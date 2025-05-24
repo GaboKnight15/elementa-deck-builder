@@ -80,48 +80,7 @@
   <header>
     <h1>Elementa: Card Gallery & Deck Builder</h1>
   </header>
-
-  <div id="card-gallery" style="display: flex; gap: 20px; flex-wrap: wrap;"></div>
-  <script>
-  const cards = [
-    {
-      name: "Drake",
-      type: "Dragon",
-      description: "A fierce drake with fiery breath.",
-      image: "images/drake.png"
-    },
-    {
-      name: "Sylvan Archer",
-      type: "Forest",
-      description: "A skilled archer of the forest.",
-      image: "images/sylvan-archer.png"
-    },
-    {
-      name: "Tidal Serpent",
-      type: "Tidal",
-      description: "A serpent that commands the waves.",
-      image: "images/tidal-serpent.png"
-    }
-  ];
-
-  function displayCards() {
-    const gallery = document.getElementById('card-gallery');
-    cards.forEach(card => {
-      const cardDiv = document.createElement('div');
-      cardDiv.className = 'card';
-      cardDiv.innerHTML = `
-        <img src="${card.image}" alt="${card.name}" style="width:150px; height:auto;">
-        <h3>${card.name}</h3>
-        <p><em>${card.type}</em></p>
-        <p>${card.description}</p>
-      `;
-      gallery.appendChild(cardDiv);
-    });
-  }
-
-  window.onload = displayCards;
-</script>
-
+  
   <div class="container" id="card-gallery"></div>
 
   <div class="deck">
