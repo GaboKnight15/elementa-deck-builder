@@ -80,7 +80,7 @@
   <header>
     <h1>Elementa: Card Gallery & Deck Builder</h1>
   </header>
-  
+
   <div class="container" id="card-gallery"></div>
 
   <div class="deck">
@@ -88,120 +88,88 @@
     <ul class="deck-list" id="deck-list"></ul>
     <p>Total Cards: <span id="card-count">0</span>/60</p>
   </div>
-  
-<button onclick="resetDeck()">Reset Deck</button>
-  
-  <h2>Your Deck</h2>
-<ul id="deck-list"></ul>
 
-<h2>Card Gallery</h2>
-<div id="card-gallery"></div>
+  <script>
+    const dummyCards = [
+      { id: 'card001', name: 'Blazing Wyrmling', rarity: 'Rare', image: 'https://via.placeholder.com/150x200?text=Blazing+Wyrmling' },
+      { id: 'card002', name: 'Sylvan Sprite', rarity: 'Common', image: 'https://via.placeholder.com/150x200?text=Sylvan+Sprite' },
+      { id: 'card003', name: 'Abyssal Drake', rarity: 'Epic', image: 'https://via.placeholder.com/150x200?text=Abyssal+Drake' },
+    ];
 
-<script>
-  const cards = [
-    {
-      id: 'card001',
-      name: 'Cindercore Golemheart',
-      type: 'Terra/Fire',
-      rarity: 'Rare',
-      description: 'An earthen construct powered by a burning heart of flame.',
-      image: 'images/cindercore-golemheart.png'
-    },
-    {
-      id: 'card002',
-      name: 'Maelvyrn, Coralbound Automaton',
-      type: 'Tidal',
-      rarity: 'Epic',
-      description: 'An ancient construct of coral and magic guarding the deep.',
-      image: 'images/maelvyrn-coralbound-automaton.png'
-    },
-    {
-      id: 'card003',
-      name: 'Wyrm of Thorns and Sunfire',
-      type: 'Forest/Fire',
-      rarity: 'Common',
-      description: 'A colossal wyrm born of sunfire and tangled roots.',
-      image: 'images/wyrm-of-thorns-and-sunfire.png'
-    }
-  ];
+    const deck = JSON.parse(localStorage.getItem('deck')) || {};
 
-  // Start with empty deck (no localStorage)
-  const deck = {};
+    const gallery = document.getElementById('card-gallery');
+    const deckList = document.getElementById('deck-list');
+    const cardCount = document.getElementById('card-count');
 
-  const gallery = document.getElementById('card-gallery');
-  const deckList = document.getElementById('deck-list');
-
-  function updateDeckDisplay() {
-    deckList.innerHTML = '';
-    for (const [id, count] of Object.entries(deck)) {
-      const card = cards.find(c => c.id === id);
-      const li = document.createElement('li');
-      li.textContent = `${card.name} ×${count}`;
-      deckList.appendChild(li);
-    }
-  }
-
-  function getMaxAllowed(card) {
-    if (card.rarity === 'Epic') return 2;
-    if (card.rarity === 'Rare') return 4;
-    return 99; // Common or unspecified
-  }
-
-  cards.forEach(card => {
-    const div = document.createElement('div');
-    div.className = 'card';
-
-    const img = document.createElement('img');
-    img.src = card.image;
-    img.alt = card.name;
-    img.style.width = '150px';
-
-    const name = document.createElement('h4');
-    name.textContent = card.name;
-
-    const rarity = document.createElement('p');
-    rarity.textContent = `Rarity: ${card.rarity}`;
-
-    const type = document.createElement('p');
-    type.innerHTML = `<em>${card.type}</em>`;
-
-    const desc = document.createElement('p');
-    desc.textContent = card.description;
-
-    const addBtn = document.createElement('button');
-    addBtn.textContent = 'Add to Deck';
-    addBtn.onclick = () => {
-      const count = deck[card.id] || 0;
-      if (count < getMaxAllowed(card)) {
-        deck[card.id] = count + 1;
-        updateDeckDisplay();
-      }
-    };
+    function updateDeckDisplay() {
+  deckList.innerHTML = '';
+  let total = 0;
+  for (const [id, count] of Object.entries(deck)) {
+    const card = dummyCards.find(c => c.id === id);
+    const li = document.createElement('li');
+    li.innerHTML = `${card.name} ×${count} `;
 
     const removeBtn = document.createElement('button');
-    removeBtn.textContent = 'Remove';
+    removeBtn.textContent = '−';
     removeBtn.onclick = () => {
-      const count = deck[card.id] || 0;
-      if (count > 0) {
-        deck[card.id] = count - 1;
-        if (deck[card.id] === 0) delete deck[card.id];
-        updateDeckDisplay();
+      deck[id]--;
+      if (deck[id] <= 0) {
+        delete deck[id];
       }
+      updateDeckDisplay();
     };
 
-    div.appendChild(img);
-    div.appendChild(name);
-    div.appendChild(rarity);
-    div.appendChild(type);
-    div.appendChild(desc);
-    div.appendChild(addBtn);
-    div.appendChild(removeBtn);
+    li.appendChild(removeBtn);
+    deckList.appendChild(li);
+    total += count;
+  }
+  cardCount.textContent = total;
+  localStorage.setItem('deck', JSON.stringify(deck));
 
-    gallery.appendChild(div);
+  // Re-enable buttons if below limits
+  document.querySelectorAll('.card button').forEach((btn, i) => {
+    const card = dummyCards[i];
+    btn.disabled = !canAddCard(card);
   });
+}
 
-  updateDeckDisplay();
-</script>
+    function canAddCard(card) {
+      const count = deck[card.id] || 0;
+      const total = Object.values(deck).reduce((a, b) => a + b, 0);
+      if (total >= 60) return false;
+      if (card.rarity === 'Epic' && count >= 2) return false;
+      if (card.rarity === 'Rare' && count >= 4) return false;
+      return true;
+    }
 
+    dummyCards.forEach(card => {
+      const div = document.createElement('div');
+      div.className = 'card';
+
+      const img = document.createElement('img');
+      img.src = card.image;
+
+      const name = document.createElement('h4');
+      name.textContent = card.name;
+
+      const btn = document.createElement('button');
+      btn.textContent = 'Add to Deck';
+      btn.disabled = !canAddCard(card);
+      btn.onclick = () => {
+        if (!canAddCard(card)) return;
+        deck[card.id] = (deck[card.id] || 0) + 1;
+        updateDeckDisplay();
+        btn.disabled = !canAddCard(card);
+      };
+
+      div.appendChild(img);
+      div.appendChild(name);
+      div.appendChild(btn);
+      gallery.appendChild(div);
+    });
+
+    updateDeckDisplay();
+  </script>
 </body>
 </html>
