@@ -214,18 +214,10 @@ toggleBtn.onclick = () => {
 };
 
 window.addEventListener('click', (e) => {
-  // Only close the deck if:
-  // 1. The click is outside the deck panel AND
-  // 2. The click is not on the toggle button
-  if (
-    !deckPanel.contains(e.target) &&
-    e.target !== toggleBtn &&
-    deckPanel.classList.contains('show')
-  ) {
+  if (!deckPanel.contains(e.target) && e.target !== toggleBtn && deckPanel.classList.contains('show')) {
     deckPanel.classList.remove('show');
   }
 });
-
 
   </script>
 </body>
