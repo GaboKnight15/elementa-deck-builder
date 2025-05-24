@@ -88,6 +88,8 @@
     <ul class="deck-list" id="deck-list"></ul>
     <p>Total Cards: <span id="card-count">0</span>/60</p>
   </div>
+  
+<button onclick="resetDeck()">Reset Deck</button>
 
   <script>
     const dummyCards = [
@@ -171,6 +173,15 @@
     });
 
     updateDeckDisplay();
+
+    function resetDeck() {
+  localStorage.removeItem('deck');
+  for (const key in deck) {
+    delete deck[key];
+  }
+  updateDeckDisplay();
+}
+
   </script>
 </body>
 </html>
