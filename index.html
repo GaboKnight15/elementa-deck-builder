@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elementa Card Gallery & Deck Builder</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: #f3f3f3;
+    }
+    header {
+      background-color: #222;
+      color: white;
+      width: 100%;
+      padding: 1em;
+      text-align: center;
+    }
+    .container {
+      max-width: 1200px;
+      padding: 1em;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1em;
+      justify-content: center;
+    }
+    .card {
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      width: 150px;
+      padding: 0.5em;
+      text-align: center;
+    }
+    .card img {
+      max-width: 100%;
+      border-radius: 4px;
+    }
+    .deck {
+      position: fixed;
+      right: 0;
+      top: 0;
+      width: 250px;
+      height: 100vh;
+      background: #fff;
+      border-left: 2px solid #ccc;
+      overflow-y: auto;
+      padding: 1em;
+    }
+    .deck h2 {
+      margin-top: 0;
+    }
+    .deck-list {
+      list-style: none;
+      padding: 0;
+    }
+    .deck-list li {
+      margin: 0.5em 0;
+    }
+    button {
+      padding: 0.4em 0.6em;
+      margin-top: 0.5em;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:disabled {
+      background-color: gray;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Elementa: Card Gallery & Deck Builder</h1>
+  </header>
+
+  <div class="container" id="card-gallery"></div>
+
+  <div class="deck">
+    <h2>Your Deck</h2>
+    <ul class="deck-list" id="deck-list"></ul>
+    <p>Total Cards: <span id="card-count">0</span>/60</p>
+  </div>
+
+  <script>
+    const dummyCards = [
+      { id: 'card001', name: 'Blazing Wyrmling', rarity: 'Rare', image: 'https://via.placeholder.com/150x200?text=Blazing+Wyrmling' },
+      { id: 'card002', name: 'Sylvan Sprite', rarity: 'Common', image: 'https://via.placeholder.com/150x200?text=Sylvan+Sprite' },
+      { id: 'card003', name: 'Abyssal Drake', rarity: 'Epic', image: 'https://via.placeholder.com/150x200?text=Abyssal+Drake' },
+    ];
+
+    const deck = JSON.parse(localStorage.getItem('deck')) || {};
+
+    const gallery = document.getElementById('card-gallery');
+    const deckList = document.getElementById('deck-list');
+    const cardCount = document.getElementById('card-count');
+
+    function updateDeckDisplay() {
+      deckList.innerHTML = '';
+      let total = 0;
+      for (const [id, count] of Object.entries(deck)) {
+        const card = dummyCards.find(c => c.id === id);
+        const li = document.createElement('li');
+        li.textContent = `${card.name} ×${count}`;
+        deckList.appendChild(li);
+        total += count;
+      }
+      cardCount.textContent = total;
+      localStorage.setItem('deck', JSON.stringify(deck));
+    }
+
+    function canAddCard(card) {
+      const count = deck[card.id] || 0;
+      const total = Object.values(deck).reduce((a, b) => a + b, 0);
+      if (total >= 60) return false;
+      if (card.rarity === 'Epic' && count >= 2) return false;
+      if (card.rarity === 'Rare' && count >= 4) return false;
+      return true;
+    }
+
+    dummyCards.forEach(card => {
+      const div = document.createElement('div');
+      div.className = 'card';
+
+      const img = document.createElement('img');
+      img.src = card.image;
+
+      const name = document.createElement('h4');
+      name.textContent = card.name;
+
+      const btn = document.createElement('button');
+      btn.textContent = 'Add to Deck';
+      btn.disabled = !canAddCard(card);
+      btn.onclick = () => {
+        if (!canAddCard(card)) return;
+        deck[card.id] = (deck[card.id] || 0) + 1;
+        updateDeckDisplay();
+        btn.disabled = !canAddCard(card);
+      };
+
+      div.appendChild(img);
+      div.appendChild(name);
+      div.appendChild(btn);
+      gallery.appendChild(div);
+    });
+
+    updateDeckDisplay();
+  </script>
+</body>
+</html>
