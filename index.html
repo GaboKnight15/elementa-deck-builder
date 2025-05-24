@@ -98,7 +98,7 @@
   <script>
     const dummyCards = [
       { id: 'card001', name: 'Cindercore Golemheart', rarity: 'Rare', image: 'images/Cindercore Golemheart.png' },
-      { id: 'card002', name: 'Maelvyrn, Coralbound Automaton', rarity: 'Common', image: 'images/Maelvyrn, Coralbound Automaton.png' },
+      { id: 'card002', name: 'Maelvyrn, Coralbound Automaton', rarity: 'Legendary', image: 'images/Maelvyrn, Coralbound Automaton.png' },
       { id: 'card003', name: 'Wyrm of Thorns and Sunfire', rarity: 'Epic', image: 'images/Wyrm of Thorns and Sunfire.png' },
     ];
 
@@ -144,8 +144,9 @@
       const count = deck[card.id] || 0;
       const total = Object.values(deck).reduce((a, b) => a + b, 0);
       if (total >= 60) return false;
+      if (card.rarity === 'Legendary' && count >= 1) return false;
       if (card.rarity === 'Epic' && count >= 2) return false;
-      if (card.rarity === 'Rare' && count >= 4) return false;
+      if (card.rarity === 'Rare' && count >= 3) return false;
       return true;
     }
 
