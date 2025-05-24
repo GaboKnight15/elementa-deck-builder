@@ -87,14 +87,10 @@
     <h2>Your Deck</h2>
     <ul class="deck-list" id="deck-list"></ul>
     <p>Total Cards: <span id="card-count">0</span>/60</p>
+    <button id="reset-deck-btn" style="background-color: #dc3545;">Reset Deck</button>
   </div>
+
   
-<h2>Your Deck</h2>
-<ul id="deck-list"></ul>
-
-<h2>Card Gallery</h2>
-<div id="card-gallery"></div>
-
   <script>
     const dummyCards = [
       { id: 'card001', name: 'Cindercore Golemheart', rarity: 'Rare', image: 'images/Cindercore Golemheart.png' },
@@ -177,6 +173,14 @@
     });
 
     updateDeckDisplay();
+    
+    document.getElementById('reset-deck-btn').onclick = () => {
+  for (const key in deck) {
+    delete deck[key];
+  }
+  updateDeckDisplay();
+};
+
   </script>
 </body>
 </html>
