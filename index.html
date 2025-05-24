@@ -102,19 +102,38 @@
     const deckList = document.getElementById('deck-list');
     const cardCount = document.getElementById('card-count');
 
-    function updateDeckDisplay() {
-      deckList.innerHTML = '';
-      let total = 0;
-      for (const [id, count] of Object.entries(deck)) {
-        const card = dummyCards.find(c => c.id === id);
-        const li = document.createElement('li');
-        li.textContent = `${card.name} ×${count}`;
-        deckList.appendChild(li);
-        total += count;
+   function updateDeckDisplay() {
+  deckList.innerHTML = '';
+  let total = 0;
+  for (const [id, count] of Object.entries(deck)) {
+    const card = dummyCards.find(c => c.id === id);
+    const li = document.createElement('li');
+    li.innerHTML = `${card.name} ×${count} `;
+
+    const removeBtn = document.createElement('button');
+    removeBtn.textContent = '−';
+    removeBtn.onclick = () => {
+      deck[id]--;
+      if (deck[id] <= 0) {
+        delete deck[id];
       }
-      cardCount.textContent = total;
-      localStorage.setItem('deck', JSON.stringify(deck));
-    }
+      updateDeckDisplay();
+    };
+
+    li.appendChild(removeBtn);
+    deckList.appendChild(li);
+    total += count;
+  }
+  cardCount.textContent = total;
+  localStorage.setItem('deck', JSON.stringify(deck));
+
+  // Re-enable buttons if below limits
+  document.querySelectorAll('.card button').forEach((btn, i) => {
+    const card = dummyCards[i];
+    btn.disabled = !canAddCard(card);
+  });
+}
+
 
     function canAddCard(card) {
       const count = deck[card.id] || 0;
