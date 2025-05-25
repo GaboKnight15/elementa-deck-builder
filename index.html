@@ -154,10 +154,10 @@
   
   <script>
     const dummyCards = [
-      { id: 'card001', name: 'Cindercore Golemheart', rarity: 'Rare', image: 'images/Cindercore Golemheart.png' },
-      { id: 'card002', name: 'Pyrokrag, Golemheart Titan', rarity: 'Legendary', image: 'images/Pyrokrag, Golemheart Titan.png' },
-      { id: 'card002', name: 'Maelvyrn, Coralbound Automaton', rarity: 'Legendary', image: 'images/Maelvyrn, Coralbound Automaton.png' },
-      { id: 'card003', name: 'Wyrm of Thorns and Sunfire', rarity: 'Epic', image: 'images/Wyrm of Thorns and Sunfire.png' },
+      { id: 'card001', name: 'Cindercore Golemheart', rarity: 'Rare', image: 'images/Cindercore Golemheart.png', color: ['red', 'gray'], type: 'elemental', hp: 15, atk: 6, def: 3, cost: 7},
+      { id: 'card002', name: 'Pyrokrag, Golemheart Titan', rarity: 'Legendary', image: 'images/Pyrokrag, Golemheart Titan.png', color: ['red', 'gray'], type: 'elemental', hp: 15, atk: 6, def: 3, cost: 7}, 
+      { id: 'card003', name: 'Maelvyrn, Coralbound Automaton', rarity: 'Legendary', image: 'images/Maelvyrn, Coralbound Automaton.png', color: ['red', 'gray'], type: 'construct', hp: 19, atk: 8, def: 5, cost: 9},
+      { id: 'card004', name: 'Wyrm of Thorns and Sunfire', rarity: 'Epic', image: 'images/Wyrm of Thorns and Sunfire.png', color: ['green', 'red', 'white'], type: 'dragon', hp: 9, atk: 5, def: 2, cost: 3 },
     ];
 
     const deck = JSON.parse(localStorage.getItem('deck')) || {};
@@ -283,6 +283,10 @@ modal.onclick = (e) => {
   }
 };
 
+    //Check if multicolored//
+    if (card.color.length > 1) {
+  console.log(`${card.name} is multicolored!`);
+}
   </script>
 </body>
 </html>
