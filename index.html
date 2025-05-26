@@ -152,6 +152,12 @@
 
   <!-- Filter Gallery -->
 <div id="filters" style="margin: 1em;">
+  
+  <label>
+  Name:
+  <input type="text" id="filter-name" placeholder="Search by name..." />
+  </label>
+
   <label>Color:
     <select id="filter-color">
       <option value="">All</option>
@@ -283,26 +289,31 @@ li.appendChild(span);
 function renderGallery() {
   gallery.innerHTML = ''; // Clear current cards
 
-  const selectedColor = document.getElementById('filter-color').value;
-  const selectedType = document.getElementById('filter-type').value;
-  const selectedRarity = document.getElementById('filter-rarity').value;
+  const selectedColor = document.getElementById('filter-color').value.toLowerCase();
+  const selectedType = document.getElementById('filter-type').value.toLowerCase();
+  const selectedRarity = document.getElementById('filter-rarity').value.toLowerCase();
+  const nameFilter = document.getElementById('filter-name').value.toLowerCase();
 
   dummyCards.forEach(card => {
+    
+    // Filter by name:
+    if (nameFilter && !card.name.toLowerCase().includes(nameFilter)) return;
+
     // Filter by color:
     if (selectedColor) {
-      const colors = Array.isArray(card.color) ? card.color : [card.color];
+      const colors = Array.isArray(card.color) ? card.color.map(c => c.toLowerCase()) : [card.color.toLowerCase()];
       if (!colors.includes(selectedColor)) return;
     }
 
     // Filter by type:
     if (selectedType) {
-      const types = Array.isArray(card.type) ? card.type : [card.type];
+      const types = Array.isArray(card.type) ? card.type.map(t => t.toLowerCase()) : [card.type.toLowerCase()];
       if (!types.includes(selectedType)) return;
     }
 
     // Filter by rarity:
     if (selectedRarity) {
-      if (card.rarity !== selectedRarity) return;
+      if (card.rarity.toLowerCase() !== selectedRarity) return;
     }
 
     const div = document.createElement('div');
@@ -337,7 +348,7 @@ function renderGallery() {
   });
 }
 
-
+document.getElementById('filter-name').addEventListener('input', renderGallery);
 document.getElementById('filter-color').addEventListener('change', renderGallery);
 document.getElementById('filter-type').addEventListener('change', renderGallery);
 document.getElementById('filter-rarity').addEventListener('change', renderGallery);
