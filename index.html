@@ -286,30 +286,35 @@ li.appendChild(span);
   const selectedRarity = document.getElementById('filter-rarity').value;
 
   dummyCards.forEach(card => {
-  // Color filter
-  if (selectedColor) {
-    const colors = Array.isArray(card.color) ? card.color : [card.color];
-    if (!colors.includes(selectedColor)) return;
-  }
+    // Color filter
+    if (selectedColor) {
+      const colors = Array.isArray(card.color) ? card.color : [card.color];
+      if (!colors.includes(selectedColor)) return;
+    }
 
-  // Type filter
-  if (selectedType) {
-    const types = Array.isArray(card.type) ? card.type : [card.type];
-    if (!types.includes(selectedType)) return;
-  }
+    // Type filter
+    if (selectedType) {
+      const types = Array.isArray(card.type) ? card.type : [card.type];
+      if (!types.includes(selectedType)) return;
+    }
 
-  // Rarity filter
-  if (selectedRarity && card.rarity !== selectedRarity) return;
+    // Rarity filter
+    if (selectedRarity && card.rarity !== selectedRarity) return;
 
-  // ... render card ...
-});
-
-
+    // Now render the card — this code MUST be inside forEach!
     const div = document.createElement('div');
     div.className = 'card';
 
     const img = document.createElement('img');
     img.src = card.image;
+    img.alt = card.name;
+    img.style.cursor = 'pointer';
+
+    // Optional: open modal on click
+    img.onclick = () => {
+      modal.style.display = "block";
+      modalImg.src = img.src;
+    };
 
     const name = document.createElement('h4');
     name.textContent = card.name;
@@ -330,6 +335,7 @@ li.appendChild(span);
     gallery.appendChild(div);
   });
 }
+
 
 document.getElementById('filter-color').addEventListener('change', renderGallery);
 document.getElementById('filter-type').addEventListener('change', renderGallery);
