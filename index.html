@@ -139,6 +139,33 @@
   align-items: center;
   gap: 8px;
 }
+    
+/* Background themes */
+body.theme-green {
+  background: linear-gradient(to bottom, #e6ffe6, #a3d9a5); /* Foresty green */
+}
+body.theme-red {
+  background: linear-gradient(to bottom, #ffd6d6, #ff7f7f); /* Fiery red */
+}
+body.theme-blue {
+  background: linear-gradient(to bottom, #d6f0ff, #7fcfff); /* Ocean blue */
+}
+body.theme-gray {
+  background: linear-gradient(to bottom, #e0e0e0, #b3b3b3); /* Stone gray */
+}
+body.theme-purple {
+  background: linear-gradient(to bottom, #f0d9ff, #c27be7); /* Arcane purple */
+}
+body.theme-yellow {
+  background: linear-gradient(to bottom, #fff9d6, #ffe066); /* Solar yellow */
+}
+body.theme-black {
+  background: linear-gradient(to bottom, #444, #000);       /* Shadow black */
+  color: white;
+}
+body.theme-white {
+  background: linear-gradient(to bottom, #ffffff, #f5f5f5); /* Pure white */
+}
 
   </style>
 </head>
@@ -362,6 +389,19 @@ document.getElementById('filter-rarity').addEventListener('change', renderGaller
   }
   updateDeckDisplay();
 };
+    
+document.getElementById('filter-color').addEventListener('change', (e) => {
+  const color = e.target.value.toLowerCase();
+  document.body.className = document.body.className
+    .split(' ')
+    .filter(cls => !cls.startsWith('theme-'))
+    .join(' ')
+    .trim();
+
+  if (color) {
+    document.body.classList.add(`theme-${color}`);
+  }
+});
 
   renderGallery();
 
