@@ -125,6 +125,11 @@
   font-weight: bold;
   cursor: pointer;
 }
+.deck-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 
   </style>
 </head>
@@ -172,7 +177,21 @@
   for (const [id, count] of Object.entries(deck)) {
     const card = dummyCards.find(c => c.id === id);
     const li = document.createElement('li');
-    li.innerHTML = `${card.name} ×${count} `;
+    const img = document.createElement('img');
+img.src = card.image;
+img.alt = card.name;
+img.style.width = '40px';  // Miniature size
+img.style.height = 'auto';
+img.style.marginRight = '8px';
+img.style.verticalAlign = 'middle';
+img.style.borderRadius = '4px';
+
+const span = document.createElement('span');
+span.textContent = `${card.name} ×${count} `;
+
+li.appendChild(img);
+li.appendChild(span);
+
 
     const removeBtn = document.createElement('button');
     removeBtn.textContent = '−';
