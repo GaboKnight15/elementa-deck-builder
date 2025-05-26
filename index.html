@@ -278,7 +278,7 @@ li.appendChild(span);
     }
 
     // Filter Function //
-    function renderGallery() {
+   function renderGallery() {
   gallery.innerHTML = ''; // Clear current cards
 
   const selectedColor = document.getElementById('filter-color').value;
@@ -301,20 +301,13 @@ li.appendChild(span);
     // Rarity filter
     if (selectedRarity && card.rarity !== selectedRarity) return;
 
-    // Now render the card — this code MUST be inside forEach!
+    // Render card only if it passes all filters
     const div = document.createElement('div');
     div.className = 'card';
 
     const img = document.createElement('img');
     img.src = card.image;
     img.alt = card.name;
-    img.style.cursor = 'pointer';
-
-    // Optional: open modal on click
-    img.onclick = () => {
-      modal.style.display = "block";
-      modalImg.src = img.src;
-    };
 
     const name = document.createElement('h4');
     name.textContent = card.name;
@@ -334,6 +327,12 @@ li.appendChild(span);
     div.appendChild(btn);
     gallery.appendChild(div);
   });
+
+  img.onclick = () => {
+  modal.style.display = "block";
+  modalImg.src = card.image;
+};
+
 }
 
 
