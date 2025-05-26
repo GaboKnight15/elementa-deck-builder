@@ -22,12 +22,13 @@
       text-align: center;
     }
     .container {
-      max-width: 1200px;
-      padding: 1em;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1em;
-      justify-content: center;
+  max-width: 1200px;
+  padding: 1em;
+  padding-right: 270px; /* Add this line */
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+  justify-content: center;
     }
     .card {
       background: white;
@@ -90,6 +91,13 @@
     transition: transform 0.3s ease;
     z-index: 1000;
   }
+
+   /* Adjusting width */
+  @media (min-width: 769px) {
+  .container {
+    padding-right: 270px;
+  }
+}
 
   .deck.show {
     transform: translateX(0);
