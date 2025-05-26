@@ -286,13 +286,24 @@ li.appendChild(span);
   const selectedRarity = document.getElementById('filter-rarity').value;
 
   dummyCards.forEach(card => {
-    // Apply filters
-    if (selectedColor && card.color !== selectedColor) return;
-    if (selectedType) {
-      const types = Array.isArray(card.type) ? card.type : [card.type];
-      if (!types.includes(selectedType)) return;
-    }
-    if (selectedRarity && card.rarity !== selectedRarity) return;
+  // Color filter
+  if (selectedColor) {
+    const colors = Array.isArray(card.color) ? card.color : [card.color];
+    if (!colors.includes(selectedColor)) return;
+  }
+
+  // Type filter
+  if (selectedType) {
+    const types = Array.isArray(card.type) ? card.type : [card.type];
+    if (!types.includes(selectedType)) return;
+  }
+
+  // Rarity filter
+  if (selectedRarity && card.rarity !== selectedRarity) return;
+
+  // ... render card ...
+});
+
 
     const div = document.createElement('div');
     div.className = 'card';
