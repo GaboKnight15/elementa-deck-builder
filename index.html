@@ -75,7 +75,7 @@
     button:disabled {
       background-color: gray;
     }
-    /* Hide deck by default on small screens */
+/* Hide deck by default on small screens */
 @media (max-width: 768px) {
   .deck {
     position: fixed;
@@ -92,17 +92,18 @@
     z-index: 1000;
   }
 
-   /* Adjusting width */
-  @media (min-width: 769px) {
+  .deck.show {
+    transform: translateX(0);
+  }
+}
+
+/* Move this outside the above media query */
+@media (min-width: 769px) {
   .container {
     padding-right: 270px;
   }
 }
 
-  .deck.show {
-    transform: translateX(0);
-  }
-}
 
 /* Full Size Image View */
     .modal {
@@ -288,24 +289,21 @@ function renderGallery() {
   dummyCards.forEach(card => {
     // Filter by color:
     if (selectedColor) {
-      // card.color can be string or array — handle both:
       const colors = Array.isArray(card.color) ? card.color : [card.color];
-      if (!colors.includes(selectedColor)) return; // skip this card
+      if (!colors.includes(selectedColor)) return;
     }
 
     // Filter by type:
     if (selectedType) {
-      // card.type can be string or array — handle both:
       const types = Array.isArray(card.type) ? card.type : [card.type];
-      if (!types.includes(selectedType)) return; // skip this card
+      if (!types.includes(selectedType)) return;
     }
 
     // Filter by rarity:
     if (selectedRarity) {
-      if (card.rarity !== selectedRarity) return; // skip this card
+      if (card.rarity !== selectedRarity) return;
     }
 
-    // If passed all filters, render the card:
     const div = document.createElement('div');
     div.className = 'card';
 
@@ -313,7 +311,6 @@ function renderGallery() {
     img.src = card.image;
     img.alt = card.name;
 
-    // Add modal click here
     img.onclick = () => {
       modal.style.display = "block";
       modalImg.src = card.image;
@@ -338,12 +335,6 @@ function renderGallery() {
     gallery.appendChild(div);
   });
 }
-
-
-  img.onclick = () => {
-  modal.style.display = "block";
-  modalImg.src = card.image;
-};
 
 }
 
@@ -393,10 +384,6 @@ modal.onclick = (e) => {
   }
 };
 
-    //Check if multicolored//
-    if (card.color.length > 1) {
-  console.log(`${card.name} is multicolored!`);
-}
   </script>
 </body>
 </html>
