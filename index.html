@@ -149,6 +149,40 @@
 
   </header>
 
+  <!-- Filter Gallery -->
+<div id="filters" style="margin: 1em;">
+  <label>Color:
+    <select id="filter-color">
+      <option value="">All</option>
+      <option value="red">Red</option>
+      <option value="green">Green</option>
+      <option value="gray">Gray</option>
+    </select>
+  </label>
+
+  <label>Type:
+    <select id="filter-type">
+      <option value="">All</option>
+      <option value="relic">Elemental</option>
+      <option value="relic">Dragon</option>
+      <option value="spell">Spell</option>
+      <option value="artifact">Artifact</option>
+      <option value="domain">Domain</option>
+      <option value="relic">Relic</option>
+    </select>
+  </label>
+
+  <label>Rarity:
+    <select id="filter-rarity">
+      <option value="">All</option>
+      <option value="Common">Common</option>
+      <option value="Rare">Rare</option>
+      <option value="Epic">Epic</option>
+      <option value="Legendary">Legendary</option>
+    </select>
+  </label>
+</div>
+
   <div class="container" id="card-gallery"></div>
 
   <div class="deck">
@@ -238,35 +272,53 @@ li.appendChild(span);
       return true;
     }
 
-    dummyCards.forEach(card => {
-      const div = document.createElement('div');
-      div.className = 'card';
+    // Filter Function //
+    function renderGallery() {
+  gallery.innerHTML = ''; // Clear current cards
 
-      const img = document.createElement('img');
-      img.src = card.image;
-      img.onclick = () => {
-        modal.style.display = "block";
-        modalImg.src = img.src;
-      };
+  const selectedColor = document.getElementById('filter-color').value;
+  const selectedType = document.getElementById('filter-type').value;
+  const selectedRarity = document.getElementById('filter-rarity').value;
 
-      const name = document.createElement('h4');
-      name.textContent = card.name;
+  dummyCards.forEach(card => {
+    // Apply filters
+    if (selectedColor && card.color !== selectedColor) return;
+    if (selectedType) {
+      const types = Array.isArray(card.type) ? card.type : [card.type];
+      if (!types.includes(selectedType)) return;
+    }
+    if (selectedRarity && card.rarity !== selectedRarity) return;
 
-      const btn = document.createElement('button');
-      btn.textContent = 'Add to Deck';
+    const div = document.createElement('div');
+    div.className = 'card';
+
+    const img = document.createElement('img');
+    img.src = card.image;
+
+    const name = document.createElement('h4');
+    name.textContent = card.name;
+
+    const btn = document.createElement('button');
+    btn.textContent = 'Add to Deck';
+    btn.disabled = !canAddCard(card);
+    btn.onclick = () => {
+      if (!canAddCard(card)) return;
+      deck[card.id] = (deck[card.id] || 0) + 1;
+      updateDeckDisplay();
       btn.disabled = !canAddCard(card);
-      btn.onclick = () => {
-        if (!canAddCard(card)) return;
-        deck[card.id] = (deck[card.id] || 0) + 1;
-        updateDeckDisplay();
-        btn.disabled = !canAddCard(card);
-      };
+    };
 
-      div.appendChild(img);
-      div.appendChild(name);
-      div.appendChild(btn);
-      gallery.appendChild(div);
-    });
+    div.appendChild(img);
+    div.appendChild(name);
+    div.appendChild(btn);
+    gallery.appendChild(div);
+  });
+}
+
+document.getElementById('filter-color').addEventListener('change', renderGallery);
+document.getElementById('filter-type').addEventListener('change', renderGallery);
+document.getElementById('filter-rarity').addEventListener('change', renderGallery);
+
 
     updateDeckDisplay();
     
@@ -276,6 +328,8 @@ li.appendChild(span);
   }
   updateDeckDisplay();
 };
+
+  renderGallery();
 
     //Mobile Functions
 const toggleBtn = document.getElementById('toggle-deck-btn');
