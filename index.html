@@ -278,7 +278,7 @@ li.appendChild(span);
     }
 
     // Filter Function //
-   function renderGallery() {
+function renderGallery() {
   gallery.innerHTML = ''; // Clear current cards
 
   const selectedColor = document.getElementById('filter-color').value;
@@ -286,39 +286,59 @@ li.appendChild(span);
   const selectedRarity = document.getElementById('filter-rarity').value;
 
   dummyCards.forEach(card => {
-  // ... your filter checks ...
+    // Filter by color:
+    if (selectedColor) {
+      // card.color can be string or array — handle both:
+      const colors = Array.isArray(card.color) ? card.color : [card.color];
+      if (!colors.includes(selectedColor)) return; // skip this card
+    }
 
-  const div = document.createElement('div');
-  div.className = 'card';
+    // Filter by type:
+    if (selectedType) {
+      // card.type can be string or array — handle both:
+      const types = Array.isArray(card.type) ? card.type : [card.type];
+      if (!types.includes(selectedType)) return; // skip this card
+    }
 
-  const img = document.createElement('img');
-  img.src = card.image;
-  img.alt = card.name;
+    // Filter by rarity:
+    if (selectedRarity) {
+      if (card.rarity !== selectedRarity) return; // skip this card
+    }
 
-  // Add modal click here
-  img.onclick = () => {
-    modal.style.display = "block";
-    modalImg.src = card.image;
-  };
+    // If passed all filters, render the card:
+    const div = document.createElement('div');
+    div.className = 'card';
 
-  const name = document.createElement('h4');
-  name.textContent = card.name;
+    const img = document.createElement('img');
+    img.src = card.image;
+    img.alt = card.name;
 
-  const btn = document.createElement('button');
-  btn.textContent = 'Add to Deck';
-  btn.disabled = !canAddCard(card);
-  btn.onclick = () => {
-    if (!canAddCard(card)) return;
-    deck[card.id] = (deck[card.id] || 0) + 1;
-    updateDeckDisplay();
+    // Add modal click here
+    img.onclick = () => {
+      modal.style.display = "block";
+      modalImg.src = card.image;
+    };
+
+    const name = document.createElement('h4');
+    name.textContent = card.name;
+
+    const btn = document.createElement('button');
+    btn.textContent = 'Add to Deck';
     btn.disabled = !canAddCard(card);
-  };
+    btn.onclick = () => {
+      if (!canAddCard(card)) return;
+      deck[card.id] = (deck[card.id] || 0) + 1;
+      updateDeckDisplay();
+      btn.disabled = !canAddCard(card);
+    };
 
-  div.appendChild(img);
-  div.appendChild(name);
-  div.appendChild(btn);
-  gallery.appendChild(div);
-});
+    div.appendChild(img);
+    div.appendChild(name);
+    div.appendChild(btn);
+    gallery.appendChild(div);
+  });
+}
+
 
   img.onclick = () => {
   modal.style.display = "block";
