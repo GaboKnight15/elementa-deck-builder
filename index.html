@@ -206,6 +206,8 @@ body.theme-white {
       <option value="dragon">Dragon</option>
       <option value="construct">Construct</option>
       <option value="beast">Beast</option>
+      <option value="undead">Undead</option>
+      <option value="mage">Mage</option>
       <option value="spell">Spell</option>
       <option value="artifact">Artifact</option>
       <option value="equipment">Equipment</option>
@@ -217,9 +219,9 @@ body.theme-white {
   <label>Rarity:
     <select id="filter-rarity">
       <option value="">All</option>
+      <option value="Basic">Basic</option>
       <option value="Common">Common</option>
       <option value="Rare">Rare</option>
-      <option value="Epic">Epic</option>
       <option value="Legendary">Legendary</option>
     </select>
   </label>
@@ -243,20 +245,28 @@ body.theme-white {
   
   <script>
     const dummyCards = [
-      { id: 'card001', name: 'Cindercore Golemheart', rarity: 'Rare', image: 'images/Cindercore Golemheart.png', color: ['red', 'gray'], type: 'elemental', hp: 15, atk: 6, def: 3, cost: 7},
+      { id: 'card001', name: 'Cindercore Golemheart', rarity: 'Rare', image: 'images/Cindercore Golemheart.png', color: ['red', 'gray'], type: 'elemental', hp: 15, atk: 6, def: 3, cost: 7, archetype: "Skullframe"},
       { id: 'card002', name: 'Pyrokrag, Golemheart Titan', rarity: 'Legendary', image: 'images/Pyrokrag, Golemheart Titan.png', color: ['red', 'gray'], type: 'elemental', hp: 15, atk: 6, def: 3, cost: 7}, 
       { id: 'card003', name: 'Maelvyrn, Coralbound Automaton', rarity: 'Legendary', image: 'images/Maelvyrn, Coralbound Automaton.png', color: 'blue', type: 'construct', hp: 19, atk: 8, def: 5, cost: 9},
-      { id: 'card004', name: 'Wyrm of Thorns and Sunfire', rarity: 'Epic', image: 'images/Wyrm of Thorns and Sunfire.png', color: ['green', 'red', 'white'], type: 'dragon', hp: 9, atk: 5, def: 2, cost: 3 },
-      { id: 'card005', name: 'Golemheart infusor', rarity: 'Rare', image: 'images/Golemheart Infusor.png', color: 'gray', type: ['artifact','relic'], hp: 5, cost: 1},
-      { id: 'card006', name: 'Life Growth', rarity: 'Common', image: 'images/Life Growth.png', color: 'green', type: 'spell', cost: 1},
-      { id: 'basicforest', name: 'Forest', rarity: 'Common', image: 'images/Forest.png', color: 'green', type: 'domain', hp: 5, cost: 1},
-      { id: 'basicvolcano', name: 'Volcano', rarity: 'Common', image: 'images/Red Basic Location.png', color: 'red', type: 'domain', hp: 5, cost: 1},
-      { id: 'basicocean', name: 'Ocean', rarity: 'Common', image: 'images/Blue Basic Location.png', color: 'blue', type: 'domain', hp: 5, cost: 1},
-      { id: 'basicmountain', name: 'Mountain', rarity: 'Common', image: 'images/Gray Basic Location.png', color: 'gray', type: 'domain', hp: 5, cost: 1},
-      { id: 'basicswamp', name: 'Swamp', rarity: 'Common', image: 'images/Purple Basic Location.png', color: 'purple', type: 'domain', hp: 5, cost: 1},
-      { id: 'basicpeaks', name: 'Peaks', rarity: 'Common', image: 'images/Yellow Basic Location.png', color: 'yellow', type: 'domain', hp: 5, cost: 1},
-      { id: 'basicplains', name: 'Plains', rarity: 'Common', image: 'images/White Basic Location.png', color: 'white', type: 'domain', hp: 5, cost: 1},
-      { id: 'basicshadowforest', name: 'Shadow Forest', rarity: 'Common', image: 'images/Black Basic Location.png', color: 'black', type: 'domain', hp: 5, cost: 1},
+      { id: 'card004', name: 'Wyrm of Thorns and Sunfire', rarity: 'Rare', image: 'images/Wyrm of Thorns and Sunfire.png', color: ['green', 'red', 'white'], type: 'dragon', hp: 9, atk: 5, def: 2, cost: 3 },
+      { id: 'card005', name: 'Golemheart infusor', rarity: 'Common', image: 'images/Golemheart Infusor.png', color: 'gray', type: ['artifact','relic'], hp: 5, cost: 1},
+      { id: 'card006', name: 'Skeleton', rarity: 'Basic', image: 'Skullframe/Skeleton Skullframe.png', color: 'black', type: 'undead', hp: 1, atk: 1, def: 0, cost: 0, archetype: "Skullframe"},
+      { id: 'card007', name: 'Skullframe Defector', rarity: 'Common', image: 'Skullframe/Skullframe Defector.png', color: 'black', type: 'undead', hp: 3, atk: 2, def: 1, cost: 1, archetype: "Skullframe"},
+      { id: 'card008', name: 'Skullframe Unyielding', rarity: 'Common', image: 'Skullframe/Skullframe Unyielding.png', color: 'black', type: 'undead', hp: 4, atk: 1, def: 0, cost: 2, archetype: "Skullframe"},
+      { id: 'card009', name: 'Skullframe Acolyte', rarity: 'Common', image: 'Skullframe/Skullframe Acolyte.png', color: ['black', 'purple'], type: 'undead', hp: 5, atk: 3, def: 1, cost: 3, archetype: "Skullframe"},
+      { id: 'card010', name: 'Skullframe Spectral Dragon', rarity: 'Rare', image: 'Skullframe/Skullframe Spectral Dragon.png', color: ['black', 'purple'], type: 'undead', hp: 12, atk: 6, def: 2, cost: 5, archetype: "Skullframe"},
+      { id: 'card011', name: 'Skullframe Hexmistress', rarity: 'Rare', image: 'Skullframe/Skullframe Hexmistress.png', color: ['black', 'purple'], type: 'undead', hp: 6, atk: 4, def: 1, cost: 3, archetype: "Skullframe"},
+      { id: 'card012', name: 'Maldryss, Skullframe Archmage', rarity: 'Legendary', image: 'Skullframe/Maldryss, Skullframe Archmage.png', color: ['black', 'purple'], type: 'undead', hp: 8, atk: 4, def: 1, cost: 3, archetype: "Skullframe"},
+      { id: 'card012a', name: 'Maldryss, Skullframe Archmage', rarity: 'Legendary', image: 'Skullframe/Maldryss, Skullframe Archmage FA.png', color: ['black', 'purple'], type: 'undead', hp: 8, atk: 4, def: 1, cost: 3, archetype: "Skullframe"},
+      { id: 'card100', name: 'Life Growth', rarity: 'Common', image: 'images/Life Growth.png', color: 'green', type: 'spell', cost: 1},
+      { id: 'basicforest', name: 'Forest', rarity: 'Basic', image: 'images/Forest.png', color: 'green', type: 'domain', hp: 5, cost: 1},
+      { id: 'basicvolcano', name: 'Volcano', rarity: 'Basic', image: 'images/Red Basic Location.png', color: 'red', type: 'domain', hp: 5, cost: 1},
+      { id: 'basicocean', name: 'Ocean', rarity: 'Basic', image: 'images/Blue Basic Location.png', color: 'blue', type: 'domain', hp: 5, cost: 1},
+      { id: 'basicmountain', name: 'Mountain', rarity: 'Basic', image: 'images/Gray Basic Location.png', color: 'gray', type: 'domain', hp: 5, cost: 1},
+      { id: 'basicswamp', name: 'Swamp', rarity: 'Basic', image: 'images/Purple Basic Location.png', color: 'purple', type: 'domain', hp: 5, cost: 1},
+      { id: 'basicpeaks', name: 'Peaks', rarity: 'Basic', image: 'images/Yellow Basic Location.png', color: 'yellow', type: 'domain', hp: 5, cost: 1},
+      { id: 'basicplains', name: 'Plains', rarity: 'Basic', image: 'images/White Basic Location.png', color: 'white', type: 'domain', hp: 5, cost: 1},
+      { id: 'basicshadowforest', name: 'Shadow Forest', rarity: 'Basic', image: 'images/Black Basic Location.png', color: 'black', type: 'domain', hp: 5, cost: 1},
       
     ];
 
