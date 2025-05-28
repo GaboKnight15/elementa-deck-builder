@@ -245,16 +245,16 @@ body.theme-white {
   
   <script>
     const dummyCards = [
-      { id: 'card001', name: 'Cindercore Golemheart', rarity: 'Rare', image: 'images/Cindercore Golemheart.png', color: ['red', 'gray'], type: 'elemental', hp: 15, atk: 6, def: 3, cost: 7, archetype: "Skullframe"},
-      { id: 'card002', name: 'Pyrokrag, Golemheart Titan', rarity: 'Legendary', image: 'images/Pyrokrag, Golemheart Titan.png', color: ['red', 'gray'], type: 'elemental', hp: 15, atk: 6, def: 3, cost: 7}, 
-      { id: 'card003', name: 'Maelvyrn, Coralbound Automaton', rarity: 'Legendary', image: 'images/Maelvyrn, Coralbound Automaton.png', color: 'blue', type: 'construct', hp: 19, atk: 8, def: 5, cost: 9},
+      { id: 'card001', name: 'Cindercore Golemheart', rarity: 'Rare', image: 'images/Cindercore Golemheart.png', color: ['red', 'gray'], type: 'elemental', hp: 15, atk: 6, def: 3, cost: 7, archetype: ['Cindercore','Golemheart']},
+      { id: 'card002', name: 'Pyrokrag, Golemheart Titan', rarity: 'Legendary', image: 'images/Pyrokrag, Golemheart Titan.png', color: ['red', 'gray'], type: 'elemental', hp: 15, atk: 6, def: 3, cost: 7, archetype: "Golemheart"}, 
+      { id: 'card003', name: 'Maelvyrn, Coralbound Automaton', rarity: 'Legendary', image: 'images/Maelvyrn, Coralbound Automaton.png', color: 'blue', type: 'construct', hp: 19, atk: 8, def: 5, cost: 9, archetype: "Coralbound"},
       { id: 'card004', name: 'Wyrm of Thorns and Sunfire', rarity: 'Rare', image: 'images/Wyrm of Thorns and Sunfire.png', color: ['green', 'red', 'white'], type: 'dragon', hp: 9, atk: 5, def: 2, cost: 3 },
-      { id: 'card005', name: 'Golemheart infusor', rarity: 'Common', image: 'images/Golemheart Infusor.png', color: 'gray', type: ['artifact','relic'], hp: 5, cost: 1},
+      { id: 'card005', name: 'Golemheart infusor', rarity: 'Common', image: 'images/Golemheart Infusor.png', color: 'gray', type: ['artifact','relic'], hp: 5, cost: 1, archetype: "Golemheart"},
       { id: 'card006', name: 'Skeleton', rarity: 'Basic', image: 'Skullframe/Skeleton Skullframe.png', color: 'black', type: 'undead', hp: 1, atk: 1, def: 0, cost: 0, archetype: "Skullframe"},
       { id: 'card007', name: 'Skullframe Defector', rarity: 'Common', image: 'Skullframe/Skullframe Defector.png', color: 'black', type: 'undead', hp: 3, atk: 2, def: 1, cost: 1, archetype: "Skullframe"},
       { id: 'card008', name: 'Skullframe Unyielding', rarity: 'Common', image: 'Skullframe/Skullframe Unyielding.png', color: 'black', type: 'undead', hp: 4, atk: 1, def: 0, cost: 2, archetype: "Skullframe"},
       { id: 'card009', name: 'Skullframe Acolyte', rarity: 'Common', image: 'Skullframe/Skullframe Acolyte.png', color: ['black', 'purple'], type: 'undead', hp: 5, atk: 3, def: 1, cost: 3, archetype: "Skullframe"},
-      { id: 'card010', name: 'Skullframe Spectral Dragon', rarity: 'Rare', image: 'Skullframe/Skullframe Spectral Dragon.png', color: ['black', 'purple'], type: 'undead', hp: 12, atk: 6, def: 2, cost: 5, archetype: "Skullframe"},
+      { id: 'card010', name: 'Skullframe Spectral Dragon', rarity: 'Rare', image: 'Skullframe/Skullframe Spectral Dragon.png', color: ['black', 'purple'], type: ['dragon','undead'], hp: 12, atk: 6, def: 2, cost: 5, archetype: "Skullframe"},
       { id: 'card011', name: 'Skullframe Hexmistress', rarity: 'Rare', image: 'Skullframe/Skullframe Hexmistress.png', color: ['black', 'purple'], type: 'undead', hp: 6, atk: 4, def: 1, cost: 3, archetype: "Skullframe"},
       { id: 'card012', name: 'Maldryss, Skullframe Archmage', rarity: 'Legendary', image: 'Skullframe/Maldryss, Skullframe Archmage.png', color: ['black', 'purple'], type: 'undead', hp: 8, atk: 4, def: 1, cost: 3, archetype: "Skullframe"},
       { id: 'card012a', name: 'Maldryss, Skullframe Archmage', rarity: 'Legendary', image: 'Skullframe/Maldryss, Skullframe Archmage FA.png', color: ['black', 'purple'], type: 'undead', hp: 8, atk: 4, def: 1, cost: 3, archetype: "Skullframe"},
