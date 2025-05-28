@@ -225,6 +225,17 @@ body.theme-white {
       <option value="Legendary">Legendary</option>
     </select>
   </label>
+
+  <label>Archetype:
+  <select id="filter-archetype">
+    <option value="">All</option>
+    <option value="Golemheart">Golemheart</option>
+    <option value="Skullframe">Skullframe</option>
+    <option value="Cindercore">Cindercore</option>
+    <option value="Coralbound">Coralbound</option>
+  </select>
+</label>
+
 </div>
 
   <div class="container" id="card-gallery"></div>
@@ -327,8 +338,8 @@ li.appendChild(span);
       const total = Object.values(deck).reduce((a, b) => a + b, 0);
       if (total >= 60) return false;
       if (card.rarity === 'Legendary' && count >= 1) return false;
-      if (card.rarity === 'Epic' && count >= 2) return false;
-      if (card.rarity === 'Rare' && count >= 3) return false;
+      if (card.rarity === 'Rare' && count >= 2) return false;
+      if (card.rarity === 'Common' && count >= 3) return false;
       return true;
     }
 
@@ -340,6 +351,7 @@ function renderGallery() {
   const selectedType = document.getElementById('filter-type').value.toLowerCase();
   const selectedRarity = document.getElementById('filter-rarity').value.toLowerCase();
   const nameFilter = document.getElementById('filter-name').value.toLowerCase();
+  const selectedArchetype = document.getElementById('filter-archetype').value.toLowerCase();
 
   dummyCards.forEach(card => {
     
@@ -362,6 +374,15 @@ function renderGallery() {
     if (selectedRarity) {
       if (card.rarity.toLowerCase() !== selectedRarity) return;
     }
+
+    // Filter by archetype:
+if (selectedArchetype) {
+  const archetypes = Array.isArray(card.archetype)
+    ? card.archetype.map(a => a.toLowerCase())
+    : [card.archetype?.toLowerCase()];
+  if (!archetypes.includes(selectedArchetype)) return;
+}
+
 
     const div = document.createElement('div');
     div.className = 'card';
@@ -399,7 +420,7 @@ document.getElementById('filter-name').addEventListener('input', renderGallery);
 document.getElementById('filter-color').addEventListener('change', renderGallery);
 document.getElementById('filter-type').addEventListener('change', renderGallery);
 document.getElementById('filter-rarity').addEventListener('change', renderGallery);
-
+document.getElementById('filter-archetype').addEventListener('change', renderGallery);
 
     updateDeckDisplay();
     
