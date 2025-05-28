@@ -475,6 +475,42 @@ modal.onclick = (e) => {
   }
 };
 
+    // Cost Bar Visualization //
+const costCounts = deck.reduce((acc, card) => {
+  const cost = card.cost;
+  acc[cost] = (acc[cost] || 0) + 1;
+  return acc;
+}, {});
+    
+const maxCount = Math.max(...Object.values(costCounts), 1);
+
+return (
+  <div className="cost-bar-container" style={{ display: 'flex', gap: '8px' }}>
+    {[1, 2, 3, 4, 5].map(cost => {
+      const count = costCounts[cost] || 0;
+      const barHeight = (count / maxCount) * 100; // percentage height
+
+      return (
+        <div key={cost} style={{ textAlign: 'center' }}>
+          <div 
+            style={{
+              width: '20px',
+              height: `${barHeight}%`,
+              backgroundColor: '#3498db',
+              marginBottom: '4px',
+              borderRadius: '4px',
+              transition: 'height 0.3s ease'
+            }} 
+          />
+          <div>Cost {cost}</div>
+          <div>{count}</div>
+        </div>
+      );
+    })}
+  </div>
+);
+
+
   </script>
 </body>
 </html>
