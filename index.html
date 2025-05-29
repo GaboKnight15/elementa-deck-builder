@@ -237,6 +237,20 @@ body.theme-white {
   </select>
 </label>
 
+  <label>Ability:
+  <select id="filter-ability">
+    <option value="">All</option>
+    <option value="Burn">Burn</option>
+    <option value="Leap">Leap</option>
+    <option value="Flying">Flying</option>
+    <option value="Immunity">Immunity</option>
+    <option value="Lifelink">Lifelink</option>
+    <option value="Rush">Rush</option>
+    <option value="Protect">Protect</option>
+    <option value="Drain">Drain</option>
+  </select>
+</label>
+
 </div>
 
   <div class="container" id="card-gallery"></div>
@@ -362,6 +376,8 @@ function renderGallery() {
   const selectedRarity = document.getElementById('filter-rarity').value.toLowerCase();
   const nameFilter = document.getElementById('filter-name').value.toLowerCase();
   const selectedArchetype = document.getElementById('filter-archetype').value.toLowerCase();
+  const selectedAbility = document.getElementById('filter-ability').value.toLowerCase();
+
 
   dummyCards.forEach(card => {
     
@@ -431,6 +447,8 @@ document.getElementById('filter-color').addEventListener('change', renderGallery
 document.getElementById('filter-type').addEventListener('change', renderGallery);
 document.getElementById('filter-rarity').addEventListener('change', renderGallery);
 document.getElementById('filter-archetype').addEventListener('change', renderGallery);
+document.getElementById('filter-ability').addEventListener('change', renderGallery);
+
 
     updateDeckDisplay();
     
