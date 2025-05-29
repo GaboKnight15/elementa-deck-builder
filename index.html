@@ -293,15 +293,15 @@ body.theme-white {
       { id: 'golem3', name: 'Smoldering Golemheart', rarity: 'Rare', image: 'XXX', color: ['red', 'gray'], type: 'elemental', hp: 15, atk: 6, def: 3, cost: 7, archetype: 'Golemheart'},
       { id: 'golem4', name: 'Golemheart Sentinel', rarity: 'Rare', image: 'XXX', color: ['red', 'gray'], type: 'elemental', hp: 15, atk: 6, def: 3, cost: 7, archetype: 'Golemheart'},
       { id: 'card003', name: 'Maelvyrn, Coralbound Automaton', rarity: 'Legendary', image: 'images/Maelvyrn, Coralbound Automaton.png', color: 'blue', type: 'construct', hp: 19, atk: 8, def: 5, cost: 9, archetype: 'Coralbound'},
-      { id: 'card004', name: 'Wyrm of Thorns and Sunfire', rarity: 'Rare', image: 'images/Wyrm of Thorns and Sunfire.png', color: ['green', 'red', 'white'], type: 'dragon', hp: 9, atk: 5, def: 2, cost: 3, ability: 'intimidate'},
+      { id: 'card004', name: 'Wyrm of Thorns and Sunfire', rarity: 'Rare', image: 'images/Wyrm of Thorns and Sunfire.png', color: ['green', 'red', 'white'], type: 'dragon', hp: 9, atk: 5, def: 2, cost: 3, ability: ['intimidate','flying']},
        
       // Skullframe //
       { id: 'skullframe01', name: 'Skullframe Defector', rarity: 'Common', image: 'Skullframe/Skullframe Defector.png', color: 'black', type: 'undead', hp: 3, atk: 2, def: 1, cost: 1, archetype: 'Skullframe'},
       { id: 'skullframe02', name: 'Skullframe Unyielding', rarity: 'Common', image: 'Skullframe/Skullframe Unyielding.png', color: 'black', type: 'undead', hp: 4, atk: 1, def: 0, cost: 2, archetype: 'Skullframe', ability: 'rush'},
       { id: 'skullframe03', name: 'Skullframe Acolyte', rarity: 'Common', image: 'Skullframe/Skullframe Acolyte.png', color: ['black', 'purple'], type: 'undead', hp: 5, atk: 3, def: 1, cost: 3, archetype: 'Skullframe'},
-      { id: 'skullframe04', name: 'Skullframe Cryptwinds', rarity: 'Common', image: 'Skullframe/Skullframe Cryptwinds.png', color: ['black', 'purple'], type: ['dragon','undead'], hp: 12, atk: 6, def: 2, cost: 5, archetype: 'Skullframe'},
-      { id: 'skullframe05', name: 'Skullframe Spectral Dragon', rarity: 'Rare', image: 'Skullframe/Skullframe Spectral Dragon.png', color: ['black', 'purple'], type: ['dragon','undead'], hp: 12, atk: 6, def: 2, cost: 5, archetype: 'Skullframe'},
-      { id: 'skullframe06', name: 'Skullframe Armored Dragon', rarity: 'Rare', image: 'Skullframe/Skullframe Armored Dragon.png', color: ['black', 'purple'], type: ['dragon','undead'], hp: 12, atk: 6, def: 2, cost: 5, archetype: 'Skullframe'},
+      { id: 'skullframe04', name: 'Skullframe Cryptwinds', rarity: 'Common', image: 'Skullframe/Skullframe Cryptwinds.png', color: ['black', 'purple'], type: ['dragon','undead'], hp: 12, atk: 6, def: 2, cost: 5, archetype: 'Skullframe', ability: 'flying'},
+      { id: 'skullframe05', name: 'Skullframe Spectral Dragon', rarity: 'Rare', image: 'Skullframe/Skullframe Spectral Dragon.png', color: ['black', 'purple'], type: ['dragon','undead'], hp: 12, atk: 6, def: 2, cost: 5, archetype: 'Skullframe', ability: 'flying'},
+      { id: 'skullframe06', name: 'Skullframe Armored Dragon', rarity: 'Rare', image: 'Skullframe/Skullframe Armored Dragon.png', color: ['black', 'purple'], type: ['dragon','undead'], hp: 12, atk: 6, def: 2, cost: 5, archetype: 'Skullframe', ability: 'flying'},
       { id: 'skullframe07', name: 'Skullframe Hexmistress', rarity: 'Rare', image: 'Skullframe/Skullframe Hexmistress.png', color: ['black', 'purple'], type: 'undead', hp: 6, atk: 4, def: 1, cost: 3, archetype: 'Skullframe'},
       { id: 'skullframe08', name: 'Maldryss, Skullframe Archmage', rarity: 'Legendary', image: 'Skullframe/Maldryss, Skullframe Archmage.png', color: ['black', 'purple'], type: 'undead', hp: 8, atk: 4, def: 1, cost: 3, archetype: 'Skullframe'},
       { id: 'skullframe08a', name: 'Maldryss, Skullframe Archmage', rarity: 'Legendary', image: 'Skullframe/Maldryss, Skullframe Archmage FA.png', color: ['black', 'purple'], type: 'undead', hp: 8, atk: 4, def: 1, cost: 3, archetype: 'Skullframe'},
@@ -309,13 +309,13 @@ body.theme-white {
       { id: 'spell015', name: 'Witherwake', rarity: 'Common', image: 'images/Witherwake.png', color: ['black','purple'], type: 'spell', cost: 2, archetype: 'Skullframe'},
 
       // Basic Creatures //
-      { id: 'basicfairy', name: 'Fairy', rarity: 'Basic', image: 'BasicCreatures/Fairy.png', color: 'green', type: 'fairy', hp: 1, atk: 1, def: 0, cost: 0, archetype: 'Fairy'},
-      { id: 'basicgablin', name: 'Goblin', rarity: 'Basic', image: 'BasicCreatures/Goblin.png', color: 'green', type: 'goblin', hp: 3, atk: 1, def: 0, cost: 0, archetype: 'Goblin'},
+      { id: 'basicfairy', name: 'Fairy', rarity: 'Basic', image: 'BasicCreatures/Fairy.png', color: 'green', type: 'fairy', hp: 1, atk: 1, def: 0, cost: 0, archetype: 'Fairy', ability: 'flying'},
+      { id: 'basicgoblin', name: 'Goblin', rarity: 'Basic', image: 'BasicCreatures/Goblin.png', color: 'green', type: 'goblin', hp: 3, atk: 1, def: 0, cost: 0, archetype: 'Goblin'},
       { id: 'basicemberling', name: 'Emberling', rarity: 'Basic', image: 'BasicCreatures/Emberling.png', color: 'red', type: 'beast', hp: 3, atk: 2, def: 0, cost: 1, archetype: 'Firelands', ability: 'burn'},
       { id: 'basicwolf', name: 'Wolf', rarity: 'Basic', image: 'BasicCreatures/Wolf.png', color: 'black', type: 'beast', hp: 3, atk: 2, def: 0, cost: 1, archetype: 'Moonfang', ability: 'ambush'},
       { id: 'basicskeleton', name: 'Skeleton', rarity: 'Basic', image: 'BasicCreatures/Skeleton.png', color: 'black', type: 'undead', hp: 1, atk: 1, def: 0, cost: 0, archetype: 'Skullframe'},
-      { id: 'basicbat', name: 'Bat', rarity: 'Basic', image: 'BasicCreatures/Bat.png', color: 'black', type: 'vampire', hp: 3, atk: 2, def: 0, cost: 1, archetype: 'Vampiric', ability: 'flying'},
-      { id: 'basicimp', name: 'Imp', rarity: 'Basic', image: 'BasicCreatures/Imp.png', color: 'black', type: 'demon', hp: 1, atk: 1, def: 0, cost: 0, archetype: 'Skullframe', ability: 'flying'},
+      { id: 'basicbat', name: 'Bat', rarity: 'Basic', image: 'BasicCreatures/Bat.png', color: 'black', type: 'vampire', hp: 3, atk: 2, def: 0, cost: 1, archetype: 'Vampiric', ability: ['drain','flying']},
+      { id: 'basicimp', name: 'Imp', rarity: 'Basic', image: 'BasicCreatures/Imp.png', color: 'black', type: 'demon', hp: 1, atk: 1, def: 0, cost: 0, archetype: 'Skullframe', ability: ['ambush','flying']},
       
       { id: 'artifact005', name: 'Golemheart infusor', rarity: 'Common', image: 'images/Golemheart Infusor.png', color: 'gray', type: ['artifact','relic'], hp: 5, cost: 1, archetype: 'Golemheart'},
       { id: 'spell010', name: 'Life Growth', rarity: 'Common', image: 'images/Life Growth.png', color: 'green', type: 'spell', cost: 1},
