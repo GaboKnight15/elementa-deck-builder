@@ -261,23 +261,6 @@ body.theme-white {
   </select>
 </label>
 
-<!-- Filter Sorting -->
-  <label>Sort by:
-  <select id="sort-by">
-    <option value="">Default</option>
-    <option value="name-asc">Name (A → Z)</option>
-    <option value="name-desc">Name (Z → A)</option>
-    <option value="cost-asc">Cost (Low → High)</option>
-    <option value="cost-desc">Cost (High → Low)</option>
-    <option value="hp-asc">HP (Low → High)</option>
-    <option value="hp-desc">HP (High → Low)</option>
-    <option value="atk-asc">ATK (Low → High)</option>
-    <option value="atk-desc">ATK (High → Low)</option>
-    <option value="def-asc">DEF (Low → High)</option>
-    <option value="def-desc">DEF (High → Low)</option>
-  </select>
-</label>
-
 </div>
 
   <div class="container" id="card-gallery"></div>
@@ -461,7 +444,6 @@ if (selectedArchetype) {
   if (!abilities.includes(selectedAbility)) return;
 }   
 
-    
     const div = document.createElement('div');
     div.className = 'card';
 
@@ -500,7 +482,6 @@ document.getElementById('filter-type').addEventListener('change', renderGallery)
 document.getElementById('filter-rarity').addEventListener('change', renderGallery);
 document.getElementById('filter-archetype').addEventListener('change', renderGallery);
 document.getElementById('filter-ability').addEventListener('change', renderGallery);
-document.getElementById('sort-by').addEventListener('change', filterCards);
 
 
     updateDeckDisplay();
@@ -555,39 +536,6 @@ modal.onclick = (e) => {
     modal.style.display = "none";
   }
 };   
-
-        // Sorting //
- function sortCards(cards, sortBy) {
-  return cards.sort((a, b) => {
-    switch (sortBy) {
-      case 'name-asc':
-        return a.name.localeCompare(b.name);
-      case 'name-desc':
-        return b.name.localeCompare(a.name);
-      case 'cost-asc':
-        return (a.cost || 0) - (b.cost || 0);
-      case 'cost-desc':
-        return (b.cost || 0) - (a.cost || 0);
-      case 'hp-asc':
-        return (a.hp || 0) - (b.hp || 0);
-      case 'hp-desc':
-        return (b.hp || 0) - (a.hp || 0);
-      case 'atk-asc':
-        return (a.atk || 0) - (b.atk || 0);
-      case 'atk-desc':
-        return (b.atk || 0) - (a.atk || 0);
-      case 'def-asc':
-        return (a.def || 0) - (b.def || 0);
-      case 'def-desc':
-        return (b.def || 0) - (a.def || 0);
-      default:
-        return 0;
-    }
-  });
-}
-    
-const sortBy = document.getElementById('sort-by').value;
-filtered = sortCards(filtered, sortBy);
     
   </script>
 </body>
