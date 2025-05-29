@@ -245,6 +245,7 @@ body.theme-white {
   <label>Ability:
   <select id="filter-ability">
     <option value="">All</option>
+    <option value="ambush">Ambush</option>
     <option value="Burn">Burn</option>
     <option value="Toxic">Toxic</option>
     <option value="Leap">Leap</option>
@@ -267,7 +268,7 @@ body.theme-white {
   <div class="deck">
     <h2>Your Deck</h2>
     <ul class="deck-list" id="deck-list"></ul>
-    <p>Total Cards: <span id="card-count">0</span>/60</p>
+    <p>Total Cards: <span id="card-count">0</span>/50</p>
     <button id="reset-deck-btn" style="background-color: #dc3545;">Reset Deck</button>
   </div>
   
@@ -309,9 +310,12 @@ body.theme-white {
 
       // Basic Creatures //
       { id: 'basicfairy', name: 'Fairy', rarity: 'Basic', image: 'BasicCreatures/Fairy.png', color: 'green', type: 'fairy', hp: 1, atk: 1, def: 0, cost: 0, archetype: 'Fairy'},
-      { id: 'basicwolf', name: 'Wolf', rarity: 'Basic', image: 'BasicCreatures/Wolf.png', color: 'black', type: 'beast', hp: 3, atk: 2, def: 0, cost: 1, archetype: 'Moonfang'},
+      { id: 'basicgablin', name: 'Goblin', rarity: 'Basic', image: 'BasicCreatures/Goblin.png', color: 'green', type: 'goblin', hp: 3, atk: 1, def: 0, cost: 0, archetype: 'Goblin'},
+      { id: 'basicemberling', name: 'Emberling', rarity: 'Basic', image: 'BasicCreatures/Emberling.png', color: 'red', type: 'beast', hp: 3, atk: 2, def: 0, cost: 1, archetype: 'Firelands', ability: 'burn'},
+      { id: 'basicwolf', name: 'Wolf', rarity: 'Basic', image: 'BasicCreatures/Wolf.png', color: 'black', type: 'beast', hp: 3, atk: 2, def: 0, cost: 1, archetype: 'Moonfang', ability: 'ambush'},
       { id: 'basicskeleton', name: 'Skeleton', rarity: 'Basic', image: 'BasicCreatures/Skeleton.png', color: 'black', type: 'undead', hp: 1, atk: 1, def: 0, cost: 0, archetype: 'Skullframe'},
-      { id: 'basicbat', name: 'Bat', rarity: 'Basic', image: 'BasicCreatures/Bat.png', color: 'black', type: 'vampire', hp: 3, atk: 2, def: 0, cost: 1, archetype: 'Vampiric'},
+      { id: 'basicbat', name: 'Bat', rarity: 'Basic', image: 'BasicCreatures/Bat.png', color: 'black', type: 'vampire', hp: 3, atk: 2, def: 0, cost: 1, archetype: 'Vampiric', ability: 'flying'},
+      { id: 'basicimp', name: 'Imp', rarity: 'Basic', image: 'BasicCreatures/Imp.png', color: 'black', type: 'demon', hp: 1, atk: 1, def: 0, cost: 0, archetype: 'Skullframe', ability: 'flying'},
       
       { id: 'artifact005', name: 'Golemheart infusor', rarity: 'Common', image: 'images/Golemheart Infusor.png', color: 'gray', type: ['artifact','relic'], hp: 5, cost: 1, archetype: 'Golemheart'},
       { id: 'spell010', name: 'Life Growth', rarity: 'Common', image: 'images/Life Growth.png', color: 'green', type: 'spell', cost: 1},
@@ -383,7 +387,7 @@ li.appendChild(span);
     function canAddCard(card) {
       const count = deck[card.id] || 0;
       const total = Object.values(deck).reduce((a, b) => a + b, 0);
-      if (total >= 60) return false;
+      if (total >= 50) return false;
       if (card.rarity === 'Legendary' && count >= 1) return false;
       if (card.rarity === 'Rare' && count >= 2) return false;
       if (card.rarity === 'Common' && count >= 3) return false;
