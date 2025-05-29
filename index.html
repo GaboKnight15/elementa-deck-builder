@@ -38,16 +38,10 @@
       padding: 0.5em;
       text-align: center;
     }
-.card img {
-  width: 100%;
-  height: auto;
-}
-
-.card button {
-  width: 100%;
-  margin-top: 0.5em;
-}
-
+    .card img {
+      max-width: 100%;
+      border-radius: 4px;
+    }
     .deck {
       position: fixed;
       right: 0;
@@ -104,19 +98,11 @@
 }
 
 /* Move this outside the above media query */
-@media (max-width: 768px) {
+@media (min-width: 769px) {
   .container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(45vw, 1fr));
-    gap: 1em;
-    padding-right: 0;
-  }
-
-  .card {
-    width: 100%; /* Full width of grid cell */
+    padding-right: 270px;
   }
 }
-
 
 
 /* Full Size Image View */
