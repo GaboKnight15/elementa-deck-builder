@@ -461,38 +461,6 @@ if (selectedArchetype) {
   if (!abilities.includes(selectedAbility)) return;
 }   
 
-    // Sorting //
- function sortCards(cards, sortBy) {
-  return cards.sort((a, b) => {
-    switch (sortBy) {
-      case 'name-asc':
-        return a.name.localeCompare(b.name);
-      case 'name-desc':
-        return b.name.localeCompare(a.name);
-      case 'cost-asc':
-        return (a.cost || 0) - (b.cost || 0);
-      case 'cost-desc':
-        return (b.cost || 0) - (a.cost || 0);
-      case 'hp-asc':
-        return (a.hp || 0) - (b.hp || 0);
-      case 'hp-desc':
-        return (b.hp || 0) - (a.hp || 0);
-      case 'atk-asc':
-        return (a.atk || 0) - (b.atk || 0);
-      case 'atk-desc':
-        return (b.atk || 0) - (a.atk || 0);
-      case 'def-asc':
-        return (a.def || 0) - (b.def || 0);
-      case 'def-desc':
-        return (b.def || 0) - (a.def || 0);
-      default:
-        return 0;
-    }
-  });
-}
-const sortBy = document.getElementById('sort-by').value;
-filtered = sortCards(filtered, sortBy);
-
     
     const div = document.createElement('div');
     div.className = 'card';
@@ -587,6 +555,39 @@ modal.onclick = (e) => {
     modal.style.display = "none";
   }
 };   
+
+        // Sorting //
+ function sortCards(cards, sortBy) {
+  return cards.sort((a, b) => {
+    switch (sortBy) {
+      case 'name-asc':
+        return a.name.localeCompare(b.name);
+      case 'name-desc':
+        return b.name.localeCompare(a.name);
+      case 'cost-asc':
+        return (a.cost || 0) - (b.cost || 0);
+      case 'cost-desc':
+        return (b.cost || 0) - (a.cost || 0);
+      case 'hp-asc':
+        return (a.hp || 0) - (b.hp || 0);
+      case 'hp-desc':
+        return (b.hp || 0) - (a.hp || 0);
+      case 'atk-asc':
+        return (a.atk || 0) - (b.atk || 0);
+      case 'atk-desc':
+        return (b.atk || 0) - (a.atk || 0);
+      case 'def-asc':
+        return (a.def || 0) - (b.def || 0);
+      case 'def-desc':
+        return (b.def || 0) - (a.def || 0);
+      default:
+        return 0;
+    }
+  });
+}
+    
+const sortBy = document.getElementById('sort-by').value;
+filtered = sortCards(filtered, sortBy);
     
   </script>
 </body>
