@@ -409,6 +409,13 @@ if (selectedArchetype) {
   if (!archetypes.includes(selectedArchetype)) return;
 }
 
+    // Filter by ability:
+ if (selectedAbility) {
+  const abilities = Array.isArray(card.ability)
+    ? card.ability.map(a => a.toLowerCase())
+    : [card.ability?.toLowerCase()];
+  if (!abilities.includes(selectedAbility)) return;
+}   
 
     const div = document.createElement('div');
     div.className = 'card';
