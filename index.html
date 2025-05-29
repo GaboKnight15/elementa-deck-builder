@@ -202,6 +202,8 @@ body.theme-white {
   <label>Type:
     <select id="filter-type">
       <option value="">All</option>
+      <option value="evolution">Evolution</option>
+      <option value="fusion">Fusion</option>
       <option value="elemental">Elemental</option>
       <option value="dragon">Dragon</option>
       <option value="construct">Construct</option>
@@ -246,18 +248,21 @@ body.theme-white {
   <select id="filter-ability">
     <option value="">All</option>
     <option value="ambush">Ambush</option>
-    <option value="Burn">Burn</option>
-    <option value="Toxic">Toxic</option>
-    <option value="Leap">Leap</option>
-    <option value="Flying">Flying</option>
-    <option value="Immunity">Immunity</option>
-    <option value="Lifelink">Lifelink</option>
-    <option value="Rush">Rush</option>
-    <option value="Protect">Protect</option>
-    <option value="Drain">Drain</option>
-    <option value="Ranged">Ranged</option>
-    <option value="Intimidate">Intimidate</option>
-    <option value="Provoke">Provoke</option>
+    <option value="burn">Burn</option>
+    <option value="drain">Drain</option>
+    
+    <option value="flying">Flying</option>
+    <option value="immunity">Immunity</option>
+    <option value="intimidate">Intimidate</option> 
+    
+    <option value="leap">Leap</option>
+    <option value="lifelink">Lifelink</option>
+    
+    <option value="protect">Protect</option>
+    <option value="provoke">Provoke</option>
+    <option value="ranged">Ranged</option>
+    <option value="rush">Rush</option>
+    <option value="toxic">Toxic</option>
   </select>
 </label>
 
@@ -283,15 +288,16 @@ body.theme-white {
     const dummyCards = [
 
       // Cindercore //
-      { id: 'card001', name: 'Cindercore Golemheart', rarity: 'Rare', image: 'images/Cindercore Golemheart.png', color: ['red', 'gray'], type: 'elemental', hp: 15, atk: 6, def: 3, cost: 7, archetype: ['Cindercore','Golemheart']},
+      { id: 'golem5', name: 'Cindercore Golemheart', rarity: 'Rare', image: 'Golems/Cindercore Golemheart.png', color: ['red', 'gray'], type: 'elemental', hp: 15, atk: 6, def: 3, cost: 7, archetype: ['Cindercore','Golemheart']},
 
       // Firelands //
 
       // Golemheart //
-      { id: 'golem1', name: 'Pyrokrag, Golemheart Titan', rarity: 'Legendary', image: 'images/Pyrokrag, Golemheart Titan.png', color: ['red', 'gray'], type: 'elemental', hp: 15, atk: 6, def: 3, cost: 7, archetype: 'Golemheart'},
-      { id: 'golem2', name: 'Golemheart Giant', rarity: 'Rare', image: 'XXX', color: ['red', 'gray'], type: 'elemental', hp: 15, atk: 6, def: 3, cost: 7, archetype: 'Golemheart'},
-      { id: 'golem3', name: 'Smoldering Golemheart', rarity: 'Rare', image: 'XXX', color: ['red', 'gray'], type: 'elemental', hp: 15, atk: 6, def: 3, cost: 7, archetype: 'Golemheart'},
-      { id: 'golem4', name: 'Golemheart Sentinel', rarity: 'Rare', image: 'XXX', color: ['red', 'gray'], type: 'elemental', hp: 15, atk: 6, def: 3, cost: 7, archetype: 'Golemheart'},
+      { id: 'golem1', name: 'Pyrokrag, Golemheart Titan', rarity: 'Legendary', image: 'Golems/Pyrokrag, Golemheart Titan.png', color: ['red', 'gray'], type: ['fusion','elemental'], hp: 15, atk: 6, def: 3, cost: 7, archetype: 'Golemheart'},
+      { id: 'golem2', name: 'Golemheart Giant', rarity: 'Rare', image: 'Golems/Golemheart Giant.png', color: ['red', 'gray'], type: 'elemental', hp: 15, atk: 6, def: 3, cost: 7, archetype: 'Golemheart'},
+      { id: 'golem3', name: 'Smoldering Golemheart', rarity: 'Rare', image: 'Golems/Smoldering Golemheart .png', color: ['red', 'gray'], type: 'elemental', hp: 15, atk: 6, def: 3, cost: 7, archetype: 'Golemheart'},
+      { id: 'golem4', name: 'Golemheart Sentinel', rarity: 'Rare', image: 'Golems/Golemheart Sentinel.png', color: ['red', 'gray'], type: 'elemental', hp: 15, atk: 6, def: 3, cost: 7, archetype: 'Golemheart', ability: 'protect'},
+      { id: 'golem6', name: 'Fire Golem', rarity: 'Common', image: 'Golems/Fire Golem.png', color: ['red', 'gray'], type: ['elemental','golem'], hp: 3, atk: 2, def: 1, cost: 2, archetype: ['Firelands','Golemheart'], ability: 'burn'},
       { id: 'card003', name: 'Maelvyrn, Coralbound Automaton', rarity: 'Legendary', image: 'images/Maelvyrn, Coralbound Automaton.png', color: 'blue', type: 'construct', hp: 19, atk: 8, def: 5, cost: 9, archetype: 'Coralbound'},
       { id: 'card004', name: 'Wyrm of Thorns and Sunfire', rarity: 'Rare', image: 'images/Wyrm of Thorns and Sunfire.png', color: ['green', 'red', 'white'], type: 'dragon', hp: 9, atk: 5, def: 2, cost: 3, ability: ['intimidate','flying']},
        
@@ -305,8 +311,8 @@ body.theme-white {
       { id: 'skullframe07', name: 'Skullframe Hexmistress', rarity: 'Rare', image: 'Skullframe/Skullframe Hexmistress.png', color: ['black', 'purple'], type: 'undead', hp: 6, atk: 4, def: 1, cost: 3, archetype: 'Skullframe'},
       { id: 'skullframe08', name: 'Maldryss, Skullframe Archmage', rarity: 'Legendary', image: 'Skullframe/Maldryss, Skullframe Archmage.png', color: ['black', 'purple'], type: 'undead', hp: 8, atk: 4, def: 1, cost: 3, archetype: 'Skullframe'},
       { id: 'skullframe08a', name: 'Maldryss, Skullframe Archmage', rarity: 'Legendary', image: 'Skullframe/Maldryss, Skullframe Archmage FA.png', color: ['black', 'purple'], type: 'undead', hp: 8, atk: 4, def: 1, cost: 3, archetype: 'Skullframe'},
-      { id: 'spell014', name: 'Soulhexing', rarity: 'Common', image: 'images/Soulhexing.png', color: 'black', type: 'spell', cost: 3, archetype: 'Skullframe'},
-      { id: 'spell015', name: 'Witherwake', rarity: 'Common', image: 'images/Witherwake.png', color: ['black','purple'], type: 'spell', cost: 2, archetype: 'Skullframe'},
+      { id: 'spell014', name: 'Soulhexing', rarity: 'Common', image: 'Skullframe/Soulhexing.png', color: 'black', type: 'spell', cost: 3, archetype: 'Skullframe'},
+      { id: 'spell015', name: 'Witherwake', rarity: 'Common', image: 'Skullframe/Witherwake.png', color: ['black','purple'], type: 'spell', cost: 2, archetype: 'Skullframe'},
 
       // Basic Creatures //
       { id: 'basicfairy', name: 'Fairy', rarity: 'Basic', image: 'BasicCreatures/Fairy.png', color: 'green', type: 'fairy', hp: 1, atk: 1, def: 0, cost: 0, archetype: 'Fairy', ability: 'flying'},
