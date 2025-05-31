@@ -22,13 +22,13 @@
       text-align: center;
     }
     .container {
-  max-width: 1200px;
-  padding: 1em;
-  padding-right: 270px; /* Add this line */
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1em;
-  justify-content: center;
+      max-width: 1200px;
+      padding: 1em;
+      padding-right: 270px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1em;
+      justify-content: center;
     }
     .card {
       background: white;
@@ -37,10 +37,12 @@
       width: 150px;
       padding: 0.5em;
       text-align: center;
+      box-sizing: border-box;
     }
     .card img {
       max-width: 100%;
       border-radius: 4px;
+      cursor: pointer;
     }
     .deck {
       position: fixed;
@@ -52,6 +54,8 @@
       border-left: 2px solid #ccc;
       overflow-y: auto;
       padding: 1em;
+      transition: transform 0.3s;
+      transform: translateX(0);
     }
     .deck h2 {
       margin-top: 0;
@@ -62,6 +66,9 @@
     }
     .deck-list li {
       margin: 0.5em 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
     button {
       padding: 0.4em 0.6em;
@@ -75,235 +82,176 @@
     button:disabled {
       background-color: gray;
     }
-/* Hide deck by default on small screens */
-@media (max-width: 768px) {
-  .deck {
-    position: fixed;
-    right: 0;
-    top: 50px; /* below header */
-    width: 80vw;
-    height: 90vh;
-    background: white;
-    border-left: 2px solid #ccc;
-    overflow-y: auto;
-    padding: 1em;
-    transform: translateX(100%);
-    transition: transform 0.3s ease;
-    z-index: 1000;
-  }
-
-  .deck.show {
-    transform: translateX(0);
-  }
-}
-
-/* Move this outside the above media query */
-@media (min-width: 769px) {
-  .container {
-    padding-right: 270px;
-  }
-}
-
-
-/* Full Size Image View */
-    .modal {
-  display: none; 
-  position: fixed; 
-  z-index: 2000; 
-  padding-top: 60px; 
-  left: 0;
-  top: 0;
-  width: 100vw;
-  height: 100vh; 
-  overflow: auto; 
-  background-color: rgba(0,0,0,0.8); 
-}
-.modal-content {
-  margin: auto;
-  display: block;
-  max-width: 90%;
-  max-height: 80vh;
-  border-radius: 8px;
-}
-.close {
-  position: absolute;
-  top: 30px;
-  right: 50px;
-  color: white;
-  font-size: 40px;
-  font-weight: bold;
-  cursor: pointer;
-}
-.deck-list li {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-    
-/* Background themes */
-body.theme-green {
-  background: linear-gradient(to bottom, #e6ffe6, #a3d9a5); /* Foresty green */
-}
-body.theme-red {
-  background: linear-gradient(to bottom, #ffd6d6, #ff7f7f); /* Fiery red */
-}
-body.theme-blue {
-  background: linear-gradient(to bottom, #d6f0ff, #7fcfff); /* Ocean blue */
-}
-body.theme-gray {
-  background: linear-gradient(to bottom, #e0e0e0, #b3b3b3); /* Stone gray */
-}
-body.theme-purple {
-  background: linear-gradient(to bottom, #f0d9ff, #c27be7); /* Arcane purple */
-}
-body.theme-yellow {
-  background: linear-gradient(to bottom, #fff9d6, #ffe066); /* Solar yellow */
-}
-body.theme-black {
-  background: linear-gradient(to bottom, #444, #000);       /* Shadow black */
-  color: white;
-}
-body.theme-white {
-  background: linear-gradient(to bottom, #ffffff, #f5f5f5); /* Pure white */
-}
-
+    @media (max-width: 768px) {
+      .deck {
+        position: fixed;
+        right: 0;
+        top: 50px;
+        width: 80vw;
+        height: 90vh;
+        background: white;
+        border-left: 2px solid #ccc;
+        overflow-y: auto;
+        padding: 1em;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+        z-index: 1000;
+      }
+      .deck.show {
+        transform: translateX(0);
+      }
+    }
     @media (min-width: 769px) {
-  .deck {
-    transition: transform 0.3s;
-    transform: translateX(0);
-  }
-  .deck.hide {
-    transform: translateX(100%);
-  }
-}
-    
-   toggleBtn.onclick = () => {
-  deckPanel.classList.toggle('show');
-  deckPanel.classList.toggle('hide');
-};
-    
+      .container {
+        padding-right: 270px;
+      }
+      .deck.hide {
+        transform: translateX(100%);
+      }
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      padding-top: 60px;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.8);
+    }
+    .modal-content {
+      margin: auto;
+      display: block;
+      max-width: 90%;
+      max-height: 80vh;
+      border-radius: 8px;
+    }
+    .close {
+      position: absolute;
+      top: 30px;
+      right: 50px;
+      color: white;
+      font-size: 40px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    /* Background themes */
+    body.theme-green  { background: linear-gradient(to bottom, #e6ffe6, #a3d9a5); }
+    body.theme-red    { background: linear-gradient(to bottom, #ffd6d6, #ff7f7f); }
+    body.theme-blue   { background: linear-gradient(to bottom, #d6f0ff, #7fcfff); }
+    body.theme-gray   { background: linear-gradient(to bottom, #e0e0e0, #b3b3b3); }
+    body.theme-purple { background: linear-gradient(to bottom, #f0d9ff, #c27be7); }
+    body.theme-yellow { background: linear-gradient(to bottom, #fff9d6, #ffe066); }
+    body.theme-black  { background: linear-gradient(to bottom, #444, #000); color: white;}
+    body.theme-white  { background: linear-gradient(to bottom, #ffffff, #f5f5f5);}
   </style>
 </head>
 <body>
   <header>
     <h1>Elementa: Card Gallery & Deck Builder</h1>
-
     <button id="toggle-deck-btn" style="margin-left: 1em; padding: 0.4em 0.6em;">Toggle Deck</button>
-
   </header>
-
   <!-- Filter Gallery -->
-<div id="filters" style="margin: 1em;">
-  
-  <label>
-  Name:
-  <input type="text" id="filter-name" placeholder="Search by name..." />
-  </label>
-
-  <label>Color:
-    <select id="filter-color">
-      <option value="">All</option>
-      <option value="green">Green</option>
-      <option value="red">Red</option>
-      <option value="blue">Blue</option>
-      <option value="gray">Gray</option>
-      <option value="purple">Purple</option>
-      <option value="yellow">Yellow</option>
-      <option value="black">Black</option>
-      <option value="white">White</option>
-    </select>
-  </label>
-
-  <label>Type:
-    <select id="filter-type">
-      <option value="">All</option>
-      <option value="evolution">Evolution</option>
-      <option value="fusion">Fusion</option>
-      <option value="elemental">Elemental</option>
-      <option value="dragon">Dragon</option>
-      <option value="construct">Construct</option>
-      <option value="beast">Beast</option>
-      <option value="undead">Undead</option>
-      <option value="demon">Demon</option>
-      <option value="mage">Mage</option>
-      <option value="spell">Spell</option>
-      <option value="artifact">Artifact</option>
-      <option value="equipment">Equipment</option>
-      <option value="relic">Relic</option>
-      <option value="domain">Domain</option>
-    </select>
-  </label>
-
-  <label>Rarity:
-    <select id="filter-rarity">
-      <option value="">All</option>
-      <option value="Basic">Basic</option>
-      <option value="Common">Common</option>
-      <option value="Rare">Rare</option>
-      <option value="Legendary">Legendary</option>
-    </select>
-  </label>
-
-  <label>Archetype:
-  <select id="filter-archetype">
-    <option value="">All</option>
-    <option value="Blazefeather">Blazefeather</option>
-    <option value="Cindercore">Cindercore</option>
-    <option value="Coralbound">Coralbound</option>
-    <option value="Frostlands">Frostlands</option>
-    <option value="Golemheart">Golemheart</option>
-    <option value="Moonfang">Moonfang</option>
-    <option value="Skullframe">Skullframe</option>
-    <option value="Voltwing">Voltwing</option>
-    <option value="Zephyra">Zephyra</option>
-  </select>
-</label>
-
-  <label>Ability:
-  <select id="filter-ability">
-    <option value="">All</option>
-    <option value="ambush">Ambush</option>
-    <option value="dive">Dive</option>
-    <option value="burn">Burn</option>
-    
-    <option value="drain">Drain</option>
-    <option value="elusive">Elusive</option>
-    <option value="flying">Flying</option>
-    <option value="ice armor">Ice Armor</option>
-    <option value="immunity">Immunity</option>
-    <option value="intimidate">Intimidate</option> 
-    
-    <option value="leap">Leap</option>
-    <option value="lifelink">Lifelink</option>
-    
-    <option value="protect">Protect</option>
-    <option value="provoke">Provoke</option>
-    <option value="ranged">Ranged</option>
-    <option value="rush">Rush</option>
-    <option value="toxic">Toxic</option>
-  </select>
-</label>
-
-</div>
-
+  <div id="filters" style="margin: 1em;">
+    <label>
+      Name:
+      <input type="text" id="filter-name" placeholder="Search by name..." />
+    </label>
+    <label>Color:
+      <select id="filter-color">
+        <option value="">All</option>
+        <option value="green">Green</option>
+        <option value="red">Red</option>
+        <option value="blue">Blue</option>
+        <option value="gray">Gray</option>
+        <option value="purple">Purple</option>
+        <option value="yellow">Yellow</option>
+        <option value="black">Black</option>
+        <option value="white">White</option>
+      </select>
+    </label>
+    <label>Type:
+      <select id="filter-type">
+        <option value="">All</option>
+        <option value="evolution">Evolution</option>
+        <option value="fusion">Fusion</option>
+        <option value="elemental">Elemental</option>
+        <option value="dragon">Dragon</option>
+        <option value="construct">Construct</option>
+        <option value="beast">Beast</option>
+        <option value="undead">Undead</option>
+        <option value="demon">Demon</option>
+        <option value="mage">Mage</option>
+        <option value="spell">Spell</option>
+        <option value="artifact">Artifact</option>
+        <option value="equipment">Equipment</option>
+        <option value="relic">Relic</option>
+        <option value="domain">Domain</option>
+      </select>
+    </label>
+    <label>Rarity:
+      <select id="filter-rarity">
+        <option value="">All</option>
+        <option value="Basic">Basic</option>
+        <option value="Common">Common</option>
+        <option value="Rare">Rare</option>
+        <option value="Legendary">Legendary</option>
+      </select>
+    </label>
+    <label>Archetype:
+      <select id="filter-archetype">
+        <option value="">All</option>
+        <option value="Blazefeather">Blazefeather</option>
+        <option value="Cindercore">Cindercore</option>
+        <option value="Coralbound">Coralbound</option>
+        <option value="Frostlands">Frostlands</option>
+        <option value="Golemheart">Golemheart</option>
+        <option value="Moonfang">Moonfang</option>
+        <option value="Skullframe">Skullframe</option>
+        <option value="Voltwing">Voltwing</option>
+        <option value="Zephyra">Zephyra</option>
+      </select>
+    </label>
+    <label>Ability:
+      <select id="filter-ability">
+        <option value="">All</option>
+        <option value="ambush">Ambush</option>
+        <option value="dive">Dive</option>
+        <option value="burn">Burn</option>
+        <option value="drain">Drain</option>
+        <option value="elusive">Elusive</option>
+        <option value="flying">Flying</option>
+        <option value="ice armor">Ice Armor</option>
+        <option value="immunity">Immunity</option>
+        <option value="intimidate">Intimidate</option>
+        <option value="leap">Leap</option>
+        <option value="lifelink">Lifelink</option>
+        <option value="protect">Protect</option>
+        <option value="provoke">Provoke</option>
+        <option value="ranged">Ranged</option>
+        <option value="rush">Rush</option>
+        <option value="toxic">Toxic</option>
+      </select>
+    </label>
+  </div>
   <div class="container" id="card-gallery"></div>
-
   <div class="deck">
     <h2>Your Deck</h2>
     <ul class="deck-list" id="deck-list"></ul>
     <p>Total Cards: <span id="card-count">0</span>/50</p>
     <button id="reset-deck-btn" style="background-color: #dc3545;">Reset Deck</button>
   </div>
-  
-<!-- Modal for full image view -->
-<div id="image-modal" class="modal">
-  <span class="close">&times;</span>
-  <img class="modal-content" id="modal-img">
-</div>
-
-  
+  <!-- Modal for full image view -->
+  <div id="image-modal" class="modal">
+    <span class="close">&times;</span>
+    <img class="modal-content" id="modal-img">
+  </div>
   <script>
-    const dummyCards = [
+    
+// Card List //
+        const dummyCards = [
 
       // Cindercore //
       { id: 'cindercore1', name: 'Cindercore Golemheart', rarity: 'Rare', image: 'Golems/Cindercore Golemheart.png', color: ['red', 'gray'], type: 'elemental', hp: 15, atk: 6, def: 3, cost: 7, archetype: ['Cindercore','Golemheart']},
@@ -423,287 +371,194 @@ body.theme-white {
     const gallery = document.getElementById('card-gallery');
     const deckList = document.getElementById('deck-list');
     const cardCount = document.getElementById('card-count');
-
-    function updateDeckDisplay() {
-  deckList.innerHTML = '';
-  let total = 0;
-  for (const [id, count] of Object.entries(deck)) {
-    const card = dummyCards.find(c => c.id === id);
-    const li = document.createElement('li');
-    const img = document.createElement('img');
-img.src = card.image;
-img.alt = card.name;
-img.style.width = '40px';  // Miniature size
-img.style.height = 'auto';
-img.style.marginRight = '8px';
-img.style.verticalAlign = 'middle';
-img.style.borderRadius = '4px';
-
-const span = document.createElement('span');
-span.textContent = `${card.name} ×${count} `;
-
-li.appendChild(img);
-li.appendChild(span);
-
-
-    const removeBtn = document.createElement('button');
-    removeBtn.textContent = '−';
-    removeBtn.onclick = () => {
-      deck[id]--;
-      if (deck[id] <= 0) {
-        delete deck[id];
-      }
-      updateDeckDisplay();
-    };
-
-    li.appendChild(removeBtn);
-    deckList.appendChild(li);
-    total += count;
-  }
-  cardCount.textContent = total;
-  localStorage.setItem('deck', JSON.stringify(deck));
-
-// Re-enable buttons for visible cards
-document.querySelectorAll('.card').forEach(cardDiv => {
-  const btn = cardDiv.querySelector('button');
-  const name = cardDiv.querySelector('h4').textContent;
-  const cardData = dummyCards.find(c => c.name === name); // safer lookup
-  if (cardData) btn.disabled = !canAddCard(cardData);
-});
-}
+    const modal = document.getElementById('image-modal');
+    const modalImg = document.getElementById('modal-img');
+    const closeBtn = document.querySelector('.close');
+    const toggleBtn = document.getElementById('toggle-deck-btn');
+    const deckPanel = document.querySelector('.deck');
 
     function canAddCard(card) {
       const count = deck[card.id] || 0;
       const total = Object.values(deck).reduce((a, b) => a + b, 0);
       if (total >= 50) return false;
-      if (card.rarity === 'Legendary' && count >= 1) return false;
-      if (card.rarity === 'Rare' && count >= 2) return false;
-      if (card.rarity === 'Common' && count >= 3) return false;
+      if (card.rarity && card.rarity.toLowerCase() === 'legendary' && count >= 1) return false;
+      if (card.rarity && card.rarity.toLowerCase() === 'rare' && count >= 2) return false;
+      if (card.rarity && card.rarity.toLowerCase() === 'common' && count >= 3) return false;
       return true;
     }
 
-    // Filter Function //
-function renderGallery() {
-  gallery.innerHTML = ''; // Clear current cards
-
-  const selectedColor = document.getElementById('filter-color').value.toLowerCase();
-  const selectedType = document.getElementById('filter-type').value.toLowerCase();
-  const selectedRarity = document.getElementById('filter-rarity').value.toLowerCase();
-  const nameFilter = document.getElementById('filter-name').value.toLowerCase();
-  const selectedArchetype = document.getElementById('filter-archetype').value.toLowerCase();
-  const selectedAbility = document.getElementById('filter-ability').value.toLowerCase();
-
-
-  dummyCards.forEach(card => {
-    
-    // Filter by name:
-    if (nameFilter && !card.name.toLowerCase().includes(nameFilter)) return;
-
-    // Filter by color:
-    if (selectedColor) {
-      const colors = Array.isArray(card.color) ? card.color.map(c => c.toLowerCase()) : [card.color.toLowerCase()];
-      if (!colors.includes(selectedColor)) return;
+    function updateDeckDisplay() {
+      deckList.innerHTML = '';
+      let total = 0;
+      for (const [id, count] of Object.entries(deck)) {
+        const card = dummyCards.find(c => c.id === id);
+        if (!card) continue;
+        const li = document.createElement('li');
+        const img = document.createElement('img');
+        img.src = card.image;
+        img.alt = card.name;
+        img.style.width = '40px';
+        img.style.height = 'auto';
+        img.style.marginRight = '8px';
+        img.style.verticalAlign = 'middle';
+        img.style.borderRadius = '4px';
+        const span = document.createElement('span');
+        span.textContent = `${card.name} ×${count} `;
+        li.appendChild(img);
+        li.appendChild(span);
+        const removeBtn = document.createElement('button');
+        removeBtn.textContent = '−';
+        removeBtn.onclick = () => {
+          deck[id]--;
+          if (deck[id] <= 0) {
+            delete deck[id];
+          }
+          updateDeckDisplay();
+          renderGallery();
+        };
+        li.appendChild(removeBtn);
+        deckList.appendChild(li);
+        total += count;
+      }
+      cardCount.textContent = total;
+      localStorage.setItem('deck', JSON.stringify(deck));
     }
-
-    // Filter by type:
-    if (selectedType) {
-      const types = Array.isArray(card.type) ? card.type.map(t => t.toLowerCase()) : [card.type.toLowerCase()];
-      if (!types.includes(selectedType)) return;
-    }
-
-    // Filter by rarity:
-    if (selectedRarity) {
-      if (card.rarity.toLowerCase() !== selectedRarity) return;
-    }
-
-    // Filter by archetype:
-if (selectedArchetype) {
-  const archetypes = Array.isArray(card.archetype)
-    ? card.archetype.map(a => a.toLowerCase())
-    : [card.archetype?.toLowerCase()];
-  if (!archetypes.includes(selectedArchetype)) return;
-}
-
-    // Filter by ability:
- if (selectedAbility) {
-  const abilities = Array.isArray(card.ability)
-    ? card.ability.map(a => a.toLowerCase())
-    : [card.ability?.toLowerCase()];
-  if (!abilities.includes(selectedAbility)) return;
-}   
-
-    const div = document.createElement('div');
-    div.className = 'card';
-
-    const img = document.createElement('img');
-    img.src = card.image;
-    img.alt = card.name;
-
-    img.onclick = () => {
-      modal.style.display = "block";
-      modalImg.src = card.image;
-    };
-
-    const name = document.createElement('h4');
-    name.textContent = card.name;
-
-    const btn = document.createElement('button');
-    btn.textContent = 'Add to Deck';
-    btn.disabled = !canAddCard(card);
-    btn.onclick = () => {
-      if (!canAddCard(card)) return;
-      deck[card.id] = (deck[card.id] || 0) + 1;
-      updateDeckDisplay();
-      btn.disabled = !canAddCard(card);
-    };
-
-    div.appendChild(img);
-    div.appendChild(name);
-    div.appendChild(btn);
-    gallery.appendChild(div);
-  });
-}
-
-document.getElementById('filter-name').addEventListener('input', renderGallery);
-document.getElementById('filter-color').addEventListener('change', renderGallery);
-document.getElementById('filter-type').addEventListener('change', renderGallery);
-document.getElementById('filter-rarity').addEventListener('change', renderGallery);
-document.getElementById('filter-archetype').addEventListener('change', renderGallery);
-document.getElementById('filter-ability').addEventListener('change', renderGallery);
-
-
-    updateDeckDisplay();
-    
-    document.getElementById('reset-deck-btn').onclick = () => {
-  for (const key in deck) {
-    delete deck[key];
-  }
-  updateDeckDisplay();
-};
-    
-document.getElementById('filter-color').addEventListener('change', (e) => {
-  const color = e.target.value.toLowerCase();
-  document.body.className = document.body.className
-    .split(' ')
-    .filter(cls => !cls.startsWith('theme-'))
-    .join(' ')
-    .trim();
-
-  if (color) {
-    document.body.classList.add(`theme-${color}`);
-  }
-});
-
-  renderGallery();
-
-    //Mobile Functions
-const toggleBtn = document.getElementById('toggle-deck-btn');
-const deckPanel = document.querySelector('.deck');
-
-toggleBtn.onclick = () => {
-  deckPanel.classList.toggle('show');
-};
-
-window.addEventListener('click', (e) => {
-  if (!deckPanel.contains(e.target) && e.target !== toggleBtn && deckPanel.classList.contains('show')) {
-    deckPanel.classList.remove('show');
-  }
-});
-
-    // Modal image logic
-const modal = document.getElementById('image-modal');
-const modalImg = document.getElementById('modal-img');
-const closeBtn = document.querySelector('.close');
-
-closeBtn.onclick = () => {
-  modal.style.display = "none";
-};
-
-modal.onclick = (e) => {
-  if (e.target === modal) {
-    modal.style.display = "none";
-  }
-};   
-
-    btn.onclick = () => {
-  if (!canAddCard(card)) return;
-  deck[card.id] = (deck[card.id] || 0) + 1;
-  updateDeckDisplay();
-  renderGallery(); // <- update buttons for all visible cards!
-};
-
-    const stats = document.createElement('div');
-stats.style.fontSize = '0.9em';
-stats.innerHTML = `
-  ${card.hp ? `HP: ${card.hp} ` : ''} 
-  ${card.atk ? `ATK: ${card.atk} ` : ''} 
-  ${card.def ? `DEF: ${card.def} ` : ''} 
-  ${card.cost !== undefined ? `Cost: ${card.cost}` : ''}
-`;
-div.appendChild(stats);
-
-    // Card Details View //
-const details = document.createElement('div');
-details.style.fontSize = '0.8em';
-details.textContent = [
-  card.rarity,
-  Array.isArray(card.type) ? card.type.join(', ') : card.type,
-  Array.isArray(card.ability) ? card.ability.join(', ') : card.ability
-].filter(Boolean).join(' | ');
-div.appendChild(details);
-    
-    btn.textContent = `Add to Deck (${deck[card.id] || 0})`;
 
     function createCardDiv(card) {
-  const div = document.createElement('div');
-  div.className = 'card';
+      const div = document.createElement('div');
+      div.className = 'card';
 
-  const img = document.createElement('img');
-  img.src = card.image;
-  img.alt = card.name;
-  img.onclick = () => {
-    modal.style.display = "block";
-    modalImg.src = card.image;
-  };
-  div.appendChild(img);
+      const img = document.createElement('img');
+      img.src = card.image;
+      img.alt = card.name;
+      img.onclick = () => {
+        modal.style.display = "block";
+        modalImg.src = card.image;
+      };
+      div.appendChild(img);
 
-  const name = document.createElement('h4');
-  name.textContent = card.name;
-  div.appendChild(name);
+      const name = document.createElement('h4');
+      name.textContent = card.name;
+      div.appendChild(name);
 
-  const stats = document.createElement('div');
-  stats.style.fontSize = '0.9em';
-  stats.innerHTML = [
-    card.hp !== undefined ? `HP: ${card.hp}` : '',
-    card.atk !== undefined ? `ATK: ${card.atk}` : '',
-    card.def !== undefined ? `DEF: ${card.def}` : '',
-    card.cost !== undefined ? `Cost: ${card.cost}` : ''
-  ].filter(Boolean).join(' | ');
-  div.appendChild(stats);
+      const stats = document.createElement('div');
+      stats.style.fontSize = '0.9em';
+      stats.innerHTML = [
+        card.hp !== undefined ? `HP: ${card.hp}` : '',
+        card.atk !== undefined ? `ATK: ${card.atk}` : '',
+        card.def !== undefined ? `DEF: ${card.def}` : '',
+        card.cost !== undefined ? `Cost: ${card.cost}` : ''
+      ].filter(Boolean).join(' | ');
+      if (stats.innerHTML.trim() !== '') div.appendChild(stats);
 
-  const details = document.createElement('div');
-  details.style.fontSize = '0.8em';
-  details.textContent = [
-    card.rarity,
-    Array.isArray(card.type) ? card.type.join(', ') : card.type,
-    Array.isArray(card.ability) ? card.ability.join(', ') : card.ability
-  ].filter(Boolean).join(' | ');
-  div.appendChild(details);
+      const details = document.createElement('div');
+      details.style.fontSize = '0.8em';
+      details.textContent = [
+        card.rarity,
+        Array.isArray(card.type) ? card.type.join(', ') : card.type,
+        Array.isArray(card.ability) ? card.ability.join(', ') : card.ability
+      ].filter(Boolean).join(' | ');
+      if (details.textContent.trim() !== '') div.appendChild(details);
 
-  const btn = document.createElement('button');
-  btn.textContent = `Add to Deck (${deck[card.id] || 0})`;
-  btn.disabled = !canAddCard(card);
-  btn.onclick = () => {
-    if (!canAddCard(card)) return;
-    deck[card.id] = (deck[card.id] || 0) + 1;
+      const btn = document.createElement('button');
+      btn.textContent = `Add to Deck (${deck[card.id] || 0})`;
+      btn.disabled = !canAddCard(card);
+      btn.onclick = () => {
+        if (!canAddCard(card)) return;
+        deck[card.id] = (deck[card.id] || 0) + 1;
+        updateDeckDisplay();
+        renderGallery();
+      };
+      div.appendChild(btn);
+
+      return div;
+    }
+
+    function renderGallery() {
+      gallery.innerHTML = '';
+      const selectedColor = document.getElementById('filter-color').value.toLowerCase();
+      const selectedType = document.getElementById('filter-type').value.toLowerCase();
+      const selectedRarity = document.getElementById('filter-rarity').value.toLowerCase();
+      const nameFilter = document.getElementById('filter-name').value.toLowerCase();
+      const selectedArchetype = document.getElementById('filter-archetype').value.toLowerCase();
+      const selectedAbility = document.getElementById('filter-ability').value.toLowerCase();
+
+      dummyCards.forEach(card => {
+        if (nameFilter && !card.name.toLowerCase().includes(nameFilter)) return;
+        if (selectedColor) {
+          const colors = Array.isArray(card.color) ? card.color.map(c => c.toLowerCase()) : [card.color.toLowerCase()];
+          if (!colors.includes(selectedColor)) return;
+        }
+        if (selectedType) {
+          const types = Array.isArray(card.type) ? card.type.map(t => t.toLowerCase()) : [card.type.toLowerCase()];
+          if (!types.includes(selectedType)) return;
+        }
+        if (selectedRarity) {
+          if (card.rarity.toLowerCase() !== selectedRarity) return;
+        }
+        if (selectedArchetype) {
+          const archetypes = Array.isArray(card.archetype)
+            ? card.archetype.map(a => a.toLowerCase())
+            : [card.archetype?.toLowerCase()];
+          if (!archetypes.includes(selectedArchetype)) return;
+        }
+        if (selectedAbility) {
+          const abilities = Array.isArray(card.ability)
+            ? card.ability.map(a => a.toLowerCase())
+            : [card.ability?.toLowerCase()];
+          if (!abilities.includes(selectedAbility)) return;
+        }
+        gallery.appendChild(createCardDiv(card));
+      });
+    }
+
+    // Event Listeners
+    document.getElementById('filter-name').addEventListener('input', renderGallery);
+    document.getElementById('filter-color').addEventListener('change', renderGallery);
+    document.getElementById('filter-type').addEventListener('change', renderGallery);
+    document.getElementById('filter-rarity').addEventListener('change', renderGallery);
+    document.getElementById('filter-archetype').addEventListener('change', renderGallery);
+    document.getElementById('filter-ability').addEventListener('change', renderGallery);
+
+    document.getElementById('reset-deck-btn').onclick = () => {
+      for (const key in deck) {
+        delete deck[key];
+      }
+      updateDeckDisplay();
+      renderGallery();
+    };
+
+    document.getElementById('filter-color').addEventListener('change', (e) => {
+      const color = e.target.value.toLowerCase();
+      document.body.className = document.body.className
+        .split(' ')
+        .filter(cls => !cls.startsWith('theme-'))
+        .join(' ')
+        .trim();
+      if (color) {
+        document.body.classList.add(`theme-${color}`);
+      }
+    });
+
+    // Modal logic
+    closeBtn.onclick = () => { modal.style.display = "none"; };
+    modal.onclick = (e) => { if (e.target === modal) modal.style.display = "none"; };
+
+    // Deck toggle logic
+    toggleBtn.onclick = () => {
+      deckPanel.classList.toggle('show');
+      deckPanel.classList.toggle('hide');
+    };
+    // Hide deck on outside click (mobile)
+    window.addEventListener('click', (e) => {
+      if (!deckPanel.contains(e.target) && e.target !== toggleBtn && deckPanel.classList.contains('show')) {
+        deckPanel.classList.remove('show');
+      }
+    });
+
+    // Initial render
     updateDeckDisplay();
     renderGallery();
-  };
-  div.appendChild(btn);
-
-  return div;
-}
-    
   </script>
 </body>
 </html>
