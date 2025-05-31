@@ -167,6 +167,21 @@ body.theme-white {
   background: linear-gradient(to bottom, #ffffff, #f5f5f5); /* Pure white */
 }
 
+    @media (min-width: 769px) {
+  .deck {
+    transition: transform 0.3s;
+    transform: translateX(0);
+  }
+  .deck.hide {
+    transform: translateX(100%);
+  }
+}
+    
+   toggleBtn.onclick = () => {
+  deckPanel.classList.toggle('show');
+  deckPanel.classList.toggle('hide');
+};
+    
   </style>
 </head>
 <body>
@@ -448,11 +463,13 @@ li.appendChild(span);
   cardCount.textContent = total;
   localStorage.setItem('deck', JSON.stringify(deck));
 
-  // Re-enable buttons if below limits
-  document.querySelectorAll('.card button').forEach((btn, i) => {
-    const card = dummyCards[i];
-    btn.disabled = !canAddCard(card);
-  });
+// Re-enable buttons for visible cards
+document.querySelectorAll('.card').forEach(cardDiv => {
+  const btn = cardDiv.querySelector('button');
+  const name = cardDiv.querySelector('h4').textContent;
+  const cardData = dummyCards.find(c => c.name === name); // safer lookup
+  if (cardData) btn.disabled = !canAddCard(cardData);
+});
 }
 
     function canAddCard(card) {
@@ -607,6 +624,85 @@ modal.onclick = (e) => {
     modal.style.display = "none";
   }
 };   
+
+    btn.onclick = () => {
+  if (!canAddCard(card)) return;
+  deck[card.id] = (deck[card.id] || 0) + 1;
+  updateDeckDisplay();
+  renderGallery(); // <- update buttons for all visible cards!
+};
+
+    const stats = document.createElement('div');
+stats.style.fontSize = '0.9em';
+stats.innerHTML = `
+  ${card.hp ? `HP: ${card.hp} ` : ''} 
+  ${card.atk ? `ATK: ${card.atk} ` : ''} 
+  ${card.def ? `DEF: ${card.def} ` : ''} 
+  ${card.cost !== undefined ? `Cost: ${card.cost}` : ''}
+`;
+div.appendChild(stats);
+
+    // Card Details View //
+const details = document.createElement('div');
+details.style.fontSize = '0.8em';
+details.textContent = [
+  card.rarity,
+  Array.isArray(card.type) ? card.type.join(', ') : card.type,
+  Array.isArray(card.ability) ? card.ability.join(', ') : card.ability
+].filter(Boolean).join(' | ');
+div.appendChild(details);
+    
+    btn.textContent = `Add to Deck (${deck[card.id] || 0})`;
+
+    function createCardDiv(card) {
+  const div = document.createElement('div');
+  div.className = 'card';
+
+  const img = document.createElement('img');
+  img.src = card.image;
+  img.alt = card.name;
+  img.onclick = () => {
+    modal.style.display = "block";
+    modalImg.src = card.image;
+  };
+  div.appendChild(img);
+
+  const name = document.createElement('h4');
+  name.textContent = card.name;
+  div.appendChild(name);
+
+  const stats = document.createElement('div');
+  stats.style.fontSize = '0.9em';
+  stats.innerHTML = [
+    card.hp !== undefined ? `HP: ${card.hp}` : '',
+    card.atk !== undefined ? `ATK: ${card.atk}` : '',
+    card.def !== undefined ? `DEF: ${card.def}` : '',
+    card.cost !== undefined ? `Cost: ${card.cost}` : ''
+  ].filter(Boolean).join(' | ');
+  div.appendChild(stats);
+
+  const details = document.createElement('div');
+  details.style.fontSize = '0.8em';
+  details.textContent = [
+    card.rarity,
+    Array.isArray(card.type) ? card.type.join(', ') : card.type,
+    Array.isArray(card.ability) ? card.ability.join(', ') : card.ability
+  ].filter(Boolean).join(' | ');
+  div.appendChild(details);
+
+  const btn = document.createElement('button');
+  btn.textContent = `Add to Deck (${deck[card.id] || 0})`;
+  btn.disabled = !canAddCard(card);
+  btn.onclick = () => {
+    if (!canAddCard(card)) return;
+    deck[card.id] = (deck[card.id] || 0) + 1;
+    updateDeckDisplay();
+    renderGallery();
+  };
+  div.appendChild(btn);
+
+  return div;
+}
     
   </script>
 </body>
