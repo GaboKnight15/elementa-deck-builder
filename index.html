@@ -193,8 +193,8 @@
 /* The rest of the zones fill the grid as normal, no need for explicit placement */
 .zone.creature    { border-color: #ffbc42; }
 .zone.domain      { border-color: #4efc8c; }
-.zone.deck        { border-color: #5dade2; background: #1a1f2a; }
-.zone.void        { border-color: #e74c3c; background: #1a1822; }
+.zone.main        { border-color: #1E90FF; }
+.zone.void        { border-color: #e74c3c; }
 .zone.hand        { border-color: #4efc8c; background: #191933; }
 .zone.first       { opacity: 0.9; border-style: dashed; }
 
@@ -256,7 +256,7 @@
  <div class="hand-area first-hand-area" id="opponent-hand"></div>
   <!-- Battlefield grid -->
 <div class="battlefield-grid">
-  <div class="zone deck first"></div>
+  <div class="zone main first"></div>
   <div class="zone domain first"></div>
   <div class="zone domain first"></div>
   <div class="zone domain first"></div>
@@ -291,7 +291,7 @@
   <div class="zone domain second"></div>
   <div class="zone domain second"></div>
   <div class="zone domain second"></div>
-  <div class="zone deck second"></div>
+  <div class="zone main second"></div>
 </div>
    <!-- Second (your) hand area -->
   <div class="hand-area second-hand-area" id="player-hand"></div>
