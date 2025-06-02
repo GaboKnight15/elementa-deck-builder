@@ -139,16 +139,19 @@
     }
 .battlefield-grid {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  grid-template-rows: repeat(8, 1fr);
-  gap: 10px;
+  grid-template-columns: repeat(6, 1fr);   /* 6 equal columns */
+  grid-template-rows: repeat(8, 1fr);      /* 8 equal rows */
+  gap: 6px;
   background: #222;
   border-radius: 14px;
-  padding: 20px;
+  padding: 10px;
   margin: 0 auto 25px auto;
   box-shadow: 0 0 22px #000a;
   max-width: 1400px;
+  max-height: 90vh;        /* optional, keeps the grid from being too tall */
+  aspect-ratio: 6 / 8;     /* optional: ensures grid stays proportional */
   position: relative;
+  overflow: auto;
 }
 
 /* 1. Opponent Hand: spans all columns, row 1 */
@@ -220,15 +223,16 @@
   flex-direction: row;
   align-items: flex-end;
   justify-content: flex-start;
-  min-width: 90px;
-  min-height: 90px;
+  min-width: 0;       /* allows shrinking */
+  min-height: 0;      /* allows shrinking */
+  width: 100%;
+  height: 100%;
   padding: 6px;
   overflow-x: auto;
   overflow-y: hidden;
   border: 3px solid #444;
   position: relative;
 }
-
 .zone.creature    { border-color: #ffbc42; }
 .zone.domain      { border-color: #4efc8c; }
 .zone.void        { border-color: #e74c3c; background: #1a1822; }
@@ -238,10 +242,15 @@
 /* Responsive for small screens */
 @media (max-width: 900px) {
   .battlefield-grid {
-    grid-template-columns: repeat(6, 1fr);
-    grid-template-rows: 80px 80px 80px 80px 80px 80px 80px 80px;
-    padding: 6px;
+    max-width: 100vw;
+    max-height: 90vw;
+    gap: 3px;
+    padding: 3px;
   }
+  .zone {
+    padding: 2px;
+  }
+}
   .zone, .zone .card {
     min-width: 60px;
     min-height: 60px;
