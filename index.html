@@ -139,66 +139,63 @@
     }
  .battlefield-grid {
   display: grid;
-  grid-template-columns: repeat(7, 135px);
-  grid-template-rows: repeat(2, 180px);
-  gap: 10px;
+  grid-template-columns: repeat(7, 240px);
+  grid-template-rows: repeat(2, 185px);
+  gap: 14px;
   background: #222;
-  border-radius: 12px;
-  padding: 20px;
+  border-radius: 14px;
+  padding: 28px;
   margin: 0 auto 25px auto;
-  box-shadow: 0 0 18px #0008;
+  box-shadow: 0 0 22px #000a;
+  max-width: 1800px;
 }
 
 .zone {
-  background: #23232b;
-  border: 2px solid #444;
-  border-radius: 8px;
+  background: #222328;
+  border-radius: 11px;
   display: flex;
-  flex-direction: row; /* horizontal stacking! */
+  flex-direction: row; /* horizontal stacking for cards! */
   align-items: flex-end;
   justify-content: flex-start;
-  color: #fff;
-  font-weight: bold;
-  font-size: 1em;
-  min-width: 120px;
-  min-height: 160px;
-  position: relative;
-  padding: 4px;
+  min-width: 220px;
+  min-height: 170px;
+  padding: 6px;
   overflow-x: auto;
   overflow-y: hidden;
+  /* Remove text, just border color shows type */
+  border: 3px solid #444;
 }
 
-/* Custom colors for zones */
 .zone.creature   { border-color: #ffbc42; }
 .zone.domain     { border-color: #4efc8c; }
 .zone.void       { border-color: #e74c3c; background: #1a1822; }
 .zone.main-deck  { border-color: #5dade2; background: #1a1f2a; }
 
-/* For card images inside zones */
+/* Card appearance in zones */
 .zone .card {
   width: 110px;
   height: 150px;
-  margin-right: 6px;
+  margin-right: 10px;
   transition: transform 0.2s;
 }
 .zone .card.defense {
   /* For defense mode: rotate card */
   transform: rotate(90deg);
+  margin-right: 24px;
 }
 
 /* Responsive for small screens */
-@media (max-width: 1050px) {
+@media (max-width: 1400px) {
   .battlefield-grid {
-    grid-template-columns: repeat(7, minmax(62px, 1fr));
-    grid-template-rows: repeat(2, 90px);
-    padding: 8px;
+    grid-template-columns: repeat(7, 125px);
+    grid-template-rows: repeat(2, 105px);
+    padding: 7px;
   }
   .zone, .zone .card {
-    min-width: 60px;
-    min-height: 80px;
-    width: 55px;
-    height: 75px;
-    font-size: 0.85em;
+    min-width: 105px;
+    min-height: 95px;
+    width: 95px;
+    height: 80px;
   }
 }
     /* Background themes */
