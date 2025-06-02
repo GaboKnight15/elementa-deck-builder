@@ -137,9 +137,9 @@
       font-weight: bold;
       cursor: pointer;
     }
- .battlefield-grid {
+.battlefield-grid {
   display: grid;
-  grid-template-columns: repeat(7, 240px);
+  grid-template-columns: repeat(8, 210px);
   grid-template-rows: repeat(2, 185px);
   gap: 14px;
   background: #222;
@@ -157,13 +157,13 @@
   flex-direction: row; /* horizontal stacking for cards! */
   align-items: flex-end;
   justify-content: flex-start;
-  min-width: 220px;
+  min-width: 190px;
   min-height: 170px;
   padding: 6px;
   overflow-x: auto;
   overflow-y: hidden;
-  /* Remove text, just border color shows type */
   border: 3px solid #444;
+  position: relative;
 }
 
 .zone.creature   { border-color: #ffbc42; }
@@ -171,7 +171,6 @@
 .zone.void       { border-color: #e74c3c; background: #1a1822; }
 .zone.main-deck  { border-color: #5dade2; background: #1a1f2a; }
 
-/* Card appearance in zones */
 .zone .card {
   width: 110px;
   height: 150px;
@@ -179,23 +178,39 @@
   transition: transform 0.2s;
 }
 .zone .card.defense {
-  /* For defense mode: rotate card */
   transform: rotate(90deg);
   margin-right: 24px;
+}
+
+/* Placement label styling */
+.placement-label {
+  display: block;
+  position: absolute;
+  top: 6px;
+  left: 8px;
+  font-size: 0.85em;
+  color: #ccc;
+  font-weight: bold;
+  pointer-events: none;
+  user-select: none;
 }
 
 /* Responsive for small screens */
 @media (max-width: 1400px) {
   .battlefield-grid {
-    grid-template-columns: repeat(7, 125px);
+    grid-template-columns: repeat(8, 105px);
     grid-template-rows: repeat(2, 105px);
     padding: 7px;
   }
   .zone, .zone .card {
-    min-width: 105px;
+    min-width: 95px;
     min-height: 95px;
     width: 95px;
     height: 80px;
+  }
+  .placement-label {
+    font-size: 0.7em;
+    left: 3px; top: 3px;
   }
 }
     /* Background themes */
@@ -217,25 +232,29 @@
   </header>
 <div id="battlefield" style="display:none;">
   <h2>Battlefield</h2>
-<div class="battlefield-grid">
-  <!-- Top row: Creature zones, Void at top right -->
-  <div class="zone creature"    title="Creature 1">Creature 1</div>
-  <div class="zone creature"    title="Creature 2">Creature 2</div>
-  <div class="zone creature"    title="Creature 3">Creature 3</div>
-  <div class="zone creature"    title="Creature 4">Creature 4</div>
-  <div class="zone creature"    title="Creature 5">Creature 5</div>
-  <div class="zone creature"    title="Creature 6">Creature 6</div>
-  <div class="zone void"        title="Void (Graveyard)">Void</div>
+  <div class="battlefield-grid">
+    <!-- Top row: Creature zones, Void at far right -->
+    <div class="zone creature" title="Creature 1"><span class="placement-label">Far Left</span>Creature 1</div>
+    <div class="zone creature" title="Creature 2"><span class="placement-label">Left</span>Creature 2</div>
+    <div class="zone creature" title="Creature 3"><span class="placement-label">Mid-Left</span>Creature 3</div>
+    <div class="zone creature" title="Creature 4"><span class="placement-label">Center-Left</span>Creature 4</div>
+    <div class="zone creature" title="Creature 5"><span class="placement-label">Center-Right</span>Creature 5</div>
+    <div class="zone creature" title="Creature 6"><span class="placement-label">Mid-Right</span>Creature 6</div>
+    <div class="zone creature" title="Creature 7"><span class="placement-label">Right</span>Creature 7</div>
+    <div class="zone void" title="Void (Graveyard)">Void</div>
+    <!-- 8th column is Void -->
 
-  <!-- Bottom row: Domain zones, Main Deck at bottom right -->
-  <div class="zone domain"      title="Domain 1">Domain 1</div>
-  <div class="zone domain"      title="Domain 2">Domain 2</div>
-  <div class="zone domain"      title="Domain 3">Domain 3</div>
-  <div class="zone domain"      title="Domain 4">Domain 4</div>
-  <div class="zone domain"      title="Domain 5">Domain 5</div>
-  <div class="zone domain"      title="Domain 6">Domain 6</div>
-  <div class="zone main-deck"   title="Main Deck">Deck</div>
-</div>
+    <!-- Bottom row: Domain zones, Main Deck at far right -->
+    <div class="zone domain" title="Domain 1"><span class="placement-label">Far Left</span>Domain 1</div>
+    <div class="zone domain" title="Domain 2"><span class="placement-label">Left</span>Domain 2</div>
+    <div class="zone domain" title="Domain 3"><span class="placement-label">Mid-Left</span>Domain 3</div>
+    <div class="zone domain" title="Domain 4"><span class="placement-label">Center-Left</span>Domain 4</div>
+    <div class="zone domain" title="Domain 5"><span class="placement-label">Center-Right</span>Domain 5</div>
+    <div class="zone domain" title="Domain 6"><span class="placement-label">Mid-Right</span>Domain 6</div>
+    <div class="zone domain" title="Domain 7"><span class="placement-label">Right</span>Domain 7</div>
+    <div class="zone main-deck" title="Main Deck">Deck</div>
+    <!-- 8th column is Deck -->
+  </div>
   <button id="back-to-builder-btn">Back to Deck Builder</button>
 </div>
   <!-- Deck Slot Selector -->
