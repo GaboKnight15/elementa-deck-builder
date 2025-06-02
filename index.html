@@ -139,51 +139,67 @@
     }
  .battlefield-grid {
   display: grid;
-  grid-template-columns: repeat(7, 125px); /* Card width + margin */
-  grid-template-rows: repeat(2, 180px);    /* Card height + margin */
+  grid-template-columns: repeat(7, 135px);
+  grid-template-rows: repeat(2, 180px);
   gap: 10px;
   background: #222;
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 20px;
-  margin: 0 auto;
+  margin: 0 auto 25px auto;
   box-shadow: 0 0 18px #0008;
 }
+
 .zone {
-  background: #333;
-  border: 2px solid #666;
+  background: #23232b;
+  border: 2px solid #444;
   border-radius: 8px;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-direction: row; /* horizontal stacking! */
+  align-items: flex-end;
   justify-content: flex-start;
   color: #fff;
   font-weight: bold;
   font-size: 1em;
-  min-width: 110px;
-  min-height: 150px;
+  min-width: 120px;
+  min-height: 160px;
   position: relative;
+  padding: 4px;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
-.zone.main-deck, .zone.void {
-  background: #1d1a22;
-  border-color: #a55;
-}
-.zone.artifact {
-  background: #223;
-  border-color: #7af;
-}
-.zone.domain {
-  background: #232;
-  border-color: #7f7;
-}
-.zone.creature {
-  background: #221e1e;
-  border-color: #fa0;
-}
-/* For cards inside zones: */
+
+/* Custom colors for zones */
+.zone.creature   { border-color: #ffbc42; }
+.zone.domain     { border-color: #4efc8c; }
+.zone.void       { border-color: #e74c3c; background: #1a1822; }
+.zone.main-deck  { border-color: #5dade2; background: #1a1f2a; }
+
+/* For card images inside zones */
 .zone .card {
   width: 110px;
   height: 150px;
-  margin: 2px 0;
+  margin-right: 6px;
+  transition: transform 0.2s;
+}
+.zone .card.defense {
+  /* For defense mode: rotate card */
+  transform: rotate(90deg);
+}
+
+/* Responsive for small screens */
+@media (max-width: 1050px) {
+  .battlefield-grid {
+    grid-template-columns: repeat(7, minmax(62px, 1fr));
+    grid-template-rows: repeat(2, 90px);
+    padding: 8px;
+  }
+  .zone, .zone .card {
+    min-width: 60px;
+    min-height: 80px;
+    width: 55px;
+    height: 75px;
+    font-size: 0.85em;
+  }
 }
     /* Background themes */
     body.theme-green  { background: linear-gradient(to bottom, #e6ffe6, #a3d9a5); }
@@ -204,24 +220,25 @@
   </header>
 <div id="battlefield" style="display:none;">
   <h2>Battlefield</h2>
-  <div class="battlefield-grid">
-    <!-- Top row: Void, Creature zones (creature+artifact) -->
-    <div class="zone void"                title="Void (Graveyard)">Void</div>
-    <div class="zone creature"            title="Creature Zone 1">Creature 1</div>
-    <div class="zone creature"            title="Creature Zone 2">Creature 2</div>
-    <div class="zone creature"            title="Creature Zone 3">Creature 3</div>
-    <div class="zone creature"            title="Creature Zone 4">Creature 4</div>
-    <div class="zone creature"            title="Creature Zone 5">Creature 5</div>
-    <div class="zone main-deck"           title="Main Deck">Deck</div>
-    <!-- Bottom row: Domains, Artifact zones (vertical) -->
-    <div class="zone domain"              title="Domain Zone 1">Domain 1</div>
-    <div class="zone domain"              title="Domain Zone 2">Domain 2</div>
-    <div class="zone domain"              title="Domain Zone 3">Domain 3</div>
-    <div class="zone domain"              title="Domain Zone 4">Domain 4</div>
-    <div class="zone domain"              title="Domain Zone 5">Domain 5</div>
-    <div class="zone domain"              title="Domain Zone 6">Domain 6</div>
-    <div class="zone artifact"            title="Artifacts (vertical)">Artifacts</div>
-  </div>
+<div class="battlefield-grid">
+  <!-- Top row: Creature zones, Void at top right -->
+  <div class="zone creature"    title="Creature 1">Creature 1</div>
+  <div class="zone creature"    title="Creature 2">Creature 2</div>
+  <div class="zone creature"    title="Creature 3">Creature 3</div>
+  <div class="zone creature"    title="Creature 4">Creature 4</div>
+  <div class="zone creature"    title="Creature 5">Creature 5</div>
+  <div class="zone creature"    title="Creature 6">Creature 6</div>
+  <div class="zone void"        title="Void (Graveyard)">Void</div>
+
+  <!-- Bottom row: Domain zones, Main Deck at bottom right -->
+  <div class="zone domain"      title="Domain 1">Domain 1</div>
+  <div class="zone domain"      title="Domain 2">Domain 2</div>
+  <div class="zone domain"      title="Domain 3">Domain 3</div>
+  <div class="zone domain"      title="Domain 4">Domain 4</div>
+  <div class="zone domain"      title="Domain 5">Domain 5</div>
+  <div class="zone domain"      title="Domain 6">Domain 6</div>
+  <div class="zone main-deck"   title="Main Deck">Deck</div>
+</div>
   <button id="back-to-builder-btn">Back to Deck Builder</button>
 </div>
   <!-- Deck Slot Selector -->
