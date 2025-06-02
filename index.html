@@ -257,7 +257,8 @@
     <img class="modal-content" id="modal-img">
   </div>
   <script>
-    // Card List //
+  // Card List //
+  const dummyCards = [
       { id: 'basicfairy', name: 'Fairy', rarity: 'Basic', image: 'BasicCreatures/Fairy.png', color: 'green', type: 'fairy', hp: 1, atk: 1, def: 0, cost: 0, archetype: 'Fairy', ability: 'flying'},More actions
       { id: 'basicgoblin', name: 'Goblin', rarity: 'Basic', image: 'BasicCreatures/Goblin.png', color: 'green', type: 'goblin', hp: 3, atk: 1, def: 0, cost: 0, archetype: 'Goblin'},
       { id: 'basicemberling', name: 'Emberling', rarity: 'Basic', image: 'BasicCreatures/Emberling.png', color: 'red', type: 'beast', hp: 3, atk: 2, def: 0, cost: 1, archetype: 'Firelands', ability: 'burn'},
@@ -368,321 +369,317 @@
       { id: 'basicplains', name: 'Plains', rarity: 'Basic', image: 'images/White Basic Location.png', color: 'white', type: 'domain', hp: 5, cost: 1},
       { id: 'basicshadowforest', name: 'Shadow Forest', rarity: 'Basic', image: 'images/Black Basic Location.png', color: 'black', type: 'domain', hp: 5, cost: 1},
 
-    ];
+  ];
 
-    // --- MULTI-DECK MANAGEMENT --- //
-    const DECK_SLOTS_KEY = "deckSlots";
-    const DECKS_KEY = "decks";
-    // Init deck slots and decks
-    let deckSlots = JSON.parse(localStorage.getItem(DECK_SLOTS_KEY)) || ["Deck 1"];
-    let decks = JSON.parse(localStorage.getItem(DECKS_KEY)) || { "Deck 1": {} };
-    let currentDeckSlot = localStorage.getItem("currentDeckSlot") || deckSlots[0];
+  // --- MULTI-DECK MANAGEMENT --- //
+  const DECK_SLOTS_KEY = "deckSlots";
+  const DECKS_KEY = "decks";
+  let deckSlots = JSON.parse(localStorage.getItem(DECK_SLOTS_KEY)) || ["Deck 1"];
+  let decks = JSON.parse(localStorage.getItem(DECKS_KEY)) || { "Deck 1": {} };
+  let currentDeckSlot = localStorage.getItem("currentDeckSlot") || deckSlots[0];
 
-    // DOM references
-    const deckSlotSelect = document.getElementById('deck-slot-select');
-    const addDeckSlotBtn = document.getElementById('add-deck-slot-btn');
-    const renameDeckSlotBtn = document.getElementById('rename-deck-slot-btn');
-    const deleteDeckSlotBtn = document.getElementById('delete-deck-slot-btn');
-    const deckTitle = document.getElementById('deck-title');
+  const deckSlotSelect = document.getElementById('deck-slot-select');
+  const addDeckSlotBtn = document.getElementById('add-deck-slot-btn');
+  const renameDeckSlotBtn = document.getElementById('rename-deck-slot-btn');
+  const deleteDeckSlotBtn = document.getElementById('delete-deck-slot-btn');
+  const deckTitle = document.getElementById('deck-title');
 
-    function saveDeckState() {
-      localStorage.setItem(DECK_SLOTS_KEY, JSON.stringify(deckSlots));
-      localStorage.setItem(DECKS_KEY, JSON.stringify(decks));
-      localStorage.setItem("currentDeckSlot", currentDeckSlot);
-    }
-    function loadDeckState() {
-      deckSlots = JSON.parse(localStorage.getItem(DECK_SLOTS_KEY)) || ["Deck 1"];
-      decks = JSON.parse(localStorage.getItem(DECKS_KEY)) || { "Deck 1": {} };
-      currentDeckSlot = localStorage.getItem("currentDeckSlot") || deckSlots[0];
-    }
+  function saveDeckState() {
+    localStorage.setItem(DECK_SLOTS_KEY, JSON.stringify(deckSlots));
+    localStorage.setItem(DECKS_KEY, JSON.stringify(decks));
+    localStorage.setItem("currentDeckSlot", currentDeckSlot);
+  }
+  function loadDeckState() {
+    deckSlots = JSON.parse(localStorage.getItem(DECK_SLOTS_KEY)) || ["Deck 1"];
+    decks = JSON.parse(localStorage.getItem(DECKS_KEY)) || { "Deck 1": {} };
+    currentDeckSlot = localStorage.getItem("currentDeckSlot") || deckSlots[0];
+  }
 
-    function getCurrentDeck() {
-      return decks[currentDeckSlot] || {};
-    }
+  function getCurrentDeck() {
+    return decks[currentDeckSlot] || {};
+  }
 
-    function setCurrentDeck(deckObj) {
-      decks[currentDeckSlot] = deckObj;
-      saveDeckState();
-    }
+  function setCurrentDeck(deckObj) {
+    decks[currentDeckSlot] = deckObj;
+    saveDeckState();
+  }
 
-    function refreshDeckSlotSelect() {
-      deckSlotSelect.innerHTML = "";
-      deckSlots.forEach(slot => {
-        const opt = document.createElement('option');
-        opt.value = slot;
-        opt.textContent = slot;
-        deckSlotSelect.appendChild(opt);
-      });
-      deckSlotSelect.value = currentDeckSlot;
-      deckTitle.textContent = currentDeckSlot;
-    }
-
-    deckSlotSelect.addEventListener('change', () => {
-      currentDeckSlot = deckSlotSelect.value;
-      saveDeckState();
-      updateDeckDisplay();
-      renderGallery();
+  function refreshDeckSlotSelect() {
+    deckSlotSelect.innerHTML = "";
+    deckSlots.forEach(slot => {
+      const opt = document.createElement('option');
+      opt.value = slot;
+      opt.textContent = slot;
+      deckSlotSelect.appendChild(opt);
     });
+    deckSlotSelect.value = currentDeckSlot;
+    deckTitle.textContent = currentDeckSlot;
+  }
 
-    addDeckSlotBtn.addEventListener('click', () => {
-      let newName = prompt("Deck name?", `Deck ${deckSlots.length + 1}`);
-      if (!newName) return;
-      if (deckSlots.includes(newName)) {
-        alert("Deck name already exists!");
-        return;
-      }
-      deckSlots.push(newName);
-      decks[newName] = {};
-      currentDeckSlot = newName;
-      saveDeckState();
-      refreshDeckSlotSelect();
-      updateDeckDisplay();
-      renderGallery();
-    });
+  deckSlotSelect.addEventListener('change', () => {
+    currentDeckSlot = deckSlotSelect.value;
+    saveDeckState();
+    updateDeckDisplay();
+    renderGallery();
+  });
 
-    renameDeckSlotBtn.addEventListener('click', () => {
-      let newName = prompt("Rename deck to:", currentDeckSlot);
-      if (!newName || newName === currentDeckSlot) return;
-      if (deckSlots.includes(newName)) {
-        alert("Deck name already exists!");
-        return;
-      }
-      // Rename in deckSlots and decks
-      let idx = deckSlots.indexOf(currentDeckSlot);
-      let deckData = decks[currentDeckSlot];
-      deckSlots[idx] = newName;
-      decks[newName] = deckData;
-      delete decks[currentDeckSlot];
-      currentDeckSlot = newName;
-      saveDeckState();
-      refreshDeckSlotSelect();
-      updateDeckDisplay();
-      renderGallery();
-    });
-
-    deleteDeckSlotBtn.addEventListener('click', () => {
-      if (deckSlots.length === 1) {
-        alert("You must have at least one deck.");
-        return;
-      }
-      if (!confirm(`Delete "${currentDeckSlot}"? This cannot be undone.`)) return;
-      let idx = deckSlots.indexOf(currentDeckSlot);
-      deckSlots.splice(idx, 1);
-      delete decks[currentDeckSlot];
-      currentDeckSlot = deckSlots[Math.max(idx - 1, 0)];
-      saveDeckState();
-      refreshDeckSlotSelect();
-      updateDeckDisplay();
-      renderGallery();
-    });
-
-    // --- END MULTI-DECK --- //
-
-    const gallery = document.getElementById('card-gallery');
-    const deckList = document.getElementById('deck-list');
-    const cardCount = document.getElementById('card-count');
-    const modal = document.getElementById('image-modal');
-    const modalImg = document.getElementById('modal-img');
-    const closeBtn = document.querySelector('.close');
-    const toggleBtn = document.getElementById('toggle-deck-btn');
-    const deckPanel = document.querySelector('.deck');
-
-    function canAddCard(card) {
-      const deck = getCurrentDeck();
-      const count = deck[card.id] || 0;
-      const total = Object.values(deck).reduce((a, b) => a + b, 0);
-      if (total >= 50) return false;
-      if (card.rarity && card.rarity.toLowerCase() === 'legendary' && count >= 1) return false;
-      if (card.rarity && card.rarity.toLowerCase() === 'rare' && count >= 2) return false;
-      if (card.rarity && card.rarity.toLowerCase() === 'common' && count >= 3) return false;
-      return true;
+  addDeckSlotBtn.addEventListener('click', () => {
+    let newName = prompt("Deck name?", `Deck ${deckSlots.length + 1}`);
+    if (!newName) return;
+    if (deckSlots.includes(newName)) {
+      alert("Deck name already exists!");
+      return;
     }
+    deckSlots.push(newName);
+    decks[newName] = {};
+    currentDeckSlot = newName;
+    saveDeckState();
+    refreshDeckSlotSelect();
+    updateDeckDisplay();
+    renderGallery();
+  });
 
-    function updateDeckDisplay() {
-      const deck = getCurrentDeck();
-      deckList.innerHTML = '';
-      let total = 0;
-      for (const [id, count] of Object.entries(deck)) {
-        const card = dummyCards.find(c => c.id === id);
-        if (!card) continue;
-        const li = document.createElement('li');
-        const img = document.createElement('img');
-        img.src = card.image;
-        img.alt = card.name;
-        img.style.width = '40px';
-        img.style.height = 'auto';
-        img.style.marginRight = '8px';
-        img.style.verticalAlign = 'middle';
-        img.style.borderRadius = '4px';
-        const span = document.createElement('span');
-        span.textContent = `${card.name} ×${count} `;
-        li.appendChild(img);
-        li.appendChild(span);
-        const removeBtn = document.createElement('button');
-        removeBtn.textContent = '−';
-        removeBtn.onclick = () => {
-          deck[id]--;
-          if (deck[id] <= 0) {
-            delete deck[id];
-          }
-          setCurrentDeck(deck);
-          updateDeckDisplay();
-          renderGallery();
-        };
-        li.appendChild(removeBtn);
-        deckList.appendChild(li);
-        total += count;
-      }
-      cardCount.textContent = total;
-      setCurrentDeck(deck);
-      saveDeckState();
+  renameDeckSlotBtn.addEventListener('click', () => {
+    let newName = prompt("Rename deck to:", currentDeckSlot);
+    if (!newName || newName === currentDeckSlot) return;
+    if (deckSlots.includes(newName)) {
+      alert("Deck name already exists!");
+      return;
     }
+    let idx = deckSlots.indexOf(currentDeckSlot);
+    let deckData = decks[currentDeckSlot];
+    deckSlots[idx] = newName;
+    decks[newName] = deckData;
+    delete decks[currentDeckSlot];
+    currentDeckSlot = newName;
+    saveDeckState();
+    refreshDeckSlotSelect();
+    updateDeckDisplay();
+    renderGallery();
+  });
 
-    function createCardDiv(card) {
-      const deck = getCurrentDeck();
-      const div = document.createElement('div');
-      div.className = 'card';
+  deleteDeckSlotBtn.addEventListener('click', () => {
+    if (deckSlots.length === 1) {
+      alert("You must have at least one deck.");
+      return;
+    }
+    if (!confirm(`Delete "${currentDeckSlot}"? This cannot be undone.`)) return;
+    let idx = deckSlots.indexOf(currentDeckSlot);
+    deckSlots.splice(idx, 1);
+    delete decks[currentDeckSlot];
+    currentDeckSlot = deckSlots[Math.max(idx - 1, 0)];
+    saveDeckState();
+    refreshDeckSlotSelect();
+    updateDeckDisplay();
+    renderGallery();
+  });
 
+  // --- END MULTI-DECK --- //
+
+  const gallery = document.getElementById('card-gallery');
+  const deckList = document.getElementById('deck-list');
+  const cardCount = document.getElementById('card-count');
+  const modal = document.getElementById('image-modal');
+  const modalImg = document.getElementById('modal-img');
+  const closeBtn = document.querySelector('.close');
+  const toggleBtn = document.getElementById('toggle-deck-btn');
+  const deckPanel = document.querySelector('.deck');
+
+  function canAddCard(card) {
+    const deck = getCurrentDeck();
+    const count = deck[card.id] || 0;
+    const total = Object.values(deck).reduce((a, b) => a + b, 0);
+    if (total >= 50) return false;
+    if (card.rarity && card.rarity.toLowerCase() === 'legendary' && count >= 1) return false;
+    if (card.rarity && card.rarity.toLowerCase() === 'rare' && count >= 2) return false;
+    if (card.rarity && card.rarity.toLowerCase() === 'common' && count >= 3) return false;
+    return true;
+  }
+
+  function updateDeckDisplay() {
+    const deck = getCurrentDeck();
+    deckList.innerHTML = '';
+    let total = 0;
+    for (const [id, count] of Object.entries(deck)) {
+      const card = dummyCards.find(c => c.id === id);
+      if (!card) continue;
+      const li = document.createElement('li');
       const img = document.createElement('img');
       img.src = card.image;
-      img.onerror = function() {
-        this.onerror = null;
-        this.src = "images/placeholder.png";
-      };
       img.alt = card.name;
-      img.onclick = () => {
-        modal.style.display = "block";
-        modalImg.src = card.image;
-      };
-      div.appendChild(img);
-
-      const name = document.createElement('h4');
-      name.textContent = card.name;
-      div.appendChild(name);
-
-      const stats = document.createElement('div');
-      stats.style.fontSize = '0.9em';
-      stats.innerHTML = [
-        card.hp !== undefined ? `HP: ${card.hp}` : '',
-        card.atk !== undefined ? `ATK: ${card.atk}` : '',
-        card.def !== undefined ? `DEF: ${card.def}` : '',
-        card.cost !== undefined ? `Cost: ${card.cost}` : ''
-      ].filter(Boolean).join(' | ');
-      if (stats.innerHTML.trim() !== '') div.appendChild(stats);
-
-      const details = document.createElement('div');
-      details.style.fontSize = '0.8em';
-      details.textContent = [
-        card.rarity,
-        Array.isArray(card.type) ? card.type.join(', ') : card.type,
-        Array.isArray(card.ability) ? card.ability.join(', ') : card.ability
-      ].filter(Boolean).join(' | ');
-      if (details.textContent.trim() !== '') div.appendChild(details);
-
-      const btn = document.createElement('button');
-      btn.textContent = `Add to Deck (${deck[card.id] || 0})`;
-      btn.disabled = !canAddCard(card);
-      btn.onclick = () => {
-        if (!canAddCard(card)) return;
-        deck[card.id] = (deck[card.id] || 0) + 1;
+      img.style.width = '40px';
+      img.style.height = 'auto';
+      img.style.marginRight = '8px';
+      img.style.verticalAlign = 'middle';
+      img.style.borderRadius = '4px';
+      const span = document.createElement('span');
+      span.textContent = `${card.name} ×${count} `;
+      li.appendChild(img);
+      li.appendChild(span);
+      const removeBtn = document.createElement('button');
+      removeBtn.textContent = '−';
+      removeBtn.onclick = () => {
+        deck[id]--;
+        if (deck[id] <= 0) {
+          delete deck[id];
+        }
         setCurrentDeck(deck);
         updateDeckDisplay();
         renderGallery();
       };
-      div.appendChild(btn);
-
-      return div;
+      li.appendChild(removeBtn);
+      deckList.appendChild(li);
+      total += count;
     }
+    cardCount.textContent = total;
+    setCurrentDeck(deck);
+    saveDeckState();
+  }
 
-    function renderGallery() {
-      gallery.innerHTML = '';
-      const selectedColor = document.getElementById('filter-color').value.toLowerCase();
-      const selectedType = document.getElementById('filter-type').value.toLowerCase();
-      const selectedRarity = document.getElementById('filter-rarity').value.toLowerCase();
-      const nameFilter = document.getElementById('filter-name').value.toLowerCase();
-      const selectedArchetype = document.getElementById('filter-archetype').value.toLowerCase();
-      const selectedAbility = document.getElementById('filter-ability').value.toLowerCase();
+  function createCardDiv(card) {
+    const deck = getCurrentDeck();
+    const div = document.createElement('div');
+    div.className = 'card';
 
-      dummyCards.forEach(card => {
-        if (nameFilter && !card.name.toLowerCase().includes(nameFilter)) return;
-        if (selectedColor) {
-          const colors = Array.isArray(card.color) ? card.color.map(c => c.toLowerCase()) : [card.color.toLowerCase()];
-          if (!colors.includes(selectedColor)) return;
-        }
-        if (selectedType) {
-          const types = Array.isArray(card.type) ? card.type.map(t => t.toLowerCase()) : [card.type.toLowerCase()];
-          if (!types.includes(selectedType)) return;
-        }
-        if (selectedRarity) {
-          if (card.rarity.toLowerCase() !== selectedRarity) return;
-        }
-        if (selectedArchetype) {
-          const archetypes = Array.isArray(card.archetype)
-            ? card.archetype.map(a => a.toLowerCase())
-            : [card.archetype?.toLowerCase()];
-          if (!archetypes.includes(selectedArchetype)) return;
-        }
-        if (selectedAbility) {
-          const abilities = Array.isArray(card.ability)
-            ? card.ability.map(a => a.toLowerCase())
-            : [card.ability?.toLowerCase()];
-          if (!abilities.includes(selectedAbility)) return;
-        }
-        gallery.appendChild(createCardDiv(card));
-      });
-    }
+    const img = document.createElement('img');
+    img.src = card.image;
+    img.onerror = function() {
+      this.onerror = null;
+      this.src = "images/placeholder.png";
+    };
+    img.alt = card.name;
+    img.onclick = () => {
+      modal.style.display = "block";
+      modalImg.src = card.image;
+    };
+    div.appendChild(img);
 
-    // Event Listeners
-    document.getElementById('filter-name').addEventListener('input', renderGallery);
-    document.getElementById('filter-color').addEventListener('change', renderGallery);
-    document.getElementById('filter-type').addEventListener('change', renderGallery);
-    document.getElementById('filter-rarity').addEventListener('change', renderGallery);
-    document.getElementById('filter-archetype').addEventListener('change', renderGallery);
-    document.getElementById('filter-ability').addEventListener('change', renderGallery);
+    const name = document.createElement('h4');
+    name.textContent = card.name;
+    div.appendChild(name);
 
-    document.getElementById('reset-deck-btn').onclick = () => {
-      const deck = getCurrentDeck();
-      for (const key in deck) {
-        delete deck[key];
-      }
+    const stats = document.createElement('div');
+    stats.style.fontSize = '0.9em';
+    stats.innerHTML = [
+      card.hp !== undefined ? `HP: ${card.hp}` : '',
+      card.atk !== undefined ? `ATK: ${card.atk}` : '',
+      card.def !== undefined ? `DEF: ${card.def}` : '',
+      card.cost !== undefined ? `Cost: ${card.cost}` : ''
+    ].filter(Boolean).join(' | ');
+    if (stats.innerHTML.trim() !== '') div.appendChild(stats);
+
+    const details = document.createElement('div');
+    details.style.fontSize = '0.8em';
+    details.textContent = [
+      card.rarity,
+      Array.isArray(card.type) ? card.type.join(', ') : card.type,
+      Array.isArray(card.ability) ? card.ability.join(', ') : card.ability
+    ].filter(Boolean).join(' | ');
+    if (details.textContent.trim() !== '') div.appendChild(details);
+
+    const btn = document.createElement('button');
+    btn.textContent = `Add to Deck (${deck[card.id] || 0})`;
+    btn.disabled = !canAddCard(card);
+    btn.onclick = () => {
+      if (!canAddCard(card)) return;
+      deck[card.id] = (deck[card.id] || 0) + 1;
       setCurrentDeck(deck);
       updateDeckDisplay();
       renderGallery();
     };
+    div.appendChild(btn);
 
-    document.getElementById('filter-color').addEventListener('change', (e) => {
-      const color = e.target.value.toLowerCase();
-      document.body.className = document.body.className
-        .split(' ')
-        .filter(cls => !cls.startsWith('theme-'))
-        .join(' ')
-        .trim();
-      if (color) {
-        document.body.classList.add(`theme-${color}`);
+    return div;
+  }
+
+  function renderGallery() {
+    gallery.innerHTML = '';
+    const selectedColor = document.getElementById('filter-color').value.toLowerCase();
+    const selectedType = document.getElementById('filter-type').value.toLowerCase();
+    const selectedRarity = document.getElementById('filter-rarity').value.toLowerCase();
+    const nameFilter = document.getElementById('filter-name').value.toLowerCase();
+    const selectedArchetype = document.getElementById('filter-archetype').value.toLowerCase();
+    const selectedAbility = document.getElementById('filter-ability').value.toLowerCase();
+
+    dummyCards.forEach(card => {
+      if (nameFilter && !card.name.toLowerCase().includes(nameFilter)) return;
+      if (selectedColor) {
+        const colors = Array.isArray(card.color) ? card.color.map(c => c.toLowerCase()) : [card.color.toLowerCase()];
+        if (!colors.includes(selectedColor)) return;
       }
-    });
-
-    // Modal logic
-    closeBtn.onclick = () => { modal.style.display = "none"; };
-    modal.onclick = (e) => { if (e.target === modal) modal.style.display = "none"; };
-
-    // Deck toggle logic
-    toggleBtn.onclick = () => {
-      deckPanel.classList.toggle('show');
-      deckPanel.classList.toggle('hide');
-    };
-    // Hide deck on outside click (mobile)
-    window.addEventListener('click', (e) => {
-      if (!deckPanel.contains(e.target) && e.target !== toggleBtn && deckPanel.classList.contains('show')) {
-        deckPanel.classList.remove('show');
+      if (selectedType) {
+        const types = Array.isArray(card.type) ? card.type.map(t => t.toLowerCase()) : [card.type.toLowerCase()];
+        if (!types.includes(selectedType)) return;
       }
+      if (selectedRarity) {
+        if (card.rarity.toLowerCase() !== selectedRarity) return;
+      }
+      if (selectedArchetype) {
+        const archetypes = Array.isArray(card.archetype)
+          ? card.archetype.map(a => a.toLowerCase())
+          : [card.archetype?.toLowerCase()];
+        if (!archetypes.includes(selectedArchetype)) return;
+      }
+      if (selectedAbility) {
+        const abilities = Array.isArray(card.ability)
+          ? card.ability.map(a => a.toLowerCase())
+          : [card.ability?.toLowerCase()];
+        if (!abilities.includes(selectedAbility)) return;
+      }
+      gallery.appendChild(createCardDiv(card));
     });
+  }
 
-    // Initial render
-    loadDeckState();
-    refreshDeckSlotSelect();
+  // Event Listeners
+  document.getElementById('filter-name').addEventListener('input', renderGallery);
+  document.getElementById('filter-color').addEventListener('change', renderGallery);
+  document.getElementById('filter-type').addEventListener('change', renderGallery);
+  document.getElementById('filter-rarity').addEventListener('change', renderGallery);
+  document.getElementById('filter-archetype').addEventListener('change', renderGallery);
+  document.getElementById('filter-ability').addEventListener('change', renderGallery);
+
+  document.getElementById('reset-deck-btn').onclick = () => {
+    const deck = getCurrentDeck();
+    for (const key in deck) {
+      delete deck[key];
+    }
+    setCurrentDeck(deck);
     updateDeckDisplay();
     renderGallery();
-  </script>
+  };
+
+  document.getElementById('filter-color').addEventListener('change', (e) => {
+    const color = e.target.value.toLowerCase();
+    document.body.className = document.body.className
+      .split(' ')
+      .filter(cls => !cls.startsWith('theme-'))
+      .join(' ')
+      .trim();
+    if (color) {
+      document.body.classList.add(`theme-${color}`);
+    }
+  });
+
+  // Modal logic
+  closeBtn.onclick = () => { modal.style.display = "none"; };
+  modal.onclick = (e) => { if (e.target === modal) modal.style.display = "none"; };
+
+  // Deck toggle logic
+  toggleBtn.onclick = () => {
+    deckPanel.classList.toggle('show');
+    deckPanel.classList.toggle('hide');
+  };
+  window.addEventListener('click', (e) => {
+    if (!deckPanel.contains(e.target) && e.target !== toggleBtn && deckPanel.classList.contains('show')) {
+      deckPanel.classList.remove('show');
+    }
+  });
+
+  // Initial render
+  loadDeckState();
+  refreshDeckSlotSelect();
+  updateDeckDisplay();
+  renderGallery();
+</script>
 </body>
 </html>
