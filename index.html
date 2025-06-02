@@ -151,22 +151,6 @@
   position: relative;
 }
 
-/* Place the special creature zone above the Void (col 6, row 1) */
-.special-creature {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 210px;
-  height: 80px;
-  background: #222328;
-  border: 3px solid #ffbc42;
-  border-radius: 11px;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .zone {
   background: #222328;
   border-radius: 11px;
@@ -213,10 +197,6 @@
     width: 95px;
     height: 80px;
   }
-  .special-creature {
-    width: 105px;
-    height: 45px;
-  }
 }
     /* Background themes */
     body.theme-green  { background: linear-gradient(to bottom, #e6ffe6, #a3d9a5); }
@@ -246,7 +226,7 @@
     <div class="zone creature" title="Creature 5"></div>
     <div class="zone creature" title="Creature 6"></div>
 
-    <!-- Second row: Creatures 7-12 -->
+    <!-- Second row: Creatures 7-11, Void -->
     <div class="zone creature" title="Creature 7"></div>
     <div class="zone creature" title="Creature 8"></div>
     <div class="zone creature" title="Creature 9"></div>
@@ -254,16 +234,14 @@
     <div class="zone creature" title="Creature 11"></div>
     <div class="zone void" title="Void"></div>
 
-    <!-- Third row: Domains 1-5, Void -->
+    <!-- Third row: Domains 1-5, Deck -->
     <div class="zone domain" title="Domain 1"></div>
     <div class="zone domain" title="Domain 2"></div>
     <div class="zone domain" title="Domain 3"></div>
     <div class="zone domain" title="Domain 4"></div>
     <div class="zone domain" title="Domain 5"></div>
     <div class="zone Deck" title="Deck"></div>
-  </div>
-  <!-- Special Creature slot, absolutely positioned over Void (top of column 6) -->
-  <div class="zone creature special-creature" title="Special Creature"></div>
+</div>
   <button id="back-to-builder-btn">Back to Deck Builder</button>
 </div>
   <!-- Deck Slot Selector -->
