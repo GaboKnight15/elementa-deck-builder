@@ -139,22 +139,39 @@
     }
 .battlefield-grid {
   display: grid;
-  grid-template-columns: repeat(8, 210px);
-  grid-template-rows: repeat(2, 185px);
+  grid-template-columns: repeat(6, 210px);
+  grid-template-rows: repeat(3, 185px);
   gap: 14px;
   background: #222;
   border-radius: 14px;
   padding: 28px;
   margin: 0 auto 25px auto;
   box-shadow: 0 0 22px #000a;
-  max-width: 1800px;
+  max-width: 1400px;
+  position: relative;
+}
+
+/* Place the special creature zone above the Void (col 6, row 1) */
+.special-creature {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 210px;
+  height: 80px;
+  background: #222328;
+  border: 3px solid #ffbc42;
+  border-radius: 11px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .zone {
   background: #222328;
   border-radius: 11px;
   display: flex;
-  flex-direction: row; /* horizontal stacking for cards! */
+  flex-direction: row;
   align-items: flex-end;
   justify-content: flex-start;
   min-width: 190px;
@@ -171,6 +188,7 @@
 .zone.void       { border-color: #e74c3c; background: #1a1822; }
 .zone.main-deck  { border-color: #5dade2; background: #1a1f2a; }
 
+/* Card appearance in zones */
 .zone .card {
   width: 110px;
   height: 150px;
@@ -182,35 +200,22 @@
   margin-right: 24px;
 }
 
-/* Placement label styling */
-.placement-label {
-  display: block;
-  position: absolute;
-  top: 6px;
-  left: 8px;
-  font-size: 0.85em;
-  color: #ccc;
-  font-weight: bold;
-  pointer-events: none;
-  user-select: none;
-}
-
 /* Responsive for small screens */
-@media (max-width: 1400px) {
+@media (max-width: 900px) {
   .battlefield-grid {
-    grid-template-columns: repeat(8, 105px);
-    grid-template-rows: repeat(2, 105px);
+    grid-template-columns: repeat(6, 105px);
+    grid-template-rows: repeat(3, 95px);
     padding: 7px;
   }
   .zone, .zone .card {
     min-width: 95px;
-    min-height: 95px;
+    min-height: 80px;
     width: 95px;
     height: 80px;
   }
-  .placement-label {
-    font-size: 0.7em;
-    left: 3px; top: 3px;
+  .special-creature {
+    width: 105px;
+    height: 45px;
   }
 }
     /* Background themes */
@@ -233,28 +238,32 @@
 <div id="battlefield" style="display:none;">
   <h2>Battlefield</h2>
   <div class="battlefield-grid">
-    <!-- Top row: Creature zones, Void at far right -->
-    <div class="zone creature" title="Creature 1"><span class="placement-label">Far Left</span>Creature 1</div>
-    <div class="zone creature" title="Creature 2"><span class="placement-label">Left</span>Creature 2</div>
-    <div class="zone creature" title="Creature 3"><span class="placement-label">Mid-Left</span>Creature 3</div>
-    <div class="zone creature" title="Creature 4"><span class="placement-label">Center-Left</span>Creature 4</div>
-    <div class="zone creature" title="Creature 5"><span class="placement-label">Center-Right</span>Creature 5</div>
-    <div class="zone creature" title="Creature 6"><span class="placement-label">Mid-Right</span>Creature 6</div>
-    <div class="zone creature" title="Creature 7"><span class="placement-label">Right</span>Creature 7</div>
-    <div class="zone void" title="Void (Graveyard)">Void</div>
-    <!-- 8th column is Void -->
+    <!-- First row: Creatures 1-6 -->
+    <div class="zone creature" title="Creature 1"></div>
+    <div class="zone creature" title="Creature 2"></div>
+    <div class="zone creature" title="Creature 3"></div>
+    <div class="zone creature" title="Creature 4"></div>
+    <div class="zone creature" title="Creature 5"></div>
+    <div class="zone creature" title="Creature 6"></div>
 
-    <!-- Bottom row: Domain zones, Main Deck at far right -->
-    <div class="zone domain" title="Domain 1"><span class="placement-label">Far Left</span>Domain 1</div>
-    <div class="zone domain" title="Domain 2"><span class="placement-label">Left</span>Domain 2</div>
-    <div class="zone domain" title="Domain 3"><span class="placement-label">Mid-Left</span>Domain 3</div>
-    <div class="zone domain" title="Domain 4"><span class="placement-label">Center-Left</span>Domain 4</div>
-    <div class="zone domain" title="Domain 5"><span class="placement-label">Center-Right</span>Domain 5</div>
-    <div class="zone domain" title="Domain 6"><span class="placement-label">Mid-Right</span>Domain 6</div>
-    <div class="zone domain" title="Domain 7"><span class="placement-label">Right</span>Domain 7</div>
-    <div class="zone main-deck" title="Main Deck">Deck</div>
-    <!-- 8th column is Deck -->
+    <!-- Second row: Creatures 7-12 -->
+    <div class="zone creature" title="Creature 7"></div>
+    <div class="zone creature" title="Creature 8"></div>
+    <div class="zone creature" title="Creature 9"></div>
+    <div class="zone creature" title="Creature 10"></div>
+    <div class="zone creature" title="Creature 11"></div>
+    <div class="zone void" title="Void"></div>
+
+    <!-- Third row: Domains 1-5, Void -->
+    <div class="zone domain" title="Domain 1"></div>
+    <div class="zone domain" title="Domain 2"></div>
+    <div class="zone domain" title="Domain 3"></div>
+    <div class="zone domain" title="Domain 4"></div>
+    <div class="zone domain" title="Domain 5"></div>
+    <div class="zone Deck" title="Deck"></div>
   </div>
+  <!-- Special Creature slot, absolutely positioned over Void (top of column 6) -->
+  <div class="zone creature special-creature" title="Special Creature"></div>
   <button id="back-to-builder-btn">Back to Deck Builder</button>
 </div>
   <!-- Deck Slot Selector -->
