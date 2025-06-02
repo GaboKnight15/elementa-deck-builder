@@ -772,7 +772,7 @@ backToBuilderBtn.onclick = () => {
     const nameFilter = document.getElementById('filter-name').value.toLowerCase();
     const selectedArchetype = document.getElementById('filter-archetype').value.toLowerCase();
     const selectedAbility = document.getElementById('filter-ability').value.toLowerCase();
-    const selectedCategory = document.getElementById('filter-category')?.value.toLowerCase() || "";
+    const selectedCategory = document.getElementById('filter-category').value.toLowerCase();
     dummyCards.forEach(card => {
       if (nameFilter && !card.name.toLowerCase().includes(nameFilter)) return;
       if (selectedColor) {
@@ -780,8 +780,11 @@ backToBuilderBtn.onclick = () => {
         if (!colors.includes(selectedColor)) return;
       }
       // Filter by category:
-    if (selectedCategory) {
-      if (getCardCategory(card) !== selectedCategory) return;
+      if (selectedCategory) {
+        const categories = Array.isArray(card.category)
+          ? card.category.map(a => a.toLowerCase())
+          : [card.category?.toLowerCase()];
+        if (!categories.includes(selectedCategory)) return;
       }
       if (selectedType) {
         const types = Array.isArray(card.type) ? card.type.map(t => t.toLowerCase()) : [card.type.toLowerCase()];
