@@ -669,12 +669,49 @@ backToBuilderBtn.onclick = () => {
   }
 
   function updateDeckDisplay() {
-    const deck = getCurrentDeck();
-    deckList.innerHTML = '';
-    let total = 0;
-    for (const [id, count] of Object.entries(deck)) {
-      const card = dummyCards.find(c => c.id === id);
-      if (!card) continue;
+  const deck = getCurrentDeck();
+  deckList.innerHTML = '';
+  let total = 0;
+
+  // Group cards by category
+  const sections = {
+    creature: [],
+    artifact: [],
+    spell: [],
+    domain: []
+  };
+
+  for (const [id, count] of Object.entries(deck)) {
+    const card = dummyCards.find(c => c.id === id);
+    if (!card) continue;
+    const cat = getCardCategory(card);
+    if (sections.hasOwnProperty(cat)) {
+      sections[cat].push({ card, count });
+    } else {
+      sections.other.push({ card, count });
+    }
+    total += count;
+  }
+
+  // Section display order
+  const sectionNames = [
+    { key: "creature", label: "Creatures" },
+    { key: "artifact", label: "Artifacts" },
+    { key: "spell", label: "Spells" },
+    { key: "domain", label: "Domains" }
+  ];
+
+  for (const {key, label} of sectionNames) {
+    if (sections[key].length === 0) continue;
+    // Add section heading
+    const heading = document.createElement('li');
+    heading.textContent = label;
+    heading.style.fontWeight = "bold";
+    heading.style.marginTop = "12px";
+    heading.style.marginBottom = "2px";
+    deckList.appendChild(heading);
+
+    for (const { card, count } of sections[key]) {
       const li = document.createElement('li');
       const img = document.createElement('img');
       img.src = card.image;
@@ -684,16 +721,19 @@ backToBuilderBtn.onclick = () => {
       img.style.marginRight = '8px';
       img.style.verticalAlign = 'middle';
       img.style.borderRadius = '4px';
+
       const span = document.createElement('span');
       span.textContent = `${card.name} ×${count} `;
+
       li.appendChild(img);
       li.appendChild(span);
+
       const removeBtn = document.createElement('button');
       removeBtn.textContent = '−';
       removeBtn.onclick = () => {
-        deck[id]--;
-        if (deck[id] <= 0) {
-          delete deck[id];
+        deck[card.id]--;
+        if (deck[card.id] <= 0) {
+          delete deck[card.id];
         }
         setCurrentDeck(deck);
         updateDeckDisplay();
@@ -701,12 +741,13 @@ backToBuilderBtn.onclick = () => {
       };
       li.appendChild(removeBtn);
       deckList.appendChild(li);
-      total += count;
     }
-    cardCount.textContent = total;
-    setCurrentDeck(deck);
-    saveDeckState();
   }
+
+  cardCount.textContent = total;
+  setCurrentDeck(deck);
+  saveDeckState();
+}
 
   function createCardDiv(card) {
     const deck = getCurrentDeck();
@@ -763,7 +804,10 @@ backToBuilderBtn.onclick = () => {
 
     return div;
   }
-
+    
+function getCardCategory(card) {
+  return card.category ? card.category.toLowerCase() : '';
+}
   function renderGallery() {
     gallery.innerHTML = '';
     const selectedColor = document.getElementById('filter-color').value.toLowerCase();
