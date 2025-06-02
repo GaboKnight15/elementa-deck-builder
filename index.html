@@ -5,7 +5,147 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Elementa Card Gallery & Deck Builder</title>
   <style>
-    /* ... (all your original styles unchanged) ... */
+        body {More actions
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: #f3f3f3;
+    }
+    header {
+      background-color: #222;
+      color: white;
+      width: 100%;
+      padding: 1em;
+      text-align: center;
+    }
+    .container {
+      max-width: 1200px;
+      padding: 1em;
+      padding-right: 270px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1em;
+      justify-content: center;
+    }
+    .card {
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      width: 150px;
+      padding: 0.5em;
+      text-align: center;
+      box-sizing: border-box;
+    }
+    .card img {
+      max-width: 100%;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .deck {
+      position: fixed;
+      right: 0;
+      top: 0;
+      width: 250px;
+      height: 100vh;
+      background: #fff;
+      border-left: 2px solid #ccc;
+      overflow-y: auto;
+      padding: 1em;
+      transition: transform 0.3s;
+      transform: translateX(0);
+    }
+    .deck h2 {
+      margin-top: 0;
+    }
+    .deck-list {
+      list-style: none;
+      padding: 0;
+    }
+    .deck-list li {
+      margin: 0.5em 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    button {
+      padding: 0.4em 0.6em;
+      margin-top: 0.5em;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:disabled {
+      background-color: gray;
+    }
+    @media (max-width: 768px) {
+      .deck {
+        position: fixed;
+        right: 0;
+        top: 50px;
+        width: 80vw;
+        height: 90vh;
+        background: white;
+        border-left: 2px solid #ccc;
+        overflow-y: auto;
+        padding: 1em;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+        z-index: 1000;
+      }
+      .deck.show {
+        transform: translateX(0);
+      }
+    }
+    @media (min-width: 769px) {
+      .container {
+        padding-right: 270px;
+      }
+      .deck.hide {
+        transform: translateX(100%);
+      }
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      padding-top: 60px;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.8);
+    }
+    .modal-content {
+      margin: auto;
+      display: block;
+      max-width: 90%;
+      max-height: 80vh;
+      border-radius: 8px;
+    }
+    .close {
+      position: absolute;
+      top: 30px;
+      right: 50px;
+      color: white;
+      font-size: 40px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    /* Background themes */
+    body.theme-green  { background: linear-gradient(to bottom, #e6ffe6, #a3d9a5); }
+    body.theme-red    { background: linear-gradient(to bottom, #ffd6d6, #ff7f7f); }
+    body.theme-blue   { background: linear-gradient(to bottom, #d6f0ff, #7fcfff); }
+    body.theme-gray   { background: linear-gradient(to bottom, #e0e0e0, #b3b3b3); }
+    body.theme-purple { background: linear-gradient(to bottom, #f0d9ff, #c27be7); }
+    body.theme-yellow { background: linear-gradient(to bottom, #fff9d6, #ffe066); }
+    body.theme-black  { background: linear-gradient(to bottom, #444, #000); color: white;}
+    body.theme-white  { background: linear-gradient(to bottom, #ffffff, #f5f5f5);}
   </style>
 </head>
 <body>
@@ -23,7 +163,86 @@
   </div>
   <!-- Filter Gallery -->
   <div id="filters" style="margin: 1em;">
-    <!-- ... (your filter controls unchanged) ... -->
+    <label>More actions
+      Name:
+      <input type="text" id="filter-name" placeholder="Search by name..." />
+    </label>
+    <label>Color:
+      <select id="filter-color">
+        <option value="">All</option>
+        <option value="green">Green</option>
+        <option value="red">Red</option>
+        <option value="blue">Blue</option>
+        <option value="gray">Gray</option>
+        <option value="purple">Purple</option>
+        <option value="yellow">Yellow</option>
+        <option value="black">Black</option>
+        <option value="white">White</option>
+      </select>
+    </label>
+    <label>Type:
+      <select id="filter-type">
+        <option value="">All</option>
+        <option value="evolution">Evolution</option>
+        <option value="fusion">Fusion</option>
+        <option value="elemental">Elemental</option>
+        <option value="dragon">Dragon</option>
+        <option value="construct">Construct</option>
+        <option value="beast">Beast</option>
+        <option value="undead">Undead</option>
+        <option value="demon">Demon</option>
+        <option value="mage">Mage</option>
+        <option value="spell">Spell</option>
+        <option value="artifact">Artifact</option>
+        <option value="equipment">Equipment</option>
+        <option value="relic">Relic</option>
+        <option value="domain">Domain</option>
+      </select>
+    </label>
+    <label>Rarity:
+      <select id="filter-rarity">
+        <option value="">All</option>
+        <option value="Basic">Basic</option>
+        <option value="Common">Common</option>
+        <option value="Rare">Rare</option>
+        <option value="Legendary">Legendary</option>
+      </select>
+    </label>
+    <label>Archetype:
+      <select id="filter-archetype">
+        <option value="">All</option>
+        <option value="Blazefeather">Blazefeather</option>
+        <option value="Cindercore">Cindercore</option>
+        <option value="Coralbound">Coralbound</option>
+        <option value="Frostlands">Frostlands</option>
+        <option value="Golemheart">Golemheart</option>
+        <option value="Moonfang">Moonfang</option>
+        <option value="Skullframe">Skullframe</option>
+        <option value="Voltwing">Voltwing</option>
+        <option value="Zephyra">Zephyra</option>
+      </select>
+    </label>
+    <label>Ability:
+      <select id="filter-ability">
+        <option value="">All</option>
+        <option value="ambush">Ambush</option>
+        <option value="dive">Dive</option>
+        <option value="burn">Burn</option>
+        <option value="drain">Drain</option>
+        <option value="elusive">Elusive</option>
+        <option value="flying">Flying</option>
+        <option value="ice armor">Ice Armor</option>
+        <option value="immunity">Immunity</option>
+        <option value="intimidate">Intimidate</option>
+        <option value="leap">Leap</option>
+        <option value="lifelink">Lifelink</option>
+        <option value="protect">Protect</option>
+        <option value="provoke">Provoke</option>
+        <option value="ranged">Ranged</option>
+        <option value="rush">Rush</option>
+        <option value="toxic">Toxic</option>
+      </select>
+    </label>
   </div>
   <div class="container" id="card-gallery"></div>
   <div class="deck">
@@ -39,8 +258,116 @@
   </div>
   <script>
     // Card List //
-    const dummyCards = [
-      /* ... your entire dummyCards array ... */
+      { id: 'basicfairy', name: 'Fairy', rarity: 'Basic', image: 'BasicCreatures/Fairy.png', color: 'green', type: 'fairy', hp: 1, atk: 1, def: 0, cost: 0, archetype: 'Fairy', ability: 'flying'},More actions
+      { id: 'basicgoblin', name: 'Goblin', rarity: 'Basic', image: 'BasicCreatures/Goblin.png', color: 'green', type: 'goblin', hp: 3, atk: 1, def: 0, cost: 0, archetype: 'Goblin'},
+      { id: 'basicemberling', name: 'Emberling', rarity: 'Basic', image: 'BasicCreatures/Emberling.png', color: 'red', type: 'beast', hp: 3, atk: 2, def: 0, cost: 1, archetype: 'Firelands', ability: 'burn'},
+      { id: 'basicfirepixie', name: 'Fire Pixie', rarity: 'Basic', image: 'BasicCreatures/Fire Pixie.png', color: 'red', type: 'fairy', hp: 3, atk: 2, def: 0, cost: 1, archetype: 'Firelands', ability: ['burn','flying']},
+      { id: 'basichellcharger', name: 'Hellcharger', rarity: 'Basic', image: 'BasicCreatures/Hellcharger.png', color: 'red', type: 'warrior', hp: 3, atk: 2, def: 0, cost: 1, archetype: 'Firelands', ability: 'burn'},
+      { id: 'basicelementalblue', name: 'Water Elemental', rarity: 'Basic', image: 'BasicCreatures/Water Elemental.png', color: 'blue', type: 'elemental', hp: 5, atk: 2, def: 0, cost: 1, archetype: 'Firelands', ability: ['dive','elusive','soak']},
+      { id: 'basicwolfgray', name: 'Desert Wolf', rarity: 'Basic', image: 'BasicCreatures/Desert Wolf.png', color: 'gray', type: 'beast', hp: 3, atk: 2, def: 0, cost: 1, archetype: 'Scorchlands', ability: 'burn'},
+      { id: 'basicgolemites', name: 'Golemites', rarity: 'Basic', image: 'BasicCreatures/Golemites.png', color: 'gray', type: 'elemental', hp: 3, atk: 2, def: 0, cost: 1, archetype: 'Golemheart', ability: 'burn'},
+      { id: 'basicwolfblack', name: 'Wolf', rarity: 'Basic', image: 'BasicCreatures/Wolf.png', color: 'black', type: 'beast', hp: 3, atk: 2, def: 0, cost: 1, archetype: 'Moonfang', ability: 'ambush'},
+      { id: 'basicskeleton', name: 'Skeleton', rarity: 'Basic', image: 'BasicCreatures/Skeleton.png', color: 'black', type: 'undead', hp: 1, atk: 1, def: 0, cost: 0, archetype: 'Skullframe'},
+      { id: 'basicbat', name: 'Bat', rarity: 'Basic', image: 'BasicCreatures/Bat.png', color: 'black', type: 'vampire', hp: 3, atk: 2, def: 0, cost: 1, archetype: 'Vampiric', ability: ['drain','flying']},
+      { id: 'basicimp', name: 'Imp', rarity: 'Basic', image: 'BasicCreatures/Imp.png', color: 'black', type: 'demon', hp: 1, atk: 1, def: 0, cost: 0, archetype: 'Skullframe', ability: ['ambush','flying']},
+      { id: 'basicvampire', name: 'Vampire', rarity: 'Basic', image: 'BasicCreatures/Vampire.png', color: 'black', type: 'demon', hp: 3, atk: 2, def: 0, cost: 1, archetype: 'Vampiric', ability: ['drain','flying']},
+
+
+ // Cindercore //
+      { id: 'cindercore1', name: 'Cindercore Golemheart', rarity: 'Rare', image: 'Golems/Cindercore Golemheart.png', color: ['red', 'gray'], type: 'elemental', hp: 15, atk: 6, def: 3, cost: 7, archetype: ['Cindercore','Golemheart']},
+      { id: 'cindercore2', name: 'Cindercore Sentry', rarity: 'Common', image: 'Cindercore/Cindercore Sentry.png', color: 'red', type: 'construct', hp: 15, atk: 6, def: 3, cost: 7, archetype: 'Cindercore'},
+      { id: 'cindercore3', name: 'Cindercore Protector', rarity: 'Common', image: 'Cindercore/Cindercore Protector.png', color: 'red', type: 'construct', hp: 15, atk: 6, def: 3, cost: 7, archetype: 'Cindercore'},
+      { id: 'cindercore4', name: 'Cindercore Vanguard', rarity: 'Common', image: 'Cindercore/Cindercore Vanguard.png', color: 'red', type: 'construct', hp: 15, atk: 6, def: 3, cost: 7, archetype: 'Cindercore'},
+      { id: 'cindercore5', name: 'Ignavaryn, Cindercore Automaton', rarity: 'Legendary', image: 'Cindercore/Ignavaryn, Cindercore Automaton.png', color: 'red', type: 'construct', hp: 15, atk: 6, def: 3, cost: 7, archetype: 'Cindercore'},
+
+ // Firelands //
+      { id: 'firelands1', name: 'Firelands Scamperling', rarity: 'Common', image: 'Firelands/Firelands Scamperling.png', color: 'red', type: 'beast', hp: 3, atk: 2, def: 1, cost: 2, archetype: 'Firelands', ability: ['burn','rush']},
+      { id: 'firelands2', name: 'Firelands Cindercub', rarity: 'Common', image: 'Firelands/Firelands Cindercub.png', color: 'red', type: 'beast', hp: 3, atk: 2, def: 1, cost: 2, archetype: 'Firelands', ability: ['burn','rush']},
+      { id: 'firelands3', name: 'Firelands Lynx', rarity: 'Common', image: 'Firelands/Firelands Lynx.png', color: 'red', type: 'beast', hp: 3, atk: 2, def: 1, cost: 2, archetype: 'Firelands', ability: ['burn','leap','rush']},
+      { id: 'firelands4', name: 'Firelands Kitsune', rarity: 'Common', image: 'Firelands/Firelands Kitsune.png', color: 'red', type: 'beast', hp: 3, atk: 2, def: 1, cost: 2, archetype: 'Firelands', ability: ['burn','rush']},
+      { id: 'firelands5', name: 'Firelands Direbeast', rarity: 'Rare', image: 'Firelands/Firelands Direbeast.png', color: 'red', type: 'beast', hp: 3, atk: 2, def: 1, cost: 2, archetype: 'Firelands', ability: ['burn','rush']},
+      { id: 'firelands6', name: 'Firelands Hellhound', rarity: 'Common', image: 'Firelands/Firelands Hellhound.png', color: ['red','black'], type: ['beast','demon'], hp: 3, atk: 2, def: 1, cost: 2, archetype: 'Firelands', ability: ['burn','rush']},
+      { id: 'firelands7', name: 'Firelands Hellmaw', rarity: 'Common', image: 'Firelands/Firelands Hellmaw.png', color: ['red','black'], type: ['dragon','demon'], hp: 3, atk: 2, def: 1, cost: 2, archetype: 'Firelands', ability: ['burn','flying','rush']},
+      { id: 'firelands8', name: 'Ephoros, Firelands Behemoth', rarity: 'Common', image: 'Firelands/Ephoros, Firelands Behemoth.png', color: ['red','black'], type: ['beast','demon'], hp: 3, atk: 2, def: 1, cost: 2, archetype: 'Firelands', ability: ['burn','rush']},
+      { id: 'firelands8a', name: 'Ephoros, Firelands Behemoth', rarity: 'Common', image: 'Firelands/Ephoros, Firelands Behemoth FA.png', color: ['red','black'], type: ['beast','demon'], hp: 3, atk: 2, def: 1, cost: 2, archetype: 'Firelands', ability: ['burn','rush']},
+
+  // Golemheart //
+      { id: 'golem1', name: 'Pyrokrag, Golemheart Titan', rarity: 'Legendary', image: 'Golems/Pyrokrag, Golemheart Titan.png', color: ['red', 'gray'], type: ['fusion','elemental'], hp: 15, atk: 6, def: 3, cost: 7, archetype: 'Golemheart'},
+      { id: 'golem2', name: 'Golemheart Giant', rarity: 'Rare', image: 'Golems/Golemheart Giant.png', color: ['red', 'gray'], type: 'elemental', hp: 15, atk: 6, def: 3, cost: 7, archetype: 'Golemheart'},
+      { id: 'golem3', name: 'Smoldering Golemheart', rarity: 'Rare', image: 'Golems/Smoldering Golemheart .png', color: ['red', 'gray'], type: 'elemental', hp: 15, atk: 6, def: 3, cost: 7, archetype: 'Golemheart'},
+      { id: 'golem4', name: 'Golemheart Sentinel', rarity: 'Rare', image: 'Golems/Golemheart Sentinel.png', color: ['red', 'gray'], type: 'elemental', hp: 15, atk: 6, def: 3, cost: 7, archetype: 'Golemheart', ability: 'protect'},
+      { id: 'golem6', name: 'Fire Golem', rarity: 'Common', image: 'Golems/Fire Golem.png', color: ['red', 'gray'], type: ['elemental','golem'], hp: 3, atk: 2, def: 1, cost: 2, archetype: ['Firelands','Golemheart'], ability: 'burn'},
+      { id: 'golem7', name: 'Kaelgorran, Elemental Primordial', rarity: 'Legendary', image: 'Golems/Kaelgorran, Elemental Primordial', color: ['green','red', 'gray'], type: ['elemental','golem'], hp: 3, atk: 2, def: 1, cost: 2, archetype: ['Firelands','Golemheart'], ability: 'burn'},
+      { id: 'golem8', name: 'Acidic Golem', rarity: 'Common', image: 'Golems/Acidic Golem.png', color: ['purple', 'gray'], type: ['elemental','golem'], hp: 3, atk: 2, def: 1, cost: 2, archetype: 'Golemheart', ability: 'toxic'},
+
+
+  // Coralbound //
+      { id: 'coralbound1', name: 'Coralbound Sentry', rarity: 'Common', image: 'Coralbound/Coralbound Sentry.png', color: 'blue', type: 'construct', hp: 5, atk: 1, def: 1, cost: 1, archetype: 'Coralbound'},
+      { id: 'coralbound2', name: 'Coralbound Protector', rarity: 'Common', image: 'Coralbound/Coralbound Protector.png', color: 'blue', type: 'construct', hp: 5, atk: 1, def: 1, cost: 1, archetype: 'Coralbound'},
+      { id: 'coralbound3', name: 'Coralbound Vanguard', rarity: 'Common', image: 'Coralbound/Coralbound Vanguard.png', color: 'blue', type: 'construct', hp: 5, atk: 1, def: 1, cost: 1, archetype: 'Coralbound'},
+      { id: 'coralbound4', name: 'Maelvyrn, Coralbound Automaton', rarity: 'Legendary', image: 'images/Maelvyrn, Coralbound Automaton.png', color: 'blue', type: 'construct', hp: 19, atk: 8, def: 5, cost: 9, archetype: 'Coralbound'},
+
+
+      { id: 'card004', name: 'Wyrm of Thorns and Sunfire', rarity: 'Rare', image: 'images/Wyrm of Thorns and Sunfire.png', color: ['green', 'red', 'white'], type: 'dragon', hp: 9, atk: 5, def: 2, cost: 3, ability: ['intimidate','flying']},
+
+  // Plaguecore //
+
+
+   // Skullframe //
+      { id: 'skullframe01', name: 'Skullframe Defector', rarity: 'Common', image: 'Skullframe/Skullframe Defector.png', color: 'black', type: 'undead', hp: 3, atk: 2, def: 1, cost: 1, archetype: 'Skullframe'},
+      { id: 'skullframe02', name: 'Skullframe Unyielding', rarity: 'Common', image: 'Skullframe/Skullframe Unyielding.png', color: 'black', type: 'undead', hp: 4, atk: 1, def: 0, cost: 2, archetype: 'Skullframe', ability: 'rush'},
+      { id: 'skullframe03', name: 'Skullframe Acolyte', rarity: 'Common', image: 'Skullframe/Skullframe Acolyte.png', color: ['black', 'purple'], type: 'undead', hp: 5, atk: 3, def: 1, cost: 3, archetype: 'Skullframe'},
+      { id: 'skullframe04', name: 'Skullframe Cryptwinds', rarity: 'Common', image: 'Skullframe/Skullframe Cryptwinds.png', color: ['black', 'purple'], type: ['dragon','undead'], hp: 12, atk: 6, def: 2, cost: 5, archetype: 'Skullframe', ability: 'flying'},
+      { id: 'skullframe05', name: 'Skullframe Spectral Dragon', rarity: 'Rare', image: 'Skullframe/Skullframe Spectral Dragon.png', color: ['black', 'purple'], type: ['dragon','undead'], hp: 12, atk: 6, def: 2, cost: 5, archetype: 'Skullframe', ability: 'flying'},
+      { id: 'skullframe06', name: 'Skullframe Armored Dragon', rarity: 'Rare', image: 'Skullframe/Skullframe Armored Dragon.png', color: ['black', 'purple'], type: ['dragon','undead'], hp: 12, atk: 6, def: 2, cost: 5, archetype: 'Skullframe', ability: 'flying'},
+      { id: 'skullframe07', name: 'Skullframe Hexmistress', rarity: 'Rare', image: 'Skullframe/Skullframe Hexmistress.png', color: ['black', 'purple'], type: 'undead', hp: 6, atk: 4, def: 1, cost: 3, archetype: 'Skullframe'},
+      { id: 'skullframe08', name: 'Maldryss, Skullframe Archmage', rarity: 'Legendary', image: 'Skullframe/Maldryss, Skullframe Archmage.png', color: ['black', 'purple'], type: 'undead', hp: 8, atk: 4, def: 1, cost: 3, archetype: 'Skullframe'},
+      { id: 'skullframe08a', name: 'Maldryss, Skullframe Archmage', rarity: 'Legendary', image: 'Skullframe/Maldryss, Skullframe Archmage FA.png', color: ['black', 'purple'], type: 'undead', hp: 8, atk: 4, def: 1, cost: 3, archetype: 'Skullframe'},
+      { id: 'spell014', name: 'Soulhexing', rarity: 'Common', image: 'Skullframe/Soulhexing.png', color: 'black', type: 'spell', cost: 3, archetype: 'Skullframe'},
+      { id: 'spell015', name: 'Witherwake', rarity: 'Common', image: 'Skullframe/Witherwake.png', color: ['black','purple'], type: 'spell', cost: 2, archetype: 'Skullframe'},
+
+   // Frostlands //
+      { id: 'frostlands01', name: 'Frostlands Dragon', rarity: 'Rare', image: 'Frostlands/Frostlands Dragon.png', color: ['blue', 'gray'], type: 'dragon', hp: 9, atk: 5, def: 2, cost: 3, ability: ['Ice Armor','flying'], archetype: 'Frostlands'},
+      { id: 'frostlands02', name: 'Frostlands Wyrm', rarity: 'common', image: 'Frostlands/Frostlands Wyrm.png', color: ['blue', 'gray'], type: 'dragon', hp: 9, atk: 5, def: 2, cost: 3, ability: ['Ice Armor','flying'], archetype: 'Frostlands'},
+      { id: 'frostlands03', name: 'Frostlands Golem', rarity: 'Common', image: 'Frostlands/Frostlands Golem.png', color: ['blue', 'gray'], type: 'elemental', hp: 9, atk: 5, def: 2, cost: 3, ability: 'Ice Armor', archetype: 'Frostlands'},
+      { id: 'frostlands04', name: 'Frostlands Phoenix', rarity: 'Common', image: 'Frostlands/Frostlands Phoenix.png', color: ['blue', 'gray'], type: 'avian', hp: 9, atk: 5, def: 2, cost: 3, ability: ['Ice Armor','flying'], archetype: 'Frostlands'},
+      { id: 'frostlands05', name: 'Frostlands Runeforged Automaton', rarity: 'Common', image: 'Frostlands/Frostlands Runeforged Automaton.png', color: ['blue', 'gray'], type: 'construct', hp: 9, atk: 5, def: 2, cost: 3, ability: 'Ice Armor', archetype: 'Frostlands'},
+      { id: 'frostlands06', name: 'Frostlands Runeforged Titan', rarity: 'Rare', image: 'Frostlands/Frostlands Runeforged Titan.png', color: ['blue', 'gray'], type: 'construct', hp: 9, atk: 5, def: 2, cost: 3, ability: ['Ice Armor','crush'], archetype: 'Frostlands'},
+      { id: 'frostlands07', name: 'Eirawen, Frostlands Queen', rarity: 'Legendary', image: 'Frostlands/Eirawen, Frostlands Queen.png', color: ['blue', 'gray'], type: ['mage','champion'], hp: 11, atk: 1, def: 0, cost: 3, ability: ['Ice Armor','flying'], archetype: 'Frostlands'},
+
+   // Basic Artifacts //
+      { id: 'artifact005', name: 'Golemheart infusor', rarity: 'Common', image: 'images/Golemheart Infusor.png', color: 'gray', type: ['artifact','relic'], hp: 5, cost: 1, archetype: 'Golemheart'},
+      { id: 'artifact006', name: 'Heartwood Emeralds', rarity: 'Common', image: 'images/Heartwood Emeralds.png', color: 'green', type: ['artifact','relic'], hp: 5, cost: 1, archetype: 'Heartwood'},
+      { id: 'artifact007', name: 'Cindercore Ember', rarity: 'Common', image: 'images/Cindercore Ember.png', color: 'red', type: ['artifact','relic'], hp: 5, cost: 1, archetype: 'cindercore'},
+      { id: 'artifact008', name: 'Tidecallers Pearl', rarity: 'Common', image: 'images/Tidecallers Pearl.png', color: 'blue', type: ['artifact','relic'], hp: 5, cost: 1, archetype: 'coralbound'},
+      { id: 'artifact009', name: 'Stormcore Dynamo', rarity: 'Common', image: 'images/Stormcore Dynamo.png', color: 'yellow', type: ['artifact','relic'], hp: 5, cost: 1, archetype: 'stormcore'},
+      { id: 'artifact010', name: 'Plague Thorn Talisman', rarity: 'Common', image: 'images/Plague Thorn Talisman.png', color: 'purple', type: ['artifact','relic'], hp: 5, cost: 1, archetype: 'stormcore'},
+      { id: 'artifact011', name: 'Titans Anvil', rarity: 'Common', image: 'images/Titans Anvil.png', color: 'gray', type: ['artifact','relic'], hp: 5, cost: 1, archetype: 'stormcore'},
+      { id: 'artifact012', name: 'Veil of the Forgotten', rarity: 'Common', image: 'images/Veil of the Forgotten.png', color: 'black', type: ['artifact','relic'], hp: 5, cost: 1, archetype: 'stormcore'},
+      { id: 'artifact013', name: 'Lumen Spire', rarity: 'Common', image: 'images/Lumen Spire.png', color: 'white', type: ['artifact','relic'], hp: 5, cost: 1, archetype: 'stormcore'},
+
+      // Basic Spells //
+
+      { id: 'spell010', name: 'Life Growth', rarity: 'Common', image: 'images/Life Growth.png', color: 'green', type: 'spell', cost: 1},
+      { id: 'basicspell1', name: 'Essence Surge', rarity: 'basic', image: 'SpellsBasic/Essence Surge.png', color: 'green', type: 'spell', cost: 2},
+      { id: 'basicspell2', name: 'Essence Assault', rarity: 'basic', image: 'SpellsBasic/Essence Assault.png', color: 'red', type: 'spell', cost: 2},
+      { id: 'basicspell3', name: 'Essence Rift', rarity: 'basic', image: 'SpellsBasic/Essence Rift.png', color: 'blue', type: 'spell', cost: 2},
+      { id: 'basicspell4', name: 'Essence Bolt', rarity: 'basic', image: 'SpellsBasic/Essence Bolt.png', color: 'yellow', type: 'spell', cost: 2},
+      { id: 'basicspell5', name: 'Essence Break', rarity: 'basic', image: 'SpellsBasic/Essence Break.png', color: 'purple', type: 'spell', cost: 4},
+      { id: 'basicspell6', name: 'Essence Barrier', rarity: 'basic', image: 'SpellsBasic/Essence Barrier.png', color: 'gray', type: 'spell', cost: 1},
+      { id: 'basicspell7', name: 'Essence Purge', rarity: 'basic', image: 'SpellsBasic/Essence Purge.png', color: 'black', type: 'spell', cost: 4},
+      { id: 'basicspell8', name: 'Essence Blessing', rarity: 'basic', image: 'SpellsBasic/Essence Blessing.png', color: 'white', type: 'spell', cost: 1},
+
+      // Basic Domains //
+      { id: 'basicforest', name: 'Forest', rarity: 'Basic', image: 'images/Forest.png', color: 'green', type: 'domain', hp: 5, cost: 1},
+      { id: 'basicvolcano', name: 'Volcano', rarity: 'Basic', image: 'images/Red Basic Location.png', color: 'red', type: 'domain', hp: 5, cost: 1},
+      { id: 'basicocean', name: 'Ocean', rarity: 'Basic', image: 'images/Blue Basic Location.png', color: 'blue', type: 'domain', hp: 5, cost: 1},
+      { id: 'basicmountain', name: 'Mountain', rarity: 'Basic', image: 'images/Gray Basic Location.png', color: 'gray', type: 'domain', hp: 5, cost: 1},
+      { id: 'basicswamp', name: 'Swamp', rarity: 'Basic', image: 'images/Purple Basic Location.png', color: 'purple', type: 'domain', hp: 5, cost: 1},
+      { id: 'basicpeaks', name: 'Peaks', rarity: 'Basic', image: 'images/Yellow Basic Location.png', color: 'yellow', type: 'domain', hp: 5, cost: 1},
+      { id: 'basicplains', name: 'Plains', rarity: 'Basic', image: 'images/White Basic Location.png', color: 'white', type: 'domain', hp: 5, cost: 1},
+      { id: 'basicshadowforest', name: 'Shadow Forest', rarity: 'Basic', image: 'images/Black Basic Location.png', color: 'black', type: 'domain', hp: 5, cost: 1},
+
     ];
 
     // --- MULTI-DECK MANAGEMENT --- //
