@@ -780,10 +780,8 @@ backToBuilderBtn.onclick = () => {
         if (!colors.includes(selectedColor)) return;
       }
       // Filter by category:
-      if (selectedCategory) {
-        const categories = Array.isArray(card.category)
-          ? card.category.map(a => a.toLowerCase())
-          : [card.category?.toLowerCase()];
+     if (selectedCategory) {
+        const categories = Array.isArray(card.category) ? card.category.map(t => t.toLowerCase()) : [card.type.toLowerCase()];
         if (!categories.includes(selectedCategory)) return;
       }
       if (selectedType) {
