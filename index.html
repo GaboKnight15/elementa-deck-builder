@@ -536,6 +536,12 @@
   const deckTitle = document.getElementById('deck-title');
 const startGameBtn = document.getElementById('start-game-btn');
 const battlefield = document.getElementById('battlefield');
+    // Phase display at top of battlefield
+const phaseDisplay = document.createElement('div');
+phaseDisplay.id = "phase-display";
+phaseDisplay.style.margin = "1em";
+phaseDisplay.style.fontSize = "1.2em";
+battlefield.insertBefore(phaseDisplay, battlefield.firstChild);
 const backToBuilderBtn = document.getElementById('back-to-builder-btn');
 
 // Elements to hide/show (deck, filters, gallery, deck slot selector)
@@ -968,6 +974,7 @@ function drawCards(who, n) {
     hand.push(deck.shift());
   }
   renderGameState();
+  updatePhaseDisplay();
 }
 
 // 6. Render game state (hands)
@@ -1003,30 +1010,49 @@ function renderGameState() {
   }
 
   // Render player deck stack
-  const playerDeckDiv = document.getElementById('player-deck-zone');
-  playerDeckDiv.innerHTML = '';
-  const playerDeckCard = document.createElement('div');
-  playerDeckCard.className = 'card';
-  const playerDeckImg = document.createElement('img');
-  playerDeckImg.src = "images/cardback.png";
-  playerDeckImg.alt = "Your Deck";
-  playerDeckImg.style.width = "60px";
-  playerDeckImg.style.opacity = "0.85";
-  playerDeckCard.appendChild(playerDeckImg);
-  // Deck count
-  const deckCount = document.createElement('div');
-  deckCount.style.textAlign = 'center';
-  deckCount.style.fontWeight = 'bold';
-  deckCount.textContent = gameState.playerDeck.length;
-  playerDeckCard.appendChild(deckCount);
-  playerDeckDiv.appendChild(playerDeckCard);
+const playerDeckDiv = document.getElementById('player-deck-zone');
+playerDeckDiv.innerHTML = '';
+  // Dropdown for deck actions
+const deckActionSelect = document.createElement('select');
+["Draw", "Shuffle", "Search"].forEach(action => {
+  const option = document.createElement('option');
+  option.value = action.toLowerCase();
+  option.textContent = action;
+  deckActionSelect.appendChild(option);
+});
+deckActionSelect.style.marginBottom = "5px";
+playerDeckDiv.appendChild(deckActionSelect);
+  
+const playerDeckCard = document.createElement('div');
+playerDeckCard.className = 'card';
+const playerDeckImg = document.createElement('img');
+playerDeckImg.src = "images/cardback.png";
+playerDeckImg.alt = "Your Deck";
+playerDeckImg.style.width = "60px";
+playerDeckImg.style.opacity = "0.85";
+playerDeckCard.appendChild(playerDeckImg);
 
-  // Click-to-draw for player deck
-  playerDeckCard.onclick = () => {
-    if (gameState.turn === "player" && gameState.playerDeck.length > 0) {
-      drawCards("player", 1);
-    }
-  };
+// Deck count
+const deckCount = document.createElement('div');
+deckCount.style.textAlign = 'center';
+deckCount.style.fontWeight = 'bold';
+deckCount.textContent = gameState.playerDeck.length;
+playerDeckCard.appendChild(deckCount);
+playerDeckDiv.appendChild(playerDeckCard);
+
+// Click handler for main deck zone
+playerDeckCard.onclick = () => {
+  const action = deckActionSelect.value;
+  if (action === "draw" && gameState.turn === "player" && gameState.playerDeck.length > 0) {
+    drawCards("player", 1);
+    updatePhaseDisplay();
+  } else if (action === "shuffle") {
+    gameState.playerDeck = shuffle(gameState.playerDeck);
+    renderGameState();
+  } else if (action === "search" && gameState.playerDeck.length > 0) {
+    openDeckSearchModal();
+  }
+};
 
   // Render opponent deck stack
   const opponentDeckDiv = document.getElementById('opponent-deck-zone');
@@ -1083,10 +1109,46 @@ function advancePhase() {
   updatePhaseDisplay();
 }
 
+// 9. Search Menu
+    function openDeckSearchModal() {
+  const modal = document.getElementById('deck-search-modal');
+  const content = document.getElementById('deck-search-content');
+  content.innerHTML = "<h3>Select a card to add to your hand:</h3>";
+  // Show all cards left in deck (one button per card instance)
+  gameState.playerDeck.forEach((id, idx) => {
+    const card = dummyCards.find(c => c.id === id);
+    if (!card) return;
+    const btn = document.createElement('button');
+    btn.textContent = card.name;
+    btn.style.margin = "0.2em";
+    btn.onclick = () => {
+      // Remove card from deck and add to hand
+      gameState.playerHand.push(card.id);
+      gameState.playerDeck.splice(idx, 1);
+      closeDeckSearchModal();
+      renderGameState();
+      updatePhaseDisplay();
+    };
+    content.appendChild(btn);
+  });
+  modal.style.display = "block";
+}
+function closeDeckSearchModal() {
+  document.getElementById('deck-search-modal').style.display = "none";
+}
+document.getElementById('close-deck-search').onclick = closeDeckSearchModal;
+document.getElementById('deck-search-modal').onclick = (e) => {
+  if (e.target.id === 'deck-search-modal') closeDeckSearchModal();
+};
 // Call updatePhaseDisplay at end of each relevant function as needed!
 
 // (Optional) Remove draw buttons after drawing 6 if you want to only allow it once.
     
 </script>
+  <!-- Deck Search Modal -->
+<div id="deck-search-modal" class="modal">
+  <span class="close" id="close-deck-search">&times;</span>
+  <div id="deck-search-content" style="background:white;padding:1em;border-radius:8px;max-width:90vw;margin:auto;"></div>
+</div>
 </body>
 </html>
