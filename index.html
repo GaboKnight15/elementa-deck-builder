@@ -185,15 +185,27 @@
   overflow-y: hidden;
   border: 3px solid #444;
 }
-
-/* Hands: Span all 6 columns */
-.first-hand {
-  grid-row: 1;
-  grid-column: 1 / span 6;
+    
+.hand-area {
+  min-height: 60px;        /* Adjust for card size */
+  max-width: 1400px;       /* Match battlefield-grid */
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 8px 12px;
+  background: #181822;
+  border-radius: 12px;
+  box-shadow: 0 0 12px #0008;
+  gap: 10px;
+  /* Optionally, add border to distinguish */
+  border: 2px solid #333;
 }
-.second-hand {
-  grid-row: 8;
-  grid-column: 1 / span 6;
+.first-hand-area {
+  margin-bottom: 10px;
+}
+.second-hand-area {
+  margin-top: 10px;
 }
 
 /* The rest of the zones fill the grid as normal, no need for explicit placement */
@@ -258,9 +270,10 @@
   </header>
 <div id="battlefield" style="display:none;">
   <h2>Battlefield</h2>
-<div class="battlefield-grid">
-  <!-- Row 1: First (opponent) Hand -->
-  <div class="zone hand first-hand"></div>
+    <!-- First (opponent) hand area -->
+  <div class="hand-area first-hand-area" id="opponent-hand"></div>
+  <!-- Battlefield grid -->
+  <div class="battlefield-grid">
   <!-- Row 2: First Deck, Domains 1-4, Void (6 columns total) -->
   <div class="zone deck first" title="First Deck"></div>
   <div class="zone domain first" title="First Domain 1"></div>
@@ -303,9 +316,9 @@
   <div class="zone domain second" title="Second Domain 4"></div>
   <div class="zone deck second" title="Second Deck"></div>
   <div class="zone void second" title="Second Void"></div>
-  <!-- Row 8: Second Hand -->
-  <div class="zone hand second-hand"></div>
 </div>
+   <!-- Second (your) hand area -->
+  <div class="hand-area second-hand-area" id="player-hand"></div>
   <button id="back-to-builder-btn">Back to Deck Builder</button>
 </div>
   <!-- Deck Slot Selector -->
