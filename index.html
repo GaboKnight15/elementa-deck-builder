@@ -325,6 +325,15 @@
         <option value="white">White</option>
       </select>
     </label>
+  <label>Category:
+  <select id="filter-category">
+    <option value="">All</option>
+    <option value="creature">Creature</option>
+    <option value="artifact">Artifact</option>
+    <option value="spell">Spell</option>
+    <option value="domain">Domain</option>
+  </select>
+  </label>
     <label>Type:
       <select id="filter-type">
         <option value="">All</option>
@@ -337,11 +346,8 @@
         <option value="undead">Undead</option>
         <option value="demon">Demon</option>
         <option value="mage">Mage</option>
-        <option value="spell">Spell</option>
-        <option value="artifact">Artifact</option>
         <option value="equipment">Equipment</option>
         <option value="relic">Relic</option>
-        <option value="domain">Domain</option>
       </select>
     </label>
     <label>Rarity:
@@ -766,12 +772,16 @@ backToBuilderBtn.onclick = () => {
     const nameFilter = document.getElementById('filter-name').value.toLowerCase();
     const selectedArchetype = document.getElementById('filter-archetype').value.toLowerCase();
     const selectedAbility = document.getElementById('filter-ability').value.toLowerCase();
-
+    const selectedCategory = document.getElementById('filter-category')?.value.toLowerCase() || "";
     dummyCards.forEach(card => {
       if (nameFilter && !card.name.toLowerCase().includes(nameFilter)) return;
       if (selectedColor) {
         const colors = Array.isArray(card.color) ? card.color.map(c => c.toLowerCase()) : [card.color.toLowerCase()];
         if (!colors.includes(selectedColor)) return;
+      }
+      // Filter by category:
+    if (selectedCategory) {
+      if (getCardCategory(card) !== selectedCategory) return;
       }
       if (selectedType) {
         const types = Array.isArray(card.type) ? card.type.map(t => t.toLowerCase()) : [card.type.toLowerCase()];
@@ -799,6 +809,7 @@ backToBuilderBtn.onclick = () => {
   // Event Listeners
   document.getElementById('filter-name').addEventListener('input', renderGallery);
   document.getElementById('filter-color').addEventListener('change', renderGallery);
+  document.getElementById('filter-category').addEventListener('change', renderGallery);
   document.getElementById('filter-type').addEventListener('change', renderGallery);
   document.getElementById('filter-rarity').addEventListener('change', renderGallery);
   document.getElementById('filter-archetype').addEventListener('change', renderGallery);
