@@ -152,7 +152,13 @@
   <header>
     <h1>Elementa: Card Gallery & Deck Builder</h1>
     <button id="toggle-deck-btn" style="margin-left: 1em; padding: 0.4em 0.6em;">Toggle Deck</button>
+    <button id="start-game-btn" style="margin:1em 0;">Start Game</button>
   </header>
+  <div id="battlefield" style="display:none;">
+  <h2>Battlefield</h2>
+  <!-- Here you will add the actual battlefield zones later -->
+  <button id="back-to-builder-btn">Back to Deck Builder</button>
+  </div>
   <!-- Deck Slot Selector -->
   <div id="deck-slot-selector" style="margin: 1em;">
     <label for="deck-slot-select">Deck Slot:</label>
@@ -383,7 +389,28 @@
   const renameDeckSlotBtn = document.getElementById('rename-deck-slot-btn');
   const deleteDeckSlotBtn = document.getElementById('delete-deck-slot-btn');
   const deckTitle = document.getElementById('deck-title');
+const startGameBtn = document.getElementById('start-game-btn');
+const battlefield = document.getElementById('battlefield');
+const backToBuilderBtn = document.getElementById('back-to-builder-btn');
 
+// Elements to hide/show (deck, filters, gallery, deck slot selector)
+const elementsToHide = [
+  document.getElementById('deck-slot-selector'),
+  document.getElementById('filters'),
+  document.getElementById('card-gallery'),
+  document.querySelector('.deck'),
+  startGameBtn
+];
+
+startGameBtn.onclick = () => {
+  elementsToHide.forEach(el => el.style.display = 'none');
+  battlefield.style.display = 'block';
+};
+
+backToBuilderBtn.onclick = () => {
+  elementsToHide.forEach(el => el.style.display = '');
+  battlefield.style.display = 'none';
+};
   function saveDeckState() {
     localStorage.setItem(DECK_SLOTS_KEY, JSON.stringify(deckSlots));
     localStorage.setItem(DECKS_KEY, JSON.stringify(decks));
