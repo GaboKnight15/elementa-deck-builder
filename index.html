@@ -141,14 +141,14 @@
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   grid-template-rows:
-    80px      /* 1. Opponent Hand */
-    100px     /* 2. Opponent Domains */
+    140px      /* 1. Opponent Hand */
+    140px     /* 2. Opponent Domains */
     140px     /* 3. Opponent Creatures 1 */
     140px     /* 4. Opponent Creatures 2 */
     140px     /* 5. My Creatures 1 */
     140px     /* 6. My Creatures 2 */
-    100px     /* 7. My Domains */
-    80px;     /* 8. My Hand */
+    140px     /* 7. My Domains */
+    140px;     /* 8. My Hand */
   gap: 10px;
   background: #222;
   border-radius: 14px;
@@ -200,7 +200,7 @@
 @media (max-width: 900px) {
   .battlefield-grid {
     grid-template-columns: repeat(6, 1fr);
-    grid-template-rows: 40px 60px 80px 80px 80px 80px 60px 40px;
+    grid-template-rows: 80px 80px 80px 80px 80px 80px 80px 80px;
     padding: 6px;
   }
   .zone, .zone .card {
@@ -295,7 +295,7 @@
     <div class="zone domain" title="My Domain 3"></div>
     <div class="zone domain" title="My Domain 4"></div>
     <div class="zone domain" title="My Domain 5"></div>
-    <div class="zone main-deck" title="My Deck"></div>
+    <div class="zone deck" title="My Deck"></div>
     
     <!-- Row 8: My Hand (spans all columns) -->
     <div class="zone hand my-hand" title="My Hand"></div>
