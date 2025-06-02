@@ -687,8 +687,6 @@ backToBuilderBtn.onclick = () => {
     const cat = getCardCategory(card);
     if (sections.hasOwnProperty(cat)) {
       sections[cat].push({ card, count });
-    } else {
-      sections.other.push({ card, count });
     }
     total += count;
   }
@@ -946,17 +944,21 @@ startGameBtn.onclick = () => {
 };
 
 // 4. Add Draw 6 buttons & phase display to battlefield
-const phaseDisplay = document.createElement('div');
-phaseDisplay.id = "phase-display";
-phaseDisplay.style.margin = "1em";
-battlefield.insertBefore(phaseDisplay, battlefield.firstChild);
-
-const draw6PlayerBtn = document.createElement('button');
-draw6PlayerBtn.textContent = "Player: Draw 6";
-draw6PlayerBtn.onclick = () => {
-  drawCards("player", 6);
+// Draw 1 button for player
+const draw1PlayerBtn = document.createElement('button');
+draw1PlayerBtn.textContent = "Player: Draw 1";
+draw1PlayerBtn.onclick = () => {
+  drawCards("player", 1);
 };
-battlefield.insertBefore(draw6PlayerBtn, document.getElementById("opponent-hand"));
+battlefield.insertBefore(draw1PlayerBtn, document.getElementById("opponent-hand"));
+
+// Draw 1 button for opponent
+const draw1OpponentBtn = document.createElement('button');
+draw1OpponentBtn.textContent = "Opponent: Draw 1";
+draw1OpponentBtn.onclick = () => {
+  drawCards("opponent", 1);
+};
+battlefield.insertBefore(draw1OpponentBtn, document.getElementById("opponent-hand"));
 
 const draw6OpponentBtn = document.createElement('button');
 draw6OpponentBtn.textContent = "Opponent: Draw 6";
