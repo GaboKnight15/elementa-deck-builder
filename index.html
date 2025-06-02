@@ -154,90 +154,55 @@
   overflow: auto;
 }
 
-/* 1. Opponent Hand: spans all columns, row 1 */
-.battlefield-grid > .opponent-hand {
-  grid-row: 1;
-  grid-column: 1 / span 6;
+.battlefield-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+  gap: 6px;
+  background: #222;
+  border-radius: 14px;
+  padding: 10px;
+  margin: 0 auto 25px auto;
+  box-shadow: 0 0 22px #000a;
+  max-width: 1400px;
+  aspect-ratio: 6 / 8;
+  height: 80vh;
+  position: relative;
+  overflow: auto;
 }
 
-/* 2. Opponent Domains & Deck: row 2 */
-.battlefield-grid > .deck.opponent        { grid-row: 2; grid-column: 1; }
-.battlefield-grid > .domain.opponent:nth-of-type(2) { grid-row: 2; grid-column: 2; }
-.battlefield-grid > .domain.opponent:nth-of-type(3) { grid-row: 2; grid-column: 3; }
-.battlefield-grid > .domain.opponent:nth-of-type(4) { grid-row: 2; grid-column: 4; }
-.battlefield-grid > .domain.opponent:nth-of-type(5) { grid-row: 2; grid-column: 5; }
-.battlefield-grid > .domain.opponent:nth-of-type(6) { grid-row: 2; grid-column: 6; }
-
-/* 3. Opponent Creatures & Void: row 3 */
-.battlefield-grid > .void.opponent        { grid-row: 3; grid-column: 1; }
-.battlefield-grid > .creature.opponent:nth-of-type(8) { grid-row: 3; grid-column: 2; }
-.battlefield-grid > .creature.opponent:nth-of-type(9) { grid-row: 3; grid-column: 3; }
-.battlefield-grid > .creature.opponent:nth-of-type(10) { grid-row: 3; grid-column: 4; }
-.battlefield-grid > .creature.opponent:nth-of-type(11) { grid-row: 3; grid-column: 5; }
-.battlefield-grid > .creature.opponent:nth-of-type(12) { grid-row: 3; grid-column: 6; }
-
-/* 4. Opponent Creatures 7-12: row 4 */
-.battlefield-grid > .creature.opponent:nth-of-type(13) { grid-row: 4; grid-column: 1; }
-.battlefield-grid > .creature.opponent:nth-of-type(14) { grid-row: 4; grid-column: 2; }
-.battlefield-grid > .creature.opponent:nth-of-type(15) { grid-row: 4; grid-column: 3; }
-.battlefield-grid > .creature.opponent:nth-of-type(16) { grid-row: 4; grid-column: 4; }
-.battlefield-grid > .creature.opponent:nth-of-type(17) { grid-row: 4; grid-column: 5; }
-.battlefield-grid > .creature.opponent:nth-of-type(18) { grid-row: 4; grid-column: 6; }
-
-/* 5. My Creatures 1-6: row 5 */
-.battlefield-grid > .creature:not(.opponent):nth-of-type(19) { grid-row: 5; grid-column: 1; }
-.battlefield-grid > .creature:not(.opponent):nth-of-type(20) { grid-row: 5; grid-column: 2; }
-.battlefield-grid > .creature:not(.opponent):nth-of-type(21) { grid-row: 5; grid-column: 3; }
-.battlefield-grid > .creature:not(.opponent):nth-of-type(22) { grid-row: 5; grid-column: 4; }
-.battlefield-grid > .creature:not(.opponent):nth-of-type(23) { grid-row: 5; grid-column: 5; }
-.battlefield-grid > .creature:not(.opponent):nth-of-type(24) { grid-row: 5; grid-column: 6; }
-
-/* 6. My Creatures 7-12 & Void: row 6 */
-.battlefield-grid > .creature:not(.opponent):nth-of-type(25) { grid-row: 6; grid-column: 1; }
-.battlefield-grid > .creature:not(.opponent):nth-of-type(26) { grid-row: 6; grid-column: 2; }
-.battlefield-grid > .creature:not(.opponent):nth-of-type(27) { grid-row: 6; grid-column: 3; }
-.battlefield-grid > .creature:not(.opponent):nth-of-type(28) { grid-row: 6; grid-column: 4; }
-.battlefield-grid > .creature:not(.opponent):nth-of-type(29) { grid-row: 6; grid-column: 5; }
-.battlefield-grid > .void:not(.opponent) { grid-row: 6; grid-column: 6; }
-
-/* 7. My Domains & Deck: row 7 */
-.battlefield-grid > .domain:not(.opponent):nth-of-type(31) { grid-row: 7; grid-column: 1; }
-.battlefield-grid > .domain:not(.opponent):nth-of-type(32) { grid-row: 7; grid-column: 2; }
-.battlefield-grid > .domain:not(.opponent):nth-of-type(33) { grid-row: 7; grid-column: 3; }
-.battlefield-grid > .domain:not(.opponent):nth-of-type(34) { grid-row: 7; grid-column: 4; }
-.battlefield-grid > .domain:not(.opponent):nth-of-type(35) { grid-row: 7; grid-column: 5; }
-.battlefield-grid > .deck:not(.opponent) { grid-row: 7; grid-column: 6; }
-
-/* 8. My Hand: spans all columns, row 8 */
-.battlefield-grid > .my-hand {
-  grid-row: 8;
-  grid-column: 1 / span 6;
-}
-
-/* ...rest of your .zone, .hand, .creature, .domain styles stay the same... */
-
+/* All zones */
 .zone {
   background: #222328;
   border-radius: 11px;
   display: flex;
-  flex-direction: row;
   align-items: flex-end;
   justify-content: flex-start;
-  min-width: 0;       /* allows shrinking */
-  min-height: 0;      /* allows shrinking */
   width: 100%;
   height: 100%;
   padding: 6px;
   overflow-x: auto;
   overflow-y: hidden;
   border: 3px solid #444;
-  position: relative;
 }
+
+/* Hands: Span all 6 columns */
+.first-hand {
+  grid-row: 1;
+  grid-column: 1 / span 6;
+}
+.second-hand {
+  grid-row: 8;
+  grid-column: 1 / span 6;
+}
+
+/* The rest of the zones fill the grid as normal, no need for explicit placement */
 .zone.creature    { border-color: #ffbc42; }
 .zone.domain      { border-color: #4efc8c; }
 .zone.void        { border-color: #e74c3c; background: #1a1822; }
-.zone.main-deck   { border-color: #5dade2; background: #1a1f2a; }
-.zone.opponent    { opacity: 0.85; border-style: dashed; }
+.zone.deck        { border-color: #5dade2; background: #1a1f2a; }
+.zone.hand        { border-color: #4efc8c; background: #191933; }
+.zone.first       { opacity: 0.9; border-style: dashed; }
 
 /* Responsive for small screens */
 @media (max-width: 900px) {
@@ -293,62 +258,54 @@
   </header>
 <div id="battlefield" style="display:none;">
   <h2>Battlefield</h2>
-  <div class="battlefield-grid">
-
-    <!-- 1. Opponent Hand (row 1) -->
-    <div class="zone hand opponent-hand" title="Opponent's Hand"></div>
-
-    <!-- 2. Opponent Domains (row 2) -->
-    <div class="zone deck opponent" title="Opponent Deck"></div>
-    <div class="zone domain opponent" title="Opponent Domain 5"></div>
-    <div class="zone domain opponent" title="Opponent Domain 4"></div>
-    <div class="zone domain opponent" title="Opponent Domain 3"></div>
-    <div class="zone domain opponent" title="Opponent Domain 2"></div>
-    <div class="zone domain opponent" title="Opponent Domain 1"></div>
-    
-    <!-- 3. Opponent Creatures (row 3) -->
-    <div class="zone void opponent" title="Opponent Void"></div>
-    <div class="zone creature opponent" title="Opponent Creature 5"></div>
-    <div class="zone creature opponent" title="Opponent Creature 4"></div>
-    <div class="zone creature opponent" title="Opponent Creature 3"></div>
-    <div class="zone creature opponent" title="Opponent Creature 2"></div>
-    <div class="zone creature opponent" title="Opponent Creature 1"></div>
-    
-    <!-- 4. Opponent Creatures 7-12 (row 4) -->
-    <div class="zone creature opponent" title="Opponent Creature 12"></div>
-    <div class="zone creature opponent" title="Opponent Creature 11"></div>
-    <div class="zone creature opponent" title="Opponent Creature 10"></div>
-    <div class="zone creature opponent" title="Opponent Creature 9"></div>
-    <div class="zone creature opponent" title="Opponent Creature 8"></div>
-    <div class="zone creature opponent" title="Opponent Creature 7"></div>
-    
-    <!-- 5. My Creatures 1-6 (row 5) -->
-    <div class="zone creature" title="My Creature 1"></div>
-    <div class="zone creature" title="My Creature 2"></div>
-    <div class="zone creature" title="My Creature 3"></div>
-    <div class="zone creature" title="My Creature 4"></div>
-    <div class="zone creature" title="My Creature 5"></div>
-    <div class="zone creature" title="My Creature 6"></div>
-    
-    <!-- 6. My Creatures 7-12 (row 6) -->
-    <div class="zone creature" title="My Creature 7"></div>
-    <div class="zone creature" title="My Creature 8"></div>
-    <div class="zone creature" title="My Creature 9"></div>
-    <div class="zone creature" title="My Creature 10"></div>
-    <div class="zone creature" title="My Creature 11"></div>
-    <div class="zone void" title="My Void"></div>
-    
-    <!-- 7. My Domains (row 7) -->
-    <div class="zone domain" title="My Domain 1"></div>
-    <div class="zone domain" title="My Domain 2"></div>
-    <div class="zone domain" title="My Domain 3"></div>
-    <div class="zone domain" title="My Domain 4"></div>
-    <div class="zone domain" title="My Domain 5"></div>
-    <div class="zone deck" title="My Deck"></div>
-    
-    <!-- 8. My Hand (row 8) -->
-    <div class="zone hand my-hand" title="My Hand"></div>
-  </div>
+<div class="battlefield-grid">
+  <!-- Row 1: First (opponent) Hand -->
+  <div class="zone hand first-hand"></div>
+  <!-- Row 2: First Deck, Domains 1-4, Void (6 columns total) -->
+  <div class="zone deck first" title="First Deck"></div>
+  <div class="zone domain first" title="First Domain 1"></div>
+  <div class="zone domain first" title="First Domain 2"></div>
+  <div class="zone domain first" title="First Domain 3"></div>
+  <div class="zone domain first" title="First Domain 4"></div>
+  <div class="zone void first" title="First Void"></div>
+  <!-- Row 3: First Creatures 1-6 -->
+  <div class="zone creature first" title="First Creature 1"></div>
+  <div class="zone creature first" title="First Creature 2"></div>
+  <div class="zone creature first" title="First Creature 3"></div>
+  <div class="zone creature first" title="First Creature 4"></div>
+  <div class="zone creature first" title="First Creature 5"></div>
+  <div class="zone creature first" title="First Creature 6"></div>
+  <!-- Row 4: First Creatures 7-12 -->
+  <div class="zone creature first" title="First Creature 7"></div>
+  <div class="zone creature first" title="First Creature 8"></div>
+  <div class="zone creature first" title="First Creature 9"></div>
+  <div class="zone creature first" title="First Creature 10"></div>
+  <div class="zone creature first" title="First Creature 11"></div>
+  <div class="zone creature first" title="First Creature 12"></div>
+  <!-- Row 5: Second Creatures 1-6 -->
+  <div class="zone creature second" title="Second Creature 1"></div>
+  <div class="zone creature second" title="Second Creature 2"></div>
+  <div class="zone creature second" title="Second Creature 3"></div>
+  <div class="zone creature second" title="Second Creature 4"></div>
+  <div class="zone creature second" title="Second Creature 5"></div>
+  <div class="zone creature second" title="Second Creature 6"></div>
+  <!-- Row 6: Second Creatures 7-12 -->
+  <div class="zone creature second" title="Second Creature 7"></div>
+  <div class="zone creature second" title="Second Creature 8"></div>
+  <div class="zone creature second" title="Second Creature 9"></div>
+  <div class="zone creature second" title="Second Creature 10"></div>
+  <div class="zone creature second" title="Second Creature 11"></div>
+  <div class="zone creature second" title="Second Creature 12"></div>
+  <!-- Row 7: Second Domains 1-4, Deck, Void -->
+  <div class="zone domain second" title="Second Domain 1"></div>
+  <div class="zone domain second" title="Second Domain 2"></div>
+  <div class="zone domain second" title="Second Domain 3"></div>
+  <div class="zone domain second" title="Second Domain 4"></div>
+  <div class="zone deck second" title="Second Deck"></div>
+  <div class="zone void second" title="Second Void"></div>
+  <!-- Row 8: Second Hand -->
+  <div class="zone hand second-hand"></div>
+</div>
   <button id="back-to-builder-btn">Back to Deck Builder</button>
 </div>
   <!-- Deck Slot Selector -->
