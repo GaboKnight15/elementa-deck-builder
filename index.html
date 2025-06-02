@@ -900,6 +900,147 @@ if (selectedCategory) {
   refreshDeckSlotSelect();
   updateDeckDisplay();
   renderGallery();
+
+// 1. Add to your global variables
+let gameState = {
+  playerDeck: [],
+  playerHand: [],
+  opponentDeck: [],
+  opponentHand: [],
+  turn: "player",
+  phase: "draw"
+};
+
+// 2. Utility: Shuffle an array
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+// 3. When "Start Game" is clicked, load deck into gameState and shuffle
+startGameBtn.onclick = () => {
+  // Hide deck builder UI, show battlefield
+  elementsToHide.forEach(el => el.style.display = 'none');
+  battlefield.style.display = 'block';
+
+  // Construct deck as an array of card ids, respecting deck counts
+  const deckObj = getCurrentDeck();
+  let fullDeck = [];
+  for (let [id, count] of Object.entries(deckObj)) {
+    for (let i = 0; i < count; i++) fullDeck.push(id);
+  }
+  gameState.playerDeck = shuffle([...fullDeck]);
+  gameState.playerHand = [];
+
+  // For now, opponent uses same deck (or you can randomize/dummy)
+  gameState.opponentDeck = shuffle([...fullDeck]);
+  gameState.opponentHand = [];
+
+  gameState.turn = "player";
+  gameState.phase = "draw";
+  renderGameState();
+  updatePhaseDisplay();
+};
+
+// 4. Add Draw 6 buttons & phase display to battlefield
+const phaseDisplay = document.createElement('div');
+phaseDisplay.id = "phase-display";
+phaseDisplay.style.margin = "1em";
+battlefield.insertBefore(phaseDisplay, battlefield.firstChild);
+
+const draw6PlayerBtn = document.createElement('button');
+draw6PlayerBtn.textContent = "Player: Draw 6";
+draw6PlayerBtn.onclick = () => {
+  drawCards("player", 6);
+};
+battlefield.insertBefore(draw6PlayerBtn, document.getElementById("opponent-hand"));
+
+const draw6OpponentBtn = document.createElement('button');
+draw6OpponentBtn.textContent = "Opponent: Draw 6";
+draw6OpponentBtn.onclick = () => {
+  drawCards("opponent", 6);
+};
+battlefield.insertBefore(draw6OpponentBtn, document.getElementById("opponent-hand"));
+
+// 5. Draw cards function
+function drawCards(who, n) {
+  let deck = who === "player" ? gameState.playerDeck : gameState.opponentDeck;
+  let hand = who === "player" ? gameState.playerHand : gameState.opponentHand;
+  for (let i = 0; i < n && deck.length > 0; i++) {
+    hand.push(deck.shift());
+  }
+  renderGameState();
+}
+
+// 6. Render game state (hands)
+function renderGameState() {
+  // Render player hand
+  const playerHandDiv = document.getElementById('player-hand');
+  playerHandDiv.innerHTML = '';
+  for (let cardId of gameState.playerHand) {
+    const card = dummyCards.find(c => c.id === cardId);
+    if (!card) continue;
+    const div = document.createElement('div');
+    div.className = 'card';
+    const img = document.createElement('img');
+    img.src = card.image;
+    img.alt = card.name;
+    img.style.width = "80px";
+    div.appendChild(img);
+    playerHandDiv.appendChild(div);
+  }
+
+  // Render opponent hand (as facedown cards)
+  const opponentHandDiv = document.getElementById('opponent-hand');
+  opponentHandDiv.innerHTML = '';
+  for (let i = 0; i < gameState.opponentHand.length; i++) {
+    const div = document.createElement('div');
+    div.className = 'card';
+    const img = document.createElement('img');
+    img.src = "images/cardback.png"; // Use your card back image
+    img.alt = "Opponent's card";
+    img.style.width = "80px";
+    div.appendChild(img);
+    opponentHandDiv.appendChild(div);
+  }
+}
+
+// 7. Phase control
+const nextPhaseBtn = document.createElement('button');
+nextPhaseBtn.textContent = "Next Phase";
+nextPhaseBtn.onclick = () => {
+  advancePhase();
+};
+battlefield.appendChild(nextPhaseBtn);
+
+function updatePhaseDisplay() {
+  phaseDisplay.textContent = `Turn: ${gameState.turn} | Phase: ${gameState.phase}`;
+}
+
+// 8. Phase logic (simplified)
+const phaseOrder = ["draw", "main", "end"];
+function advancePhase() {
+  let idx = phaseOrder.indexOf(gameState.phase);
+  if (idx === -1) idx = 0;
+  if (idx < phaseOrder.length - 1) {
+    gameState.phase = phaseOrder[idx + 1];
+  } else {
+    // End phase, switch turn
+    gameState.phase = "draw";
+    gameState.turn = gameState.turn === "player" ? "opponent" : "player";
+    // Auto-draw 1 at start of turn
+    drawCards(gameState.turn, 1);
+  }
+  updatePhaseDisplay();
+}
+
+// Call updatePhaseDisplay at end of each relevant function as needed!
+
+// (Optional) Remove draw buttons after drawing 6 if you want to only allow it once.
+    
 </script>
 </body>
 </html>
