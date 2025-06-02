@@ -137,6 +137,54 @@
       font-weight: bold;
       cursor: pointer;
     }
+ .battlefield-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 125px); /* Card width + margin */
+  grid-template-rows: repeat(2, 180px);    /* Card height + margin */
+  gap: 10px;
+  background: #222;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 0 auto;
+  box-shadow: 0 0 18px #0008;
+}
+.zone {
+  background: #333;
+  border: 2px solid #666;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  color: #fff;
+  font-weight: bold;
+  font-size: 1em;
+  min-width: 110px;
+  min-height: 150px;
+  position: relative;
+}
+.zone.main-deck, .zone.void {
+  background: #1d1a22;
+  border-color: #a55;
+}
+.zone.artifact {
+  background: #223;
+  border-color: #7af;
+}
+.zone.domain {
+  background: #232;
+  border-color: #7f7;
+}
+.zone.creature {
+  background: #221e1e;
+  border-color: #fa0;
+}
+/* For cards inside zones: */
+.zone .card {
+  width: 110px;
+  height: 150px;
+  margin: 2px 0;
+}
     /* Background themes */
     body.theme-green  { background: linear-gradient(to bottom, #e6ffe6, #a3d9a5); }
     body.theme-red    { background: linear-gradient(to bottom, #ffd6d6, #ff7f7f); }
@@ -154,11 +202,28 @@
     <button id="toggle-deck-btn" style="margin-left: 1em; padding: 0.4em 0.6em;">Toggle Deck</button>
     <button id="start-game-btn" style="margin:1em 0;">Start Game</button>
   </header>
-  <div id="battlefield" style="display:none;">
+<div id="battlefield" style="display:none;">
   <h2>Battlefield</h2>
-  <!-- Here you will add the actual battlefield zones later -->
-  <button id="back-to-builder-btn">Back to Deck Builder</button>
+  <div class="battlefield-grid">
+    <!-- Top row: Void, Creature zones (creature+artifact) -->
+    <div class="zone void"                title="Void (Graveyard)">Void</div>
+    <div class="zone creature"            title="Creature Zone 1">Creature 1</div>
+    <div class="zone creature"            title="Creature Zone 2">Creature 2</div>
+    <div class="zone creature"            title="Creature Zone 3">Creature 3</div>
+    <div class="zone creature"            title="Creature Zone 4">Creature 4</div>
+    <div class="zone creature"            title="Creature Zone 5">Creature 5</div>
+    <div class="zone main-deck"           title="Main Deck">Deck</div>
+    <!-- Bottom row: Domains, Artifact zones (vertical) -->
+    <div class="zone domain"              title="Domain Zone 1">Domain 1</div>
+    <div class="zone domain"              title="Domain Zone 2">Domain 2</div>
+    <div class="zone domain"              title="Domain Zone 3">Domain 3</div>
+    <div class="zone domain"              title="Domain Zone 4">Domain 4</div>
+    <div class="zone domain"              title="Domain Zone 5">Domain 5</div>
+    <div class="zone domain"              title="Domain Zone 6">Domain 6</div>
+    <div class="zone artifact"            title="Artifacts (vertical)">Artifacts</div>
   </div>
+  <button id="back-to-builder-btn">Back to Deck Builder</button>
+</div>
   <!-- Deck Slot Selector -->
   <div id="deck-slot-selector" style="margin: 1em;">
     <label for="deck-slot-select">Deck Slot:</label>
@@ -169,7 +234,7 @@
   </div>
   <!-- Filter Gallery -->
   <div id="filters" style="margin: 1em;">
-    <label>More actions
+    <label>
       Name:
       <input type="text" id="filter-name" placeholder="Search by name..." />
     </label>
