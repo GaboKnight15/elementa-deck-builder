@@ -256,7 +256,7 @@
  <div class="hand-area first-hand-area" id="opponent-hand"></div>
   <!-- Battlefield grid -->
 <div class="battlefield-grid">
-  <div class="zone main first"></div>
+  <div class="zone main first" id="opponent-deck-zone"></div>
   <div class="zone domain first"></div>
   <div class="zone domain first"></div>
   <div class="zone domain first"></div>
@@ -291,7 +291,7 @@
   <div class="zone domain second"></div>
   <div class="zone domain second"></div>
   <div class="zone domain second"></div>
-  <div class="zone main second"></div>
+  <div class="zone main second" id="player-deck-zone"></div>
 </div>
    <!-- Second (your) hand area -->
   <div class="hand-area second-hand-area" id="player-hand"></div>
@@ -960,13 +960,6 @@ draw1OpponentBtn.onclick = () => {
 };
 battlefield.insertBefore(draw1OpponentBtn, document.getElementById("opponent-hand"));
 
-const draw6OpponentBtn = document.createElement('button');
-draw6OpponentBtn.textContent = "Opponent: Draw 6";
-draw6OpponentBtn.onclick = () => {
-  drawCards("opponent", 6);
-};
-battlefield.insertBefore(draw6OpponentBtn, document.getElementById("opponent-hand"));
-
 // 5. Draw cards function
 function drawCards(who, n) {
   let deck = who === "player" ? gameState.playerDeck : gameState.opponentDeck;
@@ -1008,8 +1001,59 @@ function renderGameState() {
     div.appendChild(img);
     opponentHandDiv.appendChild(div);
   }
-}
 
+  // Render player deck stack
+  const playerDeckDiv = document.getElementById('player-deck-zone');
+  playerDeckDiv.innerHTML = '';
+  const playerDeckCard = document.createElement('div');
+  playerDeckCard.className = 'card';
+  const playerDeckImg = document.createElement('img');
+  playerDeckImg.src = "images/cardback.png";
+  playerDeckImg.alt = "Your Deck";
+  playerDeckImg.style.width = "60px";
+  playerDeckImg.style.opacity = "0.85";
+  playerDeckCard.appendChild(playerDeckImg);
+  // Deck count
+  const deckCount = document.createElement('div');
+  deckCount.style.textAlign = 'center';
+  deckCount.style.fontWeight = 'bold';
+  deckCount.textContent = gameState.playerDeck.length;
+  playerDeckCard.appendChild(deckCount);
+  playerDeckDiv.appendChild(playerDeckCard);
+
+  // Click-to-draw for player deck
+  playerDeckCard.onclick = () => {
+    if (gameState.turn === "player" && gameState.playerDeck.length > 0) {
+      drawCards("player", 1);
+    }
+  };
+
+  // Render opponent deck stack
+  const opponentDeckDiv = document.getElementById('opponent-deck-zone');
+  opponentDeckDiv.innerHTML = '';
+  const opponentDeckCard = document.createElement('div');
+  opponentDeckCard.className = 'card';
+  const opponentDeckImg = document.createElement('img');
+  opponentDeckImg.src = "images/cardback.png";
+  opponentDeckImg.alt = "Opponent's Deck";
+  opponentDeckImg.style.width = "60px";
+  opponentDeckImg.style.opacity = "0.85";
+  opponentDeckCard.appendChild(opponentDeckImg);
+  const oppDeckCount = document.createElement('div');
+  oppDeckCount.style.textAlign = 'center';
+  oppDeckCount.style.fontWeight = 'bold';
+  oppDeckCount.textContent = gameState.opponentDeck.length;
+  opponentDeckCard.appendChild(oppDeckCount);
+  opponentDeckDiv.appendChild(opponentDeckCard);
+
+  // Click-to-draw for opponent deck
+  opponentDeckCard.onclick = () => {
+    if (gameState.turn === "opponent" && gameState.opponentDeck.length > 0) {
+      drawCards("opponent", 1);
+    }
+  };
+}
+    
 // 7. Phase control
 const nextPhaseBtn = document.createElement('button');
 nextPhaseBtn.textContent = "Next Phase";
