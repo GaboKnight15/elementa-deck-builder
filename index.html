@@ -140,7 +140,7 @@
 .battlefield-grid {
   display: grid;
   grid-template-columns: repeat(6, 1fr);   /* 6 equal columns */
-  grid-template-rows: repeat(8, 1fr);      /* 8 equal rows */
+  grid-template-rows: repeat(6, 1fr);      /* 6 equal rows */
   gap: 6px;
   background: #222;
   border-radius: 14px;
@@ -150,23 +150,6 @@
   max-width: 1400px;
   max-height: 90vh;        /* optional, keeps the grid from being too tall */
   aspect-ratio: 6 / 8;     /* optional: ensures grid stays proportional */
-  position: relative;
-  overflow: auto;
-}
-
-.battlefield-grid {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  grid-template-rows: repeat(8, 1fr);
-  gap: 6px;
-  background: #222;
-  border-radius: 14px;
-  padding: 10px;
-  margin: 0 auto 25px auto;
-  box-shadow: 0 0 22px #000a;
-  max-width: 1400px;
-  aspect-ratio: 6 / 8;
-  height: 80vh;
   position: relative;
   overflow: auto;
 }
@@ -185,11 +168,6 @@
   overflow-y: hidden;
   border: 3px solid #444;
 }
-  .zone.placeholder {
-  background: transparent;
-  border: none;
-  pointer-events: none;
-}  
 .hand-area {
   min-height: 60px;        /* Adjust for card size */
   max-width: 1400px;       /* Match battlefield-grid */
@@ -215,8 +193,8 @@
 /* The rest of the zones fill the grid as normal, no need for explicit placement */
 .zone.creature    { border-color: #ffbc42; }
 .zone.domain      { border-color: #4efc8c; }
-.zone.void        { border-color: #e74c3c; background: #1a1822; }
 .zone.deck        { border-color: #5dade2; background: #1a1f2a; }
+.zone.void        { border-color: #e74c3c; background: #1a1822; }
 .zone.hand        { border-color: #4efc8c; background: #191933; }
 .zone.first       { opacity: 0.9; border-style: dashed; }
 
@@ -278,34 +256,27 @@
  <div class="hand-area first-hand-area" id="opponent-hand"></div>
   <!-- Battlefield grid -->
 <div class="battlefield-grid">
-  <!-- 6 empty divs for first row (opponent hand area) -->
-  <div class="zone placeholder"></div>
-  <div class="zone placeholder"></div>
-  <div class="zone placeholder"></div>
-  <div class="zone placeholder"></div>
-  <div class="zone placeholder"></div>
-  <div class="zone placeholder"></div>
-  <!-- Row 2: First Deck, Domains 1-4, Void (6 columns total) -->
+  <!-- Row 2: First Deck, Domains 1-5 -->
   <div class="zone deck first" title="First Deck"></div>
   <div class="zone domain first" title="First Domain 1"></div>
   <div class="zone domain first" title="First Domain 2"></div>
   <div class="zone domain first" title="First Domain 3"></div>
   <div class="zone domain first" title="First Domain 4"></div>
+  <div class="zone domain first" title="First Domain 5"></div>
+  <!-- Row 3: First Void, Creatures 1-5 -->
   <div class="zone void first" title="First Void"></div>
-  <!-- Row 3: First Creatures 1-6 -->
   <div class="zone creature first" title="First Creature 1"></div>
   <div class="zone creature first" title="First Creature 2"></div>
   <div class="zone creature first" title="First Creature 3"></div>
   <div class="zone creature first" title="First Creature 4"></div>
   <div class="zone creature first" title="First Creature 5"></div>
+  <!-- Row 4: First Creatures 6-11 -->
   <div class="zone creature first" title="First Creature 6"></div>
-  <!-- Row 4: First Creatures 7-12 -->
   <div class="zone creature first" title="First Creature 7"></div>
   <div class="zone creature first" title="First Creature 8"></div>
   <div class="zone creature first" title="First Creature 9"></div>
   <div class="zone creature first" title="First Creature 10"></div>
   <div class="zone creature first" title="First Creature 11"></div>
-  <div class="zone creature first" title="First Creature 12"></div>
   <!-- Row 5: Second Creatures 1-6 -->
   <div class="zone creature second" title="Second Creature 1"></div>
   <div class="zone creature second" title="Second Creature 2"></div>
@@ -313,27 +284,20 @@
   <div class="zone creature second" title="Second Creature 4"></div>
   <div class="zone creature second" title="Second Creature 5"></div>
   <div class="zone creature second" title="Second Creature 6"></div>
-  <!-- Row 6: Second Creatures 7-12 -->
+  <!-- Row 6: Second Creatures 7-11, Void -->
   <div class="zone creature second" title="Second Creature 7"></div>
   <div class="zone creature second" title="Second Creature 8"></div>
   <div class="zone creature second" title="Second Creature 9"></div>
   <div class="zone creature second" title="Second Creature 10"></div>
   <div class="zone creature second" title="Second Creature 11"></div>
-  <div class="zone creature second" title="Second Creature 12"></div>
-  <!-- Row 7: Second Domains 1-4, Deck, Void -->
+  <div class="zone void second" title="Second Void"></div>
+  <!-- Row 7: Second Domains 1-5, Deck -->
   <div class="zone domain second" title="Second Domain 1"></div>
   <div class="zone domain second" title="Second Domain 2"></div>
   <div class="zone domain second" title="Second Domain 3"></div>
   <div class="zone domain second" title="Second Domain 4"></div>
+  <div class="zone domain second" title="Second Domain 5"></div>
   <div class="zone deck second" title="Second Deck"></div>
-  <div class="zone void second" title="Second Void"></div>
-   <!-- 6 empty divs for last row (player hand area) -->
-  <div class="zone placeholder"></div>
-  <div class="zone placeholder"></div>
-  <div class="zone placeholder"></div>
-  <div class="zone placeholder"></div>
-  <div class="zone placeholder"></div>
-  <div class="zone placeholder"></div>
 </div>
    <!-- Second (your) hand area -->
   <div class="hand-area second-hand-area" id="player-hand"></div>
