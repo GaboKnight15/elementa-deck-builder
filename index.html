@@ -412,6 +412,7 @@
     <img class="modal-content" id="modal-img">
   </div>
   <script>
+    window.onload = function () {
   // Card List //
   const dummyCards = [
       { id: 'basicfairy', name: 'Fairy', rarity: 'Basic', image: 'BasicCreatures/Fairy.png', category: 'creature', color: 'green', type: 'fairy', hp: 1, atk: 1, def: 0, cost: 0, archetype: 'Fairy', ability: 'flying'},
@@ -953,23 +954,6 @@ startGameBtn.onclick = () => {
   updatePhaseDisplay();
 };
 
-// 4. Add Draw 6 buttons & phase display to battlefield
-// Draw 1 button for player
-const draw1PlayerBtn = document.createElement('button');
-draw1PlayerBtn.textContent = "Player: Draw 1";
-draw1PlayerBtn.onclick = () => {
-  drawCards("player", 1);
-};
-battlefield.insertBefore(draw1PlayerBtn, document.getElementById("opponent-hand"));
-
-// Draw 1 button for opponent
-const draw1OpponentBtn = document.createElement('button');
-draw1OpponentBtn.textContent = "Opponent: Draw 1";
-draw1OpponentBtn.onclick = () => {
-  drawCards("opponent", 1);
-};
-battlefield.insertBefore(draw1OpponentBtn, document.getElementById("opponent-hand"));
-
 // 5. Draw cards function
 function drawCards(who, n) {
   let deck = who === "player" ? gameState.playerDeck : gameState.opponentDeck;
@@ -980,7 +964,7 @@ function drawCards(who, n) {
   renderGameState();
   updatePhaseDisplay();
 }
-
+let overlay = null;
 // 6. Render game state (hands)
 function renderGameState() {
   // Render player hand
@@ -1156,6 +1140,7 @@ function closeDeckSearchModal() {
 document.getElementById('close-deck-search').onclick = closeDeckSearchModal;
 document.getElementById('deck-search-modal').onclick = (e) => {
   if (e.target.id === 'deck-search-modal') closeDeckSearchModal();
+};
 };
 </script>
 </body>
