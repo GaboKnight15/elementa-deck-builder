@@ -298,10 +298,6 @@
   
   <button id="back-to-builder-btn">Back to Deck Builder</button>
 </div>
-<div id="deck-search-modal" class="modal">
-  <span class="close" id="close-deck-search">&times;</span>
-  <div id="deck-search-content" style="background:white;padding:1em;border-radius:8px;max-width:90vw;margin:auto;"></div>
-</div>
   <!-- Deck Slot Selector -->
   <div id="deck-slot-selector" style="margin: 1em;">
     <label for="deck-slot-select">Deck Slot:</label>
@@ -411,7 +407,7 @@
     <span class="close">&times;</span>
     <img class="modal-content" id="modal-img">
   </div>
-  <script defer>
+  <script>
   // Card List //
   const dummyCards = [
       { id: 'basicfairy', name: 'Fairy', rarity: 'Basic', image: 'BasicCreatures/Fairy.png', category: 'creature', color: 'green', type: 'fairy', hp: 1, atk: 1, def: 0, cost: 0, archetype: 'Fairy', ability: 'flying'},
@@ -538,15 +534,15 @@
   const renameDeckSlotBtn = document.getElementById('rename-deck-slot-btn');
   const deleteDeckSlotBtn = document.getElementById('delete-deck-slot-btn');
   const deckTitle = document.getElementById('deck-title');
-  const startGameBtn = document.getElementById('start-game-btn');
-  const battlefield = document.getElementById('battlefield');
-  const backToBuilderBtn = document.getElementById('back-to-builder-btn');
+const startGameBtn = document.getElementById('start-game-btn');
+const battlefield = document.getElementById('battlefield');
     // Phase display at top of battlefield
 const phaseDisplay = document.createElement('div');
 phaseDisplay.id = "phase-display";
 phaseDisplay.style.margin = "1em";
 phaseDisplay.style.fontSize = "1.2em";
 battlefield.insertBefore(phaseDisplay, battlefield.firstChild);
+const backToBuilderBtn = document.getElementById('back-to-builder-btn');
 
 // Elements to hide/show (deck, filters, gallery, deck slot selector)
 const elementsToHide = [
@@ -556,6 +552,11 @@ const elementsToHide = [
   document.querySelector('.deck'),
   startGameBtn
 ];
+
+startGameBtn.onclick = () => {
+  elementsToHide.forEach(el => el.style.display = 'none');
+  battlefield.style.display = 'block';
+};
 
 backToBuilderBtn.onclick = () => {
   elementsToHide.forEach(el => el.style.display = '');
@@ -661,7 +662,6 @@ backToBuilderBtn.onclick = () => {
   const closeBtn = document.querySelector('.close');
   const toggleBtn = document.getElementById('toggle-deck-btn');
   const deckPanel = document.querySelector('.deck');
-  let overlay = null; 
 
   function canAddCard(card) {
     const deck = getCurrentDeck();
@@ -924,6 +924,12 @@ function shuffle(array) {
   return array;
 }
 
+// 3. When "Start Game" is clicked, load deck into gameState and shuffle
+startGameBtn.onclick = () => {
+  // Hide deck builder UI, show battlefield
+  elementsToHide.forEach(el => el.style.display = 'none');
+  battlefield.style.display = 'block';
+
   // Construct deck as an array of card ids, respecting deck counts
   const deckObj = getCurrentDeck();
   let fullDeck = [];
@@ -943,6 +949,23 @@ function shuffle(array) {
   updatePhaseDisplay();
 };
 
+// 4. Add Draw 6 buttons & phase display to battlefield
+// Draw 1 button for player
+const draw1PlayerBtn = document.createElement('button');
+draw1PlayerBtn.textContent = "Player: Draw 1";
+draw1PlayerBtn.onclick = () => {
+  drawCards("player", 1);
+};
+battlefield.insertBefore(draw1PlayerBtn, document.getElementById("opponent-hand"));
+
+// Draw 1 button for opponent
+const draw1OpponentBtn = document.createElement('button');
+draw1OpponentBtn.textContent = "Opponent: Draw 1";
+draw1OpponentBtn.onclick = () => {
+  drawCards("opponent", 1);
+};
+battlefield.insertBefore(draw1OpponentBtn, document.getElementById("opponent-hand"));
+
 // 5. Draw cards function
 function drawCards(who, n) {
   let deck = who === "player" ? gameState.playerDeck : gameState.opponentDeck;
@@ -953,7 +976,7 @@ function drawCards(who, n) {
   renderGameState();
   updatePhaseDisplay();
 }
-      
+
 // 6. Render game state (hands)
 function renderGameState() {
   // Render player hand
@@ -986,17 +1009,22 @@ function renderGameState() {
     opponentHandDiv.appendChild(div);
   }
 
-// Render player deck stack
+  // Render player deck stack
 const playerDeckDiv = document.getElementById('player-deck-zone');
 playerDeckDiv.innerHTML = '';
-if (overlay) {
-  overlay.remove();
-  overlay = null;
-}
-
+  // Dropdown for deck actions
+const deckActionSelect = document.createElement('select');
+["Draw", "Shuffle", "Search"].forEach(action => {
+  const option = document.createElement('option');
+  option.value = action.toLowerCase();
+  option.textContent = action;
+  deckActionSelect.appendChild(option);
+});
+deckActionSelect.style.marginBottom = "5px";
+playerDeckDiv.appendChild(deckActionSelect);
+  
 const playerDeckCard = document.createElement('div');
 playerDeckCard.className = 'card';
-playerDeckCard.style.position = "relative";
 const playerDeckImg = document.createElement('img');
 playerDeckImg.src = "images/cardback.png";
 playerDeckImg.alt = "Your Deck";
@@ -1010,66 +1038,47 @@ deckCount.style.textAlign = 'center';
 deckCount.style.fontWeight = 'bold';
 deckCount.textContent = gameState.playerDeck.length;
 playerDeckCard.appendChild(deckCount);
-
 playerDeckDiv.appendChild(playerDeckCard);
-playerDeckCard.onclick = (e) => {
-  e.stopPropagation();
-  // Prevent multiple overlays
-  if (overlay) return;
-  overlay = document.createElement('div');
-  overlay.style.position = 'absolute';
-  overlay.style.top = '25px';
-  overlay.style.left = '50%';
-  overlay.style.transform = 'translateX(-50%)';
-  overlay.style.background = '#fff';
-  overlay.style.border = '1px solid #444';
-  overlay.style.borderRadius = '6px';
-  overlay.style.boxShadow = '0 2px 10px #000a';
-  overlay.style.padding = '1em';
-  overlay.style.zIndex = '10';
 
-  const select = document.createElement('select');
-  ["Draw", "Shuffle", "Search"].forEach(action => {
-    const option = document.createElement('option');
-    option.value = action.toLowerCase();
-    option.textContent = action;
-    select.appendChild(option);
-  });
-  overlay.appendChild(select);
-
-  const confirmBtn = document.createElement('button');
-  confirmBtn.textContent = "Confirm";
-  confirmBtn.style.marginLeft = "1em";
-  overlay.appendChild(confirmBtn);
-
-  // Confirm action
-  confirmBtn.onclick = () => {
-    const action = select.value;
-    if (action === "draw" && gameState.turn === "player" && gameState.playerDeck.length > 0) {
-      drawCards("player", 1);
-      updatePhaseDisplay();
-    } else if (action === "shuffle") {
-      gameState.playerDeck = shuffle(gameState.playerDeck);
-      renderGameState();
-      updatePhaseDisplay();
-    } else if (action === "search" && gameState.playerDeck.length > 0) {
-      openDeckSearchModal();
-    }
-    overlay.remove();
-    overlay = null;
-  };
-
-  // Dismiss overlay if clicking outside
-  document.addEventListener('click', function dismissOverlay(ev) {
-    if (ev.target !== overlay && !overlay.contains(ev.target)) {
-      overlay.remove();
-      overlay = null;
-      document.removeEventListener('click', dismissOverlay);
-    }
-  });
-
-  playerDeckCard.appendChild(overlay);
+// Click handler for main deck zone
+playerDeckCard.onclick = () => {
+  const action = deckActionSelect.value;
+  if (action === "draw" && gameState.turn === "player" && gameState.playerDeck.length > 0) {
+    drawCards("player", 1);
+    updatePhaseDisplay();
+  } else if (action === "shuffle") {
+    gameState.playerDeck = shuffle(gameState.playerDeck);
+    renderGameState();
+  } else if (action === "search" && gameState.playerDeck.length > 0) {
+    openDeckSearchModal();
+  }
 };
+
+  // Render opponent deck stack
+  const opponentDeckDiv = document.getElementById('opponent-deck-zone');
+  opponentDeckDiv.innerHTML = '';
+  const opponentDeckCard = document.createElement('div');
+  opponentDeckCard.className = 'card';
+  const opponentDeckImg = document.createElement('img');
+  opponentDeckImg.src = "images/cardback.png";
+  opponentDeckImg.alt = "Opponent's Deck";
+  opponentDeckImg.style.width = "60px";
+  opponentDeckImg.style.opacity = "0.85";
+  opponentDeckCard.appendChild(opponentDeckImg);
+  const oppDeckCount = document.createElement('div');
+  oppDeckCount.style.textAlign = 'center';
+  oppDeckCount.style.fontWeight = 'bold';
+  oppDeckCount.textContent = gameState.opponentDeck.length;
+  opponentDeckCard.appendChild(oppDeckCount);
+  opponentDeckDiv.appendChild(opponentDeckCard);
+
+  // Click-to-draw for opponent deck
+  opponentDeckCard.onclick = () => {
+    if (gameState.turn === "opponent" && gameState.opponentDeck.length > 0) {
+      drawCards("opponent", 1);
+    }
+  };
+}
     
 // 7. Phase control
 const nextPhaseBtn = document.createElement('button');
@@ -1131,32 +1140,15 @@ document.getElementById('close-deck-search').onclick = closeDeckSearchModal;
 document.getElementById('deck-search-modal').onclick = (e) => {
   if (e.target.id === 'deck-search-modal') closeDeckSearchModal();
 };
-  // Initial render
-    loadDeckState();
-    refreshDeckSlotSelect();
-    updateDeckDisplay();
-    renderGallery();
+// Call updatePhaseDisplay at end of each relevant function as needed!
 
-    // Only ONE assignment for startGameBtn.onclick
-    startGameBtn.onclick = () => {
-      elementsToHide.forEach(el => el.style.display = 'none');
-      battlefield.style.display = 'block';
-
-      // Construct deck as an array of card ids, respecting deck counts
-      const deckObj = getCurrentDeck();
-      let fullDeck = [];
-      for (let [id, count] of Object.entries(deckObj)) {
-        for (let i = 0; i < count; i++) fullDeck.push(id);
-      }
-      gameState.playerDeck = shuffle([...fullDeck]);
-      gameState.playerHand = [];
-      gameState.opponentDeck = shuffle([...fullDeck]);
-      gameState.opponentHand = [];
-      gameState.turn = "player";
-      gameState.phase = "draw";
-      renderGameState();
-      updatePhaseDisplay();
-    }; 
+// (Optional) Remove draw buttons after drawing 6 if you want to only allow it once.
+    
 </script>
+  <!-- Deck Search Modal -->
+<div id="deck-search-modal" class="modal">
+  <span class="close" id="close-deck-search">&times;</span>
+  <div id="deck-search-content" style="background:white;padding:1em;border-radius:8px;max-width:90vw;margin:auto;"></div>
+</div>
 </body>
 </html>
