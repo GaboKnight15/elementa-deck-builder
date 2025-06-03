@@ -412,7 +412,6 @@
     <img class="modal-content" id="modal-img">
   </div>
   <script>
-  window.onload = function() {
   // Card List //
   const dummyCards = [
       { id: 'basicfairy', name: 'Fairy', rarity: 'Basic', image: 'BasicCreatures/Fairy.png', category: 'creature', color: 'green', type: 'fairy', hp: 1, atk: 1, def: 0, cost: 0, archetype: 'Fairy', ability: 'flying'},
@@ -1157,7 +1156,6 @@ function closeDeckSearchModal() {
 document.getElementById('close-deck-search').onclick = closeDeckSearchModal;
 document.getElementById('deck-search-modal').onclick = (e) => {
   if (e.target.id === 'deck-search-modal') closeDeckSearchModal();
-};
 };
 </script>
 </body>
