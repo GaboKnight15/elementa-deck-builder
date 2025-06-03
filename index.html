@@ -30,20 +30,100 @@
       gap: 1em;
       justify-content: center;
     }
-    .card {
-      background: white;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      width: 150px;
-      padding: 0.5em;
-      text-align: center;
-      box-sizing: border-box;
+  .card {
+  background: linear-gradient(135deg, #fff 70%, #f5f8ff 100%);
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  width: 170px;
+  padding: 0.8em 0.5em;
+  text-align: center;
+  box-sizing: border-box;
+  transition: transform 0.16s, box-shadow 0.18s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  cursor: pointer;
+  opacity: 0;
+  animation: fadeInCard 0.5s forwards;
     }
+    @keyframes fadeInCard {
+  to { opacity: 1; }
+    }
+    .card:hover {
+  transform: translateY(-6px) scale(1.045);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.17);
+  z-index: 3;
+    }
+    /* Grid Layout for Gallery */
+    #card-gallery.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 1.3em;
+  justify-items: center;
+  align-items: start;
+}
+    /* Titles & Details */
+    .card h4 {
+  margin: 0.5em 0 0.2em 0;
+  font-size: 1.15em;
+  font-weight: 600;
+  color: #23245a;
+    }
+.card > div:last-child {
+  font-size: 0.9em;
+  color: #667;
+}
+    /* Card Count Badge */
+    .card .count-badge {
+  position: absolute;
+  top: 7px; right: 10px;
+  background: #222;
+  color: #fff;
+  font-size: 0.9em;
+  padding: 0.15em 0.5em;
+  border-radius: 8px;
+  z-index: 2;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+  }
+    /* Animated Add-to-Deck Button */
+    .card button {
+  margin-top: 10px;
+  background: linear-gradient(90deg, #007BFF 60%, #5ec6fa 100%);
+  color: #fff;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  transition: background 0.2s, transform 0.13s;
+  padding: 0.4em 1.1em;
+}
+.card button:hover:enabled {
+  background: linear-gradient(90deg, #009fff 60%, #44e0e0 100%);
+  transform: scale(1.06);
+}
+   /* Rarity Border */ 
+.card[data-rarity="Legendary"] {
+  border: 2px solid gold;
+  box-shadow: 0 0 10px gold;
+}
+.card[data-rarity="Rare"] {
+  border: 2px solid #4298f4;
+}
+.card[data-rarity="Common"] {
+  border: 2px solid #aaa;
+}
+.card[data-rarity="Basic"] {
+  border: 2px dashed #bbb;
+}
+    /* Card Image  */
     .card img {
-      max-width: 100%;
-      border-radius: 4px;
-      cursor: pointer;
-    }
+  max-width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.12);
+  background: #f0f4fa;
+  margin-bottom: 0.5em;
+  transition: box-shadow 0.18s;
+}
+.card:hover img {
+  box-shadow: 0 8px 24px rgba(0,0,0,0.22);
+}
     .deck {
       position: fixed;
       right: 0;
@@ -82,7 +162,17 @@
     button:disabled {
       background-color: gray;
     }
-    @media (max-width: 768px) {
+     /* Mobile CSS Adjustments */
+    @media (max-width: 600px) {
+  #card-gallery.container {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 0.6em;
+  }
+  .card {
+    width: 120px;
+    padding: 0.6em 0.3em;
+  }
+}
       .deck {
         position: fixed;
         right: 0;
@@ -757,6 +847,9 @@ backToBuilderBtn.onclick = () => {
     const deck = getCurrentDeck();
     const div = document.createElement('div');
     div.className = 'card';
+    if (card.rarity) {
+    div.setAttribute('data-rarity', card.rarity);
+  }
 
     const img = document.createElement('img');
     img.src = card.image;
