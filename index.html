@@ -924,12 +924,6 @@ function shuffle(array) {
   return array;
 }
 
-// 3. When "Start Game" is clicked, load deck into gameState and shuffle
-startGameBtn.onclick = () => {
-  // Hide deck builder UI, show battlefield
-  elementsToHide.forEach(el => el.style.display = 'none');
-  battlefield.style.display = 'block';
-
   // Construct deck as an array of card ids, respecting deck counts
   const deckObj = getCurrentDeck();
   let fullDeck = [];
