@@ -1020,7 +1020,6 @@ deckCount.textContent = gameState.playerDeck.length;
 playerDeckCard.appendChild(deckCount);
 
 playerDeckDiv.appendChild(playerDeckCard);
-
 playerDeckCard.onclick = (e) => {
   e.stopPropagation();
   // Prevent multiple overlays
