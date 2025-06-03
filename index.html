@@ -965,6 +965,7 @@ function drawCards(who, n) {
   updatePhaseDisplay();
 }
 let overlay = null;
+      
 // 6. Render game state (hands)
 function renderGameState() {
   // Render player hand
@@ -1019,8 +1020,6 @@ deckCount.textContent = gameState.playerDeck.length;
 playerDeckCard.appendChild(deckCount);
 
 playerDeckDiv.appendChild(playerDeckCard);
-
-let overlay = null;
 
 playerDeckCard.onclick = (e) => {
   e.stopPropagation();
