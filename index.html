@@ -132,7 +132,7 @@
 .card:hover img {
   box-shadow: 0 8px 24px rgba(0,0,0,0.22);
 }
-    .deck {
+.deck {
   position: fixed;
   right: 0;
   top: 0;
@@ -145,7 +145,12 @@
   padding: 1.2em 1em 1em 1em;
   box-shadow: -2px 0 16px rgba(0,0,0,0.12);
   z-index: 1100;
-  transition: transform 0.3s;
+  transition: transform 0.3s cubic-bezier(.4,1.6,.3,1), box-shadow 0.3s;
+  transform: translateX(100%); /* hidden by default */
+}
+.deck.show {
+  transform: translateX(0);   /* visible when .show is present */
+  box-shadow: -2px 0 16px rgba(0,0,0,0.18);
 }
     .deck h2 {
       margin-top: 0;
@@ -174,6 +179,21 @@
     }
      /* Mobile CSS Adjustments */
     @media (max-width: 900px) {
+  .deck {
+    width: 95vw;
+    left: unset;
+    right: 0;
+    top: 56px;
+    max-width: 100vw;
+    border-left: none;
+    border-top: 2px solid #ccc;
+    height: 88vh;
+    box-shadow: 0 -2px 14px rgba(0,0,0,0.08);
+    transform: translateX(100%);
+  }
+  .deck.show {
+    transform: translateX(0);
+  }
   #card-gallery.container {
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 0.6em;
@@ -183,20 +203,7 @@
     padding: 0.6em 0.3em;
   }
 }
-      .deck {
-    width: 90vw;
-    left: 0;
-    right: 0;
-    top: 56px;
-    max-width: 100vw;
-    border-left: none;
-    border-top: 2px solid #ccc;
-    height: 88vh;
-    box-shadow: 0 -2px 14px rgba(0,0,0,0.08);
-  }
-      .deck.show {
-        transform: translateX(0);
-      }
+
     }
     @media (min-width: 769px) {
       .container {
@@ -995,7 +1002,6 @@ function getCardCategory(card) {
   // Deck toggle logic
   toggleBtn.onclick = () => {
     deckPanel.classList.toggle('show');
-    deckPanel.classList.toggle('hide');
   };
   window.addEventListener('click', (e) => {
     if (!deckPanel.contains(e.target) && e.target !== toggleBtn && deckPanel.classList.contains('show')) {
