@@ -666,6 +666,7 @@ backToBuilderBtn.onclick = () => {
   const closeBtn = document.querySelector('.close');
   const toggleBtn = document.getElementById('toggle-deck-btn');
   const deckPanel = document.querySelector('.deck');
+  let overlay = null; 
 
   function canAddCard(card) {
     const deck = getCurrentDeck();
