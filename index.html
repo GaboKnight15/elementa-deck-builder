@@ -557,11 +557,6 @@ const elementsToHide = [
   startGameBtn
 ];
 
-startGameBtn.onclick = () => {
-  elementsToHide.forEach(el => el.style.display = 'none');
-  battlefield.style.display = 'block';
-};
-
 backToBuilderBtn.onclick = () => {
   elementsToHide.forEach(el => el.style.display = '');
   battlefield.style.display = 'none';
