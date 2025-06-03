@@ -538,15 +538,15 @@
   const renameDeckSlotBtn = document.getElementById('rename-deck-slot-btn');
   const deleteDeckSlotBtn = document.getElementById('delete-deck-slot-btn');
   const deckTitle = document.getElementById('deck-title');
-const startGameBtn = document.getElementById('start-game-btn');
-const battlefield = document.getElementById('battlefield');
+  const startGameBtn = document.getElementById('start-game-btn');
+  const battlefield = document.getElementById('battlefield');
+  const backToBuilderBtn = document.getElementById('back-to-builder-btn');
     // Phase display at top of battlefield
 const phaseDisplay = document.createElement('div');
 phaseDisplay.id = "phase-display";
 phaseDisplay.style.margin = "1em";
 phaseDisplay.style.fontSize = "1.2em";
 battlefield.insertBefore(phaseDisplay, battlefield.firstChild);
-const backToBuilderBtn = document.getElementById('back-to-builder-btn');
 
 // Elements to hide/show (deck, filters, gallery, deck slot selector)
 const elementsToHide = [
