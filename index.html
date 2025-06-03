@@ -1137,6 +1137,32 @@ document.getElementById('close-deck-search').onclick = closeDeckSearchModal;
 document.getElementById('deck-search-modal').onclick = (e) => {
   if (e.target.id === 'deck-search-modal') closeDeckSearchModal();
 };
+  // Initial render
+    loadDeckState();
+    refreshDeckSlotSelect();
+    updateDeckDisplay();
+    renderGallery();
+
+    // Only ONE assignment for startGameBtn.onclick
+    startGameBtn.onclick = () => {
+      elementsToHide.forEach(el => el.style.display = 'none');
+      battlefield.style.display = 'block';
+
+      // Construct deck as an array of card ids, respecting deck counts
+      const deckObj = getCurrentDeck();
+      let fullDeck = [];
+      for (let [id, count] of Object.entries(deckObj)) {
+        for (let i = 0; i < count; i++) fullDeck.push(id);
+      }
+      gameState.playerDeck = shuffle([...fullDeck]);
+      gameState.playerHand = [];
+      gameState.opponentDeck = shuffle([...fullDeck]);
+      gameState.opponentHand = [];
+      gameState.turn = "player";
+      gameState.phase = "draw";
+      renderGameState();
+      updatePhaseDisplay();
+    }; 
 </script>
 </body>
 </html>
