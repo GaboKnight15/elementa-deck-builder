@@ -964,7 +964,6 @@ function drawCards(who, n) {
   renderGameState();
   updatePhaseDisplay();
 }
-let overlay = null;
       
 // 6. Render game state (hands)
 function renderGameState() {
@@ -1001,6 +1000,10 @@ function renderGameState() {
 // Render player deck stack
 const playerDeckDiv = document.getElementById('player-deck-zone');
 playerDeckDiv.innerHTML = '';
+if (overlay) {
+  overlay.remove();
+  overlay = null;
+}
 
 const playerDeckCard = document.createElement('div');
 playerDeckCard.className = 'card';
