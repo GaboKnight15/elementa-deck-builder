@@ -147,7 +147,6 @@
   z-index: 1100;
   transition: transform 0.3s cubic-bezier(.4,1.6,.3,1), box-shadow 0.3s;
   transform: translateX(100%); /* hidden by default */
-  <button id="close-deck-panel" style="position:absolute; top:10px; right:10px; background:#eee; color:#222; border:none; font-size:1.2em; border-radius:30px; width:32px; height:32px; cursor:pointer; z-index:1300;">×</button>
 }
 .deck.show {
   transform: translateX(0);   /* visible when .show is present */
@@ -907,13 +906,12 @@ backToBuilderBtn.onclick = () => {
     btn.textContent = "Add to Deck";
     btn.disabled = !canAddCard(card);
     btn.onclick = () => {
-  if (!canAddCard(card)) return;
-  deck[card.id] = (deck[card.id] || 0) + 1;
-  setCurrentDeck(deck);
-  updateDeckDisplay();
-  // Only re-render the gallery if this card cannot be added anymore (maxed out)
-  if (!canAddCard(card)) renderGallery();
-};
+      if (!canAddCard(card)) return;
+      deck[card.id] = (deck[card.id] || 0) + 1;
+      setCurrentDeck(deck);
+      updateDeckDisplay();
+      renderGallery();
+    };
     div.appendChild(btn);
 
     return div;
@@ -974,11 +972,7 @@ function getCardCategory(card) {
   document.getElementById('filter-rarity').addEventListener('change', renderGallery);
   document.getElementById('filter-archetype').addEventListener('change', renderGallery);
   document.getElementById('filter-ability').addEventListener('change', renderGallery);
- // Close Deck Button //   
-  document.getElementById('close-deck-panel').onclick = () => {
-  deckPanel.classList.remove('show');
-};
-  // Reset Deck Button //
+
   document.getElementById('reset-deck-btn').onclick = () => {
     const deck = getCurrentDeck();
     for (const key in deck) {
@@ -1009,6 +1003,11 @@ function getCardCategory(card) {
   toggleBtn.onclick = () => {
     deckPanel.classList.toggle('show');
   };
+  window.addEventListener('click', (e) => {
+    if (!deckPanel.contains(e.target) && e.target !== toggleBtn && deckPanel.classList.contains('show')) {
+      deckPanel.classList.remove('show');
+    }
+  });
 
   // Initial render
   loadDeckState();
@@ -1250,11 +1249,7 @@ function closeDeckSearchModal() {
 document.getElementById('close-deck-search').onclick = closeDeckSearchModal;
 document.getElementById('deck-search-modal').onclick = (e) => {
   if (e.target.id === 'deck-search-modal') closeDeckSearchModal();
-};
-// Call updatePhaseDisplay at end of each relevant function as needed!
-
-// (Optional) Remove draw buttons after drawing 6 if you want to only allow it once.
-    
+}; 
 </script>
   <!-- Deck Search Modal -->
 <div id="deck-search-modal" class="modal">
