@@ -298,6 +298,10 @@
   
   <button id="back-to-builder-btn">Back to Deck Builder</button>
 </div>
+<div id="deck-search-modal" class="modal">
+  <span class="close" id="close-deck-search">&times;</span>
+  <div id="deck-search-content" style="background:white;padding:1em;border-radius:8px;max-width:90vw;margin:auto;"></div>
+</div>
   <!-- Deck Slot Selector -->
   <div id="deck-slot-selector" style="margin: 1em;">
     <label for="deck-slot-select">Deck Slot:</label>
@@ -408,6 +412,7 @@
     <img class="modal-content" id="modal-img">
   </div>
   <script>
+  window.onload = function() {
   // Card List //
   const dummyCards = [
       { id: 'basicfairy', name: 'Fairy', rarity: 'Basic', image: 'BasicCreatures/Fairy.png', category: 'creature', color: 'green', type: 'fairy', hp: 1, atk: 1, def: 0, cost: 0, archetype: 'Fairy', ability: 'flying'},
@@ -1153,15 +1158,7 @@ document.getElementById('close-deck-search').onclick = closeDeckSearchModal;
 document.getElementById('deck-search-modal').onclick = (e) => {
   if (e.target.id === 'deck-search-modal') closeDeckSearchModal();
 };
-// Call updatePhaseDisplay at end of each relevant function as needed!
-
-// (Optional) Remove draw buttons after drawing 6 if you want to only allow it once.
-    
+};
 </script>
-  <!-- Deck Search Modal -->
-<div id="deck-search-modal" class="modal">
-  <span class="close" id="close-deck-search">&times;</span>
-  <div id="deck-search-content" style="background:white;padding:1em;border-radius:8px;max-width:90vw;margin:auto;"></div>
-</div>
 </body>
 </html>
