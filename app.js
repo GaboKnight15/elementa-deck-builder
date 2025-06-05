@@ -1,4 +1,13 @@
- // Card List //
+// --- Card Background Helper ---
+function getCardBgClass(card) {
+  let colors = Array.isArray(card.color) ? card.color : [card.color];
+  colors = colors.filter(Boolean).map(c => c.toLowerCase());
+  if (colors.length === 2) return `card-bg-${colors[0]}-${colors[1]}`;
+  if (colors.length === 1) return `card-bg-${colors[0]}`;
+  return '';
+}
+
+// Card List //
   const dummyCards = [
       { id: 'basicfairy', name: 'Fairy', rarity: 'Basic', image: 'BasicCreatures/Fairy.png', category: 'creature', color: 'green', type: 'fairy', hp: 1, atk: 1, def: 0, cost: 0, archetype: 'Fairy', ability: 'flying'},
       { id: 'basicgoblin', name: 'Goblin', rarity: 'Basic', image: 'BasicCreatures/Goblin.png', category: 'creature', color: 'green', type: 'goblin', hp: 3, atk: 1, def: 0, cost: 0, archetype: 'Goblin'},
@@ -350,6 +359,7 @@ backToBuilderBtn.onclick = () => {
     div.className = 'card';
     if (card.rarity) {
     div.setAttribute('data-rarity', card.rarity);
+    div.classList.add(getCardBgClass(card));
   }
 
     const img = document.createElement('img');
