@@ -602,49 +602,94 @@ function renderGameState() {
   }
 
   // Render player deck stack
-const playerDeckDiv = document.getElementById('player-deck-zone');
-playerDeckDiv.innerHTML = '';
-  // Dropdown for deck actions
-const deckActionSelect = document.createElement('select');
-["Draw", "Shuffle", "Search"].forEach(action => {
-  const option = document.createElement('option');
-  option.value = action.toLowerCase();
-  option.textContent = action;
-  deckActionSelect.appendChild(option);
-});
-deckActionSelect.style.marginBottom = "5px";
-playerDeckDiv.appendChild(deckActionSelect);
-  
-const playerDeckCard = document.createElement('div');
-playerDeckCard.className = 'card';
-const playerDeckImg = document.createElement('img');
-playerDeckImg.src = "images/cardback.png";
-playerDeckImg.alt = "Your Deck";
-playerDeckImg.style.width = "60px";
-playerDeckImg.style.opacity = "0.85";
-playerDeckCard.appendChild(playerDeckImg);
+  const playerDeckDiv = document.getElementById('player-deck-zone');
+  playerDeckDiv.innerHTML = '';
 
-// Deck count
-const deckCount = document.createElement('div');
-deckCount.style.textAlign = 'center';
-deckCount.style.fontWeight = 'bold';
-deckCount.textContent = gameState.playerDeck.length;
-playerDeckCard.appendChild(deckCount);
-playerDeckDiv.appendChild(playerDeckCard);
+  // Player deck card
+  const playerDeckCard = document.createElement('div');
+  playerDeckCard.className = 'card';
+  const playerDeckImg = document.createElement('img');
+  playerDeckImg.src = "images/cardback.png";
+  playerDeckImg.alt = "Your Deck";
+  playerDeckImg.style.width = "60px";
+  playerDeckImg.style.opacity = "0.85";
+  playerDeckCard.appendChild(playerDeckImg);
 
-// Click handler for main deck zone
-playerDeckCard.onclick = () => {
-  const action = deckActionSelect.value;
-  if (action === "draw" && gameState.turn === "player" && gameState.playerDeck.length > 0) {
-    drawCards("player", 1);
-    updatePhaseDisplay();
-  } else if (action === "shuffle") {
-    gameState.playerDeck = shuffle(gameState.playerDeck);
-    renderGameState();
-  } else if (action === "search" && gameState.playerDeck.length > 0) {
-    openDeckSearchModal();
+  // Deck count
+  const deckCount = document.createElement('div');
+  deckCount.style.textAlign = 'center';
+  deckCount.style.fontWeight = 'bold';
+  deckCount.textContent = gameState.playerDeck.length;
+  playerDeckCard.appendChild(deckCount);
+  playerDeckDiv.appendChild(playerDeckCard);
+
+  // Deck actions popup (shown on click)
+  let deckActionsMenu = document.getElementById('player-deck-actions');
+  if (!deckActionsMenu) {
+    deckActionsMenu = document.createElement('div');
+    deckActionsMenu.id = 'player-deck-actions';
+    deckActionsMenu.style.display = 'none';
+    deckActionsMenu.style.position = 'absolute';
+    deckActionsMenu.style.background = 'white';
+    deckActionsMenu.style.border = '1px solid #aaa';
+    deckActionsMenu.style.borderRadius = '7px';
+    deckActionsMenu.style.zIndex = '999';
+    deckActionsMenu.style.padding = '8px';
+    deckActionsMenu.innerHTML = `
+      <button id="deck-draw-btn">Draw</button>
+      <button id="deck-shuffle-btn">Shuffle</button>
+      <button id="deck-search-btn">Search</button>
+    `;
+    document.body.appendChild(deckActionsMenu);
+
+    // Prevent menu from closing when clicking inside it
+    deckActionsMenu.addEventListener('click', function(e){
+      e.stopPropagation();
+    });
+
+    // Deck actions handlers
+    document.getElementById('deck-draw-btn').onclick = function() {
+      if (gameState.turn === "player" && gameState.playerDeck.length > 0) {
+        drawCards("player", 1);
+        updatePhaseDisplay();
+      }
+      deckActionsMenu.style.display = "none";
+    };
+    document.getElementById('deck-shuffle-btn').onclick = function() {
+      gameState.playerDeck = shuffle(gameState.playerDeck);
+      renderGameState();
+      deckActionsMenu.style.display = "none";
+    };
+    document.getElementById('deck-search-btn').onclick = function() {
+      if (gameState.playerDeck.length > 0) {
+        openDeckSearchModal();
+      }
+      deckActionsMenu.style.display = "none";
+    };
   }
-};
+
+  // Show deck actions popup on click
+  playerDeckCard.onclick = (e) => {
+    e.stopPropagation();
+    // Position the menu near the deck
+    const rect = playerDeckCard.getBoundingClientRect();
+    deckActionsMenu.style.top = `${rect.bottom + window.scrollY + 8}px`;
+    deckActionsMenu.style.left = `${rect.left + window.scrollX}px`;
+    deckActionsMenu.style.display = "block";
+  };
+
+  // Hide menu when clicking elsewhere
+  document.body.addEventListener('click', function hideDeckMenu(e) {
+    // Only add once
+    document.body.removeEventListener('click', hideDeckMenu);
+    if (deckActionsMenu.style.display === "block") {
+      deckActionsMenu.style.display = "none";
+    }
+    // Re-add for next time
+    setTimeout(() => {
+      document.body.addEventListener('click', hideDeckMenu);
+    }, 0);
+  });
 
   // Render opponent deck stack
   const opponentDeckDiv = document.getElementById('opponent-deck-zone');
