@@ -265,6 +265,7 @@ backToBuilderBtn.onclick = () => {
   const deck = getCurrentDeck();
   deckList.innerHTML = '';
   let total = 0;
+  const wasOpen = deckPanel.classList.contains('show');
 
   // Group cards by category
   const sections = {
@@ -338,6 +339,12 @@ backToBuilderBtn.onclick = () => {
   cardCount.textContent = total;
   setCurrentDeck(deck);
   saveDeckState();
+
+    if (wasOpen) {
+    deckPanel.classList.add('show');
+  } else {
+    deckPanel.classList.remove('show');
+  }
 }
 
   function createCardDiv(card) {
@@ -391,6 +398,7 @@ backToBuilderBtn.onclick = () => {
       if (!canAddCard(card)) return;
       deck[card.id] = (deck[card.id] || 0) + 1;
       setCurrentDeck(deck);
+      deckPanel.classList.add('show');
       updateDeckDisplay();
       renderGallery();
     };
