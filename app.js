@@ -569,7 +569,7 @@ function drawCards(who, n) {
   updatePhaseDisplay();
 }
 
-// 6. Render game state (hands)
+// Render game state (hands)
 function renderGameState() {
   // Render player hand
   const playerHandDiv = document.getElementById('player-hand');
@@ -621,72 +621,15 @@ function renderGameState() {
   playerDeckCard.appendChild(deckCount);
   playerDeckDiv.appendChild(playerDeckCard);
 
-  // Deck actions popup (shown on click)
-  let deckActionsMenu = document.getElementById('player-deck-actions');
-  if (!deckActionsMenu) {
-    deckActionsMenu = document.createElement('div');
-    deckActionsMenu.id = 'player-deck-actions';
-    document.body.appendChild(deckActionsMenu);
-  }
-  deckActionsMenu.style.display = 'none';
-  deckActionsMenu.style.position = 'absolute';
-  deckActionsMenu.style.background = 'white';
-  deckActionsMenu.style.border = '1px solid #aaa';
-  deckActionsMenu.style.borderRadius = '7px';
-  deckActionsMenu.style.zIndex = '999';
-  deckActionsMenu.style.padding = '8px';
-  // Always refresh the innerHTML and handlers
-  deckActionsMenu.innerHTML = `
-    <button id="deck-draw-btn">Draw</button>
-    <button id="deck-shuffle-btn">Shuffle</button>
-    <button id="deck-search-btn">Search</button>
-  `;
-
-  deckActionsMenu.onclick = function(e) {
-    e.stopPropagation();
-  };
-
-  document.getElementById('deck-draw-btn').onclick = function() {
-    if (gameState.turn === "player" && gameState.playerDeck.length > 0) {
-      drawCards("player", 1);
-      updatePhaseDisplay();
-    }
-    deckActionsMenu.style.display = "none";
-  };
-  document.getElementById('deck-shuffle-btn').onclick = function() {
-    gameState.playerDeck = shuffle(gameState.playerDeck);
-    renderGameState();
-    deckActionsMenu.style.display = "none";
-  };
-  document.getElementById('deck-search-btn').onclick = function() {
-    if (gameState.playerDeck.length > 0) {
-      openDeckSearchModal();
-    }
-    deckActionsMenu.style.display = "none";
-  };
-
+// Show the menu when clicking the deck
   playerDeckCard.onclick = (e) => {
     e.stopPropagation();
-    
     // Position the menu near the deck
     const rect = playerDeckCard.getBoundingClientRect();
     deckActionsMenu.style.top = `${rect.bottom + window.scrollY + 8}px`;
     deckActionsMenu.style.left = `${rect.left + window.scrollX}px`;
     deckActionsMenu.style.display = "block";
   };
-
-  // Hide menu when clicking elsewhere
-  document.body.addEventListener('click', function hideDeckMenu(e) {
-    // Only add once
-    document.body.removeEventListener('click', hideDeckMenu);
-    if (deckActionsMenu.style.display === "block") {
-      deckActionsMenu.style.display = "none";
-    }
-    // Re-add for next time
-    setTimeout(() => {
-      document.body.addEventListener('click', hideDeckMenu);
-    }, 0);
-  });
 
   // Render opponent deck stack
   const opponentDeckDiv = document.getElementById('opponent-deck-zone');
@@ -720,7 +663,54 @@ document.body.addEventListener('click', function(e) {
     menu.style.display = "none";
   }
 });
+// Create the deck actions menu ONCE
+let deckActionsMenu = document.createElement('div');
+deckActionsMenu.id = 'player-deck-actions';
+deckActionsMenu.style.display = 'none';
+deckActionsMenu.style.position = 'absolute';
+deckActionsMenu.style.background = 'white';
+deckActionsMenu.style.border = '1px solid #aaa';
+deckActionsMenu.style.borderRadius = '7px';
+deckActionsMenu.style.zIndex = '999';
+deckActionsMenu.style.padding = '8px';
+deckActionsMenu.innerHTML = `
+  <button id="deck-draw-btn">Draw</button>
+  <button id="deck-shuffle-btn">Shuffle</button>
+  <button id="deck-search-btn">Search</button>
+`;
+document.body.appendChild(deckActionsMenu);
 
+// Prevent menu from closing when clicking inside it
+deckActionsMenu.onclick = function(e) {
+  e.stopPropagation();
+};
+
+// Attach event listeners ONCE
+document.getElementById('deck-draw-btn').onclick = function() {
+  if (gameState.turn === "player" && gameState.playerDeck.length > 0) {
+    drawCards("player", 1);
+    updatePhaseDisplay();
+  }
+  deckActionsMenu.style.display = "none";
+};
+document.getElementById('deck-shuffle-btn').onclick = function() {
+  gameState.playerDeck = shuffle(gameState.playerDeck);
+  renderGameState();
+  deckActionsMenu.style.display = "none";
+};
+document.getElementById('deck-search-btn').onclick = function() {
+  if (gameState.playerDeck.length > 0) {
+    openDeckSearchModal();
+  }
+  deckActionsMenu.style.display = "none";
+};
+
+// Hide menu when clicking elsewhere
+document.body.addEventListener('click', function(e) {
+  if (deckActionsMenu && deckActionsMenu.style.display === "block") {
+    deckActionsMenu.style.display = "none";
+  }
+});
 // 7. Phase control
 const nextPhaseBtn = document.createElement('button');
 nextPhaseBtn.textContent = "Next Phase";
