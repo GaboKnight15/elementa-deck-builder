@@ -260,8 +260,6 @@ backToBuilderBtn.onclick = () => {
   }
 
   function updateDeckDisplay() {
-     deckList.classList.add('updating');
-     setTimeout(() => deckList.classList.remove('updating'), 130);
   const deck = getCurrentDeck();
   deckList.innerHTML = '';
   let total = 0;
@@ -398,12 +396,11 @@ backToBuilderBtn.onclick = () => {
       if (!canAddCard(card)) return;
       deck[card.id] = (deck[card.id] || 0) + 1;
       setCurrentDeck(deck);
-      deckPanel.classList.add('show');
       updateDeckDisplay();
       renderGallery();
+      deckPanel.classList.add('show');
     };
     div.appendChild(btn);
-
     return div;
   }
     
