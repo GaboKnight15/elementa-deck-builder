@@ -366,6 +366,11 @@ body {
 .card-bg-black-purple, .card-bg-purple-black {
   background: linear-gradient(135deg, #ececec 60%, #f3e6fa 100%);
 }
+/* Gameplay CSS */
+.zone.drag-over {
+  outline: 2px dashed #007bff;
+  background: #e0f3ff;
+}
 /* Debugs for CSS */
 #card-gallery,
 .deck-list,
