@@ -339,3 +339,23 @@ body {
     body.theme-yellow { background: linear-gradient(to bottom, #fff9d6, #ffe066); }
     body.theme-black  { background: linear-gradient(to bottom, #444, #000); color: white;}
     body.theme-white  { background: linear-gradient(to bottom, #ffffff, #f5f5f5);}
+
+.card-bg-green   { background: #eafae6; }
+.card-bg-red     { background: #fae6e6; }
+.card-bg-blue    { background: #e6f4fa; }
+.card-bg-gray    { background: #f0f0f0; }
+.card-bg-purple  { background: #f3e6fa; }
+.card-bg-yellow  { background: #faf8e6; }
+.card-bg-black   { background: #ececec; }
+.card-bg-white   { background: #f9f9fa; }
+
+/* Example dual color combos */
+.card-bg-red-gray, .card-bg-gray-red {
+  background: linear-gradient(135deg, #fae6e6 60%, #f0f0f0 100%);
+}
+.card-bg-green-red, .card-bg-red-green {
+  background: linear-gradient(135deg, #eafae6 60%, #fae6e6 100%);
+}
+.card-bg-black-purple, .card-bg-purple-black {
+  background: linear-gradient(135deg, #ececec 60%, #f3e6fa 100%);
+}
