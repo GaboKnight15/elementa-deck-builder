@@ -403,8 +403,6 @@ function getCardCategory(card) {
   return card.category ? card.category.toLowerCase() : '';
 }
   function renderGallery() {
-    gallery.classList.add('updating');
-    setTimeout(() => gallery.classList.remove('updating'), 130);
     gallery.innerHTML = '';
     const selectedColor = document.getElementById('filter-color').value.toLowerCase();
     const selectedType = document.getElementById('filter-type').value.toLowerCase();
