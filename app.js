@@ -2,8 +2,9 @@
 function getCardBgClass(card) {
   let colors = Array.isArray(card.color) ? card.color : [card.color];
   colors = colors.filter(Boolean).map(c => c.toLowerCase());
-  if (colors.length === 2) return `card-bg-${colors[0]}-${colors[1]}`;
   if (colors.length === 1) return `card-bg-${colors[0]}`;
+  if (colors.length === 2) return `card-bg-${colors[0]}-${colors[1]}`;
+  if (colors.length >= 3) return `card-bg-${colors[0]}`; // fallback for gallery load!
   return '';
 }
 
