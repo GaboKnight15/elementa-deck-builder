@@ -2,10 +2,11 @@
 function getCardBgClass(card) {
   let colors = Array.isArray(card.color) ? card.color : [card.color];
   colors = colors.filter(Boolean).map(c => c.toLowerCase());
+  // Only allow 1 or 2 colors for background
   if (colors.length === 1) return `card-bg-${colors[0]}`;
   if (colors.length === 2) return `card-bg-${colors[0]}-${colors[1]}`;
-  if (colors.length >= 3) return `card-bg-${colors[0]}`; // fallback for gallery load!
-  return '';
+  // If 3+ colors, fallback to 'card-bg-gold' or any default
+  return `card-bg-gold`;
 }
 
 // Card List //
