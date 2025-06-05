@@ -359,6 +359,21 @@ body {
 .card-bg-green-red, .card-bg-red-green {
   background: linear-gradient(135deg, #eafae6 60%, #fae6e6 100%);
 }
+
+#player-deck-actions button {
+  display: block;
+  width: 100%;
+  margin: 0.2em 0;
+  border: none;
+  background: #eee;
+  border-radius: 5px;
+  padding: 0.5em;
+  font-size: 1em;
+  cursor: pointer;
+}
+#player-deck-actions button:hover {
+  background: #ffeeba;
+}
 .card-bg-black-purple, .card-bg-purple-black {
   background: linear-gradient(135deg, #ececec 60%, #f3e6fa 100%);
 }
