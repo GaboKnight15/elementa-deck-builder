@@ -34,11 +34,6 @@ body {
   transition: transform 0.16s, box-shadow 0.18s;
   box-shadow: 0 1px 4px rgba(0,0,0,0.08);
   cursor: pointer;
-  opacity: 0;
-  animation: fadeInCard 0.5s forwards;
-    }
-    @keyframes fadeInCard {
-  to { opacity: 1; }
     }
     .card:hover {
   transform: translateY(-6px) scale(1.045);
@@ -370,4 +365,16 @@ body {
 }
 .card-bg-black-purple, .card-bg-purple-black {
   background: linear-gradient(135deg, #ececec 60%, #f3e6fa 100%);
+}
+/* Debugs for CSS */
+#card-gallery,
+.deck-list,
+.deck {
+  transition: none !important;
+  opacity: 1 !important;
+  background: none !important;
+}
+.updating {
+  opacity: 1 !important;
+  background: none !important;
 }
