@@ -348,6 +348,7 @@ body {
 .card-bg-yellow  { background: #faf8e6; }
 .card-bg-black   { background: #ececec; }
 .card-bg-white   { background: #f9f9fa; }
+.card-bg-gold    { background: gold; }
 
 /* Example dual color combos */
 .card-bg-red-gray, .card-bg-gray-red {
