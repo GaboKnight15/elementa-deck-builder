@@ -617,7 +617,27 @@ function renderGameState() {
     div.appendChild(img);
     opponentHandDiv.appendChild(div);
   }
-
+// Render cards in zones
+  document.querySelectorAll('.zone').forEach(zone => {
+    const zoneId = zone.id;
+    zone.innerHTML = '';
+    const cards = gameState.zones[zoneId] || [];
+    for (const { cardId, orientation } of cards) {
+      const card = dummyCards.find(c => c.id === cardId);
+      if (!card) continue;
+      const cardDiv = document.createElement('div');
+      cardDiv.className = 'card';
+      if (orientation === 'horizontal') {
+        cardDiv.style.transform = 'rotate(90deg)';
+      }
+      const img = document.createElement('img');
+      img.src = card.image;
+      img.alt = card.name;
+      img.style.width = "80px";
+      cardDiv.appendChild(img);
+      zone.appendChild(cardDiv);
+    }
+  });
 // Render player deck stack
   const playerDeckDiv = document.getElementById('player-deck-zone');
   playerDeckDiv.innerHTML = '';
