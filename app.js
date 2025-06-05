@@ -401,7 +401,7 @@ backToBuilderBtn.onclick = () => {
 function getCardCategory(card) {
   return card.category ? card.category.toLowerCase() : '';
 }
-  function renderGallery() {
+function renderGallery() {
     gallery.innerHTML = '';
     const selectedColor = document.getElementById('filter-color').value.toLowerCase();
     const selectedType = document.getElementById('filter-type').value.toLowerCase();
@@ -451,7 +451,6 @@ function getCardCategory(card) {
   document.getElementById('filter-rarity').addEventListener('change', renderGallery);
   document.getElementById('filter-archetype').addEventListener('change', renderGallery);
   document.getElementById('filter-ability').addEventListener('change', renderGallery);
-
   document.getElementById('reset-deck-btn').onclick = () => {
     const deck = getCurrentDeck();
     for (const key in deck) {
@@ -500,6 +499,7 @@ let gameState = {
   playerHand: [],
   opponentDeck: [],
   opponentHand: [],
+  zones: {},
   turn: "player",
   phase: "draw"
 };
@@ -536,9 +536,24 @@ startGameBtn.onclick = () => {
   gameState.phase = "draw";
   renderGameState();
   updatePhaseDisplay();
+  document.querySelectorAll('.zone').forEach(zone => {
+  zone.ondragover = (e) => {
+    e.preventDefault(); // allow drop
+    zone.classList.add('drag-over');
+  };
+  zone.ondragleave = () => {
+    zone.classList.remove('drag-over');
+  };
+  zone.ondrop = (e) => {
+    e.preventDefault();
+    zone.classList.remove('drag-over');
+    const cardId = e.dataTransfer.getData("text/plain");
+    let orientation = e.shiftKey ? "horizontal" : "vertical";
+    placeCardInZone(cardId, zone.id, orientation);
+  };
+});
 };
 
-// 4. Add Draw 6 buttons & phase display to battlefield
 // Draw 1 button for player
 const draw1PlayerBtn = document.createElement('button');
 draw1PlayerBtn.textContent = "Player: Draw 1";
@@ -576,6 +591,11 @@ function renderGameState() {
     if (!card) continue;
     const div = document.createElement('div');
     div.className = 'card';
+    div.draggable = true;
+    div.dataset.cardId = cardId;
+    div.ondragstart = (e) => {
+      e.dataTransfer.setData("text/plain", cardId);
+    };
     const img = document.createElement('img');
     img.src = card.image;
     img.alt = card.name;
@@ -719,7 +739,18 @@ battlefield.appendChild(nextPhaseBtn);
 function updatePhaseDisplay() {
   phaseDisplay.textContent = `Turn: ${gameState.turn} | Phase: ${gameState.phase}`;
 }
-
+// Drag cards to zones //
+function placeCardInZone(cardId, zoneId, orientation = "vertical") {
+  // Remove from hand
+  const idx = gameState.playerHand.indexOf(cardId);
+  if (idx !== -1) {
+    gameState.playerHand.splice(idx, 1);
+  }
+  // Place in zone
+  if (!gameState.zones[zoneId]) gameState.zones[zoneId] = [];
+  gameState.zones[zoneId].push({ cardId, orientation });
+  renderGameState(); // re-render everything
+}
 // 8. Phase logic (simplified)
 const phaseOrder = ["draw", "main", "end"];
 function advancePhase() {
