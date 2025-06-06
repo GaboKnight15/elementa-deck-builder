@@ -40,6 +40,10 @@ body {
   box-shadow: 0 10px 24px rgba(0,0,0,0.17);
   z-index: 3;
     }
+/* HIDE GAMEPLAY UI */
+.in-game-only {
+  display: none;
+}
     /* Grid Layout for Gallery */
 #card-gallery.container,
 #card-gallery {
