@@ -197,6 +197,16 @@ const PHASES = [
 // ==========================
 // === RENDERING / UI ===
 // ==========================
+function showBattlefield() {
+  document.getElementById('battlefield').style.display = 'block';
+  document.querySelectorAll('.in-game-only').forEach(el => el.style.display = '');
+  // Hide builder-only elements, etc.
+}
+function showBuilder() {
+  document.getElementById('battlefield').style.display = 'none';
+  document.querySelectorAll('.in-game-only').forEach(el => el.style.display = 'none');
+  // Show builder-only elements, etc.
+}
 function getCardBgClass(card) {
   let colors = Array.isArray(card.color) ? card.color : [card.color];
   colors = colors.filter(Boolean).map(c => c.toLowerCase());
@@ -832,6 +842,7 @@ document.getElementById('void-modal').addEventListener('click', function(event) 
   });
 // SRART GAME LOGIC
 startGameBtn.onclick = () => {
+  showBattlefield();
   // Hide deck builder UI, show battlefield
   elementsToHide.forEach(el => el.style.display = 'none');
   battlefield.style.display = 'block';
@@ -888,6 +899,7 @@ startGameBtn.onclick = () => {
 
 
 backToBuilderBtn.onclick = () => {
+  showBuilder();
   elementsToHide.forEach(el => el.style.display = '');
   battlefield.style.display = 'none';
 };
