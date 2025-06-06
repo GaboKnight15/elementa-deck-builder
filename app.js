@@ -142,7 +142,13 @@ const PHASES = [
   const phasePlayerSpan    = document.getElementById('phase-player');
   const phaseNameSpan      = document.getElementById('phase-name');
   const nextPhaseBtn       = document.getElementById('next-phase-btn');
-
+  const elementsToHide = [
+    document.getElementById('deck-slot-selector'),
+    document.getElementById('filters'),
+    document.getElementById('card-gallery'),
+    document.querySelector('.deck'),
+    startGameBtn
+  ];
 // ==========================
 // === DECK MANAGEMENT ===
 // ==========================
@@ -788,7 +794,6 @@ startGameBtn.onclick = () => {
   }
   gameState.playerDeck = shuffle([...fullDeck]);
   gameState.playerHand = [];
-
   // For now, opponent uses same deck (or you can randomize/dummy)
   gameState.opponentDeck = shuffle([...fullDeck]);
   gameState.opponentHand = [];
@@ -798,7 +803,7 @@ startGameBtn.onclick = () => {
   renderGameState();
   updatePhaseDisplay();
 
-  // Set up drag-and-drop for all zones except void
+  // SET-UP DRAG AND DROP EXCEPT VOIDE
   document.querySelectorAll('.zone').forEach(zone => {
     const zoneId = zone.id;
     if (zoneId === "void-zone") return; // skip drag-and-drop on void
@@ -806,34 +811,31 @@ startGameBtn.onclick = () => {
       e.preventDefault(); // allow drop
       zone.classList.add('drag-over');
     };
-    zone.ondragleave = () => {
+    zone.ondragleave = () => {zone.classList.remove('drag-over');};
+    zone.ondrop = (e) => {
+      e.preventDefault();
       zone.classList.remove('drag-over');
-    };
-zone.ondrop = (e) => {
-  e.preventDefault();
-  zone.classList.remove('drag-over');
-  const cardId = e.dataTransfer.getData("text/plain");
-  const source = e.dataTransfer.getData("source");
-  const originZone = e.dataTransfer.getData("originZone");
-  let orientation = e.shiftKey ? "horizontal" : "vertical";
-
-  // Remove from the source
-  if (source === "hand") {
-    const idx = gameState.playerHand.indexOf(cardId);
-    if (idx !== -1) gameState.playerHand.splice(idx, 1);
-  } else if (source === "field" && originZone) {
-    let arr = gameState.zones[originZone];
-    if (arr) gameState.zones[originZone] = arr.filter(c => c.cardId !== cardId);
-  } else if (source === "void") {
-    const idx = gameState.zones["void"].findIndex(c => c.cardId === cardId);
-    if (idx !== -1) gameState.zones["void"].splice(idx, 1);
-  }
-
-  // Now add to the target zone
-  placeCardInZone(cardId, zone.id, orientation);
-};
-});
-};
+      const cardId = e.dataTransfer.getData("text/plain");
+      const source = e.dataTransfer.getData("source");
+      const originZone = e.dataTransfer.getData("originZone");
+      let orientation = e.shiftKey ? "horizontal" : "vertical";
+  // REMOVE FROM SOURCE
+      if (source === "hand") {
+        const idx = gameState.playerHand.indexOf(cardId);
+        if (idx !== -1) gameState.playerHand.splice(idx, 1);
+      } else if (source === "field" && originZone) {
+        let arr = gameState.zones[originZone];
+        if (arr) gameState.zones[originZone] = arr.filter(c => c.cardId !== cardId);
+      } else if (source === "void") {
+        const idx = gameState.zones["void"].findIndex(c => c.cardId === cardId);
+        if (idx !== -1) gameState.zones["void"].splice(idx, 1);
+      }
+    // ADD TO TARGET ZONE
+        placeCardInZone(cardId, zone.id, orientation);
+        showVoidModal && showVoidModal();
+      };
+     });
+   };
 
 
 backToBuilderBtn.onclick = () => {
@@ -1270,27 +1272,3 @@ document.getElementById('phase-name').onclick = function() {
 
 // Call this after any phase or turn change
 updatePhaseBar();
-
-
-// IDK WHERE THIS GOES //
-
-
-
-
-phaseDisplay.id = "phase-display";
-phaseDisplay.style.margin = "1em";
-phaseDisplay.style.fontSize = "1.2em";
-battlefield.insertBefore(phaseDisplay, battlefield.firstChild);
-
-const elementsToHide = [
-  document.getElementById('deck-slot-selector'),
-  document.getElementById('filters'),
-  document.getElementById('card-gallery'),
-  document.querySelector('.deck'),
-  startGameBtn
-];
-
-startGameBtn.onclick = () => {
-  elementsToHide.forEach(el => el.style.display = 'none');
-  battlefield.style.display = 'block';
-};
