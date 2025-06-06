@@ -1172,6 +1172,7 @@ document.body.addEventListener('click', function(e) {
 menu.onclick = (e) => e.stopPropagation();
 // Void Modal
 const voidModal = document.getElementById('void-modal');
+const voidModalContent = document.getElementById('void-modal-content');
 voidModal.addEventListener('click', function(event) {
   // Only close if clicking directly on the overlay (not inside modal content)
   if (event.target === voidModal) {
