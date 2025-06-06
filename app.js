@@ -1082,6 +1082,7 @@ function showVoidModal() {
 
       // Dropdown menu
       const menu = document.createElement('div');
+      menu.className = 'void-dropdown';
       menu.style.display = 'none';
       menu.style.position = 'absolute';
       menu.style.top = '40px';
@@ -1116,12 +1117,12 @@ function showVoidModal() {
       };
 
       // Show menu on right-click or click
-      btn.oncontextmenu = btn.onclick = (e) => {
-        e.preventDefault();
-        // Hide all other menus first
-        document.querySelectorAll('#void-card-list > div > div').forEach(m => m.style.display = 'none');
-        menu.style.display = 'block';
-      };
+btn.onclick = (e) => {
+  e.stopPropagation();
+  // Hide all other menus first
+  document.querySelectorAll('#void-card-list .void-dropdown').forEach(m => m.style.display = 'none');
+  menu.style.display = 'block';
+};
 
       // Hide menu if clicking elsewhere
       document.body.addEventListener('click', function hideMenu(e) {
@@ -1155,3 +1156,7 @@ zone.ondrop = (e) => {
   placeCardInZone(cardId, zone.id, orientation);
   showVoidModal && showVoidModal(); // re-render modal if open
 };
+document.body.addEventListener('click', function(e) {
+  document.querySelectorAll('#void-card-list .void-dropdown').forEach(m => m.style.display = 'none');
+});
+menu.onclick = (e) => e.stopPropagation();
