@@ -789,7 +789,7 @@ function advancePhase() {
 }
 
 // 9. Search Menu
-    function openDeckSearchModal() {
+function openDeckSearchModal() {
   const modal = document.getElementById('deck-search-modal');
   const content = document.getElementById('deck-search-content');
   content.innerHTML = "<h3>Select a card to add to your hand:</h3>";
@@ -797,11 +797,36 @@ function advancePhase() {
   gameState.playerDeck.forEach((id, idx) => {
     const card = dummyCards.find(c => c.id === id);
     if (!card) return;
+
     const btn = document.createElement('button');
-    btn.textContent = card.name;
     btn.style.margin = "0.2em";
+    btn.style.display = "flex";
+    btn.style.flexDirection = "column";
+    btn.style.alignItems = "center";
+    btn.style.justifyContent = "center";
+    btn.style.width = "110px";
+    btn.style.height = "170px";
+    btn.style.padding = "6px";
+
+    const img = document.createElement('img');
+    img.src = card.image;
+    img.alt = card.name;
+    img.style.maxWidth = "80px";
+    img.style.maxHeight = "110px";
+    img.style.display = "block";
+    img.style.marginBottom = "6px";
+
+    const name = document.createElement('div');
+    name.textContent = card.name;
+    name.style.fontSize = "0.95em";
+    name.style.color = "#223";
+    name.style.fontWeight = "bold";
+    name.style.textAlign = "center";
+
+    btn.appendChild(img);
+    btn.appendChild(name);
+
     btn.onclick = () => {
-      // Remove card from deck and add to hand
       gameState.playerHand.push(card.id);
       gameState.playerDeck.splice(idx, 1);
       closeDeckSearchModal();
