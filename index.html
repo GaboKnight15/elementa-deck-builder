@@ -12,14 +12,15 @@
     <button id="toggle-deck-btn" style="margin-left: 1em; padding: 0.4em 0.6em;">Toggle Deck</button>
     <button id="start-game-btn" style="margin:1em 0;">Start Game</button>
   </header>
+<div id="battlefield-container">
 <div id="battlefield" style="display:none;">
   <h2>Battlefield</h2>
 <!-- OPPONENT HAND -->
- <div class="hand-area first-hand-area" id="opponent-hand"></div>
+ <div class="hand-area first-hand-area in-game-only" id="opponent-hand"></div>
 <!-- OPPONENT ZONES -->
  <div class="zone-row utility-row" style="justify-content: flex-start;">
-  <div class="deck-zone" id="opponent-deck-zone"></div>
-  <div class="void-zone" id="opponent-void-zone"></div>
+    <div class="deck-zone" id="opponent-deck-zone"></div>
+    <div class="void-zone" id="opponent-void-zone"></div>
  </div>
   <div class="zone-row" id="opponent-domains-zone"></div>
   <div class="zone-row" id="opponent-creatures-zone"></div>
@@ -33,8 +34,9 @@
     <div class="void-zone" id="player-void-zone"></div>
  </div>
 </div>
+</div>
   <!-- PLAYER HAND -->
- <div class="hand-area second-hand-area" id="player-hand"></div>
+ <div class="hand-area second-hand-area in-game-only" id="player-hand"></div>
   
   <!-- Phase Display -->
   <div id="phase-display">
