@@ -446,3 +446,25 @@ body {
 #card-action-menu button:hover {
   background: #ffeeba;
 }
+/* Toggle Deck Alignment */
+body.deck-open #card-gallery.container,
+body.deck-open #card-gallery {
+  margin-right: 320px; /* Same as .deck width */
+  transition: margin 0.3s;
+}
+@media (max-width: 900px) {
+  body.deck-open #card-gallery.container,
+  body.deck-open #card-gallery {
+    margin-right: 0; /* Deck stacks on top, not beside, on mobile */
+  }
+}
+/* Adjust Gallery inside Container */
+body.deck-open .container {
+  margin-right: 320px;
+  transition: margin 0.3s;
+}
+@media (max-width: 900px) {
+  body.deck-open .container {
+    margin-right: 0;
+  }
+}
