@@ -442,6 +442,7 @@ function renderGameState() {
     div.appendChild(img);
     playerHandDiv.appendChild(div);
   }
+  fanHand();
 
   // Render opponent hand (as facedown cards)
   const opponentHandDiv = document.getElementById('opponent-hand');
@@ -553,7 +554,25 @@ function renderGameState() {
     }
   };
 }
+// FANHAND
+function fanHand() {
+  const hand = document.getElementById('player-hand');
+  const cards = hand.querySelectorAll('.card');
+  const total = cards.length;
+  if (total === 0) return;
 
+  const spread = Math.min(60, total * 12); // total angle in degrees, max 60
+  const offset = 40; // px between card centers
+
+  for (let i = 0; i < total; i++) {
+    // Center the spread
+    const angle = ((i - (total - 1) / 2) * (spread / (total > 1 ? total - 1 : 1)));
+    const x = (i - (total - 1) / 2) * offset;
+    cards[i].style.transform = `translateX(${x}px) rotate(${angle}deg)`;
+    cards[i].style.zIndex = 10 + i; // center card highest
+  }
+}
+// PLACECARDINZONE
 function placeCardInZone(cardId, zoneId, orientation = "vertical") {
   // Remove from hand
   const idx = gameState.playerHand.indexOf(cardId);
