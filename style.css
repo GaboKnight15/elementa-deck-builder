@@ -236,11 +236,18 @@ body {
       cursor: pointer;
     }
 /* GAMEPLAY STYLE */
+#battlefield-container {
+  display: flex;
+  justify-content: center;
+  width: 100vw;
+}
 #battlefield {
-  background: linear-gradient(135deg, #f5e8d0 0%, #e6d8c3 100%);
+  width: 1200px;
+  margin: 0 auto;
   border-radius: 18px;
-  box-shadow: 0 4px 24px #0002;
   padding: 24px 0;
+  background: linear-gradient(135deg, #f5e8d0 0%, #e6d8c3 100%);
+  box-shadow: 0 4px 24px #0002;
 }
 .hand-area {
   min-height: 60px;        /* Adjust for card size */
