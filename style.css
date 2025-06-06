@@ -468,3 +468,21 @@ body.deck-open .container {
     margin-right: 0;
   }
 }
+/* Void Style */
+.zone.void {
+  background: #222; /* example, dark background for discard */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.void-btn {
+  padding: 0.5em 1.2em;
+  border-radius: 8px;
+  background: #4c2d60;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+.void-btn:hover {
+  background: #7e469a;
+}
