@@ -723,19 +723,19 @@ deckActionsMenu.onclick = function(e) {
 };
 
 // Attach event listeners ONCE
-document.getElementById('deck-draw-btn').onclick = function() {
+deckActionsMenu.querySelector('#deck-draw-btn').onclick = function() {
   if (gameState.turn === "player" && gameState.playerDeck.length > 0) {
     drawCards("player", 1);
     updatePhaseDisplay();
   }
   deckActionsMenu.style.display = "none";
 };
-document.getElementById('deck-shuffle-btn').onclick = function() {
+deckActionsMenu.querySelector('#deck-shuffle-btn').onclick = function() {
   gameState.playerDeck = shuffle(gameState.playerDeck);
   renderGameState();
   deckActionsMenu.style.display = "none";
 };
-document.getElementById('deck-search-btn').onclick = function() {
+deckActionsMenu.querySelector('#deck-search-btn').onclick = function() {
   if (gameState.playerDeck.length > 0) {
     openDeckSearchModal();
   }
