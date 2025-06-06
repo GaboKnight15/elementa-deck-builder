@@ -417,3 +417,19 @@ body {
   font-size: 1.23em;
   margin-bottom: 0.6em;
 }
+/* Card zones actions */
+#card-action-menu button {
+  display: block;
+  width: 100%;
+  margin: 0.2em 0;
+  border: none;
+  background: #eee;
+  border-radius: 5px;
+  padding: 0.5em;
+  font-size: 1em;
+  cursor: pointer;
+  color: #333;
+}
+#card-action-menu button:hover {
+  background: #ffeeba;
+}
