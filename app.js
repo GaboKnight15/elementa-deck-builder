@@ -873,10 +873,9 @@ document.getElementById('void-modal').addEventListener('click', function(event) 
     updateDeckDisplay();
     renderGallery();
   });
-// SRART GAME LOGIC
+// START GAME LOGIC
 startGameBtn.onclick = () => {
   showBattlefield();
-  // Hide deck builder UI, show battlefield
   elementsToHide.forEach(el => el.style.display = 'none');
   battlefield.style.display = 'block';
 
