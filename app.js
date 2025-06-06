@@ -630,6 +630,11 @@ function renderGameState() {
       if (orientation === 'horizontal') {
         cardDiv.style.transform = 'rotate(90deg)';
       }
+      // Attach the onclick handler for ALL cards in zones
+      cardDiv.onclick = (e) => {
+           e.stopPropagation();
+           showCardActionMenu(cardId, zoneId, orientation, cardDiv);
+      };
       const img = document.createElement('img');
       img.src = card.image;
       img.alt = card.name;
@@ -843,4 +848,83 @@ function closeDeckSearchModal() {
 document.getElementById('close-deck-search').onclick = closeDeckSearchModal;
 document.getElementById('deck-search-modal').onclick = (e) => {
   if (e.target.id === 'deck-search-modal') closeDeckSearchModal();
+};
+
+// Actions in zones
+let currentCardMenuState = null;
+
+function showCardActionMenu(cardId, zoneId, orientation, cardDiv) {
+  const menu = document.getElementById('card-action-menu');
+  // Store which card, zone, and orientation are being operated on
+  currentCardMenuState = { cardId, zoneId, orientation };
+
+  // Position menu near the card
+  const rect = cardDiv.getBoundingClientRect();
+  menu.style.top = `${rect.bottom + window.scrollY + 4}px`;
+  menu.style.left = `${rect.left + window.scrollX}px`;
+  menu.style.display = 'block';
+}
+
+// Hide menu when clicking elsewhere
+document.body.addEventListener('click', function(e) {
+  const menu = document.getElementById('card-action-menu');
+  if (menu && menu.style.display === "block") {
+    menu.style.display = "none";
+  }
+});
+// Prevent menu from closing when clicking inside it
+document.getElementById('card-action-menu').onclick = function(e) {
+  e.stopPropagation();
+};
+document.getElementById('card-action-return-hand').onclick = function() {
+  if (!currentCardMenuState) return;
+  const { cardId, zoneId } = currentCardMenuState;
+  // Remove from zone
+  let arr = gameState.zones[zoneId];
+  if (arr) gameState.zones[zoneId] = arr.filter(c => c.cardId !== cardId);
+  // Add to hand
+  gameState.playerHand.push(cardId);
+  renderGameState();
+  document.getElementById('card-action-menu').style.display = 'none';
+};
+
+document.getElementById('card-action-orient').onclick = function() {
+  if (!currentCardMenuState) return;
+  const { cardId, zoneId } = currentCardMenuState;
+  // Change orientation
+  let arr = gameState.zones[zoneId];
+  if (arr) {
+    for (let c of arr) {
+      if (c.cardId === cardId) {
+        c.orientation = c.orientation === "horizontal" ? "vertical" : "horizontal";
+      }
+    }
+  }
+  renderGameState();
+  document.getElementById('card-action-menu').style.display = 'none';
+};
+
+document.getElementById('card-action-send-void').onclick = function() {
+  if (!currentCardMenuState) return;
+  const { cardId, zoneId } = currentCardMenuState;
+  // Remove from zone
+  let arr = gameState.zones[zoneId];
+  if (arr) gameState.zones[zoneId] = arr.filter(c => c.cardId !== cardId);
+  // Add to void zone (implement your own logic, e.g. push to gameState.zones['void'])
+  if (!gameState.zones['void']) gameState.zones['void'] = [];
+  gameState.zones['void'].push({ cardId, orientation: 'vertical' });
+  renderGameState();
+  document.getElementById('card-action-menu').style.display = 'none';
+};
+
+document.getElementById('card-action-send-deck').onclick = function() {
+  if (!currentCardMenuState) return;
+  const { cardId, zoneId } = currentCardMenuState;
+  // Remove from zone
+  let arr = gameState.zones[zoneId];
+  if (arr) gameState.zones[zoneId] = arr.filter(c => c.cardId !== cardId);
+  // Add to player deck (bottom)
+  gameState.playerDeck.push(cardId);
+  renderGameState();
+  document.getElementById('card-action-menu').style.display = 'none';
 };
