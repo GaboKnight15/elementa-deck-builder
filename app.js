@@ -752,7 +752,84 @@ document.body.addEventListener('click', function(e) {
   if (deckActionsMenu && deckActionsMenu.style.display === "block") {
     deckActionsMenu.style.display = "none";
   }
+document.getElementById('zone-void-2').onclick = function(e) {
+  e.stopPropagation();
+  showVoidModal();
+};
+  
 });
+// Void zone display
+function showVoidModal() {
+  const modal = document.getElementById('void-modal');
+  const list = document.getElementById('void-card-list');
+  list.innerHTML = '';
+
+  const voidCards = (gameState.zones['void'] || []);
+  if (voidCards.length === 0) {
+    list.innerHTML = '<div style="color:#999;">Void is empty.</div>';
+  } else {
+    // Use a grid for display
+    list.style.display = 'grid';
+    list.style.gridTemplateColumns = 'repeat(auto-fit, minmax(120px, 1fr))';
+    list.style.gap = '1em';
+    voidCards.forEach(({cardId, orientation}, idx) => {
+      const card = dummyCards.find(c => c.id === cardId);
+      if (!card) return;
+      const btn = document.createElement('button');
+      btn.style.display = 'flex';
+      btn.style.flexDirection = 'column';
+      btn.style.alignItems = 'center';
+      btn.style.justifyContent = 'center';
+      btn.style.width = "110px";
+      btn.style.height = "170px";
+      btn.style.padding = "6px";
+      btn.style.background = "#444";
+      btn.style.color = "#fff";
+      btn.style.borderRadius = "10px";
+      btn.style.border = "none";
+      btn.style.cursor = "pointer";
+      btn.style.transition = "background 0.2s";
+      btn.onmouseover = () => btn.style.background = "#222";
+      btn.onmouseout = () => btn.style.background = "#444";
+
+      const img = document.createElement('img');
+      img.src = card.image;
+      img.alt = card.name;
+      img.style.maxWidth = "80px";
+      img.style.maxHeight = "110px";
+      img.style.display = "block";
+      img.style.marginBottom = "6px";
+      if (orientation === 'horizontal') img.style.transform = "rotate(90deg)";
+
+      const name = document.createElement('div');
+      name.textContent = card.name;
+      name.style.fontSize = "0.95em";
+      name.style.fontWeight = "bold";
+      name.style.textAlign = "center";
+      name.style.color = "#fff";
+
+      btn.appendChild(img);
+      btn.appendChild(name);
+
+      // Placeholder for card actions in modal, to be added in the next step
+      btn.onclick = (e) => {
+        e.stopPropagation();
+        // Will add dropdown here in the next step!
+      };
+
+      list.appendChild(btn);
+    });
+  }
+
+  modal.style.display = 'block';
+}
+// Void close logic
+document.getElementById('close-void-modal').onclick = function() {
+  document.getElementById('void-modal').style.display = "none";
+};
+document.getElementById('void-modal').onclick = function(e) {
+  if (e.target.id === 'void-modal') document.getElementById('void-modal').style.display = "none";
+};
 // 7. Phase control
 const nextPhaseBtn = document.createElement('button');
 nextPhaseBtn.textContent = "Next Phase";
