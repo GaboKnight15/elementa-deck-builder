@@ -583,18 +583,25 @@ function renderDeckZone(zoneId, deckArray, who) {
 function fanHand() {
   const hand = document.getElementById('player-hand');
   const cards = hand.querySelectorAll('.card');
-  const total = cards.length;
-  if (total === 0) return;
+  const n = cards.length;
+  if (!n) return;
 
-  const spread = Math.min(60, total * 12); // total angle in degrees, max 60
-  const offset = 40; // px between card centers
+  // Adjust these for fan curvature
+  const maxAngle = 60; // total degrees of arc (e.g., 60 for wide, 30 for shallow)
+  const radius = 420;  // px, radius of the curve
 
-  for (let i = 0; i < total; i++) {
-    // Center the spread
-    const angle = ((i - (total - 1) / 2) * (spread / (total > 1 ? total - 1 : 1)));
-    const x = (i - (total - 1) / 2) * offset;
-    cards[i].style.transform = `translateX(${x}px) rotate(${angle}deg)`;
-    cards[i].style.zIndex = 10 + i; // center card highest
+  for (let i = 0; i < n; i++) {
+    // Spread angle: center = 0, edges = -maxAngle/2 ... +maxAngle/2
+    const angle = ((i - (n - 1) / 2) * (maxAngle / Math.max(n - 1, 1)));
+    // Calculate position on arc
+    const rad = angle * (Math.PI / 180);
+    const x = radius * Math.sin(rad);
+    const y = radius * (1 - Math.cos(rad));
+
+    cards[i].style.left = `calc(50% + ${x}px)`;
+    cards[i].style.bottom = `${y}px`;
+    cards[i].style.transform = `rotate(${angle}deg)`;
+    cards[i].style.zIndex = 10 + i;
   }
 }
 // PLACECARDINZONE
