@@ -847,9 +847,9 @@ function showVoidModal() {
 document.getElementById('close-void-modal').onclick = function() {
   document.getElementById('void-modal').style.display = "none";
 };
-document.getElementById('void-modal').onclick = function(e) {
-  if (e.target.id === 'void-modal') document.getElementById('void-modal').style.display = "none";
-};
+document.getElementById('void-modal').addEventListener('click', function(event) {
+  if (event.target === this) this.style.display = 'none';
+});
 // 7. Phase control
 const nextPhaseBtn = document.createElement('button');
 nextPhaseBtn.textContent = "Next Phase";
