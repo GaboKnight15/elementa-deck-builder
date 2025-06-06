@@ -549,14 +549,30 @@ startGameBtn.onclick = () => {
     zone.ondragleave = () => {
       zone.classList.remove('drag-over');
     };
-    zone.ondrop = (e) => {
-      e.preventDefault();
-      zone.classList.remove('drag-over');
-      const cardId = e.dataTransfer.getData("text/plain");
-      let orientation = e.shiftKey ? "horizontal" : "vertical";
-      placeCardInZone(cardId, zone.id, orientation);
-    };
-  });
+zone.ondrop = (e) => {
+  e.preventDefault();
+  zone.classList.remove('drag-over');
+  const cardId = e.dataTransfer.getData("text/plain");
+  const source = e.dataTransfer.getData("source");
+  const originZone = e.dataTransfer.getData("originZone");
+  let orientation = e.shiftKey ? "horizontal" : "vertical";
+
+  // Remove from the source
+  if (source === "hand") {
+    const idx = gameState.playerHand.indexOf(cardId);
+    if (idx !== -1) gameState.playerHand.splice(idx, 1);
+  } else if (source === "field" && originZone) {
+    let arr = gameState.zones[originZone];
+    if (arr) gameState.zones[originZone] = arr.filter(c => c.cardId !== cardId);
+  } else if (source === "void") {
+    const idx = gameState.zones["void"].findIndex(c => c.cardId === cardId);
+    if (idx !== -1) gameState.zones["void"].splice(idx, 1);
+  }
+
+  // Now add to the target zone
+  placeCardInZone(cardId, zone.id, orientation);
+};
+});
 };
 // Draw cards function
 function drawCards(who, n) {
