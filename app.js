@@ -944,6 +944,20 @@ document.getElementById('deck-search-modal').onclick = (e) => {
 
 // Actions in zones
 let currentCardMenuState = null;
+// Global click handlers
+if (!window.voidMenuGlobalClickHandlerAdded) {
+  document.body.addEventListener('click', function() {
+    document.querySelectorAll('#void-card-list .void-dropdown').forEach(m => m.style.display = 'none');
+  });
+  window.voidMenuGlobalClickHandlerAdded = true;
+}
+if (!window.cardMenuGlobalClickHandlerAdded) {
+  document.body.addEventListener('click', function() {
+    const menu = document.getElementById('card-action-menu');
+    if (menu && menu.style.display === "block") menu.style.display = "none";
+  });
+  window.cardMenuGlobalClickHandlerAdded = true;
+}
 
 function showCardActionMenu(cardId, zoneId, orientation, cardDiv) {
   const menu = document.getElementById('card-action-menu');
