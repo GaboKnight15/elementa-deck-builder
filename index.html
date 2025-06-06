@@ -196,10 +196,11 @@
   <button id="deck-search-btn">Search</button>
 </div>
   <!-- Void Search Modal -->
-<div id="void-modal" class="modal-overlay" style="display:none;">
-  <div id="void-modal-content" style="background:#fff; border-radius:10px; padding:18px; max-width:700px; margin:50px auto; position:relative;">
+<div id="void-modal" class="modal-overlay">
+  <div id="void-modal-content">
+    <button id="close-void-modal" style="position:absolute;top:10px;right:16px;font-size:1.8em;background:none;border:none;color:#889;cursor:pointer;z-index:10000;">×</button>
     <h3>Void</h3>
-    <div class="modal-content" id="void-card-list"></div>
+    <div id="void-card-list"></div>
   </div>
 </div>
   
