@@ -624,7 +624,17 @@ function renderGameState() {
   }
 // Render cards in zones
   document.querySelectorAll('.zone').forEach(zone => {
-    const zoneId = zone.id;
+  const zoneId = zone.id;
+  if (zoneId === "zone-void") {
+    // Render only a button or discard pile icon in the void cell
+    const voidCount = (gameState.zones['zone-void'] || []).length;
+    zone.innerHTML = `<button class="void-btn" onclick="showVoidModal()">Void (${voidCount})</button>`;
+    // Prevent drag-and-drop on Void zone
+    zone.ondragover = null;
+    zone.ondragleave = null;
+    zone.ondrop = null;
+    return;
+  }
     zone.innerHTML = '';
     const cards = gameState.zones[zoneId] || [];
     for (const { cardId, orientation } of cards) {
