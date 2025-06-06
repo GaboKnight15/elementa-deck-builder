@@ -165,12 +165,14 @@
     <button id="reset-deck-btn" style="background-color: #dc3545;">Reset Deck</button>
   </div>
   <!-- Phase Display -->
+<!-- Phase Display -->
 <div id="phase-display">
   <span class="label">Turn:</span>
-  <span class="player">player</span>
+  <span class="player" id="phase-player">player</span>
   <span class="label phase-sep">|</span>
   <span class="label">Phase:</span>
-  <span class="phase">draw</span>
+  <span class="phase" id="phase-name">draw</span>
+  <button id="next-phase-btn" title="Next Phase" style="margin-left:16px;">⏭</button>
 </div>
   <!-- Modal for full image view -->
   <div id="image-modal" class="modal">
