@@ -1170,3 +1170,11 @@ document.body.addEventListener('click', function(e) {
   document.querySelectorAll('#void-card-list .void-dropdown').forEach(m => m.style.display = 'none');
 });
 menu.onclick = (e) => e.stopPropagation();
+// Void Modal
+const voidModal = document.getElementById('void-modal');
+voidModal.addEventListener('click', function(event) {
+  // Only close if clicking directly on the overlay (not inside modal content)
+  if (event.target === voidModal) {
+    voidModal.style.display = 'none';
+  }
+});
