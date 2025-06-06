@@ -235,37 +235,6 @@ body {
       font-weight: bold;
       cursor: pointer;
     }
-.battlefield-grid {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);   /* 6 equal columns */
-  grid-template-rows: repeat(6, 1fr);      /* 6 equal rows */
-  gap: 6px;
-  background: #222;
-  border-radius: 14px;
-  padding: 10px;
-  margin: 0 auto 25px auto;
-  box-shadow: 0 0 22px #000a;
-  max-width: 1400px;
-  max-height: 90vh;        /* optional, keeps the grid from being too tall */
-  aspect-ratio: 6 / 8;     /* optional: ensures grid stays proportional */
-  position: relative;
-  overflow: auto;
-}
-
-/* All zones */
-.zone {
-  background: #222328;
-  border-radius: 11px;
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-start;
-  width: 100%;
-  height: 100%;
-  padding: 6px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  border: 3px solid #444;
-}
 .hand-area {
   min-height: 60px;        /* Adjust for card size */
   max-width: 1400px;       /* Match battlefield-grid */
@@ -287,51 +256,7 @@ body {
 .second-hand-area {
   margin-top: 10px;
 }
-
-/* The rest of the zones fill the grid as normal, no need for explicit placement */
-.zone.creature    { border-color: #ffbc42; }
-.zone.domain      { border-color: #4efc8c; }
-.zone.main        { border-color: #1E90FF; }
-.zone.void        { border-color: #e74c3c; }
-.zone.hand        { border-color: #4efc8c; background: #191933; }
-.zone.first       { opacity: 0.9; border-style: dashed; }
-
-/* Responsive for small screens */
-@media (max-width: 900px) {
-  .battlefield-grid {
-    max-width: 100vw;
-    max-height: 90vw;
-    gap: 3px;
-    padding: 3px;
-  }
-  .zone {
-    padding: 2px;
-  }
-}
-  .zone, .zone .card {
-    min-width: 60px;
-    min-height: 60px;
-    width: 60px;
-    height: 60px;
-  }
-  .hand {
-    min-height: 35px;
-    padding: 4px;
-  }
-}
-
-/* Card appearance in zones */
-.zone .card {
-  width: 80px;
-  height: 110px;
-  margin-right: 7px;
-  transition: transform 0.2s;
-}
-.zone .card.defense {
-  transform: rotate(90deg);
-  margin-right: 18px;
-}
-    /* Background themes */
+/* BACKGROUND THEMES */
     body.theme-green  { background: linear-gradient(to bottom, #e6ffe6, #a3d9a5); }
     body.theme-red    { background: linear-gradient(to bottom, #ffd6d6, #ff7f7f); }
     body.theme-blue   { background: linear-gradient(to bottom, #d6f0ff, #7fcfff); }
@@ -584,4 +509,49 @@ body.deck-open .container {
 #player-hand.hand .card:hover {
   transform: scale(1.1) translateY(-20px) !important;
   z-index: 100 !important;
+}
+.zone-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  min-height: 110px;
+  align-items: flex-end;
+  margin-bottom: 16px;
+}
+.utility-row {
+  gap: 48px; /* More space between deck/void piles */
+  min-height: 60px;
+}
+.deck-zone, .void-zone {
+  width: 60px;
+  height: 85px;
+  border-radius: 8px;
+  border: 2px solid #bbb;
+  background: #e7e7ef;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  font-size: 0.9em;
+  box-shadow: 0 2px 12px #0001;
+}
+.deck-zone::after {
+  content: "Deck";
+  position: absolute;
+  left: 50%;
+  bottom: -1.2em;
+  transform: translateX(-50%);
+  font-size: 0.85em;
+  color: #667;
+  opacity: 0.8;
+}
+.void-zone::after {
+  content: "Void";
+  position: absolute;
+  left: 50%;
+  bottom: -1.2em;
+  transform: translateX(-50%);
+  font-size: 0.85em;
+  color: #667;
+  opacity: 0.8;
 }
