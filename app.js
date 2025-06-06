@@ -586,7 +586,7 @@ function renderRowZone(zoneId, cardArray, category) {
       e.dataTransfer.setData("text/plain", cardId);
       e.dataTransfer.setData("source", zoneId);
     };
-    cardDiv.oncontextmenu = (e) => {
+    cardDiv.onclick = (e) => {
       e.stopPropagation();
       showCardActionMenu(cardId, zoneId, "vertical", cardDiv); // adjust as needed
     };
