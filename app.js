@@ -962,9 +962,7 @@ phaseNameSpan.onclick = function() { nextPhaseBtn.click(); };
   updateDeckDisplay();
   renderGallery();
   updatePhaseBar();
-
-
-
+  showBuilder();
 
   document.getElementById('filter-color').addEventListener('change', (e) => {
     const color = e.target.value.toLowerCase();
@@ -988,9 +986,6 @@ phaseNameSpan.onclick = function() { nextPhaseBtn.click(); };
       deckPanel.classList.remove('show');
     }
   });
-
-
-
 
 document.body.addEventListener('click', function(e) {
   let menu = document.getElementById('player-deck-actions');
