@@ -39,16 +39,18 @@
  <div class="hand-area second-hand-area in-game-only" id="player-hand"></div>
   
   <!-- Phase Display -->
-  <div id="phase-display">
-    <span class="label">Turn:</span>
-    <span class="player" id="phase-player">player</span>
-    <span class="label phase-sep">|</span>
-    <span class="label">Phase:</span>
-    <span class="phase" id="phase-name">draw</span>
-  <button id="next-phase-btn" title="Next Phase" style="margin-left:16px;">⏭</button>
+  <div class="phase-bar in-game-only" id="phase-bar">
+    <div id="phase-display">
+      <span class="label">Turn:</span>
+      <span class="player" id="phase-player">player</span>
+      <span class="label phase-sep">|</span>
+      <span class="label">Phase:</span>
+      <span class="phase" id="phase-name">draw</span>
+    <button id="next-phase-btn" title="Next Phase" style="margin-left:16px;">⏭</button>
+  </div>
 </div>
   
-  <button id="back-to-builder-btn">Back to Deck Builder</button>
+  <button class="in-game-only" id="back-to-builder-btn">Back to Deck Builder</button>
 </div>
   <!-- Deck Slot Selector -->
   <div id="deck-slot-selector" style="margin: 1em;">
