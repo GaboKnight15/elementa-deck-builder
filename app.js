@@ -434,6 +434,7 @@ function drawCards(who, n) {
     hand.push(deck.shift());
   }
   renderGameState();
+  setupDropZones();
 }
 
 function renderGameState() {
@@ -541,6 +542,25 @@ function renderGameState() {
     }
   };
 }
+// DROP ZONES
+function setupDropZones() {
+  ['player-creatures-zone', 'player-domains-zone'].forEach(zoneId => {
+    const zone = document.getElementById(zoneId);
+    if (!zone) return;
+    zone.ondragover = (e) => {
+      e.preventDefault();
+      zone.classList.add('drag-over');
+    };
+    zone.ondragleave = () => zone.classList.remove('drag-over');
+    zone.ondrop = (e) => {
+      e.preventDefault();
+      zone.classList.remove('drag-over');
+      const cardId = e.dataTransfer.getData('text/plain');
+      if (!gameState.playerHand.includes(cardId)) return;
+      placeCardInZone(cardId, zoneId, "vertical");
+    };
+  });
+}
 // RENDER ROW ZONES
 function renderRowZone(zoneId, cardArray, category) {
   const zoneDiv = document.getElementById(zoneId);
@@ -630,6 +650,7 @@ function placeCardInZone(cardId, zoneId, orientation = "vertical") {
   // (Add for opponent, etc...)
 
   renderGameState();
+  setupDropZones();
 }
 
 function removeCardFromAllZones(cardId) {
@@ -690,6 +711,7 @@ function openDeckSearchModal() {
       gameState.playerDeck.splice(idx, 1);
       closeDeckSearchModal();
       renderGameState();
+      setupDropZones();
     };
     content.appendChild(btn);
   });
@@ -862,39 +884,26 @@ startGameBtn.onclick = () => {
   gameState.turn = "player";
   gameState.phase = "draw";
   renderGameState();
+  setupDropZones();
 
   // SET-UP DRAG AND DROP EXCEPT VOIDE
-  document.querySelectorAll('.zone').forEach(zone => {
-    const zoneId = zone.id;
-    if (zoneId === "void-zone") return; // skip drag-and-drop on void
-    zone.ondragover = (e) => {
-      e.preventDefault(); // allow drop
-      zone.classList.add('drag-over');
-    };
-    zone.ondragleave = () => {zone.classList.remove('drag-over');};
-    zone.ondrop = (e) => {
-      e.preventDefault();
-      zone.classList.remove('drag-over');
-      const cardId = e.dataTransfer.getData("text/plain");
-      const source = e.dataTransfer.getData("source");
-      const originZone = e.dataTransfer.getData("originZone");
-      let orientation = e.shiftKey ? "horizontal" : "vertical";
-  // REMOVE FROM SOURCE
-      if (source === "hand") {
-        const idx = gameState.playerHand.indexOf(cardId);
-        if (idx !== -1) gameState.playerHand.splice(idx, 1);
-      } else if (source === "field" && originZone) {
-        let arr = gameState.zones[originZone];
-        if (arr) gameState.zones[originZone] = arr.filter(c => c.cardId !== cardId);
-      } else if (source === "void") {
-        const idx = gameState.zones["void"].findIndex(c => c.cardId === cardId);
-        if (idx !== -1) gameState.zones["void"].splice(idx, 1);
-      }
-    // ADD TO TARGET ZONE
-        placeCardInZone(cardId, zone.id, orientation);
-        showVoidModal && showVoidModal();
-      };
-     });
+['player-creatures-zone', 'player-domains-zone'].forEach(zoneId => {
+  const zone = document.getElementById(zoneId);
+  if (!zone) return;
+  zone.ondragover = (e) => {
+    e.preventDefault();
+    zone.classList.add('drag-over');
+  };
+  zone.ondragleave = () => zone.classList.remove('drag-over');
+  zone.ondrop = (e) => {
+    e.preventDefault();
+    zone.classList.remove('drag-over');
+    const cardId = e.dataTransfer.getData('text/plain');
+    // Only allow hand cards (if you want)
+    if (!gameState.playerHand.includes(cardId)) return;
+    placeCardInZone(cardId, zoneId, "vertical");
+  };
+});
    };
 
 
@@ -913,6 +922,7 @@ nextPhaseBtn.onclick = () => {
   if (gameState.phase === 'draw') drawCards(gameState.turn, 1);
   updatePhaseBar();
   renderGameState && renderGameState();
+  setupDropZones();
 };
 phaseNameSpan.onclick = function() { nextPhaseBtn.click(); };
 
@@ -1010,6 +1020,7 @@ deckActionsMenu.querySelector('#deck-draw-btn').onclick = function() {
 deckActionsMenu.querySelector('#deck-shuffle-btn').onclick = function() {
   gameState.playerDeck = shuffle(gameState.playerDeck);
   renderGameState();
+  setupDropZones();
   deckActionsMenu.style.display = "none";
 };
 deckActionsMenu.querySelector('#deck-search-btn').onclick = function() {
@@ -1080,6 +1091,7 @@ document.getElementById('card-action-return-hand').onclick = function() {
   // Add to hand
   gameState.playerHand.push(cardId);
   renderGameState();
+  setupDropZones();
   document.getElementById('card-action-menu').style.display = 'none';
 };
 
@@ -1096,6 +1108,7 @@ document.getElementById('card-action-orient').onclick = function() {
     }
   }
   renderGameState();
+  setupDropZones();
   document.getElementById('card-action-menu').style.display = 'none';
 };
 
@@ -1109,6 +1122,7 @@ document.getElementById('card-action-send-void').onclick = function() {
   if (!gameState.zones['void']) gameState.zones['void'] = [];
   gameState.zones['void'].push({ cardId, orientation: 'vertical' });
   renderGameState();
+  setupDropZones();
   document.getElementById('card-action-menu').style.display = 'none';
 };
 
@@ -1121,6 +1135,7 @@ document.getElementById('card-action-send-deck').onclick = function() {
   // Add to player deck (bottom)
   gameState.playerDeck.push(cardId);
   renderGameState();
+  setupDropZones();
   document.getElementById('card-action-menu').style.display = 'none';
 };
 function showVoidModal() {
