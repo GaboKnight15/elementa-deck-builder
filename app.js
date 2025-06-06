@@ -109,15 +109,20 @@ const PHASES = [
   // --- MULTI-DECK MANAGEMENT --- //
   const DECK_SLOTS_KEY = "deckSlots";
   const DECKS_KEY = "decks";
-  let gameState = {
-    playerDeck: [],
-    playerHand: [],
-    opponentDeck: [],
-    opponentHand: [],
-    zones: {},
-    turn: "player",
-    phase: "draw"
-  };
+ let gameState = {
+  playerDeck: [],
+  playerHand: [],
+  playerCreatures: [],
+  playerDomains: [],
+  playerVoid: [],
+  opponentDeck: [],
+  opponentHand: [],
+  opponentCreatures: [],
+  opponentDomains: [],
+  opponentVoid: [],
+  turn: "player",
+  phase: "draw"
+};
 // ==========================
 // === DOM REFERENCES ===
 // ==========================
@@ -422,7 +427,7 @@ function drawCards(who, n) {
 }
 
 function renderGameState() {
-  // Render player hand
+  // RENDER PLAYER HAND
   const playerHandDiv = document.getElementById('player-hand');
   playerHandDiv.innerHTML = '';
   for (let cardId of gameState.playerHand) {
@@ -444,7 +449,7 @@ function renderGameState() {
   }
   fanHand();
 
-  // Render opponent hand (as facedown cards)
+  // RENDER OPPONENT HAND FACEDOWN
   const opponentHandDiv = document.getElementById('opponent-hand');
   opponentHandDiv.innerHTML = '';
   for (let i = 0; i < gameState.opponentHand.length; i++) {
@@ -457,48 +462,20 @@ function renderGameState() {
     div.appendChild(img);
     opponentHandDiv.appendChild(div);
   }
-// Render cards in zones
-  document.querySelectorAll('.zone').forEach(zone => {
-  const zoneId = zone.id;
-  if (zoneId === "zone-void") {
-    // Render only a button or discard pile icon in the void cell
-    const voidCount = (gameState.zones['zone-void'] || []).length;
-    zone.innerHTML = `<button class="void-btn" onclick="showVoidModal()">Void (${voidCount})</button>`;
-    // Prevent drag-and-drop on Void zone
-    zone.ondragover = null;
-    zone.ondragleave = null;
-    zone.ondrop = null;
-    return;
-  }
-    zone.innerHTML = '';
-    const cards = gameState.zones[zoneId] || [];
-    for (const { cardId, orientation } of cards) {
-      const card = dummyCards.find(c => c.id === cardId);
-      if (!card) continue;
-      const cardDiv = document.createElement('div');
-      cardDiv.className = 'card';
-      if (orientation === 'horizontal') {
-        cardDiv.style.transform = 'rotate(90deg)';
-      }
-      cardDiv.draggable = true;
-      cardDiv.ondragstart = (e) => {
-        e.dataTransfer.setData("text/plain", cardId);
-        e.dataTransfer.setData("source", "field");
-        e.dataTransfer.setData("originZone", zoneId);
-};
-      // Attach the onclick handler for ALL cards in zones
-      cardDiv.onclick = (e) => {
-           e.stopPropagation();
-           showCardActionMenu(cardId, zoneId, orientation, cardDiv);
-      };
-      const img = document.createElement('img');
-      img.src = card.image;
-      img.alt = card.name;
-      img.style.width = "80px";
-      cardDiv.appendChild(img);
-      zone.appendChild(cardDiv);
-    }
-  });
+    // Player Zones
+  renderRowZone('player-creatures-zone', gameState.playerCreatures, "creature");
+  renderRowZone('player-domains-zone', gameState.playerDomains, "domain");
+
+  // Opponent Zones
+  renderRowZone('opponent-creatures-zone', gameState.opponentCreatures, "creature");
+  renderRowZone('opponent-domains-zone', gameState.opponentDomains, "domain");
+
+  // Deck & Void
+  renderDeckZone('player-deck-zone', gameState.playerDeck, "player");
+  renderDeckZone('player-void-zone', gameState.playerVoid, "player");
+  renderDeckZone('opponent-deck-zone', gameState.opponentDeck, "opponent");
+  renderDeckZone('opponent-void-zone', gameState.opponentVoid, "opponent");
+  
 // Render player deck stack
   const playerDeckDiv = document.getElementById('player-deck-zone');
   playerDeckDiv.innerHTML = '';
@@ -554,6 +531,54 @@ function renderGameState() {
     }
   };
 }
+// RENDER ROW ZONES
+function renderRowZone(zoneId, cardArray, category) {
+  const zoneDiv = document.getElementById(zoneId);
+  zoneDiv.innerHTML = '';
+  for (const cardId of cardArray) {
+    const card = dummyCards.find(c => c.id === cardId);
+    if (!card) continue;
+    const cardDiv = document.createElement('div');
+    cardDiv.className = 'card';
+    cardDiv.draggable = true;
+    cardDiv.ondragstart = (e) => {
+      e.dataTransfer.setData("text/plain", cardId);
+      e.dataTransfer.setData("source", zoneId);
+    };
+    cardDiv.onclick = (e) => {
+      e.stopPropagation();
+      showCardActionMenu(cardId, zoneId, "vertical", cardDiv); // adjust as needed
+    };
+    const img = document.createElement('img');
+    img.src = card.image;
+    img.alt = card.name;
+    img.style.width = "80px";
+    cardDiv.appendChild(img);
+    zoneDiv.appendChild(cardDiv);
+  }
+}
+// RENDER DECK AND VOID
+function renderDeckZone(zoneId, deckArray, who) {
+  const zoneDiv = document.getElementById(zoneId);
+  zoneDiv.innerHTML = '';
+  const deckCard = document.createElement('div');
+  deckCard.className = 'card';
+  const img = document.createElement('img');
+  img.src = "images/cardback.png";
+  img.alt = who + "'s Deck";
+  img.style.width = "60px";
+  img.style.opacity = "0.85";
+  deckCard.appendChild(img);
+
+  const countDiv = document.createElement('div');
+  countDiv.style.textAlign = 'center';
+  countDiv.style.fontWeight = 'bold';
+  countDiv.textContent = deckArray.length;
+  deckCard.appendChild(countDiv);
+  zoneDiv.appendChild(deckCard);
+
+  // Add click/drag handlers as needed
+}
 // FANHAND
 function fanHand() {
   const hand = document.getElementById('player-hand');
@@ -574,18 +599,33 @@ function fanHand() {
 }
 // PLACECARDINZONE
 function placeCardInZone(cardId, zoneId, orientation = "vertical") {
-  // Remove from hand
-  const idx = gameState.playerHand.indexOf(cardId);
-  if (idx !== -1) {
-    gameState.playerHand.splice(idx, 1);
+  // Remove from all possible locations (hand, other battlefield rows)
+  removeCardFromAllZones(cardId);
+
+  // Add to target
+  if (zoneId === 'player-creatures-zone') {
+    gameState.playerCreatures.push(cardId);
+  } else if (zoneId === 'player-domains-zone') {
+    gameState.playerDomains.push(cardId);
+  } else if (zoneId === 'player-void-zone') {
+    gameState.playerVoid.push(cardId);
   }
-  // Place in zone
-  if (!gameState.zones[zoneId]) gameState.zones[zoneId] = [];
-  gameState.zones[zoneId].push({ cardId, orientation });
-  renderGameState(); // re-render everything
+  // (Add for opponent, etc...)
+
+  renderGameState();
 }
 
-
+function removeCardFromAllZones(cardId) {
+  // Utility to remove the card from any array it could be in
+  const allRows = [
+    gameState.playerHand, gameState.playerCreatures, gameState.playerDomains, gameState.playerVoid,
+    gameState.opponentHand, gameState.opponentCreatures, gameState.opponentDomains, gameState.opponentVoid
+  ];
+  for (const arr of allRows) {
+    const idx = arr.indexOf(cardId);
+    if (idx !== -1) arr.splice(idx, 1);
+  }
+}
   // Modal logic
   closeBtn.onclick = () => { modal.style.display = "none"; };
   modal.onclick = (e) => { if (e.target === modal) modal.style.display = "none"; };
