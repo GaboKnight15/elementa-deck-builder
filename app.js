@@ -1125,11 +1125,14 @@ function showVoidModal() {
       // Attach menu actions
       menu.querySelector('.void-action-hand').onclick = (e) => {
         e.stopPropagation();
+        const voidIdx = gameState.zones['void'].findIndex(c => c.cardId === cardId);
+        if (voidIdx !== -1) {
         // Remove from void, add to hand
         gameState.zones['void'].splice(idx, 1);
         gameState.playerHand.push(cardId);
         showVoidModal(); // re-render
         updatePhaseDisplay && updatePhaseDisplay();
+        }
       };
       menu.querySelector('.void-action-deck').onclick = (e) => {
         e.stopPropagation();
