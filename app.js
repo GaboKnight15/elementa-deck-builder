@@ -1010,3 +1010,148 @@ document.getElementById('card-action-send-deck').onclick = function() {
   renderGameState();
   document.getElementById('card-action-menu').style.display = 'none';
 };
+function showVoidModal() {
+  const modal = document.getElementById('void-modal');
+  const list = document.getElementById('void-card-list');
+  list.innerHTML = '';
+
+  const voidCards = (gameState.zones['void'] || []);
+  if (voidCards.length === 0) {
+    list.innerHTML = '<div style="color:#999;">Void is empty.</div>';
+  } else {
+    list.style.display = 'grid';
+    list.style.gridTemplateColumns = 'repeat(auto-fit, minmax(120px, 1fr))';
+    list.style.gap = '1em';
+    voidCards.forEach(({cardId, orientation}, idx) => {
+      const card = dummyCards.find(c => c.id === cardId);
+      if (!card) return;
+
+      const wrapper = document.createElement('div');
+      wrapper.style.position = 'relative';
+      wrapper.style.display = 'flex';
+      wrapper.style.flexDirection = 'column';
+      wrapper.style.alignItems = 'center';
+
+      // Card button (for drag and menu)
+      const btn = document.createElement('button');
+      btn.style.display = 'flex';
+      btn.style.flexDirection = 'column';
+      btn.style.alignItems = 'center';
+      btn.style.justifyContent = 'center';
+      btn.style.width = "110px";
+      btn.style.height = "170px";
+      btn.style.padding = "6px";
+      btn.style.background = "#444";
+      btn.style.color = "#fff";
+      btn.style.borderRadius = "10px";
+      btn.style.border = "none";
+      btn.style.cursor = "pointer";
+      btn.draggable = true;
+
+      // Drag logic
+      btn.ondragstart = (e) => {
+        e.dataTransfer.setData("text/plain", cardId);
+        e.dataTransfer.setData("source", "void");
+        // Optional: visually indicate dragging
+        btn.style.opacity = "0.7";
+      };
+      btn.ondragend = (e) => {
+        btn.style.opacity = "1";
+      };
+
+      // Card image
+      const img = document.createElement('img');
+      img.src = card.image;
+      img.alt = card.name;
+      img.style.maxWidth = "80px";
+      img.style.maxHeight = "110px";
+      img.style.display = "block";
+      img.style.marginBottom = "6px";
+      if (orientation === 'horizontal') img.style.transform = "rotate(90deg)";
+
+      // Card name
+      const name = document.createElement('div');
+      name.textContent = card.name;
+      name.style.fontSize = "0.95em";
+      name.style.fontWeight = "bold";
+      name.style.textAlign = "center";
+      name.style.color = "#fff";
+
+      btn.appendChild(img);
+      btn.appendChild(name);
+
+      // Dropdown menu
+      const menu = document.createElement('div');
+      menu.style.display = 'none';
+      menu.style.position = 'absolute';
+      menu.style.top = '40px';
+      menu.style.left = '50%';
+      menu.style.transform = 'translateX(-50%)';
+      menu.style.background = 'white';
+      menu.style.border = '1px solid #aaa';
+      menu.style.borderRadius = '7px';
+      menu.style.zIndex = '9999';
+      menu.style.padding = '4px';
+      menu.innerHTML = `
+        <button type="button" class="void-action-hand">Return to Hand</button>
+        <button type="button" class="void-action-deck">Return to Deck</button>
+      `;
+
+      // Attach menu actions
+      menu.querySelector('.void-action-hand').onclick = (e) => {
+        e.stopPropagation();
+        // Remove from void, add to hand
+        gameState.zones['void'].splice(idx, 1);
+        gameState.playerHand.push(cardId);
+        showVoidModal(); // re-render
+        updatePhaseDisplay && updatePhaseDisplay();
+      };
+      menu.querySelector('.void-action-deck').onclick = (e) => {
+        e.stopPropagation();
+        // Remove from void, add to deck (top)
+        gameState.zones['void'].splice(idx, 1);
+        gameState.playerDeck.push(cardId);
+        showVoidModal();
+        updatePhaseDisplay && updatePhaseDisplay();
+      };
+
+      // Show menu on right-click or click
+      btn.oncontextmenu = btn.onclick = (e) => {
+        e.preventDefault();
+        // Hide all other menus first
+        document.querySelectorAll('#void-card-list > div > div').forEach(m => m.style.display = 'none');
+        menu.style.display = 'block';
+      };
+
+      // Hide menu if clicking elsewhere
+      document.body.addEventListener('click', function hideMenu(e) {
+        if (!menu.contains(e.target)) menu.style.display = 'none';
+      }, { once: true });
+
+      wrapper.appendChild(btn);
+      wrapper.appendChild(menu);
+
+      list.appendChild(wrapper);
+    });
+  }
+
+  modal.style.display = 'block';
+}
+zone.ondrop = (e) => {
+  e.preventDefault();
+  zone.classList.remove('drag-over');
+  const cardId = e.dataTransfer.getData("text/plain");
+  const source = e.dataTransfer.getData("source");
+  let orientation = e.shiftKey ? "horizontal" : "vertical";
+  if (source === "void") {
+    // Remove from void pile
+    const idx = gameState.zones["void"].findIndex(c => c.cardId === cardId);
+    if (idx !== -1) gameState.zones["void"].splice(idx, 1);
+  } else {
+    // Remove from hand if needed
+    const idx = gameState.playerHand.indexOf(cardId);
+    if (idx !== -1) gameState.playerHand.splice(idx, 1);
+  }
+  placeCardInZone(cardId, zone.id, orientation);
+  showVoidModal && showVoidModal(); // re-render modal if open
+};
