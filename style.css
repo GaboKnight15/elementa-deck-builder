@@ -495,26 +495,33 @@ body.deck-open .container {
   border: 2px solid #5076e3;
 }
 /* HAND FANOUT */
-#player-hand.hand {
+#player-hand.hand-area {
   position: relative;
-  width: 600px;   /* Or 100%, or whatever suits your layout */
-  height: 180px;  /* Enough for rotation, adjust as needed */
+  width: 700px; /* or 100%, or whatever suits */
+  height: 200px; /* enough for the curve */
   margin: auto;
-  display: block; /* Remove flex/grid if present! */
-  pointer-events: none; /* Prevent container from eating events */
+  background: #232339;
+  border-radius: 0 0 42% 42% / 0 0 100% 100%;
+  box-shadow: 0 -2px 24px #0007;
+  display: block;
+  overflow: visible;
+  pointer-events: none; /* so the container doesn't block card events */
 }
-#player-hand.hand .card {
+
+#player-hand.hand-area .card {
   position: absolute;
   bottom: 0;
   left: 50%;
   transform-origin: bottom center;
-  transition: transform 0.2s, z-index 0.2s;
-  width: 100px;    /* Card size */
-  height: 140px;
-  pointer-events: auto; /* Allow cards to remain interactive */
+  transition: transform 0.22s, z-index 0.18s;
+  width: 110px;
+  height: 154px;
+  pointer-events: auto; /* card events still work */
+  box-shadow: 0 4px 16px #0004;
 }
-#player-hand.hand .card:hover {
-  transform: scale(1.1) translateY(-20px) !important;
+
+#player-hand.hand-area .card:hover {
+  transform: scale(1.16) translateY(-32px) !important;
   z-index: 100 !important;
 }
 .zone-row {
