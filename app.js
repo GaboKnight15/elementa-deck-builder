@@ -1,14 +1,3 @@
-// --- Card Background Helper ---
-function getCardBgClass(card) {
-  let colors = Array.isArray(card.color) ? card.color : [card.color];
-  colors = colors.filter(Boolean).map(c => c.toLowerCase());
-  // Only allow 1 or 2 colors for background
-  if (colors.length === 1) return `card-bg-${colors[0]}`;
-  if (colors.length === 2) return `card-bg-${colors[0]}-${colors[1]}`;
-  // If 3+ colors, fallback to 'card-bg-gold' or any default
-  return `card-bg-gold`;
-}
-
 // Card List //
   const dummyCards = [
       { id: 'basicfairy', name: 'Fairy', rarity: 'Basic', image: 'BasicCreatures/Fairy.png', category: 'creature', color: 'green', type: 'fairy', hp: 1, atk: 1, def: 0, cost: 0, archetype: 'Fairy', ability: 'flying'},
@@ -106,47 +95,62 @@ function getCardBgClass(card) {
       { id: 'basicshadowforest', name: 'Shadow Forest', rarity: 'Basic', image: 'images/Black Basic Location.png', category: 'domain', color: 'black', type: 'domain', hp: 5, cost: 1},
 
   ];
-
+// ==========================
+// === CONSTANTS & STATE ===
+// ==========================
+const PHASES = [
+  { turn: 'player', phase: 'draw' },
+  { turn: 'player', phase: 'main' },
+  { turn: 'player', phase: 'end' },
+  { turn: 'opponent', phase: 'draw' },
+  { turn: 'opponent', phase: 'main' },
+  { turn: 'opponent', phase: 'end' }
+];
   // --- MULTI-DECK MANAGEMENT --- //
   const DECK_SLOTS_KEY = "deckSlots";
   const DECKS_KEY = "decks";
+  let gameState = {
+    playerDeck: [],
+    playerHand: [],
+    opponentDeck: [],
+    opponentHand: [],
+    zones: {},
+    turn: "player",
+    phase: "draw"
+  };
+// ==========================
+// === DOM REFERENCES ===
+// ==========================
+
+  const deckSlotSelect     = document.getElementById('deck-slot-select');
+  const addDeckSlotBtn     = document.getElementById('add-deck-slot-btn');
+  const renameDeckSlotBtn  = document.getElementById('rename-deck-slot-btn');
+  const deleteDeckSlotBtn  = document.getElementById('delete-deck-slot-btn');
+  const deckTitle          = document.getElementById('deck-title');
+  const startGameBtn       = document.getElementById('start-game-btn');
+  const backToBuilderBtn   = document.getElementById('back-to-builder-btn');
+  const battlefield        = document.getElementById('battlefield');
+  const gallery            = document.getElementById('card-gallery');
+  const deckList           = document.getElementById('deck-list');
+  const cardCount          = document.getElementById('card-count');
+  const modal              = document.getElementById('image-modal');
+  const modalImg           = document.getElementById('modal-img');
+  const closeBtn           = document.querySelector('.close');
+  const toggleBtn          = document.getElementById('toggle-deck-btn');
+  const deckPanel          = document.querySelector('.deck');
+  // Phase display (HTML version, not JS-generated)
+  const phasePlayerSpan    = document.getElementById('phase-player');
+  const phaseNameSpan      = document.getElementById('phase-name');
+  const nextPhaseBtn       = document.getElementById('next-phase-btn');
+
+// ==========================
+// === DECK MANAGEMENT ===
+// ==========================
+
   let deckSlots = JSON.parse(localStorage.getItem(DECK_SLOTS_KEY)) || ["Deck 1"];
   let decks = JSON.parse(localStorage.getItem(DECKS_KEY)) || { "Deck 1": {} };
   let currentDeckSlot = localStorage.getItem("currentDeckSlot") || deckSlots[0];
 
-  const deckSlotSelect = document.getElementById('deck-slot-select');
-  const addDeckSlotBtn = document.getElementById('add-deck-slot-btn');
-  const renameDeckSlotBtn = document.getElementById('rename-deck-slot-btn');
-  const deleteDeckSlotBtn = document.getElementById('delete-deck-slot-btn');
-  const deckTitle = document.getElementById('deck-title');
-const startGameBtn = document.getElementById('start-game-btn');
-const battlefield = document.getElementById('battlefield');
-    // Phase display at top of battlefield
-const phaseDisplay = document.createElement('div');
-phaseDisplay.id = "phase-display";
-phaseDisplay.style.margin = "1em";
-phaseDisplay.style.fontSize = "1.2em";
-battlefield.insertBefore(phaseDisplay, battlefield.firstChild);
-const backToBuilderBtn = document.getElementById('back-to-builder-btn');
-
-// Elements to hide/show (deck, filters, gallery, deck slot selector)
-const elementsToHide = [
-  document.getElementById('deck-slot-selector'),
-  document.getElementById('filters'),
-  document.getElementById('card-gallery'),
-  document.querySelector('.deck'),
-  startGameBtn
-];
-
-startGameBtn.onclick = () => {
-  elementsToHide.forEach(el => el.style.display = 'none');
-  battlefield.style.display = 'block';
-};
-
-backToBuilderBtn.onclick = () => {
-  elementsToHide.forEach(el => el.style.display = '');
-  battlefield.style.display = 'none';
-};
   function saveDeckState() {
     localStorage.setItem(DECK_SLOTS_KEY, JSON.stringify(deckSlots));
     localStorage.setItem(DECKS_KEY, JSON.stringify(decks));
@@ -179,85 +183,21 @@ backToBuilderBtn.onclick = () => {
     deckTitle.textContent = currentDeckSlot;
   }
 
-  deckSlotSelect.addEventListener('change', () => {
-    currentDeckSlot = deckSlotSelect.value;
-    saveDeckState();
-    updateDeckDisplay();
-    renderGallery();
-  });
+// ==========================
+// === RENDERING / UI ===
+// ==========================
+function getCardBgClass(card) {
+  let colors = Array.isArray(card.color) ? card.color : [card.color];
+  colors = colors.filter(Boolean).map(c => c.toLowerCase());
+  if (colors.length === 1) return `card-bg-${colors[0]}`;
+  if (colors.length === 2) return `card-bg-${colors[0]}-${colors[1]}`;
+  return `card-bg-gold`;
+}
 
-  addDeckSlotBtn.addEventListener('click', () => {
-    let newName = prompt("Deck name?", `Deck ${deckSlots.length + 1}`);
-    if (!newName) return;
-    if (deckSlots.includes(newName)) {
-      alert("Deck name already exists!");
-      return;
-    }
-    deckSlots.push(newName);
-    decks[newName] = {};
-    currentDeckSlot = newName;
-    saveDeckState();
-    refreshDeckSlotSelect();
-    updateDeckDisplay();
-    renderGallery();
-  });
-
-  renameDeckSlotBtn.addEventListener('click', () => {
-    let newName = prompt("Rename deck to:", currentDeckSlot);
-    if (!newName || newName === currentDeckSlot) return;
-    if (deckSlots.includes(newName)) {
-      alert("Deck name already exists!");
-      return;
-    }
-    let idx = deckSlots.indexOf(currentDeckSlot);
-    let deckData = decks[currentDeckSlot];
-    deckSlots[idx] = newName;
-    decks[newName] = deckData;
-    delete decks[currentDeckSlot];
-    currentDeckSlot = newName;
-    saveDeckState();
-    refreshDeckSlotSelect();
-    updateDeckDisplay();
-    renderGallery();
-  });
-
-  deleteDeckSlotBtn.addEventListener('click', () => {
-    if (deckSlots.length === 1) {
-      alert("You must have at least one deck.");
-      return;
-    }
-    if (!confirm(`Delete "${currentDeckSlot}"? This cannot be undone.`)) return;
-    let idx = deckSlots.indexOf(currentDeckSlot);
-    deckSlots.splice(idx, 1);
-    delete decks[currentDeckSlot];
-    currentDeckSlot = deckSlots[Math.max(idx - 1, 0)];
-    saveDeckState();
-    refreshDeckSlotSelect();
-    updateDeckDisplay();
-    renderGallery();
-  });
-
-  // --- END MULTI-DECK --- //
-
-  const gallery = document.getElementById('card-gallery');
-  const deckList = document.getElementById('deck-list');
-  const cardCount = document.getElementById('card-count');
-  const modal = document.getElementById('image-modal');
-  const modalImg = document.getElementById('modal-img');
-  const closeBtn = document.querySelector('.close');
-  const toggleBtn = document.getElementById('toggle-deck-btn');
-  const deckPanel = document.querySelector('.deck');
-
-  function canAddCard(card) {
-    const deck = getCurrentDeck();
-    const count = deck[card.id] || 0;
-    const total = Object.values(deck).reduce((a, b) => a + b, 0);
-    if (total >= 50) return false;
-    if (card.rarity && card.rarity.toLowerCase() === 'legendary' && count >= 1) return false;
-    if (card.rarity && card.rarity.toLowerCase() === 'rare' && count >= 2) return false;
-    if (card.rarity && card.rarity.toLowerCase() === 'common' && count >= 3) return false;
-    return true;
-  }
+function updatePhaseBar() {
+  document.getElementById('phase-player').textContent = gameState.turn;
+  document.getElementById('phase-name').textContent = gameState.phase;
+}
 
   function updateDeckDisplay() {
   const deck = getCurrentDeck();
@@ -397,10 +337,11 @@ backToBuilderBtn.onclick = () => {
     div.appendChild(btn);
     return div;
   }
-    
+
 function getCardCategory(card) {
   return card.category ? card.category.toLowerCase() : '';
 }
+
 function renderGallery() {
     gallery.innerHTML = '';
     const selectedColor = document.getElementById('filter-color').value.toLowerCase();
@@ -443,69 +384,9 @@ function renderGallery() {
     });
   }
 
-  // Event Listeners
-  document.getElementById('filter-name').addEventListener('input', renderGallery);
-  document.getElementById('filter-color').addEventListener('change', renderGallery);
-  document.getElementById('filter-category').addEventListener('change', renderGallery);
-  document.getElementById('filter-type').addEventListener('change', renderGallery);
-  document.getElementById('filter-rarity').addEventListener('change', renderGallery);
-  document.getElementById('filter-archetype').addEventListener('change', renderGallery);
-  document.getElementById('filter-ability').addEventListener('change', renderGallery);
-  document.getElementById('reset-deck-btn').onclick = () => {
-    const deck = getCurrentDeck();
-    for (const key in deck) {
-      delete deck[key];
-    }
-    setCurrentDeck(deck);
-    updateDeckDisplay();
-    renderGallery();
-  };
-
-  document.getElementById('filter-color').addEventListener('change', (e) => {
-    const color = e.target.value.toLowerCase();
-    document.body.className = document.body.className
-      .split(' ')
-      .filter(cls => !cls.startsWith('theme-'))
-      .join(' ')
-      .trim();
-    if (color) {
-      document.body.classList.add(`theme-${color}`);
-    }
-  });
-
-  // Modal logic
-  closeBtn.onclick = () => { modal.style.display = "none"; };
-  modal.onclick = (e) => { if (e.target === modal) modal.style.display = "none"; };
-
-  // Deck toggle logic
-  toggleBtn.onclick = () => {
-    deckPanel.classList.toggle('show');
-    document.body.classList.toggle('deck-open', deckPanel.classList.contains('show'));
-  };
-  window.addEventListener('click', (e) => {
-    if (!deckPanel.contains(e.target) && e.target !== toggleBtn && deckPanel.classList.contains('show')) {
-      deckPanel.classList.remove('show');
-    }
-  });
-
-  // Initial render
-  loadDeckState();
-  refreshDeckSlotSelect();
-  updateDeckDisplay();
-  renderGallery();
-
-// 1. Add to your global variables
-let gameState = {
-  playerDeck: [],
-  playerHand: [],
-  opponentDeck: [],
-  opponentHand: [],
-  zones: {},
-  turn: "player",
-  phase: "draw"
-};
-
-// 2. Utility: Shuffle an array
+// ==========================
+// === GAMEPLAY LOGIC ===
+// ==========================
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -514,67 +395,17 @@ function shuffle(array) {
   return array;
 }
 
-// 3. When "Start Game" is clicked, load deck into gameState and shuffle
-startGameBtn.onclick = () => {
-  // Hide deck builder UI, show battlefield
-  elementsToHide.forEach(el => el.style.display = 'none');
-  battlefield.style.display = 'block';
-
-  // Construct deck as an array of card ids, respecting deck counts
-  const deckObj = getCurrentDeck();
-  let fullDeck = [];
-  for (let [id, count] of Object.entries(deckObj)) {
-    for (let i = 0; i < count; i++) fullDeck.push(id);
-  }
-  gameState.playerDeck = shuffle([...fullDeck]);
-  gameState.playerHand = [];
-
-  // For now, opponent uses same deck (or you can randomize/dummy)
-  gameState.opponentDeck = shuffle([...fullDeck]);
-  gameState.opponentHand = [];
-
-  gameState.turn = "player";
-  gameState.phase = "draw";
-  renderGameState();
-  updatePhaseDisplay();
-
-  // Set up drag-and-drop for all zones except void
-  document.querySelectorAll('.zone').forEach(zone => {
-    const zoneId = zone.id;
-    if (zoneId === "void-zone") return; // skip drag-and-drop on void
-    zone.ondragover = (e) => {
-      e.preventDefault(); // allow drop
-      zone.classList.add('drag-over');
-    };
-    zone.ondragleave = () => {
-      zone.classList.remove('drag-over');
-    };
-zone.ondrop = (e) => {
-  e.preventDefault();
-  zone.classList.remove('drag-over');
-  const cardId = e.dataTransfer.getData("text/plain");
-  const source = e.dataTransfer.getData("source");
-  const originZone = e.dataTransfer.getData("originZone");
-  let orientation = e.shiftKey ? "horizontal" : "vertical";
-
-  // Remove from the source
-  if (source === "hand") {
-    const idx = gameState.playerHand.indexOf(cardId);
-    if (idx !== -1) gameState.playerHand.splice(idx, 1);
-  } else if (source === "field" && originZone) {
-    let arr = gameState.zones[originZone];
-    if (arr) gameState.zones[originZone] = arr.filter(c => c.cardId !== cardId);
-  } else if (source === "void") {
-    const idx = gameState.zones["void"].findIndex(c => c.cardId === cardId);
-    if (idx !== -1) gameState.zones["void"].splice(idx, 1);
+  function canAddCard(card) {
+    const deck = getCurrentDeck();
+    const count = deck[card.id] || 0;
+    const total = Object.values(deck).reduce((a, b) => a + b, 0);
+    if (total >= 50) return false;
+    if (card.rarity && card.rarity.toLowerCase() === 'legendary' && count >= 1) return false;
+    if (card.rarity && card.rarity.toLowerCase() === 'rare' && count >= 2) return false;
+    if (card.rarity && card.rarity.toLowerCase() === 'common' && count >= 3) return false;
+    return true;
   }
 
-  // Now add to the target zone
-  placeCardInZone(cardId, zone.id, orientation);
-};
-});
-};
-// Draw cards function
 function drawCards(who, n) {
   let deck = who === "player" ? gameState.playerDeck : gameState.opponentDeck;
   let hand = who === "player" ? gameState.playerHand : gameState.opponentHand;
@@ -585,7 +416,6 @@ function drawCards(who, n) {
   updatePhaseDisplay();
 }
 
-// Render game state (hands)
 function renderGameState() {
   // Render player hand
   const playerHandDiv = document.getElementById('player-hand');
@@ -719,66 +549,95 @@ function renderGameState() {
   };
 }
 
-document.body.addEventListener('click', function(e) {
-  let menu = document.getElementById('player-deck-actions');
-  if (menu && menu.style.display === "block") {
-    menu.style.display = "none";
+function placeCardInZone(cardId, zoneId, orientation = "vertical") {
+  // Remove from hand
+  const idx = gameState.playerHand.indexOf(cardId);
+  if (idx !== -1) {
+    gameState.playerHand.splice(idx, 1);
   }
-});
-// Create the deck actions menu ONCE
-let deckActionsMenu = document.createElement('div');
-deckActionsMenu.id = 'player-deck-actions';
-deckActionsMenu.style.display = 'none';
-deckActionsMenu.style.position = 'absolute';
-deckActionsMenu.style.background = 'white';
-deckActionsMenu.style.border = '1px solid #aaa';
-deckActionsMenu.style.borderRadius = '7px';
-deckActionsMenu.style.zIndex = '999';
-deckActionsMenu.style.padding = '8px';
-deckActionsMenu.innerHTML = `
-  <button id="deck-draw-btn">Draw</button>
-  <button id="deck-shuffle-btn">Shuffle</button>
-  <button id="deck-search-btn">Search</button>
-`;
-document.body.appendChild(deckActionsMenu);
+  // Place in zone
+  if (!gameState.zones[zoneId]) gameState.zones[zoneId] = [];
+  gameState.zones[zoneId].push({ cardId, orientation });
+  renderGameState(); // re-render everything
+}
 
-// Prevent menu from closing when clicking inside it
-deckActionsMenu.onclick = function(e) {
-  e.stopPropagation();
+function advancePhase() {
+  let idx = phaseOrder.indexOf(gameState.phase);
+  if (idx === -1) idx = 0;
+  if (idx < phaseOrder.length - 1) {
+    gameState.phase = phaseOrder[idx + 1];
+  } else {
+    // End phase, switch turn
+    gameState.phase = "draw";
+    gameState.turn = gameState.turn === "player" ? "opponent" : "player";
+    // Auto-draw 1 at start of turn
+    drawCards(gameState.turn, 1);
+  }
+  updatePhaseDisplay();
+}
+
+  // Modal logic
+  closeBtn.onclick = () => { modal.style.display = "none"; };
+  modal.onclick = (e) => { if (e.target === modal) modal.style.display = "none"; };
+
+// DECK SEARCH MODAL
+function openDeckSearchModal() {
+  const modal = document.getElementById('deck-search-modal');
+  const content = document.getElementById('deck-search-content');
+  content.innerHTML = "<h3>Select a card to add to your hand:</h3>";
+  // Show all cards left in deck (one button per card instance)
+  gameState.playerDeck.forEach((id, idx) => {
+    const card = dummyCards.find(c => c.id === id);
+    if (!card) return;
+
+    const btn = document.createElement('button');
+    btn.style.margin = "0.2em";
+    btn.style.display = "flex";
+    btn.style.flexDirection = "column";
+    btn.style.alignItems = "center";
+    btn.style.justifyContent = "center";
+    btn.style.width = "110px";
+    btn.style.height = "170px";
+    btn.style.padding = "6px";
+
+    const img = document.createElement('img');
+    img.src = card.image;
+    img.alt = card.name;
+    img.style.maxWidth = "80px";
+    img.style.maxHeight = "110px";
+    img.style.display = "block";
+    img.style.marginBottom = "6px";
+
+    const name = document.createElement('div');
+    name.textContent = card.name;
+    name.style.fontSize = "0.95em";
+    name.style.color = "#223";
+    name.style.fontWeight = "bold";
+    name.style.textAlign = "center";
+
+    btn.appendChild(img);
+    btn.appendChild(name);
+
+    btn.onclick = () => {
+      gameState.playerHand.push(card.id);
+      gameState.playerDeck.splice(idx, 1);
+      closeDeckSearchModal();
+      renderGameState();
+      updatePhaseDisplay();
+    };
+    content.appendChild(btn);
+  });
+  modal.style.display = "block";
+}
+function closeDeckSearchModal() {
+  document.getElementById('deck-search-modal').style.display = "none";
+}
+document.getElementById('close-deck-search').onclick = closeDeckSearchModal;
+document.getElementById('deck-search-modal').onclick = (e) => {
+  if (e.target.id === 'deck-search-modal') closeDeckSearchModal();
 };
 
-// Attach event listeners ONCE
-deckActionsMenu.querySelector('#deck-draw-btn').onclick = function() {
-  if (gameState.turn === "player" && gameState.playerDeck.length > 0) {
-    drawCards("player", 1);
-    updatePhaseDisplay();
-  }
-  deckActionsMenu.style.display = "none";
-};
-deckActionsMenu.querySelector('#deck-shuffle-btn').onclick = function() {
-  gameState.playerDeck = shuffle(gameState.playerDeck);
-  renderGameState();
-  deckActionsMenu.style.display = "none";
-};
-deckActionsMenu.querySelector('#deck-search-btn').onclick = function() {
-  if (gameState.playerDeck.length > 0) {
-    openDeckSearchModal();
-  }
-  deckActionsMenu.style.display = "none";
-};
-
-// Hide menu when clicking elsewhere
-document.body.addEventListener('click', function(e) {
-  if (deckActionsMenu && deckActionsMenu.style.display === "block") {
-    deckActionsMenu.style.display = "none";
-  }
-document.getElementById('zone-void-2').onclick = function(e) {
-  e.stopPropagation();
-  showVoidModal();
-};
-  
-});
-// Void zone display
+// VOID ZONE DISPLAY
 function showVoidModal() {
   const modal = document.getElementById('void-modal');
   const list = document.getElementById('void-card-list');
@@ -850,6 +709,266 @@ document.getElementById('close-void-modal').onclick = function() {
 document.getElementById('void-modal').addEventListener('click', function(event) {
   if (event.target === this) this.style.display = 'none';
 });
+// PLEASE HELP ME ADJUST THIS PART modal logic here as in your original code... //
+
+
+// ==========================
+// === EVENT LISTENERS ===
+// ==========================
+
+// Deck slot events
+  deckSlotSelect.addEventListener('change', () => {
+    currentDeckSlot = deckSlotSelect.value;
+    saveDeckState();
+    updateDeckDisplay();
+    renderGallery();
+  });
+// ADD DECK SLOT 
+  addDeckSlotBtn.addEventListener('click', () => {
+    let newName = prompt("Deck name?", `Deck ${deckSlots.length + 1}`);
+    if (!newName) return;
+    if (deckSlots.includes(newName)) {
+      alert("Deck name already exists!");
+      return;
+    }
+    deckSlots.push(newName);
+    decks[newName] = {};
+    currentDeckSlot = newName;
+    saveDeckState();
+    refreshDeckSlotSelect();
+    updateDeckDisplay();
+    renderGallery();
+  });
+// RENAME DECK SLOT
+  renameDeckSlotBtn.addEventListener('click', () => {
+    let newName = prompt("Rename deck to:", currentDeckSlot);
+    if (!newName || newName === currentDeckSlot) return;
+    if (deckSlots.includes(newName)) {
+      alert("Deck name already exists!");
+      return;
+    }
+    let idx = deckSlots.indexOf(currentDeckSlot);
+    let deckData = decks[currentDeckSlot];
+    deckSlots[idx] = newName;
+    decks[newName] = deckData;
+    delete decks[currentDeckSlot];
+    currentDeckSlot = newName;
+    saveDeckState();
+    refreshDeckSlotSelect();
+    updateDeckDisplay();
+    renderGallery();
+  });
+// DELETE DECK SLOT
+  deleteDeckSlotBtn.addEventListener('click', () => {
+    if (deckSlots.length === 1) {
+      alert("You must have at least one deck.");
+      return;
+    }
+    if (!confirm(`Delete "${currentDeckSlot}"? This cannot be undone.`)) return;
+    let idx = deckSlots.indexOf(currentDeckSlot);
+    deckSlots.splice(idx, 1);
+    delete decks[currentDeckSlot];
+    currentDeckSlot = deckSlots[Math.max(idx - 1, 0)];
+    saveDeckState();
+    refreshDeckSlotSelect();
+    updateDeckDisplay();
+    renderGallery();
+  });
+// SRART GAME LOGIC
+startGameBtn.onclick = () => {
+  // Hide deck builder UI, show battlefield
+  elementsToHide.forEach(el => el.style.display = 'none');
+  battlefield.style.display = 'block';
+
+  // Construct deck as an array of card ids, respecting deck counts
+  const deckObj = getCurrentDeck();
+  let fullDeck = [];
+  for (let [id, count] of Object.entries(deckObj)) {
+    for (let i = 0; i < count; i++) fullDeck.push(id);
+  }
+  gameState.playerDeck = shuffle([...fullDeck]);
+  gameState.playerHand = [];
+
+  // For now, opponent uses same deck (or you can randomize/dummy)
+  gameState.opponentDeck = shuffle([...fullDeck]);
+  gameState.opponentHand = [];
+
+  gameState.turn = "player";
+  gameState.phase = "draw";
+  renderGameState();
+  updatePhaseDisplay();
+
+  // Set up drag-and-drop for all zones except void
+  document.querySelectorAll('.zone').forEach(zone => {
+    const zoneId = zone.id;
+    if (zoneId === "void-zone") return; // skip drag-and-drop on void
+    zone.ondragover = (e) => {
+      e.preventDefault(); // allow drop
+      zone.classList.add('drag-over');
+    };
+    zone.ondragleave = () => {
+      zone.classList.remove('drag-over');
+    };
+zone.ondrop = (e) => {
+  e.preventDefault();
+  zone.classList.remove('drag-over');
+  const cardId = e.dataTransfer.getData("text/plain");
+  const source = e.dataTransfer.getData("source");
+  const originZone = e.dataTransfer.getData("originZone");
+  let orientation = e.shiftKey ? "horizontal" : "vertical";
+
+  // Remove from the source
+  if (source === "hand") {
+    const idx = gameState.playerHand.indexOf(cardId);
+    if (idx !== -1) gameState.playerHand.splice(idx, 1);
+  } else if (source === "field" && originZone) {
+    let arr = gameState.zones[originZone];
+    if (arr) gameState.zones[originZone] = arr.filter(c => c.cardId !== cardId);
+  } else if (source === "void") {
+    const idx = gameState.zones["void"].findIndex(c => c.cardId === cardId);
+    if (idx !== -1) gameState.zones["void"].splice(idx, 1);
+  }
+
+  // Now add to the target zone
+  placeCardInZone(cardId, zone.id, orientation);
+};
+});
+};
+
+
+backToBuilderBtn.onclick = () => {
+  elementsToHide.forEach(el => el.style.display = '');
+  battlefield.style.display = 'none';
+};
+
+// Phase control events
+nextPhaseBtn.onclick = () => {
+  let idx = getCurrentPhaseIndex();
+  idx = (idx + 1) % PHASES.length;
+  gameState.turn = PHASES[idx].turn;
+  gameState.phase = PHASES[idx].phase;
+  if (gameState.phase === 'draw') drawCards(gameState.turn, 1);
+  updatePhaseBar();
+  renderGameState && renderGameState();
+};
+phaseNameSpan.onclick = function() { nextPhaseBtn.click(); };
+
+  // GALLERY EVENT FILTERS
+  document.getElementById('filter-name').addEventListener('input', renderGallery);
+  document.getElementById('filter-color').addEventListener('change', renderGallery);
+  document.getElementById('filter-category').addEventListener('change', renderGallery);
+  document.getElementById('filter-type').addEventListener('change', renderGallery);
+  document.getElementById('filter-rarity').addEventListener('change', renderGallery);
+  document.getElementById('filter-archetype').addEventListener('change', renderGallery);
+  document.getElementById('filter-ability').addEventListener('change', renderGallery);
+  document.getElementById('reset-deck-btn').onclick = () => {
+    const deck = getCurrentDeck();
+    for (const key in deck) {
+      delete deck[key];
+    }
+    setCurrentDeck(deck);
+    updateDeckDisplay();
+    renderGallery();
+  };
+
+// ==========================
+// === INITIALIZATION ===
+// ==========================
+  loadDeckState();
+  refreshDeckSlotSelect();
+  updateDeckDisplay();
+  renderGallery();
+  updatePhaseBar();
+
+
+
+
+  document.getElementById('filter-color').addEventListener('change', (e) => {
+    const color = e.target.value.toLowerCase();
+    document.body.className = document.body.className
+      .split(' ')
+      .filter(cls => !cls.startsWith('theme-'))
+      .join(' ')
+      .trim();
+    if (color) {
+      document.body.classList.add(`theme-${color}`);
+    }
+  });
+
+  // Deck toggle logic
+  toggleBtn.onclick = () => {
+    deckPanel.classList.toggle('show');
+    document.body.classList.toggle('deck-open', deckPanel.classList.contains('show'));
+  };
+  window.addEventListener('click', (e) => {
+    if (!deckPanel.contains(e.target) && e.target !== toggleBtn && deckPanel.classList.contains('show')) {
+      deckPanel.classList.remove('show');
+    }
+  });
+
+
+
+
+document.body.addEventListener('click', function(e) {
+  let menu = document.getElementById('player-deck-actions');
+  if (menu && menu.style.display === "block") {
+    menu.style.display = "none";
+  }
+});
+// Create the deck actions menu ONCE
+let deckActionsMenu = document.createElement('div');
+deckActionsMenu.id = 'player-deck-actions';
+deckActionsMenu.style.display = 'none';
+deckActionsMenu.style.position = 'absolute';
+deckActionsMenu.style.background = 'white';
+deckActionsMenu.style.border = '1px solid #aaa';
+deckActionsMenu.style.borderRadius = '7px';
+deckActionsMenu.style.zIndex = '999';
+deckActionsMenu.style.padding = '8px';
+deckActionsMenu.innerHTML = `
+  <button id="deck-draw-btn">Draw</button>
+  <button id="deck-shuffle-btn">Shuffle</button>
+  <button id="deck-search-btn">Search</button>
+`;
+document.body.appendChild(deckActionsMenu);
+
+// Prevent menu from closing when clicking inside it
+deckActionsMenu.onclick = function(e) {
+  e.stopPropagation();
+};
+
+// Attach event listeners ONCE
+deckActionsMenu.querySelector('#deck-draw-btn').onclick = function() {
+  if (gameState.turn === "player" && gameState.playerDeck.length > 0) {
+    drawCards("player", 1);
+    updatePhaseDisplay();
+  }
+  deckActionsMenu.style.display = "none";
+};
+deckActionsMenu.querySelector('#deck-shuffle-btn').onclick = function() {
+  gameState.playerDeck = shuffle(gameState.playerDeck);
+  renderGameState();
+  deckActionsMenu.style.display = "none";
+};
+deckActionsMenu.querySelector('#deck-search-btn').onclick = function() {
+  if (gameState.playerDeck.length > 0) {
+    openDeckSearchModal();
+  }
+  deckActionsMenu.style.display = "none";
+};
+
+// Hide menu when clicking elsewhere
+document.body.addEventListener('click', function(e) {
+  if (deckActionsMenu && deckActionsMenu.style.display === "block") {
+    deckActionsMenu.style.display = "none";
+  }
+document.getElementById('zone-void-2').onclick = function(e) {
+  e.stopPropagation();
+  showVoidModal();
+};
+  
+});
+
 // 7. Phase control
 const nextPhaseBtn = document.createElement('button');
 nextPhaseBtn.textContent = "Next Phase";
@@ -861,91 +980,12 @@ battlefield.appendChild(nextPhaseBtn);
 function updatePhaseDisplay() {
   phaseDisplay.textContent = `Turn: ${gameState.turn} | Phase: ${gameState.phase}`;
 }
-// Drag cards to zones //
-function placeCardInZone(cardId, zoneId, orientation = "vertical") {
-  // Remove from hand
-  const idx = gameState.playerHand.indexOf(cardId);
-  if (idx !== -1) {
-    gameState.playerHand.splice(idx, 1);
-  }
-  // Place in zone
-  if (!gameState.zones[zoneId]) gameState.zones[zoneId] = [];
-  gameState.zones[zoneId].push({ cardId, orientation });
-  renderGameState(); // re-render everything
-}
+
 // 8. Phase logic (simplified)
 const phaseOrder = ["draw", "main", "end"];
-function advancePhase() {
-  let idx = phaseOrder.indexOf(gameState.phase);
-  if (idx === -1) idx = 0;
-  if (idx < phaseOrder.length - 1) {
-    gameState.phase = phaseOrder[idx + 1];
-  } else {
-    // End phase, switch turn
-    gameState.phase = "draw";
-    gameState.turn = gameState.turn === "player" ? "opponent" : "player";
-    // Auto-draw 1 at start of turn
-    drawCards(gameState.turn, 1);
-  }
-  updatePhaseDisplay();
-}
 
-// 9. Search Menu
-function openDeckSearchModal() {
-  const modal = document.getElementById('deck-search-modal');
-  const content = document.getElementById('deck-search-content');
-  content.innerHTML = "<h3>Select a card to add to your hand:</h3>";
-  // Show all cards left in deck (one button per card instance)
-  gameState.playerDeck.forEach((id, idx) => {
-    const card = dummyCards.find(c => c.id === id);
-    if (!card) return;
 
-    const btn = document.createElement('button');
-    btn.style.margin = "0.2em";
-    btn.style.display = "flex";
-    btn.style.flexDirection = "column";
-    btn.style.alignItems = "center";
-    btn.style.justifyContent = "center";
-    btn.style.width = "110px";
-    btn.style.height = "170px";
-    btn.style.padding = "6px";
 
-    const img = document.createElement('img');
-    img.src = card.image;
-    img.alt = card.name;
-    img.style.maxWidth = "80px";
-    img.style.maxHeight = "110px";
-    img.style.display = "block";
-    img.style.marginBottom = "6px";
-
-    const name = document.createElement('div');
-    name.textContent = card.name;
-    name.style.fontSize = "0.95em";
-    name.style.color = "#223";
-    name.style.fontWeight = "bold";
-    name.style.textAlign = "center";
-
-    btn.appendChild(img);
-    btn.appendChild(name);
-
-    btn.onclick = () => {
-      gameState.playerHand.push(card.id);
-      gameState.playerDeck.splice(idx, 1);
-      closeDeckSearchModal();
-      renderGameState();
-      updatePhaseDisplay();
-    };
-    content.appendChild(btn);
-  });
-  modal.style.display = "block";
-}
-function closeDeckSearchModal() {
-  document.getElementById('deck-search-modal').style.display = "none";
-}
-document.getElementById('close-deck-search').onclick = closeDeckSearchModal;
-document.getElementById('deck-search-modal').onclick = (e) => {
-  if (e.target.id === 'deck-search-modal') closeDeckSearchModal();
-};
 
 // Actions in zones
 let currentCardMenuState = null;
@@ -1201,27 +1241,12 @@ voidModal.addEventListener('click', function(event) {
     voidModal.style.display = 'none';
   }
 });
-// Phases in order: playerDraw, playerMain, playerEnd, opponentDraw, opponentMain, opponentEnd
-const PHASES = [
-  { turn: 'player', phase: 'draw' },
-  { turn: 'player', phase: 'main' },
-  { turn: 'player', phase: 'end' },
-  { turn: 'opponent', phase: 'draw' },
-  { turn: 'opponent', phase: 'main' },
-  { turn: 'opponent', phase: 'end' }
-];
 
 // Find the current phase index
 function getCurrentPhaseIndex() {
   return PHASES.findIndex(
     p => p.turn === gameState.turn && p.phase === gameState.phase
   );
-}
-
-// Update display based on gameState
-function updatePhaseBar() {
-  document.getElementById('phase-player').textContent = gameState.turn;
-  document.getElementById('phase-name').textContent = gameState.phase;
 }
 
 // Advance to next phase
@@ -1245,3 +1270,27 @@ document.getElementById('phase-name').onclick = function() {
 
 // Call this after any phase or turn change
 updatePhaseBar();
+
+
+// IDK WHERE THIS GOES //
+
+
+
+
+phaseDisplay.id = "phase-display";
+phaseDisplay.style.margin = "1em";
+phaseDisplay.style.fontSize = "1.2em";
+battlefield.insertBefore(phaseDisplay, battlefield.firstChild);
+
+const elementsToHide = [
+  document.getElementById('deck-slot-selector'),
+  document.getElementById('filters'),
+  document.getElementById('card-gallery'),
+  document.querySelector('.deck'),
+  startGameBtn
+];
+
+startGameBtn.onclick = () => {
+  elementsToHide.forEach(el => el.style.display = 'none');
+  battlefield.style.display = 'block';
+};
