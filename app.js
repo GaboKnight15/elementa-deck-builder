@@ -537,22 +537,26 @@ startGameBtn.onclick = () => {
   gameState.phase = "draw";
   renderGameState();
   updatePhaseDisplay();
+
+  // Set up drag-and-drop for all zones except void
   document.querySelectorAll('.zone').forEach(zone => {
-  zone.ondragover = (e) => {
-    e.preventDefault(); // allow drop
-    zone.classList.add('drag-over');
-  };
-  zone.ondragleave = () => {
-    zone.classList.remove('drag-over');
-  };
-  zone.ondrop = (e) => {
-    e.preventDefault();
-    zone.classList.remove('drag-over');
-    const cardId = e.dataTransfer.getData("text/plain");
-    let orientation = e.shiftKey ? "horizontal" : "vertical";
-    placeCardInZone(cardId, zone.id, orientation);
-  };
-});
+    const zoneId = zone.id;
+    if (zoneId === "void-zone") return; // skip drag-and-drop on void
+    zone.ondragover = (e) => {
+      e.preventDefault(); // allow drop
+      zone.classList.add('drag-over');
+    };
+    zone.ondragleave = () => {
+      zone.classList.remove('drag-over');
+    };
+    zone.ondrop = (e) => {
+      e.preventDefault();
+      zone.classList.remove('drag-over');
+      const cardId = e.dataTransfer.getData("text/plain");
+      let orientation = e.shiftKey ? "horizontal" : "vertical";
+      placeCardInZone(cardId, zone.id, orientation);
+    };
+  });
 };
 
 // Draw 1 button for player
