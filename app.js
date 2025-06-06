@@ -419,7 +419,6 @@ function drawCards(who, n) {
     hand.push(deck.shift());
   }
   renderGameState();
-  updatePhaseDisplay();
 }
 
 function renderGameState() {
@@ -567,20 +566,6 @@ function placeCardInZone(cardId, zoneId, orientation = "vertical") {
   renderGameState(); // re-render everything
 }
 
-function advancePhase() {
-  let idx = phaseOrder.indexOf(gameState.phase);
-  if (idx === -1) idx = 0;
-  if (idx < phaseOrder.length - 1) {
-    gameState.phase = phaseOrder[idx + 1];
-  } else {
-    // End phase, switch turn
-    gameState.phase = "draw";
-    gameState.turn = gameState.turn === "player" ? "opponent" : "player";
-    // Auto-draw 1 at start of turn
-    drawCards(gameState.turn, 1);
-  }
-  updatePhaseDisplay();
-}
 
   // Modal logic
   closeBtn.onclick = () => { modal.style.display = "none"; };
@@ -629,7 +614,6 @@ function openDeckSearchModal() {
       gameState.playerDeck.splice(idx, 1);
       closeDeckSearchModal();
       renderGameState();
-      updatePhaseDisplay();
     };
     content.appendChild(btn);
   });
@@ -801,7 +785,6 @@ startGameBtn.onclick = () => {
   gameState.turn = "player";
   gameState.phase = "draw";
   renderGameState();
-  updatePhaseDisplay();
 
   // SET-UP DRAG AND DROP EXCEPT VOIDE
   document.querySelectorAll('.zone').forEach(zone => {
@@ -943,7 +926,6 @@ deckActionsMenu.onclick = function(e) {
 deckActionsMenu.querySelector('#deck-draw-btn').onclick = function() {
   if (gameState.turn === "player" && gameState.playerDeck.length > 0) {
     drawCards("player", 1);
-    updatePhaseDisplay();
   }
   deckActionsMenu.style.display = "none";
 };
@@ -970,24 +952,6 @@ document.getElementById('zone-void-2').onclick = function(e) {
 };
   
 });
-
-// 7. Phase control
-const nextPhaseBtn = document.createElement('button');
-nextPhaseBtn.textContent = "Next Phase";
-nextPhaseBtn.onclick = () => {
-  advancePhase();
-};
-battlefield.appendChild(nextPhaseBtn);
-
-function updatePhaseDisplay() {
-  phaseDisplay.textContent = `Turn: ${gameState.turn} | Phase: ${gameState.phase}`;
-}
-
-// 8. Phase logic (simplified)
-const phaseOrder = ["draw", "main", "end"];
-
-
-
 
 // Actions in zones
 let currentCardMenuState = null;
@@ -1178,7 +1142,6 @@ function showVoidModal() {
         gameState.zones['void'].splice(idx, 1);
         gameState.playerHand.push(cardId);
         showVoidModal(); // re-render
-        updatePhaseDisplay && updatePhaseDisplay();
         }
       };
       menu.querySelector('.void-action-deck').onclick = (e) => {
@@ -1187,7 +1150,6 @@ function showVoidModal() {
         gameState.zones['void'].splice(idx, 1);
         gameState.playerDeck.push(cardId);
         showVoidModal();
-        updatePhaseDisplay && updatePhaseDisplay();
       };
 
       // Show menu on right-click or click
@@ -1212,24 +1174,6 @@ btn.onclick = (e) => {
 
   modal.style.display = 'block';
 }
-zone.ondrop = (e) => {
-  e.preventDefault();
-  zone.classList.remove('drag-over');
-  const cardId = e.dataTransfer.getData("text/plain");
-  const source = e.dataTransfer.getData("source");
-  let orientation = e.shiftKey ? "horizontal" : "vertical";
-  if (source === "void") {
-    // Remove from void pile
-    const idx = gameState.zones["void"].findIndex(c => c.cardId === cardId);
-    if (idx !== -1) gameState.zones["void"].splice(idx, 1);
-  } else {
-    // Remove from hand if needed
-    const idx = gameState.playerHand.indexOf(cardId);
-    if (idx !== -1) gameState.playerHand.splice(idx, 1);
-  }
-  placeCardInZone(cardId, zone.id, orientation);
-  showVoidModal && showVoidModal(); // re-render modal if open
-};
 document.body.addEventListener('click', function(e) {
   document.querySelectorAll('#void-card-list .void-dropdown').forEach(m => m.style.display = 'none');
 });
