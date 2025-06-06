@@ -558,24 +558,7 @@ startGameBtn.onclick = () => {
     };
   });
 };
-
-// Draw 1 button for player
-const draw1PlayerBtn = document.createElement('button');
-draw1PlayerBtn.textContent = "Player: Draw 1";
-draw1PlayerBtn.onclick = () => {
-  drawCards("player", 1);
-};
-battlefield.insertBefore(draw1PlayerBtn, document.getElementById("opponent-hand"));
-
-// Draw 1 button for opponent
-const draw1OpponentBtn = document.createElement('button');
-draw1OpponentBtn.textContent = "Opponent: Draw 1";
-draw1OpponentBtn.onclick = () => {
-  drawCards("opponent", 1);
-};
-battlefield.insertBefore(draw1OpponentBtn, document.getElementById("opponent-hand"));
-
-// 5. Draw cards function
+// Draw cards function
 function drawCards(who, n) {
   let deck = who === "player" ? gameState.playerDeck : gameState.opponentDeck;
   let hand = who === "player" ? gameState.playerHand : gameState.opponentHand;
