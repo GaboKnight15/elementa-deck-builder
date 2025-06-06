@@ -480,6 +480,7 @@ function renderGallery() {
   // Deck toggle logic
   toggleBtn.onclick = () => {
     deckPanel.classList.toggle('show');
+    document.body.classList.toggle('deck-open', deckPanel.classList.contains('show'));
   };
   window.addEventListener('click', (e) => {
     if (!deckPanel.contains(e.target) && e.target !== toggleBtn && deckPanel.classList.contains('show')) {
