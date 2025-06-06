@@ -495,9 +495,25 @@ body.deck-open .container {
   justify-content: center;
   z-index: 9999;
 }
+#void-modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.36);
+  z-index: 9999;
+  align-items: flex-start;
+  justify-content: center;
+}
+
 #void-modal-content {
-  margin-top: 60px;
-  /* already has max-width, background, padding, border-radius */
+  position: relative;
+  background: #fff;
+  margin: 60px auto;
+  padding: 28px 30px 22px 30px;
+  border-radius: 14px;
+  min-width: 260px;
+  box-shadow: 0 2px 20px #0002;
 }
 /* Phase Display Button Style */
 #phase-display {
