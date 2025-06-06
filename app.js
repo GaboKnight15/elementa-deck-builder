@@ -1201,3 +1201,47 @@ voidModal.addEventListener('click', function(event) {
     voidModal.style.display = 'none';
   }
 });
+// Phases in order: playerDraw, playerMain, playerEnd, opponentDraw, opponentMain, opponentEnd
+const PHASES = [
+  { turn: 'player', phase: 'draw' },
+  { turn: 'player', phase: 'main' },
+  { turn: 'player', phase: 'end' },
+  { turn: 'opponent', phase: 'draw' },
+  { turn: 'opponent', phase: 'main' },
+  { turn: 'opponent', phase: 'end' }
+];
+
+// Find the current phase index
+function getCurrentPhaseIndex() {
+  return PHASES.findIndex(
+    p => p.turn === gameState.turn && p.phase === gameState.phase
+  );
+}
+
+// Update display based on gameState
+function updatePhaseBar() {
+  document.getElementById('phase-player').textContent = gameState.turn;
+  document.getElementById('phase-name').textContent = gameState.phase;
+}
+
+// Advance to next phase
+document.getElementById('next-phase-btn').onclick = () => {
+  let idx = getCurrentPhaseIndex();
+  idx = (idx + 1) % PHASES.length;
+  gameState.turn = PHASES[idx].turn;
+  gameState.phase = PHASES[idx].phase;
+
+  // Optionally: trigger draw if entering a draw phase
+  if (gameState.phase === 'draw') drawCards(gameState.turn, 1);
+
+  updatePhaseBar();
+  renderGameState && renderGameState(); // re-render as needed
+};
+
+// Optional: click phase name to cycle phase
+document.getElementById('phase-name').onclick = function() {
+  document.getElementById('next-phase-btn').click();
+};
+
+// Call this after any phase or turn change
+updatePhaseBar();
