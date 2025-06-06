@@ -371,15 +371,3 @@ body {
   outline: 2px dashed #007bff;
   background: #e0f3ff;
 }
-/* Debugs for CSS */
-#card-gallery,
-.deck-list,
-.deck {
-  transition: none !important;
-  opacity: 1 !important;
-  background: none !important;
-}
-.updating {
-  opacity: 1 !important;
-  background: none !important;
-}
