@@ -55,9 +55,17 @@
   <div class="zone domain second" id="zone-domain-10"></div>
   <div class="zone main second" id="player-deck-zone"></div>
 </div>
-   <!-- Second (your) hand area -->
+  <!-- Second (your) hand area -->
   <div class="hand-area second-hand-area" id="player-hand"></div>
-  
+  <!-- Phase Display -->
+  <div id="phase-display">
+    <span class="label">Turn:</span>
+    <span class="player" id="phase-player">player</span>
+    <span class="label phase-sep">|</span>
+    <span class="label">Phase:</span>
+    <span class="phase" id="phase-name">draw</span>
+  <button id="next-phase-btn" title="Next Phase" style="margin-left:16px;">⏭</button>
+</div>
   <button id="back-to-builder-btn">Back to Deck Builder</button>
 </div>
   <!-- Deck Slot Selector -->
@@ -164,16 +172,6 @@
     <p>Total Cards: <span id="card-count">0</span>/50</p>
     <button id="reset-deck-btn" style="background-color: #dc3545;">Reset Deck</button>
   </div>
-  <!-- Phase Display -->
-<!-- Phase Display -->
-<div id="phase-display">
-  <span class="label">Turn:</span>
-  <span class="player" id="phase-player">player</span>
-  <span class="label phase-sep">|</span>
-  <span class="label">Phase:</span>
-  <span class="phase" id="phase-name">draw</span>
-  <button id="next-phase-btn" title="Next Phase" style="margin-left:16px;">⏭</button>
-</div>
   <!-- Modal for full image view -->
   <div id="image-modal" class="modal">
     <span class="close">&times;</span>
