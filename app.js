@@ -1177,7 +1177,6 @@ btn.onclick = (e) => {
 document.body.addEventListener('click', function(e) {
   document.querySelectorAll('#void-card-list .void-dropdown').forEach(m => m.style.display = 'none');
 });
-menu.onclick = (e) => e.stopPropagation();
 // Void Modal
 const voidModal = document.getElementById('void-modal');
 const voidModalContent = document.getElementById('void-modal-content');
@@ -1194,25 +1193,5 @@ function getCurrentPhaseIndex() {
     p => p.turn === gameState.turn && p.phase === gameState.phase
   );
 }
-
-// Advance to next phase
-document.getElementById('next-phase-btn').onclick = () => {
-  let idx = getCurrentPhaseIndex();
-  idx = (idx + 1) % PHASES.length;
-  gameState.turn = PHASES[idx].turn;
-  gameState.phase = PHASES[idx].phase;
-
-  // Optionally: trigger draw if entering a draw phase
-  if (gameState.phase === 'draw') drawCards(gameState.turn, 1);
-
-  updatePhaseBar();
-  renderGameState && renderGameState(); // re-render as needed
-};
-
-// Optional: click phase name to cycle phase
-document.getElementById('phase-name').onclick = function() {
-  document.getElementById('next-phase-btn').click();
-};
-
 // Call this after any phase or turn change
 updatePhaseBar();
