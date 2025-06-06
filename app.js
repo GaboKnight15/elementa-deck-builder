@@ -597,10 +597,10 @@ function renderGameState() {
     const div = document.createElement('div');
     div.className = 'card';
     div.draggable = true;
-    div.dataset.cardId = cardId;
     div.ondragstart = (e) => {
       e.dataTransfer.setData("text/plain", cardId);
-    };
+      e.dataTransfer.setData("source", "hand");
+  };
     const img = document.createElement('img');
     img.src = card.image;
     img.alt = card.name;
@@ -645,6 +645,12 @@ function renderGameState() {
       if (orientation === 'horizontal') {
         cardDiv.style.transform = 'rotate(90deg)';
       }
+      cardDiv.draggable = true;
+      cardDiv.ondragstart = (e) => {
+        e.dataTransfer.setData("text/plain", cardId);
+        e.dataTransfer.setData("source", "field");
+        e.dataTransfer.setData("originZone", zoneId);
+};
       // Attach the onclick handler for ALL cards in zones
       cardDiv.onclick = (e) => {
            e.stopPropagation();
