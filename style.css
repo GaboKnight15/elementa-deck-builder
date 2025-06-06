@@ -486,3 +486,16 @@ body.deck-open .container {
 .void-btn:hover {
   background: #7e469a;
 }
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  z-index: 9999;
+}
+#void-modal-content {
+  margin-top: 60px;
+  /* already has max-width, background, padding, border-radius */
+}
