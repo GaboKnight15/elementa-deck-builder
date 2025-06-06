@@ -219,7 +219,18 @@ function updatePhaseBar() {
   document.getElementById('phase-player').textContent = gameState.turn;
   document.getElementById('phase-name').textContent = gameState.phase;
 }
-
+function getZoneArray(zoneId) {
+  switch (zoneId) {
+    case "player-creatures-zone": return gameState.playerCreatures;
+    case "player-domains-zone": return gameState.playerDomains;
+    case "player-void-zone": return gameState.playerVoid;
+    case "opponent-creatures-zone": return gameState.opponentCreatures;
+    case "opponent-domains-zone": return gameState.opponentDomains;
+    case "opponent-void-zone": return gameState.opponentVoid;
+    // Add more if you have more zones
+    default: return null;
+  }
+}
   function updateDeckDisplay() {
   const deck = getCurrentDeck();
   deckList.innerHTML = '';
@@ -1086,8 +1097,11 @@ document.getElementById('card-action-return-hand').onclick = function() {
   if (!currentCardMenuState) return;
   const { cardId, zoneId } = currentCardMenuState;
   // Remove from zone
-  let arr = gameState.zones[zoneId];
-  if (arr) gameState.zones[zoneId] = arr.filter(c => c.cardId !== cardId);
+  let arr = getZoneArray(zoneId);
+  if (arr) {
+    const idx = arr.indexOf(cardId);
+    if (idx !== -1) arr.splice(idx, 1);
+  }
   // Add to hand
   gameState.playerHand.push(cardId);
   renderGameState();
@@ -1115,12 +1129,12 @@ document.getElementById('card-action-orient').onclick = function() {
 document.getElementById('card-action-send-void').onclick = function() {
   if (!currentCardMenuState) return;
   const { cardId, zoneId } = currentCardMenuState;
-  // Remove from zone
-  let arr = gameState.zones[zoneId];
-  if (arr) gameState.zones[zoneId] = arr.filter(c => c.cardId !== cardId);
-  // Add to void zone (implement your own logic, e.g. push to gameState.zones['void'])
-  if (!gameState.zones['void']) gameState.zones['void'] = [];
-  gameState.zones['void'].push({ cardId, orientation: 'vertical' });
+  let arr = getZoneArray(zoneId);
+  if (arr) {
+    const idx = arr.indexOf(cardId);
+    if (idx !== -1) arr.splice(idx, 1);
+  }
+  gameState.playerVoid.push(cardId);
   renderGameState();
   setupDropZones();
   document.getElementById('card-action-menu').style.display = 'none';
@@ -1129,15 +1143,17 @@ document.getElementById('card-action-send-void').onclick = function() {
 document.getElementById('card-action-send-deck').onclick = function() {
   if (!currentCardMenuState) return;
   const { cardId, zoneId } = currentCardMenuState;
-  // Remove from zone
-  let arr = gameState.zones[zoneId];
-  if (arr) gameState.zones[zoneId] = arr.filter(c => c.cardId !== cardId);
-  // Add to player deck (bottom)
+  let arr = getZoneArray(zoneId);
+  if (arr) {
+    const idx = arr.indexOf(cardId);
+    if (idx !== -1) arr.splice(idx, 1);
+  }
   gameState.playerDeck.push(cardId);
   renderGameState();
   setupDropZones();
   document.getElementById('card-action-menu').style.display = 'none';
 };
+// VOID DISPLAY
 function showVoidModal() {
   const modal = document.getElementById('void-modal');
   const list = document.getElementById('void-card-list');
