@@ -152,7 +152,8 @@ const PHASES = [
     document.getElementById('filters'),
     document.getElementById('card-gallery'),
     document.querySelector('.deck'),
-    startGameBtn
+    startGameBtn,
+    toggleBtn
   ];
 // ==========================
 // === DECK MANAGEMENT ===
