@@ -500,7 +500,6 @@ function renderGameState() {
   renderDeckZone('player-void-zone', gameState.playerVoid, "player");
   renderDeckZone('opponent-deck-zone', gameState.opponentDeck, "opponent");
   renderDeckZone('opponent-void-zone', gameState.opponentVoid, "opponent");
-  attachVoidZoneHandlers();
   
 // Render player deck stack
   const playerDeckDiv = document.getElementById('player-deck-zone');
@@ -557,23 +556,6 @@ function renderGameState() {
     }
   };
 }
-// VOID ZONE HANDLERS
-function attachVoidZoneHandlers() {
-  let playerVoidZone = document.getElementById('player-void-zone');
-  if (playerVoidZone) {
-    playerVoidZone.onclick = function(e) {
-      e.stopPropagation();
-      showVoidModal();
-    };
-  }
-  let opponentVoidZone = document.getElementById('opponent-void-zone');
-  if (opponentVoidZone) {
-    opponentVoidZone.onclick = function(e) {
-      e.stopPropagation();
-      showVoidModal(); // Or use opponentVoid if you want opponent's void
-    };
-  }
-}
 // HAND OPTIONS MENU
 function showHandCardMenu(cardId, cardDiv) {
   const menu = document.getElementById('hand-card-menu');
@@ -621,12 +603,13 @@ function renderRowZone(zoneId, cardArray, category) {
     };
     cardDiv.onclick = (e) => {
       e.stopPropagation();
-      showCardActionMenu(cardId, zoneId, "vertical", cardDiv); // adjust as needed
+      showCardActionMenu(cardId, zoneId, orientation, cardDiv); // adjust as needed
     };
     const img = document.createElement('img');
     img.src = card.image;
     img.alt = card.name;
     img.style.width = "80px";
+    if (orientation === 'horizontal') img.style.transform = "rotate(90deg)";
     cardDiv.appendChild(img);
     zoneDiv.appendChild(cardDiv);
   }
@@ -661,14 +644,13 @@ function renderDeckZone(zoneId, deckArray, who) {
 }
 // PLACECARDINZONE
 function placeCardInZone(cardId, zoneId, orientation = "vertical") {
-  // Remove from all possible locations (hand, other battlefield rows)
+  // REMOVE CARD FROM ALL LOCATIONS
   removeCardFromAllZones(cardId);
-
-  // Add to target
+  // ADD TO TARGET
   if (zoneId === 'player-creatures-zone') {
-    gameState.playerCreatures.push(cardId);
+    gameState.playerCreatures.push({ cardId, orientation });
   } else if (zoneId === 'player-domains-zone') {
-    gameState.playerDomains.push(cardId);
+    gameState.playerDomains.push({ cardId, orientation });
   } else if (zoneId === 'player-void-zone') {
     gameState.playerVoid.push(cardId);
   }
@@ -756,15 +738,14 @@ function showVoidModal() {
   const list = document.getElementById('void-card-list');
   list.innerHTML = '';
 
-  const voidCards = gameState.playerVoid;
+const voidCards = gameState.playerVoid; // Array of card IDs!
   if (voidCards.length === 0) {
     list.innerHTML = '<div style="color:#999;">Void is empty.</div>';
   } else {
-    // Use a grid for display
     list.style.display = 'grid';
     list.style.gridTemplateColumns = 'repeat(auto-fit, minmax(120px, 1fr))';
     list.style.gap = '1em';
-    voidCards.forEach(({cardId, orientation}, idx) => {
+    voidCards.forEach((cardId, idx) => {
       const card = dummyCards.find(c => c.id === cardId);
       if (!card) return;
       const btn = document.createElement('button');
@@ -1096,26 +1077,27 @@ if (!window.cardMenuGlobalClickHandlerAdded) {
   window.cardMenuGlobalClickHandlerAdded = true;
 }
 
+let currentCardMenuState = null;
+
 function showCardActionMenu(cardId, zoneId, orientation, cardDiv) {
   const menu = document.getElementById('card-action-menu');
-  // Store which card, zone, and orientation are being operated on
   currentCardMenuState = { cardId, zoneId, orientation };
-
-  // Position menu near the card
+  // POSITION MENU NEAR CARD
   const rect = cardDiv.getBoundingClientRect();
   menu.style.top = `${rect.bottom + window.scrollY + 4}px`;
   menu.style.left = `${rect.left + window.scrollX}px`;
   menu.style.display = 'block';
 }
 
-// Hide menu when clicking elsewhere
+// HIDE ALL MENUS
 document.body.addEventListener('click', function(e) {
   const menu = document.getElementById('card-action-menu');
   if (menu && menu.style.display === "block") {
     menu.style.display = "none";
   }
 });
-// Prevent menu from closing when clicking inside it
+
+// PREVENT MENUS FROM CLOSING WHEN CLICK INSIDE
 document.getElementById('card-action-menu').onclick = function(e) {
   e.stopPropagation();
 };
@@ -1138,12 +1120,11 @@ document.getElementById('card-action-return-hand').onclick = function() {
 document.getElementById('card-action-orient').onclick = function() {
   if (!currentCardMenuState) return;
   const { cardId, zoneId } = currentCardMenuState;
-  // Change orientation
-  let arr = gameState.zones[zoneId];
+  let arr = getZoneArray(zoneId);
   if (arr) {
     for (let c of arr) {
       if (c.cardId === cardId) {
-        c.orientation = c.orientation === "horizontal" ? "vertical" : "horizontal";
+        c.orientation = (c.orientation === "horizontal") ? "vertical" : "horizontal";
       }
     }
   }
