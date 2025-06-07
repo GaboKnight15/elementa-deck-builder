@@ -597,7 +597,7 @@ function renderRowZone(zoneId, cardArray, category) {
       cardId = cardObj;
       orientation = "vertical";
     } else {
-      cardID = cardObj.cardId;
+      cardId = cardObj.cardId;
       orientation = cardObj.orientation || "vertical";
     }
     const card = dummyCards.find(c => c.id === cardId);
