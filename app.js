@@ -468,6 +468,10 @@ function renderGameState() {
     img.alt = card.name;
     img.style.width = "80px";
     div.appendChild(img);
+    div.onclick = (e) => {
+      e.stopPropagation();
+      showHandCardMenu(cardId, div);
+    };
     playerHandDiv.appendChild(div);
   }
   // RENDER OPPONENT HAND FACEDOWN
@@ -551,6 +555,18 @@ function renderGameState() {
       drawCards("opponent", 1);
     }
   };
+}
+// HAND OPTIONS MENU
+function showHandCardMenu(cardId, cardDiv) {
+  const menu = document.getElementById('hand-card-menu');
+  // Store the cardId for actions
+  menu.setAttribute('data-card-id', cardId);
+
+  // Position menu under the card
+  const rect = cardDiv.getBoundingClientRect();
+  menu.style.top = `${rect.bottom + window.scrollY + 6}px`;
+  menu.style.left = `${rect.left + window.scrollX + rect.width/2 - 60}px`; // center-ish
+  menu.style.display = 'block';
 }
 // DROP ZONES
 function setupDropZones() {
@@ -944,6 +960,36 @@ phaseNameSpan.onclick = function() { nextPhaseBtn.click(); };
   updatePhaseBar();
   showBuilder();
 
+// --- HAND CARD MENU EVENTS ---
+document.getElementById('hand-menu-play').onclick = function(e) {
+  e.stopPropagation();
+  const menu = document.getElementById('hand-card-menu');
+  const cardId = menu.getAttribute('data-card-id');
+  removeCardFromAllZones(cardId);
+  gameState.playerCreatures.push(cardId); // or playerDomains as appropriate
+  renderGameState();
+  setupDropZones();
+  menu.style.display = 'none';
+};
+
+document.getElementById('hand-menu-void').onclick = function(e) {
+  e.stopPropagation();
+  const menu = document.getElementById('hand-card-menu');
+  const cardId = menu.getAttribute('data-card-id');
+  removeCardFromAllZones(cardId);
+  gameState.playerVoid.push(cardId);
+  renderGameState();
+  setupDropZones();
+  menu.style.display = 'none';
+};
+
+document.body.addEventListener('click', function() {
+  document.getElementById('hand-card-menu').style.display = 'none';
+});
+document.getElementById('hand-card-menu').onclick = function(e) {
+  e.stopPropagation(); // Don't hide when clicking inside menu
+};
+// FILTER COLOR EVENTS
   document.getElementById('filter-color').addEventListener('change', (e) => {
     const color = e.target.value.toLowerCase();
     document.body.className = document.body.className
