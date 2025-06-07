@@ -1255,6 +1255,8 @@ const voidCards = gameState.playerVoid;
           gameState.playerVoid.splice(voidIdx, 1);
           gameState.playerHand.push(cardId);
            showVoidModal();
+           renderGameState();
+           setupDropZones();
         }
       };
     menu.querySelector('.void-action-deck').onclick = (e) => {
@@ -1264,6 +1266,8 @@ const voidCards = gameState.playerVoid;
         gameState.playerVoid.splice(voidIdx, 1);
         gameState.playerDeck.push(cardId);
         showVoidModal();
+        renderGameState();
+        setupDropZones();
       }
     };
 
