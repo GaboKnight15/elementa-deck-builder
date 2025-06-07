@@ -598,7 +598,9 @@ function setupDropZones() {
       const instanceId = e.dataTransfer.getData('text/plain');
       const cardIdx = gameState.playerHand.findIndex(c => c.instanceId === instanceId);
       if (cardIdx === -1) return;
-      moveCard(instanceId, gameState.playerHand, gameState[<targetArray>], {orientation: "vertical"});
+      // Choose the correct target array based on zoneId
+      let targetArr = zoneId === "player-creatures-zone" ? gameState.playerCreatures : gameState.playerDomains;
+      moveCard(instanceId, gameState.playerHand, targetArr, {orientation: "vertical"});
       renderGameState();
       setupDropZones();
     };
