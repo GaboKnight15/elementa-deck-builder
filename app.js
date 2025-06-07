@@ -163,27 +163,24 @@ const PHASES = [
   let decks = JSON.parse(localStorage.getItem(DECKS_KEY)) || { "Deck 1": {} };
   let currentDeckSlot = localStorage.getItem("currentDeckSlot") || deckSlots[0];
 
-  function saveDeckState() {
+function saveDeckState() {
     localStorage.setItem(DECK_SLOTS_KEY, JSON.stringify(deckSlots));
     localStorage.setItem(DECKS_KEY, JSON.stringify(decks));
     localStorage.setItem("currentDeckSlot", currentDeckSlot);
   }
-  function loadDeckState() {
+function loadDeckState() {
     deckSlots = JSON.parse(localStorage.getItem(DECK_SLOTS_KEY)) || ["Deck 1"];
     decks = JSON.parse(localStorage.getItem(DECKS_KEY)) || { "Deck 1": {} };
     currentDeckSlot = localStorage.getItem("currentDeckSlot") || deckSlots[0];
   }
-
-  function getCurrentDeck() {
+function getCurrentDeck() {
     return decks[currentDeckSlot] || {};
   }
-
-  function setCurrentDeck(deckObj) {
+function setCurrentDeck(deckObj) {
     decks[currentDeckSlot] = deckObj;
     saveDeckState();
   }
-
-  function refreshDeckSlotSelect() {
+function refreshDeckSlotSelect() {
     deckSlotSelect.innerHTML = "";
     deckSlots.forEach(slot => {
       const opt = document.createElement('option');
@@ -247,7 +244,7 @@ function getZoneArray(zoneId) {
     default: return null;
   }
 }
-  function updateDeckDisplay() {
+function updateDeckDisplay() {
   const deck = getCurrentDeck();
   deckList.innerHTML = '';
   let total = 0;
@@ -269,7 +266,6 @@ function getZoneArray(zoneId) {
     }
     total += count;
   }
-
   // Section display order
   const sectionNames = [
     { key: "creature", label: "Creatures" },
@@ -688,17 +684,6 @@ function placeCardInZone(instanceId, zoneId, orientation = "vertical") {
   }
   renderGameState();
   setupDropZones();
-}
-
-function removeCardFromAllZones(instanceId) {
-  const allRows = [
-    gameState.playerHand, gameState.playerCreatures, gameState.playerDomains, gameState.playerVoid,
-    gameState.opponentHand, gameState.opponentCreatures, gameState.opponentDomains, gameState.opponentVoid
-  ];
-  for (const arr of allRows) {
-    let idx = arr.findIndex(c => c.instanceId === instanceId);
-    if (idx !== -1) arr.splice(idx, 1);
-  }
 }
   // Modal logic
   closeBtn.onclick = () => { modal.style.display = "none"; };
