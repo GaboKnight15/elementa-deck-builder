@@ -470,8 +470,6 @@ function renderGameState() {
     div.appendChild(img);
     playerHandDiv.appendChild(div);
   }
-  fanHand();
-
   // RENDER OPPONENT HAND FACEDOWN
   const opponentHandDiv = document.getElementById('opponent-hand');
   opponentHandDiv.innerHTML = '';
@@ -620,31 +618,6 @@ function renderDeckZone(zoneId, deckArray, who) {
   zoneDiv.appendChild(deckCard);
 
   // Add click/drag handlers as needed
-}
-// FANHAND
-function fanHand() {
-  const hand = document.getElementById('player-hand');
-  const cards = hand.querySelectorAll('.card');
-  const n = cards.length;
-  if (!n) return;
-
-  // Adjust these for fan curvature
-  const maxAngle = 60; // total degrees of arc (e.g., 60 for wide, 30 for shallow)
-  const radius = 420;  // px, radius of the curve
-
-  for (let i = 0; i < n; i++) {
-    // Spread angle: center = 0, edges = -maxAngle/2 ... +maxAngle/2
-    const angle = ((i - (n - 1) / 2) * (maxAngle / Math.max(n - 1, 1)));
-    // Calculate position on arc
-    const rad = angle * (Math.PI / 180);
-    const x = radius * Math.sin(rad);
-    const y = radius * (1 - Math.cos(rad));
-
-    cards[i].style.left = `calc(50% + ${x}px)`;
-    cards[i].style.bottom = `${y}px`;
-    cards[i].style.transform = `rotate(${angle}deg)`;
-    cards[i].style.zIndex = 10 + i;
-  }
 }
 // PLACECARDINZONE
 function placeCardInZone(cardId, zoneId, orientation = "vertical") {
