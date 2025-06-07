@@ -545,6 +545,20 @@ body.deck-open .container {
   transform: scale(1.16) translateY(-32px) !important;
   z-index: 100 !important;
 }
+#hand-card-menu button {
+  color: #222 !important;    /* Make text dark and visible */
+  background: none;
+  font-size: 1em;
+  width: 100%;
+  text-align: left;
+  padding: 6px 24px;
+  border: none;
+  cursor: pointer;
+  box-shadow: none;
+}
+#hand-card-menu button:hover {
+  background: #f5e8d0;
+}
 .zone-row {
   display: flex;
   flex-wrap: wrap;
