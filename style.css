@@ -241,7 +241,7 @@ body {
     }
 /* GAMEPLAY STYLE */
 #battlefield-container {
-  display: flex;
+  display: none;
   justify-content: center;
   width: 100vw;
 }
