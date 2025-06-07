@@ -467,17 +467,17 @@ function drawCards(who, n) {
 function renderGameState() {
   // RENDER PLAYER HAND
   const playerHandDiv = document.getElementById('player-hand');
-  playerHandDiv.innerHTML = '';
-  for (let cardId of gameState.playerHand) {
-    const card = dummyCards.find(c => c.id === cardId);
+    playerHandDiv.innerHTML = '';
+    for (let cardObj of gameState.playerHand) {
+    const card = dummyCards.find(c => c.id === cardObj.cardId);
     if (!card) continue;
     const div = document.createElement('div');
     div.className = 'card';
     div.draggable = true;
     div.ondragstart = (e) => {
-      e.dataTransfer.setData("text/plain", cardId);
+      e.dataTransfer.setData("text/plain", cardObj.instanceId);
       e.dataTransfer.setData("source", "hand");
-  };
+    };
     const img = document.createElement('img');
     img.src = card.image;
     img.alt = card.name;
@@ -485,7 +485,7 @@ function renderGameState() {
     div.appendChild(img);
     div.onclick = (e) => {
       e.stopPropagation();
-      showHandCardMenu(cardId, div);
+      showHandCardMenu(cardObj.instanceId, div);
     };
     playerHandDiv.appendChild(div);
   }
@@ -596,9 +596,10 @@ function setupDropZones() {
     zone.ondrop = (e) => {
       e.preventDefault();
       zone.classList.remove('drag-over');
-      const cardId = e.dataTransfer.getData('text/plain');
-      if (!gameState.playerHand.includes(cardId)) return;
-      placeCardInZone(cardId, zoneId, "vertical");
+      const instanceId = e.dataTransfer.getData('text/plain');
+      moveCard(instanceId, gameState.playerHand, gameState[<targetArray>], {orientation: "vertical"});
+      renderGameState();
+       setupDropZones();
     };
   });
 }
@@ -607,6 +608,7 @@ function renderRowZone(zoneId, cardArray, category) {
   const zoneDiv = document.getElementById(zoneId);
   zoneDiv.innerHTML = '';
   for (const cardObj of cardArray) {
+    const card = dummyCards.find(c => c.id === cardObj.cardId);
     let cardId, orientation;
     if (typeof cardObj === "string") {
       cardId = cardObj;
@@ -621,12 +623,12 @@ function renderRowZone(zoneId, cardArray, category) {
     cardDiv.className = 'card';
     cardDiv.draggable = true;
     cardDiv.ondragstart = (e) => {
-      e.dataTransfer.setData("text/plain", cardId);
+      e.dataTransfer.setData("text/plain", cardObj.instanceId);
       e.dataTransfer.setData("source", zoneId);
     };
     cardDiv.onclick = (e) => {
       e.stopPropagation();
-      showCardActionMenu(cardId, zoneId, orientation, cardDiv); // adjust as needed
+      showCardActionMenu(cardObj.instanceId, zoneId, orientation, cardDiv);
     };
     const img = document.createElement('img');
     img.src = card.image;
@@ -999,9 +1001,8 @@ phaseNameSpan.onclick = function() { nextPhaseBtn.click(); };
 document.getElementById('hand-menu-play').onclick = function(e) {
   e.stopPropagation();
   const menu = document.getElementById('hand-card-menu');
-  const cardId = menu.getAttribute('data-card-id');
-  removeCardFromAllZones(cardId);
-  gameState.playerCreatures.push({ cardId, orientation: "vertical" }); // or playerDomains as appropriate
+  const instanceId = menu.getAttribute('data-card-id');
+  moveCard(instanceId, gameState.playerHand, gameState.playerCreatures, {orientation: "vertical"});
   renderGameState();
   setupDropZones();
   menu.style.display = 'none';
