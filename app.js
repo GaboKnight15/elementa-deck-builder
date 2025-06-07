@@ -572,10 +572,9 @@ function renderGameState() {
   };
 }
 // HAND OPTIONS MENU
-function showHandCardMenu(cardId, cardDiv) {
+function showHandCardMenu(instanceId, cardDiv) {
   const menu = document.getElementById('hand-card-menu');
-  // Store the cardId for actions
-  menu.setAttribute('data-instance-id', cardObj.instanceId);
+  menu.setAttribute('data-instance-id', instanceId);
 
   // Position menu under the card
   const rect = cardDiv.getBoundingClientRect();
@@ -672,7 +671,7 @@ function renderDeckZone(zoneId, deckArray, who) {
 // PLACECARDINZONE
 function placeCardInZone(cardId, zoneId, orientation = "vertical") {
   // REMOVE CARD FROM ALL LOCATIONS
-  removeCardFromAllZones(cardId);
+  removeCardFromAllZones(instanceId);
   // ADD TO TARGET
   if (zoneId === 'player-creatures-zone') {
     gameState.playerCreatures.push({ cardId, orientation });
@@ -688,18 +687,12 @@ function placeCardInZone(cardId, zoneId, orientation = "vertical") {
 }
 
 function removeCardFromAllZones(instanceId) {
-  // Utility to remove the card from any array it could be in
   const allRows = [
     gameState.playerHand, gameState.playerCreatures, gameState.playerDomains, gameState.playerVoid,
     gameState.opponentHand, gameState.opponentCreatures, gameState.opponentDomains, gameState.opponentVoid
   ];
   for (const arr of allRows) {
-    let idx;
-    if (arr.length > 0 && typeof arr[0] === 'object') {
-      idx = arr.findIndex(c => c.cardId === cardId);
-    } else {
-      idx = arr.indexOf(cardId);
-    }
+    let idx = arr.findIndex(c => c.instanceId === instanceId);
     if (idx !== -1) arr.splice(idx, 1);
   }
 }
@@ -769,7 +762,7 @@ function showVoidModal() {
   const list = document.getElementById('void-card-list');
   list.innerHTML = '';
 
-const voidCards = gameState.playerVoid; // Array of card IDs!
+const voidCards = gameState.playerVoid;
   if (voidCards.length === 0) {
     list.innerHTML = '<div style="color:#999;">Void is empty.</div>';
   } else {
@@ -935,10 +928,11 @@ startGameBtn.onclick = () => {
   zone.ondrop = (e) => {
     e.preventDefault();
     zone.classList.remove('drag-over');
-    const cardId = e.dataTransfer.getData('text/plain');
-    // Only allow hand cards (if you want)
-    if (!gameState.playerHand.includes(cardId)) return;
-    placeCardInZone(cardId, zoneId, "vertical");
+    const instanceId = e.dataTransfer.getData('text/plain');
+    let targetArr = zoneId === "player-creatures-zone" ? gameState.playerCreatures : gameState.playerDomains;
+    moveCard(instanceId, gameState.playerHand, targetArr, {orientation: "vertical"});
+    renderGameState();
+    setupDropZones();
   };
 });
    };
@@ -1013,8 +1007,7 @@ document.getElementById('hand-menu-void').onclick = function(e) {
   e.stopPropagation();
   const menu = document.getElementById('hand-card-menu');
   const instanceId = menu.getAttribute('data-instance-id');
-  removeCardFromAllZones(cardId);
-  gameState.playerVoid.push(cardId);
+  moveCard(instanceId, gameState.playerHand, gameState.playerVoid);
   renderGameState();
   setupDropZones();
   menu.style.display = 'none';
@@ -1115,9 +1108,9 @@ if (!window.cardMenuGlobalClickHandlerAdded) {
   window.cardMenuGlobalClickHandlerAdded = true;
 }
 
-function showCardActionMenu(cardId, zoneId, orientation, cardDiv) {
+function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
   const menu = document.getElementById('card-action-menu');
-  currentCardMenuState = { cardId, zoneId, orientation };
+  currentCardMenuState = { instanceId, zoneId, orientation };
   // POSITION MENU NEAR CARD
   const rect = cardDiv.getBoundingClientRect();
   menu.style.top = `${rect.bottom + window.scrollY + 4}px`;
@@ -1207,8 +1200,8 @@ const voidCards = gameState.playerVoid;
     list.style.display = 'grid';
     list.style.gridTemplateColumns = 'repeat(auto-fit, minmax(120px, 1fr))';
     list.style.gap = '1em';
-    voidCards.forEach((cardId, idx) => {
-      const card = dummyCards.find(c => c.id === cardId);
+    voidCards.forEach((cardObj, idx) => {
+      const card = dummyCards.find(c => c.id === cardObj.cardId);
       if (!card) return;
 
       const wrapper = document.createElement('div');
@@ -1271,33 +1264,24 @@ const voidCards = gameState.playerVoid;
       `;
 
       // Attach menu actions
-      menu.querySelector('.void-action-hand').onclick = (e) => {
+       menu.querySelector('.void-action-hand').onclick = (e) => {
         e.stopPropagation();
-      const voidIdx = gameState.playerVoid.indexOf(cardId);
-        if (voidIdx !== -1) {
-          gameState.playerVoid.splice(voidIdx, 1);
-          gameState.playerHand.push(cardId);
-           showVoidModal();
-           renderGameState();
-           setupDropZones();
+        moveCard(cardObj.instanceId, gameState.playerVoid, gameState.playerHand);
+        showVoidModal();
+        renderGameState();
+        setupDropZones();
         }
       };
     menu.querySelector('.void-action-deck').onclick = (e) => {
-      e.stopPropagation();
-      const voidIdx = gameState.playerVoid.indexOf(cardId);
-      if (voidIdx !== -1) {
-        gameState.playerVoid.splice(voidIdx, 1);
-        gameState.playerDeck.push(cardId);
+        e.stopPropagation();
+        moveCard(cardObj.instanceId, gameState.playerVoid, gameState.playerDeck);
         showVoidModal();
         renderGameState();
         setupDropZones();
       }
     };
-
-      // Show menu on right-click or click
 btn.onclick = (e) => {
   e.stopPropagation();
-  // Hide all other menus first
   document.querySelectorAll('#void-card-list .void-dropdown').forEach(m => m.style.display = 'none');
   menu.style.display = 'block';
 };
