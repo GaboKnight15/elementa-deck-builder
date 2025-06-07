@@ -591,13 +591,13 @@ function setupDropZones() {
 function renderRowZone(zoneId, cardArray, category) {
   const zoneDiv = document.getElementById(zoneId);
   zoneDiv.innerHTML = '';
-  for (const cardId of cardArray) {
+  for (const cardObj of cardArray) {
     let cardId, orientation;
     if (typeof cardObj === "string") {
       cardId = cardObj;
       orientation = "vertical";
     } else {
-      cardId = cardObj.cardId;
+      cardObj = cardObj.cardId;
       orientation = cardObj.orientation || "vertical";
     }
     const card = dummyCards.find(c => c.id === cardId);
@@ -1267,13 +1267,15 @@ const voidCards = gameState.playerVoid;
            showVoidModal();
         }
       };
-      menu.querySelector('.void-action-deck').onclick = (e) => {
-        e.stopPropagation();
-        // Remove from void, add to deck (top)
-        gameState.zones['void'].splice(idx, 1);
+    menu.querySelector('.void-action-deck').onclick = (e) => {
+      e.stopPropagation();
+      const voidIdx = gameState.playerVoid.indexOf(cardId);
+      if (voidIdx !== -1) {
+        gameState.playerVoid.splice(voidIdx, 1);
         gameState.playerDeck.push(cardId);
         showVoidModal();
-      };
+      }
+    };
 
       // Show menu on right-click or click
 btn.onclick = (e) => {
