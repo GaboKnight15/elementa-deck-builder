@@ -155,9 +155,6 @@ const PHASES = [
     startGameBtn,
     toggleBtn
   ];
-  wrapper.appendChild(btn);
-  wrapper.appendChild(menu);
-  list.appendChild(wrapper);
 // ==========================
 // === DECK MANAGEMENT ===
 // ==========================
