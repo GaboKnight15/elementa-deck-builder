@@ -607,6 +607,7 @@ function renderRowZone(zoneId, cardArray, category) {
   const zoneDiv = document.getElementById(zoneId);
   zoneDiv.innerHTML = '';
   for (const cardObj of cardArray) {
+    if (!cardObj || !cardObj.cardId) continue;
     const card = dummyCards.find(c => c.id === cardObj.cardId);
     if (!card) continue;
     const orientation = cardObj.orientation || "vertical";
