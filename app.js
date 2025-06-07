@@ -675,7 +675,12 @@ function removeCardFromAllZones(cardId) {
     gameState.opponentHand, gameState.opponentCreatures, gameState.opponentDomains, gameState.opponentVoid
   ];
   for (const arr of allRows) {
-    const idx = arr.indexOf(cardId);
+    let idx;
+    if (arr.length > 0 && typeof arr[0] === 'object') {
+      idx = arr.findIndex(c => c.cardId === cardId);
+    } else {
+      idx = arr.indexOf(cardId);
+    }
     if (idx !== -1) arr.splice(idx, 1);
   }
 }
