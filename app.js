@@ -597,7 +597,7 @@ function renderRowZone(zoneId, cardArray, category) {
       cardId = cardObj;
       orientation = "vertical";
     } else {
-      cardObj = cardObj.cardId;
+      cardID = cardObj.cardId;
       orientation = cardObj.orientation || "vertical";
     }
     const card = dummyCards.find(c => c.id === cardId);
@@ -975,7 +975,7 @@ document.getElementById('hand-menu-play').onclick = function(e) {
   const menu = document.getElementById('hand-card-menu');
   const cardId = menu.getAttribute('data-card-id');
   removeCardFromAllZones(cardId);
-  gameState.playerCreatures.push(cardId); // or playerDomains as appropriate
+  gameState.playerCreatures.push({ cardId, orientation: "vertical" }); // or playerDomains as appropriate
   renderGameState();
   setupDropZones();
   menu.style.display = 'none';
@@ -1205,18 +1205,6 @@ const voidCards = gameState.playerVoid;
       btn.style.borderRadius = "10px";
       btn.style.border = "none";
       btn.style.cursor = "pointer";
-      btn.draggable = true;
-
-      // Drag logic
-      btn.ondragstart = (e) => {
-        e.dataTransfer.setData("text/plain", cardId);
-        e.dataTransfer.setData("source", "void");
-        // Optional: visually indicate dragging
-        btn.style.opacity = "0.7";
-      };
-      btn.ondragend = (e) => {
-        btn.style.opacity = "1";
-      };
 
       // Card image
       const img = document.createElement('img');
@@ -1226,7 +1214,6 @@ const voidCards = gameState.playerVoid;
       img.style.maxHeight = "110px";
       img.style.display = "block";
       img.style.marginBottom = "6px";
-      if (orientation === 'horizontal') img.style.transform = "rotate(90deg)";
 
       // Card name
       const name = document.createElement('div');
