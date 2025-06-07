@@ -1261,22 +1261,21 @@ const voidCards = gameState.playerVoid;
       `;
 
       // Attach menu actions
-       menu.querySelector('.void-action-hand').onclick = (e) => {
-        e.stopPropagation();
-        moveCard(cardObj.instanceId, gameState.playerVoid, gameState.playerHand);
-        showVoidModal();
-        renderGameState();
-        setupDropZones();
-        }
-      };
-    menu.querySelector('.void-action-deck').onclick = (e) => {
-        e.stopPropagation();
-        moveCard(cardObj.instanceId, gameState.playerVoid, gameState.playerDeck);
-        showVoidModal();
-        renderGameState();
-        setupDropZones();
-      }
-    };
+menu.querySelector('.void-action-hand').onclick = (e) => {
+  e.stopPropagation();
+  moveCard(cardObj.instanceId, gameState.playerVoid, gameState.playerHand);
+  showVoidModal();
+  renderGameState();
+  setupDropZones();
+};
+
+menu.querySelector('.void-action-deck').onclick = (e) => {
+  e.stopPropagation();
+  moveCard(cardObj.instanceId, gameState.playerVoid, gameState.playerDeck);
+  showVoidModal();
+  renderGameState();
+  setupDropZones();
+};
 btn.onclick = (e) => {
   e.stopPropagation();
   document.querySelectorAll('#void-card-list .void-dropdown').forEach(m => m.style.display = 'none');
