@@ -198,10 +198,12 @@ const PHASES = [
 // === RENDERING / UI ===
 // ==========================
 function showBattlefield() {
+  document.getElementById('battlefield-container').style.display = 'flex';
   document.getElementById('battlefield').style.display = 'block';
   // Hide builder-only elements, etc.
 }
 function showBuilder() {
+  document.getElementById('battlefield-container').style.display = 'none';
   document.getElementById('battlefield').style.display = 'none';
   // Show builder-only elements, etc.
 }
