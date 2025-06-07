@@ -1092,8 +1092,6 @@ if (!window.cardMenuGlobalClickHandlerAdded) {
   window.cardMenuGlobalClickHandlerAdded = true;
 }
 
-let currentCardMenuState = null;
-
 function showCardActionMenu(cardId, zoneId, orientation, cardDiv) {
   const menu = document.getElementById('card-action-menu');
   currentCardMenuState = { cardId, zoneId, orientation };
