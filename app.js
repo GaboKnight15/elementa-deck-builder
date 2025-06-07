@@ -669,19 +669,29 @@ function renderDeckZone(zoneId, deckArray, who) {
     }
 }
 // PLACECARDINZONE
-function placeCardInZone(cardId, zoneId, orientation = "vertical") {
-  // REMOVE CARD FROM ALL LOCATIONS
-  removeCardFromAllZones(instanceId);
-  // ADD TO TARGET
-  if (zoneId === 'player-creatures-zone') {
-    gameState.playerCreatures.push({ cardId, orientation });
-  } else if (zoneId === 'player-domains-zone') {
-    gameState.playerDomains.push({ cardId, orientation });
-  } else if (zoneId === 'player-void-zone') {
-    gameState.playerVoid.push(cardId);
+function placeCardInZone(instanceId, zoneId, orientation = "vertical") {
+  // Find and remove from all zones
+  let cardObj;
+  const allRows = [
+    gameState.playerHand, gameState.playerCreatures, gameState.playerDomains, gameState.playerVoid,
+    gameState.opponentHand, gameState.opponentCreatures, gameState.opponentDomains, gameState.opponentVoid
+  ];
+  for (const arr of allRows) {
+    let idx = arr.findIndex(c => c.instanceId === instanceId);
+    if (idx !== -1) {
+      [cardObj] = arr.splice(idx, 1);
+      break;
+    }
   }
-  // (Add for opponent, etc...)
-
+  if (!cardObj) return;
+  // Add to correct zone
+  if (zoneId === 'player-creatures-zone') {
+    gameState.playerCreatures.push({ ...cardObj, orientation });
+  } else if (zoneId === 'player-domains-zone') {
+    gameState.playerDomains.push({ ...cardObj, orientation });
+  } else if (zoneId === 'player-void-zone') {
+    gameState.playerVoid.push(cardObj);
+  }
   renderGameState();
   setupDropZones();
 }
@@ -1132,13 +1142,16 @@ document.getElementById('card-action-menu').onclick = function(e) {
 };
 document.getElementById('card-action-return-hand').onclick = function() {
   if (!currentCardMenuState) return;
-  const { cardId, zoneId } = currentCardMenuState;
+  const { instanceId, zoneId } = currentCardMenuState;
   let arr = getZoneArray(zoneId);
   if (arr) {
-    let idx = arr.findIndex(c => (typeof c === 'object' ? c.cardId : c) === cardId);
-    if (idx !== -1) arr.splice(idx, 1);
+    // Remove from the current zone and get the card object
+    const idx = arr.findIndex(card => card.instanceId === instanceId);
+    if (idx !== -1) {
+    const [cardObj] = arr.splice(idx, 1);
+    gameState.playerHand.push(cardObj);
   }
-  gameState.playerHand.push(cardId);
+}
   renderGameState();
   setupDropZones();
   document.getElementById('card-action-menu').style.display = 'none';
@@ -1146,12 +1159,12 @@ document.getElementById('card-action-return-hand').onclick = function() {
 
 document.getElementById('card-action-orient').onclick = function() {
   if (!currentCardMenuState) return;
-  const { cardId, zoneId } = currentCardMenuState;
+  const { instanceId, zoneId } = currentCardMenuState;
   let arr = getZoneArray(zoneId);
   if (arr) {
     for (let c of arr) {
-      if (c.cardId === cardId) {
-        c.orientation = (c.orientation === "horizontal") ? "vertical" : "horizontal";
+      if (c.instanceId === instanceId) {
+      c.orientation = (c.orientation === "horizontal") ? "vertical" : "horizontal";
       }
     }
   }
@@ -1162,13 +1175,15 @@ document.getElementById('card-action-orient').onclick = function() {
 
 document.getElementById('card-action-send-void').onclick = function() {
   if (!currentCardMenuState) return;
-  const { cardId, zoneId } = currentCardMenuState;
+  const { instanceId, zoneId } = currentCardMenuState;
   let arr = getZoneArray(zoneId);
   if (arr) {
-    const idx = arr.indexOf(cardId);
-    if (idx !== -1) arr.splice(idx, 1);
+    const idx = arr.findIndex(card => card.instanceId === instanceId);
+    if (idx !== -1) {
+      const [cardObj] = arr.splice(idx, 1);
+      gameState.playerVoid.push(cardObj);
+    }
   }
-  gameState.playerVoid.push(cardId);
   renderGameState();
   setupDropZones();
   document.getElementById('card-action-menu').style.display = 'none';
@@ -1176,13 +1191,15 @@ document.getElementById('card-action-send-void').onclick = function() {
 
 document.getElementById('card-action-send-deck').onclick = function() {
   if (!currentCardMenuState) return;
-  const { cardId, zoneId } = currentCardMenuState;
+  const { instanceId, zoneId } = currentCardMenuState;
   let arr = getZoneArray(zoneId);
   if (arr) {
-    const idx = arr.indexOf(cardId);
-    if (idx !== -1) arr.splice(idx, 1);
+    const idx = arr.findIndex(card => card.instanceId === instanceId);
+    if (idx !== -1) {
+        const [cardObj] = arr.splice(idx, 1);
+        gameState.playerDeck.push(cardObj);
+    }
   }
-  gameState.playerDeck.push(cardId);
   renderGameState();
   setupDropZones();
   document.getElementById('card-action-menu').style.display = 'none';
