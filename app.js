@@ -914,6 +914,8 @@ startGameBtn.onclick = () => {
     placeCardInZone(cardId, zoneId, "vertical");
   };
 });
+  document.getElementById('phase-bar').style.display = '';
+  document.getElementById('back-to-builder-btn').style.display = '';
    };
 
 
