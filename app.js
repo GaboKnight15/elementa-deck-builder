@@ -500,6 +500,7 @@ function renderGameState() {
   renderDeckZone('player-void-zone', gameState.playerVoid, "player");
   renderDeckZone('opponent-deck-zone', gameState.opponentDeck, "opponent");
   renderDeckZone('opponent-void-zone', gameState.opponentVoid, "opponent");
+  attachVoidZoneHandlers();
   
 // Render player deck stack
   const playerDeckDiv = document.getElementById('player-deck-zone');
@@ -555,6 +556,23 @@ function renderGameState() {
       drawCards("opponent", 1);
     }
   };
+}
+// VOID ZONE HANDLERS
+function attachVoidZoneHandlers() {
+  let playerVoidZone = document.getElementById('player-void-zone');
+  if (playerVoidZone) {
+    playerVoidZone.onclick = function(e) {
+      e.stopPropagation();
+      showVoidModal();
+    };
+  }
+  let opponentVoidZone = document.getElementById('opponent-void-zone');
+  if (opponentVoidZone) {
+    opponentVoidZone.onclick = function(e) {
+      e.stopPropagation();
+      showVoidModal(); // Or use opponentVoid if you want opponent's void
+    };
+  }
 }
 // HAND OPTIONS MENU
 function showHandCardMenu(cardId, cardDiv) {
@@ -1061,22 +1079,6 @@ deckActionsMenu.querySelector('#deck-search-btn').onclick = function() {
   deckActionsMenu.style.display = "none";
 };
 
-// Hide menu when clicking elsewhere
-document.body.addEventListener('click', function(e) {
-  if (deckActionsMenu && deckActionsMenu.style.display === "block") {
-    deckActionsMenu.style.display = "none";
-  }
-  document.getElementById('player-void-zone').onclick = function(e) {
-    e.stopPropagation();
-    showVoidModal();
-  };
-  document.getElementById('opponent-void-zone').onclick = function(e) {
-    e.stopPropagation();
-    showVoidModal();
-};
-  
-});
-
 // Actions in zones
 let currentCardMenuState = null;
 // Global click handlers
@@ -1183,7 +1185,7 @@ function showVoidModal() {
   const list = document.getElementById('void-card-list');
   list.innerHTML = '';
 
-  const voidCards = (gameState.zones['void'] || []);
+const voidCards = gameState.playerVoid;
   if (voidCards.length === 0) {
     list.innerHTML = '<div style="color:#999;">Void is empty.</div>';
   } else {
