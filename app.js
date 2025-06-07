@@ -592,6 +592,14 @@ function renderRowZone(zoneId, cardArray, category) {
   const zoneDiv = document.getElementById(zoneId);
   zoneDiv.innerHTML = '';
   for (const cardId of cardArray) {
+    let cardId, orientation;
+    if (typeof cardObj === "string") {
+      cardId = cardObj;
+      orientation = "vertical";
+    } else {
+      cardId = cardObj.cardId;
+      orientation = cardObj.orientation || "vertical";
+    }
     const card = dummyCards.find(c => c.id === cardId);
     if (!card) continue;
     const cardDiv = document.createElement('div');
@@ -748,6 +756,11 @@ const voidCards = gameState.playerVoid; // Array of card IDs!
     voidCards.forEach((cardId, idx) => {
       const card = dummyCards.find(c => c.id === cardId);
       if (!card) return;
+      const wrapper = document.createElement('div');
+      wrapper.style.position = 'relative';
+      wrapper.style.display = 'flex';
+      wrapper.style.flexDirection = 'column';
+      wrapper.style.alignItems = 'center';
       const btn = document.createElement('button');
       btn.style.display = 'flex';
       btn.style.flexDirection = 'column';
@@ -772,7 +785,6 @@ const voidCards = gameState.playerVoid; // Array of card IDs!
       img.style.maxHeight = "110px";
       img.style.display = "block";
       img.style.marginBottom = "6px";
-      if (orientation === 'horizontal') img.style.transform = "rotate(90deg)";
 
       const name = document.createElement('div');
       name.textContent = card.name;
@@ -803,8 +815,6 @@ document.getElementById('close-void-modal').onclick = function() {
 document.getElementById('void-modal').addEventListener('click', function(event) {
   if (event.target === this) this.style.display = 'none';
 });
-// PLEASE HELP ME ADJUST THIS PART modal logic here as in your original code... //
-
 
 // ==========================
 // === EVENT LISTENERS ===
@@ -1104,13 +1114,11 @@ document.getElementById('card-action-menu').onclick = function(e) {
 document.getElementById('card-action-return-hand').onclick = function() {
   if (!currentCardMenuState) return;
   const { cardId, zoneId } = currentCardMenuState;
-  // Remove from zone
   let arr = getZoneArray(zoneId);
   if (arr) {
-    const idx = arr.indexOf(cardId);
+    let idx = arr.findIndex(c => (typeof c === 'object' ? c.cardId : c) === cardId);
     if (idx !== -1) arr.splice(idx, 1);
   }
-  // Add to hand
   gameState.playerHand.push(cardId);
   renderGameState();
   setupDropZones();
@@ -1173,7 +1181,7 @@ const voidCards = gameState.playerVoid;
     list.style.display = 'grid';
     list.style.gridTemplateColumns = 'repeat(auto-fit, minmax(120px, 1fr))';
     list.style.gap = '1em';
-    voidCards.forEach(({cardId, orientation}, idx) => {
+    voidCards.forEach((cardId, idx) => {
       const card = dummyCards.find(c => c.id === cardId);
       if (!card) return;
 
@@ -1252,12 +1260,11 @@ const voidCards = gameState.playerVoid;
       // Attach menu actions
       menu.querySelector('.void-action-hand').onclick = (e) => {
         e.stopPropagation();
-        const voidIdx = gameState.zones['void'].findIndex(c => c.cardId === cardId);
+      const voidIdx = gameState.playerVoid.indexOf(cardId);
         if (voidIdx !== -1) {
-        // Remove from void, add to hand
-        gameState.zones['void'].splice(idx, 1);
-        gameState.playerHand.push(cardId);
-        showVoidModal(); // re-render
+          gameState.playerVoid.splice(voidIdx, 1);
+          gameState.playerHand.push(cardId);
+           showVoidModal();
         }
       };
       menu.querySelector('.void-action-deck').onclick = (e) => {
