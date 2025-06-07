@@ -155,6 +155,9 @@ const PHASES = [
     startGameBtn,
     toggleBtn
   ];
+  wrapper.appendChild(btn);
+  wrapper.appendChild(menu);
+  list.appendChild(wrapper);
 // ==========================
 // === DECK MANAGEMENT ===
 // ==========================
@@ -610,16 +613,8 @@ function renderRowZone(zoneId, cardArray, category) {
   zoneDiv.innerHTML = '';
   for (const cardObj of cardArray) {
     const card = dummyCards.find(c => c.id === cardObj.cardId);
-    let cardId, orientation;
-    if (typeof cardObj === "string") {
-      cardId = cardObj;
-      orientation = "vertical";
-    } else {
-      cardId = cardObj.cardId;
-      orientation = cardObj.orientation || "vertical";
-    }
-    const card = dummyCards.find(c => c.id === cardId);
     if (!card) continue;
+    const orientation = cardObj.orientation || "vertical";
     const cardDiv = document.createElement('div');
     cardDiv.className = 'card';
     cardDiv.draggable = true;
@@ -779,8 +774,8 @@ const voidCards = gameState.playerVoid;
     list.style.display = 'grid';
     list.style.gridTemplateColumns = 'repeat(auto-fit, minmax(120px, 1fr))';
     list.style.gap = '1em';
-    voidCards.forEach((cardId, idx) => {
-      const card = dummyCards.find(c => c.id === cardId);
+    voidCards.forEach((cardObj, idx) => {
+      const card = dummyCards.find(c => c.id === cardObj.cardId);
       if (!card) return;
       const wrapper = document.createElement('div');
       wrapper.style.position = 'relative';
