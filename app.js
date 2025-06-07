@@ -617,7 +617,13 @@ function renderDeckZone(zoneId, deckArray, who) {
   deckCard.appendChild(countDiv);
   zoneDiv.appendChild(deckCard);
 
-  // Add click/drag handlers as needed
+  // CLICK HANDLER FOR VOID ZONE
+  if (zoneId.endsWith('void-zone')) {
+    deckCard.onclick = (e) => {
+      e.stopPropagation();
+      showVoidModal();
+      };
+    }
 }
 // PLACECARDINZONE
 function placeCardInZone(cardId, zoneId, orientation = "vertical") {
@@ -716,7 +722,7 @@ function showVoidModal() {
   const list = document.getElementById('void-card-list');
   list.innerHTML = '';
 
-  const voidCards = (gameState.zones['void'] || []);
+  const voidCards = gameState.playerVoid;
   if (voidCards.length === 0) {
     list.innerHTML = '<div style="color:#999;">Void is empty.</div>';
   } else {
@@ -1014,9 +1020,13 @@ document.body.addEventListener('click', function(e) {
   if (deckActionsMenu && deckActionsMenu.style.display === "block") {
     deckActionsMenu.style.display = "none";
   }
-document.getElementById('zone-void-2').onclick = function(e) {
-  e.stopPropagation();
-  showVoidModal();
+  document.getElementById('player-void-zone').onclick = function(e) {
+    e.stopPropagation();
+    showVoidModal();
+  };
+  document.getElementById('opponent-void-zone').onclick = function(e) {
+    e.stopPropagation();
+    showVoidModal();
 };
   
 });
