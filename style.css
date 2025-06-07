@@ -546,18 +546,24 @@ body.deck-open .container {
   z-index: 100 !important;
 }
 #hand-card-menu button {
-  color: #222 !important;    /* Make text dark and visible */
-  background: none;
-  font-size: 1em;
-  width: 100%;
-  text-align: left;
-  padding: 6px 24px;
+  background: linear-gradient(90deg, #007BFF 60%, #5ec6fa 100%);
+  color: #fff;
+  font-weight: bold;
   border: none;
+  border-radius: 6px;
+  transition: background 0.2s, transform 0.13s;
+  padding: 0.4em 1.1em;
+  margin: 0.2em 0;
+  font-size: 1em;
+  width: 120px;        /* or 100% if you prefer */
+  text-align: center;
+  box-shadow: 0 2px 6px #007bff33;
   cursor: pointer;
-  box-shadow: none;
+  outline: none;
 }
 #hand-card-menu button:hover {
-  background: #f5e8d0;
+  background: linear-gradient(90deg, #009fff 60%, #44e0e0 100%);
+  transform: scale(1.06);
 }
 .zone-row {
   display: flex;
