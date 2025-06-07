@@ -1076,7 +1076,7 @@ deckActionsMenu.querySelector('#deck-search-btn').onclick = function() {
 };
 
 // Actions in zones
-let currentCardMenuState = null;
+var currentCardMenuState = null;
 // Global click handlers
 if (!window.voidMenuGlobalClickHandlerAdded) {
   document.body.addEventListener('click', function() {
