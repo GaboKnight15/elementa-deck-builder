@@ -199,12 +199,10 @@ const PHASES = [
 // ==========================
 function showBattlefield() {
   document.getElementById('battlefield').style.display = 'block';
-  document.querySelectorAll('.in-game-only').forEach(el => el.style.display = '');
   // Hide builder-only elements, etc.
 }
 function showBuilder() {
   document.getElementById('battlefield').style.display = 'none';
-  document.querySelectorAll('.in-game-only').forEach(el => el.style.display = 'none');
   // Show builder-only elements, etc.
 }
 function getCardBgClass(card) {
