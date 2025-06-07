@@ -198,6 +198,21 @@ const PHASES = [
 // ==========================
 // === RENDERING / UI ===
 // ==========================
+
+// DECK CREATION LOGIC
+function buildDeck(deckObj) {
+  let deck = [];
+  let uid = 1;
+  for (let [cardId, count] of Object.entries(deckObj)) {
+    for (let i = 0; i < count; i++) {
+      deck.push({
+        cardId: cardId,
+        instanceId: cardId + "#" + (uid++)
+      });
+    }
+  }
+  return deck;
+}
 function showBattlefield() {
   document.getElementById('battlefield-container').style.display = 'flex';
   document.getElementById('battlefield').style.display = 'block';
@@ -889,20 +904,19 @@ startGameBtn.onclick = () => {
   elementsToHide.forEach(el => el.style.display = 'none');
   battlefield.style.display = 'block';
 
-  // Construct deck as an array of card ids, respecting deck counts
   const deckObj = getCurrentDeck();
-  let fullDeck = [];
-  for (let [id, count] of Object.entries(deckObj)) {
-    for (let i = 0; i < count; i++) fullDeck.push(id);
-  }
-  gameState.playerDeck = shuffle([...fullDeck]);
+  
+  gameState.playerDeck = shuffle(buildDeck(deckObj));
   gameState.playerHand = [];
-  // For now, opponent uses same deck (or you can randomize/dummy)
-  gameState.opponentDeck = shuffle([...fullDeck]);
-  gameState.opponentHand = [];
+  gameState.playerCreatures = [];
+  gameState.playerDomains = [];
+  gameState.playerVoid = [];
 
-  gameState.turn = "player";
-  gameState.phase = "draw";
+  gameState.opponentDeck = shuffle(buildDeck(deckObj));
+  gameState.opponentHand = [];
+  gameState.opponentCreatures = [];
+  gameState.opponentDomains = [];
+  gameState.opponentVoid = [];
   renderGameState();
   setupDropZones();
 
@@ -925,7 +939,14 @@ startGameBtn.onclick = () => {
   };
 });
    };
-
+// MOVE OBJECT
+function moveCard(instanceId, fromArr, toArr, extra = {}) {
+  const idx = fromArr.findIndex(card => card.instanceId === instanceId);
+  if (idx !== -1) {
+    const [cardObj] = fromArr.splice(idx, 1);
+    toArr.push({ ...cardObj, ...extra });
+  }
+}
 
 backToBuilderBtn.onclick = () => {
   showBuilder();
