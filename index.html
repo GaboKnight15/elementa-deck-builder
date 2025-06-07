@@ -13,42 +13,40 @@
     <button id="start-game-btn" style="margin:1em 0;">Start Game</button>
   </header>
 <div id="battlefield-container" style="display:none;">
-<div id="battlefield">
-  <h2>Battlefield</h2>
-<!-- OPPONENT HAND -->
- <div class="hand-area first-hand-area in-game-only" id="opponent-hand"></div>
-<!-- OPPONENT ZONES -->
- <div class="zone-row utility-row" style="justify-content: flex-start;">
-    <div class="deck-zone" id="opponent-deck-zone"></div>
-    <div class="void-zone" id="opponent-void-zone"></div>
- </div>
-  <div class="zone-row" id="opponent-domains-zone"></div>
-  <div class="zone-row" id="opponent-creatures-zone"></div>
-    <!-- SPACE -->
-  <hr style="opacity:0.2;">
-  <!-- PLAYER ZONES -->
-  <div class="zone-row" id="player-domains-zone"></div>
-  <div class="zone-row" id="player-creatures-zone"></div>
- <div class="zone-row utility-row" style="justify-content: flex-start;">
-    <div class="deck-zone" id="player-deck-zone"></div>
-    <div class="void-zone" id="player-void-zone"></div>
- </div>
-</div>
-    <!-- Phase Display -->
-  <div class="phase-bar in-game-only" id="phase-bar">
-    <div id="phase-display">
-      <span class="label">Turn:</span>
-      <span class="player" id="phase-player">player</span>
-      <span class="label phase-sep">|</span>
-      <span class="label">Phase:</span>
-      <span class="phase" id="phase-name">draw</span>
-    <button id="next-phase-btn" title="Next Phase" style="margin-left:16px;">⏭</button>
-  </div>
-    
-      <button id="back-to-builder-btn">Back to Deck Builder</button>
-      <!-- PLAYER HAND -->
- <div class="hand-area second-hand-area" id="player-hand"></div>
+  <div id="battlefield">
+    <h2>Battlefield</h2>
+    <!-- OPPONENT HAND -->
+    <div class="hand-area first-hand-area" id="opponent-hand"></div>
+    <!-- OPPONENT ZONES -->
+    <div class="zone-row utility-row" style="justify-content: flex-start;">
+      <div class="deck-zone" id="opponent-deck-zone"></div>
+      <div class="void-zone" id="opponent-void-zone"></div>
     </div>
+    <div class="zone-row" id="opponent-domains-zone"></div>
+    <div class="zone-row" id="opponent-creatures-zone"></div>
+    <hr style="opacity:0.2;">
+    <!-- PLAYER ZONES -->
+    <div class="zone-row" id="player-domains-zone"></div>
+    <div class="zone-row" id="player-creatures-zone"></div>
+    <div class="zone-row utility-row" style="justify-content: flex-start;">
+      <div class="deck-zone" id="player-deck-zone"></div>
+      <div class="void-zone" id="player-void-zone"></div>
+    </div>
+    <!-- PHASE BAR -->
+    <div class="phase-bar" id="phase-bar">
+      <div id="phase-display">
+        <span class="label">Turn:</span>
+        <span class="player" id="phase-player">player</span>
+        <span class="label phase-sep">|</span>
+        <span class="label">Phase:</span>
+        <span class="phase" id="phase-name">draw</span>
+        <button id="next-phase-btn" title="Next Phase" style="margin-left:16px;">⏭</button>
+      </div>
+    </div>
+    <!-- BACK TO DECK BUILDER BUTTON -->
+    <button id="back-to-builder-btn">Back to Deck Builder</button>
+    <!-- PLAYER HAND -->
+    <div class="hand-area second-hand-area" id="player-hand"></div>
   </div>
 </div>
   <!-- Deck Slot Selector -->
