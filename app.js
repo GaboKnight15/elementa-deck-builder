@@ -704,10 +704,24 @@ function openDeckSearchModal() {
     const card = dummyCards.find(c => c.id === cardObj.cardId);
     if (!card) return;
 
-    const btn = document.createElement('div');
-    btn.className = 'card';
-    btn.style.position = "relative";
+    // Use the same styling as the void modal!
+    const btn = document.createElement('button');
+    btn.style.display = 'flex';
+    btn.style.flexDirection = 'column';
+    btn.style.alignItems = 'center';
+    btn.style.justifyContent = 'center';
+    btn.style.width = "110px";
+    btn.style.height = "170px";
+    btn.style.padding = "6px";
+    btn.style.background = "#444";
+    btn.style.color = "#fff";
+    btn.style.borderRadius = "10px";
+    btn.style.border = "none";
     btn.style.cursor = "pointer";
+    btn.style.transition = "background 0.2s";
+    btn.classList.add('card', 'card-modal-dark');
+    btn.onmouseover = () => btn.style.background = "#222";
+    btn.onmouseout = () => btn.style.background = "#444";
 
     const img = document.createElement('img');
     img.src = card.image;
@@ -719,10 +733,7 @@ function openDeckSearchModal() {
 
     const name = document.createElement('div');
     name.textContent = card.name;
-    name.style.fontSize = "0.95em";
-    name.style.color = "#223";
-    name.style.fontWeight = "bold";
-    name.style.textAlign = "center";
+    name.className = "card-name";
 
     btn.appendChild(img);
     btn.appendChild(name);
