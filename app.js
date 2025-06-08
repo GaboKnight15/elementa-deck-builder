@@ -690,25 +690,24 @@ function placeCardInZone(instanceId, zoneId, orientation = "vertical") {
   closeBtn.onclick = () => { modal.style.display = "none"; };
   modal.onclick = (e) => { if (e.target === modal) modal.style.display = "none"; };
 
-// DECK SEARCH MODAL
+// DECK SEARCH MODAL with Popup Menu on Card Click
 function openDeckSearchModal() {
   const modal = document.getElementById('deck-search-modal');
   const content = document.getElementById('deck-search-content');
-  content.innerHTML = "<h3>Select a card to add to your hand:</h3>";
-  // Show all cards left in deck (one button per card instance)
+  content.innerHTML = "<h3>Select a card and choose an action:</h3>";
+
+  // Remove any old menu if present
+  let deckMenu = document.getElementById('deck-search-card-menu');
+  if (deckMenu) deckMenu.remove();
+
   gameState.playerDeck.forEach((cardObj, idx) => {
     const card = dummyCards.find(c => c.id === cardObj.cardId);
     if (!card) return;
 
-    const btn = document.createElement('button');
-    btn.style.margin = "0.2em";
-    btn.style.display = "flex";
-    btn.style.flexDirection = "column";
-    btn.style.alignItems = "center";
-    btn.style.justifyContent = "center";
-    btn.style.width = "110px";
-    btn.style.height = "170px";
-    btn.style.padding = "6px";
+    const btn = document.createElement('div');
+    btn.className = 'card';
+    btn.style.position = "relative";
+    btn.style.cursor = "pointer";
 
     const img = document.createElement('img');
     img.src = card.image;
@@ -725,51 +724,77 @@ function openDeckSearchModal() {
     name.style.fontWeight = "bold";
     name.style.textAlign = "center";
 
-      // --- Add to Hand button ---
-  const addBtn = document.createElement('button');
-  addBtn.textContent = "Add to Hand";
-  addBtn.style.marginTop = "4px";
-  addBtn.onclick = (ev) => {
-    ev.stopPropagation();
-    moveCard(cardObj.instanceId, gameState.playerDeck, gameState.playerHand);
-    closeDeckSearchModal();
-    renderGameState();
-    setupDropZones();
-  };
-
-        // --- Send to Void button ---
-    const voidBtn = document.createElement('button');
-    voidBtn.textContent = "Send to Void";
-    voidBtn.style.marginTop = "4px";
-    voidBtn.onclick = (ev) => {
-      ev.stopPropagation();
-      moveCard(cardObj.instanceId, gameState.playerDeck, gameState.playerVoid);
-      closeDeckSearchModal();
-      renderGameState();
-      setupDropZones();
-    };
-
-    // "View" button
-    const viewBtn = document.createElement('button');
-    viewBtn.textContent = "View";
-    viewBtn.style.position = "absolute";
-    viewBtn.style.bottom = "8px";
-    viewBtn.style.right = "8px";
-    viewBtn.style.padding = "2px 8px";
-    viewBtn.style.fontSize = "0.9em";
-    viewBtn.onclick = (ev) => {
-      ev.stopPropagation(); // Prevent triggering the card's main click
-      modalImg.src = card.image;
-      modal.style.display = "block";
-    };
     btn.appendChild(img);
     btn.appendChild(name);
-    btn.appendChild(addBtn);
-    btn.appendChild(voidBtn);
-    btn.appendChild(viewBtn);
-    
+
+    // On click, show the popup menu
+    btn.onclick = (e) => {
+      e.stopPropagation();
+
+      // Remove any existing menu
+      let oldMenu = document.getElementById('deck-search-card-menu');
+      if (oldMenu) oldMenu.remove();
+
+      // Create popup menu
+      const menu = document.createElement('div');
+      menu.id = 'deck-search-card-menu';
+      menu.style.position = 'fixed';
+      menu.style.background = 'white';
+      menu.style.border = '1px solid #aaa';
+      menu.style.borderRadius = '7px';
+      menu.style.zIndex = '99999';
+      menu.style.padding = '4px';
+      menu.style.minWidth = '120px';
+      menu.style.boxShadow = '0 4px 16px #0003';
+      menu.innerHTML = `
+        <button type="button" class="deck-action-add">Add to Hand</button>
+        <button type="button" class="deck-action-void">Send to Void</button>
+        <button type="button" class="deck-action-view">View</button>
+      `;
+
+      // Position the menu near the card
+      const rect = btn.getBoundingClientRect();
+      menu.style.top = `${rect.bottom + window.scrollY + 4}px`;
+      menu.style.left = `${rect.left + window.scrollX}px`;
+
+      // Action handlers
+      menu.querySelector('.deck-action-add').onclick = (ev) => {
+        ev.stopPropagation();
+        moveCard(cardObj.instanceId, gameState.playerDeck, gameState.playerHand);
+        closeDeckSearchModal();
+        renderGameState();
+        setupDropZones();
+        menu.remove();
+      };
+      menu.querySelector('.deck-action-void').onclick = (ev) => {
+        ev.stopPropagation();
+        moveCard(cardObj.instanceId, gameState.playerDeck, gameState.playerVoid);
+        closeDeckSearchModal();
+        renderGameState();
+        setupDropZones();
+        menu.remove();
+      };
+      menu.querySelector('.deck-action-view').onclick = (ev) => {
+        ev.stopPropagation();
+        modalImg.src = card.image;
+        modal.style.display = "block";
+        menu.remove();
+      };
+
+      document.body.appendChild(menu);
+
+      // Hide menu when clicking elsewhere
+      setTimeout(() => {
+        document.body.addEventListener('click', function handler() {
+          if (menu) menu.remove();
+          document.body.removeEventListener('click', handler);
+        }, { once: true });
+      }, 10);
+    };
+
     content.appendChild(btn);
   });
+
   modal.style.display = "block";
 }
 
