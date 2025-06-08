@@ -486,6 +486,14 @@ body.deck-open .container {
   min-width: 260px;
   box-shadow: 0 2px 20px #0002;
 }
+#void-card-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start; /* or center if you want them centered */
+  align-items: flex-start;
+  gap: 1em;
+  padding: 0.5em 0;
+}
 /* Phase Display Button Style */
 #phase-display {
   display: flex;
