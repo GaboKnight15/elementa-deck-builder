@@ -40,6 +40,25 @@ body {
   box-shadow: 0 10px 24px rgba(0,0,0,0.17);
   z-index: 3;
     }
+.card-name {
+  font-size: 0.95em;
+  font-weight: bold;
+  text-align: center;
+  color: #fff;
+  margin-top: 0.2em;
+  margin-bottom: 0.1em;
+  text-shadow: 0 1px 2px #0007;
+}
+.card-modal-dark {
+  background: #444 !important;
+  color: #fff !important;
+  border: none;
+  border-radius: 10px;
+  transition: background 0.2s;
+}
+.card-modal-dark:hover {
+  background: #222 !important;
+}
     /* Grid Layout for Gallery */
 #card-gallery.container,
 #card-gallery {
