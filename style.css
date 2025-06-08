@@ -567,11 +567,15 @@ body.deck-open .container {
 }
 .zone-row {
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  min-height: 110px;
-  align-items: flex-end;
-  margin-bottom: 16px;
+  justify-content: center;
+  align-items: flex-end;    /* or center depending on your card art */
+  gap: 18px;                /* space between cards */
+  min-height: 120px;        /* or as needed */
+  margin: 8px 0;
+  position: relative;
+}
+.zone-row .card {
+  margin: 0;                /* Remove any side margins */
 }
 .utility-row {
   gap: 48px; /* More space between deck/void piles */
