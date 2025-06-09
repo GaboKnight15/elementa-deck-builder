@@ -605,24 +605,19 @@ function appendVoidZone(parentDiv, voidArray, who) {
   voidZone.className = 'void-zone';
   const voidCard = document.createElement('div');
   voidCard.className = 'card';
-  const img = document.createElement('img');
   // Show last card image if void is not empty
   if (voidArray.length > 0) {
     const lastCardObj = voidArray[voidArray.length - 1];
-    // Find card data (assuming dummyCards is your card data array)
     const card = dummyCards.find(c => c.id === lastCardObj.cardId);
-    img.src = card ? card.image : "images/placeholder.png";
-    img.alt = card ? card.name : "Unknown Card";
-  } else {
-    // If void is empty, show a placeholder image or faded card back
-    img.src = "images/placeholder.png"; // or "images/cardback.png"
-    img.alt = "Void (empty)";
-    img.style.opacity = "0.35";
+     if (card && card.image) {
+      const img = document.createElement('img');
+      img.src = card.image;
+      img.alt = card.name;
+      img.style.width = "60px";
+      img.style.opacity = "0.85";
+      voidCard.appendChild(img);
+    }
   }
-  img.style.width = "60px";
-  img.style.opacity = "0.85";
-  voidCard.appendChild(img);
-
   const countDiv = document.createElement('div');
   countDiv.style.textAlign = 'center';
   countDiv.style.fontWeight = 'bold';
