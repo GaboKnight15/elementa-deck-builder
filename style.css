@@ -626,10 +626,13 @@ body.deck-open .container {
 }
 /* Make sure the rightmost element (deck/void) stays at the right */
 #player-creatures-zone .void-zone,
-#opponent-creatures-zone .void-zone,
-#player-domains-zone .deck-zone,
-#opponent-domains-zone .deck-zone {
+#player-domains-zone .deck-zone {
   margin-left: auto;
+}
+#opponent-domains-zone .deck-zone,
+#opponent-creatures-zone .void-zone {
+  margin-left: 0;
+  margin-right: auto; /* Pushes cards right, puts deck/void left */
 }
 
 .deck-zone, .void-zone {
