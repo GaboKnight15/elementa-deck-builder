@@ -606,6 +606,8 @@ function setupDropZones() {
 function renderRowZone(zoneId, cardArray, category) {
   const zoneDiv = document.getElementById(zoneId);
   zoneDiv.innerHTML = '';
+
+  // Render cards in the zone
   for (const cardObj of cardArray) {
     if (!cardObj || !cardObj.cardId) continue;
     const card = dummyCards.find(c => c.id === cardObj.cardId);
@@ -630,6 +632,82 @@ function renderRowZone(zoneId, cardArray, category) {
     cardDiv.appendChild(img);
     zoneDiv.appendChild(cardDiv);
   }
+
+  // Only for player's zones: add deck/void at right
+  if (zoneId === "player-domains-zone") {
+    appendDeckZone(zoneDiv, gameState.playerDeck, "player");
+  }
+  if (zoneId === "player-creatures-zone") {
+    appendVoidZone(zoneDiv, gameState.playerVoid, "player");
+  }
+  // Do the same for opponent if you want
+  if (zoneId === "opponent-domains-zone") {
+    appendDeckZone(zoneDiv, gameState.opponentDeck, "opponent");
+  }
+  if (zoneId === "opponent-creatures-zone") {
+    appendVoidZone(zoneDiv, gameState.opponentVoid, "opponent");
+  }
+}
+
+// Helper to create and append the deck zone card at the end
+function appendDeckZone(parentDiv, deckArray, who) {
+  const deckZone = document.createElement('div');
+  deckZone.className = 'deck-zone';
+  const deckCard = document.createElement('div');
+  deckCard.className = 'card';
+  const img = document.createElement('img');
+  img.src = "images/cardback.png";
+  img.alt = who + "'s Deck";
+  img.style.width = "60px";
+  img.style.opacity = "0.85";
+  deckCard.appendChild(img);
+
+  const countDiv = document.createElement('div');
+  countDiv.style.textAlign = 'center';
+  countDiv.style.fontWeight = 'bold';
+  countDiv.textContent = deckArray.length;
+  deckCard.appendChild(countDiv);
+  deckZone.appendChild(deckCard);
+
+  // Deck menu for player
+  if (who === "player") {
+    deckCard.onclick = (e) => {
+      e.stopPropagation();
+      const rect = deckCard.getBoundingClientRect();
+      deckActionsMenu.style.top = `${rect.bottom + window.scrollY + 8}px`;
+      deckActionsMenu.style.left = `${rect.left + window.scrollX}px`;
+      deckActionsMenu.style.display = "block";
+    };
+  }
+
+  parentDiv.appendChild(deckZone);
+}
+
+function appendVoidZone(parentDiv, voidArray, who) {
+  const voidZone = document.createElement('div');
+  voidZone.className = 'void-zone';
+  const voidCard = document.createElement('div');
+  voidCard.className = 'card';
+  const img = document.createElement('img');
+  img.src = "images/cardback.png";
+  img.alt = who + "'s Void";
+  img.style.width = "60px";
+  img.style.opacity = "0.85";
+  voidCard.appendChild(img);
+
+  const countDiv = document.createElement('div');
+  countDiv.style.textAlign = 'center';
+  countDiv.style.fontWeight = 'bold';
+  countDiv.textContent = voidArray.length;
+  voidCard.appendChild(countDiv);
+  voidZone.appendChild(voidCard);
+
+  voidCard.onclick = (e) => {
+    e.stopPropagation();
+    showVoidModal();
+  };
+
+  parentDiv.appendChild(voidZone);
 }
 // RENDER DECK AND VOID
 function renderDeckZone(zoneId, deckArray, who) {
