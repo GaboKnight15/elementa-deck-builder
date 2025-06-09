@@ -25,16 +25,7 @@
     <div class="zone-row" id="opponent-domains-zone"></div>
     <div class="zone-row" id="opponent-creatures-zone"></div>
     <hr style="opacity:0.2;">
-    <!-- PLAYER ZONES -->
-    <div class="zone-row" id="player-creatures-zone"></div>
-    <div class="zone-row" id="player-domains-zone"></div>
-    <div class="zone-row utility-row" style="justify-content: flex-start;">
-      <div class="deck-zone" id="player-deck-zone"></div>
-      <div class="void-zone" id="player-void-zone"></div>
-    </div>
-        <!-- PLAYER HAND -->
-    <div class="hand-area second-hand-area" id="player-hand"></div>
-    <!-- PHASE BAR -->
+        <!-- PHASE BAR -->
     <div class="phase-bar" id="phase-bar">
       <div id="phase-display">
         <span class="label">Turn:</span>
@@ -45,6 +36,17 @@
         <button id="next-phase-btn" title="Next Phase" style="margin-left:16px;">⏭</button>
       </div>
     </div>
+    <!-- PLAYER CREATURE ZONES AND VOID -->
+    <div class="zone-row" id="player-creatures-zone">
+      <div class="void-zone" id="player-void-zone"></div>
+    </div>
+    <!-- PLAYER DOMAIN ZONES AND DECK -->
+    <div class="zone-row" id="player-domains-zone">
+      <div class="deck-zone" id="player-deck-zone"></div>
+    </div>
+        <!-- PLAYER HAND-->
+    <div class="hand-area second-hand-area" id="player-hand"></div>
+    
     <!-- BACK TO DECK BUILDER BUTTON -->
     <button id="back-to-builder-btn">Back to Deck Builder</button>
   </div>
