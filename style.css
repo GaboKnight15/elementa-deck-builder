@@ -602,6 +602,8 @@ body.deck-open .container {
 }
 .zone-row {
   display: flex;
+  width: 100%;
+  box-sizing: border-box;    
   align-items: flex-end;
   gap: 18px;
   min-height: 120px;
@@ -623,9 +625,7 @@ body.deck-open .container {
 }
 /* Make sure the rightmost element (deck/void) stays at the right */
 #player-creatures-zone .void-zone,
-#opponent-creatures-zone .void-zone {
-  margin-left: auto;
-}
+#opponent-creatures-zone .void-zone,
 #player-domains-zone .deck-zone,
 #opponent-domains-zone .deck-zone {
   margin-left: auto;
