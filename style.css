@@ -609,7 +609,7 @@ body.deck-open .container {
   min-height: 120px;
   margin: 8px 0;
   position: relative;
-  justify-content: flex-start; /* By default, cards start at left */
+  justify-content: center; /* By default, cards start at left */
 }
 .zone-row .card {
   margin: 0;                /* Remove any side margins */
