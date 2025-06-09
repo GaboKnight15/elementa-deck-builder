@@ -548,8 +548,8 @@ function renderRowZone(zoneId, cardArray, category) {
 
   // RENDER CARDS IN ZONES
   for (const cardObj of cardArray) {
-    zoneDiv.appendChild(renderCardOnField(cardObj));
-  }
+  zoneDiv.appendChild(renderCardOnField(cardObj, zoneId));
+}
   // Only for player's zones: add deck/void at right
   if (zoneId === "player-domains-zone") {
     appendDeckZone(zoneDiv, gameState.playerDeck, "player");
@@ -931,9 +931,9 @@ function renderCardOnField(cardObj) {
   cardDiv.appendChild(hpBadge);
   // Allow manual HP update
   cardDiv.onclick = function(e) {
-  e.stopPropagation();
-  showCardActionMenu(cardObj.instanceId, zoneId, orientation, cardDiv);
-};
+    e.stopPropagation();
+    showCardActionMenu(cardObj.instanceId, zoneId, cardObj.orientation || "vertical", cardDiv);
+  };
   return cardDiv;
 }
 // ==========================
