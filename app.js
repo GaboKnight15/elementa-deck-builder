@@ -549,30 +549,7 @@ function renderRowZone(zoneId, cardArray, category) {
   // RENDER CARDS IN ZONES
   for (const cardObj of cardArray) {
     zoneDiv.appendChild(renderCardOnField(cardObj));
-    if (!cardObj || !cardObj.cardId) continue;
-    const card = dummyCards.find(c => c.id === cardObj.cardId);
-    if (!card) continue;
-    const orientation = cardObj.orientation || "vertical";
-    const cardDiv = document.createElement('div');
-    cardDiv.className = 'card';
-    cardDiv.draggable = true;
-    cardDiv.ondragstart = (e) => {
-      e.dataTransfer.setData("text/plain", cardObj.instanceId);
-      e.dataTransfer.setData("source", zoneId);
-    };
-    cardDiv.onclick = (e) => {
-      e.stopPropagation();
-      showCardActionMenu(cardObj.instanceId, zoneId, orientation, cardDiv);
-    };
-    const img = document.createElement('img');
-    img.src = card.image;
-    img.alt = card.name;
-    img.style.width = "80px";
-    if (orientation === 'horizontal') img.style.transform = "rotate(90deg)";
-    cardDiv.appendChild(img);
-    zoneDiv.appendChild(cardDiv);
   }
-
   // Only for player's zones: add deck/void at right
   if (zoneId === "player-domains-zone") {
     appendDeckZone(zoneDiv, gameState.playerDeck, "player");
@@ -963,6 +940,7 @@ function renderCardOnField(cardObj) {
       renderGameState(); // or your update function
     }
   };
+  return cardDiv;
 }
 // ==========================
 // === EVENT LISTENERS ===
