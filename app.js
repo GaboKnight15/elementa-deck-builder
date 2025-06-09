@@ -546,8 +546,9 @@ function renderRowZone(zoneId, cardArray, category) {
   const zoneDiv = document.getElementById(zoneId);
   zoneDiv.innerHTML = '';
 
-  // Render cards in the zone
+  // RENDER CARDS IN ZONES
   for (const cardObj of cardArray) {
+    zoneDiv.appendChild(renderCardOnField(cardObj));
     if (!cardObj || !cardObj.cardId) continue;
     const card = dummyCards.find(c => c.id === cardObj.cardId);
     if (!card) continue;
@@ -921,6 +922,48 @@ document.getElementById('void-modal').addEventListener('click', function(event) 
   if (event.target === this) this.style.display = 'none';
 });
 
+// CARD STATS DETECTION
+function getBaseHp(cardId) {
+  const card = dummyCards.find(c => c.id === cardId);
+  return card ? card.hp : 1; // fallback to 1 if not found
+}
+function renderCardOnField(cardObj) {
+  // Make sure currentHP is set
+  if (typeof cardObj.currentHP !== "number") {
+    cardObj.currentHP = getBaseHp(cardObj.cardId);
+  }
+  // Create the main card div
+  const cardDiv = document.createElement('div');
+  cardDiv.className = 'card on-field';
+  cardDiv.dataset.instanceId = cardObj.instanceId;
+
+  // Add card image
+  const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+  if (cardData && cardData.image) {
+    const img = document.createElement('img');
+    img.src = cardData.image;
+    img.alt = cardData.name || "Card";
+    cardDiv.appendChild(img);
+  } else {
+    // fallback if no image
+    cardDiv.textContent = cardData ? cardData.name : "Unknown";
+  }
+  const hpBadge = document.createElement('span');
+  hpBadge.className = 'hp-badge';
+  hpBadge.textContent = `(${cardObj.currentHP})`;
+  cardDiv.appendChild(hpBadge);
+
+  // Allow manual HP update
+  cardDiv.onclick = function(e) {
+    e.stopPropagation();
+    let newHp = prompt("Set HP (1-99):", cardObj.currentHP);
+    let num = parseInt(newHp, 10);
+    if (!isNaN(num) && num > 0 && num <= 99) {
+      cardObj.currentHP = num;
+      renderGameState(); // or your update function
+    }
+  };
+}
 // ==========================
 // === EVENT LISTENERS ===
 // ==========================
