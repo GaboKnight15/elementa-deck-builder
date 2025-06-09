@@ -904,7 +904,7 @@ function getBaseHp(cardId) {
   const card = dummyCards.find(c => c.id === cardId);
   return card ? card.hp : 1; // fallback to 1 if not found
 }
-function renderCardOnField(cardObj) {
+function renderCardOnField(cardObj, zoneId) {
   // Make sure currentHP is set
   if (typeof cardObj.currentHP !== "number") {
     cardObj.currentHP = getBaseHp(cardObj.cardId);
