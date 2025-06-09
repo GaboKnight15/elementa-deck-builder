@@ -1052,6 +1052,7 @@ function moveCard(instanceId, fromArr, toArr, extra = {}) {
     if (fromField && !toField) {
       // Remove currentHP so it resets next time it's played
       delete cardObj.currentHP;
+      delete cardObj.orientation;
     }
 
     fromArr.splice(idx, 1);
