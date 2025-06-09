@@ -18,12 +18,12 @@
     <!-- OPPONENT HAND -->
     <div class="hand-area first-hand-area" id="opponent-hand"></div>
     <!-- OPPONENT ZONES -->
-    <div class="zone-row utility-row" style="justify-content: flex-start;">
+    <div class="zone-row" id="opponent-domains-zone">
       <div class="deck-zone" id="opponent-deck-zone"></div>
+    </div>
+    <div class="zone-row" id="opponent-creatures-zone">
       <div class="void-zone" id="opponent-void-zone"></div>
     </div>
-    <div class="zone-row" id="opponent-domains-zone"></div>
-    <div class="zone-row" id="opponent-creatures-zone"></div>
     <hr style="opacity:0.2;">
         <!-- PHASE BAR -->
     <div class="phase-bar" id="phase-bar">
@@ -35,6 +35,7 @@
         <span class="phase" id="phase-name">draw</span>
         <button id="next-phase-btn" title="Next Phase" style="margin-left:16px;">⏭</button>
       </div>
+      <hr style="opacity:0.2;">
     </div>
     <!-- PLAYER CREATURE ZONES AND VOID -->
     <div class="zone-row" id="player-creatures-zone">
