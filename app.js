@@ -929,17 +929,11 @@ function renderCardOnField(cardObj) {
   hpBadge.className = 'hp-badge';
   hpBadge.textContent = `(${cardObj.currentHP})`;
   cardDiv.appendChild(hpBadge);
-
   // Allow manual HP update
   cardDiv.onclick = function(e) {
-    e.stopPropagation();
-    let newHp = prompt("Set HP (1-99):", cardObj.currentHP);
-    let num = parseInt(newHp, 10);
-    if (!isNaN(num) && num > 0 && num <= 99) {
-      cardObj.currentHP = num;
-      renderGameState(); // or your update function
-    }
-  };
+  e.stopPropagation();
+  showCardActionMenu(cardObj.instanceId, zoneId, orientation, cardDiv);
+};
   return cardDiv;
 }
 // ==========================
@@ -1271,6 +1265,22 @@ document.body.addEventListener('click', function(e) {
 // PREVENT MENUS FROM CLOSING WHEN CLICK INSIDE
 document.getElementById('card-action-menu').onclick = function(e) {
   e.stopPropagation();
+};
+document.getElementById('card-action-set-hp').onclick = function() {
+  if (!currentCardMenuState) return;
+  const { instanceId, zoneId } = currentCardMenuState;
+  let arr = getZoneArray(zoneId);
+  if (arr) {
+    let cardObj = arr.find(card => card.instanceId === instanceId);
+    if (!cardObj) return;
+    let newHp = prompt("Set HP (1-99):", cardObj.currentHP);
+    let num = parseInt(newHp, 10);
+    if (!isNaN(num) && num > 0 && num <= 99) {
+      cardObj.currentHP = num;
+      renderGameState();
+    }
+  }
+  document.getElementById('card-action-menu').style.display = 'none';
 };
 document.getElementById('card-action-return-hand').onclick = function() {
   if (!currentCardMenuState) return;
