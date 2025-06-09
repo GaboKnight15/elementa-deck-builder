@@ -640,7 +640,7 @@ body.deck-open .container {
   height: 85px;
   border-radius: 8px;
   border: 2px solid #bbb;
-  background: #e7e7ef;
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -667,4 +667,23 @@ body.deck-open .container {
   font-size: 0.85em;
   color: #667;
   opacity: 0.8;
+}
+.card.on-field .hp-badge {
+  position: absolute;
+  bottom: 6px;
+  right: 8px;
+  font-size: 1.08em;
+  font-weight: 700;
+  color: #fff;
+  background: #212a;
+  border-radius: 6px;
+  padding: 2px 7px;
+  box-shadow: 0 2px 6px #0009;
+  z-index: 2;
+  pointer-events: none;
+  user-select: none;
+  letter-spacing: 0.01em;
+}
+.card.on-field {
+  position: relative;
 }
