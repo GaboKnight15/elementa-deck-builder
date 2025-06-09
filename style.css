@@ -668,22 +668,22 @@ body.deck-open .container {
   color: #667;
   opacity: 0.8;
 }
-.card.on-field .hp-badge {
-  position: absolute;
-  bottom: 6px;
-  right: 8px;
-  font-size: 1.08em;
-  font-weight: 700;
-  color: #fff;
-  background: #212a;
-  border-radius: 6px;
-  padding: 2px 7px;
-  box-shadow: 0 2px 6px #0009;
-  z-index: 2;
-  pointer-events: none;
-  user-select: none;
-  letter-spacing: 0.01em;
-}
 .card.on-field {
-  position: relative;
+  width: 90px;     /* or 100px, experiment with value */
+  height: 126px;   /* maintain the card's aspect ratio */
+  padding: 0.2em;
+  font-size: 0.9em;
+}
+
+.card.on-field img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.card.on-field .hp-badge {
+  font-size: 1em;  /* adjust as needed */
+  padding: 2px 5px;
+  right: 4px;
+  bottom: 4px;
 }
