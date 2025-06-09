@@ -900,7 +900,7 @@ function getBaseHp(cardId) {
   return card ? card.hp : 1; // fallback to 1 if not found
 }
 function renderCardOnField(cardObj, zoneId) {
-  // Make sure currentHP is set
+  // CURRENT HP
   if (typeof cardObj.currentHP !== "number") {
     cardObj.currentHP = getBaseHp(cardObj.cardId);
   }
@@ -915,6 +915,9 @@ function renderCardOnField(cardObj, zoneId) {
     const img = document.createElement('img');
     img.src = cardData.image;
     img.alt = cardData.name || "Card";
+    if (cardObj.orientation === "horizontal") {
+      img.style.transform = "rotate(90deg)";
+    }
     cardDiv.appendChild(img);
   } else {
     // fallback if no image
@@ -924,7 +927,7 @@ function renderCardOnField(cardObj, zoneId) {
   hpBadge.className = 'hp-badge';
   hpBadge.textContent = `(${cardObj.currentHP})`;
   cardDiv.appendChild(hpBadge);
-  // Allow manual HP update
+  // MANUAL HP UPDATE
   cardDiv.onclick = function(e) {
     e.stopPropagation();
     showCardActionMenu(cardObj.instanceId, zoneId, cardObj.orientation || "vertical", cardDiv);
@@ -1039,11 +1042,36 @@ startGameBtn.onclick = () => {
 function moveCard(instanceId, fromArr, toArr, extra = {}) {
   const idx = fromArr.findIndex(card => card.instanceId === instanceId);
   if (idx !== -1) {
-    const [cardObj] = fromArr.splice(idx, 1);
-    toArr.push({ ...cardObj, ...extra });
+    let cardObj = { ...fromArr[idx], ...extra };
+
+    // Reset HP if moving from field to non-field
+    const fieldZones = ['playerCreatures', 'playerDomains', 'opponentCreatures', 'opponentDomains'];
+    const fromField = fieldZones.includes(getZoneNameForArray(fromArr));
+    const toField = fieldZones.includes(getZoneNameForArray(toArr));
+
+    if (fromField && !toField) {
+      // Remove currentHP so it resets next time it's played
+      delete cardObj.currentHP;
+    }
+
+    fromArr.splice(idx, 1);
+    toArr.push(cardObj);
   }
 }
-
+// Helper to get zone name for an array reference
+function getZoneNameForArray(arr) {
+  if (arr === gameState.playerCreatures) return 'playerCreatures';
+  if (arr === gameState.playerDomains) return 'playerDomains';
+  if (arr === gameState.opponentCreatures) return 'opponentCreatures';
+  if (arr === gameState.opponentDomains) return 'opponentDomains';
+  if (arr === gameState.playerHand) return 'playerHand';
+  if (arr === gameState.opponentHand) return 'opponentHand';
+  if (arr === gameState.playerDeck) return 'playerDeck';
+  if (arr === gameState.opponentDeck) return 'opponentDeck';
+  if (arr === gameState.playerVoid) return 'playerVoid';
+  if (arr === gameState.opponentVoid) return 'opponentVoid';
+  return '';
+}
 backToBuilderBtn.onclick = () => {
   showBuilder();
   elementsToHide.forEach(el => el.style.display = '');
