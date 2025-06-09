@@ -504,68 +504,7 @@ function renderGameState() {
 
   // Opponent Zones
   renderRowZone('opponent-creatures-zone', gameState.opponentCreatures, "creature");
-  renderRowZone('opponent-domains-zone', gameState.opponentDomains, "domain");
-
-  // Deck & Void
-  renderDeckZone('player-deck-zone', gameState.playerDeck, "player");
-  renderDeckZone('player-void-zone', gameState.playerVoid, "player");
-  renderDeckZone('opponent-deck-zone', gameState.opponentDeck, "opponent");
-  renderDeckZone('opponent-void-zone', gameState.opponentVoid, "opponent");
-  
-// Render player deck stack
-  const playerDeckDiv = document.getElementById('player-deck-zone');
-  playerDeckDiv.innerHTML = '';
-
-  const playerDeckCard = document.createElement('div');
-  playerDeckCard.className = 'card';
-  const playerDeckImg = document.createElement('img');
-  playerDeckImg.src = "images/cardback.png";
-  playerDeckImg.alt = "Your Deck";
-  playerDeckImg.style.width = "60px";
-  playerDeckImg.style.opacity = "0.85";
-  playerDeckCard.appendChild(playerDeckImg);
-
-  const deckCount = document.createElement('div');
-  deckCount.style.textAlign = 'center';
-  deckCount.style.fontWeight = 'bold';
-  deckCount.textContent = gameState.playerDeck.length;
-  playerDeckCard.appendChild(deckCount);
-  playerDeckDiv.appendChild(playerDeckCard);
-
-// Show the menu when clicking the deck
-  playerDeckCard.onclick = (e) => {
-    e.stopPropagation();
-    // Position the menu near the deck
-    const rect = playerDeckCard.getBoundingClientRect();
-    deckActionsMenu.style.top = `${rect.bottom + window.scrollY + 8}px`;
-    deckActionsMenu.style.left = `${rect.left + window.scrollX}px`;
-    deckActionsMenu.style.display = "block";
-  };
-
-  // Render opponent deck stack
-  const opponentDeckDiv = document.getElementById('opponent-deck-zone');
-  opponentDeckDiv.innerHTML = '';
-  const opponentDeckCard = document.createElement('div');
-  opponentDeckCard.className = 'card';
-  const opponentDeckImg = document.createElement('img');
-  opponentDeckImg.src = "images/cardback.png";
-  opponentDeckImg.alt = "Opponent's Deck";
-  opponentDeckImg.style.width = "60px";
-  opponentDeckImg.style.opacity = "0.85";
-  opponentDeckCard.appendChild(opponentDeckImg);
-  const oppDeckCount = document.createElement('div');
-  oppDeckCount.style.textAlign = 'center';
-  oppDeckCount.style.fontWeight = 'bold';
-  oppDeckCount.textContent = gameState.opponentDeck.length;
-  opponentDeckCard.appendChild(oppDeckCount);
-  opponentDeckDiv.appendChild(opponentDeckCard);
-
-  // Click-to-draw for opponent deck
-  opponentDeckCard.onclick = () => {
-    if (gameState.turn === "opponent" && gameState.opponentDeck.length > 0) {
-      drawCards("opponent", 1);
-    }
-  };
+  renderRowZone('opponent-domains-zone', gameState.opponentDomains, "domain"); 
 }
 // HAND OPTIONS MENU
 function showHandCardMenu(instanceId, cardDiv) {
