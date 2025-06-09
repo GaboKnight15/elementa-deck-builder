@@ -622,6 +622,7 @@ body.deck-open .container {
   align-items: flex-end;
   gap: 18px;
   position: relative;
+  justify-content: flex-end;
 }
 /* Make sure the rightmost element (deck/void) stays at the right */
 #player-creatures-zone .void-zone,
