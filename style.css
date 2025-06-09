@@ -272,10 +272,9 @@ body {
   box-shadow: 0 4px 24px #0002;
 }
 #phase-bar {
-  margin-bottom: 12px;
-  width: 100%;
   display: flex;
   justify-content: center;
+  width: 100%;
 }
 #back-to-builder-btn {
   margin-bottom: 16px;
@@ -494,6 +493,15 @@ body.deck-open .container {
   gap: 1em;
   padding: 0.5em 0;
 }
+
+#phase-bar-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin: 18px 0 18px 0;
+  min-height: 64px; /* or whatever fits your design */
+}
 /* Phase Display Button Style */
 #phase-display {
   display: flex;
@@ -594,20 +602,35 @@ body.deck-open .container {
 }
 .zone-row {
   display: flex;
-  justify-content: center;
-  align-items: flex-end;    /* or center depending on your card art */
-  gap: 18px;                /* space between cards */
-  min-height: 120px;        /* or as needed */
+  align-items: flex-end;
+  gap: 18px;
+  min-height: 120px;
   margin: 8px 0;
   position: relative;
+  justify-content: flex-start; /* By default, cards start at left */
 }
 .zone-row .card {
   margin: 0;                /* Remove any side margins */
 }
-.utility-row {
-  gap: 48px; /* More space between deck/void piles */
-  min-height: 60px;
+/* Ensure deck and void stick to the far right of their row */
+#player-creatures-zone, #opponent-creatures-zone,
+#player-domains-zone, #opponent-domains-zone {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 18px;
+  position: relative;
 }
+/* Make sure the rightmost element (deck/void) stays at the right */
+#player-creatures-zone .void-zone,
+#opponent-creatures-zone .void-zone {
+  margin-left: auto;
+}
+#player-domains-zone .deck-zone,
+#opponent-domains-zone .deck-zone {
+  margin-left: auto;
+}
+
 .deck-zone, .void-zone {
   width: 60px;
   height: 85px;
