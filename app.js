@@ -1559,15 +1559,13 @@ menu.querySelector('.void-action-deck').onclick = (e) => {
 };
  menu.querySelector('.void-action-view').onclick = (e) => {
   e.stopPropagation();
-  closeVoidModal();
-  showFullCardModal(cardObj);
-  const card = dummyCards.find(c => c.id === cardObj.cardId);
-  if (card) {
+  // Animate from the void card's image to the modal
+  animateCardZoom(btn.querySelector('img'), card.image, function() {
     modal.style.display = "block";
     modalImg.src = card.image;
-  }
+  });
   menu.style.display = 'none';
- };
+};
       
 btn.onclick = (e) => {
   e.stopPropagation();
