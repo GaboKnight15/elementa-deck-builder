@@ -686,3 +686,9 @@ body.deck-open .container {
   right: 4px;
   bottom: 4px;
 }
+#image-modal, .modal#image-modal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  z-index: 20000 !important;
+}
