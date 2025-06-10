@@ -1044,13 +1044,18 @@ function moveCard(instanceId, fromArr, toArr, extra = {}) {
   if (idx !== -1) {
     let cardObj = { ...fromArr[idx], ...extra };
 
-    // Reset HP if moving from field to non-field
-    const fieldZones = ['playerCreatures', 'playerDomains', 'opponentCreatures', 'opponentDomains'];
-    const fromField = fieldZones.includes(getZoneNameForArray(fromArr));
-    const toField = fieldZones.includes(getZoneNameForArray(toArr));
+    // Define which arrays are the field zones (battlefield)
+    const fieldArrays = [
+      gameState.playerCreatures,
+      gameState.playerDomains,
+      gameState.opponentCreatures,
+      gameState.opponentDomains
+    ];
+    const fromField = fieldArrays.includes(fromArr);
+    const toField = fieldArrays.includes(toArr);
 
+    // If moving OUT of field, remove currentHP & orientation so it resets next time
     if (fromField && !toField) {
-      // Remove currentHP so it resets next time it's played
       delete cardObj.currentHP;
       delete cardObj.orientation;
     }
