@@ -840,6 +840,7 @@ const voidCards = gameState.playerVoid;
       wrapper.style.flexDirection = 'column';
       wrapper.style.alignItems = 'center';
       const btn = document.createElement('button');
+      btn.classList.add('card', 'card-modal-dark');
       btn.style.display = 'flex';
       btn.style.flexDirection = 'column';
       btn.style.alignItems = 'center';
