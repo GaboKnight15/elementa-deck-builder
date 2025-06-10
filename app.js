@@ -794,13 +794,14 @@ function openDeckSearchModal() {
         menu.remove();
       };
       menu.querySelector('.deck-action-view').onclick = (ev) => {
-        ev.stopPropagation();
-        closeDeckSearchModal();
-        showFullCardModal(cardObj);
-        modalImg.src = card.image;
-        modal.style.display = "block";
-        menu.remove();
-      };
+  ev.stopPropagation();
+  closeDeckSearchModal();
+  animateCardZoom(btn.querySelector('img'), card.image, function() {
+    modal.style.display = "block";
+    modalImg.src = card.image;
+  });
+  menu.remove();
+};
 
       document.body.appendChild(menu);
 
@@ -1227,8 +1228,23 @@ document.getElementById('hand-menu-view').onclick = function(e) {
   if (cardObj) {
     const card = dummyCards.find(c => c.id === cardObj.cardId);
     if (card) {
-      modal.style.display = "block";
-      modalImg.src = card.image;
+      // Find the cardDiv for this card in the hand
+      const playerHandDiv = document.getElementById('player-hand');
+      const cardDivs = playerHandDiv.querySelectorAll('.card');
+      let cardDiv = null;
+      cardDivs.forEach(div => {
+        if (div.querySelector('img')?.src === card.image) cardDiv = div;
+      });
+      if (cardDiv) {
+        animateCardZoom(cardDiv.querySelector('img'), card.image, function() {
+          modal.style.display = "block";
+          modalImg.src = card.image;
+        });
+      } else {
+        // fallback
+        modal.style.display = "block";
+        modalImg.src = card.image;
+      }
     }
   }
   menu.style.display = 'none';
@@ -1595,6 +1611,48 @@ function getCurrentPhaseIndex() {
   return PHASES.findIndex(
     p => p.turn === gameState.turn && p.phase === gameState.phase
   );
+}
+// ANIMATIONS
+function animateCardZoom(cardImgElement, modalImgSrc, onFinish) {
+  // Get the bounding box of the card image
+  const rect = cardImgElement.getBoundingClientRect();
+
+  // Create a clone of the card image
+  const animImg = document.createElement('img');
+  animImg.src = modalImgSrc;
+  animImg.style.position = 'fixed';
+  animImg.style.left = rect.left + 'px';
+  animImg.style.top = rect.top + 'px';
+  animImg.style.width = rect.width + 'px';
+  animImg.style.height = rect.height + 'px';
+  animImg.style.zIndex = 30000; // must be above everything
+  animImg.style.borderRadius = '12px';
+  animImg.style.boxShadow = '0 8px 32px #0005';
+  animImg.style.transition = 'all 0.45s cubic-bezier(.32,1.72,.34,.99)';
+  animImg.style.pointerEvents = 'none';
+  document.body.appendChild(animImg);
+
+  // Calculate target (modal) size and position
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const targetWidth = Math.min(420, vw * 0.95);
+  const targetHeight = Math.min(600, vh * 0.95);
+  const targetLeft = (vw - targetWidth) / 2;
+  const targetTop = (vh - targetHeight) / 2;
+
+  // Animate!
+  requestAnimationFrame(() => {
+    animImg.style.left = targetLeft + 'px';
+    animImg.style.top = targetTop + 'px';
+    animImg.style.width = targetWidth + 'px';
+    animImg.style.height = targetHeight + 'px';
+    animImg.style.borderRadius = '22px';
+  });
+
+  animImg.addEventListener('transitionend', () => {
+    document.body.removeChild(animImg);
+    if (typeof onFinish === 'function') onFinish();
+  }, { once: true });
 }
 // Call this after any phase or turn change
 updatePhaseBar();
