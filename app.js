@@ -1328,10 +1328,11 @@ document.getElementById('card-action-return-hand').onclick = function() {
     // Remove from the current zone and get the card object
     const idx = arr.findIndex(card => card.instanceId === instanceId);
     if (idx !== -1) {
-    const [cardObj] = arr.splice(idx, 1);
-    gameState.playerHand.push(cardObj);
+      const [cardObj] = arr.splice(idx, 1);
+      // Always clean stats before pushing into hand
+      gameState.playerHand.push(cleanCard(cardObj));
+    }
   }
-}
   renderGameState();
   setupDropZones();
   document.getElementById('card-action-menu').style.display = 'none';
@@ -1361,7 +1362,7 @@ document.getElementById('card-action-send-void').onclick = function() {
     const idx = arr.findIndex(card => card.instanceId === instanceId);
     if (idx !== -1) {
       const [cardObj] = arr.splice(idx, 1);
-      gameState.playerVoid.push(cardObj);
+      gameState.playerVoid.push(cleanCard(cardObj));
     }
   }
   renderGameState();
@@ -1377,7 +1378,7 @@ document.getElementById('card-action-send-deck').onclick = function() {
     const idx = arr.findIndex(card => card.instanceId === instanceId);
     if (idx !== -1) {
         const [cardObj] = arr.splice(idx, 1);
-        gameState.playerDeck.push(cardObj);
+        gameState.playerDeck.push(cleanCard(cardObj));
     }
   }
   renderGameState();
