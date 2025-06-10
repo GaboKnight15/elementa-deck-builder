@@ -796,6 +796,7 @@ function openDeckSearchModal() {
       menu.querySelector('.deck-action-view').onclick = (ev) => {
         ev.stopPropagation();
         closeDeckSearchModal();
+        showFullCardModal(cardObj);
         modalImg.src = card.image;
         modal.style.display = "block";
         menu.remove();
@@ -902,7 +903,35 @@ document.getElementById('close-void-modal').onclick = function() {
 document.getElementById('void-modal').addEventListener('click', function(event) {
   if (event.target === this) this.style.display = 'none';
 });
-
+// Unified function for all "View" actions:
+function showFullCardModal(cardObj) {
+  const card = dummyCards.find(c => c.id === (cardObj.cardId || cardObj.id));
+  if (!card) return;
+  const modal = document.getElementById('image-modal');
+  const modalContent = document.getElementById('modal-img-content');
+  if (modalContent) {
+    modalContent.innerHTML = `
+      <img src="${card.image}" alt="${card.name}" style="max-width:350px;display:block;margin:auto;border-radius:10px;">
+      <h2 style="text-align:center;">${card.name}</h2>
+      <div style="text-align:center;">
+        ${card.hp !== undefined ? `HP: ${card.hp}` : ''}
+        ${card.atk !== undefined ? ` | ATK: ${card.atk}` : ''}
+        ${card.def !== undefined ? ` | DEF: ${card.def}` : ''}
+        ${card.cost !== undefined ? ` | Cost: ${card.cost}` : ''}
+      </div>
+      <div style="text-align:center;margin:8px 0;">
+        ${card.rarity || ''} ${Array.isArray(card.type) ? card.type.join(', ') : card.type || ''}
+      </div>
+      <div style="text-align:center;font-size:0.98em;color:#555;">
+        ${card.text || ''}
+      </div>
+    `;
+    modal.style.display = 'block';
+  } else {
+    modalImg.src = card.image;
+    modal.style.display = "block";
+  }
+}
 // CARD STATS DETECTION
 function getBaseHp(cardId) {
   const card = dummyCards.find(c => c.id === cardId);
@@ -1480,6 +1509,7 @@ menu.querySelector('.void-action-deck').onclick = (e) => {
  menu.querySelector('.void-action-view').onclick = (e) => {
   e.stopPropagation();
   closeVoidModal();
+  showFullCardModal(cardObj);
   const card = dummyCards.find(c => c.id === cardObj.cardId);
   if (card) {
     modal.style.display = "block";
