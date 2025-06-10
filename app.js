@@ -780,7 +780,6 @@ function openDeckSearchModal() {
       menu.querySelector('.deck-action-add').onclick = (ev) => {
         ev.stopPropagation();
         moveCard(cardObj.instanceId, gameState.playerDeck, gameState.playerHand);
-        closeDeckSearchModal();
         renderGameState();
         setupDropZones();
         menu.remove();
@@ -788,14 +787,12 @@ function openDeckSearchModal() {
       menu.querySelector('.deck-action-void').onclick = (ev) => {
         ev.stopPropagation();
         moveCard(cardObj.instanceId, gameState.playerDeck, gameState.playerVoid);
-        closeDeckSearchModal();
         renderGameState();
         setupDropZones();
         menu.remove();
       };
       menu.querySelector('.deck-action-view').onclick = (ev) => {
         ev.stopPropagation();
-        closeDeckSearchModal();
         showFullCardModal(cardObj);
         modalImg.src = card.image;
         modal.style.display = "block";
