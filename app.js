@@ -678,14 +678,21 @@ function placeCardInZone(instanceId, zoneId, orientation = "vertical") {
   if (!cardObj) return;
   // Add to correct zone
   if (zoneId === 'player-creatures-zone') {
-    gameState.playerCreatures.push({ ...cardObj, orientation });
-  } else if (zoneId === 'player-domains-zone') {
-    gameState.playerDomains.push({ ...cardObj, orientation });
-  } else if (zoneId === 'player-void-zone') {
-    gameState.playerVoid.push(cardObj);
-  }
+  gameState.playerCreatures.push({ ...cardObj, orientation });
+} else if (zoneId === 'player-domains-zone') {
+  gameState.playerDomains.push({ ...cardObj, orientation });
+} else if (zoneId === 'player-void-zone') {
+  gameState.playerVoid.push(cleanCard(cardObj));
+}
   renderGameState();
   setupDropZones();
+}
+// REMOVE STAT CHANGES
+function cleanCard(cardObj) {
+  const cleaned = { ...cardObj };
+  delete cleaned.currentHP;
+  delete cleaned.orientation;
+  return cleaned;
 }
   // Modal logic
   closeBtn.onclick = () => { modal.style.display = "none"; };
