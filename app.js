@@ -798,7 +798,6 @@ function openDeckSearchModal() {
   animateCardZoom(btn.querySelector('img'), card.image, function() {
     modal.style.display = "block";
     modalImg.src = card.image;
-    closeDeckSearchModal();
   });
   menu.remove();
 };
