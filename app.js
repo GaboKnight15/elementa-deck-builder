@@ -795,10 +795,10 @@ function openDeckSearchModal() {
       };
       menu.querySelector('.deck-action-view').onclick = (ev) => {
   ev.stopPropagation();
-  closeDeckSearchModal();
   animateCardZoom(btn.querySelector('img'), card.image, function() {
     modal.style.display = "block";
     modalImg.src = card.image;
+    closeDeckSearchModal();
   });
   menu.remove();
 };
