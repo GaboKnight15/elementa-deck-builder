@@ -795,6 +795,7 @@ function openDeckSearchModal() {
       };
       menu.querySelector('.deck-action-view').onclick = (ev) => {
         ev.stopPropagation();
+        closeDeckSearchModal();
         modalImg.src = card.image;
         modal.style.display = "block";
         menu.remove();
@@ -1478,6 +1479,7 @@ menu.querySelector('.void-action-deck').onclick = (e) => {
 };
  menu.querySelector('.void-action-view').onclick = (e) => {
   e.stopPropagation();
+  closeVoidModal();
   const card = dummyCards.find(c => c.id === cardObj.cardId);
   if (card) {
     modal.style.display = "block";
@@ -1518,7 +1520,10 @@ voidModal.addEventListener('click', function(event) {
     voidModal.style.display = 'none';
   }
 });
-
+// CLOSES VOID SEARCH
+function closeVoidModal() {
+  document.getElementById('void-modal').style.display = "none";
+}
 // Find the current phase index
 function getCurrentPhaseIndex() {
   return PHASES.findIndex(
