@@ -783,6 +783,7 @@ function openDeckSearchModal() {
         renderGameState();
         setupDropZones();
         menu.remove();
+        openDeckSearchModal();
       };
       menu.querySelector('.deck-action-void').onclick = (ev) => {
         ev.stopPropagation();
@@ -790,6 +791,7 @@ function openDeckSearchModal() {
         renderGameState();
         setupDropZones();
         menu.remove();
+        openDeckSearchModal();
       };
       menu.querySelector('.deck-action-view').onclick = (ev) => {
         ev.stopPropagation();
