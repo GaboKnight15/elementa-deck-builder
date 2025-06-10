@@ -983,24 +983,11 @@ function renderCardOnField(cardObj, zoneId) {
   // HP Bar
   const barWrap = document.createElement('div');
   barWrap.className = 'hp-bar-wrap';
-  // HP HEART
-  const heart = document.createElement('span');
-  heart.className = 'hp-heart';
-  heart.innerHTML = `
-    <svg width="22" height="22" viewBox="0 0 22 22" style="vertical-align:middle;">
-      <path d="M11 20s-7.1-4.34-7.1-10A4.1 4.1 0 0 1 11 4.18 4.1 4.1 0 0 1 18.1 10c0 5.66-7.1 10-7.1 10z"
-            fill="#43d477" stroke="#257a3d" stroke-width="1"/>
-    </svg>
-    <span class="hp-heart-num">${currentHP}</span>
-  `;
-barWrap.appendChild(heart);
-  // HP BAR
   const bar = document.createElement('div');
   bar.className = 'hp-bar';
   bar.style.width = `${Math.round(hpPercent * 100)}%`;
   bar.style.backgroundColor = barColor;
   barWrap.appendChild(bar);
-  
   cardDiv.appendChild(barWrap);
   
   // MANUAL HP UPDATE
