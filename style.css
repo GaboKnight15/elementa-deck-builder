@@ -707,3 +707,7 @@ body.deck-open .container {
   border-radius: 4px;
   transition: width 0.2s, background 0.2s;
 }
+img[style*="z-index: 30000"] {
+  will-change: transform, left, top, width, height;
+  box-shadow: 0 8px 32px #0008;
+}
