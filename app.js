@@ -1188,6 +1188,7 @@ phaseNameSpan.onclick = function() { nextPhaseBtn.click(); };
   showBuilder();
 
 // --- HAND CARD MENU EVENTS ---
+// PLAY CARD FROM HAND
 document.getElementById('hand-menu-play').onclick = function(e) {
   e.stopPropagation();
   const menu = document.getElementById('hand-card-menu');
@@ -1197,7 +1198,7 @@ document.getElementById('hand-menu-play').onclick = function(e) {
   setupDropZones();
   menu.style.display = 'none';
 };
-
+// SEND FROM HAND TO VOID
 document.getElementById('hand-menu-void').onclick = function(e) {
   e.stopPropagation();
   const menu = document.getElementById('hand-card-menu');
@@ -1207,7 +1208,17 @@ document.getElementById('hand-menu-void').onclick = function(e) {
   setupDropZones();
   menu.style.display = 'none';
 };
-
+// RETURN FROM HAND TO DECK
+document.getElementById('hand-menu-deck').onclick = function(e) {
+  e.stopPropagation();
+  const menu = document.getElementById('hand-card-menu');
+  const instanceId = menu.getAttribute('data-instance-id');
+  moveCard(instanceId, gameState.playerHand, gameState.playerDeck);
+  renderGameState();
+  setupDropZones();
+  menu.style.display = 'none';
+};
+// VIEW CARD FROM HAND
 document.getElementById('hand-menu-view').onclick = function(e) {
   e.stopPropagation();
   const menu = document.getElementById('hand-card-menu');
