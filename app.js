@@ -942,6 +942,18 @@ function renderCardOnField(cardObj, zoneId) {
   if (typeof cardObj.currentHP !== "number") {
     cardObj.currentHP = getBaseHp(cardObj.cardId);
   }
+  const baseHP = getBaseHp(cardObj.cardId);
+  const currentHP = cardObj.currentHP;
+  const hpPercent = Math.max(0, Math.min(1, currentHP / baseHP));
+
+  // Color logic
+  let barColor = "#4caf50"; // green
+  if (hpPercent <= 0.25) {
+    barColor = "#e53935"; // red
+  } else if (hpPercent <= 0.5) {
+    barColor = "#ff9800"; // orange
+  }
+  
   // Create the main card div
   const cardDiv = document.createElement('div');
   cardDiv.className = 'card on-field';
@@ -961,10 +973,23 @@ function renderCardOnField(cardObj, zoneId) {
     // fallback if no image
     cardDiv.textContent = cardData ? cardData.name : "Unknown";
   }
+  
+  // HP BADGE
   const hpBadge = document.createElement('span');
   hpBadge.className = 'hp-badge';
   hpBadge.textContent = `(${cardObj.currentHP})`;
   cardDiv.appendChild(hpBadge);
+
+  // HP Bar
+  const barWrap = document.createElement('div');
+  barWrap.className = 'hp-bar-wrap';
+  const bar = document.createElement('div');
+  bar.className = 'hp-bar';
+  bar.style.width = `${Math.round(hpPercent * 100)}%`;
+  bar.style.backgroundColor = barColor;
+  barWrap.appendChild(bar);
+  cardDiv.appendChild(barWrap);
+  
   // MANUAL HP UPDATE
   cardDiv.onclick = function(e) {
     e.stopPropagation();
