@@ -1060,11 +1060,10 @@ function moveCard(instanceId, fromArr, toArr, extra = {}) {
       gameState.opponentCreatures,
       gameState.opponentDomains
     ];
-    const fromField = fieldArrays.includes(fromArr);
     const toField = fieldArrays.includes(toArr);
 
     // If moving OUT of field, remove currentHP & orientation so it resets next time
-    if (fromField && !toField) {
+    if (!toField) {
       delete cardObj.currentHP;
       delete cardObj.orientation;
     }
