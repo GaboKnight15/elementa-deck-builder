@@ -694,49 +694,16 @@ body.deck-open .container {
 }
 /* HP BAR */
 .hp-bar-wrap {
-  display: flex;
-  align-items: center;
   width: 80%;
-  height: 18px;
+  height: 8px;
   background: #ddd;
-  border-radius: 9px;
-  margin: 6px auto 0 auto;
+  border-radius: 4px;
+  margin: 4px auto 0 auto;
   overflow: hidden;
   box-shadow: 0 1px 2px #0001;
-  position: relative;
 }
-
-.hp-heart {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 26px;
-  height: 100%;
-  margin-right: 3px;
-  position: relative;
-  z-index: 2;
-}
-
-.hp-heart-num {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 22px;
-  height: 22px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  color: #fff;
-  font-size: 0.95em;
-  pointer-events: none;
-  user-select: none;
-}
-
 .hp-bar {
   height: 100%;
-  border-radius: 0 9px 9px 0;
+  border-radius: 4px;
   transition: width 0.2s, background 0.2s;
-  flex: 1 1 0;
-  z-index: 1;
 }
