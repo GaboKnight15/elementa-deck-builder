@@ -486,10 +486,8 @@ body.deck-open .container {
   box-shadow: 0 2px 20px #0002;
 }
 #void-card-list {
-  display: gird !important;
-  flex-wrap: wrap;
-  justify-content: flex-start; /* or center if you want them centered */
-  align-items: flex-start;
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 1em;
   padding: 0.5em 0;
 }
