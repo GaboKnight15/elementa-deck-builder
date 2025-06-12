@@ -573,7 +573,7 @@ function appendDeckZone(parentDiv, deckArray, who) {
   const deckCard = document.createElement('div');
   deckCard.className = 'card';
   const img = document.createElement('img');
-  img.src = "images/cardback.png";
+  img.src = "CardImages/placeholder.png";
   img.alt = who + "'s Deck";
   img.style.width = "60px";
   img.style.opacity = "0.85";
@@ -639,7 +639,7 @@ function renderDeckZone(zoneId, deckArray, who) {
   const deckCard = document.createElement('div');
   deckCard.className = 'card';
   const img = document.createElement('img');
-  img.src = "images/cardback.png";
+  img.src = "CardImages/placeholder.png";
   img.alt = who + "'s Deck";
   img.style.width = "60px";
   img.style.opacity = "0.85";
