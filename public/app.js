@@ -492,7 +492,7 @@ function renderGameState() {
     const div = document.createElement('div');
     div.className = 'card';
     const img = document.createElement('img');
-    img.src = "images/cardback.png"; // Use your card back image
+    img.src = "CardImages/placeholder.png"; // Use your card back image
     img.alt = "Opponent's card";
     img.style.width = "80px";
     div.appendChild(img);
