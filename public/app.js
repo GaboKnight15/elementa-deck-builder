@@ -492,7 +492,7 @@ function renderGameState() {
     const div = document.createElement('div');
     div.className = 'card';
     const img = document.createElement('img');
-    img.src = "CardImages/placeholder.png"; // Use your card back image
+    img.src = "CardImages/Domains/placeholder.png"; // Use your card back image
     img.alt = "Opponent's card";
     img.style.width = "80px";
     div.appendChild(img);
@@ -573,7 +573,7 @@ function appendDeckZone(parentDiv, deckArray, who) {
   const deckCard = document.createElement('div');
   deckCard.className = 'card';
   const img = document.createElement('img');
-  img.src = "CardImages/placeholder.png";
+  img.src = "CardImages/Domains/placeholder.png";
   img.alt = who + "'s Deck";
   img.style.width = "60px";
   img.style.opacity = "0.85";
@@ -639,7 +639,7 @@ function renderDeckZone(zoneId, deckArray, who) {
   const deckCard = document.createElement('div');
   deckCard.className = 'card';
   const img = document.createElement('img');
-  img.src = "CardImages/placeholder.png";
+  img.src = "CardImages/Domains/placeholder.png";
   img.alt = who + "'s Deck";
   img.style.width = "60px";
   img.style.opacity = "0.85";
@@ -836,8 +836,9 @@ const voidCards = gameState.playerVoid;
   if (voidCards.length === 0) {
     list.innerHTML = '<div style="color:#999;">Void is empty.</div>';
   } else {
-    list.style.display = 'grid';
-    list.style.gridTemplateColumns = 'repeat(auto-fit, minmax(120px, 1fr))';
+    list.style.display = 'flex';
+    list.style.flexWrap = 'wrap';
+    list.style.justifyContent = 'flex-start';
     list.style.gap = '1em';
     voidCards.forEach((cardObj, idx) => {
       const card = dummyCards.find(c => c.id === cardObj.cardId);
@@ -1080,6 +1081,7 @@ startGameBtn.onclick = () => {
   renderGameState();
   setupDropZones();
 
+  // GAMEPLAY LOGIC //
   // SET-UP DRAG AND DROP EXCEPT VOIDE
 ['player-creatures-zone', 'player-domains-zone'].forEach(zoneId => {
   const zone = document.getElementById(zoneId);
@@ -1100,6 +1102,33 @@ startGameBtn.onclick = () => {
   };
 });
    };
+
+// DECK SELECTION FOR GAMEPLAY //
+function showDeckSelectionMenu() {
+  // Create/select modal
+  const modal = document.getElementById('deck-selection-modal');
+  modal.innerHTML = `
+    <h3>Select a Deck</h3>
+    <ul id="deck-list-modal">
+      ${deckSlots.map(ds => `<li class="deck-slot-item" data-deck="${ds}">${ds}</li>`).join('')}
+    </ul>
+    <button id="cancel-deck-select">Cancel</button>
+  `;
+  modal.style.display = 'block';
+  document.querySelectorAll('.deck-slot-item').forEach(el => {
+    el.onclick = () => {
+      currentDeckSlot = el.dataset.deck;
+      saveDeckState();
+      modal.style.display = 'none';
+      // Now start the game with selected deck
+      actuallyStartGame();
+    };
+  });
+  document.getElementById('cancel-deck-select').onclick = () => {
+    modal.style.display = 'none';
+  }
+}
+
 // MOVE OBJECT
 function moveCard(instanceId, fromArr, toArr, extra = {}) {
   const idx = fromArr.findIndex(card => card.instanceId === instanceId);
