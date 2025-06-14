@@ -486,6 +486,9 @@ body.deck-open .container {
   justify-content: center;
 }
 #void-modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   position: relative;
   background: #fff;
   margin: 60px auto;
@@ -498,7 +501,6 @@ body.deck-open .container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 1.1em;
-  justify-items: center;
   align-items: start;
 }
 #void-card-list .card, 
