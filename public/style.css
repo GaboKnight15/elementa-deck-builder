@@ -311,8 +311,8 @@ body {
   align-self: center;
 }
 .hand-area {
-  min-height: 60px;        /* Adjust for card size */
-  max-width: 1400px;       /* Match battlefield-grid */
+  min-height: 60px;
+  max-width: 1400px;
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -322,7 +322,6 @@ body {
   border-radius: 12px;
   box-shadow: 0 0 12px #0008;
   gap: 10px;
-  /* Optionally, add border to distinguish */
   border: 2px solid #333;
 }
 .first-hand-area {
@@ -495,6 +494,7 @@ body.deck-open .container {
   padding: 28px 30px 22px 30px;
   border-radius: 14px;
   min-width: 260px;
+  width: min(90vw, 1200px);
   box-shadow: 0 2px 20px #0002;
 }
 #void-card-list {
