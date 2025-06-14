@@ -254,6 +254,36 @@ body {
       font-weight: bold;
       cursor: pointer;
     }
+/* BACKGROUND THEMES */
+    body.theme-green  { background: linear-gradient(to bottom, #e6ffe6, #a3d9a5); }
+    body.theme-red    { background: linear-gradient(to bottom, #ffd6d6, #ff7f7f); }
+    body.theme-blue   { background: linear-gradient(to bottom, #d6f0ff, #7fcfff); }
+    body.theme-gray   { background: linear-gradient(to bottom, #e0e0e0, #b3b3b3); }
+    body.theme-purple { background: linear-gradient(to bottom, #f0d9ff, #c27be7); }
+    body.theme-yellow { background: linear-gradient(to bottom, #fff9d6, #ffe066); }
+    body.theme-black  { background: linear-gradient(to bottom, #444, #000); color: white;}
+    body.theme-white  { background: linear-gradient(to bottom, #ffffff, #f5f5f5);}
+
+.card-bg-green   { background: #eafae6; }
+.card-bg-red     { background: #fae6e6; }
+.card-bg-blue    { background: #e6f4fa; }
+.card-bg-gray    { background: #f0f0f0; }
+.card-bg-purple  { background: #f3e6fa; }
+.card-bg-yellow  { background: #faf8e6; }
+.card-bg-black   { background: #ececec; }
+.card-bg-white   { background: #f9f9fa; }
+.card-bg-gold {
+  background: linear-gradient(135deg, #faf8e6 0%, #ececec 50%, #f9f9fa 100%);
+}
+
+/* Example dual color combos */
+.card-bg-red-gray, .card-bg-gray-red {
+  background: linear-gradient(135deg, #fae6e6 60%, #f0f0f0 100%);
+}
+.card-bg-green-red, .card-bg-red-green {
+  background: linear-gradient(135deg, #eafae6 60%, #fae6e6 100%);
+}
+
 /* GAMEPLAY STYLE */
 #battlefield-container {
   display: flex;
@@ -301,36 +331,6 @@ body {
 .second-hand-area {
   margin-top: 10px;
 }
-/* BACKGROUND THEMES */
-    body.theme-green  { background: linear-gradient(to bottom, #e6ffe6, #a3d9a5); }
-    body.theme-red    { background: linear-gradient(to bottom, #ffd6d6, #ff7f7f); }
-    body.theme-blue   { background: linear-gradient(to bottom, #d6f0ff, #7fcfff); }
-    body.theme-gray   { background: linear-gradient(to bottom, #e0e0e0, #b3b3b3); }
-    body.theme-purple { background: linear-gradient(to bottom, #f0d9ff, #c27be7); }
-    body.theme-yellow { background: linear-gradient(to bottom, #fff9d6, #ffe066); }
-    body.theme-black  { background: linear-gradient(to bottom, #444, #000); color: white;}
-    body.theme-white  { background: linear-gradient(to bottom, #ffffff, #f5f5f5);}
-
-.card-bg-green   { background: #eafae6; }
-.card-bg-red     { background: #fae6e6; }
-.card-bg-blue    { background: #e6f4fa; }
-.card-bg-gray    { background: #f0f0f0; }
-.card-bg-purple  { background: #f3e6fa; }
-.card-bg-yellow  { background: #faf8e6; }
-.card-bg-black   { background: #ececec; }
-.card-bg-white   { background: #f9f9fa; }
-.card-bg-gold {
-  background: linear-gradient(135deg, #faf8e6 0%, #ececec 50%, #f9f9fa 100%);
-}
-
-/* Example dual color combos */
-.card-bg-red-gray, .card-bg-gray-red {
-  background: linear-gradient(135deg, #fae6e6 60%, #f0f0f0 100%);
-}
-.card-bg-green-red, .card-bg-red-green {
-  background: linear-gradient(135deg, #eafae6 60%, #fae6e6 100%);
-}
-
 #player-deck-actions button {
   display: block;
   width: 100%;
@@ -445,6 +445,16 @@ body.deck-open .container {
   align-items: center;
   justify-content: center;
 }
+.void-zone::after {
+  content: "Void";
+  position: absolute;
+  left: 50%;
+  bottom: -1.2em;
+  transform: translateX(-50%);
+  font-size: 0.85em;
+  color: #667;
+  opacity: 0.8;
+}
 .void-btn {
   padding: 0.5em 1.2em;
   border-radius: 8px;
@@ -475,7 +485,6 @@ body.deck-open .container {
   align-items: flex-start;
   justify-content: center;
 }
-
 #void-modal-content {
   position: relative;
   background: #fff;
@@ -486,85 +495,41 @@ body.deck-open .container {
   box-shadow: 0 2px 20px #0002;
 }
 #void-card-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1em;
-  justify-content: flex-start; /* or center if you want */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1.1em;
+  justify-items: center;
+  align-items: start;
 }
 #void-card-list .card, 
 #void-card-list button.card-modal-dark {
   width: 110px;
   height: 170px;
-  margin: 0; /* let the gap property handle spacing */
-}
-#void-card-list .card-modal-dark:hover {
-  background: #222 !important;
-  transform: scale(1.05);
-  transition: background 0.2s, transform 0.2s;
-}
-
-#phase-bar-row {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  margin: 18px 0 18px 0;
-  min-height: 64px; /* or whatever fits your design */
-}
-/* Phase Display Button Style */
-#phase-display {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  background: linear-gradient(90deg, #2b2e38, #222649 70%);
-  color: #e5e7ef;
-  font-family: 'Segoe UI', 'Arial', sans-serif;
-  font-size: 1.3em;
-  font-weight: 600;
+  margin: 0;
+  box-sizing: border-box;
+  background: #357afd;
   border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(40,48,80,0.13), 0 1.5px 0 #353878 inset;
-  padding: 16px 28px;
-  margin: 24px 0 20px 0;
-  letter-spacing: 0.03em;
-  border: 2px solid #5081ff;
-  width: fit-content;
-  min-width: 320px;
+  border: none;
+  box-shadow: 0 2px 12px #0002;
+  transition: background 0.2s, transform 0.1s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  cursor: pointer;
 }
-
-#phase-display .label {
-  color: #aeb8de;
-  font-weight: 400;
-  margin-right: 3px;
-  font-size: 1em;
-  letter-spacing: 0.02em;
-}
-
-#phase-display .player {
-  color: #ffdb64;
-  text-shadow: 0 1px 2px #222;
-  margin-right: 16px;
-  font-weight: bold;
-}
-
-#phase-display .phase {
-  background: #394ce3;
-  color: #fff;
-  font-weight: bold;
-  border-radius: 8px;
-  padding: 2px 12px;
-  box-shadow: 0 1px 5px #1a223a33;
-  text-transform: uppercase;
-  margin-left: 6px;
-  letter-spacing: 0.06em;
-  border: 2px solid #5076e3;
+#void-card-list .card:hover, 
+#void-card-list button.card-modal-dark:hover {
+  background: #1b5fd3;
+  transform: scale(1.045);
 }
 /* HAND FANOUT */
 #player-hand.hand-area {
   display: flex;
   align-items: center;
-  justify-content: center; /* or flex-start if you prefer */
-  gap: 10px;               /* adjust spacing as desired */
-  position: relative;      /* only needed for background/decoration, not for cards */
+  justify-content: center;
+  gap: 10px;
+  position: relative;
   width: 100%;
   height: auto;
   background: #232339;
@@ -580,8 +545,6 @@ body.deck-open .container {
   width: 110px;
   height: 154px;
   margin: 0;
-  /* other styles as needed */
-}ox-shadow: 0 4px 16px #0004;
 }
 
 #player-hand.hand-area .card:hover {
@@ -620,7 +583,7 @@ body.deck-open .container {
   justify-content: center; /* By default, cards start at left */
 }
 .zone-row .card {
-  margin: 0;                /* Remove any side margins */
+  margin: 0;
 }
 /* Ensure deck and void stick to the far right of their row */
 #player-creatures-zone, #opponent-creatures-zone,
@@ -630,13 +593,14 @@ body.deck-open .container {
   align-items: flex-end;
   gap: 18px;
   position: relative;
-  justify-content: flex-end;
+  justify-content: center;
 }
-/* Make sure the rightmost element (deck/void) stays at the right */
+/* PLACES DECK/VOID TO THE RIGHT */
 #player-creatures-zone .void-zone,
 #player-domains-zone .deck-zone {
   margin-left: auto;
 }
+/* PLACES DECK/VOID TO THE LEFT */
 #opponent-domains-zone .deck-zone,
 #opponent-creatures-zone .void-zone {
   margin-left: 0;
@@ -666,31 +630,19 @@ body.deck-open .container {
   color: #667;
   opacity: 0.8;
 }
-.void-zone::after {
-  content: "Void";
-  position: absolute;
-  left: 50%;
-  bottom: -1.2em;
-  transform: translateX(-50%);
-  font-size: 0.85em;
-  color: #667;
-  opacity: 0.8;
-}
 .card.on-field {
   width: 90px;     /* or 100px, experiment with value */
   height: 126px;   /* maintain the card's aspect ratio */
   padding: 0.2em;
   font-size: 0.9em;
 }
-
 .card.on-field img {
   width: 100%;
   height: auto;
   border-radius: 8px;
 }
-
 .card.on-field .hp-badge {
-  font-size: 1em;  /* adjust as needed */
+  font-size: 1em;
   padding: 2px 5px;
   right: 4px;
   bottom: 4px;
@@ -716,14 +668,55 @@ body.deck-open .container {
   border-radius: 4px;
   transition: width 0.2s, background 0.2s;
 }
-
-/* CENTER CARDS ON FIELD */
-.player-creatures-zone,
-.player-domains-zone,
-.opponent-creatures-zone,
-.opponent-domains-zone {
+/* PHASE STYLE */
+#phase-bar-row {
   display: flex;
   justify-content: center;
-  align-items: flex-end;
-  gap: 1em;
+  align-items: center;
+  width: 100%;
+  margin: 18px 0 18px 0;
+  min-height: 64px; /* or whatever fits your design */
+}
+#phase-display {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: linear-gradient(90deg, #2b2e38, #222649 70%);
+  color: #e5e7ef;
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  font-size: 1.3em;
+  font-weight: 600;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(40,48,80,0.13), 0 1.5px 0 #353878 inset;
+  padding: 16px 28px;
+  margin: 24px 0 20px 0;
+  letter-spacing: 0.03em;
+  border: 2px solid #5081ff;
+  width: fit-content;
+  min-width: 320px;
+}
+#phase-display .label {
+  color: #aeb8de;
+  font-weight: 400;
+  margin-right: 3px;
+  font-size: 1em;
+  letter-spacing: 0.02em;
+}
+#phase-display .player {
+  color: #ffdb64;
+  text-shadow: 0 1px 2px #222;
+  margin-right: 16px;
+  font-weight: bold;
+}
+#phase-display .phase {
+  background: #394ce3;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 8px;
+  padding: 2px 12px;
+  box-shadow: 0 1px 5px #1a223a33;
+  text-transform: uppercase;
+  margin-left: 6px;
+  letter-spacing: 0.06em;
+  border: 2px solid #5076e3;
 }
