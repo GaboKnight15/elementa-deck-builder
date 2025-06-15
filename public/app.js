@@ -1562,6 +1562,10 @@ function showVoidModal() {
       btn.style.borderRadius = "10px";
       btn.style.border = "none";
       btn.style.cursor = "pointer";
+      btn.style.transition = "background 0.2s";
+      btn.classList.add('card', 'card-modal-dark');
+      btn.onmouseover = () => btn.style.background = "#222";
+      btn.onmouseout = () => btn.style.background = "#444";
 
       const img = document.createElement('img');
       img.src = card.image;
@@ -1573,10 +1577,7 @@ function showVoidModal() {
 
       const name = document.createElement('div');
       name.textContent = card.name;
-      name.style.fontSize = "0.95em";
-      name.style.fontWeight = "bold";
-      name.style.textAlign = "center";
-      name.style.color = "#fff";
+      name.className = "card-name";
 
       btn.appendChild(img);
       btn.appendChild(name);
@@ -1631,8 +1632,6 @@ function showVoidModal() {
   }
   modal.style.display = 'block';
 }
-document.body.addEventListener('click', function(e) {
-});
 // Void Modal
 const voidModal = document.getElementById('void-modal');
 const voidModalContent = document.getElementById('void-modal-content');
