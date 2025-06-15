@@ -1610,7 +1610,6 @@ function showVoidModal() {
             text: "View",
             onClick: function(e) {
               e.stopPropagation();
-              closeVoidModal();
               showFullCardModal(cardObj);
               this.closest('.card-menu').remove();
             }
