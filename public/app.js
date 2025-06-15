@@ -659,10 +659,10 @@ function appendDeckZone(parentDiv, deckArray, who) {
   if (who === "player") {
     deckCard.onclick = (e) => {
       e.stopPropagation();
-      setTimeout(() => {
-        deckActionsMenu.style.display = "block";
-        // Also position the menu here if needed
-      }, 0);
+      const rect = deckCard.getBoundingClientRect();
+      deckActionsMenu.style.top = `${rect.bottom + window.scrollY + 8}px`;
+      deckActionsMenu.style.left = `${rect.left + window.scrollX}px`;
+      deckActionsMenu.style.display = "block";
     };
   }
 
