@@ -781,7 +781,14 @@ function openDeckSearchModal() {
     const card = dummyCards.find(c => c.id === cardObj.cardId);
     if (!card) return;
 
-    // Use the same styling as the void modal!
+    // 1. Create a wrapper for each card
+    const wrapper = document.createElement('div');
+    wrapper.style.position = 'relative';
+    wrapper.style.display = 'flex';
+    wrapper.style.flexDirection = 'column';
+    wrapper.style.alignItems = 'center';
+
+    // 2. Create card button
     const btn = document.createElement('button');
     btn.style.display = 'flex';
     btn.style.flexDirection = 'column';
@@ -815,61 +822,60 @@ function openDeckSearchModal() {
     btn.appendChild(img);
     btn.appendChild(name);
 
-    // On click, show the popup menu
+    // 3. Attach menu on click, add menu to wrapper
     btn.onclick = (e) => {
-  e.stopPropagation();
-  // Remove any existing menu
-  wrapper.querySelectorAll('.card-menu').forEach(m => m.remove());
+      e.stopPropagation();
+      // Remove any existing menu in this wrapper
+      wrapper.querySelectorAll('.card-menu').forEach(m => m.remove());
 
-  const buttons = [
-    {
-      text: "Add to Hand",
-      onClick: function(ev) {
-        ev.stopPropagation();
-        moveCard(cardObj.instanceId, gameState.playerDeck, gameState.playerHand);
-        openDeckSearchModal();
-        this.closest('.card-menu').remove();
-      }
-    },
-    {
-      text: "Send to Void",
-      onClick: function(ev) {
-        ev.stopPropagation();
-        moveCard(cardObj.instanceId, gameState.playerDeck, gameState.playerVoid);
-        openDeckSearchModal();
-        this.closest('.card-menu').remove();
-      }
-    },
-    {
-      text: "View",
-      onClick: function(ev) {
-        ev.stopPropagation();
-        showFullCardModal(cardObj);
-        this.closest('.card-menu').remove();
-      }
-    }
-  ];
-  const menu = createCardMenu(buttons);
-  menu.style.position = 'absolute';
-  menu.style.top = '100%';
-  menu.style.left = '0';
-  menu.style.marginTop = '6px';
-  menu.style.display = 'block';
+      const buttons = [
+        {
+          text: "Add to Hand",
+          onClick: function(ev) {
+            ev.stopPropagation();
+            moveCard(cardObj.instanceId, gameState.playerDeck, gameState.playerHand);
+            openDeckSearchModal();
+            this.closest('.card-menu').remove();
+          }
+        },
+        {
+          text: "Send to Void",
+          onClick: function(ev) {
+            ev.stopPropagation();
+            moveCard(cardObj.instanceId, gameState.playerDeck, gameState.playerVoid);
+            openDeckSearchModal();
+            this.closest('.card-menu').remove();
+          }
+        },
+        {
+          text: "View",
+          onClick: function(ev) {
+            ev.stopPropagation();
+            showFullCardModal(cardObj);
+            this.closest('.card-menu').remove();
+          }
+        }
+      ];
+      const menu = createCardMenu(buttons);
+      menu.style.position = 'absolute';
+      menu.style.top = '100%';
+      menu.style.left = '0';
+      menu.style.marginTop = '6px';
+      menu.style.display = 'block';
 
-  // Ensure parent is relative
-  wrapper.style.position = 'relative';
-  wrapper.appendChild(menu);
+      wrapper.appendChild(menu);
 
-  // Hide menu when clicking elsewhere
-  setTimeout(() => {
-    document.body.addEventListener('click', function handler() {
-      menu.remove();
-      document.body.removeEventListener('click', handler);
-    }, { once: true });
-  }, 10);
-};
+      // Hide menu when clicking elsewhere
+      setTimeout(() => {
+        document.body.addEventListener('click', function handler() {
+          menu.remove();
+          document.body.removeEventListener('click', handler);
+        }, { once: true });
+      }, 10);
+    };
 
-    content.appendChild(btn);
+    wrapper.appendChild(btn);
+    content.appendChild(wrapper);
   });
 
   modal.style.display = "block";
@@ -1602,13 +1608,14 @@ function showVoidModal() {
       const card = dummyCards.find(c => c.id === cardObj.cardId);
       if (!card) return;
 
+      // 1. Create wrapper FIRST
       const wrapper = document.createElement('div');
       wrapper.style.position = 'relative';
       wrapper.style.display = 'flex';
       wrapper.style.flexDirection = 'column';
       wrapper.style.alignItems = 'center';
 
-      // Card button (for drag and menu)
+      // 2. Create btn
       const btn = document.createElement('button');
       btn.style.display = 'flex';
       btn.style.flexDirection = 'column';
@@ -1643,7 +1650,7 @@ function showVoidModal() {
       btn.appendChild(img);
       btn.appendChild(name);
 
-      // MENU
+      // 3. Create menu
       const buttons = [
         {
           text: "Return to Hand",
@@ -1677,11 +1684,11 @@ function showVoidModal() {
 
       btn.onclick = (e) => {
         e.stopPropagation();
-        // Remove any open menus first
         wrapper.querySelectorAll('.card-menu').forEach(m => m.remove());
         menu.style.display = 'block';
       };
 
+      // 4. Append to wrapper and then to list
       wrapper.appendChild(btn);
       wrapper.appendChild(menu);
       list.appendChild(wrapper);
