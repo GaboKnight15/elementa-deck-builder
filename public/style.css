@@ -297,7 +297,7 @@ header {
   width: 1200px;
   margin: 0 auto;
   border-radius: 18px;
-  padding: 24px 0;
+  padding: 24px 24px;
   background: #22304a;
   box-shadow: 0 4px 24px #0002;
 }
