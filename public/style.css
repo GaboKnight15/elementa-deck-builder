@@ -399,6 +399,11 @@ body {
   margin-bottom: 0.6em;
 }
 /* Card zones actions */
+.card-action-menu, #hand-card-menu, .attachment-menu, .void-dropdown {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+}
 #card-action-menu button {
   display: block;
   width: 100%;
