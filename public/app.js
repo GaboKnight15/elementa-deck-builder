@@ -331,12 +331,6 @@ function updateDeckDisplay() {
     div.setAttribute('data-rarity', card.rarity);
   }
     div.classList.add(getCardBgClass(card));
-    // Add color classes for aura effects
-    if (Array.isArray(card.color)) {
-      card.color.forEach(color => div.classList.add(color + '-card'));
-    } else if (card.color) {
-      div.classList.add(card.color + '-card');
-    }
 
     const img = document.createElement('img');
     img.src = card.image;
@@ -1070,11 +1064,6 @@ startGameBtn.onclick = () => {
   showBattlefield();
   elementsToHide.forEach(el => el.style.display = 'none');
   battlefield.style.display = 'block';
-  //  ENTER LOBBY ID //
-  const idDisplay = document.getElementById('game-id-display');
-  if (idDisplay) {
-    idDisplay.textContent = gameId;
-  }
   const deckObj = getCurrentDeck();
   
   gameState.playerDeck = shuffle(buildDeck(deckObj));
