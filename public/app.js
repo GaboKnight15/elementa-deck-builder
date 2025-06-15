@@ -1,3 +1,6 @@
+window.onerror = function (msg, url, line, col, error) {
+  alert(`JS Error: ${msg}\nAt ${line}:${col}`);
+};
 // CARD LIST //
 const dummyCards = [
 { id: 'basicfairy', name: 'Fairy', rarity: 'Basic', image: 'CardImages/BasicCreatures/Fairy.png', category: 'creature', color: 'green', type: 'fairy', hp: 1, atk: 1, def: 0, cost: 0, archetype: 'Fairy', ability: 'flying'},
@@ -826,76 +829,6 @@ document.getElementById('deck-search-modal').onclick = (e) => {
   if (e.target.id === 'deck-search-modal') closeDeckSearchModal();
 };
 
-// VOID ZONE DISPLAY
-function showVoidModal() {
-  const modal = document.getElementById('void-modal');
-  const list = document.getElementById('void-card-list');
-  list.innerHTML = '';
-
-const voidCards = gameState.playerVoid;
-  if (voidCards.length === 0) {
-    list.innerHTML = '<div style="color:#999;">Void is empty</div>';
-  } else {
-    list.style.display = 'flex';
-    list.style.flexWrap = 'wrap';
-    list.style.justifyContent = 'flex-start';
-    list.style.gap = '1em';
-    voidCards.forEach((cardObj, idx) => {
-      const card = dummyCards.find(c => c.id === cardObj.cardId);
-      if (!card) return;
-      const wrapper = document.createElement('div');
-      wrapper.style.position = 'relative';
-      wrapper.style.display = 'flex';
-      wrapper.style.flexDirection = 'column';
-      wrapper.style.alignItems = 'center';
-      const btn = document.createElement('button');
-      btn.classList.add('card', 'card-modal-dark');
-      btn.style.display = 'flex';
-      btn.style.flexDirection = 'column';
-      btn.style.alignItems = 'center';
-      btn.style.justifyContent = 'center';
-      btn.style.width = "110px";
-      btn.style.height = "170px";
-      btn.style.padding = "6px";
-      btn.style.background = "#444";
-      btn.style.color = "#fff";
-      btn.style.borderRadius = "10px";
-      btn.style.border = "none";
-      btn.style.cursor = "pointer";
-      btn.style.transition = "background 0.2s";
-      btn.onmouseover = () => btn.style.background = "#222";
-      btn.onmouseout = () => btn.style.background = "#444";
-
-      const img = document.createElement('img');
-      img.src = card.image;
-      img.alt = card.name;
-      img.style.maxWidth = "80px";
-      img.style.maxHeight = "110px";
-      img.style.display = "block";
-      img.style.marginBottom = "6px";
-
-      const name = document.createElement('div');
-      name.textContent = card.name;
-      name.style.fontSize = "0.95em";
-      name.style.fontWeight = "bold";
-      name.style.textAlign = "center";
-      name.style.color = "#fff";
-
-      btn.appendChild(img);
-      btn.appendChild(name);
-
-      // Placeholder for card actions in modal, to be added in the next step
-      btn.onclick = (e) => {
-        e.stopPropagation();
-        // Will add dropdown here in the next step!
-      };
-
-      list.appendChild(btn);
-    });
-  }
-
-  modal.style.display = 'block';
-}
 // Void close logic
 document.getElementById('close-void-modal').onclick = function() {
   document.getElementById('void-modal').style.display = "none";
