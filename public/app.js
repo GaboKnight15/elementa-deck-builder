@@ -1505,6 +1505,19 @@ document.getElementById('card-action-send-deck').onclick = function() {
   setupDropZones();
   document.getElementById('card-action-menu').style.display = 'none';
 };
+
+document.getElementById('card-action-view').onclick = function() {
+  if (!currentCardMenuState) return;
+  const { instanceId, zoneId } = currentCardMenuState;
+  let arr = getZoneArray(zoneId);
+  if (arr) {
+    const cardObj = arr.find(card => card.instanceId === instanceId);
+    if (cardObj) {
+      showFullCardModal(cardObj);
+    }
+  }
+  document.getElementById('card-action-menu').style.display = 'none';
+};
 // ==== VOID MODAL CARD MENU ====
 function showVoidModal() {
   const modal = document.getElementById('void-modal');
