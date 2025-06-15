@@ -853,12 +853,7 @@ function openDeckSearchModal() {
         }
       ];
       const menu = createCardMenu(buttons);
-      menu.style.position = 'absolute';
-      menu.style.top = '100%';
-      menu.style.left = '0';
-      menu.style.marginTop = '6px';
-      menu.style.display = 'block';
-
+      menu.style.display = 'flex';
       wrapper.appendChild(menu);
 
       // Hide menu when clicking elsewhere
@@ -1520,14 +1515,12 @@ function showVoidModal() {
       const card = dummyCards.find(c => c.id === cardObj.cardId);
       if (!card) return;
 
-      // 1. Create wrapper FIRST
       const wrapper = document.createElement('div');
       wrapper.style.position = 'relative';
       wrapper.style.display = 'flex';
       wrapper.style.flexDirection = 'column';
       wrapper.style.alignItems = 'center';
 
-      // 2. Create btn
       const btn = document.createElement('button');
       btn.style.display = 'flex';
       btn.style.flexDirection = 'column';
@@ -1542,7 +1535,6 @@ function showVoidModal() {
       btn.style.border = "none";
       btn.style.cursor = "pointer";
 
-      // Card image
       const img = document.createElement('img');
       img.src = card.image;
       img.alt = card.name;
@@ -1551,7 +1543,6 @@ function showVoidModal() {
       img.style.display = "block";
       img.style.marginBottom = "6px";
 
-      // Card name
       const name = document.createElement('div');
       name.textContent = card.name;
       name.style.fontSize = "0.95em";
@@ -1562,47 +1553,52 @@ function showVoidModal() {
       btn.appendChild(img);
       btn.appendChild(name);
 
-      // 3. Create menu
-      const buttons = [
-        {
-          text: "Return to Hand",
-          onClick: function(e) {
-            e.stopPropagation();
-            moveCard(cardObj.instanceId, gameState.playerVoid, gameState.playerHand);
-            showVoidModal();
-            this.closest('.card-menu').remove();
-          }
-        },
-        {
-          text: "Return to Deck",
-          onClick: function(e) {
-            e.stopPropagation();
-            moveCard(cardObj.instanceId, gameState.playerVoid, gameState.playerDeck);
-            showVoidModal();
-            this.closest('.card-menu').remove();
-          }
-        },
-        {
-          text: "View",
-          onClick: function(e) {
-            e.stopPropagation();
-            closeVoidModal();
-            showFullCardModal(cardObj);
-            this.closest('.card-menu').remove();
-          }
-        }
-      ];
-      const menu = createCardMenu(buttons);
-
       btn.onclick = (e) => {
         e.stopPropagation();
         wrapper.querySelectorAll('.card-menu').forEach(m => m.remove());
-        menu.style.display = 'block';
+        const buttons = [
+          {
+            text: "Return to Hand",
+            onClick: function(e) {
+              e.stopPropagation();
+              moveCard(cardObj.instanceId, gameState.playerVoid, gameState.playerHand);
+              showVoidModal();
+              this.closest('.card-menu').remove();
+            }
+          },
+          {
+            text: "Return to Deck",
+            onClick: function(e) {
+              e.stopPropagation();
+              moveCard(cardObj.instanceId, gameState.playerVoid, gameState.playerDeck);
+              showVoidModal();
+              this.closest('.card-menu').remove();
+            }
+          },
+          {
+            text: "View",
+            onClick: function(e) {
+              e.stopPropagation();
+              closeVoidModal();
+              showFullCardModal(cardObj);
+              this.closest('.card-menu').remove();
+            }
+          }
+        ];
+        const menu = createCardMenu(buttons);
+        menu.style.display = 'flex';
+
+        wrapper.appendChild(menu);
+
+        setTimeout(() => {
+          document.body.addEventListener('click', function handler() {
+            menu.remove();
+            document.body.removeEventListener('click', handler);
+          }, { once: true });
+        }, 10);
       };
 
-      // 4. Append to wrapper and then to list
       wrapper.appendChild(btn);
-      wrapper.appendChild(menu);
       list.appendChild(wrapper);
     });
   }
