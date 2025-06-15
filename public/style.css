@@ -366,7 +366,7 @@ header {
   height: 170px;
   margin: 0;
   box-sizing: border-box;
-  background: #357afd;
+  background: #232339 ;
   border-radius: 12px;
   border: none;
   box-shadow: 0 2px 12px #0002;
@@ -488,7 +488,7 @@ body.deck-open .container {
   flex-direction: column;
   align-items: flex-start;
   position: relative;
-  background: #fff;
+  background: #232339 ;
   margin: 60px auto;
   padding: 28px 30px 22px 30px;
   border-radius: 14px;
