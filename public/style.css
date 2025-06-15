@@ -766,3 +766,21 @@ body.deck-open .container {
   letter-spacing: 0.06em;
   border: 2px solid #5076e3;
 }
+/* ATTACHMENT MENU STYLE */
+.attachment-menu {
+  min-width: 80px;
+  box-shadow: 0 2px 8px #0002;
+}
+.attachment-menu button {
+  display: block;
+  width: 100%;
+  border: none;
+  background: #eee;
+  border-radius: 5px;
+  padding: 0.4em;
+  margin: 2px 0;
+  cursor: pointer;
+}
+.attachment-menu button:hover {
+  background: #ffeeba;
+}
