@@ -1210,9 +1210,9 @@ function moveCard(instanceId, fromArr, toArr, extra = {}) {
     }
     fromArr.splice(idx, 1);
     toArr.push(cardObj);
-    renderGameState();
-    setupDropZones();
   }
+  renderGameState();
+  setupDropZones();
 }
 // Helper to get zone name for an array reference
 function getZoneNameForArray(arr) {
