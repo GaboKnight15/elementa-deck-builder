@@ -149,12 +149,12 @@
   </div>
   <!-- Modal for full image view -->
   <div id="deck-selection-modal"></div>
-  <!-- Modal for full image view -->
-  <div id="image-modal" class="modal">
+  <!-- SHOW FULL IMAGE -->
+  <div id="image-modal" class="modal" style="display:none;">
     <span class="close">&times;</span>
-    <img class="modal-content" id="modal-img">
+    <div id="modal-img-content"></div>
   </div>
-<!-- Gameplay functions -->
+<!-- FIELD ACTIONS -->
 <div id="card-action-menu" style="display:none; position:absolute; z-index:2000; background:white; border:1px solid #aaa; border-radius:7px; box-shadow:0 2px 12px #0002; padding:8px; min-width:130px;">
   <button id="card-action-set-hp">Set HP</button>
   <button id="card-action-return-hand">Return to Hand</button>
@@ -162,7 +162,6 @@
   <button id="card-action-send-void">Send to Void</button>
   <button id="card-action-send-deck">Send to Deck</button>
   <button id="card-action-view">View</button>
-  
 </div>
   <!-- Deck Search Modal -->
 <div id="deck-search-modal" class="modal">
@@ -189,11 +188,6 @@
   <button id="hand-menu-void">Send to Void</button>
   <button id="hand-menu-deck">Return to Deck</button>
   <button id="hand-menu-view">View</button>
-</div>
-  <!-- VIEW IMAGE MODAL -->
-<div id="image-modal" class="modal">
-  <span class="close">&times;</span>
-  <div id="modal-img-content"></div>
 </div>
 
   <!-- APP.JS -->
