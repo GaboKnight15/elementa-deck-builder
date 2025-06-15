@@ -325,7 +325,27 @@ function updateDeckDisplay() {
   setCurrentDeck(deck);
   saveDeckState();
 }
+// CREATE CARD MENUS
+function createCardMenu(buttons = []) {
+  const menu = document.createElement('div');
+  menu.className = 'card-menu';
+  menu.style.position = 'absolute';
+  menu.style.display = 'none';
+  menu.style.top = '100%';
+  menu.style.left = '0';
+  menu.style.marginTop = '6px';
+  // Don't set background, border, padding here—let CSS handle it
 
+  buttons.forEach(btnConf => {
+    const btn = document.createElement('button');
+    btn.type = "button";
+    btn.innerText = btnConf.text;
+    if (btnConf.className) btn.className = btnConf.className;
+    btn.onclick = btnConf.onClick;
+    menu.appendChild(btn);
+  });
+  return menu;
+}
   function createCardDiv(card) {
     const deck = getCurrentDeck();
     const div = document.createElement('div');
@@ -511,14 +531,60 @@ function renderGameState() {
 }
 // HAND OPTIONS MENU
 function showHandCardMenu(instanceId, cardDiv) {
-  const menu = document.getElementById('hand-card-menu');
-  menu.setAttribute('data-instance-id', instanceId);
+  // Remove any existing menu
+  document.querySelectorAll('.card-menu').forEach(m => m.remove());
 
-  // Position menu under the card
-  const rect = cardDiv.getBoundingClientRect();
-  menu.style.top = `${rect.bottom + window.scrollY + 6}px`;
-  menu.style.left = `${rect.left + window.scrollX + rect.width/2 - 60}px`; // center-ish
+  const cardObj = gameState.playerHand.find(c => c.instanceId === instanceId);
+
+  // Define actions
+  const buttons = [
+    {
+      text: "Play",
+      onClick: function(e) {
+        e.stopPropagation();
+        moveCard(instanceId, gameState.playerHand, gameState.playerCreatures, { orientation: "vertical" });
+        this.closest('.card-menu').remove();
+      }
+    },
+    {
+      text: "Send to Void",
+      onClick: function(e) {
+        e.stopPropagation();
+        moveCard(instanceId, gameState.playerHand, gameState.playerVoid);
+        this.closest('.card-menu').remove();
+      }
+    },
+    {
+      text: "Return to Deck",
+      onClick: function(e) {
+        e.stopPropagation();
+        moveCard(instanceId, gameState.playerHand, gameState.playerDeck);
+        this.closest('.card-menu').remove();
+      }
+    },
+    {
+      text: "View",
+      onClick: function(e) {
+        e.stopPropagation();
+        showFullCardModal(cardObj);
+        this.closest('.card-menu').remove();
+      }
+    }
+  ];
+  const menu = createCardMenu(buttons);
+
+  // Position relative to cardDiv
+  cardDiv.style.position = 'relative';
   menu.style.display = 'block';
+  cardDiv.appendChild(menu);
+
+  // Hide menu when clicking elsewhere
+  setTimeout(() => {
+    document.body.addEventListener('click', function handler() {
+      menu.remove();
+      document.body.removeEventListener('click', handler);
+    }, { once: true });
+  }, 10);
 }
 // DROP ZONES
 function setupDropZones() {
@@ -708,7 +774,7 @@ function openDeckSearchModal() {
   content.innerHTML = "<h3>Select a card and choose an action</h3>";
 
   // Remove any old menu if present
-  let deckMenu = document.getElementById('deck-search-card-menu');
+  let deckMenu = document.getElementById('card-menu');
   if (deckMenu) deckMenu.remove();
 
   gameState.playerDeck.forEach((cardObj, idx) => {
@@ -751,69 +817,57 @@ function openDeckSearchModal() {
 
     // On click, show the popup menu
     btn.onclick = (e) => {
-      e.stopPropagation();
+  e.stopPropagation();
+  // Remove any existing menu
+  wrapper.querySelectorAll('.card-menu').forEach(m => m.remove());
 
-      // Remove any existing menu
-      let oldMenu = document.getElementById('deck-search-card-menu');
-      if (oldMenu) oldMenu.remove();
-
-      // Create popup menu
-      const menu = document.createElement('div');
-      menu.id = 'deck-search-card-menu';
-      menu.style.position = 'fixed';
-      menu.style.background = 'white';
-      menu.style.border = '1px solid #aaa';
-      menu.style.borderRadius = '7px';
-      menu.style.zIndex = '99999';
-      menu.style.padding = '4px';
-      menu.style.minWidth = '120px';
-      menu.style.boxShadow = '0 4px 16px #0003';
-      menu.innerHTML = `
-        <button type="button" class="deck-action-add">Add to Hand</button>
-        <button type="button" class="deck-action-void">Send to Void</button>
-        <button type="button" class="deck-action-view">View</button>
-      `;
-
-      // Position the menu near the card
-      const rect = btn.getBoundingClientRect();
-      menu.style.top = `${rect.bottom + window.scrollY + 4}px`;
-      menu.style.left = `${rect.left + window.scrollX}px`;
-
-      // Action handlers
-      menu.querySelector('.deck-action-add').onclick = (ev) => {
+  const buttons = [
+    {
+      text: "Add to Hand",
+      onClick: function(ev) {
         ev.stopPropagation();
         moveCard(cardObj.instanceId, gameState.playerDeck, gameState.playerHand);
-        renderGameState();
-        setupDropZones();
-        menu.remove();
         openDeckSearchModal();
-      };
-      menu.querySelector('.deck-action-void').onclick = (ev) => {
+        this.closest('.card-menu').remove();
+      }
+    },
+    {
+      text: "Send to Void",
+      onClick: function(ev) {
         ev.stopPropagation();
         moveCard(cardObj.instanceId, gameState.playerDeck, gameState.playerVoid);
-        renderGameState();
-        setupDropZones();
-        menu.remove();
         openDeckSearchModal();
-      };
-      menu.querySelector('.deck-action-view').onclick = (ev) => {
+        this.closest('.card-menu').remove();
+      }
+    },
+    {
+      text: "View",
+      onClick: function(ev) {
         ev.stopPropagation();
         showFullCardModal(cardObj);
-        modalImg.src = card.image;
-        modal.style.display = "block";
-        menu.remove();
-      };
+        this.closest('.card-menu').remove();
+      }
+    }
+  ];
+  const menu = createCardMenu(buttons);
+  menu.style.position = 'absolute';
+  menu.style.top = '100%';
+  menu.style.left = '0';
+  menu.style.marginTop = '6px';
+  menu.style.display = 'block';
 
-      document.body.appendChild(menu);
+  // Ensure parent is relative
+  wrapper.style.position = 'relative';
+  wrapper.appendChild(menu);
 
-      // Hide menu when clicking elsewhere
-      setTimeout(() => {
-        document.body.addEventListener('click', function handler() {
-          if (menu) menu.remove();
-          document.body.removeEventListener('click', handler);
-        }, { once: true });
-      }, 10);
-    };
+  // Hide menu when clicking elsewhere
+  setTimeout(() => {
+    document.body.addEventListener('click', function handler() {
+      menu.remove();
+      document.body.removeEventListener('click', handler);
+    }, { once: true });
+  }, 10);
+};
 
     content.appendChild(btn);
   });
@@ -957,50 +1011,44 @@ function renderCardOnField(cardObj, zoneId) {
 
   // ATTACHMENT MENU
   attDiv.onclick = (e) => {
-    e.stopPropagation();
-    // Remove any open menus first
-    document.querySelectorAll('.attachment-menu').forEach(m => m.remove());
-    // Create menu
-    const menu = document.createElement('div');
-    menu.className = 'attachment-menu';
-    menu.style.position = 'absolute';
-    menu.style.top = '0';
-    menu.style.left = '70px';
-    menu.style.background = '#fff';
-    menu.style.border = '1px solid #666';
-    menu.style.borderRadius = '8px';
-    menu.style.zIndex = 20;
-    menu.style.padding = '4px';
-    menu.innerHTML = `
-      <button class="attachment-view">View</button>
-      <button class="attachment-detach">Detach</button>
-    `;
-    // View action
-    menu.querySelector('.attachment-view').onclick = (ev) => {
-      ev.stopPropagation();
-      showFullCardModal(attachObj);
-      menu.remove();
-    };
-    // Detach action
-    menu.querySelector('.attachment-detach').onclick = (ev) => {
-      ev.stopPropagation();
-      // Remove from attachments and add to void
-      cardObj.attachedCards.splice(i, 1);
-      gameState.playerVoid.push(attachObj);
-      renderGameState();
-      setupDropZones();
-      menu.remove();
-    };
-    attDiv.appendChild(menu);
+  e.stopPropagation();
+  // Remove any open menus first
+  attDiv.querySelectorAll('.card-menu').forEach(m => m.remove());
+  // Create menu
+  const buttons = [
+    {
+      text: "View",
+      onClick: function(ev) {
+        ev.stopPropagation();
+        showFullCardModal(attachObj);
+        this.closest('.card-menu').remove();
+      }
+    },
+    {
+      text: "Detach",
+      onClick: function(ev) {
+        ev.stopPropagation();
+        cardObj.attachedCards.splice(i, 1);
+        gameState.playerVoid.push(attachObj);
+        renderGameState();
+        setupDropZones();
+        this.closest('.card-menu').remove();
+      }
+    }
+  ];
+  const menu = createCardMenu(buttons);
+  menu.style.left = '70px'; // optional: offset menu to the right of attachment
+  attDiv.appendChild(menu);
+  menu.style.display = 'block';
 
-    // Hide menu if click elsewhere
-    setTimeout(() => {
-      document.body.addEventListener('click', function handler() {
-        menu.remove();
-        document.body.removeEventListener('click', handler);
-      }, { once: true });
-    }, 10);
-  };
+  // Hide menu if click elsewhere
+  setTimeout(() => {
+    document.body.addEventListener('click', function handler() {
+      menu.remove();
+      document.body.removeEventListener('click', handler);
+    }, { once: true });
+  }, 10);
+};
 
       const img = document.createElement('img');
       img.src = attachData.image;
@@ -1537,13 +1585,13 @@ document.getElementById('card-action-send-deck').onclick = function() {
   setupDropZones();
   document.getElementById('card-action-menu').style.display = 'none';
 };
-// VOID DISPLAY
+// ==== VOID MODAL CARD MENU ====
 function showVoidModal() {
   const modal = document.getElementById('void-modal');
   const list = document.getElementById('void-card-list');
   list.innerHTML = '';
 
-const voidCards = gameState.playerVoid;
+  const voidCards = gameState.playerVoid;
   if (voidCards.length === 0) {
     list.innerHTML = '<div style="color:#999;">Void is empty.</div>';
   } else {
@@ -1595,71 +1643,50 @@ const voidCards = gameState.playerVoid;
       btn.appendChild(img);
       btn.appendChild(name);
 
-      // Dropdown menu
-      const menu = document.createElement('div');
-      menu.className = 'void-dropdown';
-      menu.style.display = 'none';
-      menu.style.position = 'absolute';
-      menu.style.top = '40px';
-      menu.style.left = '50%';
-      menu.style.transform = 'translateX(-50%)';
-      menu.style.background = 'white';
-      menu.style.border = '1px solid #aaa';
-      menu.style.borderRadius = '7px';
-      menu.style.zIndex = '9999';
-      menu.style.padding = '4px';
-      menu.innerHTML = `
-        <button type="button" class="void-action-hand">Return to Hand</button>
-        <button type="button" class="void-action-deck">Return to Deck</button>
-        <button type="button" class="void-action-view">View</button>
-      `;
+      // MENU
+      const buttons = [
+        {
+          text: "Return to Hand",
+          onClick: function(e) {
+            e.stopPropagation();
+            moveCard(cardObj.instanceId, gameState.playerVoid, gameState.playerHand);
+            showVoidModal();
+            this.closest('.card-menu').remove();
+          }
+        },
+        {
+          text: "Return to Deck",
+          onClick: function(e) {
+            e.stopPropagation();
+            moveCard(cardObj.instanceId, gameState.playerVoid, gameState.playerDeck);
+            showVoidModal();
+            this.closest('.card-menu').remove();
+          }
+        },
+        {
+          text: "View",
+          onClick: function(e) {
+            e.stopPropagation();
+            closeVoidModal();
+            showFullCardModal(cardObj);
+            this.closest('.card-menu').remove();
+          }
+        }
+      ];
+      const menu = createCardMenu(buttons);
 
-      // Attach menu actions
-menu.querySelector('.void-action-hand').onclick = (e) => {
-  e.stopPropagation();
-  moveCard(cardObj.instanceId, gameState.playerVoid, gameState.playerHand);
-  showVoidModal();
-  renderGameState();
-  setupDropZones();
-};
-
-menu.querySelector('.void-action-deck').onclick = (e) => {
-  e.stopPropagation();
-  moveCard(cardObj.instanceId, gameState.playerVoid, gameState.playerDeck);
-  showVoidModal();
-  renderGameState();
-  setupDropZones();
-};
- menu.querySelector('.void-action-view').onclick = (e) => {
-  e.stopPropagation();
-  closeVoidModal();
-  showFullCardModal(cardObj);
-  const card = dummyCards.find(c => c.id === cardObj.cardId);
-  if (card) {
-    modal.style.display = "block";
-    modalImg.src = card.image;
-  }
-  menu.style.display = 'none';
- };
-      
-btn.onclick = (e) => {
-  e.stopPropagation();
-  document.querySelectorAll('#void-card-list .void-dropdown').forEach(m => m.style.display = 'none');
-  menu.style.display = 'block';
-};
-
-      // Hide menu if clicking elsewhere
-      document.body.addEventListener('click', function hideMenu(e) {
-        if (!menu.contains(e.target)) menu.style.display = 'none';
-      }, { once: true });
+      btn.onclick = (e) => {
+        e.stopPropagation();
+        // Remove any open menus first
+        wrapper.querySelectorAll('.card-menu').forEach(m => m.remove());
+        menu.style.display = 'block';
+      };
 
       wrapper.appendChild(btn);
       wrapper.appendChild(menu);
-
       list.appendChild(wrapper);
     });
   }
-
   modal.style.display = 'block';
 }
 document.body.addEventListener('click', function(e) {
