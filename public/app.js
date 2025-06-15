@@ -773,10 +773,6 @@ function openDeckSearchModal() {
   const content = document.getElementById('deck-search-content');
   content.innerHTML = "<h3>Select a card and choose an action</h3>";
 
-  // Remove any old menu if present
-  let deckMenu = document.getElementById('card-menu');
-  if (deckMenu) deckMenu.remove();
-
   gameState.playerDeck.forEach((cardObj, idx) => {
     const card = dummyCards.find(c => c.id === cardObj.cardId);
     if (!card) return;
@@ -1329,76 +1325,6 @@ phaseNameSpan.onclick = function() { nextPhaseBtn.click(); };
   updatePhaseBar();
   showBuilder();
 
-// --- HAND CARD MENU EVENTS ---
-// PLAY CARD FROM HAND
-document.getElementById('hand-menu-play').onclick = function(e) {
-  e.stopPropagation();
-  const menu = document.getElementById('hand-card-menu');
-  const instanceId = menu.getAttribute('data-instance-id');
-  moveCard(instanceId, gameState.playerHand, gameState.playerCreatures, {orientation: "vertical"});
-  renderGameState();
-  setupDropZones();
-  menu.style.display = 'none';
-};
-// SEND FROM HAND TO VOID
-document.getElementById('hand-menu-void').onclick = function(e) {
-  e.stopPropagation();
-  const menu = document.getElementById('hand-card-menu');
-  const instanceId = menu.getAttribute('data-instance-id');
-  moveCard(instanceId, gameState.playerHand, gameState.playerVoid);
-  renderGameState();
-  setupDropZones();
-  menu.style.display = 'none';
-};
-// RETURN FROM HAND TO DECK
-document.getElementById('hand-menu-deck').onclick = function(e) {
-  e.stopPropagation();
-  const menu = document.getElementById('hand-card-menu');
-  const instanceId = menu.getAttribute('data-instance-id');
-  moveCard(instanceId, gameState.playerHand, gameState.playerDeck);
-  renderGameState();
-  setupDropZones();
-  menu.style.display = 'none';
-};
-// VIEW CARD FROM HAND
-document.getElementById('hand-menu-view').onclick = function(e) {
-  e.stopPropagation();
-  const menu = document.getElementById('hand-card-menu');
-  const instanceId = menu.getAttribute('data-instance-id');
-  const cardObj = gameState.playerHand.find(c => c.instanceId === instanceId);
-  if (cardObj) {
-    const card = dummyCards.find(c => c.id === cardObj.cardId);
-    if (card) {
-      modal.style.display = "block";
-      modalImg.src = card.image;
-    }
-  }
-  menu.style.display = 'none';
-};
-
-document.getElementById('card-action-view').onclick = function() {
-  if (!currentCardMenuState) return;
-  const { instanceId, zoneId } = currentCardMenuState;
-  let arr = getZoneArray(zoneId);
-  if (arr) {
-    const cardObj = arr.find(card => card.instanceId === instanceId);
-    if (cardObj) {
-      const card = dummyCards.find(c => c.id === cardObj.cardId);
-      if (card) {
-        modal.style.display = "block";
-        modalImg.src = card.image;
-      }
-    }
-  }
-  document.getElementById('card-action-menu').style.display = 'none';
-};
-
-document.body.addEventListener('click', function() {
-  document.getElementById('hand-card-menu').style.display = 'none';
-});
-document.getElementById('hand-card-menu').onclick = function(e) {
-  e.stopPropagation(); // Don't hide when clicking inside menu
-};
 // FILTER COLOR EVENTS
   document.getElementById('filter-color').addEventListener('change', (e) => {
     const color = e.target.value.toLowerCase();
@@ -1473,20 +1399,6 @@ deckActionsMenu.querySelector('#deck-search-btn').onclick = function() {
 
 // Actions in zones
 var currentCardMenuState = null;
-// Global click handlers
-if (!window.voidMenuGlobalClickHandlerAdded) {
-  document.body.addEventListener('click', function() {
-    document.querySelectorAll('#void-card-list .void-dropdown').forEach(m => m.style.display = 'none');
-  });
-  window.voidMenuGlobalClickHandlerAdded = true;
-}
-if (!window.cardMenuGlobalClickHandlerAdded) {
-  document.body.addEventListener('click', function() {
-    const menu = document.getElementById('card-action-menu');
-    if (menu && menu.style.display === "block") menu.style.display = "none";
-  });
-  window.cardMenuGlobalClickHandlerAdded = true;
-}
 
 function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
   const menu = document.getElementById('card-action-menu');
@@ -1697,7 +1609,6 @@ function showVoidModal() {
   modal.style.display = 'block';
 }
 document.body.addEventListener('click', function(e) {
-  document.querySelectorAll('#void-card-list .void-dropdown').forEach(m => m.style.display = 'none');
 });
 // Void Modal
 const voidModal = document.getElementById('void-modal');
