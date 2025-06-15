@@ -949,6 +949,7 @@ function renderCardOnField(cardObj, zoneId) {
   const cardDiv = document.createElement('div');
   cardDiv.className = 'card on-field';
   cardDiv.dataset.instanceId = cardObj.instanceId;
+  cardDiv.style.position = 'relative';
 
   // Add card image
   const cardData = dummyCards.find(c => c.id === cardObj.cardId);
@@ -1069,11 +1070,20 @@ function renderCardOnField(cardObj, zoneId) {
 
   // HP BADGE
   const hpBadge = document.createElement('span');
-  hpBadge.className = 'hp-badge';
-  hpBadge.textContent = `(${cardObj.currentHP})`;
+  hpBadge.className = 'hp-badge-heart';
+  hpBadge.innerHTML = `<svg viewBox="0 0 20 20" class="heart-icon"><path d="M10 18s-7-4.35-7-9.35C3 5.08 5.08 3 7.35 3A4.09 4.09 0 0 1 10 5.09 4.09 4.09 0 0 1 12.65 3C14.92 3 17 5.08 17 8.65 17 13.65 10 18 10 18z" fill="#e25555"/></svg> <span>${cardObj.currentHP}</span>`;
   cardDiv.appendChild(hpBadge);
 
-  // HP Bar
+  // Return a wrapper with cardDiv + hp bar below
+  const wrapper = document.createElement('div');
+  wrapper.className = 'card-on-field-wrapper';
+  wrapper.style.display = 'flex';
+  wrapper.style.flexDirection = 'column';
+  wrapper.style.alignItems = 'center';
+
+  wrapper.appendChild(cardDiv);
+
+  // HP Bar just below the card
   const barWrap = document.createElement('div');
   barWrap.className = 'hp-bar-wrap';
   const bar = document.createElement('div');
@@ -1081,14 +1091,14 @@ function renderCardOnField(cardObj, zoneId) {
   bar.style.width = `${Math.round(hpPercent * 100)}%`;
   bar.style.backgroundColor = barColor;
   barWrap.appendChild(bar);
-  cardDiv.appendChild(barWrap);
+  wrapper.appendChild(barWrap);;
   
   // MANUAL HP UPDATE
   cardDiv.onclick = function(e) {
     e.stopPropagation();
     showCardActionMenu(cardObj.instanceId, zoneId, cardObj.orientation || "vertical", cardDiv);
   };
-  return cardDiv;
+  return wrapper;
 }
 // ==========================
 // === EVENT LISTENERS ===
