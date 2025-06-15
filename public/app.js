@@ -984,9 +984,9 @@ function renderCardOnField(cardObj, zoneId) {
     // Detach action
     menu.querySelector('.attachment-detach').onclick = (ev) => {
       ev.stopPropagation();
-      // Remove from attachments and add to hand (or void if you want)
+      // Remove from attachments and add to void
       cardObj.attachedCards.splice(i, 1);
-      gameState.playerHand.push(attachObj);
+      gameState.playerVoid.push(attachObj);
       renderGameState();
       setupDropZones();
       menu.remove();
@@ -1178,9 +1178,18 @@ function moveCard(instanceId, fromArr, toArr, extra = {}) {
     // If card has attachments and is leaving the field, detach them
     if (cardObj.attachedCards && cardObj.attachedCards.length > 0) {
       // Decide where to put them: to hand, toArr, or to void?
-      // This example sends all attachments to the player's hand:
+      let zoneName = getZoneNameForArray(toArr);
+      let destinationArr = null;
+      if (zoneName === 'playerHand') {
+        destinationArr = gameState.playerHand;
+      } else if (zoneName === 'playerVoid') {
+        destinationArr = gameState.playerVoid;
+      } else {
+        // Default: send to void
+        destinationArr = gameState.playerVoid;
+      }
       cardObj.attachedCards.forEach(att => {
-        gameState.playerHand.push(att);
+        destinationArr.push(att);
       });
       cardObj.attachedCards = []; // clear attachments
     }
