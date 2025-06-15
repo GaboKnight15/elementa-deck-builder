@@ -1395,19 +1395,16 @@ deckActionsMenu.querySelector('#deck-draw-btn').onclick = function() {
   if (gameState.turn === "player" && gameState.playerDeck.length > 0) {
     drawCards("player", 1);
   }
-  deckActionsMenu.style.display = "none";
 };
 deckActionsMenu.querySelector('#deck-shuffle-btn').onclick = function() {
   gameState.playerDeck = shuffle(gameState.playerDeck);
   renderGameState();
   setupDropZones();
-  deckActionsMenu.style.display = "none";
 };
 deckActionsMenu.querySelector('#deck-search-btn').onclick = function() {
   if (gameState.playerDeck.length > 0) {
     openDeckSearchModal();
   }
-  deckActionsMenu.style.display = "none";
 };
 
 // Actions in zones
