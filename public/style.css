@@ -655,10 +655,10 @@ body.deck-open .container {
   z-index: 5;
 }
 .attached-on-top {
-  box-shadow: 0 2px 8px #0004;
-  border: 2px solid #666;
+  box-shadow: none !important;
+  border: none !important;
   border-radius: 8px;
-  background: #222;
+  background: transparent !important;
   opacity: 0.94;
   pointer-events: auto;
   cursor: pointer;
