@@ -893,6 +893,7 @@ function showFullCardModal(cardObj) {
   if (!card) return;
   const modal = document.getElementById('image-modal');
   const modalContent = document.getElementById('modal-img-content');
+  const modalImg = document.getElementById('modal-img');
   if (modalContent) {
     modalContent.innerHTML = `
       <img src="${card.image}" alt="${card.name}" style="max-width:350px;display:block;margin:auto;border-radius:10px;">
@@ -910,12 +911,18 @@ function showFullCardModal(cardObj) {
         ${card.text || ''}
       </div>
     `;
-    modal.style.display = 'block';
+    modal.style.display = 'flex';
+    if (modalImg) modalImg.style.display = "none";
   } else {
     modalImg.src = card.image;
-    modal.style.display = "block";
+    modalImg.style.display = "block";
+    modal.style.display = "flex";
   }
 }
+// IMAGE MODAL CLOSE LOGIC
+document.querySelector('.close').onclick = () => {
+  document.getElementById('image-modal').style.display = "none";
+};
 // CARD STATS DETECTION
 function getBaseHp(cardId) {
   const card = dummyCards.find(c => c.id === cardId);
