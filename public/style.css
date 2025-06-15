@@ -724,92 +724,42 @@ body.deck-open .container {
 }
 
 
-/* ==== Base for all field cards by color ==== */
-
-/* RED - Fire / Flame Glow */
-#player-creatures-zone .card.red-card,
-#opponent-creatures-zone .card.red-card {
+.card.red-card {
   position: relative;
   animation: flameGlow 1.5s infinite alternate;
 }
-@keyframes flameGlow {
-  from { box-shadow: 0 0 10px 3px rgba(255, 60, 0, 0.5); }
-  to   { box-shadow: 0 0 25px 8px rgba(255, 100, 0, 0.9); }
-}
 
-/* GREEN - Leaves / Nature Particles */
-#player-creatures-zone .card.green-card,
-#opponent-creatures-zone .card.green-card {
+.card.green-card {
   position: relative;
   animation: leafGlow 2s infinite alternate;
 }
-@keyframes leafGlow {
-  from { box-shadow: 0 0 10px 3px rgba(60, 255, 60, 0.4); }
-  to   { box-shadow: 0 0 20px 6px rgba(100, 255, 100, 0.7); }
-}
 
-/* BLUE - Water Bubble Effect */
-#player-creatures-zone .card.blue-card,
-#opponent-creatures-zone .card.blue-card {
+.card.blue-card {
   position: relative;
   animation: waterGlow 2s infinite alternate;
 }
-@keyframes waterGlow {
-  from { box-shadow: 0 0 12px 4px rgba(0, 150, 255, 0.4); }
-  to   { box-shadow: 0 0 22px 6px rgba(0, 200, 255, 0.8); }
-}
 
-/* YELLOW - Electric Sparks */
-#player-creatures-zone .card.yellow-card,
-#opponent-creatures-zone .card.yellow-card {
+.card.yellow-card {
   position: relative;
   animation: electricGlow 1.2s infinite alternate;
 }
-@keyframes electricGlow {
-  from { box-shadow: 0 0 15px 5px rgba(255, 255, 60, 0.4); }
-  to   { box-shadow: 0 0 25px 8px rgba(255, 255, 120, 0.9); }
-}
 
-/* PURPLE - Poison Bubbles */
-#player-creatures-zone .card.purple-card,
-#opponent-creatures-zone .card.purple-card {
+.card.purple-card {
   position: relative;
   animation: poisonGlow 2s infinite alternate;
 }
-@keyframes poisonGlow {
-  from { box-shadow: 0 0 12px 4px rgba(200, 60, 255, 0.4); }
-  to   { box-shadow: 0 0 22px 7px rgba(220, 100, 255, 0.8); }
-}
 
-/* GRAY - Earth Rocks */
-#player-creatures-zone .card.gray-card,
-#opponent-creatures-zone .card.gray-card {
+.card.gray-card {
   position: relative;
   animation: earthGlow 2.5s infinite alternate;
 }
-@keyframes earthGlow {
-  from { box-shadow: 0 0 8px 3px rgba(150, 150, 150, 0.4); }
-  to   { box-shadow: 0 0 16px 6px rgba(180, 180, 180, 0.8); }
-}
 
-/* BLACK - Darkness Shadow Aura */
-#player-creatures-zone .card.black-card,
-#opponent-creatures-zone .card.black-card {
+.card.black-card {
   position: relative;
   animation: darkGlow 2.5s infinite alternate;
 }
-@keyframes darkGlow {
-  from { box-shadow: 0 0 10px 4px rgba(0, 0, 0, 0.6); }
-  to   { box-shadow: 0 0 20px 8px rgba(50, 0, 50, 0.9); }
-}
 
-/* WHITE - Holy Light */
-#player-creatures-zone .card.white-card,
-#opponent-creatures-zone .card.white-card {
+.card.white-card {
   position: relative;
   animation: lightGlow 1.8s infinite alternate;
-}
-@keyframes lightGlow {
-  from { box-shadow: 0 0 12px 5px rgba(255, 255, 255, 0.6); }
-  to   { box-shadow: 0 0 24px 10px rgba(255, 255, 255, 0.9); }
 }
