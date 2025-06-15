@@ -955,6 +955,53 @@ function renderCardOnField(cardObj, zoneId) {
       attDiv.style.pointerEvents = 'auto'; // allow tooltip/interaction if desired
       attDiv.title = attachData.name;
 
+  // ATTACHMENT MENU
+  attDiv.onclick = (e) => {
+    e.stopPropagation();
+    // Remove any open menus first
+    document.querySelectorAll('.attachment-menu').forEach(m => m.remove());
+    // Create menu
+    const menu = document.createElement('div');
+    menu.className = 'attachment-menu';
+    menu.style.position = 'absolute';
+    menu.style.top = '0';
+    menu.style.left = '70px';
+    menu.style.background = '#fff';
+    menu.style.border = '1px solid #666';
+    menu.style.borderRadius = '8px';
+    menu.style.zIndex = 20;
+    menu.style.padding = '4px';
+    menu.innerHTML = `
+      <button class="attachment-view">View</button>
+      <button class="attachment-detach">Detach</button>
+    `;
+    // View action
+    menu.querySelector('.attachment-view').onclick = (ev) => {
+      ev.stopPropagation();
+      showFullCardModal(attachObj);
+      menu.remove();
+    };
+    // Detach action
+    menu.querySelector('.attachment-detach').onclick = (ev) => {
+      ev.stopPropagation();
+      // Remove from attachments and add to hand (or void if you want)
+      cardObj.attachedCards.splice(i, 1);
+      gameState.playerHand.push(attachObj);
+      renderGameState();
+      setupDropZones();
+      menu.remove();
+    };
+    attDiv.appendChild(menu);
+
+    // Hide menu if click elsewhere
+    setTimeout(() => {
+      document.body.addEventListener('click', function handler() {
+        menu.remove();
+        document.body.removeEventListener('click', handler);
+      }, { once: true });
+    }, 10);
+  };
+
       const img = document.createElement('img');
       img.src = attachData.image;
       img.alt = attachData.name;
@@ -1127,6 +1174,16 @@ function moveCard(instanceId, fromArr, toArr, extra = {}) {
   const idx = fromArr.findIndex(card => card.instanceId === instanceId);
   if (idx !== -1) {
     let cardObj = { ...fromArr[idx], ...extra };
+
+    // If card has attachments and is leaving the field, detach them
+    if (cardObj.attachedCards && cardObj.attachedCards.length > 0) {
+      // Decide where to put them: to hand, toArr, or to void?
+      // This example sends all attachments to the player's hand:
+      cardObj.attachedCards.forEach(att => {
+        gameState.playerHand.push(att);
+      });
+      cardObj.attachedCards = []; // clear attachments
+    }
 
     // Define which arrays are the field zones (battlefield)
     const fieldArrays = [
