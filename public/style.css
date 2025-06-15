@@ -632,8 +632,9 @@ body.deck-open .container {
   opacity: 0.8;
 }
 .card.on-field {
-  width: 90px;     /* or 100px, experiment with value */
-  height: 126px;   /* maintain the card's aspect ratio */
+  position: relative;
+  width: 90px;
+  height: 126px;
   padding: 0.2em;
   font-size: 0.9em;
 }
@@ -648,6 +649,26 @@ body.deck-open .container {
   right: 4px;
   bottom: 4px;
 }
+/* ATTACHED CARDS */
+.attached-cards-stack {
+  pointer-events: none;
+  z-index: 5;
+}
+.attached-on-top {
+  box-shadow: 0 2px 8px #0004;
+  border: 2px solid #666;
+  border-radius: 8px;
+  background: #222;
+  opacity: 0.94;
+  pointer-events: auto;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.attached-on-top:hover {
+  transform: scale(1.08) translateY(-6px);
+  z-index: 12;
+}
+
 #image-modal, .modal#image-modal {
   position: fixed;
   top: 0; left: 0;
@@ -675,6 +696,19 @@ body.deck-open .container {
   transition: transform 0.18s, box-shadow 0.18s;
 }
 .card:hover, .card-modal-dark:hover, .on-field:hover, #void-card-list .card:hover, #deck-search-content .card:hover, .hand-area .card:hover {
+  transform: scale(1.08) translateY(-10px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.22);
+  z-index: 10;
+}
+#void-card-list .card,
+#void-card-list button.card-modal-dark,
+#void-card-list button.card {
+  transition: transform 0.18s, box-shadow 0.18s;
+}
+#void-card-list .card:hover,
+#void-card-list button.card-modal-dark:hover,
+#void-card-list button.card:hover {
+  background: #1b5fd3 !important;
   transform: scale(1.08) translateY(-10px);
   box-shadow: 0 8px 24px rgba(0,0,0,0.22);
   z-index: 10;
