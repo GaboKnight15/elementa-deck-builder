@@ -331,6 +331,12 @@ function updateDeckDisplay() {
     div.setAttribute('data-rarity', card.rarity);
   }
     div.classList.add(getCardBgClass(card));
+    // Add color classes for aura effects
+    if (Array.isArray(card.color)) {
+      card.color.forEach(color => div.classList.add(color + '-card'));
+    } else if (card.color) {
+      div.classList.add(card.color + '-card');
+    }
 
     const img = document.createElement('img');
     img.src = card.image;
