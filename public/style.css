@@ -789,3 +789,33 @@ body.deck-open .container {
 .attachment-menu button:hover {
   background: #ffeeba;
 }
+
+.card-menu {
+  display: none; /* default hidden, shown via JS */
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 6px;
+  border-radius: 7px;
+  z-index: 1000;
+  background: rgba(255,255,255,0.07);
+  box-shadow: 0 2px 8px #0002;
+  border: none;
+  padding: 4px;
+  min-width: 120px;
+}
+.card-menu button {
+  width: 100%;
+  background: #257cff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 0;
+  margin: 3px 0;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.card-menu button:hover {
+  background: #1252a3;
+}
