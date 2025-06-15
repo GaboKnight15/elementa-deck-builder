@@ -1071,7 +1071,13 @@ function renderCardOnField(cardObj, zoneId) {
   // HP BADGE
   const hpBadge = document.createElement('span');
   hpBadge.className = 'hp-badge-heart';
-  hpBadge.innerHTML = `<svg viewBox="0 0 20 20" class="heart-icon"><path d="M10 18s-7-4.35-7-9.35C3 5.08 5.08 3 7.35 3A4.09 4.09 0 0 1 10 5.09 4.09 4.09 0 0 1 12.65 3C14.92 3 17 5.08 17 8.65 17 13.65 10 18 10 18z" fill="#e25555"/></svg> <span>${cardObj.currentHP}</span>`;
+  hpBadge.innerHTML = `
+    <svg viewBox="0 0 32 32" class="hp-heart-svg" width="28" height="28">
+      <path d="M16 29s-11-7-11-15C5 5.8 13 5.8 16 12.5 19 5.8 27 5.8 27 14c0 8-11 15-11 15z"
+          fill="#e25555" stroke="#be2626" stroke-width="1"/>
+      <text x="16" y="20" text-anchor="middle" font-size="14" fill="#fff" font-family="Verdana" font-weight="bold">${cardObj.currentHP}</text>
+    </svg>
+  `;
   cardDiv.appendChild(hpBadge);
 
   // Return a wrapper with cardDiv + hp bar below
