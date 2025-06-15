@@ -973,61 +973,66 @@ function renderCardOnField(cardObj, zoneId) {
     // fallback if no image
     cardDiv.textContent = cardData ? cardData.name : "Unknown";
   }
-  // Attach drop zone for artifacts (only on creatures/domains)
-  if (cardData.category === 'creature' || cardData.category === 'domain') {
-    cardDiv.ondragover = (e) => {
-      // Allow dropping artifact from hand
-      const draggedId = e.dataTransfer.getData("text/plain");
-      const draggedCard = gameState.playerHand.find(c => c.instanceId === draggedId);
-      if (draggedCard) {
-        const cardInfo = dummyCards.find(c => c.id === draggedCard.cardId);
-        if (cardInfo && cardInfo.category === 'artifact') {
-          e.preventDefault();
-          cardDiv.classList.add('drag-over');
-        }
-      }
-    };
-    cardDiv.ondragleave = () => cardDiv.classList.remove('drag-over');
-    cardDiv.ondrop = (e) => {
-      e.preventDefault();
-      cardDiv.classList.remove('drag-over');
-      const instanceId = e.dataTransfer.getData("text/plain");
-      // Find and remove artifact from hand
-      const idx = gameState.playerHand.findIndex(c => c.instanceId === instanceId);
-      if (idx !== -1) {
-        const artifactObj = gameState.playerHand.splice(idx, 1)[0];
-        if (!cardObj.attachedArtifacts) cardObj.attachedArtifacts = [];
-        cardObj.attachedArtifacts.push({ ...artifactObj, orientation: "horizontal" });
-        renderGameState();
-        setupDropZones();
-      }
-    };
+  // Allow any card to receive attachments
+cardDiv.ondragover = (e) => {
+  const draggedId = e.dataTransfer.getData("text/plain");
+  const draggedCard = gameState.playerHand.find(c => c.instanceId === draggedId);
+  if (draggedCard) {
+    e.preventDefault();
+    cardDiv.classList.add('drag-over');
   }
-  // Render attached artifacts, if any
-  if (cardObj.attachedArtifacts && cardObj.attachedArtifacts.length > 0) {
-    const artifactsRow = document.createElement('div');
-    artifactsRow.style.display = 'flex';
-    artifactsRow.style.gap = '6px';
-    artifactsRow.style.justifyContent = 'center';
-    artifactsRow.style.marginTop = '4px';
-    artifactsRow.style.marginBottom = '2px';
+};
+cardDiv.ondragleave = () => cardDiv.classList.remove('drag-over');
+cardDiv.ondrop = (e) => {
+  e.preventDefault();
+  cardDiv.classList.remove('drag-over');
+  const instanceId = e.dataTransfer.getData("text/plain");
+  const idx = gameState.playerHand.findIndex(c => c.instanceId === instanceId);
+  if (idx !== -1) {
+    const attachObj = gameState.playerHand.splice(idx, 1)[0];
+    if (!cardObj.attachedCards) cardObj.attachedCards = [];
+    cardObj.attachedCards.push({ ...attachObj });
+    renderGameState();
+    setupDropZones();
+  }
+};
+}
+// Render attached cards ON TOP, stacked with a small vertical offset
+if (cardObj.attachedCards && cardObj.attachedCards.length > 0) {
+  const stackDiv = document.createElement('div');
+  stackDiv.className = 'attached-cards-stack';
+  stackDiv.style.position = 'absolute';
+  stackDiv.style.left = '50%';
+  stackDiv.style.top = '12px'; // adjust as needed
+  stackDiv.style.transform = 'translateX(-50%)';
+  stackDiv.style.pointerEvents = 'none'; // so they don't block the parent card
+  stackDiv.style.zIndex = '5';
 
-    cardObj.attachedArtifacts.forEach(artifactObj => {
-      const artifactData = dummyCards.find(c => c.id === artifactObj.cardId);
-      if (!artifactData) return;
-      const artDiv = document.createElement('div');
-      artDiv.className = 'card artifact-attached';
-      // Render as horizontal (rotated)
-      const img = document.createElement('img');
-      img.src = artifactData.image;
-      img.alt = artifactData.name;
-      img.style.width = "50px";
-      img.style.transform = "rotate(90deg)";
-      artDiv.appendChild(img);
-      artifactsRow.appendChild(artDiv);
-    });
-    cardDiv.appendChild(artifactsRow);
-  }
+  cardObj.attachedCards.forEach((attachObj, i) => {
+    const attachData = dummyCards.find(c => c.id === attachObj.cardId);
+    if (!attachData) return;
+    const attDiv = document.createElement('div');
+    attDiv.className = 'card attached-on-top';
+    attDiv.style.width = '60px';
+    attDiv.style.height = '85px';
+    attDiv.style.position = 'absolute';
+    attDiv.style.left = '0';
+    attDiv.style.top = `${i * 16}px`; // stagger each attachment down a bit
+    attDiv.style.pointerEvents = 'auto'; // allow tooltip/interaction if desired
+    attDiv.title = attachData.name;
+
+    const img = document.createElement('img');
+    img.src = attachData.image;
+    img.alt = attachData.name;
+    img.style.width = '100%';
+    img.style.borderRadius = '8px';
+    attDiv.appendChild(img);
+
+    stackDiv.appendChild(attDiv);
+  });
+  cardDiv.style.position = 'relative';
+  cardDiv.appendChild(stackDiv);
+}
   // HP BADGE
   const hpBadge = document.createElement('span');
   hpBadge.className = 'hp-badge';
