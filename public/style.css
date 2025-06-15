@@ -868,6 +868,7 @@ body.deck-open .container {
   z-index: 9999;
   min-width: 160px;
   max-width: 240px;
+ align-items: stretch;
 }
 .card-menu button {
   background: #4285f4;
@@ -881,6 +882,8 @@ body.deck-open .container {
   width: 100%;
   font-weight: 500;
   transition: background 0.18s;
+  box-sizing: border-box;
+  display: block;
 }
 .card-menu button:hover, .card-menu button:focus {
   background: #204080;
