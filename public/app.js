@@ -659,10 +659,10 @@ function appendDeckZone(parentDiv, deckArray, who) {
   if (who === "player") {
     deckCard.onclick = (e) => {
       e.stopPropagation();
-      const rect = deckCard.getBoundingClientRect();
-      deckActionsMenu.style.top = `${rect.bottom + window.scrollY + 8}px`;
-      deckActionsMenu.style.left = `${rect.left + window.scrollX}px`;
-      deckActionsMenu.style.display = "block";
+      setTimeout(() => {
+        deckActionsMenu.style.display = "block";
+        // Also position the menu here if needed
+      }, 0);
     };
   }
 
@@ -1367,11 +1367,9 @@ phaseNameSpan.onclick = function() { nextPhaseBtn.click(); };
     }
   });
 
-document.body.addEventListener('click', function(e) {
+document.body.addEventListener('click', function() {
   let menu = document.getElementById('player-deck-actions');
-  if (menu && menu.style.display === "block") {
-    menu.style.display = "none";
-  }
+  if (menu) menu.style.display = "none";
 });
 // Create the deck actions menu ONCE
 let deckActionsMenu = document.createElement('div');
