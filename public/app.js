@@ -896,8 +896,8 @@ function showFullCardModal(cardObj) {
   const modalImg = document.getElementById('modal-img');
   if (modalContent) {
     modalContent.innerHTML = `
-      <img src="${card.image}" alt="${card.name}" style="max-width:350px;display:block;margin:auto;border-radius:10px;">
-      <h2 style="text-align:center;">${card.name}</h2>
+      <img src="${card.image}" alt="${card.name}">
+      <h2 style="text-align:center; color:white; margin-top:12px;">${card.name}</h2>
       <div style="text-align:center;">
         ${card.hp !== undefined ? `HP: ${card.hp}` : ''}
         ${card.atk !== undefined ? ` | ATK: ${card.atk}` : ''}
@@ -1373,11 +1373,6 @@ deckActionsMenu.innerHTML = `
   <button id="deck-search-btn">Search</button>
 `;
 document.body.appendChild(deckActionsMenu);
-
-// Prevent menu from closing when clicking inside it
-deckActionsMenu.onclick = function(e) {
-  e.stopPropagation();
-};
 
 // Attach event listeners ONCE
 deckActionsMenu.querySelector('#deck-draw-btn').onclick = function() {
