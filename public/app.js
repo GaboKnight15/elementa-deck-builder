@@ -1070,7 +1070,11 @@ startGameBtn.onclick = () => {
   showBattlefield();
   elementsToHide.forEach(el => el.style.display = 'none');
   battlefield.style.display = 'block';
-
+  //  ENTER LOBBY ID //
+  const idDisplay = document.getElementById('game-id-display');
+  if (idDisplay) {
+    idDisplay.textContent = gameId;
+  }
   const deckObj = getCurrentDeck();
   
   gameState.playerDeck = shuffle(buildDeck(deckObj));
