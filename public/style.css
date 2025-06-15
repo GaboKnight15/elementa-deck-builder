@@ -5,16 +5,16 @@ body {
       display: flex;
       flex-direction: column;
       align-items: center;
-      background: #181f2b !important;
-    }
-    header {
+      background: #f5f5f5;
+}
+header {
       background-color: #222;
       color: white;
       width: 100%;
       padding: 1em;
       text-align: center;
-    }
-    .container {
+}
+.container {
       max-width: 1200px;
       padding: 1em;
       padding-right: 270px;
@@ -22,9 +22,9 @@ body {
       flex-wrap: wrap;
       gap: 1em;
       justify-content: center;
-    }
+}
 .card {
-  background: none; /* or use a transparent or themed color */
+  background: none;
   border: none;
   border-radius: 12px;
   width: 170px;
