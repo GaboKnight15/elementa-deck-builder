@@ -1,21 +1,31 @@
 const socket = io();
 
-// Join a game (could be a random ID, or from a lobby)
-const gameId = prompt("Enter game ID (or share with a friend):");
-socket.emit("joinGame", gameId);
+let gameId = null;
+let myDeck = null;
 
-socket.on("startGame", (data) => {
-  console.log(data.message);
-  // Initialize your game UI here
+// Step 1: Let player pick/select deck FIRST, then prompt for gameId
+function startMultiplayerGame() {
+  // Assume myDeck is the deck object the player has built/selected
+  gameId = prompt("Enter game ID to join or create (share this with your friend):");
+  if (!gameId) return;
+  socket.emit("joinGame", gameId, myDeck);
+}
+
+socket.on("waitingForOpponent", () => {
+  alert("Waiting for opponent to join...");
 });
 
-// Send an action (e.g., play card, end turn)
+socket.on("startGame", ({ message, gameState }) => {
+  alert(message);
+  // Use gameState to set up local UI/battlefields/hands, etc.
+});
+
 function sendAction(action) {
+  // Example: { type: "playCard", cardId: "foo", ... }
   socket.emit("playerAction", { gameId, action });
 }
 
-// Receive opponent action
 socket.on("opponentAction", (action) => {
   // Apply opponent's move to your local game state/UI
-  console.log("Opponent did:", action);
+  handleOpponentAction(action);
 });
