@@ -145,7 +145,11 @@ function updateDeckDisplay() {
   setCurrentDeck(deck);
   saveDeckState();
 }
-
+function showBuilder() {
+  document.getElementById('battlefield-container').style.display = 'none';
+  document.getElementById('battlefield').style.display = 'none';
+  // Show builder-only elements, etc.
+}
 function getCardCategory(card) {
   return card.category ? card.category.toLowerCase() : '';
 }
