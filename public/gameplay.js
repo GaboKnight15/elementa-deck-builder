@@ -34,10 +34,8 @@ const PHASES = [
 const phasePlayerSpan    = document.getElementById('phase-player');
 const phaseNameSpan      = document.getElementById('phase-name');
 const nextPhaseBtn       = document.getElementById('next-phase-btn');
-const startGameBtn       = document.getElementById('start-game-btn');
 const backToBuilderBtn   = document.getElementById('back-to-builder-btn');
 const battlefield        = document.getElementById('battlefield');
-
 
 // ==========================
 // === RENDERING / UI ===
@@ -52,48 +50,7 @@ function showBuilder() {
   document.getElementById('battlefield').style.display = 'none';
   // Show builder-only elements, etc.
 }
-// START GAME LOGIC
-startGameBtn.onclick = () => {
-  showBattlefield();
-  elementsToHide.forEach(el => el.style.display = 'none');
-  battlefield.style.display = 'block';
-  const deckObj = getCurrentDeck();
-  
-  gameState.playerDeck = shuffle(buildDeck(deckObj));
-  gameState.playerHand = [];
-  gameState.playerCreatures = [];
-  gameState.playerDomains = [];
-  gameState.playerVoid = [];
 
-  gameState.opponentDeck = shuffle(buildDeck(deckObj));
-  gameState.opponentHand = [];
-  gameState.opponentCreatures = [];
-  gameState.opponentDomains = [];
-  gameState.opponentVoid = [];
-  renderGameState();
-  setupDropZones();
-
-  // GAMEPLAY LOGIC //
-  // SET-UP DRAG AND DROP EXCEPT VOIDE
-['player-creatures-zone', 'player-domains-zone'].forEach(zoneId => {
-  const zone = document.getElementById(zoneId);
-  if (!zone) return;
-  zone.ondragover = (e) => {
-    e.preventDefault();
-    zone.classList.add('drag-over');
-  };
-  zone.ondragleave = () => zone.classList.remove('drag-over');
-  zone.ondrop = (e) => {
-    e.preventDefault();
-    zone.classList.remove('drag-over');
-    const instanceId = e.dataTransfer.getData('text/plain');
-    let targetArr = zoneId === "player-creatures-zone" ? gameState.playerCreatures : gameState.playerDomains;
-    moveCard(instanceId, gameState.playerHand, targetArr, {orientation: "vertical"});
-    renderGameState();
-    setupDropZones();
-  };
-});
-   };
 backToBuilderBtn.onclick = () => {
   showBuilder();
   elementsToHide.forEach(el => el.style.display = '');
@@ -271,17 +228,6 @@ function shuffle(array) {
   }
   return array;
 }
-
-  function canAddCard(card) {
-    const deck = getCurrentDeck();
-    const count = deck[card.id] || 0;
-    const total = Object.values(deck).reduce((a, b) => a + b, 0);
-    if (total >= 50) return false;
-    if (card.rarity && card.rarity.toLowerCase() === 'legendary' && count >= 1) return false;
-    if (card.rarity && card.rarity.toLowerCase() === 'rare' && count >= 2) return false;
-    if (card.rarity && card.rarity.toLowerCase() === 'common' && count >= 3) return false;
-    return true;
-  }
 
 function drawCards(who, n) {
   let deck = who === "player" ? gameState.playerDeck : gameState.opponentDeck;
