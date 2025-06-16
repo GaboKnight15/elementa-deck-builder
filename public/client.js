@@ -82,7 +82,9 @@ socket.on('sync deck', (deckObj) => {
   status.textContent = "Deck received! Starting game...";
   startGameWithSyncedDeck(deckObj);
 });
-
+socket.on('game action', (action) => {
+  handleOpponentAction(action); // This is defined in gameplay.js
+});
 // Example function
 function startGameWithSyncedDeck(deckObj) {
   // Initialize your game state and UI here using deckObj
