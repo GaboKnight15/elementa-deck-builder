@@ -817,6 +817,22 @@ function renderCardOnField(cardObj, zoneId) {
   };
   return wrapper;
 }
+// Create the deck actions menu ONCE
+let deckActionsMenu = document.createElement('div');
+deckActionsMenu.id = 'player-deck-actions';
+deckActionsMenu.style.display = 'none';
+deckActionsMenu.style.position = 'absolute';
+deckActionsMenu.style.background = 'white';
+deckActionsMenu.style.border = '1px solid #aaa';
+deckActionsMenu.style.borderRadius = '7px';
+deckActionsMenu.style.zIndex = '999';
+deckActionsMenu.style.padding = '8px';
+deckActionsMenu.innerHTML = `
+  <button id="deck-draw-btn">Draw</button>
+  <button id="deck-shuffle-btn">Shuffle</button>
+  <button id="deck-search-btn">Search</button>
+`;
+document.body.appendChild(deckActionsMenu);
 // Attach event listeners ONCE
 deckActionsMenu.querySelector('#deck-draw-btn').onclick = function() {
   if (gameState.turn === "player" && gameState.playerDeck.length > 0) {
@@ -838,22 +854,6 @@ document.body.addEventListener('click', function() {
   let menu = document.getElementById('player-deck-actions');
   if (menu) menu.style.display = "none";
 });
-// Create the deck actions menu ONCE
-let deckActionsMenu = document.createElement('div');
-deckActionsMenu.id = 'player-deck-actions';
-deckActionsMenu.style.display = 'none';
-deckActionsMenu.style.position = 'absolute';
-deckActionsMenu.style.background = 'white';
-deckActionsMenu.style.border = '1px solid #aaa';
-deckActionsMenu.style.borderRadius = '7px';
-deckActionsMenu.style.zIndex = '999';
-deckActionsMenu.style.padding = '8px';
-deckActionsMenu.innerHTML = `
-  <button id="deck-draw-btn">Draw</button>
-  <button id="deck-shuffle-btn">Shuffle</button>
-  <button id="deck-search-btn">Search</button>
-`;
-document.body.appendChild(deckActionsMenu);
 
 // Actions in zones
 var currentCardMenuState = null;
