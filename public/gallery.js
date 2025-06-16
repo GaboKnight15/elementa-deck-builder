@@ -162,6 +162,16 @@ function buildDeck(deckObj) {
   }
   return deck;
 }
+function canAddCard(card) {
+    const deck = getCurrentDeck();
+    const count = deck[card.id] || 0;
+    const total = Object.values(deck).reduce((a, b) => a + b, 0);
+    if (total >= 50) return false;
+    if (card.rarity && card.rarity.toLowerCase() === 'legendary' && count >= 1) return false;
+    if (card.rarity && card.rarity.toLowerCase() === 'rare' && count >= 2) return false;
+    if (card.rarity && card.rarity.toLowerCase() === 'common' && count >= 3) return false;
+    return true;
+}
 function renderGallery() {
     gallery.innerHTML = '';
     const selectedColor = document.getElementById('filter-color').value.toLowerCase();
