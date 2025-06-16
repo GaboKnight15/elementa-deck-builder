@@ -1123,6 +1123,48 @@ function startGameWithSyncedDeck(deckObj) {
 }
 window.startGameWithSyncedDeck = startGameWithSyncedDeck; // Expose globally if needed
 
+function handleOpponentAction(action) {
+  switch (action.type) {
+    case "play_card":
+      // Example: action = { type: "play_card", cardId: "...", zone: "creatures" }
+      // Move the card from opponent's hand to the correct zone
+      moveCard(action.cardId, gameState.opponentHand, gameState.opponentCreatures, { orientation: "vertical" });
+      renderGameState();
+      break;
+
+    case "end_turn":
+      // Opponent ended their turn
+      gameState.isPlayerTurn = true;
+      renderGameState();
+      showStatusMessage("Your turn!");
+      break;
+
+    case "draw_card":
+      // Opponent drew a card
+      if (gameState.opponentDeck.length > 0) {
+        const card = gameState.opponentDeck.pop();
+        gameState.opponentHand.push(card);
+        renderGameState();
+      }
+      break;
+
+    case "chat":
+      // If you want to display chat messages inside gameplay
+      appendChatMessage(`Opponent: ${action.message}`);
+      break;
+
+    case "custom_action":
+      // Custom logic for any other action type
+      // Implement your specific logic here
+      break;
+
+    default:
+      console.warn("Unknown opponent action:", action);
+  }
+}
+
+// Make available globally if called from client.js:
+window.handleOpponentAction = handleOpponentAction;
 // ==========================
 // === INITIALIZATION ===
 // ==========================
