@@ -6,7 +6,20 @@ const createBtn = document.getElementById('create-btn');
 const joinBtn = document.getElementById('join-btn');
 const roomInput = document.getElementById('room-code-input');
 const status = document.getElementById('status');
+const startGameBtn = document.getElementById('start-game-btn');
+const lobbyUI = document.getElementById('lobby-ui');
+const chatUI = document.getElementById('chat-ui');
 
+// Only show lobby UI after Start Game is clicked
+startGameBtn.onclick = () => {
+  lobbyUI.style.display = 'block';
+  // Optionally hide the gallery or keep it visible as needed
+};
+
+// After both players are synced (e.g., in socket.on('sync deck')):
+chatUI.style.display = 'block';
+lobbyUI.style.display = 'none';
+// Optionally hide the gallery or show gameplay UI
 // Utility to generate random room code
 function generateRoomId() {
   return Math.random().toString(36).substr(2, 6);
@@ -71,12 +84,7 @@ function appendChatMessage(msg) {
   chatLog.appendChild(div);
   chatLog.scrollTop = chatLog.scrollHeight;
 }
-socket.on('opponent joined', (opponentSocketId) => {
-  status.textContent = "Opponent joined! Syncing deck...";
-  // Choose one player to send deck (e.g., first to join)
-  // For demo, always send deck when opponent joins:
-  socket.emit('sync deck', currentRoomId, getCurrentDeck()); // getCurrentDeck() must return your deck object
-});
+
 socket.on('sync deck', (deckObj) => {
   // Use deckObj to initialize your game state
   status.textContent = "Deck received! Starting game...";
