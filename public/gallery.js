@@ -203,7 +203,48 @@ function renderGallery() {
       gallery.appendChild(createCardDiv(card));
     });
   }
+// START GAME LOGIC
+startGameBtn.onclick = () => {
+  showBattlefield();
+  elementsToHide.forEach(el => el.style.display = 'none');
+  battlefield.style.display = 'block';
+  const deckObj = getCurrentDeck();
+  
+  gameState.playerDeck = shuffle(buildDeck(deckObj));
+  gameState.playerHand = [];
+  gameState.playerCreatures = [];
+  gameState.playerDomains = [];
+  gameState.playerVoid = [];
 
+  gameState.opponentDeck = shuffle(buildDeck(deckObj));
+  gameState.opponentHand = [];
+  gameState.opponentCreatures = [];
+  gameState.opponentDomains = [];
+  gameState.opponentVoid = [];
+  renderGameState();
+  setupDropZones();
+
+  // GAMEPLAY LOGIC //
+  // SET-UP DRAG AND DROP EXCEPT VOIDE
+['player-creatures-zone', 'player-domains-zone'].forEach(zoneId => {
+  const zone = document.getElementById(zoneId);
+  if (!zone) return;
+  zone.ondragover = (e) => {
+    e.preventDefault();
+    zone.classList.add('drag-over');
+  };
+  zone.ondragleave = () => zone.classList.remove('drag-over');
+  zone.ondrop = (e) => {
+    e.preventDefault();
+    zone.classList.remove('drag-over');
+    const instanceId = e.dataTransfer.getData('text/plain');
+    let targetArr = zoneId === "player-creatures-zone" ? gameState.playerCreatures : gameState.playerDomains;
+    moveCard(instanceId, gameState.playerHand, targetArr, {orientation: "vertical"});
+    renderGameState();
+    setupDropZones();
+    };
+  });
+};
 // ==========================
 // === EVENT LISTENERS ===
 // ==========================
