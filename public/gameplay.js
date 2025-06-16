@@ -37,6 +37,8 @@ const nextPhaseBtn       = document.getElementById('next-phase-btn');
 const startGameBtn       = document.getElementById('start-game-btn');
 const backToBuilderBtn   = document.getElementById('back-to-builder-btn');
 const battlefield        = document.getElementById('battlefield');
+const deckActionsMenu    = document.getElementById('deck-actions-menu');
+
 
 // ==========================
 // === RENDERING / UI ===
