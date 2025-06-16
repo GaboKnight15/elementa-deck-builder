@@ -26,6 +26,7 @@ const modal              = document.getElementById('image-modal');
 const modalImg           = document.getElementById('modal-img');
 const closeBtn           = document.querySelector('.close');
 const toggleBtn          = document.getElementById('toggle-deck-btn');
+const startGameBtn       = document.getElementById('start-game-btn');
 const deckPanel          = document.querySelector('.deck');
 const elementsToHide = [
     document.getElementById('deck-slot-selector'),
