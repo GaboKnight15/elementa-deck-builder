@@ -1111,6 +1111,18 @@ nextPhaseBtn.onclick = () => {
 };
 phaseNameSpan.onclick = function() { nextPhaseBtn.click(); };
 
+// MULTIPLAYER START
+function startGameWithSyncedDeck(deckObj) {
+  // Set up the game state using deckObj
+  // Example:
+  gameState.playerDeck = shuffle(buildDeck(deckObj));
+  // ...initialize playerHand, opponentHand, etc.
+  // Render the game UI
+  renderGameState();
+  // Any other setup needed
+}
+window.startGameWithSyncedDeck = startGameWithSyncedDeck; // Expose globally if needed
+
 // ==========================
 // === INITIALIZATION ===
 // ==========================
