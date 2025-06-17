@@ -54,6 +54,10 @@ createBtn.onclick = () => {
   submitDeckToServer();
 };
 
+startGameBtn.onclick = () => {
+  if (typeof showBattlefield === "function") showBattlefield();
+  showLobbyUI();
+};
 joinBtn.onclick = () => {
   const roomId = roomInput.value.trim();
   if (!roomId) return alert('Enter a room code!');
