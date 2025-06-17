@@ -35,11 +35,6 @@ function hideLobbyAndChat() {
 // Initially hide lobby/chat (only appear in gameplay)
 hideLobbyAndChat();
 
-// Show lobby when player clicks "Start Game" (from gameplay section only)
-startGameBtn.onclick = () => {
-  showLobbyUI();
-};
-
 // Utility to generate random room code
 function generateRoomId() {
   return Math.random().toString(36).substr(2, 6);
@@ -56,8 +51,13 @@ createBtn.onclick = () => {
 
 startGameBtn.onclick = () => {
   if (typeof showBattlefield === "function") showBattlefield();
+  // If not in multiplayer lobby, start solo playtest
+  if (!currentRoomId && typeof startSoloGameWithCurrentDeck === "function") {
+    startSoloGameWithCurrentDeck();
+  }
   showLobbyUI();
 };
+
 joinBtn.onclick = () => {
   const roomId = roomInput.value.trim();
   if (!roomId) return alert('Enter a room code!');
@@ -124,6 +124,12 @@ function appendChatMessage(msg) {
   chatLog.appendChild(div);
   chatLog.scrollTop = chatLog.scrollHeight;
 }
+
+// After both players have chosen/joined a room and decks are exchanged:
+socket.on('sync deck', (deckObj) => {
+  // For your own player:
+  startGameWithSyncedDeck(deckObj);
+});
 
 // --- Game Actions Sync ---
 socket.on('game action', (action) => {
