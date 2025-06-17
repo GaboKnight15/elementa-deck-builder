@@ -330,6 +330,19 @@ header {
 .second-hand-area {
   margin-top: 10px;
 }
+.deck-search-card-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+.deck-search-card-img {
+  max-width: 80px;
+  max-height: 110px;
+  margin-bottom: 6px;
+  border-radius: 5px;
+  display: block;
+}
 #player-deck-actions button {
   display: block;
   width: 100%;
@@ -436,7 +449,8 @@ body.deck-open .container {
     margin-right: 0;
   }
 }
-/* Void Style */
+
+/* VOID STYLE */
 .zone.void {
   background: #222; /* example, dark background for discard */
   display: flex;
@@ -463,6 +477,19 @@ body.deck-open .container {
 }
 .void-btn:hover {
   background: #7e469a;
+}
+.void-card-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+.void-card-img {
+  max-width: 80px;
+  max-height: 110px;
+  margin-bottom: 6px;
+  border-radius: 5px;
+  display: block;
 }
 .modal-overlay {
   position: fixed;
