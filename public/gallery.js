@@ -176,6 +176,79 @@ function canAddCard(card) {
     if (card.rarity && card.rarity.toLowerCase() === 'common' && count >= 3) return false;
     return true;
 }
+function renderDeckList(deck, deckContainer) {
+  deckContainer.innerHTML = '';
+  // Group cards by type or whatever logic you have
+  for (const [type, cards] of Object.entries(deck.categories)) {
+    const section = document.createElement('div');
+    section.innerHTML = `<strong>${type}</strong>`;
+    for (const cardObj of cards) {
+      const cardDiv = document.createElement('div');
+      cardDiv.className = 'deck-list-card-row';
+      // Card image
+      const img = document.createElement('img');
+      img.src = cardObj.image;
+      img.className = 'deck-list-thumb';
+      cardDiv.appendChild(img);
+      // Name and count
+      const nameSpan = document.createElement('span');
+      nameSpan.textContent = `${cardObj.name} ×${cardObj.count}`;
+      cardDiv.appendChild(nameSpan);
+
+      // Add "+" button
+      const plusBtn = document.createElement('button');
+      plusBtn.textContent = '+';
+      plusBtn.className = 'deck-add-btn';
+      plusBtn.onclick = (e) => {
+        e.stopPropagation();
+        addCardToDeck(cardObj.id); // Your add logic
+        renderDeckList(deck, deckContainer);
+      };
+      cardDiv.appendChild(plusBtn);
+
+      // Remove "-" button (existing)
+      const minusBtn = document.createElement('button');
+      minusBtn.textContent = '–';
+      minusBtn.className = 'deck-remove-btn';
+      minusBtn.onclick = (e) => {
+        e.stopPropagation();
+        removeCardFromDeck(cardObj.id); // Your remove logic
+        renderDeckList(deck, deckContainer);
+      };
+      cardDiv.appendChild(minusBtn);
+
+      // Context menu (like void)
+      cardDiv.onclick = (e) => {
+        e.stopPropagation();
+        // Remove any other menus
+        document.querySelectorAll('.card-menu').forEach(m => m.remove());
+
+        const buttons = [
+          {
+            text: "View",
+            onClick: function(ev) {
+              ev.stopPropagation();
+              showFullCardModal(cardObj);
+              this.closest('.card-menu').remove();
+            }
+          },
+        ];
+        const menu = createCardMenu(buttons);
+        menu.style.display = 'flex';
+        cardDiv.appendChild(menu);
+
+        setTimeout(() => {
+          document.body.addEventListener('click', function handler() {
+            menu.remove();
+            document.body.removeEventListener('click', handler);
+          }, { once: true });
+        }, 10);
+      };
+
+      deckContainer.appendChild(cardDiv);
+    }
+  }
+}
 function renderGallery() {
     gallery.innerHTML = '';
     const selectedColor = document.getElementById('filter-color').value.toLowerCase();
