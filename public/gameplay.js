@@ -77,31 +77,6 @@ function getZoneArray(zoneId) {
     default: return null;
   }
 }
-// DECK SELECTION FOR GAMEPLAY //
-function showDeckSelectionMenu() {
-  // Create/select modal
-  const modal = document.getElementById('deck-selection-modal');
-  modal.innerHTML = `
-    <h3>Select a Deck</h3>
-    <ul id="deck-list-modal">
-      ${deckSlots.map(ds => `<li class="deck-slot-item" data-deck="${ds}">${ds}</li>`).join('')}
-    </ul>
-    <button id="cancel-deck-select">Cancel</button>
-  `;
-  modal.style.display = 'block';
-  document.querySelectorAll('.deck-slot-item').forEach(el => {
-    el.onclick = () => {
-      currentDeckSlot = el.dataset.deck;
-      saveDeckState();
-      modal.style.display = 'none';
-      // Now start the game with selected deck
-      actuallyStartGame();
-    };
-  });
-  document.getElementById('cancel-deck-select').onclick = () => {
-    modal.style.display = 'none';
-  }
-}
 // MOVE OBJECT
 function moveCard(instanceId, fromArr, toArr, extra = {}) {
   const idx = fromArr.findIndex(card => card.instanceId === instanceId);
@@ -366,32 +341,71 @@ function appendDeckZone(parentDiv, deckArray, who) {
   countDiv.textContent = deckArray.length;
   deckCard.appendChild(countDiv);
   deckZone.appendChild(deckCard);
-
-  // Deck menu for player
+// DECK MENU
   if (who === "player") {
   deckCard.onclick = (e) => {
     e.stopPropagation();
-    // Toggle menu
-    if (deckActionsMenu.style.display === "block") {
-      deckActionsMenu.style.display = "none";
-      return;
-    }
-    const rect = deckCard.getBoundingClientRect();
-    deckActionsMenu.style.top = `${rect.bottom + window.scrollY + 8}px`;
-    deckActionsMenu.style.left = `${rect.left + window.scrollX}px`;
-    deckActionsMenu.style.display = "block";
+    // Remove any other open card-menu
+    document.querySelectorAll('.card-menu').forEach(m => m.remove());
+    
+    // Define deck actions as menu buttons
+    const buttons = [
+      {
+        text: "Draw",
+        onClick: function(ev) {
+          ev.stopPropagation();
+          if (gameState.turn === "player" && gameState.playerDeck.length > 0) {
+            moveCard(gameState.playerDeck[0].instanceId, gameState.playerDeck, gameState.playerHand);
+            renderGameState();
+            setupDropZones();
+          }
+          this.closest('.card-menu').remove();
+        }
+      },
+      {
+        text: "Shuffle",
+        onClick: function(ev) {
+          ev.stopPropagation();
+          gameState.playerDeck = shuffle(gameState.playerDeck);
+          renderGameState();
+          setupDropZones();
+          this.closest('.card-menu').remove();
+        }
+      },
+      {
+        text: "Search",
+        onClick: function(ev) {
+          ev.stopPropagation();
+          if (gameState.playerDeck.length > 0) {
+            openDeckSearchModal();
+          }
+          this.closest('.card-menu').remove();
+        }
+      }
+    ];
+    // Create and show the menu
+    const menu = createCardMenu(buttons);
+    deckCard.style.position = 'relative';
+    deckCard.appendChild(menu);
+
+    // Hide menu when clicking elsewhere
+    setTimeout(() => {
+      document.body.addEventListener('click', function handler() {
+        menu.remove();
+        document.body.removeEventListener('click', handler);
+      }, { once: true });
+    }, 10);
   };
 }
-
   parentDiv.appendChild(deckZone);
 }
-
+// VOID ZONE
 function appendVoidZone(parentDiv, voidArray, who) {
   const voidZone = document.createElement('div');
   voidZone.className = 'void-zone';
   const voidCard = document.createElement('div');
   voidCard.className = 'card';
-  // Show last card image if void is not empty
+  // LAST CARD VOID
   if (voidArray.length > 0) {
     const lastCardObj = voidArray[voidArray.length - 1];
     const card = dummyCards.find(c => c.id === lastCardObj.cardId);
@@ -417,61 +431,6 @@ function appendVoidZone(parentDiv, voidArray, who) {
   };
 
   parentDiv.appendChild(voidZone);
-}
-// RENDER DECK AND VOID
-function renderDeckZone(zoneId, deckArray, who) {
-  const zoneDiv = document.getElementById(zoneId);
-  zoneDiv.innerHTML = '';
-  const deckCard = document.createElement('div');
-  deckCard.className = 'card';
-  const img = document.createElement('img');
-  img.src = "CardImages/Domains/placeholder.png";
-  img.alt = who + "'s Deck";
-  img.style.width = "60px";
-  img.style.opacity = "0.85";
-  deckCard.appendChild(img);
-
-  const countDiv = document.createElement('div');
-  countDiv.style.textAlign = 'center';
-  countDiv.style.fontWeight = 'bold';
-  countDiv.textContent = deckArray.length;
-  deckCard.appendChild(countDiv);
-  zoneDiv.appendChild(deckCard);
-
-  // CLICK HANDLER FOR VOID ZONE
-  if (zoneId.endsWith('void-zone')) {
-    deckCard.onclick = (e) => {
-      e.stopPropagation();
-      showVoidModal();
-      };
-    }
-}
-// PLACECARDINZONE
-function placeCardInZone(instanceId, zoneId, orientation = "vertical") {
-  // Find and remove from all zones
-  let cardObj;
-  const allRows = [
-    gameState.playerHand, gameState.playerCreatures, gameState.playerDomains, gameState.playerVoid,
-    gameState.opponentHand, gameState.opponentCreatures, gameState.opponentDomains, gameState.opponentVoid
-  ];
-  for (const arr of allRows) {
-    let idx = arr.findIndex(c => c.instanceId === instanceId);
-    if (idx !== -1) {
-      [cardObj] = arr.splice(idx, 1);
-      break;
-    }
-  }
-  if (!cardObj) return;
-  // Add to correct zone
-  if (zoneId === 'player-creatures-zone') {
-  gameState.playerCreatures.push({ ...cardObj, orientation });
-} else if (zoneId === 'player-domains-zone') {
-  gameState.playerDomains.push({ ...cardObj, orientation });
-} else if (zoneId === 'player-void-zone') {
-  gameState.playerVoid.push(cleanCard(cardObj));
-}
-  renderGameState();
-  setupDropZones();
 }
 // REMOVE STAT CHANGES
 function cleanCard(cardObj) {
@@ -653,7 +612,6 @@ function renderCardOnField(cardObj, zoneId) {
     }
     cardDiv.appendChild(img);
   } else {
-    // fallback if no image
     cardDiv.textContent = cardData ? cardData.name : "Unknown";
   }
 
@@ -681,7 +639,7 @@ function renderCardOnField(cardObj, zoneId) {
     }
   };
 
-  // Render attached cards ON TOP, stacked with a small vertical offset
+  // ATTACHED CARDS ON TOP
   if (cardObj.attachedCards && cardObj.attachedCards.length > 0) {
     const stackDiv = document.createElement('div');
     stackDiv.className = 'attached-cards-stack';
@@ -797,41 +755,6 @@ function renderCardOnField(cardObj, zoneId) {
   };
   return wrapper;
 }
-// Create the deck actions menu ONCE
-let deckActionsMenu = document.createElement('div');
-deckActionsMenu.id = 'player-deck-actions';
-deckActionsMenu.style.display = 'none';
-deckActionsMenu.style.position = 'absolute';
-deckActionsMenu.innerHTML = `
-  <button id="deck-draw-btn">Draw</button>
-  <button id="deck-shuffle-btn">Shuffle</button>
-  <button id="deck-search-btn">Search</button>
-`;
-document.body.appendChild(deckActionsMenu);
-deckActionsMenu.onclick = function(e) { e.stopPropagation(); };
-// Attach event listeners ONCE
-deckActionsMenu.querySelector('#deck-draw-btn').onclick = function() {
-  if (gameState.turn === "player" && gameState.playerDeck.length > 0) {
-    drawCards("player", 1);
-  }
-};
-deckActionsMenu.querySelector('#deck-shuffle-btn').onclick = function() {
-  gameState.playerDeck = shuffle(gameState.playerDeck);
-  renderGameState();
-  setupDropZones();
-};
-deckActionsMenu.querySelector('#deck-search-btn').onclick = function() {
-  if (gameState.playerDeck.length > 0) {
-    openDeckSearchModal();
-  }
-};
-
-document.body.addEventListener('click', function handler(e) {
-  let menu = document.getElementById('player-deck-actions');
-  if (menu && (menu.style.display === "block" || menu.style.display === "flex")) {
-    menu.style.display = "none";
-  }
-});
 
 // Actions in zones
 var currentCardMenuState = null;
@@ -1121,10 +1044,4 @@ function handleOpponentAction(action) {
 
 // Make available globally if called from client.js:
 window.handleOpponentAction = handleOpponentAction;
-// ==========================
-// === INITIALIZATION ===
-// ==========================
-updatePhaseBar();
-
-// Call this after any phase or turn change
 updatePhaseBar();
