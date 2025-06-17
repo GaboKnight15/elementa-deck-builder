@@ -11,23 +11,23 @@
     <h1>Elementa: Card Gallery & Deck Builder</h1>
     <button id="toggle-deck-btn" style="margin-left: 1em; padding: 0.4em 0.6em;">Toggle Deck</button>
     <button id="start-game-btn" style="margin:1em 0;">Start Game</button>
-    <!-- Lobby UI (initially hidden) -->
+  </header>
+<div id="battlefield-container" style="display:none;">
+  
+  <div id="battlefield">
+    <!-- LOBBY UI -->
     <div id="lobby-ui" style="display:none;">
       <button id="create-btn">Create Game</button>
       <input id="room-code-input" placeholder="Enter code to join...">
       <button id="join-btn">Join Game</button>
       <div id="status"></div>
     </div>
-    <!-- Chat UI (initially hidden) -->
+    <!-- CHAT UI -->
     <div id="chat-ui" style="display:none;">
       <input id="chat-input" placeholder="Type message...">
       <button id="send-chat-btn">Send</button>
       <div id="chat-log"></div>
     </div>
-  </header>
-<div id="battlefield-container" style="display:none;">
-  
-  <div id="battlefield">
     
     <!-- OPPONENT HAND -->
     <div class="hand-area first-hand-area" id="opponent-hand"></div>
