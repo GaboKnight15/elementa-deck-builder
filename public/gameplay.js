@@ -760,121 +760,139 @@ function renderCardOnField(cardObj, zoneId) {
 var currentCardMenuState = null;
 
 function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
-  const menu = document.getElementById('card-action-menu');
+  // Remove any existing card menus
+  document.querySelectorAll('.card-menu').forEach(m => m.remove());
+
   currentCardMenuState = { instanceId, zoneId, orientation };
-  // POSITION MENU NEAR CARD
-  const rect = cardDiv.getBoundingClientRect();
-  menu.style.top = `${rect.bottom + window.scrollY + 4}px`;
-  menu.style.left = `${rect.left + window.scrollX}px`;
-  menu.style.display = 'block';
-}
 
-// HIDE ALL MENUS
-document.body.addEventListener('click', function(e) {
-  const menu = document.getElementById('card-action-menu');
-  if (menu && menu.style.display === "block") {
-    menu.style.display = "none";
-  }
-});
-
-// PREVENT MENUS FROM CLOSING WHEN CLICK INSIDE
-document.getElementById('card-action-menu').onclick = function(e) {
-  e.stopPropagation();
-};
-document.getElementById('card-action-set-hp').onclick = function() {
-  if (!currentCardMenuState) return;
-  const { instanceId, zoneId } = currentCardMenuState;
-  let arr = getZoneArray(zoneId);
-  if (arr) {
-    let cardObj = arr.find(card => card.instanceId === instanceId);
-    if (!cardObj) return;
-    let newHp = prompt("Set HP (1-99):", cardObj.currentHP);
-    let num = parseInt(newHp, 10);
-    if (!isNaN(num) && num > 0 && num <= 99) {
-      cardObj.currentHP = num;
-      renderGameState();
-    }
-  }
-  document.getElementById('card-action-menu').style.display = 'none';
-};
-document.getElementById('card-action-return-hand').onclick = function() {
-  if (!currentCardMenuState) return;
-  const { instanceId, zoneId } = currentCardMenuState;
-  let arr = getZoneArray(zoneId);
-  if (arr) {
-    // Remove from the current zone and get the card object
-    const idx = arr.findIndex(card => card.instanceId === instanceId);
-    if (idx !== -1) {
-      const [cardObj] = arr.splice(idx, 1);
-      // Always clean stats before pushing into hand
-      gameState.playerHand.push(cleanCard(cardObj));
-    }
-  }
-  renderGameState();
-  setupDropZones();
-  document.getElementById('card-action-menu').style.display = 'none';
-};
-
-document.getElementById('card-action-orient').onclick = function() {
-  if (!currentCardMenuState) return;
-  const { instanceId, zoneId } = currentCardMenuState;
-  let arr = getZoneArray(zoneId);
-  if (arr) {
-    for (let c of arr) {
-      if (c.instanceId === instanceId) {
-      c.orientation = (c.orientation === "horizontal") ? "vertical" : "horizontal";
+  // Define menu options
+  const buttons = [
+    {
+      text: "Set HP",
+      onClick: function(e) {
+        e.stopPropagation();
+        let arr = getZoneArray(zoneId);
+        if (arr) {
+          let cardObj = arr.find(card => card.instanceId === instanceId);
+          if (!cardObj) return;
+          let newHp = prompt("Set HP (1-99):", cardObj.currentHP);
+          let num = parseInt(newHp, 10);
+          if (!isNaN(num) && num > 0 && num <= 99) {
+            cardObj.currentHP = num;
+            renderGameState();
+          }
+        }
+        this.closest('.card-menu').remove();
+      }
+    },
+    {
+      text: "Return to Hand",
+      onClick: function(e) {
+        e.stopPropagation();
+        let arr = getZoneArray(zoneId);
+        if (arr) {
+          const idx = arr.findIndex(card => card.instanceId === instanceId);
+          if (idx !== -1) {
+            const [cardObj] = arr.splice(idx, 1);
+            gameState.playerHand.push(cleanCard(cardObj));
+          }
+        }
+        renderGameState();
+        setupDropZones();
+        this.closest('.card-menu').remove();
+      }
+    },
+    {
+      text: "Orient (Tap/Untap)",
+      onClick: function(e) {
+        e.stopPropagation();
+        let arr = getZoneArray(zoneId);
+        if (arr) {
+          for (let c of arr) {
+            if (c.instanceId === instanceId) {
+              c.orientation = (c.orientation === "horizontal") ? "vertical" : "horizontal";
+            }
+          }
+        }
+        renderGameState();
+        setupDropZones();
+        this.closest('.card-menu').remove();
+      }
+    },
+    {
+      text: "Send to Void",
+      onClick: function(e) {
+        e.stopPropagation();
+        let arr = getZoneArray(zoneId);
+        if (arr) {
+          const idx = arr.findIndex(card => card.instanceId === instanceId);
+          if (idx !== -1) {
+            const [cardObj] = arr.splice(idx, 1);
+            gameState.playerVoid.push(cleanCard(cardObj));
+          }
+        }
+        renderGameState();
+        setupDropZones();
+        this.closest('.card-menu').remove();
+      }
+    },
+    {
+      text: "Send to Deck",
+      onClick: function(e) {
+        e.stopPropagation();
+        let arr = getZoneArray(zoneId);
+        if (arr) {
+          const idx = arr.findIndex(card => card.instanceId === instanceId);
+          if (idx !== -1) {
+            const [cardObj] = arr.splice(idx, 1);
+            gameState.playerDeck.push(cleanCard(cardObj));
+          }
+        }
+        renderGameState();
+        setupDropZones();
+        this.closest('.card-menu').remove();
+      }
+    },
+    {
+      text: "View",
+      onClick: function(e) {
+        e.stopPropagation();
+        let arr = getZoneArray(zoneId);
+        if (arr) {
+          const cardObj = arr.find(card => card.instanceId === instanceId);
+          if (cardObj) {
+            showFullCardModal(cardObj);
+          }
+        }
+        this.closest('.card-menu').remove();
       }
     }
-  }
-  renderGameState();
-  setupDropZones();
-  document.getElementById('card-action-menu').style.display = 'none';
-};
+  ];
 
-document.getElementById('card-action-send-void').onclick = function() {
-  if (!currentCardMenuState) return;
-  const { instanceId, zoneId } = currentCardMenuState;
-  let arr = getZoneArray(zoneId);
-  if (arr) {
-    const idx = arr.findIndex(card => card.instanceId === instanceId);
-    if (idx !== -1) {
-      const [cardObj] = arr.splice(idx, 1);
-      gameState.playerVoid.push(cleanCard(cardObj));
-    }
-  }
-  renderGameState();
-  setupDropZones();
-  document.getElementById('card-action-menu').style.display = 'none';
-};
+  // Create and show the menu
+  const menu = createCardMenu(buttons);
 
-document.getElementById('card-action-send-deck').onclick = function() {
-  if (!currentCardMenuState) return;
-  const { instanceId, zoneId } = currentCardMenuState;
-  let arr = getZoneArray(zoneId);
-  if (arr) {
-    const idx = arr.findIndex(card => card.instanceId === instanceId);
-    if (idx !== -1) {
-        const [cardObj] = arr.splice(idx, 1);
-        gameState.playerDeck.push(cleanCard(cardObj));
-    }
-  }
-  renderGameState();
-  setupDropZones();
-  document.getElementById('card-action-menu').style.display = 'none';
-};
+  // Position menu absolutely near cardDiv
+  const rect = cardDiv.getBoundingClientRect();
+  menu.style.position = 'absolute';
+  menu.style.top = `${rect.bottom + window.scrollY + 4}px`;
+  menu.style.left = `${rect.left + window.scrollX}px`;
+  menu.style.zIndex = 9999;
+  menu.style.display = 'block';
 
-document.getElementById('card-action-view').onclick = function() {
-  if (!currentCardMenuState) return;
-  const { instanceId, zoneId } = currentCardMenuState;
-  let arr = getZoneArray(zoneId);
-  if (arr) {
-    const cardObj = arr.find(card => card.instanceId === instanceId);
-    if (cardObj) {
-      showFullCardModal(cardObj);
-    }
-  }
-  document.getElementById('card-action-menu').style.display = 'none';
-};
+  document.body.appendChild(menu);
+
+  // Hide menu when clicking elsewhere
+  setTimeout(() => {
+    document.body.addEventListener('click', function handler() {
+      menu.remove();
+      document.body.removeEventListener('click', handler);
+    }, { once: true });
+  }, 10);
+
+  menu.onclick = function(e) { e.stopPropagation(); };
+}
+
 // ==== VOID MODAL CARD MENU ====
 function showVoidModal() {
   const modal = document.getElementById('void-modal');
