@@ -369,14 +369,19 @@ function appendDeckZone(parentDiv, deckArray, who) {
 
   // Deck menu for player
   if (who === "player") {
-    deckCard.onclick = (e) => {
-      e.stopPropagation();
-      const rect = deckCard.getBoundingClientRect();
-      deckActionsMenu.style.top = `${rect.bottom + window.scrollY + 8}px`;
-      deckActionsMenu.style.left = `${rect.left + window.scrollX}px`;
-      deckActionsMenu.style.display = "block";
-    };
-  }
+  deckCard.onclick = (e) => {
+    e.stopPropagation();
+    // Toggle menu
+    if (deckActionsMenu.style.display === "block") {
+      deckActionsMenu.style.display = "none";
+      return;
+    }
+    const rect = deckCard.getBoundingClientRect();
+    deckActionsMenu.style.top = `${rect.bottom + window.scrollY + 8}px`;
+    deckActionsMenu.style.left = `${rect.left + window.scrollX}px`;
+    deckActionsMenu.style.display = "block";
+  };
+}
 
   parentDiv.appendChild(deckZone);
 }
@@ -797,11 +802,6 @@ let deckActionsMenu = document.createElement('div');
 deckActionsMenu.id = 'player-deck-actions';
 deckActionsMenu.style.display = 'none';
 deckActionsMenu.style.position = 'absolute';
-deckActionsMenu.style.background = 'white';
-deckActionsMenu.style.border = '1px solid #aaa';
-deckActionsMenu.style.borderRadius = '7px';
-deckActionsMenu.style.zIndex = '999';
-deckActionsMenu.style.padding = '8px';
 deckActionsMenu.innerHTML = `
   <button id="deck-draw-btn">Draw</button>
   <button id="deck-shuffle-btn">Shuffle</button>
@@ -828,7 +828,7 @@ deckActionsMenu.querySelector('#deck-search-btn').onclick = function() {
 
 document.body.addEventListener('click', function handler(e) {
   let menu = document.getElementById('player-deck-actions');
-  if (menu && menu.style.display === "block" || menu.style.display === "flex") {
+  if (menu && (menu.style.display === "block" || menu.style.display === "flex")) {
     menu.style.display = "none";
   }
 });
