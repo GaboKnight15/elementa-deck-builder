@@ -521,7 +521,7 @@ function openDeckModal() {
     };
 
     wrapper.appendChild(btn);
-    content.appendChild(wrapper);
+    list.appendChild(wrapper);
   });
 
   modal.style.display = "block";
@@ -535,13 +535,6 @@ document.getElementById('deck-modal').onclick = (e) => {
   if (e.target.id === 'deck-modal') closeDeckModal();
 };
 
-// Void close logic
-document.getElementById('close-void-modal').onclick = function() {
-  document.getElementById('void-modal').style.display = "none";
-};
-document.getElementById('void-modal').addEventListener('click', function(event) {
-  if (event.target === this) this.style.display = 'none';
-});
 // Unified function for all "View" actions:
 function showFullCardModal(cardObj) {
   const card = dummyCards.find(c => c.id === (cardObj.cardId || cardObj.id));
@@ -900,7 +893,21 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
 
 // ==== VOID MODAL ====
 function openVoidModal() {
-  const modal = document.getElementById('void-modal');
+  let modal = document.getElementById('void-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'void-modal';
+    modal.className = 'modal';
+    const content = document.createElement('div');
+    content.className = 'modal-content';
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+
+    // Close on backdrop click
+    modal.addEventListener('click', function(event) {
+      if (event.target === modal) modal.style.display = 'none';
+    });
+  }
   let list = modal.querySelector('.modal-card-list');
   if (!list) {
     list = document.createElement('div');
@@ -980,14 +987,7 @@ function openVoidModal() {
   }
   modal.style.display = 'block';
 }
-// Void Modal
-const voidModal = document.getElementById('void-modal');
-const voidModalContent = document.getElementById('void-modal-content');
-voidModal.addEventListener('click', function(event) {
-  if (event.target === voidModal) {
-    voidModal.style.display = 'none';
-  }
-});
+
 // CLOSES VOID MODAL
 function closeVoidModal() {
   document.getElementById('void-modal').style.display = "none";
