@@ -446,8 +446,13 @@ function cleanCard(cardObj) {
 // OPEN DECK MODAL
 function openDeckModal() {
   const modal = document.getElementById('deck-modal');
-  const content = document.getElementById('modal-card-list');
-  content.innerHTML = "<h3>Select a card and choose an action</h3>";
+  let list = modal.querySelector('.modal-card-list');
+  if (!list) {
+    list = document.createElement('div');
+    list.className = 'modal-card-list';
+    modal.querySelector('.modal-content').appendChild(list);
+  }
+  list.innerHTML = "<h3>Select a card and choose an action</h3>";
 
   gameState.playerDeck.forEach((cardObj, idx) => {
     const card = dummyCards.find(c => c.id === cardObj.cardId);
@@ -896,9 +901,13 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
 // ==== VOID MODAL ====
 function openVoidModal() {
   const modal = document.getElementById('void-modal');
-  const list = document.getElementById('modal-card-list');
+  let list = modal.querySelector('.modal-card-list');
+  if (!list) {
+    list = document.createElement('div');
+    list.className = 'modal-card-list';
+    modal.querySelector('.modal-content').appendChild(list);
+  }
   list.innerHTML = '';
-
   const voidCards = gameState.playerVoid;
   if (voidCards.length === 0) {
     list.innerHTML = '<div style="color:#999;">Void is empty.</div>';
