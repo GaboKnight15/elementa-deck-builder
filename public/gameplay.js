@@ -40,6 +40,20 @@ const battlefield        = document.getElementById('battlefield');
 // ==========================
 // === RENDERING / UI ===
 // ==========================
+// Only run this from client.js after both players are ready!
+// Called when entering gameplay for solo playtest (not from sync)
+function startSoloGameWithCurrentDeck() {
+  gameState.playerDeck = shuffle(buildDeck(getCurrentDeck()));
+  gameState.playerHand = [];
+  gameState.playerCreatures = [];
+  gameState.playerDomains = [];
+  gameState.playerVoid = [];
+  // Optionally draw initial hand here
+  renderGameState();
+  setupDropZones();
+}
+window.startSoloGameWithCurrentDeck = startSoloGameWithCurrentDeck;
+
 function showBattlefield() {
   document.getElementById('battlefield-container').style.display = 'flex';
   document.getElementById('battlefield').style.display = 'block';
@@ -150,28 +164,12 @@ function getZoneNameForArray(arr) {
 // CREATE CARD MENUS
 function createCardMenu(buttons = []) {
   const menu = document.createElement('div');
-  menu.className = 'card-menu'; // ensure your CSS matches the void menu!
-  menu.style.position = 'absolute';
-  menu.style.background = '#23223a';
-  menu.style.borderRadius = '16px';
-  menu.style.padding = '18px 0 12px 0';
-  menu.style.boxShadow = '0 2px 16px #0005';
-  menu.style.flexDirection = 'column';
+  menu.className = 'card-menu';
   buttons.forEach(btnConf => {
     const btn = document.createElement('button');
     btn.type = "button";
     btn.innerText = btnConf.text;
     btn.onclick = btnConf.onClick;
-    btn.style.background = 'none';
-    btn.style.color = '#fff';
-    btn.style.fontSize = '1.15em';
-    btn.style.margin = '8px 0';
-    btn.style.padding = '10px 28px';
-    btn.style.borderRadius = '10px';
-    btn.style.border = 'none';
-    btn.style.cursor = 'pointer';
-    btn.onmouseover = () => btn.style.background = "#444";
-    btn.onmouseout = () => btn.style.background = "none";
     menu.appendChild(btn);
   });
   return menu;
@@ -493,37 +491,16 @@ function openDeckSearchModal() {
 
     // 1. Create a wrapper for each card
     const wrapper = document.createElement('div');
-    wrapper.style.position = 'relative';
-    wrapper.style.display = 'flex';
-    wrapper.style.flexDirection = 'column';
-    wrapper.style.alignItems = 'center';
+    wrapper.className = "deck-search-card-wrapper";
 
     // 2. Create card button
     const btn = document.createElement('button');
-    btn.style.display = 'flex';
-    btn.style.flexDirection = 'column';
-    btn.style.alignItems = 'center';
-    btn.style.justifyContent = 'center';
-    btn.style.width = "110px";
-    btn.style.height = "170px";
-    btn.style.padding = "6px";
-    btn.style.background = "#444";
-    btn.style.color = "#fff";
-    btn.style.borderRadius = "10px";
-    btn.style.border = "none";
-    btn.style.cursor = "pointer";
-    btn.style.transition = "background 0.2s";
     btn.classList.add('card', 'card-modal-dark');
-    btn.onmouseover = () => btn.style.background = "#222";
-    btn.onmouseout = () => btn.style.background = "#444";
 
     const img = document.createElement('img');
     img.src = card.image;
     img.alt = card.name;
-    img.style.maxWidth = "80px";
-    img.style.maxHeight = "110px";
-    img.style.display = "block";
-    img.style.marginBottom = "6px";
+    img.className = "deck-search-card-img";
 
     const name = document.createElement('div');
     name.textContent = card.name;
@@ -535,9 +512,7 @@ function openDeckSearchModal() {
     // 3. Attach menu on click, add menu to wrapper
     btn.onclick = (e) => {
       e.stopPropagation();
-      // Remove any existing menu in this wrapper
       wrapper.querySelectorAll('.card-menu').forEach(m => m.remove());
-
       const buttons = [
         {
           text: "Add to Hand",
@@ -567,10 +542,7 @@ function openDeckSearchModal() {
         }
       ];
       const menu = createCardMenu(buttons);
-      menu.style.display = 'flex';
       wrapper.appendChild(menu);
-
-      // Hide menu when clicking elsewhere
       setTimeout(() => {
         document.body.addEventListener('click', function handler() {
           menu.remove();
@@ -854,9 +826,11 @@ deckActionsMenu.querySelector('#deck-search-btn').onclick = function() {
   }
 };
 
-document.body.addEventListener('click', function() {
+document.body.addEventListener('click', function handler(e) {
   let menu = document.getElementById('player-deck-actions');
-  if (menu) menu.style.display = "none";
+  if (menu && menu.style.display === "block" || menu.style.display === "flex") {
+    menu.style.display = "none";
+  }
 });
 
 // Actions in zones
@@ -988,44 +962,20 @@ function showVoidModal() {
   if (voidCards.length === 0) {
     list.innerHTML = '<div style="color:#999;">Void is empty.</div>';
   } else {
-    list.style.display = 'grid';
-    list.style.gridTemplateColumns = 'repeat(auto-fit, minmax(120px, 1fr))';
-    list.style.gap = '1em';
     voidCards.forEach((cardObj, idx) => {
       const card = dummyCards.find(c => c.id === cardObj.cardId);
       if (!card) return;
 
       const wrapper = document.createElement('div');
-      wrapper.style.position = 'relative';
-      wrapper.style.display = 'flex';
-      wrapper.style.flexDirection = 'column';
-      wrapper.style.alignItems = 'center';
+      wrapper.className = "void-card-wrapper";
 
       const btn = document.createElement('button');
-      btn.style.display = 'flex';
-      btn.style.flexDirection = 'column';
-      btn.style.alignItems = 'center';
-      btn.style.justifyContent = 'center';
-      btn.style.width = "110px";
-      btn.style.height = "170px";
-      btn.style.padding = "6px";
-      btn.style.background = "#444";
-      btn.style.color = "#fff";
-      btn.style.borderRadius = "10px";
-      btn.style.border = "none";
-      btn.style.cursor = "pointer";
-      btn.style.transition = "background 0.2s";
       btn.classList.add('card', 'card-modal-dark');
-      btn.onmouseover = () => btn.style.background = "#222";
-      btn.onmouseout = () => btn.style.background = "#444";
 
       const img = document.createElement('img');
       img.src = card.image;
       img.alt = card.name;
-      img.style.maxWidth = "80px";
-      img.style.maxHeight = "110px";
-      img.style.display = "block";
-      img.style.marginBottom = "6px";
+      img.className = "void-card-img";
 
       const name = document.createElement('div');
       name.textContent = card.name;
@@ -1066,10 +1016,7 @@ function showVoidModal() {
           }
         ];
         const menu = createCardMenu(buttons);
-        menu.style.display = 'flex';
-
         wrapper.appendChild(menu);
-
         setTimeout(() => {
           document.body.addEventListener('click', function handler() {
             menu.remove();
