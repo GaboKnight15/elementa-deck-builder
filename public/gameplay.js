@@ -377,13 +377,13 @@ function appendDeckZone(parentDiv, deckArray, who) {
         onClick: function(ev) {
           ev.stopPropagation();
           if (gameState.playerDeck.length > 0) {
-            openDeckSearchModal();
+            openDeckModal();
           }
           this.closest('.card-menu').remove();
         }
       }
     ];
-    // Create and show the menu
+    // CREATE MENU
     const menu = createCardMenu(buttons);
     deckCard.style.position = 'relative';
     deckCard.appendChild(menu);
@@ -427,7 +427,7 @@ function appendVoidZone(parentDiv, voidArray, who) {
 
   voidCard.onclick = (e) => {
     e.stopPropagation();
-    showVoidModal();
+    openVoidModal();
   };
 
   parentDiv.appendChild(voidZone);
@@ -443,10 +443,10 @@ function cleanCard(cardObj) {
   closeBtn.onclick = () => { modal.style.display = "none"; };
   modal.onclick = (e) => { if (e.target === modal) modal.style.display = "none"; };
 
-// DECK SEARCH MODAL with Popup Menu on Card Click
-function openDeckSearchModal() {
-  const modal = document.getElementById('deck-search-modal');
-  const content = document.getElementById('deck-search-content');
+// OPEN DECK MODAL
+function openDeckModal() {
+  const modal = document.getElementById('deck-modal');
+  const content = document.getElementById('modal-card-list');
   content.innerHTML = "<h3>Select a card and choose an action</h3>";
 
   gameState.playerDeck.forEach((cardObj, idx) => {
@@ -455,7 +455,7 @@ function openDeckSearchModal() {
 
     // 1. Create a wrapper for each card
     const wrapper = document.createElement('div');
-    wrapper.className = "deck-search-card-wrapper";
+    wrapper.className = "modal-card-wrapper";
 
     // 2. Create card button
     const btn = document.createElement('button');
@@ -464,7 +464,7 @@ function openDeckSearchModal() {
     const img = document.createElement('img');
     img.src = card.image;
     img.alt = card.name;
-    img.className = "deck-search-card-img";
+    img.className = "modal-card-img";
 
     const name = document.createElement('div');
     name.textContent = card.name;
@@ -483,7 +483,7 @@ function openDeckSearchModal() {
           onClick: function(ev) {
             ev.stopPropagation();
             moveCard(cardObj.instanceId, gameState.playerDeck, gameState.playerHand);
-            openDeckSearchModal();
+            openDeckModal();
             this.closest('.card-menu').remove();
           }
         },
@@ -492,7 +492,7 @@ function openDeckSearchModal() {
           onClick: function(ev) {
             ev.stopPropagation();
             moveCard(cardObj.instanceId, gameState.playerDeck, gameState.playerVoid);
-            openDeckSearchModal();
+            openDeckModal();
             this.closest('.card-menu').remove();
           }
         },
@@ -522,12 +522,12 @@ function openDeckSearchModal() {
   modal.style.display = "block";
 }
 
-function closeDeckSearchModal() {
-  document.getElementById('deck-search-modal').style.display = "none";
+function closeDeckModal() {
+  document.getElementById('deck-modal').style.display = "none";
 }
-document.getElementById('close-deck-search').onclick = closeDeckSearchModal;
-document.getElementById('deck-search-modal').onclick = (e) => {
-  if (e.target.id === 'deck-search-modal') closeDeckSearchModal();
+document.getElementById('close-deck-search').onclick = closeDeckModal;
+document.getElementById('deck-modal').onclick = (e) => {
+  if (e.target.id === 'deck-modal') closeDeckModal();
 };
 
 // Void close logic
@@ -803,7 +803,7 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
       }
     },
     {
-      text: "Orient (Tap/Untap)",
+      text: "Change Position",
       onClick: function(e) {
         e.stopPropagation();
         let arr = getZoneArray(zoneId);
@@ -837,7 +837,7 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
       }
     },
     {
-      text: "Send to Deck",
+      text: "Return to Deck",
       onClick: function(e) {
         e.stopPropagation();
         let arr = getZoneArray(zoneId);
@@ -893,10 +893,10 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
   menu.onclick = function(e) { e.stopPropagation(); };
 }
 
-// ==== VOID MODAL CARD MENU ====
-function showVoidModal() {
+// ==== VOID MODAL ====
+function openVoidModal() {
   const modal = document.getElementById('void-modal');
-  const list = document.getElementById('void-card-list');
+  const list = document.getElementById('modal-card-list');
   list.innerHTML = '';
 
   const voidCards = gameState.playerVoid;
@@ -908,7 +908,7 @@ function showVoidModal() {
       if (!card) return;
 
       const wrapper = document.createElement('div');
-      wrapper.className = "void-card-wrapper";
+      wrapper.className = "modal-card-wrapper";
 
       const btn = document.createElement('button');
       btn.classList.add('card', 'card-modal-dark');
@@ -916,7 +916,7 @@ function showVoidModal() {
       const img = document.createElement('img');
       img.src = card.image;
       img.alt = card.name;
-      img.className = "void-card-img";
+      img.className = "modal-card-img";
 
       const name = document.createElement('div');
       name.textContent = card.name;
@@ -934,7 +934,7 @@ function showVoidModal() {
             onClick: function(e) {
               e.stopPropagation();
               moveCard(cardObj.instanceId, gameState.playerVoid, gameState.playerHand);
-              showVoidModal();
+              openVoidModal();
               this.closest('.card-menu').remove();
             }
           },
@@ -943,7 +943,7 @@ function showVoidModal() {
             onClick: function(e) {
               e.stopPropagation();
               moveCard(cardObj.instanceId, gameState.playerVoid, gameState.playerDeck);
-              showVoidModal();
+              openVoidModal();
               this.closest('.card-menu').remove();
             }
           },
@@ -965,7 +965,6 @@ function showVoidModal() {
           }, { once: true });
         }, 10);
       };
-
       wrapper.appendChild(btn);
       list.appendChild(wrapper);
     });
@@ -976,12 +975,11 @@ function showVoidModal() {
 const voidModal = document.getElementById('void-modal');
 const voidModalContent = document.getElementById('void-modal-content');
 voidModal.addEventListener('click', function(event) {
-  // Only close if clicking directly on the overlay (not inside modal content)
   if (event.target === voidModal) {
     voidModal.style.display = 'none';
   }
 });
-// CLOSES VOID SEARCH
+// CLOSES VOID MODAL
 function closeVoidModal() {
   document.getElementById('void-modal').style.display = "none";
 }
