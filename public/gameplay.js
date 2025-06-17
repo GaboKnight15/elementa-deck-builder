@@ -150,20 +150,28 @@ function getZoneNameForArray(arr) {
 // CREATE CARD MENUS
 function createCardMenu(buttons = []) {
   const menu = document.createElement('div');
-  menu.className = 'card-menu';
+  menu.className = 'card-menu'; // ensure your CSS matches the void menu!
   menu.style.position = 'absolute';
-  menu.style.display = 'none';
-  menu.style.top = '100%';
-  menu.style.left = '0';
-  menu.style.marginTop = '6px';
-  // Don't set background, border, padding here—let CSS handle it
-
+  menu.style.background = '#23223a';
+  menu.style.borderRadius = '16px';
+  menu.style.padding = '18px 0 12px 0';
+  menu.style.boxShadow = '0 2px 16px #0005';
+  menu.style.flexDirection = 'column';
   buttons.forEach(btnConf => {
     const btn = document.createElement('button');
     btn.type = "button";
     btn.innerText = btnConf.text;
-    if (btnConf.className) btn.className = btnConf.className;
     btn.onclick = btnConf.onClick;
+    btn.style.background = 'none';
+    btn.style.color = '#fff';
+    btn.style.fontSize = '1.15em';
+    btn.style.margin = '8px 0';
+    btn.style.padding = '10px 28px';
+    btn.style.borderRadius = '10px';
+    btn.style.border = 'none';
+    btn.style.cursor = 'pointer';
+    btn.onmouseover = () => btn.style.background = "#444";
+    btn.onmouseout = () => btn.style.background = "none";
     menu.appendChild(btn);
   });
   return menu;
@@ -828,6 +836,7 @@ deckActionsMenu.innerHTML = `
   <button id="deck-search-btn">Search</button>
 `;
 document.body.appendChild(deckActionsMenu);
+deckActionsMenu.onclick = function(e) { e.stopPropagation(); };
 // Attach event listeners ONCE
 deckActionsMenu.querySelector('#deck-draw-btn').onclick = function() {
   if (gameState.turn === "player" && gameState.playerDeck.length > 0) {
