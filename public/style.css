@@ -360,7 +360,7 @@ header {
   justify-items: center;
   align-items: start;
 }
-#deck-search-content button {
+#deck-search-content > button {
   width: 110px;
   height: 170px;
   margin: 0;
@@ -398,7 +398,25 @@ header {
   font-size: 1.23em;
   margin-bottom: 0.6em;
 }
-
+.modal-card-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+  justify-content: flex-start;
+}
+.modal-card-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+.modal-card-img {
+  max-width: 80px;
+  max-height: 110px;
+  margin-bottom: 6px;
+  border-radius: 5px;
+  display: block;
+}
 /* Toggle Deck Alignment */
 body.deck-open #card-gallery.container,
 body.deck-open #card-gallery {
@@ -723,13 +741,6 @@ body.deck-open .container {
   margin-right: 3px;
   vertical-align: middle;
 }
-
-.card-on-field-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 8px; /* spacing below card/bar */
-}
 /* HP BAR */
 .hp-bar-wrap {
   width: 80%;
@@ -744,6 +755,13 @@ body.deck-open .container {
   height: 100%;
   border-radius: 4px;
   transition: width 0.2s, background 0.2s;
+}
+
+.card-on-field-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 8px; /* spacing below card/bar */
 }
 
 /* CARD HOVER ANIMATIONS */
@@ -821,7 +839,6 @@ body.deck-open .container {
   letter-spacing: 0.06em;
   border: 2px solid #5076e3;
 }
-
 .card-menu {
   display: flex;
   flex-direction: column;
