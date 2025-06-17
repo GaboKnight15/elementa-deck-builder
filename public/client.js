@@ -16,9 +16,6 @@ startGameBtn.onclick = () => {
   // Optionally hide the gallery or keep it visible as needed
 };
 
-// After both players are synced (e.g., in socket.on('sync deck')):
-chatUI.style.display = 'block';
-lobbyUI.style.display = 'none';
 // Optionally hide the gallery or show gameplay UI
 // Utility to generate random room code
 function generateRoomId() {
@@ -86,6 +83,9 @@ function appendChatMessage(msg) {
 }
 
 socket.on('sync deck', (deckObj) => {
+  // After both players are synced (e.g., in socket.on('sync deck')):
+  chatUI.style.display = 'block';
+  lobbyUI.style.display = 'none';
   // Use deckObj to initialize your game state
   status.textContent = "Deck received! Starting game...";
   startGameWithSyncedDeck(deckObj);
