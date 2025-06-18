@@ -991,6 +991,7 @@ function openVoidModal() {
 // CLOSES VOID MODAL
 function closeVoidModal() {
   document.getElementById('void-modal').style.display = "none";
+  document.getElementById('close-void-modal').onclick = closeVoidModal;
 }
 // Find the current phase index
 function getCurrentPhaseIndex() {
