@@ -991,8 +991,11 @@ function openVoidModal() {
 // CLOSES VOID MODAL
 function closeVoidModal() {
   document.getElementById('void-modal').style.display = "none";
-  document.getElementById('close-void-modal').onclick = closeVoidModal;
 }
+document.getElementById('close-void-modal').onclick = closeVoidModal;
+document.getElementById('void-modal').onclick = (e) => {
+  if (e.target.id === 'void-modal') closeVoidModal();
+};
 // Find the current phase index
 function getCurrentPhaseIndex() {
   return PHASES.findIndex(
@@ -1067,7 +1070,6 @@ function handleOpponentAction(action) {
       console.warn("Unknown opponent action:", action);
   }
 }
-
 // Make available globally if called from client.js:
 window.handleOpponentAction = handleOpponentAction;
 updatePhaseBar();
