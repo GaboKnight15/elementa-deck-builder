@@ -340,24 +340,64 @@ header {
   background: #e0f3ff;
 }
 /* DECK AND VOID STYLES */
+/* Modal Card List: horizontal, wrapping, nice gap */
 .modal-card-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 1em;
+  gap: 18px;
   justify-content: flex-start;
+  align-items: flex-start;
+  padding: 18px 8px 8px 8px;
+  background: none;
+  width: 100%;
+  box-sizing: border-box;
+  max-height: 65vh;
+  overflow-y: auto;
 }
+
+/* Modal Card Wrapper: card-shaped, not square; add background for separation */
 .modal-card-wrapper {
+  width: 110px;
+  min-width: 110px;
+  height: 165px;
+  min-height: 165px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  background: #23242a;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px #0004;
+  padding: 8px 6px 6px 6px;
+  margin-bottom: 4px;
   position: relative;
+  transition: box-shadow 0.17s, background 0.18s;
 }
+.modal-card-wrapper:hover {
+  background: #292b32;
+  box-shadow: 0 4px 18px #000a;
+}
+/* Card image in modal: fill most of the width, keep aspect ratio */
 .modal-card-img {
-  max-width: 80px;
-  max-height: 110px;
+  width: 95px;
+  height: 135px;
+  object-fit: cover;
+  border-radius: 8px;
+  background: #191a1d;
+  box-shadow: 0 1px 8px #0003;
   margin-bottom: 6px;
-  border-radius: 5px;
-  display: block;
+}
+
+/* Card name under modal card */
+.modal-card-wrapper .card-name {
+  color: #eee;
+  font-size: 1em;
+  text-align: center;
+  margin: 0;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 95px;
 }
 /* Toggle Deck Alignment */
 body.deck-open #card-gallery.container,
@@ -409,39 +449,6 @@ body.deck-open .container {
 }
 .void-btn:hover {
   background: #7e469a;
-}
-
-.modal-overlay {
-  position: fixed;
-  top: 0; left: 0; width: 100vw; height: 100vh;
-  background: rgba(0,0,0,0.4);
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  z-index: 9999;
-}
-#void-modal {
-  display: none;
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  width: 100vw; height: 100vh;
-  background: rgba(0,0,0,0.36);
-  z-index: 9999;
-  align-items: flex-start;
-  justify-content: center;
-}
-#void-modal-content {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  position: relative;
-  background: #232339 ;
-  margin: 60px auto;
-  padding: 28px 30px 22px 30px;
-  border-radius: 14px;
-  min-width: 260px;
-  width: min(90vw, 1200px);
-  box-shadow: 0 2px 20px #0002;
 }
 
 /* HAND FANOUT */
