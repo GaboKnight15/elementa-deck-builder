@@ -177,9 +177,10 @@
   <button id="card-action-view">View</button>
 </div>
   <!-- Deck Search Modal -->
-<div id="deck-search-modal" class="modal">
-  <span class="close" id="close-deck-search">&times;</span>
-  <div id="deck-search-content" style="background:white;padding:1em;border-radius:8px;max-width:90vw;margin:auto;"></div>
+<div id="deck-modal" class="modal">
+  <div class="modal-content">
+    <button id="close-deck-search">Close</button>
+  </div>
 </div>
   <!-- Deck Options Menu -->  
 <div id="player-deck-actions" style="display:none; position:absolute; background:white; border:1px solid #aaa; border-radius:7px; z-index:999; padding:8px;">
@@ -188,11 +189,11 @@
   <button id="deck-search-btn">Search</button>
 </div>
   <!-- Void Search Modal -->
-<div id="void-modal" class="modal-overlay">
-  <div id="void-modal-content">
-    <button id="close-void-modal" style="position:absolute;top:10px;right:16px;font-size:1.8em;background:none;border:none;color:#889;cursor:pointer;z-index:10000;">×</button>
+<div id="void-modal" class="modal">
+  <div class="modal-content">
+    <button id="close-void-modal">×</button>
     <h3>Void</h3>
-    <div id="void-card-list"></div>
+    <div class="modal-card-list"></div>
   </div>
 </div>
   <!-- HAND OPTIONS MENU -->  
