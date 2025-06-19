@@ -523,7 +523,7 @@ function openDeckModal() {
 
   modal.style.display = "block";
 }
-// --- DECK MODAL ---
+// --- CLOSE DECK MODAL ---
 const deckModal = document.getElementById('deck-modal');
 if (deckModal) {
   deckModal.onclick = function(e) {
@@ -952,7 +952,7 @@ function openVoidModal() {
   modal.style.display = 'block';
 }
 
-// --- VOID MODAL ---
+// --- CLOSE VOID MODAL ---
 const voidModal = document.getElementById('void-modal');
 if (voidModal) {
   voidModal.onclick = function(e) {
