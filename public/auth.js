@@ -18,9 +18,13 @@ const profileIcons = document.getElementById('profile-icons');
 
 const profileEditUsernameBtn = document.getElementById('edit-username-btn');
 const profileChangePicBtn = document.getElementById('change-profile-btn');
-const profileLogoutBtn = document.getElementById('logout-btn');
-const profileLoginBtn = document.getElementById('login-btn');
-const profileSignupBtn = document.getElementById('signup-btn');
+const profileLogoutBtn = document.getElementById('profile-logout-btn');
+const profileLoginBtn = document.getElementById('profile-login-btn');
+const profileSignupBtn = document.getElementById('profile-signup-btn');
+
+const authSignupBtn = document.getElementById('auth-signup-btn');
+const authLoginBtn = document.getElementById('auth-login-btn');
+const authLogoutBtn = document.getElementById('auth-logout-btn');
 
 const authContainer = document.getElementById('auth-container');
 
@@ -64,14 +68,19 @@ authForm.onsubmit = function(e) {
   // Default to signup if user clicks enter (can adjust if desired)
   signup();
 };
-document.getElementById('login-btn').onclick = function(e) {
+authLoginBtn.onclick = function(e) {
   e.preventDefault();
   login();
 };
-document.getElementById('signup-btn').onclick = function(e) {
+authSignupBtn.onclick = function(e) {
   e.preventDefault();
   signup();
 };
+if(authLogoutBtn) {
+  authLogoutBtn.onclick = function() {
+    auth.signOut();
+  };
+}
 
 function signup() {
   const email = emailInput.value;
@@ -107,10 +116,6 @@ function login() {
       errorDiv.textContent = err.message;
     });
 }
-
-document.getElementById('logout-btn').onclick = function() {
-  auth.signOut();
-};
 
 // --- Profile menu button logic ---
 profileLogoutBtn.onclick = () => auth.signOut();
