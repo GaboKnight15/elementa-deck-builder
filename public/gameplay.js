@@ -436,13 +436,20 @@ function cleanCard(cardObj) {
   delete cleaned.orientation;
   return cleaned;
 }
-  // Modal logic
-  closeBtn.onclick = () => { modal.style.display = "none"; };
-  modal.onclick = (e) => { if (e.target === modal) modal.style.display = "none"; };
 
 // OPEN DECK MODAL
 function openDeckModal() {
   const modal = document.getElementById('deck-modal');
+  // Always attach the close-on-backdrop handler
+  modal.onclick = function(e) {
+    if (e.target === modal) modal.style.display = 'none';
+  };
+  // Prevent modal-content clicks from closing the modal
+  const modalContent = modal.querySelector('.modal-content');
+  if (modalContent) {
+    modalContent.onclick = e => e.stopPropagation();
+  }
+
   let list = modal.querySelector('.modal-card-list');
   if (!list) {
     list = document.createElement('div');
@@ -478,7 +485,7 @@ function openDeckModal() {
     // 3. Attach menu on click, add menu to wrapper
     btn.onclick = (e) => {
       e.stopPropagation();
-      wrapper.querySelectorAll('.card-menu').forEach(m => m.remove());
+      modal.querySelectorAll('.card-menu').forEach(m => m.remove());
       const buttons = [
         {
           text: "Add to Hand",
@@ -486,7 +493,7 @@ function openDeckModal() {
             ev.stopPropagation();
             moveCard(cardObj.instanceId, gameState.playerDeck, gameState.playerHand);
             openDeckModal();
-            this.closest('.card-menu').remove();
+            modal.querySelectorAll('.card-menu').forEach(m => m.remove());
           }
         },
         {
@@ -495,7 +502,7 @@ function openDeckModal() {
             ev.stopPropagation();
             moveCard(cardObj.instanceId, gameState.playerDeck, gameState.playerVoid);
             openDeckModal();
-            this.closest('.card-menu').remove();
+            modal.querySelectorAll('.card-menu').forEach(m => m.remove());
           }
         },
         {
@@ -503,7 +510,7 @@ function openDeckModal() {
           onClick: function(ev) {
             ev.stopPropagation();
             showFullCardModal(cardObj);
-            this.closest('.card-menu').remove();
+            modal.querySelectorAll('.card-menu').forEach(m => m.remove());
           }
         }
       ];
@@ -511,7 +518,7 @@ function openDeckModal() {
       wrapper.appendChild(menu);
       setTimeout(() => {
         document.body.addEventListener('click', function handler() {
-          menu.remove();
+          modal.querySelectorAll('.card-menu').forEach(m => m.remove());
           document.body.removeEventListener('click', handler);
         }, { once: true });
       }, 10);
@@ -523,18 +530,7 @@ function openDeckModal() {
 
   modal.style.display = "block";
 }
-// --- CLOSE DECK MODAL ---
-const deckModal = document.getElementById('deck-modal');
-if (deckModal) {
-  deckModal.onclick = function(e) {
-    if (e.target === deckModal) deckModal.style.display = 'none';
-  };
-  // Prevent modal-content clicks from closing the modal
-  const modalContent = deckModal.querySelector('.modal-content');
-  if (modalContent) {
-    modalContent.onclick = e => e.stopPropagation();
-  }
-}
+
 // CARD STATS DETECTION
 function getBaseHp(cardId) {
   const card = dummyCards.find(c => c.id === cardId);
@@ -866,12 +862,17 @@ function openVoidModal() {
     content.className = 'modal-content';
     modal.appendChild(content);
     document.body.appendChild(modal);
-
-    // Close on backdrop click
-    modal.addEventListener('click', function(event) {
-      if (event.target === modal) modal.style.display = 'none';
-    });
   }
+  // Always attach (overwrite) close-on-backdrop handler
+  modal.onclick = function(e) {
+    if (e.target === modal) modal.style.display = 'none';
+  };
+  // Always prevent modal-content clicks from closing the modal
+  const modalContent = modal.querySelector('.modal-content');
+  if (modalContent) {
+    modalContent.onclick = e => e.stopPropagation();
+  }
+
   let list = modal.querySelector('.modal-card-list');
   if (!list) {
     list = document.createElement('div');
@@ -907,7 +908,8 @@ function openVoidModal() {
 
       btn.onclick = (e) => {
         e.stopPropagation();
-        wrapper.querySelectorAll('.card-menu').forEach(m => m.remove());
+        // Remove all card menus in this modal
+        modal.querySelectorAll('.card-menu').forEach(m => m.remove());
         const buttons = [
           {
             text: "Return to Hand",
@@ -915,7 +917,7 @@ function openVoidModal() {
               e.stopPropagation();
               moveCard(cardObj.instanceId, gameState.playerVoid, gameState.playerHand);
               openVoidModal();
-              this.closest('.card-menu').remove();
+              modal.querySelectorAll('.card-menu').forEach(m => m.remove());
             }
           },
           {
@@ -924,7 +926,7 @@ function openVoidModal() {
               e.stopPropagation();
               moveCard(cardObj.instanceId, gameState.playerVoid, gameState.playerDeck);
               openVoidModal();
-              this.closest('.card-menu').remove();
+              modal.querySelectorAll('.card-menu').forEach(m => m.remove());
             }
           },
           {
@@ -932,7 +934,7 @@ function openVoidModal() {
             onClick: function(e) {
               e.stopPropagation();
               showFullCardModal(cardObj);
-              this.closest('.card-menu').remove();
+              modal.querySelectorAll('.card-menu').forEach(m => m.remove());
             }
           }
         ];
@@ -940,7 +942,7 @@ function openVoidModal() {
         wrapper.appendChild(menu);
         setTimeout(() => {
           document.body.addEventListener('click', function handler() {
-            menu.remove();
+            modal.querySelectorAll('.card-menu').forEach(m => m.remove());
             document.body.removeEventListener('click', handler);
           }, { once: true });
         }, 10);
@@ -950,19 +952,6 @@ function openVoidModal() {
     });
   }
   modal.style.display = 'block';
-}
-
-// --- CLOSE VOID MODAL ---
-const voidModal = document.getElementById('void-modal');
-if (voidModal) {
-  voidModal.onclick = function(e) {
-    if (e.target === voidModal) voidModal.style.display = 'none';
-  };
-  // Prevent modal-content clicks from closing the modal
-  const modalContent = voidModal.querySelector('.modal-content');
-  if (modalContent) {
-    modalContent.onclick = e => e.stopPropagation();
-  }
 }
 
 // CURRENT PHASE
