@@ -1,4 +1,5 @@
 // --- Profile / Auth DOM Elements ---
+document.addEventListener('DOMContentLoaded', function () {
 const profileArea = document.getElementById('profile-area');
 const profileMenu = document.getElementById('profile-menu');
 const profileAuthSection = document.getElementById('profile-auth-section');
@@ -197,3 +198,4 @@ auth.onAuthStateChanged(user => {
   // Always hide menu on auth change for clarity
   profileMenu.classList.add('hidden');
 });
+});  
