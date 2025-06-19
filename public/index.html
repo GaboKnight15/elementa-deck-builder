@@ -7,11 +7,35 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
+<header>
     <h1>Elementa: Card Gallery & Deck Builder</h1>
     <button id="toggle-deck-btn" style="margin-left: 1em; padding: 0.4em 0.6em;">Toggle Deck</button>
     <button id="start-game-btn" style="margin:1em 0;">Start Game</button>
-  </header>
+<div id="profile-area">
+  <img id="profile-pic" src="icons/default.png" alt="Profile" />
+</div>
+  <div id="profile-menu" class="hidden">
+  <!-- This menu shows on click -->
+  <div id="profile-info">
+    <img id="profile-pic-large" src="icons/default.png" alt="Profile Large" />
+    <div id="profile-username"></div>
+  </div>
+  <form id="profile-edit-form" class="hidden">
+    <label>Change Username:<br>
+      <input type="text" id="new-username" maxlength="20">
+    </label>
+    <button type="button" id="save-username-btn">Save</button>
+  </form>
+  <div id="profile-icons">
+    <!-- Render available icons as img tags here -->
+  </div>
+  <button type="button" id="change-profile-btn">Change Profile Pic</button>
+  <button type="button" id="edit-username-btn">Edit Username</button>
+  <button type="button" id="logout-btn">Logout</button>
+  <button type="button" id="login-btn">Login</button>
+  <button type="button" id="signup-btn">Sign Up</button>
+  </div>
+</header>
 <div id="auth-container">
   <h2>Sign Up / Login</h2>
   <form id="auth-form">
