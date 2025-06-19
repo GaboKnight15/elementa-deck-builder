@@ -30,11 +30,11 @@ const authContainer = document.getElementById('auth-container');
 
 // --- Profile Icon Choices ---
 const iconOptions = [
-  "icons/default.png",
-  "icons/avatar1.png",
-  "icons/avatar2.png",
-  "icons/avatar3.png",
-  "icons/avatar4.png"
+  "CardImages/Avatars/Avatar1.png",
+  "CardImages/Avatars/Avatar2.png",
+  "CardImages/Avatars/Avatar3.png",
+  "CardImages/Avatars/Avatar4.png",
+  "CardImages/Avatars/Avatar5.png"
 ];
 
 // --- Menu Show/Hide Logic ---
