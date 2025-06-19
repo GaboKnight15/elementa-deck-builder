@@ -531,43 +531,6 @@ document.getElementById('close-deck-modal').onclick = closeDeckModal;
 document.getElementById('deck-modal').onclick = (e) => {
   if (e.target.id === 'deck-modal') closeDeckModal();
 };
-
-// Unified function for all "View" actions:
-function showFullCardModal(cardObj) {
-  const card = dummyCards.find(c => c.id === (cardObj.cardId || cardObj.id));
-  if (!card) return;
-  const modal = document.getElementById('image-modal');
-  const modalContent = document.getElementById('modal-img-content');
-  const modalImg = document.getElementById('modal-img');
-  if (modalContent) {
-    modalContent.innerHTML = `
-      <img src="${card.image}" alt="${card.name}">
-      <h2 style="text-align:center; color:white; margin-top:12px;">${card.name}</h2>
-      <div style="text-align:center;">
-        ${card.hp !== undefined ? `HP: ${card.hp}` : ''}
-        ${card.atk !== undefined ? ` | ATK: ${card.atk}` : ''}
-        ${card.def !== undefined ? ` | DEF: ${card.def}` : ''}
-        ${card.cost !== undefined ? ` | Cost: ${card.cost}` : ''}
-      </div>
-      <div style="text-align:center;margin:8px 0;">
-        ${card.rarity || ''} ${Array.isArray(card.type) ? card.type.join(', ') : card.type || ''}
-      </div>
-      <div style="text-align:center;font-size:0.98em;color:#555;">
-        ${card.text || ''}
-      </div>
-    `;
-    modal.style.display = 'flex';
-    if (modalImg) modalImg.style.display = "none";
-  } else {
-    modalImg.src = card.image;
-    modalImg.style.display = "block";
-    modal.style.display = "flex";
-  }
-}
-// IMAGE MODAL CLOSE LOGIC
-document.querySelector('.close').onclick = () => {
-  document.getElementById('image-modal').style.display = "none";
-};
 // CARD STATS DETECTION
 function getBaseHp(cardId) {
   const card = dummyCards.find(c => c.id === cardId);
