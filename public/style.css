@@ -746,3 +746,179 @@ body.deck-open .container {
 .card-menu button:hover, .card-menu button:focus {
   background: #204080;
 }
+
+/* PROFILE (top-left corner) */
+#profile-area {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 2000;
+  cursor: pointer;
+  border-radius: 50%;
+  background: white;
+  padding: 3px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  transition: box-shadow 0.2s;
+}
+#profile-area:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.13);
+}
+
+/* Small round profile picture in header */
+#profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ddd;
+  background: #f8f8f8;
+}
+
+/* Profile menu (dropdown/modal) */
+#profile-menu {
+  position: absolute;
+  top: 60px;
+  left: 10px;
+  min-width: 230px;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+  padding: 18px 20px 16px 20px;
+  z-index: 2100;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  animation: fadeIn 0.2s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-8px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+
+/* Hide menu by default */
+.hidden {
+  display: none;
+}
+
+/* Profile info (large pic + username) */
+#profile-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+#profile-pic-large {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 2.5px solid #aaa;
+  object-fit: cover;
+  margin-bottom: 6px;
+  background: #eee;
+}
+#profile-username {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #2d2d2d;
+  margin-bottom: 2px;
+}
+
+/* Edit username form */
+#profile-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  align-items: center;
+}
+#profile-edit-form input {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 1rem;
+  margin-top: 3px;
+}
+#save-username-btn {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 7px;
+  padding: 7px 16px;
+  margin-top: 3px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.18s;
+}
+#save-username-btn:hover {
+  background: #2563eb;
+}
+
+/* Profile icons selection area */
+#profile-icons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  justify-content: center;
+  margin: 10px 0 4px 0;
+}
+#profile-icons img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+#profile-icons img.selected,
+#profile-icons img:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px #93c5fd;
+}
+
+/* Profile menu buttons */
+#profile-menu button {
+  background: #e5e7eb;
+  color: #222;
+  border: none;
+  border-radius: 7px;
+  padding: 7px 16px;
+  margin-top: 3px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.18s;
+  font-size: 1rem;
+}
+#profile-menu button:hover {
+  background: #d1d5db;
+}
+
+/* Special styles for logout/login/signup */
+#logout-btn {
+  background: #fee2e2;
+  color: #991b1b;
+}
+#logout-btn:hover {
+  background: #fecaca;
+}
+
+#login-btn, #signup-btn {
+  background: #dbeafe;
+  color: #1e3a8a;
+}
+#login-btn:hover, #signup-btn:hover {
+  background: #bfdbfe;
+}
+
+@media (max-width: 600px) {
+  #profile-menu {
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 90vw;
+    padding: 12px 6vw 12px 6vw;
+  }
+  #profile-area {
+    top: 8px;
+    left: 8px;
+  }
+}
