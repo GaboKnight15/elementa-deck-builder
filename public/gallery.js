@@ -174,14 +174,17 @@ function renderDeckList(deck, deckContainer) {
   for (const [type, cards] of Object.entries(deck.categories)) {
     const section = document.createElement('div');
     section.innerHTML = `<strong>${type}</strong>`;
+    deckContainer.appendChild(section);
     for (const cardObj of cards) {
       const cardDiv = document.createElement('div');
       cardDiv.className = 'deck-list-card-row';
+
       // Card image
       const img = document.createElement('img');
       img.src = cardObj.image;
       img.className = 'deck-list-thumb';
       cardDiv.appendChild(img);
+
       // Name and count
       const nameSpan = document.createElement('span');
       nameSpan.textContent = `${cardObj.name} ×${cardObj.count}`;
@@ -198,7 +201,7 @@ function renderDeckList(deck, deckContainer) {
       };
       cardDiv.appendChild(plusBtn);
 
-      // Remove "-" button (existing)
+      // Remove "-" button
       const minusBtn = document.createElement('button');
       minusBtn.textContent = '–';
       minusBtn.className = 'deck-remove-btn';
@@ -209,32 +212,12 @@ function renderDeckList(deck, deckContainer) {
       };
       cardDiv.appendChild(minusBtn);
 
-      // Context menu (like void)
+      // Directly open modal on card click (no menu)
       cardDiv.onclick = (e) => {
         e.stopPropagation();
-        // Remove any other menus
-        document.querySelectorAll('.card-menu').forEach(m => m.remove());
-
-        const buttons = [
-          {
-            text: "View",
-            onClick: function(ev) {
-              ev.stopPropagation();
-              showFullCardModal(cardObj);
-              this.closest('.card-menu').remove();
-            }
-          },
-        ];
-        const menu = createCardMenu(buttons);
-        menu.style.display = 'flex';
-        cardDiv.appendChild(menu);
-
-        setTimeout(() => {
-          document.body.addEventListener('click', function handler() {
-            menu.remove();
-            document.body.removeEventListener('click', handler);
-          }, { once: true });
-        }, 10);
+        // Use full card data if available (from dummyCards)
+        const fullCard = dummyCards.find(c => c.id === cardObj.id) || cardObj;
+        showFullCardModal(fullCard);
       };
 
       deckContainer.appendChild(cardDiv);
