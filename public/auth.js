@@ -4,6 +4,7 @@ const profileMenu = document.getElementById('profile-menu');
 const profileAuthSection = document.getElementById('profile-auth-section');
 const profileAccountSection = document.getElementById('profile-account-section');
 
+const profilePic = document.getElementById('profile-pic');
 const profilePicLarge = document.getElementById('profile-pic-large');
 const profilePicLargeAuth = document.getElementById('profile-pic-large-auth');
 const profileUsernameDisplay = document.getElementById('profile-username-display');
@@ -22,6 +23,7 @@ const profileUsernameInput = document.getElementById('profile-username-input');
 const profileEmailInput = document.getElementById('profile-email-input');
 const profilePasswordInput = document.getElementById('profile-password-input');
 const profileAuthError = document.getElementById('profile-auth-error');
+const profileAuthForm = document.getElementById('profile-auth-form');
 
 // --- Profile Icon Choices ---
 const iconOptions = [
@@ -31,6 +33,7 @@ const iconOptions = [
   "CardImages/Avatars/Avatar4.png",
   "CardImages/Avatars/Avatar5.png"
 ];
+const defaultIcon = "icons/default.png";
 
 // --- Menu Show/Hide Logic ---
 profileArea.onclick = function(e) {
@@ -44,9 +47,14 @@ document.addEventListener('click', (e) => {
       !profileArea.contains(e.target)) {
     profileMenu.classList.add('hidden');
     // Optionally clear sensitive fields
-    profilePasswordInput.value = "";
+    if (profilePasswordInput) profilePasswordInput.value = "";
   }
 });
+
+// Prevent menu clicks from closing menu
+profileMenu.onclick = function(e) {
+  e.stopPropagation();
+};
 
 // --- Render Icon Choices ---
 function renderProfileIcons(selectedIcon) {
@@ -61,6 +69,10 @@ function renderProfileIcons(selectedIcon) {
 }
 
 // --- Signup/Login logic for modal/profile menu ---
+profileAuthForm.onsubmit = function(e) {
+  e.preventDefault();
+  login();
+};
 profileLoginBtn.onclick = function(e) {
   e.preventDefault();
   login();
@@ -71,9 +83,9 @@ profileSignupBtn.onclick = function(e) {
 };
 
 function signup() {
-  const email = profileEmailInput.value;
+  const email = profileEmailInput.value.trim();
   const password = profilePasswordInput.value;
-  const username = profileUsernameInput.value;
+  const username = profileUsernameInput.value.trim();
   profileAuthError.textContent = "";
   if (!username) {
     profileAuthError.textContent = "Please enter a username.";
@@ -98,7 +110,7 @@ function signup() {
 }
 
 function login() {
-  const email = profileEmailInput.value;
+  const email = profileEmailInput.value.trim();
   const password = profilePasswordInput.value;
   profileAuthError.textContent = "";
   auth.signInWithEmailAndPassword(email, password)
@@ -136,13 +148,14 @@ function selectProfileIcon(iconUrl) {
     .set({ profilePic: iconUrl }, {merge: true})
     .then(() => {
       profilePicLarge.src = iconUrl;
-      profilePicLargeAuth.src = iconUrl;
+      if (profilePicLargeAuth) profilePicLargeAuth.src = iconUrl;
+      profilePic.src = iconUrl;
       renderProfileIcons(iconUrl);
     });
 }
 profileChangePicBtn.onclick = () => {
   // Reveal icons (always show after click, or toggle to your preference)
-  renderProfileIcons(profilePicLargeAuth.src);
+  renderProfileIcons(profilePicLargeAuth ? profilePicLargeAuth.src : iconOptions[0]);
   profileIcons.style.display = '';
 };
 
@@ -159,7 +172,8 @@ function loadProfile(user) {
         if (data.username) name = data.username;
       }
       profilePicLarge.src = icon;
-      profilePicLargeAuth.src = icon;
+      if (profilePicLargeAuth) profilePicLargeAuth.src = icon;
+      profilePic.src = icon;
       profileUsernameDisplay.textContent = name;
       renderProfileIcons(icon);
     });
@@ -182,8 +196,9 @@ auth.onAuthStateChanged(user => {
     profileEmailInput.value = "";
     profilePasswordInput.value = "";
     profileAuthError.textContent = "";
-    if (profilePicLarge) profilePicLarge.src = iconOptions[0];
-    if (profilePicLargeAuth) profilePicLargeAuth.src = iconOptions[0];
+    profilePic.src = defaultIcon;
+    profilePicLarge.src = defaultIcon;
+    if (profilePicLargeAuth) profilePicLargeAuth.src = defaultIcon;
     if (profileUsernameDisplay) profileUsernameDisplay.textContent = "";
     profileIcons.innerHTML = "";
   }
