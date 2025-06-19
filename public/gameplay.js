@@ -527,7 +527,7 @@ function openDeckModal() {
 function closeDeckModal() {
   document.getElementById('deck-modal').style.display = "none";
 }
-document.getElementById('close-deck-search').onclick = closeDeckModal;
+document.getElementById('close-deck-modal').onclick = closeDeckModal;
 document.getElementById('deck-modal').onclick = (e) => {
   if (e.target.id === 'deck-modal') closeDeckModal();
 };
