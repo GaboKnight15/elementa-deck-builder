@@ -33,7 +33,7 @@ const iconOptions = [
   "CardImages/Avatars/Avatar4.png",
   "CardImages/Avatars/Avatar5.png"
 ];
-const defaultIcon = "icons/default.png";
+const defaultIcon = "CardImages/Avatars/Default.png";
 
 // --- Menu Show/Hide Logic ---
 profileArea.onclick = function(e) {
@@ -88,7 +88,7 @@ function signup() {
   const username = profileUsernameInput.value.trim();
   profileAuthError.textContent = "";
   if (!username) {
-    profileAuthError.textContent = "Please enter a username.";
+    profileAuthError.textContent = "Enter a username.";
     return;
   }
   auth.createUserWithEmailAndPassword(email, password)
@@ -136,7 +136,7 @@ saveUsernameBtn.onclick = () => {
       .set({ username: newUsername }, {merge: true});
   }).then(() => {
     profileEditForm.classList.add('hidden');
-    loadProfile(user); // Update UI
+    loadProfile(user);
   });
 };
 
