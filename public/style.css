@@ -809,11 +809,8 @@ body.deck-open .container {
   gap: 9px;
   margin-bottom: 10px;
 }
-#profile-username {
-  font-size: 1.18rem;
-  font-weight: 600;
-  color: #232323;
-  margin-bottom: 6px;
+#profile-username-display {
+  color: #222;
 }
 #profile-menu form, #profile-menu #profile-auth-section, #profile-menu #profile-account-section {
   display: flex;
@@ -832,38 +829,6 @@ body.deck-open .container {
   background: #f7faff;
   font-size: 1rem;
 }
-/* Edit username form */
-#profile-edit-form {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-  align-items: center;
-}
-#profile-edit-form input {
-  border: 1px solid #bbb;
-  border-radius: 7px;
-  padding: 7px 12px;
-  font-size: 1.05rem;
-  margin-top: 3px;
-  background: #f8fafc;
-}
-#save-username-btn {
-  background: #3b82f6;
-  color: white;
-  border: none;
-  border-radius: 7px;
-  padding: 8px 18px;
-  margin-top: 3px;
-  cursor: pointer;
-  font-weight: 500;
-  font-size: 1.04rem;
-  transition: background 0.18s, box-shadow 0.15s;
-  box-shadow: 0 1px 4px #0001;
-}
-#save-username-btn:hover {
-  background: #2563eb;
-}
-
 /* Profile icons selection area */
 #profile-icons {
   display: flex;
