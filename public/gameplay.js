@@ -60,7 +60,7 @@ function showBattlefield() {
   // Hide builder-only elements, etc.
 }
 
-backToBuilderBtn.onclick = showBuilder();
+backToBuilderBtn.onclick = showBuilder;
 
 function getZoneArray(zoneId) {
   switch (zoneId) {
