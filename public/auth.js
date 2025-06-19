@@ -90,7 +90,6 @@ function renderProfileIcons(selectedIcon) {
   closeProfileIconModalBtn.onclick = function() {
     profileIconModal.style.display = 'none';
   };
-
   // Close modal when clicking outside the content
   profileIconModal.onclick = function(e) {
     if (e.target === profileIconModal) {
@@ -163,14 +162,6 @@ function selectProfileIcon(iconUrl) {
       renderProfileIcons(iconUrl);
     });
 }
-profileChangePicBtn.onclick = () => {
-  if (profileIcons.style.display === 'none' || !profileIcons.style.display) {
-    profileIcons.style.display = '';
-    renderProfileIcons(profilePic.src || iconOptions[0]);
-  } else {
-    profileIcons.style.display = 'none';
-  }
-};
 
 // --- Load profile info (username, icon) on login ---
 function loadProfile(user) {
