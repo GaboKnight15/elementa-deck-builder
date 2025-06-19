@@ -1,24 +1,29 @@
 // --- Profile / Auth DOM Elements ---
 document.addEventListener('DOMContentLoaded', function () {
-const profileArea = document.getElementById('profile-area');
-const profileMenu = document.getElementById('profile-menu');
-const profileAuthSection = document.getElementById('profile-auth-section');
-const profileAccountSection = document.getElementById('profile-account-section');
+const profileArea            = document.getElementById('profile-area');
+const profileMenu            = document.getElementById('profile-menu');
+const profileAuthSection     = document.getElementById('profile-auth-section');
+const profileAccountSection  = document.getElementById('profile-account-section');
 
-const profilePic = document.getElementById('profile-pic');
-const profileUsernameDisplay = document.getElementById('profile-username-display');
-const profileIcons = document.getElementById('profile-icons');
+const profilePic              = document.getElementById('profile-pic');
+const profileUsernameDisplay  = document.getElementById('profile-username-display');
+const profileIcons            = document.getElementById('profile-icons');
 
-const profileChangePicBtn = document.getElementById('change-profile-btn');
-const profileLogoutBtn = document.getElementById('profile-logout-btn');
-const profileLoginBtn = document.getElementById('profile-login-btn');
-const profileSignupBtn = document.getElementById('profile-signup-btn');
+const profileChangePicBtn     = document.getElementById('change-profile-btn');
+const profileLogoutBtn         = document.getElementById('profile-logout-btn');
+const profileLoginBtn          = document.getElementById('profile-login-btn');
+const profileSignupBtn         = document.getElementById('profile-signup-btn');
 
 const profileUsernameInput = document.getElementById('profile-username-input');
 const profileEmailInput = document.getElementById('profile-email-input');
 const profilePasswordInput = document.getElementById('profile-password-input');
 const profileAuthError = document.getElementById('profile-auth-error');
 const profileAuthForm = document.getElementById('profile-auth-form');
+
+const profileIconModal = document.getElementById('profile-icon-modal');
+const profileIconModalContent = document.getElementById('profile-icon-modal-content');
+const profileIcons = document.getElementById('profile-icons');
+const closeProfileIconModalBtn = document.getElementById('close-profile-icon-modal');
 
 // --- Profile Icon Choices ---
 const iconOptions = [
@@ -51,7 +56,7 @@ profileMenu.onclick = function(e) {
   e.stopPropagation();
 };
 
-// --- Render Icon Choices ---
+// --- ICON CHOICES ---
 function renderProfileIcons(selectedIcon) {
   profileIcons.innerHTML = "";
   iconOptions.forEach(iconUrl => {
@@ -62,7 +67,37 @@ function renderProfileIcons(selectedIcon) {
     profileIcons.appendChild(img);
   });
 }
+// Open the avatar selection modal
+  profileChangePicBtn.onclick = function() {
+    // Optionally, highlight the current avatar
+    const currentIcon = document.getElementById('profile-pic').src;
+    renderProfileIcons(currentIcon);
+    profileIconModal.style.display = 'flex';
+  };
+  // Handle avatar selection
+  function selectProfileIcon(iconUrl) {
+    const user = auth.currentUser;
+    if (!user) return;
+    firebase.firestore().collection('users').doc(user.uid)
+      .set({ profilePic: iconUrl }, {merge: true})
+      .then(() => {
+        document.getElementById('profile-pic').src = iconUrl;
+        profileIconModal.style.display = 'none';
+      });
+  }
 
+  // Close modal with button
+  closeProfileIconModalBtn.onclick = function() {
+    profileIconModal.style.display = 'none';
+  };
+
+  // Close modal when clicking outside the content
+  profileIconModal.onclick = function(e) {
+    if (e.target === profileIconModal) {
+      profileIconModal.style.display = 'none';
+    }
+  };
+  
 // --- Signup/Login logic for modal/profile menu ---
 profileAuthForm.onsubmit = function(e) {
   e.preventDefault();
