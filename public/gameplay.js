@@ -48,23 +48,20 @@ function startSoloGameWithCurrentDeck() {
   gameState.playerCreatures = [];
   gameState.playerDomains = [];
   gameState.playerVoid = [];
-  // Optionally draw initial hand here
   renderGameState();
   setupDropZones();
 }
 window.startSoloGameWithCurrentDeck = startSoloGameWithCurrentDeck;
 
 function showBattlefield() {
+  document.getElementById('builder-container').style.display = 'none';
   document.getElementById('battlefield-container').style.display = 'flex';
   document.getElementById('battlefield').style.display = 'block';
   // Hide builder-only elements, etc.
 }
 
-backToBuilderBtn.onclick = () => {
-  showBuilder();
-  elementsToHide.forEach(el => el.style.display = '');
-  battlefield.style.display = 'none';
-};
+backToBuilderBtn.onclick = showBuilder();
+
 function getZoneArray(zoneId) {
   switch (zoneId) {
     case "player-creatures-zone": return gameState.playerCreatures;
