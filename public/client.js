@@ -4,7 +4,6 @@ const socket = io();
 let currentRoomId = null;
 
 // UI elements
-const startGameBtn = document.getElementById('start-game-btn');
 const lobbyUI = document.getElementById('lobby-ui');
 const chatUI = document.getElementById('chat-ui');
 const createBtn = document.getElementById('create-btn');
