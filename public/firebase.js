@@ -8,3 +8,44 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 window.auth = firebase.auth();
+
+// SAVE PROGRESS
+function saveProgress(progressData) {
+  const user = firebase.auth().currentUser;
+  if (user) {
+    const db = firebase.firestore();
+    db.collection('users').doc(user.uid).set(progressData, { merge: true })
+      .then(() => {
+        console.log("Progress saved!");
+      })
+      .catch((error) => {
+        console.error("Error saving progress: ", error);
+      });
+  } else {
+    console.warn("No user logged in, cannot save progress.");
+  }
+}
+// LOAD PROGRESS
+function loadProgress(callback) {
+  const user = firebase.auth().currentUser;
+  if (user) {
+    const db = firebase.firestore();
+    db.collection('users').doc(user.uid).get()
+      .then((doc) => {
+        if (doc.exists) {
+          const data = doc.data();
+          callback(data); // Pass the progress data to your app
+        } else {
+          console.log("No saved progress yet.");
+          callback({}); // Or handle as you wish
+        }
+      })
+      .catch((error) => {
+        console.error("Error loading progress: ", error);
+        callback(null); // Or handle error in your app
+      });
+  } else {
+    console.warn("No user logged in, cannot load progress.");
+    callback(null);
+  }
+}
