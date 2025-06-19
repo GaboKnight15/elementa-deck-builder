@@ -5,8 +5,6 @@ const profileAuthSection = document.getElementById('profile-auth-section');
 const profileAccountSection = document.getElementById('profile-account-section');
 
 const profilePic = document.getElementById('profile-pic');
-const profilePicLarge = document.getElementById('profile-pic-large');
-const profilePicLargeAuth = document.getElementById('profile-pic-large-auth');
 const profileUsernameDisplay = document.getElementById('profile-username-display');
 const profileEditForm = document.getElementById('profile-edit-form');
 const newUsernameInput = document.getElementById('new-username');
@@ -147,15 +145,13 @@ function selectProfileIcon(iconUrl) {
   firebase.firestore().collection('users').doc(user.uid)
     .set({ profilePic: iconUrl }, {merge: true})
     .then(() => {
-      profilePicLarge.src = iconUrl;
-      if (profilePicLargeAuth) profilePicLargeAuth.src = iconUrl;
       profilePic.src = iconUrl;
       renderProfileIcons(iconUrl);
     });
 }
 profileChangePicBtn.onclick = () => {
-  // Reveal icons (always show after click, or toggle to your preference)
-  renderProfileIcons(profilePicLargeAuth ? profilePicLargeAuth.src : iconOptions[0]);
+  // Show icons to pick from, highlighting the current one
+  renderProfileIcons(profilePic.src || iconOptions[0]);
   profileIcons.style.display = '';
 };
 
@@ -171,8 +167,6 @@ function loadProfile(user) {
         if (data.profilePic) icon = data.profilePic;
         if (data.username) name = data.username;
       }
-      profilePicLarge.src = icon;
-      if (profilePicLargeAuth) profilePicLargeAuth.src = icon;
       profilePic.src = icon;
       profileUsernameDisplay.textContent = name;
       renderProfileIcons(icon);
@@ -197,8 +191,6 @@ auth.onAuthStateChanged(user => {
     profilePasswordInput.value = "";
     profileAuthError.textContent = "";
     profilePic.src = defaultIcon;
-    profilePicLarge.src = defaultIcon;
-    if (profilePicLargeAuth) profilePicLargeAuth.src = defaultIcon;
     if (profileUsernameDisplay) profileUsernameDisplay.textContent = "";
     profileIcons.innerHTML = "";
   }
