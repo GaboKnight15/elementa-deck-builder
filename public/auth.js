@@ -39,6 +39,7 @@ const iconOptions = [
 
 // --- Menu Show/Hide Logic ---
 profileArea.onclick = () => {
+  e.stopPropagation();
   profileMenu.classList.toggle('hidden');
 };
 // Hide menu when clicking outside
