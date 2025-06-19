@@ -28,15 +28,6 @@ const closeBtn           = document.querySelector('.close');
 const toggleBtn          = document.getElementById('toggle-deck-btn');
 const startGameBtn       = document.getElementById('start-game-btn');
 const deckPanel          = document.querySelector('.deck');
-const elementsToHide = [
-    document.getElementById('deck-slot-selector'),
-    document.getElementById('filters'),
-    document.getElementById('card-gallery'),
-    document.querySelector('.deck'),
-    startGameBtn,
-    toggleBtn
-  ];
-
 
 function saveDeckState() {
     localStorage.setItem(DECK_SLOTS_KEY, JSON.stringify(deckSlots));
@@ -146,6 +137,7 @@ function updateDeckDisplay() {
   saveDeckState();
 }
 function showBuilder() {
+  document.getElementById('builder-container').style.display = '';
   document.getElementById('battlefield-container').style.display = 'none';
   document.getElementById('battlefield').style.display = 'none';
   // Show builder-only elements, etc.
@@ -292,8 +284,8 @@ function renderGallery() {
   }
 // START GAME LOGIC
 startGameBtn.onclick = () => {
+  document.getElementById('builder-container').style.display = 'none';
   showBattlefield();
-  elementsToHide.forEach(el => el.style.display = 'none');
   battlefield.style.display = 'block';
   const deckObj = getCurrentDeck();
   
