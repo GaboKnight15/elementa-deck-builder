@@ -284,7 +284,6 @@ function renderGallery() {
   }
 // START GAME LOGIC
 startGameBtn.onclick = () => {
-  document.getElementById('builder-container').style.display = 'none';
   showBattlefield();
   battlefield.style.display = 'block';
   const deckObj = getCurrentDeck();
