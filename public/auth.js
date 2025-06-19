@@ -7,12 +7,8 @@ const profileAccountSection = document.getElementById('profile-account-section')
 
 const profilePic = document.getElementById('profile-pic');
 const profileUsernameDisplay = document.getElementById('profile-username-display');
-const profileEditForm = document.getElementById('profile-edit-form');
-const newUsernameInput = document.getElementById('new-username');
-const saveUsernameBtn = document.getElementById('save-username-btn');
 const profileIcons = document.getElementById('profile-icons');
 
-const profileEditUsernameBtn = document.getElementById('edit-username-btn');
 const profileChangePicBtn = document.getElementById('change-profile-btn');
 const profileLogoutBtn = document.getElementById('profile-logout-btn');
 const profileLoginBtn = document.getElementById('profile-login-btn');
@@ -121,24 +117,6 @@ function login() {
 // --- Profile menu button logic ---
 profileLogoutBtn.onclick = () => auth.signOut();
 
-// --- Username edit ---
-profileEditUsernameBtn.onclick = () => {
-  profileEditForm.classList.remove('hidden');
-  newUsernameInput.value = profileUsernameDisplay.textContent;
-};
-saveUsernameBtn.onclick = () => {
-  const user = auth.currentUser;
-  const newUsername = newUsernameInput.value.trim();
-  if (!user || !newUsername) return;
-  user.updateProfile({ displayName: newUsername }).then(() => {
-    return firebase.firestore().collection('users').doc(user.uid)
-      .set({ username: newUsername }, {merge: true});
-  }).then(() => {
-    profileEditForm.classList.add('hidden');
-    loadProfile(user);
-  });
-};
-
 // --- Profile icon select ---
 function selectProfileIcon(iconUrl) {
   const user = auth.currentUser;
@@ -183,13 +161,11 @@ auth.onAuthStateChanged(user => {
     // Show profile account section, hide auth section
     profileAuthSection.classList.add('hidden');
     profileAccountSection.classList.remove('hidden');
-    profileEditForm.classList.add('hidden');
     loadProfile(user);
   } else {
     // Show login/signup, hide profile account section
     profileAuthSection.classList.remove('hidden');
     profileAccountSection.classList.add('hidden');
-    profileEditForm.classList.add('hidden');
     profileUsernameInput.value = "";
     profileEmailInput.value = "";
     profilePasswordInput.value = "";
