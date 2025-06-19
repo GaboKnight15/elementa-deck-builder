@@ -11,44 +11,38 @@
     <h1>Elementa: Card Gallery & Deck Builder</h1>
     <button id="toggle-deck-btn" style="margin-left: 1em; padding: 0.4em 0.6em;">Toggle Deck</button>
     <button id="start-game-btn" style="margin:1em 0;">Start Game</button>
-<div id="profile-area">
-  <img id="profile-pic" src="icons/default.png" alt="Profile" />
-</div>
-  <div id="profile-menu" class="hidden">
-  <!-- This menu shows on click -->
-  <div id="profile-info">
+  
+<div id="profile-menu" class="hidden">
+  <!-- LOGGED OUT VIEW -->
+  <div id="profile-auth-section">
     <img id="profile-pic-large" src="icons/default.png" alt="Profile Large" />
-    <div id="profile-username"></div>
+    <input type="text" id="profile-username-input" placeholder="Username" maxlength="20">
+    <input type="email" id="profile-email-input" placeholder="Email">
+    <input type="password" id="profile-password-input" placeholder="Password">
+    <button id="profile-login-btn">Login</button>
+    <button id="profile-signup-btn">Sign Up</button>
+    <div id="profile-auth-error" style="color:red;"></div>
   </div>
-  <form id="profile-edit-form" class="hidden">
-    <label>Change Username:<br>
+  <!-- LOGGED IN VIEW -->
+  <div id="profile-account-section" class="hidden">
+    <div id="profile-info">
+      <img id="profile-pic-large-auth" src="icons/default.png" alt="Profile Large" />
+      <div id="profile-username-display"></div>
+    </div>
+    <button id="change-profile-btn">Change Profile Pic</button>
+    <button id="edit-username-btn">Edit Username</button>
+    <button id="profile-logout-btn">Logout</button>
+    <!-- Username edit form, hidden by default -->
+    <form id="profile-edit-form" class="hidden">
       <input type="text" id="new-username" maxlength="20">
-    </label>
-    <button type="button" id="save-username-btn">Save</button>
-  </form>
-  <div id="profile-icons">
-    <!-- Render available icons as img tags here -->
-</div>
-  <button type="button" id="change-profile-btn">Change Profile Pic</button>
-  <button type="button" id="edit-username-btn">Edit Username</button>
-  <button type="button" id="profile-logout-btn">Logout</button>
-  <button type="button" id="profile-login-btn">Login</button>
-  <button type="button" id="profile-signup-btn">Sign Up</button>
+      <button type="button" id="save-username-btn">Save</button>
+    </form>
+    <div id="profile-icons"></div>
+  </div>
 </div>
 </header>
-<div id="auth-container">
-  <h2>Sign Up / Login</h2>
-  <form id="auth-form">
-    <input type="text" id="usernameInput" placeholder="Username" required>
-    <input type="email" id="auth-email" placeholder="Email" required>
-    <input type="password" id="auth-password" placeholder="Password" required>
-    <button type="submit" id="auth-signup-btn">Sign Up</button>
-    <button type="button" id="auth-login-btn">Log In</button>
-    <div id="auth-error" style="color:red;"></div>
-  </form>
-  <button id="auth-logout-btn" style="display:none;">Logout</button>
-  <div id="auth-status"></div>
-</div>  
+
+<!-- BATTLEFIELD UI -->  
 <div id="battlefield-container" style="display:none;"> 
   <div id="battlefield">
     <!-- LOBBY UI -->
