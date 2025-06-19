@@ -7,7 +7,6 @@ const profileAccountSection  = document.getElementById('profile-account-section'
 
 const profilePic              = document.getElementById('profile-pic');
 const profileUsernameDisplay  = document.getElementById('profile-username-display');
-const profileIcons            = document.getElementById('profile-icons');
 
 const profileChangePicBtn     = document.getElementById('change-profile-btn');
 const profileLogoutBtn         = document.getElementById('profile-logout-btn');
