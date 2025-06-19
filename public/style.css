@@ -750,43 +750,44 @@ body.deck-open .container {
 /* PROFILE (top-left corner) */
 #profile-area {
   position: absolute;
-  top: 12px;
+  top: 14px;
   left: 16px;
   z-index: 2000;
   cursor: pointer;
   border-radius: 50%;
   background: #fff;
-  padding: 4px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  padding: 3px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.07);
   transition: box-shadow 0.2s;
 }
 #profile-area:hover {
-  box-shadow: 0 6px 24px rgba(0,0,0,0.16);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.14);
 }
-
 #profile-pic {
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid #bbb;
   background: #f4f4f4;
 }
 
+
 /* Profile menu (dropdown/modal) */
 #profile-menu {
   position: absolute;
-  top: 52px;
-  left: 10px;
-  min-width: 270px;
+  top: 56px;
+  left: 16px; /* adjust as needed, or use right: 16px; left:auto; for right-side menu */
+  min-width: 260px;
+  max-width: 320px;
   background: #fff;
-  border-radius: 18px;
-  box-shadow: 0 8px 36px rgba(0,0,0,0.22);
-  padding: 28px 24px 22px 24px;
+  border-radius: 14px;
+  box-shadow: 0 6px 28px rgba(0,0,0,0.13);
+  padding: 18px 16px 14px 16px;
   z-index: 2100;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 11px;
   animation: fadeIn 0.16s;
 }
 
@@ -808,23 +809,29 @@ body.deck-open .container {
   gap: 9px;
   margin-bottom: 10px;
 }
-#profile-pic-large {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  border: 2.5px solid #bbb;
-  object-fit: cover;
-  margin-bottom: 8px;
-  background: #f4f4f4;
-  box-shadow: 0 2px 10px #0001;
-}
 #profile-username {
   font-size: 1.18rem;
   font-weight: 600;
   color: #232323;
   margin-bottom: 6px;
 }
-
+#profile-menu form, #profile-menu #profile-auth-section, #profile-menu #profile-account-section {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+#profile-menu input[type="text"],
+#profile-menu input[type="email"],
+#profile-menu input[type="password"] {
+  width: 100%;
+  padding: 7px 10px;
+  margin-bottom: 4px;
+  box-sizing: border-box;
+  border-radius: 7px;
+  border: 1px solid #ccc;
+  background: #f7faff;
+  font-size: 1rem;
+}
 /* Edit username form */
 #profile-edit-form {
   display: flex;
