@@ -151,9 +151,12 @@ function selectProfileIcon(iconUrl) {
     });
 }
 profileChangePicBtn.onclick = () => {
-  // Show icons to pick from, highlighting the current one
-  renderProfileIcons(profilePic.src || iconOptions[0]);
-  profileIcons.style.display = '';
+  if (profileIcons.style.display === 'none' || !profileIcons.style.display) {
+    profileIcons.style.display = '';
+    renderProfileIcons(profilePic.src || iconOptions[0]);
+  } else {
+    profileIcons.style.display = 'none';
+  }
 };
 
 // --- Load profile info (username, icon) on login ---
