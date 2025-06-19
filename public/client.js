@@ -14,7 +14,7 @@ const chatInput = document.getElementById('chat-input');
 const sendChatBtn = document.getElementById('send-chat-btn');
 const chatLog = document.getElementById('chat-log');
 
-let myDeckObj = null; // Will hold your current deck object
+let myDeckObj = null;
 let opponentDeckReceived = false;
 
 // --- UI: Only show lobby/chat in gameplay, not in gallery/builder ---
