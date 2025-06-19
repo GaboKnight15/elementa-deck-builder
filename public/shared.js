@@ -33,67 +33,6 @@ function getCardBgClass(card) {
   if (colors.length === 2) return `card-bg-${colors[0]}-${colors[1]}`;
   return `card-bg-gold`;
 }
-// ==========================
-// === RENDERING CARDS ===
-// ==========================
-  function createCardDiv(card) {
-    const deck = getCurrentDeck();
-    const div = document.createElement('div');
-    div.className = 'card';
-    if (card.rarity) {
-    div.setAttribute('data-rarity', card.rarity);
-  }
-    div.classList.add(getCardBgClass(card));
-
-    const img = document.createElement('img');
-    img.src = card.image;
-    img.onerror = function() {
-      this.onerror = null;
-      this.src = "CardImages/Domains/placeholder.png";
-    };
-    img.alt = card.name;
-    img.onclick = () => {
-      modal.style.display = "block";
-      modalImg.src = card.image;
-    };
-    div.appendChild(img);
-
-    const name = document.createElement('h4');
-    name.textContent = card.name;
-    div.appendChild(name);
-
-    const stats = document.createElement('div');
-    stats.style.fontSize = '0.9em';
-    stats.innerHTML = [
-      card.hp !== undefined ? `HP: ${card.hp}` : '',
-      card.atk !== undefined ? `ATK: ${card.atk}` : '',
-      card.def !== undefined ? `DEF: ${card.def}` : '',
-      card.cost !== undefined ? `Cost: ${card.cost}` : ''
-    ].filter(Boolean).join(' | ');
-    if (stats.innerHTML.trim() !== '') div.appendChild(stats);
-
-    const details = document.createElement('div');
-    details.style.fontSize = '0.8em';
-    details.textContent = [
-      card.rarity,
-      Array.isArray(card.type) ? card.type.join(', ') : card.type
-    ].filter(Boolean).join(' | ');
-    if (details.textContent.trim() !== '') div.appendChild(details);
-
-    const btn = document.createElement('button');
-    btn.textContent = "Add to Deck";
-    btn.disabled = !canAddCard(card);
-    btn.onclick = () => {
-      if (!canAddCard(card)) return;
-      deck[card.id] = (deck[card.id] || 0) + 1;
-      setCurrentDeck(deck);
-      updateDeckDisplay();
-      renderGallery();
-      setTimeout(() => deckPanel.classList.add('show'), 0);
-    };
-    div.appendChild(btn);
-    return div;
-  }
 
 // VIEW CARDS
 function showFullCardModal(cardObj) {
