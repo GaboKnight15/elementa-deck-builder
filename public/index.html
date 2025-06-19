@@ -28,13 +28,13 @@
   </form>
   <div id="profile-icons">
     <!-- Render available icons as img tags here -->
-  </div>
+</div>
   <button type="button" id="change-profile-btn">Change Profile Pic</button>
   <button type="button" id="edit-username-btn">Edit Username</button>
-  <button type="button" id="logout-btn">Logout</button>
-  <button type="button" id="login-btn">Login</button>
-  <button type="button" id="signup-btn">Sign Up</button>
-  </div>
+  <button type="button" id="profile-logout-btn">Logout</button>
+  <button type="button" id="profile-login-btn">Login</button>
+  <button type="button" id="profile-signup-btn">Sign Up</button>
+</div>
 </header>
 <div id="auth-container">
   <h2>Sign Up / Login</h2>
@@ -42,11 +42,11 @@
     <input type="text" id="usernameInput" placeholder="Username" required>
     <input type="email" id="auth-email" placeholder="Email" required>
     <input type="password" id="auth-password" placeholder="Password" required>
-    <button type="submit" id="signup-btn">Sign Up</button>
-    <button type="button" id="login-btn">Log In</button>
+    <button type="submit" id="auth-signup-btn">Sign Up</button>
+    <button type="button" id="auth-login-btn">Log In</button>
     <div id="auth-error" style="color:red;"></div>
   </form>
-  <button id="logout-btn" style="display:none;">Logout</button>
+  <button id="auth-logout-btn" style="display:none;">Logout</button>
   <div id="auth-status"></div>
 </div>  
 <div id="battlefield-container" style="display:none;">
