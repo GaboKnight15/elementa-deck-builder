@@ -523,14 +523,18 @@ function openDeckModal() {
 
   modal.style.display = "block";
 }
-
-function closeDeckModal() {
-  document.getElementById('deck-modal').style.display = "none";
+// --- DECK MODAL ---
+const deckModal = document.getElementById('deck-modal');
+if (deckModal) {
+  deckModal.onclick = function(e) {
+    if (e.target === deckModal) deckModal.style.display = 'none';
+  };
+  // Prevent modal-content clicks from closing the modal
+  const modalContent = deckModal.querySelector('.modal-content');
+  if (modalContent) {
+    modalContent.onclick = e => e.stopPropagation();
+  }
 }
-document.getElementById('close-deck-modal').onclick = closeDeckModal;
-document.getElementById('deck-modal').onclick = (e) => {
-  if (e.target.id === 'deck-modal') closeDeckModal();
-};
 // CARD STATS DETECTION
 function getBaseHp(cardId) {
   const card = dummyCards.find(c => c.id === cardId);
@@ -948,15 +952,20 @@ function openVoidModal() {
   modal.style.display = 'block';
 }
 
-// CLOSES VOID MODAL
-function closeVoidModal() {
-  document.getElementById('void-modal').style.display = "none";
+// --- VOID MODAL ---
+const voidModal = document.getElementById('void-modal');
+if (voidModal) {
+  voidModal.onclick = function(e) {
+    if (e.target === voidModal) voidModal.style.display = 'none';
+  };
+  // Prevent modal-content clicks from closing the modal
+  const modalContent = voidModal.querySelector('.modal-content');
+  if (modalContent) {
+    modalContent.onclick = e => e.stopPropagation();
+  }
 }
-document.getElementById('close-void-modal').onclick = closeVoidModal;
-document.getElementById('void-modal').onclick = (e) => {
-  if (e.target.id === 'void-modal') closeVoidModal();
-};
-// Find the current phase index
+
+// CURRENT PHASE
 function getCurrentPhaseIndex() {
   return PHASES.findIndex(
     p => p.turn === gameState.turn && p.phase === gameState.phase
