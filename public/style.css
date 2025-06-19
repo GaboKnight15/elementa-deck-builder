@@ -134,10 +134,10 @@ header {
   box-shadow: -2px 0 16px rgba(0,0,0,0.12);
   z-index: 1100;
   transition: transform 0.3s cubic-bezier(.4,1.6,.3,1), box-shadow 0.3s;
-  transform: translateX(100%); /* hidden by default */
+  transform: translateX(100%);
 }
 .deck.show {
-  transform: translateX(0);   /* visible when .show is present */
+  transform: translateX(0);
   box-shadow: -2px 0 16px rgba(0,0,0,0.18);
 }
     .deck h2 {
@@ -376,29 +376,6 @@ header {
   text-overflow: ellipsis;
   max-width: 95px;
 }
-/* Toggle Deck Alignment */
-body.deck-open #card-gallery.container,
-body.deck-open #card-gallery {
-  margin-right: 320px; /* Same as .deck width */
-  transition: margin 0.3s;
-}
-@media (max-width: 900px) {
-  body.deck-open #card-gallery.container,
-  body.deck-open #card-gallery {
-    margin-right: 0; /* Deck stacks on top, not beside, on mobile */
-  }
-}
-/* Adjust Gallery inside Container */
-body.deck-open .container {
-  margin-right: 320px;
-  transition: margin 0.3s;
-}
-@media (max-width: 900px) {
-  body.deck-open .container {
-    margin-right: 0;
-  }
-}
-
 /* VOID STYLE */
 .zone.void {
   background: #222; /* example, dark background for discard */
