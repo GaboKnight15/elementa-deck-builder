@@ -165,9 +165,9 @@ header {
     button:disabled {
       background-color: gray;
     }
-/* ICONS: TRASH */
+/* ICONS: TRASH, Plus */
 .icon-btn {
-  background: #fff;
+  background: linear-gradient(90deg, #3249e8 0%, #1c254e 100%);
   border: none;
   padding: 5px 12px;
   cursor: pointer;
@@ -183,6 +183,25 @@ header {
 .icon-btn:focus,
 .icon-btn:hover {
   background: #fee2e2;
+  box-shadow: 0 2px 8px #d32f2f33;
+}
+.icon-btn-negative {
+  background: linear-gradient(90deg, #bb2d2d 0%, #2b3b57 100%);
+  border: none;
+  padding: 5px 12px;
+  cursor: pointer;
+  border-radius: 7px;
+  box-shadow: 0 1px 4px #0001;
+  transition: background 0.13s, box-shadow 0.13s;
+  vertical-align: middle;
+  outline: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.icon-btn-negative:focus,
+.icon-btn-negative:hover {
+  background: linear-gradient(90deg, #d32f2f 0%, #3e1c1c 100%);
   box-shadow: 0 2px 8px #d32f2f33;
 }
 /* Mobile CSS Adjustments 900px for tablets*/
@@ -493,7 +512,11 @@ header {
 .card-bg-green-red, .card-bg-red-green {
   background: linear-gradient(135deg, #eafae6 60%, #fae6e6 100%);
 }
-
+#start-game-btn {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
 /* GAMEPLAY STYLE */
 #battlefield-container {
   display: flex;
@@ -953,13 +976,13 @@ header {
   z-index: 3000;
   left: 0; top: 0;
   width: 100vw; height: 100vh;
-  background: #22304a;
+  background: rgba(0,0,0,0.35);
   align-items: center;
   justify-content: center;
 }
 
 #profile-icon-modal-content {
-  background: #fff;
+  background: #22304a;
   padding: 24px 18px 20px 18px;
   border-radius: 16px;
   box-shadow: 0 8px 40px #0006;
