@@ -68,7 +68,7 @@ header {
   color: #667;
 }
     /* Card Count Badge */
-    .card .count-badge {
+.card .count-badge {
   position: absolute;
   top: 7px; right: 10px;
   background: #222; color: #fff;
@@ -109,7 +109,7 @@ header {
   border: 2px dashed #bbb;
 }
     /* Card Image  */
-    .card img {
+.card img {
   max-width: 100%;
   border-radius: 8px;
   box-shadow: 0 3px 12px rgba(0,0,0,0.12);
