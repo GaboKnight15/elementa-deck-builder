@@ -484,14 +484,8 @@ function openDeckModal() {
     img.alt = card.name;
     img.className = "modal-card-img";
 
-    const name = document.createElement('div');
-    name.textContent = card.name;
-    name.className = "card-name";
-
     btn.appendChild(img);
-    btn.appendChild(name);
-
-    // 3. Attach menu on click, add menu to wrapper
+    // ATTACH MENU ON CLICK
     btn.onclick = (e) => {
       e.stopPropagation();
       modal.querySelectorAll('.card-menu').forEach(m => m.remove());
@@ -909,12 +903,7 @@ function openVoidModal() {
       img.alt = card.name;
       img.className = "modal-card-img";
 
-      const name = document.createElement('div');
-      name.textContent = card.name;
-      name.className = "card-name";
-
       btn.appendChild(img);
-      btn.appendChild(name);
 
       btn.onclick = (e) => {
         e.stopPropagation();
