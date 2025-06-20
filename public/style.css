@@ -231,6 +231,10 @@ header {
     padding: 0.8em 0.2em;
   }
 }
+#deck-list.drag-over {
+  box-shadow: 0 0 8px 2px #3b82f6;
+  border: 2px dashed #3b82f6;
+}
 #card-gallery.container,
   #card-gallery {
     grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
