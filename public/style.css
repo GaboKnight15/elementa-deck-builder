@@ -371,27 +371,6 @@ header {
   box-shadow: 0 1px 8px #0003;
   margin-bottom: 6px;
 }
-/* Card name under modal card */
-.modal-card-wrapper .card-name {
-  color: #eee;
-  font-size: 1em;
-  text-align: center;
-  margin: 0;
-  font-weight: 500;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 95px;
-}
-.close {
-      position: absolute;
-      top: 30px;
-      right: 50px;
-      color: white;
-      font-size: 40px;
-      font-weight: bold;
-      cursor: pointer;
-}
 /* BACKGROUND THEMES */
     body.theme-green  { background: linear-gradient(to bottom, #e6ffe6, #a3d9a5); }
     body.theme-red    { background: linear-gradient(to bottom, #ffd6d6, #ff7f7f); }
@@ -663,17 +642,6 @@ header {
   margin: 0 auto 26px auto;
   box-shadow: 0 8px 40px #0008;
 }
-
-#image-modal .close {
-  position: absolute;
-  top: 32px;
-  right: 32px;
-  font-size: 52px;
-  color: #fff;
-  cursor: pointer;
-  z-index: 30000;
-}
-
 @media (max-width: 600px) {
   #modal-img-content img {
     max-width: 98vw;
