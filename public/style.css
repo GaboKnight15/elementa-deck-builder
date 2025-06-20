@@ -794,18 +794,19 @@ header {
 }
 .card-menu {
   display: flex;
+  position: absolute;
   flex-direction: column;
   gap: 8px;
-  background: #fff;
+  background: linear-gradient(120deg, #22304a 80%, #1a2533 100%);
+  color: #e5e7ef;
   border: 1.5px solid #aac;
   border-radius: 14px;
   box-shadow: 0 4px 24px #0003;
   padding: 14px 12px;
-  position: absolute;
   z-index: 9999;
   min-width: 160px;
   max-width: 240px;
- align-items: stretch;
+  align-items: stretch;
 }
 .card-menu button {
   background: #4285f4;
@@ -876,6 +877,9 @@ header {
 /* Profile menu (dropdown/modal) */
 #profile-menu {
   /* Battlefield-inspired background */
+  position: absolute;
+  top: 70px;
+  left: 16px;
   background: linear-gradient(120deg, #22304a 80%, #1a2533 100%);
   color: #e5e7ef;
   border-radius: 16px;
