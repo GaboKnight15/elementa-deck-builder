@@ -292,6 +292,16 @@ header {
       }
     }
 /* <--- DECK AND VOID MODALS */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.5);
+  justify-content: center;
+  align-items: center;
+}
 .modal-content {
   margin: 0 auto;
   max-width: 98vw;
@@ -306,17 +316,20 @@ header {
   padding: 28px 28px 20px 28px;
   position: relative;
 }
+/* Add this to your CSS */
 .modal-card-list {
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  box-sizing: border-box;
   display: flex;
   flex-wrap: wrap;
-  gap: 1.2em 1em;
-  justify-content: flex-start;  /* <--- left-align cards! */
-  align-items: flex-start;
-  padding: 0;
-  margin: 0;
-  width: 100%;
-  min-width: 480px;
-  /* Remove max-width if you want true full width */
+  gap: 8px;
+  justify-content: center;
+}
+.modal-card-list:empty {
+  display: none;
 }
 .modal-card-list > * {
   margin: 0;
@@ -370,7 +383,7 @@ header {
   text-overflow: ellipsis;
   max-width: 95px;
 }
-    .close {
+.close {
       position: absolute;
       top: 30px;
       right: 50px;
@@ -378,7 +391,7 @@ header {
       font-size: 40px;
       font-weight: bold;
       cursor: pointer;
-    }
+}
 /* BACKGROUND THEMES */
     body.theme-green  { background: linear-gradient(to bottom, #e6ffe6, #a3d9a5); }
     body.theme-red    { background: linear-gradient(to bottom, #ffd6d6, #ff7f7f); }
