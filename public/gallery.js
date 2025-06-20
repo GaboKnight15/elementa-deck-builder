@@ -68,9 +68,12 @@ function createCardDiv(card) {
     div.setAttribute('draggable', 'true');
     div.addEventListener('dragstart', function(e) {
       e.dataTransfer.setData('card-id', card.id);
-    // Optionally, for custom drag image:
-    // e.dataTransfer.setDragImage(div, 20, 20);
+      e.dataTransfer.setDragImage(div, div.offsetWidth / 2, div.offsetHeight / 2);
+      div.classList.add('dragging');
   });
+  div.addEventListener('dragend', function(e) {
+        div.classList.remove('dragging');
+    });
     if (card.rarity) {
     div.setAttribute('data-rarity', card.rarity);
   }
