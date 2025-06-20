@@ -226,46 +226,6 @@ header {
   display: block;
   pointer-events: none;
 }
-/* Battlefield-inspired button style */
-#toggle-deck-btn,
-#start-game-btn {
-  background: linear-gradient(90deg, #3249e8 0%, #1c254e 100%);
-  color: #fff;
-  font-family: 'Segoe UI', 'Arial', sans-serif;
-  font-size: 1.18em;
-  font-weight: 600;
-  border: 2.5px solid #4761e6;
-  border-radius: 14px;
-  padding: 0.56em 2.2em;
-  box-shadow: 0 2px 10px #1a224444;
-  letter-spacing: 0.04em;
-  transition: 
-    background 0.18s, 
-    border-color 0.18s, 
-    box-shadow 0.19s,
-    color 0.18s,
-    transform 0.13s;
-  outline: none;
-  text-shadow: 0 1px 4px #1115;
-}
-#toggle-deck-btn:hover,
-#start-game-btn:hover,
-#toggle-deck-btn:focus,
-#start-game-btn:focus {
-  background: linear-gradient(90deg, #4568ff 0%, #3a2cb4 100%);
-  color: #ffdb64;
-  border-color: #7aa6ff;
-  box-shadow: 0 6px 28px #1a2244bb, 0 0 0 3px #5081ff88;
-  transform: scale(1.065);
-}
-#toggle-deck-btn:active,
-#start-game-btn:active {
-  background: linear-gradient(90deg, #232e5a 0%, #3249e8 100%);
-  color: #fff;
-  border-color: #3249e8;
-  box-shadow: 0 2px 8px #181c44aa;
-  transform: scale(0.98);
-}
 #deck-list.drag-over {
   box-shadow: 0 0 8px 2px #3b82f6;
   border: 2px dashed #3b82f6;
@@ -291,8 +251,7 @@ header {
     padding: 0.6em 0.3em;
   }
 }
-#toggle-deck-btn,
-#start-game-btn {
+.btn-primary {
   background: linear-gradient(90deg, #3249e8 0%, #1c254e 100%);
   color: #fff;
   font-family: 'Segoe UI', 'Arial', sans-serif;
@@ -312,18 +271,15 @@ header {
   outline: none;
   text-shadow: 0 1px 4px #1115;
 }
-#toggle-deck-btn:hover,
-#start-game-btn:hover,
-#toggle-deck-btn:focus,
-#start-game-btn:focus {
+.btn-primary:hover,
+.btn-primary:focus {
   background: linear-gradient(90deg, #4568ff 0%, #3a2cb4 100%);
   color: #ffdb64;
   border-color: #7aa6ff;
   box-shadow: 0 6px 28px #1a2244bb, 0 0 0 3px #5081ff88;
   transform: scale(1.065);
 }
-#toggle-deck-btn:active,
-#start-game-btn:active {
+.btn-primary:active {
   background: linear-gradient(90deg, #232e5a 0%, #3249e8 100%);
   color: #fff;
   border-color: #3249e8;
@@ -1036,7 +992,7 @@ header {
     max-width: 98vw;
     max-height: 70vh;
   }
-  #toggle-deck-btn, #start-game-btn {
+  .btn-primary {
     width: 90vw;
     font-size: 1em;
     padding: 0.8em 0.2em;
