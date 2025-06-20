@@ -825,11 +825,15 @@ header {
   align-items: center;
   justify-content: center;
 }
-#profile-area:hover {
-  box-shadow: none;
+/* Hover animation: glow, slight scale, border color */
+#profile-area:hover #profile-pic,
+#profile-pic:hover {
+  box-shadow: 0 0 0 5px #5081ff55, 0 6px 24px #2d3a70aa;
+  border-color: #5081ff;
+  transform: scale(1.08) rotate(-4deg);
 }
 
-/* Bigger, clean avatar */
+/* AVATAR */
 #profile-pic {
   width: 60px;
   height: 60px;
@@ -853,20 +857,20 @@ header {
 
 /* Profile menu (dropdown/modal) */
 #profile-menu {
-  position: absolute;
-  top: 56px;
-  left: 16px; /* adjust as needed, or use right: 16px; left:auto; for right-side menu */
-  min-width: 260px;
-  max-width: 320px;
-  background: #fff;
-  border-radius: 14px;
-  box-shadow: 0 6px 28px rgba(0,0,0,0.13);
+  /* Battlefield-inspired background */
+  background: linear-gradient(120deg, #22304a 80%, #1a2533 100%);
+  color: #e5e7ef;
+  border-radius: 16px;
+  box-shadow: 0 6px 32px 0 #141e2f99, 0 1.5px 0 #22304a inset;
+  border: 2.5px solid #314175;
   padding: 18px 16px 14px 16px;
   z-index: 2100;
   display: flex;
   flex-direction: column;
   gap: 11px;
   animation: fadeIn 0.16s;
+  min-width: 260px;
+  max-width: 320px;
 }
 
 @keyframes fadeIn {
@@ -975,33 +979,14 @@ header {
   box-shadow: 0 0 0 2px #93c5fd;
 }
 
-/* Profile menu buttons */
-#profile-menu button:not(#save-username-btn) {
-  background: #f2f4f7;
-  color: #262626;
-  border: none;
-  border-radius: 8px;
-  padding: 9px 0;
-  margin-top: 3px;
-  cursor: pointer;
-  font-weight: 500;
-  font-size: 1.05rem;
-  box-shadow: 0 1px 4px #0001;
-  transition: background 0.18s;
-  width: 100%;
-  letter-spacing: 0.01em;
-}
-#profile-menu button:not(#save-username-btn):hover {
-  background: #e0e7ef;
-}
-
+/* LOGOUT BUTTON */
 #profile-menu button#profile-logout-btn {
-  background: #fee2e2;
-  color: #991b1b;
-  font-weight: 600;
+  background: linear-gradient(90deg, #912e2e 0%, #2b3b57 100%);
+  color: #fff;
 }
 #profile-menu button#profile-logout-btn:hover {
-  background: #fecaca;
+  background: linear-gradient(90deg, #d32f2f 0%, #2b3b57 100%);
+  color: #fff;
 }
 
 #profile-menu button#profile-login-btn,
