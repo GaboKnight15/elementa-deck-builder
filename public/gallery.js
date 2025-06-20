@@ -206,7 +206,7 @@ function updateDeckDisplay() {
       li.appendChild(span);
 
       const removeBtn = document.createElement('button');
-      removeBtn.className = 'btn-negative';
+      removeBtn.className = 'icon-btn-negative';
       removeBtn.textContent = '−';
       removeBtn.onclick = () => {
         deck[card.id]--;
