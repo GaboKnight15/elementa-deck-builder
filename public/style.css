@@ -7,6 +7,12 @@ header {
       width: 100%; padding: 1em;
       text-align: center;
 }
+label {
+  color: #f7faff;
+  text-shadow: 0 0 4px #9ef6ff33, 0 2px 6px #2228;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
 .container {
       max-width: 1200px; padding: 1em; padding-right: 270px;
       display: flex; flex-wrap: wrap; gap: 1em; justify-content: center;
@@ -131,7 +137,8 @@ header {
   width: 320px;
   max-width: 95vw;
   height: 100vh;
-  background: #fff;
+  background: linear-gradient(120deg, #232a3c 80%, #191f2c 100%);
+  color: #f7faff;
   border-left: 2px solid #ccc;
   overflow-y: auto;
   padding: 1.2em 1em 1em 1em;
@@ -186,8 +193,11 @@ header {
 }
 .icon-btn:focus,
 .icon-btn:hover {
-  background: #fee2e2;
-  box-shadow: 0 2px 8px #d32f2f33;
+  background: linear-gradient(90deg, #4568ff 0%, #3a2cb4 100%);
+  color: #ffdb64;
+  border-color: #7aa6ff;
+  box-shadow: 0 6px 28px #1a2244bb, 0 0 0 3px #5081ff88;
+  transform: scale(1.065);
 }
 .icon-btn-negative {
   background: linear-gradient(90deg, #bb2d2d 0%, #2b3b57 100%);
@@ -206,7 +216,10 @@ header {
 .icon-btn-negative:focus,
 .icon-btn-negative:hover {
   background: linear-gradient(90deg, #d32f2f 0%, #3e1c1c 100%);
-  box-shadow: 0 2px 8px #d32f2f33;
+  color: #ffdada;
+  border-color: #e57373;
+  box-shadow: 0 6px 28px #a41a1abb, 0 0 0 3px #ffb4b488;
+  transform: scale(1.065);
 }
 .btn-primary {
   background: linear-gradient(90deg, #3249e8 0%, #1c254e 100%);
