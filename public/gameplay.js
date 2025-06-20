@@ -140,6 +140,7 @@ function createCardMenu(buttons = []) {
   buttons.forEach(btnConf => {
     const btn = document.createElement('button');
     btn.type = "button";
+    btn.className = 'btn-secondary';
     btn.innerText = btnConf.text;
     btn.onclick = btnConf.onClick;
     menu.appendChild(btn);
