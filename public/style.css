@@ -286,6 +286,43 @@ header {
   box-shadow: 0 2px 8px #181c44aa;
   transform: scale(0.98);
 }
+/* SMALLER BUTTONS */
+.btn-secondary {
+  background: linear-gradient(90deg, #3249e8 0%, #1c254e 100%);
+  color: #fff;
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  font-size: 0.95em;         /* Smaller font */
+  font-weight: 600;
+  border: 2px solid #4761e6; /* Slightly thinner border */
+  border-radius: 10px;       /* Slightly less rounded */
+  padding: 0.32em 1.1em;     /* Less padding */
+  box-shadow: 0 1px 6px #1a224433;
+  letter-spacing: 0.03em;
+  transition: 
+    background 0.18s, 
+    border-color 0.18s, 
+    box-shadow 0.19s,
+    color 0.18s,
+    transform 0.13s;
+  outline: none;
+  text-shadow: 0 1px 3px #1114;
+  cursor: pointer;
+}
+.btn-secondary:hover,
+.btn-secondary:focus {
+  background: linear-gradient(90deg, #4568ff 0%, #3a2cb4 100%);
+  color: #ffdb64;
+  border-color: #7aa6ff;
+  box-shadow: 0 4px 16px #1a2244bb, 0 0 0 2px #5081ff88;
+  transform: scale(1.05);
+}
+.btn-secondary:active {
+  background: linear-gradient(90deg, #232e5a 0%, #3249e8 100%);
+  color: #fff;
+  border-color: #3249e8;
+  box-shadow: 0 1px 4px #181c44aa;
+  transform: scale(0.97);
+}
 #deck-list.drag-over {
   box-shadow: 0 0 8px 2px #3b82f6;
   border: 2px dashed #3b82f6;
