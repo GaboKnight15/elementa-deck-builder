@@ -42,10 +42,14 @@ header {
 .card-modal-dark:hover {
   background: #222 !important;
 }
+#builder-container {
+  background: #1a2533;
+}
 /* Grid Layout for Gallery */
 #card-gallery.container,
 #card-gallery {
   display: grid;
+  background: #1a2533;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 1.1em;
   justify-items: center;
@@ -204,72 +208,6 @@ header {
   background: linear-gradient(90deg, #d32f2f 0%, #3e1c1c 100%);
   box-shadow: 0 2px 8px #d32f2f33;
 }
-/* Mobile CSS Adjustments 900px for tablets*/
-@media (max-width: 900px) {
-  .deck {
-    width: 95vw;
-    left: unset;
-    right: 0;
-    top: 56px;
-    max-width: 100vw;
-    border-left: none;
-    border-top: 2px solid #ccc;
-    height: 88vh;
-    box-shadow: 0 -2px 14px rgba(0,0,0,0.08);
-    transform: translateX(100%);
-  }
-  .deck.show {
-    transform: translateX(0);
-  }
-/* ICONS: TRASH */
-.icon-btn {
-  background: #fff;
-  border: none;
-  padding: 5px 12px;
-  cursor: pointer;
-  border-radius: 7px;
-  box-shadow: 0 1px 4px #0001;
-  transition: background 0.13s, box-shadow 0.13s;
-  vertical-align: middle;
-  outline: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-.icon-btn:focus,
-.icon-btn:hover {
-  background: #fee2e2;
-  box-shadow: 0 2px 8px #d32f2f33;
-}
-.trash-icon {
-  display: block;
-  pointer-events: none;
-}
-#deck-list.drag-over {
-  box-shadow: 0 0 8px 2px #3b82f6;
-  border: 2px dashed #3b82f6;
-}
-.card.dragging {
-  opacity: 0.3;
-  filter: blur(2px) grayscale(1);
-  transition: opacity 0.1s, filter 0.15s;
-  box-shadow: 0 0 24px 4px #3b82f6bb;
-}
-#card-gallery.container,
-#card-gallery {
-    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-    gap: 0.6em;
-    padding: 0.7em 0.2em;
-    max-width: 100vw;
-}
- .container {
-    padding-right: 0px;
- }
-  .card {
-    width: 120px;
-    padding: 0.6em 0.3em;
-  }
-}
 .btn-primary {
   background: linear-gradient(90deg, #3249e8 0%, #1c254e 100%);
   color: #fff;
@@ -378,6 +316,43 @@ header {
   border-color: #912e2e;
   box-shadow: 0 2px 8px #a41a1a88;
   transform: scale(0.98);
+}
+/* NEGATIVE SMALL BUTTON */
+.btn-negative-secondary {
+  background: linear-gradient(90deg, #bb2d2d 0%, #2b3b57 100%);
+  color: #fff;
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  font-size: 0.95em;
+  font-weight: 600;
+  border: 2px solid #4761e6;
+  border-radius: 10px;
+  padding: 0.32em 1.1em;
+  box-shadow: 0 1px 6px #a41a1a33;
+  letter-spacing: 0.03em;
+  transition: 
+    background 0.18s, 
+    border-color 0.18s, 
+    box-shadow 0.19s,
+    color 0.18s,
+    transform 0.13s;
+  outline: none;
+  text-shadow: 0 1px 3px #1115;
+  cursor: pointer;
+}
+.btn-negative-secondary:hover,
+.btn-negative-secondary:focus {
+  background: linear-gradient(90deg, #d32f2f 0%, #3e1c1c 100%);
+  color: #ffdada;
+  border-color: #e57373;
+  box-shadow: 0 4px 16px #a41a1abb, 0 0 0 2px #ffb4b488;
+  transform: scale(1.05);
+}
+.btn-negative-secondary:active {
+  background: linear-gradient(90deg, #912e2e 0%, #2b3b57 100%);
+  color: #fff;
+  border-color: #912e2e;
+  box-shadow: 0 1px 4px #a41a1a88;
+  transform: scale(0.97);
 }
 #deck-list.drag-over {
   box-shadow: 0 0 8px 2px #3b82f6;
@@ -1074,4 +1049,32 @@ header {
     font-size: 1em;
     padding: 0.8em 0.2em;
   }
+}
+/* Mobile CSS Adjustments 900px for tablets*/
+@media (max-width: 900px) {
+.deck {
+    width: 95vw;
+    left: unset;
+    right: 0;
+    top: 56px;
+    max-width: 100vw;
+    border-left: none;
+    border-top: 2px solid #ccc;
+    height: 88vh;
+    box-shadow: 0 -2px 14px rgba(0,0,0,0.08);
+    transform: translateX(100%);
+  }
+  .deck.show {
+    transform: translateX(0);
+  }
+.trash-icon {
+  display: block;
+  pointer-events: none;
+}
+.card.dragging {
+  opacity: 0.3;
+  filter: blur(2px) grayscale(1);
+  transition: opacity 0.1s, filter 0.15s;
+  box-shadow: 0 0 24px 4px #3b82f6bb;
+}
 }
