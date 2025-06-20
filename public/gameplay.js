@@ -160,7 +160,10 @@ function renderGameState() {
       div.ondragstart = (e) => {
         e.dataTransfer.setData("text/plain", cardObj.instanceId);
         e.dataTransfer.setData("source", "hand");
+        div.classList.add('dragging');
+        e.dataTransfer.setDragImage(div, div.offsetWidth / 2, div.offsetHeight / 2);
       };
+      div.ondragend = () => div.classList.remove('dragging');
       const img = document.createElement('img');
       img.src = card.image;
       img.alt = card.name;
