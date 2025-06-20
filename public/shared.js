@@ -44,7 +44,6 @@ function showFullCardModal(cardObj) {
   if (modalContent) {
     modalContent.innerHTML = `
       <img src="${card.image}" alt="${card.name}">
-      <h2 style="text-align:center; color:white; margin-top:12px;">${card.name}</h2>
       <div style="text-align:center;">
         ${card.hp !== undefined ? `HP: ${card.hp}` : ''}
         ${card.atk !== undefined ? ` | ATK: ${card.atk}` : ''}
@@ -66,10 +65,7 @@ function showFullCardModal(cardObj) {
     modal.style.display = "flex";
   }
 }
-// IMAGE MODAL CLOSE LOGIC
-document.querySelector('.close').onclick = () => {
-  document.getElementById('image-modal').style.display = "none";
-};
+// IMAGE MODAL CLOSE
 document.getElementById('image-modal').onclick = (e) => {
   if (e.target.id === 'image-modal') {
     document.getElementById('image-modal').style.display = "none";
