@@ -811,28 +811,45 @@ header {
 /* PROFILE (top-left corner) */
 #profile-area {
   position: absolute;
-  top: 14px;
+  top: 10px;
   left: 16px;
   z-index: 2000;
   cursor: pointer;
-  border-radius: 50%;
-  background: #fff;
-  padding: 3px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.07);
-  transition: box-shadow 0.2s;
+  /* Remove background, padding, and box-shadow for a clean look */
+  background: none !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  border-radius: 50%; /* for pointer events, not for visuals */
+  transition: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 #profile-area:hover {
-  box-shadow: 0 4px 16px rgba(0,0,0,0.14);
-}
-#profile-pic {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #bbb;
-  background: #f4f4f4;
+  box-shadow: none;
 }
 
+/* Bigger, clean avatar */
+#profile-pic {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2.5px solid #bbb;
+  background: none;
+}
+
+/* Responsive: shrink on mobile */
+@media (max-width: 600px) {
+  #profile-pic {
+    width: 46px;
+    height: 46px;
+  }
+  #profile-area {
+    top: 4px;
+    left: 4px;
+  }
+}
 
 /* Profile menu (dropdown/modal) */
 #profile-menu {
