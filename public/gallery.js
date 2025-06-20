@@ -64,6 +64,13 @@ function createCardDiv(card) {
     const deck = getCurrentDeck();
     const div = document.createElement('div');
     div.className = 'card';
+  // DRAG AND DROP SUPPORT
+    div.setAttribute('draggable', 'true');
+    div.addEventListener('dragstart', function(e) {
+      e.dataTransfer.setData('card-id', card.id);
+    // Optionally, for custom drag image:
+    // e.dataTransfer.setDragImage(div, 20, 20);
+  });
     if (card.rarity) {
     div.setAttribute('data-rarity', card.rarity);
   }
@@ -118,7 +125,25 @@ function createCardDiv(card) {
     div.appendChild(btn);
     return div;
 }
-
+// --- DRAG AND DROP FOR DECK BUILDER --- //
+deckList.addEventListener('dragover', function(e) {
+  e.preventDefault();
+  deckList.classList.add('drag-over');
+});
+deckList.addEventListener('dragleave', function(e) {
+  deckList.classList.remove('drag-over');
+});
+deckList.addEventListener('drop', function(e) {
+  e.preventDefault();
+  deckList.classList.remove('drag-over');
+  const cardId = e.dataTransfer.getData('card-id');
+  if(cardId) {
+    addCardToDeck(cardId);
+    updateDeckDisplay();
+    renderGallery();
+    setTimeout(() => deckPanel.classList.add('show'), 0);
+  }
+});
 // DECK CREATION LOGIC
 function updateDeckDisplay() {
   const deck = getCurrentDeck();
