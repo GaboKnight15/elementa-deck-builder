@@ -439,9 +439,15 @@ function cleanCard(cardObj) {
   delete cleaned.orientation;
   return cleaned;
 }
-
+// CLOSE MODAL BEFORE OPENING A NEW ONE
+function closeAllModals() {
+  document.querySelectorAll('.modal').forEach(modal => {
+    modal.style.display = 'none';
+  });
+}
 // OPEN DECK MODAL
 function openDeckModal() {
+  closeAllModals();
   const modal = document.getElementById('deck-modal');
   // Always attach the close-on-backdrop handler
   modal.onclick = function(e) {
@@ -856,6 +862,7 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
 
 // ==== VOID MODAL ====
 function openVoidModal() {
+  closeAllModals();
   let modal = document.getElementById('void-modal');
   if (!modal) {
     modal = document.createElement('div');
