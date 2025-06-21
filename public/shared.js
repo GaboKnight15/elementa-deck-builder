@@ -34,13 +34,19 @@ document.querySelectorAll('#main-nav button[data-section]').forEach(btn => {
     // Show the one matching the button's data-section
     const target = btn.getAttribute('data-section');
     document.getElementById(target).style.display = '';
+
+    // Call section-specific render logic
+    if (target === 'gallery-section' && typeof renderGallery === 'function') {
+      renderGallery();
+    }
+    if (target === 'shop-section' && typeof renderShop === 'function') {
+      renderShop();
+    }
     if (target === 'gameplay-section') {
       const bf = document.getElementById('battlefield-container');
       if (bf) bf.style.display = '';
-      // Optionally, start or reset the game state here:
       if (typeof setupBattlefieldGame === "function") setupBattlefieldGame();
     } else {
-      // Hide battlefield-container when not in gameplay
       const bf = document.getElementById('battlefield-container');
       if (bf) bf.style.display = 'none';
     }
