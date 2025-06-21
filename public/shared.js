@@ -38,8 +38,8 @@ document.querySelectorAll('#main-nav button[data-section]').forEach(btn => {
     if (target === 'gallery-section' && typeof renderGallery === 'function') {
       renderGallery();
     }
-    if (target === 'shop-section' && typeof renderShop === 'function') {
-      renderShop();
+    if (target === 'shop-section' && typeof window.showShop === 'function') {
+      window.showShop();
     }
     if (target === 'gameplay-section') {
       const bf = document.getElementById('battlefield-container');
