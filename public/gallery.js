@@ -119,13 +119,15 @@ function createCardDiv(card) {
     btn.classList.add('btn-secondary');
     btn.disabled = !canAddCard(card);
     btn.onclick = () => {
-      if (!canAddCard(card)) return;
-      deck[card.id] = (deck[card.id] || 0) + 1;
-      setCurrentDeck(deck);
-      updateDeckDisplay();
-      renderGallery();
-      setTimeout(() => deckPanel.classList.add('show'), 0);
-    };
+    if (!canAddCard(card)) return;
+    deck[card.id] = (deck[card.id] || 0) + 1;
+    setCurrentDeck(deck);
+    updateDeckDisplay();
+    renderGallery();
+    if (!deckPanel.classList.contains('show')) {
+      deckPanel.classList.add('show');
+    }
+};
     div.appendChild(btn);
     return div;
 }
@@ -218,7 +220,8 @@ function updateDeckDisplay() {
   const removeBtn = document.createElement('button');
   removeBtn.className = 'icon-btn-negative';
   removeBtn.textContent = '−';
-  removeBtn.onclick = () => {
+  removeBtn.onclick = (e) => {
+    e.stopPropagation();
     deck[card.id]--;
     if (deck[card.id] <= 0) {
       delete deck[card.id];
@@ -226,10 +229,9 @@ function updateDeckDisplay() {
     setCurrentDeck(deck);
     updateDeckDisplay();
     renderGallery();
-    if (!deckPanel.classList.contains('show')) {
-        deckPanel.classList.add('show');
-    }
+    deckPanel.classList.add('show');
   };
+};
   li.appendChild(img);
   li.appendChild(badge);
   li.appendChild(removeBtn);
