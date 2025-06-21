@@ -24,6 +24,22 @@ const dummyCards = [
 ];
 
 // ==========================
+// === SECTION NAVIGATION ===
+// ==========================
+// Add nav button listeners
+document.querySelectorAll('#main-nav button[data-section]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    // Hide all content sections
+    document.querySelectorAll('section[id$="-section"]').forEach(section => section.style.display = 'none');
+    // Show the one matching the button's data-section
+    const target = btn.getAttribute('data-section');
+    document.getElementById(target).style.display = '';
+  });
+});
+// Optionally, show builder-section by default on load
+document.getElementById('builder-section').style.display = '';
+
+// ==========================
 // === RENDERING / UI ===
 // ==========================
 function getCardBgClass(card) {
