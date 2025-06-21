@@ -88,22 +88,7 @@ label {
   z-index: 2;
   box-shadow: 0 1px 4px rgba(0,0,0,0.12);
   }
-    /* Animated Add-to-Deck Button */
-    .card button {
-  margin-top: 10px;
-  background: linear-gradient(90deg, #007BFF 60%, #5ec6fa 100%);
-  color: #fff;
-  font-weight: bold;
-  border: none;
-  border-radius: 6px;
-  transition: background 0.2s, transform 0.13s;
-  padding: 0.4em 1.1em;
-}
-.card button:hover:enabled {
-  background: linear-gradient(90deg, #009fff 60%, #44e0e0 100%);
-  transform: scale(1.06);
-}
-   /* Rarity Border */ 
+/* Rarity Border */ 
 .card[data-rarity="Legendary"] {
   border: 2px solid gold;
   box-shadow: 0 0 10px gold;
@@ -1028,9 +1013,11 @@ label {
   align-items: center;
   min-width: 280px;
 }
-#profile-icon-modal-content h3 {
-  margin: 0 0 16px 0;
-  color: #222;
+.modal-content {
+  color: #fff; /* or try #f7faff for a softer futuristic white */
+  text-shadow: 0 0 6px #0ff2, 0 1px 8px #2238; /* optional: subtle glow */
+  font-weight: 600;
+  letter-spacing: 0.04em;
 }
 #profile-icons {
   display: flex;
