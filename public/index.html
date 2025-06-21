@@ -103,13 +103,13 @@
     <button id="toggle-deck-btn" class="btn-primary">Toggle Deck</button>
   </div>
   <!-- Filter Gallery -->
-  <div id="filters" style="margin: 1em;">
+  <div id="filters" class="filter-row" style="margin: 1em;">
     <label>
       Name:
       <input type="text" id="filter-name" placeholder="Search by name..." />
     </label>
     <label>Color:
-      <select id="filter-color">
+      <select id="filter-color" class="filter-select">
         <option value="">All</option>
         <option value="green">Green</option>
         <option value="red">Red</option>
@@ -122,7 +122,7 @@
       </select>
     </label>
   <label>Category:
-  <select id="filter-category">
+  <select id="filter-category" class="filter-select">
     <option value="">All</option>
     <option value="creature">Creature</option>
     <option value="artifact">Artifact</option>
@@ -131,7 +131,7 @@
   </select>
   </label>
     <label>Type:
-      <select id="filter-type">
+      <select id="filter-type" class="filter-select">
         <option value="">All</option>
         <option value="evolution">Evolution</option>
         <option value="fusion">Fusion</option>
@@ -147,7 +147,7 @@
       </select>
     </label>
     <label>Rarity:
-      <select id="filter-rarity">
+      <select id="filter-rarity" class="filter-select">
         <option value="">All</option>
         <option value="Basic">Basic</option>
         <option value="Common">Common</option>
@@ -156,7 +156,7 @@
       </select>
     </label>
     <label>Archetype:
-      <select id="filter-archetype">
+      <select id="filter-archetype" class="filter-select">
         <option value="">All</option>
         <option value="Blazefeather">Blazefeather</option>
         <option value="Cindercore">Cindercore</option>
@@ -170,7 +170,7 @@
       </select>
     </label>
     <label>Ability:
-      <select id="filter-ability">
+      <select id="filter-ability" class="filter-select">
         <option value="">All</option>
         <option value="ambush">Ambush</option>
         <option value="dive">Dive</option>
