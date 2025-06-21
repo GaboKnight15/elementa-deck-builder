@@ -44,53 +44,13 @@
 </div> 
 </header>
 
-<!-- BATTLEFIELD UI -->  
-<div id="battlefield-container" style="display:none;"> 
-  <div id="battlefield">
-    <!-- BACK TO DECK BUILDER BUTTON -->
-    <button id="back-to-builder-btn" class="btn-primary">Back to Deck Builder</button>
-    <!-- LOBBY UI -->
-    <div id="lobby-ui" style="display:none;">
-      <button id="create-btn" class="btn-primary">Create Game</button>
-      <input id="room-code-input" placeholder="Enter code to join...">
-      <button id="join-btn" class="btn-primary">Join Game</button>
-      <div id="status"></div>
-    </div>
-    <!-- CHAT UI -->
-    <div id="chat-ui" style="display:none;">
-      <input id="chat-input" placeholder="Type message...">
-      <button id="send-chat-btn">Send</button>
-      <div id="chat-log"></div>
-    </div>
-    
-    <!-- OPPONENT HAND -->
-    <div class="hand-area first-hand-area" id="opponent-hand"></div>
-    <!-- OPPONENT ZONES -->
-    <div class="zone-row" id="opponent-domains-zone"></div>
-    <div class="zone-row" id="opponent-creatures-zone"></div>
-        <!-- PHASE BAR -->
-    <div class="phase-bar" id="phase-bar">
-      <div id="phase-display">
-        <span class="label">Turn:</span>
-        <span class="player" id="phase-player">player</span>
-        <span class="label phase-sep">|</span>
-        <span class="label">Phase:</span>
-        <span class="phase" id="phase-name">draw</span>
-        <button id="next-phase-btn" title="Next Phase" style="margin-left:16px;">⏭</button>
-      </div>
-    </div>
-    <!-- PLAYER CREATURE ZONES AND VOID -->
-    <div class="zone-row" id="player-creatures-zone"></div>
-    <!-- PLAYER DOMAIN ZONES AND DECK -->
-    <div class="zone-row" id="player-domains-zone"></div>
-        <!-- PLAYER HAND-->
-    <div class="hand-area second-hand-area" id="player-hand"></div>
-  </div>
-</div>
 <!-- GALLERY AND DECK BUILDER -->  
-<div id="builder-container">  
+<div id="builder-container">
+  <button id="collection-btn" class="btn-primary">Card Collection</button>
+  <button id="deck-builder-btn" class="btn-primary">Deck Builder</button>
   <button id="start-game-btn" class="btn-primary">Start Game</button>
-  <!-- Deck Slot Selector -->
+  <button id="shop-btn" class="btn-primary">Shop</button>  
+  <!-- DECK SLOTS -->
   <div id="deck-slot-selector" style="margin: 1em;">
     <label for="deck-slot-select">Deck Slot:</label>
     <select id="deck-slot-select"></select>
@@ -103,7 +63,7 @@
     <button id="rename-deck-slot-btn" class="btn-primary">Rename</button>
     <button id="toggle-deck-btn" class="btn-primary">Toggle Deck</button>
   </div>
-  <!-- Filter Gallery -->
+  <!-- FILTER GALLERY -->
   <div id="filters" class="filter-row" style="margin: 1em;">
     <label>
       Name:
@@ -200,19 +160,62 @@
     <button id="reset-deck-btn" class="btn-negative">Reset Deck</button>
   </div>
 </div>
+<!-- BATTLEFIELD UI -->  
+<div id="battlefield-container" style="display:none;"> 
+  <div id="battlefield">
+    <!-- BACK TO DECK BUILDER BUTTON -->
+    <button id="back-to-builder-btn" class="btn-primary">Back to Deck Builder</button>
+    <!-- LOBBY UI -->
+    <div id="lobby-ui" style="display:none;">
+      <button id="create-btn" class="btn-primary">Create Game</button>
+      <input id="room-code-input" placeholder="Enter code to join...">
+      <button id="join-btn" class="btn-primary">Join Game</button>
+      <div id="status"></div>
+    </div>
+    <!-- CHAT UI -->
+    <div id="chat-ui" style="display:none;">
+      <input id="chat-input" placeholder="Type message...">
+      <button id="send-chat-btn">Send</button>
+      <div id="chat-log"></div>
+    </div>
+    
+    <!-- OPPONENT HAND -->
+    <div class="hand-area first-hand-area" id="opponent-hand"></div>
+    <!-- OPPONENT ZONES -->
+    <div class="zone-row" id="opponent-domains-zone"></div>
+    <div class="zone-row" id="opponent-creatures-zone"></div>
+        <!-- PHASE BAR -->
+    <div class="phase-bar" id="phase-bar">
+      <div id="phase-display">
+        <span class="label">Turn:</span>
+        <span class="player" id="phase-player">player</span>
+        <span class="label phase-sep">|</span>
+        <span class="label">Phase:</span>
+        <span class="phase" id="phase-name">draw</span>
+        <button id="next-phase-btn" title="Next Phase" style="margin-left:16px;">⏭</button>
+      </div>
+    </div>
+    <!-- PLAYER CREATURE ZONES AND VOID -->
+    <div class="zone-row" id="player-creatures-zone"></div>
+    <!-- PLAYER DOMAIN ZONES AND DECK -->
+    <div class="zone-row" id="player-domains-zone"></div>
+        <!-- PLAYER HAND-->
+    <div class="hand-area second-hand-area" id="player-hand"></div>
+  </div>
+</div>
 <!-- Modal for full image view -->
 <div id="deck-selection-modal"></div>
   <!-- SHOW FULL IMAGE -->
   <div id="image-modal" class="modal" style="display:none;">
   <div id="modal-img-content"></div>
 </div>
-  <!-- Deck Search Modal -->
+  <!-- DECK MODAL -->
 <div id="deck-modal" class="modal">
   <div class="modal-content">
     <div class="modal-card-list"></div>
   </div>
 </div>
-  <!-- Void Search Modal -->
+  <!-- VOID MODAL -->
 <div id="void-modal" class="modal">
   <div class="modal-content">
     <h3>Void</h3>
