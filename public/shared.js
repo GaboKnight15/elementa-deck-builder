@@ -22,7 +22,7 @@ const dummyCards = [
 { id: 'basicplains', name: 'Plains', rarity: 'Basic', image: 'CardImages/Domains/White Basic Location.png', category: 'domain', color: 'white', type: 'domain', hp: 5, cost: 1},
 { id: 'basicshadowforest', name: 'Shadow Forest', rarity: 'Basic', image: 'CardImages/Domains/Black Basic Location.png', category: 'domain', color: 'black', type: 'domain', hp: 5, cost: 1},
 ];
-
+const gallery = document.getElementById('card-gallery');
 // ==========================
 // === SECTION NAVIGATION ===
 // ==========================
