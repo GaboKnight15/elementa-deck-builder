@@ -68,6 +68,9 @@ label {
 .card-modal-dark:hover {
   background: #222 !important;
 }
+#gallery-container {
+  background: #1a2533;
+}
 #builder-container {
   background: #1a2533;
 }
