@@ -367,6 +367,55 @@ label {
   box-shadow: 0 1px 4px #a41a1a88;
   transform: scale(0.97);
 }
+.filter-select {
+  background: linear-gradient(90deg, #22304a 0%, #1a2533 100%);
+  color: #f7faff;
+  border: 2px solid #4761e6;
+  border-radius: 8px;
+  padding: 0.25em 1.6em 0.25em 0.7em;
+  font-size: 1em;
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  font-weight: 500;
+  box-shadow: 0 1px 6px #1a224433;
+  transition: border-color 0.18s, box-shadow 0.19s, color 0.18s, background 0.18s;
+  outline: none;
+  margin-right: 0.6em;
+}
+.filter-select:focus, .filter-select:hover {
+  border-color: #7aa6ff;
+  box-shadow: 0 0 0 2px #5081ff88;
+  background: linear-gradient(90deg, #2b3a6e 0%, #202840 100%);
+}
+.filter-input {
+  background: linear-gradient(90deg, #22304a 0%, #1a2533 100%);
+  color: #f7faff;
+  border: 2px solid #4761e6;
+  border-radius: 8px;
+  padding: 0.25em 0.9em;
+  font-size: 1em;
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  font-weight: 500;
+  box-shadow: 0 1px 6px #1a224433;
+  transition: border-color 0.18s, box-shadow 0.19s, color 0.18s, background 0.18s;
+  outline: none;
+  margin-right: 0.6em;
+}
+.filter-input:focus, .filter-input:hover {
+  border-color: #7aa6ff;
+  box-shadow: 0 0 0 2px #5081ff88;
+  background: linear-gradient(90deg, #2b3a6e 0%, #202840 100%);
+}
+::placeholder {
+  color: #aeb8de;
+  opacity: 1;
+}
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.7em;
+  margin-bottom: 1em;
+}
 #deck-list.drag-over {
   box-shadow: 0 0 8px 2px #3b82f6;
   border: 2px dashed #3b82f6;
