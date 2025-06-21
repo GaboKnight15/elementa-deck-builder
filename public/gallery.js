@@ -189,40 +189,54 @@ function updateDeckDisplay() {
     heading.style.marginBottom = "2px";
     deckList.appendChild(heading);
 
-    for (const { card, count } of sections[key]) {
-      const li = document.createElement('li');
-      const img = document.createElement('img');
-      img.src = card.image;
-      img.alt = card.name;
-      img.style.width = '40px';
-      img.style.height = 'auto';
-      img.style.marginRight = '8px';
-      img.style.verticalAlign = 'middle';
-      img.style.borderRadius = '4px';
+  for (const { card, count } of sections[key]) {
+  const li = document.createElement('li');
+  li.style.display = 'flex';
+  li.style.alignItems = 'center';
+  li.style.gap = '10px';
 
-      const span = document.createElement('span');
-      span.textContent = `${card.name} ×${count} `;
+  const img = document.createElement('img');
+  img.src = card.image;
+  img.alt = card.name;
+  img.style.width = '56px';
+  img.style.height = 'auto';
+  img.style.borderRadius = '6px';
+  img.style.display = 'block';
 
-      li.appendChild(img);
-      li.appendChild(span);
+  // COUNTER BADGE
+  const badge = document.createElement('span');
+  badge.textContent = `×${count}`;
+  badge.className = 'deck-count-badge';
+  badge.style.background = '#22304a';
+  badge.style.color = '#ffdb64';
+  badge.style.fontWeight = 'bold';
+  badge.style.fontSize = '1em';
+  badge.style.padding = '3px 12px';
+  badge.style.borderRadius = '10px';
+  badge.style.marginLeft = '5px';
 
-      const removeBtn = document.createElement('button');
-      removeBtn.className = 'icon-btn-negative';
-      removeBtn.textContent = '−';
-      removeBtn.onclick = () => {
-        deck[card.id]--;
-        if (deck[card.id] <= 0) {
-          delete deck[card.id];
-        }
-        setCurrentDeck(deck);
-        updateDeckDisplay();
-        renderGallery();
-        setTimeout(() => deckPanel.classList.add('show'), 0);
-      };
-      li.appendChild(removeBtn);
-      deckList.appendChild(li);
+  li.appendChild(img);
+  li.appendChild(badge);
+
+  const removeBtn = document.createElement('button');
+  removeBtn.className = 'icon-btn-negative';
+  removeBtn.textContent = '−';
+  removeBtn.style.marginLeft = 'auto';
+  removeBtn.onclick = () => {
+    deck[card.id]--;
+    if (deck[card.id] <= 0) {
+      delete deck[card.id];
     }
-  }
+    setCurrentDeck(deck);
+    updateDeckDisplay();
+    renderGallery();
+    setTimeout(() => deckPanel.classList.add('show'), 0);
+  };
+
+  li.appendChild(removeBtn);
+  deckList.appendChild(li);
+}
+}
 
   cardCount.textContent = total;
   setCurrentDeck(deck);
