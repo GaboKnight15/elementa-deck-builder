@@ -115,6 +115,7 @@ function createCardDiv(card) {
     btn.classList.add('btn-secondary');
     btn.disabled = !canAddCard(card);
     btn.onclick = () => {
+      e.stopPropagation();
       if (!canAddCard(card)) return;
       deck[card.id] = (deck[card.id] || 0) + 1;
       setCurrentDeck(deck);
@@ -402,11 +403,6 @@ function renderGallery() {
     deckPanel.classList.toggle('show');
     document.body.classList.toggle('deck-open', deckPanel.classList.contains('show'));
   };
-  window.addEventListener('click', (e) => {
-    if (!deckPanel.contains(e.target) && e.target !== toggleBtn && deckPanel.classList.contains('show')) {
-      deckPanel.classList.remove('show');
-    }
-  });
 
 // ==========================
 // === INITIALIZATION ===
