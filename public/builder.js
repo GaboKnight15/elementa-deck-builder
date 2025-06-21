@@ -14,7 +14,7 @@
 // ==========================
 // === DOM REFERENCES ===
 // ==========================
-const gallery            = document.getElementById('card-gallery-builder');
+const builderGallery     = document.getElementById('card-gallery-builder');
 const deckSlotSelect     = document.getElementById('deck-slot-select');
 const addDeckSlotBtn     = document.getElementById('add-deck-slot-btn');
 const deleteDeckSlotBtn  = document.getElementById('delete-deck-slot-btn');
@@ -267,7 +267,7 @@ function canAddCard(card) {
 }
 
 function renderGallery() {
-    gallery.innerHTML = '';
+    builderGallery.innerHTML = '';
     const selectedColor = document.getElementById('filter-color-builder').value.toLowerCase();
     const selectedType = document.getElementById('filter-type-builder').value.toLowerCase();
     const selectedRarity = document.getElementById('filter-rarity-builder').value.toLowerCase();
@@ -304,7 +304,7 @@ function renderGallery() {
           : [card.ability?.toLowerCase()];
         if (!abilities.includes(selectedAbility)) return;
       }
-      gallery.appendChild(createCardDiv(card));
+      builderGallery.appendChild(createCardDiv(card));
     });
   }
 // ==========================
