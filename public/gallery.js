@@ -193,7 +193,7 @@ function updateDeckDisplay() {
   const li = document.createElement('li');
   li.style.display = 'flex';
   li.style.alignItems = 'center';
-  li.style.gap = '10px';
+  li.style.gap = '8px';
 
   const img = document.createElement('img');
   img.src = card.image;
@@ -215,13 +215,9 @@ function updateDeckDisplay() {
   badge.style.borderRadius = '10px';
   badge.style.marginLeft = '5px';
 
-  li.appendChild(img);
-  li.appendChild(badge);
-
   const removeBtn = document.createElement('button');
   removeBtn.className = 'icon-btn-negative';
   removeBtn.textContent = '−';
-  removeBtn.style.marginLeft = 'auto';
   removeBtn.onclick = () => {
     deck[card.id]--;
     if (deck[card.id] <= 0) {
@@ -232,7 +228,8 @@ function updateDeckDisplay() {
     renderGallery();
     setTimeout(() => deckPanel.classList.add('show'), 0);
   };
-
+  li.appendChild(img);
+  li.appendChild(badge);
   li.appendChild(removeBtn);
   deckList.appendChild(li);
 }
