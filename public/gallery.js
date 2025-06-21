@@ -16,7 +16,6 @@
 // ==========================
 const deckSlotSelect     = document.getElementById('deck-slot-select');
 const addDeckSlotBtn     = document.getElementById('add-deck-slot-btn');
-const renameDeckSlotBtn  = document.getElementById('rename-deck-slot-btn');
 const deleteDeckSlotBtn  = document.getElementById('delete-deck-slot-btn');
 const deckTitle          = document.getElementById('deck-title');
 const gallery            = document.getElementById('card-gallery');
@@ -26,8 +25,8 @@ const modal              = document.getElementById('image-modal');
 const modalImg           = document.getElementById('modal-img');
 const closeBtn           = document.querySelector('.close');
 const toggleBtn          = document.getElementById('toggle-deck-btn');
-const startGameBtn       = document.getElementById('start-game-btn');
 const deckPanel          = document.querySelector('.deck');
+const deckRenameBtn      = document.getElementById('deck-rename-btn');
 
 function saveDeckState() {
     localStorage.setItem(DECK_SLOTS_KEY, JSON.stringify(deckSlots));
@@ -243,12 +242,6 @@ function updateDeckDisplay() {
   setCurrentDeck(deck);
   saveDeckState();
 }
-function showBuilder() {
-  document.getElementById('builder-container').style.display = '';
-  document.getElementById('battlefield-container').style.display = 'none';
-  document.getElementById('battlefield').style.display = 'none';
-  // Show builder-only elements, etc.
-}
 function getCardCategory(card) {
   return card.category ? card.category.toLowerCase() : '';
 }
@@ -372,47 +365,6 @@ function renderGallery() {
       gallery.appendChild(createCardDiv(card));
     });
   }
-// START GAME LOGIC
-startGameBtn.onclick = () => {
-  showBattlefield();
-  battlefield.style.display = 'block';
-  const deckObj = getCurrentDeck();
-  
-  gameState.playerDeck = shuffle(buildDeck(deckObj));
-  gameState.playerHand = [];
-  gameState.playerCreatures = [];
-  gameState.playerDomains = [];
-  gameState.playerVoid = [];
-
-  gameState.opponentDeck = shuffle(buildDeck(deckObj));
-  gameState.opponentHand = [];
-  gameState.opponentCreatures = [];
-  gameState.opponentDomains = [];
-  gameState.opponentVoid = [];
-  renderGameState();
-  setupDropZones();
-
-  // GAMEPLAY LOGIC //
-  // SET-UP DRAG AND DROP EXCEPT VOIDE
-['player-creatures-zone', 'player-domains-zone'].forEach(zoneId => {
-  const zone = document.getElementById(zoneId);
-  if (!zone) return;
-  zone.ondragover = (e) => {
-    e.preventDefault();
-    zone.classList.add('drag-over');
-  };
-  zone.ondragleave = () => zone.classList.remove('drag-over');
-  zone.ondrop = (e) => {
-    e.preventDefault();
-    zone.classList.remove('drag-over');
-    const instanceId = e.dataTransfer.getData('text/plain');
-    let targetArr = zoneId === "player-creatures-zone" ? gameState.playerCreatures : gameState.playerDomains;
-    moveCard(instanceId, gameState.playerHand, targetArr, {orientation: "vertical"});
-    renderGameState();
-    setupDropZones();
-    };
-  });
-};
 // ==========================
 // === EVENT LISTENERS ===
 // ==========================
@@ -441,24 +393,24 @@ startGameBtn.onclick = () => {
     renderGallery();
   });
 // RENAME DECK SLOT
-  renameDeckSlotBtn.addEventListener('click', () => {
-    let newName = prompt("Rename deck to:", currentDeckSlot);
-    if (!newName || newName === currentDeckSlot) return;
-    if (deckSlots.includes(newName)) {
-      alert("Deck name already exists!");
-      return;
-    }
-    let idx = deckSlots.indexOf(currentDeckSlot);
-    let deckData = decks[currentDeckSlot];
-    deckSlots[idx] = newName;
-    decks[newName] = deckData;
-    delete decks[currentDeckSlot];
-    currentDeckSlot = newName;
-    saveDeckState();
-    refreshDeckSlotSelect();
-    updateDeckDisplay();
-    renderGallery();
-  });
+  deckRenameBtn.addEventListener('click', () => {
+  let newName = prompt("Rename deck to:", currentDeckSlot);
+  if (!newName || newName === currentDeckSlot) return;
+  if (deckSlots.includes(newName)) {
+    alert("Deck name already exists!");
+    return;
+  }
+  let idx = deckSlots.indexOf(currentDeckSlot);
+  let deckData = decks[currentDeckSlot];
+  deckSlots[idx] = newName;
+  decks[newName] = deckData;
+  delete decks[currentDeckSlot];
+  currentDeckSlot = newName;
+  saveDeckState();
+  refreshDeckSlotSelect();
+  updateDeckDisplay();
+  renderGallery();
+});
 // DELETE DECK SLOT
   deleteDeckSlotBtn.addEventListener('click', () => {
     if (deckSlots.length === 1) {
