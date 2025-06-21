@@ -8,7 +8,7 @@ const shopContainer = document.getElementById('shop-container');
 const packOptions = document.getElementById('pack-options');
 const packOpeningArea = document.getElementById('pack-opening-area');
 const closeShopBtn = document.getElementById('close-shop-btn');
-
+ 
 // Helper: get N random cards from dummyCards
 function getRandomCards(n) {
   // Use a shallow copy so we don't mutate original
