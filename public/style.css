@@ -13,6 +13,26 @@ label {
   font-weight: 600;
   letter-spacing: 0.03em;
 }
+.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5em;
+  width: 100%;
+  padding: 0 2vw;
+}
+
+.header-row h1 {
+  flex: 1 0 auto;
+  margin: 0;
+}
+
+#main-nav {
+  flex: 2 1 auto;
+  display: flex;
+  justify-content: center;
+  gap: 1.2em;
+}
 .container {
       max-width: 1200px; padding: 1em; padding-right: 270px;
       display: flex; flex-wrap: wrap; gap: 1em; justify-content: center;
@@ -579,7 +599,7 @@ label {
   justify-content: center;
   width: 100%;
 }
-#back-to-builder-btn {
+#deck-builder-btn {
   margin-bottom: 16px;
   align-self: center;
 }
