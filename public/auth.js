@@ -80,7 +80,7 @@ function renderProfileIcons(selectedIcon) {
     firebase.firestore().collection('users').doc(user.uid)
       .set({ profilePic: iconUrl }, {merge: true})
       .then(() => {
-        document.getElementById('profile-pic').src = iconUrl;
+        document.getElementById('profile-pic').src = iconUrl + '?v=' + Date.now();
         profileIconModal.style.display = 'none';
       });
   }
@@ -186,6 +186,10 @@ auth.onAuthStateChanged(user => {
     // Show profile account section, hide auth section
     profileAuthSection.classList.add('hidden');
     profileAccountSection.classList.remove('hidden');
+    profileAuthSection.classList.add('hidden');
+    profileAccountSection.classList.remove('hidden');
+  // Show username immediately
+    profileUsernameDisplay.textContent = user.displayName || user.email || "";
     loadProfile(user);
   } else {
     // Show login/signup, hide profile account section
