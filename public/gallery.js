@@ -226,7 +226,9 @@ function updateDeckDisplay() {
     setCurrentDeck(deck);
     updateDeckDisplay();
     renderGallery();
-    setTimeout(() => deckPanel.classList.add('show'), 0);
+    if (!deckPanel.classList.contains('show')) {
+        deckPanel.classList.add('show');
+    }
   };
   li.appendChild(img);
   li.appendChild(badge);
