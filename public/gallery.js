@@ -1,0 +1,124 @@
+// ==========================
+// === GALLERY LOGIC ===
+// ==========================
+// ==========================
+// === DOM REFERENCES ===
+// ==========================
+const gallery            = document.getElementById('card-gallery');
+// ==========================
+// === RENDERING CARDS ===
+// ==========================
+function createCardDiv(card) {
+    const div = document.createElement('div');
+    div.className = 'card';
+    if (card.rarity) {
+    div.setAttribute('data-rarity', card.rarity);
+  }
+    div.classList.add(getCardBgClass(card));
+
+    const img = document.createElement('img');
+    img.src = card.image;
+    img.onerror = function() {
+      this.onerror = null;
+      this.src = "CardImages/Domains/placeholder.png";
+    };
+    img.alt = card.name;
+    img.onclick = (e) => {
+      e.stopPropagation();
+      showFullCardModal(card);
+    };
+    div.appendChild(img);
+
+    const name = document.createElement('h4');
+    name.textContent = card.name;
+    div.appendChild(name);
+
+    const stats = document.createElement('div');
+    stats.style.fontSize = '0.9em';
+    stats.innerHTML = [
+      card.hp !== undefined ? `HP: ${card.hp}` : '',
+      card.atk !== undefined ? `ATK: ${card.atk}` : '',
+      card.def !== undefined ? `DEF: ${card.def}` : '',
+      card.cost !== undefined ? `Cost: ${card.cost}` : ''
+    ].filter(Boolean).join(' | ');
+    if (stats.innerHTML.trim() !== '') div.appendChild(stats);
+
+    const details = document.createElement('div');
+    details.style.fontSize = '0.8em';
+    details.textContent = [
+      card.rarity,
+      Array.isArray(card.type) ? card.type.join(', ') : card.type
+    ].filter(Boolean).join(' | ');
+    if (details.textContent.trim() !== '') div.appendChild(details);
+    return div;
+}
+
+function renderGallery() {
+    gallery.innerHTML = '';
+    const selectedColor = document.getElementById('filter-color').value.toLowerCase();
+    const selectedType = document.getElementById('filter-type').value.toLowerCase();
+    const selectedRarity = document.getElementById('filter-rarity').value.toLowerCase();
+    const nameFilter = document.getElementById('filter-name').value.toLowerCase();
+    const selectedArchetype = document.getElementById('filter-archetype').value.toLowerCase();
+    const selectedAbility = document.getElementById('filter-ability').value.toLowerCase();
+    const selectedCategory = document.getElementById('filter-category').value.toLowerCase();
+    dummyCards.forEach(card => {
+      if (nameFilter && !card.name.toLowerCase().includes(nameFilter)) return;
+      if (selectedColor) {
+        const colors = Array.isArray(card.color) ? card.color.map(c => c.toLowerCase()) : [card.color.toLowerCase()];
+        if (!colors.includes(selectedColor)) return;
+      }
+      // Filter by category:
+      if (selectedCategory) {
+      if (!card.category || card.category.toLowerCase() !== selectedCategory) return;
+      }
+      if (selectedType) {
+        const types = Array.isArray(card.type) ? card.type.map(t => t.toLowerCase()) : [card.type.toLowerCase()];
+        if (!types.includes(selectedType)) return;
+      }
+      if (selectedRarity) {
+        if (card.rarity.toLowerCase() !== selectedRarity) return;
+      }
+      if (selectedArchetype) {
+        const archetypes = Array.isArray(card.archetype)
+          ? card.archetype.map(a => a.toLowerCase())
+          : [card.archetype?.toLowerCase()];
+        if (!archetypes.includes(selectedArchetype)) return;
+      }
+      if (selectedAbility) {
+        const abilities = Array.isArray(card.ability)
+          ? card.ability.map(a => a.toLowerCase())
+          : [card.ability?.toLowerCase()];
+        if (!abilities.includes(selectedAbility)) return;
+      }
+      gallery.appendChild(createCardDiv(card));
+    });
+  }
+// ==========================
+// === EVENT LISTENERS ===
+// ==========================
+// GALLERY EVENT FILTERS
+  document.getElementById('filter-name').addEventListener('input', renderGallery);
+  document.getElementById('filter-color').addEventListener('change', renderGallery);
+  document.getElementById('filter-category').addEventListener('change', renderGallery);
+  document.getElementById('filter-type').addEventListener('change', renderGallery);
+  document.getElementById('filter-rarity').addEventListener('change', renderGallery);
+  document.getElementById('filter-archetype').addEventListener('change', renderGallery);
+  document.getElementById('filter-ability').addEventListener('change', renderGallery);
+// FILTER COLOR EVENTS
+  document.getElementById('filter-color').addEventListener('change', (e) => {
+    const color = e.target.value.toLowerCase();
+    document.body.className = document.body.className
+      .split(' ')
+      .filter(cls => !cls.startsWith('theme-'))
+      .join(' ')
+      .trim();
+    if (color) {
+      document.body.classList.add(`theme-${color}`);
+    }
+  });
+
+// ==========================
+// === INITIALIZATION ===
+// ==========================
+renderGallery();
