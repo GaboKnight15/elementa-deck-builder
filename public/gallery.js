@@ -2,10 +2,6 @@
 // === GALLERY LOGIC ===
 // ==========================
 // ==========================
-// === DOM REFERENCES ===
-// ==========================
-const gallery            = document.getElementById('card-gallery');
-// ==========================
 // === RENDERING CARDS ===
 // ==========================
 function createCardDiv(card) {
@@ -55,13 +51,13 @@ function createCardDiv(card) {
 
 function renderGallery() {
     gallery.innerHTML = '';
-    const selectedColor = document.getElementById('filter-color').value.toLowerCase();
-    const selectedType = document.getElementById('filter-type').value.toLowerCase();
-    const selectedRarity = document.getElementById('filter-rarity').value.toLowerCase();
-    const nameFilter = document.getElementById('filter-name').value.toLowerCase();
-    const selectedArchetype = document.getElementById('filter-archetype').value.toLowerCase();
-    const selectedAbility = document.getElementById('filter-ability').value.toLowerCase();
-    const selectedCategory = document.getElementById('filter-category').value.toLowerCase();
+    const selectedColor = document.getElementById('filter-color-gallery').value.toLowerCase();
+    const selectedType = document.getElementById('filter-type-gallery').value.toLowerCase();
+    const selectedRarity = document.getElementById('filter-rarity-gallery').value.toLowerCase();
+    const nameFilter = document.getElementById('filter-name-gallery').value.toLowerCase();
+    const selectedArchetype = document.getElementById('filter-archetype-gallery').value.toLowerCase();
+    const selectedAbility = document.getElementById('filter-ability-gallery').value.toLowerCase();
+    const selectedCategory = document.getElementById('filter-category-gallery').value.toLowerCase();
     dummyCards.forEach(card => {
       if (nameFilter && !card.name.toLowerCase().includes(nameFilter)) return;
       if (selectedColor) {
@@ -98,15 +94,15 @@ function renderGallery() {
 // === EVENT LISTENERS ===
 // ==========================
 // GALLERY EVENT FILTERS
-  document.getElementById('filter-name').addEventListener('input', renderGallery);
-  document.getElementById('filter-color').addEventListener('change', renderGallery);
-  document.getElementById('filter-category').addEventListener('change', renderGallery);
-  document.getElementById('filter-type').addEventListener('change', renderGallery);
-  document.getElementById('filter-rarity').addEventListener('change', renderGallery);
-  document.getElementById('filter-archetype').addEventListener('change', renderGallery);
-  document.getElementById('filter-ability').addEventListener('change', renderGallery);
+  document.getElementById('filter-name-gallery').addEventListener('input', renderGallery);
+  document.getElementById('filter-color-gallery').addEventListener('change', renderGallery);
+  document.getElementById('filter-category-gallery').addEventListener('change', renderGallery);
+  document.getElementById('filter-type-gallery').addEventListener('change', renderGallery);
+  document.getElementById('filter-rarity-gallery').addEventListener('change', renderGallery);
+  document.getElementById('filter-archetype-gallery').addEventListener('change', renderGallery);
+  document.getElementById('filter-ability-gallery').addEventListener('change', renderGallery);
 // FILTER COLOR EVENTS
-  document.getElementById('filter-color').addEventListener('change', (e) => {
+  document.getElementById('filter-color-gallery').addEventListener('change', (e) => {
     const color = e.target.value.toLowerCase();
     document.body.className = document.body.className
       .split(' ')
