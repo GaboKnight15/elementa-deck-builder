@@ -414,4 +414,3 @@ loadDeckState();
 refreshDeckSlotSelect();
 updateDeckDisplay();
 renderGallery();
-showBuilder();
