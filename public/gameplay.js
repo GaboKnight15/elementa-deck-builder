@@ -34,7 +34,6 @@ const PHASES = [
 const phasePlayerSpan    = document.getElementById('phase-player');
 const phaseNameSpan      = document.getElementById('phase-name');
 const nextPhaseBtn       = document.getElementById('next-phase-btn');
-const backToBuilderBtn   = document.getElementById('back-to-builder-btn');
 const battlefield        = document.getElementById('battlefield');
 
 // ==========================
@@ -53,15 +52,46 @@ function startSoloGameWithCurrentDeck() {
 }
 window.startSoloGameWithCurrentDeck = startSoloGameWithCurrentDeck;
 
-function showBattlefield() {
-  document.getElementById('builder-container').style.display = 'none';
-  document.getElementById('battlefield-container').style.display = 'flex';
-  document.getElementById('battlefield').style.display = 'block';
-  // Hide builder-only elements, etc.
+function setupBattlefieldGame() {
+  // Insert your battlefield setup logic here
+  const battlefield = document.getElementById('battlefield');
+  if (battlefield) battlefield.style.display = 'block';
+  const deckObj = getCurrentDeck();
+
+  gameState.playerDeck = shuffle(buildDeck(deckObj));
+  gameState.playerHand = [];
+  gameState.playerCreatures = [];
+  gameState.playerDomains = [];
+  gameState.playerVoid = [];
+
+  gameState.opponentDeck = shuffle(buildDeck(deckObj));
+  gameState.opponentHand = [];
+  gameState.opponentCreatures = [];
+  gameState.opponentDomains = [];
+  gameState.opponentVoid = [];
+  renderGameState();
+  setupDropZones();
+
+  // Setup drag and drop handlers
+  ['player-creatures-zone', 'player-domains-zone'].forEach(zoneId => {
+    const zone = document.getElementById(zoneId);
+    if (!zone) return;
+    zone.ondragover = (e) => {
+      e.preventDefault();
+      zone.classList.add('drag-over');
+    };
+    zone.ondragleave = () => zone.classList.remove('drag-over');
+    zone.ondrop = (e) => {
+      e.preventDefault();
+      zone.classList.remove('drag-over');
+      const instanceId = e.dataTransfer.getData('text/plain');
+      let targetArr = zoneId === "player-creatures-zone" ? gameState.playerCreatures : gameState.playerDomains;
+      moveCard(instanceId, gameState.playerHand, targetArr, {orientation: "vertical"});
+      renderGameState();
+      setupDropZones();
+    };
+  });
 }
-
-backToBuilderBtn.onclick = showBuilder;
-
 function getZoneArray(zoneId) {
   switch (zoneId) {
     case "player-creatures-zone": return gameState.playerCreatures;
