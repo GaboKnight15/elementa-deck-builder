@@ -268,13 +268,13 @@ function canAddCard(card) {
 
 function renderGallery() {
     gallery.innerHTML = '';
-    const selectedColor = document.getElementById('filter-color').value.toLowerCase();
-    const selectedType = document.getElementById('filter-type').value.toLowerCase();
-    const selectedRarity = document.getElementById('filter-rarity').value.toLowerCase();
-    const nameFilter = document.getElementById('filter-name').value.toLowerCase();
-    const selectedArchetype = document.getElementById('filter-archetype').value.toLowerCase();
-    const selectedAbility = document.getElementById('filter-ability').value.toLowerCase();
-    const selectedCategory = document.getElementById('filter-category').value.toLowerCase();
+    const selectedColor = document.getElementById('filter-color-builder').value.toLowerCase();
+    const selectedType = document.getElementById('filter-type-builder').value.toLowerCase();
+    const selectedRarity = document.getElementById('filter-rarity-builder').value.toLowerCase();
+    const nameFilter = document.getElementById('filter-name-builder').value.toLowerCase();
+    const selectedArchetype = document.getElementById('filter-archetype-builder').value.toLowerCase();
+    const selectedAbility = document.getElementById('filter-ability-builder').value.toLowerCase();
+    const selectedCategory = document.getElementById('filter-category-builder').value.toLowerCase();
     dummyCards.forEach(card => {
       if (nameFilter && !card.name.toLowerCase().includes(nameFilter)) return;
       if (selectedColor) {
@@ -370,7 +370,7 @@ function renderGallery() {
     renderGallery();
   });
 // FILTER COLOR EVENTS
-  document.getElementById('filter-color').addEventListener('change', (e) => {
+  document.getElementById('filter-color-builder').addEventListener('change', (e) => {
     const color = e.target.value.toLowerCase();
     document.body.className = document.body.className
       .split(' ')
@@ -382,13 +382,13 @@ function renderGallery() {
     }
   });
 // GALLERY EVENT FILTERS
-  document.getElementById('filter-name').addEventListener('input', renderGallery);
-  document.getElementById('filter-color').addEventListener('change', renderGallery);
-  document.getElementById('filter-category').addEventListener('change', renderGallery);
-  document.getElementById('filter-type').addEventListener('change', renderGallery);
-  document.getElementById('filter-rarity').addEventListener('change', renderGallery);
-  document.getElementById('filter-archetype').addEventListener('change', renderGallery);
-  document.getElementById('filter-ability').addEventListener('change', renderGallery);
+  document.getElementById('filter-name-builder').addEventListener('input', renderGallery);
+  document.getElementById('filter-color-builder').addEventListener('change', renderGallery);
+  document.getElementById('filter-category-builder').addEventListener('change', renderGallery);
+  document.getElementById('filter-type-builder').addEventListener('change', renderGallery);
+  document.getElementById('filter-rarity-builder').addEventListener('change', renderGallery);
+  document.getElementById('filter-archetype-builder').addEventListener('change', renderGallery);
+  document.getElementById('filter-ability-builder').addEventListener('change', renderGallery);
   document.getElementById('reset-deck-btn').onclick = () => {
     const deck = getCurrentDeck();
     for (const key in deck) {
