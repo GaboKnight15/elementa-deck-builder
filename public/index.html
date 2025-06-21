@@ -9,7 +9,13 @@
 </head>
 <body>
 <header>
-    <h1>Elementa</h1>
+     <h1>Elementa</h1>
+    <nav id="main-nav">
+      <button id="gallery-btn" class="btn-primary" data-section="gallery-section">Gallery</button>
+      <button id="builder-btn" class="btn-primary" data-section="builder-section">Deck Builder</button>
+      <button id="gameplay-btn" class="btn-primary" data-section="gameplay-section">Start Game</button>
+      <button id="shop-btn" class="btn-primary" data-section="shop-section">Shop</button>
+    </nav>
 <div id="profile-area">
   <img id="profile-pic" src="CardImages/Avatars/Default.png" alt="Profile">
 </div>
@@ -41,15 +47,13 @@
     <div id="profile-icons"></div>
     <button id="close-profile-icon-modal" class="btn-negative" style="margin-top:14px;">Cancel</button>
   </div>
-</div> 
+</div>
 </header>
-
-<!-- GALLERY AND DECK BUILDER -->  
-<div id="builder-container">
-  <button id="collection-btn" class="btn-primary">Card Collection</button>
-  <button id="deck-builder-btn" class="btn-primary">Deck Builder</button>
-  <button id="start-game-btn" class="btn-primary">Start Game</button>
-  <button id="shop-btn" class="btn-primary">Shop</button>  
+            <!-- GALLERY -->
+<section id="gallery-section" style="display:none;"> ... </section> 
+            <!-- DECK BUILDER -->
+<section id="builder-section">  
+<div id="builder-container"> 
   <!-- DECK SLOTS -->
   <div id="deck-slot-selector" style="margin: 1em;">
     <label for="deck-slot-select">Deck Slot:</label>
@@ -160,11 +164,24 @@
     <button id="reset-deck-btn" class="btn-negative">Reset Deck</button>
   </div>
 </div>
-<!-- BATTLEFIELD UI -->  
+</section>
+                    <!-- SHOP -->
+<section id="shop-section" style="display:none;">
+<div id="shop-container" style="display:none;">
+  <h2>Shop</h2>
+  <div id="pack-options">
+    <!-- Example pack buttons -->
+    <button id="booster-btn" class="btn-primary" data-pack="standard">Standard Pack (Free)</button>
+  </div>
+  <div id="pack-opening-area"></div>
+  <button id="close-shop-btn" class="btn-secondary">Back</button>
+</div>
+</section>
+  
+<section id="gameplay-section" style="display:none;">  
+                  <!-- BATTLEFIELD UI -->  
 <div id="battlefield-container" style="display:none;"> 
   <div id="battlefield">
-    <!-- BACK TO DECK BUILDER BUTTON -->
-    <button id="back-to-builder-btn" class="btn-primary">Back to Deck Builder</button>
     <!-- LOBBY UI -->
     <div id="lobby-ui" style="display:none;">
       <button id="create-btn" class="btn-primary">Create Game</button>
@@ -222,6 +239,7 @@
     <div class="modal-card-list"></div>
   </div>
 </div>
+</section>
 <!-- Firebase App (the core Firebase SDK) -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <!-- Firebase Authentication -->
