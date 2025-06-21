@@ -21,9 +21,6 @@ const deckTitle          = document.getElementById('deck-title');
 const gallery            = document.getElementById('card-gallery');
 const deckList           = document.getElementById('deck-list');
 const cardCount          = document.getElementById('card-count');
-const modal              = document.getElementById('image-modal');
-const modalImg           = document.getElementById('modal-img');
-const closeBtn           = document.querySelector('.close');
 const toggleBtn          = document.getElementById('toggle-deck-btn');
 const deckPanel          = document.querySelector('.deck');
 const deckRenameBtn      = document.getElementById('deck-rename-btn');
@@ -268,62 +265,7 @@ function canAddCard(card) {
     if (card.rarity && card.rarity.toLowerCase() === 'common' && count >= 3) return false;
     return true;
 }
-function renderDeckList(deck, deckContainer) {
-  deckContainer.innerHTML = '';
-  // Group cards by type or whatever logic you have
-  for (const [type, cards] of Object.entries(deck.categories)) {
-    const section = document.createElement('div');
-    section.innerHTML = `<strong>${type}</strong>`;
-    deckContainer.appendChild(section);
-    for (const cardObj of cards) {
-      const cardDiv = document.createElement('div');
-      cardDiv.className = 'deck-list-card-row';
 
-      // Card image
-      const img = document.createElement('img');
-      img.src = cardObj.image;
-      img.className = 'deck-list-thumb';
-      cardDiv.appendChild(img);
-
-      // Name and count
-      const nameSpan = document.createElement('span');
-      nameSpan.textContent = `${cardObj.name} ×${cardObj.count}`;
-      cardDiv.appendChild(nameSpan);
-
-      // Add "+" button
-      const plusBtn = document.createElement('button');
-      plusBtn.textContent = '+';
-      plusBtn.className = 'deck-add-btn';
-      plusBtn.onclick = (e) => {
-        e.stopPropagation();
-        addCardToDeck(cardObj.id); // Your add logic
-        renderDeckList(deck, deckContainer);
-      };
-      cardDiv.appendChild(plusBtn);
-
-      // Remove "-" button
-      const minusBtn = document.createElement('button');
-      minusBtn.textContent = '–';
-      minusBtn.className = 'deck-remove-btn';
-      minusBtn.onclick = (e) => {
-        e.stopPropagation();
-        removeCardFromDeck(cardObj.id); // Your remove logic
-        renderDeckList(deck, deckContainer);
-      };
-      cardDiv.appendChild(minusBtn);
-
-      // Directly open modal on card click (no menu)
-      cardDiv.onclick = (e) => {
-        e.stopPropagation();
-        // Use full card data if available (from dummyCards)
-        const fullCard = dummyCards.find(c => c.id === cardObj.id) || cardObj;
-        showFullCardModal(fullCard);
-      };
-
-      deckContainer.appendChild(cardDiv);
-    }
-  }
-}
 function renderGallery() {
     gallery.innerHTML = '';
     const selectedColor = document.getElementById('filter-color').value.toLowerCase();
