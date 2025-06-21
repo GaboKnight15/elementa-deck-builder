@@ -161,6 +161,15 @@ label {
     button:disabled {
       background-color: gray;
     }
+.deck-count-badge {
+  background: #22304a;
+  color: #ffdb64;
+  font-weight: bold;
+  font-size: 1em;
+  padding: 3px 12px;
+  border-radius: 10px;
+  margin-left: 5px;
+}
 /* ICONS: TRASH, Plus */
 .icon-btn {
   background: linear-gradient(90deg, #3249e8 0%, #1c254e 100%);
