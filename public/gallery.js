@@ -115,15 +115,15 @@ function createCardDiv(card) {
     btn.classList.add('btn-secondary');
     btn.disabled = !canAddCard(card);
     btn.onclick = () => {
-    if (!canAddCard(card)) return;
-    deck[card.id] = (deck[card.id] || 0) + 1;
-    setCurrentDeck(deck);
-    updateDeckDisplay();
-    renderGallery();
-    if (!deckPanel.classList.contains('show')) {
-      deckPanel.classList.add('show');
-    }
-};
+      if (!canAddCard(card)) return;
+      deck[card.id] = (deck[card.id] || 0) + 1;
+      setCurrentDeck(deck);
+      updateDeckDisplay();
+      renderGallery();
+      if (!deckPanel.classList.contains('show')) {
+        deckPanel.classList.add('show');
+      }
+    };
     div.appendChild(btn);
     return div;
 }
@@ -143,7 +143,9 @@ deckList.addEventListener('drop', function(e) {
     addCardToDeck(cardId);
     updateDeckDisplay();
     renderGallery();
-    setTimeout(() => deckPanel.classList.add('show'), 0);
+    if (!deckPanel.classList.contains('show')) {
+      deckPanel.classList.add('show');
+    }
   }
 });
 // DECK CREATION LOGIC
@@ -225,7 +227,6 @@ function updateDeckDisplay() {
     setCurrentDeck(deck);
     updateDeckDisplay();
     renderGallery();
-    deckPanel.classList.add('show');
   };
   li.appendChild(img);
   li.appendChild(badge);
