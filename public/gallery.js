@@ -227,14 +227,12 @@ function updateDeckDisplay() {
     renderGallery();
     deckPanel.classList.add('show');
   };
-};
   li.appendChild(img);
   li.appendChild(badge);
   li.appendChild(removeBtn);
   deckList.appendChild(li);
+  }
 }
-}
-
   cardCount.textContent = total;
   setCurrentDeck(deck);
   saveDeckState();
