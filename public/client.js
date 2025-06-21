@@ -48,15 +48,6 @@ createBtn.onclick = () => {
   submitDeckToServer();
 };
 
-startGameBtn.onclick = () => {
-  if (typeof showBattlefield === "function") showBattlefield();
-  // If not in multiplayer lobby, start solo playtest
-  if (!currentRoomId && typeof startSoloGameWithCurrentDeck === "function") {
-    startSoloGameWithCurrentDeck();
-  }
-  showLobbyUI();
-};
-
 joinBtn.onclick = () => {
   const roomId = roomInput.value.trim();
   if (!roomId) return alert('Enter a room code!');
