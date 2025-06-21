@@ -34,6 +34,16 @@ document.querySelectorAll('#main-nav button[data-section]').forEach(btn => {
     // Show the one matching the button's data-section
     const target = btn.getAttribute('data-section');
     document.getElementById(target).style.display = '';
+    if (target === 'gameplay-section') {
+      const bf = document.getElementById('battlefield-container');
+      if (bf) bf.style.display = '';
+      // Optionally, start or reset the game state here:
+      if (typeof setupBattlefieldGame === "function") setupBattlefieldGame();
+    } else {
+      // Hide battlefield-container when not in gameplay
+      const bf = document.getElementById('battlefield-container');
+      if (bf) bf.style.display = 'none';
+    }
   });
 });
 // Optionally, show builder-section by default on load
