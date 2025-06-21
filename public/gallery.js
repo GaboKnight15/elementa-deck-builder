@@ -115,7 +115,8 @@ function createCardDiv(card) {
     if (details.textContent.trim() !== '') div.appendChild(details);
 
     const btn = document.createElement('button');
-    btn.textContent = "Add to Deck";
+    btn.textContent = "Add";
+    btn.classList.add('btn-secondary');
     btn.disabled = !canAddCard(card);
     btn.onclick = () => {
       if (!canAddCard(card)) return;
