@@ -113,8 +113,7 @@ function renderGallery() {
       document.body.classList.add(`theme-${color}`);
     }
   });
-window.renderGallery = renderGallery;
 // ==========================
 // === INITIALIZATION ===
 // ==========================
-renderGallery();
+window.renderGallery = renderGallery;
