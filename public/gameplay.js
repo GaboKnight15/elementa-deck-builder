@@ -53,9 +53,6 @@ function startSoloGameWithCurrentDeck() {
 window.startSoloGameWithCurrentDeck = startSoloGameWithCurrentDeck;
 
 function setupBattlefieldGame() {
-  // Insert your battlefield setup logic here
-  document.getElementById('builder-container').style.display = 'none';
-  document.getElementById('battlefield-container').style.display = 'flex';
   const battlefield = document.getElementById('battlefield');
   if (battlefield) battlefield.style.display = 'block';
   const deckObj = getCurrentDeck();
