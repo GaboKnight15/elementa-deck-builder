@@ -438,7 +438,6 @@ label {
   flex-wrap: wrap;
   align-items: center;
   gap: 0.7em;
-  margin-bottom: 1em;
 }
 #deck-list.drag-over {
   box-shadow: 0 0 8px 2px #3b82f6;
