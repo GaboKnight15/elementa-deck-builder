@@ -7,6 +7,7 @@ const shopSection = document.getElementById('shop-section');
 const shopContainer = document.getElementById('shop-container');
 const packOptions = document.getElementById('pack-options');
 const packOpeningArea = document.getElementById('pack-opening-area');
+const closeShopBtn = document.getElementById('close-shop-btn');
  
 // Helper: get N random cards from dummyCards
 function getRandomCards(n) {
@@ -38,13 +39,12 @@ function openPack(type) {
             </div>
             <div class="opened-card-front">
               <img src="${card.image}" alt="${card.name}" style="width:100px;height:auto;display:block;margin:auto;">
-              <div style="font-weight:bold;font-size:1em;margin-top:2px;">${card.name}</div>
+              <button class="view-card-btn" style="display:none;margin-top:8px;" data-card-idx="${idx}">View</button>
             </div>
           </div>
         </div>
       `).join('')}
     </div>
-    <div style="margin-top:10px;font-size:0.95em;color:#888;">(Cards will disappear when you leave or do another action)</div>
   `;
 
   // Animate cards in sequence: flip from back to front
@@ -64,7 +64,7 @@ function openPack(type) {
       const idx = parseInt(e.target.dataset.cardIdx, 10);
       const card = cards[idx];
       if (card && typeof window.viewCard === 'function') {
-        window.viewCard(card); // or pass card.id if your viewer expects id
+        window.viewCard(card);
       }
     }
   }, { once: true }); 
@@ -78,14 +78,18 @@ packOptions.addEventListener('click', (e) => {
   }
 });
 
-// Dismiss opened pack when clicking outside or doing another shop action
 shopContainer.addEventListener('click', (e) => {
-  // Only clear if not clicking a pack button
   if (!e.target.closest('.opened-card') && !e.target.matches('button[data-pack]')) {
     packOpeningArea.innerHTML = '';
   }
 });
 
+// Close shop button
+closeShopBtn.addEventListener('click', () => {
+  shopSection.style.display = 'none';
+  shopContainer.style.display = 'none';
+  packOpeningArea.innerHTML = '';
+});
 // Optionally, expose functions for navigation
 window.showShop = function () {
   shopSection.style.display = '';
