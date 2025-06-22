@@ -89,15 +89,14 @@ closeShopBtn.addEventListener('click', () => {
   // Optionally, switch to gallery or another main section:
   document.getElementById('gallery-section').classList.add('active');
 });
-// Optionally, expose functions for navigation
-window.showShop = function () {
-  // Use only .active class for section visibility!
+
+function renderShop() {
+  // Hide all other sections
   document.querySelectorAll('section[id$="-section"]').forEach(section => {
     section.classList.remove('active');
   });
+  // Show shop section
   shopSection.classList.add('active');
-};
-window.hideShop = function () {
-  shopSection.classList.remove('active');
+  // Optionally reset/clear content
   packOpeningArea.innerHTML = '';
-};
+}
