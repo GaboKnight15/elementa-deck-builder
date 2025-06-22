@@ -84,17 +84,20 @@ shopContainer.addEventListener('click', (e) => {
 
 // Close shop button
 closeShopBtn.addEventListener('click', () => {
-  shopSection.style.display = 'none';
-  shopContainer.style.display = 'none';
+  shopSection.classList.remove('active');
   packOpeningArea.innerHTML = '';
+  // Optionally, switch to gallery or another main section:
+  document.getElementById('gallery-section').classList.add('active');
 });
 // Optionally, expose functions for navigation
 window.showShop = function () {
-  shopSection.style.display = '';
-  shopContainer.style.display = '';
+  // Use only .active class for section visibility!
+  document.querySelectorAll('section[id$="-section"]').forEach(section => {
+    section.classList.remove('active');
+  });
+  shopSection.classList.add('active');
 };
 window.hideShop = function () {
-  shopSection.style.display = 'none';
-  shopContainer.style.display = 'none';
+  shopSection.classList.remove('active');
   packOpeningArea.innerHTML = '';
 };
