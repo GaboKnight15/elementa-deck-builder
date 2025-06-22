@@ -28,53 +28,37 @@ const dummyCards = [
 // Add nav button listeners
 document.querySelectorAll('#main-nav button[data-section]').forEach(btn => {
   btn.addEventListener('click', () => {
-    // Hide all content sections with transition
+    // Hide all sections
     document.querySelectorAll('section[id$="-section"]').forEach(section => {
       section.classList.remove('active');
     });
-
-    // Show the one matching the button's data-section
+    // Show the target section
     const target = btn.getAttribute('data-section');
     const targetSection = document.getElementById(target);
     if (targetSection) targetSection.classList.add('active');
 
-    // Show/hide inner containers based on the section
-    if (target === 'builder-section') {
-      const builderContainer = document.getElementById('builder-container');
-      const battlefieldContainer = document.getElementById('battlefield-container');
-      if (builderContainer) builderContainer.style.display = '';
-      if (battlefieldContainer) battlefieldContainer.style.display = 'none';
+    // Battlefield overlay handling
+    const battlefieldContainer = document.getElementById('battlefield-container');
+    if (battlefieldContainer) {
+      battlefieldContainer.style.display = (target === 'gameplay-section') ? 'flex' : 'none';
     }
-
-    if (target === 'gameplay-section') {
-      const builderContainer = document.getElementById('builder-container');
-      const battlefieldContainer = document.getElementById('battlefield-container');
-      if (builderContainer) builderContainer.style.display = 'none';
-      if (battlefieldContainer) battlefieldContainer.style.display = 'flex'; // or ''
-      if (typeof setupBattlefieldGame === "function") setupBattlefieldGame();
-    }
-
-    if (target === 'gallery-section' && typeof renderGallery === 'function') {
-      renderGallery();
-    }
-
-    if (target === 'shop-section' && typeof window.showShop === 'function') {
-      window.showShop();
-    }
-
-    // Optionally: hide the battlefield container if switching away from gameplay
-    if (target !== 'gameplay-section') {
-      const battlefieldContainer = document.getElementById('battlefield-container');
-      if (battlefieldContainer) battlefieldContainer.style.display = 'none';
+    // Special section actions
+    const specialActions = {
+      'gallery-section': window.renderGallery,
+      'builder-section': window.renderGalleryBuilder, // Make sure this function exists
+      'shop-section': window.showShop,
+      'gameplay-section': window.setupBattlefieldGame
+    };
+    if (typeof specialActions[target] === 'function') {
+      specialActions[target]();
     }
   });
 });
-
 // Show gallery-section by default
 document.querySelectorAll('section[id$="-section"]').forEach(section => section.classList.remove('active'));
 document.getElementById('gallery-section').classList.add('active');
-if (typeof renderGallery === 'function') {
-  renderGallery();
+if (typeof window.renderGallery === 'function') {
+  window.renderGallery();
 }
 
 // ==========================
