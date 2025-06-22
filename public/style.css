@@ -13,6 +13,15 @@ label {
   font-weight: 600;
   letter-spacing: 0.03em;
 }
+button {
+  padding: 0.4em 0.6em;
+  margin-top: 0.5em;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
 .header-row {
   display: flex;
   align-items: center;
@@ -60,14 +69,6 @@ label {
   margin-top: 0.2em; margin-bottom: 0.1em;
   text-shadow: 0 1px 2px #0007;
 }
-.card-modal-dark {
-  background: #444 !important; color: #fff !important;
-  border: none; border-radius: 10px;
-  transition: background 0.2s;
-}
-.card-modal-dark:hover {
-  background: #222 !important;
-}
 .section-container {
   display: flex;
   flex-direction: column;      /* Stack children vertically */
@@ -99,13 +100,13 @@ label {
   overflow-x: auto;
   max-width: 100vw;
 }
-    /* Titles & Details */
-    .card h4 {
+    /* CARD NAME */
+.card h4 {
   margin: 0.5em 0 0.2em 0;
   font-size: 1.15em;
   font-weight: 600;
   color: #23245a;
-    }
+}
 .card > div:last-child {
   font-size: 0.9em;
   color: #667;
@@ -121,7 +122,7 @@ label {
   z-index: 2;
   box-shadow: 0 1px 4px rgba(0,0,0,0.12);
   }
-/* Rarity Border */ 
+/* RARITY BORDERS */ 
 .card[data-rarity="Legendary"] {
   border: 2px solid gold;
   box-shadow: 0 0 10px gold;
@@ -136,7 +137,7 @@ label {
 .card[data-rarity="Basic"] {
   border: 2px dashed #bbb;
 }
-    /* Card Image  */
+    /* CARD IMAGE  */
 .card img {
   max-width: 100%;
   border-radius: 8px;
@@ -171,32 +172,63 @@ label {
   transform: translateX(0);
   box-shadow: -2px 0 16px rgba(0,0,0,0.18);
 }
-    .deck h2 {
-      margin-top: 0;
-      font-size: 1.1em;
-    }
-    .deck-list {
-      list-style: none;
-      padding: 0;
-    }
-    .deck-list li {
-      margin: 0.3em 0;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    button {
-      padding: 0.4em 0.6em;
-      margin-top: 0.5em;
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    button:disabled {
-      background-color: gray;
-    }
+.deck h2 {
+  margin-top: 0;
+  font-size: 1.1em;
+}
+.deck-list {
+  list-style: none;
+  padding: 0;
+}
+.deck-list li {
+  margin: 0.3em 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+/* STATS AND DETAILS IN CARD GALLERY  */
+.card-gallery-stats {
+  display: flex;
+  gap: 0.7em;
+}
+.stat {
+  display: inline-flex;
+  align-items: center;
+  font-size: 1em;
+  font-weight: bold;
+  padding: 0 0.3em;
+}
+/* Add icons using pseudo-elements */
+.stat.hp::before {
+  content: "❤️";
+  margin-right: 0.2em;
+  font-size: 1.1em;
+}
+.stat.atk::before {
+  content: "⚔️";
+  margin-right: 0.2em;
+  font-size: 1.1em;
+}
+.stat.def::before {
+  content: "🛡️";
+  margin-right: 0.2em;
+  font-size: 1.1em;
+}
+.stat.cost::before {
+  content: "💰";
+  margin-right: 0.2em;
+  font-size: 1.1em;
+}
+.card-details {
+  font-size: 0.8em;
+  color: #666;
+  margin-top: 0.1em;
+}
+
+/* ADD BUTTON  */
+.btn-add:disabled {
+  background-color: gray;
+}
 .deck-count-badge {
   background: #22304a;
   color: #ffdb64;
@@ -576,12 +608,6 @@ label {
 .card-bg-green-red, .card-bg-red-green {
   background: linear-gradient(135deg, #eafae6 60%, #fae6e6 100%);
 }
-#start-game-btn {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-}
-
 #battlefield {
   display: flex;
   flex-direction: column;
@@ -597,10 +623,6 @@ label {
   display: flex;
   justify-content: center;
   width: 100%;
-}
-#deck-builder-btn {
-  margin-bottom: 16px;
-  align-self: center;
 }
 .hand-area {
   min-height: 60px;
@@ -867,10 +889,10 @@ label {
 }
 
 /* CARD HOVER ANIMATIONS */
-.card, .card-modal-dark, .on-field, .hand-area .card {
+.card, .on-field, .hand-area .card {
   transition: transform 0.18s, box-shadow 0.18s;
 }
-.card:hover, .card-modal-dark:hover, .on-field:hover, .modal-card-img .card:hover, .hand-area .card:hover {
+.card:hover, .on-field:hover, .modal-card-img .card:hover, .hand-area .card:hover {
   transform: scale(1.08) translateY(-10px);
   box-shadow: 0 8px 24px rgba(0,0,0,0.22);
   z-index: 10;
@@ -1135,37 +1157,27 @@ label {
 }
 
  /* SHOP STYLES */
-#shop-container h2 {
-  text-align: center;
-  color: #ffdb64;
-  margin-bottom: 20px;
-}
-
 #pack-options {
   display: flex;
   justify-content: center;
   margin-bottom: 40px;
 }
-
 #pack-options button {
   font-size: 1.2em;
   padding: 10px 28px;
 }
-
 #pack-opening-area {
   margin-top: 0px;
   margin-bottom: 16px;
   min-height: 190px;
   transition: min-height 0.2s;
 }
-
 .opened-pack-row {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 18px;
 }
-
 .opened-card {
   background: #24293a;
   border-radius: 10px;
@@ -1178,18 +1190,15 @@ label {
   box-shadow: 0 10px 24px rgba(0,0,0,0.17);
   z-index: 3;
 }
-
 .opened-card img {
   border-radius: 5px;
   box-shadow: 0 2px 8px #0004;
   background: #16171e;
 }
-
 .opened-card div {
   color: #ffdb64;
   margin-top: 4px;
 }
-
 /* For a simple fade-in */
 @keyframes cardFadeIn {
   0% { opacity: 0; transform: scale(0.5) rotate(-10deg);}
@@ -1207,7 +1216,6 @@ label {
   opacity: 0;
   animation: cardFlipIn 0.6s forwards;
 }
-
 /* Inner wrapper for animation */
 .opened-card-inner {
   width: 110px;
@@ -1216,12 +1224,10 @@ label {
   transition: transform 0.6s cubic-bezier(.4,2,.6,1);
   transform-style: preserve-3d;
 }
-
 /* Flip state */
 .opened-card.flipped .opened-card-inner {
   transform: rotateY(180deg);
 }
-
 /* Card faces */
 .opened-card-front,
 .opened-card-back {
@@ -1239,7 +1245,7 @@ label {
   justify-content: center;
 }
 
-/* Back of card (shown first) */
+/* CARDBACK (shown first) */
 .opened-card-back {
   z-index: 2;
 }
