@@ -68,15 +68,14 @@ label {
 .card-modal-dark:hover {
   background: #222 !important;
 }
-#gallery-container {
+#gallery-container, #builder-container, #battlefield-container, #shop-container {
+  display: flex;
   background: #1a2533;
-}
-#builder-container {
-  background: #1a2533;
+  justify-content: center;
+  width: 100vw;
 }
 /* Grid Layout for Gallery */
-#card-gallery.container,
-#card-gallery {
+#card-gallery, #card-gallery-builder {
   display: grid;
   background: #1a2533;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -449,14 +448,6 @@ label {
   transition: opacity 0.1s, filter 0.15s;
   box-shadow: 0 0 24px 4px #3b82f6bb;
 }
-#card-gallery.container,
-#card-gallery {
-    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-    gap: 0.6em;
-    padding: 0.7em 0.2em;
-    margin-top: 2.5em;
-    max-width: 100vw;
-}
   .card {
     width: 120px;
     padding: 0.6em 0.3em;
@@ -575,13 +566,7 @@ label {
   margin-left: auto;
   margin-right: auto;
 }
-/* GAMEPLAY STYLE */
-#battlefield-container {
-  display: flex;
-  background: #1a2533;
-  justify-content: center;
-  width: 100vw;
-}
+
 #battlefield {
   display: flex;
   flex-direction: column;
@@ -1135,21 +1120,6 @@ label {
 }
 
  /* SHOP STYLES */
-#shop-container {
-  background: #232436; #1a2533
-  border-radius: 14px;
-  box-shadow: 0 4px 20px #0006;
-  padding: 32px 24px 24px 24px;
-  width: 100%;
-  height: 100%;
-  min-height: 80vh; /* Or 100vh if you want true fullscreen */
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-}
-
 #shop-container h2 {
   text-align: center;
   color: #ffdb64;
