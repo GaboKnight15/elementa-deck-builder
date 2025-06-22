@@ -114,7 +114,7 @@ function createCardDiv(card) {
     btn.textContent = "Add";
     btn.classList.add('btn-secondary');
     btn.disabled = !canAddCard(card);
-    btn.onclick = () => {
+    btn.onclick = (e) => {
       e.stopPropagation();
       if (!canAddCard(card)) return;
       deck[card.id] = (deck[card.id] || 0) + 1;
