@@ -1189,9 +1189,9 @@ label {
   transition: transform 0.1s, box-shadow 0.1s;
 }
 .opened-card:hover {
-  transform: scale(1.06);
-  box-shadow: 0 4px 18px #0007, 0 0 0 2px #ffdb64;
-  z-index: 2;
+  transform: translateY(-6px) scale(1.045);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.17);
+  z-index: 3;
 }
 
 .opened-card img {
