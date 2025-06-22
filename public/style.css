@@ -107,6 +107,7 @@ button {
 }
 .section-container {
   display: flex;
+  top: 80px;
   flex-direction: column;
   background: #1a2533;
   justify-content: flex-start;
