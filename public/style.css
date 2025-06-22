@@ -1203,7 +1203,27 @@ label {
   color: #ffdb64;
   margin-top: 4px;
 }
+/* For a simple fade-in */
+@keyframes cardFadeIn {
+  0% { opacity: 0; transform: scale(0.5) rotate(-10deg);}
+  80% { transform: scale(1.05) rotate(2deg);}
+  100% { opacity: 1; transform: scale(1) rotate(0);}
+}
+.opened-card-anim {
+  opacity: 0;
+  animation: cardFadeIn 0.5s forwards;
+}
 
+/* For a “flip” effect, you can use: */
+@keyframes cardFlipIn {
+  0%   { transform: rotateY(90deg) scale(0.8); opacity: 0;}
+  50%  { transform: rotateY(-10deg) scale(1.05); opacity: 1;}
+  100% { transform: rotateY(0deg) scale(1); opacity: 1;}
+}
+.opened-card-flip {
+  opacity: 0;
+  animation: cardFlipIn 0.6s forwards;
+}
 @media (max-width: 600px) {
   #profile-menu {
     left: 50%;
