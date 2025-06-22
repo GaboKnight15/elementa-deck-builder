@@ -46,7 +46,7 @@ document.querySelectorAll('#main-nav button[data-section]').forEach(btn => {
     const specialActions = {
       'gallery-section': window.renderGallery,
       'builder-section': window.renderGallery,
-      'shop-section': window.showShop,
+      'shop-section': window.renderShop,
       'gameplay-section': window.setupBattlefieldGame
     };
     if (typeof specialActions[target] === 'function') {
