@@ -28,27 +28,32 @@ function getRandomCards(n) {
 
 // Open pack logic
 function openPack(type) {
-  // For now, no type-based odds
   const cards = getRandomCards(10);
-  // Show cards in packOpeningArea
   packOpeningArea.innerHTML = `
     <div class="opened-pack-row" style="display:flex;flex-wrap:wrap;justify-content:center;gap:12px;">
       ${cards.map(card => `
-        <div class="opened-card" style="text-align:center;">
-          <img src="${card.image}" alt="${card.name}" style="width:110px;height:auto;display:block;margin:auto;">
-          <div style="font-weight:bold;font-size:1em;margin-top:2px;">${card.name}</div>
+        <div class="opened-card opened-card-flip">
+          <div class="opened-card-inner">
+            <div class="opened-card-back">
+              <img src="CardImages/Domains/placeholder.png" alt="Card Back" style="width:100px;height:auto;display:block;margin:auto;">
+            </div>
+            <div class="opened-card-front">
+              <img src="${card.image}" alt="${card.name}" style="width:100px;height:auto;display:block;margin:auto;">
+              <div style="font-weight:bold;font-size:1em;margin-top:2px;">${card.name}</div>
+            </div>
+          </div>
         </div>
       `).join('')}
     </div>
     <div style="margin-top:10px;font-size:0.95em;color:#888;">(Cards will disappear when you leave or do another action)</div>
   `;
-  // Animate cards in sequence
+
+  // Animate cards in sequence: flip from back to front
   const cardDivs = packOpeningArea.querySelectorAll('.opened-card');
   cardDivs.forEach((div, i) => {
     setTimeout(() => {
-      // Use either 'opened-card-anim' or 'opened-card-flip', or both
-      div.classList.add('opened-card-flip');
-    }, 100 * i); // 100ms stagger per card
+      div.classList.add('flipped');
+    }, 250 * i); // 250ms stagger per card for nice cascade
   });
 }
 
