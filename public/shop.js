@@ -91,14 +91,6 @@ closeShopBtn.addEventListener('click', () => {
 });
 
 function renderShop() {
-  // Hide all other sections
-  document.querySelectorAll('section[id$="-section"]').forEach(section => {
-    section.classList.remove('active');
-  });
-  // Show shop section
-  shopSection.classList.add('active');
-  // Optionally reset/clear content
   packOpeningArea.innerHTML = '';
 }
 window.renderShop = renderShop;
-renderShop();
