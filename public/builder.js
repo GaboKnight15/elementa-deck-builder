@@ -112,7 +112,7 @@ function createCardDiv(card) {
 
     const btn = document.createElement('button');
     btn.textContent = "Add";
-    btn.classList.add('btn-secondary');
+    btn.classList.add('btn-secondary', 'btn-add');
     btn.disabled = !canAddCard(card);
     btn.onclick = (e) => {
       e.stopPropagation();
