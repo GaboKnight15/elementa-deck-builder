@@ -69,6 +69,30 @@ button {
   margin-top: 0.2em; margin-bottom: 0.1em;
   text-shadow: 0 1px 2px #0007;
 }
+.section {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(60px) scale(0.97);
+  filter: blur(10px) brightness(0.7);
+  transition:
+    opacity 0.7s cubic-bezier(0.4,2,0.6,1),
+    transform 0.8s cubic-bezier(0.4,2,0.6,1),
+    filter 0.7s cubic-bezier(0.4,2,0.6,1);
+  box-shadow: 0 0 40px 10px #00eaff33, 0 0 8px #00fff7;
+  border-radius: 18px;
+  background: rgba(15, 25, 36, 0.92);
+  margin: 2em 0;
+  padding: 2em;
+  position: relative;
+  z-index: 1;
+}
+.section.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+  filter: blur(0) brightness(1) drop-shadow(0 0 16px #00fff7cc);
+  z-index: 2;
+}
 .section-container {
   display: flex;
   flex-direction: column;      /* Stack children vertically */
