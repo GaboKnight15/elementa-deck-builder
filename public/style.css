@@ -78,10 +78,7 @@ button {
     opacity 0.7s cubic-bezier(0.4,2,0.6,1),
     transform 0.8s cubic-bezier(0.4,2,0.6,1),
     filter 0.7s cubic-bezier(0.4,2,0.6,1);
-  box-shadow: 0 0 40px 10px #00eaff33, 0 0 8px #00fff7;
-  border-radius: 18px;
   background: rgba(15, 25, 36, 0.92);
-  margin: 2em 0;
   padding: 2em;
   position: relative;
 }
@@ -89,7 +86,7 @@ button {
   opacity: 1;
   pointer-events: auto;
   transform: translateY(0) scale(1);
-  filter: blur(0) brightness(1) drop-shadow(0 0 16px #00fff7cc);
+  filter: blur(0) brightness(1);
 }
 .section-container {
   display: flex;
@@ -98,7 +95,9 @@ button {
   justify-content: flex-start; /* Start at the top */
   align-items: center;         /* Center contents horizontally */
   width: 100vw;
+  height: 100vh;
   min-height: 100vh;           /* Fill the screen */
+  box-sizing: border-box;
 }
 #gallery-container, #builder-container, #battlefield-container, #shop-container {
   display: flex;
