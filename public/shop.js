@@ -26,9 +26,11 @@ function getRandomCards(n) {
   return result;
 }
 
+let lastPackCards = [];
 // Open pack logic
 function openPack(type) {
   const cards = getRandomCards(10);
+  lastPackCards = cards;
   packOpeningArea.innerHTML = `
     <div class="opened-pack-row" style="display:flex;flex-wrap:wrap;justify-content:center;gap:12px;">
       ${cards.map(card => `
@@ -39,7 +41,6 @@ function openPack(type) {
             </div>
             <div class="opened-card-front">
               <img src="${card.image}" alt="${card.name}" style="width:100px;height:auto;display:block;margin:auto;">
-              <button class="view-card-btn" style="display:none;margin-top:8px;" data-card-idx="${idx}">View</button>
             </div>
           </div>
         </div>
@@ -53,21 +54,18 @@ function openPack(type) {
     setTimeout(() => {
       div.classList.add('flipped');
       setTimeout(() => {
-        const btn = div.querySelector('.view-card-btn');
-        if (btn) btn.style.display = '';
-      }, 600);
+        // After flip animation, attach onclick to card front
+        const idx = parseInt(div.getAttribute('data-card-idx'), 10);
+        const front = div.querySelector('.opened-card-front');
+        if (front && typeof window.showFullCardModal === 'function') {
+          front.onclick = () => {
+            const card = lastPackCards[idx];
+            window.showFullCardModal(card);
+          };
+        }
+      }, 600); // after flip
     }, 250 * i);
   });
- // Add View button functionality
-  packOpeningArea.addEventListener('click', function onClick(e) {
-    if (e.target.classList.contains('view-card-btn')) {
-      const idx = parseInt(e.target.dataset.cardIdx, 10);
-      const card = cards[idx];
-      if (card && typeof window.viewCard === 'function') {
-        window.viewCard(card);
-      }
-    }
-  }, { once: true }); 
 }
 
 // Handle pack button click
