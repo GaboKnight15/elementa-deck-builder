@@ -45,7 +45,7 @@ document.querySelectorAll('#main-nav button[data-section]').forEach(btn => {
     // Special section actions
     const specialActions = {
       'gallery-section': window.renderGallery,
-      'builder-section': window.renderGalleryBuilder, // Make sure this function exists
+      'builder-section': window.renderGallery,
       'shop-section': window.showShop,
       'gameplay-section': window.setupBattlefieldGame
     };
