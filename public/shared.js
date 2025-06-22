@@ -28,12 +28,15 @@ const dummyCards = [
 // Add nav button listeners
 document.querySelectorAll('#main-nav button[data-section]').forEach(btn => {
   btn.addEventListener('click', () => {
-    // Hide all content sections
-    document.querySelectorAll('section[id$="-section"]').forEach(section => section.style.display = 'none');
+    // Hide all content sections with transition
+    document.querySelectorAll('section[id$="-section"]').forEach(section => {
+      section.classList.remove('active');
+    });
 
     // Show the one matching the button's data-section
     const target = btn.getAttribute('data-section');
-    document.getElementById(target).style.display = '';
+    const targetSection = document.getElementById(target);
+    if (targetSection) targetSection.classList.add('active');
 
     // Show/hide inner containers based on the section
     if (target === 'builder-section') {
@@ -66,8 +69,10 @@ document.querySelectorAll('#main-nav button[data-section]').forEach(btn => {
     }
   });
 });
-// Optionally, show builder-section by default on load
-document.getElementById('gallery-section').style.display = '';
+
+// Show gallery-section by default
+document.querySelectorAll('section[id$="-section"]').forEach(section => section.classList.remove('active'));
+document.getElementById('gallery-section').classList.add('active');
 if (typeof renderGallery === 'function') {
   renderGallery();
 }
