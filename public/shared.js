@@ -67,7 +67,10 @@ document.querySelectorAll('#main-nav button[data-section]').forEach(btn => {
   });
 });
 // Optionally, show builder-section by default on load
-document.getElementById('builder-section').style.display = '';
+document.getElementById('gallery-section').style.display = '';
+if (typeof renderGallery === 'function') {
+  renderGallery();
+}
 
 // ==========================
 // === RENDERING / UI ===
