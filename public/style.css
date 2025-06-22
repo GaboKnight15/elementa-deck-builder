@@ -33,7 +33,7 @@ label {
   justify-content: center;
   gap: 1.2em;
 }
-.container {
+.deck-builder-container {
       max-width: 1200px; padding: 1em; padding-right: 270px;
       display: flex; flex-wrap: wrap; gap: 1em; justify-content: center;
 }
@@ -68,10 +68,21 @@ label {
 .card-modal-dark:hover {
   background: #222 !important;
 }
+.section-container {
+  display: flex;
+  flex-direction: column;      /* Stack children vertically */
+  background: #1a2533;
+  justify-content: flex-start; /* Start at the top */
+  align-items: center;         /* Center contents horizontally */
+  width: 100vw;
+  min-height: 100vh;           /* Fill the screen */
+}
 #gallery-container, #builder-container, #battlefield-container, #shop-container {
   display: flex;
+  flex-direction: column; 
   background: #1a2533;
   justify-content: center;
+  align-items: center; 
   width: 100vw;
 }
 /* Grid Layout for Gallery */
