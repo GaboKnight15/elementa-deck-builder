@@ -84,14 +84,12 @@ button {
   margin: 2em 0;
   padding: 2em;
   position: relative;
-  z-index: 1;
 }
 .section.active {
   opacity: 1;
   pointer-events: auto;
   transform: translateY(0) scale(1);
   filter: blur(0) brightness(1) drop-shadow(0 0 16px #00fff7cc);
-  z-index: 2;
 }
 .section-container {
   display: flex;
