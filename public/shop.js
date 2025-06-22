@@ -42,6 +42,14 @@ function openPack(type) {
     </div>
     <div style="margin-top:10px;font-size:0.95em;color:#888;">(Cards will disappear when you leave or do another action)</div>
   `;
+  // Animate cards in sequence
+  const cardDivs = packOpeningArea.querySelectorAll('.opened-card');
+  cardDivs.forEach((div, i) => {
+    setTimeout(() => {
+      // Use either 'opened-card-anim' or 'opened-card-flip', or both
+      div.classList.add('opened-card-flip');
+    }, 100 * i); // 100ms stagger per card
+  });
 }
 
 // Handle pack button click
