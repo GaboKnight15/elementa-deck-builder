@@ -7,7 +7,6 @@ const shopSection = document.getElementById('shop-section');
 const shopContainer = document.getElementById('shop-container');
 const packOptions = document.getElementById('pack-options');
 const packOpeningArea = document.getElementById('pack-opening-area');
-const closeShopBtn = document.getElementById('close-shop-btn');
  
 // Helper: get N random cards from dummyCards
 function getRandomCards(n) {
@@ -53,8 +52,22 @@ function openPack(type) {
   cardDivs.forEach((div, i) => {
     setTimeout(() => {
       div.classList.add('flipped');
-    }, 250 * i); // 250ms stagger per card for nice cascade
+      setTimeout(() => {
+        const btn = div.querySelector('.view-card-btn');
+        if (btn) btn.style.display = '';
+      }, 600);
+    }, 250 * i);
   });
+ // Add View button functionality
+  packOpeningArea.addEventListener('click', function onClick(e) {
+    if (e.target.classList.contains('view-card-btn')) {
+      const idx = parseInt(e.target.dataset.cardIdx, 10);
+      const card = cards[idx];
+      if (card && typeof window.viewCard === 'function') {
+        window.viewCard(card); // or pass card.id if your viewer expects id
+      }
+    }
+  }, { once: true }); 
 }
 
 // Handle pack button click
@@ -71,13 +84,6 @@ shopContainer.addEventListener('click', (e) => {
   if (!e.target.closest('.opened-card') && !e.target.matches('button[data-pack]')) {
     packOpeningArea.innerHTML = '';
   }
-});
-
-// Close shop button
-closeShopBtn.addEventListener('click', () => {
-  shopSection.style.display = 'none';
-  shopContainer.style.display = 'none';
-  packOpeningArea.innerHTML = '';
 });
 
 // Optionally, expose functions for navigation
