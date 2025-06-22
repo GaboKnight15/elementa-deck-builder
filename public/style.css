@@ -11,10 +11,12 @@ body {
       overflow-x: hidden;
 }
 header {
-  position: relative; /* or 'fixed' if you want sticky nav */
-  z-index: 10;        /* above .section (which is z-index 2) */
-  background-color: #222; color: white;
-  width: 100%; padding: 1em;
+  position: fixed; /* or 'fixed' if you want sticky nav */
+  z-index: 10;
+  background-color: #222;
+  color: white;
+  width: 100%; 
+  padding: 1em;
   text-align: center;
 }
 label {
@@ -52,9 +54,18 @@ button {
   justify-content: center;
   gap: 1.2em;
 }
-.deck-builder-container {
-      max-width: 1200px; padding: 1em; padding-right: 270px;
-      display: flex; flex-wrap: wrap; gap: 1em; justify-content: center;
+.gallery-container {
+  display: grid;
+  background: #1a2533;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1em;
+  justify-items: center;
+  align-items: start;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 1.5em 1em;
+  overflow-x: auto;
+  max-width: 100vw;
 }
 .card {
   background: none;
@@ -81,7 +92,7 @@ button {
 }
 .section {
   position: absolute;
-  top: 80px;
+  padding-top: 100px;
   opacity: 0;
   pointer-events: none;
   width: 100vw;
@@ -100,6 +111,7 @@ button {
 }
 .section.active {
   opacity: 1;
+  padding-top: 100px;
   pointer-events: auto;
   transform: translateY(0) scale(1);
   filter: blur(0) brightness(1);
@@ -107,7 +119,7 @@ button {
 }
 .section-container {
   display: flex;
-  top: 80px;
+  padding-top: 100px;
   flex-direction: column;
   background: #1a2533;
   justify-content: flex-start;
@@ -116,20 +128,6 @@ button {
   width: 100%;
   overflow-y: auto;
   height: 100%;
-}
-/* Grid Layout for Gallery */
-#card-gallery, #card-gallery-builder {
-  display: grid;
-  background: #1a2533;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 0.5em;
-  justify-items: center;
-  align-items: start;
-  width: 100%;
-  box-sizing: border-box;
-  padding: 1em 0.5em;
-  overflow-x: auto;
-  max-width: 100vw;
 }
     /* CARD NAME */
 .card h4 {
