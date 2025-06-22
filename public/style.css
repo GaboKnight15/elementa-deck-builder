@@ -90,7 +90,7 @@ label {
   display: grid;
   background: #1a2533;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 1.1em;
+  gap: 0.5em;
   justify-items: center;
   align-items: start;
   width: 100%;
@@ -448,6 +448,9 @@ label {
   flex-wrap: wrap;
   align-items: center;
   gap: 0.7em;
+  padding: 0 1em;
+  box-sizing: border-box;
+  overflow-x: auto;
 }
 #deck-list.drag-over {
   box-shadow: 0 0 8px 2px #3b82f6;
@@ -459,10 +462,11 @@ label {
   transition: opacity 0.1s, filter 0.15s;
   box-shadow: 0 0 24px 4px #3b82f6bb;
 }
-  .card {
-    width: 120px;
-    padding: 0.6em 0.3em;
-  }
+.card {
+  width: 120px;
+  padding: 0.6em 0.3em;
+  margin: 0 !important;    
+}
 
 /* <--- DECK AND VOID MODALS */
 .modal {
@@ -687,7 +691,7 @@ label {
 
 .zone-row {
   display: flex;
-  width: 100%;
+  width: 100vw;
   box-sizing: border-box;    
   align-items: flex-end;
   gap: 18px;
