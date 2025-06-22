@@ -510,7 +510,7 @@ function openDeckModal() {
 
     // 2. Create card button
     const btn = document.createElement('button');
-    btn.classList.add('card', 'card-modal-dark');
+    btn.classList.add('card');
 
     const img = document.createElement('img');
     img.src = card.image;
@@ -929,7 +929,7 @@ function openVoidModal() {
       wrapper.className = "modal-card-wrapper";
 
       const btn = document.createElement('button');
-      btn.classList.add('card', 'card-modal-dark');
+      btn.classList.add('card');
 
       const img = document.createElement('img');
       img.src = card.image;
