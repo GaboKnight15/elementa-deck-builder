@@ -30,24 +30,39 @@ document.querySelectorAll('#main-nav button[data-section]').forEach(btn => {
   btn.addEventListener('click', () => {
     // Hide all content sections
     document.querySelectorAll('section[id$="-section"]').forEach(section => section.style.display = 'none');
+
     // Show the one matching the button's data-section
     const target = btn.getAttribute('data-section');
     document.getElementById(target).style.display = '';
 
-    // Call section-specific render logic
+    // Show/hide inner containers based on the section
+    if (target === 'builder-section') {
+      const builderContainer = document.getElementById('builder-container');
+      const battlefieldContainer = document.getElementById('battlefield-container');
+      if (builderContainer) builderContainer.style.display = '';
+      if (battlefieldContainer) battlefieldContainer.style.display = 'none';
+    }
+
+    if (target === 'gameplay-section') {
+      const builderContainer = document.getElementById('builder-container');
+      const battlefieldContainer = document.getElementById('battlefield-container');
+      if (builderContainer) builderContainer.style.display = 'none';
+      if (battlefieldContainer) battlefieldContainer.style.display = 'flex'; // or ''
+      if (typeof setupBattlefieldGame === "function") setupBattlefieldGame();
+    }
+
     if (target === 'gallery-section' && typeof renderGallery === 'function') {
       renderGallery();
     }
+
     if (target === 'shop-section' && typeof window.showShop === 'function') {
       window.showShop();
     }
-    if (target === 'gameplay-section') {
-      const bf = document.getElementById('battlefield-container');
-      if (bf) bf.style.display = '';
-      if (typeof setupBattlefieldGame === "function") setupBattlefieldGame();
-    } else {
-      const bf = document.getElementById('battlefield-container');
-      if (bf) bf.style.display = 'none';
+
+    // Optionally: hide the battlefield container if switching away from gameplay
+    if (target !== 'gameplay-section') {
+      const battlefieldContainer = document.getElementById('battlefield-container');
+      if (battlefieldContainer) battlefieldContainer.style.display = 'none';
     }
   });
 });
