@@ -1019,7 +1019,6 @@ function startGameWithSyncedDeck(deckObj) {
   renderGameState();
   // Any other setup needed
 }
-window.startGameWithSyncedDeck = startGameWithSyncedDeck; // Expose globally if needed
 
 function handleOpponentAction(action) {
   switch (action.type) {
@@ -1061,5 +1060,7 @@ function handleOpponentAction(action) {
   }
 }
 // Make available globally if called from client.js:
+window.setupBattlefieldGame = setupBattlefieldGame;
+window.startGameWithSyncedDeck = startGameWithSyncedDeck;
 window.handleOpponentAction = handleOpponentAction;
 updatePhaseBar();
