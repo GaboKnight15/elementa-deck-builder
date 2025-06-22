@@ -403,11 +403,10 @@ function renderGallery() {
     deckPanel.classList.toggle('show');
     document.body.classList.toggle('deck-open', deckPanel.classList.contains('show'));
   };
-window.renderGallery = renderGallery;
 // ==========================
 // === INITIALIZATION ===
 // ==========================
 loadDeckState();
 refreshDeckSlotSelect();
 updateDeckDisplay();
-renderGallery();
+window.renderGallery = renderGallery;
