@@ -101,3 +101,4 @@ function renderShop() {
   packOpeningArea.innerHTML = '';
 }
 window.renderShop = renderShop;
+renderShop();
