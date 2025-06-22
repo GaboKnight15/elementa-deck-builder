@@ -100,3 +100,4 @@ function renderShop() {
   // Optionally reset/clear content
   packOpeningArea.innerHTML = '';
 }
+window.renderShop = renderShop;
