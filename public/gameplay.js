@@ -996,11 +996,11 @@ nextPhaseBtn.onclick = () => {
 phaseNameSpan.onclick = function() { nextPhaseBtn.click(); };
 
 // MULTIPLAYER START
-function showLobbyUI() {
+function showLobby() {
   document.getElementById('lobby-ui').style.display = 'block';
   document.getElementById('chat-ui').style.display = 'none';
 }
-function showChatUI() {
+function showChat() {
   document.getElementById('lobby-ui').style.display = 'none';
   document.getElementById('chat-ui').style.display = 'block';
 }
