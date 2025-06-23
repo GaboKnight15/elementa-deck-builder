@@ -682,11 +682,6 @@ button {
   transform: scale(1.08) translateY(-10px);
   box-shadow: 0 8px 24px rgba(0,0,0,0.22);
 }
-#phase-bar {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-}
 .hand-area {
   min-height: 60px;
   width: 100%;
@@ -900,6 +895,11 @@ button {
 }
 
 /* PHASE STYLE */
+#phase-bar {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
 #phase-bar-row {
   display: flex;
   justify-content: center;
@@ -939,17 +939,32 @@ button {
   margin-right: 16px;
   font-weight: bold;
 }
-#phase-display .phase {
-  background: #394ce3;
-  color: #fff;
-  font-weight: bold;
+/* Style for the phase label */
+#phase-name.phase-player {
+  color: #428fff;
+  background: #192e50;
   border-radius: 8px;
-  padding: 2px 12px;
+  padding: 2px 16px;
   box-shadow: 0 1px 5px #1a223a33;
+  border: 2px solid #2768dd;
   text-transform: uppercase;
   margin-left: 6px;
-  letter-spacing: 0.06em;
-  border: 2px solid #5076e3;
+  font-weight: bold;
+  letter-spacing: 0.07em;
+  transition: color 0.2s, background 0.2s, border 0.2s;
+}
+#phase-name.phase-opponent {
+  color: #ff4444;
+  background: #3a1616;
+  border-radius: 8px;
+  padding: 2px 16px;
+  box-shadow: 0 1px 5px #221a1a33;
+  border: 2px solid #e43232;
+  text-transform: uppercase;
+  margin-left: 6px;
+  font-weight: bold;
+  letter-spacing: 0.07em;
+  transition: color 0.2s, background 0.2s, border 0.2s;
 }
 .card-menu {
   display: flex;
