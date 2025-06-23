@@ -11,17 +11,12 @@ const closeShopBtn = document.getElementById('close-shop-btn');
  
 // Helper: get N random cards from dummyCards
 function getRandomCards(n) {
-  // Use a shallow copy so we don't mutate original
   const available = [...dummyCards];
   const result = [];
   for (let i = 0; i < n; i++) {
     if (available.length === 0) break;
-    // Pick a random index
     const idx = Math.floor(Math.random() * available.length);
     result.push(available[idx]);
-    // Optionally, remove card for unique pulls:
-    // available.splice(idx, 1);
-    // But for now, allow duplicates (like a real pack)
   }
   return result;
 }
@@ -84,14 +79,10 @@ shopContainer.addEventListener('click', (e) => {
 
 // Close shop button
 closeShopBtn.addEventListener('click', () => {
-  shopSection.classList.remove('active');
   packOpeningArea.innerHTML = '';
-  // Optionally, switch to gallery or another main section:
-  document.getElementById('gallery-section').classList.add('active');
 });
 
 function renderShop() {
   packOpeningArea.innerHTML = '';
 }
 window.renderShop = renderShop;
-renderShop();
