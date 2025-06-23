@@ -323,14 +323,23 @@ function renderRowZone(zoneId, cardArray, category) {
   }
 }
 function renderRightbarZones() {
-  // Deck
-  const deckZoneDiv = document.getElementById('deck-zone');
-  deckZoneDiv.innerHTML = '';
-  appendDeckZone(deckZoneDiv, gameState.playerDeck, "player");
-  // Void
-  const voidZoneDiv = document.getElementById('void-zone');
-  voidZoneDiv.innerHTML = '';
-  appendVoidZone(voidZoneDiv, gameState.playerVoid, "player");
+  // OPPONENT DECK
+  const oppDeckDiv = document.getElementById('opponent-deck-zone');
+  oppDeckDiv.innerHTML = '';
+  appendDeckZone(oppDeckDiv, gameState.opponentDeck, "opponent");
+  // OPPONENT VOID
+  const oppVoidDiv = document.getElementById('opponent-void-zone');
+  oppVoidDiv.innerHTML = '';
+  appendVoidZone(oppVoidDiv, gameState.opponentVoid, "opponent");
+
+  // PLAYER VOID
+  const playerVoidDiv = document.getElementById('player-void-zone');
+  playerVoidDiv.innerHTML = '';
+  appendVoidZone(playerVoidDiv, gameState.playerVoid, "player");
+  // PLAYER DECK
+  const playerDeckDiv = document.getElementById('player-deck-zone');
+  playerDeckDiv.innerHTML = '';
+  appendDeckZone(playerDeckDiv, gameState.playerDeck, "player");
 }
 // Helper to create and append the deck zone card at the end
 function appendDeckZone(parentDiv, deckArray, who) {
