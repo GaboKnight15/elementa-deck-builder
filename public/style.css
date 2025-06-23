@@ -708,7 +708,7 @@ button {
   color: #667;
   opacity: 0.8;
 }
-.void-btn {
+.card-void {
   padding: 0.5em 1.2em;
   border-radius: 8px;
   background: #4c2d60;
@@ -716,7 +716,7 @@ button {
   border: none;
   cursor: pointer;
 }
-.void-btn:hover {
+.card-void:hover {
   background: #7e469a;
 }
 
@@ -903,7 +903,11 @@ button {
 .card, .on-field, .hand-area .card-battlefield {
   transition: transform 0.18s, box-shadow 0.18s;
 }
-.card-battlefield:hover, .card-battlefield:hover, .modal-card-img .card-battlefield:hover, .hand-area .card-battlefield:hover {
+.deckvoid-card-btn
+.card-battlefield:hover,
+.card-battlefield:hover,
+.modal-card-img .card-battlefield:hover,
+.hand-area .card-battlefield:hover {
   transform: scale(1.08) translateY(-10px);
   box-shadow: 0 8px 24px rgba(0,0,0,0.22);
   z-index: 10;
