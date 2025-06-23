@@ -209,14 +209,7 @@ function renderGameState() {
   renderRowZone('opponent-domains-zone', gameState.opponentDomains, "domain");
   renderRowZone('player-creatures-zone', gameState.playerCreatures, "creature");
   renderRowZone('player-domains-zone', gameState.playerDomains, "domain");
-  
-  const deckZoneDiv = document.getElementById('deck-zone');
-  deckZoneDiv.innerHTML = '';
-  appendDeckZone(deckZoneDiv, gameState.playerDeck, "player");
-
-  const voidZoneDiv = document.getElementById('void-zone');
-  voidZoneDiv.innerHTML = '';
-  appendVoidZone(voidZoneDiv, gameState.playerVoid, "player");
+  renderRightbarZones();
 }
 
 function shuffle(array) {
@@ -329,7 +322,7 @@ function renderRowZone(zoneId, cardArray, category) {
   zoneDiv.appendChild(renderCardOnField(cardObj, zoneId));
   }
 }
-function renderSidebarZones() {
+function renderRightbarZones() {
   // Deck
   const deckZoneDiv = document.getElementById('deck-zone');
   deckZoneDiv.innerHTML = '';
@@ -994,7 +987,14 @@ nextPhaseBtn.onclick = () => {
 phaseNameSpan.onclick = function() { nextPhaseBtn.click(); };
 
 // MULTIPLAYER START
-
+function showLobbyUI() {
+  document.getElementById('lobby-ui').style.display = 'block';
+  document.getElementById('chat-ui').style.display = 'none';
+}
+function showChatUI() {
+  document.getElementById('lobby-ui').style.display = 'none';
+  document.getElementById('chat-ui').style.display = 'block';
+}
 function handleOpponentAction(action) {
   switch (action.type) {
     case "play_card":
