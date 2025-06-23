@@ -73,6 +73,7 @@ button {
 .section.active {
   opacity: 1;
   display: block;
+  background: #1a2533 !important;
   pointer-events: auto;
   transform: translateY(0) scale(1);
   filter: blur(0) brightness(1);
