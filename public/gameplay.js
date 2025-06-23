@@ -41,20 +41,7 @@ const battlefield        = document.getElementById('battlefield');
 // ==========================
 // Only run this from client.js after both players are ready!
 // Called when entering gameplay for solo playtest (not from sync)
-function startSoloGameWithCurrentDeck() {
-  gameState.playerDeck = shuffle(buildDeck(getCurrentDeck()));
-  gameState.playerHand = [];
-  gameState.playerCreatures = [];
-  gameState.playerDomains = [];
-  gameState.playerVoid = [];
-  renderGameState();
-  setupDropZones();
-}
-window.startSoloGameWithCurrentDeck = startSoloGameWithCurrentDeck;
-
 function setupBattlefieldGame() {
-  const battlefield = document.getElementById('battlefield');
-  if (battlefield) battlefield.style.display = 'block';
   const deckObj = getCurrentDeck();
 
   gameState.playerDeck = shuffle(buildDeck(deckObj));
@@ -1007,15 +994,6 @@ nextPhaseBtn.onclick = () => {
 phaseNameSpan.onclick = function() { nextPhaseBtn.click(); };
 
 // MULTIPLAYER START
-function startGameWithSyncedDeck(deckObj) {
-  // Set up the game state using deckObj
-  // Example:
-  gameState.playerDeck = shuffle(buildDeck(deckObj));
-  // ...initialize playerHand, opponentHand, etc.
-  // Render the game UI
-  renderGameState();
-  // Any other setup needed
-}
 
 function handleOpponentAction(action) {
   switch (action.type) {
@@ -1058,6 +1036,5 @@ function handleOpponentAction(action) {
 }
 // Make available globally if called from client.js:
 window.setupBattlefieldGame = setupBattlefieldGame;
-window.startGameWithSyncedDeck = startGameWithSyncedDeck;
 window.handleOpponentAction = handleOpponentAction;
 updatePhaseBar();
