@@ -47,7 +47,7 @@ const PHASES = [
 // === DOM REFERENCES ===
 // ==========================
 const phasePlayerSpan    = document.getElementById('phase-player');
-const phaseBadge      = document.getElementById('phase-name');
+const phaseNameSpan      = document.getElementById('phase-name');
 const nextPhaseBtn       = document.getElementById('next-phase-btn');
 const battlefield        = document.getElementById('battlefield');
 
@@ -1000,7 +1000,7 @@ function getCurrentPhaseIndex() {
 }
 function updatePhase() {
   const phaseBadge = document.getElementById('phase-badge');
-  const phaseBadge = document.getElementById('phase-name');
+  const phaseNameSpan = document.getElementById('phase-name');
 
   // Set background class for player/opponent
   phaseBadge.classList.remove('opponent-turn');
