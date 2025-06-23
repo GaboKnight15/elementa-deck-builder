@@ -641,6 +641,14 @@ button {
 .card-bg-gold {
   background: linear-gradient(135deg, #faf8e6 0%, #ececec 50%, #f9f9fa 100%);
 }
+#gameplay-container {
+  display: flex;
+  flex-direction: row;
+  width: 100vw;
+  height: 100vh;
+  background: #22304a;
+  overflow: hidden;
+}
 #battlefield-leftbar {
   width: 200px;
   min-width: 160px;
@@ -672,6 +680,7 @@ button {
   align-items: center;
   justify-content: flex-start;
   padding: 1em 0.5em;
+  gap: 16px;
   box-shadow: -2px 0 16px rgba(0,0,0,0.12);
   z-index: 1100;
 }
@@ -784,27 +793,6 @@ button {
 .zone-row .card-battlefield {
   margin: 0;
 }
-/* Ensure deck and void stick to the far right of their row */
-#player-creatures-zone, #opponent-creatures-zone,
-#player-domains-zone, #opponent-domains-zone {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-end;
-  gap: 18px;
-  position: relative;
-  justify-content: center;
-}
-/* PLACES DECK/VOID TO THE RIGHT */
-#player-creatures-zone .void-zone,
-#player-domains-zone .deck-zone {
-  margin-left: auto;
-}
-/* PLACES DECK/VOID TO THE LEFT */
-#opponent-domains-zone .deck-zone,
-#opponent-creatures-zone .void-zone {
-  margin-left: 0;
-  margin-right: auto; /* Pushes cards right, puts deck/void left */
-}
 
 .deck-zone, .void-zone {
   width: 60px;
@@ -818,6 +806,7 @@ button {
   position: relative;
   font-size: 0.9em;
   box-shadow: 0 2px 12px #0001;
+  margin-bottom: 8px;
 }
 .deck-zone::after {
   content: "Deck";
