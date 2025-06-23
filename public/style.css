@@ -585,6 +585,9 @@ button {
   background: #292b32;
   box-shadow: 0 4px 18px #000a;
 }
+.deckvoid-card-btn
+
+
 .modal-card-img {
   width: 95px;
   height: 135px;
@@ -900,7 +903,7 @@ button {
   align-items: center;
   width: 100%;
   margin: 18px 0 18px 0;
-  min-height: 64px; /* or whatever fits your design */
+  min-height: 64px;
 }
 #phase-display {
   display: flex;
