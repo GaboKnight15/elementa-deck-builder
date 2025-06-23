@@ -47,7 +47,7 @@ const PHASES = [
 // === DOM REFERENCES ===
 // ==========================
 const phasePlayerSpan    = document.getElementById('phase-player');
-const phaseNameSpan      = document.getElementById('phase-name');
+const phaseBadge      = document.getElementById('phase-name');
 const nextPhaseBtn       = document.getElementById('next-phase-btn');
 const battlefield        = document.getElementById('battlefield');
 
@@ -998,9 +998,9 @@ function getCurrentPhaseIndex() {
     p => p.turn === gameState.turn && p.phase === gameState.phase
   );
 }
-function updatePhaseBar() {
+function updatePhase() {
   const phaseBadge = document.getElementById('phase-badge');
-  const phaseNameSpan = document.getElementById('phase-name');
+  const phaseBadge = document.getElementById('phase-name');
 
   // Set background class for player/opponent
   phaseBadge.classList.remove('opponent-turn');
@@ -1009,9 +1009,9 @@ function updatePhaseBar() {
   }
 
   // Set phase name and color class
-  phaseNameSpan.textContent = PHASE_DISPLAY_NAMES[gameState.phase] || gameState.phase;
-  phaseNameSpan.className = '';
-  phaseNameSpan.classList.add(PHASE_CLASS[gameState.phase]);
+  phaseBadge.textContent = PHASE_DISPLAY_NAMES[gameState.phase] || gameState.phase;
+  phaseBadge.className = '';
+  phaseBadge.classList.add(PHASE_CLASS[gameState.phase]);
 }
 // Phase control events
 nextPhaseBtn.onclick = () => {
@@ -1020,11 +1020,11 @@ nextPhaseBtn.onclick = () => {
   gameState.turn = PHASES[idx].turn;
   gameState.phase = PHASES[idx].phase;
   if (gameState.phase === 'draw') drawCards(gameState.turn, 1);
-  updatePhaseBar();
+  updatePhase();
   renderGameState && renderGameState();
   setupDropZones();
 };
-phaseNameSpan.onclick = function() { nextPhaseBtn.click(); };
+phaseBadge.onclick = function() { nextPhaseBtn.click(); };
 
 // MULTIPLAYER START
 function showLobby() {
@@ -1077,4 +1077,4 @@ function handleOpponentAction(action) {
 // Make available globally if called from client.js:
 window.setupBattlefieldGame = setupBattlefieldGame;
 window.handleOpponentAction = handleOpponentAction;
-updatePhaseBar();
+updatePhase();
