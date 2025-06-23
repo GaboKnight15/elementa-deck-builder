@@ -29,23 +29,6 @@ function createCardGallery(card) {
     const name = document.createElement('h4');
     name.textContent = card.name;
     div.appendChild(name);
-
-    const stats = document.createElement('div');
-    stats.className = 'card-gallery-stats';
-    const hp = card.hp !== undefined ? `<span class="stat hp">${card.hp}</span>` : '';
-    const atk = card.atk !== undefined ? `<span class="stat atk">${card.atk}</span>` : '';
-    const def = card.def !== undefined ? `<span class="stat def">${card.def}</span>` : '';
-    const cost = card.cost !== undefined ? `<span class="stat cost">${card.cost}</span>` : '';
-    stats.innerHTML = [hp, atk, def, cost].filter(Boolean).join(' ');
-    if (stats.innerHTML.trim() !== '') div.appendChild(stats);
-
-    const details = document.createElement('div');
-    details.className = 'card-gallery-details';
-    details.textContent = [
-      card.rarity,
-      Array.isArray(card.type) ? card.type.join(', ') : card.type
-    ].filter(Boolean).join(' | ');
-    if (details.textContent.trim() !== '') div.appendChild(details);
     return div;
 }
 
