@@ -821,6 +821,18 @@ button {
   transform: scale(1.08) translateY(-6px);
   z-index: 12;
 }
+.card-deck,
+.card-void {
+  transition: transform 0.16s, box-shadow 0.18s;
+  cursor: pointer;
+}
+.card-deck:hover, .card-deck:focus,
+.card-void:hover, .card-void:focus {
+  transform: translateY(-6px) scale(1.045);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.17);
+  z-index: 3;
+  outline: none;
+}
 /* VIEW STYLE */
 #image-modal.modal {
   display: none;
