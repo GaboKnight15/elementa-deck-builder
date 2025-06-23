@@ -926,12 +926,36 @@ button {
   width: fit-content;
   min-width: 320px;
 }
-#phase-display .label {
-  color: #aeb8de;
-  font-weight: 400;
-  margin-right: 3px;
-  font-size: 1em;
-  letter-spacing: 0.02em;
+#phase-display.player-turn {
+  background: linear-gradient(90deg, #2456a6 0%, #14315b 100%) !important;
+  border: 2px solid #428fff;
+  box-shadow: 0 2px 10px #2456a6aa, 0 1.5px 0 #153366 inset;
+}
+#phase-display.opponent-turn {
+  background: linear-gradient(90deg, #b72828 0%, #611313 100%) !important;
+  border: 2px solid #ff4444;
+  box-shadow: 0 2px 10px #b72828aa, 0 1.5px 0 #661515 inset;
+}
+/* Phase Name Colors */
+.phase-draw {
+  color: #1d7fff;
+  font-weight: bold;
+  text-shadow: 0 1px 2px #12295f55;
+}
+.phase-essence {
+  color: #15a863;
+  font-weight: bold;
+  text-shadow: 0 1px 2px #0e3c2c44;
+}
+.phase-action {
+  color: #9b3ddb;
+  font-weight: bold;
+  text-shadow: 0 1px 2px #320b5944;
+}
+.phase-end {
+  color: #d12d2d;
+  font-weight: bold;
+  text-shadow: 0 1px 2px #42090944;
 }
 #phase-display .player {
   color: #ffdb64;
@@ -940,31 +964,15 @@ button {
   font-weight: bold;
 }
 /* Style for the phase label */
-#phase-name.phase-player {
-  color: #428fff;
-  background: #192e50;
+#phase-name {
   border-radius: 8px;
-  padding: 2px 16px;
-  box-shadow: 0 1px 5px #1a223a33;
-  border: 2px solid #2768dd;
-  text-transform: uppercase;
-  margin-left: 6px;
-  font-weight: bold;
+  padding: 2px 18px;
+  margin-left: 10px;
+  background: rgba(255,255,255,0.04); /* subtle background for label */
+  font-size: 1.2em;
   letter-spacing: 0.07em;
-  transition: color 0.2s, background 0.2s, border 0.2s;
-}
-#phase-name.phase-opponent {
-  color: #ff4444;
-  background: #3a1616;
-  border-radius: 8px;
-  padding: 2px 16px;
-  box-shadow: 0 1px 5px #221a1a33;
-  border: 2px solid #e43232;
   text-transform: uppercase;
-  margin-left: 6px;
-  font-weight: bold;
-  letter-spacing: 0.07em;
-  transition: color 0.2s, background 0.2s, border 0.2s;
+  transition: color 0.2s, background 0.2s;
 }
 .card-menu {
   display: flex;
