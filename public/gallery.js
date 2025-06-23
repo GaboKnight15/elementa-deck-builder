@@ -5,7 +5,7 @@ const gallery = document.getElementById('card-gallery');
 // ==========================
 // === RENDERING CARDS ===
 // ==========================
-function createCardDiv(card) {
+function createCardGallery(card) {
     const div = document.createElement('div');
     div.className = 'card';
     if (card.rarity) {
@@ -87,7 +87,7 @@ function renderGallery() {
           : [card.ability?.toLowerCase()];
         if (!abilities.includes(selectedAbility)) return;
       }
-      gallery.appendChild(createCardDiv(card));
+      gallery.appendChild(createCardGallery(card));
     });
   }
 // ==========================
