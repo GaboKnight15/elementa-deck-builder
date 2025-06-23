@@ -490,13 +490,11 @@ function openDeckModal() {
     const card = dummyCards.find(c => c.id === cardObj.cardId);
     if (!card) return;
 
-    // 1. Create a wrapper for each card
     const wrapper = document.createElement('div');
     wrapper.className = "modal-card-wrapper";
 
-    // 2. Create card button
     const btn = document.createElement('button');
-    btn.classList.add('card');
+    btn.classList.add('deckvoid-card-btn');
 
     const img = document.createElement('img');
     img.src = card.image;
@@ -577,7 +575,7 @@ function renderCardOnField(cardObj, zoneId) {
   
   // Create the main card div
   const cardDiv = document.createElement('div');
-  cardDiv.className = 'card on-field';
+  cardDiv.className = 'card-battlefield';
   cardDiv.dataset.instanceId = cardObj.instanceId;
   cardDiv.style.position = 'relative';
 
@@ -625,9 +623,9 @@ function renderCardOnField(cardObj, zoneId) {
     stackDiv.className = 'attached-cards-stack';
     stackDiv.style.position = 'absolute';
     stackDiv.style.left = '50%';
-    stackDiv.style.top = '12px'; // adjust as needed
+    stackDiv.style.top = '12px';
     stackDiv.style.transform = 'translateX(-50%)';
-    stackDiv.style.pointerEvents = 'none'; // so they don't block the parent card
+    stackDiv.style.pointerEvents = 'none';
     stackDiv.style.zIndex = '5';
 
     cardObj.attachedCards.forEach((attachObj, i) => {
@@ -639,8 +637,8 @@ function renderCardOnField(cardObj, zoneId) {
       attDiv.style.height = '85px';
       attDiv.style.position = 'absolute';
       attDiv.style.left = '0';
-      attDiv.style.top = `${i * 16}px`; // stagger each attachment down a bit
-      attDiv.style.pointerEvents = 'auto'; // allow tooltip/interaction if desired
+      attDiv.style.top = `${i * 16}px`;
+      attDiv.style.pointerEvents = 'auto';
       attDiv.title = attachData.name;
 
   // ATTACHMENT MENU
@@ -915,7 +913,7 @@ function openVoidModal() {
       wrapper.className = "modal-card-wrapper";
 
       const btn = document.createElement('button');
-      btn.classList.add('card');
+      btn.classList.add('deckvoid-card-btn');
 
       const img = document.createElement('img');
       img.src = card.image;
