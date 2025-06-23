@@ -660,6 +660,7 @@ button {
   padding: 1em 0.5em;
   box-shadow: -2px 0 16px rgba(0,0,0,0.12);
   z-index: 1100;
+  gap: 2em;
 }
 #battlefield {
   flex: 1 1 0%;
@@ -1360,4 +1361,52 @@ button {
   transition: opacity 0.1s, filter 0.15s;
   box-shadow: 0 0 24px 4px #3b82f6bb;
 }
+}
+
+#lobby-ui,
+#chat-ui {
+  background: #1a2233;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px #1117;
+  padding: 1em 0.5em 1em 0.5em;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.7em;
+  margin-bottom: 1.5em;
+}
+#lobby-ui input,
+#chat-ui input {
+  padding: 0.4em 0.6em;
+  border-radius: 7px;
+  border: 1.5px solid #4761e6;
+  background: #232a3c;
+  color: #fff;
+  margin-bottom: 0.3em;
+  font-size: 1em;
+  outline: none;
+}
+#lobby-ui input:focus,
+#chat-ui input:focus {
+  border-color: #7aa6ff;
+}
+#lobby-ui button,
+#chat-ui button {
+  width: 100%;
+}
+#chat-log {
+  min-height: 100px;
+  background: #232a3c;
+  color: #e5e7ef;
+  border-radius: 8px;
+  padding: 0.7em;
+  overflow-y: auto;
+  font-size: 0.98em;
+  max-height: 30vh;
+}
+#status {
+  color: #ffdb64;
+  font-size: 0.97em;
+  padding: 0.3em 0 0.1em 0;
+  min-height: 1.5em;
 }
