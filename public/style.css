@@ -968,26 +968,6 @@ button {
 #phase-badge .phase-action { color: #9b3ddb; }
 #phase-badge .phase-end { color: #d12d2d; }
 /* Phase Name Colors */
-.phase-draw {
-  color: #1d7fff;
-  font-weight: bold;
-  text-shadow: 0 1px 2px #12295f55;
-}
-.phase-essence {
-  color: #15a863;
-  font-weight: bold;
-  text-shadow: 0 1px 2px #0e3c2c44;
-}
-.phase-action {
-  color: #9b3ddb;
-  font-weight: bold;
-  text-shadow: 0 1px 2px #320b5944;
-}
-.phase-end {
-  color: #d12d2d;
-  font-weight: bold;
-  text-shadow: 0 1px 2px #42090944;
-}
 #phase-badge .player {
   color: #ffdb64;
   text-shadow: 0 1px 2px #222;
