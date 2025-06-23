@@ -999,15 +999,13 @@ function getCurrentPhaseIndex() {
   );
 }
 function updatePhaseBar() {
-  const phaseDisplay = document.getElementById('phase-display');
+  const phaseBadge = document.getElementById('phase-badge');
   const phaseNameSpan = document.getElementById('phase-name');
 
   // Set background class for player/opponent
-  phaseDisplay.classList.remove('player-turn', 'opponent-turn');
-  if (gameState.turn === 'player') {
-    phaseDisplay.classList.add('player-turn');
-  } else {
-    phaseDisplay.classList.add('opponent-turn');
+  phaseBadge.classList.remove('opponent-turn');
+  if (gameState.turn === 'opponent') {
+    phaseBadge.classList.add('opponent-turn');
   }
 
   // Set phase name and color class
