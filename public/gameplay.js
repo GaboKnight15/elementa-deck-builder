@@ -18,6 +18,16 @@ const PHASE_CLASS = {
   action: 'phase-action',
   end: 'phase-end'
 };
+const PHASES = [
+  { turn: 'player', phase: 'draw' },
+  { turn: 'player', phase: 'essence' },
+  { turn: 'player', phase: 'action' },
+  { turn: 'player', phase: 'end' },
+  { turn: 'opponent', phase: 'draw' },
+  { turn: 'opponent', phase: 'essence' },
+  { turn: 'opponent', phase: 'action' },
+  { turn: 'opponent', phase: 'end' }
+];
  let gameState = {
   playerDeck: [],
   playerHand: [],
