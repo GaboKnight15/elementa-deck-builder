@@ -1,7 +1,7 @@
 // ==========================
 // === GALLERY LOGIC ===
 // ==========================
-const gallery = document.getElementById('card-gallery');
+const gallery = document.getElementById('gallery-cards');
 // ==========================
 // === RENDERING CARDS ===
 // ==========================
