@@ -87,7 +87,7 @@ button {
   box-sizing: border-box;
   overflow-y: auto;
 }
-#gallery-container {
+#gallery {
   display: grid;
   background: #1a2533;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
