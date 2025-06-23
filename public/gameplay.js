@@ -493,6 +493,9 @@ function openDeckModal() {
     const wrapper = document.createElement('div');
     wrapper.className = "modal-card-wrapper";
 
+    const cardDiv = document.createElement('div');
+    cardDiv.className = 'card-battlefield';
+    
     const btn = document.createElement('button');
     btn.classList.add('deckvoid-card-btn');
 
@@ -500,7 +503,8 @@ function openDeckModal() {
     img.src = card.image;
     img.alt = card.name;
     img.className = "modal-card-img";
-
+    
+    cardDiv.appendChild(img);
     btn.appendChild(img);
     // ATTACH MENU ON CLICK
     btn.onclick = (e) => {
@@ -912,6 +916,9 @@ function openVoidModal() {
       const wrapper = document.createElement('div');
       wrapper.className = "modal-card-wrapper";
 
+      const cardDiv = document.createElement('div');
+      cardDiv.className = 'card-battlefield';
+      
       const btn = document.createElement('button');
       btn.classList.add('deckvoid-card-btn');
 
@@ -919,7 +926,7 @@ function openVoidModal() {
       img.src = card.image;
       img.alt = card.name;
       img.className = "modal-card-img";
-
+      cardDiv.appendChild(img);
       btn.appendChild(img);
 
       btn.onclick = (e) => {
