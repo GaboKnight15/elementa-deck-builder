@@ -7,7 +7,7 @@ const gallery = document.getElementById('card-gallery');
 // ==========================
 function createCardGallery(card) {
     const div = document.createElement('div');
-    div.className = 'card gallery';
+    div.className = 'card card-gallery';
     if (card.rarity) {
     div.setAttribute('data-rarity', card.rarity);
   }
