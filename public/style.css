@@ -116,43 +116,6 @@ button {
   box-shadow: 0 10px 24px rgba(0,0,0,0.17);
   z-index: 3;
 }
-.card-gallery-stats {
-  display: flex;
-  gap: 0.5em;
-}
-.stat {
-  display: inline-flex;
-  align-items: center;
-  font-size: 0.8em;
-  font-weight: bold;
-  padding: 0 0.3em;
-}
-/* Add icons using pseudo-elements */
-.stat.hp::before {
-  content: "❤️";
-  margin-right: 0.2em;
-  font-size: 1.1em;
-}
-.stat.atk::before {
-  content: "⚔️";
-  margin-right: 0.2em;
-  font-size: 1.1em;
-}
-.stat.def::before {
-  content: "🛡️";
-  margin-right: 0.2em;
-  font-size: 1.1em;
-}
-.stat.cost::before {
-  content: "⚪";
-  margin-right: 0.2em;
-  font-size: 1.1em;
-}
-.card-details {
-  font-size: 0.8em;
-  color: #666;
-  margin-top: 0.1em;
-}
 .card-builder {
   background: none;
   border: none; border-radius: 12px;
@@ -180,7 +143,7 @@ button {
   font-size: 0.95em; font-weight: bold;
   text-align: center;
   color: #fff;
-  margin-top: 0.2em; margin-bottom: 0.1em;
+  margin-top: 0.1em; margin-bottom: 0.1em;
   text-shadow: 0 1px 2px #0007;
 }
     /* CARD NAME */
