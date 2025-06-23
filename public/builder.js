@@ -56,7 +56,7 @@ function refreshDeckSlotSelect() {
 // ==========================
 // === RENDERING CARDS ===
 // ==========================
-function createCardDiv(card) {
+function createCardBuilder(card) {
     const deck = getCurrentDeck();
     const div = document.createElement('div');
     div.className = 'card';
@@ -88,28 +88,6 @@ function createCardDiv(card) {
     };
     div.appendChild(img);
 
-    const name = document.createElement('h4');
-    name.textContent = card.name;
-    div.appendChild(name);
-
-    const stats = document.createElement('div');
-    stats.style.fontSize = '0.9em';
-    stats.innerHTML = [
-      card.hp !== undefined ? `HP: ${card.hp}` : '',
-      card.atk !== undefined ? `ATK: ${card.atk}` : '',
-      card.def !== undefined ? `DEF: ${card.def}` : '',
-      card.cost !== undefined ? `Cost: ${card.cost}` : ''
-    ].filter(Boolean).join(' | ');
-    if (stats.innerHTML.trim() !== '') div.appendChild(stats);
-
-    const details = document.createElement('div');
-    details.style.fontSize = '0.8em';
-    details.textContent = [
-      card.rarity,
-      Array.isArray(card.type) ? card.type.join(', ') : card.type
-    ].filter(Boolean).join(' | ');
-    if (details.textContent.trim() !== '') div.appendChild(details);
-
     const btn = document.createElement('button');
     btn.textContent = "Add";
     btn.classList.add('btn-secondary', 'btn-add');
@@ -120,7 +98,7 @@ function createCardDiv(card) {
       deck[card.id] = (deck[card.id] || 0) + 1;
       setCurrentDeck(deck);
       updateDeckDisplay();
-      renderGallery();
+      renderBuilder();
       if (!deckPanel.classList.contains('show')) {
         deckPanel.classList.add('show');
       }
@@ -143,7 +121,7 @@ deckList.addEventListener('drop', function(e) {
   if(cardId) {
     addCardToDeck(cardId);
     updateDeckDisplay();
-    renderGallery();
+    renderBuilder();
     if (!deckPanel.classList.contains('show')) {
       deckPanel.classList.add('show');
     }
@@ -227,7 +205,7 @@ function updateDeckDisplay() {
     }
     setCurrentDeck(deck);
     updateDeckDisplay();
-    renderGallery();
+    renderBuilder();
   };
   li.appendChild(img);
   li.appendChild(badge);
@@ -266,7 +244,7 @@ function canAddCard(card) {
     return true;
 }
 
-function renderGallery() {
+function renderBuilder() {
     builderGallery.innerHTML = '';
     const selectedColor = document.getElementById('filter-color-builder').value.toLowerCase();
     const selectedType = document.getElementById('filter-type-builder').value.toLowerCase();
@@ -304,7 +282,7 @@ function renderGallery() {
           : [card.ability?.toLowerCase()];
         if (!abilities.includes(selectedAbility)) return;
       }
-      builderGallery.appendChild(createCardDiv(card));
+      builderGallery.appendChild(createCardBuilder(card));
     });
   }
 // ==========================
@@ -316,7 +294,7 @@ function renderGallery() {
     currentDeckSlot = deckSlotSelect.value;
     saveDeckState();
     updateDeckDisplay();
-    renderGallery();
+    renderBuilder();
   });
 // ADD DECK SLOT 
   addDeckSlotBtn.addEventListener('click', () => {
@@ -332,7 +310,7 @@ function renderGallery() {
     saveDeckState();
     refreshDeckSlotSelect();
     updateDeckDisplay();
-    renderGallery();
+    renderBuilder();
   });
 // RENAME DECK SLOT
   deckRenameBtn.addEventListener('click', () => {
@@ -351,7 +329,7 @@ function renderGallery() {
   saveDeckState();
   refreshDeckSlotSelect();
   updateDeckDisplay();
-  renderGallery();
+  renderBuilder();
 });
 // DELETE DECK SLOT
   deleteDeckSlotBtn.addEventListener('click', () => {
@@ -367,7 +345,7 @@ function renderGallery() {
     saveDeckState();
     refreshDeckSlotSelect();
     updateDeckDisplay();
-    renderGallery();
+    renderBuilder();
   });
 // FILTER COLOR EVENTS
   document.getElementById('filter-color-builder').addEventListener('change', (e) => {
@@ -382,13 +360,13 @@ function renderGallery() {
     }
   });
 // GALLERY EVENT FILTERS
-  document.getElementById('filter-name-builder').addEventListener('input', renderGallery);
-  document.getElementById('filter-color-builder').addEventListener('change', renderGallery);
-  document.getElementById('filter-category-builder').addEventListener('change', renderGallery);
-  document.getElementById('filter-type-builder').addEventListener('change', renderGallery);
-  document.getElementById('filter-rarity-builder').addEventListener('change', renderGallery);
-  document.getElementById('filter-archetype-builder').addEventListener('change', renderGallery);
-  document.getElementById('filter-ability-builder').addEventListener('change', renderGallery);
+  document.getElementById('filter-name-builder').addEventListener('input', renderBuilder);
+  document.getElementById('filter-color-builder').addEventListener('change', renderBuilder);
+  document.getElementById('filter-category-builder').addEventListener('change', renderBuilder);
+  document.getElementById('filter-type-builder').addEventListener('change', renderBuilder);
+  document.getElementById('filter-rarity-builder').addEventListener('change', renderBuilder);
+  document.getElementById('filter-archetype-builder').addEventListener('change', renderBuilder);
+  document.getElementById('filter-ability-builder').addEventListener('change', renderBuilder);
   document.getElementById('reset-deck-btn').onclick = () => {
     const deck = getCurrentDeck();
     for (const key in deck) {
@@ -396,7 +374,7 @@ function renderGallery() {
     }
     setCurrentDeck(deck);
     updateDeckDisplay();
-    renderGallery();
+    renderBuilder();
   };
   // Deck toggle logic
   toggleBtn.onclick = () => {
@@ -409,4 +387,4 @@ function renderGallery() {
 loadDeckState();
 refreshDeckSlotSelect();
 updateDeckDisplay();
-window.renderGallery = renderGallery;
+window.renderBuilder = renderBuilder;
