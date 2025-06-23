@@ -54,6 +54,7 @@ button {
   gap: 1.2em;
 }
 .section {
+  display: none;
   opacity: 0;
   pointer-events: none;
   width: 100vw;
@@ -71,22 +72,20 @@ button {
 }
 .section.active {
   opacity: 1;
+  display: block;
   pointer-events: auto;
   transform: translateY(0) scale(1);
   filter: blur(0) brightness(1);
   z-index: 2;
 }
 .section-container {
-  display: flex;
-  padding-top: 100px;
+  display: block;
   flex-direction: column;
   background: #1a2533;
   justify-content: flex-start;
   align-items: center;
   box-sizing: border-box;
-  width: 100%;
   overflow-y: auto;
-  height: 100%;
 }
 .gallery-container {
   display: grid;
@@ -214,12 +213,12 @@ button {
 /* STATS AND DETAILS IN CARD GALLERY  */
 .card-gallery-stats {
   display: flex;
-  gap: 0.7em;
+  gap: 0.5em;
 }
 .stat {
   display: inline-flex;
   align-items: center;
-  font-size: 1em;
+  font-size: 0.8em;
   font-weight: bold;
   padding: 0 0.3em;
 }
@@ -240,7 +239,7 @@ button {
   font-size: 1.1em;
 }
 .stat.cost::before {
-  content: "💰";
+  content: "⚪";
   margin-right: 0.2em;
   font-size: 1.1em;
 }
