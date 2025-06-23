@@ -12,16 +12,12 @@ const PHASE_DISPLAY_NAMES = {
   action: "Action Phase",
   end: "End Phase"
 };
-const PHASES = [
-  { turn: 'player', phase: 'draw' },
-  { turn: 'player', phase: 'essence' },
-  { turn: 'player', phase: 'action' },
-  { turn: 'player', phase: 'end' },
-  { turn: 'opponent', phase: 'draw' },
-  { turn: 'opponent', phase: 'essence' },
-  { turn: 'opponent', phase: 'action' },
-  { turn: 'opponent', phase: 'end' }
-];
+const PHASE_CLASS = {
+  draw: 'phase-draw',
+  essence: 'phase-essence',
+  action: 'phase-action',
+  end: 'phase-end'
+};
  let gameState = {
   playerDeck: [],
   playerHand: [],
@@ -993,18 +989,21 @@ function getCurrentPhaseIndex() {
   );
 }
 function updatePhaseBar() {
-  document.getElementById('phase-player').textContent = gameState.turn;
-  // Set phase label & color
+  const phaseDisplay = document.getElementById('phase-display');
   const phaseNameSpan = document.getElementById('phase-name');
-  phaseNameSpan.textContent = PHASE_DISPLAY_NAMES[gameState.phase] || gameState.phase;
-  // Remove old classes
-  phaseNameSpan.classList.remove('phase-player', 'phase-opponent');
-  // Add color class based on turn
+
+  // Set background class for player/opponent
+  phaseDisplay.classList.remove('player-turn', 'opponent-turn');
   if (gameState.turn === 'player') {
-    phaseNameSpan.classList.add('phase-player');
+    phaseDisplay.classList.add('player-turn');
   } else {
-    phaseNameSpan.classList.add('phase-opponent');
+    phaseDisplay.classList.add('opponent-turn');
   }
+
+  // Set phase name and color class
+  phaseNameSpan.textContent = PHASE_DISPLAY_NAMES[gameState.phase] || gameState.phase;
+  phaseNameSpan.className = '';
+  phaseNameSpan.classList.add(PHASE_CLASS[gameState.phase]);
 }
 // Phase control events
 nextPhaseBtn.onclick = () => {
