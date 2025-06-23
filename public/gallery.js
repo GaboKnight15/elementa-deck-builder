@@ -7,7 +7,7 @@ const gallery = document.getElementById('card-gallery');
 // ==========================
 function createCardGallery(card) {
     const div = document.createElement('div');
-    div.className = 'card';
+    div.className = 'card-gallery';
     if (card.rarity) {
     div.setAttribute('data-rarity', card.rarity);
   }
@@ -101,18 +101,6 @@ function renderGallery() {
   document.getElementById('filter-rarity-gallery').addEventListener('change', renderGallery);
   document.getElementById('filter-archetype-gallery').addEventListener('change', renderGallery);
   document.getElementById('filter-ability-gallery').addEventListener('change', renderGallery);
-// FILTER COLOR EVENTS
-  document.getElementById('filter-color-gallery').addEventListener('change', (e) => {
-    const color = e.target.value.toLowerCase();
-    document.body.className = document.body.className
-      .split(' ')
-      .filter(cls => !cls.startsWith('theme-'))
-      .join(' ')
-      .trim();
-    if (color) {
-      document.body.classList.add(`theme-${color}`);
-    }
-  });
 // ==========================
 // === INITIALIZATION ===
 // ==========================
