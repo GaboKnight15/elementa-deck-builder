@@ -38,10 +38,10 @@ document.querySelectorAll('#main-nav button[data-section]').forEach(btn => {
     if (targetSection) targetSection.classList.add('active');
     // Special section actions
     const specialActions = {
-      'gallery-section': window.renderGallery,
-      'builder-section': window.renderGallery,
+      'gallery-section' : window.renderGallery,
+      'builder-section' : window.renderGallery,
       'gameplay-section': window.setupBattlefieldGame,
-      'shop-section': window.renderShop
+      'shop-section'    : window.renderShop
     };
     if (typeof specialActions[target] === 'function') {
       specialActions[target]();
