@@ -5,12 +5,21 @@
 // ==========================
 // === CONSTANTS & STATE ===
 // ==========================
+// Map phase keys to your custom names
+const PHASE_DISPLAY_NAMES = {
+  draw: "Draw Phase",
+  essence: "Essence Phase",
+  action: "Action Phase",
+  end: "End Phase"
+};
 const PHASES = [
   { turn: 'player', phase: 'draw' },
-  { turn: 'player', phase: 'main' },
+  { turn: 'player', phase: 'essence' },
+  { turn: 'player', phase: 'action' },
   { turn: 'player', phase: 'end' },
   { turn: 'opponent', phase: 'draw' },
-  { turn: 'opponent', phase: 'main' },
+  { turn: 'opponent', phase: 'essence' },
+  { turn: 'opponent', phase: 'action' },
   { turn: 'opponent', phase: 'end' }
 ];
  let gameState = {
@@ -985,7 +994,17 @@ function getCurrentPhaseIndex() {
 }
 function updatePhaseBar() {
   document.getElementById('phase-player').textContent = gameState.turn;
-  document.getElementById('phase-name').textContent = gameState.phase;
+  // Set phase label & color
+  const phaseNameSpan = document.getElementById('phase-name');
+  phaseNameSpan.textContent = PHASE_DISPLAY_NAMES[gameState.phase] || gameState.phase;
+  // Remove old classes
+  phaseNameSpan.classList.remove('phase-player', 'phase-opponent');
+  // Add color class based on turn
+  if (gameState.turn === 'player') {
+    phaseNameSpan.classList.add('phase-player');
+  } else {
+    phaseNameSpan.classList.add('phase-opponent');
+  }
 }
 // Phase control events
 nextPhaseBtn.onclick = () => {
