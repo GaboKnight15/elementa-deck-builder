@@ -172,7 +172,7 @@ function renderGameState() {
       const card = dummyCards.find(c => c.id === cardObj.cardId);
       if (!card) continue;
       const div = document.createElement('div');
-      div.className = 'card';
+      div.className = 'card-battlefield';
       div.draggable = true;
       div.ondragstart = (e) => {
         e.dataTransfer.setData("text/plain", cardObj.instanceId);
@@ -197,7 +197,7 @@ function renderGameState() {
   opponentHandDiv.innerHTML = '';
   for (let i = 0; i < gameState.opponentHand.length; i++) {
     const div = document.createElement('div');
-    div.className = 'card';
+    div.className = 'card-battlefield';
     const img = document.createElement('img');
     img.src = "CardImages/Domains/placeholder.png"; // Use your card back image
     img.alt = "Opponent's card";
@@ -344,7 +344,7 @@ function appendDeckZone(parentDiv, deckArray, who) {
   const deckZone = document.createElement('div');
   deckZone.className = 'deck-zone';
   const deckCard = document.createElement('div');
-  deckCard.className = 'card';
+  deckCard.className = 'card-deck';
   const img = document.createElement('img');
   img.src = "CardImages/Domains/placeholder.png";
   img.alt = who + "'s Deck";
@@ -421,7 +421,7 @@ function appendVoidZone(parentDiv, voidArray, who) {
   const voidZone = document.createElement('div');
   voidZone.className = 'void-zone';
   const voidCard = document.createElement('div');
-  voidCard.className = 'card';
+  voidCard.className = 'card-void';
   // LAST CARD VOID
   if (voidArray.length > 0) {
     const lastCardObj = voidArray[voidArray.length - 1];
@@ -709,7 +709,7 @@ function renderCardOnField(cardObj, zoneId) {
 
   // Return a wrapper with cardDiv + hp bar below
   const wrapper = document.createElement('div');
-  wrapper.className = 'card-on-field-wrapper';
+  wrapper.className = 'card-battlefield-wrapper';
   wrapper.style.display = 'flex';
   wrapper.style.flexDirection = 'column';
   wrapper.style.alignItems = 'center';
