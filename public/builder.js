@@ -59,7 +59,7 @@ function refreshDeckSlotSelect() {
 function createCardBuilder(card) {
     const deck = getCurrentDeck();
     const div = document.createElement('div');
-    div.className = 'card-gallery';
+    div.className = 'card-builder';
   // DRAG AND DROP SUPPORT
     div.setAttribute('draggable', 'true');
     div.addEventListener('dragstart', function(e) {
