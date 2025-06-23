@@ -205,13 +205,18 @@ function renderGameState() {
     div.appendChild(img);
     opponentHandDiv.appendChild(div);
   }
-    // Player Zones
+  renderRowZone('opponent-creatures-zone', gameState.opponentCreatures, "creature");
+  renderRowZone('opponent-domains-zone', gameState.opponentDomains, "domain");
   renderRowZone('player-creatures-zone', gameState.playerCreatures, "creature");
   renderRowZone('player-domains-zone', gameState.playerDomains, "domain");
+  
+  const deckZoneDiv = document.getElementById('deck-zone');
+  deckZoneDiv.innerHTML = '';
+  appendDeckZone(deckZoneDiv, gameState.playerDeck, "player");
 
-  // Opponent Zones
-  renderRowZone('opponent-creatures-zone', gameState.opponentCreatures, "creature");
-  renderRowZone('opponent-domains-zone', gameState.opponentDomains, "domain"); 
+  const voidZoneDiv = document.getElementById('void-zone');
+  voidZoneDiv.innerHTML = '';
+  appendVoidZone(voidZoneDiv, gameState.playerVoid, "player");
 }
 
 function shuffle(array) {
@@ -322,23 +327,18 @@ function renderRowZone(zoneId, cardArray, category) {
   // RENDER CARDS IN ZONES
   for (const cardObj of cardArray) {
   zoneDiv.appendChild(renderCardOnField(cardObj, zoneId));
-}
-  // Only for player's zones: add deck/void at right
-  if (zoneId === "player-domains-zone") {
-    appendDeckZone(zoneDiv, gameState.playerDeck, "player");
-  }
-  if (zoneId === "player-creatures-zone") {
-    appendVoidZone(zoneDiv, gameState.playerVoid, "player");
-  }
-  // Do the same for opponent if you want
-  if (zoneId === "opponent-domains-zone") {
-    appendDeckZone(zoneDiv, gameState.opponentDeck, "opponent");
-  }
-  if (zoneId === "opponent-creatures-zone") {
-    appendVoidZone(zoneDiv, gameState.opponentVoid, "opponent");
   }
 }
-
+function renderSidebarZones() {
+  // Deck
+  const deckZoneDiv = document.getElementById('deck-zone');
+  deckZoneDiv.innerHTML = '';
+  appendDeckZone(deckZoneDiv, gameState.playerDeck, "player");
+  // Void
+  const voidZoneDiv = document.getElementById('void-zone');
+  voidZoneDiv.innerHTML = '';
+  appendVoidZone(voidZoneDiv, gameState.playerVoid, "player");
+}
 // Helper to create and append the deck zone card at the end
 function appendDeckZone(parentDiv, deckArray, who) {
   const deckZone = document.createElement('div');
