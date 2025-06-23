@@ -36,12 +36,6 @@ document.querySelectorAll('#main-nav button[data-section]').forEach(btn => {
     const target = btn.getAttribute('data-section');
     const targetSection = document.getElementById(target);
     if (targetSection) targetSection.classList.add('active');
-
-    // Battlefield overlay handling
-    const battlefieldContainer = document.getElementById('battlefield-container');
-    if (battlefieldContainer) {
-      battlefieldContainer.style.display = (target === 'gameplay-section') ? 'flex' : 'none';
-    }
     // Special section actions
     const specialActions = {
       'gallery-section': window.renderGallery,
