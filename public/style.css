@@ -520,13 +520,13 @@ button {
   box-shadow: 0 0 8px 2px #3b82f6;
   border: 2px dashed #3b82f6;
 }
-.card.dragging {
+.card-gallery.dragging {
   opacity: 0.3;
   filter: blur(2px) grayscale(1);
   transition: opacity 0.1s, filter 0.15s;
   box-shadow: 0 0 24px 4px #3b82f6bb;
 }
-.card {
+.card-gallery {
   width: 120px;
   padding: 0.6em 0.3em;
   margin: 0 !important;    
@@ -611,15 +611,6 @@ button {
   box-shadow: 0 1px 8px #0003;
   margin-bottom: 6px;
 }
-/* BACKGROUND THEMES */
-    body.theme-green  { background: linear-gradient(to bottom, #e6ffe6, #a3d9a5); }
-    body.theme-red    { background: linear-gradient(to bottom, #ffd6d6, #ff7f7f); }
-    body.theme-blue   { background: linear-gradient(to bottom, #d6f0ff, #7fcfff); }
-    body.theme-gray   { background: linear-gradient(to bottom, #e0e0e0, #b3b3b3); }
-    body.theme-purple { background: linear-gradient(to bottom, #f0d9ff, #c27be7); }
-    body.theme-yellow { background: linear-gradient(to bottom, #fff9d6, #ffe066); }
-    body.theme-black  { background: linear-gradient(to bottom, #444, #000); color: white;}
-    body.theme-white  { background: linear-gradient(to bottom, #ffffff, #f5f5f5);}
 
 .card-bg-green   { background: #eafae6; }
 .card-bg-red     { background: #fae6e6; }
@@ -633,18 +624,12 @@ button {
   background: linear-gradient(135deg, #faf8e6 0%, #ececec 50%, #f9f9fa 100%);
 }
 
-/* Example dual color combos */
-.card-bg-red-gray, .card-bg-gray-red {
-  background: linear-gradient(135deg, #fae6e6 60%, #f0f0f0 100%);
-}
-.card-bg-green-red, .card-bg-red-green {
-  background: linear-gradient(135deg, #eafae6 60%, #fae6e6 100%);
-}
 #battlefield {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 1200px;
+  max-width: 1200px;
+  width: 100%;
   margin: 0 auto;
   border-radius: 18px;
   padding: 24px 24px;
@@ -729,7 +714,7 @@ button {
   overflow: visible;
 }
 
-#player-hand.hand-area .card {
+#player-hand.hand-area .card-battlefield {
   position: static;
   left: unset;
   bottom: unset;
@@ -738,7 +723,7 @@ button {
   margin: 0;
 }
 
-#player-hand.hand-area .card:hover {
+#player-hand.hand-area .card-battlefield:hover {
   transform: scale(1.16) translateY(-32px);
   z-index: 100;
 }
@@ -754,7 +739,7 @@ button {
   position: relative;
   justify-content: center;
 }
-.zone-row .card {
+.zone-row .card-battlefield {
   margin: 0;
 }
 /* Ensure deck and void stick to the far right of their row */
@@ -802,19 +787,19 @@ button {
   color: #667;
   opacity: 0.8;
 }
-.card.on-field {
+.card-battlefield {
   position: relative;
   width: 90px;
   height: 126px;
   padding: 0.2em;
   font-size: 0.9em;
 }
-.card.on-field img {
+.card-battlefield img {
   width: 100%;
   height: auto;
   border-radius: 8px;
 }
-.card.on-field .hp-badge {
+.card-battlefield .hp-badge {
   font-size: 1em;
   padding: 2px 5px;
   right: 4px;
@@ -913,7 +898,7 @@ button {
   transition: width 0.2s, background 0.2s;
 }
 
-.card-on-field-wrapper {
+.card-battlefield-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -921,10 +906,10 @@ button {
 }
 
 /* CARD HOVER ANIMATIONS */
-.card, .on-field, .hand-area .card {
+.card, .on-field, .hand-area .card-battlefield {
   transition: transform 0.18s, box-shadow 0.18s;
 }
-.card:hover, .on-field:hover, .modal-card-img .card:hover, .hand-area .card:hover {
+.card-battlefield:hover, .card-battlefield:hover, .modal-card-img .card-battlefield:hover, .hand-area .card-battlefield:hover {
   transform: scale(1.08) translateY(-10px);
   box-shadow: 0 8px 24px rgba(0,0,0,0.22);
   z-index: 10;
