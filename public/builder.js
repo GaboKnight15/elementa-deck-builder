@@ -25,6 +25,10 @@ const toggleBtn          = document.getElementById('toggle-deck-btn');
 const deckPanel          = document.querySelector('.deck');
 const deckRenameBtn      = document.getElementById('deck-rename-btn');
 
+// Get collection from localStorage using shared.js util
+function getCollection() {
+  return JSON.parse(localStorage.getItem("cardCollection")) || {};
+}
 function saveDeckState() {
     localStorage.setItem(DECK_SLOTS_KEY, JSON.stringify(deckSlots));
     localStorage.setItem(DECKS_KEY, JSON.stringify(decks));
@@ -58,6 +62,7 @@ function refreshDeckSlotSelect() {
 // ==========================
 function createCardBuilder(card) {
     const deck = getCurrentDeck();
+    const currentInDeck = deck[card.id] || 0;
     const div = document.createElement('div');
     div.className = 'card-builder';
   // DRAG AND DROP SUPPORT
@@ -88,6 +93,12 @@ function createCardBuilder(card) {
     };
     div.appendChild(img);
 
+    // Show owned badge
+    const ownedBadge = document.createElement('div');
+    ownedBadge.className = 'card-count-badge';
+    ownedBadge.textContent = `Owned: ${ownedCount}`;
+    div.appendChild(ownedBadge);
+  
     const btn = document.createElement('button');
     btn.textContent = "Add";
     btn.classList.add('btn-secondary', 'btn-add');
@@ -233,11 +244,13 @@ function buildDeck(deckObj) {
   }
   return deck;
 }
-function canAddCard(card) {
+function canAddCard(card, currentInDeck, ownedCount) {
     const deck = getCurrentDeck();
-    const count = deck[card.id] || 0;
+    const count = currentInDeck || 0;
     const total = Object.values(deck).reduce((a, b) => a + b, 0);
     if (total >= 50) return false;
+    if (count >= ownedCount) return false; // <-- Don't exceed owned
+    // Rarity limits
     if (card.rarity && card.rarity.toLowerCase() === 'legendary' && count >= 1) return false;
     if (card.rarity && card.rarity.toLowerCase() === 'rare' && count >= 2) return false;
     if (card.rarity && card.rarity.toLowerCase() === 'common' && count >= 3) return false;
@@ -246,6 +259,7 @@ function canAddCard(card) {
 
 function renderBuilder() {
     builderGallery.innerHTML = '';
+    const collection = getCollection(); // Fetch up-to-date collection here
     const selectedColor = document.getElementById('filter-color-builder').value.toLowerCase();
     const selectedType = document.getElementById('filter-type-builder').value.toLowerCase();
     const selectedRarity = document.getElementById('filter-rarity-builder').value.toLowerCase();
@@ -283,7 +297,7 @@ function renderBuilder() {
         if (!abilities.includes(selectedAbility)) return;
       }
       if (!collection[card.id]) return;
-      builderGallery.appendChild(createCardBuilder(card));
+      builderGallery.appendChild(createCardBuilder(card, collection[card.id]));
     });
   }
 // ==========================
