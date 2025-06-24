@@ -94,13 +94,6 @@ button {
   box-sizing: border-box;
 }
 
-/* Show/hide logic (you can toggle these via JS) */
-#login-menu.active { display: block; } {
-  flex: 2 1 auto;
-  display: flex;
-  justify-content: center;
-  gap: 1.2em;
-}
 .section {
   display: none;
   opacity: 0;
