@@ -192,8 +192,8 @@ document.addEventListener('DOMContentLoaded', function () {
       profileAuthSection.classList.add('hidden');
       profileAccountSection.classList.remove('hidden');
       profileUsernameDisplay.textContent = user.displayName || user.email || "";
-      if (appMain) appMain.style.display = '';
-      if (mainNav) mainNav.style.display = '';
+      if (appMain) appMain.style.display = 'block';
+      if (mainNav) mainNav.style.display = 'flex';
       loadProfile(user);
       console.log('[auth] Showing #app-main');
     } else {
