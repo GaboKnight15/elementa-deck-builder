@@ -1,38 +1,29 @@
 // --- Profile / Auth DOM Elements ---
 document.addEventListener('DOMContentLoaded', function () {
     // New login/signup menu elements
-  const loginMenu        = document.getElementById('login-menu');
-  const loginForm        = document.getElementById('login-form');
-  const loginBtn         = document.getElementById('login-btn');
-  const signupBtn        = document.getElementById('signup-btn');
+  const loginMenu          = document.getElementById('login-menu');
+  const loginForm          = document.getElementById('login-form');
+  const loginBtn           = document.getElementById('login-btn');
+  const signupBtn          = document.getElementById('signup-btn');
   const loginUsernameInput = document.getElementById('login-username-input');
   const loginEmailInput    = document.getElementById('login-email-input');
   const loginPasswordInput = document.getElementById('login-password-input');
   const loginError         = document.getElementById('login-error');
-  
+
+  const profileAuthError   = document.getElementById('profile-auth-error');
+  const profileAuthForm    = document.getElementById('profile-auth-form');
+
   const profileArea            = document.getElementById('profile-area');
   const profileMenu            = document.getElementById('profile-menu');
-  const profileAuthSection     = document.getElementById('profile-auth-section');
-  const profileAccountSection  = document.getElementById('profile-account-section');
-
   const profilePic              = document.getElementById('profile-pic');
   const profileUsernameDisplay  = document.getElementById('profile-username-display');
-
   const profileChangePicBtn     = document.getElementById('change-profile-btn');
   const profileLogoutBtn        = document.getElementById('profile-logout-btn');
-  const profileLoginBtn         = document.getElementById('profile-login-btn');
-  const profileSignupBtn        = document.getElementById('profile-signup-btn');
 
-  const profileUsernameInput = document.getElementById('profile-username-input');
-  const profileEmailInput = document.getElementById('profile-email-input');
-  const profilePasswordInput = document.getElementById('profile-password-input');
-  const profileAuthError = document.getElementById('profile-auth-error');
-  const profileAuthForm = document.getElementById('profile-auth-form');
-
-  const profileIconModal = document.getElementById('profile-icon-modal');
-  const profileIconModalContent = document.getElementById('profile-icon-modal-content');
-  const profileIcons = document.getElementById('profile-icons');
-  const closeProfileIconModalBtn = document.getElementById('close-profile-icon-modal');
+  const profileIconModal          = document.getElementById('profile-icon-modal');
+  const profileIconModalContent   = document.getElementById('profile-icon-modal-content');
+  const profileIcons              = document.getElementById('profile-icons');
+  const closeProfileIconModalBtn  = document.getElementById('close-profile-icon-modal');
 
   const appMain = document.getElementById('app-main');
   const mainNav = document.getElementById('main-nav');
