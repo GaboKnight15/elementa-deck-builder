@@ -63,7 +63,7 @@ button {
 }
 /* Add these or adjust as needed */
  #login-menu {
-  display: block;
+  display: none;
   background: #232a3c;
   color: #fff;
   padding: 1em 1.5em;
@@ -76,8 +76,11 @@ button {
 #login-menu.active {
   display: block;
 }
-
 #profile-menu {
+  display: none;
+}
+#profile-menu.active {
+  display: block;    
   position: absolute;
   top: 70px;
   left: 16px;
