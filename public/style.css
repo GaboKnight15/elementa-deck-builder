@@ -41,12 +41,14 @@ button {
   display: block;
 }
 #main-nav {
-  flex: 2 1 auto;
   display: none;
+}
+#main-nav.active {
+  display: flex;
   justify-content: center;
   gap: 1.2em;
+  flex: 2 1 auto;
 }
-#main-nav.active { display: flex; }
 
 .header-row {
   display: flex;
