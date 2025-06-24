@@ -9,7 +9,7 @@ body {
       align-items: center; 
       background: #1a2533 !important; 
       overflow-x: hidden;
-}
+} 
 header {
   z-index: 10;
   background-color: #222;
