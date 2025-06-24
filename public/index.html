@@ -373,5 +373,12 @@
 <!-- SERVER -->  
 <script src="/socket.io/socket.io.js"></script>
 <script src="client.js"></script>
+<script>
+  // Fallback: forcibly reveal app-main after 2s for debugging
+  setTimeout(function() {
+    var m = document.getElementById('app-main');
+    if(m) m.style.display = '';
+  }, 2000);
+</script>  
 </body> 
 </html>
