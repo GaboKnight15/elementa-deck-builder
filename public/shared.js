@@ -104,7 +104,15 @@ document.getElementById('image-modal').onclick = (e) => {
   }
 };
 const COLLECTION_KEY = "cardCollection";
+const NEW_CARD_KEY = "newlyUnlockedCards";
 
+function getNewlyUnlockedCards() {
+  return JSON.parse(localStorage.getItem(NEW_CARD_KEY)) || [];
+}
+
+function setNewlyUnlockedCards(arr) {
+  localStorage.setItem(NEW_CARD_KEY, JSON.stringify(arr));
+}
 function getCollection() {
   return JSON.parse(localStorage.getItem(COLLECTION_KEY)) || {};
 }
@@ -116,6 +124,15 @@ function setCollection(collection) {
 // Helper to add cards
 function addToCollection(cardId, amount = 1) {
   const collection = getCollection();
+  const wasOwned = collection[cardId] > 0;
   collection[cardId] = (collection[cardId] || 0) + amount;
   setCollection(collection);
+  // If just unlocked, mark as new
+  if (!wasOwned && collection[cardId] > 0) {
+    const newCards = getNewlyUnlockedCards();
+    if (!newCards.includes(cardId)) {
+      newCards.push(cardId);
+      setNewlyUnlockedCards(newCards);
+    }
+  }
 }
