@@ -101,6 +101,17 @@ button {
   overflow-x: auto;
   max-width: 100vw;
 }
+.card-image-locked {
+  filter: grayscale(1) brightness(0.6) contrast(1.1);
+  opacity: 0.75;
+}
+.card-count-badge {
+  font-size: 1em;
+  text-align: center;
+  font-weight: bold;
+  color: #ffdb64;
+  margin-top: 4px;
+}
 #gallery-builder-cards {
   display: grid;
   background: #1a2533;
