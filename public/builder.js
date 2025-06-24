@@ -282,6 +282,7 @@ function renderBuilder() {
           : [card.ability?.toLowerCase()];
         if (!abilities.includes(selectedAbility)) return;
       }
+      if (!collection[card.id]) return;
       builderGallery.appendChild(createCardBuilder(card));
     });
   }
