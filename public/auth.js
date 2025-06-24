@@ -18,7 +18,6 @@ document.addEventListener('DOMContentLoaded', function () {
   const profileLogoutBtn        = document.getElementById('profile-logout-btn');
 
   const profileIconModal          = document.getElementById('profile-icon-modal');
-  const profileIconModalContent   = document.getElementById('profile-icon-modal-content');
   const profileIcons              = document.getElementById('profile-icons');
   const closeProfileIconModalBtn  = document.getElementById('close-profile-icon-modal');
 
@@ -174,6 +173,8 @@ document.addEventListener('DOMContentLoaded', function () {
       profileMenu.classList.remove('active'); // Hide menu by default
       loginMenu.classList.remove('active');
       loginMenu.style.display = 'none';
+      appMain.style.display = '';
+      mainNav.style.display = 'flex';
       loadProfile(user);
     } else {
       profileArea.style.display = 'none';
@@ -181,6 +182,8 @@ document.addEventListener('DOMContentLoaded', function () {
       profileMenu.style.display = 'none';
       loginMenu.classList.add('active');
       loginMenu.style.display = '';
+      appMain.style.display = 'none';
+      mainNav.style.display = 'none';
       loginUsernameInput.value = "";
       loginEmailInput.value = "";
       loginPasswordInput.value = "";
