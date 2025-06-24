@@ -70,12 +70,15 @@ function getCardBgClass(card) {
 function showFullCardModal(cardObj) {
   const card = dummyCards.find(c => c.id === (cardObj.cardId || cardObj.id));
   if (!card) return;
+  const collection = getCollection();
+  const owned = collection[card.id] || 0;
+
   const modal = document.getElementById('image-modal');
   const modalContent = document.getElementById('modal-img-content');
   const modalImg = document.getElementById('modal-img');
   if (modalContent) {
     modalContent.innerHTML = `
-      <img src="${card.image}" alt="${card.name}">
+      <img src="${card.image}" alt="${card.name}" ${owned === 0 ? 'class="card-image-locked"' : ''}>
       <div style="text-align:center;">
         ${card.hp !== undefined ? `HP: ${card.hp}` : ''}
         ${card.atk !== undefined ? ` | ATK: ${card.atk}` : ''}
@@ -93,6 +96,8 @@ function showFullCardModal(cardObj) {
     if (modalImg) modalImg.style.display = "none";
   } else {
     modalImg.src = card.image;
+    if (owned === 0) modalImg.classList.add('card-image-locked');
+    else modalImg.classList.remove('card-image-locked');
     modalImg.style.display = "block";
     modal.style.display = "flex";
   }
