@@ -103,3 +103,19 @@ document.getElementById('image-modal').onclick = (e) => {
     document.getElementById('image-modal').style.display = "none";
   }
 };
+const COLLECTION_KEY = "cardCollection";
+
+function getCollection() {
+  return JSON.parse(localStorage.getItem(COLLECTION_KEY)) || {};
+}
+
+function setCollection(collection) {
+  localStorage.setItem(COLLECTION_KEY, JSON.stringify(collection));
+}
+
+// Helper to add cards
+function addToCollection(cardId, amount = 1) {
+  const collection = getCollection();
+  collection[cardId] = (collection[cardId] || 0) + amount;
+  setCollection(collection);
+}
