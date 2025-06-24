@@ -59,7 +59,7 @@ button {
   margin: 0;
 }
 /* Add these or adjust as needed */
- #login {
+ #login-menu {
   display: none;
   background: #232a3c;
   color: #fff;
@@ -70,7 +70,7 @@ button {
   max-width: 340px;
   text-align: left;
 }
-.profile-menu {
+#profile-menu {
   position: absolute;
   top: 70px;
   left: 16px;
@@ -81,23 +81,22 @@ button {
   border: 2.5px solid #314175;
   padding: 18px 16px 14px 16px;
   z-index: 2100;
-  display: flex;
+  display: none;
   flex-direction: column;
   gap: 11px;
   animation: fadeIn 0.16s;
   min-width: 260px;
   max-width: 320px;
 }
-#login-menu input, #login button {
+#login-menu input, #login-menu button {
   margin: 0.3em 0;
   width: 100%;
   box-sizing: border-box;
 }
 
 /* Show/hide logic (you can toggle these via JS) */
-#login.active { display: block; }
-.profile-menu.active { display: block; }
-#main-nav {
+#login-menu.active { display: block; }
+#profile-menu.active { display: block; } {
   flex: 2 1 auto;
   display: flex;
   justify-content: center;
