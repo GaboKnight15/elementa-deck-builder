@@ -104,9 +104,6 @@ function openPack(type) {
     setNewlyUnlockedCards(newCards);
   }
   if (window.renderGallery) renderGallery();
-} 
- cards.forEach(card => addToCollection(card.id, 1));
- if (window.renderGallery) renderGallery();
 }
 
 // Handle pack button click
