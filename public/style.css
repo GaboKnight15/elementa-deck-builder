@@ -34,7 +34,16 @@ button {
   cursor: pointer;
 }
 
-#app-main { display: none; }
+#app-main { 
+  display: none; 
+}
+
+#main-nav {
+  flex: 2 1 auto;
+  display: none;
+  justify-content: center;
+  gap: 1.2em;
+}
 
 .header-row {
   display: flex;
