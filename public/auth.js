@@ -1,5 +1,15 @@
 // --- Profile / Auth DOM Elements ---
 document.addEventListener('DOMContentLoaded', function () {
+    // New login/signup menu elements
+  const loginMenu        = document.getElementById('login-menu');
+  const loginForm        = document.getElementById('login-form');
+  const loginBtn         = document.getElementById('login-btn');
+  const signupBtn        = document.getElementById('signup-btn');
+  const loginUsernameInput = document.getElementById('login-username-input');
+  const loginEmailInput    = document.getElementById('login-email-input');
+  const loginPasswordInput = document.getElementById('login-password-input');
+  const loginError         = document.getElementById('login-error');
+  
   const profileArea            = document.getElementById('profile-area');
   const profileMenu            = document.getElementById('profile-menu');
   const profileAuthSection     = document.getElementById('profile-auth-section');
@@ -103,26 +113,42 @@ document.addEventListener('DOMContentLoaded', function () {
   };
 
   // --- Signup/Login logic for modal/profile menu ---
-  profileAuthForm.onsubmit = function(e) {
+ profileArea.onclick = function(e) {
+    e.stopPropagation();
+    profileMenu.classList.toggle('active');
+  };
+  document.addEventListener('click', (e) => {
+    if (
+      profileMenu.classList.contains('active') &&
+      !profileMenu.contains(e.target) &&
+      !profileArea.contains(e.target)
+    ) {
+      profileMenu.classList.remove('active');
+    }
+  });
+  profileMenu.onclick = function(e) { e.stopPropagation(); };
+
+  // --- Auth logic for login/signup ---
+  loginForm.onsubmit = function(e) {
     e.preventDefault();
     login();
   };
-  profileLoginBtn.onclick = function(e) {
+  loginBtn.onclick = function(e) {
     e.preventDefault();
     login();
   };
-  profileSignupBtn.onclick = function(e) {
+  signupBtn.onclick = function(e) {
     e.preventDefault();
     signup();
   };
 
   function signup() {
-    const email = profileEmailInput.value.trim();
-    const password = profilePasswordInput.value;
-    const username = profileUsernameInput.value.trim();
-    profileAuthError.textContent = "";
+    const email = loginEmailInput.value.trim();
+    const password = loginPasswordInput.value;
+    const username = loginUsernameInput.value.trim();
+    loginError.textContent = "";
     if (!username) {
-      profileAuthError.textContent = "Enter a username.";
+      loginError.textContent = "Enter a username.";
       return;
     }
     auth.createUserWithEmailAndPassword(email, password)
@@ -130,88 +156,67 @@ document.addEventListener('DOMContentLoaded', function () {
         return userCredential.user.updateProfile({
           displayName: username
         }).then(() => {
-          // Save username and default icon to Firestore
           return firebase.firestore().collection('users').doc(userCredential.user.uid)
             .set({
               username: username,
-              profilePic: iconOptions[0]
+              profilePic: "CardImages/Avatars/Avatar1.png"
             }, {merge: true});
         });
       })
       .catch(err => {
-        profileAuthError.textContent = err.message;
-        console.error('[auth] Signup error:', err);
+        loginError.textContent = err.message;
       });
   }
-
   function login() {
-    const email = profileEmailInput.value.trim();
-    const password = profilePasswordInput.value;
-    profileAuthError.textContent = "";
+    const email = loginEmailInput.value.trim();
+    const password = loginPasswordInput.value;
+    loginError.textContent = "";
     auth.signInWithEmailAndPassword(email, password)
       .catch(err => {
-        profileAuthError.textContent = err.message;
-        console.error('[auth] Login error:', err);
+        loginError.textContent = err.message;
       });
   }
 
-  // --- Profile menu button logic ---
   profileLogoutBtn.onclick = () => auth.signOut();
 
-  // --- Load profile info (username, icon) on login ---
   function loadProfile(user) {
     if (!user) return;
     firebase.firestore().collection('users').doc(user.uid).get()
       .then(doc => {
-        let icon = iconOptions[0];
+        let icon = "CardImages/Avatars/Avatar1.png";
         let name = user.displayName || user.email;
         if (doc.exists) {
           const data = doc.data();
           if (data && data.profilePic) icon = data.profilePic;
           if (data && data.username) name = data.username;
         }
-        profilePic.src = icon;
+        document.getElementById('profile-pic').src = icon;
         profileUsernameDisplay.textContent = name;
-        renderProfileIcons(icon);
       })
       .catch(err => {
-        // Fallback to defaults if Firestore fails
-        console.error('[auth] Failed to load profile:', err);
-        profilePic.src = defaultIcon;
+        document.getElementById('profile-pic').src = "CardImages/Avatars/Default.png";
         profileUsernameDisplay.textContent = user.displayName || user.email || "";
-        renderProfileIcons(defaultIcon);
       });
   }
 
   auth.onAuthStateChanged(user => {
-    console.log('[auth] Auth state changed:', user);
-    console.log('[auth] appMain:', appMain, 'mainNav:', mainNav);
-
-    // Profile/account section UI
     if (user) {
-      if (profileArea) profileArea.style.display = '';
-      profileAuthSection.classList.add('hidden');
-      profileAccountSection.classList.remove('hidden');
-      profileUsernameDisplay.textContent = user.displayName || user.email || "";
-      if (appMain) appMain.style.display = 'block';
-      if (mainNav) mainNav.style.display = 'flex';
+      profileArea.style.display = '';
+      profileMenu.classList.remove('hidden');
+      profileMenu.classList.remove('active'); // Hide menu by default
+      loginMenu.classList.remove('active');
+      loginMenu.style.display = 'none';
       loadProfile(user);
-      console.log('[auth] Showing #app-main');
     } else {
-      if (profileArea) profileArea.style.display = 'none';
-      profileAuthSection.classList.remove('hidden');
-      profileAccountSection.classList.add('hidden');
-      profileUsernameInput.value = "";
-      profileEmailInput.value = "";
-      profilePasswordInput.value = "";
-      profileAuthError.textContent = "";
-      profilePic.src = defaultIcon;
-      if (profileUsernameDisplay) profileUsernameDisplay.textContent = "";
-      profileIcons.innerHTML = "";
-      if (appMain) appMain.style.display = 'none';
-      if (mainNav) mainNav.style.display = 'none';
-      console.log('[auth] Hiding #app-main');
+      profileArea.style.display = 'none';
+      profileMenu.classList.remove('active');
+      profileMenu.style.display = 'none';
+      loginMenu.classList.add('active');
+      loginMenu.style.display = '';
+      loginUsernameInput.value = "";
+      loginEmailInput.value = "";
+      loginPasswordInput.value = "";
+      loginError.textContent = "";
     }
-    profileMenu.classList.add('hidden');
   });
-}); // <-- closes DOMContentLoaded
+});
