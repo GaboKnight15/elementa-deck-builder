@@ -172,18 +172,16 @@ document.addEventListener('DOMContentLoaded', function () {
       profileArea.style.display = '';
       profileMenu.classList.remove('active'); // Hide menu by default
       loginMenu.classList.remove('active');
-      loginMenu.style.display = 'none';
-      appMain.style.display = '';
-      mainNav.style.display = 'flex';
+      appMain.classList.add('active');
+      mainNav.classList.add('active');
       loadProfile(user);
     } else {
       profileArea.style.display = 'none';
       profileMenu.classList.remove('active');
       profileMenu.style.display = 'none';
       loginMenu.classList.add('active');
-      loginMenu.style.display = '';
-      appMain.style.display = 'none';
-      mainNav.style.display = 'none';
+      appMain.classList.remove('active');
+      mainNav.classList.remove('active');
       loginUsernameInput.value = "";
       loginEmailInput.value = "";
       loginPasswordInput.value = "";
