@@ -50,6 +50,7 @@ const phasePlayerSpan    = document.getElementById('phase-player');
 const phaseNameSpan      = document.getElementById('phase-name');
 const nextPhaseBtn       = document.getElementById('next-phase-btn');
 const battlefield        = document.getElementById('battlefield');
+const phaseBadge = document.getElementById('phase-badge');
 
 // ==========================
 // === RENDERING / UI ===
