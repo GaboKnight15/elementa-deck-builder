@@ -59,7 +59,7 @@ button {
   margin: 0;
 }
 /* Add these or adjust as needed */
-.auth-menu {
+ #login {
   display: none;
   background: #232a3c;
   color: #fff;
@@ -88,14 +88,14 @@ button {
   min-width: 260px;
   max-width: 320px;
 }
-.auth-menu input, .auth-menu button {
+#login-menu input, #login button {
   margin: 0.3em 0;
   width: 100%;
   box-sizing: border-box;
 }
 
 /* Show/hide logic (you can toggle these via JS) */
-.auth-menu.active { display: block; }
+#login.active { display: block; }
 .profile-menu.active { display: block; }
 #main-nav {
   flex: 2 1 auto;
