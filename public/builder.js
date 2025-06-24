@@ -14,7 +14,7 @@
 // ==========================
 // === DOM REFERENCES ===
 // ==========================
-const builderGallery     = document.getElementById('card-gallery-builder');
+const builderGallery     = document.getElementById('gallery-builder-cards');
 const deckSlotSelect     = document.getElementById('deck-slot-select');
 const addDeckSlotBtn     = document.getElementById('add-deck-slot-btn');
 const deleteDeckSlotBtn  = document.getElementById('delete-deck-slot-btn');
