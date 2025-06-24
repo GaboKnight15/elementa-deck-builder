@@ -35,27 +35,6 @@ document.addEventListener('DOMContentLoaded', function () {
   ];
   const defaultIcon = "CardImages/Avatars/Default.png";
 
-  // --- Menu Show/Hide Logic ---
-  profileArea.onclick = function(e) {
-    e.stopPropagation();
-    profileMenu.classList.toggle('active');
-  };
-  // Hide menu when clicking outside
-  document.addEventListener('click', (e) => {
-    if (!profileMenu.classList.contains('active') &&
-        !profileMenu.contains(e.target) &&
-        !profileArea.contains(e.target)) {
-          profileMenu.classList.add('active');
-          // Optionally clear sensitive fields
-          if (profilePasswordInput) profilePasswordInput.value = "";
-        }
-   });
-
-  // Prevent menu clicks from closing menu
-  profileMenu.onclick = function(e) {
-    e.stopPropagation();
-  };
-
   // --- ICON CHOICES ---
   function renderProfileIcons(selectedIcon) {
     profileIcons.innerHTML = "";
@@ -114,7 +93,9 @@ document.addEventListener('DOMContentLoaded', function () {
       profileMenu.classList.remove('active');
     }
   });
-  profileMenu.onclick = function(e) { e.stopPropagation(); };
+  profileMenu.onclick = function(e) { 
+      e.stopPropagation(); 
+  };
 
   // --- Auth logic for login/signup ---
   loginForm.onsubmit = function(e) {
