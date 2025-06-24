@@ -33,6 +33,9 @@ button {
   border-radius: 4px;
   cursor: pointer;
 }
+
+#app-main { display: none; }
+
 .header-row {
   display: flex;
   align-items: center;
