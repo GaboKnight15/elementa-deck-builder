@@ -30,6 +30,10 @@ function createCardGallery(card) {
     img.onclick = (e) => {
       e.stopPropagation();
       showFullCardModal(card);
+        
+      const newCards = getNewlyUnlockedCards().filter(id => id !== card.id);
+      setNewlyUnlockedCards(newCards);
+      renderGallery();
     };
     div.appendChild(img);
 
@@ -37,6 +41,15 @@ function createCardGallery(card) {
     name.textContent = card.name;
     div.appendChild(name);
 
+    // "New!" badge
+    const newCards = getNewlyUnlockedCards();
+    if (newCards.includes(card.id)) {
+      const newBadge = document.createElement('div');
+      newBadge.className = 'new-card-badge';
+      newBadge.textContent = 'New!';
+      div.appendChild(newBadge);
+    }
+    
     // Show count badge
     const countBadge = document.createElement('div');
     countBadge.className = 'card-count-badge'; // style in CSS
