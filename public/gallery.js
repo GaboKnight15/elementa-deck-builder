@@ -6,11 +6,14 @@ const gallery = document.getElementById('gallery-cards');
 // === RENDERING CARDS ===
 // ==========================
 function createCardGallery(card) {
+    const collection = getCollection();
+    const owned = collection[card.id] || 0;
+
     const div = document.createElement('div');
     div.className = 'card-gallery';
     if (card.rarity) {
-    div.setAttribute('data-rarity', card.rarity);
-  }
+      div.setAttribute('data-rarity', card.rarity);
+    }
     div.classList.add(getCardBgClass(card));
 
     const img = document.createElement('img');
@@ -20,6 +23,10 @@ function createCardGallery(card) {
       this.src = "CardImages/Domains/placeholder.png";
     };
     img.alt = card.name;
+
+    // GRAY OUT if not owned
+    if (owned === 0) img.classList.add('card-image-locked');
+
     img.onclick = (e) => {
       e.stopPropagation();
       showFullCardModal(card);
@@ -29,6 +36,13 @@ function createCardGallery(card) {
     const name = document.createElement('h4');
     name.textContent = card.name;
     div.appendChild(name);
+
+    // Show count badge
+    const countBadge = document.createElement('div');
+    countBadge.className = 'card-count-badge'; // style in CSS
+    countBadge.textContent = owned;
+    div.appendChild(countBadge);
+
     return div;
 }
 
