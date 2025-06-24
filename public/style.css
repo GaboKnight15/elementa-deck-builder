@@ -37,13 +37,16 @@ button {
 #app-main { 
   display: none; 
 }
-
+#app-main.active {
+  display: block;
+}
 #main-nav {
   flex: 2 1 auto;
   display: none;
   justify-content: center;
   gap: 1.2em;
 }
+#main-nav.active { display: flex; }
 
 .header-row {
   display: flex;
