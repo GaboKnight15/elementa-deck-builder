@@ -183,35 +183,44 @@ function loadProfile(user) {
     });
 }
 
-  auth.onAuthStateChanged(user => {
-    // Profile/account section UI
-    if (user) {
-      profileAuthSection.classList.add('hidden');
-      profileAccountSection.classList.remove('hidden');
-      profileUsernameDisplay.textContent = user.displayName || user.email || "";
-      loadProfile(user);
-    } else {
-      profileAuthSection.classList.remove('hidden');
-      profileAccountSection.classList.add('hidden');
-      profileUsernameInput.value = "";
-      profileEmailInput.value = "";
-      profilePasswordInput.value = "";
-      profileAuthError.textContent = "";
-      profilePic.src = defaultIcon;
-      if (profileUsernameDisplay) profileUsernameDisplay.textContent = "";
-      profileIcons.innerHTML = "";
-    }
-    profileMenu.classList.add('hidden');
+auth.onAuthStateChanged(user => {
+  console.log('[auth] Auth state changed:', user);
+  const appMain = document.getElementById('app-main');
+  const mainNav = document.getElementById('main-nav');
+  console.log('[auth] appMain:', appMain, 'mainNav:', mainNav);
 
-    // <<< Place your app/main UI show/hide code here >>>
-    const appMain = document.getElementById('app-main');
-    const mainNav = document.getElementById('main-nav');
-    if (user) {
-      if (appMain) appMain.style.display = '';
-      if (mainNav) mainNav.style.display = '';
-    } else {
-      if (appMain) appMain.style.display = 'none';
-      if (mainNav) mainNav.style.display = 'none';
+  // Profile/account section UI
+  if (user) {
+    profileAuthSection.classList.add('hidden');
+    profileAccountSection.classList.remove('hidden');
+    profileUsernameDisplay.textContent = user.displayName || user.email || "";
+    loadProfile(user);
+  } else {
+    profileAuthSection.classList.remove('hidden');
+    profileAccountSection.classList.add('hidden');
+    profileUsernameInput.value = "";
+    profileEmailInput.value = "";
+    profilePasswordInput.value = "";
+    profileAuthError.textContent = "";
+    profilePic.src = defaultIcon;
+    if (profileUsernameDisplay) profileUsernameDisplay.textContent = "";
+    profileIcons.innerHTML = "";
+  }
+  profileMenu.classList.add('hidden');
+
+  // Show/hide main app area
+  if (user) {
+    if (appMain) {
+      appMain.style.display = '';
+      console.log('[auth] Showing #app-main');
     }
-  });
+    if (mainNav) mainNav.style.display = '';
+  } else {
+    if (appMain) {
+      appMain.style.display = 'none';
+      console.log('[auth] Hiding #app-main');
+    }
+    if (mainNav) mainNav.style.display = 'none';
+  }
+});
 }); // <-- closes DOMContentLoaded
