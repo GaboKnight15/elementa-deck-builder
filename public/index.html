@@ -10,38 +10,43 @@
 <body>
 <header>
   <h1>Elementa</h1>
-<div id="profile-area">
-  <img id="profile-pic" src="CardImages/Avatars/Default.png" alt="Profile">
-</div>
-<div id="profile-menu" class="hidden">
-  <!-- LOGGED OUT VIEW -->
-  <div id="profile-auth-section">
-    <form id="profile-auth-form">
-      <input type="text" id="profile-username-input" placeholder="Username" maxlength="20" autocomplete="username">
-      <input type="email" id="profile-email-input" placeholder="Email" autocomplete="email">
-      <input type="password" id="profile-password-input" placeholder="Password" autocomplete="current-password">
-      <button id="profile-login-btn" class="btn-primary" type="submit">Login</button>
-      <button id="profile-signup-btn" class="btn-primary" type="button">Sign Up</button>
-    </form>
-    <div id="profile-auth-error" style="color:red;"></div>
+
+  <!-- Profile area: only shown AFTER login, hidden by default -->
+  <div id="profile-area" style="display: none;">
+    <img id="profile-pic" src="CardImages/Avatars/Default.png" alt="Profile">
   </div>
-  <!-- LOGGED IN VIEW -->
-  <div id="profile-account-section" class="hidden">
-    <div id="profile-info">
-      <div id="profile-username-display"></div>
+
+  <!-- Profile menu: always present, but toggles views inside -->
+  <div id="profile-menu" class="hidden">
+    <!-- LOGGED OUT VIEW -->
+    <div id="profile-auth-section">
+      <form id="profile-auth-form">
+        <input type="text" id="profile-username-input" placeholder="Username" maxlength="20" autocomplete="username">
+        <input type="email" id="profile-email-input" placeholder="Email" autocomplete="email">
+        <input type="password" id="profile-password-input" placeholder="Password" autocomplete="current-password">
+        <button id="profile-login-btn" class="btn-primary" type="submit">Login</button>
+        <button id="profile-signup-btn" class="btn-primary" type="button">Sign Up</button>
+      </form>
+      <div id="profile-auth-error" style="color:red;"></div>
     </div>
-    <button id="change-profile-btn" class="btn-primary">Profile Pic</button>
-    <button id="profile-logout-btn" class="btn-negative">Logout</button>
+    <!-- LOGGED IN VIEW -->
+    <div id="profile-account-section" class="hidden">
+      <div id="profile-info">
+        <div id="profile-username-display"></div>
+      </div>
+      <button id="change-profile-btn" class="btn-primary">Profile Pic</button>
+      <button id="profile-logout-btn" class="btn-negative">Logout</button>
+    </div>
   </div>
-</div>
-<!-- PROFILE ICONS MENU -->
-<div id="profile-icon-modal" class="modal" style="display:none;">
-  <div id="profile-icon-modal-content" class="modal-content">
-    <h3>Choose your Avatar</h3>
-    <div id="profile-icons"></div>
-    <button id="close-profile-icon-modal" class="btn-negative" style="margin-top:14px;">Cancel</button>
+  
+  <!-- PROFILE ICONS MENU -->
+  <div id="profile-icon-modal" class="modal" style="display:none;">
+    <div id="profile-icon-modal-content" class="modal-content">
+      <h3>Choose your Avatar</h3>
+      <div id="profile-icons"></div>
+      <button id="close-profile-icon-modal" class="btn-negative" style="margin-top:14px;">Cancel</button>
+    </div>
   </div>
-</div>
 </header>
 
                               <!-- NAVIGATION -->
