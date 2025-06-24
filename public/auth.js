@@ -10,9 +10,6 @@ document.addEventListener('DOMContentLoaded', function () {
   const loginPasswordInput = document.getElementById('login-password-input');
   const loginError         = document.getElementById('login-error');
 
-  const profileAuthError   = document.getElementById('profile-auth-error');
-  const profileAuthForm    = document.getElementById('profile-auth-form');
-
   const profileArea            = document.getElementById('profile-area');
   const profileMenu            = document.getElementById('profile-menu');
   const profilePic              = document.getElementById('profile-pic');
@@ -41,18 +38,18 @@ document.addEventListener('DOMContentLoaded', function () {
   // --- Menu Show/Hide Logic ---
   profileArea.onclick = function(e) {
     e.stopPropagation();
-    profileMenu.classList.toggle('hidden');
+    profileMenu.classList.toggle('active');
   };
   // Hide menu when clicking outside
   document.addEventListener('click', (e) => {
-    if (!profileMenu.classList.contains('hidden') &&
+    if (!profileMenu.classList.contains('active') &&
         !profileMenu.contains(e.target) &&
         !profileArea.contains(e.target)) {
-      profileMenu.classList.add('hidden');
-      // Optionally clear sensitive fields
-      if (profilePasswordInput) profilePasswordInput.value = "";
-    }
-  });
+          profileMenu.classList.add('active');
+          // Optionally clear sensitive fields
+          if (profilePasswordInput) profilePasswordInput.value = "";
+        }
+   });
 
   // Prevent menu clicks from closing menu
   profileMenu.onclick = function(e) {
@@ -193,7 +190,6 @@ document.addEventListener('DOMContentLoaded', function () {
   auth.onAuthStateChanged(user => {
     if (user) {
       profileArea.style.display = '';
-      profileMenu.classList.remove('hidden');
       profileMenu.classList.remove('active'); // Hide menu by default
       loginMenu.classList.remove('active');
       loginMenu.style.display = 'none';
