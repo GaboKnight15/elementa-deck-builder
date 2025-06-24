@@ -189,6 +189,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Profile/account section UI
     if (user) {
+      if (profileArea) profileArea.style.display = '';
       profileAuthSection.classList.add('hidden');
       profileAccountSection.classList.remove('hidden');
       profileUsernameDisplay.textContent = user.displayName || user.email || "";
@@ -197,6 +198,7 @@ document.addEventListener('DOMContentLoaded', function () {
       loadProfile(user);
       console.log('[auth] Showing #app-main');
     } else {
+      if (profileArea) profileArea.style.display = 'none';
       profileAuthSection.classList.remove('hidden');
       profileAccountSection.classList.add('hidden');
       profileUsernameInput.value = "";
