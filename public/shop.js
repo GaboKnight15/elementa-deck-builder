@@ -61,6 +61,8 @@ function openPack(type) {
       }, 600); // after flip
     }, 250 * i);
   });
+ cards.forEach(card => addToCollection(card.id, 1));
+ if (window.renderGallery) renderGallery();
 }
 
 // Handle pack button click
