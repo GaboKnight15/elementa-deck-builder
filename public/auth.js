@@ -24,6 +24,9 @@ const profileIconModalContent = document.getElementById('profile-icon-modal-cont
 const profileIcons = document.getElementById('profile-icons');
 const closeProfileIconModalBtn = document.getElementById('close-profile-icon-modal');
 
+const appMain = document.getElementById('app-main');
+const mainNav = document.getElementById('main-nav');
+  
 // --- Profile Icon Choices ---
 const iconOptions = [
   "CardImages/Avatars/Avatar1.png",
@@ -180,30 +183,35 @@ function loadProfile(user) {
     });
 }
 
-// --- Auth state change: show/hide UI properly ---
-auth.onAuthStateChanged(user => {
-  if (user) {
-    // Show profile account section, hide auth section
-    profileAuthSection.classList.add('hidden');
-    profileAccountSection.classList.remove('hidden');
-    profileAuthSection.classList.add('hidden');
-    profileAccountSection.classList.remove('hidden');
-  // Show username immediately
-    profileUsernameDisplay.textContent = user.displayName || user.email || "";
-    loadProfile(user);
-  } else {
-    // Show login/signup, hide profile account section
-    profileAuthSection.classList.remove('hidden');
-    profileAccountSection.classList.add('hidden');
-    profileUsernameInput.value = "";
-    profileEmailInput.value = "";
-    profilePasswordInput.value = "";
-    profileAuthError.textContent = "";
-    profilePic.src = defaultIcon;
-    if (profileUsernameDisplay) profileUsernameDisplay.textContent = "";
-    profileIcons.innerHTML = "";
-  }
-  // Always hide menu on auth change for clarity
-  profileMenu.classList.add('hidden');
-});
-});  
+  auth.onAuthStateChanged(user => {
+    // Profile/account section UI
+    if (user) {
+      profileAuthSection.classList.add('hidden');
+      profileAccountSection.classList.remove('hidden');
+      profileUsernameDisplay.textContent = user.displayName || user.email || "";
+      loadProfile(user);
+    } else {
+      profileAuthSection.classList.remove('hidden');
+      profileAccountSection.classList.add('hidden');
+      profileUsernameInput.value = "";
+      profileEmailInput.value = "";
+      profilePasswordInput.value = "";
+      profileAuthError.textContent = "";
+      profilePic.src = defaultIcon;
+      if (profileUsernameDisplay) profileUsernameDisplay.textContent = "";
+      profileIcons.innerHTML = "";
+    }
+    profileMenu.classList.add('hidden');
+
+    // <<< Place your app/main UI show/hide code here >>>
+    const appMain = document.getElementById('app-main');
+    const mainNav = document.getElementById('main-nav');
+    if (user) {
+      if (appMain) appMain.style.display = '';
+      if (mainNav) mainNav.style.display = '';
+    } else {
+      if (appMain) appMain.style.display = 'none';
+      if (mainNav) mainNav.style.display = 'none';
+    }
+  });
+}); // <-- closes DOMContentLoaded
