@@ -48,6 +48,7 @@ button {
   justify-content: center;
   gap: 1.2em;
   flex: 2 1 auto;
+  margin-bottom: 1em;
 }
 
 .header-row {
