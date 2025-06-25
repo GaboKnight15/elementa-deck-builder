@@ -60,11 +60,12 @@ function refreshDeckSlotSelect() {
 // ==========================
 // === RENDERING CARDS ===
 // ==========================
-function createCardBuilder(card) {
+function createCardBuilder(card, ownedCount) {
     const deck = getCurrentDeck();
     const currentInDeck = deck[card.id] || 0;
     const div = document.createElement('div');
     div.className = 'card-builder';
+
   // DRAG AND DROP SUPPORT
     div.setAttribute('draggable', 'true');
     div.addEventListener('dragstart', function(e) {
@@ -102,10 +103,10 @@ function createCardBuilder(card) {
     const btn = document.createElement('button');
     btn.textContent = "Add";
     btn.classList.add('btn-secondary', 'btn-add');
-    btn.disabled = !canAddCard(card);
+    btn.disabled = !canAddCard(card, currentInDeck, ownedCount);
     btn.onclick = (e) => {
       e.stopPropagation();
-      if (!canAddCard(card)) return;
+      if (!canAddCard(card, currentInDeck, ownedCount)) return;
       deck[card.id] = (deck[card.id] || 0) + 1;
       setCurrentDeck(deck);
       updateDeckDisplay();
