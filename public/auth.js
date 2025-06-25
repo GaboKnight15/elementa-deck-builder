@@ -170,7 +170,7 @@ document.addEventListener('DOMContentLoaded', function () {
   auth.onAuthStateChanged(user => {
     if (user) {
       profileArea.style.display = '';
-      profileMenu.classList.remove('active'); // Hide menu by default
+      profileMenu.classList.add('active');
       loginMenu.classList.remove('active');
       appMain.classList.add('active');
       mainNav.classList.add('active');
@@ -178,7 +178,6 @@ document.addEventListener('DOMContentLoaded', function () {
     } else {
       profileArea.style.display = 'none';
       profileMenu.classList.remove('active');
-      profileMenu.style.display = 'none';
       loginMenu.classList.add('active');
       appMain.classList.remove('active');
       mainNav.classList.remove('active');
