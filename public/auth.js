@@ -170,7 +170,7 @@ document.addEventListener('DOMContentLoaded', function () {
   auth.onAuthStateChanged(user => {
     if (user) {
       profileArea.style.display = '';
-      profileMenu.classList.add('active');
+      profileMenu.classList.remove('active');
       loginMenu.classList.remove('active');
       appMain.classList.add('active');
       mainNav.classList.add('active');
