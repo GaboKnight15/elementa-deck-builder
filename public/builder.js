@@ -27,39 +27,61 @@ const deleteDeckSlotBtn  = document.getElementById('delete-deck-slot-btn');
 const deckTitle          = document.getElementById('deck-title');
 const deckList           = document.getElementById('deck-list');
 const cardCount          = document.getElementById('card-count');
-const toggleBtn          = document.getElementById('toggle-deck-btn');
 const deckPanel          = document.querySelector('.deck');
 const deckRenameBtn      = document.getElementById('deck-rename-btn');
 
 // Get collection from localStorage using shared.js util
 function showDeckSelection() {
-  deckSelectionContainer.style.display = '';
+  document.getElementById('deck-selection-grid').style.display = '';
   builderContainer.style.display = 'none';
+  deckPanel.style.display = 'none';
   renderDeckSelection();
 }
 function showDeckBuilder() {
-  deckSelectionContainer.style.display = 'none';
+  document.getElementById('deck-selection-grid').style.display = 'none';
   builderContainer.style.display = '';
+  deckPanel.style.display = '';
   refreshDeckSlotSelect();
   updateDeckDisplay();
   renderBuilder();
 }
 
 function renderDeckSelection() {
-  deckSelectionList.innerHTML = '';
-  deckSlots.forEach(slot => {
-    const li = document.createElement('li');
-    li.textContent = slot;
-    li.className = 'deck-selection-item btn-secondary';
-    li.style.margin = '8px 0';
-    li.style.cursor = 'pointer';
-    li.onclick = () => {
-      currentDeckSlot = slot;
-      saveDeckState();
-      showDeckBuilder();
-    };
-    deckSelectionList.appendChild(li);
-  });
+  const grid = document.getElementById('deck-selection-grid');
+  grid.innerHTML = '';
+
+  // Always 9 slots (fill with deck names, then "Empty Slot")
+  for (let i = 0; i < 9; i++) {
+    const slotName = deckSlots[i];
+    const tile = document.createElement('div');
+    tile.className = 'deck-slot-tile';
+
+    if (slotName) {
+      tile.textContent = slotName;
+      tile.onclick = () => {
+        currentDeckSlot = slotName;
+        saveDeckState();
+        showDeckBuilder();
+      };
+    } else {
+      tile.classList.add('empty');
+      tile.textContent = '+ New Deck';
+      tile.onclick = () => {
+        let newName = prompt("Deck name?");
+        if (!newName) return;
+        if (deckSlots.includes(newName)) {
+          alert("Deck name already exists!");
+          return;
+        }
+        deckSlots[i] = newName;
+        decks[newName] = {};
+        currentDeckSlot = newName;
+        saveDeckState();
+        showDeckBuilder();
+      };
+    }
+    grid.appendChild(tile);
+  }
 }
 
 createNewDeckBtn.onclick = () => {
@@ -443,11 +465,7 @@ function renderBuilder() {
     updateDeckDisplay();
     renderBuilder();
   };
-  // Deck toggle logic
-  toggleBtn.onclick = () => {
-    deckPanel.classList.toggle('show');
-    document.body.classList.toggle('deck-open', deckPanel.classList.contains('show'));
-  };
+
 // ==========================
 // === INITIALIZATION ===
 // ==========================
