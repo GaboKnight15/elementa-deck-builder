@@ -93,7 +93,7 @@ button {
   box-shadow: 0 6px 32px 0 #141e2f99, 0 1.5px 0 #22304a inset;
   border: 2.5px solid #314175;
   padding: 18px 16px 14px 16px;
-  z-index: 2100;
+  z-index: 5001;
   display: none;
   flex-direction: column;
   gap: 11px;
@@ -1287,7 +1287,7 @@ button {
   padding-bottom: 2px;
   filter: drop-shadow(0 0 8px #ffe06644);
 }
-#profile-auth-section {
+#profile-account-section {
   position: absolute;
   left: 50%;
   top: 50%;
@@ -1301,11 +1301,7 @@ button {
   flex-direction: column;
   align-items: center;
 }
-#profile-menu form, #profile-menu #profile-account-section {
-  display: flex;
-  flex-direction: column;
-  gap: 9px;
-}
+
 #profile-menu input[type="text"],
 #profile-menu input[type="email"],
 #profile-menu input[type="password"] {
