@@ -116,23 +116,8 @@
                       <!-- DECK BUILDER -->
 <section id="builder-section" class="section">  
   <div id="builder-container" class="section-container">
-    <div id="deck-selection-grid" class="deck-selection-grid">
-    <div id="deck-selection-container" class="section-container">
-      <h2>Your Decks</h2>
-      <ul id="deck-selection-list"></ul>
-      <button id="create-new-deck-btn" class="btn-primary">+ New Deck</button>
-    </div>
-  <!-- DECK SLOTS -->
-  <div id="deck-slot-selector">
-    <label for="deck-slot-select">Deck Slot:</label>
-    <select id="deck-slot-select"></select>
-    <button id="add-deck-slot-btn" class="icon-btn">+</button>
-    <button id="delete-deck-slot-btn" class="icon-btn-negative" title="Delete Deck Slot">
-      <svg class="trash-icon" viewBox="0 0 20 20" width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
-        <path d="M6.25 7.5V15M10 7.5V15M13.75 7.5V15M2.5 5H17.5M4.167 5V16.25C4.167 16.6642 4.33594 17.0617 4.63223 17.3579C4.92852 17.6542 5.32609 17.8231 5.74026 17.8231H14.2597C14.6739 17.8231 15.0715 17.6542 15.3678 17.3579C15.6641 17.0617 15.833 16.6642 15.833 16.25V5M7.083 2.5H12.917C13.3312 2.5 13.7287 2.66894 14.025 2.96523C14.3213 3.26152 14.4903 3.65909 14.4903 4.07326V5H5.50974V4.07326C5.50974 3.65909 5.67868 3.26152 5.97497 2.96523C6.27126 2.66894 6.66883 2.5 7.083 2.5Z" stroke="#d32f2f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </button>
-  </div>
+<!-- DECK SLOTS -->
+    <div id="deck-selection-grid" class="deck-selection-grid"></div>
   <!-- FILTER GALLERY BUILDER -->
   <div id="filters-builder" class="filter-row">
     <label>
@@ -216,9 +201,9 @@
     <ul class="deck-list" id="deck-list"></ul>
     <p>Total Cards: <span id="card-count">0</span>/50</p>
     <button id="deck-rename-btn" class="btn-primary" style="margin-bottom: 10px;">Rename Deck</button>
+    <button id="deck-delete-btn" class="btn-negative" style="margin-bottom: 10px;">Delete Deck</button>
     <button id="reset-deck-btn" class="btn-negative">Reset Deck</button>
   </div>
-</div>
 </div>
 </div>  
 </section>
