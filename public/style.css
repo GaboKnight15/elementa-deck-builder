@@ -338,10 +338,7 @@ button {
   transition: transform 0.3s cubic-bezier(.4,1.6,.3,1), box-shadow 0.3s;
   transform: translateX(100%);
 }
-.deck.show {
-  transform: translateX(0);
-  box-shadow: -2px 0 16px rgba(0,0,0,0.18);
-}
+
 .deck h2 {
   margin-top: 0;
   font-size: 1.1em;
