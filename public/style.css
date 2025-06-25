@@ -1518,3 +1518,46 @@ button {
   padding: 0.3em 0 0.1em 0;
   min-height: 1.5em;
 }
+
+/* ===== ELEMENT GLOW KEYFRAMES ===== */
+
+@keyframes glow-leaves {
+  0%,100% { box-shadow: 0 0 24px 6px #5ff377, 0 0 40px 6px #1fe41b; }
+  50%     { box-shadow: 0 0 36px 14px #9cffb4, 0 0 60px 14px #41d36e; }
+}
+@keyframes glow-fire {
+  0%,100% { box-shadow: 0 0 24px 8px #ffb347, 0 0 40px 8px #ff7043;}
+  50%     { box-shadow: 0 0 32px 16px #ffd700, 0 0 64px 16px #ff7043;}
+}
+@keyframes glow-water {
+  0%,100% { box-shadow: 0 0 24px 8px #4fc3f7, 0 0 40px 8px #2196f3;}
+  50%     { box-shadow: 0 0 36px 14px #b3e5fc, 0 0 60px 14px #0288d1;}
+}
+@keyframes glow-thunder {
+  0%,100% { box-shadow: 0 0 24px 8px #fff176, 0 0 40px 8px #ffd600;}
+  50%     { box-shadow: 0 0 36px 16px #fffde7, 0 0 60px 18px #ffea00;}
+}
+@keyframes glow-ground {
+  0%,100% { box-shadow: 0 0 20px 8px #996633, 0 0 40px 8px #c9b175;}
+  50%     { box-shadow: 0 0 30px 12px #c2b280, 0 0 54px 14px #7d5a1e;}
+}
+@keyframes glow-poison {
+  0%,100% { box-shadow: 0 0 24px 8px #b388ff, 0 0 40px 8px #8e24aa;}
+  50%     { box-shadow: 0 0 36px 14px #e1bee7, 0 0 60px 16px #ae52d4;}
+}
+@keyframes glow-dark {
+  0%,100% { box-shadow: 0 0 24px 8px #616161, 0 0 40px 8px #212121;}
+  50%     { box-shadow: 0 0 36px 14px #9e9e9e, 0 0 60px 16px #000;}
+}
+@keyframes glow-light {
+  0%,100% { box-shadow: 0 0 28px 12px #fff9c4, 0 0 44px 12px #fffde7;}
+  50%     { box-shadow: 0 0 44px 16px #ffffff, 0 0 80px 24px #fffde7;}
+}
+.card-element-leaves:hover { animation: glow-leaves 1.2s infinite alternate; }
+.card-element-fire:hover { animation: glow-fire 1.2s infinite alternate; }
+.card-element-water:hover { animation: glow-water 1.2s infinite alternate; }
+.card-element-thunder:hover { animation: glow-thunder 1.2s infinite alternate; }
+.card-element-ground:hover { animation: glow-ground 1.2s infinite alternate; }
+.card-element-poison:hover { animation: glow-poison 1.2s infinite alternate; }
+.card-element-dark:hover { animation: glow-dark 1.2s infinite alternate; }
+.card-element-light:hover { animation: glow-light 1.2s infinite alternate; }
