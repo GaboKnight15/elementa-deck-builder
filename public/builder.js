@@ -15,15 +15,9 @@
 // === DOM REFERENCES ===
 // ==========================
 // SELECTION MODE
-const deckSelectionContainer = document.getElementById('deck-selection-container');
-const deckSelectionList = document.getElementById('deck-selection-list');
-const createNewDeckBtn = document.getElementById('create-new-deck-btn');
 const builderContainer = document.getElementById('builder-container');
 const builderBackBtn = document.getElementById('builder-back-btn');
 const builderGallery     = document.getElementById('gallery-builder-cards');
-const deckSlotSelect     = document.getElementById('deck-slot-select');
-const addDeckSlotBtn     = document.getElementById('add-deck-slot-btn');
-const deleteDeckSlotBtn  = document.getElementById('delete-deck-slot-btn');
 const deckTitle          = document.getElementById('deck-title');
 const deckList           = document.getElementById('deck-list');
 const cardCount          = document.getElementById('card-count');
