@@ -14,6 +14,12 @@
 // ==========================
 // === DOM REFERENCES ===
 // ==========================
+// SELECTION MODE
+const deckSelectionContainer = document.getElementById('deck-selection-container');
+const deckSelectionList = document.getElementById('deck-selection-list');
+const createNewDeckBtn = document.getElementById('create-new-deck-btn');
+const builderContainer = document.getElementById('builder-container');
+const builderBackBtn = document.getElementById('builder-back-btn');
 const builderGallery     = document.getElementById('gallery-builder-cards');
 const deckSlotSelect     = document.getElementById('deck-slot-select');
 const addDeckSlotBtn     = document.getElementById('add-deck-slot-btn');
@@ -26,9 +32,51 @@ const deckPanel          = document.querySelector('.deck');
 const deckRenameBtn      = document.getElementById('deck-rename-btn');
 
 // Get collection from localStorage using shared.js util
-function getCollection() {
-  return JSON.parse(localStorage.getItem("cardCollection")) || {};
+function showDeckSelection() {
+  deckSelectionContainer.style.display = '';
+  builderContainer.style.display = 'none';
+  renderDeckSelection();
 }
+function showDeckBuilder() {
+  deckSelectionContainer.style.display = 'none';
+  builderContainer.style.display = '';
+  refreshDeckSlotSelect();
+  updateDeckDisplay();
+  renderBuilder();
+}
+
+function renderDeckSelection() {
+  deckSelectionList.innerHTML = '';
+  deckSlots.forEach(slot => {
+    const li = document.createElement('li');
+    li.textContent = slot;
+    li.className = 'deck-selection-item btn-secondary';
+    li.style.margin = '8px 0';
+    li.style.cursor = 'pointer';
+    li.onclick = () => {
+      currentDeckSlot = slot;
+      saveDeckState();
+      showDeckBuilder();
+    };
+    deckSelectionList.appendChild(li);
+  });
+}
+
+createNewDeckBtn.onclick = () => {
+  let newName = prompt("Deck name?", `Deck ${deckSlots.length + 1}`);
+  if (!newName) return;
+  if (deckSlots.includes(newName)) {
+    alert("Deck name already exists!");
+    return;
+  }
+  deckSlots.push(newName);
+  decks[newName] = {};
+  currentDeckSlot = newName;
+  saveDeckState();
+  showDeckBuilder();
+};
+
+builderBackBtn.onclick = showDeckSelection;
 function saveDeckState() {
     localStorage.setItem(DECK_SLOTS_KEY, JSON.stringify(deckSlots));
     localStorage.setItem(DECKS_KEY, JSON.stringify(decks));
@@ -60,6 +108,9 @@ function refreshDeckSlotSelect() {
 // ==========================
 // === RENDERING CARDS ===
 // ==========================
+function getCollection() {
+  return JSON.parse(localStorage.getItem("cardCollection")) || {};
+}
 function createCardBuilder(card, ownedCount) {
     const deck = getCurrentDeck();
     const currentInDeck = deck[card.id] || 0;
@@ -404,3 +455,4 @@ loadDeckState();
 refreshDeckSlotSelect();
 updateDeckDisplay();
 window.renderBuilder = renderBuilder;
+showDeckSelection();
