@@ -1561,3 +1561,8 @@ button {
 .card-element-poison:hover { animation: glow-poison 1.2s infinite alternate; }
 .card-element-dark:hover { animation: glow-dark 1.2s infinite alternate; }
 .card-element-light:hover { animation: glow-light 1.2s infinite alternate; }
+.card-locked:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.4);
+  z-index: 3;
+}
