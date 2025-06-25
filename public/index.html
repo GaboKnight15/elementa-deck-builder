@@ -67,24 +67,15 @@
     </label>
     <label>Color:
       <select id="filter-color-gallery" class="filter-select">
-        <option value="">All</option>
-        <option value="green">Green</option>
-        <option value="red">Red</option>
-        <option value="blue">Blue</option>
-        <option value="gray">Gray</option>
-        <option value="purple">Purple</option>
-        <option value="yellow">Yellow</option>
-        <option value="black">Black</option>
-        <option value="white">White</option>
+        <option value="">All</option><option value="green">Green</option><option value="red">Red</option>
+        <option value="blue">Blue</option><option value="gray">Gray</option><option value="purple">Purple</option>
+        <option value="yellow">Yellow</option><option value="black">Black</option><option value="white">White</option>
       </select>
     </label>
   <label>Category:
   <select id="filter-category-gallery" class="filter-select">
-    <option value="">All</option>
-    <option value="creature">Creature</option>
-    <option value="artifact">Artifact</option>
-    <option value="spell">Spell</option>
-    <option value="domain">Domain</option>
+    <option value="">All</option><option value="creature">Creature</option><option value="artifact">Artifact</option>
+    <option value="spell">Spell</option><option value="domain">Domain</option>
   </select>
   </label>
     <label>Type:
@@ -105,46 +96,25 @@
     </label>
     <label>Rarity:
       <select id="filter-rarity-gallery" class="filter-select">
-        <option value="">All</option>
-        <option value="Basic">Basic</option>
-        <option value="Common">Common</option>
-        <option value="Rare">Rare</option>
-        <option value="Legendary">Legendary</option>
+        <option value="">All</option><option value="Basic">Basic</option><option value="Common">Common</option>
+        <option value="Rare">Rare</option><option value="Legendary">Legendary</option>
       </select>
     </label>
     <label>Archetype:
       <select id="filter-archetype-gallery" class="filter-select">
-        <option value="">All</option>
-        <option value="Blazefeather">Blazefeather</option>
-        <option value="Cindercore">Cindercore</option>
-        <option value="Coralbound">Coralbound</option>
-        <option value="Frostlands">Frostlands</option>
-        <option value="Golemheart">Golemheart</option>
-        <option value="Moonfang">Moonfang</option>
-        <option value="Skullframe">Skullframe</option>
-        <option value="Voltwing">Voltwing</option>
-        <option value="Zephyra">Zephyra</option>
+        <option value="">All</option><option value="Blazefeather">Blazefeather</option><option value="Cindercore">Cindercore</option>
+        <option value="Coralbound">Coralbound</option><option value="Frostlands">Frostlands</option>
+        <option value="Golemheart">Golemheart</option><option value="Moonfang">Moonfang</option><option value="Skullframe">Skullframe</option><option value="Voltwing">Voltwing</option><option value="Zephyra">Zephyra</option>
       </select>
     </label>
     <label>Ability:
       <select id="filter-ability-gallery" class="filter-select">
-        <option value="">All</option>
-        <option value="ambush">Ambush</option>
-        <option value="dive">Dive</option>
-        <option value="burn">Burn</option>
-        <option value="drain">Drain</option>
-        <option value="elusive">Elusive</option>
-        <option value="flying">Flying</option>
-        <option value="ice armor">Ice Armor</option>
-        <option value="immunity">Immunity</option>
-        <option value="intimidate">Intimidate</option>
-        <option value="leap">Leap</option>
-        <option value="lifelink">Lifelink</option>
-        <option value="protect">Protect</option>
-        <option value="provoke">Provoke</option>
-        <option value="ranged">Ranged</option>
-        <option value="rush">Rush</option>
-        <option value="toxic">Toxic</option>
+        <option value="">All</option><option value="ambush">Ambush</option>
+        <option value="dive">Dive</option><option value="burn">Burn</option><option value="drain">Drain</option>
+        <option value="elusive">Elusive</option><option value="flying">Flying</option><option value="ice armor">Ice Armor</option><option value="immunity">Immunity</option>
+        <option value="intimidate">Intimidate</option><option value="leap">Leap</option><option value="lifelink">Lifelink</option>
+        <option value="protect">Protect</option><option value="provoke">Provoke</option><option value="ranged">Ranged</option>
+        <option value="rush">Rush</option><option value="toxic">Toxic</option>
       </select>
     </label>
   </div>
@@ -155,7 +125,12 @@
   
                       <!-- DECK BUILDER -->
 <section id="builder-section" class="section">  
-  <div id="builder-container" class="section-container"> 
+  <div id="builder-container" class="section-container">
+    <div id="deck-selection-container" class="section-container">
+      <h2>Your Decks</h2>
+      <ul id="deck-selection-list"></ul>
+      <button id="create-new-deck-btn" class="btn-primary">+ New Deck</button>
+    </div>
   <!-- DECK SLOTS -->
   <div id="deck-slot-selector">
     <label for="deck-slot-select">Deck Slot:</label>
@@ -266,6 +241,7 @@
     <button id="reset-deck-btn" class="btn-negative">Reset Deck</button>
   </div>
 </div>
+</div>  
 </section>
 
 
