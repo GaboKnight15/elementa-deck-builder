@@ -80,18 +80,8 @@
   </label>
     <label>Type:
       <select id="filter-type-gallery" class="filter-select">
-        <option value="">All</option>
-        <option value="evolution">Evolution</option>
-        <option value="fusion">Fusion</option>
-        <option value="elemental">Elemental</option>
-        <option value="dragon">Dragon</option>
-        <option value="construct">Construct</option>
-        <option value="beast">Beast</option>
-        <option value="undead">Undead</option>
-        <option value="demon">Demon</option>
-        <option value="mage">Mage</option>
-        <option value="equipment">Equipment</option>
-        <option value="relic">Relic</option>
+        <option value="">All</option><option value="evolution">Evolution</option><option value="fusion">Fusion</option><option value="elemental">Elemental</option><option value="dragon">Dragon</option><option value="construct">Construct</option><option value="beast">Beast</option> <option value="undead">Undead</option><option value="demon">Demon</option>
+        <option value="mage">Mage</option><option value="equipment">Equipment</option><option value="relic">Relic</option>
       </select>
     </label>
     <label>Rarity:
@@ -126,6 +116,7 @@
                       <!-- DECK BUILDER -->
 <section id="builder-section" class="section">  
   <div id="builder-container" class="section-container">
+    <div id="deck-selection-grid" class="deck-selection-grid">
     <div id="deck-selection-container" class="section-container">
       <h2>Your Decks</h2>
       <ul id="deck-selection-list"></ul>
@@ -141,7 +132,6 @@
         <path d="M6.25 7.5V15M10 7.5V15M13.75 7.5V15M2.5 5H17.5M4.167 5V16.25C4.167 16.6642 4.33594 17.0617 4.63223 17.3579C4.92852 17.6542 5.32609 17.8231 5.74026 17.8231H14.2597C14.6739 17.8231 15.0715 17.6542 15.3678 17.3579C15.6641 17.0617 15.833 16.6642 15.833 16.25V5M7.083 2.5H12.917C13.3312 2.5 13.7287 2.66894 14.025 2.96523C14.3213 3.26152 14.4903 3.65909 14.4903 4.07326V5H5.50974V4.07326C5.50974 3.65909 5.67868 3.26152 5.97497 2.96523C6.27126 2.66894 6.66883 2.5 7.083 2.5Z" stroke="#d32f2f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </button>
-    <button id="toggle-deck-btn" class="btn-primary">Toggle Deck</button>
   </div>
   <!-- FILTER GALLERY BUILDER -->
   <div id="filters-builder" class="filter-row">
@@ -212,23 +202,11 @@
     </label>
     <label>Ability:
       <select id="filter-ability-builder" class="filter-select">
-        <option value="">All</option>
-        <option value="ambush">Ambush</option>
-        <option value="dive">Dive</option>
-        <option value="burn">Burn</option>
-        <option value="drain">Drain</option>
-        <option value="elusive">Elusive</option>
-        <option value="flying">Flying</option>
-        <option value="ice armor">Ice Armor</option>
-        <option value="immunity">Immunity</option>
-        <option value="intimidate">Intimidate</option>
-        <option value="leap">Leap</option>
-        <option value="lifelink">Lifelink</option>
-        <option value="protect">Protect</option>
-        <option value="provoke">Provoke</option>
-        <option value="ranged">Ranged</option>
-        <option value="rush">Rush</option>
-        <option value="toxic">Toxic</option>
+        <option value="">All</option><option value="ambush">Ambush</option>
+        <option value="dive">Dive</option><option value="burn">Burn</option><option value="drain">Drain</option><option value="elusive">Elusive</option><option value="flying">Flying</option>
+        <option value="ice armor">Ice Armor</option><option value="immunity">Immunity</option><option value="intimidate">Intimidate</option>
+        <option value="leap">Leap</option><option value="lifelink">Lifelink</option><option value="protect">Protect</option>
+        <option value="provoke">Provoke</option><option value="ranged">Ranged</option><option value="rush">Rush</option><option value="toxic">Toxic</option>
       </select>
     </label>
   </div>
@@ -240,6 +218,7 @@
     <button id="deck-rename-btn" class="btn-primary" style="margin-bottom: 10px;">Rename Deck</button>
     <button id="reset-deck-btn" class="btn-negative">Reset Deck</button>
   </div>
+</div>
 </div>
 </div>  
 </section>
