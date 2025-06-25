@@ -151,7 +151,7 @@ button {
   align-items: start;
   width: 100%;
   box-sizing: border-box;
-  padding: 0.7em 0.2em;
+  padding: 1em 0.2em;
   overflow-x: auto;
   max-width: 100vw;
 }
@@ -622,7 +622,7 @@ button {
   flex-wrap: wrap;
   align-items: center;
   gap: 0.7em;
-  padding: 1em 1em;
+  padding: 0.5em 1em;
   box-sizing: border-box;
   overflow-x: auto;
 }
@@ -630,7 +630,38 @@ button {
   box-shadow: 0 0 8px 2px #3b82f6;
   border: 2px dashed #3b82f6;
 }
-
+.deck-selection-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 140px); /* adjust size as needed */
+  grid-template-rows: repeat(3, 180px);    /* adjust size as needed */
+  gap: 2em;
+  justify-content: center;
+  align-items: center;
+  margin: 4em auto;
+}
+.deck-slot-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #232a3c;
+  color: #fff;
+  border-radius: 14px;
+  box-shadow: 0 2px 12px #0003;
+  font-size: 1.2em;
+  cursor: pointer;
+  height: 160px;
+  width: 120px;
+  transition: box-shadow 0.18s, background 0.18s;
+}
+.deck-slot-tile.empty {
+  background: #283040;
+  color: #aaa;
+}
+.deck-slot-tile:hover {
+  box-shadow: 0 6px 32px #3458e6aa;
+  background: #314175;
+}
 /* <--- DECK AND VOID MODALS */
 .modal {
   display: none;
@@ -1128,7 +1159,7 @@ button {
 
 /* PROFILE AREA */
 #profile-area {
-  position: relative;
+  position: absolute;
   top: 16px;
   left: 16px;
   z-index: 5000;
