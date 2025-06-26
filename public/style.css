@@ -158,7 +158,7 @@ button {
 }
 
 .section {
-  /* REMOVE display: none; */
+  display: none;
   opacity: 0;
   pointer-events: none;
   width: 100vw;
@@ -175,6 +175,7 @@ button {
   z-index: 1;
 }
 .section.active {
+  display: block;
   opacity: 1;
   pointer-events: auto;
   background: #1a2533 !important;
