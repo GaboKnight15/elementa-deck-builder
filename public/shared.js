@@ -143,13 +143,3 @@ function addToCollection(cardId, amount = 1) {
     }
   }
 }
-// Hide inactive sections after their fade-out ends (optional)
-document.querySelectorAll('section[id$="-section"]').forEach(section => {
-  section.addEventListener('transitionend', function(e) {
-    if (!section.classList.contains('active')) {
-      section.style.display = 'none';
-    } else {
-      section.style.display = '';
-    }
-  });
-});
