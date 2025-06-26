@@ -29,6 +29,19 @@ const deckSlotSelect = document.getElementById('deckSlotSelect');
 const addDeckSlotBtn = document.getElementById('addDeckSlotBtn');
 const deleteDeckSlotBtn = document.getElementById('deleteDeckSlotBtn');
 
+// NEW DECK HANDLER OPTIONS
+const deckMenuModal = document.getElementById('deck-menu-modal');
+const deckMenuTitle = document.getElementById('deck-menu-title');
+const viewDeckBtn = document.getElementById('view-deck-btn');
+const editDeckBtn = document.getElementById('edit-deck-btn');
+const renameDeckBtn = document.getElementById('rename-deck-btn');
+const deleteDeckBtn = document.getElementById('delete-deck-btn');
+const closeDeckMenuBtn = document.getElementById('close-deck-menu-btn');
+const deckViewModal = document.getElementById('deck-view-modal');
+const deckViewModalTitle = document.getElementById('deck-view-modal-title');
+const deckViewModalList = document.getElementById('deck-view-modal-list');
+const closeDeckViewModalBtn = document.getElementById('close-deck-view-modal-btn');
+
 // Get collection from localStorage using shared.js util
 function showDeckSelection() {
   deckSelectionGrid.style.display = '';
@@ -86,7 +99,101 @@ function renderDeckSelection() {
 }
 
 builderBackBtn.onclick = showDeckSelection;
-
+function showDeckTileMenu(deckName) {
+  deckMenuTitle.textContent = deckName;
+  deckMenuModal.style.display = 'flex';
+  // Store the deckName for handlers
+  deckMenuModal.dataset.deckName = deckName;
+}
+function closeDeckTileMenu() {
+  deckMenuModal.style.display = 'none';
+}
+closeDeckMenuBtn.onclick = closeDeckTileMenu;
+deckMenuModal.addEventListener('click', function(e) {
+  if (e.target === deckMenuModal) closeDeckTileMenu();
+});
+deckViewModal.addEventListener('click', function(e) {
+  if (e.target === deckViewModal) deckViewModal.style.display = 'none';
+});
+// View Deck
+viewDeckBtn.onclick = function() {
+  const deckName = deckMenuModal.dataset.deckName;
+  showDeckViewModal(deckName);
+  closeDeckTileMenu();
+};
+// Edit Deck
+editDeckBtn.onclick = function() {
+  const deckName = deckMenuModal.dataset.deckName;
+  currentDeckSlot = deckName;
+  saveDeckState();
+  closeDeckTileMenu();
+  showDeckBuilder();
+};
+// Rename
+renameDeckBtn.onclick = function() {
+  const deckName = deckMenuModal.dataset.deckName;
+  closeDeckTileMenu();
+  let newName = prompt("Rename deck to:", deckName);
+  if (!newName || newName === deckName) return;
+  if (deckSlots.includes(newName)) {
+    alert("Deck name already exists!");
+    return;
+  }
+  let idx = deckSlots.indexOf(deckName);
+  let deckData = decks[deckName];
+  deckSlots[idx] = newName;
+  decks[newName] = deckData;
+  delete decks[deckName];
+  currentDeckSlot = newName;
+  saveDeckState();
+  renderDeckSelection();
+};
+// Delete
+deleteDeckBtn.onclick = function() {
+  const deckName = deckMenuModal.dataset.deckName;
+  if (deckSlots.length === 1) {
+    alert("You must have at least one deck.");
+    return;
+  }
+  if (!confirm(`Delete "${deckName}"? This cannot be undone.`)) return;
+  let idx = deckSlots.indexOf(deckName);
+  deckSlots.splice(idx, 1);
+  delete decks[deckName];
+  currentDeckSlot = deckSlots[Math.max(idx - 1, 0)];
+  saveDeckState();
+  closeDeckTileMenu();
+  renderDeckSelection();
+};
+function showDeckViewModal(deckName) {
+  deckViewModalTitle.textContent = "Viewing: " + deckName;
+  deckViewModalList.innerHTML = "";
+  const deck = decks[deckName] || {};
+  let total = 0;
+  for (const [id, count] of Object.entries(deck)) {
+    const card = dummyCards.find(c => c.id === id);
+    if (!card) continue;
+    const wrapper = document.createElement('div');
+    wrapper.className = 'modal-card-wrapper';
+    const img = document.createElement('img');
+    img.className = 'modal-card-img';
+    img.src = card.image;
+    img.alt = card.name;
+    wrapper.appendChild(img);
+    const name = document.createElement('div');
+    name.textContent = card.name;
+    wrapper.appendChild(name);
+    const badge = document.createElement('div');
+    badge.textContent = `x${count}`;
+    badge.className = 'deck-count-badge';
+    wrapper.appendChild(badge);
+    deckViewModalList.appendChild(wrapper);
+    total += count;
+  }
+  deckViewModal.style.display = 'flex';
+}
+closeDeckViewModalBtn.onclick = function() {
+  deckViewModal.style.display = 'none';
+};
 function saveDeckState() {
     localStorage.setItem(DECK_SLOTS_KEY, JSON.stringify(deckSlots));
     localStorage.setItem(DECKS_KEY, JSON.stringify(decks));
