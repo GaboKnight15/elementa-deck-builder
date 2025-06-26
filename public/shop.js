@@ -10,13 +10,15 @@ const packOpeningArea = document.getElementById('pack-opening-area');
 const closeShopBtn = document.getElementById('close-shop-btn');
  
 // Helper: get N random cards from dummyCards
-function getRandomCards(n) {
-  const available = [...dummyCards];
+function getRandomCards(n, setName) {
+  // Only cards whose set matches setName
+  const available = dummyCards.filter(card => Array.isArray(card.set) ? card.set.includes(setName) : card.set === setName);
   const result = [];
   for (let i = 0; i < n; i++) {
     if (available.length === 0) break;
     const idx = Math.floor(Math.random() * available.length);
     result.push(available[idx]);
+    available.splice(idx, 1); // Prevent duplicates in one pack
   }
   return result;
 }
@@ -34,7 +36,7 @@ let lastPackNewIds = [];
 // Open pack logic
 function openPack(type) {
   const collection = getCollection(); 
-  const cards = getRandomCards(10);
+  const cards = getRandomCards(10, setName);
 
   // Determine which cards are "new" in this pack (not owned before this pack)
   lastPackNewIds = [];
