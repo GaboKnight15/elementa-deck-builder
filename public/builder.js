@@ -166,10 +166,10 @@ function createCardBuilder(card, ownedCount) {
     };
     div.appendChild(img);
 
-    // Show owned badge
+    // OWNED BADGE
     const ownedBadge = document.createElement('div');
     ownedBadge.className = 'card-count-badge';
-    ownedBadge.textContent = `Owned: ${ownedCount}`;
+    ownedBadge.textContent = ownedCount;
     div.appendChild(ownedBadge);
   
     const btn = document.createElement('button');
