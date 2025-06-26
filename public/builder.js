@@ -23,7 +23,7 @@ const builderGallery    = document.getElementById('gallery-builder-cards');
 const deckTitle         = document.getElementById('deck-title');
 const deckList          = document.getElementById('deck-list');
 const cardCount         = document.getElementById('card-count');
-const deckPanel         = document.querySelector('.deck');
+const deckPanel         = document.querySelector('deck-panel');
 const deckRenameBtn     = document.getElementById('deck-rename-btn');
 const deckSlotSelect = document.getElementById('deckSlotSelect');
 const addDeckSlotBtn = document.getElementById('addDeckSlotBtn');
@@ -278,9 +278,6 @@ function createCardBuilder(card, ownedCount) {
       setCurrentDeck(deck);
       updateDeckDisplay();
       renderBuilder();
-      if (!deckPanel.classList.contains('show')) {
-        deckPanel.classList.add('show');
-      }
     };
     div.appendChild(btn);
     return div;
@@ -301,9 +298,6 @@ deckList.addEventListener('drop', function(e) {
     addCardToDeck(cardId);
     updateDeckDisplay();
     renderBuilder();
-    if (!deckPanel.classList.contains('show')) {
-      deckPanel.classList.add('show');
-    }
   }
 });
 // DECK CREATION LOGIC
