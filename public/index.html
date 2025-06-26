@@ -120,6 +120,25 @@
       <button id="addDeckSlotBtn" style="display:none;">Add Deck</button>
       <button id="deleteDeckSlotBtn" style="display:none;">Delete Deck</button>
       <select id="deckSlotSelect" style="display:none;"></select>
+    <!-- Deck Tile Context Menu Modal -->
+<div id="deck-menu-modal" class="modal" style="display:none;">
+  <div class="modal-content deck-menu-modal-content">
+    <h3 id="deck-menu-title"></h3>
+    <button id="view-deck-btn" class="btn-secondary">View Deck</button>
+    <button id="edit-deck-btn" class="btn-primary">Edit Deck</button>
+    <button id="rename-deck-btn" class="btn-secondary">Rename</button>
+    <button id="delete-deck-btn" class="btn-negative">Delete</button>
+    <button id="close-deck-menu-btn" class="btn-secondary">Cancel</button>
+  </div>
+</div>
+<!-- Modal for viewing cards in deck -->
+<div id="deck-view-modal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h3 id="deck-view-modal-title"></h3>
+    <div class="modal-card-list" id="deck-view-modal-list"></div>
+    <button id="close-deck-view-modal-btn" class="btn-secondary">Close</button>
+  </div>
+</div>
 <!-- DECK SLOTS -->
     <div id="deck-selection-grid" class="deck-selection-grid"></div>
       <div id="deck-builder-ui" style="display:none;">
