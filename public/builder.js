@@ -556,12 +556,6 @@ deckPanelBackBtn.onclick = showDeckSelection;
     updateDeckDisplay();
     renderBuilder();
   };
-
-document.getElementById('builder-btn').onclick = function() {
-  document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-  document.getElementById('builder-section').classList.add('active');
-  showDeckSelection();
-};
 // ==========================
 // === INITIALIZATION ===
 // ==========================
@@ -571,4 +565,4 @@ updateDeckDisplay();
 window.renderBuilder = renderBuilder;
 window.buildDeck = buildDeck;
 window.getCurrentDeck = getCurrentDeck;
-showDeckSelection();
+window.showDeckSelection = showDeckSelection;
