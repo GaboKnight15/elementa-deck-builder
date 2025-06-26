@@ -271,6 +271,7 @@ button {
   color: #ffdb64;
 }
 .card-builder {
+  position: relative;
   background: none;
   border: none; border-radius: 12px;
   width: 130px;
