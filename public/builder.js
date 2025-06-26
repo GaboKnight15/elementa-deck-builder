@@ -25,6 +25,9 @@ const deckList          = document.getElementById('deck-list');
 const cardCount         = document.getElementById('card-count');
 const deckPanel         = document.querySelector('.deck');
 const deckRenameBtn     = document.getElementById('deck-rename-btn');
+const deckSlotSelect = document.getElementById('deckSlotSelect');
+const addDeckSlotBtn = document.getElementById('addDeckSlotBtn');
+const deleteDeckSlotBtn = document.getElementById('deleteDeckSlotBtn');
 
 // Get collection from localStorage using shared.js util
 function showDeckSelection() {
