@@ -342,7 +342,7 @@ button {
   min-width: 0;
 }
 
-.deck-right {
+#deck-panel {
   position: static !important;
   width: 220px;
   min-width: 180px;
@@ -1553,9 +1553,7 @@ button {
     box-shadow: 0 -2px 14px rgba(0,0,0,0.08);
     transform: translateX(100%);
   }
-  .deck.show {
-    transform: translateX(0);
-  }
+
 .trash-icon {
   display: block;
   pointer-events: none;
