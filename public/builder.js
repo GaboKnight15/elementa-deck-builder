@@ -30,15 +30,13 @@ const deckRenameBtn     = document.getElementById('deck-rename-btn');
 function showDeckSelection() {
   deckSelectionGrid.style.display = '';
   deckBuilderUI.style.display = 'none';
-  document.getElementById('deck-selection-grid').style.display = '';
-  builderContainer.style.display = 'none';
+  builderContainer.style.display = '';
   deckPanel.style.display = 'none';
   renderDeckSelection();
 }
 function showDeckBuilder() {
   deckSelectionGrid.style.display = 'none';
   deckBuilderUI.style.display = '';
-  document.getElementById('deck-selection-grid').style.display = 'none';
   builderContainer.style.display = '';
   deckPanel.style.display = '';
   refreshDeckSlotSelect();
