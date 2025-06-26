@@ -18,7 +18,6 @@ function getRandomCards(n, setName) {
     if (available.length === 0) break;
     const idx = Math.floor(Math.random() * available.length);
     result.push(available[idx]);
-    available.splice(idx, 1); // Prevent duplicates in one pack
   }
   return result;
 }
