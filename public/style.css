@@ -131,6 +131,7 @@ button {
 }
 #profile-menu {
   display: none;
+  z-index: 99999 !important;
 }
 #profile-menu.active {
   display: block;    
@@ -143,7 +144,7 @@ button {
   box-shadow: 0 6px 32px 0 #141e2f99, 0 1.5px 0 #22304a inset;
   border: 2.5px solid #314175;
   padding: 18px 16px 14px 16px;
-  z-index: 5001;
+  z-index: 99999 !important;
   display: none;
   flex-direction: column;
   gap: 11px;
