@@ -23,10 +23,10 @@ const builderGallery    = document.getElementById('gallery-builder-cards');
 const deckTitle         = document.getElementById('deck-title');
 const deckList          = document.getElementById('deck-list');
 const cardCount         = document.getElementById('card-count');
-const deckPanel         = document.querySelector('deck-panel');
+const deckPanel         = document.getElementById('deck-panel');
 const deckRenameBtn     = document.getElementById('deck-rename-btn');
-const deckSlotSelect = document.getElementById('deckSlotSelect');
-const addDeckSlotBtn = document.getElementById('addDeckSlotBtn');
+const deckSlotSelect    = document.getElementById('deckSlotSelect');
+const addDeckSlotBtn    = document.getElementById('addDeckSlotBtn');
 const deleteDeckSlotBtn = document.getElementById('deleteDeckSlotBtn');
 
 // NEW DECK HANDLER OPTIONS
