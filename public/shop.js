@@ -36,7 +36,7 @@ let lastPackNewIds = [];
 // Open pack logic
 function openPack(type) {
   const collection = getCollection(); 
-  const cards = getRandomCards(10, setName);
+  const cards = getRandomCards(10, type);
 
   // Determine which cards are "new" in this pack (not owned before this pack)
   lastPackNewIds = [];
