@@ -1166,7 +1166,7 @@ button {
   box-shadow: none !important;
   border-radius: 50%;
   transition: none;
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
 }
