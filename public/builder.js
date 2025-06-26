@@ -72,12 +72,11 @@ function renderDeckSelection() {
 
     if (slotName) {
       tile.textContent = slotName;
-      tile.onclick = () => {
-        currentDeckSlot = slotName;
-        saveDeckState();
-        showDeckBuilder();
+      tile.onclick = (e) => {
+        showDeckTileMenu(slotName);
       };
-    } else {
+    } 
+    else {
       tile.classList.add('empty');
       tile.textContent = '+ New Deck';
       tile.onclick = () => {
