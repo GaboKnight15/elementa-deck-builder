@@ -561,4 +561,6 @@ loadDeckState();
 refreshDeckSlotSelect();
 updateDeckDisplay();
 window.renderBuilder = renderBuilder;
+window.buildDeck = buildDeck;
+window.getCurrentDeck = getCurrentDeck;
 showDeckSelection();
