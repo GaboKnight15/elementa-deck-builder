@@ -26,16 +26,18 @@ const dummyCards = [
 // === SECTION NAVIGATION ===
 // ==========================
 // Add nav button listeners
+// Enhanced nav button listeners for smooth transitions
 document.querySelectorAll('#main-nav button[data-section]').forEach(btn => {
   btn.addEventListener('click', () => {
-    // Hide all sections
-    document.querySelectorAll('section[id$="-section"]').forEach(section => {
-      section.classList.remove('active');
-    });
-    // Show the target section
     const target = btn.getAttribute('data-section');
-    const targetSection = document.getElementById(target);
-    if (targetSection) targetSection.classList.add('active');
+    document.querySelectorAll('section[id$="-section"]').forEach(section => {
+      // Remove .active from all, but don't set display:none
+      if (section.id === target) {
+        section.classList.add('active');
+      } else {
+        section.classList.remove('active');
+      }
+    });
     // Special section actions
     const specialActions = {
       'gallery-section' : window.renderGallery,
@@ -141,3 +143,13 @@ function addToCollection(cardId, amount = 1) {
     }
   }
 }
+// Hide inactive sections after their fade-out ends (optional)
+document.querySelectorAll('section[id$="-section"]').forEach(section => {
+  section.addEventListener('transitionend', function(e) {
+    if (!section.classList.contains('active')) {
+      section.style.display = 'none';
+    } else {
+      section.style.display = '';
+    }
+  });
+});
