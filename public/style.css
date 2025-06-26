@@ -254,23 +254,6 @@ button {
 }
 
 /* DECK BUILDER */
-
-.deck-selection-item {
-  padding: 0.8em 1.2em;
-  border-radius: 10px;
-  background: #232a3c;
-  color: #fff;
-  font-size: 1.1em;
-  margin: 0.5em 0;
-  cursor: pointer;
-  border: 2px solid #4761e6;
-  transition: background 0.16s, color 0.16s;
-  text-align: left;
-}
-.deck-selection-item:hover {
-  background: #2b3a6e;
-  color: #ffdb64;
-}
 .card-builder {
   position: relative;
   background: none;
@@ -295,13 +278,6 @@ button {
   transition: opacity 0.1s, filter 0.15s;
   box-shadow: 0 0 24px 4px #3b82f6bb;
 }
-.card-name {
-  font-size: 0.95em; font-weight: bold;
-  text-align: center;
-  color: #fff;
-  margin-top: 0.1em; margin-bottom: 0.1em;
-  text-shadow: 0 1px 2px #0007;
-}
     /* CARD NAME */
 .card h4 {
   margin: 0.5em 0 0.2em 0;
@@ -313,17 +289,6 @@ button {
   font-size: 0.9em;
   color: #667;
 }
-    /* Card Count Badge */
-.card .count-badge {
-  position: absolute;
-  top: 7px; right: 10px;
-  background: #222; color: #fff;
-  font-size: 0.9em;
-  padding: 0.15em 0.5em;
-  border-radius: 8px;
-  z-index: 2;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.12);
-  }
 /* RARITY BORDERS */ 
 .card[data-rarity="Legendary"] {
   border: 2px solid gold;
@@ -768,8 +733,6 @@ button {
   background: #292b32;
   box-shadow: 0 4px 18px #000a;
 }
-.deckvoid-card-btn
-
 
 .modal-card-img {
   width: 95px;
