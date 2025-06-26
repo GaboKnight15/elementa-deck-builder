@@ -557,6 +557,11 @@ deckPanelBackBtn.onclick = showDeckSelection;
     renderBuilder();
   };
 
+document.getElementById('builder-btn').onclick = function() {
+  document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+  document.getElementById('builder-section').classList.add('active');
+  showDeckSelection();
+};
 // ==========================
 // === INITIALIZATION ===
 // ==========================
