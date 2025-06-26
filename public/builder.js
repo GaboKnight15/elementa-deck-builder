@@ -85,20 +85,6 @@ function renderDeckSelection() {
   }
 }
 
-createNewDeckBtn.onclick = () => {
-  let newName = prompt("Deck name?", `Deck ${deckSlots.length + 1}`);
-  if (!newName) return;
-  if (deckSlots.includes(newName)) {
-    alert("Deck name already exists!");
-    return;
-  }
-  deckSlots.push(newName);
-  decks[newName] = {};
-  currentDeckSlot = newName;
-  saveDeckState();
-  showDeckBuilder();
-};
-
 builderBackBtn.onclick = showDeckSelection;
 
 function saveDeckState() {
