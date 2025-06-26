@@ -66,6 +66,54 @@ button {
   flex: 1 0 auto;
   margin: 0;
 }
+.elementa-title {
+  font-family: 'Orbitron', 'Segoe UI', Arial, sans-serif;
+  font-size: 2.8em;
+  letter-spacing: 0.08em;
+  color: #fff;
+  text-shadow:
+    0 0 8px #50eaff,
+    0 0 16px #50eaff,
+    0 0 32px #1956ff,
+    0 0 64px #1956ff;
+  animation: elementa-glow 2.5s ease-in-out infinite alternate;
+  transition: text-shadow 0.4s;
+}
+
+@keyframes elementa-glow {
+  0% {
+    text-shadow:
+      0 0 8px #50eaff,
+      0 0 16px #50eaff,
+      0 0 32px #1956ff,
+      0 0 64px #1956ff;
+    color: #fff;
+  }
+  30% {
+    text-shadow:
+      0 0 16px #7affff,
+      0 0 24px #7affff,
+      0 0 40px #00ffd5,
+      0 0 80px #00ffd5;
+    color: #cfffff;
+  }
+  60% {
+    text-shadow:
+      0 0 10px #fff599,
+      0 0 20px #ffe066,
+      0 0 48px #ffe066,
+      0 0 80px #ffad1d;
+    color: #fffbe6;
+  }
+  100% {
+    text-shadow:
+      0 0 8px #50eaff,
+      0 0 16px #50eaff,
+      0 0 32px #1956ff,
+      0 0 64px #1956ff;
+    color: #fff;
+  }
+}
 /* Add these or adjust as needed */
  #login-menu {
   display: none;
