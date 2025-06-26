@@ -28,6 +28,7 @@ const deckRenameBtn     = document.getElementById('deck-rename-btn');
 const deckSlotSelect    = document.getElementById('deckSlotSelect');
 const addDeckSlotBtn    = document.getElementById('addDeckSlotBtn');
 const deleteDeckSlotBtn = document.getElementById('deleteDeckSlotBtn');
+const deckPanelBackBtn = document.getElementById('deck-panel-back-btn');
 
 // NEW DECK HANDLER OPTIONS
 const deckMenuModal = document.getElementById('deck-menu-modal');
@@ -536,6 +537,8 @@ function renderBuilder() {
       document.body.classList.add(`theme-${color}`);
     }
   });
+
+deckPanelBackBtn.onclick = showDeckSelection;
 // GALLERY EVENT FILTERS
   document.getElementById('filter-name-builder').addEventListener('input', renderBuilder);
   document.getElementById('filter-color-builder').addEventListener('change', renderBuilder);
