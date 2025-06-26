@@ -1490,6 +1490,7 @@ button {
 /* Add or ensure this for new badge on shop cards */
 .opened-card-front .new-card-badge {
   position: absolute;
+  z-index: 3;
   top: 8px;
   left: 50%;
   transform: translateX(-50%);
