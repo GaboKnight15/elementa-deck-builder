@@ -15,23 +15,29 @@
 // === DOM REFERENCES ===
 // ==========================
 // SELECTION MODE
-const builderContainer = document.getElementById('builder-container');
-const builderBackBtn = document.getElementById('builder-back-btn');
-const builderGallery     = document.getElementById('gallery-builder-cards');
-const deckTitle          = document.getElementById('deck-title');
-const deckList           = document.getElementById('deck-list');
-const cardCount          = document.getElementById('card-count');
-const deckPanel          = document.querySelector('.deck');
-const deckRenameBtn      = document.getElementById('deck-rename-btn');
+const builderContainer  = document.getElementById('builder-container');
+const deckSelectionGrid = document.getElementById('deck-selection-grid');
+const deckBuilderUI     = document.getElementById('deck-builder-ui');
+const builderBackBtn    = document.getElementById('builder-back-btn');
+const builderGallery    = document.getElementById('gallery-builder-cards');
+const deckTitle         = document.getElementById('deck-title');
+const deckList          = document.getElementById('deck-list');
+const cardCount         = document.getElementById('card-count');
+const deckPanel         = document.querySelector('.deck');
+const deckRenameBtn     = document.getElementById('deck-rename-btn');
 
 // Get collection from localStorage using shared.js util
 function showDeckSelection() {
+  deckSelectionGrid.style.display = '';
+  deckBuilderUI.style.display = 'none';
   document.getElementById('deck-selection-grid').style.display = '';
   builderContainer.style.display = 'none';
   deckPanel.style.display = 'none';
   renderDeckSelection();
 }
 function showDeckBuilder() {
+  deckSelectionGrid.style.display = 'none';
+  deckBuilderUI.style.display = '';
   document.getElementById('deck-selection-grid').style.display = 'none';
   builderContainer.style.display = '';
   deckPanel.style.display = '';
@@ -93,6 +99,7 @@ createNewDeckBtn.onclick = () => {
 };
 
 builderBackBtn.onclick = showDeckSelection;
+
 function saveDeckState() {
     localStorage.setItem(DECK_SLOTS_KEY, JSON.stringify(deckSlots));
     localStorage.setItem(DECKS_KEY, JSON.stringify(decks));
