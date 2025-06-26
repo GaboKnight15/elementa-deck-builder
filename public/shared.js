@@ -29,12 +29,14 @@ const dummyCards = [
 // Enhanced nav button listeners for smooth transitions
 document.querySelectorAll('#main-nav button[data-section]').forEach(btn => {
   btn.addEventListener('click', () => {
-    const target = btn.getAttribute('data-section');
-    // Reset display for all sections (in case any are still display:none)
+    // Hide all sections
     document.querySelectorAll('section[id$="-section"]').forEach(section => {
-      section.style.display = '';
-      section.classList.toggle('active', section.id === target);
+      section.classList.remove('active');
     });
+    // Show the target section
+    const target = btn.getAttribute('data-section');
+    const targetSection = document.getElementById(target);
+    if (targetSection) targetSection.classList.add('active');
     // Special section actions
     const specialActions = {
       'gallery-section' : window.renderGallery,
@@ -48,10 +50,7 @@ document.querySelectorAll('#main-nav button[data-section]').forEach(btn => {
   });
 });
 // Show gallery-section by default
-document.querySelectorAll('section[id$="-section"]').forEach(section => {
-  section.style.display = '';
-  section.classList.remove('active');
-});
+document.querySelectorAll('section[id$="-section"]').forEach(section => section.classList.remove('active'));
 document.getElementById('gallery-section').classList.add('active');
 if (typeof window.renderGallery === 'function') {
   window.renderGallery();
