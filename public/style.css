@@ -1,4 +1,4 @@
-ody {
+body {
       font-family: sans-serif;
       min-height: 100vh;
       width: 100vw;
@@ -50,6 +50,7 @@ button {
   gap: 1.2em;
   flex: 2 1 auto;
   margin-bottom: 1em;
+  background: #1a2533
 }
  
 .header-row {
