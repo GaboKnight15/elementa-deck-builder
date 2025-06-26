@@ -52,7 +52,7 @@ function openPack(type) {
             <div class="opened-card-back">
               <img src="CardImages/Domains/placeholder.png" alt="Card Back" style="width:100px;height:auto;display:block;margin:auto;">
             </div>
-            <div class="opened-card-front" style="position:relative;">
+            <div class="opened-card-front">
               <img src="${card.image}" alt="${card.name}" style="width:100px;height:auto;display:block;margin:auto;">
               <!-- New badge will be injected here after flip if needed -->
             </div>
