@@ -30,13 +30,10 @@ const dummyCards = [
 document.querySelectorAll('#main-nav button[data-section]').forEach(btn => {
   btn.addEventListener('click', () => {
     const target = btn.getAttribute('data-section');
+    // Reset display for all sections (in case any are still display:none)
     document.querySelectorAll('section[id$="-section"]').forEach(section => {
-      // Remove .active from all, but don't set display:none
-      if (section.id === target) {
-        section.classList.add('active');
-      } else {
-        section.classList.remove('active');
-      }
+      section.style.display = '';
+      section.classList.toggle('active', section.id === target);
     });
     // Special section actions
     const specialActions = {
@@ -51,7 +48,10 @@ document.querySelectorAll('#main-nav button[data-section]').forEach(btn => {
   });
 });
 // Show gallery-section by default
-document.querySelectorAll('section[id$="-section"]').forEach(section => section.classList.remove('active'));
+document.querySelectorAll('section[id$="-section"]').forEach(section => {
+  section.style.display = '';
+  section.classList.remove('active');
+});
 document.getElementById('gallery-section').classList.add('active');
 if (typeof window.renderGallery === 'function') {
   window.renderGallery();
