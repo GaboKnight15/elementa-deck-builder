@@ -131,13 +131,11 @@ button {
 }
 #profile-menu {
   display: none;
-  z-index: 99999 !important;
-}
-#profile-menu.active {
-  display: block;    
   position: absolute;
-  top: 70px;
-  left: 16px;
+  top: 70px;          /* adjust as needed for your header height */
+  left: 16px;         /* adjust to align with your profile icon */
+  min-width: 220px;
+  max-width: 320px;
   background: linear-gradient(120deg, #22304a 80%, #1a2533 100%);
   color: #e5e7ef;
   border-radius: 16px;
@@ -145,12 +143,13 @@ button {
   border: 2.5px solid #314175;
   padding: 18px 16px 14px 16px;
   z-index: 99999 !important;
-  display: none;
   flex-direction: column;
   gap: 11px;
   animation: fadeIn 0.16s;
-  min-width: 260px;
-  max-width: 320px;
+}
+
+#profile-menu.active {
+  display: flex;
 }
 #login-menu input, #login-menu button {
   margin: 0.3em 0;
