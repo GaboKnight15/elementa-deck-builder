@@ -51,6 +51,10 @@ document.addEventListener('DOMContentLoaded', function () {
     renderProfileIcons(currentIcon);
     profileIconModal.style.display = 'flex';
   };
+  profilePic.onclick = function(e) {
+    e.stopPropagation();
+    profileMenu.classList.toggle('active');
+  };  
   // Handle avatar selection
   function selectProfileIcon(iconUrl) {
     const user = auth.currentUser;
