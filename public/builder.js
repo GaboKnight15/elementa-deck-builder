@@ -83,15 +83,20 @@ function renderDeckSelection() {
     const tile = document.createElement('div');
     tile.className = 'deck-slot-tile';
     if (slotName) {
-  const deck = decks[slotName] || {};
+      const deck = decks[slotName] || {};
 
-    if (slotName) {
-      tile.textContent = slotName;
+      if (deck.highlightArt) {
+        tile.style.backgroundImage = `url('${deck.highlightArt}')`;
+        tile.style.backgroundSize = "cover";
+        tile.style.backgroundPosition = "center";
+        tile.innerHTML = `<div class="deck-slot-title-overlay">${slotName}</div>`;
+      } else {
+        tile.textContent = slotName;
+      }
       tile.onclick = (e) => {
         showDeckTileMenu(slotName);
       };
-    } 
-    else {
+    } else {
       tile.classList.add('empty');
       tile.textContent = '+ New Deck';
       tile.onclick = () => {
@@ -113,6 +118,7 @@ function renderDeckSelection() {
 }
 
 builderBackBtn.onclick = showDeckSelection;
+  
 function showDeckTileMenu(deckName) {
   deckMenuTitle.textContent = deckName;
   deckMenuModal.style.display = 'flex';
