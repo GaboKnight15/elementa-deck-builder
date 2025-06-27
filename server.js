@@ -29,9 +29,12 @@ io.on('connection', (socket) => {
     socket.to(roomId).emit('sync deck', deckObj);
   });
 
-  socket.on('game message', (roomId, msg) => {
-    io.to(roomId).emit('game message', msg);
+socket.on('game message', (roomId, msg) => {
+  io.to(roomId).emit('game message', {
+    sender: socket.id,
+    msg
   });
+});
 
   socket.on('play card', (data) => {
     socket.to(data.roomId).emit('opponent play card', data);
