@@ -141,7 +141,25 @@ setHighlightArtBtn.onclick = function() {
     highlightArtList.innerHTML = "<div style='color:#eee'>No Legendary cards in this deck.</div>";
     return;
   }
-
+  // If a highlightArt is set, show the remove button
+  if (decks[deckName] && decks[deckName].highlightArt) {
+    const removeBtn = document.createElement('button');
+    removeBtn.textContent = "Remove Highlight";
+    removeBtn.className = "btn-negative";
+    removeBtn.style.margin = "10px 0";
+    removeBtn.onclick = () => {
+      delete decks[deckName].highlightArt;
+      saveDeckState();
+      renderDeckSelection();
+      highlightArtModal.style.display = "none";
+      closeDeckTileMenu();
+    };
+    highlightArtList.appendChild(removeBtn);
+  }
+    if (legendaryCards.length === 0) {
+    highlightArtList.innerHTML += "<div style='color:#eee'>No Legendary cards in this deck.</div>";
+    return;
+  }
   legendaryCards.forEach(card => {
     const img = document.createElement('img');
     // Use card.artwork if you have a separate artwork property, else use .image
@@ -594,7 +612,7 @@ function renderBuilder() {
     }
   });
 
-deckPanelBackBtn.onclick = showDeckSelection;
+backBuilderBtn.onclick = showDeckSelection;
 // GALLERY EVENT FILTERS
   document.getElementById('filter-name-builder').addEventListener('input', renderBuilder);
   document.getElementById('filter-color-builder').addEventListener('change', renderBuilder);
