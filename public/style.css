@@ -360,6 +360,12 @@ button {
   align-items: flex-start;
   font-size: 1em;
 }
+/* In style.css */
+#deck-view-modal-title {
+  text-align: center;
+  width: 100%;
+  margin: 0 0 16px 0;
+}
     /* CARD NAME */
 .card h4 {
   margin: 0.5em 0 0.2em 0;
@@ -768,6 +774,18 @@ button {
 .highlight-art-choice:hover {
   box-shadow: 0 6px 24px #50eaffcc;
   transform: scale(1.07);
+}
+.badge-top-left {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 1;
+  background: #22304a;
+  color: #ffdb64;
+  font-weight: bold;
+  font-size: 1em;
+  padding: 3px 12px;
+  border-radius: 10px;
 }
 /* <--- DECK AND VOID MODALS */
 .modal {
