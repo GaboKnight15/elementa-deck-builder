@@ -76,7 +76,17 @@ function renderDeckSelection() {
     tile.className = 'deck-slot-tile';
     if (slotName) {
       const deck = decks[slotName] || {};
-
+      // Remove highlightArt if the referenced art is not in the current deck's Legendary cards
+    if (deck.highlightArt) {
+      const validLegendary = Object.keys(deck)
+        .map(cardId => dummyCards.find(card => card.id === cardId && card.rarity === 'Legendary'))
+        .filter(Boolean)
+        .some(card => (card.artwork || card.image) === deck.highlightArt);
+      if (!validLegendary) {
+        delete deck.highlightArt;
+        saveDeckState();
+      }
+    }
       if (deck.highlightArt) {
         tile.style.backgroundImage = `url('${deck.highlightArt}')`;
         tile.style.backgroundSize = "cover";
@@ -130,25 +140,6 @@ setHighlightArtBtn.onclick = function() {
 
   if (legendaryCards.length === 0) {
     highlightArtList.innerHTML = "<div style='color:#eee'>No Legendary cards in this deck.</div>";
-    return;
-  }
-  // If a highlightArt is set, show the remove button
-  if (decks[deckName] && decks[deckName].highlightArt) {
-    const removeBtn = document.createElement('button');
-    removeBtn.textContent = "Remove Highlight";
-    removeBtn.className = "btn-negative";
-    removeBtn.style.margin = "10px 0";
-    removeBtn.onclick = () => {
-      delete decks[deckName].highlightArt;
-      saveDeckState();
-      renderDeckSelection();
-      highlightArtModal.style.display = "none";
-      closeDeckTileMenu();
-    };
-    highlightArtList.appendChild(removeBtn);
-  }
-    if (legendaryCards.length === 0) {
-    highlightArtList.innerHTML += "<div style='color:#eee'>No Legendary cards in this deck.</div>";
     return;
   }
   legendaryCards.forEach(card => {
