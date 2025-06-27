@@ -76,7 +76,12 @@ function startMultiplayerGameIfReady() {
 }
 
 // --- Chat Logic ---
-
+chatInput.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') {
+    sendChatBtn.click();
+    e.preventDefault();
+  }
+});
 sendChatBtn.onclick = () => {
   const msg = chatInput.value.trim();
   if (msg && currentRoomId) {
