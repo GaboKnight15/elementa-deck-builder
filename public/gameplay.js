@@ -261,6 +261,13 @@ function showHandCardMenu(instanceId, cardDiv) {
       onClick: function(e) {
         e.stopPropagation();
         moveCard(instanceId, gameState.playerHand, gameState.playerCreatures, { orientation: "vertical" });
+        emitGameAction({
+          type: 'play_card',
+          cardId: instanceId,
+          from: 'hand',
+          to: 'creatures',
+          extra: { orientation: "vertical" }
+        });
         this.closest('.card-menu').remove();
       }
     },
@@ -1025,6 +1032,11 @@ nextPhaseBtn.onclick = () => {
 phaseBadge.onclick = function() { nextPhaseBtn.click(); };
 
 // MULTIPLAYER START
+function emitGameAction(action) {
+  if (window.socket && window.currentRoomId) {
+    socket.emit('game action', { ...action, roomId: currentRoomId });
+  }
+}
 function showLobby() {
   document.getElementById('lobby-ui').style.display = 'block';
   document.getElementById('chat-ui').style.display = 'none';
@@ -1036,11 +1048,10 @@ function showChat() {
 function handleOpponentAction(action) {
   switch (action.type) {
     case "play_card":
-      // Example: action = { type: "play_card", cardId: "...", zone: "creatures" }
-      // Move the card from opponent's hand to the correct zone
-      moveCard(action.cardId, gameState.opponentHand, gameState.opponentCreatures, { orientation: "vertical" });
-      renderGameState();
-      break;
+    // Find the card in opponentHand, move to opponentCreatures
+    moveCard(action.cardId, gameState.opponentHand, gameState.opponentCreatures, action.extra);
+    renderGameState();
+    break;
 
     case "end_turn":
       // Opponent ended their turn
