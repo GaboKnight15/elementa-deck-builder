@@ -17,23 +17,6 @@ const chatLog = document.getElementById('chat-log');
 let myDeckObj = null;
 let opponentDeckReceived = false;
 
-// --- UI: Only show lobby/chat in gameplay, not in gallery/builder ---
-function showLobbyUI() {
-  lobbyUI.style.display = 'block';
-  chatUI.style.display = 'none';
-}
-function showChatUI() {
-  lobbyUI.style.display = 'none';
-  chatUI.style.display = 'block';
-}
-function hideLobbyAndChat() {
-  lobbyUI.style.display = 'none';
-  chatUI.style.display = 'none';
-}
-
-// Initially hide lobby/chat (only appear in gameplay)
-hideLobbyAndChat();
-
 // Utility to generate random room code
 function generateRoomId() {
   return Math.random().toString(36).substr(2, 6);
@@ -87,9 +70,6 @@ socket.on('opponent deck', (deckObj) => {
 function startMultiplayerGameIfReady() {
   // Only show gameplay/chat when both players have decks
   if (opponentDeckReceived) {
-    showChatUI();
-    // Any other gameplay UI setup can go here
-    // E.g. renderGameState(), setupDropZones(), etc.
   }
 }
 
@@ -135,7 +115,6 @@ socket.on('your deck', (deckObj) => {
 
 // --- Hide lobby/chat when leaving/ending gameplay (optional helper) ---
 function endGameCleanup() {
-  hideLobbyAndChat();
   chatLog.innerHTML = "";
   opponentDeckReceived = false;
   // Any other cleanup...
@@ -163,9 +142,6 @@ socket.on('opponent game action', action => {
 });
 
 // --- Export for use in other scripts, if needed ---
-window.hideLobbyAndChat = hideLobbyAndChat;
-window.showLobbyUI = showLobbyUI;
-window.showChatUI = showChatUI;
 window.endGameCleanup = endGameCleanup;
 
 // --- Optionally: listen for room events, errors, etc. ---
