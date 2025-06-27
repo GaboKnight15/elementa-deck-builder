@@ -108,11 +108,15 @@ function openPack(type) {
 }
 
 // Handle pack image click
-packOptions.addEventListener('click', (e) => {
-  const img = e.target.closest('.pack-image');
-  if (img && img.dataset.pack) {
+document.querySelectorAll('.pack-image').forEach(img => {
+  img.addEventListener('click', () => {
     openPack(img.dataset.pack);
-  }
+  });
+  img.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      openPack(img.dataset.pack);
+    }
+  });
 });
 
 shopContainer.addEventListener('click', (e) => {
