@@ -22,31 +22,24 @@ io.on('connection', (socket) => {
   });
 
   socket.on('game action', (action) => {
-  socket.to(action.roomId).emit('opponent game action', action);
+    socket.to(action.roomId).emit('opponent game action', action);
   });
 
   socket.on('sync deck', (roomId, deckObj) => {
     socket.to(roomId).emit('sync deck', deckObj);
   });
 
-io.on('connection', socket => {
   socket.on('game message', (roomId, msg) => {
     io.to(roomId).emit('game message', msg);
   });
-});
+
+  socket.on('play card', (data) => {
+    socket.to(data.roomId).emit('opponent play card', data);
+  });
 
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
   });
-});
-
-io.on('connection', (socket) => {
-  socket.on('play card', (data) => {
-    // Optionally validate action here!
-    // Relay to opponent
-    socket.to(data.roomId).emit('opponent play card', data);
-  });
-  // ...other actions
 });
 
 const PORT = process.env.PORT || 3000;
