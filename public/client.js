@@ -86,8 +86,12 @@ sendChatBtn.onclick = () => {
   }
 };
 
-socket.on('game message', (msg) => {
-  appendChatMessage(`Opponent: ${msg}`);
+socket.on('game message', (data) => {
+  if (data.sender === socket.id) {
+    // This is your own message echoed back from the server, ignore.
+    return;
+  }
+  appendChatMessage(`Opponent: ${data.msg}`);
 });
 
 function appendChatMessage(msg) {
