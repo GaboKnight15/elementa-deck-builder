@@ -49,7 +49,6 @@ const closeHighlightArtBtn = document.getElementById('close-highlight-art-btn');
 
 // Deck banner logic
 const deckBannerImg = document.getElementById('deck-banner-img');
-const changeDeckBannerBtn = document.getElementById('change-deck-banner-btn');
 const deckBannerModal = document.getElementById('deck-banner-modal');
 const deckBannerArtList = document.getElementById('deck-banner-art-list');
 const closeDeckBannerModalBtn = document.getElementById('close-deck-banner-modal');
@@ -172,8 +171,9 @@ function updateDeckBanner(deckName) {
   const deck = decks[deckName] || {};
   deckBannerImg.src = deck.bannerArt || "CardImages/Banners/DefaultBanner.jpg";
 }
-// Show the banner modal
-changeDeckBannerBtn.onclick = function() {
+
+// Make the banner image clickable to open the modal
+deckBannerImg.onclick = function() {
   deckBannerModal.style.display = "flex";
   deckBannerArtList.innerHTML = "";
 
@@ -208,6 +208,7 @@ changeDeckBannerBtn.onclick = function() {
     deckBannerArtList.innerHTML = "<div style='color:#eee'>Add cards to your deck to pick a banner.</div>";
   }
 };
+
 closeDeckBannerModalBtn.onclick = () => (deckBannerModal.style.display = "none");
 
 // Update banner when opening the modal
