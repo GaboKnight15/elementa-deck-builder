@@ -141,6 +141,23 @@ function endGameCleanup() {
   // Any other cleanup...
 }
 
+function playCard(instanceId, fromZone, toZone) {
+  // 1. Locally update state
+  moveCard(instanceId, fromZone, toZone);
+  renderGameState();
+  setupDropZones();
+  // 2. Sync with opponent
+  socket.emit('play card', { roomId: currentRoomId, instanceId, fromZone, toZone });
+}
+
+// Listen for opponent actions
+socket.on('opponent play card', (data) => {
+  // Update opponent's state accordingly
+  moveCard(data.instanceId, data.fromZone, data.toZone, /*isOpponent=*/true);
+  renderGameState();
+  setupDropZones();
+});
+
 // --- Export for use in other scripts, if needed ---
 window.hideLobbyAndChat = hideLobbyAndChat;
 window.showLobbyUI = showLobbyUI;
