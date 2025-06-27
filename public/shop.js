@@ -109,10 +109,11 @@ function openPack(type) {
 // Handle pack image click
 const packImages = document.querySelectorAll('.pack-image');
 packImages.forEach(img => {
-  img.onclick = function() {
+  img.onclick = function(e) {
+    e.stopPropagation();
     openPack(img.dataset.pack);
   };
-  img.tabIndex = 0; // Make it accessible by keyboard
+  img.tabIndex = 0;
   img.addEventListener('keydown', (e) => {
     if (e.key === "Enter" || e.key === " ") openPack(img.dataset.pack);
   });
