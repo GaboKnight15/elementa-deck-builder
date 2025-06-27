@@ -126,6 +126,7 @@
     <h3 id="deck-menu-title"></h3>
     <button id="edit-deck-btn" class="btn-primary">Edit Deck</button>
     <button id="view-deck-btn" class="btn-secondary">View Deck</button>
+    <button id="set-highlight-art-btn" class="btn-secondary">Highlight Card</button>
     <button id="rename-deck-btn" class="btn-secondary">Rename</button>
     <button id="delete-deck-btn" class="btn-negative">Delete</button>
     <button id="close-deck-menu-btn" class="btn-negative">Cancel</button>
@@ -325,6 +326,14 @@
   <div id="image-modal" class="modal">
     <div id="modal-img-content"></div>
   </div>
+<!-- HIGHLIGHT CARD IN BUILDER -->
+<div id="highlight-art-modal" class="modal">
+  <div class="modal-content">
+    <h3>Select Highlight Artwork</h3>
+    <div id="highlight-art-list"></div>
+    <button id="close-highlight-art-btn" class="btn-secondary">Close</button>
+  </div>
+</div>
   
 <!-- Firebase App (the core Firebase SDK) -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
