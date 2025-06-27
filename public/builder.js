@@ -176,10 +176,15 @@ function updateDeckBanner(deckName) {
 changeDeckBannerBtn.onclick = function() {
   deckBannerModal.style.display = "flex";
   deckBannerArtList.innerHTML = "";
-  // Show all unique artwork from dummyCards
+
+  // Use only cards in the selected deck
+  const deckName = deckMenuModal.dataset.deckName;
+  const deck = decks[deckName] && decks[deckName].cards ? decks[deckName].cards : decks[deckName] || {};
   const artworkSet = new Set();
-  dummyCards.forEach(card => {
-    // Use card.artwork if available, else card.image
+
+  Object.keys(deck).forEach(cardId => {
+    const card = dummyCards.find(c => c.id === cardId);
+    if (!card) return;
     let art = card.artwork || card.image;
     if (art && !artworkSet.has(art)) {
       artworkSet.add(art);
@@ -189,7 +194,6 @@ changeDeckBannerBtn.onclick = function() {
       img.className = "deck-banner-choice";
       img.title = card.name;
       img.onclick = () => {
-        const deckName = deckMenuModal.dataset.deckName;
         decks[deckName].bannerArt = art;
         saveDeckState();
         updateDeckBanner(deckName);
@@ -198,6 +202,11 @@ changeDeckBannerBtn.onclick = function() {
       deckBannerArtList.appendChild(img);
     }
   });
+
+  // Optional: fallback if no cards in deck
+  if (artworkSet.size === 0) {
+    deckBannerArtList.innerHTML = "<div style='color:#eee'>Add cards to your deck to pick a banner.</div>";
+  }
 };
 closeDeckBannerModalBtn.onclick = () => (deckBannerModal.style.display = "none");
 
