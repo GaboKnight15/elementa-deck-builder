@@ -1497,7 +1497,7 @@ button {
 
 .pack-image:hover,
 .pack-image:focus {
-  transform: scale(1.07) rotate(-2deg);
+  transform: scale(1.07);
   box-shadow: 0 8px 32px #50eaffcc, 0 0 0 5px #ffe066cc;
   border-color: #ffe066;
   z-index: 2;
