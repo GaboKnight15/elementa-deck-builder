@@ -34,6 +34,15 @@ io.on('connection', (socket) => {
   });
 });
 
+io.on('connection', (socket) => {
+  socket.on('play card', (data) => {
+    // Optionally validate action here!
+    // Relay to opponent
+    socket.to(data.roomId).emit('opponent play card', data);
+  });
+  // ...other actions
+});
+
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
