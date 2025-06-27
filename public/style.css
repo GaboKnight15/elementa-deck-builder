@@ -1593,18 +1593,7 @@ button {
   transform: rotateY(180deg);
   z-index: 1;
 }
-/* Add or ensure this for new badge on shop cards */
-.opened-card-front .new-card-badge {
-  position: absolute;
-  z-index: 3;
-  top: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-  margin: 0;
-  min-width: 40px;
-  text-align: center;
-  pointer-events: none;
-}
+
 /* For a “flip” effect, you can use: */
 @keyframes cardFlipIn {
   0%   { transform: rotateY(90deg) scale(0.8); opacity: 0;}
