@@ -158,6 +158,10 @@ socket.on('opponent play card', (data) => {
   setupDropZones();
 });
 
+socket.on('opponent game action', action => {
+  handleOpponentAction(action); // already present in your gameplay.js
+});
+
 // --- Export for use in other scripts, if needed ---
 window.hideLobbyAndChat = hideLobbyAndChat;
 window.showLobbyUI = showLobbyUI;
