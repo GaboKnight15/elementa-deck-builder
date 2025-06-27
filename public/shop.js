@@ -107,11 +107,11 @@ function openPack(type) {
   if (window.renderGallery) renderGallery();
 }
 
-// Handle pack button click
+// Handle pack image click
 packOptions.addEventListener('click', (e) => {
-  if (e.target.matches('button[data-pack]')) {
-    const packType = e.target.getAttribute('data-pack');
-    openPack(packType);
+  const img = e.target.closest('.pack-image');
+  if (img && img.dataset.pack) {
+    openPack(img.dataset.pack);
   }
 });
 
