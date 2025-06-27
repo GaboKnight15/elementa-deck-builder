@@ -961,9 +961,9 @@ button {
   background: #232a3c;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: flex-start;
-  padding: 1em 0.5em;
+  padding: 0.5em 0.5em 0.5em 0.5em;
   box-shadow: -2px 0 16px rgba(0,0,0,0.12);
   z-index: 1100;
 }
