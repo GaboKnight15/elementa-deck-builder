@@ -47,6 +47,13 @@ const highlightArtList = document.getElementById('highlight-art-list');
 const setHighlightArtBtn = document.getElementById('set-highlight-art-btn');
 const closeHighlightArtBtn = document.getElementById('close-highlight-art-btn');
 
+// Deck banner logic
+const deckBannerImg = document.getElementById('deck-banner-img');
+const changeDeckBannerBtn = document.getElementById('change-deck-banner-btn');
+const deckBannerModal = document.getElementById('deck-banner-modal');
+const deckBannerArtList = document.getElementById('deck-banner-art-list');
+const closeDeckBannerModalBtn = document.getElementById('close-deck-banner-modal');
+
 // Get collection from localStorage using shared.js util
 function showDeckSelection() {
   deckSelectionGrid.style.display = '';
@@ -161,6 +168,46 @@ setHighlightArtBtn.onclick = function() {
 };
 closeHighlightArtBtn.onclick = () => highlightArtModal.style.display = "none";
 
+function updateDeckBanner(deckName) {
+  const deck = decks[deckName] || {};
+  deckBannerImg.src = deck.bannerArt || "CardImages/Banners/DefaultBanner.jpg";
+}
+// Show the banner modal
+changeDeckBannerBtn.onclick = function() {
+  deckBannerModal.style.display = "flex";
+  deckBannerArtList.innerHTML = "";
+  // Show all unique artwork from dummyCards
+  const artworkSet = new Set();
+  dummyCards.forEach(card => {
+    // Use card.artwork if available, else card.image
+    let art = card.artwork || card.image;
+    if (art && !artworkSet.has(art)) {
+      artworkSet.add(art);
+      const img = document.createElement('img');
+      img.src = art;
+      img.alt = card.name;
+      img.className = "deck-banner-choice";
+      img.title = card.name;
+      img.onclick = () => {
+        const deckName = deckMenuModal.dataset.deckName;
+        decks[deckName].bannerArt = art;
+        saveDeckState();
+        updateDeckBanner(deckName);
+        deckBannerModal.style.display = "none";
+      };
+      deckBannerArtList.appendChild(img);
+    }
+  });
+};
+closeDeckBannerModalBtn.onclick = () => (deckBannerModal.style.display = "none");
+
+// Update banner when opening the modal
+function showDeckTileMenu(deckName) {
+  deckMenuTitle.textContent = deckName;
+  updateDeckBanner(deckName);
+  deckMenuModal.style.display = 'flex';
+  deckMenuModal.dataset.deckName = deckName;
+}
 function closeDeckTileMenu() {
   deckMenuModal.style.display = 'none';
 }
