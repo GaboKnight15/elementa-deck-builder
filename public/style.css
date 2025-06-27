@@ -929,6 +929,7 @@ button {
   padding: 1em 0.5em;
   box-shadow: -2px 0 16px rgba(0,0,0,0.12);
   z-index: 1100;
+  gap: 15px;
 }
 .card-battlefield {
   transition: transform 0.18s, box-shadow 0.18s;
