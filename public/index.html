@@ -133,6 +133,11 @@
     <!-- Deck Tile Context Menu Modal -->
 <div id="deck-menu-modal" class="modal" style="display:none;">
   <div class="modal-content deck-menu-modal-content">
+    <!-- Banner container -->
+    <div id="deck-banner-container" class="deck-banner-container">
+      <img id="deck-banner-img" src="CardImages/Banners/DefaultBanner.jpg" alt="Deck Banner">
+      <button id="change-deck-banner-btn" class="btn-secondary" style="margin-top: 7px;">Change Banner</button>
+    </div>
     <h3 id="deck-menu-title"></h3>
     <button id="edit-deck-btn" class="btn-primary">Edit Deck</button>
     <button id="view-deck-btn" class="btn-secondary">View Deck</button>
@@ -148,6 +153,14 @@
     <h3 id="deck-view-modal-title"></h3>
     <div class="modal-card-list" id="deck-view-modal-list"></div>
     <button id="close-deck-view-modal-btn" class="btn-secondary">Close</button>
+  </div>
+</div>
+<!-- BANNER MODAL DECK -->
+<div id="deck-banner-modal" class="modal">
+  <div class="modal-content">
+    <h3>Choose Banner Artwork</h3>
+    <div id="deck-banner-art-list"></div>
+    <button id="close-deck-banner-modal" class="btn-secondary" style="margin-top:14px;">Cancel</button>
   </div>
 </div>
 <!-- DECK SLOTS -->
