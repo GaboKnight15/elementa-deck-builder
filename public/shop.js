@@ -107,14 +107,14 @@ function openPack(type) {
 }
 
 // Handle pack image click
-document.querySelectorAll('.pack-image').forEach(img => {
-  img.addEventListener('click', () => {
+const packImages = document.querySelectorAll('.pack-image');
+packImages.forEach(img => {
+  img.onclick = function() {
     openPack(img.dataset.pack);
-  });
+  };
+  img.tabIndex = 0; // Make it accessible by keyboard
   img.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      openPack(img.dataset.pack);
-    }
+    if (e.key === "Enter" || e.key === " ") openPack(img.dataset.pack);
   });
 });
 
