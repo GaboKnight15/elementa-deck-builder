@@ -107,14 +107,16 @@ function openPack(type) {
 }
 
 // Handle pack image click
-document.querySelectorAll('.pack-image').forEach(img => {
-  img.addEventListener('click', () => {
-    openPack(img.dataset.pack);
-  });
-  img.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.pack-image').forEach(img => {
+    img.addEventListener('click', () => {
       openPack(img.dataset.pack);
-    }
+    });
+    img.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        openPack(img.dataset.pack);
+      }
+    });
   });
 });
 
