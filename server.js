@@ -21,6 +21,10 @@ io.on('connection', (socket) => {
     socket.to(roomId).emit('game action', action);
   });
 
+  socket.on('game action', (action) => {
+  socket.to(action.roomId).emit('opponent game action', action);
+  });
+
   socket.on('sync deck', (roomId, deckObj) => {
     socket.to(roomId).emit('sync deck', deckObj);
   });
