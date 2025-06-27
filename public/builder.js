@@ -24,11 +24,9 @@ const deckTitle         = document.getElementById('deck-title');
 const deckList          = document.getElementById('deck-list');
 const cardCount         = document.getElementById('card-count');
 const deckPanel         = document.getElementById('deck-panel');
-const deckRenameBtn     = document.getElementById('deck-rename-btn');
 const deckSlotSelect    = document.getElementById('deckSlotSelect');
 const addDeckSlotBtn    = document.getElementById('addDeckSlotBtn');
 const deleteDeckSlotBtn = document.getElementById('deleteDeckSlotBtn');
-const deckPanelBackBtn = document.getElementById('deck-panel-back-btn');
 
 // NEW DECK HANDLER OPTIONS
 const deckMenuModal = document.getElementById('deck-menu-modal');
@@ -48,13 +46,6 @@ const highlightArtModal = document.getElementById('highlight-art-modal');
 const highlightArtList = document.getElementById('highlight-art-list');
 const setHighlightArtBtn = document.getElementById('set-highlight-art-btn');
 const closeHighlightArtBtn = document.getElementById('close-highlight-art-btn');
-
-const AVAILABLE_ARTWORKS = [
-  "Artworks/fairy_art.jpg",
-  "Artworks/dragon_art.jpg",
-  "Artworks/knight_art.jpg",
-  // ...add more as you upload
-];
 
 // Get collection from localStorage using shared.js util
 function showDeckSelection() {
@@ -239,7 +230,7 @@ deleteDeckBtn.onclick = function() {
   renderDeckSelection();
 };
 function showDeckViewModal(deckName) {
-  deckViewModalTitle.textContent = "Viewing: " + deckName;
+  deckViewModalTitle.textContent = deckName;
   deckViewModalList.innerHTML = "";
   const deck = decks[deckName] || {};
   let total = 0;
@@ -258,8 +249,9 @@ function showDeckViewModal(deckName) {
     wrapper.appendChild(name);
     const badge = document.createElement('div');
     badge.textContent = `x${count}`;
-    badge.className = 'deck-count-badge';
+    badge.className = 'deck-count-badge badge-top-left';
     wrapper.appendChild(badge);
+    
     deckViewModalList.appendChild(wrapper);
     total += count;
   }
@@ -564,25 +556,7 @@ function renderBuilder() {
     updateDeckDisplay();
     renderBuilder();
   });
-// RENAME DECK SLOT
-  deckRenameBtn.addEventListener('click', () => {
-  let newName = prompt("Rename deck to:", currentDeckSlot);
-  if (!newName || newName === currentDeckSlot) return;
-  if (deckSlots.includes(newName)) {
-    alert("Deck name already exists!");
-    return;
-  }
-  let idx = deckSlots.indexOf(currentDeckSlot);
-  let deckData = decks[currentDeckSlot];
-  deckSlots[idx] = newName;
-  decks[newName] = deckData;
-  delete decks[currentDeckSlot];
-  currentDeckSlot = newName;
-  saveDeckState();
-  refreshDeckSlotSelect();
-  updateDeckDisplay();
-  renderBuilder();
-});
+
 // DELETE DECK SLOT
   deleteDeckSlotBtn.addEventListener('click', () => {
     if (deckSlots.length === 1) {
