@@ -42,6 +42,7 @@ const deckViewModal = document.getElementById('deck-view-modal');
 const deckViewModalTitle = document.getElementById('deck-view-modal-title');
 const deckViewModalList = document.getElementById('deck-view-modal-list');
 const closeDeckViewModalBtn = document.getElementById('close-deck-view-modal-btn');
+const backBuilderBtn = document.getElementById('back-builder-btn');
 
 const highlightArtModal = document.getElementById('highlight-art-modal');
 const highlightArtList = document.getElementById('highlight-art-list');
