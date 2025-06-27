@@ -29,9 +29,11 @@ io.on('connection', (socket) => {
     socket.to(roomId).emit('sync deck', deckObj);
   });
 
+io.on('connection', socket => {
   socket.on('game message', (roomId, msg) => {
-    socket.to(roomId).emit('game message', msg);
+    io.to(roomId).emit('game message', msg);
   });
+});
 
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
