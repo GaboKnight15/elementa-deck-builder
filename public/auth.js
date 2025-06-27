@@ -23,6 +23,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const appMain = document.getElementById('app-main');
   const mainNav = document.getElementById('main-nav');
+  // Banner selection logic
+  const profileBannerContainer = document.getElementById('profile-banner-container');
+  const profileBanner = document.getElementById('profile-banner');
+  const profileBannerModal = document.getElementById('profile-banner-modal');
+  const profileBanners = document.getElementById('profile-banners');
+  const closeProfileBannerModalBtn = document.getElementById('close-profile-banner-modal');
 
   // --- Profile Icon Choices ---
   const iconOptions = [
@@ -33,6 +39,14 @@ document.addEventListener('DOMContentLoaded', function () {
     "CardImages/Avatars/Avatar5.png"
   ];
   const defaultIcon = "CardImages/Avatars/Default.png";
+    
+  const bannerOptions = [
+    "CardImages/Banners/Banner1.jpg",
+    "CardImages/Banners/Banner2.jpg",
+    "CardImages/Banners/Banner3.jpg",
+    "CardImages/Banners/DefaultBanner.jpg" // default last
+  ];
+const defaultBanner = "CardImages/Banners/DefaultBanner.jpg";
 
   // --- ICON CHOICES ---
   function renderProfileIcons(selectedIcon) {
@@ -147,22 +161,71 @@ document.addEventListener('DOMContentLoaded', function () {
 
   profileLogoutBtn.onclick = () => auth.signOut();
 
+    // Render banner choices
+function renderProfileBanners(selectedBanner) {
+  profileBanners.innerHTML = "";
+  bannerOptions.forEach(bannerUrl => {
+    const img = document.createElement('img');
+    img.src = bannerUrl;
+    img.className = (bannerUrl === selectedBanner) ? "selected" : "";
+    img.onclick = () => selectProfileBanner(bannerUrl);
+    profileBanners.appendChild(img);
+  });
+}
+
+// Open banner modal
+profileBanner.onclick = function() {
+  const currentBanner = profileBanner.src;
+  renderProfileBanners(currentBanner);
+  profileBannerModal.style.display = 'flex';
+};
+
+// Handle banner selection
+function selectProfileBanner(bannerUrl) {
+  const user = auth.currentUser;
+  if (!user) return;
+  firebase.firestore().collection('users').doc(user.uid)
+    .set({ profileBanner: bannerUrl }, { merge: true })
+    .then(() => {
+      profileBanner.src = bannerUrl + '?v=' + Date.now();
+      renderProfileBanners(bannerUrl);
+      profileBannerModal.style.display = 'none';
+    })
+    .catch(err => {
+      console.error('[auth] Failed to update profile banner:', err);
+    });
+}
+
+// Close banner modal
+closeProfileBannerModalBtn.onclick = function() {
+  profileBannerModal.style.display = 'none';
+};
+profileBannerModal.onclick = function(e) {
+  if (e.target === profileBannerModal) {
+    profileBannerModal.style.display = 'none';
+  }
+};
+    
   function loadProfile(user) {
     if (!user) return;
     firebase.firestore().collection('users').doc(user.uid).get()
       .then(doc => {
         let icon = "CardImages/Avatars/Avatar1.png";
         let name = user.displayName || user.email;
+        let banner = defaultBanner;
         if (doc.exists) {
           const data = doc.data();
           if (data && data.profilePic) icon = data.profilePic;
           if (data && data.username) name = data.username;
+          if (data && data.profileBanner) banner = data.profileBanner;
         }
         document.getElementById('profile-pic').src = icon;
         profileUsernameDisplay.textContent = name;
+        profileBanner.src = banner;
       })
       .catch(err => {
         document.getElementById('profile-pic').src = "CardImages/Avatars/Default.png";
+        profileBanner.src = defaultBanner;
         profileUsernameDisplay.textContent = user.displayName || user.email || "";
       });
   }
