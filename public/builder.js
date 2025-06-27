@@ -43,6 +43,18 @@ const deckViewModalTitle = document.getElementById('deck-view-modal-title');
 const deckViewModalList = document.getElementById('deck-view-modal-list');
 const closeDeckViewModalBtn = document.getElementById('close-deck-view-modal-btn');
 
+const highlightArtModal = document.getElementById('highlight-art-modal');
+const highlightArtList = document.getElementById('highlight-art-list');
+const setHighlightArtBtn = document.getElementById('set-highlight-art-btn');
+const closeHighlightArtBtn = document.getElementById('close-highlight-art-btn');
+
+const AVAILABLE_ARTWORKS = [
+  "Artworks/fairy_art.jpg",
+  "Artworks/dragon_art.jpg",
+  "Artworks/knight_art.jpg",
+  // ...add more as you upload
+];
+
 // Get collection from localStorage using shared.js util
 function showDeckSelection() {
   deckSelectionGrid.style.display = '';
@@ -70,6 +82,8 @@ function renderDeckSelection() {
     const slotName = deckSlots[i];
     const tile = document.createElement('div');
     tile.className = 'deck-slot-tile';
+    if (slotName) {
+  const deck = decks[slotName] || {};
 
     if (slotName) {
       tile.textContent = slotName;
@@ -105,6 +119,41 @@ function showDeckTileMenu(deckName) {
   // Store the deckName for handlers
   deckMenuModal.dataset.deckName = deckName;
 }
+setHighlightArtBtn.onclick = function() {
+  highlightArtModal.style.display = "flex";
+  highlightArtList.innerHTML = "";
+
+  // Only Legendary cards currently in this deck
+  const deckName = deckMenuModal.dataset.deckName;
+  const deck = decks[deckName] && decks[deckName].cards ? decks[deckName].cards : decks[deckName] || {};
+  const legendaryCards = Object.keys(deck)
+    .map(cardId => dummyCards.find(card => card.id === cardId && card.rarity === 'Legendary'))
+    .filter(Boolean);
+
+  if (legendaryCards.length === 0) {
+    highlightArtList.innerHTML = "<div style='color:#eee'>No Legendary cards in this deck.</div>";
+    return;
+  }
+
+  legendaryCards.forEach(card => {
+    const img = document.createElement('img');
+    // Use card.artwork if you have a separate artwork property, else use .image
+    img.src = card.artwork || card.image;
+    img.alt = card.name;
+    img.className = "highlight-art-choice";
+    img.title = card.name;
+    img.onclick = () => {
+      decks[deckName].highlightArt = card.artwork || card.image;
+      saveDeckState();
+      renderDeckSelection();
+      highlightArtModal.style.display = "none";
+      closeDeckTileMenu();
+    };
+    highlightArtList.appendChild(img);
+  });
+};
+closeHighlightArtBtn.onclick = () => highlightArtModal.style.display = "none";
+
 function closeDeckTileMenu() {
   deckMenuModal.style.display = 'none';
 }
