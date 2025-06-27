@@ -903,7 +903,8 @@ button {
   background: #1a2533;
 }
 #battlefield-leftbar {
-  width: 200px;
+  width: 100%;
+  margin-bottom: 18px;
   min-width: 160px;
   max-width: 240px;
   background: #232a3c;
@@ -1596,17 +1597,19 @@ button {
 }
 }
 
-#lobby-ui,
+#lobby-ui {
+  margin-bottom: 22px;
+  /* Optional: background, border, padding for better appearance */
+  background: #20283a;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px #0006;
+  padding: 12px 8px 10px 8px;
+}
 #chat-ui {
-  background: #1a2233;
-  border-radius: 14px;
-  box-shadow: 0 2px 8px #1117;
-  padding: 1em 0.5em 1em 0.5em;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 0.7em;
-  margin-bottom: 1.5em;
+  background: #20283a;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px #0006;
+  padding: 12px 8px 10px 8px;
 }
 #lobby-ui input,
 #chat-ui input {
