@@ -5,7 +5,6 @@
 // DOM references
 const shopSection = document.getElementById('shop-section');
 const shopContainer = document.getElementById('shop-container');
-const packOptions = document.getElementById('pack-options');
 const packOpeningArea = document.getElementById('pack-opening-area');
 const closeShopBtn = document.getElementById('close-shop-btn');
  
