@@ -184,9 +184,9 @@ deckBannerImg.onclick = function() {
 
   Object.keys(deck).forEach(cardId => {
     const card = dummyCards.find(c => c.id === cardId);
-    if (!card) return;
-    let art = card.artwork || card.image;
-    if (art && !artworkSet.has(art)) {
+    if (!card || !card.artwork) return;
+    const art = card.artwork;
+   if (!artworkSet.has(art)) {
       artworkSet.add(art);
       const img = document.createElement('img');
       img.src = art;
@@ -203,9 +203,9 @@ deckBannerImg.onclick = function() {
     }
   });
 
-  // Optional: fallback if no cards in deck
+  // Fallback if no artwork in deck
   if (artworkSet.size === 0) {
-    deckBannerArtList.innerHTML = "<div style='color:#eee'>Add cards to your deck to pick a banner.</div>";
+    deckBannerArtList.innerHTML = "<div style='color:#eee'>No cards with artwork in this deck.</div>";
   }
 };
 
