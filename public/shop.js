@@ -112,15 +112,25 @@ packImages.forEach(img => {
   img.onclick = function(e) {
     e.stopPropagation();
     openPack(img.dataset.pack);
+    img.blur();
   };
   img.tabIndex = 0;
   img.addEventListener('keydown', (e) => {
-    if (e.key === "Enter" || e.key === " ") openPack(img.dataset.pack);
+    if (e.key === "Enter" || e.key === " ") {
+      e.stopPropagation();
+      openPack(img.dataset.pack);
+      img.blur();
+    }
   });
 });
 
 shopContainer.addEventListener('click', (e) => {
-  if (!e.target.closest('.opened-card') && !e.target.matches('button[data-pack]')) {
+  if (
+    !e.target.closest('.opened-card') &&
+    !e.target.closest('#pack-opening-area') &&
+    !e.target.closest('.pack-image') &&
+    !e.target.matches('button[data-pack]')
+  ) {
     packOpeningArea.innerHTML = '';
   }
 });
