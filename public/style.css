@@ -472,7 +472,7 @@ button {
   box-shadow: 0 6px 18px #50eaffcc;
   transform: scale(1.07);
 }
-#deck-banner-cardback-row {
+#deck-banner-row {
   display: flex;
   align-items: center;
   gap: 22px;
@@ -518,6 +518,38 @@ button {
   box-shadow: 0 6px 18px #50eaffcc;
   transform: scale(1.07);
   outline: 2px solid #ffe066;
+}
+#deck-title-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 10px;
+}
+#deck-cardback-img {
+  width: 44px;
+  height: 62px;
+  object-fit: cover;
+  border-radius: 7px;
+  box-shadow: 0 2px 8px #0005;
+  cursor: pointer;
+  background: #1a2533;
+  transition: box-shadow 0.18s, filter 0.18s;
+}
+#deck-cardback-img:hover {
+  box-shadow: 0 6px 18px #50eaffcc;
+  filter: brightness(1.10) saturate(1.12);
+  outline: 2px solid #4af4ff;
+  outline-offset: 2px;
+}
+#deck-card-count {
+  background: #22304a;
+  color: #ffe066;
+  font-weight: bold;
+  border-radius: 9px;
+  padding: 4px 13px;
+  font-size: 1em;
+  box-shadow: 0 1px 4px #0002;
+  margin-left: 8px;
 }
 .deck {
   position: fixed;
