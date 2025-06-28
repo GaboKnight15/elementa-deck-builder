@@ -13,6 +13,7 @@ io.on('connection', (socket) => {
 
   socket.on('join room', (roomId) => {
     socket.join(roomId);
+    socket.roomId = roomId;
     socket.to(roomId).emit('opponent joined', socket.id);
     console.log(`Socket ${socket.id} joined room ${roomId}`);
   });
@@ -24,7 +25,13 @@ io.on('connection', (socket) => {
   socket.on('game action', (action) => {
     socket.to(action.roomId).emit('opponent game action', action);
   });
-
+  socket.on('profile', (profileObj) => {
+    // Send to everyone else in the room (assume socket.roomId is set on join)
+    // You may want to store roomId on socket when joining
+    if (socket.roomId) {
+      socket.to(socket.roomId).emit('opponent profile', profileObj);
+    }
+  });
   socket.on('sync deck', (roomId, deckObj) => {
     socket.to(roomId).emit('sync deck', deckObj);
   });
