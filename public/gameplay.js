@@ -1056,7 +1056,13 @@ function showGameUI(myProfile, opponentProfile) {
 function renderProfile(elId, profile) {
   const el = document.getElementById(elId);
   if (!el || !profile) return;
-  el.innerHTML = `<img src="${profile.avatar}" alt="Profile"><span class="profile-username">${profile.username}</span>`;
+  el.innerHTML = `
+    <img src="${profile.avatar}" alt="Profile">
+    <div>
+      <div class="profile-username">${profile.username}</div>
+      <img class="profile-banner" src="${profile.banner}" alt="Banner">
+    </div>
+  `;
 }
 function showChat() {
   document.getElementById('lobby-ui').style.display = 'none';
