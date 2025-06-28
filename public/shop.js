@@ -6,6 +6,11 @@
 const shopSection = document.getElementById('shop-section');
 const shopContainer = document.getElementById('shop-container');
 const packOpeningArea = document.getElementById('pack-opening-area');
+// At the top, get modal DOM:
+const packOpeningModal = document.getElementById('pack-opening-modal');
+const packOpeningModalContent = document.getElementById('pack-opening-modal-content');
+const openedPackRowModal = document.getElementById('opened-pack-row-modal');
+const closePackOpeningModalBtn = document.getElementById('close-pack-opening-modal');
 // These should match your iconOptions in auth.js!
 const allAvatarOptions = [
   "CardImages/Avatars/Avatar1.png",
@@ -60,26 +65,24 @@ function openPack(type) {
   }); 
  
   lastPackCards = cards;
-  packOpeningArea.innerHTML = `
-    <div class="opened-pack-row" style="display:flex;flex-wrap:wrap;justify-content:center;gap:12px;">
-      ${cards.map((card, i) => `
-        <div class="opened-card opened-card-flip" data-card-idx="${i}">
-          <div class="opened-card-inner">
-            <div class="opened-card-back">
-              <img src="CardImages/Domains/placeholder.png" alt="Card Back" style="width:100px;height:auto;display:block;margin:auto;">
-            </div>
-            <div class="opened-card-front">
-              <img src="${card.image}" alt="${card.name}" style="width:100px;height:auto;display:block;margin:auto;">
-              <!-- New badge will be injected here after flip if needed -->
-            </div>
-          </div>
+
+  // Display in modal, not in packOpeningArea
+  openedPackRowModal.innerHTML = cards.map((card, i) => `
+    <div class="opened-card opened-card-flip" data-card-idx="${i}">
+      <div class="opened-card-inner">
+        <div class="opened-card-back">
+          <img src="CardImages/Domains/placeholder.png" alt="Card Back" style="width:100px;height:auto;display:block;margin:auto;">
         </div>
-      `).join('')}
+        <div class="opened-card-front">
+          <img src="${card.image}" alt="${card.name}" style="width:100px;height:auto;display:block;margin:auto;">
+        </div>
+      </div>
     </div>
-  `;
+  `).join('');
+  packOpeningModal.style.display = "flex";
 
   // Animate cards in sequence: flip from back to front
-  const cardDivs = packOpeningArea.querySelectorAll('.opened-card');
+  const cardDivs = openedPackRowModal.querySelectorAll('.opened-card');
   cardDivs.forEach((div, i) => {
     setTimeout(() => {
       div.classList.add('flipped');
@@ -122,6 +125,20 @@ function openPack(type) {
   }
   if (window.renderGallery) renderGallery();
 }
+
+// Handle closing the modal
+closePackOpeningModalBtn.onclick = () => {
+  packOpeningModal.style.display = "none";
+  openedPackRowModal.innerHTML = '';
+};
+
+// Clicking outside modal-content closes modal
+packOpeningModal.onclick = function(e) {
+  if (e.target === packOpeningModal) {
+    packOpeningModal.style.display = "none";
+    openedPackRowModal.innerHTML = '';
+  }
+};
 
 // Handle pack image click
 const packImages = document.querySelectorAll('.pack-image');
