@@ -41,18 +41,27 @@ const deckViewModalTitle = document.getElementById('deck-view-modal-title');
 const deckViewModalList = document.getElementById('deck-view-modal-list');
 const closeDeckViewModalBtn = document.getElementById('close-deck-view-modal-btn');
 const backBuilderBtn = document.getElementById('back-builder-btn');
-
+// HIGHLIGHTED CARD
 const highlightArtModal = document.getElementById('highlight-art-modal');
 const highlightArtList = document.getElementById('highlight-art-list');
 const setHighlightArtBtn = document.getElementById('set-highlight-art-btn');
 const closeHighlightArtBtn = document.getElementById('close-highlight-art-btn');
-
-// Deck banner logic
+// DECK BANNER
 const deckBannerImg = document.getElementById('deck-banner-img');
 const deckBannerModal = document.getElementById('deck-banner-modal');
 const deckBannerArtList = document.getElementById('deck-banner-art-list');
 const closeDeckBannerModalBtn = document.getElementById('close-deck-banner-modal');
-
+// CARDBACK
+const deckCardbackImg = document.getElementById('deck-cardback-img');
+const deckCardbackModal = document.getElementById('deck-cardback-modal');
+const deckCardbackArtList = document.getElementById('deck-cardback-art-list');
+const closeDeckCardbackModalBtn = document.getElementById('close-deck-cardback-modal');
+// Cardback options (expand as needed)
+const cardbackOptions = [
+  "CardImages/Cardbacks/Cardback1.png",
+  "CardImages/Cardbacks/Cardback2.png",
+  "CardImages/Cardbacks/DefaultCardback.png"
+];
 // Get collection from localStorage using shared.js util
 function showDeckSelection() {
   deckSelectionGrid.style.display = '';
@@ -210,14 +219,45 @@ deckBannerImg.onclick = function() {
 };
 
 closeDeckBannerModalBtn.onclick = () => (deckBannerModal.style.display = "none");
+// Update displayed cardback in deck menu
+function updateDeckCardback(deckName) {
+  const deck = decks[deckName] || {};
+  deckCardbackImg.src = deck.cardbackArt || "CardImages/Cardbacks/DefaultCardback.png";
+}
 
-// Update banner when opening the modal
+// Make cardback image clickable to open the modal
+deckCardbackImg.onclick = function() {
+  deckCardbackModal.style.display = "flex";
+  deckCardbackArtList.innerHTML = "";
+  const deckName = deckMenuModal.dataset.deckName;
+  const deck = decks[deckName] || {};
+  cardbackOptions.forEach(cb => {
+    const img = document.createElement('img');
+    img.src = cb;
+    img.alt = "Cardback";
+    img.className = "deck-cardback-choice";
+    img.onclick = () => {
+      decks[deckName].cardbackArt = cb;
+      saveDeckState();
+      updateDeckCardback(deckName);
+      deckCardbackModal.style.display = "none";
+      closeDeckTileMenu();
+    };
+    deckCardbackArtList.appendChild(img);
+  });
+};
+
+closeDeckCardbackModalBtn.onclick = () => (deckCardbackModal.style.display = "none");
+
+// When opening deck menu, update cardback image too
 function showDeckTileMenu(deckName) {
   deckMenuTitle.textContent = deckName;
   updateDeckBanner(deckName);
+  updateDeckCardback(deckName); // <-- add this
   deckMenuModal.style.display = 'flex';
   deckMenuModal.dataset.deckName = deckName;
 }
+
 function closeDeckTileMenu() {
   deckMenuModal.style.display = 'none';
 }
