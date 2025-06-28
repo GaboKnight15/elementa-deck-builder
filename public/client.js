@@ -152,6 +152,23 @@ socket.on('opponent game action', action => {
   handleOpponentAction(action); // already present in your gameplay.js
 });
 
+// PROFILE DETAILS IN GAME
+function showMyProfile() {
+  renderProfile('my-profile', getMyProfileInfo());
+  document.getElementById('my-profile').style.display = '';
+}
+function getMyProfileInfo() {
+  return {
+    username: document.getElementById('profile-username-display').textContent,
+    avatar: document.getElementById('profile-pic').src,
+    banner: document.getElementById('profile-banner').src
+  };
+}
+socket.emit('profile', getMyProfileInfo());
+socket.on('opponent profile', profileObj => {
+  renderProfile('opponent-profile', profileObj);
+  document.getElementById('opponent-profile').style.display = '';
+});
 // --- Export for use in other scripts, if needed ---
 window.endGameCleanup = endGameCleanup;
 
