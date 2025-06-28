@@ -19,7 +19,12 @@ const allBannerOptions = [
   "CardImages/Banners/Banner2.jpg",
   "CardImages/Banners/Banner3.jpg"
   // Add your "DefaultBanner.jpg" path when ready
-]; 
+];
+const allCardbackOptions = [
+  "CardImages/Cardbacks/Cardback1.png",
+  "CardImages/Cardbacks/Cardback2.png",
+  "CardImages/Cardbacks/DefaultCardback.png"
+];
 // RNG
 function getRandomCards(n, setName) {
   // Only cards whose set matches setName
@@ -259,13 +264,60 @@ function renderShopBanners() {
     grid.appendChild(wrapper);
   });
 }
-// Call this on page/shop load
+function getUnlockedCardbacks() {
+  // Always default to at least the default cardback unlocked
+  return JSON.parse(localStorage.getItem('unlockedCardbacks') || '["CardImages/Cardbacks/DefaultCardback.png"]');
+}
+function setUnlockedCardbacks(arr) {
+  localStorage.setItem('unlockedCardbacks', JSON.stringify(arr));
+}
+
+// Render cardbacks shop
+function renderShopCardbacks() {
+  const grid = document.getElementById('shop-cardbacks-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  const unlocked = getUnlockedCardbacks();
+  allCardbackOptions.forEach(src => {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'shop-cardback-option';
+    const img = document.createElement('img');
+    img.src = src;
+    img.className = 'shop-cardback-img';
+    if (unlocked.includes(src)) {
+      img.classList.add('unlocked');
+    }
+    wrapper.appendChild(img);
+
+    const btn = document.createElement('button');
+    btn.className = 'btn-secondary';
+    if (unlocked.includes(src)) {
+      btn.textContent = 'Unlocked';
+      btn.disabled = true;
+    } else {
+      btn.textContent = 'Get';
+      btn.onclick = () => {
+        const updated = getUnlockedCardbacks();
+        if (!updated.includes(src)) {
+          updated.push(src);
+          setUnlockedCardbacks(updated);
+          renderShopCardbacks();
+          if (window.renderDeckCardbackChoices) window.renderDeckCardbackChoices();
+          alert('Cardback unlocked! Now available in your deck options.');
+        }
+      };
+    }
+    wrapper.appendChild(btn);
+    grid.appendChild(wrapper);
+  });
+}
+
+// INITIALIZATION //
+renderShopCardbacks();
+window.renderShopCardbacks = renderShopCardbacks;
 renderShopBanners();
 window.renderShopBanners = renderShopBanners;
-// Call on load
 renderShopAvatars();
-
-// Optional: expose for reload after purchases elsewhere
 window.renderShopAvatars = renderShopAvatars;
 
 function renderShop() {
