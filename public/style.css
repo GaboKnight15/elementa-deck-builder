@@ -472,6 +472,53 @@ button {
   box-shadow: 0 6px 18px #50eaffcc;
   transform: scale(1.07);
 }
+#deck-banner-cardback-row {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  margin-bottom: 6px;
+}
+#deck-cardback-img {
+  width: 56px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 7px;
+  box-shadow: 0 2px 10px #0005;
+  background: #1a2533;
+  cursor: pointer;
+  transition: box-shadow 0.18s, filter 0.18s;
+}
+#deck-cardback-img:hover, #deck-cardback-img:focus {
+  box-shadow: 0 6px 22px #50eaffcc;
+  filter: brightness(1.10) saturate(1.12);
+  outline: 2px solid #4af4ff;
+  outline-offset: 2px;
+}
+#deck-cardback-art-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+  max-height: 260px;
+  overflow-y: auto;
+  padding: 8px;
+  justify-content: center;
+}
+.deck-cardback-choice {
+  width: 56px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 7px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px #0005;
+  transition: box-shadow 0.16s, transform 0.12s;
+  background: #232a3c;
+}
+.deck-cardback-choice:hover {
+  box-shadow: 0 6px 18px #50eaffcc;
+  transform: scale(1.07);
+  outline: 2px solid #ffe066;
+}
 .deck {
   position: fixed;
   right: 0;
