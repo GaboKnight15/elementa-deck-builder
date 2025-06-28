@@ -6,7 +6,20 @@
 const shopSection = document.getElementById('shop-section');
 const shopContainer = document.getElementById('shop-container');
 const packOpeningArea = document.getElementById('pack-opening-area');
- 
+// These should match your iconOptions in auth.js!
+const allAvatarOptions = [
+  "CardImages/Avatars/Avatar1.png",
+  "CardImages/Avatars/Avatar2.png",
+  "CardImages/Avatars/Avatar3.png",
+  "CardImages/Avatars/Avatar4.png",
+  "CardImages/Avatars/Avatar5.png"
+];
+const allBannerOptions = [
+  "CardImages/Banners/Banner1.jpg",
+  "CardImages/Banners/Banner2.jpg",
+  "CardImages/Banners/Banner3.jpg"
+  // Add your "DefaultBanner.jpg" path when ready
+]; 
 // RNG
 function getRandomCards(n, setName) {
   // Only cards whose set matches setName
@@ -154,14 +167,7 @@ document.querySelectorAll('.shop-free-btn').forEach(btn => {
     }
   };
 });
-// These should match your iconOptions in auth.js!
-const allAvatarOptions = [
-  "CardImages/Avatars/Avatar1.png",
-  "CardImages/Avatars/Avatar2.png",
-  "CardImages/Avatars/Avatar3.png",
-  "CardImages/Avatars/Avatar4.png",
-  "CardImages/Avatars/Avatar5.png"
-];
+
 
 function getUnlockedAvatars() {
   // You could use Firebase/cloud instead
@@ -209,7 +215,53 @@ function renderShopAvatars() {
     grid.appendChild(wrapper);
   });
 }
+function getUnlockedBanners() {
+  // Default to an empty array or include your default banner if you want
+  return JSON.parse(localStorage.getItem('unlockedBanners') || '[]');
+}
+function setUnlockedBanners(arr) {
+  localStorage.setItem('unlockedBanners', JSON.stringify(arr));
+}
+function renderShopBanners() {
+  const grid = document.getElementById('shop-banners-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  const unlocked = getUnlockedBanners();
+  allBannerOptions.forEach(src => {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'shop-banner-option';
+    const img = document.createElement('img');
+    img.src = src;
+    img.className = 'shop-banner-img';
+    if (unlocked.includes(src)) {
+      img.classList.add('unlocked');
+    }
+    wrapper.appendChild(img);
 
+    const btn = document.createElement('button');
+    btn.className = 'btn-secondary';
+    if (unlocked.includes(src)) {
+      btn.textContent = 'Unlocked';
+      btn.disabled = true;
+    } else {
+      btn.textContent = 'Get';
+      btn.onclick = () => {
+        const updated = getUnlockedBanners();
+        if (!updated.includes(src)) {
+          updated.push(src);
+          setUnlockedBanners(updated);
+          renderShopBanners();
+          alert('Banner unlocked! Now available in your profile.');
+        }
+      };
+    }
+    wrapper.appendChild(btn);
+    grid.appendChild(wrapper);
+  });
+}
+// Call this on page/shop load
+renderShopBanners();
+window.renderShopBanners = renderShopBanners;
 // Call on load
 renderShopAvatars();
 
