@@ -134,15 +134,17 @@
 <div id="deck-menu-modal" class="modal" style="display:none;">
   <div class="modal-content deck-menu-modal-content">
     <!-- Banner and Cardback container, side by side -->
-    <div id="deck-banner-cardback-row" style="display: flex; align-items: center; gap: 22px; margin-bottom: 6px;">
+    <div id="deck-banner-row" style="display: flex; align-items: center; gap: 22px; margin-bottom: 6px;">
       <div id="deck-banner-container">
         <img id="deck-banner-img" src="CardImages/Banners/DefaultBanner.jpg" alt="Deck Banner">
       </div>
-      <div id="deck-cardback-container">
-        <img id="deck-cardback-img" src="CardImages/Cardbacks/DefaultCardback.png" alt="Deck Cardback" style="width:56px;height:80px;object-fit:cover;cursor:pointer;border-radius:7px;">
-      </div>
     </div>
-    <h3 id="deck-menu-title" style="display:inline-block;"></h3>
+    <div id="deck-title-row" style="display: flex; align-items: center; gap: 14px; margin-bottom: 10px;">
+      <h3 id="deck-menu-title" style="margin:0; font-size:1.3em;"></h3>
+      <span id="deck-card-count" style="background:#22304a;color:#ffe066;font-weight:bold;border-radius:9px;padding:4px 13px;font-size:1em;box-shadow:0 1px 4px #0002;"></span>
+      <img id="deck-cardback-img" src="CardImages/Cardbacks/DefaultCardback.png" alt="Deck Cardback"
+        style="width:44px;height:62px;object-fit:cover;cursor:pointer;border-radius:7px;box-shadow:0 2px 8px #0005;">
+    </div>
     <button id="edit-deck-btn" class="btn-primary">Edit Deck</button>
     <button id="view-deck-btn" class="btn-secondary">View Deck</button>
     <button id="set-highlight-art-btn" class="btn-secondary">Highlight Card</button>
