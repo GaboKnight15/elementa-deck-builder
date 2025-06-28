@@ -231,7 +231,10 @@ deckCardbackImg.onclick = function() {
   deckCardbackArtList.innerHTML = "";
   const deckName = deckMenuModal.dataset.deckName;
   const deck = decks[deckName] || {};
-  cardbackOptions.forEach(cb => {
+  const unlocked = getUnlockedCardbacks ? getUnlockedCardbacks() : 
+    (window.getUnlockedCardbacks ? window.getUnlockedCardbacks() : 
+      ["CardImages/Cardbacks/DefaultCardback.png"]);
+  unlocked.forEach(cb => {
     const img = document.createElement('img');
     img.src = cb;
     img.alt = "Cardback";
@@ -246,6 +249,12 @@ deckCardbackImg.onclick = function() {
     deckCardbackArtList.appendChild(img);
   });
 };
+window.renderDeckCardbackChoices = function() {
+  // If modal is open, re-render its contents after unlock
+  if (deckCardbackModal.style.display === "flex") {
+    deckCardbackImg.onclick();
+  }
+}
 
 closeDeckCardbackModalBtn.onclick = () => (deckCardbackModal.style.display = "none");
 
