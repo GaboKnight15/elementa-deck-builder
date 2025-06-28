@@ -6,9 +6,8 @@
 const shopSection = document.getElementById('shop-section');
 const shopContainer = document.getElementById('shop-container');
 const packOpeningArea = document.getElementById('pack-opening-area');
-const closeShopBtn = document.getElementById('close-shop-btn');
  
-// Helper: get N random cards from dummyCards
+// RNG
 function getRandomCards(n, setName) {
   // Only cards whose set matches setName
   const available = dummyCards.filter(card => Array.isArray(card.set) ? card.set.includes(setName) : card.set === setName);
@@ -134,12 +133,27 @@ shopContainer.addEventListener('click', (e) => {
     packOpeningArea.innerHTML = '';
   }
 });
-
-// Close shop button
-closeShopBtn.addEventListener('click', () => {
-  packOpeningArea.innerHTML = '';
+// Cosmetic shop free unlock handlers
+document.querySelectorAll('.shop-free-btn').forEach(btn => {
+  btn.onclick = function() {
+    const type = btn.dataset.type;
+    // For now, just show a popup/alert for demo
+    switch(type) {
+      case 'profile-pic':
+        alert("You unlocked a new avatar! (Feature coming soon)");
+        break;
+      case 'banner':
+        alert("You unlocked a new banner! (Feature coming soon)");
+        break;
+      case 'cardback':
+        alert("You unlocked a new sleeve! (Feature coming soon)");
+        break;
+      case 'single-card':
+        alert("You unlocked a new card! (Feature coming soon)");
+        break;
+    }
+  };
 });
-
 function renderShop() {
   packOpeningArea.innerHTML = '';
 }
