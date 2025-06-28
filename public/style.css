@@ -1654,6 +1654,32 @@ button {
 .shop-avatar-img.unlocked {
   border-color: #ffe066;
 }
+#shop-banners-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin: 10px 0;
+}
+.shop-banner-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 120px;
+  margin-bottom: 12px;
+}
+.shop-banner-img {
+  width: 96px;
+  height: 48px;
+  border-radius: 8px;
+  background: #283040;
+  margin-bottom: 6px;
+  border: 2px solid #ffe06644;
+  transition: filter 0.2s;
+  object-fit: cover;
+}
+.shop-banner-img.unlocked {
+  border-color: #ffe066;
+}
 @media (max-width: 600px) {
   #profile-menu {
     left: 50%;
