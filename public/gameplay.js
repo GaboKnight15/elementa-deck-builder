@@ -1037,9 +1037,26 @@ function emitGameAction(action) {
     socket.emit('game action', { ...action, roomId: currentRoomId });
   }
 }
-function showLobby() {
-  document.getElementById('lobby-ui').style.display = 'block';
+function showLobbyUI() {
+  document.getElementById('lobby-ui').style.display = '';
   document.getElementById('chat-ui').style.display = 'none';
+  document.getElementById('lobby-topbar').style.display = 'none';
+  document.getElementById('opponent-profile').style.display = 'none';
+  document.getElementById('my-profile').style.display = 'none';
+}
+function showGameUI(myProfile, opponentProfile) {
+  document.getElementById('lobby-ui').style.display = 'none';
+  document.getElementById('chat-ui').style.display = '';
+  document.getElementById('lobby-topbar').style.display = '';
+  document.getElementById('opponent-profile').style.display = '';
+  document.getElementById('my-profile').style.display = '';
+  renderProfile('my-profile', myProfile);
+  renderProfile('opponent-profile', opponentProfile);
+}
+function renderProfile(elId, profile) {
+  const el = document.getElementById(elId);
+  if (!el || !profile) return;
+  el.innerHTML = `<img src="${profile.avatar}" alt="Profile"><span class="profile-username">${profile.username}</span>`;
 }
 function showChat() {
   document.getElementById('lobby-ui').style.display = 'none';
