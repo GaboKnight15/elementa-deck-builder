@@ -154,6 +154,68 @@ document.querySelectorAll('.shop-free-btn').forEach(btn => {
     }
   };
 });
+// These should match your iconOptions in auth.js!
+const allAvatarOptions = [
+  "CardImages/Avatars/Avatar1.png",
+  "CardImages/Avatars/Avatar2.png",
+  "CardImages/Avatars/Avatar3.png",
+  "CardImages/Avatars/Avatar4.png",
+  "CardImages/Avatars/Avatar5.png"
+];
+
+function getUnlockedAvatars() {
+  // You could use Firebase/cloud instead
+  return JSON.parse(localStorage.getItem('unlockedAvatars') || '["CardImages/Avatars/Avatar1.png"]');
+}
+function setUnlockedAvatars(arr) {
+  localStorage.setItem('unlockedAvatars', JSON.stringify(arr));
+}
+
+// Render avatars shop
+function renderShopAvatars() {
+  const grid = document.getElementById('shop-avatars-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  const unlocked = getUnlockedAvatars();
+  allAvatarOptions.forEach(src => {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'shop-avatar-option';
+    const img = document.createElement('img');
+    img.src = src;
+    img.className = 'shop-avatar-img';
+    if (unlocked.includes(src)) {
+      img.classList.add('unlocked');
+    }
+    wrapper.appendChild(img);
+
+    const btn = document.createElement('button');
+    btn.className = 'btn-secondary';
+    if (unlocked.includes(src)) {
+      btn.textContent = 'Unlocked';
+      btn.disabled = true;
+    } else {
+      btn.textContent = 'Get';
+      btn.onclick = () => {
+        const updated = getUnlockedAvatars();
+        if (!updated.includes(src)) {
+          updated.push(src);
+          setUnlockedAvatars(updated);
+          renderShopAvatars();
+          alert('Avatar unlocked! Now available in your profile.');
+        }
+      };
+    }
+    wrapper.appendChild(btn);
+    grid.appendChild(wrapper);
+  });
+}
+
+// Call on load
+renderShopAvatars();
+
+// Optional: expose for reload after purchases elsewhere
+window.renderShopAvatars = renderShopAvatars;
+
 function renderShop() {
   packOpeningArea.innerHTML = '';
 }
