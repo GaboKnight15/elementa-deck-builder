@@ -1617,18 +1617,55 @@ button {
   min-height: 190px;
   transition: min-height 0.2s;
 }
+#pack-opening-modal {
+  display: none;
+  position: fixed;
+  z-index: 2000;
+  left: 0; top: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(10,15,22,0.85);
+  justify-content: center;
+  align-items: center;
+}
+#pack-opening-modal .modal-content {
+  background: linear-gradient(120deg, #22304a 90%, #1a2533 100%);
+  border-radius: 18px;
+  box-shadow: 0 8px 40px #141e2f99;
+  padding: 34px 28px 28px 28px;
+  max-width: 980px;
+  width: 98vw;
+  max-height: 90vh;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#opened-pack-row-modal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  justify-content: center;
+  align-items: flex-start;
+  margin: 20px 0 0 0;
+}
 .opened-pack-row {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 18px;
 }
+/* Card flip styles (similar to your current opened-card styles) */
 .opened-card {
-  background: #24293a;
-  border-radius: 10px;
-  padding: 10px 8px 8px 8px;
-  box-shadow: 0 2px 10px #0003, 0 0 0 2px #191b20;
-  transition: transform 0.1s, box-shadow 0.1s;
+  background: none;
+  border: none;
+  box-shadow: 0 1px 8px #0003;
+  border-radius: 12px;
+  width: 110px;
+  height: 152px;
+  transition: box-shadow 0.19s;
+  cursor: pointer;
+  perspective: 1200px;
+  position: relative;
 }
 .opened-card:hover {
   transform: translateY(-6px) scale(1.045);
@@ -1663,11 +1700,11 @@ button {
 }
 /* Inner wrapper for animation */
 .opened-card-inner {
-  width: 110px;
-  height: 150px;
-  position: relative;
-  transition: transform 0.6s cubic-bezier(.4,2,.6,1);
+  width: 100%;
+  height: 100%;
+  transition: transform 0.7s cubic-bezier(.4,1.6,.3,1);
   transform-style: preserve-3d;
+  position: relative;
 }
 /* Flip state */
 .opened-card.flipped .opened-card-inner {
@@ -1677,8 +1714,8 @@ button {
 .opened-card-front,
 .opened-card-back {
   position: absolute;
-  width: 110px;
-  height: 150px;
+  width: 100%;
+  height: 100%;
   backface-visibility: hidden;
   border-radius: 10px;
   overflow: hidden;
@@ -1692,14 +1729,26 @@ button {
 
 /* CARDBACK (shown first) */
 .opened-card-back {
+  background: #19223a;      
   z-index: 2;
 }
 
 /* Front of card (revealed on flip) */
 .opened-card-front {
-  position: relative;
+  background: #232a3c;
   transform: rotateY(180deg);
-  z-index: 1;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.opened-card-front .new-card-badge {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
 }
 
 /* For a “flip” effect, you can use: */
