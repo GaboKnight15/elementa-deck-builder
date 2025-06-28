@@ -133,11 +133,16 @@
     <!-- Deck Tile Context Menu Modal -->
 <div id="deck-menu-modal" class="modal" style="display:none;">
   <div class="modal-content deck-menu-modal-content">
-    <!-- Banner container -->
-    <div id="deck-banner-container">
-      <img id="deck-banner-img" src="CardImages/Banners/DefaultBanner.jpg" alt="Deck Banner">
+    <!-- Banner and Cardback container, side by side -->
+    <div id="deck-banner-cardback-row" style="display: flex; align-items: center; gap: 22px; margin-bottom: 6px;">
+      <div id="deck-banner-container">
+        <img id="deck-banner-img" src="CardImages/Banners/DefaultBanner.jpg" alt="Deck Banner">
+      </div>
+      <div id="deck-cardback-container">
+        <img id="deck-cardback-img" src="CardImages/Cardbacks/DefaultCardback.png" alt="Deck Cardback" style="width:56px;height:80px;object-fit:cover;cursor:pointer;border-radius:7px;">
+      </div>
     </div>
-    <h3 id="deck-menu-title"></h3>
+    <h3 id="deck-menu-title" style="display:inline-block;"></h3>
     <button id="edit-deck-btn" class="btn-primary">Edit Deck</button>
     <button id="view-deck-btn" class="btn-secondary">View Deck</button>
     <button id="set-highlight-art-btn" class="btn-secondary">Highlight Card</button>
@@ -160,6 +165,14 @@
     <h3>Choose Banner Artwork</h3>
     <div id="deck-banner-art-list"></div>
     <button id="close-deck-banner-modal" class="btn-secondary" style="margin-top:14px;">Cancel</button>
+  </div>
+</div>
+<!-- CARD BACK MODAL DECK -->
+<div id="deck-cardback-modal" class="modal">
+  <div class="modal-content">
+    <h3>Choose Deck Cardback</h3>
+    <div id="deck-cardback-art-list"></div>
+    <button id="close-deck-cardback-modal" class="btn-secondary" style="margin-top:14px;">Cancel</button>
   </div>
 </div>
 <!-- DECK SLOTS -->
