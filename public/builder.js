@@ -51,6 +51,7 @@ const deckBannerImg = document.getElementById('deck-banner-img');
 const deckBannerModal = document.getElementById('deck-banner-modal');
 const deckBannerArtList = document.getElementById('deck-banner-art-list');
 const closeDeckBannerModalBtn = document.getElementById('close-deck-banner-modal');
+const deckCardCount = document.getElementById('deck-card-count');
 // CARDBACK
 const deckCardbackImg = document.getElementById('deck-cardback-img');
 const deckCardbackModal = document.getElementById('deck-cardback-modal');
@@ -138,8 +139,16 @@ builderBackBtn.onclick = showDeckSelection;
   
 function showDeckTileMenu(deckName) {
   deckMenuTitle.textContent = deckName;
+  updateDeckBanner(deckName);
+  updateDeckCardback(deckName);
+  // Card count
+  const deck = decks[deckName] || {};
+  const count = Object.values(deck)
+    .filter(v => typeof v === 'number') // Only card counts
+    .reduce((a, b) => a + b, 0);
+  deckCardCount.textContent = `${count} cards`;
+
   deckMenuModal.style.display = 'flex';
-  // Store the deckName for handlers
   deckMenuModal.dataset.deckName = deckName;
 }
 setHighlightArtBtn.onclick = function() {
