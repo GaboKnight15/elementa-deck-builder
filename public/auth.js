@@ -49,16 +49,45 @@ document.addEventListener('DOMContentLoaded', function () {
 const defaultBanner = "CardImages/Banners/DefaultBanner.jpg";
 
   // --- ICON CHOICES ---
-  function renderProfileIcons(selectedIcon) {
-    profileIcons.innerHTML = "";
-    iconOptions.forEach(iconUrl => {
-      const img = document.createElement('img');
-      img.src = iconUrl;
-      img.className = (iconUrl === selectedIcon) ? "selected" : "";
-      img.onclick = () => selectProfileIcon(iconUrl);
-      profileIcons.appendChild(img);
-    });
+  function getUnlockedAvatars() {
+      try {
+        return JSON.parse(localStorage.getItem('unlockedAvatars') || '["CardImages/Avatars/Avatar1.png"]');
+      } catch (e) {
+        return ["CardImages/Avatars/Avatar1.png"];
+      }
+    }  
+function renderProfileIcons(selectedIcon) {
+  profileIcons.innerHTML = "";
+  const unlocked = getUnlockedAvatars();
+  iconOptions.forEach(iconUrl => {
+    if (!unlocked.includes(iconUrl)) return; // Only show unlocked now
+    const img = document.createElement('img');
+    img.src = iconUrl;
+    img.className = (iconUrl === selectedIcon) ? "selected" : "";
+    img.onclick = () => selectProfileIcon(iconUrl);
+    profileIcons.appendChild(img);
+  });
+}
+function getUnlockedBanners() {
+  try {
+    return JSON.parse(localStorage.getItem('unlockedBanners') || '[]');
+  } catch (e) {
+    return ["CardImages/Avatars/Avatar1.png"];
   }
+}
+
+function renderProfileBanners(selectedBanner) {
+  profileBanners.innerHTML = "";
+  const unlocked = getUnlockedBanners();
+  bannerOptions.forEach(bannerUrl => {
+    if (!unlocked.includes(bannerUrl)) return;
+    const img = document.createElement('img');
+    img.src = bannerUrl;
+    img.className = (bannerUrl === selectedBanner) ? "selected" : "";
+    img.onclick = () => selectProfileBanner(bannerUrl);
+    profileBanners.appendChild(img);
+  });
+}
   // Open the avatar selection modal
   profileChangePicBtn.onclick = function() {
     const currentIcon = profilePic.src;
