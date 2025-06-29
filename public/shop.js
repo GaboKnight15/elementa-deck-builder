@@ -12,14 +12,29 @@ const closePackOpeningModalBtn = document.getElementById('close-pack-opening-mod
 // These should match your iconOptions in auth.js!
 // Arrays of image paths
 const allAvatarOptions = [
-  "CardImages/Avatars/Avatar1.png",
-  "CardImages/Avatars/Avatar2.png",
-  "CardImages/Avatars/Avatar3.png",
-  "CardImages/Avatars/Avatar4.png",
-  "CardImages/Avatars/Avatar5.png",
-  "CardImages/Avatars/Avatar6.png",
-  "CardImages/Avatars/Avatar7.png",
-  "CardImages/Avatars/Avatar8.png"
+      "CardImages/Avatars/Faelyra.png",
+      "CardImages/Avatars/Kaelyn.png",
+      "CardImages/Avatars/Zaryon.png",
+      "CardImages/Avatars/Zyra.png",
+      "CardImages/Avatars/Veniryss.png",
+      "CardImages/Avatars/Gravok.png",
+      "CardImages/Avatars/Nyzariel.png",
+      "CardImages/Avatars/Elyndra.png",
+      "CardImages/Avatars/Aureavian.png",
+      "CardImages/Avatars/Maldryss.png",
+      "CardImages/Avatars/Tydros.png",
+      "CardImages/Avatars/Ephoros.png",
+      "CardImages/Avatars/Mordrath.png",
+      "CardImages/Avatars/Raukhar.png",
+      "CardImages/Avatars/Velmira.png",
+      "CardImages/Avatars/Verdarok.png",
+      "CardImages/Avatars/Pyronyx.png",
+      "CardImages/Avatars/Abyndra.png",
+      "CardImages/Avatars/Voltrazek.png",
+      "CardImages/Avatars/Toxigon.png",
+      "CardImages/Avatars/Ferronyx.png",
+      "CardImages/Avatars/Nochtyros.png",
+      "CardImages/Avatars/Solaryth.png"
 ];
 const allBannerOptions = [
   "CardImages/Banners/Banner1.jpg",
@@ -34,14 +49,29 @@ const allCardbackOptions = [
 
 // Price maps
 const avatarPrices = {
-  "CardImages/Avatars/Avatar1.png": 100,
-  "CardImages/Avatars/Avatar2.png": 100,
-  "CardImages/Avatars/Avatar3.png": 100,
-  "CardImages/Avatars/Avatar4.png": 100,
-  "CardImages/Avatars/Avatar5.png": 100,
-  "CardImages/Avatars/Avatar6.png": 100,
-  "CardImages/Avatars/Avatar7.png": 100,
-  "CardImages/Avatars/Avatar8.png": 100
+      "CardImages/Avatars/Faelyra.png": 100,
+      "CardImages/Avatars/Kaelyn.png": 100,
+      "CardImages/Avatars/Zaryon.png": 100,
+      "CardImages/Avatars/Zyra.png": 100,
+      "CardImages/Avatars/Veniryss.png": 100,
+      "CardImages/Avatars/Gravok.png": 100,
+      "CardImages/Avatars/Nyzariel.png": 100,
+      "CardImages/Avatars/Elyndra.png": 100,
+      "CardImages/Avatars/Aureavian.png": 100,
+      "CardImages/Avatars/Maldryss.png": 100,
+      "CardImages/Avatars/Tydros.png": 100,
+      "CardImages/Avatars/Ephoros.png": 100,
+      "CardImages/Avatars/Mordrath.png": 100,
+      "CardImages/Avatars/Raukhar.png": 100,
+      "CardImages/Avatars/Velmira.png": 100,
+      "CardImages/Avatars/Verdarok.png": 100,
+      "CardImages/Avatars/Pyronyx.png": 100,
+      "CardImages/Avatars/Abyndra.png": 100,
+      "CardImages/Avatars/Voltrazek.png": 100,
+      "CardImages/Avatars/Toxigon.png": 100,
+      "CardImages/Avatars/Ferronyx.png": 100,
+      "CardImages/Avatars/Nochtyros.png": 100,
+      "CardImages/Avatars/Solaryth.png": 100
 };
 const bannerPrices = {
   "CardImages/Banners/Banner1.jpg": 100,
