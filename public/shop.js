@@ -85,6 +85,12 @@ function openPack(type) {
   const cardDivs = openedPackRowModal.querySelectorAll('.opened-card');
   cardDivs.forEach((div, i) => {
     setTimeout(() => {
+          // Play the flip sound
+      const flipSnd = document.getElementById('card-flip-sound');
+      if (flipSnd) {
+        flipSnd.currentTime = 0;
+        flipSnd.play();
+      }
       div.classList.add('flipped');
       setTimeout(() => {
         // After flip animation, attach onclick to card front
