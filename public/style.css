@@ -1578,9 +1578,11 @@ button {
   padding: 16px 14px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   width: 100%;
   max-width: 340px;
+  margin-left: auto;
+  margin-right: auto;
 }
 .shop-division h3 {
   margin: 0 0 12px 0;
@@ -1598,7 +1600,11 @@ button {
   align-items: center;
   width: 100%;
 }
-
+.shop-profile-pics {
+  display: grid;
+  justify-content: center;
+  width: 100%;
+}
 /* COSMETICS ANIMATION */
 .modal-content img[alt="Cosmetic Preview"] {
   transition: 
@@ -1847,7 +1853,7 @@ button {
 }
 .shop-avatar-img:hover,
 .shop-avatar-img:focus {
-  transform: scale(1.13) rotate(-2deg);
+  transform: scale(1.13);
   box-shadow: 0 4px 18px #50eaffcc, 0 0 0 2.5px #ffe066;
   border-color: #ffe066;
   outline: none;
