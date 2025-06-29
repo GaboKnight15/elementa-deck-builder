@@ -129,6 +129,7 @@ function renderProfileBanners(selectedBanner) {
         profilePic.src = iconUrl + '?v=' + Date.now();
         renderProfileIcons(iconUrl);
         profileIconModal.style.display = 'none';
+        setTimeout(() => loadProfile(user), 500);  
       })
       .catch(err => {
         console.error('[auth] Failed to update profile icon:', err);
