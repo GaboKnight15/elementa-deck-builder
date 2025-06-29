@@ -76,10 +76,15 @@ function showCosmeticConfirmModal({imgSrc, type, price, onConfirm}) {
 
   // Confirm
   cosmeticConfirmModal.querySelector('#cosmetic-get-btn').onclick = function() {
-    onConfirm();
-    cosmeticConfirmModal.remove();
-    cosmeticConfirmModal = null;
-  };
+  this.disabled = true;
+  const purchaseSucceeded = onConfirm();
+  if (purchaseSucceeded === false) {
+    this.disabled = false; // re-enable so user can try again
+    return;
+  }
+  cosmeticConfirmModal.remove();
+  cosmeticConfirmModal = null;
+};
   // Cancel
   cosmeticConfirmModal.querySelector('#cosmetic-cancel-btn').onclick = function() {
     cosmeticConfirmModal.remove();
@@ -262,7 +267,7 @@ function renderShopAvatars() {
   const unlocked = getUnlockedAvatars();
   allAvatarOptions.forEach(src => {
     if (unlocked.includes(src)) return; // Hide unlocked
-
+    const price = typeof avatarPrices[src] !== "undefined" ? avatarPrices[src] : 100;
     const wrapper = document.createElement('div');
     wrapper.className = 'shop-avatar-option';
     const img = document.createElement('img');
@@ -319,7 +324,7 @@ function renderShopBanners() {
   const unlocked = getUnlockedBanners();
   allBannerOptions.forEach(src => {
     if (unlocked.includes(src)) return; // Hide unlocked
-
+    const price = typeof bannerPrices[src] !== "undefined" ? bannerPrices[src] : 100;
     const wrapper = document.createElement('div');
     wrapper.className = 'shop-banner-option';
     const img = document.createElement('img');
@@ -377,7 +382,7 @@ function renderShopCardbacks() {
   const unlocked = getUnlockedCardbacks();
   allCardbackOptions.forEach(src => {
     if (unlocked.includes(src)) return; // Hide unlocked
-
+    const price = typeof cardbackPrices[src] !== "undefined" ? cardbackPrices[src] : 100;
     const wrapper = document.createElement('div');
     wrapper.className = 'shop-cardback-option';
     const img = document.createElement('img');
