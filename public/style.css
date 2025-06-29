@@ -1615,12 +1615,6 @@ button {
   z-index: 2;
   filter: brightness(1.1) saturate(1.13);
 }
-#pack-opening-area {
-  margin-top: 0px;
-  margin-bottom: 16px;
-  min-height: 190px;
-  transition: min-height 0.2s;
-}
 #pack-opening-modal {
   display: none;
   position: fixed;
