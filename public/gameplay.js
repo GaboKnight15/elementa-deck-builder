@@ -93,6 +93,8 @@ function setupBattlefieldGame() {
       setupDropZones();
     };
   });
+  document.getElementById('my-profile').style.display = '';
+  renderProfile('my-profile', getMyProfileInfo());
 }
 function getZoneArray(zoneId) {
   switch (zoneId) {
@@ -1063,6 +1065,13 @@ function renderProfile(elId, profile) {
       <img class="profile-banner" src="${profile.banner}" alt="Banner">
     </div>
   `;
+}
+function getMyProfileInfo() {
+  return {
+    username: document.getElementById('profile-username-display').textContent,
+    avatar: document.getElementById('profile-pic').src,
+    banner: document.getElementById('profile-banner').src
+  };
 }
 function showChat() {
   document.getElementById('lobby-ui').style.display = 'none';
