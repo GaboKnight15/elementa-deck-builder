@@ -151,5 +151,11 @@ function setCurrency(amount) {
   const el = document.getElementById('currency-amount');
   if (el) el.textContent = amount;
 }
+function getCurrencyHtml(amount) {
+  return `<span class="currency-display">
+    <img class="currency-icon" src="images/coin.png" alt="Coins">
+    <span>${amount}</span>
+  </span>`;
+}
 // Call setCurrency(getCurrency()) on page load to update display
 window.addEventListener('DOMContentLoaded', () => setCurrency(getCurrency()));
