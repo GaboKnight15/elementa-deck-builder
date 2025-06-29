@@ -11,22 +11,22 @@ const openedPackRowModal = document.getElementById('opened-pack-row-modal');
 const closePackOpeningModalBtn = document.getElementById('close-pack-opening-modal');
 // These should match your iconOptions in auth.js!
 const allAvatarOptions = [
-  "CardImages/Avatars/Avatar1.png",
-  "CardImages/Avatars/Avatar2.png",
-  "CardImages/Avatars/Avatar3.png",
-  "CardImages/Avatars/Avatar4.png",
-  "CardImages/Avatars/Avatar5.png"
+  "CardImages/Avatars/Avatar1.png": 100,
+  "CardImages/Avatars/Avatar2.png": 100,
+  "CardImages/Avatars/Avatar3.png": 100,
+  "CardImages/Avatars/Avatar4.png": 100,
+  "CardImages/Avatars/Avatar5.png": 100
 ];
 const allBannerOptions = [
-  "CardImages/Banners/Banner1.jpg",
-  "CardImages/Banners/Banner2.jpg",
-  "CardImages/Banners/Banner3.jpg"
+  "CardImages/Banners/Banner1.jpg": 100,
+  "CardImages/Banners/Banner2.jpg": 100,
+  "CardImages/Banners/Banner3.jpg": 100
   // Add your "DefaultBanner.jpg" path when ready
 ];
 const allCardbackOptions = [
-  "CardImages/Cardbacks/Cardback1.png",
-  "CardImages/Cardbacks/Cardback2.png",
-  "CardImages/Cardbacks/DefaultCardback.png"
+  "CardImages/Cardbacks/Cardback1.png": 100,
+  "CardImages/Cardbacks/Cardback2.png": 100,
+  "CardImages/Cardbacks/DefaultCardback.png": 100
 ];
 // Modal for confirmation
 let cosmeticConfirmModal = null;
@@ -43,6 +43,10 @@ function showCosmeticConfirmModal({imgSrc, type, onConfirm}) {
     <div class="modal-content" style="align-items:center;max-width:320px;">
       <h3>Are you sure you want to purchase?</h3>
       <img src="${imgSrc}" alt="Cosmetic Preview" style="max-width:120px;max-height:120px;border-radius:12px;box-shadow:0 2px 10px #0005;margin:10px 0;">
+      <div class="currency-display" style="margin:10px 0;">
+        <img class="currency-icon" src="images/coin.png" alt="Coins">
+        <span>${price}</span>
+      </div>
       <div style="display:flex;gap:18px;justify-content:center;margin-top:8px;">
         <button id="cosmetic-get-btn" class="btn-primary">Get</button>
         <button id="cosmetic-cancel-btn" class="btn-secondary">Cancel</button>
@@ -246,6 +250,19 @@ function renderShopAvatars() {
     img.src = src;
     img.className = 'shop-avatar-img';
     img.style.cursor = 'pointer';
+    
+    const price = avatarPrices[src] || 100;
+    const priceTag = document.createElement('span');
+    priceTag.className = 'currency-display';
+    priceTag.style.display = 'flex';
+    priceTag.style.alignItems = 'center';
+    priceTag.style.justifyContent = 'center';
+    priceTag.style.marginTop = '8px';
+    priceTag.innerHTML = `
+      <img class="currency-icon" src="images/coin.png" alt="Coins">
+      <span>${price}</span>
+    `;
+    
     img.onclick = () => {
       showCosmeticConfirmModal({
         imgSrc: src,
@@ -262,7 +279,7 @@ function renderShopAvatars() {
       });
     };
     wrapper.appendChild(img);
-    // No button
+    wrapper.appendChild(priceTag);
     grid.appendChild(wrapper);
   });
 }
@@ -287,6 +304,18 @@ function renderShopBanners() {
     img.src = src;
     img.className = 'shop-banner-img';
     img.style.cursor = 'pointer';
+    const price = avatarPrices[src] || 100;
+    const priceTag = document.createElement('span');
+    priceTag.className = 'currency-display';
+    priceTag.style.display = 'flex';
+    priceTag.style.alignItems = 'center';
+    priceTag.style.justifyContent = 'center';
+    priceTag.style.marginTop = '8px';
+    priceTag.innerHTML = `
+      <img class="currency-icon" src="images/coin.png" alt="Coins">
+      <span>${price}</span>
+    `;
+    
     img.onclick = () => {
       showCosmeticConfirmModal({
         imgSrc: src,
@@ -303,6 +332,7 @@ function renderShopBanners() {
       });
     };
     wrapper.appendChild(img);
+    wrapper.appendChild(priceTag);    
     grid.appendChild(wrapper);
   });
 }
@@ -329,6 +359,19 @@ function renderShopCardbacks() {
     img.src = src;
     img.className = 'shop-cardback-img';
     img.style.cursor = 'pointer';
+    
+    const price = avatarPrices[src] || 100;
+    const priceTag = document.createElement('span');
+    priceTag.className = 'currency-display';
+    priceTag.style.display = 'flex';
+    priceTag.style.alignItems = 'center';
+    priceTag.style.justifyContent = 'center';
+    priceTag.style.marginTop = '8px';
+    priceTag.innerHTML = `
+      <img class="currency-icon" src="images/coin.png" alt="Coins">
+      <span>${price}</span>
+    `;
+    
     img.onclick = () => {
       showCosmeticConfirmModal({
         imgSrc: src,
@@ -346,6 +389,7 @@ function renderShopCardbacks() {
       });
     };
     wrapper.appendChild(img);
+    wrapper.appendChild(priceTag);    
     grid.appendChild(wrapper);
   });
 }
