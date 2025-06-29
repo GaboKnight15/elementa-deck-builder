@@ -82,7 +82,17 @@ function getRandomCards(n, setName) {
   }
   return result;
 }
-
+// CURRENCY DEDUCTION
+function purchaseCosmetic(cost, purchaseCallback) {
+  let balance = getCurrency();
+  if (balance < cost) {
+    alert("Not enough coins!");
+    return false;
+  }
+  setCurrency(balance - cost);
+  purchaseCallback();
+  return true;
+}
 // Helper: Track which cards are "new" when opening a pack
 function getNewlyUnlockedCards() {
   return JSON.parse(localStorage.getItem("newlyUnlockedCards")) || [];
