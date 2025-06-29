@@ -5,7 +5,6 @@
 // DOM references
 const shopSection = document.getElementById('shop-section');
 const shopContainer = document.getElementById('shop-container');
-// At the top, get modal DOM:
 const packOpeningModal = document.getElementById('pack-opening-modal');
 const packOpeningModalContent = document.getElementById('pack-opening-modal-content');
 const openedPackRowModal = document.getElementById('opened-pack-row-modal');
@@ -29,6 +28,48 @@ const allCardbackOptions = [
   "CardImages/Cardbacks/Cardback2.png",
   "CardImages/Cardbacks/DefaultCardback.png"
 ];
+// Modal for confirmation
+let cosmeticConfirmModal = null;
+
+// Modal Creation Utility
+function showCosmeticConfirmModal({imgSrc, type, onConfirm}) {
+  if (cosmeticConfirmModal) cosmeticConfirmModal.remove();
+  cosmeticConfirmModal = document.createElement('div');
+  cosmeticConfirmModal.className = 'modal';
+  cosmeticConfirmModal.style.display = 'flex';
+  cosmeticConfirmModal.style.alignItems = 'center';
+  cosmeticConfirmModal.style.justifyContent = 'center';
+  cosmeticConfirmModal.innerHTML = `
+    <div class="modal-content" style="align-items:center;max-width:320px;">
+      <h3 style="margin-bottom:8px;">Are you sure you want to purchase?</h3>
+      <img src="${imgSrc}" alt="Cosmetic Preview" style="max-width:120px;max-height:120px;border-radius:12px;box-shadow:0 2px 10px #0005;margin:10px 0;">
+      <div style="display:flex;gap:18px;justify-content:center;margin-top:8px;">
+        <button id="cosmetic-get-btn" class="btn-primary">Get</button>
+        <button id="cosmetic-cancel-btn" class="btn-secondary">Cancel</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(cosmeticConfirmModal);
+
+  // Confirm
+  cosmeticConfirmModal.querySelector('#cosmetic-get-btn').onclick = function() {
+    onConfirm();
+    cosmeticConfirmModal.remove();
+    cosmeticConfirmModal = null;
+  };
+  // Cancel
+  cosmeticConfirmModal.querySelector('#cosmetic-cancel-btn').onclick = function() {
+    cosmeticConfirmModal.remove();
+    cosmeticConfirmModal = null;
+  };
+  // Clicking outside closes
+  cosmeticConfirmModal.onclick = function(e) {
+    if (e.target === cosmeticConfirmModal) {
+      cosmeticConfirmModal.remove();
+      cosmeticConfirmModal = null;
+    }
+  };
+}
 // RNG
 function getRandomCards(n, setName) {
   // Only cards whose set matches setName
@@ -171,6 +212,142 @@ shopContainer.addEventListener('click', (e) => {
   ) {
   }
 });
+
+function getUnlockedAvatars() {
+  // You could use Firebase/cloud instead
+  return JSON.parse(localStorage.getItem('unlockedAvatars') || '["CardImages/Avatars/Avatar1.png"]');
+}
+function setUnlockedAvatars(arr) {
+  localStorage.setItem('unlockedAvatars', JSON.stringify(arr));
+}
+
+// Render avatars shop
+function renderShopAvatars() {
+  const grid = document.getElementById('shop-avatars-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  const unlocked = getUnlockedAvatars();
+  allAvatarOptions.forEach(src => {
+    if (unlocked.includes(src)) return; // Hide unlocked
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'shop-avatar-option';
+    const img = document.createElement('img');
+    img.src = src;
+    img.className = 'shop-avatar-img';
+    img.style.cursor = 'pointer';
+    img.onclick = () => {
+      showCosmeticConfirmModal({
+        imgSrc: src,
+        type: 'avatar',
+        onConfirm: () => {
+          const updated = getUnlockedAvatars();
+          if (!updated.includes(src)) {
+            updated.push(src);
+            setUnlockedAvatars(updated);
+            renderShopAvatars();
+            alert('Avatar unlocked! Now available in your profile.');
+          }
+        }
+      });
+    };
+    wrapper.appendChild(img);
+    // No button
+    grid.appendChild(wrapper);
+  });
+}
+function getUnlockedBanners() {
+  // Default to an empty array or include your default banner if you want
+  return JSON.parse(localStorage.getItem('unlockedBanners') || '[]');
+}
+function setUnlockedBanners(arr) {
+  localStorage.setItem('unlockedBanners', JSON.stringify(arr));
+}
+function renderShopBanners() {
+  const grid = document.getElementById('shop-banners-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  const unlocked = getUnlockedBanners();
+  allBannerOptions.forEach(src => {
+    if (unlocked.includes(src)) return; // Hide unlocked
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'shop-banner-option';
+    const img = document.createElement('img');
+    img.src = src;
+    img.className = 'shop-banner-img';
+    img.style.cursor = 'pointer';
+    img.onclick = () => {
+      showCosmeticConfirmModal({
+        imgSrc: src,
+        type: 'banner',
+        onConfirm: () => {
+          const updated = getUnlockedBanners();
+          if (!updated.includes(src)) {
+            updated.push(src);
+            setUnlockedBanners(updated);
+            renderShopBanners();
+            alert('Banner unlocked! Now available in your profile.');
+          }
+        }
+      });
+    };
+    wrapper.appendChild(img);
+    grid.appendChild(wrapper);
+  });
+}
+function getUnlockedCardbacks() {
+  // Always default to at least the default cardback unlocked
+  return JSON.parse(localStorage.getItem('unlockedCardbacks') || '["CardImages/Cardbacks/DefaultCardback.png"]');
+}
+function setUnlockedCardbacks(arr) {
+  localStorage.setItem('unlockedCardbacks', JSON.stringify(arr));
+}
+
+// Render cardbacks shop
+function renderShopCardbacks() {
+  const grid = document.getElementById('shop-cardbacks-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  const unlocked = getUnlockedCardbacks();
+  allCardbackOptions.forEach(src => {
+    if (unlocked.includes(src)) return; // Hide unlocked
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'shop-cardback-option';
+    const img = document.createElement('img');
+    img.src = src;
+    img.className = 'shop-cardback-img';
+    img.style.cursor = 'pointer';
+    img.onclick = () => {
+      showCosmeticConfirmModal({
+        imgSrc: src,
+        type: 'cardback',
+        onConfirm: () => {
+          const updated = getUnlockedCardbacks();
+          if (!updated.includes(src)) {
+            updated.push(src);
+            setUnlockedCardbacks(updated);
+            renderShopCardbacks();
+            if (window.renderDeckCardbackChoices) window.renderDeckCardbackChoices();
+            alert('Cardback unlocked! Now available in your deck options.');
+          }
+        }
+      });
+    };
+    wrapper.appendChild(img);
+    grid.appendChild(wrapper);
+  });
+}
+
+// INITIALIZATION //
+renderShopCardbacks();
+window.renderShopCardbacks = renderShopCardbacks;
+renderShopBanners();
+window.renderShopBanners = renderShopBanners;
+renderShopAvatars();
+window.renderShopAvatars = renderShopAvatars;
+
 // Cosmetic shop free unlock handlers
 document.querySelectorAll('.shop-free-btn').forEach(btn => {
   btn.onclick = function() {
@@ -193,135 +370,5 @@ document.querySelectorAll('.shop-free-btn').forEach(btn => {
   };
 });
 
-
-function getUnlockedAvatars() {
-  // You could use Firebase/cloud instead
-  return JSON.parse(localStorage.getItem('unlockedAvatars') || '["CardImages/Avatars/Avatar1.png"]');
-}
-function setUnlockedAvatars(arr) {
-  localStorage.setItem('unlockedAvatars', JSON.stringify(arr));
-}
-
-// Render avatars shop
-function renderShopAvatars() {
-  const grid = document.getElementById('shop-avatars-grid');
-  if (!grid) return;
-  grid.innerHTML = '';
-  const unlocked = getUnlockedAvatars();
- allAvatarOptions.forEach(src => {
-  if (unlocked.includes(src)) return; // Skip unlocked avatars
-
-  const wrapper = document.createElement('div');
-  wrapper.className = 'shop-avatar-option';
-  const img = document.createElement('img');
-  img.src = src;
-  img.className = 'shop-avatar-img';
-  wrapper.appendChild(img);
-
-  const btn = document.createElement('button');
-  btn.className = 'btn-secondary';
-  btn.textContent = 'Get';
-  btn.onclick = () => {
-    const updated = getUnlockedAvatars();
-    if (!updated.includes(src)) {
-      updated.push(src);
-      setUnlockedAvatars(updated);
-      renderShopAvatars();
-      alert('Avatar unlocked! Now available in your profile.');
-    }
-  };
-  wrapper.appendChild(btn);
-  grid.appendChild(wrapper);
-});
-}
-function getUnlockedBanners() {
-  // Default to an empty array or include your default banner if you want
-  return JSON.parse(localStorage.getItem('unlockedBanners') || '[]');
-}
-function setUnlockedBanners(arr) {
-  localStorage.setItem('unlockedBanners', JSON.stringify(arr));
-}
-function renderShopBanners() {
-  const grid = document.getElementById('shop-banners-grid');
-  if (!grid) return;
-  grid.innerHTML = '';
-  const unlocked = getUnlockedBanners();
- allBannerOptions.forEach(src => {
-  if (unlocked.includes(src)) return; // Skip unlocked banners
-
-  const wrapper = document.createElement('div');
-  wrapper.className = 'shop-banner-option';
-  const img = document.createElement('img');
-  img.src = src;
-  img.className = 'shop-banner-img';
-  wrapper.appendChild(img);
-
-  const btn = document.createElement('button');
-  btn.className = 'btn-secondary';
-  btn.textContent = 'Get';
-  btn.onclick = () => {
-    const updated = getUnlockedBanners();
-    if (!updated.includes(src)) {
-      updated.push(src);
-      setUnlockedBanners(updated);
-      renderShopBanners();
-      alert('Banner unlocked! Now available in your profile.');
-    }
-  };
-  wrapper.appendChild(btn);
-  grid.appendChild(wrapper);
-});
-}
-function getUnlockedCardbacks() {
-  // Always default to at least the default cardback unlocked
-  return JSON.parse(localStorage.getItem('unlockedCardbacks') || '["CardImages/Cardbacks/DefaultCardback.png"]');
-}
-function setUnlockedCardbacks(arr) {
-  localStorage.setItem('unlockedCardbacks', JSON.stringify(arr));
-}
-
-// Render cardbacks shop
-function renderShopCardbacks() {
-  const grid = document.getElementById('shop-cardbacks-grid');
-  if (!grid) return;
-  grid.innerHTML = '';
-  const unlocked = getUnlockedCardbacks();
-allCardbackOptions.forEach(src => {
-  if (unlocked.includes(src)) return; // Skip unlocked sleeves
-
-  const wrapper = document.createElement('div');
-  wrapper.className = 'shop-cardback-option';
-  const img = document.createElement('img');
-  img.src = src;
-  img.className = 'shop-cardback-img';
-  wrapper.appendChild(img);
-
-  const btn = document.createElement('button');
-  btn.className = 'btn-secondary';
-  btn.textContent = 'Get';
-  btn.onclick = () => {
-    const updated = getUnlockedCardbacks();
-    if (!updated.includes(src)) {
-      updated.push(src);
-      setUnlockedCardbacks(updated);
-      renderShopCardbacks();
-      if (window.renderDeckCardbackChoices) window.renderDeckCardbackChoices();
-      alert('Cardback unlocked! Now available in your deck options.');
-    }
-  };
-  wrapper.appendChild(btn);
-  grid.appendChild(wrapper);
-});
-}
-
-// INITIALIZATION //
-renderShopCardbacks();
-window.renderShopCardbacks = renderShopCardbacks;
-renderShopBanners();
-window.renderShopBanners = renderShopBanners;
-renderShopAvatars();
-window.renderShopAvatars = renderShopAvatars;
-
-function renderShop() {
-}
+function renderShop() {}
 window.renderShop = renderShop;
