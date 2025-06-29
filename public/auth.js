@@ -32,14 +32,29 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // --- Profile Icon Choices ---
   const iconOptions = [
-      "CardImages/Avatars/Avatar1.png",
-      "CardImages/Avatars/Avatar2.png",
-      "CardImages/Avatars/Avatar3.png",
-      "CardImages/Avatars/Avatar4.png",
-      "CardImages/Avatars/Avatar5.png",
-      "CardImages/Avatars/Avatar6.png",
-      "CardImages/Avatars/Avatar7.png",
-      "CardImages/Avatars/Avatar8.png"
+      "CardImages/Avatars/Faelyra.png",
+      "CardImages/Avatars/Kaelyn.png",
+      "CardImages/Avatars/Zaryon.png",
+      "CardImages/Avatars/Zyra.png",
+      "CardImages/Avatars/Veniryss.png",
+      "CardImages/Avatars/Gravok.png",
+      "CardImages/Avatars/Nyzariel.png",
+      "CardImages/Avatars/Elyndra.png",
+      "CardImages/Avatars/Aureavian.png",
+      "CardImages/Avatars/Maldryss.png",
+      "CardImages/Avatars/Tydros.png",
+      "CardImages/Avatars/Ephoros.png",
+      "CardImages/Avatars/Mordrath.png",
+      "CardImages/Avatars/Raukhar.png",
+      "CardImages/Avatars/Velmira.png",
+      "CardImages/Avatars/Verdarok.png",
+      "CardImages/Avatars/Pyronyx.png",
+      "CardImages/Avatars/Abyndra.png",
+      "CardImages/Avatars/Voltrazek.png",
+      "CardImages/Avatars/Toxigon.png",
+      "CardImages/Avatars/Ferronyx.png",
+      "CardImages/Avatars/Nochtyros.png",
+      "CardImages/Avatars/Solaryth.png"
   ];
   const defaultIcon = "CardImages/Avatars/Default.png";
     
