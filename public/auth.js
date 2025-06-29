@@ -32,11 +32,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // --- Profile Icon Choices ---
   const iconOptions = [
-    "CardImages/Avatars/Avatar1.png",
-    "CardImages/Avatars/Avatar2.png",
-    "CardImages/Avatars/Avatar3.png",
-    "CardImages/Avatars/Avatar4.png",
-    "CardImages/Avatars/Avatar5.png"
+      "CardImages/Avatars/Avatar1.png",
+      "CardImages/Avatars/Avatar2.png",
+      "CardImages/Avatars/Avatar3.png",
+      "CardImages/Avatars/Avatar4.png",
+      "CardImages/Avatars/Avatar5.png",
+      "CardImages/Avatars/Avatar6.png",
+      "CardImages/Avatars/Avatar7.png",
+      "CardImages/Avatars/Avatar8.png"
   ];
   const defaultIcon = "CardImages/Avatars/Default.png";
     
