@@ -59,10 +59,17 @@ document.addEventListener('DOMContentLoaded', function () {
   const defaultIcon = "CardImages/Avatars/Default.png";
     
   const bannerOptions = [
-    "CardImages/Banners/Banner1.jpg",
-    "CardImages/Banners/Banner2.jpg",
-    "CardImages/Banners/Banner3.jpg",
-    "CardImages/Banners/DefaultBanner.jpg" // default last
+    "CardImages/Banners/Verdara.jpg",
+    "CardImages/Banners/Ashkar.jpg",
+    "CardImages/Banners/Pearlhaven.jpg",
+    "CardImages/Banners/Aetherion.jpg",
+    "CardImages/Banners/Drakzul.jpg",
+    "CardImages/Banners/GlimbarkFrontier.jpg",
+    "CardImages/Banners/SkywardArchipelago.jpg",
+    "CardImages/Banners/Duskhaven.jpg",
+    "CardImages/Banners/Nochtyra.jpg",
+    "CardImages/Banners/Solmara.jpg",   
+    "CardImages/Banners/DefaultBanner.jpg"
   ];
 const defaultBanner = "CardImages/Banners/DefaultBanner.jpg";
 
