@@ -51,7 +51,7 @@ const cardbackPrices = {
 let cosmeticConfirmModal = null;
 
 // Modal Creation Utility
-function showCosmeticConfirmModal({imgSrc, type, onConfirm}) {
+function showCosmeticConfirmModal({imgSrc, type, price, onConfirm}) {
   if (cosmeticConfirmModal) cosmeticConfirmModal.remove();
   cosmeticConfirmModal = document.createElement('div');
   cosmeticConfirmModal.className = 'modal';
@@ -283,26 +283,23 @@ function renderShopAvatars() {
     `;
     
     img.onclick = () => {
-      showCosmeticConfirmModal({
-        imgSrc: src,
-        type: 'avatar',
-        price,
-        onConfirm: () => {
-          const updated = getUnlockedAvatars();
-          if (!updated.includes(src)) {
-            updated.push(src);
-            setUnlockedAvatars(updated);
-            renderShopAvatars();
-            alert('Avatar unlocked! Now available in your profile.');
-          }
+  showCosmeticConfirmModal({
+    imgSrc: src,
+    type: 'avatar',
+    price,
+    onConfirm: () => {
+      purchaseCosmetic(price, () => {
+        const updated = getUnlockedAvatars();
+        if (!updated.includes(src)) {
+          updated.push(src);
+          setUnlockedAvatars(updated);
+          renderShopAvatars();
+          alert('Avatar unlocked! Now available in your profile.');
         }
       });
-    };
-    wrapper.appendChild(img);
-    wrapper.appendChild(priceTag);
-    grid.appendChild(wrapper);
+    }
   });
-}
+};
 function getUnlockedBanners() {
   // Default to an empty array or include your default banner if you want
   return JSON.parse(localStorage.getItem('unlockedBanners') || '[]');
@@ -342,6 +339,7 @@ function renderShopBanners() {
         type: 'banner',
         price,
         onConfirm: () => {
+          purchaseCosmetic(price, () => {
           const updated = getUnlockedBanners();
           if (!updated.includes(src)) {
             updated.push(src);
@@ -349,6 +347,7 @@ function renderShopBanners() {
             renderShopBanners();
             alert('Banner unlocked! Now available in your profile.');
           }
+         });   
         }
       });
     };
@@ -381,7 +380,7 @@ function renderShopCardbacks() {
     img.className = 'shop-cardback-img';
     img.style.cursor = 'pointer';
     
-    const price = cardbacksPrices[src] || 100;
+    const price = cardbackPrices[src] || 100;
     const priceTag = document.createElement('span');
     priceTag.className = 'currency-display';
     priceTag.style.display = 'flex';
@@ -399,6 +398,7 @@ function renderShopCardbacks() {
         type: 'cardback',
         price,
         onConfirm: () => {
+          purchaseCosmetic(price, () => {
           const updated = getUnlockedCardbacks();
           if (!updated.includes(src)) {
             updated.push(src);
@@ -407,6 +407,7 @@ function renderShopCardbacks() {
             if (window.renderDeckCardbackChoices) window.renderDeckCardbackChoices();
             alert('Cardback unlocked! Now available in your deck options.');
           }
+          });
         }
       });
     };
