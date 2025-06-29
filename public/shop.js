@@ -5,7 +5,6 @@
 // DOM references
 const shopSection = document.getElementById('shop-section');
 const shopContainer = document.getElementById('shop-container');
-const packOpeningArea = document.getElementById('pack-opening-area');
 // At the top, get modal DOM:
 const packOpeningModal = document.getElementById('pack-opening-modal');
 const packOpeningModalContent = document.getElementById('pack-opening-modal-content');
@@ -66,7 +65,7 @@ function openPack(type) {
  
   lastPackCards = cards;
 
-  // Display in modal, not in packOpeningArea
+  // OPENED PACK MODAL
   openedPackRowModal.innerHTML = cards.map((card, i) => `
     <div class="opened-card opened-card-flip" data-card-idx="${i}">
       <div class="opened-card-inner">
@@ -167,11 +166,9 @@ packImages.forEach(img => {
 shopContainer.addEventListener('click', (e) => {
   if (
     !e.target.closest('.opened-card') &&
-    !e.target.closest('#pack-opening-area') &&
     !e.target.closest('.pack-image') &&
     !e.target.matches('button[data-pack]')
   ) {
-    packOpeningArea.innerHTML = '';
   }
 });
 // Cosmetic shop free unlock handlers
@@ -344,6 +341,5 @@ renderShopAvatars();
 window.renderShopAvatars = renderShopAvatars;
 
 function renderShop() {
-  packOpeningArea.innerHTML = '';
 }
 window.renderShop = renderShop;
