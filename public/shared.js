@@ -157,5 +157,12 @@ function getCurrencyHtml(amount) {
     <span>${amount}</span>
   </span>`;
 }
+document.getElementById('add-coins-btn').onclick = function() {
+  let current = parseInt(localStorage.getItem('currency') || '0', 10);
+  current += 100;
+  localStorage.setItem('currency', current);
+  const el = document.getElementById('currency-amount');
+  if (el) el.textContent = current;
+};
 // Call setCurrency(getCurrency()) on page load to update display
 window.addEventListener('DOMContentLoaded', () => setCurrency(getCurrency()));
