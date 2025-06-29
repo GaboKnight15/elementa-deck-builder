@@ -127,7 +127,7 @@ function setCollection(collection) {
   localStorage.setItem(COLLECTION_KEY, JSON.stringify(collection));
 }
 
-// Helper to add cards
+// ADD CARDS TO COLLECTION 
 function addToCollection(cardId, amount = 1) {
   const collection = getCollection();
   const wasOwned = collection[cardId] > 0;
@@ -142,3 +142,14 @@ function addToCollection(cardId, amount = 1) {
     }
   }
 }
+
+function getCurrency() {
+  return parseInt(localStorage.getItem('currency') || '0', 10);
+}
+function setCurrency(amount) {
+  localStorage.setItem('currency', amount);
+  const el = document.getElementById('currency-amount');
+  if (el) el.textContent = amount;
+}
+// Call setCurrency(getCurrency()) on page load to update display
+window.addEventListener('DOMContentLoaded', () => setCurrency(getCurrency()));
