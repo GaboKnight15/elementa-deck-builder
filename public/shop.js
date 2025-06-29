@@ -208,37 +208,31 @@ function renderShopAvatars() {
   if (!grid) return;
   grid.innerHTML = '';
   const unlocked = getUnlockedAvatars();
-  allAvatarOptions.forEach(src => {
-    const wrapper = document.createElement('div');
-    wrapper.className = 'shop-avatar-option';
-    const img = document.createElement('img');
-    img.src = src;
-    img.className = 'shop-avatar-img';
-    if (unlocked.includes(src)) {
-      img.classList.add('unlocked');
-    }
-    wrapper.appendChild(img);
+ allAvatarOptions.forEach(src => {
+  if (unlocked.includes(src)) return; // Skip unlocked avatars
 
-    const btn = document.createElement('button');
-    btn.className = 'btn-secondary';
-    if (unlocked.includes(src)) {
-      btn.textContent = 'Unlocked';
-      btn.disabled = true;
-    } else {
-      btn.textContent = 'Get';
-      btn.onclick = () => {
-        const updated = getUnlockedAvatars();
-        if (!updated.includes(src)) {
-          updated.push(src);
-          setUnlockedAvatars(updated);
-          renderShopAvatars();
-          alert('Avatar unlocked! Now available in your profile.');
-        }
-      };
+  const wrapper = document.createElement('div');
+  wrapper.className = 'shop-avatar-option';
+  const img = document.createElement('img');
+  img.src = src;
+  img.className = 'shop-avatar-img';
+  wrapper.appendChild(img);
+
+  const btn = document.createElement('button');
+  btn.className = 'btn-secondary';
+  btn.textContent = 'Get';
+  btn.onclick = () => {
+    const updated = getUnlockedAvatars();
+    if (!updated.includes(src)) {
+      updated.push(src);
+      setUnlockedAvatars(updated);
+      renderShopAvatars();
+      alert('Avatar unlocked! Now available in your profile.');
     }
-    wrapper.appendChild(btn);
-    grid.appendChild(wrapper);
-  });
+  };
+  wrapper.appendChild(btn);
+  grid.appendChild(wrapper);
+});
 }
 function getUnlockedBanners() {
   // Default to an empty array or include your default banner if you want
@@ -252,37 +246,31 @@ function renderShopBanners() {
   if (!grid) return;
   grid.innerHTML = '';
   const unlocked = getUnlockedBanners();
-  allBannerOptions.forEach(src => {
-    const wrapper = document.createElement('div');
-    wrapper.className = 'shop-banner-option';
-    const img = document.createElement('img');
-    img.src = src;
-    img.className = 'shop-banner-img';
-    if (unlocked.includes(src)) {
-      img.classList.add('unlocked');
-    }
-    wrapper.appendChild(img);
+ allBannerOptions.forEach(src => {
+  if (unlocked.includes(src)) return; // Skip unlocked banners
 
-    const btn = document.createElement('button');
-    btn.className = 'btn-secondary';
-    if (unlocked.includes(src)) {
-      btn.textContent = 'Unlocked';
-      btn.disabled = true;
-    } else {
-      btn.textContent = 'Get';
-      btn.onclick = () => {
-        const updated = getUnlockedBanners();
-        if (!updated.includes(src)) {
-          updated.push(src);
-          setUnlockedBanners(updated);
-          renderShopBanners();
-          alert('Banner unlocked! Now available in your profile.');
-        }
-      };
+  const wrapper = document.createElement('div');
+  wrapper.className = 'shop-banner-option';
+  const img = document.createElement('img');
+  img.src = src;
+  img.className = 'shop-banner-img';
+  wrapper.appendChild(img);
+
+  const btn = document.createElement('button');
+  btn.className = 'btn-secondary';
+  btn.textContent = 'Get';
+  btn.onclick = () => {
+    const updated = getUnlockedBanners();
+    if (!updated.includes(src)) {
+      updated.push(src);
+      setUnlockedBanners(updated);
+      renderShopBanners();
+      alert('Banner unlocked! Now available in your profile.');
     }
-    wrapper.appendChild(btn);
-    grid.appendChild(wrapper);
-  });
+  };
+  wrapper.appendChild(btn);
+  grid.appendChild(wrapper);
+});
 }
 function getUnlockedCardbacks() {
   // Always default to at least the default cardback unlocked
@@ -298,38 +286,32 @@ function renderShopCardbacks() {
   if (!grid) return;
   grid.innerHTML = '';
   const unlocked = getUnlockedCardbacks();
-  allCardbackOptions.forEach(src => {
-    const wrapper = document.createElement('div');
-    wrapper.className = 'shop-cardback-option';
-    const img = document.createElement('img');
-    img.src = src;
-    img.className = 'shop-cardback-img';
-    if (unlocked.includes(src)) {
-      img.classList.add('unlocked');
-    }
-    wrapper.appendChild(img);
+allCardbackOptions.forEach(src => {
+  if (unlocked.includes(src)) return; // Skip unlocked sleeves
 
-    const btn = document.createElement('button');
-    btn.className = 'btn-secondary';
-    if (unlocked.includes(src)) {
-      btn.textContent = 'Unlocked';
-      btn.disabled = true;
-    } else {
-      btn.textContent = 'Get';
-      btn.onclick = () => {
-        const updated = getUnlockedCardbacks();
-        if (!updated.includes(src)) {
-          updated.push(src);
-          setUnlockedCardbacks(updated);
-          renderShopCardbacks();
-          if (window.renderDeckCardbackChoices) window.renderDeckCardbackChoices();
-          alert('Cardback unlocked! Now available in your deck options.');
-        }
-      };
+  const wrapper = document.createElement('div');
+  wrapper.className = 'shop-cardback-option';
+  const img = document.createElement('img');
+  img.src = src;
+  img.className = 'shop-cardback-img';
+  wrapper.appendChild(img);
+
+  const btn = document.createElement('button');
+  btn.className = 'btn-secondary';
+  btn.textContent = 'Get';
+  btn.onclick = () => {
+    const updated = getUnlockedCardbacks();
+    if (!updated.includes(src)) {
+      updated.push(src);
+      setUnlockedCardbacks(updated);
+      renderShopCardbacks();
+      if (window.renderDeckCardbackChoices) window.renderDeckCardbackChoices();
+      alert('Cardback unlocked! Now available in your deck options.');
     }
-    wrapper.appendChild(btn);
-    grid.appendChild(wrapper);
-  });
+  };
+  wrapper.appendChild(btn);
+  grid.appendChild(wrapper);
+});
 }
 
 // INITIALIZATION //
