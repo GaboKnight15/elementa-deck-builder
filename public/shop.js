@@ -275,7 +275,6 @@ function renderShopAvatars() {
     img.className = 'shop-avatar-img';
     img.style.cursor = 'pointer';
     
-    const price = avatarPrices[src] || 100;
     const priceTag = document.createElement('span');
     priceTag.className = 'currency-display';
     priceTag.style.display = 'flex';
@@ -331,7 +330,7 @@ function renderShopBanners() {
     img.src = src;
     img.className = 'shop-banner-img';
     img.style.cursor = 'pointer';
-    const price = bannerPrices[src] || 100;
+
     const priceTag = document.createElement('span');
     priceTag.className = 'currency-display';
     priceTag.style.display = 'flex';
@@ -390,7 +389,6 @@ function renderShopCardbacks() {
     img.className = 'shop-cardback-img';
     img.style.cursor = 'pointer';
     
-    const price = cardbackPrices[src] || 100;
     const priceTag = document.createElement('span');
     priceTag.className = 'currency-display';
     priceTag.style.display = 'flex';
