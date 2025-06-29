@@ -37,16 +37,16 @@ const allAvatarOptions = [
       "CardImages/Avatars/Solaryth.png"
 ];
 const allBannerOptions = [
-    "CardImages/Banners/Verdara.jpg",
-    "CardImages/Banners/Ashkar.jpg",
-    "CardImages/Banners/Pearlhaven.jpg",
-    "CardImages/Banners/Aetherion.jpg",
-    "CardImages/Banners/Drakzul.jpg",
-    "CardImages/Banners/GlimbarkFrontier.jpg",
-    "CardImages/Banners/SkywardArchipelago.jpg",
-    "CardImages/Banners/Duskhaven.jpg",
-    "CardImages/Banners/Nochtyra.jpg",
-    "CardImages/Banners/Solmara.jpg", 
+    "CardImages/Banners/Verdara.png",
+    "CardImages/Banners/Ashkar.png",
+    "CardImages/Banners/Pearlhaven.png",
+    "CardImages/Banners/Aetherion.png",
+    "CardImages/Banners/Drakzul.png",
+    "CardImages/Banners/GlimbarkFrontier.png",
+    "CardImages/Banners/SkywardArchipelago.png",
+    "CardImages/Banners/Duskhaven.png",
+    "CardImages/Banners/Nochtyra.png",
+    "CardImages/Banners/Solmara.png", 
 ];
 const allCardbackOptions = [
   "CardImages/Cardbacks/Cardback1.png",
@@ -81,16 +81,16 @@ const avatarPrices = {
       "CardImages/Avatars/Solaryth.png": 100
 };
 const bannerPrices = {
-    "CardImages/Banners/Verdara.jpg": 100,
-    "CardImages/Banners/Ashkar.jpg": 100,
-    "CardImages/Banners/Pearlhaven.jpg": 100,
-    "CardImages/Banners/Aetherion.jpg": 100,
-    "CardImages/Banners/Drakzul.jpg": 100,
-    "CardImages/Banners/GlimbarkFrontier.jpg": 100,
-    "CardImages/Banners/SkywardArchipelago.jpg": 100,
-    "CardImages/Banners/Duskhaven.jpg": 100,
-    "CardImages/Banners/Nochtyra.jpg": 100,
-    "CardImages/Banners/Solmara.jpg": 100 
+    "CardImages/Banners/Verdara.png": 100,
+    "CardImages/Banners/Ashkar.png": 100,
+    "CardImages/Banners/Pearlhaven.png": 100,
+    "CardImages/Banners/Aetherion.png": 100,
+    "CardImages/Banners/Drakzul.png": 100,
+    "CardImages/Banners/GlimbarkFrontier.png": 100,
+    "CardImages/Banners/SkywardArchipelago.png": 100,
+    "CardImages/Banners/Duskhaven.png": 100,
+    "CardImages/Banners/Nochtyra.png": 100,
+    "CardImages/Banners/Solmara.png": 100 
 };
 const cardbackPrices = {
   "CardImages/Cardbacks/Cardback1.png": 100,
