@@ -1580,11 +1580,13 @@ button {
   flex-direction: column;
   align-items: center;
   width: 100%;
-  max-width: 340px;
+  max-width: 900px;
   margin-left: auto;
   margin-right: auto;
 }
 .shop-division h3 {
+  text-align: center;
+  width: 100%;
   margin: 0 0 12px 0;
   font-size: 1.18em;
   color: #ffe066;
@@ -1800,7 +1802,7 @@ button {
   width: 100%;
   max-width: 900px; /* or larger if needed */
   margin: 0 auto;
-  padding: 22px 12px 18px 12px;
+  padding: 18px 12px 18px 12px;
   box-sizing: border-box;
 }
 
@@ -1834,6 +1836,7 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-start;
   width: 120px;
   margin-bottom: 12px;
 }
@@ -1857,6 +1860,22 @@ button {
   box-shadow: 0 4px 18px #50eaffcc, 0 0 0 2.5px #ffe066;
   border-color: #ffe066;
   outline: none;
+}
+.shop-banner-img {
+  width: 160px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 9px;
+  box-shadow: 0 2px 8px #0005;
+  background: #232a3c;
+  margin-bottom: 0.3em;
+  transition: box-shadow 0.15s, transform 0.13s;
+}
+.shop-banner-img:hover,
+.shop-banner-img:focus {
+  box-shadow: 0 6px 18px #50eaffcc;
+  transform: scale(1.07);
+  outline: 2px solid #ffe066;
 }
 .shop-banner-img.unlocked {
   border-color: #ffe066;
@@ -1971,10 +1990,11 @@ button {
   align-items: center;
   gap: 12px;
   min-height: 56px;
+  width: 100%;
 }
 .profile-panel img {
-  width: 44px;
-  height: 44px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   object-fit: cover;
   background: #222;
@@ -1988,7 +2008,6 @@ button {
   height: 44px;
   object-fit: cover;
   border-radius: 6px;
-  margin-right: 8px;
 }
 #chat-ui {
   background: #20283a;
