@@ -10,24 +10,43 @@ const packOpeningModalContent = document.getElementById('pack-opening-modal-cont
 const openedPackRowModal = document.getElementById('opened-pack-row-modal');
 const closePackOpeningModalBtn = document.getElementById('close-pack-opening-modal');
 // These should match your iconOptions in auth.js!
+// Arrays of image paths
 const allAvatarOptions = [
+  "CardImages/Avatars/Avatar1.png",
+  "CardImages/Avatars/Avatar2.png",
+  "CardImages/Avatars/Avatar3.png",
+  "CardImages/Avatars/Avatar4.png",
+  "CardImages/Avatars/Avatar5.png"
+];
+const allBannerOptions = [
+  "CardImages/Banners/Banner1.jpg",
+  "CardImages/Banners/Banner2.jpg",
+  "CardImages/Banners/Banner3.jpg"
+];
+const allCardbackOptions = [
+  "CardImages/Cardbacks/Cardback1.png",
+  "CardImages/Cardbacks/Cardback2.png",
+  "CardImages/Cardbacks/DefaultCardback.png"
+];
+
+// Price maps
+const avatarPrices = {
   "CardImages/Avatars/Avatar1.png": 100,
   "CardImages/Avatars/Avatar2.png": 100,
   "CardImages/Avatars/Avatar3.png": 100,
   "CardImages/Avatars/Avatar4.png": 100,
   "CardImages/Avatars/Avatar5.png": 100
-];
-const allBannerOptions = [
+};
+const bannerPrices = {
   "CardImages/Banners/Banner1.jpg": 100,
   "CardImages/Banners/Banner2.jpg": 100,
   "CardImages/Banners/Banner3.jpg": 100
-  // Add your "DefaultBanner.jpg" path when ready
-];
-const allCardbackOptions = [
+};
+const cardbackPrices = {
   "CardImages/Cardbacks/Cardback1.png": 100,
   "CardImages/Cardbacks/Cardback2.png": 100,
   "CardImages/Cardbacks/DefaultCardback.png": 100
-];
+};
 // Modal for confirmation
 let cosmeticConfirmModal = null;
 
@@ -267,6 +286,7 @@ function renderShopAvatars() {
       showCosmeticConfirmModal({
         imgSrc: src,
         type: 'avatar',
+        price,
         onConfirm: () => {
           const updated = getUnlockedAvatars();
           if (!updated.includes(src)) {
@@ -304,7 +324,7 @@ function renderShopBanners() {
     img.src = src;
     img.className = 'shop-banner-img';
     img.style.cursor = 'pointer';
-    const price = avatarPrices[src] || 100;
+    const price = bannerPrices[src] || 100;
     const priceTag = document.createElement('span');
     priceTag.className = 'currency-display';
     priceTag.style.display = 'flex';
@@ -320,6 +340,7 @@ function renderShopBanners() {
       showCosmeticConfirmModal({
         imgSrc: src,
         type: 'banner',
+        price,
         onConfirm: () => {
           const updated = getUnlockedBanners();
           if (!updated.includes(src)) {
@@ -360,7 +381,7 @@ function renderShopCardbacks() {
     img.className = 'shop-cardback-img';
     img.style.cursor = 'pointer';
     
-    const price = avatarPrices[src] || 100;
+    const price = cardbacksPrices[src] || 100;
     const priceTag = document.createElement('span');
     priceTag.className = 'currency-display';
     priceTag.style.display = 'flex';
@@ -376,6 +397,7 @@ function renderShopCardbacks() {
       showCosmeticConfirmModal({
         imgSrc: src,
         type: 'cardback',
+        price,
         onConfirm: () => {
           const updated = getUnlockedCardbacks();
           if (!updated.includes(src)) {
