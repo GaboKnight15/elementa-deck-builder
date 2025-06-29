@@ -300,6 +300,11 @@ function renderShopAvatars() {
     }
   });
 };
+wrapper.appendChild(img);
+wrapper.appendChild(priceTag);
+grid.appendChild(wrapper);
+});
+}  
 function getUnlockedBanners() {
   // Default to an empty array or include your default banner if you want
   return JSON.parse(localStorage.getItem('unlockedBanners') || '[]');
@@ -399,16 +404,16 @@ function renderShopCardbacks() {
         price,
         onConfirm: () => {
           purchaseCosmetic(price, () => {
-          const updated = getUnlockedCardbacks();
-          if (!updated.includes(src)) {
-            updated.push(src);
-            setUnlockedCardbacks(updated);
-            renderShopCardbacks();
-            if (window.renderDeckCardbackChoices) window.renderDeckCardbackChoices();
-            alert('Cardback unlocked! Now available in your deck options.');
+            const updated = getUnlockedCardbacks();
+            if (!updated.includes(src)) {
+              updated.push(src);
+              setUnlockedCardbacks(updated);
+              renderShopCardbacks();
+              if (window.renderDeckCardbackChoices) window.renderDeckCardbackChoices();
+              alert('Cardback unlocked! Now available in your deck options.');
+              }
+            });
           }
-          });
-        }
       });
     };
     wrapper.appendChild(img);
