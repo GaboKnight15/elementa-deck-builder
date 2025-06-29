@@ -41,7 +41,7 @@ function showCosmeticConfirmModal({imgSrc, type, onConfirm}) {
   cosmeticConfirmModal.style.justifyContent = 'center';
   cosmeticConfirmModal.innerHTML = `
     <div class="modal-content" style="align-items:center;max-width:320px;">
-      <h3 style="margin-bottom:8px;">Are you sure you want to purchase?</h3>
+      <h3>Are you sure you want to purchase?</h3>
       <img src="${imgSrc}" alt="Cosmetic Preview" style="max-width:120px;max-height:120px;border-radius:12px;box-shadow:0 2px 10px #0005;margin:10px 0;">
       <div style="display:flex;gap:18px;justify-content:center;margin-top:8px;">
         <button id="cosmetic-get-btn" class="btn-primary">Get</button>
