@@ -16,7 +16,10 @@ const allAvatarOptions = [
   "CardImages/Avatars/Avatar2.png",
   "CardImages/Avatars/Avatar3.png",
   "CardImages/Avatars/Avatar4.png",
-  "CardImages/Avatars/Avatar5.png"
+  "CardImages/Avatars/Avatar5.png",
+  "CardImages/Avatars/Avatar6.png",
+  "CardImages/Avatars/Avatar7.png",
+  "CardImages/Avatars/Avatar8.png"
 ];
 const allBannerOptions = [
   "CardImages/Banners/Banner1.jpg",
@@ -35,7 +38,10 @@ const avatarPrices = {
   "CardImages/Avatars/Avatar2.png": 100,
   "CardImages/Avatars/Avatar3.png": 100,
   "CardImages/Avatars/Avatar4.png": 100,
-  "CardImages/Avatars/Avatar5.png": 100
+  "CardImages/Avatars/Avatar5.png": 100,
+  "CardImages/Avatars/Avatar6.png": 100,
+  "CardImages/Avatars/Avatar7.png": 100,
+  "CardImages/Avatars/Avatar8.png": 100
 };
 const bannerPrices = {
   "CardImages/Banners/Banner1.jpg": 100,
@@ -63,7 +69,7 @@ function showCosmeticConfirmModal({imgSrc, type, price, onConfirm}) {
       <h3>Are you sure you want to purchase?</h3>
       <img src="${imgSrc}" alt="Cosmetic Preview" style="max-width:120px;max-height:120px;border-radius:12px;box-shadow:0 2px 10px #0005;margin:10px 0;">
       <div class="currency-display" style="margin:10px 0;">
-        <img class="currency-icon" src="images/coin.png" alt="Coins">
+        <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins">
         <span>${price}</span>
       </div>
       <div style="display:flex;gap:18px;justify-content:center;margin-top:8px;">
@@ -282,7 +288,7 @@ function renderShopAvatars() {
     priceTag.style.justifyContent = 'center';
     priceTag.style.marginTop = '8px';
     priceTag.innerHTML = `
-      <img class="currency-icon" src="images/coin.png" alt="Coins">
+      <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins">
       <span>${price}</span>
     `;
     
@@ -338,7 +344,7 @@ function renderShopBanners() {
     priceTag.style.justifyContent = 'center';
     priceTag.style.marginTop = '8px';
     priceTag.innerHTML = `
-      <img class="currency-icon" src="images/coin.png" alt="Coins">
+      <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins">
       <span>${price}</span>
     `;
     
@@ -396,7 +402,7 @@ function renderShopCardbacks() {
     priceTag.style.justifyContent = 'center';
     priceTag.style.marginTop = '8px';
     priceTag.innerHTML = `
-      <img class="currency-icon" src="images/coin.png" alt="Coins">
+      <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins">
       <span>${price}</span>
     `;
     
