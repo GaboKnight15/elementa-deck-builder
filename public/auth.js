@@ -59,26 +59,26 @@ document.addEventListener('DOMContentLoaded', function () {
   const defaultIcon = "CardImages/Avatars/Default.png";
     
   const bannerOptions = [
-    "CardImages/Banners/Verdara.jpg",
-    "CardImages/Banners/Ashkar.jpg",
-    "CardImages/Banners/Pearlhaven.jpg",
-    "CardImages/Banners/Aetherion.jpg",
-    "CardImages/Banners/Drakzul.jpg",
-    "CardImages/Banners/GlimbarkFrontier.jpg",
-    "CardImages/Banners/SkywardArchipelago.jpg",
-    "CardImages/Banners/Duskhaven.jpg",
-    "CardImages/Banners/Nochtyra.jpg",
-    "CardImages/Banners/Solmara.jpg",   
-    "CardImages/Banners/DefaultBanner.jpg"
+    "CardImages/Banners/Verdara.png",
+    "CardImages/Banners/Ashkar.png",
+    "CardImages/Banners/Pearlhaven.png",
+    "CardImages/Banners/Aetherion.png",
+    "CardImages/Banners/Drakzul.png",
+    "CardImages/Banners/GlimbarkFrontier.png",
+    "CardImages/Banners/SkywardArchipelago.png",
+    "CardImages/Banners/Duskhaven.png",
+    "CardImages/Banners/Nochtyra.png",
+    "CardImages/Banners/Solmara.png",   
+    "CardImages/Banners/DefaultBanner.png"
   ];
-const defaultBanner = "CardImages/Banners/DefaultBanner.jpg";
+const defaultBanner = "CardImages/Banners/DefaultBanner.png";
 
   // --- ICON CHOICES ---
   function getUnlockedAvatars() {
       try {
-        return JSON.parse(localStorage.getItem('unlockedAvatars') || '["CardImages/Avatars/Avatar1.png"]');
+        return JSON.parse(localStorage.getItem('unlockedAvatars') || '["CardImages/Avatars/Default.png"]');
       } catch (e) {
-        return ["CardImages/Avatars/Avatar1.png"];
+        return ["CardImages/Avatars/Default.png"];
       }
     }  
 function renderProfileIcons(selectedIcon) {
@@ -97,7 +97,7 @@ function getUnlockedBanners() {
   try {
     return JSON.parse(localStorage.getItem('unlockedBanners') || '[]');
   } catch (e) {
-    return ["CardImages/Avatars/Avatar1.png"];
+    return ["CardImages/Banners/Default.png"];
   }
 }
 
@@ -264,7 +264,7 @@ profileBannerModal.onclick = function(e) {
     if (!user) return;
     firebase.firestore().collection('users').doc(user.uid).get()
       .then(doc => {
-        let icon = "CardImages/Avatars/Avatar1.png";
+        let icon = "CardImages/Avatars/Default.png";
         let name = user.displayName || user.email;
         let banner = defaultBanner;
         if (doc.exists) {
