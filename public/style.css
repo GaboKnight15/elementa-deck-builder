@@ -1058,11 +1058,9 @@ button {
   background: #23242a;
   border-radius: 12px;
   box-shadow: 0 2px 12px #0004;
-  padding: 8px 6px 6px 6px;
-  margin-bottom: 4px;
+  padding: 6px 6px 6px 6px;
   position: relative;
   transition: box-shadow 0.17s, background 0.18s;
-  margin-right: 0; /* Remove right margin if you had it */
 }
 .card-battlefield-wrapper {
   display: flex;
@@ -1081,7 +1079,6 @@ button {
   border-radius: 8px;
   background: #191a1d;
   box-shadow: 0 1px 8px #0003;
-  margin-bottom: 6px;
 }
 
 .card-bg-green   { background: #203d26; }
