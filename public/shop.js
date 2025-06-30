@@ -53,7 +53,11 @@ const allCardbackOptions = [
   "CardImages/Cardbacks/Cardback2.png",
   "CardImages/Cardbacks/DefaultCardback.png"
 ];
-
+const packPrices = {
+  "StandardPack": 100,
+  "StandardPack2": 100,
+  // Add more if you have more packs, e.g. "RiseOfDragons": 200,
+};
 // Price maps
 const avatarPrices = {
       "CardImages/Avatars/Faelyra.png": 100,
@@ -300,7 +304,79 @@ shopContainer.addEventListener('click', (e) => {
   ) {
   }
 });
+function renderShopPacks() {
+  const packOptionsDiv = document.getElementById('pack-options');
+  if (!packOptionsDiv) return;
+  // Clear and re-render to avoid double-wrapping
+  const existing = Array.from(packOptionsDiv.querySelectorAll('.shop-pack-option'));
+  existing.forEach(e => e.remove());
 
+  const packImages = Array.from(packOptionsDiv.querySelectorAll('.pack-image'));
+  packImages.forEach(img => {
+    // Only process images not already inside a .shop-pack-option
+    if (img.parentElement.classList.contains('shop-pack-option')) return;
+
+    // Create wrapper
+    const wrapper = document.createElement('div');
+    wrapper.className = 'shop-pack-option';
+
+    // Move the image into the wrapper
+    wrapper.appendChild(img);
+
+    // Get price
+    const price = packPrices[img.dataset.pack] || 100;
+
+    // Create price tag
+    const priceTag = document.createElement('span');
+    priceTag.className = 'currency-display';
+    priceTag.style.display = 'flex';
+    priceTag.style.alignItems = 'center';
+    priceTag.style.justifyContent = 'center';
+    priceTag.style.marginTop = '8px';
+    priceTag.innerHTML = `
+      <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins">
+      <span>${price}</span>
+    `;
+
+    wrapper.appendChild(priceTag);
+
+    // Insert the wrapper into the DOM
+    packOptionsDiv.appendChild(wrapper);
+
+    // Style and setup click handler
+    img.style.cursor = 'pointer';
+    img.onclick = function(e) {
+      e.stopPropagation();
+      showCosmeticConfirmModal({
+        imgSrc: img.src,
+        type: 'pack',
+        price,
+        onConfirm: () => {
+          return purchaseCosmetic(price, () => {
+            openPack(img.dataset.pack);
+          });
+        }
+      });
+    };
+    // Accessibility: Enter/Space
+    img.tabIndex = 0;
+    img.addEventListener('keydown', (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.stopPropagation();
+        showCosmeticConfirmModal({
+          imgSrc: img.src,
+          type: 'pack',
+          price,
+          onConfirm: () => {
+            return purchaseCosmetic(price, () => {
+              openPack(img.dataset.pack);
+            });
+          }
+        });
+      }
+    });
+  });
+}
 function getUnlockedAvatars() {
   // You could use Firebase/cloud instead
   return JSON.parse(localStorage.getItem('unlockedAvatars') || '["CardImages/Avatars/Avatar1.png"]');
@@ -507,3 +583,4 @@ document.querySelectorAll('.shop-free-btn').forEach(btn => {
 
 function renderShop() {}
 window.renderShop = renderShop;
+renderShopPacks();
