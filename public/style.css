@@ -211,6 +211,25 @@ button {
   /* Optionally add a soft glow or border for visibility */
   filter: drop-shadow(0 1px 4px #0008);
 }
+#header-icons {
+  position: absolute;
+  top: 16px;
+  right: 24px;
+  display: flex;
+  gap: 18px;
+  z-index: 100;
+}
+.header-action-icon {
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  filter: drop-shadow(0 1px 6px #0004);
+  transition: transform 0.12s, filter 0.15s;
+}
+.header-action-icon:hover, .header-action-icon:focus {
+  transform: scale(1.10) rotate(-8deg);
+  filter: drop-shadow(0 2px 12px #ffe066dd);
+}
 #gallery-cards {
   display: grid;
   background: #1a2533;
