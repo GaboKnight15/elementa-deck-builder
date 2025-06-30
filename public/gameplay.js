@@ -301,14 +301,8 @@ function showHandCardMenu(instanceId, cardDiv) {
   const menu = createCardMenu(buttons);
 
   // Position relative to cardDiv
-  const rect = cardDiv.getBoundingClientRect();
-  menu.style.position = 'absolute';
-  menu.style.top = `${rect.bottom + window.scrollY + 8}px`;
-  menu.style.left = `${rect.left + window.scrollX}px`;
-  menu.style.zIndex = 9999;
-  menu.style.display = 'block';
-
-  document.body.appendChild(menu);
+const rect = cardDiv.getBoundingClientRect();
+placeMenuWithinViewport(menu, rect);
 
   // Hide menu when clicking elsewhere
   setTimeout(() => {
@@ -434,8 +428,8 @@ function appendDeckZone(parentDiv, deckArray, who) {
     ];
     // CREATE MENU
     const menu = createCardMenu(buttons);
-    deckCard.style.position = 'relative';
-    deckCard.appendChild(menu);
+    const rect = deckCard.getBoundingClientRect();
+    placeMenuWithinViewport(menu, rect);
 
     // Hide menu when clicking elsewhere
     setTimeout(() => {
@@ -885,14 +879,8 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
   const menu = createCardMenu(buttons);
 
   // Position menu absolutely near cardDiv
-  const rect = cardDiv.getBoundingClientRect();
-  menu.style.position = 'absolute';
-  menu.style.top = `${rect.bottom + window.scrollY + 4}px`;
-  menu.style.left = `${rect.left + window.scrollX}px`;
-  menu.style.zIndex = 9999;
-  menu.style.display = 'block';
-
-  document.body.appendChild(menu);
+const rect = cardDiv.getBoundingClientRect();
+placeMenuWithinViewport(menu, rect);
 
   // Hide menu when clicking elsewhere
   setTimeout(() => {
