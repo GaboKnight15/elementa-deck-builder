@@ -1404,11 +1404,13 @@ button {
   border: 1.5px solid #aac;
   border-radius: 14px;
   box-shadow: 0 4px 24px #0003;
-  padding: 14px 12px;
+  padding: 10px 10px;
   z-index: 9999;
   min-width: 160px;
   max-width: 240px;
+  max-height: 80vh;
   align-items: stretch;
+  overflow-y: auto;
 }
 .card-menu button {
   background: #4285f4;
