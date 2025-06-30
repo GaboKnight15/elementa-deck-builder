@@ -349,6 +349,20 @@ function renderWeeklyMissions() {
 }
 
 // 8. Modal open/close and init
+// Main Missions Modal open/close logic
+document.getElementById('missions-icon').onclick = function() {
+  document.getElementById('missions-modal').style.display = 'flex';
+};
+document.getElementById('close-missions-modal').onclick = function() {
+  document.getElementById('missions-modal').style.display = 'none';
+};
+document.getElementById('missions-modal').onclick = function(e) {
+  if (e.target === this) this.style.display = 'none';
+};
+document.getElementById('achievements-modal').onclick = function(e) {
+  if (e.target === this) this.style.display = 'none';
+};
+// Main Missions Modal open/close logic
 document.getElementById('show-daily-missions').onclick = function() {
   renderDailyMissions();
   document.getElementById('daily-missions-modal').style.display = 'flex';
