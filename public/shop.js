@@ -339,8 +339,6 @@ function renderShopPacks() {
     `;
 
     wrapper.appendChild(priceTag);
-
-    // Insert the wrapper into the DOM
     packOptionsDiv.appendChild(wrapper);
 
     // Style and setup click handler
@@ -355,26 +353,15 @@ function renderShopPacks() {
           return purchaseCosmetic(price, () => {
             openPack(img.dataset.pack);
           });
+          // After successful purchase of a booster pack:
+            if (typeof incrementMissionProgress === 'function') {
+              incrementMissionProgress('purchase_pack_daily');
+              incrementMissionProgress('purchase_pack_weekly');
+            }
+            return purchased; 
         }
       });
     };
-    // Accessibility: Enter/Space
-    img.tabIndex = 0;
-    img.addEventListener('keydown', (e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.stopPropagation();
-        showCosmeticConfirmModal({
-          imgSrc: img.src,
-          type: 'pack',
-          price,
-          onConfirm: () => {
-            return purchaseCosmetic(price, () => {
-              openPack(img.dataset.pack);
-            });
-          }
-        });
-      }
-    });
   });
 }
 function getUnlockedAvatars() {
