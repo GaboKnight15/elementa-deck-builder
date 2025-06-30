@@ -164,5 +164,48 @@ document.getElementById('add-coins-btn').onclick = function() {
   const el = document.getElementById('currency-amount');
   if (el) el.textContent = current;
 };
+function placeMenuWithinViewport(menu, triggerRect, preferred = "bottom") {
+  // Default position: below the triggering element
+  let top = triggerRect.bottom + window.scrollY + 8;
+  let left = triggerRect.left + window.scrollX;
+
+  // Temporarily set position to get true size
+  menu.style.position = 'absolute';
+  menu.style.top = `${top}px`;
+  menu.style.left = `${left}px`;
+  menu.style.zIndex = 9999;
+  menu.style.display = 'block';
+
+  document.body.appendChild(menu);
+
+  // Now check for overflow
+  const menuRect = menu.getBoundingClientRect();
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+
+  // Horizontal: If overflowing right, pull it left to fit
+  if (menuRect.right > vw) {
+    left = Math.max(vw - menuRect.width - 8, 8);
+    menu.style.left = `${left}px`;
+  }
+  // Vertical: If overflowing bottom, show above trigger if fits, otherwise clamp to top
+  if (menuRect.bottom > vh) {
+    // Try above the trigger
+    if (triggerRect.top - menuRect.height - 8 > 0) {
+      top = triggerRect.top + window.scrollY - menuRect.height - 8;
+    } else {
+      top = Math.max(vh - menuRect.height - 8, 8);
+    }
+    menu.style.top = `${top}px`;
+  }
+  // If overflowing left, clamp to left edge
+  if (menuRect.left < 0) {
+    menu.style.left = `8px`;
+  }
+  // If overflowing top, clamp to top edge
+  if (menuRect.top < 0) {
+    menu.style.top = `8px`;
+  }
+}
 // Call setCurrency(getCurrency()) on page load to update display
 window.addEventListener('DOMContentLoaded', () => setCurrency(getCurrency()));
