@@ -22,6 +22,25 @@ const dummyCards = [
 { id: 'basicplains', name: 'Plains', rarity: 'Basic', image: 'CardImages/Domains/White Basic Location.png', category: 'domain', color: 'white', type: 'domain', hp: 5, cost: 1, set: 'StandardPack2'},
 { id: 'basicshadowforest', name: 'Shadow Forest', rarity: 'Basic', image: 'CardImages/Domains/Black Basic Location.png', category: 'domain', color: 'black', type: 'domain', hp: 5, cost: 1, set: 'StandardPack2'},
 ];
+// 1. Mission Definitions (update/add new missions here)
+const DAILY_MISSIONS = [
+  {
+    id: 'purchase_pack_daily',
+    type: 'daily',
+    description: 'Purchase a Booster Pack',
+    goal: 1,
+    reward: { type: 'currency', amount: 100 }
+  }
+];
+const WEEKLY_MISSIONS = [
+  {
+    id: 'purchase_pack_weekly',
+    type: 'weekly',
+    description: 'Purchase 2 Booster Packs',
+    goal: 2,
+    reward: { type: 'currency', amount: 500 }
+  }
+];
 // ==========================
 // === SECTION NAVIGATION ===
 // ==========================
@@ -184,6 +203,191 @@ document.getElementById('close-achievements-modal').onclick = function() {
 document.getElementById('achievements-modal').onclick = function(e) {
   if (e.target === this) this.style.display = 'none';
 };
+// 2. Persistence and Reset Helpers
+function getMissionData() {
+  return JSON.parse(localStorage.getItem('missions') || '{}');
+}
+function setMissionData(data) {
+  localStorage.setItem('missions', JSON.stringify(data));
+}
+function getMissionResets() {
+  return JSON.parse(localStorage.getItem('missionResets') || '{}');
+}
+function setMissionResets(obj) {
+  localStorage.setItem('missionResets', JSON.stringify(obj));
+}
+function resetMissionsIfNeeded() {
+  const now = new Date();
+  const resets = getMissionResets();
+  let changed = false;
+
+  // Daily reset at 00:00 UTC
+  const lastDaily = resets.lastDailyReset ? new Date(resets.lastDailyReset) : null;
+  const nowUtc = new Date(now.toISOString().split('T')[0] + "T00:00:00.000Z");
+  if (!lastDaily || nowUtc > lastDaily) {
+    resetMissionProgress('daily');
+    resets.lastDailyReset = nowUtc.toISOString();
+    changed = true;
+  }
+
+  // Weekly reset: Monday 00:00 UTC
+  const lastWeekly = resets.lastWeeklyReset ? new Date(resets.lastWeeklyReset) : null;
+  // Find most recent Monday 00:00 UTC
+  let monday = new Date(nowUtc);
+  monday.setUTCDate(monday.getUTCDate() - ((monday.getUTCDay() + 6) % 7));
+  if (!lastWeekly || monday > lastWeekly) {
+    resetMissionProgress('weekly');
+    resets.lastWeeklyReset = monday.toISOString();
+    changed = true;
+  }
+  if (changed) setMissionResets(resets);
+}
+// 3. Reset mission progress for a type
+function resetMissionProgress(type) {
+  let missions = getMissionData();
+  for (const mission of [...DAILY_MISSIONS, ...WEEKLY_MISSIONS]) {
+    if (mission.type === type) {
+      missions[mission.id] = { progress: 0, completed: false, claimed: false };
+    }
+  }
+  setMissionData(missions);
+}
+
+// 4. Get progress for a mission
+function getMissionProgress(mission) {
+  let data = getMissionData();
+  if (!data[mission.id]) {
+    data[mission.id] = { progress: 0, completed: false, claimed: false };
+    setMissionData(data);
+  }
+  return data[mission.id];
+}
+
+// 5. Increment mission progress by 1 (call from shop.js or elsewhere)
+function incrementMissionProgress(missionId) {
+  let data = getMissionData();
+  // Find mission in lists
+  const mission =
+    DAILY_MISSIONS.find(m => m.id === missionId) ||
+    WEEKLY_MISSIONS.find(m => m.id === missionId);
+  if (!mission) return;
+  if (!data[missionId]) data[missionId] = { progress: 0, completed: false, claimed: false };
+  if (data[missionId].completed) return; // Already complete, no more progress
+
+  data[missionId].progress = Math.min(mission.goal, (data[missionId].progress || 0) + 1);
+  if (data[missionId].progress >= mission.goal) data[missionId].completed = true;
+  setMissionData(data);
+  renderDailyMissions();
+  renderWeeklyMissions();
+}
+
+// 6. Claim mission reward
+function claimMissionReward(mission) {
+  let data = getMissionData();
+  if (!data[mission.id] || !data[mission.id].completed || data[mission.id].claimed) return false;
+  setCurrency(getCurrency() + mission.reward.amount);
+  data[mission.id].claimed = true;
+  setMissionData(data);
+  renderDailyMissions();
+  renderWeeklyMissions();
+  return true;
+}
+
+// 7. Renderers
+function renderDailyMissions() {
+  const list = document.getElementById('daily-missions-list');
+  if (!list) return;
+  list.innerHTML = '';
+  DAILY_MISSIONS.forEach(mission => {
+    const progress = getMissionProgress(mission);
+    const percent = Math.min(100, Math.round((progress.progress / mission.goal) * 100));
+    const entry = document.createElement('div');
+    entry.className = 'mission-entry';
+
+    entry.innerHTML = `
+      <div class="mission-desc">${mission.description}</div>
+      <div class="mission-progress-bar-wrap">
+        <div class="mission-progress-bar" style="width:${percent}%;"></div>
+      </div>
+      <div style="font-size:0.96em;color:#fff;text-align:right;">${progress.progress} / ${mission.goal}</div>
+      <div class="mission-reward">
+        <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins" style="width:18px;">
+        +${mission.reward.amount}
+      </div>
+    `;
+    if (progress.completed && !progress.claimed) {
+      const btn = document.createElement('button');
+      btn.className = 'btn-primary mission-claim-btn';
+      btn.textContent = 'Claim';
+      btn.onclick = () => claimMissionReward(mission);
+      entry.appendChild(btn);
+    } else if (progress.claimed) {
+      const badge = document.createElement('div');
+      badge.className = 'mission-claimed-badge';
+      badge.textContent = 'Claimed!';
+      entry.appendChild(badge);
+    }
+    list.appendChild(entry);
+  });
+}
+function renderWeeklyMissions() {
+  const list = document.getElementById('weekly-missions-list');
+  if (!list) return;
+  list.innerHTML = '';
+  WEEKLY_MISSIONS.forEach(mission => {
+    const progress = getMissionProgress(mission);
+    const percent = Math.min(100, Math.round((progress.progress / mission.goal) * 100));
+    const entry = document.createElement('div');
+    entry.className = 'mission-entry';
+
+    entry.innerHTML = `
+      <div class="mission-desc">${mission.description}</div>
+      <div class="mission-progress-bar-wrap">
+        <div class="mission-progress-bar" style="width:${percent}%;"></div>
+      </div>
+      <div style="font-size:0.96em;color:#fff;text-align:right;">${progress.progress} / ${mission.goal}</div>
+      <div class="mission-reward">
+        <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins" style="width:18px;">
+        +${mission.reward.amount}
+      </div>
+    `;
+    if (progress.completed && !progress.claimed) {
+      const btn = document.createElement('button');
+      btn.className = 'btn-primary mission-claim-btn';
+      btn.textContent = 'Claim';
+      btn.onclick = () => claimMissionReward(mission);
+      entry.appendChild(btn);
+    } else if (progress.claimed) {
+      const badge = document.createElement('div');
+      badge.className = 'mission-claimed-badge';
+      badge.textContent = 'Claimed!';
+      entry.appendChild(badge);
+    }
+    list.appendChild(entry);
+  });
+}
+
+// 8. Modal open/close and init
+document.getElementById('show-daily-missions').onclick = function() {
+  renderDailyMissions();
+  document.getElementById('daily-missions-modal').style.display = 'flex';
+};
+document.getElementById('show-weekly-missions').onclick = function() {
+  renderWeeklyMissions();
+  document.getElementById('weekly-missions-modal').style.display = 'flex';
+};
+document.getElementById('close-daily-missions-modal').onclick = function() {
+  document.getElementById('daily-missions-modal').style.display = 'none';
+};
+document.getElementById('close-weekly-missions-modal').onclick = function() {
+  document.getElementById('weekly-missions-modal').style.display = 'none';
+};
+document.getElementById('daily-missions-modal').onclick = function(e) {
+  if (e.target === this) this.style.display = 'none';
+};
+document.getElementById('weekly-missions-modal').onclick = function(e) {
+  if (e.target === this) this.style.display = 'none';
+};
 // MENU INSIDE VIEWPORT
 function placeMenuWithinViewport(menu, triggerRect, preferred = "bottom") {
   // Default position: below the triggering element
@@ -230,3 +434,7 @@ function placeMenuWithinViewport(menu, triggerRect, preferred = "bottom") {
 }
 // Call setCurrency(getCurrency()) on page load to update display
 window.addEventListener('DOMContentLoaded', () => setCurrency(getCurrency()));
+// 9. On load, check for resets
+window.addEventListener('DOMContentLoaded', () => {
+  resetMissionsIfNeeded();
+});
