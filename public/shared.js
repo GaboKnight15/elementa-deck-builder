@@ -183,26 +183,7 @@ document.getElementById('add-coins-btn').onclick = function() {
   const el = document.getElementById('currency-amount');
   if (el) el.textContent = current;
 };
-// MISSIONS MODAL
-document.getElementById('missions-icon').onclick = function() {
-  document.getElementById('missions-modal').style.display = 'flex';
-};
-document.getElementById('close-missions-modal').onclick = function() {
-  document.getElementById('missions-modal').style.display = 'none';
-};
-document.getElementById('missions-modal').onclick = function(e) {
-  if (e.target === this) this.style.display = 'none';
-};
-// ACHIEVEMENTS MODAL
-document.getElementById('achievements-icon').onclick = function() {
-  document.getElementById('achievements-modal').style.display = 'flex';
-};
-document.getElementById('close-achievements-modal').onclick = function() {
-  document.getElementById('achievements-modal').style.display = 'none';
-};
-document.getElementById('achievements-modal').onclick = function(e) {
-  if (e.target === this) this.style.display = 'none';
-};
+
 // 2. Persistence and Reset Helpers
 function getMissionData() {
   return JSON.parse(localStorage.getItem('missions') || '{}');
