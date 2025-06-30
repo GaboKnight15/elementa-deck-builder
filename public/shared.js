@@ -359,6 +359,12 @@ document.getElementById('close-missions-modal').onclick = function() {
 document.getElementById('missions-modal').onclick = function(e) {
   if (e.target === this) this.style.display = 'none';
 };
+document.getElementById('achievements-icon').onclick = function() {
+  document.getElementById('achievements-modal').style.display = 'flex';
+};
+document.getElementById('close-achievements-modal').onclick = function() {
+  document.getElementById('achievements-modal').style.display = 'none';
+};
 document.getElementById('achievements-modal').onclick = function(e) {
   if (e.target === this) this.style.display = 'none';
 };
