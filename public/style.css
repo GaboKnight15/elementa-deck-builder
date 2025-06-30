@@ -227,7 +227,7 @@ button {
   transition: transform 0.12s, filter 0.15s;
 }
 .header-action-icon:hover, .header-action-icon:focus {
-  transform: scale(1.10) rotate(-8deg);
+  transform: scale(1.10);
   filter: drop-shadow(0 2px 12px #ffe066dd);
 }
 .mission-entry {
