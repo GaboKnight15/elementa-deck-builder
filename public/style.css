@@ -1109,7 +1109,7 @@ button {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding: 8px 12px;
+  padding: 8px 8px;
   background: #181822;
   border-radius: 12px;
   box-shadow: 0 0 12px #0008;
@@ -1241,6 +1241,7 @@ button {
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  padding: 20px;
 }
 
 #modal-img-content {
