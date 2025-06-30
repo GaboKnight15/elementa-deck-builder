@@ -510,71 +510,69 @@ function openDeckModal() {
   }
   list.innerHTML = "<h3>Select a card and choose an action</h3>";
 
-  gameState.playerDeck.forEach((cardObj, idx) => {
-    const card = dummyCards.find(c => c.id === cardObj.cardId);
-    if (!card) return;
+gameState.playerDeck.forEach((cardObj, idx) => {
+  const card = dummyCards.find(c => c.id === cardObj.cardId);
+  if (!card) return;
 
-    const wrapper = document.createElement('div');
-    wrapper.className = "modal-card-wrapper";
+  const wrapper = document.createElement('div');
+  wrapper.className = "modal-card-wrapper";
 
-    const cardDiv = document.createElement('div');
-    cardDiv.className = 'card-battlefield';
-    
-    const btn = document.createElement('button');
-    btn.classList.add('deckvoid-card-btn');
+  const cardDiv = document.createElement('div');
+  cardDiv.className = 'card-battlefield';
 
-    const img = document.createElement('img');
-    img.src = card.image;
-    img.alt = card.name;
-    img.className = "modal-card-img";
-    
-    cardDiv.appendChild(img);
-    btn.appendChild(img);
-    // ATTACH MENU ON CLICK
-    btn.onclick = (e) => {
-      e.stopPropagation();
-      modal.querySelectorAll('.card-menu').forEach(m => m.remove());
-      const buttons = [
-        {
-          text: "Add to Hand",
-          onClick: function(ev) {
-            ev.stopPropagation();
-            moveCard(cardObj.instanceId, gameState.playerDeck, gameState.playerHand);
-            openDeckModal();
-            modal.querySelectorAll('.card-menu').forEach(m => m.remove());
-          }
-        },
-        {
-          text: "Send to Void",
-          onClick: function(ev) {
-            ev.stopPropagation();
-            moveCard(cardObj.instanceId, gameState.playerDeck, gameState.playerVoid);
-            openDeckModal();
-            modal.querySelectorAll('.card-menu').forEach(m => m.remove());
-          }
-        },
-        {
-          text: "View",
-          onClick: function(ev) {
-            ev.stopPropagation();
-            showFullCardModal(cardObj);
-            modal.querySelectorAll('.card-menu').forEach(m => m.remove());
-          }
-        }
-      ];
-      const menu = createCardMenu(buttons);
-      wrapper.appendChild(menu);
-      setTimeout(() => {
-        document.body.addEventListener('click', function handler() {
+  const img = document.createElement('img');
+  img.src = card.image;
+  img.alt = card.name;
+  img.className = "modal-card-img";
+  cardDiv.appendChild(img);
+
+  // Make the image itself clickable for the menu
+  img.style.cursor = "pointer";
+  img.onclick = (e) => {
+    e.stopPropagation();
+    modal.querySelectorAll('.card-menu').forEach(m => m.remove());
+    const buttons = [
+      {
+        text: "Add to Hand",
+        onClick: function(ev) {
+          ev.stopPropagation();
+          moveCard(cardObj.instanceId, gameState.playerDeck, gameState.playerHand);
+          openDeckModal();
           modal.querySelectorAll('.card-menu').forEach(m => m.remove());
-          document.body.removeEventListener('click', handler);
-        }, { once: true });
-      }, 10);
-    };
+        }
+      },
+      {
+        text: "Send to Void",
+        onClick: function(ev) {
+          ev.stopPropagation();
+          moveCard(cardObj.instanceId, gameState.playerDeck, gameState.playerVoid);
+          openDeckModal();
+          modal.querySelectorAll('.card-menu').forEach(m => m.remove());
+        }
+      },
+      {
+        text: "View",
+        onClick: function(ev) {
+          ev.stopPropagation();
+          showFullCardModal(cardObj);
+          modal.querySelectorAll('.card-menu').forEach(m => m.remove());
+        }
+      }
+    ];
+    const menu = createCardMenu(buttons);
+    wrapper.appendChild(menu);
+    setTimeout(() => {
+      document.body.addEventListener('click', function handler() {
+        modal.querySelectorAll('.card-menu').forEach(m => m.remove());
+        document.body.removeEventListener('click', handler);
+      }, { once: true });
+    }, 10);
+  };
 
-    wrapper.appendChild(btn);
-    list.appendChild(wrapper);
-  });
+  cardDiv.appendChild(img);
+  wrapper.appendChild(cardDiv);
+  list.appendChild(wrapper);
+});
 
   modal.style.display = "block";
 }
@@ -928,69 +926,69 @@ function openVoidModal() {
     list.innerHTML = '<div style="color:#999;">Void is empty.</div>';
   } else {
     voidCards.forEach((cardObj, idx) => {
-      const card = dummyCards.find(c => c.id === cardObj.cardId);
-      if (!card) return;
+  const card = dummyCards.find(c => c.id === cardObj.cardId);
+  if (!card) return;
 
-      const wrapper = document.createElement('div');
-      wrapper.className = "modal-card-wrapper";
+  const wrapper = document.createElement('div');
+  wrapper.className = "modal-card-wrapper";
 
-      const cardDiv = document.createElement('div');
-      cardDiv.className = 'card-battlefield';
-      
-      const btn = document.createElement('button');
-      btn.classList.add('deckvoid-card-btn');
+  const cardDiv = document.createElement('div');
+  cardDiv.className = 'card-battlefield';
 
-      const img = document.createElement('img');
-      img.src = card.image;
-      img.alt = card.name;
-      img.className = "modal-card-img";
-      cardDiv.appendChild(img);
-      btn.appendChild(img);
+  const img = document.createElement('img');
+  img.src = card.image;
+  img.alt = card.name;
+  img.className = "modal-card-img";
+  cardDiv.appendChild(img);
 
-      btn.onclick = (e) => {
-        e.stopPropagation();
-        // Remove all card menus in this modal
+  // Make image clickable for menu
+  img.style.cursor = "pointer";
+  img.onclick = (e) => {
+    e.stopPropagation();
+    // Remove all card menus in this modal
+    modal.querySelectorAll('.card-menu').forEach(m => m.remove());
+    const buttons = [
+      {
+        text: "Return to Hand",
+        onClick: function(e) {
+          e.stopPropagation();
+          moveCard(cardObj.instanceId, gameState.playerVoid, gameState.playerHand);
+          openVoidModal();
+          modal.querySelectorAll('.card-menu').forEach(m => m.remove());
+        }
+      },
+      {
+        text: "Return to Deck",
+        onClick: function(e) {
+          e.stopPropagation();
+          moveCard(cardObj.instanceId, gameState.playerVoid, gameState.playerDeck);
+          openVoidModal();
+          modal.querySelectorAll('.card-menu').forEach(m => m.remove());
+        }
+      },
+      {
+        text: "View",
+        onClick: function(e) {
+          e.stopPropagation();
+          showFullCardModal(cardObj);
+          modal.querySelectorAll('.card-menu').forEach(m => m.remove());
+        }
+      }
+    ];
+    const menu = createCardMenu(buttons);
+    wrapper.appendChild(menu);
+    setTimeout(() => {
+      document.body.addEventListener('click', function handler() {
         modal.querySelectorAll('.card-menu').forEach(m => m.remove());
-        const buttons = [
-          {
-            text: "Return to Hand",
-            onClick: function(e) {
-              e.stopPropagation();
-              moveCard(cardObj.instanceId, gameState.playerVoid, gameState.playerHand);
-              openVoidModal();
-              modal.querySelectorAll('.card-menu').forEach(m => m.remove());
-            }
-          },
-          {
-            text: "Return to Deck",
-            onClick: function(e) {
-              e.stopPropagation();
-              moveCard(cardObj.instanceId, gameState.playerVoid, gameState.playerDeck);
-              openVoidModal();
-              modal.querySelectorAll('.card-menu').forEach(m => m.remove());
-            }
-          },
-          {
-            text: "View",
-            onClick: function(e) {
-              e.stopPropagation();
-              showFullCardModal(cardObj);
-              modal.querySelectorAll('.card-menu').forEach(m => m.remove());
-            }
-          }
-        ];
-        const menu = createCardMenu(buttons);
-        wrapper.appendChild(menu);
-        setTimeout(() => {
-          document.body.addEventListener('click', function handler() {
-            modal.querySelectorAll('.card-menu').forEach(m => m.remove());
-            document.body.removeEventListener('click', handler);
-          }, { once: true });
-        }, 10);
-      };
-      wrapper.appendChild(btn);
-      list.appendChild(wrapper);
-    });
+        document.body.removeEventListener('click', handler);
+      }, { once: true });
+    }, 10);
+  };
+
+  cardDiv.appendChild(img);
+  wrapper.appendChild(cardDiv);
+  list.appendChild(wrapper);
+});
   }
   modal.style.display = 'block';
 }
