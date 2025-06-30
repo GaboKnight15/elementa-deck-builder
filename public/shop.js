@@ -345,7 +345,7 @@ function renderShopPacks() {
     img.style.cursor = 'pointer';
     img.onclick = function(e) {
       e.stopPropagation();
-      AwesomeshowCosmeticConfirmModal({
+      showCosmeticConfirmModal({
         imgSrc: img.src,
         type: 'pack',
         price,
