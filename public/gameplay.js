@@ -301,9 +301,14 @@ function showHandCardMenu(instanceId, cardDiv) {
   const menu = createCardMenu(buttons);
 
   // Position relative to cardDiv
-  cardDiv.style.position = 'relative';
+  const rect = cardDiv.getBoundingClientRect();
+  menu.style.position = 'absolute';
+  menu.style.top = `${rect.bottom + window.scrollY + 8}px`;
+  menu.style.left = `${rect.left + window.scrollX}px`;
+  menu.style.zIndex = 9999;
   menu.style.display = 'block';
-  cardDiv.appendChild(menu);
+
+  document.body.appendChild(menu);
 
   // Hide menu when clicking elsewhere
   setTimeout(() => {
