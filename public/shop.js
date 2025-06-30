@@ -345,20 +345,20 @@ function renderShopPacks() {
     img.style.cursor = 'pointer';
     img.onclick = function(e) {
       e.stopPropagation();
-      showCosmeticConfirmModal({
+      AwesomeshowCosmeticConfirmModal({
         imgSrc: img.src,
         type: 'pack',
         price,
         onConfirm: () => {
-          return purchaseCosmetic(price, () => {
+          const purchased = purchaseCosmetic(price, () => {
             openPack(img.dataset.pack);
           });
           // After successful purchase of a booster pack:
-            if (typeof incrementMissionProgress === 'function') {
-              incrementMissionProgress('purchase_pack_daily');
-              incrementMissionProgress('purchase_pack_weekly');
-            }
-            return purchased; 
+          if (purchased && typeof incrementMissionProgress === 'function') {
+            incrementMissionProgress('purchase_pack_daily');
+            incrementMissionProgress('purchase_pack_weekly');
+          }
+          return purchased;
         }
       });
     };
