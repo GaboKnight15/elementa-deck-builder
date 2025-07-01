@@ -261,35 +261,32 @@ function showHandCardMenu(instanceId, cardDiv) {
   text: "Play",
   onClick: function(e) {
     e.stopPropagation();
-    const sourceDiv = this.closest('.card-battlefield');
-    const destinationDiv = document.getElementById('player-creatures-zone');
-    moveCardWithAnimation({
+    moveCardUniversal({
       instanceId,
       fromArr: gameState.playerHand,
       toArr: gameState.playerCreatures,
       extra: { orientation: "vertical" },
-      sourceDiv,
-      destinationDiv,
-      animationType: "move"
+      fromZoneId: "player-hand",
+      toZoneId: "player-creatures-zone"
     });
-    emitGameAction({
-      type: 'play_card',
-      cardId: instanceId,
-      from: 'hand',
-      to: 'creatures',
-      extra: { orientation: "vertical" }
+    emitGameAction(...);
+    this.closest('.card-menu').remove();
+  }
+},
+{
+  text: "Send to Void",
+  onClick: function(e) {
+    e.stopPropagation();
+    moveCardUniversal({
+      instanceId,
+      fromArr: gameState.playerHand,
+      toArr: gameState.playerVoid,
+      fromZoneId: "player-hand",
+      toZoneId: "player-void-zone"
     });
     this.closest('.card-menu').remove();
   }
 },
-    {
-      text: "Send to Void",
-      onClick: function(e) {
-        e.stopPropagation();
-        moveCard(instanceId, gameState.playerHand, gameState.playerVoid);
-        this.closest('.card-menu').remove();
-      }
-    },
     {
       text: "Return to Deck",
       onClick: function(e) {
@@ -1115,22 +1112,42 @@ function handleOpponentAction(action) {
       console.warn("Unknown opponent action:", action);
   }
 }
-async function moveCardWithAnimation({
+// --- Helper: find card DOM element by instanceId in a given zone ---
+function findCardDivInZone(zoneId, instanceId) {
+  const zone = document.getElementById(zoneId);
+  if (!zone) return null;
+  // Your render uses .card-battlefield on the div holding the card
+  return Array.from(zone.querySelectorAll('.card-battlefield')).find(div => {
+    return div.dataset.instanceId === instanceId;
+  });
+}
+// --- Universal move function with optional animation ---
+async function moveCardUniversal({
   instanceId,
   fromArr,
   toArr,
   extra = {},
-  sourceDiv,
-  destinationDiv,
-  animationType = "move" // could be "move", "flip", "fade", etc. in the future
+  fromZoneId = null,
+  toZoneId = null,
+  sourceDiv = null,
+  destinationDiv = null,
+  animationType = "move"
 }) {
-  if (sourceDiv && destinationDiv && animationType === "move") {
-    await new Promise(resolve => {
-      animateCardMove(sourceDiv, destinationDiv, resolve);
-    });
+  // Try to infer DOM nodes if not supplied
+  if (!sourceDiv && fromZoneId) {
+    sourceDiv = findCardDivInZone(fromZoneId, instanceId);
   }
-  // After animation (or if not animating), update state and rerender
+  if (!destinationDiv && toZoneId) {
+    // For animation, we often animate to the zone, not to a particular card
+    destinationDiv = document.getElementById(toZoneId);
+  }
+  // Animate if possible and requested
+  if (animationType !== "none" && sourceDiv && destinationDiv) {
+    await new Promise(resolve => animateCardMove(sourceDiv, destinationDiv, resolve));
+  }
+  // Move in state
   moveCard(instanceId, fromArr, toArr, extra);
+  // Rerender
   renderGameState();
   setupDropZones();
 }
