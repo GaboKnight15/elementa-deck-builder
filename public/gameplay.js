@@ -269,7 +269,6 @@ function showHandCardMenu(instanceId, cardDiv) {
       fromZoneId: "player-hand",
       toZoneId: "player-creatures-zone"
     });
-    emitGameAction(...);
     this.closest('.card-menu').remove();
   }
 },
