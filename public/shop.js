@@ -307,26 +307,35 @@ shopContainer.addEventListener('click', (e) => {
 function renderShopPacks() {
   const packOptionsDiv = document.getElementById('pack-options');
   if (!packOptionsDiv) return;
-  // Clear and re-render to avoid double-wrapping
-  const existing = Array.from(packOptionsDiv.querySelectorAll('.shop-pack-option'));
-  existing.forEach(e => e.remove());
-
-  const packImages = Array.from(packOptionsDiv.querySelectorAll('.pack-image'));
-  packImages.forEach(img => {
-    // Only process images not already inside a .shop-pack-option
-    if (img.parentElement.classList.contains('shop-pack-option')) return;
-
-    // Create wrapper
+  packOptionsDiv.innerHTML = ''; // Clear all
+  for (const [packName, price] of Object.entries(packPrices)) {
     const wrapper = document.createElement('div');
     wrapper.className = 'shop-pack-option';
 
-    // Move the image into the wrapper
-    wrapper.appendChild(img);
-
-    // Get price
-    const price = packPrices[img.dataset.pack] || 100;
-
-    // Create price tag
+    const img = document.createElement('img');
+    img.className = 'pack-image';
+    img.src = `CardImages/Packs/${packName}.png`;
+    img.alt = packName;
+    img.dataset.pack = packName;
+    img.style.cursor = 'pointer';
+    img.onclick = function(e) {
+      e.stopPropagation();
+      showCosmeticConfirmModal({
+        imgSrc: img.src,
+        type: 'pack',
+        price,
+        onConfirm: async () => {
+          const purchased = await purchaseCosmetic(price, async () => {
+            openPack(packName);
+          });
+          if (purchased && typeof incrementMissionProgress === 'function') {
+            incrementMissionProgress('purchase_pack_daily');
+            incrementMissionProgress('purchase_pack_weekly');
+          }
+          return purchased;
+        }
+      });
+    };
     const priceTag = document.createElement('span');
     priceTag.className = 'currency-display';
     priceTag.style.display = 'flex';
@@ -337,32 +346,10 @@ function renderShopPacks() {
       <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins">
       <span>${price}</span>
     `;
-
+    wrapper.appendChild(img);
     wrapper.appendChild(priceTag);
     packOptionsDiv.appendChild(wrapper);
-
-    // Style and setup click handler
-    img.style.cursor = 'pointer';
-    img.onclick = function(e) {
-      e.stopPropagation();
-      showCosmeticConfirmModal({
-        imgSrc: img.src,
-        type: 'pack',
-        price,
-        onConfirm: () => {
-          const purchased = purchaseCosmetic(price, () => {
-            openPack(img.dataset.pack);
-          });
-          // After successful purchase of a booster pack:
-          if (purchased && typeof incrementMissionProgress === 'function') {
-            incrementMissionProgress('purchase_pack_daily');
-            incrementMissionProgress('purchase_pack_weekly');
-          }
-          return purchased;
-        }
-      });
-    };
-  });
+  }
 }
 async function getUnlockedAvatars() {
   return await loadUnlockedAvatars();
