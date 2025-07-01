@@ -74,52 +74,68 @@ document.addEventListener('DOMContentLoaded', function () {
 const defaultBanner = "CardImages/Banners/DefaultBanner.png";
 
   // --- ICON CHOICES ---
-  function getUnlockedAvatars() {
-      try {
-        return JSON.parse(localStorage.getItem('unlockedAvatars') || '["CardImages/Avatars/Default.png"]');
-      } catch (e) {
-        return ["CardImages/Avatars/Default.png"];
-      }
-    }  
-function renderProfileIcons(selectedIcon) {
-  profileIcons.innerHTML = "";
-  const unlocked = getUnlockedAvatars();
-  iconOptions.forEach(iconUrl => {
-    if (!unlocked.includes(iconUrl)) return; // Only show unlocked now
-    const img = document.createElement('img');
-    img.src = iconUrl;
-    img.className = (iconUrl === selectedIcon) ? "selected" : "";
-    img.onclick = () => selectProfileIcon(iconUrl);
-    profileIcons.appendChild(img);
-  });
-}
-function getUnlockedBanners() {
-  try {
-    return JSON.parse(localStorage.getItem('unlockedBanners') || '[]');
-  } catch (e) {
-    return ["CardImages/Banners/Default.png"];
+  async function getUnlockedAvatars() {
+    const user = auth.currentUser;
+    if (!user) return [defaultIcon];
+    const doc = await firebase.firestore().collection('users').doc(user.uid).get();
+    if (doc.exists && doc.data().unlockedAvatars) {
+      return doc.data().unlockedAvatars;
+    }
+    return [defaultIcon];
+  } 
+  // --- Render Profile Avatars ---
+  async function renderProfileIcons(selectedIcon) {
+    profileIcons.innerHTML = "";
+    const unlocked = await getUnlockedAvatars();
+    iconOptions.forEach(iconUrl => {
+      if (!unlocked.includes(iconUrl)) return; // Only show unlocked
+      const img = document.createElement('img');
+      img.src = iconUrl;
+      img.className = (iconUrl === selectedIcon) ? "selected" : "";
+      img.onclick = () => selectProfileIcon(iconUrl);
+      profileIcons.appendChild(img);
+    });
   }
-}
+  async function getUnlockedBanners() {
+    const user = auth.currentUser;
+    if (!user) return [defaultBanner];
+    const doc = await firebase.firestore().collection('users').doc(user.uid).get();
+    if (doc.exists && doc.data().unlockedBanners) {
+      return doc.data().unlockedBanners;
+    }
+    return [defaultBanner];
+  }
 
-function renderProfileBanners(selectedBanner) {
-  profileBanners.innerHTML = "";
-  const unlocked = getUnlockedBanners();
-  bannerOptions.forEach(bannerUrl => {
-    if (!unlocked.includes(bannerUrl)) return;
-    const img = document.createElement('img');
-    img.src = bannerUrl;
-    img.className = (bannerUrl === selectedBanner) ? "selected" : "";
-    img.onclick = () => selectProfileBanner(bannerUrl);
-    profileBanners.appendChild(img);
-  });
-}
-  // Open the avatar selection modal
+  // --- Render Banners ---
+  async function renderProfileBanners(selectedBanner) {
+    profileBanners.innerHTML = "";
+    const unlocked = await getUnlockedBanners();
+    bannerOptions.forEach(bannerUrl => {
+      if (!unlocked.includes(bannerUrl)) return;
+      const img = document.createElement('img');
+      img.src = bannerUrl;
+      img.className = (bannerUrl === selectedBanner) ? "selected" : "";
+      img.onclick = () => selectProfileBanner(bannerUrl);
+      profileBanners.appendChild(img);
+    });
+  }
+    
+  // --- Open/Close Avatar Modal ---
   profileChangePicBtn.onclick = function() {
-    const currentIcon = profilePic.src;
+    const currentIcon = profilePic.src.split('?')[0];
     renderProfileIcons(currentIcon);
     profileIconModal.style.display = 'flex';
   };
-  // Handle avatar selection
+  closeProfileIconModalBtn.onclick = function() {
+    profileIconModal.style.display = 'none';
+  };
+  profileIconModal.onclick = function(e) {
+    if (e.target === profileIconModal) {
+      profileIconModal.style.display = 'none';
+    }
+  };
+    
+  // --- Avatar Selection ---
   function selectProfileIcon(iconUrl) {
     const user = auth.currentUser;
     if (!user) return;
@@ -135,18 +151,36 @@ function renderProfileBanners(selectedBanner) {
         console.error('[auth] Failed to update profile icon:', err);
       });
   }
-
-  // Close modal with button
-  closeProfileIconModalBtn.onclick = function() {
-    profileIconModal.style.display = 'none';
+    
+  // --- Banner Modal ---
+  profileBanner.onclick = function() {
+    const currentBanner = profileBanner.src.split('?')[0];
+    renderProfileBanners(currentBanner);
+    profileBannerModal.style.display = 'flex';
   };
-  // Close modal when clicking outside the content
-  profileIconModal.onclick = function(e) {
-    if (e.target === profileIconModal) {
-      profileIconModal.style.display = 'none';
+  closeProfileBannerModalBtn.onclick = function() {
+    profileBannerModal.style.display = 'none';
+  };
+  profileBannerModal.onclick = function(e) {
+    if (e.target === profileBannerModal) {
+      profileBannerModal.style.display = 'none';
     }
   };
-
+   // --- Banner Selection ---
+  function selectProfileBanner(bannerUrl) {
+    const user = auth.currentUser;
+    if (!user) return;
+    firebase.firestore().collection('users').doc(user.uid)
+      .set({ profileBanner: bannerUrl }, { merge: true })
+      .then(() => {
+        profileBanner.src = bannerUrl + '?v=' + Date.now();
+        renderProfileBanners(bannerUrl);
+        profileBannerModal.style.display = 'none';
+      })
+      .catch(err => {
+        console.error('[auth] Failed to update profile banner:', err);
+      });
+  }   
   // --- Signup/Login logic for modal/profile menu ---
  profileArea.onclick = function(e) {
     e.stopPropagation();
@@ -193,10 +227,14 @@ function renderProfileBanners(selectedBanner) {
         return userCredential.user.updateProfile({
           displayName: username
         }).then(() => {
+          // Set initial profile in Firestore
           return firebase.firestore().collection('users').doc(userCredential.user.uid)
             .set({
               username: username,
-              profilePic: "CardImages/Avatars/Avatar1.png"
+              profilePic: defaultIcon,
+              profileBanner: defaultBanner,
+              unlockedAvatars: [defaultIcon],
+              unlockedBanners: [defaultBanner]
             }, {merge: true});
         });
       })
@@ -215,57 +253,13 @@ function renderProfileBanners(selectedBanner) {
   }
 
   profileLogoutBtn.onclick = () => auth.signOut();
-
-    // Render banner choices
-function renderProfileBanners(selectedBanner) {
-  profileBanners.innerHTML = "";
-  bannerOptions.forEach(bannerUrl => {
-    const img = document.createElement('img');
-    img.src = bannerUrl;
-    img.className = (bannerUrl === selectedBanner) ? "selected" : "";
-    img.onclick = () => selectProfileBanner(bannerUrl);
-    profileBanners.appendChild(img);
-  });
-}
-
-// Open banner modal
-profileBanner.onclick = function() {
-  const currentBanner = profileBanner.src;
-  renderProfileBanners(currentBanner);
-  profileBannerModal.style.display = 'flex';
-};
-
-// Handle banner selection
-function selectProfileBanner(bannerUrl) {
-  const user = auth.currentUser;
-  if (!user) return;
-  firebase.firestore().collection('users').doc(user.uid)
-    .set({ profileBanner: bannerUrl }, { merge: true })
-    .then(() => {
-      profileBanner.src = bannerUrl + '?v=' + Date.now();
-      renderProfileBanners(bannerUrl);
-      profileBannerModal.style.display = 'none';
-    })
-    .catch(err => {
-      console.error('[auth] Failed to update profile banner:', err);
-    });
-}
-
-// Close banner modal
-closeProfileBannerModalBtn.onclick = function() {
-  profileBannerModal.style.display = 'none';
-};
-profileBannerModal.onclick = function(e) {
-  if (e.target === profileBannerModal) {
-    profileBannerModal.style.display = 'none';
-  }
-};
     
+  // --- Load Profile From Firestore ---
   function loadProfile(user) {
     if (!user) return;
     firebase.firestore().collection('users').doc(user.uid).get()
       .then(doc => {
-        let icon = "CardImages/Avatars/Default.png";
+        let icon = defaultIcon;
         let name = user.displayName || user.email;
         let banner = defaultBanner;
         if (doc.exists) {
@@ -274,17 +268,18 @@ profileBannerModal.onclick = function(e) {
           if (data && data.username) name = data.username;
           if (data && data.profileBanner) banner = data.profileBanner;
         }
-        document.getElementById('profile-pic').src = icon;
+        profilePic.src = icon;
         profileUsernameDisplay.textContent = name;
         profileBanner.src = banner;
       })
       .catch(err => {
-        document.getElementById('profile-pic').src = "CardImages/Avatars/Default.png";
+        profilePic.src = defaultIcon;
         profileBanner.src = defaultBanner;
         profileUsernameDisplay.textContent = user.displayName || user.email || "";
       });
   }
 
+  // --- Auth state changes ---
   auth.onAuthStateChanged(user => {
     if (user) {
       profileArea.style.display = '';
