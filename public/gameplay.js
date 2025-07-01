@@ -291,7 +291,7 @@ function showHandCardMenu(instanceId, cardDiv) {
       this.closest('.card-menu').remove();
     }
   }
-}
+},
     {
       text: "Send to Void",
       onClick: function(e) {
