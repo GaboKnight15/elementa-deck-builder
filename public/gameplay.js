@@ -150,7 +150,6 @@ function moveCard(instanceId, fromArr, toArr, extra = {}) {
     fromArr.splice(idx, 1);
     toArr.push(cardObj);
   }
-  renderGameState();
   setupDropZones();
 }
 // Helper to get zone name for an array reference
@@ -275,6 +274,8 @@ function showHandCardMenu(instanceId, cardDiv) {
           to: 'creatures',
           extra: { orientation: "vertical" }
         });
+        renderGameState();
+        setupDropZones();
         // Remove menu
         this.closest('.card-menu').remove();
       });
