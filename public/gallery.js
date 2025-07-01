@@ -145,6 +145,7 @@ function loadPlayerCollection() {
     renderGallery();
   });
 }
+
 function renderGallery() {
     gallery.innerHTML = '';
     const selectedColor = document.getElementById('filter-color-gallery').value.toLowerCase();
