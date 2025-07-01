@@ -517,7 +517,6 @@ function claimAchievementReward(ach) {
   data[ach.id].claimed = true;
   setAchievementData(data);
   updateAchievementsNotificationDot();
-  renderAchievements();
   return true;
 }
 
