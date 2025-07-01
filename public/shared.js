@@ -232,6 +232,21 @@ document.getElementById('add-coins-btn').onclick = function() {
   const el = document.getElementById('currency-amount');
   if (el) el.textContent = current;
 };
+// ESSENCE CURRENCY
+function getEssence() {
+  return parseInt(localStorage.getItem('essence') || '0', 10);
+}
+function setEssence(amount) {
+  localStorage.setItem('essence', amount);
+  const el = document.getElementById('essence-amount');
+  if (el) el.textContent = amount;
+}
+function getEssenceHtml(amount) {
+  return `<span class="currency-display">
+    <img class="currency-icon" src="images/essence.png" alt="Essence">
+    <span>${amount}</span>
+  </span>`;
+}
 
 // 2. Persistence and Reset Helpers
 function getMissionData() {
@@ -750,6 +765,7 @@ function placeMenuWithinViewport(menu, triggerRect, preferred = "bottom") {
 // INITIALIZACION 
 // Call setCurrency(getCurrency()) on page load to update display
 window.addEventListener('DOMContentLoaded', () => setCurrency(getCurrency()));
+window.addEventListener('DOMContentLoaded', () => setEssence(getEssence()));
 // 9. On load, check for resets
 window.addEventListener('DOMContentLoaded', () => {
   resetMissionsIfNeeded();
