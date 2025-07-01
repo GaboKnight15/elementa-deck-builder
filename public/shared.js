@@ -812,8 +812,10 @@ function placeMenuWithinViewport(menu, triggerRect, preferred = "bottom") {
 
 // INITIALIZACION 
 // Call setCurrency(getCurrency()) on page load to update display
-window.addEventListener('DOMContentLoaded', () => setCurrency(getCurrency()));
-window.addEventListener('DOMContentLoaded', () => setEssence(getEssence()));
+window.addEventListener('DOMContentLoaded', () => {
+  loadPlayerCurrencyEssence();
+});
+window.addEventListener('DOMContentLoaded', loadPlayerCurrencyEssence);
 // 9. On load, check for resets
 window.addEventListener('DOMContentLoaded', () => {
   resetMissionsIfNeeded();
