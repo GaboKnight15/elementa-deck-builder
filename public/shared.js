@@ -275,10 +275,10 @@ function resetMissionsIfNeeded() {
 // 3. Reset mission progress for a type
 function resetMissionProgress(type) {
   let missions = getMissionData();
-  for (const mission of [...DAILY_MISSIONS, ...WEEKLY_MISSIONS]) {
-    if (mission.type === type) {
-      missions[mission.id] = { progress: 0, completed: false, claimed: false };
-    }
+  // Use only active missions for the given type
+  const activeMissions = (type === "daily") ? getActiveDailyMissions() : getActiveWeeklyMissions();
+  for (const mission of activeMissions) {
+    missions[mission.id] = { progress: 0, completed: false, claimed: false };
   }
   setMissionData(missions);
 }
@@ -296,10 +296,9 @@ function getMissionProgress(mission) {
 // 5. Increment mission progress by 1 (call from shop.js or elsewhere)
 function incrementMissionProgress(missionId) {
   let data = getMissionData();
-  // Find mission in lists
-  const mission =
-    DAILY_MISSIONS.find(m => m.id === missionId) ||
-    WEEKLY_MISSIONS.find(m => m.id === missionId);
+  // Only consider active missions
+  const allActive = [...getActiveDailyMissions(), ...getActiveWeeklyMissions()];
+  const mission = allActive.find(m => m.id === missionId);
   if (!mission) return;
   if (!data[missionId]) data[missionId] = { progress: 0, completed: false, claimed: false };
   if (data[missionId].completed) return; // Already complete, no more progress
