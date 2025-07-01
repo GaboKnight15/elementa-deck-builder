@@ -308,6 +308,7 @@ function incrementMissionProgress(missionId) {
   setMissionData(data);
   renderDailyMissions();
   renderWeeklyMissions();
+  updateMissionsNotificationDot();
 }
 
 // 6. Claim mission reward
@@ -317,6 +318,7 @@ function claimMissionReward(mission) {
   setCurrency(getCurrency() + mission.reward.amount);
   data[mission.id].claimed = true;
   setMissionData(data);
+  updateMissionsNotificationDot();
   return true;
 }
 
@@ -477,6 +479,7 @@ function incrementAchievementProgress(achievementId, amount = 1) {
   if (data[achievementId].progress >= ach.goal) data[achievementId].completed = true;
   setAchievementData(data);
   renderAchievements();
+  updateAchievementsNotificationDot();
 }
 
 // 5. Set achievement progress directly (for things like "collect X cards")
@@ -498,6 +501,7 @@ function claimAchievementReward(ach) {
   setCurrency(getCurrency() + ach.reward.amount);
   data[ach.id].claimed = true;
   setAchievementData(data);
+  updateAchievementsNotificationDot();
   renderAchievements();
   return true;
 }
@@ -677,6 +681,27 @@ function refreshWeeklyMissions() {
 }
 // In addToCollection, after updating collection:
 updateColorAchievements();
+
+function updateMissionsNotificationDot() {
+  const allMissions = [...getActiveDailyMissions(), ...getActiveWeeklyMissions()];
+  const missionData = getMissionData();
+  const hasClaimable = allMissions.some(m => {
+    const p = missionData[m.id];
+    return p && p.completed && !p.claimed;
+  });
+  const dot = document.getElementById('missions-notification-dot');
+  if (dot) dot.style.display = hasClaimable ? 'block' : 'none';
+}
+
+function updateAchievementsNotificationDot() {
+  const achievementData = getAchievementData();
+  const hasClaimable = ACHIEVEMENTS.some(a => {
+    const p = achievementData[a.id];
+    return p && p.completed && !p.claimed;
+  });
+  const dot = document.getElementById('achievements-notification-dot');
+  if (dot) dot.style.display = hasClaimable ? 'block' : 'none';
+}
 // MENU INSIDE VIEWPORT
 function placeMenuWithinViewport(menu, triggerRect, preferred = "bottom") {
   // Default position: below the triggering element
@@ -721,6 +746,8 @@ function placeMenuWithinViewport(menu, triggerRect, preferred = "bottom") {
     menu.style.top = `8px`;
   }
 }
+
+// INITIALIZACION 
 // Call setCurrency(getCurrency()) on page load to update display
 window.addEventListener('DOMContentLoaded', () => setCurrency(getCurrency()));
 // 9. On load, check for resets
@@ -736,4 +763,9 @@ window.addEventListener('DOMContentLoaded', () => {
   renderWeeklyMissions();
   startDailyMissionTimer();
   startWeeklyMissionTimer();
+});
+window.addEventListener('DOMContentLoaded', () => {
+  // ...existing startup logic...
+  updateMissionsNotificationDot();
+  updateAchievementsNotificationDot();
 });
