@@ -1,6 +1,6 @@
 // ==========================
 // === SHOP LOGIC ===
-// ==========================
+// ========================== 
 
 // DOM references 
 const shopSection = document.getElementById('shop-section');
