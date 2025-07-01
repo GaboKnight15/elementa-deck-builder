@@ -419,8 +419,7 @@ async function renderShopCosmetics({
               gridId, options, prices, getUnlocked, setUnlocked, unlockMsg, wrapperClass, imgClass
             });
             alert(unlockMsg);
-          });
-        }
+         }
       });
     };
     wrapper.appendChild(img);
