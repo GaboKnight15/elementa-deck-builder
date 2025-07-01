@@ -317,8 +317,6 @@ function claimMissionReward(mission) {
   setCurrency(getCurrency() + mission.reward.amount);
   data[mission.id].claimed = true;
   setMissionData(data);
-  renderDailyMissions();
-  renderWeeklyMissions();
   return true;
 }
 
@@ -667,13 +665,13 @@ function setActiveWeeklyMissions(missions) {
 }
 // Call this on timer expiry or at startup if needed
 function refreshDailyMissions() {
-  const newMissions = getRandomMissions(DAILY_MISSION_POOL, 1); // 1 daily mission, adjust number as needed
+  const newMissions = getRandomMissions(DAILY_MISSION_POOL, 3);
   setActiveDailyMissions(newMissions);
   // Also reset progress!
   resetMissionProgress('daily');
 }
 function refreshWeeklyMissions() {
-  const newMissions = getRandomMissions(WEEKLY_MISSION_POOL, 1); // 1 weekly mission, adjust number as needed
+  const newMissions = getRandomMissions(WEEKLY_MISSION_POOL, 6);
   setActiveWeeklyMissions(newMissions);
   resetMissionProgress('weekly');
 }
