@@ -1356,6 +1356,15 @@ button {
   z-index: 3;
   outline: none;
 }
+/* CARD ANIMATION BATTLEFIELD */
+.card-move-animate {
+  box-shadow: 0 10px 42px #50eaffcc, 0 2px 14px #0006;
+  border-radius: 12px;
+  opacity: 1;
+  transition: all 0.5s cubic-bezier(.33,1.62,.46,.98);
+  will-change: left, top, transform, opacity;
+  pointer-events: none;
+}
 /* VIEW STYLE */
 #image-modal.modal {
   display: none;
