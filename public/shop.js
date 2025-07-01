@@ -418,7 +418,7 @@ async function renderShopCosmetics({
             await renderShopCosmetics({
               gridId, options, prices, getUnlocked, setUnlocked, unlockMsg, wrapperClass, imgClass
             });
-            alert(unlockMsg);
+            showToast(unlockMsg);
          }
       });
     };
