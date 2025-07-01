@@ -201,6 +201,26 @@ function addToCollection(cardId, amount = 1) {
       setNewlyUnlockedCards(newCards);
     }
   }
+  // --- Green Card Mission ---
+  const newlyAddedCard = dummyCards.find(c => c.id === cardId);
+  if (newlyAddedCard) {
+    if ((Array.isArray(newlyAddedCard.color) && newlyAddedCard.color.includes('green')) || newlyAddedCard.color === 'green') {
+      [...getActiveDailyMissions(), ...getActiveWeeklyMissions()].forEach(mission => {
+        if (mission.id && mission.id.includes('green_card')) {
+          incrementMissionProgress(mission.id);
+        }
+      });
+    }
+  }
+
+  // --- Unique Card Mission ---
+  if (!wasOwned && collection[cardId] > 0) {
+    [...getActiveDailyMissions(), ...getActiveWeeklyMissions()].forEach(mission => {
+      if (mission.id && mission.id.includes('unique_card')) {
+        incrementMissionProgress(mission.id);
+      }
+    });
+  }
   // Update color achievements (generalized)
   if (typeof updateColorAchievements === 'function') {
     updateColorAchievements();
