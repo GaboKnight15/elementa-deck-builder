@@ -536,14 +536,7 @@ async function renderShopCardbacks() {
 }
 
 // INITIALIZATION //
-(async () => {
-  await renderShopCardbacks();
-  window.renderShopCardbacks = renderShopCardbacks;
-  await renderShopBanners();
-  window.renderShopBanners = renderShopBanners;
-  await renderShopAvatars();
-  window.renderShopAvatars = renderShopAvatars;
-})();
+
 
 // Cosmetic shop free unlock handlers
 document.querySelectorAll('.shop-free-btn').forEach(btn => {
@@ -567,6 +560,10 @@ document.querySelectorAll('.shop-free-btn').forEach(btn => {
   };
 });
 
-function renderShop() {}
+async function renderShop() {
+  await renderShopCardbacks();
+  await renderShopBanners();
+  await renderShopAvatars();
+  renderShopPacks();
+}
 window.renderShop = renderShop;
-renderShopPacks();
