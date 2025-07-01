@@ -288,6 +288,9 @@ const defaultBanner = "CardImages/Banners/DefaultBanner.png";
       appMain.classList.add('active');
       mainNav.classList.add('active');
       loadProfile(user);
+      loadPlayerCollection();
+      loadPlayerCurrencyEssence();
+      loadPlayerMissionsAchievements();  
     } else {
       profileArea.style.display = 'none';
       profileMenu.classList.remove('active');
@@ -298,6 +301,14 @@ const defaultBanner = "CardImages/Banners/DefaultBanner.png";
       loginEmailInput.value = "";
       loginPasswordInput.value = "";
       loginError.textContent = "";
-    }
+      playerCollection = {};
+      playerCurrency = 0;
+      playerEssence = 0;
+      playerMissions = {};
+      playerAchievements = {};
+      renderGallery();
+      setCurrency(0);
+      setEssence(0);  
+     }
   });
 });
