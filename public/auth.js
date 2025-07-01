@@ -280,7 +280,7 @@ const defaultBanner = "CardImages/Banners/DefaultBanner.png";
   }
 
   // --- Auth state changes ---
-  auth.onAuthStateChanged(user => {
+  auth.onAuthStateChanged(async user => {
     if (user) {
       profileArea.style.display = '';
       profileMenu.classList.remove('active');
