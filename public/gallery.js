@@ -139,7 +139,12 @@ div.appendChild(name);
 
     return div;
 }
-
+function loadPlayerCollection() {
+  loadCollection().then(collection => {
+    playerCollection = collection || {};
+    renderGallery();
+  });
+}
 function renderGallery() {
     gallery.innerHTML = '';
     const selectedColor = document.getElementById('filter-color-gallery').value.toLowerCase();
