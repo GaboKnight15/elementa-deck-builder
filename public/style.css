@@ -406,6 +406,17 @@ button {
   margin: 0;
   box-shadow: 0 1px 4px rgba(0,0,0,0.12);
 }
+.gallery-action-btn {
+  width: 28px;
+  height: 28px;
+  filter: drop-shadow(0 1px 4px #0004);
+  transition: transform 0.12s, filter 0.13s;
+  margin: 0 2px;
+}
+.gallery-action-btn:hover {
+  transform: scale(1.1);
+  filter: drop-shadow(0 2px 8px #ffe066bb);
+}
 #gallery-builder-cards {
   display: grid;
   background: #1a2533;
