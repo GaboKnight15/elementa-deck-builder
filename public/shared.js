@@ -46,8 +46,17 @@ const ACHIEVEMENTS = [
     id: 'collect_3_green_cards',
     description: 'Collect 3 green cards',
     goal: 3,
+    color: 'green',
     reward: { type: 'currency', amount: 200 }
-  }
+  },
+  {
+    id: 'collect_3_red_cards',
+    description: 'Collect 3 red cards',
+    goal: 3,
+    color: 'red',
+    reward: { type: 'currency', amount: 200 }
+  },
+  // ...add more colors as needed
 ];
 // ==========================
 // === SECTION NAVIGATION ===
@@ -168,6 +177,7 @@ function addToCollection(cardId, amount = 1) {
       setNewlyUnlockedCards(newCards);
     }
   }
+  updateColorAchievements();
 }
 
 function getCurrency() {
@@ -500,6 +510,28 @@ document.getElementById('close-achievements-modal').onclick = function() {
 document.getElementById('achievements-modal').onclick = function(e) {
   if (e.target === this) this.style.display = 'none';
 };
+function updateColorAchievements() {
+  const collection = getCollection();
+  ACHIEVEMENTS.forEach(ach => {
+    if (ach.color) {
+      // Get all card ids for this color
+      const colorCardIds = dummyCards
+        .filter(card => card.color && (
+          (Array.isArray(card.color) && card.color.includes(ach.color)) ||
+          card.color === ach.color
+        ))
+        .map(card => card.id);
+      // Count in collection
+      const count = colorCardIds.reduce((sum, id) => sum + (collection[id] || 0), 0);
+      if (typeof setAchievementProgress === 'function') {
+        setAchievementProgress(ach.id, count);
+      }
+    }
+  });
+}
+
+// In addToCollection, after updating collection:
+updateColorAchievements();
 // MENU INSIDE VIEWPORT
 function placeMenuWithinViewport(menu, triggerRect, preferred = "bottom") {
   // Default position: below the triggering element
