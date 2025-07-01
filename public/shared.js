@@ -246,13 +246,15 @@ function addToCollection(cardId, amount = 1) {
   }
 }
 
-function getCurrency() {
-  return parseInt(localStorage.getItem('currency') || '0', 10);
-}
-function setCurrency(amount) {
-  localStorage.setItem('currency', amount);
+let playerCurrency = 0;
+let playerEssence = 0;
+
+function getCurrency()    { return playerCurrency; }
+function setCurrency(amt) {
+  playerCurrency = amt;
+  saveCurrencyEssence(playerCurrency, playerEssence);
   const el = document.getElementById('currency-amount');
-  if (el) el.textContent = amount;
+  if (el) el.textContent = amt;
 }
 function getCurrencyHtml(amount) {
   return `<span class="currency-display">
@@ -268,13 +270,12 @@ document.getElementById('add-coins-btn').onclick = function() {
   if (el) el.textContent = current;
 };
 // ESSENCE CURRENCY
-function getEssence() {
-  return parseInt(localStorage.getItem('essence') || '0', 10);
-}
-function setEssence(amount) {
-  localStorage.setItem('essence', amount);
+function getEssence()     { return playerEssence; }
+function setEssence(amt)  {
+  playerEssence = amt;
+  saveCurrencyEssence(playerCurrency, playerEssence);
   const el = document.getElementById('essence-amount');
-  if (el) el.textContent = amount;
+  if (el) el.textContent = amt;
 }
 function getEssenceHtml(amount) {
   return `<span class="currency-display">
@@ -283,13 +284,20 @@ function getEssenceHtml(amount) {
   </span>`;
 }
 
+function loadPlayerCurrencyEssence() {
+  loadCurrencyEssence().then(({ currency, essence }) => {
+    playerCurrency = currency;
+    playerEssence = essence;
+    setCurrency(currency);
+    setEssence(essence);
+  });
+}
 // 2. Persistence and Reset Helpers
-function getMissionData() {
-  return JSON.parse(localStorage.getItem('missions') || '{}');
-}
-function setMissionData(data) {
-  localStorage.setItem('missions', JSON.stringify(data));
-}
+let playerMissions = {};
+let playerAchievements = {};
+
+function getMissionData()        { return playerMissions; }
+function setMissionData(data)    { playerMissions = data; saveMissions(data); }
 function getMissionResets() {
   return JSON.parse(localStorage.getItem('missionResets') || '{}');
 }
@@ -502,11 +510,18 @@ document.getElementById('weekly-missions-modal').onclick = function(e) {
   if (e.target === this) this.style.display = 'none';
 };
 // 2. Persistence Helpers
-function getAchievementData() {
-  return JSON.parse(localStorage.getItem('achievements') || '{}');
-}
-function setAchievementData(data) {
-  localStorage.setItem('achievements', JSON.stringify(data));
+function getAchievementData()    { return playerAchievements; }
+function setAchievementData(data){ playerAchievements = data; saveAchievements(data); }
+
+function loadPlayerMissionsAchievements() {
+  loadMissions().then(missions => {
+    playerMissions = missions || {};
+    // Optionally: renderMissions();
+  });
+  loadAchievements().then(achievements => {
+    playerAchievements = achievements || {};
+    // Optionally: renderAchievements();
+  });
 }
 
 // 3. Get progress for an achievement
