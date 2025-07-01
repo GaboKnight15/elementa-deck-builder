@@ -499,9 +499,11 @@ document.querySelectorAll('.shop-free-btn').forEach(btn => {
 });
 
 async function renderShop() {
-  await renderShopCardbacks();
-  await renderShopBanners();
-  await renderShopAvatars();
-  renderShopPacks();
+      await Promise.all([
+        renderShopCardbacks(),
+        renderShopBanners(),
+        renderShopAvatars()
+      ]);
+      renderShopPacks();
 }
 window.renderShop = renderShop;
