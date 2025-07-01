@@ -291,7 +291,13 @@ function showHandCardMenu(instanceId, cardDiv) {
       text: "Return to Deck",
       onClick: function(e) {
         e.stopPropagation();
-        moveCard(instanceId, gameState.playerHand, gameState.playerDeck);
+        moveCardUniversal({
+          instanceId,
+          fromArr: gameState.playerHand,
+          toArr: gameState.playerDeck,
+          fromZoneId: "player-hand",
+          toZoneId: "player-deck-zone"
+        });
         this.closest('.card-menu').remove();
       }
     },
