@@ -64,7 +64,60 @@ function createCardGallery(card) {
 
     const name = document.createElement('h4');
     name.textContent = card.name;
-    div.appendChild(name);
+    const actionRow = document.createElement('div');
+        actionRow.style.display = "flex";
+        actionRow.style.justifyContent = "center";
+        actionRow.style.gap = "0.6em";
+        actionRow.style.margin = "3px 0 3px 0";
+    // Create button
+const createBtn = document.createElement('img');
+createBtn.src = 'images/create-icon.png'; // use your actual image path
+createBtn.alt = 'Create';
+createBtn.title = 'Create (spend Essence to make 1 copy)';
+createBtn.className = 'gallery-action-btn';
+createBtn.style.cursor = 'pointer';
+createBtn.onclick = function(e) {
+  e.stopPropagation();
+  // Example cost, adjust per rarity/type
+  const cost = 50; // could make a function getEssenceCreateCost(card)
+  if (getEssence() < cost) {
+    alert('Not enough Essence!');
+    return;
+  }
+  const collection = getCollection();
+  collection[card.id] = (collection[card.id] || 0) + 1;
+  setCollection(collection);
+  setEssence(getEssence() - cost);
+  renderGallery();
+};
+
+// Void button
+const voidBtn = document.createElement('img');
+voidBtn.src = 'images/void-icon.png'; // use your actual image path
+voidBtn.alt = 'Void';
+voidBtn.title = 'Void (destroy 1 copy for Essence)';
+voidBtn.className = 'gallery-action-btn';
+voidBtn.style.cursor = 'pointer';
+voidBtn.onclick = function(e) {
+  e.stopPropagation();
+  const collection = getCollection();
+  if ((collection[card.id] || 0) <= 0) {
+    alert('No copies to Void!');
+    return;
+  }
+  // Example return, adjust per rarity/type
+  const refund = 10; // could make a function getEssenceVoidReturn(card)
+  collection[card.id] -= 1;
+  if (collection[card.id] < 0) collection[card.id] = 0;
+  setCollection(collection);
+  setEssence(getEssence() + refund);
+  renderGallery();
+};
+
+actionRow.appendChild(createBtn);
+actionRow.appendChild(voidBtn);
+div.appendChild(actionRow);
+div.appendChild(name);
 
     // "New!" badge
     const newCards = getNewlyUnlockedCards();
