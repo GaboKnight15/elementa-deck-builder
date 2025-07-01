@@ -63,7 +63,7 @@ const cardbackOptions = [
   "OtherImages/Cardbacks/Cardback2.png",
   "OtherImages/Cardbacks/DefaultCardback.png"
 ];
-// Get collection from localStorage using shared.js util
+
 function showDeckSelection() {
   deckSelectionGrid.style.display = '';
   deckBuilderUI.style.display = 'none';
@@ -397,7 +397,7 @@ function refreshDeckSlotSelect() {
 // === RENDERING CARDS ===
 // ==========================
 function getCollection() {
-  return JSON.parse(localStorage.getItem("cardCollection")) || {};
+  return playerCollection || {};
 }
 function createCardBuilder(card, ownedCount) {
     const deck = getCurrentDeck();
@@ -717,9 +717,6 @@ backBuilderBtn.onclick = showDeckSelection;
   refreshDeckSlotSelect();
   updateDeckDisplay();
 })();
-loadDeckState();
-refreshDeckSlotSelect();
-updateDeckDisplay();
 window.renderBuilder = renderBuilder;
 window.buildDeck = buildDeck;
 window.getCurrentDeck = getCurrentDeck;
