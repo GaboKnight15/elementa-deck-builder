@@ -198,7 +198,7 @@ if (typeof firebase !== "undefined" && firebase.auth) {
       loadPlayerCurrencyEssence();
       loadCollection().then(collection => {
         playerCollection = collection || {};
-        if (typeof renderGallery === "function") renderGallery();
+        if (typeof window.renderGallery === "function") window.renderGallery();
         if (typeof window.renderShop === "function") window.renderShop();
       });
     } else {
@@ -211,7 +211,7 @@ if (typeof firebase !== "undefined" && firebase.auth) {
       playerEssence = 0;
       setCurrency(0);
       setEssence(0);
-      if (typeof renderGallery === "function") renderGallery();
+      if (typeof window.renderGallery === "function") window.renderGallery();
       if (typeof window.renderShop === "function") window.renderShop();
     }
   });
@@ -867,5 +867,5 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 loadCollection().then(collection => {
   playerCollection = collection || {};
-  renderGallery(); // re-render with loaded data
+  window.renderGallery(); // re-render with loaded data
 });
