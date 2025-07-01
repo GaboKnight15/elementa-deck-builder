@@ -408,8 +408,13 @@ button {
 }
 
 .gallery-action-btn {
-  transition: transform 0.15s, box-shadow 0.15s;
+  width: 38px;
+  height: 38px;
+  max-width: 38px;
+  max-height: 38px;
+  object-fit: contain;
   border-radius: 8px;
+  transition: transform 0.15s, box-shadow 0.15s;
 }
 
 .gallery-action-btn:hover {
