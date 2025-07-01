@@ -406,6 +406,33 @@ button {
   margin: 0;
   box-shadow: 0 1px 4px rgba(0,0,0,0.12);
 }
+.universal-icon {
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(30, 36, 50, 0.85); /* semi-transparent, works on dark and light */
+  border-radius: 12px;
+  box-shadow: 0 2px 8px #0003;
+  padding: 5px;
+  margin: 0 3px;
+  transition: transform 0.13s, box-shadow 0.18s;
+  border: 1.5px solid #2225;
+}
+.universal-icon img, 
+.universal-icon svg {
+  width: 90%;
+  height: 90%;
+  object-fit: contain;
+  border-radius: 8px;
+  background: none;
+  display: block;
+}
+.universal-icon:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 18px #50eaff77;
+}
 .gallery-action-btn {
   width: 28px;
   height: 28px;
