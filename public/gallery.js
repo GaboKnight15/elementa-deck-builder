@@ -69,7 +69,7 @@ function createCardGallery(card) {
         actionRow.style.justifyContent = "center";
         actionRow.style.gap = "0.6em";
         actionRow.style.margin = "3px 0 3px 0";
-    // Create button
+        // Create button
     const createBtn = document.createElement('img');
     createBtn.src = 'images/create-icon.png'; // use your actual image path
     createBtn.alt = 'Create';
@@ -77,19 +77,28 @@ function createCardGallery(card) {
     createBtn.className = 'gallery-action-btn';
     createBtn.style.cursor = 'pointer';
     createBtn.onclick = function(e) {
-      e.stopPropagation();
-      // Example cost, adjust per rarity/type
-      const cost = 50; // could make a function getEssenceCreateCost(card)
-      if (getEssence() < cost) {
-        alert('Not enough Essence!');
-        return;
-      }
-      const collection = getCollection();
-      collection[card.id] = (collection[card.id] || 0) + 1;
-      setCollection(collection);
-      setEssence(getEssence() - cost);
-      renderGallery();
-    };
+  e.stopPropagation();
+  const cost = 50;
+  if (getEssence() < cost) {
+    alert('Not enough Essence!');
+    return;
+  }
+  const collection = getCollection();
+  const wasOwned = collection[card.id] > 0; // check before increment
+  collection[card.id] = (collection[card.id] || 0) + 1;
+  setCollection(collection);
+  setEssence(getEssence() - cost);
+
+  // Mark as new if previously not owned
+  if (!wasOwned && collection[card.id] > 0) {
+    const newCards = getNewlyUnlockedCards();
+    if (!newCards.includes(card.id)) {
+      newCards.push(card.id);
+      setNewlyUnlockedCards(newCards);
+    }
+  }
+  renderGallery();
+};
 
     // Void button
     const voidBtn = document.createElement('img');
