@@ -2079,6 +2079,19 @@ button {
 .shop-cardback-img.unlocked {
   border-color: #ffe066;
 }
+.toast-message {
+  position: fixed;
+  left: 50%; top: 70px;
+  transform: translateX(-50%);
+  background: #222; color: #ff0;
+  padding: 10px 24px;
+  border-radius: 10px;
+  opacity: 0; transition: opacity 0.3s;
+  z-index: 9999;
+  pointer-events: none;
+  font-size: 1.1em;
+}
+.toast-message.show { opacity: 1; }
 @media (max-width: 600px) {
   #profile-menu {
     left: 50%;
