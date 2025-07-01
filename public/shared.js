@@ -331,7 +331,13 @@ function renderDailyMissions() {
       const btn = document.createElement('button');
       btn.className = 'btn-primary mission-claim-btn';
       btn.textContent = 'Claim';
-      btn.onclick = () => claimMissionReward(mission);
+      btn.onclick = () => {
+      claimMissionReward(mission);
+      entry.classList.add('achievement-fade-out');
+      setTimeout(() => {
+        entry.remove();
+      }, 800);
+    };
       entry.appendChild(btn);
     } else if (progress.claimed) {
       const badge = document.createElement('div');
@@ -363,13 +369,19 @@ function renderWeeklyMissions() {
         +${mission.reward.amount}
       </div>
     `;
-    if (progress.completed && !progress.claimed) {
-      const btn = document.createElement('button');
-      btn.className = 'btn-primary mission-claim-btn';
-      btn.textContent = 'Claim';
-      btn.onclick = () => claimMissionReward(mission);
-      entry.appendChild(btn);
-    } else if (progress.claimed) {
+if (progress.completed && !progress.claimed) {
+  const btn = document.createElement('button');
+  btn.className = 'btn-primary mission-claim-btn';
+  btn.textContent = 'Claim';
+  btn.onclick = () => {
+    claimMissionReward(mission);
+    entry.classList.add('achievement-fade-out');
+    setTimeout(() => {
+      entry.remove();
+    }, 800);
+  };
+  entry.appendChild(btn);
+} else if (progress.claimed) {
       const badge = document.createElement('div');
       badge.className = 'mission-claimed-badge';
       badge.textContent = 'Claimed!';
