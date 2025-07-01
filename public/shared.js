@@ -185,7 +185,16 @@ function setCollection(collection) {
 }
 if (typeof firebase !== "undefined" && firebase.auth) {
   firebase.auth().onAuthStateChanged(function(user) {
+    // DOM refs
+    const mainHeader = document.getElementById('main-header');
+    const appMain = document.getElementById('app-main');
+    const loginMenu = document.getElementById('login-menu');
+
     if (user) {
+      if (mainHeader) mainHeader.style.display = "";
+      if (appMain) appMain.style.display = "";
+      if (loginMenu) loginMenu.style.display = "none";
+
       loadPlayerCurrencyEssence();
       loadCollection().then(collection => {
         playerCollection = collection || {};
@@ -193,6 +202,10 @@ if (typeof firebase !== "undefined" && firebase.auth) {
         if (typeof window.renderShop === "function") window.renderShop();
       });
     } else {
+      if (mainHeader) mainHeader.style.display = "none";
+      if (appMain) appMain.style.display = "none";
+      if (loginMenu) loginMenu.style.display = "";
+
       playerCollection = {};
       playerCurrency = 0;
       playerEssence = 0;
