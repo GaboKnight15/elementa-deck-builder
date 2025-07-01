@@ -71,7 +71,7 @@ function createCardGallery(card) {
         actionRow.style.margin = "3px 0 3px 0";
         // Create button
     const createBtn = document.createElement('img');
-    createBtn.src = 'images/create-icon.png'; // use your actual image path
+    createBtn.src = 'OtherImages/Icons/Essence.png';
     createBtn.alt = 'Create';
     createBtn.title = 'Create (spend Essence to make 1 copy)';
     createBtn.className = 'gallery-action-btn';
@@ -102,7 +102,7 @@ function createCardGallery(card) {
 
     // Void button
     const voidBtn = document.createElement('img');
-    voidBtn.src = 'images/void-icon.png'; // use your actual image path
+    voidBtn.src = 'OtherImages/Icons/Void.png';
     voidBtn.alt = 'Void';
     voidBtn.title = 'Void (destroy 1 copy for Essence)';
     voidBtn.className = 'gallery-action-btn';
