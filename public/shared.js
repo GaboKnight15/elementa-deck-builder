@@ -865,7 +865,3 @@ window.addEventListener('DOMContentLoaded', () => {
   updateMissionsNotificationDot();
   updateAchievementsNotificationDot();
 });
-loadCollection().then(collection => {
-  playerCollection = collection || {};
-  window.renderGallery(); // re-render with loaded data
-});
