@@ -49,3 +49,38 @@ function loadProgress(callback) {
     callback(null);
   }
 }
+
+// Save just the collection
+function saveCollection(collection) {
+  const user = firebase.auth().currentUser;
+  if (user) {
+    const db = firebase.firestore();
+    db.collection('users').doc(user.uid).set({ collection }, { merge: true })
+      .then(() => console.log("Collection saved!"))
+      .catch((error) => console.error("Error saving collection: ", error));
+  }
+}
+
+// Load just the collection (returns a promise)
+function loadCollection() {
+  return new Promise((resolve, reject) => {
+    const user = firebase.auth().currentUser;
+    if (user) {
+      const db = firebase.firestore();
+      db.collection('users').doc(user.uid).get()
+        .then((doc) => {
+          if (doc.exists && doc.data().collection) {
+            resolve(doc.data().collection);
+          } else {
+            resolve({}); // No collection yet
+          }
+        })
+        .catch((error) => {
+          console.error("Error loading collection: ", error);
+          reject(error);
+        });
+    } else {
+      resolve({}); // Not logged in
+    }
+  });
+}
