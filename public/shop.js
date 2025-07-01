@@ -2,7 +2,7 @@
 // === SHOP LOGIC ===
 // ==========================
 
-// DOM references
+// DOM references 
 const shopSection = document.getElementById('shop-section');
 const shopContainer = document.getElementById('shop-container');
 const packOpeningModal = document.getElementById('pack-opening-modal');
