@@ -259,9 +259,14 @@ function showHandCardMenu(instanceId, cardDiv) {
   // Define actions
   const buttons = [
     {
-      text: "Play",
-      onClick: function(e) {
-        e.stopPropagation();
+  text: "Play",
+  onClick: function(e) {
+    e.stopPropagation();
+    // Find the cardDiv and the destination zoneDiv
+    const cardDiv = this.closest('.card-battlefield');
+    const destinationDiv = document.getElementById('player-creatures-zone');
+    if (cardDiv && destinationDiv) {
+      animateCardMove(cardDiv, destinationDiv, () => {
         moveCard(instanceId, gameState.playerHand, gameState.playerCreatures, { orientation: "vertical" });
         emitGameAction({
           type: 'play_card',
@@ -270,9 +275,23 @@ function showHandCardMenu(instanceId, cardDiv) {
           to: 'creatures',
           extra: { orientation: "vertical" }
         });
+        // Remove menu
         this.closest('.card-menu').remove();
-      }
-    },
+      });
+    } else {
+      // fallback if can't animate
+      moveCard(instanceId, gameState.playerHand, gameState.playerCreatures, { orientation: "vertical" });
+      emitGameAction({
+        type: 'play_card',
+        cardId: instanceId,
+        from: 'hand',
+        to: 'creatures',
+        extra: { orientation: "vertical" }
+      });
+      this.closest('.card-menu').remove();
+    }
+  }
+}
     {
       text: "Send to Void",
       onClick: function(e) {
@@ -1105,6 +1124,41 @@ function handleOpponentAction(action) {
     default:
       console.warn("Unknown opponent action:", action);
   }
+}
+  // CARD ANIMATIONS
+function animateCardMove(cardDiv, destinationDiv, callback) {
+  // Get starting and ending positions
+  const startRect = cardDiv.getBoundingClientRect();
+  const endRect = destinationDiv.getBoundingClientRect();
+
+  // Clone the cardDiv for animation
+  const animCard = cardDiv.cloneNode(true);
+  animCard.style.position = 'fixed';
+  animCard.style.left = startRect.left + 'px';
+  animCard.style.top = startRect.top + 'px';
+  animCard.style.width = startRect.width + 'px';
+  animCard.style.height = startRect.height + 'px';
+  animCard.style.pointerEvents = 'none';
+  animCard.style.zIndex = 10000;
+  animCard.classList.add('card-move-animate');
+
+  document.body.appendChild(animCard);
+
+  // Force reflow for transition
+  void animCard.offsetWidth;
+
+  // Animate to destination
+  animCard.style.transition = 'all 0.5s cubic-bezier(.33,1.62,.46,.98)';
+  animCard.style.left = endRect.left + 'px';
+  animCard.style.top = endRect.top + 'px';
+  animCard.style.transform = 'scale(1.15) rotate(-5deg)';
+  animCard.style.opacity = '0.92';
+
+  // After transition, remove it and call callback
+  animCard.addEventListener('transitionend', () => {
+    animCard.remove();
+    if (callback) callback();
+  });
 }
 // Make available globally if called from client.js:
 window.setupBattlefieldGame = setupBattlefieldGame;
