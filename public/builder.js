@@ -59,9 +59,9 @@ const deckCardbackArtList = document.getElementById('deck-cardback-art-list');
 const closeDeckCardbackModalBtn = document.getElementById('close-deck-cardback-modal');
 // Cardback options (expand as needed)
 const cardbackOptions = [
-  "CardImages/Cardbacks/Cardback1.png",
-  "CardImages/Cardbacks/Cardback2.png",
-  "CardImages/Cardbacks/DefaultCardback.png"
+  "OtherImages/Cardbacks/Cardback1.png",
+  "OtherImages/Cardbacks/Cardback2.png",
+  "OtherImages/Cardbacks/DefaultCardback.png"
 ];
 // Get collection from localStorage using shared.js util
 function showDeckSelection() {
@@ -231,7 +231,7 @@ closeDeckBannerModalBtn.onclick = () => (deckBannerModal.style.display = "none")
 // Update displayed cardback in deck menu
 function updateDeckCardback(deckName) {
   const deck = decks[deckName] || {};
-  deckCardbackImg.src = deck.cardbackArt || "CardImages/Cardbacks/DefaultCardback.png";
+  deckCardbackImg.src = deck.cardbackArt || "OtherImages/Cardbacks/DefaultCardback.png";
 }
 
 // Make cardback image clickable to open the modal
@@ -242,7 +242,7 @@ deckCardbackImg.onclick = function() {
   const deck = decks[deckName] || {};
   const unlocked = getUnlockedCardbacks ? getUnlockedCardbacks() : 
     (window.getUnlockedCardbacks ? window.getUnlockedCardbacks() : 
-      ["CardImages/Cardbacks/DefaultCardback.png"]);
+      ["OtherImages/Cardbacks/DefaultCardback.png"]);
   unlocked.forEach(cb => {
     const img = document.createElement('img');
     img.src = cb;
