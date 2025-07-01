@@ -501,7 +501,13 @@ function renderAchievements() {
       const btn = document.createElement('button');
       btn.className = 'btn-primary mission-claim-btn';
       btn.textContent = 'Claim';
-      btn.onclick = () => claimAchievementReward(ach);
+      btn.onclick = () => {
+      claimAchievementReward(ach);
+      entry.classList.add('achievement-fade-out');
+      setTimeout(() => {
+        entry.remove();
+      }, 800);
+    };
       entry.appendChild(btn);
     } else if (progress.claimed) {
       const badge = document.createElement('div');
