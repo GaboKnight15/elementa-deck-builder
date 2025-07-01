@@ -384,8 +384,9 @@ async function renderShopCosmetics({
 }) {
   const grid = document.getElementById(gridId);
   if (!grid) return;
+  let unlocked = await getUnlocked();      
   grid.innerHTML = '';
-  let unlocked = await getUnlocked();
+
   options.forEach(src => {
     if (unlocked.includes(src)) return;
     const price = prices[src] !== undefined ? prices[src] : 100;
