@@ -41,6 +41,14 @@ const WEEKLY_MISSIONS = [
     reward: { type: 'currency', amount: 500 }
   }
 ];
+const ACHIEVEMENTS = [
+  {
+    id: 'collect_3_green_cards',
+    description: 'Collect 3 green cards',
+    goal: 3,
+    reward: { type: 'currency', amount: 200 }
+  }
+];
 // ==========================
 // === SECTION NAVIGATION ===
 // ==========================
@@ -387,6 +395,109 @@ document.getElementById('daily-missions-modal').onclick = function(e) {
   if (e.target === this) this.style.display = 'none';
 };
 document.getElementById('weekly-missions-modal').onclick = function(e) {
+  if (e.target === this) this.style.display = 'none';
+};
+// 2. Persistence Helpers
+function getAchievementData() {
+  return JSON.parse(localStorage.getItem('achievements') || '{}');
+}
+function setAchievementData(data) {
+  localStorage.setItem('achievements', JSON.stringify(data));
+}
+
+// 3. Get progress for an achievement
+function getAchievementProgress(ach) {
+  let data = getAchievementData();
+  if (!data[ach.id]) {
+    data[ach.id] = { progress: 0, completed: false, claimed: false };
+    setAchievementData(data);
+  }
+  return data[ach.id];
+}
+
+// 4. Increment achievement progress by value (default 1)
+function incrementAchievementProgress(achievementId, amount = 1) {
+  let data = getAchievementData();
+  const ach = ACHIEVEMENTS.find(a => a.id === achievementId);
+  if (!ach) return;
+  if (!data[achievementId]) data[achievementId] = { progress: 0, completed: false, claimed: false };
+  if (data[achievementId].completed) return; // Already complete
+
+  data[achievementId].progress = Math.min(ach.goal, (data[achievementId].progress || 0) + amount);
+  if (data[achievementId].progress >= ach.goal) data[achievementId].completed = true;
+  setAchievementData(data);
+  renderAchievements();
+}
+
+// 5. Set achievement progress directly (for things like "collect X cards")
+function setAchievementProgress(achievementId, value) {
+  let data = getAchievementData();
+  const ach = ACHIEVEMENTS.find(a => a.id === achievementId);
+  if (!ach) return;
+  data[achievementId] = data[achievementId] || { progress: 0, completed: false, claimed: false };
+  data[achievementId].progress = Math.min(ach.goal, value);
+  data[achievementId].completed = data[achievementId].progress >= ach.goal;
+  setAchievementData(data);
+  renderAchievements();
+}
+
+// 6. Claim achievement reward
+function claimAchievementReward(ach) {
+  let data = getAchievementData();
+  if (!data[ach.id] || !data[ach.id].completed || data[ach.id].claimed) return false;
+  setCurrency(getCurrency() + ach.reward.amount);
+  data[ach.id].claimed = true;
+  setAchievementData(data);
+  renderAchievements();
+  return true;
+}
+
+// 7. Render Achievements Modal
+function renderAchievements() {
+  const list = document.getElementById('achievements-list');
+  if (!list) return;
+  list.innerHTML = '';
+  ACHIEVEMENTS.forEach(ach => {
+    const progress = getAchievementProgress(ach);
+    const percent = Math.min(100, Math.round((progress.progress / ach.goal) * 100));
+    const entry = document.createElement('div');
+    entry.className = 'mission-entry';
+
+    entry.innerHTML = `
+      <div class="mission-desc">${ach.description}</div>
+      <div class="mission-progress-bar-wrap">
+        <div class="mission-progress-bar" style="width:${percent}%;"></div>
+      </div>
+      <div style="font-size:0.96em;color:#fff;text-align:right;">${progress.progress} / ${ach.goal}</div>
+      <div class="mission-reward">
+        <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins" style="width:18px;">
+        +${ach.reward.amount}
+      </div>
+    `;
+    if (progress.completed && !progress.claimed) {
+      const btn = document.createElement('button');
+      btn.className = 'btn-primary mission-claim-btn';
+      btn.textContent = 'Claim';
+      btn.onclick = () => claimAchievementReward(ach);
+      entry.appendChild(btn);
+    } else if (progress.claimed) {
+      const badge = document.createElement('div');
+      badge.className = 'mission-claimed-badge';
+      badge.textContent = 'Claimed!';
+      entry.appendChild(badge);
+    }
+    list.appendChild(entry);
+  });
+}
+// 8. Modal open/close and init for Achievements
+document.getElementById('achievements-icon').onclick = function() {
+  renderAchievements();
+  document.getElementById('achievements-modal').style.display = 'flex';
+};
+document.getElementById('close-achievements-modal').onclick = function() {
+  document.getElementById('achievements-modal').style.display = 'none';
+};
+document.getElementById('achievements-modal').onclick = function(e) {
   if (e.target === this) this.style.display = 'none';
 };
 // MENU INSIDE VIEWPORT
