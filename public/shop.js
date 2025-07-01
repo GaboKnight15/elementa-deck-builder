@@ -165,14 +165,14 @@ function getRandomCards(n, setName) {
   return result;
 }
 // CURRENCY DEDUCTION
-function purchaseCosmetic(cost, purchaseCallback) {
+async function purchaseCosmetic(cost, purchaseCallback) {
   let balance = getCurrency();
   if (balance < cost) {
     alert("Not enough coins!");
     return false;
   }
   setCurrency(balance - cost);
-  purchaseCallback();
+  await purchaseCallback(); // <-- Await here for async updates
   return true;
 }
 // Helper: Track which cards are "new" when opening a pack
@@ -404,14 +404,14 @@ async function renderShopAvatars() {
     type: 'avatar',
     price,
     onConfirm: async () => {
-      purchaseCosmetic(price, async () => {
+      return await purchaseCosmetic(price, async () => {
         const updated = await getUnlockedAvatars();
         if (!updated.includes(src)) {
           updated.push(src);
           await setUnlockedAvatars(updated);
-          await renderShopAvatars();
-          alert('Avatar unlocked! Now available in your profile.');
         }
+        await renderShopAvatars();
+        alert('Avatar unlocked! Now available in your profile.');            
       });
     }
   });
@@ -460,14 +460,14 @@ async function renderShopBanners() {
         type: 'banner',
         price,
         onConfirm: async () => {
-          purchaseCosmetic(price, async () => {
+          return await purchaseCosmetic(price, async () => {
           const updated = await getUnlockedBanners();
           if (!updated.includes(src)) {
             updated.push(src);
             await setUnlockedBanners(updated);
-            await renderShopBanners();
-            alert('Banner unlocked! Now available in your profile.');
           }
+          await renderShopBanners();
+          alert('Banner unlocked! Now available in your profile.');
          });   
         }
       });
@@ -491,7 +491,7 @@ async function renderShopCardbacks() {
   grid.innerHTML = '';
   const unlocked = await getUnlockedCardbacks();
   allCardbackOptions.forEach(src => {
-    if (unlocked.includes(src)) return; // Hide unlocked
+    if (unlocked.includes(src)) return;
     const price = typeof cardbackPrices[src] !== "undefined" ? cardbackPrices[src] : 100;
     const wrapper = document.createElement('div');
     wrapper.className = 'shop-cardback-option';
@@ -517,14 +517,14 @@ async function renderShopCardbacks() {
         type: 'cardback',
         price,
         onConfirm: async () => {
-          purchaseCosmetic(price, async () => {
+          return await purchaseCosmetic(price, async () => {
             const updated = await getUnlockedCardbacks();
             if (!updated.includes(src)) {
               updated.push(src);
               await setUnlockedCardbacks(updated);
+              }
               await renderShopCardbacks();
               alert('Cardback unlocked! Now available in your deck options.');
-              }
             });
           }
       });
