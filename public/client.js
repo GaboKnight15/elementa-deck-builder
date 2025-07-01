@@ -43,8 +43,8 @@ socket.on('opponent joined', (opponentId) => {
   status.textContent = "Opponent joined! You can start chatting.";
 });
 // --- Submit deck to server for multiplayer sync ---
-function submitDeckToServer() {
-  // Assumes getCurrentDeck() is globally available (from app.js)
+async function submitDeckToServer() {
+  if (typeof loadDeckState === "function") await loadDeckState();
   if (typeof getCurrentDeck === "function") {
     myDeckObj = getCurrentDeck();
     socket.emit('submit deck', currentRoomId, myDeckObj);
