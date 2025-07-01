@@ -259,9 +259,9 @@ function showHandCardMenu(instanceId, cardDiv) {
   const buttons = [
 {
   text: "Play",
-  onClick: function(e) {
+  onClick: async function(e) {
     e.stopPropagation();
-    moveCardUniversal({
+    await moveCardUniversal({
       instanceId,
       fromArr: gameState.playerHand,
       toArr: gameState.playerCreatures,
@@ -274,9 +274,9 @@ function showHandCardMenu(instanceId, cardDiv) {
 },
 {
   text: "Send to Void",
-  onClick: function(e) {
+  onClick: async function(e) {
     e.stopPropagation();
-    moveCardUniversal({
+    await moveCardUniversal({
       instanceId,
       fromArr: gameState.playerHand,
       toArr: gameState.playerVoid,
@@ -286,20 +286,20 @@ function showHandCardMenu(instanceId, cardDiv) {
     this.closest('.card-menu').remove();
   }
 },
-    {
-      text: "Return to Deck",
-      onClick: function(e) {
-        e.stopPropagation();
-        moveCardUniversal({
-          instanceId,
-          fromArr: gameState.playerHand,
-          toArr: gameState.playerDeck,
-          fromZoneId: "player-hand",
-          toZoneId: "player-deck-zone"
-        });
-        this.closest('.card-menu').remove();
-      }
-    },
+{
+  text: "Return to Deck",
+  onClick: async function(e) {
+    e.stopPropagation();
+    await moveCardUniversal({
+      instanceId,
+      fromArr: gameState.playerHand,
+      toArr: gameState.playerDeck,
+      fromZoneId: "player-hand",
+      toZoneId: "player-deck-zone"
+    });
+    this.closest('.card-menu').remove();
+  }
+},
     {
       text: "View",
       onClick: function(e) {
