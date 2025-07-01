@@ -65,20 +65,14 @@ function createCardGallery(card) {
     const name = document.createElement('h4');
     name.textContent = card.name;
     const actionRow = document.createElement('div');
-    actionRow.style.display = "flex";
-    actionRow.style.justifyContent = "center";
-    actionRow.style.gap = "0.6em";
-    actionRow.style.margin = "3px 0 3px 0";
+    actionRow.className = "action-row";
     // Create button
     // Essence ("Create") button
 const createBtnImg = document.createElement('img');
 createBtnImg.src = 'OtherImages/Icons/Essence.png';
 createBtnImg.alt = 'Create';
 createBtnImg.title = 'Create (spend Essence to make 1 copy)';
-createBtnImg.className = "gallery-action-btn";    
-createBtnImg.style.cursor = 'pointer';
-createBtnImg.style.background = 'none';
-createBtnImg.style.border = 'none';
+createBtnImg.className = "gallery-action-btn";
 createBtnImg.onclick = function(e) {
       e.stopPropagation();
       const cost = 50;
@@ -109,10 +103,7 @@ const voidBtnImg = document.createElement('img');
 voidBtnImg.src = 'OtherImages/Icons/Void.png';
 voidBtnImg.alt = 'Void';
 voidBtnImg.title = 'Void (destroy 1 copy for Essence)';
-voidBtnImg.className = "gallery-action-btn";    
-voidBtnImg.style.cursor = 'pointer';
-voidBtnImg.style.background = 'none';
-voidBtnImg.style.border = 'none';
+voidBtnImg.className = "gallery-action-btn";
 voidBtnImg.onclick = function(e) {
   e.stopPropagation();
   const collection = getCollection();
