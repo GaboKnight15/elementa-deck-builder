@@ -352,12 +352,14 @@ function renderShopPacks() {
     packOptionsDiv.appendChild(wrapper);
   }
 }
+
 async function getUnlockedAvatars() {
   return await loadUnlockedAvatars();
 }
 async function setUnlockedAvatars(arr) {
   await saveUnlockedAvatars(arr);
 }
+
 async function renderShopCosmetics({
   gridId,
   options,
@@ -371,7 +373,7 @@ async function renderShopCosmetics({
   const grid = document.getElementById(gridId);
   if (!grid) return;
   grid.innerHTML = '';
-  const unlocked = await getUnlocked();
+  let unlocked = await getUnlocked();
   options.forEach(src => {
     if (unlocked.includes(src)) return;
     const price = prices[src] !== undefined ? prices[src] : 100;
@@ -397,11 +399,9 @@ async function renderShopCosmetics({
         type: wrapperClass.replace('shop-','').replace('-option',''), // e.g. 'avatar'
         price,
         onConfirm: async () => {
-          return await purchaseCosmetic(price, async () => {
-            const updated = await getUnlocked();
             if (!updated.includes(src)) {
               updated.push(src);
-              await setUnlocked(updated);
+              await setUnlocked(unlocked);
             }
             await renderShopCosmetics({
               gridId, options, prices, getUnlocked, setUnlocked, unlockMsg, wrapperClass, imgClass
