@@ -403,8 +403,8 @@ async function renderShopAvatars() {
     imgSrc: src,
     type: 'avatar',
     price,
-    onConfirm: () => {
-      purchaseCosmetic(price, () => {
+    onConfirm: async () => {
+      purchaseCosmetic(price, async () => {
         const updated = await getUnlockedAvatars();
         if (!updated.includes(src)) {
           updated.push(src);
@@ -459,8 +459,8 @@ async function renderShopBanners() {
         imgSrc: src,
         type: 'banner',
         price,
-        onConfirm: () => {
-          purchaseCosmetic(price, () => {
+        onConfirm: async () => {
+          purchaseCosmetic(price, async () => {
           const updated = await getUnlockedBanners();
           if (!updated.includes(src)) {
             updated.push(src);
@@ -516,8 +516,8 @@ async function renderShopCardbacks() {
         imgSrc: src,
         type: 'cardback',
         price,
-        onConfirm: () => {
-          purchaseCosmetic(price, () => {
+        onConfirm: async () => {
+          purchaseCosmetic(price, async () => {
             const updated = await getUnlockedCardbacks();
             if (!updated.includes(src)) {
               updated.push(src);
