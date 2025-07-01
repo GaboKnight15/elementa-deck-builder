@@ -364,6 +364,7 @@ function renderDailyMissions() {
   list.innerHTML = '';
   getActiveDailyMissions().forEach(mission => {
     const progress = getMissionProgress(mission);
+    if (progress.claimed) return;
     const percent = Math.min(100, Math.round((progress.progress / mission.goal) * 100));
     const entry = document.createElement('div');
     entry.className = 'mission-entry';
@@ -406,6 +407,7 @@ function renderWeeklyMissions() {
   list.innerHTML = '';
   getActiveWeeklyMissions().forEach(mission => {
     const progress = getMissionProgress(mission);
+    if (progress.claimed) return;
     const percent = Math.min(100, Math.round((progress.progress / mission.goal) * 100));
     const entry = document.createElement('div');
     entry.className = 'mission-entry';
@@ -547,6 +549,7 @@ function renderAchievements() {
   list.innerHTML = '';
   ACHIEVEMENTS.forEach(ach => {
     const progress = getAchievementProgress(ach);
+    if (progress.claimed) return;
     const percent = Math.min(100, Math.round((progress.progress / ach.goal) * 100));
     const entry = document.createElement('div');
     entry.className = 'mission-entry';
