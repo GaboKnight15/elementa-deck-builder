@@ -278,6 +278,31 @@ button {
   margin-top: 4px;
   align-self: flex-end;
 }
+@keyframes achievement-fade-out {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+    max-height: 120px;
+    margin: 10px 0;
+    padding: 12px 14px 10px 14px;
+  }
+  70% {
+    opacity: 0.2;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-40px);
+    max-height: 0;
+    margin: 0;
+    padding: 0 14px;
+  }
+}
+
+.achievement-fade-out {
+  animation: achievement-fade-out 0.8s forwards cubic-bezier(.6,.1,.6,1);
+  pointer-events: none;
+}
 #gallery-cards {
   display: grid;
   background: #1a2533;
