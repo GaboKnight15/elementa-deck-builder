@@ -257,40 +257,29 @@ function showHandCardMenu(instanceId, cardDiv) {
 
   // Define actions
   const buttons = [
-    {
+{
   text: "Play",
   onClick: function(e) {
     e.stopPropagation();
-    // Find the cardDiv and the destination zoneDiv
-    const cardDiv = this.closest('.card-battlefield');
+    const sourceDiv = this.closest('.card-battlefield');
     const destinationDiv = document.getElementById('player-creatures-zone');
-    if (cardDiv && destinationDiv) {
-      animateCardMove(cardDiv, destinationDiv, () => {
-        moveCard(instanceId, gameState.playerHand, gameState.playerCreatures, { orientation: "vertical" });
-        emitGameAction({
-          type: 'play_card',
-          cardId: instanceId,
-          from: 'hand',
-          to: 'creatures',
-          extra: { orientation: "vertical" }
-        });
-        renderGameState();
-        setupDropZones();
-        // Remove menu
-        this.closest('.card-menu').remove();
-      });
-    } else {
-      // fallback if can't animate
-      moveCard(instanceId, gameState.playerHand, gameState.playerCreatures, { orientation: "vertical" });
-      emitGameAction({
-        type: 'play_card',
-        cardId: instanceId,
-        from: 'hand',
-        to: 'creatures',
-        extra: { orientation: "vertical" }
-      });
-      this.closest('.card-menu').remove();
-    }
+    moveCardWithAnimation({
+      instanceId,
+      fromArr: gameState.playerHand,
+      toArr: gameState.playerCreatures,
+      extra: { orientation: "vertical" },
+      sourceDiv,
+      destinationDiv,
+      animationType: "move"
+    });
+    emitGameAction({
+      type: 'play_card',
+      cardId: instanceId,
+      from: 'hand',
+      to: 'creatures',
+      extra: { orientation: "vertical" }
+    });
+    this.closest('.card-menu').remove();
   }
 },
     {
@@ -1125,6 +1114,25 @@ function handleOpponentAction(action) {
     default:
       console.warn("Unknown opponent action:", action);
   }
+}
+async function moveCardWithAnimation({
+  instanceId,
+  fromArr,
+  toArr,
+  extra = {},
+  sourceDiv,
+  destinationDiv,
+  animationType = "move" // could be "move", "flip", "fade", etc. in the future
+}) {
+  if (sourceDiv && destinationDiv && animationType === "move") {
+    await new Promise(resolve => {
+      animateCardMove(sourceDiv, destinationDiv, resolve);
+    });
+  }
+  // After animation (or if not animating), update state and rerender
+  moveCard(instanceId, fromArr, toArr, extra);
+  renderGameState();
+  setupDropZones();
 }
   // CARD ANIMATIONS
 function animateCardMove(cardDiv, destinationDiv, callback) {
