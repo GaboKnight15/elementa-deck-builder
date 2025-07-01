@@ -261,6 +261,10 @@ function showHandCardMenu(instanceId, cardDiv) {
   text: "Play",
   onClick: async function(e) {
     e.stopPropagation();
+    const menu = this.closest('.card-menu');
+    if (menu) menu.remove();
+    // Delay slightly before starting animation to ensure sourceDiv is still in DOM
+    await new Promise(resolve => setTimeout(resolve, 20));
     await moveCardUniversal({
       instanceId,
       fromArr: gameState.playerHand,
@@ -269,7 +273,6 @@ function showHandCardMenu(instanceId, cardDiv) {
       fromZoneId: "player-hand",
       toZoneId: "player-creatures-zone"
     });
-    this.closest('.card-menu').remove();
   }
 },
 {
