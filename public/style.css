@@ -405,9 +405,9 @@ button {
 }
 
 .gallery-action-btn {
-  cursor: 'pointer';
-  background: 'none';
-  border: 'none';
+  cursor: pointer;
+  background: none;
+  border: none;
   width: 38px;
   height: 38px;
   max-width: 38px;
