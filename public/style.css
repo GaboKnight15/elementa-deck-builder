@@ -229,6 +229,24 @@ button {
   transform: scale(1.10);
   filter: drop-shadow(0 2px 12px #ffe066dd);
 }
+.header-notification-dot {
+  position: absolute;
+  top: 5px;
+  right: 2px;
+  width: 13px;
+  height: 13px;
+  background: #ff3b3b;
+  border-radius: 50%;
+  border: 2px solid #fff6;
+  box-shadow: 0 0 6px #ff3b3bcc;
+  z-index: 12;
+  pointer-events: none;
+  display: block;
+}
+#missions-icon-wrapper, #achievements-icon-wrapper {
+  position: relative;
+  display: inline-block;
+}
 .mission-entry {
   background: #232a3c;
   border-radius: 10px;
