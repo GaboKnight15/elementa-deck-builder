@@ -173,14 +173,29 @@ function getNewlyUnlockedCards() {
 function setNewlyUnlockedCards(arr) {
   localStorage.setItem(NEW_CARD_KEY, JSON.stringify(arr));
 }
+// FIREBASE GALLERY
+let playerCollection = {}; // In-memory cache
+
 function getCollection() {
-  return JSON.parse(localStorage.getItem(COLLECTION_KEY)) || {};
+  return playerCollection;
 }
-
 function setCollection(collection) {
-  localStorage.setItem(COLLECTION_KEY, JSON.stringify(collection));
+  playerCollection = collection;
+  saveCollection(collection); // Save to Firestore!
 }
-
+if (typeof firebase !== "undefined" && firebase.auth) {
+  firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+      loadCollection().then(collection => {
+        playerCollection = collection || {};
+        renderGallery();
+      });
+    } else {
+      playerCollection = {};
+      renderGallery();
+    }
+  });
+}
 // ADD CARDS TO COLLECTION 
 function addToCollection(cardId, amount = 1) {
   const collection = getCollection();
@@ -800,4 +815,8 @@ window.addEventListener('DOMContentLoaded', () => {
   // ...existing startup logic...
   updateMissionsNotificationDot();
   updateAchievementsNotificationDot();
+});
+loadCollection().then(collection => {
+  playerCollection = collection || {};
+  renderGallery(); // re-render with loaded data
 });
