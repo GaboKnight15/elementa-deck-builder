@@ -101,6 +101,7 @@ const cardbackPrices = {
   "CardImages/Cardbacks/Cardback2.png": 100,
   "CardImages/Cardbacks/DefaultCardback.png": 100
 };
+
 // Modal for confirmation
 let cosmeticConfirmModal = null;
 
@@ -357,23 +358,29 @@ async function getUnlockedAvatars() {
 async function setUnlockedAvatars(arr) {
   await saveUnlockedAvatars(arr);
 }
-
-// Render avatars shop
-async function renderShopAvatars() {
-  const grid = document.getElementById('shop-avatars-grid');
+async function renderShopCosmetics({
+  gridId,
+  options,
+  prices,
+  getUnlocked,
+  setUnlocked,
+  unlockMsg,
+  wrapperClass,
+  imgClass
+}) {
+  const grid = document.getElementById(gridId);
   if (!grid) return;
   grid.innerHTML = '';
-  const unlocked = await getUnlockedAvatars();
-  allAvatarOptions.forEach(src => {
-    if (unlocked.includes(src)) return; // Hide unlocked
-    const price = typeof avatarPrices[src] !== "undefined" ? avatarPrices[src] : 100;
+  const unlocked = await getUnlocked();
+  options.forEach(src => {
+    if (unlocked.includes(src)) return;
+    const price = prices[src] !== undefined ? prices[src] : 100;
     const wrapper = document.createElement('div');
-    wrapper.className = 'shop-avatar-option';
+    wrapper.className = wrapperClass;
     const img = document.createElement('img');
     img.src = src;
-    img.className = 'shop-avatar-img';
+    img.className = imgClass;
     img.style.cursor = 'pointer';
-    
     const priceTag = document.createElement('span');
     priceTag.className = 'currency-display';
     priceTag.style.display = 'flex';
@@ -384,30 +391,71 @@ async function renderShopAvatars() {
       <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins">
       <span>${price}</span>
     `;
-    
     img.onclick = () => {
-  showCosmeticConfirmModal({
-    imgSrc: src,
-    type: 'avatar',
-    price,
-    onConfirm: async () => {
-      return await purchaseCosmetic(price, async () => {
-        const updated = await getUnlockedAvatars();
-        if (!updated.includes(src)) {
-          updated.push(src);
-          await setUnlockedAvatars(updated);
+      showCosmeticConfirmModal({
+        imgSrc: src,
+        type: wrapperClass.replace('shop-','').replace('-option',''), // e.g. 'avatar'
+        price,
+        onConfirm: async () => {
+          return await purchaseCosmetic(price, async () => {
+            const updated = await getUnlocked();
+            if (!updated.includes(src)) {
+              updated.push(src);
+              await setUnlocked(updated);
+            }
+            await renderShopCosmetics({
+              gridId, options, prices, getUnlocked, setUnlocked, unlockMsg, wrapperClass, imgClass
+            });
+            alert(unlockMsg);
+          });
         }
-        await renderShopAvatars();
-        alert('Avatar unlocked! Now available in your profile.');            
       });
-    }
+    };
+    wrapper.appendChild(img);
+    wrapper.appendChild(priceTag);
+    grid.appendChild(wrapper);
   });
-};
-wrapper.appendChild(img);
-wrapper.appendChild(priceTag);
-grid.appendChild(wrapper);
-});
-}  
+}
+
+// --- USE THE GENERIC FUNCTION FOR EACH COSMETIC TYPE ---
+function renderShopAvatars() {
+  return renderShopCosmetics({
+    gridId: 'shop-avatars-grid',
+    options: allAvatarOptions,
+    prices: avatarPrices,
+    getUnlocked: getUnlockedAvatars,
+    setUnlocked: setUnlockedAvatars,
+    unlockMsg: 'Avatar unlocked! Now available in your profile.',
+    wrapperClass: 'shop-avatar-option',
+    imgClass: 'shop-avatar-img'
+  });
+}
+function renderShopBanners() {
+  return renderShopCosmetics({
+    gridId: 'shop-banners-grid',
+    options: allBannerOptions,
+    prices: bannerPrices,
+    getUnlocked: getUnlockedBanners,
+    setUnlocked: setUnlockedBanners,
+    unlockMsg: 'Banner unlocked! Now available in your profile.',
+    wrapperClass: 'shop-banner-option',
+    imgClass: 'shop-banner-img'
+  });
+}
+function renderShopCardbacks() {
+  return renderShopCosmetics({
+    gridId: 'shop-cardbacks-grid',
+    options: allCardbackOptions,
+    prices: cardbackPrices,
+    getUnlocked: getUnlockedCardbacks,
+    setUnlocked: setUnlockedCardbacks,
+    unlockMsg: 'Cardback unlocked! Now available in your deck options.',
+    wrapperClass: 'shop-cardback-option',
+    imgClass: 'shop-cardback-img'
+  });
+}
+// Render avatars shop
+
 async function getUnlockedBanners() {
   return await loadUnlockedBanners();
 }
@@ -415,55 +463,7 @@ async function setUnlockedBanners(arr) {
   await saveUnlockedBanners(arr);
 }
 
-async function renderShopBanners() {
-  const grid = document.getElementById('shop-banners-grid');
-  if (!grid) return;
-  grid.innerHTML = '';
-  const unlocked = await getUnlockedBanners();
-  allBannerOptions.forEach(src => {
-    if (unlocked.includes(src)) return; // Hide unlocked
-    const price = typeof bannerPrices[src] !== "undefined" ? bannerPrices[src] : 100;
-    const wrapper = document.createElement('div');
-    wrapper.className = 'shop-banner-option';
-    const img = document.createElement('img');
-    img.src = src;
-    img.className = 'shop-banner-img';
-    img.style.cursor = 'pointer';
 
-    const priceTag = document.createElement('span');
-    priceTag.className = 'currency-display';
-    priceTag.style.display = 'flex';
-    priceTag.style.alignItems = 'center';
-    priceTag.style.justifyContent = 'center';
-    priceTag.style.marginTop = '8px';
-    priceTag.innerHTML = `
-      <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins">
-      <span>${price}</span>
-    `;
-    
-    img.onclick = () => {
-      showCosmeticConfirmModal({
-        imgSrc: src,
-        type: 'banner',
-        price,
-        onConfirm: async () => {
-          return await purchaseCosmetic(price, async () => {
-          const updated = await getUnlockedBanners();
-          if (!updated.includes(src)) {
-            updated.push(src);
-            await setUnlockedBanners(updated);
-          }
-          await renderShopBanners();
-          alert('Banner unlocked! Now available in your profile.');
-         });   
-        }
-      });
-    };
-    wrapper.appendChild(img);
-    wrapper.appendChild(priceTag);    
-    grid.appendChild(wrapper);
-  });
-}
 async function getUnlockedCardbacks() {
   return await loadUnlockedCardbacks();
 }
@@ -471,56 +471,7 @@ async function setUnlockedCardbacks(arr) {
   await saveUnlockedCardbacks(arr);
 }
 
-// Render cardbacks shop
-async function renderShopCardbacks() {
-  const grid = document.getElementById('shop-cardbacks-grid');
-  if (!grid) return;
-  grid.innerHTML = '';
-  const unlocked = await getUnlockedCardbacks();
-  allCardbackOptions.forEach(src => {
-    if (unlocked.includes(src)) return;
-    const price = typeof cardbackPrices[src] !== "undefined" ? cardbackPrices[src] : 100;
-    const wrapper = document.createElement('div');
-    wrapper.className = 'shop-cardback-option';
-    const img = document.createElement('img');
-    img.src = src;
-    img.className = 'shop-cardback-img';
-    img.style.cursor = 'pointer';
-    
-    const priceTag = document.createElement('span');
-    priceTag.className = 'currency-display';
-    priceTag.style.display = 'flex';
-    priceTag.style.alignItems = 'center';
-    priceTag.style.justifyContent = 'center';
-    priceTag.style.marginTop = '8px';
-    priceTag.innerHTML = `
-      <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins">
-      <span>${price}</span>
-    `;
-    
-    img.onclick = () => {
-      showCosmeticConfirmModal({
-        imgSrc: src,
-        type: 'cardback',
-        price,
-        onConfirm: async () => {
-          return await purchaseCosmetic(price, async () => {
-            const updated = await getUnlockedCardbacks();
-            if (!updated.includes(src)) {
-              updated.push(src);
-              await setUnlockedCardbacks(updated);
-              }
-              await renderShopCardbacks();
-              alert('Cardback unlocked! Now available in your deck options.');
-            });
-          }
-      });
-    };
-    wrapper.appendChild(img);
-    wrapper.appendChild(priceTag);    
-    grid.appendChild(wrapper);
-  });
-}
+
 
 // INITIALIZATION //
 
