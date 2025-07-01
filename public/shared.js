@@ -22,27 +22,21 @@ const dummyCards = [
 { id: 'basicplains', name: 'Plains', rarity: 'Basic', image: 'CardImages/Domains/White Basic Location.png', category: 'domain', color: 'white', type: 'domain', hp: 5, cost: 1, set: 'StandardPack2'},
 { id: 'basicshadowforest', name: 'Shadow Forest', rarity: 'Basic', image: 'CardImages/Domains/Black Basic Location.png', category: 'domain', color: 'black', type: 'domain', hp: 5, cost: 1, set: 'StandardPack2'},
 ];
-// 1. Mission Definitions (update/add new missions here)
+
+// MISSION LIST
 const DAILY_MISSION_POOL = [
-  // Add as many as you like
-  {
-    id: 'purchase_pack_daily',
-    type: 'daily',
-    description: 'Purchase a Booster Pack',
-    goal: 1,
-    reward: { type: 'currency', amount: 100 }
-  },
-  {
-    id: 'collect_green_card_daily',
-    type: 'daily',
-    description: 'Collect a Green Card',
-    goal: 1,
-    reward: { type: 'currency', amount: 80 }
-  },
-  // ...more
+  { id: 'purchase_pack_daily', type: 'daily', description: 'Purchase a Booster Pack', goal: 1, reward: { type: 'currency', amount: 100 } },
+  { id: 'collect_green_card_daily', type: 'daily', description: 'Collect a Green Card', goal: 1, reward: { type: 'currency', amount: 80 } },
+  { id: 'collect_red_card_daily', type: 'daily', description: 'Collect a Red Card', goal: 1, reward: { type: 'currency', amount: 80 } },
+  { id: 'collect_blue_card_daily', type: 'daily', description: 'Collect a Blue Card', goal: 1, reward: { type: 'currency', amount: 80 } },
+  { id: 'collect_yellow_card_daily', type: 'daily', description: 'Collect a Yellow Card', goal: 1, reward: { type: 'currency', amount: 80 } },
+  { id: 'collect_purple_card_daily', type: 'daily', description: 'Collect a Purple Card', goal: 1, reward: { type: 'currency', amount: 80 } },
+  { id: 'collect_gray_card_daily', type: 'daily', description: 'Collect a Gray Card', goal: 1, reward: { type: 'currency', amount: 80 } },
+  { id: 'collect_black_card_daily', type: 'daily', description: 'Collect a Black Card', goal: 1, reward: { type: 'currency', amount: 80 } },
+  { id: 'collect_white_card_daily', type: 'daily', description: 'Collect a White Card', goal: 1, reward: { type: 'currency', amount: 80 } },
+
 ];
 const WEEKLY_MISSION_POOL = [
-  // Add as many as you like
   {
     id: 'purchase_pack_weekly',
     type: 'weekly',
