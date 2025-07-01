@@ -70,13 +70,15 @@ function createCardGallery(card) {
         actionRow.style.gap = "0.6em";
         actionRow.style.margin = "3px 0 3px 0";
         // Create button
-    const createBtn = document.createElement('img');
-    createBtn.src = 'OtherImages/Icons/Essence.png';
-    createBtn.alt = 'Create';
-    createBtn.title = 'Create (spend Essence to make 1 copy)';
-    createBtn.className = 'universal-icon';
-    createBtn.style.cursor = 'pointer';
-    createBtn.onclick = function(e) {
+// Essence ("Create") button
+const createBtnWrapper = document.createElement('span');
+createBtnWrapper.className = 'universal-icon';
+const createBtnImg = document.createElement('img');
+createBtnImg.src = 'OtherImages/Icons/Essence.png';
+createBtnImg.alt = 'Create';
+createBtnImg.title = 'Create (spend Essence to make 1 copy)';
+createBtnImg.style.cursor = 'pointer';
+createBtnImg.onclick = function(e) {
   e.stopPropagation();
   const cost = 50;
   if (getEssence() < cost) {
@@ -84,7 +86,7 @@ function createCardGallery(card) {
     return;
   }
   const collection = getCollection();
-  const wasOwned = collection[card.id] > 0; // check before increment
+  const wasOwned = collection[card.id] > 0;
   collection[card.id] = (collection[card.id] || 0) + 1;
   setCollection(collection);
   setEssence(getEssence() - cost);
@@ -99,31 +101,33 @@ function createCardGallery(card) {
   }
   renderGallery();
 };
+createBtnWrapper.appendChild(createBtnImg);
 
-    // Void button
-    const voidBtn = document.createElement('img');
-    voidBtn.src = 'OtherImages/Icons/Void.png';
-    voidBtn.alt = 'Void';
-    voidBtn.title = 'Void (destroy 1 copy for Essence)';
-    voidBtn.className = 'universal-icon';
-    voidBtn.style.cursor = 'pointer';
-    voidBtn.onclick = function(e) {
-      e.stopPropagation();
-      const collection = getCollection();
-      if ((collection[card.id] || 0) <= 1) { // changed from <= 0 to <= 1
-        alert('You must keep at least one copy!');
-        return;
-      }
-      // Example return, adjust per rarity/type
-      const refund = 10; // could make a function getEssenceVoidReturn(card)
-      collection[card.id] -= 1;
-      setCollection(collection);
-      setEssence(getEssence() + refund);
-      renderGallery();
-    };
+// Void button
+const voidBtnWrapper = document.createElement('span');
+voidBtnWrapper.className = 'universal-icon';
+const voidBtnImg = document.createElement('img');
+voidBtnImg.src = 'OtherImages/Icons/Void.png';
+voidBtnImg.alt = 'Void';
+voidBtnImg.title = 'Void (destroy 1 copy for Essence)';
+voidBtnImg.style.cursor = 'pointer';
+voidBtnImg.onclick = function(e) {
+  e.stopPropagation();
+  const collection = getCollection();
+  if ((collection[card.id] || 0) <= 1) {
+    alert('You must keep at least one copy!');
+    return;
+  }
+  const refund = 10; // adjust as needed
+  collection[card.id] -= 1;
+  setCollection(collection);
+  setEssence(getEssence() + refund);
+  renderGallery();
+};
+voidBtnWrapper.appendChild(voidBtnImg);
 
-    actionRow.appendChild(createBtn);
-    actionRow.appendChild(voidBtn);
+actionRow.appendChild(createBtnWrapper);
+actionRow.appendChild(voidBtnWrapper);
     div.appendChild(actionRow);
     div.appendChild(name);
 
