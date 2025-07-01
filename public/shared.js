@@ -23,23 +23,41 @@ const dummyCards = [
 { id: 'basicshadowforest', name: 'Shadow Forest', rarity: 'Basic', image: 'CardImages/Domains/Black Basic Location.png', category: 'domain', color: 'black', type: 'domain', hp: 5, cost: 1, set: 'StandardPack2'},
 ];
 // 1. Mission Definitions (update/add new missions here)
-const DAILY_MISSIONS = [
+const DAILY_MISSION_POOL = [
+  // Add as many as you like
   {
     id: 'purchase_pack_daily',
     type: 'daily',
     description: 'Purchase a Booster Pack',
     goal: 1,
     reward: { type: 'currency', amount: 100 }
-  }
+  },
+  {
+    id: 'collect_green_card_daily',
+    type: 'daily',
+    description: 'Collect a Green Card',
+    goal: 1,
+    reward: { type: 'currency', amount: 80 }
+  },
+  // ...more
 ];
-const WEEKLY_MISSIONS = [
+const WEEKLY_MISSION_POOL = [
+  // Add as many as you like
   {
     id: 'purchase_pack_weekly',
     type: 'weekly',
     description: 'Purchase 2 Booster Packs',
     goal: 2,
     reward: { type: 'currency', amount: 500 }
-  }
+  },
+  {
+    id: 'collect_5_unique_cards_weekly',
+    type: 'weekly',
+    description: 'Collect 5 Unique Cards',
+    goal: 5,
+    reward: { type: 'currency', amount: 250 }
+  },
+  // ...more
 ];
 const ACHIEVEMENTS = [
   {
@@ -310,7 +328,7 @@ function renderDailyMissions() {
   const list = document.getElementById('daily-missions-list');
   if (!list) return;
   list.innerHTML = '';
-  DAILY_MISSIONS.forEach(mission => {
+  getActiveDailyMissions().forEach(mission => {
     const progress = getMissionProgress(mission);
     const percent = Math.min(100, Math.round((progress.progress / mission.goal) * 100));
     const entry = document.createElement('div');
@@ -352,7 +370,7 @@ function renderWeeklyMissions() {
   const list = document.getElementById('weekly-missions-list');
   if (!list) return;
   list.innerHTML = '';
-  WEEKLY_MISSIONS.forEach(mission => {
+  getActiveWeeklyMissions().forEach(mission => {
     const progress = getMissionProgress(mission);
     const percent = Math.min(100, Math.round((progress.progress / mission.goal) * 100));
     const entry = document.createElement('div');
@@ -568,7 +586,98 @@ function updateColorAchievements() {
     }
   });
 }
+function getNextDailyResetTime() {
+  const now = new Date();
+  // Next 00:00 UTC
+  const next = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
+  return next.getTime();
+}
+function getNextWeeklyResetTime() {
+  const now = new Date();
+  // Next Monday 00:00 UTC
+  const day = now.getUTCDay();
+  const daysUntilMonday = (8 - day) % 7 || 7; // 0 = today, 1 = next Monday, etc.
+  const next = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + daysUntilMonday));
+  return next.getTime();
+}
+function formatTimer(ms) {
+  const total = Math.max(0, Math.floor(ms / 1000));
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+  return `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+}
+let dailyTimerInterval = null;
+let weeklyTimerInterval = null;
 
+function startDailyMissionTimer() {
+  clearInterval(dailyTimerInterval);
+  function update() {
+    const now = Date.now();
+    const remain = getNextDailyResetTime() - now;
+    const el = document.getElementById('daily-missions-timer');
+    if (el) el.textContent = 'Refreshes in: ' + formatTimer(remain);
+    if (remain <= 0) {
+      refreshDailyMissions();
+      renderDailyMissions();
+      startDailyMissionTimer(); // restart for next cycle
+    }
+  }
+  update();
+  dailyTimerInterval = setInterval(update, 1000);
+}
+function startWeeklyMissionTimer() {
+  clearInterval(weeklyTimerInterval);
+  function update() {
+    const now = Date.now();
+    const remain = getNextWeeklyResetTime() - now;
+    const el = document.getElementById('weekly-missions-timer');
+    if (el) el.textContent = 'Refreshes in: ' + formatTimer(remain);
+    if (remain <= 0) {
+      refreshWeeklyMissions();
+      renderWeeklyMissions();
+      startWeeklyMissionTimer();
+    }
+  }
+  update();
+  weeklyTimerInterval = setInterval(update, 1000);
+}
+function getRandomMissions(pool, count) {
+  // Simple random unique selection
+  const copy = [...pool];
+  const selected = [];
+  while (selected.length < count && copy.length > 0) {
+    const idx = Math.floor(Math.random() * copy.length);
+    selected.push(copy.splice(idx, 1)[0]);
+  }
+  return selected;
+}
+
+// Store currently active missions in localStorage
+function getActiveDailyMissions() {
+  return JSON.parse(localStorage.getItem('activeDailyMissions') || '[]');
+}
+function setActiveDailyMissions(missions) {
+  localStorage.setItem('activeDailyMissions', JSON.stringify(missions));
+}
+function getActiveWeeklyMissions() {
+  return JSON.parse(localStorage.getItem('activeWeeklyMissions') || '[]');
+}
+function setActiveWeeklyMissions(missions) {
+  localStorage.setItem('activeWeeklyMissions', JSON.stringify(missions));
+}
+// Call this on timer expiry or at startup if needed
+function refreshDailyMissions() {
+  const newMissions = getRandomMissions(DAILY_MISSION_POOL, 1); // 1 daily mission, adjust number as needed
+  setActiveDailyMissions(newMissions);
+  // Also reset progress!
+  resetMissionProgress('daily');
+}
+function refreshWeeklyMissions() {
+  const newMissions = getRandomMissions(WEEKLY_MISSION_POOL, 1); // 1 weekly mission, adjust number as needed
+  setActiveWeeklyMissions(newMissions);
+  resetMissionProgress('weekly');
+}
 // In addToCollection, after updating collection:
 updateColorAchievements();
 // MENU INSIDE VIEWPORT
@@ -620,4 +729,14 @@ window.addEventListener('DOMContentLoaded', () => setCurrency(getCurrency()));
 // 9. On load, check for resets
 window.addEventListener('DOMContentLoaded', () => {
   resetMissionsIfNeeded();
+});
+window.addEventListener('DOMContentLoaded', () => {
+  // If no missions picked for today/week, pick them
+  if (getActiveDailyMissions().length === 0) refreshDailyMissions();
+  if (getActiveWeeklyMissions().length === 0) refreshWeeklyMissions();
+  // Render and start timers
+  renderDailyMissions();
+  renderWeeklyMissions();
+  startDailyMissionTimer();
+  startWeeklyMissionTimer();
 });
