@@ -186,13 +186,20 @@ function setCollection(collection) {
 if (typeof firebase !== "undefined" && firebase.auth) {
   firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
+      loadPlayerCurrencyEssence();
       loadCollection().then(collection => {
         playerCollection = collection || {};
-        renderGallery();
+        if (typeof renderGallery === "function") renderGallery();
+        if (typeof window.renderShop === "function") window.renderShop();
       });
     } else {
       playerCollection = {};
-      renderGallery();
+      playerCurrency = 0;
+      playerEssence = 0;
+      setCurrency(0);
+      setEssence(0);
+      if (typeof renderGallery === "function") renderGallery();
+      if (typeof window.renderShop === "function") window.renderShop();
     }
   });
 }
