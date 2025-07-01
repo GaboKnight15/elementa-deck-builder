@@ -364,20 +364,19 @@ function renderShopPacks() {
     };
   });
 }
-function getUnlockedAvatars() {
-  // You could use Firebase/cloud instead
-  return JSON.parse(localStorage.getItem('unlockedAvatars') || '["CardImages/Avatars/Avatar1.png"]');
+async function getUnlockedAvatars() {
+  return await loadUnlockedAvatars();
 }
-function setUnlockedAvatars(arr) {
-  localStorage.setItem('unlockedAvatars', JSON.stringify(arr));
+async function setUnlockedAvatars(arr) {
+  await saveUnlockedAvatars(arr);
 }
 
 // Render avatars shop
-function renderShopAvatars() {
+async function renderShopAvatars() {
   const grid = document.getElementById('shop-avatars-grid');
   if (!grid) return;
   grid.innerHTML = '';
-  const unlocked = getUnlockedAvatars();
+  const unlocked = await getUnlockedAvatars();
   allAvatarOptions.forEach(src => {
     if (unlocked.includes(src)) return; // Hide unlocked
     const price = typeof avatarPrices[src] !== "undefined" ? avatarPrices[src] : 100;
@@ -406,11 +405,11 @@ function renderShopAvatars() {
     price,
     onConfirm: () => {
       purchaseCosmetic(price, () => {
-        const updated = getUnlockedAvatars();
+        const updated = await getUnlockedAvatars();
         if (!updated.includes(src)) {
           updated.push(src);
-          setUnlockedAvatars(updated);
-          renderShopAvatars();
+          await setUnlockedAvatars(updated);
+          await renderShopAvatars();
           alert('Avatar unlocked! Now available in your profile.');
         }
       });
@@ -422,18 +421,18 @@ wrapper.appendChild(priceTag);
 grid.appendChild(wrapper);
 });
 }  
-function getUnlockedBanners() {
-  // Default to an empty array or include your default banner if you want
-  return JSON.parse(localStorage.getItem('unlockedBanners') || '[]');
+async function getUnlockedBanners() {
+  return await loadUnlockedBanners();
 }
-function setUnlockedBanners(arr) {
-  localStorage.setItem('unlockedBanners', JSON.stringify(arr));
+async function setUnlockedBanners(arr) {
+  await saveUnlockedBanners(arr);
 }
-function renderShopBanners() {
+
+async function renderShopBanners() {
   const grid = document.getElementById('shop-banners-grid');
   if (!grid) return;
   grid.innerHTML = '';
-  const unlocked = getUnlockedBanners();
+  const unlocked = await getUnlockedBanners();
   allBannerOptions.forEach(src => {
     if (unlocked.includes(src)) return; // Hide unlocked
     const price = typeof bannerPrices[src] !== "undefined" ? bannerPrices[src] : 100;
@@ -462,11 +461,11 @@ function renderShopBanners() {
         price,
         onConfirm: () => {
           purchaseCosmetic(price, () => {
-          const updated = getUnlockedBanners();
+          const updated = await getUnlockedBanners();
           if (!updated.includes(src)) {
             updated.push(src);
-            setUnlockedBanners(updated);
-            renderShopBanners();
+            await setUnlockedBanners(updated);
+            await renderShopBanners();
             alert('Banner unlocked! Now available in your profile.');
           }
          });   
@@ -478,20 +477,19 @@ function renderShopBanners() {
     grid.appendChild(wrapper);
   });
 }
-function getUnlockedCardbacks() {
-  // Always default to at least the default cardback unlocked
-  return JSON.parse(localStorage.getItem('unlockedCardbacks') || '["CardImages/Cardbacks/DefaultCardback.png"]');
+async function getUnlockedCardbacks() {
+  return await loadUnlockedCardbacks();
 }
-function setUnlockedCardbacks(arr) {
-  localStorage.setItem('unlockedCardbacks', JSON.stringify(arr));
+async function setUnlockedCardbacks(arr) {
+  await saveUnlockedCardbacks(arr);
 }
 
 // Render cardbacks shop
-function renderShopCardbacks() {
+async function renderShopCardbacks() {
   const grid = document.getElementById('shop-cardbacks-grid');
   if (!grid) return;
   grid.innerHTML = '';
-  const unlocked = getUnlockedCardbacks();
+  const unlocked = await getUnlockedCardbacks();
   allCardbackOptions.forEach(src => {
     if (unlocked.includes(src)) return; // Hide unlocked
     const price = typeof cardbackPrices[src] !== "undefined" ? cardbackPrices[src] : 100;
@@ -520,12 +518,11 @@ function renderShopCardbacks() {
         price,
         onConfirm: () => {
           purchaseCosmetic(price, () => {
-            const updated = getUnlockedCardbacks();
+            const updated = await getUnlockedCardbacks();
             if (!updated.includes(src)) {
               updated.push(src);
-              setUnlockedCardbacks(updated);
-              renderShopCardbacks();
-              if (window.renderDeckCardbackChoices) window.renderDeckCardbackChoices();
+              await setUnlockedCardbacks(updated);
+              await renderShopCardbacks();
               alert('Cardback unlocked! Now available in your deck options.');
               }
             });
@@ -539,12 +536,14 @@ function renderShopCardbacks() {
 }
 
 // INITIALIZATION //
-renderShopCardbacks();
-window.renderShopCardbacks = renderShopCardbacks;
-renderShopBanners();
-window.renderShopBanners = renderShopBanners;
-renderShopAvatars();
-window.renderShopAvatars = renderShopAvatars;
+(async () => {
+  await renderShopCardbacks();
+  window.renderShopCardbacks = renderShopCardbacks;
+  await renderShopBanners();
+  window.renderShopBanners = renderShopBanners;
+  await renderShopAvatars();
+  window.renderShopAvatars = renderShopAvatars;
+})();
 
 // Cosmetic shop free unlock handlers
 document.querySelectorAll('.shop-free-btn').forEach(btn => {
