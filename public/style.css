@@ -303,6 +303,14 @@ button {
   animation: achievement-fade-out 0.8s forwards cubic-bezier(.6,.1,.6,1);
   pointer-events: none;
 }
+.missions-timer {
+  text-align: center;
+  font-size: 1.1em;
+  color: #ffe066;
+  margin-bottom: 8px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
 #gallery-cards {
   display: grid;
   background: #1a2533;
