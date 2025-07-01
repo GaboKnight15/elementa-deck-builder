@@ -5,11 +5,11 @@
 // === CONSTANTS & STATE ===
 // ==========================
 // --- MULTI-DECK MANAGEMENT --- //
-  const DECK_SLOTS_KEY = "deckSlots";
-  const DECKS_KEY = "decks";
-  let deckSlots = JSON.parse(localStorage.getItem(DECK_SLOTS_KEY)) || ["Deck 1"];
-  let decks = JSON.parse(localStorage.getItem(DECKS_KEY)) || { "Deck 1": {} };
-  let currentDeckSlot = localStorage.getItem("currentDeckSlot") || deckSlots[0];
+const DECK_SLOTS_KEY = "deckSlots";
+const DECKS_KEY = "decks";
+let deckSlots = ["Deck 1"];
+let decks = { "Deck 1": {} };
+let currentDeckSlot = "Deck 1";
 
 // ==========================
 // === DOM REFERENCES ===
@@ -367,15 +367,14 @@ closeDeckViewModalBtn.onclick = function() {
   deckViewModal.style.display = 'none';
 };
 function saveDeckState() {
-    localStorage.setItem(DECK_SLOTS_KEY, JSON.stringify(deckSlots));
-    localStorage.setItem(DECKS_KEY, JSON.stringify(decks));
-    localStorage.setItem("currentDeckSlot", currentDeckSlot);
+  saveUserDecks(deckSlots, decks, currentDeckSlot);
   }
-function loadDeckState() {
-    deckSlots = JSON.parse(localStorage.getItem(DECK_SLOTS_KEY)) || ["Deck 1"];
-    decks = JSON.parse(localStorage.getItem(DECKS_KEY)) || { "Deck 1": {} };
-    currentDeckSlot = localStorage.getItem("currentDeckSlot") || deckSlots[0];
-  }
+async function loadDeckState() {
+  const data = await loadUserDecks();
+  deckSlots = data.deckSlots;
+  decks = data.decks;
+  currentDeckSlot = data.currentDeckSlot;
+}
 function getCurrentDeck() {
     return decks[currentDeckSlot] || {};
   }
@@ -713,6 +712,11 @@ backBuilderBtn.onclick = showDeckSelection;
 // ==========================
 // === INITIALIZATION ===
 // ==========================
+(async () => {
+  await loadDeckState();
+  refreshDeckSlotSelect();
+  updateDeckDisplay();
+})();
 loadDeckState();
 refreshDeckSlotSelect();
 updateDeckDisplay();
