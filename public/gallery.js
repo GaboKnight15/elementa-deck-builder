@@ -65,26 +65,26 @@ function createCardGallery(card) {
     const name = document.createElement('h4');
     name.textContent = card.name;
     const actionRow = document.createElement('div');
-        actionRow.style.display = "flex";
-        actionRow.style.justifyContent = "center";
-        actionRow.style.gap = "0.6em";
-        actionRow.style.margin = "3px 0 3px 0";
-        // Create button
-// Essence ("Create") button
-const createBtnWrapper = document.createElement('span');
-createBtnWrapper.className = 'universal-icon';
-const createBtnImg = document.createElement('img');
-createBtnImg.src = 'OtherImages/Icons/Essence.png';
-createBtnImg.alt = 'Create';
-createBtnImg.title = 'Create (spend Essence to make 1 copy)';
-createBtnImg.style.cursor = 'pointer';
-createBtnImg.onclick = function(e) {
-  e.stopPropagation();
-  const cost = 50;
-  if (getEssence() < cost) {
-    alert('Not enough Essence!');
-    return;
-  }
+    actionRow.style.display = "flex";
+    actionRow.style.justifyContent = "center";
+    actionRow.style.gap = "0.6em";
+    actionRow.style.margin = "3px 0 3px 0";
+    // Create button
+    // Essence ("Create") button
+    const createBtnWrapper = document.createElement('span');
+    createBtnWrapper.className = 'universal-icon';
+    const createBtnImg = document.createElement('img');
+    createBtnImg.src = 'OtherImages/Icons/Essence.png';
+    createBtnImg.alt = 'Create';
+    createBtnImg.title = 'Create (spend Essence to make 1 copy)';
+    createBtnImg.style.cursor = 'pointer';
+    createBtnImg.onclick = function(e) {
+      e.stopPropagation();
+      const cost = 50;
+      if (getEssence() < cost) {
+        alert('Not enough Essence!');
+        return;
+      }
   const collection = getCollection();
   const wasOwned = collection[card.id] > 0;
   collection[card.id] = (collection[card.id] || 0) + 1;
