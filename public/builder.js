@@ -187,7 +187,7 @@ closeHighlightArtBtn.onclick = () => highlightArtModal.style.display = "none";
 
 function updateDeckBanner(deckName) {
   const deck = decks[deckName] || {};
-  deckBannerImg.src = deck.bannerArt || "CardImages/Banners/DefaultBanner.jpg";
+  deckBannerImg.src = deck.bannerArt || "CardImages/Banners/DefaultBanner.png";
 }
 
 // Make the banner image clickable to open the modal
