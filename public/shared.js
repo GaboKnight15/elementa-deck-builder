@@ -57,6 +57,12 @@ const ACHIEVEMENTS = [
     reward: { type: 'currency', amount: 200 }
   },
   // ...add more colors as needed
+  {
+  id: 'collect_20_unique_cards',
+  description: 'Collect 20 different cards',
+  goal: 20,
+  reward: { type: 'currency', amount: 500 }
+  }
 ];
 // ==========================
 // === SECTION NAVIGATION ===
@@ -177,7 +183,14 @@ function addToCollection(cardId, amount = 1) {
       setNewlyUnlockedCards(newCards);
     }
   }
-  updateColorAchievements();
+  // Update color achievements (generalized)
+  if (typeof updateColorAchievements === 'function') {
+    updateColorAchievements();
+  }
+  // Update unique cards achievement
+  if (typeof updateUniqueCardsAchievement === 'function') {
+    updateUniqueCardsAchievement();
+  }
 }
 
 function getCurrency() {
@@ -510,6 +523,14 @@ document.getElementById('close-achievements-modal').onclick = function() {
 document.getElementById('achievements-modal').onclick = function(e) {
   if (e.target === this) this.style.display = 'none';
 };
+function updateUniqueCardsAchievement() {
+  const collection = getCollection();
+  // Count unique card IDs with at least 1 copy
+  const uniqueCount = Object.keys(collection).filter(id => collection[id] > 0).length;
+  if (typeof setAchievementProgress === 'function') {
+    setAchievementProgress('collect_20_unique_cards', uniqueCount);
+  }
+}
 function updateColorAchievements() {
   const collection = getCollection();
   ACHIEVEMENTS.forEach(ach => {
