@@ -84,3 +84,83 @@ function loadCollection() {
     }
   });
 }
+function saveCurrencyEssence(currency, essence) {
+  const user = firebase.auth().currentUser;
+  if (user) {
+    firebase.firestore().collection('users').doc(user.uid)
+      .set({ currency, essence }, { merge: true });
+  }
+}
+function loadCurrencyEssence() {
+  return new Promise((resolve, reject) => {
+    const user = firebase.auth().currentUser;
+    if (user) {
+      firebase.firestore().collection('users').doc(user.uid).get()
+        .then(doc => {
+          if (doc.exists) {
+            const data = doc.data();
+            resolve({
+              currency: data.currency ?? 0,
+              essence: data.essence ?? 0
+            });
+          } else {
+            resolve({ currency: 0, essence: 0 });
+          }
+        })
+        .catch(reject);
+    } else {
+      resolve({ currency: 0, essence: 0 });
+    }
+  });
+}
+function saveMissions(missions) {
+  const user = firebase.auth().currentUser;
+  if (user) {
+    firebase.firestore().collection('users').doc(user.uid)
+      .set({ missions }, { merge: true });
+  }
+}
+function loadMissions() {
+  return new Promise((resolve, reject) => {
+    const user = firebase.auth().currentUser;
+    if (user) {
+      firebase.firestore().collection('users').doc(user.uid).get()
+        .then(doc => {
+          if (doc.exists && doc.data().missions) {
+            resolve(doc.data().missions);
+          } else {
+            resolve({});
+          }
+        })
+        .catch(reject);
+    } else {
+      resolve({});
+    }
+  });
+}
+
+function saveAchievements(achievements) {
+  const user = firebase.auth().currentUser;
+  if (user) {
+    firebase.firestore().collection('users').doc(user.uid)
+      .set({ achievements }, { merge: true });
+  }
+}
+function loadAchievements() {
+  return new Promise((resolve, reject) => {
+    const user = firebase.auth().currentUser;
+    if (user) {
+      firebase.firestore().collection('users').doc(user.uid).get()
+        .then(doc => {
+          if (doc.exists && doc.data().achievements) {
+            resolve(doc.data().achievements);
+          } else {
+            resolve({});
+          }
+        })
+        .catch(reject);
+    } else {
+      resolve({});
+    }
+  });
+}
