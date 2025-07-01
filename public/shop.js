@@ -354,12 +354,24 @@ function renderShopPacks() {
 }
 
 async function getUnlockedAvatars() {
-  return await loadUnlockedAvatars();
+  return (await loadUnlockedAvatars()) || [];
 }
 async function setUnlockedAvatars(arr) {
   await saveUnlockedAvatars(arr);
 }
 
+async function getUnlockedBanners() {
+  return (await loadUnlockedBanners()) || [];
+}
+async function setUnlockedBanners(arr) {
+  await saveUnlockedBanners(arr);
+}
+async function getUnlockedCardbacks() {
+  return (await loadUnlockedCardbacks()) || [];
+}
+async function setUnlockedCardbacks(arr) {
+  await saveUnlockedCardbacks(arr);
+}
 async function renderShopCosmetics({
   gridId,
   options,
@@ -454,27 +466,8 @@ function renderShopCardbacks() {
     imgClass: 'shop-cardback-img'
   });
 }
-// Render avatars shop
-
-async function getUnlockedBanners() {
-  return await loadUnlockedBanners();
-}
-async function setUnlockedBanners(arr) {
-  await saveUnlockedBanners(arr);
-}
-
-
-async function getUnlockedCardbacks() {
-  return await loadUnlockedCardbacks();
-}
-async function setUnlockedCardbacks(arr) {
-  await saveUnlockedCardbacks(arr);
-}
-
-
 
 // INITIALIZATION //
-
 
 // Cosmetic shop free unlock handlers
 document.querySelectorAll('.shop-free-btn').forEach(btn => {
