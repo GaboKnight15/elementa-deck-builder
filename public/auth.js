@@ -289,6 +289,10 @@ const defaultBanner = "CardImages/Banners/DefaultBanner.png";
       mainNav.classList.add('active');
       loadProfile(user);
       loadPlayerCollection();
+      await loadDeckState();
+      refreshDeckSlotSelect();
+      updateDeckDisplay();
+      renderBuilder();  
       loadPlayerCurrencyEssence();
       loadPlayerMissionsAchievements();  
     } else {
@@ -302,11 +306,17 @@ const defaultBanner = "CardImages/Banners/DefaultBanner.png";
       loginPasswordInput.value = "";
       loginError.textContent = "";
       playerCollection = {};
+      deckSlots = ["Deck 1"];
+      decks = { "Deck 1": {} };
+      currentDeckSlot = "Deck 1";
       playerCurrency = 0;
       playerEssence = 0;
       playerMissions = {};
       playerAchievements = {};
       renderGallery();
+      refreshDeckSlotSelect();
+      updateDeckDisplay();
+      renderBuilder();  
       setCurrency(0);
       setEssence(0);  
      }
