@@ -84,6 +84,42 @@ function loadCollection() {
     }
   });
 }
+// Save decks and slots
+function saveUserDecks(deckSlots, decks, currentDeckSlot) {
+  const user = firebase.auth().currentUser;
+  if (user) {
+    return firebase.firestore().collection('users').doc(user.uid)
+      .set({ deckSlots, decks, currentDeckSlot }, { merge: true });
+  }
+  return Promise.resolve();
+}
+// Load decks and slots
+function loadUserDecks() {
+  const user = firebase.auth().currentUser;
+  if (user) {
+    return firebase.firestore().collection('users').doc(user.uid).get()
+      .then(doc => {
+        if (doc.exists) {
+          const data = doc.data();
+          return {
+            deckSlots: data.deckSlots || ["Deck 1"],
+            decks: data.decks || { "Deck 1": {} },
+            currentDeckSlot: data.currentDeckSlot || (data.deckSlots && data.deckSlots[0]) || "Deck 1"
+          };
+        }
+        return {
+          deckSlots: ["Deck 1"],
+          decks: { "Deck 1": {} },
+          currentDeckSlot: "Deck 1"
+        };
+      });
+  }
+  return Promise.resolve({
+    deckSlots: ["Deck 1"],
+    decks: { "Deck 1": {} },
+    currentDeckSlot: "Deck 1"
+  });
+}
 function saveCurrencyEssence(currency, essence) {
   const user = firebase.auth().currentUser;
   if (user) {
