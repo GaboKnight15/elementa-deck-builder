@@ -399,8 +399,8 @@ async function renderShopCosmetics({
         type: wrapperClass.replace('shop-','').replace('-option',''), // e.g. 'avatar'
         price,
         onConfirm: async () => {
-            if (!updated.includes(src)) {
-              updated.push(src);
+            if (!unlocked.includes(src)) {
+              unlocked.push(src);
               await setUnlocked(unlocked);
             }
             await renderShopCosmetics({
