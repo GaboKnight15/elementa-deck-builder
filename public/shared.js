@@ -196,6 +196,12 @@ if (typeof firebase !== "undefined" && firebase.auth) {
     }
   });
 }
+function loadPlayerCollection() {
+  loadCollection().then(collection => {
+    playerCollection = collection || {};
+    renderGallery();
+  });
+}
 // ADD CARDS TO COLLECTION 
 function addToCollection(cardId, amount = 1) {
   const collection = getCollection();
