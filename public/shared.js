@@ -263,11 +263,7 @@ function getCurrencyHtml(amount) {
   </span>`;
 }
 document.getElementById('add-coins-btn').onclick = function() {
-  let current = parseInt(localStorage.getItem('currency') || '0', 10);
-  current += 100;
-  localStorage.setItem('currency', current);
-  const el = document.getElementById('currency-amount');
-  if (el) el.textContent = current;
+  setCurrency(getCurrency() + 100); // This uses playerCurrency and saves to Firestore!
 };
 // ESSENCE CURRENCY
 function getEssence()     { return playerEssence; }
