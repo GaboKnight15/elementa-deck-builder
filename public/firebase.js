@@ -164,3 +164,55 @@ function loadAchievements() {
     }
   });
 }
+// --- FIRESTORE UNLOCKS HELPERS ---
+
+function saveUnlockedAvatars(arr) {
+  const user = firebase.auth().currentUser;
+  if (user) {
+    return firebase.firestore().collection('users').doc(user.uid)
+      .set({ unlockedAvatars: arr }, { merge: true });
+  }
+  return Promise.resolve();
+}
+function loadUnlockedAvatars() {
+  const user = firebase.auth().currentUser;
+  if (user) {
+    return firebase.firestore().collection('users').doc(user.uid).get()
+      .then(doc => (doc.exists && doc.data().unlockedAvatars) ? doc.data().unlockedAvatars : []);
+  }
+  return Promise.resolve([]);
+}
+
+function saveUnlockedBanners(arr) {
+  const user = firebase.auth().currentUser;
+  if (user) {
+    return firebase.firestore().collection('users').doc(user.uid)
+      .set({ unlockedBanners: arr }, { merge: true });
+  }
+  return Promise.resolve();
+}
+function loadUnlockedBanners() {
+  const user = firebase.auth().currentUser;
+  if (user) {
+    return firebase.firestore().collection('users').doc(user.uid).get()
+      .then(doc => (doc.exists && doc.data().unlockedBanners) ? doc.data().unlockedBanners : []);
+  }
+  return Promise.resolve([]);
+}
+
+function saveUnlockedCardbacks(arr) {
+  const user = firebase.auth().currentUser;
+  if (user) {
+    return firebase.firestore().collection('users').doc(user.uid)
+      .set({ unlockedCardbacks: arr }, { merge: true });
+  }
+  return Promise.resolve();
+}
+function loadUnlockedCardbacks() {
+  const user = firebase.auth().currentUser;
+  if (user) {
+    return firebase.firestore().collection('users').doc(user.uid).get()
+      .then(doc => (doc.exists && doc.data().unlockedCardbacks) ? doc.data().unlockedCardbacks : []);
+  }
+  return Promise.resolve([]);
+}
