@@ -71,14 +71,15 @@ function createCardGallery(card) {
     actionRow.style.margin = "3px 0 3px 0";
     // Create button
     // Essence ("Create") button
-    const createBtnWrapper = document.createElement('span');
-    createBtnWrapper.className = 'universal-icon';
-    const createBtnImg = document.createElement('img');
-    createBtnImg.src = 'OtherImages/Icons/Essence.png';
-    createBtnImg.alt = 'Create';
-    createBtnImg.title = 'Create (spend Essence to make 1 copy)';
-    createBtnImg.style.cursor = 'pointer';
-    createBtnImg.onclick = function(e) {
+const createBtnImg = document.createElement('img');
+createBtnImg.src = 'OtherImages/Icons/Essence.png';
+createBtnImg.alt = 'Create';
+createBtnImg.title = 'Create (spend Essence to make 1 copy)';
+createBtnImg.className = "gallery-action-btn";    
+createBtnImg.style.cursor = 'pointer';
+createBtnImg.style.background = 'none';
+createBtnImg.style.border = 'none';
+createBtnImg.onclick = function(e) {
       e.stopPropagation();
       const cost = 50;
       if (getEssence() < cost) {
@@ -101,16 +102,17 @@ function createCardGallery(card) {
   }
   renderGallery();
 };
-createBtnWrapper.appendChild(createBtnImg);
+actionRow.appendChild(createBtnImg);
 
 // Void button
-const voidBtnWrapper = document.createElement('span');
-voidBtnWrapper.className = 'universal-icon';
 const voidBtnImg = document.createElement('img');
 voidBtnImg.src = 'OtherImages/Icons/Void.png';
 voidBtnImg.alt = 'Void';
 voidBtnImg.title = 'Void (destroy 1 copy for Essence)';
+voidBtnImg.className = "gallery-action-btn";    
 voidBtnImg.style.cursor = 'pointer';
+voidBtnImg.style.background = 'none';
+voidBtnImg.style.border = 'none';
 voidBtnImg.onclick = function(e) {
   e.stopPropagation();
   const collection = getCollection();
@@ -124,12 +126,10 @@ voidBtnImg.onclick = function(e) {
   setEssence(getEssence() + refund);
   renderGallery();
 };
-voidBtnWrapper.appendChild(voidBtnImg);
-
-actionRow.appendChild(createBtnWrapper);
-actionRow.appendChild(voidBtnWrapper);
-    div.appendChild(actionRow);
-    div.appendChild(name);
+actionRow.appendChild(voidBtnImg);
+    
+div.appendChild(actionRow);
+div.appendChild(name);
 
     // "New!" badge
     const newCards = getNewlyUnlockedCards();
