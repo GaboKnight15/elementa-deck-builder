@@ -387,6 +387,7 @@ function claimMissionReward(mission) {
   data[mission.id].claimed = true;
   setMissionData(data);
   updateMissionsNotificationDot();
+  await grantExp(10);
   return true;
 }
 
@@ -579,6 +580,7 @@ function claimAchievementReward(ach) {
   data[ach.id].claimed = true;
   setAchievementData(data);
   updateAchievementsNotificationDot();
+  await grantExp(10);
   return true;
 }
 
