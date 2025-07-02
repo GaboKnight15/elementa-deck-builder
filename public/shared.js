@@ -23,6 +23,7 @@ const dummyCards = [
 { id: 'basicshadowforest', name: 'Shadow Forest', rarity: 'Basic', image: 'CardImages/Domains/Black Basic Location.png', category: 'domain', color: 'black', type: 'domain', hp: 5, cost: 1, set: 'StandardPack2'},
 ];
 
+const COLOR_MISSIONS = ['green', 'red', 'blue', 'yellow', 'purple', 'gray', 'black', 'white'];
 // MISSION LIST
 const DAILY_MISSION_POOL = [
   { id: 'purchase_pack_daily', type: 'daily', description: 'Purchase a Booster Pack', goal: 1, reward: { type: 'currency', amount: 100 } },
@@ -232,16 +233,20 @@ function addToCollection(cardId, amount = 1) {
     }
   }
   // --- Green Card Mission ---
-  const newlyAddedCard = dummyCards.find(c => c.id === cardId);
-  if (newlyAddedCard) {
-    if ((Array.isArray(newlyAddedCard.color) && newlyAddedCard.color.includes('green')) || newlyAddedCard.color === 'green') {
-      [...getActiveDailyMissions(), ...getActiveWeeklyMissions()].forEach(mission => {
-        if (mission.id && mission.id.includes('green_card')) {
-          incrementMissionProgress(mission.id);
-        }
-      });
-    }
-  }
+ const newlyAddedCard = dummyCards.find(c => c.id === cardId);
+if (newlyAddedCard) {
+  const cardColors = Array.isArray(newlyAddedCard.color) ? newlyAddedCard.color : [newlyAddedCard.color];
+  [...getActiveDailyMissions(), ...getActiveWeeklyMissions()].forEach(mission => {
+    COLOR_MISSIONS.forEach(color => {
+      if (
+        mission.id && mission.id.includes(`${color}_card`) &&
+        cardColors.includes(color)
+      ) {
+        incrementMissionProgress(mission.id);
+      }
+    });
+  });
+}
 
   // --- Unique Card Mission ---
   if (!wasOwned && collection[cardId] > 0) {
