@@ -305,6 +305,7 @@ const defaultBanner = "CardImages/Banners/DefaultBanner.png";
       loginEmailInput.value = "";
       loginPasswordInput.value = "";
       loginError.textContent = "";
+        
       playerCollection = {};
       deckSlots = ["Deck 1"];
       decks = { "Deck 1": {} };
@@ -316,9 +317,7 @@ const defaultBanner = "CardImages/Banners/DefaultBanner.png";
       renderGallery();
       refreshDeckSlotSelect();
       updateDeckDisplay();
-      renderBuilder();  
-      setCurrency(0);
-      setEssence(0);  
+      renderBuilder();
      }
   });
 });
