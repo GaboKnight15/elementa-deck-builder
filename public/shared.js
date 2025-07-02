@@ -197,6 +197,7 @@ if (typeof firebase !== "undefined" && firebase.auth) {
         if (typeof window.renderGallery === "function") window.renderGallery();
         if (typeof window.renderShop === "function") window.renderShop();
       });
+      loadPlayerMissionsAchievements();
     } else {
       if (mainHeader) mainHeader.style.display = "none";
       if (appMain) appMain.style.display = "none";
