@@ -619,7 +619,7 @@ function renderAchievements() {
       btn.className = 'btn-primary mission-claim-btn';
       btn.textContent = 'Claim';
       btn.onclick = async () => {
-        async claimAchievementReward(ach);
+        await claimAchievementReward(ach);
         entry.classList.add('achievement-fade-out');
         setTimeout(() => {
           entry.remove();
