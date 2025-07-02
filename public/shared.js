@@ -179,7 +179,7 @@ function setCollection(collection) {
   saveCollection(collection); // Save to Firestore!
 }
 if (typeof firebase !== "undefined" && firebase.auth) {
-  firebase.auth().onAuthStateChanged(function(user) {
+  firebase.auth().onAuthStateChanged(async function(user) {
     // DOM refs
     const mainHeader = document.getElementById('main-header');
     const appMain = document.getElementById('app-main');
@@ -387,7 +387,7 @@ function incrementMissionProgress(missionId) {
 }
 
 // 6. Claim mission reward
-function claimMissionReward(mission) {
+async function claimMissionReward(mission) {
   let data = getMissionData();
   if (!data[mission.id] || !data[mission.id].completed || data[mission.id].claimed) return false;
   setCurrency(getCurrency() + mission.reward.amount);
@@ -426,7 +426,7 @@ function renderDailyMissions() {
       btn.className = 'btn-primary mission-claim-btn';
       btn.textContent = 'Claim';
       btn.onclick = () => {
-      claimMissionReward(mission);
+      await claimMissionReward(mission);
       entry.classList.add('achievement-fade-out');
       setTimeout(() => {
         entry.remove();
@@ -469,7 +469,7 @@ if (progress.completed && !progress.claimed) {
   btn.className = 'btn-primary mission-claim-btn';
   btn.textContent = 'Claim';
   btn.onclick = () => {
-    claimMissionReward(mission);
+    await claimMissionReward(mission);
     entry.classList.add('achievement-fade-out');
     setTimeout(() => {
       entry.remove();
@@ -580,7 +580,7 @@ function setAchievementProgress(achievementId, value) {
 }
 
 // 6. Claim achievement reward
-function claimAchievementReward(ach) {
+async function claimAchievementReward(ach) {
   let data = getAchievementData();
   if (!data[ach.id] || !data[ach.id].completed || data[ach.id].claimed) return false;
   setCurrency(getCurrency() + ach.reward.amount);
@@ -619,7 +619,7 @@ function renderAchievements() {
       btn.className = 'btn-primary mission-claim-btn';
       btn.textContent = 'Claim';
       btn.onclick = () => {
-      claimAchievementReward(ach);
+      async claimAchievementReward(ach);
       entry.classList.add('achievement-fade-out');
       setTimeout(() => {
         entry.remove();
@@ -877,7 +877,7 @@ async function acceptFriendRequest(fromUid, fromUsername) {
   if (!theirFriends.includes(currentUid)) theirFriends.push(currentUid);
   await theirRef.set({ friends: theirFriends }, { merge: true });
   showToast(`You and ${fromUsername} are now friends!`);
-  renderFriendNotifications();
+  await renderFriendNotifications();
   renderFriendsList();
 }
 
@@ -889,7 +889,7 @@ async function declineFriendRequest(fromUid) {
   let requests = doc.data()?.friendRequests || [];
   requests = requests.filter(r => r.fromUid !== fromUid);
   await userRef.set({ friendRequests: requests }, { merge: true });
-  renderFriendNotifications();
+  await renderFriendNotifications();
   renderFriendsList();
 }
 
@@ -904,12 +904,11 @@ async function renderFriendNotifications() {
 }
 
 // Add to DOMContentLoaded and after login
-firebase.auth().onAuthStateChanged(function(user) {
+firebase.auth().onAuthStateChanged(async function(user) {
   if (user) {
-    renderFriendNotifications();
+    await renderFriendNotifications();
   }
 });
-window.addEventListener('DOMContentLoaded', renderFriendNotifications);
 
 // Render pending requests in friend modal
 async function renderFriendsList() {
