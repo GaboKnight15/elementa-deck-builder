@@ -425,7 +425,7 @@ function renderDailyMissions() {
       const btn = document.createElement('button');
       btn.className = 'btn-primary mission-claim-btn';
       btn.textContent = 'Claim';
-      btn.onclick = () => {
+      btn.onclick = async () => {
       await claimMissionReward(mission);
       entry.classList.add('achievement-fade-out');
       setTimeout(() => {
@@ -618,7 +618,7 @@ function renderAchievements() {
       const btn = document.createElement('button');
       btn.className = 'btn-primary mission-claim-btn';
       btn.textContent = 'Claim';
-      btn.onclick = () => {
+      btn.onclick = async () => {
       async claimAchievementReward(ach);
       entry.classList.add('achievement-fade-out');
       setTimeout(() => {
