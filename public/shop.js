@@ -49,9 +49,9 @@ const allBannerOptions = [
     "CardImages/Banners/Solmara.png", 
 ];
 const allCardbackOptions = [
-  "CardImages/Cardbacks/Cardback1.png",
-  "CardImages/Cardbacks/Cardback2.png",
-  "CardImages/Cardbacks/DefaultCardback.png"
+  "OtherImages/Cardbacks/Cardback1.png",
+  "OtherImages/Cardbacks/Cardback2.png",
+  "OtherImages/Cardbacks/DefaultCardback.png"
 ];
 const packPrices = {
   "StandardPack": 100,
@@ -97,9 +97,9 @@ const bannerPrices = {
     "CardImages/Banners/Solmara.png": 100 
 };
 const cardbackPrices = {
-  "CardImages/Cardbacks/Cardback1.png": 100,
-  "CardImages/Cardbacks/Cardback2.png": 100,
-  "CardImages/Cardbacks/DefaultCardback.png": 100
+  "OtherImages/Cardbacks/Cardback1.png": 100,
+  "OtherImages/Cardbacks/Cardback2.png": 100,
+  "OtherImages/Cardbacks/DefaultCardback.png": 100
 };
 
 // Modal for confirmation
