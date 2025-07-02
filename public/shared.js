@@ -903,13 +903,6 @@ async function renderFriendNotifications() {
   if (dot) dot.style.display = requests.length > 0 ? 'block' : 'none';
 }
 
-// Add to DOMContentLoaded and after login
-firebase.auth().onAuthStateChanged(async function(user) {
-  if (user) {
-    await renderFriendNotifications();
-  }
-});
-
 // Render pending requests in friend modal
 async function renderFriendsList() {
   const modal = document.getElementById('friends-modal');
