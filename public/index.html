@@ -72,8 +72,11 @@
    <!-- MISSIONS & ACHIEVEMENTS ICONS -->
   <div id="header-icons">
     <!-- In your HTML header/navigation -->
+   <div style="position:relative; display:inline-block;"> 
     <img id="friends-icon" src="OtherImages/Icons/Friends.png" alt="Friends" style="width:32px;cursor:pointer;margin-right:12px;">
-    <span id="missions-icon-wrapper" style="position:relative;display:inline-block;">
+    <span id="friends-notification-dot" class="header-notification-dot" style="display:none;"></span>
+   </div>
+     <span id="missions-icon-wrapper" style="position:relative;display:inline-block;">
       <img src="OtherImages/Icons/Quest.png" alt="Missions" id="missions-icon" class="header-action-icon" title="Missions">
       <span id="missions-notification-dot" class="header-notification-dot" style="display:none;"></span>
     </span>
@@ -426,13 +429,19 @@
     <button id="close-achievements-modal" class="btn-negative-secondary" style="margin-top:14px;">Close</button>
   </div>
 </div>  
-<!-- Friend List Modal -->
+<!-- FRIEND LIST -->
 <div id="friends-modal" class="modal" style="display:none;">
   <div class="modal-content">
     <button id="close-friends-modal">X</button>
     <h2>Your Friends</h2>
     <input id="add-friend-id" placeholder="Enter Friend ID" />
     <button onclick="addFriend(document.getElementById('add-friend-id').value)">Add Friend</button>
+    <div style="margin-bottom:1em;">
+      <input id="add-friend-username" placeholder="Username" style="padding:4px 8px; border-radius:4px; border:1px solid #333;">
+      <button onclick="sendFriendRequest(document.getElementById('add-friend-username').value)" style="margin-left:8px;">
+        Add Friend
+      </button>
+    </div>
     <div id="friends-list"></div>
   </div>
 </div>
