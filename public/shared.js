@@ -954,14 +954,6 @@ window.acceptFriendRequest = acceptFriendRequest;
 window.declineFriendRequest = declineFriendRequest;
 window.renderFriendsList = renderFriendsList;
 
-// Example: add a text input/button in your modal for username-based add
-// <input id="add-friend-username" placeholder="Username">
-// <button onclick="sendFriendRequest(document.getElementById('add-friend-username').value)">Add Friend</button>
-
-// Red dot in HTML:
-// <span id="friends-notification-dot" class="notification-dot"></span>
-
-
 // Hook up modals and icon
 document.getElementById('friends-icon').onclick = function() {
   renderFriendsList();
@@ -973,6 +965,71 @@ document.getElementById('close-friends-modal').onclick = function() {
 document.getElementById('close-friend-profile-modal').onclick = function() {
   document.getElementById('friend-profile-modal').style.display = 'none';
 };
+
+// PLAYER LEVEL
+// Level curve: you may adjust as you wish!
+function expToNextLevel(level) {
+  return 100 + (level - 1) * 100; // Example: 100, 200, 300, ...
+}
+
+// Load/Save Player Level/EXP from Firestore
+let playerLevel = 1;
+let playerExp = 0;
+
+function getPlayerLevel() { return playerLevel; }
+function getPlayerExp() { return playerExp; }
+
+async function loadPlayerLevelExp() {
+  const uid = firebase.auth().currentUser?.uid;
+  if (!uid) return;
+  const doc = await firebase.firestore().collection('users').doc(uid).get();
+  playerLevel = doc.data()?.level || 1;
+  playerExp = doc.data()?.exp || 0;
+  renderPlayerLevel();
+}
+
+async function savePlayerLevelExp() {
+  const uid = firebase.auth().currentUser?.uid;
+  if (!uid) return;
+  await firebase.firestore().collection('users').doc(uid).set({
+    level: playerLevel,
+    exp: playerExp
+  }, { merge: true });
+}
+
+// Grant EXP, handle level up
+async function grantExp(amount) {
+  if (!amount) return;
+  playerExp += amount;
+  let leveledUp = false;
+  while (playerExp >= expToNextLevel(playerLevel)) {
+    playerExp -= expToNextLevel(playerLevel);
+    playerLevel += 1;
+    leveledUp = true;
+    // Optionally: Give level up rewards here!
+    showToast(`Level Up! You reached Lv ${playerLevel}!`);
+    // TODO: grantLevelReward(playerLevel); // implement as desired
+  }
+  await savePlayerLevelExp();
+  renderPlayerLevel();
+  return leveledUp;
+}
+
+function renderPlayerLevel() {
+  document.getElementById('player-level-label').textContent = "Lv " + playerLevel;
+  const needed = expToNextLevel(playerLevel);
+  const fill = Math.min(100, Math.round((playerExp / needed) * 100));
+  document.getElementById('player-exp-bar-fill').style.width = fill + "%";
+  document.getElementById('player-exp-numbers').textContent = playerExp + "/" + needed;
+}
+
+// On login load, also load level/exp
+firebase.auth().onAuthStateChanged(function(user) {
+  if (user) loadPlayerLevelExp();
+});
+
+// Call renderPlayerLevel on DOMContentLoaded too (in case of reload)
+window.addEventListener('DOMContentLoaded', renderPlayerLevel);
 // MENU INSIDE VIEWPORT
 function placeMenuWithinViewport(menu, triggerRect, preferred = "bottom") {
   // Default position: below the triggering element
