@@ -794,6 +794,76 @@ function showToast(message) {
     setTimeout(() => document.body.removeChild(toast), 300);
   }, 2200);
 }
+// In shared.js
+
+// Storage helpers
+function getFriendIDs() {
+  return JSON.parse(localStorage.getItem('friendIDs') || '[]');
+}
+function setFriendIDs(ids) {
+  localStorage.setItem('friendIDs', JSON.stringify(ids));
+}
+
+// Add friend by ID
+function addFriend(id) {
+  let ids = getFriendIDs();
+  if (!ids.includes(id)) {
+    ids.push(id);
+    setFriendIDs(ids);
+    renderFriendsList();
+  }
+}
+
+// Remove friend
+function removeFriend(id) {
+  let ids = getFriendIDs().filter(fid => fid !== id);
+  setFriendIDs(ids);
+  renderFriendsList();
+}
+
+// Render Friend List Modal
+function renderFriendsList() {
+  const modal = document.getElementById('friends-modal');
+  const list = document.getElementById('friends-list');
+  const ids = getFriendIDs();
+  list.innerHTML = '';
+  if (!ids.length) {
+    list.innerHTML = '<div>No friends yet. Add someone by ID!</div>';
+    return;
+  }
+  ids.forEach(fid => {
+    const entry = document.createElement('div');
+    entry.className = 'friend-entry';
+    entry.innerHTML = `
+      <span>${fid}</span>
+      <button onclick="viewFriendProfile('${fid}')">View</button>
+      <button onclick="removeFriend('${fid}')">Remove</button>
+    `;
+    list.appendChild(entry);
+  });
+}
+
+// View Friend Profile
+function viewFriendProfile(id) {
+  // You can fetch more info from Firestore or show dummy data for now
+  const modal = document.getElementById('friend-profile-modal');
+  const content = document.getElementById('friend-profile-content');
+  content.innerHTML = `<h3>Profile: ${id}</h3>
+    <div>Coming soon: Collection, stats, etc.</div>`;
+  modal.style.display = 'flex';
+}
+
+// Hook up modals and icon
+document.getElementById('friends-icon').onclick = function() {
+  renderFriendsList();
+  document.getElementById('friends-modal').style.display = 'flex';
+};
+document.getElementById('close-friends-modal').onclick = function() {
+  document.getElementById('friends-modal').style.display = 'none';
+};
+document.getElementById('close-friend-profile-modal').onclick = function() {
+  document.getElementById('friend-profile-modal').style.display = 'none';
+};
 // MENU INSIDE VIEWPORT
 function placeMenuWithinViewport(menu, triggerRect, preferred = "bottom") {
   // Default position: below the triggering element
