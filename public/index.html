@@ -71,6 +71,8 @@
   
    <!-- MISSIONS & ACHIEVEMENTS ICONS -->
   <div id="header-icons">
+    <!-- In your HTML header/navigation -->
+    <img id="friends-icon" src="OtherImages/Icons/Friends.png" alt="Friends" style="width:32px;cursor:pointer;margin-right:12px;">
     <span id="missions-icon-wrapper" style="position:relative;display:inline-block;">
       <img src="OtherImages/Icons/Quest.png" alt="Missions" id="missions-icon" class="header-action-icon" title="Missions">
       <span id="missions-notification-dot" class="header-notification-dot" style="display:none;"></span>
@@ -424,7 +426,24 @@
     <button id="close-achievements-modal" class="btn-negative-secondary" style="margin-top:14px;">Close</button>
   </div>
 </div>  
+<!-- Friend List Modal -->
+<div id="friends-modal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <button id="close-friends-modal">X</button>
+    <h2>Your Friends</h2>
+    <input id="add-friend-id" placeholder="Enter Friend ID" />
+    <button onclick="addFriend(document.getElementById('add-friend-id').value)">Add Friend</button>
+    <div id="friends-list"></div>
+  </div>
+</div>
   
+<!-- Friend Profile Modal -->
+<div id="friend-profile-modal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <button id="close-friend-profile-modal">X</button>
+    <div id="friend-profile-content"></div>
+  </div>
+</div>  
                         <!-- Modal for full image view -->
 <div id="deck-selection-modal"></div>
   <!-- DECK MODAL -->
