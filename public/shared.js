@@ -189,7 +189,8 @@ if (typeof firebase !== "undefined" && firebase.auth) {
       if (mainHeader) mainHeader.style.display = "";
       if (appMain) appMain.style.display = "";
       if (loginMenu) loginMenu.style.display = "none";
-
+      await loadPlayerLevelExp();
+      await renderFriendNotifications();
       loadPlayerCurrencyEssence();
       loadCollection().then(collection => {
         playerCollection = collection || {};
@@ -206,6 +207,12 @@ if (typeof firebase !== "undefined" && firebase.auth) {
       playerEssence = 0;
       setCurrency(0);
       setEssence(0);
+      playerLevel = 1;
+      playerExp = 0;
+      renderPlayerLevel();
+      // Hide friend dot
+      const dot = document.getElementById('friends-notification-dot');
+      if (dot) dot.style.display = 'none';
       if (typeof window.renderGallery === "function") window.renderGallery();
       if (typeof window.renderShop === "function") window.renderShop();
     }
@@ -1025,13 +1032,6 @@ function renderPlayerLevel() {
   document.getElementById('player-exp-numbers').textContent = playerExp + "/" + needed;
 }
 
-// On login load, also load level/exp
-firebase.auth().onAuthStateChanged(function(user) {
-  if (user) loadPlayerLevelExp();
-});
-
-// Call renderPlayerLevel on DOMContentLoaded too (in case of reload)
-window.addEventListener('DOMContentLoaded', renderPlayerLevel);
 // MENU INSIDE VIEWPORT
 function placeMenuWithinViewport(menu, triggerRect, preferred = "bottom") {
   // Default position: below the triggering element
