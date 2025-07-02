@@ -796,54 +796,144 @@ function showToast(message) {
 }
 // In shared.js
 
-// --- FIREBASE FRIENDS SYSTEM ---
+// --- FRIEND INVITE SYSTEM WITH FIRESTORE ---
+
+// Utility: get current user info
 function getCurrentUserId() {
   return firebase.auth().currentUser?.uid;
 }
-
-// Fetch friend IDs from Firestore (returns Promise<Array>)
-async function getFriendIDs() {
-  const uid = getCurrentUserId();
-  if (!uid) return [];
-  const doc = await firebase.firestore().collection('users').doc(uid).get();
-  const data = doc.data();
-  return data && Array.isArray(data.friends) ? data.friends : [];
+function getCurrentUsername() {
+  return firebase.auth().currentUser?.displayName; // or store in Firestore
 }
 
-// Save friend IDs to Firestore (overwrites array)
-async function setFriendIDs(ids) {
-  const uid = getCurrentUserId();
-  if (!uid) return;
-  await firebase.firestore().collection('users').doc(uid).set({ friends: ids }, { merge: true });
+// Look up a user by username (returns {uid, username} or null)
+async function findUserByUsername(username) {
+  if (!username) return null;
+  const snap = await firebase.firestore().collection('users')
+    .where('username', '==', username).limit(1).get();
+  if (snap.empty) return null;
+  const doc = snap.docs[0];
+  return { uid: doc.id, ...doc.data() };
 }
 
-// Add friend by ID
-async function addFriend(id) {
-  if (!id) return;
-  let ids = await getFriendIDs();
-  if (!ids.includes(id)) {
-    ids.push(id);
-    await setFriendIDs(ids);
-    renderFriendsList();
+// Send a friend request by username
+async function sendFriendRequest(username) {
+  if (!username) return;
+  const currentUid = getCurrentUserId();
+  const currentUsername = getCurrentUsername();
+  if (!currentUid || !currentUsername) {
+    showToast("You must be logged in!");
+    return;
   }
+  const user = await findUserByUsername(username);
+  if (!user) {
+    showToast("No user found with that username.");
+    return;
+  }
+  if (user.uid === currentUid) {
+    showToast("You can't add yourself!");
+    return;
+  }
+  // Fetch their existing requests
+  const ref = firebase.firestore().collection('users').doc(user.uid);
+  const doc = await ref.get();
+  const requests = doc.data()?.friendRequests || [];
+  // Prevent duplicate requests
+  if (requests.some(r => r.fromUid === currentUid)) {
+    showToast("Request already sent!");
+    return;
+  }
+  // Add request
+  requests.push({ fromUid: currentUid, fromUsername: currentUsername });
+  await ref.set({ friendRequests: requests }, { merge: true });
+  showToast("Friend request sent!");
 }
 
-// Remove friend
-async function removeFriend(id) {
-  let ids = (await getFriendIDs()).filter(fid => fid !== id);
-  await setFriendIDs(ids);
+// Accept a friend request
+async function acceptFriendRequest(fromUid, fromUsername) {
+  const currentUid = getCurrentUserId();
+  const userRef = firebase.firestore().collection('users').doc(currentUid);
+  const doc = await userRef.get();
+  let requests = doc.data()?.friendRequests || [];
+  // Remove from requests
+  requests = requests.filter(r => r.fromUid !== fromUid);
+  // Add to friends
+  let friends = doc.data()?.friends || [];
+  if (!friends.includes(fromUid)) friends.push(fromUid);
+  await userRef.set({ friends, friendRequests: requests }, { merge: true });
+  // Also add you to their friends
+  const theirRef = firebase.firestore().collection('users').doc(fromUid);
+  const theirDoc = await theirRef.get();
+  let theirFriends = theirDoc.data()?.friends || [];
+  if (!theirFriends.includes(currentUid)) theirFriends.push(currentUid);
+  await theirRef.set({ friends: theirFriends }, { merge: true });
+  showToast(`You and ${fromUsername} are now friends!`);
+  renderFriendNotifications();
   renderFriendsList();
 }
 
-// Render Friend List Modal (async)
+// Decline a friend request
+async function declineFriendRequest(fromUid) {
+  const currentUid = getCurrentUserId();
+  const userRef = firebase.firestore().collection('users').doc(currentUid);
+  const doc = await userRef.get();
+  let requests = doc.data()?.friendRequests || [];
+  requests = requests.filter(r => r.fromUid !== fromUid);
+  await userRef.set({ friendRequests: requests }, { merge: true });
+  renderFriendNotifications();
+  renderFriendsList();
+}
+
+// Show a red dot if there are pending requests
+async function renderFriendNotifications() {
+  const currentUid = getCurrentUserId();
+  if (!currentUid) return;
+  const doc = await firebase.firestore().collection('users').doc(currentUid).get();
+  const requests = doc.data()?.friendRequests || [];
+  const dot = document.getElementById('friends-notification-dot');
+  if (dot) dot.style.display = requests.length > 0 ? 'block' : 'none';
+}
+
+// Add to DOMContentLoaded and after login
+firebase.auth().onAuthStateChanged(function(user) {
+  if (user) {
+    renderFriendNotifications();
+  }
+});
+window.addEventListener('DOMContentLoaded', renderFriendNotifications);
+
+// Render pending requests in friend modal
 async function renderFriendsList() {
   const modal = document.getElementById('friends-modal');
   const list = document.getElementById('friends-list');
   list.innerHTML = '<div>Loading...</div>';
-  const ids = await getFriendIDs();
-  list.innerHTML = '';
+  const currentUid = getCurrentUserId();
+  if (!currentUid) {
+    list.innerHTML = "<div>Please log in.</div>";
+    return;
+  }
+  const doc = await firebase.firestore().collection('users').doc(currentUid).get();
+  const ids = doc.data()?.friends || [];
+  const requests = doc.data()?.friendRequests || [];
+  // Pending requests section
+  if (requests.length) {
+    const pendingDiv = document.createElement('div');
+    pendingDiv.innerHTML = `<b>Friend Requests:</b>`;
+    requests.forEach(r => {
+      const entry = document.createElement('div');
+      entry.className = 'friend-request-entry';
+      entry.innerHTML = `
+        <span>${r.fromUsername}</span>
+        <button onclick="acceptFriendRequest('${r.fromUid}', '${r.fromUsername}')">Accept</button>
+        <button onclick="declineFriendRequest('${r.fromUid}')">Decline</button>
+      `;
+      pendingDiv.appendChild(entry);
+    });
+    list.appendChild(pendingDiv);
+  }
+  // Friends section
   if (!ids.length) {
-    list.innerHTML = '<div>No friends yet. Add someone by ID!</div>';
+    list.innerHTML += '<div>No friends yet. Add someone by username!</div>';
     return;
   }
   ids.forEach(fid => {
@@ -858,19 +948,19 @@ async function renderFriendsList() {
   });
 }
 
-// View Friend Profile (can be async in future for Firestore profile data)
-window.viewFriendProfile = function(id) {
-  const modal = document.getElementById('friend-profile-modal');
-  const content = document.getElementById('friend-profile-content');
-  content.innerHTML = `<h3>Profile: ${id}</h3>
-    <div>Coming soon: Collection, stats, etc.</div>`;
-  modal.style.display = 'flex';
-}
-
-// Expose async functions to global scope for inline onclick
-window.addFriend = addFriend;
-window.removeFriend = removeFriend;
+// Expose to global
+window.sendFriendRequest = sendFriendRequest;
+window.acceptFriendRequest = acceptFriendRequest;
+window.declineFriendRequest = declineFriendRequest;
 window.renderFriendsList = renderFriendsList;
+
+// Example: add a text input/button in your modal for username-based add
+// <input id="add-friend-username" placeholder="Username">
+// <button onclick="sendFriendRequest(document.getElementById('add-friend-username').value)">Add Friend</button>
+
+// Red dot in HTML:
+// <span id="friends-notification-dot" class="notification-dot"></span>
+
 
 // Hook up modals and icon
 document.getElementById('friends-icon').onclick = function() {
