@@ -186,7 +186,9 @@ if (typeof firebase !== "undefined" && firebase.auth) {
     const loginMenu = document.getElementById('login-menu');
 
 if (user) {
-  // ...load data from Firestore and render UI...
+  if (mainHeader) mainHeader.style.display = "";
+  if (appMain) appMain.style.display = "";
+  if (loginMenu) loginMenu.style.display = "none";
   await loadPlayerLevelExp();
   await renderFriendNotifications();
   loadPlayerCurrencyEssence();
@@ -197,7 +199,9 @@ if (user) {
   });
   loadPlayerMissionsAchievements();
 } else {
-  // LOGOUT BRANCH - DO NOT SAVE!
+  if (mainHeader) mainHeader.style.display = "none";
+  if (appMain) appMain.style.display = "none";
+  if (loginMenu) loginMenu.style.display = "";
   playerCollection = {};
   playerCurrency = 0;
   playerEssence = 0;
