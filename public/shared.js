@@ -427,11 +427,11 @@ function renderDailyMissions() {
       btn.textContent = 'Claim';
       btn.onclick = async () => {
       await claimMissionReward(mission);
-      entry.classList.add('achievement-fade-out');
-      setTimeout(() => {
-        entry.remove();
-      }, 800);
-    };
+        entry.classList.add('achievement-fade-out');
+        setTimeout(() => {
+          entry.remove();
+        }, 800);
+      };
       entry.appendChild(btn);
     } else if (progress.claimed) {
       const badge = document.createElement('div');
@@ -468,7 +468,7 @@ if (progress.completed && !progress.claimed) {
   const btn = document.createElement('button');
   btn.className = 'btn-primary mission-claim-btn';
   btn.textContent = 'Claim';
-  btn.onclick = () => {
+  btn.onclick = async () => {
     await claimMissionReward(mission);
     entry.classList.add('achievement-fade-out');
     setTimeout(() => {
@@ -619,12 +619,12 @@ function renderAchievements() {
       btn.className = 'btn-primary mission-claim-btn';
       btn.textContent = 'Claim';
       btn.onclick = async () => {
-      async claimAchievementReward(ach);
-      entry.classList.add('achievement-fade-out');
-      setTimeout(() => {
-        entry.remove();
-      }, 800);
-    };
+        async claimAchievementReward(ach);
+        entry.classList.add('achievement-fade-out');
+        setTimeout(() => {
+          entry.remove();
+        }, 800);
+      };
       entry.appendChild(btn);
     } else if (progress.claimed) {
       const badge = document.createElement('div');
