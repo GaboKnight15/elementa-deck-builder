@@ -9,12 +9,41 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 window.auth = firebase.auth();
 
+// --- NEW: Set username/displayName in Firestore after login/signup ---
+firebase.auth().onAuthStateChanged(function(user) {
+  if (user) {
+    // Set displayName from auth, or fallback to email prefix or empty string
+    let username = user.displayName 
+      || (user.email ? user.email.split('@')[0] : "")
+      || "";
+    // You can prompt for a username here if you want a custom one
+    // e.g., username = prompt("Choose a username:", username);
+
+    const db = firebase.firestore();
+    db.collection('users').doc(user.uid).set(
+      {
+        displayName: username,
+        email: user.email || "",
+        lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+      },
+      { merge: true }
+    );
+  }
+});
+
 // SAVE PROGRESS
 function saveProgress(progressData) {
   const user = firebase.auth().currentUser;
   if (user) {
     const db = firebase.firestore();
-    db.collection('users').doc(user.uid).set(progressData, { merge: true })
+    // Always attach display name/email for admin view
+    let username = user.displayName 
+      || (user.email ? user.email.split('@')[0] : "")
+      || "";
+    db.collection('users').doc(user.uid).set(
+      { ...progressData, displayName: username, email: user.email || "" },
+      { merge: true }
+    )
       .then(() => {
         console.log("Progress saved!");
       })
@@ -25,7 +54,7 @@ function saveProgress(progressData) {
     console.warn("No user logged in, cannot save progress.");
   }
 }
-// LOAD PROGRESS
+// LOAD PROGRESS (unchanged)
 function loadProgress(callback) {
   const user = firebase.auth().currentUser;
   if (user) {
@@ -55,7 +84,13 @@ function saveCollection(collection) {
   const user = firebase.auth().currentUser;
   if (user) {
     const db = firebase.firestore();
-    db.collection('users').doc(user.uid).set({ collection }, { merge: true })
+    let username = user.displayName 
+      || (user.email ? user.email.split('@')[0] : "")
+      || "";
+    db.collection('users').doc(user.uid).set(
+      { collection, displayName: username, email: user.email || "" },
+      { merge: true }
+    )
       .then(() => console.log("Collection saved!"))
       .catch((error) => console.error("Error saving collection: ", error));
   }
@@ -88,12 +123,15 @@ function loadCollection() {
 function saveUserDecks(deckSlots, decks, currentDeckSlot) {
   const user = firebase.auth().currentUser;
   if (user) {
+    let username = user.displayName 
+      || (user.email ? user.email.split('@')[0] : "")
+      || "";
     return firebase.firestore().collection('users').doc(user.uid)
-      .set({ deckSlots, decks, currentDeckSlot }, { merge: true });
+      .set({ deckSlots, decks, currentDeckSlot, displayName: username, email: user.email || "" }, { merge: true });
   }
   return Promise.resolve();
 }
-// Load decks and slots
+// Load decks and slots (unchanged)
 function loadUserDecks() {
   const user = firebase.auth().currentUser;
   if (user) {
@@ -123,8 +161,11 @@ function loadUserDecks() {
 function saveCurrencyEssence(currency, essence) {
   const user = firebase.auth().currentUser;
   if (user) {
+    let username = user.displayName 
+      || (user.email ? user.email.split('@')[0] : "")
+      || "";
     firebase.firestore().collection('users').doc(user.uid)
-      .set({ currency, essence }, { merge: true });
+      .set({ currency, essence, displayName: username, email: user.email || "" }, { merge: true });
   }
 }
 function loadCurrencyEssence() {
@@ -152,8 +193,11 @@ function loadCurrencyEssence() {
 function saveMissions(missions) {
   const user = firebase.auth().currentUser;
   if (user) {
+    let username = user.displayName 
+      || (user.email ? user.email.split('@')[0] : "")
+      || "";
     firebase.firestore().collection('users').doc(user.uid)
-      .set({ missions }, { merge: true });
+      .set({ missions, displayName: username, email: user.email || "" }, { merge: true });
   }
 }
 function loadMissions() {
@@ -178,8 +222,11 @@ function loadMissions() {
 function saveAchievements(achievements) {
   const user = firebase.auth().currentUser;
   if (user) {
+    let username = user.displayName 
+      || (user.email ? user.email.split('@')[0] : "")
+      || "";
     firebase.firestore().collection('users').doc(user.uid)
-      .set({ achievements }, { merge: true });
+      .set({ achievements, displayName: username, email: user.email || "" }, { merge: true });
   }
 }
 function loadAchievements() {
@@ -205,8 +252,11 @@ function loadAchievements() {
 function saveUnlockedAvatars(arr) {
   const user = firebase.auth().currentUser;
   if (user) {
+    let username = user.displayName 
+      || (user.email ? user.email.split('@')[0] : "")
+      || "";
     return firebase.firestore().collection('users').doc(user.uid)
-      .set({ unlockedAvatars: arr }, { merge: true });
+      .set({ unlockedAvatars: arr, displayName: username, email: user.email || "" }, { merge: true });
   }
   return Promise.resolve();
 }
@@ -222,8 +272,11 @@ function loadUnlockedAvatars() {
 function saveUnlockedBanners(arr) {
   const user = firebase.auth().currentUser;
   if (user) {
+    let username = user.displayName 
+      || (user.email ? user.email.split('@')[0] : "")
+      || "";
     return firebase.firestore().collection('users').doc(user.uid)
-      .set({ unlockedBanners: arr }, { merge: true });
+      .set({ unlockedBanners: arr, displayName: username, email: user.email || "" }, { merge: true });
   }
   return Promise.resolve();
 }
@@ -239,8 +292,11 @@ function loadUnlockedBanners() {
 function saveUnlockedCardbacks(arr) {
   const user = firebase.auth().currentUser;
   if (user) {
+    let username = user.displayName 
+      || (user.email ? user.email.split('@')[0] : "")
+      || "";
     return firebase.firestore().collection('users').doc(user.uid)
-      .set({ unlockedCardbacks: arr }, { merge: true });
+      .set({ unlockedCardbacks: arr, displayName: username, email: user.email || "" }, { merge: true });
   }
   return Promise.resolve();
 }
