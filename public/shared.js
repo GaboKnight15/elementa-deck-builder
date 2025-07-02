@@ -796,36 +796,51 @@ function showToast(message) {
 }
 // In shared.js
 
-// Storage helpers
-function getFriendIDs() {
-  return JSON.parse(localStorage.getItem('friendIDs') || '[]');
+// --- FIREBASE FRIENDS SYSTEM ---
+function getCurrentUserId() {
+  return firebase.auth().currentUser?.uid;
 }
-function setFriendIDs(ids) {
-  localStorage.setItem('friendIDs', JSON.stringify(ids));
+
+// Fetch friend IDs from Firestore (returns Promise<Array>)
+async function getFriendIDs() {
+  const uid = getCurrentUserId();
+  if (!uid) return [];
+  const doc = await firebase.firestore().collection('users').doc(uid).get();
+  const data = doc.data();
+  return data && Array.isArray(data.friends) ? data.friends : [];
+}
+
+// Save friend IDs to Firestore (overwrites array)
+async function setFriendIDs(ids) {
+  const uid = getCurrentUserId();
+  if (!uid) return;
+  await firebase.firestore().collection('users').doc(uid).set({ friends: ids }, { merge: true });
 }
 
 // Add friend by ID
-function addFriend(id) {
-  let ids = getFriendIDs();
+async function addFriend(id) {
+  if (!id) return;
+  let ids = await getFriendIDs();
   if (!ids.includes(id)) {
     ids.push(id);
-    setFriendIDs(ids);
+    await setFriendIDs(ids);
     renderFriendsList();
   }
 }
 
 // Remove friend
-function removeFriend(id) {
-  let ids = getFriendIDs().filter(fid => fid !== id);
-  setFriendIDs(ids);
+async function removeFriend(id) {
+  let ids = (await getFriendIDs()).filter(fid => fid !== id);
+  await setFriendIDs(ids);
   renderFriendsList();
 }
 
-// Render Friend List Modal
-function renderFriendsList() {
+// Render Friend List Modal (async)
+async function renderFriendsList() {
   const modal = document.getElementById('friends-modal');
   const list = document.getElementById('friends-list');
-  const ids = getFriendIDs();
+  list.innerHTML = '<div>Loading...</div>';
+  const ids = await getFriendIDs();
   list.innerHTML = '';
   if (!ids.length) {
     list.innerHTML = '<div>No friends yet. Add someone by ID!</div>';
@@ -843,15 +858,19 @@ function renderFriendsList() {
   });
 }
 
-// View Friend Profile
-function viewFriendProfile(id) {
-  // You can fetch more info from Firestore or show dummy data for now
+// View Friend Profile (can be async in future for Firestore profile data)
+window.viewFriendProfile = function(id) {
   const modal = document.getElementById('friend-profile-modal');
   const content = document.getElementById('friend-profile-content');
   content.innerHTML = `<h3>Profile: ${id}</h3>
     <div>Coming soon: Collection, stats, etc.</div>`;
   modal.style.display = 'flex';
 }
+
+// Expose async functions to global scope for inline onclick
+window.addFriend = addFriend;
+window.removeFriend = removeFriend;
+window.renderFriendsList = renderFriendsList;
 
 // Hook up modals and icon
 document.getElementById('friends-icon').onclick = function() {
