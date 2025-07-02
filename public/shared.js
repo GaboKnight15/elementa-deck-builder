@@ -45,13 +45,7 @@ const WEEKLY_MISSION_POOL = [
     goal: 2,
     reward: { type: 'currency', amount: 500 }
   },
-  {
-    id: 'collect_5_unique_cards_weekly',
-    type: 'weekly',
-    description: 'Collect 5 Unique Cards',
-    goal: 5,
-    reward: { type: 'currency', amount: 250 }
-  },
+
   // ...more
 ];
 const ACHIEVEMENTS = [
