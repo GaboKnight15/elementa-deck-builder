@@ -185,38 +185,35 @@ if (typeof firebase !== "undefined" && firebase.auth) {
     const appMain = document.getElementById('app-main');
     const loginMenu = document.getElementById('login-menu');
 
-    if (user) {
-      if (mainHeader) mainHeader.style.display = "";
-      if (appMain) appMain.style.display = "";
-      if (loginMenu) loginMenu.style.display = "none";
-      await loadPlayerLevelExp();
-      await renderFriendNotifications();
-      loadPlayerCurrencyEssence();
-      loadCollection().then(collection => {
-        playerCollection = collection || {};
-        if (typeof window.renderGallery === "function") window.renderGallery();
-        if (typeof window.renderShop === "function") window.renderShop();
-      });
-      loadPlayerMissionsAchievements();
-    } else {
-      if (mainHeader) mainHeader.style.display = "none";
-      if (appMain) appMain.style.display = "none";
-      if (loginMenu) loginMenu.style.display = "";
+if (user) {
+  // ...load data from Firestore and render UI...
+  await loadPlayerLevelExp();
+  await renderFriendNotifications();
+  loadPlayerCurrencyEssence();
+  loadCollection().then(collection => {
+    playerCollection = collection || {};
+    if (typeof window.renderGallery === "function") window.renderGallery();
+    if (typeof window.renderShop === "function") window.renderShop();
+  });
+  loadPlayerMissionsAchievements();
+} else {
+  // LOGOUT BRANCH - DO NOT SAVE!
+  playerCollection = {};
+  playerCurrency = 0;
+  playerEssence = 0;
+  playerLevel = 1;
+  playerExp = 0;
 
-      playerCollection = {};
-      playerCurrency = 0;
-      playerEssence = 0;
-      setCurrency(0);
-      setEssence(0);
-      playerLevel = 1;
-      playerExp = 0;
-      renderPlayerLevel();
-      // Hide friend dot
-      const dot = document.getElementById('friends-notification-dot');
-      if (dot) dot.style.display = 'none';
-      if (typeof window.renderGallery === "function") window.renderGallery();
-      if (typeof window.renderShop === "function") window.renderShop();
-    }
+  // Only update UI
+  if (mainHeader) mainHeader.style.display = "none";
+  if (appMain) appMain.style.display = "none";
+  if (loginMenu) loginMenu.style.display = "";
+  setTimeout(() => renderPlayerLevel(), 0); // Update UI, does NOT save
+  const dot = document.getElementById('friends-notification-dot');
+  if (dot) dot.style.display = 'none';
+  if (typeof window.renderGallery === "function") window.renderGallery();
+  if (typeof window.renderShop === "function") window.renderShop();
+}
   });
 }
 
