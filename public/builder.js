@@ -7,10 +7,6 @@
 // --- MULTI-DECK MANAGEMENT --- //
 const DECK_SLOTS_KEY = "deckSlots";
 const DECKS_KEY = "decks";
-let deckSlots = ["Deck 1"];
-let decks = { "Deck 1": {} };
-let currentDeckSlot = "Deck 1";
-
 // ==========================
 // === DOM REFERENCES ===
 // ==========================
@@ -388,9 +384,6 @@ function refreshDeckSlotSelect() {
 // ==========================
 // === RENDERING CARDS ===
 // ==========================
-function getCollection() {
-  return playerCollection || {};
-}
 function createCardBuilder(card, ownedCount) {
     const deck = getCurrentDeck();
     const currentInDeck = deck[card.id] || 0;
