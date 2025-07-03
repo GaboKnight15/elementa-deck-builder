@@ -347,7 +347,12 @@ button {
     padding: 0 14px;
   }
 }
-
+#missions-columns > div {
+  min-width: 0;
+}
+#missions-modal .missions-timer {
+  margin-bottom: 10px;
+}
 .achievement-fade-out {
   animation: achievement-fade-out 0.8s forwards cubic-bezier(.6,.1,.6,1);
   pointer-events: none;
