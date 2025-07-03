@@ -366,7 +366,9 @@ function loadPlayerCurrencyEssence() {
     setEssence(essence);
   });
 }
-
+function getCurrency() {
+  return playerCurrency;
+}
 function getMissionData() {
   return playerMissions;
 }
@@ -1037,9 +1039,6 @@ document.getElementById('close-friends-modal').onclick = function() {
 };
 document.getElementById('friends-modal').onclick = function(e) {
   if (e.target === this) this.style.display = 'none';
-};
-document.getElementById('close-friend-profile-modal').onclick = function() {
-  document.getElementById('friend-profile-modal').style.display = 'none';
 };
 document.getElementById('missions-icon').onclick = function() {
   renderDailyMissions();
