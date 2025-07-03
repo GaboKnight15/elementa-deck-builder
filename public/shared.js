@@ -230,16 +230,6 @@ function getNewlyUnlockedCards() {
 function setNewlyUnlockedCards(arr) {
   localStorage.setItem(NEW_CARD_KEY, JSON.stringify(arr));
 }
-// --- SIMPLE PATCHES (add early in shared.js or before use) ---
-
-function loadCurrencyEssence() {
-  return new Promise(resolve => {
-    resolve({
-      currency: playerCurrency || 0,
-      essence: playerEssence || 0
-    });
-  });
-}
 
 function saveMissions() {
   return saveSingleField('missions', playerMissions);
@@ -363,7 +353,18 @@ if (addCoinsBtn) {
   };
 }
 // ESSENCE CURRENCY
-
+function getEssence() {
+  return playerEssence;
+}
+function setEssence(amount) {
+  playerEssence = amount;
+  updateEssenceDisplay();
+  saveAllProgressAndUI();
+}
+function updateEssenceDisplay() {
+  const el = document.getElementById('essence-amount');
+  if (el) el.textContent = playerEssence;
+}
 function getEssenceHtml(amount) {
   return `<span class="currency-display">
     <img class="currency-icon" src="images/essence.png" alt="Essence">
@@ -371,14 +372,6 @@ function getEssenceHtml(amount) {
   </span>`;
 }
 
-function loadPlayerCurrencyEssence() {
-  loadCurrencyEssence().then(({ currency, essence }) => {
-    playerCurrency = currency;
-    playerEssence = essence;
-    setCurrency(currency);
-    setEssence(essence);
-  });
-}
 function getCurrency() {
   return playerCurrency;
 }
@@ -1153,18 +1146,16 @@ function placeMenuWithinViewport(menu, triggerRect, preferred = "bottom") {
 }
 
 // INITIALIZACION 
-// Call setCurrency(getCurrency()) on page load to update display
-window.addEventListener('DOMContentLoaded', () => {
-  loadPlayerCurrencyEssence();
-});
-window.addEventListener('DOMContentLoaded', loadPlayerCurrencyEssence);
-// 9. On load, check for resets
+
+// On load, check for resets
 window.addEventListener('DOMContentLoaded', async () => {
   await resetMissionsIfNeeded();
   if ((await getActiveDailyMissions()).length === 0) await refreshDailyMissions();
   if ((await getActiveWeeklyMissions()).length === 0) await refreshWeeklyMissions();
   await renderDailyMissions();
   await renderWeeklyMissions();
+  updateCurrencyDisplay();
+  updateEssenceDisplay();
   startDailyMissionTimer();
   startWeeklyMissionTimer();
   updateMissionsNotificationDot();
