@@ -130,9 +130,9 @@ function showCosmeticConfirmModal({imgSrc, type, price, onConfirm}) {
   document.body.appendChild(cosmeticConfirmModal);
 
   // Confirm
-  cosmeticConfirmModal.querySelector('#cosmetic-get-btn').onclick = function() {
+  cosmeticConfirmModal.querySelector('#cosmetic-get-btn').onclick = async function() {
   this.disabled = true;
-  const purchaseSucceeded = onConfirm();
+  const purchaseSucceeded = await onConfirm();
   if (purchaseSucceeded === false) {
     this.disabled = false; // re-enable so user can try again
     return;
@@ -424,6 +424,7 @@ async function renderShopCosmetics({
               gridId, options, prices, getUnlocked, setUnlocked, unlockMsg, wrapperClass, imgClass
             });
             showToast(unlockMsg);
+            return true;  
          }
       });
     };
