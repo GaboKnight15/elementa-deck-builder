@@ -23,6 +23,16 @@ const dummyCards = [
 { id: 'basicshadowforest', name: 'Shadow Forest', rarity: 'Basic', image: 'CardImages/Domains/Black Basic Location.png', category: 'domain', color: 'black', type: 'domain', hp: 5, cost: 1, set: 'StandardPack2'},
 ];
 
+const userState = {
+  collection: {},
+  currency: 0,
+  essence: 0,
+  missions: {},
+  achievements: {},
+  level: 1,
+  exp: 0,
+  // add more as needed
+};
 const COLOR_MISSIONS = ['green', 'red', 'blue', 'yellow', 'purple', 'gray', 'black', 'white'];
 // MISSION LIST
 const DAILY_MISSION_POOL = [
@@ -78,6 +88,39 @@ let playerLevel = 1;
 let playerExp = 0;
 let playerCurrency = 0;
 let playerEssence = 0;
+
+async function loadUserState() {
+  const user = firebase.auth().currentUser;
+  if (!user) return false;
+  const doc = await firebase.firestore().collection('users').doc(user.uid).get();
+  if (!doc.exists) return false;
+  const data = doc.data();
+  userState.collection    = data.collection    || {};
+  userState.currency      = data.currency      || 0;
+  userState.essence       = data.essence       || 0;
+  userState.missions      = data.missions      || {};
+  userState.achievements  = data.achievements  || {};
+  userState.level         = data.level         || 1;
+  userState.exp           = data.exp           || 0;
+  // ...etc.
+  return true;
+}
+
+async function saveUserState() {
+  const user = firebase.auth().currentUser;
+  if (!user) return false;
+  await firebase.firestore().collection('users').doc(user.uid).set({
+    collection: userState.collection,
+    currency: userState.currency,
+    essence: userState.essence,
+    missions: userState.missions,
+    achievements: userState.achievements,
+    level: userState.level,
+    exp: userState.exp,
+    // ...etc.
+  }, { merge: true });
+  return true;
+}
 // ==========================
 // === SECTION NAVIGATION ===
 // ==========================
@@ -303,11 +346,16 @@ function getCurrencyHtml(amount) {
     <span>${amount}</span>
   </span>`;
 }
+async function addCoins(amount) {
+  userState.currency += amount;
+  await saveUserState();
+  renderCurrency();
+}
 document.addEventListener('DOMContentLoaded', function() {
   const addCoinsBtn = document.getElementById('add-coins-btn');
   if (addCoinsBtn) {
-    addCoinsBtn.onclick = function() {
-      setCurrency(getCurrency() + 100); // This uses playerCurrency and saves to Firestore!
+    addCoinsBtn.onclick = async function() {
+      await addCoins(100);
     };
   }
 });
@@ -1066,6 +1114,16 @@ function renderPlayerLevel() {
   document.getElementById('player-exp-bar-fill').style.width = fill + "%";
   document.getElementById('player-exp-numbers').textContent = playerExp + "/" + needed;
 }
+
+auth.onAuthStateChanged(async user => {
+  if (user) {
+    await loadUserState();
+    renderEverything();
+  } else {
+    resetUserState();
+    renderEverything();
+  }
+});
 
 // MENU INSIDE VIEWPORT
 function placeMenuWithinViewport(menu, triggerRect, preferred = "bottom") {
