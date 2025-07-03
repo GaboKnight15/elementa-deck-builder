@@ -73,7 +73,6 @@ const ACHIEVEMENTS = [
 ];
 
 let isLoggingOut = false;
-// Load/Save Player Level/EXP from Firestore
 let playerLevel = 1;
 let playerExp = 0;
 let playerCurrency = 0;
@@ -81,57 +80,46 @@ let playerEssence = 0;
 let playerCollection = {};
 let playerMissions = {};
 let playerAchievements = {};
+let playerUnlockedAvatars = [];
+let playerUnlockedBanners = [];
+let playerUnlockedCardbacks = [];
+let deckSlots = ["Deck 1"];
+let decks = { "Deck 1": {} };
+let currentDeckSlot = "Deck 1";
 
-// --- FIREBASE LOAD ---
-async function loadCurrency() {
-  const user = firebase.auth().currentUser;
-  if (!user) return;
-  const doc = await firebase.firestore().collection('users').doc(user.uid).get();
-  playerCurrency = doc.exists && doc.data().currency ? doc.data().currency : 0;
+function loadAllPlayerProgress(callback) {
+  loadProgress(data => {
+    playerLevel = data.level || 1;
+    playerExp = data.exp || 0;
+    playerCurrency = data.currency || 0;
+    playerEssence = data.essence || 0;
+    playerCollection = data.collection || {};
+    playerMissions = data.missions || {};
+    playerAchievements = data.achievements || {};
+    playerUnlockedAvatars = data.unlockedAvatars || [];
+    playerUnlockedBanners = data.unlockedBanners || [];
+    playerUnlockedCardbacks = data.unlockedCardbacks || [];
+    deckSlots = data.deckSlots || ["Deck 1"];
+    decks = data.decks || { "Deck 1": {} };
+    currentDeckSlot = data.currentDeckSlot || "Deck 1";
+    if (typeof callback === "function") callback();
+    updateCurrencyDisplay();
+    updateCollectionDependentUI();
+    renderPlayerLevel();
+    // ...other UI updates as needed
+  });
+}
+function saveAllProgressAndUI() {
+  saveAllProgress();
   updateCurrencyDisplay();
-}
-async function loadCollection() {
-  const user = firebase.auth().currentUser;
-  if (!user) return {};
-  const doc = await firebase.firestore().collection('users').doc(user.uid).get();
-  playerCollection = doc.exists && doc.data().collection ? doc.data().collection : {};
   updateCollectionDependentUI();
-  return playerCollection;
-}
-async function loadPlayerLevelExp() {
-  const user = firebase.auth().currentUser;
-  if (!user) return;
-  const doc = await firebase.firestore().collection('users').doc(user.uid).get();
-  playerLevel = doc.exists && doc.data().level ? doc.data().level : 1;
-  playerExp = doc.exists && doc.data().exp ? doc.data().exp : 0;
   renderPlayerLevel();
+  // ...other UI updates as needed
 }
 
-// --- FIREBASE SAVE ---
-async function saveCurrency() {
-  const user = firebase.auth().currentUser;
-  if (!user) return;
-  await firebase.firestore().collection('users').doc(user.uid).set(
-    { currency: playerCurrency },
-    { merge: true }
-  );
-}
-async function saveCollection() {
-  const user = firebase.auth().currentUser;
-  if (!user) return;
-  await firebase.firestore().collection('users').doc(user.uid).set(
-    { collection: playerCollection },
-    { merge: true }
-  );
-}
-async function savePlayerLevelExp() {
-  const user = firebase.auth().currentUser;
-  if (!user) return;
-  await firebase.firestore().collection('users').doc(user.uid).set(
-    { level: playerLevel, exp: playerExp },
-    { merge: true }
-  );
-}
+// --- END UNIFIED FIREBASE LOAD/SAVE ---
+
+
 // --- CURRENCY DISPLAY ---
 function updateCurrencyDisplay() {
   const el = document.getElementById('currency-amount');
@@ -242,11 +230,11 @@ function getNewlyUnlockedCards() {
 function setNewlyUnlockedCards(arr) {
   localStorage.setItem(NEW_CARD_KEY, JSON.stringify(arr));
 }
+
 // FIREBASE GALLERY
 async function setCollection(collection) {
   playerCollection = collection;
-  await saveCollection();
-  updateCollectionDependentUI();
+  saveAllProgressAndUI();
 }
 function updateCollectionDependentUI() {
   if (typeof renderGallery === "function") renderGallery();
@@ -255,44 +243,40 @@ function updateCollectionDependentUI() {
 
 if (typeof firebase !== "undefined" && firebase.auth) {
   firebase.auth().onAuthStateChanged(async function(user) {
-    // DOM refs
     const mainHeader = document.getElementById('main-header');
     const appMain = document.getElementById('app-main');
     const loginMenu = document.getElementById('login-menu');
-
-if (user) {
-  if (mainHeader) mainHeader.style.display = "";
-  if (appMain) appMain.style.display = "";
-  if (loginMenu) loginMenu.style.display = "none";
-  await loadPlayerLevelExp();
-  await renderFriendNotifications();
-  loadPlayerCurrencyEssence();
-  loadCollection().then(collection => {
-    playerCollection = collection || {};
-    if (typeof window.renderGallery === "function") window.renderGallery();
-    if (typeof window.renderShop === "function") window.renderShop();
-  });
-  loadPlayerMissionsAchievements();
-} else {
-  if (mainHeader) mainHeader.style.display = "none";
-  if (appMain) appMain.style.display = "none";
-  if (loginMenu) loginMenu.style.display = "";
-  playerCollection = {};
-  playerCurrency = 0;
-  playerEssence = 0;
-  playerLevel = 1;
-  playerExp = 0;
-
-  // Only update UI
-  if (mainHeader) mainHeader.style.display = "none";
-  if (appMain) appMain.style.display = "none";
-  if (loginMenu) loginMenu.style.display = "";
-  setTimeout(() => renderPlayerLevel(), 0); // Update UI, does NOT save
-  const dot = document.getElementById('friends-notification-dot');
-  if (dot) dot.style.display = 'none';
-  if (typeof window.renderGallery === "function") window.renderGallery();
-  if (typeof window.renderShop === "function") window.renderShop();
-}
+    if (user) {
+      if (mainHeader) mainHeader.style.display = "";
+      if (appMain) appMain.style.display = "";
+      if (loginMenu) loginMenu.style.display = "none";
+      loadAllPlayerProgress(() => {
+        if (typeof window.renderGallery === "function") window.renderGallery();
+        if (typeof window.renderShop === "function") window.renderShop();
+      });
+      await renderFriendNotifications();
+    } else {
+      // Reset variables/UI on logout
+      if (mainHeader) mainHeader.style.display = "none";
+      if (appMain) appMain.style.display = "none";
+      if (loginMenu) loginMenu.style.display = "";
+      playerCollection = {};
+      playerCurrency = 0;
+      playerEssence = 0;
+      playerLevel = 1;
+      playerExp = 0;
+      playerUnlockedAvatars = [];
+      playerUnlockedBanners = [];
+      playerUnlockedCardbacks = [];
+      deckSlots = ["Deck 1"];
+      decks = { "Deck 1": {} };
+      currentDeckSlot = "Deck 1";
+      setTimeout(() => renderPlayerLevel(), 0);
+      const dot = document.getElementById('friends-notification-dot');
+      if (dot) dot.style.display = 'none';
+      if (typeof window.renderGallery === "function") window.renderGallery();
+      if (typeof window.renderShop === "function") window.renderShop();
+    }
   });
 }
 
@@ -301,7 +285,7 @@ async function addToCollection(cardId, amount = 1) {
   const collection = getCollection();
   const wasOwned = collection[cardId] > 0;
   collection[cardId] = (collection[cardId] || 0) + amount;
-  await setCollection(collection);
+  saveAllProgressAndUI();
 
   // If just unlocked, mark as new
   if (!wasOwned && collection[cardId] > 0) {
@@ -354,8 +338,7 @@ function getCurrencyHtml(amount) {
 }
 async function addCoins(amount) {
   playerCurrency += amount;
-  await saveCurrency();
-  updateCurrencyDisplay();
+  saveAllProgressAndUI();
 }
 const addCoinsBtn = document.getElementById('add-coins-btn');
 if (addCoinsBtn) {
@@ -1091,10 +1074,8 @@ async function grantExp(amount) {
     playerLevel += 1;
     leveledUp = true;
     showToast(`Level Up! You reached Lv ${playerLevel}!`);
-    // Optionally: grantLevelReward(playerLevel);
   }
-  await savePlayerLevelExp();
-  renderPlayerLevel();
+  saveAllProgressAndUI();
   return leveledUp;
 }
 
