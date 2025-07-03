@@ -56,12 +56,12 @@ function loadProgress(callback) {
 
 // --- OPTIONAL: Single-field helpers if you want them --- //
 
-function saveSingleField(field, value) {
+async function saveSingleField(field, value) {
   const user = firebase.auth().currentUser;
   if (!user) return;
   let obj = {};
   obj[field] = value;
-  firebase.firestore().collection('users').doc(user.uid).set(obj, { merge: true });
+  await firebase.firestore().collection('users').doc(user.uid).set(obj, { merge: true });
 }
 
 function loadSingleField(field, callback) {
@@ -72,8 +72,8 @@ function loadSingleField(field, callback) {
     .catch(() => callback(null));
 }
 
-function saveAllProgress() {
-  saveProgress({
+async function saveAllProgress() {
+  await saveProgress({
     collection: playerCollection,
     deckSlots: deckSlots,
     decks: decks,
