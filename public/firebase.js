@@ -80,7 +80,7 @@ async function saveAllProgress() {
     currentDeckSlot: currentDeckSlot,
     currency: playerCurrency,
     essence: playerEssence,
-    missions: playerMissions,
+    quests: playerQuests,
     achievements: playerAchievements,
     level: playerLevel,
     exp: playerExp,
