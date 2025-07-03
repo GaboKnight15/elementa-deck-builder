@@ -71,6 +71,8 @@ const ACHIEVEMENTS = [
   reward: { type: 'currency', amount: 500 }
   }
 ];
+
+let isLoggingOut = false;
 // ==========================
 // === SECTION NAVIGATION ===
 // ==========================
