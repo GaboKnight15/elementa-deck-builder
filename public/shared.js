@@ -547,7 +547,7 @@ function incrementAchievementProgress(achievementId, amount = 1) {
   const ach = ACHIEVEMENTS.find(a => a.id === achievementId);
   if (!ach) return;
   if (!data[achievementId]) data[achievementId] = { progress: 0, completed: false, claimed: false };
-  if (data[achievementId].completed) return; // Already complete
+  if (data[achievementId].completed) return;
 
   data[achievementId].progress = Math.min(ach.goal, (data[achievementId].progress || 0) + amount);
   if (data[achievementId].progress >= ach.goal) data[achievementId].completed = true;
