@@ -435,6 +435,12 @@ async function incrementQuestProgress(questId) {
 }
 
 // 6. Claim Quest reward
+function setCurrency(amount) {
+  playerCurrency = amount;
+  updateCurrencyDisplay();
+  saveAllProgressAndUI();
+}
+
 async function claimQuestReward(quest) {
   let data = getQuestData();
   if (!data[quest.id] || !data[quest.id].completed || data[quest.id].claimed) return false;
