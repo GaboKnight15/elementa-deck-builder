@@ -401,7 +401,7 @@ async function resetQuestsIfNeeded() {
 async function resetQuestProgress(type) {
   let quests = getQuestData();
   // Use only active Quests for the given type
-  const activeQuests = (type === "daily") ? await getActiveDailyQuests();
+  const activeQuests = await getActiveDailyQuests();
   for (const quest of activeQuests) {
     quests[quest.id] = { progress: 0, completed: false, claimed: false };
   }
