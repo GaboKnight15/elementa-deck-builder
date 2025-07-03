@@ -331,9 +331,9 @@ function renderShopPacks() {
           const purchased = await purchaseCosmetic(price, async () => {
             await openPack(packName);
           });
-          if (purchased && typeof incrementMissionProgress === 'function') {
-            await incrementMissionProgress('purchase_pack_daily');
-            await incrementMissionProgress('purchase_pack_weekly');
+          if (purchased && typeof incrementQuestProgress === 'function') {
+            await incrementQuestProgress('purchase_pack_daily');
+            await incrementQuestProgress('purchase_pack_weekly');
           }
           return purchased;
         }
