@@ -516,14 +516,7 @@ document.getElementById('close-achievements-modal').onclick = function() {
 document.getElementById('achievements-modal').onclick = function(e) {
   if (e.target === this) this.style.display = 'none';
 };
-// Main Missions Modal open/close logic
 
-document.getElementById('daily-missions-modal').onclick = function(e) {
-  if (e.target === this) this.style.display = 'none';
-};
-document.getElementById('weekly-missions-modal').onclick = function(e) {
-  if (e.target === this) this.style.display = 'none';
-};
 // 2. Persistence Helpers
 function getAchievementData()    { return playerAchievements; }
 function setAchievementData(data){ playerAchievements = data; if (!isLoggingOut) saveAchievements(data); }
