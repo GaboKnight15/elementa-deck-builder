@@ -187,7 +187,7 @@ function setNewlyUnlockedCards(arr) {
 let lastPackCards = [];
 let lastPackNewIds = [];
 // Open pack logic
-function openPack(type) {
+async function openPack(type) {
   const collection = getCollection(); 
   const cards = getRandomCards(10, type);
 
@@ -253,7 +253,10 @@ function openPack(type) {
   });
 
   // Update collection and "new" list
-  cards.forEach(card => addToCollection(card.id, 1));
+  // Await each addToCollection!
+  for (const card of cards) {
+    await addToCollection(card.id, 1);
+  }
   // Update the global "new" list for gallery etc.
   if (lastPackNewIds.length > 0) {
     let newCards = getNewlyUnlockedCards();
@@ -262,7 +265,7 @@ function openPack(type) {
     });
     setNewlyUnlockedCards(newCards);
   }
-  if (window.renderGallery) renderGallery();
+  if (window.renderGallery) window.renderGallery();
 }
 
 // Handle closing the modal
@@ -327,11 +330,11 @@ function renderShopPacks() {
         price,
         onConfirm: async () => {
           const purchased = await purchaseCosmetic(price, async () => {
-            openPack(packName);
+            await openPack(packName);
           });
           if (purchased && typeof incrementMissionProgress === 'function') {
-            incrementMissionProgress('purchase_pack_daily');
-            incrementMissionProgress('purchase_pack_weekly');
+            await incrementMissionProgress('purchase_pack_daily');
+            await incrementMissionProgress('purchase_pack_weekly');
           }
           return purchased;
         }
