@@ -422,7 +422,7 @@ function getQuestProgress(quest) {
 async function incrementQuestProgress(questId) {
   let data = getQuestData();
   const daily = await getActiveDailyQuests();
-  const quest = allActive.find(m => m.id === questId);
+  const quest = daily.find(m => m.id === questId);
   if (!quest) return;
   if (!data[questId]) data[questId] = { progress: 0, completed: false, claimed: false };
   if (data[questId].completed) return; // Already complete, no more progress
@@ -735,7 +735,7 @@ updateColorAchievements();
 async function updateQuestsNotificationDot() {
   const daily = await getActiveDailyQuests();
   const questData = getQuestData();
-  const hasClaimable = allQuests.some(m => {
+  const hasClaimable = daily.some(m => {
     const p = questData[m.id];
     return p && p.completed && !p.claimed;
   });
