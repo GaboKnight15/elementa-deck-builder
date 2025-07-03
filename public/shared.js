@@ -80,14 +80,13 @@ let playerCurrency = 0;
 let playerEssence = 0;
 let playerCollection = {};
 
-// --- Firebase Load/Save ---
-async function saveCurrency() {
+// --- FIREBASE LOAD ---
+async function loadCurrency() {
   const user = firebase.auth().currentUser;
   if (!user) return;
-  await firebase.firestore().collection('users').doc(user.uid).set(
-    { currency: playerCurrency },
-    { merge: true }
-  );
+  const doc = await firebase.firestore().collection('users').doc(user.uid).get();
+  playerCurrency = doc.exists && doc.data().currency ? doc.data().currency : 0;
+  updateCurrencyDisplay();
 }
 async function loadCollection() {
   const user = firebase.auth().currentUser;
@@ -97,15 +96,23 @@ async function loadCollection() {
   updateCollectionDependentUI();
   return playerCollection;
 }
-
-
-// --- Firebase Load/Save ---
-async function loadCurrency() {
+async function loadPlayerLevelExp() {
   const user = firebase.auth().currentUser;
   if (!user) return;
   const doc = await firebase.firestore().collection('users').doc(user.uid).get();
-  playerCurrency = doc.exists && doc.data().currency ? doc.data().currency : 0;
-  updateCurrencyDisplay();
+  playerLevel = doc.exists && doc.data().level ? doc.data().level : 1;
+  playerExp = doc.exists && doc.data().exp ? doc.data().exp : 0;
+  renderPlayerLevel();
+}
+
+// --- FIREBASE SAVE ---
+async function saveCurrency() {
+  const user = firebase.auth().currentUser;
+  if (!user) return;
+  await firebase.firestore().collection('users').doc(user.uid).set(
+    { currency: playerCurrency },
+    { merge: true }
+  );
 }
 async function saveCollection() {
   const user = firebase.auth().currentUser;
@@ -115,7 +122,14 @@ async function saveCollection() {
     { merge: true }
   );
 }
-
+async function savePlayerLevelExp() {
+  const user = firebase.auth().currentUser;
+  if (!user) return;
+  await firebase.firestore().collection('users').doc(user.uid).set(
+    { level: playerLevel, exp: playerExp },
+    { merge: true }
+  );
+}
 // --- CURRENCY DISPLAY ---
 function updateCurrencyDisplay() {
   const el = document.getElementById('currency-amount');
@@ -1053,15 +1067,6 @@ function expToNextLevel(level) {
 function getPlayerLevel() { return playerLevel; }
 function getPlayerExp() { return playerExp; }
 
-async function loadPlayerLevelExp() {
-  const uid = firebase.auth().currentUser?.uid;
-  if (!uid) return;
-  const doc = await firebase.firestore().collection('users').doc(uid).get();
-  playerLevel = doc.data()?.level || 1;
-  playerExp = doc.data()?.exp || 0;
-  renderPlayerLevel();
-}
-
 async function savePlayerLevelExp() {
   const uid = firebase.auth().currentUser?.uid;
   if (!uid) return;
@@ -1080,9 +1085,8 @@ async function grantExp(amount) {
     playerExp -= expToNextLevel(playerLevel);
     playerLevel += 1;
     leveledUp = true;
-    // Optionally: Give level up rewards here!
     showToast(`Level Up! You reached Lv ${playerLevel}!`);
-    // TODO: grantLevelReward(playerLevel); // implement as desired
+    // Optionally: grantLevelReward(playerLevel);
   }
   await savePlayerLevelExp();
   renderPlayerLevel();
@@ -1090,11 +1094,13 @@ async function grantExp(amount) {
 }
 
 function renderPlayerLevel() {
-  document.getElementById('player-level-label').textContent = "Lv " + playerLevel;
+  const levelEl = document.getElementById('player-level-label');
+  if (levelEl) levelEl.textContent = "Lv " + playerLevel;
+  const expBar = document.getElementById('player-exp-bar-fill');
+  const expNum = document.getElementById('player-exp-numbers');
   const needed = expToNextLevel(playerLevel);
-  const fill = Math.min(100, Math.round((playerExp / needed) * 100));
-  document.getElementById('player-exp-bar-fill').style.width = fill + "%";
-  document.getElementById('player-exp-numbers').textContent = playerExp + "/" + needed;
+  if (expBar) expBar.style.width = Math.min(100, Math.round((playerExp / needed) * 100)) + "%";
+  if (expNum) expNum.textContent = playerExp + "/" + needed;
 }
 
 // MENU INSIDE VIEWPORT
