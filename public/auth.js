@@ -316,7 +316,6 @@ auth.onAuthStateChanged(async user => {
     appMain.classList.add('active');
     mainNav.classList.add('active');
     loadProfile(user);
-    await loadDeckState();
     loadPlayerMissionsAchievements();  
   } else {
       isLoggingOut = true;  
