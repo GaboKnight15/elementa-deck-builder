@@ -304,7 +304,7 @@ const defaultBanner = "CardImages/Banners/DefaultBanner.png";
       setAchievementData(achievements || {});
     } catch (e) {
       showToast("Error loading your progress from the server.");
-    }
+    } 
     // Now update UI
     renderGallery();
     refreshDeckSlotSelect();
