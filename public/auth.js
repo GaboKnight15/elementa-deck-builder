@@ -291,7 +291,7 @@ auth.onAuthStateChanged(async user => {
           currentDeckSlot = data.currentDeckSlot || "Deck 1";
           playerCurrency = data.currency || 0;
           playerEssence = data.essence || 0;
-          playerMissions = data.missions || {};
+          playerQuests = data.quests || {};
           playerAchievements = data.achievements || {};
           playerLevel = data.level || 1;
           playerExp = data.exp || 0;
@@ -319,7 +319,7 @@ auth.onAuthStateChanged(async user => {
       appMain.classList.add('active');
       mainNav.classList.add('active');
       loadProfile(user);
-      if (typeof loadPlayerMissionsAchievements === 'function') loadPlayerMissionsAchievements();  
+      if (typeof loadPlayerQuestsAchievements === 'function') loadPlayerQuestsAchievements();  
     } else {
       isLoggingOut = true;  
       profileArea.style.display = 'none';
@@ -338,7 +338,7 @@ auth.onAuthStateChanged(async user => {
       currentDeckSlot = "Deck 1";
       playerCurrency = 0;
       playerEssence = 0;
-      playerMissions = {};
+      playerQuests = {};
       playerAchievements = {};
       playerLevel = 1;
       playerExp = 0;
