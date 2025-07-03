@@ -280,12 +280,35 @@ const defaultBanner = "CardImages/Banners/DefaultBanner.png";
   }
 
   // --- Auth state changes ---
-  auth.onAuthStateChanged(async user => {
-    if (user) {
-    await loadCurrency(); 
-    await loadCollection();
-    await loadPlayerLevelExp();
-    await loadMissions();    
+auth.onAuthStateChanged(async user => {
+  if (user) {
+    // Load ALL player state from Firestore
+    loadProgress(data => {
+      playerCollection = data.collection || {};
+      deckSlots = data.deckSlots || ["Deck 1"];
+      decks = data.decks || { "Deck 1": {} };
+      currentDeckSlot = data.currentDeckSlot || "Deck 1";
+      playerCurrency = data.currency || 0;
+      playerEssence = data.essence || 0;
+      playerMissions = data.missions || {};
+      playerAchievements = data.achievements || {};
+      playerLevel = data.level || 1;
+      playerExp = data.exp || 0;
+      playerUnlockedAvatars = data.unlockedAvatars || [defaultIcon];
+      playerUnlockedBanners = data.unlockedBanners || [defaultBanner];
+      playerUnlockedCardbacks = data.unlockedCardbacks || [];
+      // Now update UI
+      renderPlayerLevel();  
+      renderGallery();
+      refreshDeckSlotSelect();
+      updateDeckDisplay();
+      renderBuilder();
+      updateCurrencyDisplay();
+      updateCollectionDependentUI();  
+      renderShop();
+      // etc...
+    });
+
     isLoggingOut = false;  
     profileArea.style.display = '';
     profileMenu.classList.remove('active');
@@ -293,17 +316,9 @@ const defaultBanner = "CardImages/Banners/DefaultBanner.png";
     appMain.classList.add('active');
     mainNav.classList.add('active');
     loadProfile(user);
-    // Load all progress in parallel
-    // Now update UI
-    renderGallery();
-    refreshDeckSlotSelect();
-    updateDeckDisplay();
-    renderBuilder();
-    loadPlayerCurrencyEssence();
-    renderShop();
     await loadDeckState();
     loadPlayerMissionsAchievements();  
-    } else {
+  } else {
       isLoggingOut = true;  
       profileArea.style.display = 'none';
       profileMenu.classList.remove('active');
