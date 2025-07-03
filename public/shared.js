@@ -90,48 +90,26 @@ let playerCurrency = 0;
 let playerEssence = 0;
 
 // --- Firebase Load/Save ---
-async function loadUserState() {
+async function saveCurrency() {
   const user = firebase.auth().currentUser;
-  if (!user) return false;
-  try {
-    const doc = await firebase.firestore().collection('users').doc(user.uid).get();
-    const data = doc.exists ? doc.data() : {};
-    userState.collection = data.collection || {};
-    userState.currency = data.currency || 0;
-    userState.essence = data.essence || 0;
-    userState.missions = data.missions || {};
-    userState.achievements = data.achievements || {};
-    userState.level = data.level || 1;
-    userState.exp = data.exp || 0;
-    // ...more as needed
-    return true;
-  } catch (e) {
-    showToast("Failed to load your progress. Try reloading.");
-    console.error(e);
-    return false;
-  }
+  if (!user) return;
+  await firebase.firestore().collection('users').doc(user.uid).set(
+    { currency: playerCurrency },
+    { merge: true }
+  );
 }
-
-async function saveUserState() {
+// --- Firebase Load/Save ---
+async function loadCurrency() {
   const user = firebase.auth().currentUser;
-  if (!user || isLoggingOut) return false;
-  try {
-    await firebase.firestore().collection('users').doc(user.uid).set({
-      collection: userState.collection,
-      currency: userState.currency,
-      essence: userState.essence,
-      missions: userState.missions,
-      achievements: userState.achievements,
-      level: userState.level,
-      exp: userState.exp,
-      // ...more as needed
-    }, { merge: true });
-    return true;
-  } catch (e) {
-    showToast("Failed to save your progress.");
-    console.error(e);
-    return false;
-  }
+  if (!user) return;
+  const doc = await firebase.firestore().collection('users').doc(user.uid).get();
+  playerCurrency = doc.exists && doc.data().currency ? doc.data().currency : 0;
+  updateCurrencyDisplay();
+}
+// --- CURRENCY DISPLAY ---
+function updateCurrencyDisplay() {
+  const el = document.getElementById('currency-amount');
+  if (el) el.textContent = playerCurrency;
 }
 // ==========================
 // === SECTION NAVIGATION ===
@@ -352,18 +330,16 @@ function getCurrencyHtml(amount) {
   </span>`;
 }
 async function addCoins(amount) {
-  userState.currency += amount;
-  await saveUserState();
-  renderCurrency();
+  playerCurrency += amount;
+  await saveCurrency();
+  updateCurrencyDisplay();
 }
-document.addEventListener('DOMContentLoaded', function() {
-  const addCoinsBtn = document.getElementById('add-coins-btn');
-  if (addCoinsBtn) {
-    addCoinsBtn.onclick = async function() {
-      await addCoins(100);
-    };
-  }
-});
+const addCoinsBtn = document.getElementById('add-coins-btn');
+if (addCoinsBtn) {
+  addCoinsBtn.onclick = function() {
+    addCoins(100);
+  };
+}
 // ESSENCE CURRENCY
 function getEssence() { return userState.essence; }
 async function setEssence(amt) {
