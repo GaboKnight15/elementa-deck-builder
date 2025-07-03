@@ -92,7 +92,7 @@ function renderDeckSelection() {
     tile.className = 'deck-slot-tile';
     if (slotName) {
       const deck = decks[slotName] || {};
-      // Remove highlightArt if the referenced art is not in the current deck's Legendary cards
+
     if (deck.highlightArt) {
       const validLegendary = Object.keys(deck)
         .map(cardId => dummyCards.find(card => card.id === cardId && card.rarity === 'Legendary'))
@@ -100,7 +100,7 @@ function renderDeckSelection() {
         .some(card => (card.artwork || card.image) === deck.highlightArt);
       if (!validLegendary) {
         delete deck.highlightArt;
-        saveDeckState();
+        saveAllProgress();
       }
     }
       if (deck.highlightArt) {
@@ -127,7 +127,7 @@ function renderDeckSelection() {
         deckSlots[i] = newName;
         decks[newName] = {};
         currentDeckSlot = newName;
-        saveDeckState();
+        saveAllProgress();
         showDeckBuilder();
       };
     }
@@ -175,7 +175,7 @@ setHighlightArtBtn.onclick = function() {
     img.title = card.name;
     img.onclick = () => {
       decks[deckName].highlightArt = card.artwork || card.image;
-      saveDeckState();
+      saveAllProgress();
       renderDeckSelection();
       highlightArtModal.style.display = "none";
       closeDeckTileMenu();
@@ -213,7 +213,7 @@ deckBannerImg.onclick = function() {
       img.title = card.name;
       img.onclick = () => {
         decks[deckName].bannerArt = art;
-        saveDeckState();
+        saveAllProgress();
         updateDeckBanner(deckName);
         deckBannerModal.style.display = "none";
       };
@@ -250,7 +250,7 @@ deckCardbackImg.onclick = function() {
     img.className = "deck-cardback-choice";
     img.onclick = () => {
       decks[deckName].cardbackArt = cb;
-      saveDeckState();
+      saveAllProgress();
       updateDeckCardback(deckName);
       deckCardbackModal.style.display = "none";
       closeDeckTileMenu();
@@ -296,7 +296,7 @@ viewDeckBtn.onclick = function() {
 editDeckBtn.onclick = function() {
   const deckName = deckMenuModal.dataset.deckName;
   currentDeckSlot = deckName;
-  saveDeckState();
+  saveAllProgress();
   closeDeckTileMenu();
   showDeckBuilder();
 };
@@ -316,7 +316,7 @@ renameDeckBtn.onclick = function() {
   decks[newName] = deckData;
   delete decks[deckName];
   currentDeckSlot = newName;
-  saveDeckState();
+  saveAllProgress();
   renderDeckSelection();
 };
 // Delete
@@ -331,7 +331,7 @@ deleteDeckBtn.onclick = function() {
   deckSlots.splice(idx, 1);
   delete decks[deckName];
   currentDeckSlot = deckSlots[Math.max(idx - 1, 0)];
-  saveDeckState();
+  saveAllProgress();
   closeDeckTileMenu();
   renderDeckSelection();
 };
@@ -366,21 +366,13 @@ function showDeckViewModal(deckName) {
 closeDeckViewModalBtn.onclick = function() {
   deckViewModal.style.display = 'none';
 };
-function saveDeckState() {
-  saveUserDecks(deckSlots, decks, currentDeckSlot);
-  }
-async function loadDeckState() {
-  const data = await loadUserDecks();
-  deckSlots = data.deckSlots;
-  decks = data.decks;
-  currentDeckSlot = data.currentDeckSlot;
-}
+
 function getCurrentDeck() {
     return decks[currentDeckSlot] || {};
   }
 function setCurrentDeck(deckObj) {
     decks[currentDeckSlot] = deckObj;
-    saveDeckState();
+    saveAllProgress();
   }
 function refreshDeckSlotSelect() {
     deckSlotSelect.innerHTML = "";
@@ -560,7 +552,7 @@ function updateDeckDisplay() {
 }
   cardCount.textContent = total;
   setCurrentDeck(deck);
-  saveDeckState();
+  saveAllProgress();
 }
 function getCardCategory(card) {
   return card.category ? card.category.toLowerCase() : '';
@@ -641,7 +633,7 @@ function renderBuilder() {
 // Deck slot events
   deckSlotSelect.addEventListener('change', () => {
     currentDeckSlot = deckSlotSelect.value;
-    saveDeckState();
+    saveAllProgress();
     updateDeckDisplay();
     renderBuilder();
   });
@@ -656,7 +648,7 @@ function renderBuilder() {
     deckSlots.push(newName);
     decks[newName] = {};
     currentDeckSlot = newName;
-    saveDeckState();
+    saveAllProgress();
     refreshDeckSlotSelect();
     updateDeckDisplay();
     renderBuilder();
@@ -673,7 +665,7 @@ function renderBuilder() {
     deckSlots.splice(idx, 1);
     delete decks[currentDeckSlot];
     currentDeckSlot = deckSlots[Math.max(idx - 1, 0)];
-    saveDeckState();
+    saveAllProgress();
     refreshDeckSlotSelect();
     updateDeckDisplay();
     renderBuilder();
@@ -713,7 +705,6 @@ backBuilderBtn.onclick = showDeckSelection;
 // === INITIALIZATION ===
 // ==========================
 (async () => {
-  await loadDeckState();
   refreshDeckSlotSelect();
   updateDeckDisplay();
 })();
