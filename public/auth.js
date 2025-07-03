@@ -283,7 +283,8 @@ const defaultBanner = "CardImages/Banners/DefaultBanner.png";
   auth.onAuthStateChanged(async user => {
     if (user) {
     await loadCurrency(); 
-    await loadCollection();    
+    await loadCollection();
+    await loadPlayerLevelExp();       
     isLoggingOut = false;  
     profileArea.style.display = '';
     profileMenu.classList.remove('active');
@@ -321,6 +322,9 @@ const defaultBanner = "CardImages/Banners/DefaultBanner.png";
       playerEssence = 0;
       playerMissions = {};
       playerAchievements = {};
+      playerLevel = 1;
+      playerExp = 0;
+      renderPlayerLevel();  
       renderGallery();
       refreshDeckSlotSelect();
       updateDeckDisplay();
