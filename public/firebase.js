@@ -190,33 +190,20 @@ function loadCurrencyEssence() {
     }
   });
 }
-function saveMissions(missions) {
+async function saveMissions() {
   const user = firebase.auth().currentUser;
-  if (user) {
-    let username = user.displayName 
-      || (user.email ? user.email.split('@')[0] : "")
-      || "";
-    firebase.firestore().collection('users').doc(user.uid)
-      .set({ missions, displayName: username, email: user.email || "" }, { merge: true });
-  }
+  if (!user) return;
+  await firebase.firestore().collection('users').doc(user.uid).set(
+    { missions: playerMissions },
+    { merge: true }
+  );
 }
-function loadMissions() {
-  return new Promise((resolve, reject) => {
-    const user = firebase.auth().currentUser;
-    if (user) {
-      firebase.firestore().collection('users').doc(user.uid).get()
-        .then(doc => {
-          if (doc.exists && doc.data().missions) {
-            resolve(doc.data().missions);
-          } else {
-            resolve({});
-          }
-        })
-        .catch(reject);
-    } else {
-      resolve({});
-    }
-  });
+async function loadMissions() {
+  const user = firebase.auth().currentUser;
+  if (!user) return {};
+  const doc = await firebase.firestore().collection('users').doc(user.uid).get();
+  playerMissions = doc.exists && doc.data().missions ? doc.data().missions : {};
+  return playerMissions;
 }
 
 function saveAchievements(achievements) {
