@@ -282,6 +282,7 @@ const defaultBanner = "CardImages/Banners/DefaultBanner.png";
   // --- Auth state changes ---
   auth.onAuthStateChanged(async user => {
     if (user) {
+    await loadCurrency();      
     isLoggingOut = false;  
     profileArea.style.display = '';
     profileMenu.classList.remove('active');
@@ -303,7 +304,7 @@ const defaultBanner = "CardImages/Banners/DefaultBanner.png";
     loadPlayerCurrencyEssence();
     renderShop();
     await loadDeckState();
-    loadPlayerMissionsAchievements(); 
+    loadPlayerMissionsAchievements();  
     } else {
       isLoggingOut = true;  
       profileArea.style.display = 'none';
@@ -328,6 +329,7 @@ const defaultBanner = "CardImages/Banners/DefaultBanner.png";
       refreshDeckSlotSelect();
       updateDeckDisplay();
       renderBuilder();
+      updateCurrencyDisplay();  
       setTimeout(() => { isLoggingOut = false; }, 1000);  
      }
   });
