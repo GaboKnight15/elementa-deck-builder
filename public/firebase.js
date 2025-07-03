@@ -28,12 +28,12 @@ firebase.auth().onAuthStateChanged(function(user) {
  * Save all player progress (currency, collection, decks, cosmetics, etc)
  * @param {Object} progressObj - An object with all fields to save (example: {currency: 100, collection: {...}, ...})
  */ 
-function saveProgress(progressObj) {
+async function saveProgress(progressObj) {
   const user = firebase.auth().currentUser;
   if (!user) return;
   // Optionally, attach displayName/email for admin/debugging
   let username = user.displayName || (user.email ? user.email.split('@')[0] : "");
-  firebase.firestore().collection('users').doc(user.uid).set(
+  await firebase.firestore().collection('users').doc(user.uid).set(
     { ...progressObj, displayName: username, email: user.email || "" },
     { merge: true }
   );
