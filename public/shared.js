@@ -115,7 +115,15 @@ function getCardBgClass(card) {
   if (colors.length === 2) return `card-bg-${colors[0]}-${colors[1]}`;
   return `card-bg-gold`;
 }
-
+// LOADING SCREEN
+function showLoadingOverlay() {
+  const overlay = document.getElementById('loading-overlay');
+  if (overlay) overlay.style.display = 'flex';
+}
+function hideLoadingOverlay() {
+  const overlay = document.getElementById('loading-overlay');
+  if (overlay) overlay.style.display = 'none';
+}
 // VIEW CARDS
 function showFullCardModal(cardObj) {
   const card = dummyCards.find(c => c.id === (cardObj.cardId || cardObj.id));
