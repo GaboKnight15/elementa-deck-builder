@@ -142,7 +142,6 @@ function createCardGallery(card) {
 }
 
 function renderGallery() {
-  showLoadingOverlay();
   gallery.innerHTML = '';
   const selectedColor = document.getElementById('filter-color-gallery').value.toLowerCase();
   const selectedType = document.getElementById('filter-type-gallery').value.toLowerCase();
@@ -187,7 +186,6 @@ function renderGallery() {
   let loaded = 0;
   const total = filteredCards.length;
   if (total === 0) {
-    hideLoadingOverlay();
     return;
   }
 
@@ -197,16 +195,15 @@ function renderGallery() {
     // If image already loaded (from cache), count it as loaded
     if (img.complete) {
       loaded++;
-      if (loaded === total) hideLoadingOverlay();
+      if (loaded === total);
     } else {
       img.onload = img.onerror = () => {
         loaded++;
-        if (loaded === total) hideLoadingOverlay();
+        if (loaded === total);
       };
     }
     gallery.appendChild(cardDiv);
-  });
-  setTimeout(hideLoadingOverlay, 6000);  
+  }); 
 }
 // ==========================
 // === EVENT LISTENERS ===
