@@ -23,16 +23,6 @@ const dummyCards = [
 { id: 'basicshadowforest', name: 'Shadow Forest', rarity: 'Basic', image: 'CardImages/Domains/Black Basic Location.png', category: 'domain', color: 'black', type: 'domain', hp: 5, cost: 1, set: 'StandardPack2'},
 ];
 
-const userState = {
-  collection: {},
-  currency: 0,
-  essence: 0,
-  missions: {},
-  achievements: {},
-  level: 1,
-  exp: 0,
-  // add more as needed
-};
 const COLOR_MISSIONS = ['green', 'red', 'blue', 'yellow', 'purple', 'gray', 'black', 'white'];
 // MISSION LIST
 const DAILY_MISSION_POOL = [
@@ -237,9 +227,6 @@ function setNewlyUnlockedCards(arr) {
   localStorage.setItem(NEW_CARD_KEY, JSON.stringify(arr));
 }
 // FIREBASE GALLERY
-function getCollection() {
-  return playerCollection;
-}
 async function setCollection(collection) {
   playerCollection = collection;
   await saveCollection();
@@ -343,13 +330,6 @@ async function addToCollection(cardId, amount = 1) {
   if (typeof updateUniqueCardsAchievement === 'function') {updateUniqueCardsAchievement();}
 }
 
-function getCurrency() { return userState.currency; }
-async function setCurrency(amt) {
-  userState.currency = amt;
-  await saveUserState();
-  const el = document.getElementById('currency-amount');
-  if (el) el.textContent = amt;
-}
 function getCurrencyHtml(amount) {
   return `<span class="currency-display">
     <img class="currency-icon" src="images/coin.png" alt="Coins">
@@ -368,13 +348,7 @@ if (addCoinsBtn) {
   };
 }
 // ESSENCE CURRENCY
-function getEssence() { return userState.essence; }
-async function setEssence(amt) {
-  userState.essence = amt;
-  await saveUserState();
-  const el = document.getElementById('essence-amount');
-  if (el) el.textContent = amt;
-}
+
 function getEssenceHtml(amount) {
   return `<span class="currency-display">
     <img class="currency-icon" src="images/essence.png" alt="Essence">
@@ -1122,16 +1096,6 @@ function renderPlayerLevel() {
   document.getElementById('player-exp-bar-fill').style.width = fill + "%";
   document.getElementById('player-exp-numbers').textContent = playerExp + "/" + needed;
 }
-
-auth.onAuthStateChanged(async user => {
-  if (user) {
-    await loadUserState();
-    renderEverything();
-  } else {
-    resetUserState();
-    renderEverything();
-  }
-});
 
 // MENU INSIDE VIEWPORT
 function placeMenuWithinViewport(menu, triggerRect, preferred = "bottom") {
