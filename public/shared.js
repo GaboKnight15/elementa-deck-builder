@@ -578,16 +578,19 @@ document.getElementById('achievements-modal').onclick = function(e) {
 
 // 2. Persistence Helpers
 function getAchievementData()    { return playerAchievements; }
-function setAchievementData(data){ playerAchievements = data; if (!isLoggingOut) saveAchievements(data); }
+function setAchievementData(data){ 
+  playerAchievements = data;
+  if (!isLoggingOut) saveAllProgressAndUI(); 
+}
 
-function loadPlayerMissionsAchievements() {
-  loadMissions().then(missions => {
-    playerMissions = missions || {};
-    // Optionally: renderMissions();
+function loadMissions() {
+  return new Promise(resolve => {
+    loadProgress(data => resolve(data.missions || {}));
   });
-  loadAchievements().then(achievements => {
-    playerAchievements = achievements || {};
-    // Optionally: renderAchievements();
+}
+function loadAchievements() {
+  return new Promise(resolve => {
+    loadProgress(data => resolve(data.achievements || {}));
   });
 }
 
