@@ -292,11 +292,6 @@ const defaultBanner = "CardImages/Banners/DefaultBanner.png";
     mainNav.classList.add('active');
     loadProfile(user);
     // Load all progress in parallel
-    const loaded = await loadUserState();
-    if (!loaded) {
-      showToast("Could not load your data. Try reloading.");
-      return;
-    }
     // Now update UI
     renderGallery();
     refreshDeckSlotSelect();
