@@ -325,11 +325,18 @@ let playerAchievements = {};
 
 function getMissionData()        { return playerMissions; }
 function setMissionData(data)    { playerMissions = data; if (!isLoggingOut) saveMissions(data); }
-function getMissionResets() {
-  return JSON.parse(localStorage.getItem('missionResets') || '{}');
+async function getMissionResets() {
+  const user = firebase.auth().currentUser;
+  if (!user) return {};
+  const doc = await firebase.firestore().collection('users').doc(user.uid).get();
+  return (doc.exists && doc.data().missionResets) ? doc.data().missionResets : {};
 }
-function setMissionResets(obj) {
-  localStorage.setItem('missionResets', JSON.stringify(obj));
+async function setMissionResets(obj) {
+  const user = firebase.auth().currentUser;
+  if (!user) return;
+  await firebase.firestore().collection('users').doc(user.uid).set(
+    { missionResets: obj }, { merge: true }
+  );
 }
 function resetMissionsIfNeeded() {
   const now = new Date();
@@ -730,18 +737,36 @@ function getRandomMissions(pool, count) {
   return selected;
 }
 
-// Store currently active missions in localStorage
-function getActiveDailyMissions() {
-  return JSON.parse(localStorage.getItem('activeDailyMissions') || '[]');
+// --- FIREBASE-BASED MISSION STATE ---
+
+async function getActiveDailyMissions() {
+  const user = firebase.auth().currentUser;
+  if (!user) return [];
+  const doc = await firebase.firestore().collection('users').doc(user.uid).get();
+  return (doc.exists && doc.data().activeDailyMissions) ? doc.data().activeDailyMissions : [];
 }
-function setActiveDailyMissions(missions) {
-  localStorage.setItem('activeDailyMissions', JSON.stringify(missions));
+
+async function setActiveDailyMissions(missions) {
+  const user = firebase.auth().currentUser;
+  if (!user) return;
+  await firebase.firestore().collection('users').doc(user.uid).set(
+    { activeDailyMissions: missions }, { merge: true }
+  );
 }
-function getActiveWeeklyMissions() {
-  return JSON.parse(localStorage.getItem('activeWeeklyMissions') || '[]');
+
+async function getActiveWeeklyMissions() {
+  const user = firebase.auth().currentUser;
+  if (!user) return [];
+  const doc = await firebase.firestore().collection('users').doc(user.uid).get();
+  return (doc.exists && doc.data().activeWeeklyMissions) ? doc.data().activeWeeklyMissions : [];
 }
-function setActiveWeeklyMissions(missions) {
-  localStorage.setItem('activeWeeklyMissions', JSON.stringify(missions));
+
+async function setActiveWeeklyMissions(missions) {
+  const user = firebase.auth().currentUser;
+  if (!user) return;
+  await firebase.firestore().collection('users').doc(user.uid).set(
+    { activeWeeklyMissions: missions }, { merge: true }
+  );
 }
 // Call this on timer expiry or at startup if needed
 function refreshDailyMissions() {
@@ -1082,13 +1107,12 @@ window.addEventListener('DOMContentLoaded', loadPlayerCurrencyEssence);
 window.addEventListener('DOMContentLoaded', () => {
   resetMissionsIfNeeded();
 });
-window.addEventListener('DOMContentLoaded', () => {
-  // If no missions picked for today/week, pick them
-  if (getActiveDailyMissions().length === 0) refreshDailyMissions();
-  if (getActiveWeeklyMissions().length === 0) refreshWeeklyMissions();
-  // Render and start timers
-  renderDailyMissions();
-  renderWeeklyMissions();
+window.addEventListener('DOMContentLoaded', async () => {
+  if ((await getActiveDailyMissions()).length === 0) await refreshDailyMissions();
+  if ((await getActiveWeeklyMissions()).length === 0) await refreshWeeklyMissions();
+  // Render and start timers, etc.
+  await renderDailyMissions();
+  await renderWeeklyMissions();
   startDailyMissionTimer();
   startWeeklyMissionTimer();
 });
