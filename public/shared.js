@@ -79,6 +79,8 @@ let playerExp = 0;
 let playerCurrency = 0;
 let playerEssence = 0;
 let playerCollection = {};
+let playerMissions = {};
+let playerAchievements = {};
 
 // --- FIREBASE LOAD ---
 async function loadCurrency() {
@@ -378,12 +380,15 @@ function loadPlayerCurrencyEssence() {
     setEssence(essence);
   });
 }
-// 2. Persistence and Reset Helpers
-let playerMissions = {};
-let playerAchievements = {};
 
-function getMissionData()        { return playerMissions; }
-function setMissionData(data)    { playerMissions = data; if (!isLoggingOut) saveMissions(data); }
+function getMissionData() {
+  return playerMissions;
+}
+async function setMissionData(data) {
+  playerMissions = data;
+  await saveMissions();
+}
+
 async function getMissionResets() {
   const user = firebase.auth().currentUser;
   if (!user) return {};
@@ -456,7 +461,7 @@ async function incrementMissionProgress(missionId) {
 
   data[missionId].progress = Math.min(mission.goal, (data[missionId].progress || 0) + 1);
   if (data[missionId].progress >= mission.goal) data[missionId].completed = true;
-  setMissionData(data);
+  await setMissionData(data);
   await renderDailyMissions();
   await renderWeeklyMissions();
   await updateMissionsNotificationDot();
