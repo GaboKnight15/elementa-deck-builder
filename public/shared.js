@@ -253,7 +253,7 @@ if (newlyAddedCard) {
         mission.id && mission.id.includes(`${color}_card`) &&
         cardColors.includes(color)
       ) {
-        incrementMissionProgress(mission.id);
+        await incrementMissionProgress(mission.id);
       }
     });
   });
@@ -263,7 +263,7 @@ if (newlyAddedCard) {
   if (!wasOwned && collection[cardId] > 0) {
     [...getActiveDailyMissions(), ...getActiveWeeklyMissions()].forEach(mission => {
       if (mission.id && mission.id.includes('unique_card')) {
-        incrementMissionProgress(mission.id);
+        await incrementMissionProgress(mission.id);
       }
     });
   }
@@ -385,10 +385,11 @@ function getMissionProgress(mission) {
 }
 
 // 5. Increment mission progress by 1 (call from shop.js or elsewhere)
-function incrementMissionProgress(missionId) {
+async function incrementMissionProgress(missionId) {
   let data = getMissionData();
-  // Only consider active missions
-  const allActive = [...getActiveDailyMissions(), ...getActiveWeeklyMissions()];
+  const daily = await getActiveDailyMissions();
+  const weekly = await getActiveWeeklyMissions();
+  const allActive = [...daily, ...weekly];
   const mission = allActive.find(m => m.id === missionId);
   if (!mission) return;
   if (!data[missionId]) data[missionId] = { progress: 0, completed: false, claimed: false };
@@ -397,9 +398,9 @@ function incrementMissionProgress(missionId) {
   data[missionId].progress = Math.min(mission.goal, (data[missionId].progress || 0) + 1);
   if (data[missionId].progress >= mission.goal) data[missionId].completed = true;
   setMissionData(data);
-  renderDailyMissions();
-  renderWeeklyMissions();
-  updateMissionsNotificationDot();
+  await renderDailyMissions();
+  await renderWeeklyMissions();
+  await updateMissionsNotificationDot();
 }
 
 // 6. Claim mission reward
@@ -1107,9 +1108,6 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 window.addEventListener('DOMContentLoaded', loadPlayerCurrencyEssence);
 // 9. On load, check for resets
-window.addEventListener('DOMContentLoaded', () => {
-  resetMissionsIfNeeded();
-});
 window.addEventListener('DOMContentLoaded', async () => {
   await resetMissionsIfNeeded();
   if ((await getActiveDailyMissions()).length === 0) await refreshDailyMissions();
