@@ -303,9 +303,14 @@ function getCurrencyHtml(amount) {
     <span>${amount}</span>
   </span>`;
 }
-document.getElementById('add-coins-btn').onclick = function() {
-  setCurrency(getCurrency() + 100); // This uses playerCurrency and saves to Firestore!
-};
+document.addEventListener('DOMContentLoaded', function() {
+  const addCoinsBtn = document.getElementById('add-coins-btn');
+  if (addCoinsBtn) {
+    addCoinsBtn.onclick = function() {
+      setCurrency(getCurrency() + 100); // This uses playerCurrency and saves to Firestore!
+    };
+  }
+});
 // ESSENCE CURRENCY
 function getEssence()     { return playerEssence; }
 function setEssence(amt)  {
