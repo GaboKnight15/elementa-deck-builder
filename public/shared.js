@@ -73,6 +73,11 @@ const ACHIEVEMENTS = [
 ];
 
 let isLoggingOut = false;
+// Load/Save Player Level/EXP from Firestore
+let playerLevel = 1;
+let playerExp = 0;
+let playerCurrency = 0;
+let playerEssence = 0;
 // ==========================
 // === SECTION NAVIGATION ===
 // ==========================
@@ -284,9 +289,6 @@ async function addToCollection(cardId, amount = 1) {
     updateUniqueCardsAchievement();
   }
 }
-
-let playerCurrency = 0;
-let playerEssence = 0;
 
 function getCurrency()    { return playerCurrency; }
 function setCurrency(amt) {
@@ -1012,10 +1014,6 @@ document.getElementById('missions-modal').onclick = function(e) {
 function expToNextLevel(level) {
   return 100 + (level - 1) * 100; // Example: 100, 200, 300, ...
 }
-
-// Load/Save Player Level/EXP from Firestore
-let playerLevel = 1;
-let playerExp = 0;
 
 function getPlayerLevel() { return playerLevel; }
 function getPlayerExp() { return playerExp; }
