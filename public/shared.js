@@ -973,6 +973,9 @@ document.getElementById('friends-icon').onclick = function() {
 document.getElementById('close-friends-modal').onclick = function() {
   document.getElementById('friends-modal').style.display = 'none';
 };
+document.getElementById('friends-modal').onclick = function(e) {
+  if (e.target === this) this.style.display = 'none';
+};
 document.getElementById('close-friend-profile-modal').onclick = function() {
   document.getElementById('friend-profile-modal').style.display = 'none';
 };
