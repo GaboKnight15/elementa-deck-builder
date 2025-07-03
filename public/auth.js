@@ -282,20 +282,30 @@ const defaultBanner = "CardImages/Banners/DefaultBanner.png";
   // --- Auth state changes ---
   auth.onAuthStateChanged(async user => {
     if (user) {
-      isLoggingOut = false;  
-      profileArea.style.display = '';
-      profileMenu.classList.remove('active');
-      loginMenu.classList.remove('active');
-      appMain.classList.add('active');
-      mainNav.classList.add('active');
-      loadProfile(user);
-      loadPlayerCollection();
-      await loadDeckState();
-      refreshDeckSlotSelect();
-      updateDeckDisplay();
-      renderBuilder();  
-      loadPlayerCurrencyEssence();
-      loadPlayerMissionsAchievements();  
+    isLoggingOut = false;  
+    profileArea.style.display = '';
+    profileMenu.classList.remove('active');
+    loginMenu.classList.remove('active');
+    appMain.classList.add('active');
+    mainNav.classList.add('active');
+    loadProfile(user);
+
+      // Load ALL progress before updating UI
+     playerCollection = await loadCollection();
+     let { currency, essence } = await loadCurrencyEssence();
+     playerCurrency = (await loadCurrencyEssence()).currency;
+     playerEssence = (await loadCurrencyEssence()).essence;
+     playerMissions = await loadMissions();
+     playerAchievements = await loadAchievements();     
+        
+    renderGallery();
+    refreshDeckSlotSelect();
+    updateDeckDisplay();
+    renderBuilder();
+    loadPlayerCurrencyEssence();
+    renderShop();
+    await loadDeckState();
+    loadPlayerMissionsAchievements(); 
     } else {
       isLoggingOut = true;  
       profileArea.style.display = 'none';
