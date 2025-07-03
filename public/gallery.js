@@ -147,46 +147,71 @@ function loadPlayerCollection() {
 }
 
 function renderGallery() {
-    gallery.innerHTML = '';
-    const selectedColor = document.getElementById('filter-color-gallery').value.toLowerCase();
-    const selectedType = document.getElementById('filter-type-gallery').value.toLowerCase();
-    const selectedRarity = document.getElementById('filter-rarity-gallery').value.toLowerCase();
-    const nameFilter = document.getElementById('filter-name-gallery').value.toLowerCase();
-    const selectedArchetype = document.getElementById('filter-archetype-gallery').value.toLowerCase();
-    const selectedAbility = document.getElementById('filter-ability-gallery').value.toLowerCase();
-    const selectedCategory = document.getElementById('filter-category-gallery').value.toLowerCase();
-    dummyCards.forEach(card => {
-      if (nameFilter && !card.name.toLowerCase().includes(nameFilter)) return;
-      if (selectedColor) {
-        const colors = Array.isArray(card.color) ? card.color.map(c => c.toLowerCase()) : [card.color.toLowerCase()];
-        if (!colors.includes(selectedColor)) return;
-      }
-      // Filter by category:
-      if (selectedCategory) {
-      if (!card.category || card.category.toLowerCase() !== selectedCategory) return;
-      }
-      if (selectedType) {
-        const types = Array.isArray(card.type) ? card.type.map(t => t.toLowerCase()) : [card.type.toLowerCase()];
-        if (!types.includes(selectedType)) return;
-      }
-      if (selectedRarity) {
-        if (card.rarity.toLowerCase() !== selectedRarity) return;
-      }
-      if (selectedArchetype) {
-        const archetypes = Array.isArray(card.archetype)
-          ? card.archetype.map(a => a.toLowerCase())
-          : [card.archetype?.toLowerCase()];
-        if (!archetypes.includes(selectedArchetype)) return;
-      }
-      if (selectedAbility) {
-        const abilities = Array.isArray(card.ability)
-          ? card.ability.map(a => a.toLowerCase())
-          : [card.ability?.toLowerCase()];
-        if (!abilities.includes(selectedAbility)) return;
-      }
-      gallery.appendChild(createCardGallery(card));
-    });
+  showLoadingOverlay();
+  gallery.innerHTML = '';
+  const selectedColor = document.getElementById('filter-color-gallery').value.toLowerCase();
+  const selectedType = document.getElementById('filter-type-gallery').value.toLowerCase();
+  const selectedRarity = document.getElementById('filter-rarity-gallery').value.toLowerCase();
+  const nameFilter = document.getElementById('filter-name-gallery').value.toLowerCase();
+  const selectedArchetype = document.getElementById('filter-archetype-gallery').value.toLowerCase();
+  const selectedAbility = document.getElementById('filter-ability-gallery').value.toLowerCase();
+  const selectedCategory = document.getElementById('filter-category-gallery').value.toLowerCase();
+
+  // Filter cards as usual
+  const filteredCards = dummyCards.filter(card => {
+    if (nameFilter && !card.name.toLowerCase().includes(nameFilter)) return false;
+    if (selectedColor) {
+      const colors = Array.isArray(card.color) ? card.color.map(c => c.toLowerCase()) : [card.color.toLowerCase()];
+      if (!colors.includes(selectedColor)) return false;
+    }
+    if (selectedCategory) {
+      if (!card.category || card.category.toLowerCase() !== selectedCategory) return false;
+    }
+    if (selectedType) {
+      const types = Array.isArray(card.type) ? card.type.map(t => t.toLowerCase()) : [card.type.toLowerCase()];
+      if (!types.includes(selectedType)) return false;
+    }
+    if (selectedRarity) {
+      if (card.rarity.toLowerCase() !== selectedRarity) return false;
+    }
+    if (selectedArchetype) {
+      const archetypes = Array.isArray(card.archetype)
+        ? card.archetype.map(a => a.toLowerCase())
+        : [card.archetype?.toLowerCase()];
+      if (!archetypes.includes(selectedArchetype)) return false;
+    }
+    if (selectedAbility) {
+      const abilities = Array.isArray(card.ability)
+        ? card.ability.map(a => a.toLowerCase())
+        : [card.ability?.toLowerCase()];
+      if (!abilities.includes(selectedAbility)) return false;
+    }
+    return true;
+  });
+
+  let loaded = 0;
+  const total = filteredCards.length;
+  if (total === 0) {
+    hideLoadingOverlay();
+    return;
   }
+
+  filteredCards.forEach(card => {
+    const cardDiv = createCardGallery(card);
+    const img = cardDiv.querySelector('img');
+    // If image already loaded (from cache), count it as loaded
+    if (img.complete) {
+      loaded++;
+      if (loaded === total) hideLoadingOverlay();
+    } else {
+      img.onload = img.onerror = () => {
+        loaded++;
+        if (loaded === total) hideLoadingOverlay();
+      };
+    }
+    gallery.appendChild(cardDiv);
+  });
+}
 // ==========================
 // === EVENT LISTENERS ===
 // ==========================
