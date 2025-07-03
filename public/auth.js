@@ -284,7 +284,8 @@ const defaultBanner = "CardImages/Banners/DefaultBanner.png";
     if (user) {
     await loadCurrency(); 
     await loadCollection();
-    await loadPlayerLevelExp();       
+    await loadPlayerLevelExp();
+    await loadMissions();    
     isLoggingOut = false;  
     profileArea.style.display = '';
     profileMenu.classList.remove('active');
