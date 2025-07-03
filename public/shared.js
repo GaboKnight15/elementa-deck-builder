@@ -88,6 +88,7 @@ let playerLevel = 1;
 let playerExp = 0;
 let playerCurrency = 0;
 let playerEssence = 0;
+let playerCollection = {};
 
 // --- Firebase Load/Save ---
 async function saveCurrency() {
@@ -98,6 +99,16 @@ async function saveCurrency() {
     { merge: true }
   );
 }
+async function loadCollection() {
+  const user = firebase.auth().currentUser;
+  if (!user) return {};
+  const doc = await firebase.firestore().collection('users').doc(user.uid).get();
+  playerCollection = doc.exists && doc.data().collection ? doc.data().collection : {};
+  updateCollectionDependentUI();
+  return playerCollection;
+}
+
+
 // --- Firebase Load/Save ---
 async function loadCurrency() {
   const user = firebase.auth().currentUser;
@@ -106,6 +117,15 @@ async function loadCurrency() {
   playerCurrency = doc.exists && doc.data().currency ? doc.data().currency : 0;
   updateCurrencyDisplay();
 }
+async function saveCollection() {
+  const user = firebase.auth().currentUser;
+  if (!user) return;
+  await firebase.firestore().collection('users').doc(user.uid).set(
+    { collection: playerCollection },
+    { merge: true }
+  );
+}
+
 // --- CURRENCY DISPLAY ---
 function updateCurrencyDisplay() {
   const el = document.getElementById('currency-amount');
@@ -217,13 +237,19 @@ function setNewlyUnlockedCards(arr) {
   localStorage.setItem(NEW_CARD_KEY, JSON.stringify(arr));
 }
 // FIREBASE GALLERY
-let playerCollection = {}; // In-memory cache
-
-function getCollection() { return userState.collection; }
-async function setCollection(collection) {
-  userState.collection = collection;
-  await saveUserState();
+function getCollection() {
+  return playerCollection;
 }
+async function setCollection(collection) {
+  playerCollection = collection;
+  await saveCollection();
+  updateCollectionDependentUI();
+}
+function updateCollectionDependentUI() {
+  if (typeof renderGallery === "function") renderGallery();
+  // Add other UI updates that depend on collection here if needed
+}
+
 if (typeof firebase !== "undefined" && firebase.auth) {
   firebase.auth().onAuthStateChanged(async function(user) {
     // DOM refs
@@ -269,9 +295,10 @@ if (user) {
 
 // ADD CARDS TO COLLECTION 
 async function addToCollection(cardId, amount = 1) {
-  const collection = userState.collection;
+  const collection = getCollection();
   const wasOwned = collection[cardId] > 0;
   collection[cardId] = (collection[cardId] || 0) + amount;
+  await setCollection(collection);
 
   // If just unlocked, mark as new
   if (!wasOwned && collection[cardId] > 0) {
