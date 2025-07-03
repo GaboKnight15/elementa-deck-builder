@@ -1,3 +1,86 @@
+  // --- Auth state changes ---
+auth.onAuthStateChanged(async user => {
+  if (user) {
+    // Load ALL player state from Firestore.
+    await new Promise(resolve => {
+      loadProgress(data => {
+        playerCollection = data.collection || {};
+        deckSlots = data.deckSlots || ["Deck 1"];
+        decks = data.decks || { "Deck 1": {} };
+        currentDeckSlot = data.currentDeckSlot || "Deck 1";
+        playerCurrency = data.currency || 0;
+        playerEssence = data.essence || 0;
+        playerQuests = data.quests || {};
+        playerAchievements = data.achievements || {};
+        playerLevel = data.level || 1;
+        playerExp = data.exp || 0;
+        // Always include the default avatar/banner if missing
+        playerUnlockedAvatars = (data.unlockedAvatars && data.unlockedAvatars.length > 0)
+          ? data.unlockedAvatars
+          : [defaultIcon];
+        playerUnlockedBanners = (data.unlockedBanners && data.unlockedBanners.length > 0)
+          ? data.unlockedBanners
+          : [defaultBanner];
+        playerUnlockedCardbacks = data.unlockedCardbacks || [];
+        resolve();
+      });
+    });
+
+    // Now update UI
+    renderPlayerLevel();
+    renderGallery();
+    refreshDeckSlotSelect();
+    updateDeckDisplay();
+    renderBuilder();
+    updateCurrencyDisplay();
+    updateEssenceDisplay();
+    updateCollectionDependentUI();
+    renderShop();
+
+    isLoggingOut = false;
+    profileArea.style.display = '';
+    profileMenu.classList.remove('active');
+    loginMenu.classList.remove('active');
+    appMain.classList.add('active');
+    mainNav.classList.add('active');
+    loadProfile(user);
+    if (typeof loadPlayerQuestsAchievements === 'function') loadPlayerQuestsAchievements();
+  } else {
+    isLoggingOut = true;
+    profileArea.style.display = 'none';
+    profileMenu.classList.remove('active');
+    loginMenu.classList.add('active');
+    appMain.classList.remove('active');
+    mainNav.classList.remove('active');
+    loginUsernameInput.value = "";
+    loginEmailInput.value = "";
+    loginPasswordInput.value = "";
+    loginError.textContent = "";
+
+    playerCollection = {};
+    deckSlots = ["Deck 1"];
+    decks = { "Deck 1": {} };
+    currentDeckSlot = "Deck 1";
+    playerCurrency = 0;
+    playerEssence = 0;
+    playerQuests = {};
+    playerAchievements = {};
+    playerLevel = 1;
+    playerExp = 0;
+    playerUnlockedAvatars = [defaultIcon];
+    playerUnlockedBanners = [defaultBanner];
+    playerUnlockedCardbacks = [];
+    renderPlayerLevel();
+    renderGallery();
+    refreshDeckSlotSelect();
+    updateDeckDisplay();
+    renderBuilder();
+    updateCurrencyDisplay();
+    updateEssenceDisplay();
+    updateCollectionDependentUI();
+    setTimeout(() => { isLoggingOut = false; }, 1000);
+  }
+});
 // --- Profile / Auth DOM Elements ---
 document.addEventListener('DOMContentLoaded', function () {
     // New login/signup menu elements
@@ -278,78 +361,4 @@ const defaultBanner = "CardImages/Banners/DefaultBanner.png";
         profileUsernameDisplay.textContent = user.displayName || user.email || "";
       });
   }
-
-  // --- Auth state changes ---
-auth.onAuthStateChanged(async user => {
-    if (user) {
-      // Load ALL player state from Firestore.
-      await new Promise(resolve => {
-        loadProgress(data => {
-          playerCollection = data.collection || {};
-          deckSlots = data.deckSlots || ["Deck 1"];
-          decks = data.decks || { "Deck 1": {} };
-          currentDeckSlot = data.currentDeckSlot || "Deck 1";
-          playerCurrency = data.currency || 0;
-          playerEssence = data.essence || 0;
-          playerQuests = data.quests || {};
-          playerAchievements = data.achievements || {};
-          playerLevel = data.level || 1;
-          playerExp = data.exp || 0;
-          playerUnlockedAvatars = data.unlockedAvatars || [defaultIcon];
-          playerUnlockedBanners = data.unlockedBanners || [defaultBanner];
-          playerUnlockedCardbacks = data.unlockedCardbacks || [];
-          resolve();
-        });
-      });
-
-      // Now update UI
-      renderPlayerLevel();  
-      renderGallery();
-      refreshDeckSlotSelect();
-      updateDeckDisplay();
-      renderBuilder();
-      updateCurrencyDisplay();
-      updateCollectionDependentUI();  
-      renderShop();
-
-      isLoggingOut = false;  
-      profileArea.style.display = '';
-      profileMenu.classList.remove('active');
-      loginMenu.classList.remove('active');
-      appMain.classList.add('active');
-      mainNav.classList.add('active');
-      loadProfile(user);
-      if (typeof loadPlayerQuestsAchievements === 'function') loadPlayerQuestsAchievements();  
-    } else {
-      isLoggingOut = true;  
-      profileArea.style.display = 'none';
-      profileMenu.classList.remove('active');
-      loginMenu.classList.add('active');
-      appMain.classList.remove('active');
-      mainNav.classList.remove('active');
-      loginUsernameInput.value = "";
-      loginEmailInput.value = "";
-      loginPasswordInput.value = "";
-      loginError.textContent = "";
-        
-      playerCollection = {};
-      deckSlots = ["Deck 1"];
-      decks = { "Deck 1": {} };
-      currentDeckSlot = "Deck 1";
-      playerCurrency = 0;
-      playerEssence = 0;
-      playerQuests = {};
-      playerAchievements = {};
-      playerLevel = 1;
-      playerExp = 0;
-      renderPlayerLevel();  
-      renderGallery();
-      refreshDeckSlotSelect();
-      updateDeckDisplay();
-      renderBuilder();
-      updateCurrencyDisplay();
-      updateCollectionDependentUI();  
-      setTimeout(() => { isLoggingOut = false; }, 1000);  
-    }
-  });
 });
