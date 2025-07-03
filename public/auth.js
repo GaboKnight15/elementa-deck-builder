@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const closeProfileBannerModalBtn = document.getElementById('close-profile-banner-modal');
 
   // --- Profile Icon Choices ---
-  const iconOptions = [
+  const iconOptions = [ 
       "CardImages/Avatars/Faelyra.png",
       "CardImages/Avatars/Kaelyn.png",
       "CardImages/Avatars/Zaryon.png",
