@@ -17,7 +17,6 @@ function createCardGallery(card) {
     div.classList.add(getCardBgClass(card));
 
     // === Add element classes for color(s) ===
-    // Accepts single string or array of colors
     let colors = card.color;
     if (!Array.isArray(colors)) {
         if (colors) colors = [colors];
@@ -34,7 +33,6 @@ function createCardGallery(card) {
             case 'purple':  div.classList.add('card-element-poison'); break;
             case 'black':   div.classList.add('card-element-dark'); break;
             case 'white':   div.classList.add('card-element-light'); break;
-            // add more mappings as needed
         }
     });
     
@@ -56,7 +54,7 @@ function createCardGallery(card) {
     img.onclick = (e) => {
       e.stopPropagation();
       showFullCardModal(card);
-        
+      // Remove "new" badge after viewing
       const newCards = getNewlyUnlockedCards().filter(id => id !== card.id);
       setNewlyUnlockedCards(newCards);
       renderGallery();
@@ -67,61 +65,63 @@ function createCardGallery(card) {
     name.textContent = card.name;
     const actionRow = document.createElement('div');
     actionRow.className = "action-row";
-    // Create button
+
     // Essence ("Create") button
-const createBtnImg = document.createElement('img');
-createBtnImg.src = 'OtherImages/Icons/Essence.png';
-createBtnImg.alt = 'Create';
-createBtnImg.title = 'Create (spend Essence to make 1 copy)';
-createBtnImg.className = "gallery-action-btn";
-createBtnImg.onclick = function(e) {
+    const createBtnImg = document.createElement('img');
+    createBtnImg.src = 'OtherImages/Icons/Essence.png';
+    createBtnImg.alt = 'Create';
+    createBtnImg.title = 'Create (spend Essence to make 1 copy)';
+    createBtnImg.className = "gallery-action-btn";
+    createBtnImg.onclick = function(e) {
       e.stopPropagation();
       const cost = 50;
-      if (getEssence() < cost) {
+      if (playerEssence < cost) {
         alert('Not enough Essence!');
         return;
       }
-  const collection = getCollection();
-  const wasOwned = collection[card.id] > 0;
-  collection[card.id] = (collection[card.id] || 0) + 1;
-  setCollection(collection);
-  setEssence(getEssence() - cost);
+      const collection = getCollection();
+      const wasOwned = collection[card.id] > 0;
+      collection[card.id] = (collection[card.id] || 0) + 1;
+      playerCollection = collection;
+      playerEssence -= cost;
+      saveAllProgressAndUI();
 
-  // Mark as new if previously not owned
-  if (!wasOwned && collection[card.id] > 0) {
-    const newCards = getNewlyUnlockedCards();
-    if (!newCards.includes(card.id)) {
-      newCards.push(card.id);
-      setNewlyUnlockedCards(newCards);
-    }
-  }
-  renderGallery();
-};
-actionRow.appendChild(createBtnImg);
+      // Mark as new if previously not owned
+      if (!wasOwned && collection[card.id] > 0) {
+        const newCards = getNewlyUnlockedCards();
+        if (!newCards.includes(card.id)) {
+          newCards.push(card.id);
+          setNewlyUnlockedCards(newCards);
+        }
+      }
+      renderGallery();
+    };
+    actionRow.appendChild(createBtnImg);
 
-// Void button
-const voidBtnImg = document.createElement('img');
-voidBtnImg.src = 'OtherImages/Icons/Void.png';
-voidBtnImg.alt = 'Void';
-voidBtnImg.title = 'Void (destroy 1 copy for Essence)';
-voidBtnImg.className = "gallery-action-btn";
-voidBtnImg.onclick = function(e) {
-  e.stopPropagation();
-  const collection = getCollection();
-  if ((collection[card.id] || 0) <= 1) {
-    alert('You must keep at least one copy!');
-    return;
-  }
-  const refund = 10; // adjust as needed
-  collection[card.id] -= 1;
-  setCollection(collection);
-  setEssence(getEssence() + refund);
-  renderGallery();
-};
-actionRow.appendChild(voidBtnImg);
+    // Void button
+    const voidBtnImg = document.createElement('img');
+    voidBtnImg.src = 'OtherImages/Icons/Void.png';
+    voidBtnImg.alt = 'Void';
+    voidBtnImg.title = 'Void (destroy 1 copy for Essence)';
+    voidBtnImg.className = "gallery-action-btn";
+    voidBtnImg.onclick = function(e) {
+      e.stopPropagation();
+      const collection = getCollection();
+      if ((collection[card.id] || 0) <= 1) {
+        alert('You must keep at least one copy!');
+        return;
+      }
+      const refund = 10;
+      collection[card.id] -= 1;
+      playerCollection = collection;
+      playerEssence += refund;
+      saveAllProgressAndUI();
+      renderGallery();
+    };
+    actionRow.appendChild(voidBtnImg);
     
-div.appendChild(actionRow);
-div.appendChild(name);
+    div.appendChild(actionRow);
+    div.appendChild(name);
 
     // "New!" badge
     const newCards = getNewlyUnlockedCards();
@@ -134,17 +134,11 @@ div.appendChild(name);
     
     // Show count badge
     const countBadge = document.createElement('div');
-    countBadge.className = 'card-count-badge'; // style in CSS
+    countBadge.className = 'card-count-badge';
     countBadge.textContent = owned;
     div.appendChild(countBadge);
 
     return div;
-}
-function loadPlayerCollection() {
-  loadCollection().then(collection => {
-    playerCollection = collection || {};
-    renderGallery();
-  });
 }
 
 function renderGallery() {
