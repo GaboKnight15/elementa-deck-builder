@@ -230,7 +230,20 @@ function getNewlyUnlockedCards() {
 function setNewlyUnlockedCards(arr) {
   localStorage.setItem(NEW_CARD_KEY, JSON.stringify(arr));
 }
+// --- SIMPLE PATCHES (add early in shared.js or before use) ---
 
+function loadCurrencyEssence() {
+  return new Promise(resolve => {
+    resolve({
+      currency: playerCurrency || 0,
+      essence: playerEssence || 0
+    });
+  });
+}
+
+function saveMissions() {
+  return saveSingleField('missions', playerMissions);
+}
 // FIREBASE GALLERY
 async function setCollection(collection) {
   playerCollection = collection;
