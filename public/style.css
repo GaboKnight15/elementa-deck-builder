@@ -274,11 +274,11 @@ button {
   pointer-events: none;
   display: block;
 }
-#missions-icon-wrapper, #achievements-icon-wrapper {
+#quests-icon-wrapper, #achievements-icon-wrapper {
   position: relative;
   display: inline-block;
 }
-.mission-entry {
+.quest-entry {
   background: #232a3c;
   border-radius: 10px;
   margin: 10px 0;
@@ -288,12 +288,12 @@ button {
   flex-direction: column;
   gap: 6px;
 }
-.mission-desc {
+.quest-desc {
   font-size: 1.05em;
   color: #ffe066;
   font-weight: 500;
 }
-.mission-progress-bar-wrap {
+.quest-progress-bar-wrap {
   width: 100%;
   background: #1a2234;
   border-radius: 7px;
@@ -302,13 +302,13 @@ button {
   overflow: hidden;
   border: 1.5px solid #314175;
 }
-.mission-progress-bar {
+.quest-progress-bar {
   height: 100%;
   transition: width 0.4s;
   background: linear-gradient(90deg,#50eaff 0%,#ffe066 100%);
   border-radius: 7px 0 0 7px;
 }
-.mission-reward {
+.quest-reward {
   color: #ffe066;
   font-size: 1em;
   margin-top: 2px;
@@ -316,11 +316,11 @@ button {
   align-items: center;
   gap: 4px;
 }
-.mission-claim-btn {
+.quest-claim-btn {
   margin-top: 5px;
   align-self: flex-end;
 }
-.mission-claimed-badge {
+.quest-claimed-badge {
   color: #6fd891;
   font-weight: bold;
   font-size: 0.95em;
@@ -347,17 +347,17 @@ button {
     padding: 0 14px;
   }
 }
-#missions-columns > div {
+#quests-columns > div {
   min-width: 0;
 }
-#missions-modal .missions-timer {
+#quests-modal .quests-timer {
   margin-bottom: 10px;
 }
 .achievement-fade-out {
   animation: achievement-fade-out 0.8s forwards cubic-bezier(.6,.1,.6,1);
   pointer-events: none;
 }
-.missions-timer {
+.quests-timer {
   text-align: center;
   font-size: 1.1em;
   color: #ffe066;
