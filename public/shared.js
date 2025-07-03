@@ -89,37 +89,49 @@ let playerExp = 0;
 let playerCurrency = 0;
 let playerEssence = 0;
 
+// --- Firebase Load/Save ---
 async function loadUserState() {
   const user = firebase.auth().currentUser;
   if (!user) return false;
-  const doc = await firebase.firestore().collection('users').doc(user.uid).get();
-  if (!doc.exists) return false;
-  const data = doc.data();
-  userState.collection    = data.collection    || {};
-  userState.currency      = data.currency      || 0;
-  userState.essence       = data.essence       || 0;
-  userState.missions      = data.missions      || {};
-  userState.achievements  = data.achievements  || {};
-  userState.level         = data.level         || 1;
-  userState.exp           = data.exp           || 0;
-  // ...etc.
-  return true;
+  try {
+    const doc = await firebase.firestore().collection('users').doc(user.uid).get();
+    const data = doc.exists ? doc.data() : {};
+    userState.collection = data.collection || {};
+    userState.currency = data.currency || 0;
+    userState.essence = data.essence || 0;
+    userState.missions = data.missions || {};
+    userState.achievements = data.achievements || {};
+    userState.level = data.level || 1;
+    userState.exp = data.exp || 0;
+    // ...more as needed
+    return true;
+  } catch (e) {
+    showToast("Failed to load your progress. Try reloading.");
+    console.error(e);
+    return false;
+  }
 }
 
 async function saveUserState() {
   const user = firebase.auth().currentUser;
-  if (!user) return false;
-  await firebase.firestore().collection('users').doc(user.uid).set({
-    collection: userState.collection,
-    currency: userState.currency,
-    essence: userState.essence,
-    missions: userState.missions,
-    achievements: userState.achievements,
-    level: userState.level,
-    exp: userState.exp,
-    // ...etc.
-  }, { merge: true });
-  return true;
+  if (!user || isLoggingOut) return false;
+  try {
+    await firebase.firestore().collection('users').doc(user.uid).set({
+      collection: userState.collection,
+      currency: userState.currency,
+      essence: userState.essence,
+      missions: userState.missions,
+      achievements: userState.achievements,
+      level: userState.level,
+      exp: userState.exp,
+      // ...more as needed
+    }, { merge: true });
+    return true;
+  } catch (e) {
+    showToast("Failed to save your progress.");
+    console.error(e);
+    return false;
+  }
 }
 // ==========================
 // === SECTION NAVIGATION ===
