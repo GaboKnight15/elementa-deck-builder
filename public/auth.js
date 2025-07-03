@@ -1,4 +1,76 @@
-  // --- Auth state changes ---
+    // New login/signup menu elements
+  const loginMenu          = document.getElementById('login-menu');
+  const loginForm          = document.getElementById('login-form');
+  const loginBtn           = document.getElementById('login-btn');
+  const signupBtn          = document.getElementById('signup-btn');
+  const loginUsernameInput = document.getElementById('login-username-input');
+  const loginEmailInput    = document.getElementById('login-email-input');
+  const loginPasswordInput = document.getElementById('login-password-input');
+  const loginError         = document.getElementById('login-error');
+
+  const profileArea            = document.getElementById('profile-area');
+  const profileMenu            = document.getElementById('profile-menu');
+  const profilePic              = document.getElementById('profile-pic');
+  const profileUsernameDisplay  = document.getElementById('profile-username-display');
+  const profileChangePicBtn     = document.getElementById('change-profile-btn');
+  const profileLogoutBtn        = document.getElementById('profile-logout-btn');
+
+  const profileIconModal          = document.getElementById('profile-icon-modal');
+  const profileIcons              = document.getElementById('profile-icons');
+  const closeProfileIconModalBtn  = document.getElementById('close-profile-icon-modal');
+
+  const appMain = document.getElementById('app-main');
+  const mainNav = document.getElementById('main-nav');
+  // Banner selection logic
+  const profileBannerContainer = document.getElementById('profile-banner-container');
+  const profileBanner = document.getElementById('profile-banner');
+  const profileBannerModal = document.getElementById('profile-banner-modal');
+  const profileBanners = document.getElementById('profile-banners');
+  const closeProfileBannerModalBtn = document.getElementById('close-profile-banner-modal');
+
+  // --- Profile Icon Choices ---
+  const iconOptions = [ 
+      "CardImages/Avatars/Faelyra.png",
+      "CardImages/Avatars/Kaelyn.png",
+      "CardImages/Avatars/Zaryon.png",
+      "CardImages/Avatars/Zyra.png",
+      "CardImages/Avatars/Veniryss.png",
+      "CardImages/Avatars/Gravok.png",
+      "CardImages/Avatars/Nyzariel.png",
+      "CardImages/Avatars/Elyndra.png",
+      "CardImages/Avatars/Aureavian.png",
+      "CardImages/Avatars/Maldryss.png",
+      "CardImages/Avatars/Tydros.png",
+      "CardImages/Avatars/Ephoros.png",
+      "CardImages/Avatars/Mordrath.png",
+      "CardImages/Avatars/Raukhar.png",
+      "CardImages/Avatars/Velmira.png",
+      "CardImages/Avatars/Verdarok.png",
+      "CardImages/Avatars/Pyronyx.png",
+      "CardImages/Avatars/Abyndra.png",
+      "CardImages/Avatars/Voltrazek.png",
+      "CardImages/Avatars/Toxigon.png",
+      "CardImages/Avatars/Ferronyx.png",
+      "CardImages/Avatars/Nochtyros.png",
+      "CardImages/Avatars/Solaryth.png"
+  ];
+  const defaultIcon = "CardImages/Avatars/Default.png";
+    
+  const bannerOptions = [
+    "CardImages/Banners/Verdara.png",
+    "CardImages/Banners/Ashkar.png",
+    "CardImages/Banners/Pearlhaven.png",
+    "CardImages/Banners/Aetherion.png",
+    "CardImages/Banners/Drakzul.png",
+    "CardImages/Banners/GlimbarkFrontier.png",
+    "CardImages/Banners/SkywardArchipelago.png",
+    "CardImages/Banners/Duskhaven.png",
+    "CardImages/Banners/Nochtyra.png",
+    "CardImages/Banners/Solmara.png",   
+    "CardImages/Banners/DefaultBanner.png"
+  ];
+const defaultBanner = "CardImages/Banners/DefaultBanner.png";
+// --- Auth state changes ---
 auth.onAuthStateChanged(async user => {
   if (user) {
     // Load ALL player state from Firestore.
@@ -83,79 +155,6 @@ auth.onAuthStateChanged(async user => {
 });
 // --- Profile / Auth DOM Elements ---
 document.addEventListener('DOMContentLoaded', function () {
-    // New login/signup menu elements
-  const loginMenu          = document.getElementById('login-menu');
-  const loginForm          = document.getElementById('login-form');
-  const loginBtn           = document.getElementById('login-btn');
-  const signupBtn          = document.getElementById('signup-btn');
-  const loginUsernameInput = document.getElementById('login-username-input');
-  const loginEmailInput    = document.getElementById('login-email-input');
-  const loginPasswordInput = document.getElementById('login-password-input');
-  const loginError         = document.getElementById('login-error');
-
-  const profileArea            = document.getElementById('profile-area');
-  const profileMenu            = document.getElementById('profile-menu');
-  const profilePic              = document.getElementById('profile-pic');
-  const profileUsernameDisplay  = document.getElementById('profile-username-display');
-  const profileChangePicBtn     = document.getElementById('change-profile-btn');
-  const profileLogoutBtn        = document.getElementById('profile-logout-btn');
-
-  const profileIconModal          = document.getElementById('profile-icon-modal');
-  const profileIcons              = document.getElementById('profile-icons');
-  const closeProfileIconModalBtn  = document.getElementById('close-profile-icon-modal');
-
-  const appMain = document.getElementById('app-main');
-  const mainNav = document.getElementById('main-nav');
-  // Banner selection logic
-  const profileBannerContainer = document.getElementById('profile-banner-container');
-  const profileBanner = document.getElementById('profile-banner');
-  const profileBannerModal = document.getElementById('profile-banner-modal');
-  const profileBanners = document.getElementById('profile-banners');
-  const closeProfileBannerModalBtn = document.getElementById('close-profile-banner-modal');
-
-  // --- Profile Icon Choices ---
-  const iconOptions = [ 
-      "CardImages/Avatars/Faelyra.png",
-      "CardImages/Avatars/Kaelyn.png",
-      "CardImages/Avatars/Zaryon.png",
-      "CardImages/Avatars/Zyra.png",
-      "CardImages/Avatars/Veniryss.png",
-      "CardImages/Avatars/Gravok.png",
-      "CardImages/Avatars/Nyzariel.png",
-      "CardImages/Avatars/Elyndra.png",
-      "CardImages/Avatars/Aureavian.png",
-      "CardImages/Avatars/Maldryss.png",
-      "CardImages/Avatars/Tydros.png",
-      "CardImages/Avatars/Ephoros.png",
-      "CardImages/Avatars/Mordrath.png",
-      "CardImages/Avatars/Raukhar.png",
-      "CardImages/Avatars/Velmira.png",
-      "CardImages/Avatars/Verdarok.png",
-      "CardImages/Avatars/Pyronyx.png",
-      "CardImages/Avatars/Abyndra.png",
-      "CardImages/Avatars/Voltrazek.png",
-      "CardImages/Avatars/Toxigon.png",
-      "CardImages/Avatars/Ferronyx.png",
-      "CardImages/Avatars/Nochtyros.png",
-      "CardImages/Avatars/Solaryth.png"
-  ];
-  const defaultIcon = "CardImages/Avatars/Default.png";
-    
-  const bannerOptions = [
-    "CardImages/Banners/Verdara.png",
-    "CardImages/Banners/Ashkar.png",
-    "CardImages/Banners/Pearlhaven.png",
-    "CardImages/Banners/Aetherion.png",
-    "CardImages/Banners/Drakzul.png",
-    "CardImages/Banners/GlimbarkFrontier.png",
-    "CardImages/Banners/SkywardArchipelago.png",
-    "CardImages/Banners/Duskhaven.png",
-    "CardImages/Banners/Nochtyra.png",
-    "CardImages/Banners/Solmara.png",   
-    "CardImages/Banners/DefaultBanner.png"
-  ];
-const defaultBanner = "CardImages/Banners/DefaultBanner.png";
-
   // --- ICON CHOICES ---
   async function getUnlockedAvatars() {
     const user = auth.currentUser;
