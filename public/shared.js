@@ -338,37 +338,36 @@ async function setMissionResets(obj) {
     { missionResets: obj }, { merge: true }
   );
 }
-function resetMissionsIfNeeded() {
+async function resetMissionsIfNeeded() {
   const now = new Date();
-  const resets = getMissionResets();
+  const resets = await getMissionResets();
   let changed = false;
 
   // Daily reset at 00:00 UTC
   const lastDaily = resets.lastDailyReset ? new Date(resets.lastDailyReset) : null;
   const nowUtc = new Date(now.toISOString().split('T')[0] + "T00:00:00.000Z");
   if (!lastDaily || nowUtc > lastDaily) {
-    resetMissionProgress('daily');
+    await resetMissionProgress('daily');
     resets.lastDailyReset = nowUtc.toISOString();
     changed = true;
   }
 
   // Weekly reset: Monday 00:00 UTC
   const lastWeekly = resets.lastWeeklyReset ? new Date(resets.lastWeeklyReset) : null;
-  // Find most recent Monday 00:00 UTC
   let monday = new Date(nowUtc);
   monday.setUTCDate(monday.getUTCDate() - ((monday.getUTCDay() + 6) % 7));
   if (!lastWeekly || monday > lastWeekly) {
-    resetMissionProgress('weekly');
+    await resetMissionProgress('weekly');
     resets.lastWeeklyReset = monday.toISOString();
     changed = true;
   }
-  if (changed) setMissionResets(resets);
+  if (changed) await setMissionResets(resets);
 }
 // 3. Reset mission progress for a type
-function resetMissionProgress(type) {
+async function resetMissionProgress(type) {
   let missions = getMissionData();
   // Use only active missions for the given type
-  const activeMissions = (type === "daily") ? getActiveDailyMissions() : getActiveWeeklyMissions();
+  const activeMissions = (type === "daily") ? await getActiveDailyMissions() : await getActiveWeeklyMissions();
   for (const mission of activeMissions) {
     missions[mission.id] = { progress: 0, completed: false, claimed: false };
   }
@@ -416,13 +415,14 @@ async function claimMissionReward(mission) {
 }
 
 // 7. Renderers
-function renderDailyMissions() {
+async function renderDailyMissions() {
   const list = document.getElementById('daily-missions-list');
   if (!list) return;
   list.innerHTML = '';
-  getActiveDailyMissions().forEach(mission => {
+  const missions = await getActiveDailyMissions();
+  for (const mission of missions) {
     const progress = getMissionProgress(mission);
-    if (progress.claimed) return;
+    if (progress.claimed) continue;
     const percent = Math.min(100, Math.round((progress.progress / mission.goal) * 100));
     const entry = document.createElement('div');
     entry.className = 'mission-entry';
@@ -443,7 +443,7 @@ function renderDailyMissions() {
       btn.className = 'btn-primary mission-claim-btn';
       btn.textContent = 'Claim';
       btn.onclick = async () => {
-      await claimMissionReward(mission);
+        await claimMissionReward(mission);
         entry.classList.add('achievement-fade-out');
         setTimeout(() => {
           entry.remove();
@@ -457,15 +457,16 @@ function renderDailyMissions() {
       entry.appendChild(badge);
     }
     list.appendChild(entry);
-  });
+  }
 }
-function renderWeeklyMissions() {
+async function renderWeeklyMissions() {
   const list = document.getElementById('weekly-missions-list');
   if (!list) return;
   list.innerHTML = '';
-  getActiveWeeklyMissions().forEach(mission => {
+  const missions = await getActiveWeeklyMissions();
+  for (const mission of missions) {
     const progress = getMissionProgress(mission);
-    if (progress.claimed) return;
+    if (progress.claimed) continue;
     const percent = Math.min(100, Math.round((progress.progress / mission.goal) * 100));
     const entry = document.createElement('div');
     entry.className = 'mission-entry';
@@ -481,26 +482,26 @@ function renderWeeklyMissions() {
         +${mission.reward.amount}
       </div>
     `;
-if (progress.completed && !progress.claimed) {
-  const btn = document.createElement('button');
-  btn.className = 'btn-primary mission-claim-btn';
-  btn.textContent = 'Claim';
-  btn.onclick = async () => {
-    await claimMissionReward(mission);
-    entry.classList.add('achievement-fade-out');
-    setTimeout(() => {
-      entry.remove();
-    }, 800);
-  };
-  entry.appendChild(btn);
-} else if (progress.claimed) {
+    if (progress.completed && !progress.claimed) {
+      const btn = document.createElement('button');
+      btn.className = 'btn-primary mission-claim-btn';
+      btn.textContent = 'Claim';
+      btn.onclick = async () => {
+        await claimMissionReward(mission);
+        entry.classList.add('achievement-fade-out');
+        setTimeout(() => {
+          entry.remove();
+        }, 800);
+      };
+      entry.appendChild(btn);
+    } else if (progress.claimed) {
       const badge = document.createElement('div');
       badge.className = 'mission-claimed-badge';
       badge.textContent = 'Claimed!';
       entry.appendChild(badge);
     }
     list.appendChild(entry);
-  });
+  }
 }
 
 // 8. Modal open/close and init
@@ -769,22 +770,24 @@ async function setActiveWeeklyMissions(missions) {
   );
 }
 // Call this on timer expiry or at startup if needed
-function refreshDailyMissions() {
+async function refreshDailyMissions() {
   const newMissions = getRandomMissions(DAILY_MISSION_POOL, 3);
-  setActiveDailyMissions(newMissions);
+  await setActiveDailyMissions(newMissions);
   // Also reset progress!
-  resetMissionProgress('daily');
+  await resetMissionProgress('daily');
 }
-function refreshWeeklyMissions() {
+async function refreshWeeklyMissions() {
   const newMissions = getRandomMissions(WEEKLY_MISSION_POOL, 6);
-  setActiveWeeklyMissions(newMissions);
-  resetMissionProgress('weekly');
+  await setActiveWeeklyMissions(newMissions);
+  await resetMissionProgress('weekly');
 }
 // In addToCollection, after updating collection:
 updateColorAchievements();
 
-function updateMissionsNotificationDot() {
-  const allMissions = [...getActiveDailyMissions(), ...getActiveWeeklyMissions()];
+async function updateMissionsNotificationDot() {
+  const daily = await getActiveDailyMissions();
+  const weekly = await getActiveWeeklyMissions();
+  const allMissions = [...daily, ...weekly];
   const missionData = getMissionData();
   const hasClaimable = allMissions.some(m => {
     const p = missionData[m.id];
@@ -1108,16 +1111,13 @@ window.addEventListener('DOMContentLoaded', () => {
   resetMissionsIfNeeded();
 });
 window.addEventListener('DOMContentLoaded', async () => {
+  await resetMissionsIfNeeded();
   if ((await getActiveDailyMissions()).length === 0) await refreshDailyMissions();
   if ((await getActiveWeeklyMissions()).length === 0) await refreshWeeklyMissions();
-  // Render and start timers, etc.
   await renderDailyMissions();
   await renderWeeklyMissions();
   startDailyMissionTimer();
   startWeeklyMissionTimer();
-});
-window.addEventListener('DOMContentLoaded', () => {
-  // ...existing startup logic...
   updateMissionsNotificationDot();
   updateAchievementsNotificationDot();
 });
