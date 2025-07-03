@@ -109,8 +109,8 @@ function loadAllPlayerProgress(callback) {
     // ...other UI updates as needed
   });
 }
-function saveAllProgressAndUI() {
-  saveAllProgress();
+async function saveAllProgressAndUI() {
+  await saveAllProgress();
   updateCurrencyDisplay();
   updateCollectionDependentUI();
   renderPlayerLevel();
