@@ -406,34 +406,28 @@
 </div>
 
 <!-- MISSIONS MODAL -->
-    <div id="missions-modal" class="modal">
-      <div class="modal-content">
-        <h3>Missions</h3>
-        <div style="display:flex;gap:12px;margin-bottom:10px;justify-content:center;">
-          <button id="show-daily-missions" class="btn-primary">Daily</button>
-          <button id="show-weekly-missions" class="btn-primary">Weekly</button>
-        </div>
-        <button id="close-missions-modal" class="btn-negative-secondary" style="margin-top:14px;">Close</button>
-      </div>
-    </div>
-    <!-- DAILY MISSIONS MODAL -->
-    <div id="daily-missions-modal" class="modal">
-      <div class="modal-content" style="min-width:300px;max-width:350px;">
-        <h3>Daily Missions</h3>
+<div id="missions-modal" class="modal">
+  <div class="modal-content" style="min-width:600px;max-width:800px;">
+    <h3>Missions</h3>
+    <div id="missions-columns" style="display:flex;gap:0;justify-content:space-between;align-items:flex-start;">
+      <!-- Daily -->
+      <div style="flex:1;padding:0 18px;">
+        <div style="font-weight:bold;font-size:1.13em;margin-bottom:8px;">Daily Missions</div>
         <div id="daily-missions-timer" class="missions-timer"></div>
         <div id="daily-missions-list"></div>
-        <button id="close-daily-missions-modal" class="btn-negative-secondary" style="margin-top:14px;">Close</button>
       </div>
-    </div>
-    <!-- WEEKLY MISSIONS MODAL -->
-    <div id="weekly-missions-modal" class="modal">
-      <div class="modal-content" style="min-width:300px;max-width:350px;">
-        <h3>Weekly Missions</h3>
+      <!-- Vertical Divider -->
+      <div style="width:2px;background:linear-gradient(to bottom,#334,#111 60%);border-radius:1px;height:100%;margin:0 10px;"></div>
+      <!-- Weekly -->
+      <div style="flex:1;padding:0 18px;">
+        <div style="font-weight:bold;font-size:1.13em;margin-bottom:8px;">Weekly Missions</div>
         <div id="weekly-missions-timer" class="missions-timer"></div>
         <div id="weekly-missions-list"></div>
-        <button id="close-weekly-missions-modal" class="btn-negative-secondary" style="margin-top:14px;">Close</button>
       </div>
     </div>
+    <button id="close-missions-modal" class="btn-negative-secondary" style="margin-top:16px;">Close</button>
+  </div>
+</div>
 
 <!-- ACHIEVEMENTS MODAL -->
 <div id="achievements-modal" class="modal">
