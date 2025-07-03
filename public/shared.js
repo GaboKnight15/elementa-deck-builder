@@ -241,12 +241,10 @@ function setNewlyUnlockedCards(arr) {
 // FIREBASE GALLERY
 let playerCollection = {}; // In-memory cache
 
-function getCollection() {
-  return playerCollection;
-}
-function setCollection(collection) {
-  playerCollection = collection;
-  if (!isLoggingOut) saveCollection(collection);
+function getCollection() { return userState.collection; }
+async function setCollection(collection) {
+  userState.collection = collection;
+  await saveUserState();
 }
 if (typeof firebase !== "undefined" && firebase.auth) {
   firebase.auth().onAuthStateChanged(async function(user) {
@@ -340,9 +338,7 @@ async function addToCollection(cardId, amount = 1) {
   if (typeof updateUniqueCardsAchievement === 'function') {updateUniqueCardsAchievement();}
 }
 
-function getCurrency() {
-  return userState.currency;
-}
+function getCurrency() { return userState.currency; }
 async function setCurrency(amt) {
   userState.currency = amt;
   await saveUserState();
@@ -369,10 +365,10 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 // ESSENCE CURRENCY
-function getEssence()     { return playerEssence; }
-function setEssence(amt)  {
-  playerEssence = amt;
-  if (!isLoggingOut) saveCurrencyEssence(playerCurrency, playerEssence);
+function getEssence() { return userState.essence; }
+async function setEssence(amt) {
+  userState.essence = amt;
+  await saveUserState();
   const el = document.getElementById('essence-amount');
   if (el) el.textContent = amt;
 }
