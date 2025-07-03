@@ -289,15 +289,23 @@ const defaultBanner = "CardImages/Banners/DefaultBanner.png";
     appMain.classList.add('active');
     mainNav.classList.add('active');
     loadProfile(user);
-
-      // Load ALL progress before updating UI
-     playerCollection = await loadCollection();
-     let { currency, essence } = await loadCurrencyEssence();
-     playerCurrency = (await loadCurrencyEssence()).currency;
-     playerEssence = (await loadCurrencyEssence()).essence;
-     playerMissions = await loadMissions();
-     playerAchievements = await loadAchievements();     
-        
+    // Load all progress in parallel
+    try {
+      const [collection, { currency, essence }, missions, achievements] = await Promise.all([
+        loadCollection(),
+        loadCurrencyEssence(),
+        loadMissions(),
+        loadAchievements()
+      ]);
+      setCollection(collection || {});
+      setCurrency(currency);
+      setEssence(essence);
+      setMissionData(missions || {});
+      setAchievementData(achievements || {});
+    } catch (e) {
+      showToast("Error loading your progress from the server.");
+    }
+    // Now update UI
     renderGallery();
     refreshDeckSlotSelect();
     updateDeckDisplay();
