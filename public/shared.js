@@ -230,11 +230,12 @@ if (user) {
 }
 
 // ADD CARDS TO COLLECTION 
-function addToCollection(cardId, amount = 1) {
+async function addToCollection(cardId, amount = 1) {
   const collection = getCollection();
   const wasOwned = collection[cardId] > 0;
   collection[cardId] = (collection[cardId] || 0) + amount;
   setCollection(collection);
+
   // If just unlocked, mark as new
   if (!wasOwned && collection[cardId] > 0) {
     const newCards = getNewlyUnlockedCards();
@@ -243,29 +244,34 @@ function addToCollection(cardId, amount = 1) {
       setNewlyUnlockedCards(newCards);
     }
   }
+
   // --- Green Card Mission ---
- const newlyAddedCard = dummyCards.find(c => c.id === cardId);
-if (newlyAddedCard) {
-  const cardColors = Array.isArray(newlyAddedCard.color) ? newlyAddedCard.color : [newlyAddedCard.color];
-  [...getActiveDailyMissions(), ...getActiveWeeklyMissions()].forEach(mission => {
-    COLOR_MISSIONS.forEach(color => {
-      if (
-        mission.id && mission.id.includes(`${color}_card`) &&
-        cardColors.includes(color)
-      ) {
-        await incrementMissionProgress(mission.id);
+  const newlyAddedCard = dummyCards.find(c => c.id === cardId);
+  if (newlyAddedCard) {
+    const cardColors = Array.isArray(newlyAddedCard.color) ? newlyAddedCard.color : [newlyAddedCard.color];
+    const dailyMissions = await getActiveDailyMissions();
+    const weeklyMissions = await getActiveWeeklyMissions();
+    for (const mission of [...dailyMissions, ...weeklyMissions]) {
+      for (const color of COLOR_MISSIONS) {
+        if (
+          mission.id && mission.id.includes(`${color}_card`) &&
+          cardColors.includes(color)
+        ) {
+          await incrementMissionProgress(mission.id);
+        }
       }
-    });
-  });
-}
+    }
+  }
 
   // --- Unique Card Mission ---
   if (!wasOwned && collection[cardId] > 0) {
-    [...getActiveDailyMissions(), ...getActiveWeeklyMissions()].forEach(mission => {
+    const dailyMissions = await getActiveDailyMissions();
+    const weeklyMissions = await getActiveWeeklyMissions();
+    for (const mission of [...dailyMissions, ...weeklyMissions]) {
       if (mission.id && mission.id.includes('unique_card')) {
         await incrementMissionProgress(mission.id);
       }
-    });
+    }
   }
   // Update color achievements (generalized)
   if (typeof updateColorAchievements === 'function') {
