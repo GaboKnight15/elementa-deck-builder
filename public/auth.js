@@ -282,7 +282,8 @@ const defaultBanner = "CardImages/Banners/DefaultBanner.png";
   // --- Auth state changes ---
   auth.onAuthStateChanged(async user => {
     if (user) {
-    await loadCurrency();      
+    await loadCurrency(); 
+    await loadCollection();    
     isLoggingOut = false;  
     profileArea.style.display = '';
     profileMenu.classList.remove('active');
@@ -329,7 +330,8 @@ const defaultBanner = "CardImages/Banners/DefaultBanner.png";
       refreshDeckSlotSelect();
       updateDeckDisplay();
       renderBuilder();
-      updateCurrencyDisplay();  
+      updateCurrencyDisplay();
+      updateCollectionDependentUI();  
       setTimeout(() => { isLoggingOut = false; }, 1000);  
      }
   });
