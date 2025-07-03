@@ -84,6 +84,7 @@ function createCardGallery(card) {
       collection[card.id] = (collection[card.id] || 0) + 1;
       playerCollection = collection;
       playerEssence -= cost;
+      updateEssenceDisplay();  
       await saveAllProgressAndUI();
 
       // Mark as new if previously not owned
@@ -115,6 +116,7 @@ function createCardGallery(card) {
       collection[card.id] -= 1;
       playerCollection = collection;
       playerEssence += refund;
+      updateEssenceDisplay();
       await saveAllProgressAndUI();
       renderGallery();
     };
