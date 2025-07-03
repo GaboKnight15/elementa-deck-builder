@@ -279,7 +279,6 @@ const defaultBanner = "CardImages/Banners/DefaultBanner.png";
       });
   }
 
-let isLoggingOut = false;
   // --- Auth state changes ---
   auth.onAuthStateChanged(async user => {
     if (user) {
