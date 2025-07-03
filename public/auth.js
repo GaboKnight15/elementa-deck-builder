@@ -281,22 +281,27 @@ const defaultBanner = "CardImages/Banners/DefaultBanner.png";
 
   // --- Auth state changes ---
 auth.onAuthStateChanged(async user => {
-  if (user) {
-    // Load ALL player state from Firestore
-    loadProgress(data => {
-      playerCollection = data.collection || {};
-      deckSlots = data.deckSlots || ["Deck 1"];
-      decks = data.decks || { "Deck 1": {} };
-      currentDeckSlot = data.currentDeckSlot || "Deck 1";
-      playerCurrency = data.currency || 0;
-      playerEssence = data.essence || 0;
-      playerMissions = data.missions || {};
-      playerAchievements = data.achievements || {};
-      playerLevel = data.level || 1;
-      playerExp = data.exp || 0;
-      playerUnlockedAvatars = data.unlockedAvatars || [defaultIcon];
-      playerUnlockedBanners = data.unlockedBanners || [defaultBanner];
-      playerUnlockedCardbacks = data.unlockedCardbacks || [];
+    if (user) {
+      // Load ALL player state from Firestore.
+      await new Promise(resolve => {
+        loadProgress(data => {
+          playerCollection = data.collection || {};
+          deckSlots = data.deckSlots || ["Deck 1"];
+          decks = data.decks || { "Deck 1": {} };
+          currentDeckSlot = data.currentDeckSlot || "Deck 1";
+          playerCurrency = data.currency || 0;
+          playerEssence = data.essence || 0;
+          playerMissions = data.missions || {};
+          playerAchievements = data.achievements || {};
+          playerLevel = data.level || 1;
+          playerExp = data.exp || 0;
+          playerUnlockedAvatars = data.unlockedAvatars || [defaultIcon];
+          playerUnlockedBanners = data.unlockedBanners || [defaultBanner];
+          playerUnlockedCardbacks = data.unlockedCardbacks || [];
+          resolve();
+        });
+      });
+
       // Now update UI
       renderPlayerLevel();  
       renderGallery();
@@ -306,18 +311,16 @@ auth.onAuthStateChanged(async user => {
       updateCurrencyDisplay();
       updateCollectionDependentUI();  
       renderShop();
-      // etc...
-    });
 
-    isLoggingOut = false;  
-    profileArea.style.display = '';
-    profileMenu.classList.remove('active');
-    loginMenu.classList.remove('active');
-    appMain.classList.add('active');
-    mainNav.classList.add('active');
-    loadProfile(user);
-    loadPlayerMissionsAchievements();  
-  } else {
+      isLoggingOut = false;  
+      profileArea.style.display = '';
+      profileMenu.classList.remove('active');
+      loginMenu.classList.remove('active');
+      appMain.classList.add('active');
+      mainNav.classList.add('active');
+      loadProfile(user);
+      if (typeof loadPlayerMissionsAchievements === 'function') loadPlayerMissionsAchievements();  
+    } else {
       isLoggingOut = true;  
       profileArea.style.display = 'none';
       profileMenu.classList.remove('active');
@@ -347,6 +350,6 @@ auth.onAuthStateChanged(async user => {
       updateCurrencyDisplay();
       updateCollectionDependentUI();  
       setTimeout(() => { isLoggingOut = false; }, 1000);  
-     }
+    }
   });
 });
