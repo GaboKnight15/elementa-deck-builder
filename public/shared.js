@@ -184,7 +184,7 @@ function getCollection() {
 }
 function setCollection(collection) {
   playerCollection = collection;
-  saveCollection(collection); // Save to Firestore!
+  if (!isLoggingOut) saveCollection(collection);
 }
 if (typeof firebase !== "undefined" && firebase.auth) {
   firebase.auth().onAuthStateChanged(async function(user) {
@@ -283,7 +283,7 @@ let playerEssence = 0;
 function getCurrency()    { return playerCurrency; }
 function setCurrency(amt) {
   playerCurrency = amt;
-  saveCurrencyEssence(playerCurrency, playerEssence);
+  if (!isLoggingOut) saveCurrencyEssence(playerCurrency, playerEssence);
   const el = document.getElementById('currency-amount');
   if (el) el.textContent = amt;
 }
@@ -300,7 +300,7 @@ document.getElementById('add-coins-btn').onclick = function() {
 function getEssence()     { return playerEssence; }
 function setEssence(amt)  {
   playerEssence = amt;
-  saveCurrencyEssence(playerCurrency, playerEssence);
+  if (!isLoggingOut) saveCurrencyEssence(playerCurrency, playerEssence);
   const el = document.getElementById('essence-amount');
   if (el) el.textContent = amt;
 }
@@ -324,7 +324,7 @@ let playerMissions = {};
 let playerAchievements = {};
 
 function getMissionData()        { return playerMissions; }
-function setMissionData(data)    { playerMissions = data; saveMissions(data); }
+function setMissionData(data)    { playerMissions = data; if (!isLoggingOut) saveMissions(data); }
 function getMissionResets() {
   return JSON.parse(localStorage.getItem('missionResets') || '{}');
 }
@@ -526,7 +526,7 @@ document.getElementById('weekly-missions-modal').onclick = function(e) {
 };
 // 2. Persistence Helpers
 function getAchievementData()    { return playerAchievements; }
-function setAchievementData(data){ playerAchievements = data; saveAchievements(data); }
+function setAchievementData(data){ playerAchievements = data; if (!isLoggingOut) saveAchievements(data); }
 
 function loadPlayerMissionsAchievements() {
   loadMissions().then(missions => {
