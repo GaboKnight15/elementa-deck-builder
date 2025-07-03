@@ -72,6 +72,23 @@ function loadSingleField(field, callback) {
     .catch(() => callback(null));
 }
 
+function saveAllProgress() {
+  saveProgress({
+    collection: playerCollection,
+    deckSlots: deckSlots,
+    decks: decks,
+    currentDeckSlot: currentDeckSlot,
+    currency: playerCurrency,
+    essence: playerEssence,
+    missions: playerMissions,
+    achievements: playerAchievements,
+    level: playerLevel,
+    exp: playerExp,
+    unlockedAvatars: playerUnlockedAvatars,
+    unlockedBanners: playerUnlockedBanners,
+    unlockedCardbacks: playerUnlockedCardbacks
+  });
+}
 /**
  * Example usage for cosmetics, currency, decks, etc.
  * saveSingleField('currency', 100)
