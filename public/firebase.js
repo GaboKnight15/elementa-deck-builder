@@ -98,7 +98,8 @@ function saveAllProgress() {
  */
 
 // --- Make functions available globally --- //
-window.savePlayerProgress = savePlayerProgress;
-window.loadPlayerProgress = loadPlayerProgress;
+window.saveProgress = saveProgress;
+window.loadProgress = loadProgress;
 window.saveSingleField = saveSingleField;
 window.loadSingleField = loadSingleField;
+window.saveAllProgress = saveAllProgress;
