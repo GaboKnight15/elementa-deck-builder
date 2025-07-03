@@ -236,6 +236,9 @@ async function setCollection(collection) {
   playerCollection = collection;
   saveAllProgressAndUI();
 }
+function getCollection() {
+  return playerCollection || {};
+}
 function updateCollectionDependentUI() {
   if (typeof renderGallery === "function") renderGallery();
   // Add other UI updates that depend on collection here if needed
