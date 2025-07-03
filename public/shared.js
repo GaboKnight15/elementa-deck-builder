@@ -37,17 +37,6 @@ const DAILY_MISSION_POOL = [
   { id: 'collect_white_card_daily', type: 'daily', description: 'Collect a White Card', goal: 1, reward: { type: 'currency', amount: 80 } },
 
 ];
-const WEEKLY_MISSION_POOL = [
-  {
-    id: 'purchase_pack_weekly',
-    type: 'weekly',
-    description: 'Purchase 2 Booster Packs',
-    goal: 2,
-    reward: { type: 'currency', amount: 500 }
-  },
-
-  // ...more
-];
 const ACHIEVEMENTS = [
   {
     id: 'collect_3_green_cards',
@@ -307,7 +296,6 @@ async function addToCollection(cardId, amount = 1) {
   if (newlyAddedCard) {
     const cardColors = Array.isArray(newlyAddedCard.color) ? newlyAddedCard.color : [newlyAddedCard.color];
     const dailyMissions = await getActiveDailyMissions();
-    const weeklyMissions = await getActiveWeeklyMissions();
     for (const mission of [...dailyMissions, ...weeklyMissions]) {
       for (const color of COLOR_MISSIONS) {
         if (
@@ -323,7 +311,6 @@ async function addToCollection(cardId, amount = 1) {
   // --- Unique Card Mission ---
   if (!wasOwned && collection[cardId] > 0) {
     const dailyMissions = await getActiveDailyMissions();
-    const weeklyMissions = await getActiveWeeklyMissions();
     for (const mission of [...dailyMissions, ...weeklyMissions]) {
       if (mission.id && mission.id.includes('unique_card')) {
         await incrementMissionProgress(mission.id);
@@ -425,7 +412,7 @@ async function resetMissionsIfNeeded() {
 async function resetMissionProgress(type) {
   let missions = getMissionData();
   // Use only active missions for the given type
-  const activeMissions = (type === "daily") ? await getActiveDailyMissions() : await getActiveWeeklyMissions();
+  const activeMissions = (type === "daily") ? await getActiveDailyMissions();
   for (const mission of activeMissions) {
     missions[mission.id] = { progress: 0, completed: false, claimed: false };
   }
@@ -446,7 +433,6 @@ function getMissionProgress(mission) {
 async function incrementMissionProgress(missionId) {
   let data = getMissionData();
   const daily = await getActiveDailyMissions();
-  const weekly = await getActiveWeeklyMissions();
   const allActive = [...daily, ...weekly];
   const mission = allActive.find(m => m.id === missionId);
   if (!mission) return;
@@ -479,50 +465,6 @@ async function renderDailyMissions() {
   if (!list) return;
   list.innerHTML = '';
   const missions = await getActiveDailyMissions();
-  for (const mission of missions) {
-    const progress = getMissionProgress(mission);
-    if (progress.claimed) continue;
-    const percent = Math.min(100, Math.round((progress.progress / mission.goal) * 100));
-    const entry = document.createElement('div');
-    entry.className = 'mission-entry';
-
-    entry.innerHTML = `
-      <div class="mission-desc">${mission.description}</div>
-      <div class="mission-progress-bar-wrap">
-        <div class="mission-progress-bar" style="width:${percent}%;"></div>
-      </div>
-      <div style="font-size:0.96em;color:#fff;text-align:right;">${progress.progress} / ${mission.goal}</div>
-      <div class="mission-reward">
-        <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins" style="width:18px;">
-        +${mission.reward.amount}
-      </div>
-    `;
-    if (progress.completed && !progress.claimed) {
-      const btn = document.createElement('button');
-      btn.className = 'btn-primary mission-claim-btn';
-      btn.textContent = 'Claim';
-      btn.onclick = async () => {
-        await claimMissionReward(mission);
-        entry.classList.add('achievement-fade-out');
-        setTimeout(() => {
-          entry.remove();
-        }, 800);
-      };
-      entry.appendChild(btn);
-    } else if (progress.claimed) {
-      const badge = document.createElement('div');
-      badge.className = 'mission-claimed-badge';
-      badge.textContent = 'Claimed!';
-      entry.appendChild(badge);
-    }
-    list.appendChild(entry);
-  }
-}
-async function renderWeeklyMissions() {
-  const list = document.getElementById('weekly-missions-list');
-  if (!list) return;
-  list.innerHTML = '';
-  const missions = await getActiveWeeklyMissions();
   for (const mission of missions) {
     const progress = getMissionProgress(mission);
     if (progress.claimed) continue;
@@ -739,14 +681,7 @@ function getNextDailyResetTime() {
   const next = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
   return next.getTime();
 }
-function getNextWeeklyResetTime() {
-  const now = new Date();
-  // Next Monday 00:00 UTC
-  const day = now.getUTCDay();
-  const daysUntilMonday = (8 - day) % 7 || 7; // 0 = today, 1 = next Monday, etc.
-  const next = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + daysUntilMonday));
-  return next.getTime();
-}
+
 function formatTimer(ms) {
   const total = Math.max(0, Math.floor(ms / 1000));
   const h = Math.floor(total / 3600);
@@ -755,7 +690,6 @@ function formatTimer(ms) {
   return `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
 }
 let dailyTimerInterval = null;
-let weeklyTimerInterval = null;
 
 function startDailyMissionTimer() {
   clearInterval(dailyTimerInterval);
@@ -772,22 +706,6 @@ function startDailyMissionTimer() {
   }
   update();
   dailyTimerInterval = setInterval(update, 1000);
-}
-function startWeeklyMissionTimer() {
-  clearInterval(weeklyTimerInterval);
-  function update() {
-    const now = Date.now();
-    const remain = getNextWeeklyResetTime() - now;
-    const el = document.getElementById('weekly-missions-timer');
-    if (el) el.textContent = 'Refreshes in: ' + formatTimer(remain);
-    if (remain <= 0) {
-      refreshWeeklyMissions();
-      renderWeeklyMissions();
-      startWeeklyMissionTimer();
-    }
-  }
-  update();
-  weeklyTimerInterval = setInterval(update, 1000);
 }
 function getRandomMissions(pool, count) {
   // Simple random unique selection
@@ -817,20 +735,6 @@ async function setActiveDailyMissions(missions) {
   );
 }
 
-async function getActiveWeeklyMissions() {
-  const user = firebase.auth().currentUser;
-  if (!user) return [];
-  const doc = await firebase.firestore().collection('users').doc(user.uid).get();
-  return (doc.exists && doc.data().activeWeeklyMissions) ? doc.data().activeWeeklyMissions : [];
-}
-
-async function setActiveWeeklyMissions(missions) {
-  const user = firebase.auth().currentUser;
-  if (!user) return;
-  await firebase.firestore().collection('users').doc(user.uid).set(
-    { activeWeeklyMissions: missions }, { merge: true }
-  );
-}
 // Call this on timer expiry or at startup if needed
 async function refreshDailyMissions() {
   const newMissions = getRandomMissions(DAILY_MISSION_POOL, 3);
@@ -838,17 +742,11 @@ async function refreshDailyMissions() {
   // Also reset progress!
   await resetMissionProgress('daily');
 }
-async function refreshWeeklyMissions() {
-  const newMissions = getRandomMissions(WEEKLY_MISSION_POOL, 6);
-  await setActiveWeeklyMissions(newMissions);
-  await resetMissionProgress('weekly');
-}
 // In addToCollection, after updating collection:
 updateColorAchievements();
 
 async function updateMissionsNotificationDot() {
   const daily = await getActiveDailyMissions();
-  const weekly = await getActiveWeeklyMissions();
   const allMissions = [...daily, ...weekly];
   const missionData = getMissionData();
   const hasClaimable = allMissions.some(m => {
@@ -1048,7 +946,6 @@ document.getElementById('friends-modal').onclick = function(e) {
 };
 document.getElementById('missions-icon').onclick = function() {
   renderDailyMissions();
-  renderWeeklyMissions();
   document.getElementById('missions-modal').style.display = 'flex';
 };
 document.getElementById('close-missions-modal').onclick = function() {
@@ -1151,13 +1048,10 @@ function placeMenuWithinViewport(menu, triggerRect, preferred = "bottom") {
 window.addEventListener('DOMContentLoaded', async () => {
   await resetMissionsIfNeeded();
   if ((await getActiveDailyMissions()).length === 0) await refreshDailyMissions();
-  if ((await getActiveWeeklyMissions()).length === 0) await refreshWeeklyMissions();
   await renderDailyMissions();
-  await renderWeeklyMissions();
   updateCurrencyDisplay();
   updateEssenceDisplay();
   startDailyMissionTimer();
-  startWeeklyMissionTimer();
   updateMissionsNotificationDot();
   updateAchievementsNotificationDot();
 });
