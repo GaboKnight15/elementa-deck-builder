@@ -172,7 +172,8 @@ async function purchaseCosmetic(cost, purchaseCallback) {
     alert("Not enough coins!");
     return false;
   }
-  setCurrency(balance - cost);
+  playerCurrency = balance - cost;
+  saveAllProgressAndUI();
   await purchaseCallback(); // <-- Await here for async updates
   return true;
 }
@@ -241,7 +242,6 @@ async function openPack(type) {
             front.appendChild(badge);
           }
         }
-       
         if (front && typeof window.showFullCardModal === 'function') {
           front.onclick = () => {
             const card = lastPackCards[idx];
@@ -253,7 +253,6 @@ async function openPack(type) {
   });
 
   // Update collection and "new" list
-  // Await each addToCollection!
   for (const card of cards) {
     await addToCollection(card.id, 1);
   }
@@ -356,24 +355,26 @@ function renderShopPacks() {
   }
 }
 
-async function getUnlockedAvatars() {
-  return (await loadUnlockedAvatars()) || [];
+function getUnlockedAvatars() {
+  return playerUnlockedAvatars || [];
 }
-async function setUnlockedAvatars(arr) {
-  await saveUnlockedAvatars(arr);
+function setUnlockedAvatars(arr) {
+  playerUnlockedAvatars = arr;
+  saveAllProgressAndUI();
 }
-
-async function getUnlockedBanners() {
-  return (await loadUnlockedBanners()) || [];
+function getUnlockedBanners() {
+  return playerUnlockedBanners || [];
 }
-async function setUnlockedBanners(arr) {
-  await saveUnlockedBanners(arr);
+function setUnlockedBanners(arr) {
+  playerUnlockedBanners = arr;
+  saveAllProgressAndUI();
 }
-async function getUnlockedCardbacks() {
-  return (await loadUnlockedCardbacks()) || [];
+function getUnlockedCardbacks() {
+  return playerUnlockedCardbacks || [];
 }
-async function setUnlockedCardbacks(arr) {
-  await saveUnlockedCardbacks(arr);
+function setUnlockedCardbacks(arr) {
+  playerUnlockedCardbacks = arr;
+  saveAllProgressAndUI();
 }
 async function renderShopCosmetics({
   gridId,
@@ -476,7 +477,6 @@ function renderShopCardbacks() {
 document.querySelectorAll('.shop-free-btn').forEach(btn => {
   btn.onclick = function() {
     const type = btn.dataset.type;
-    // For now, just show a popup/alert for demo
     switch(type) {
       case 'profile-pic':
         alert("You unlocked a new avatar! (Feature coming soon)");
