@@ -182,26 +182,11 @@ function renderGallery() {
     }
     return true;
   });
+  if (filteredCards.length === 0) return;
 
-  let loaded = 0;
-  const total = filteredCards.length;
-  if (total === 0) {
-    return;
-  }
 
   filteredCards.forEach(card => {
     const cardDiv = createCardGallery(card);
-    const img = cardDiv.querySelector('.card-art-image');
-    // If image already loaded (from cache), count it as loaded
-    if (img.complete) {
-      loaded++;
-      if (loaded === total);
-    } else {
-      img.onload = img.onerror = () => {
-        loaded++;
-        if (loaded === total);
-      };
-    }
     gallery.appendChild(cardDiv);
   }); 
 }
