@@ -173,7 +173,7 @@ async function purchaseCosmetic(cost, purchaseCallback) {
     return false;
   }
   playerCurrency = balance - cost;
-  saveAllProgressAndUI();
+  await saveAllProgressAndUI();
   await purchaseCallback(); // <-- Await here for async updates
   return true;
 }
