@@ -23,9 +23,9 @@ const dummyCards = [
 { id: 'basicshadowforest', name: 'Shadow Forest', rarity: 'Basic', image: 'CardImages/Domains/Black Basic Location.png', category: 'domain', color: 'black', type: 'domain', hp: 5, cost: 1, set: 'StandardPack2'},
 ];
 
-const COLOR_MISSIONS = ['green', 'red', 'blue', 'yellow', 'purple', 'gray', 'black', 'white'];
-// MISSION LIST
-const DAILY_MISSION_POOL = [
+const COLOR_QUESTS = ['green', 'red', 'blue', 'yellow', 'purple', 'gray', 'black', 'white'];
+// Quest LIST
+const DAILY_QUEST_POOL = [
   { id: 'purchase_pack_daily', type: 'daily', description: 'Purchase a Booster Pack', goal: 1, reward: { type: 'currency', amount: 100 } },
   { id: 'collect_green_card_daily', type: 'daily', description: 'Collect a Green Card', goal: 1, reward: { type: 'currency', amount: 80 } },
   { id: 'collect_red_card_daily', type: 'daily', description: 'Collect a Red Card', goal: 1, reward: { type: 'currency', amount: 80 } },
@@ -67,7 +67,7 @@ let playerExp = 0;
 let playerCurrency = 0;
 let playerEssence = 0;
 let playerCollection = {};
-let playerMissions = {};
+let playerQuests = {};
 let playerAchievements = {};
 let playerUnlockedAvatars = [];
 let playerUnlockedBanners = [];
@@ -83,7 +83,7 @@ function loadAllPlayerProgress(callback) {
     playerCurrency = data.currency || 0;
     playerEssence = data.essence || 0;
     playerCollection = data.collection || {};
-    playerMissions = data.missions || {};
+    playerQuests = data.quests || {};
     playerAchievements = data.achievements || {};
     playerUnlockedAvatars = data.unlockedAvatars || [];
     playerUnlockedBanners = data.unlockedBanners || [];
@@ -220,8 +220,8 @@ function setNewlyUnlockedCards(arr) {
   localStorage.setItem(NEW_CARD_KEY, JSON.stringify(arr));
 }
 
-function saveMissions() {
-  return saveSingleField('missions', playerMissions);
+function saveQuests() {
+  return saveSingleField('quests', playerQuests);
 }
 // FIREBASE GALLERY
 async function setCollection(collection) {
@@ -291,29 +291,29 @@ async function addToCollection(cardId, amount = 1) {
     }
   }
 
-  // --- Green Card Mission ---
+  // --- Green Card Quest ---
   const newlyAddedCard = dummyCards.find(c => c.id === cardId);
   if (newlyAddedCard) {
     const cardColors = Array.isArray(newlyAddedCard.color) ? newlyAddedCard.color : [newlyAddedCard.color];
-    const dailyMissions = await getActiveDailyMissions();
-    for (const mission of [...dailyMissions, ...weeklyMissions]) {
-      for (const color of COLOR_MISSIONS) {
+    const dailyQuests = await getActiveDailyQuests();
+    for (const quest of dailyQuests) {
+      for (const color of COLOR_QUESTS) {
         if (
-          mission.id && mission.id.includes(`${color}_card`) &&
+          quest.id && quest.id.includes(`${color}_card`) &&
           cardColors.includes(color)
         ) {
-          await incrementMissionProgress(mission.id);
+          await incrementQuestProgress(quest.id);
         }
       }
     }
   }
 
-  // --- Unique Card Mission ---
+  // --- Unique Card Quest ---
   if (!wasOwned && collection[cardId] > 0) {
-    const dailyMissions = await getActiveDailyMissions();
-    for (const mission of [...dailyMissions, ...weeklyMissions]) {
-      if (mission.id && mission.id.includes('unique_card')) {
-        await incrementMissionProgress(mission.id);
+    const dailyQuests = await getActiveDailyQuests();
+    for (const quest of dailyQuests) {
+      if (quest.id && quest.id.includes('unique_card')) {
+        await incrementQuestProgress(quest.id);
       }
     }
   }
@@ -362,133 +362,120 @@ function getEssenceHtml(amount) {
 function getCurrency() {
   return playerCurrency;
 }
-function getMissionData() {
-  return playerMissions;
+function getQuestData() {
+  return playerQuests;
 }
-async function setMissionData(data) {
-  playerMissions = data;
-  await saveMissions();
+async function setQuestData(data) {
+  playerQuests = data;
+  await saveQuests();
 }
 
-async function getMissionResets() {
+async function getQuestResets() {
   const user = firebase.auth().currentUser;
   if (!user) return {};
   const doc = await firebase.firestore().collection('users').doc(user.uid).get();
-  return (doc.exists && doc.data().missionResets) ? doc.data().missionResets : {};
+  return (doc.exists && doc.data().questResets) ? doc.data().questResets : {};
 }
-async function setMissionResets(obj) {
+async function setQuestResets(obj) {
   const user = firebase.auth().currentUser;
   if (!user) return;
   await firebase.firestore().collection('users').doc(user.uid).set(
-    { missionResets: obj }, { merge: true }
+    { questResets: obj }, { merge: true }
   );
 }
-async function resetMissionsIfNeeded() {
+async function resetQuestsIfNeeded() {
   const now = new Date();
-  const resets = await getMissionResets();
+  const resets = await getQuestResets();
   let changed = false;
-
   // Daily reset at 00:00 UTC
   const lastDaily = resets.lastDailyReset ? new Date(resets.lastDailyReset) : null;
   const nowUtc = new Date(now.toISOString().split('T')[0] + "T00:00:00.000Z");
   if (!lastDaily || nowUtc > lastDaily) {
-    await resetMissionProgress('daily');
+    await resetQuestProgress('daily');
     resets.lastDailyReset = nowUtc.toISOString();
     changed = true;
   }
-
-  // Weekly reset: Monday 00:00 UTC
-  const lastWeekly = resets.lastWeeklyReset ? new Date(resets.lastWeeklyReset) : null;
-  let monday = new Date(nowUtc);
-  monday.setUTCDate(monday.getUTCDate() - ((monday.getUTCDay() + 6) % 7));
-  if (!lastWeekly || monday > lastWeekly) {
-    await resetMissionProgress('weekly');
-    resets.lastWeeklyReset = monday.toISOString();
-    changed = true;
+  if (changed) await setQuestResets(resets);
+}
+// 3. Reset Quest progress for a type
+async function resetQuestProgress(type) {
+  let quests = getQuestData();
+  // Use only active Quests for the given type
+  const activeQuests = (type === "daily") ? await getActiveDailyQuests();
+  for (const quest of activeQuests) {
+    quests[quest.id] = { progress: 0, completed: false, claimed: false };
   }
-  if (changed) await setMissionResets(resets);
+  setQuestData(quests);
 }
-// 3. Reset mission progress for a type
-async function resetMissionProgress(type) {
-  let missions = getMissionData();
-  // Use only active missions for the given type
-  const activeMissions = (type === "daily") ? await getActiveDailyMissions();
-  for (const mission of activeMissions) {
-    missions[mission.id] = { progress: 0, completed: false, claimed: false };
+
+// 4. Get progress for a Quest
+function getQuestProgress(quest) {
+  let data = getQuestData();
+  if (!data[quest.id]) {
+    data[quest.id] = { progress: 0, completed: false, claimed: false };
+    setQuestData(data);
   }
-  setMissionData(missions);
+  return data[quest.id];
 }
 
-// 4. Get progress for a mission
-function getMissionProgress(mission) {
-  let data = getMissionData();
-  if (!data[mission.id]) {
-    data[mission.id] = { progress: 0, completed: false, claimed: false };
-    setMissionData(data);
-  }
-  return data[mission.id];
+// 5. Increment Quest progress by 1 (call from shop.js or elsewhere)
+async function incrementQuestProgress(questId) {
+  let data = getQuestData();
+  const daily = await getActiveDailyQuests();
+  const quest = allActive.find(m => m.id === questId);
+  if (!quest) return;
+  if (!data[questId]) data[questId] = { progress: 0, completed: false, claimed: false };
+  if (data[questId].completed) return; // Already complete, no more progress
+
+  data[questId].progress = Math.min(quest.goal, (data[questId].progress || 0) + 1);
+  if (data[questId].progress >= quest.goal) data[questId].completed = true;
+  await setQuestData(data);
+  await renderDailyQuests();
+  await updateQuestsNotificationDot();
 }
 
-// 5. Increment mission progress by 1 (call from shop.js or elsewhere)
-async function incrementMissionProgress(missionId) {
-  let data = getMissionData();
-  const daily = await getActiveDailyMissions();
-  const allActive = [...daily, ...weekly];
-  const mission = allActive.find(m => m.id === missionId);
-  if (!mission) return;
-  if (!data[missionId]) data[missionId] = { progress: 0, completed: false, claimed: false };
-  if (data[missionId].completed) return; // Already complete, no more progress
-
-  data[missionId].progress = Math.min(mission.goal, (data[missionId].progress || 0) + 1);
-  if (data[missionId].progress >= mission.goal) data[missionId].completed = true;
-  await setMissionData(data);
-  await renderDailyMissions();
-  await renderWeeklyMissions();
-  await updateMissionsNotificationDot();
-}
-
-// 6. Claim mission reward
-async function claimMissionReward(mission) {
-  let data = getMissionData();
-  if (!data[mission.id] || !data[mission.id].completed || data[mission.id].claimed) return false;
-  setCurrency(getCurrency() + mission.reward.amount);
-  data[mission.id].claimed = true;
-  setMissionData(data);
-  updateMissionsNotificationDot();
+// 6. Claim Quest reward
+async function claimQuestReward(quest) {
+  let data = getQuestData();
+  if (!data[quest.id] || !data[quest.id].completed || data[quest.id].claimed) return false;
+  setCurrency(getCurrency() + quest.reward.amount);
+  data[quest.id].claimed = true;
+  setQuestData(data);
+  updateQuestsNotificationDot();
   await grantExp(10);
   return true;
 }
 
 // 7. Renderers
-async function renderDailyMissions() {
-  const list = document.getElementById('daily-missions-list');
+async function renderDailyQuests() {
+  const list = document.getElementById('daily-Quests-list');
   if (!list) return;
   list.innerHTML = '';
-  const missions = await getActiveDailyMissions();
-  for (const mission of missions) {
-    const progress = getMissionProgress(mission);
+  const quests = await getActiveDailyQuests();
+  for (const quest of quests) {
+    const progress = getQuestProgress(quest);
     if (progress.claimed) continue;
-    const percent = Math.min(100, Math.round((progress.progress / mission.goal) * 100));
+    const percent = Math.min(100, Math.round((progress.progress / quest.goal) * 100));
     const entry = document.createElement('div');
-    entry.className = 'mission-entry';
+    entry.className = 'quest-entry';
 
     entry.innerHTML = `
-      <div class="mission-desc">${mission.description}</div>
-      <div class="mission-progress-bar-wrap">
-        <div class="mission-progress-bar" style="width:${percent}%;"></div>
+      <div class="quest-desc">${quest.description}</div>
+      <div class="quest-progress-bar-wrap">
+        <div class="quest-progress-bar" style="width:${percent}%;"></div>
       </div>
-      <div style="font-size:0.96em;color:#fff;text-align:right;">${progress.progress} / ${mission.goal}</div>
-      <div class="mission-reward">
+      <div style="font-size:0.96em;color:#fff;text-align:right;">${progress.progress} / ${quest.goal}</div>
+      <div class="quest-reward">
         <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins" style="width:18px;">
-        +${mission.reward.amount}
+        +${quest.reward.amount}
       </div>
     `;
     if (progress.completed && !progress.claimed) {
       const btn = document.createElement('button');
-      btn.className = 'btn-primary mission-claim-btn';
+      btn.className = 'btn-primary Quest-claim-btn';
       btn.textContent = 'Claim';
       btn.onclick = async () => {
-        await claimMissionReward(mission);
+        await claimQuestReward(quest);
         entry.classList.add('achievement-fade-out');
         setTimeout(() => {
           entry.remove();
@@ -497,7 +484,7 @@ async function renderDailyMissions() {
       entry.appendChild(btn);
     } else if (progress.claimed) {
       const badge = document.createElement('div');
-      badge.className = 'mission-claimed-badge';
+      badge.className = 'quest-claimed-badge';
       badge.textContent = 'Claimed!';
       entry.appendChild(badge);
     }
@@ -506,14 +493,14 @@ async function renderDailyMissions() {
 }
 
 // 8. Modal open/close and init
-// Main Missions Modal open/close logic
-document.getElementById('missions-icon').onclick = function() {
-  document.getElementById('missions-modal').style.display = 'flex';
+// Main Quests Modal open/close logic
+document.getElementById('quests-icon').onclick = function() {
+  document.getElementById('quests-modal').style.display = 'flex';
 };
-document.getElementById('close-missions-modal').onclick = function() {
-  document.getElementById('missions-modal').style.display = 'none';
+document.getElementById('close-quests-modal').onclick = function() {
+  document.getElementById('quests-modal').style.display = 'none';
 };
-document.getElementById('missions-modal').onclick = function(e) {
+document.getElementById('quests-modal').onclick = function(e) {
   if (e.target === this) this.style.display = 'none';
 };
 document.getElementById('achievements-icon').onclick = function() {
@@ -533,9 +520,9 @@ function setAchievementData(data){
   if (!isLoggingOut) saveAllProgressAndUI(); 
 }
 
-function loadMissions() {
+function loadQuests() {
   return new Promise(resolve => {
-    loadProgress(data => resolve(data.missions || {}));
+    loadProgress(data => resolve(data.Quests || {}));
   });
 }
 function loadAchievements() {
@@ -603,22 +590,22 @@ function renderAchievements() {
     if (progress.claimed) return;
     const percent = Math.min(100, Math.round((progress.progress / ach.goal) * 100));
     const entry = document.createElement('div');
-    entry.className = 'mission-entry';
+    entry.className = 'quest-entry';
 
     entry.innerHTML = `
-      <div class="mission-desc">${ach.description}</div>
-      <div class="mission-progress-bar-wrap">
-        <div class="mission-progress-bar" style="width:${percent}%;"></div>
+      <div class="quest-desc">${ach.description}</div>
+      <div class="quest-progress-bar-wrap">
+        <div class="quest-progress-bar" style="width:${percent}%;"></div>
       </div>
       <div style="font-size:0.96em;color:#fff;text-align:right;">${progress.progress} / ${ach.goal}</div>
-      <div class="mission-reward">
+      <div class="quest-reward">
         <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins" style="width:18px;">
         +${ach.reward.amount}
       </div>
     `;
     if (progress.completed && !progress.claimed) {
       const btn = document.createElement('button');
-      btn.className = 'btn-primary mission-claim-btn';
+      btn.className = 'btn-primary quest-claim-btn';
       btn.textContent = 'Claim';
       btn.onclick = async () => {
         await claimAchievementReward(ach);
@@ -630,7 +617,7 @@ function renderAchievements() {
       entry.appendChild(btn);
     } else if (progress.claimed) {
       const badge = document.createElement('div');
-      badge.className = 'mission-claimed-badge';
+      badge.className = 'quest-claimed-badge';
       badge.textContent = 'Claimed!';
       entry.appendChild(badge);
     }
@@ -691,23 +678,23 @@ function formatTimer(ms) {
 }
 let dailyTimerInterval = null;
 
-function startDailyMissionTimer() {
+function startDailyQuestTimer() {
   clearInterval(dailyTimerInterval);
   function update() {
     const now = Date.now();
     const remain = getNextDailyResetTime() - now;
-    const el = document.getElementById('daily-missions-timer');
+    const el = document.getElementById('daily-quests-timer');
     if (el) el.textContent = 'Refreshes in: ' + formatTimer(remain);
     if (remain <= 0) {
-      refreshDailyMissions();
-      renderDailyMissions();
-      startDailyMissionTimer(); // restart for next cycle
+      refreshDailyQuests();
+      renderDailyQuests();
+      startDailyQuestTimer(); // restart for next cycle
     }
   }
   update();
   dailyTimerInterval = setInterval(update, 1000);
 }
-function getRandomMissions(pool, count) {
+function getRandomQuests(pool, count) {
   // Simple random unique selection
   const copy = [...pool];
   const selected = [];
@@ -718,42 +705,41 @@ function getRandomMissions(pool, count) {
   return selected;
 }
 
-// --- FIREBASE-BASED MISSION STATE ---
+// --- FIREBASE-BASED Quest STATE ---
 
-async function getActiveDailyMissions() {
+async function getActiveDailyQuests() {
   const user = firebase.auth().currentUser;
   if (!user) return [];
   const doc = await firebase.firestore().collection('users').doc(user.uid).get();
-  return (doc.exists && doc.data().activeDailyMissions) ? doc.data().activeDailyMissions : [];
+  return (doc.exists && doc.data().activeDailyQuests) ? doc.data().activeDailyQuests : [];
 }
 
-async function setActiveDailyMissions(missions) {
+async function setActiveDailyQuests(quests) {
   const user = firebase.auth().currentUser;
   if (!user) return;
   await firebase.firestore().collection('users').doc(user.uid).set(
-    { activeDailyMissions: missions }, { merge: true }
+    { activeDailyQuests: quests }, { merge: true }
   );
 }
 
 // Call this on timer expiry or at startup if needed
-async function refreshDailyMissions() {
-  const newMissions = getRandomMissions(DAILY_MISSION_POOL, 3);
-  await setActiveDailyMissions(newMissions);
+async function refreshDailyQuests() {
+  const newQuests = getRandomQuests(DAILY_QUEST_POOL, 3);
+  await setActiveDailyQuests(newQuests);
   // Also reset progress!
-  await resetMissionProgress('daily');
+  await resetQuestProgress('daily');
 }
 // In addToCollection, after updating collection:
 updateColorAchievements();
 
-async function updateMissionsNotificationDot() {
-  const daily = await getActiveDailyMissions();
-  const allMissions = [...daily, ...weekly];
-  const missionData = getMissionData();
-  const hasClaimable = allMissions.some(m => {
-    const p = missionData[m.id];
+async function updateQuestsNotificationDot() {
+  const daily = await getActiveDailyQuests();
+  const questData = getQuestData();
+  const hasClaimable = allQuests.some(m => {
+    const p = questData[m.id];
     return p && p.completed && !p.claimed;
   });
-  const dot = document.getElementById('missions-notification-dot');
+  const dot = document.getElementById('quests-notification-dot');
   if (dot) dot.style.display = hasClaimable ? 'block' : 'none';
 }
 
@@ -944,14 +930,14 @@ document.getElementById('close-friends-modal').onclick = function() {
 document.getElementById('friends-modal').onclick = function(e) {
   if (e.target === this) this.style.display = 'none';
 };
-document.getElementById('missions-icon').onclick = function() {
-  renderDailyMissions();
-  document.getElementById('missions-modal').style.display = 'flex';
+document.getElementById('quests-icon').onclick = function() {
+  renderDailyQuests();
+  document.getElementById('quests-modal').style.display = 'flex';
 };
-document.getElementById('close-missions-modal').onclick = function() {
-  document.getElementById('missions-modal').style.display = 'none';
+document.getElementById('close-quests-modal').onclick = function() {
+  document.getElementById('quests-modal').style.display = 'none';
 };
-document.getElementById('missions-modal').onclick = function(e) {
+document.getElementById('quests-modal').onclick = function(e) {
   if (e.target === this) this.style.display = 'none';
 };
 // PLAYER LEVEL
@@ -1046,12 +1032,12 @@ function placeMenuWithinViewport(menu, triggerRect, preferred = "bottom") {
 
 // On load, check for resets
 window.addEventListener('DOMContentLoaded', async () => {
-  await resetMissionsIfNeeded();
-  if ((await getActiveDailyMissions()).length === 0) await refreshDailyMissions();
-  await renderDailyMissions();
+  await resetQuestsIfNeeded();
+  if ((await getActiveDailyQuests()).length === 0) await refreshDailyQuests();
+  await renderDailyQuests();
   updateCurrencyDisplay();
   updateEssenceDisplay();
-  startDailyMissionTimer();
-  updateMissionsNotificationDot();
+  startDailyQuestTimer();
+  updateQuestsNotificationDot();
   updateAchievementsNotificationDot();
 });
