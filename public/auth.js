@@ -279,9 +279,11 @@ const defaultBanner = "CardImages/Banners/DefaultBanner.png";
       });
   }
 
+let isLoggingOut = false;
   // --- Auth state changes ---
   auth.onAuthStateChanged(async user => {
     if (user) {
+      isLoggingOut = false;  
       profileArea.style.display = '';
       profileMenu.classList.remove('active');
       loginMenu.classList.remove('active');
@@ -296,6 +298,7 @@ const defaultBanner = "CardImages/Banners/DefaultBanner.png";
       loadPlayerCurrencyEssence();
       loadPlayerMissionsAchievements();  
     } else {
+      isLoggingOut = true;  
       profileArea.style.display = 'none';
       profileMenu.classList.remove('active');
       loginMenu.classList.add('active');
@@ -318,6 +321,7 @@ const defaultBanner = "CardImages/Banners/DefaultBanner.png";
       refreshDeckSlotSelect();
       updateDeckDisplay();
       renderBuilder();
+      setTimeout(() => { isLoggingOut = false; }, 1000);  
      }
   });
 });
