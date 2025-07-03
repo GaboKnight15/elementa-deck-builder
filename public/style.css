@@ -595,6 +595,15 @@ button {
 .card-builder:hover img {
   box-shadow: 0 8px 24px rgba(0,0,0,0.22);
 }
+.card-art-image.loading {
+  filter: blur(6px) grayscale(0.7);
+  opacity: 0.6;
+}
+.card-art-image.loaded {
+  filter: none;
+  opacity: 1;
+  transition: filter 0.3s, opacity 0.3s;
+}
 .deck-menu-modal-content {
   min-width: 220px;
   align-items: stretch;
