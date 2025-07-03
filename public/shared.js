@@ -517,20 +517,7 @@ document.getElementById('achievements-modal').onclick = function(e) {
   if (e.target === this) this.style.display = 'none';
 };
 // Main Missions Modal open/close logic
-document.getElementById('show-daily-missions').onclick = function() {
-  renderDailyMissions();
-  document.getElementById('daily-missions-modal').style.display = 'flex';
-};
-document.getElementById('show-weekly-missions').onclick = function() {
-  renderWeeklyMissions();
-  document.getElementById('weekly-missions-modal').style.display = 'flex';
-};
-document.getElementById('close-daily-missions-modal').onclick = function() {
-  document.getElementById('daily-missions-modal').style.display = 'none';
-};
-document.getElementById('close-weekly-missions-modal').onclick = function() {
-  document.getElementById('weekly-missions-modal').style.display = 'none';
-};
+
 document.getElementById('daily-missions-modal').onclick = function(e) {
   if (e.target === this) this.style.display = 'none';
 };
@@ -979,7 +966,17 @@ document.getElementById('friends-modal').onclick = function(e) {
 document.getElementById('close-friend-profile-modal').onclick = function() {
   document.getElementById('friend-profile-modal').style.display = 'none';
 };
-
+document.getElementById('missions-icon').onclick = function() {
+  renderDailyMissions();
+  renderWeeklyMissions();
+  document.getElementById('missions-modal').style.display = 'flex';
+};
+document.getElementById('close-missions-modal').onclick = function() {
+  document.getElementById('missions-modal').style.display = 'none';
+};
+document.getElementById('missions-modal').onclick = function(e) {
+  if (e.target === this) this.style.display = 'none';
+};
 // PLAYER LEVEL
 // Level curve: you may adjust as you wish!
 function expToNextLevel(level) {
