@@ -293,10 +293,9 @@ if (user) {
 
 // ADD CARDS TO COLLECTION 
 async function addToCollection(cardId, amount = 1) {
-  const collection = getCollection();
+  const collection = userState.collection;
   const wasOwned = collection[cardId] > 0;
   collection[cardId] = (collection[cardId] || 0) + amount;
-  setCollection(collection);
 
   // If just unlocked, mark as new
   if (!wasOwned && collection[cardId] > 0) {
@@ -336,19 +335,17 @@ async function addToCollection(cardId, amount = 1) {
     }
   }
   // Update color achievements (generalized)
-  if (typeof updateColorAchievements === 'function') {
-    updateColorAchievements();
-  }
+  if (typeof updateColorAchievements === 'function') {updateColorAchievements();}
   // Update unique cards achievement
-  if (typeof updateUniqueCardsAchievement === 'function') {
-    updateUniqueCardsAchievement();
-  }
+  if (typeof updateUniqueCardsAchievement === 'function') {updateUniqueCardsAchievement();}
 }
 
-function getCurrency()    { return playerCurrency; }
-function setCurrency(amt) {
-  playerCurrency = amt;
-  if (!isLoggingOut) saveCurrencyEssence(playerCurrency, playerEssence);
+function getCurrency() {
+  return userState.currency;
+}
+async function setCurrency(amt) {
+  userState.currency = amt;
+  await saveUserState();
   const el = document.getElementById('currency-amount');
   if (el) el.textContent = amt;
 }
