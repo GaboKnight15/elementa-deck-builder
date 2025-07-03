@@ -45,6 +45,7 @@ function createCardGallery(card) {
       this.src = "CardImages/Domains/placeholder.png";
     };
     img.alt = card.name;
+    img.classList.add('card-art-image');
 
     // GRAY OUT if not owned
     if (owned === 0) {
@@ -198,7 +199,7 @@ function renderGallery() {
 
   filteredCards.forEach(card => {
     const cardDiv = createCardGallery(card);
-    const img = cardDiv.querySelector('img');
+    const img = cardDiv.querySelector('.card-art-image');
     // If image already loaded (from cache), count it as loaded
     if (img.complete) {
       loaded++;
@@ -211,6 +212,7 @@ function renderGallery() {
     }
     gallery.appendChild(cardDiv);
   });
+  setTimeout(hideLoadingOverlay, 6000);  
 }
 // ==========================
 // === EVENT LISTENERS ===
