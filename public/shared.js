@@ -448,7 +448,7 @@ async function claimQuestReward(quest) {
 
 // 7. Renderers
 async function renderDailyQuests() {
-  const list = document.getElementById('daily-Quests-list');
+  const list = document.getElementById('daily-quests-list');
   if (!list) return;
   list.innerHTML = '';
   const quests = await getActiveDailyQuests();
@@ -522,7 +522,7 @@ function setAchievementData(data){
 
 function loadQuests() {
   return new Promise(resolve => {
-    loadProgress(data => resolve(data.Quests || {}));
+    loadProgress(data => resolve(data.quests || {}));
   });
 }
 function loadAchievements() {
