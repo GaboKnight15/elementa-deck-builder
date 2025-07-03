@@ -72,7 +72,7 @@ function createCardGallery(card) {
     createBtnImg.alt = 'Create';
     createBtnImg.title = 'Create (spend Essence to make 1 copy)';
     createBtnImg.className = "gallery-action-btn";
-    createBtnImg.onclick = function(e) {
+    createBtnImg.onclick = async function(e) {
       e.stopPropagation();
       const cost = 50;
       if (playerEssence < cost) {
@@ -84,7 +84,7 @@ function createCardGallery(card) {
       collection[card.id] = (collection[card.id] || 0) + 1;
       playerCollection = collection;
       playerEssence -= cost;
-      saveAllProgressAndUI();
+      await saveAllProgressAndUI();
 
       // Mark as new if previously not owned
       if (!wasOwned && collection[card.id] > 0) {
@@ -104,7 +104,7 @@ function createCardGallery(card) {
     voidBtnImg.alt = 'Void';
     voidBtnImg.title = 'Void (destroy 1 copy for Essence)';
     voidBtnImg.className = "gallery-action-btn";
-    voidBtnImg.onclick = function(e) {
+    voidBtnImg.onclick = async function(e) {
       e.stopPropagation();
       const collection = getCollection();
       if ((collection[card.id] || 0) <= 1) {
@@ -115,7 +115,7 @@ function createCardGallery(card) {
       collection[card.id] -= 1;
       playerCollection = collection;
       playerEssence += refund;
-      saveAllProgressAndUI();
+      await saveAllProgressAndUI();
       renderGallery();
     };
     actionRow.appendChild(voidBtnImg);
