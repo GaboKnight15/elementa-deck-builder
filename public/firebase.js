@@ -84,6 +84,14 @@ function saveProgress() {
     });
 }
 
+function guardedSaveProgress() {
+  if (!window.appLoaded) {
+    console.warn("App not loaded yet! Skipping save.");
+    return;
+  }
+  saveProgress();
+}
+
 function loadProgress(cb) {
   if (!isAppReady()) {
     console.warn("[loadProgress] App not loaded/authenticated. Progress not loaded.");
