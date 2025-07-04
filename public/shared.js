@@ -73,6 +73,7 @@ let playerUnlockedCardbacks = [];
 let deckSlots = ["Deck 1"];
 let decks = { "Deck 1": {} };
 let currentDeckSlot = "Deck 1";
+const addCoinsBtn = document.getElementById('add-coins-btn');
 
 // --- CURRENCY DISPLAY ---
 function updateCurrencyDisplay() {
@@ -254,9 +255,7 @@ function getCurrencyHtml(amount) {
 }
 async function addCoins(amount) {
   playerCurrency += amount;
-  await saveProgress();
 }
-const addCoinsBtn = document.getElementById('add-coins-btn');
 if (addCoinsBtn) {
   addCoinsBtn.onclick = function() {
     addCoins(100);
@@ -269,7 +268,7 @@ function getEssence() {
 function setEssence(amount) {
   playerEssence = amount;
   updateEssenceDisplay();
-  await saveProgress();
+  saveProgress();
 }
 function updateEssenceDisplay() {
   const el = document.getElementById('essence-amount');
