@@ -31,22 +31,21 @@ firebase.auth().onAuthStateChanged(function(user) {
 async function saveAllProgress() {
   const user = firebase.auth().currentUser;
   if (!user) return;
-  const data = {
-    collection: window.playerCollection || {},
-    deckSlots: window.deckSlots || ["Deck 1"],
-    decks: window.decks || { "Deck 1": {} },
-    currentDeckSlot: window.currentDeckSlot || "Deck 1",
-    currency: typeof window.playerCurrency === 'number' ? window.playerCurrency : 0,
-    essence: typeof window.playerEssence === 'number' ? window.playerEssence : 0,
-    quests: window.playerQuests || {},
-    achievements: window.playerAchievements || {},
-    level: typeof window.playerLevel === 'number' ? window.playerLevel : 1,
-    exp: typeof window.playerExp === 'number' ? window.playerExp : 0,
-    unlockedAvatars: window.playerUnlockedAvatars || [],
-    unlockedBanners: window.playerUnlockedBanners || [],
-    unlockedCardbacks: window.playerUnlockedCardbacks || []
-  };
-  await firebase.firestore().collection('users').doc(user.uid).set(data, { merge: true });
+  await saveProgress({
+    collection: playerCollection,
+    deckSlots: deckSlots,
+    decks: decks,
+    currentDeckSlot: currentDeckSlot,
+    currency: playerCurrency,
+    essence: playerEssence,
+    quests: playerQuests,
+    achievements: playerAchievements,
+    level: playerLevel,
+    exp: playerExp,
+    unlockedAvatars: playerUnlockedAvatars,
+    unlockedBanners: playerUnlockedBanners,
+    unlockedCardbacks: playerUnlockedCardbacks
+  });
 }
 
 /**
