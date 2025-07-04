@@ -98,7 +98,7 @@ const defaultBanner = "CardImages/Banners/DefaultBanner.png";
 // --- Auth state changes ---
 auth.onAuthStateChanged(async user => {
   if (user) {
-    let isLoggingOut = false;
+    window.appLoaded = false;
     await new Promise(resolve => {
       loadProgress(data => {
         playerCollection = data.collection || {};
@@ -142,9 +142,9 @@ auth.onAuthStateChanged(async user => {
     mainNav.classList.add('active');
     loadProfile(user);
     if (typeof loadPlayerQuestsAchievements === 'function') loadPlayerQuestsAchievements();
-    appLoaded = true;  
+    window.appLoaded = true;  
   } else {
-    appLoaded = false;  
+    window.appLoaded = false; 
     isLoggingOut = true;
     profileArea.style.display = 'none';
     profileMenu.classList.remove('active');
