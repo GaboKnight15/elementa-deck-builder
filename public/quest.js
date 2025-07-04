@@ -268,7 +268,8 @@ function updateColorAchievements() {
   });
 }
 function getNextResetTime() {
-  if (!window.questResetTimestamp) return Date.now();
+  // Fallback: add 24h to now if timestamp is not set
+  if (!window.questResetTimestamp) return Date.now() + 24 * 60 * 60 * 1000;
   return window.questResetTimestamp + 24 * 60 * 60 * 1000;
 }
 
