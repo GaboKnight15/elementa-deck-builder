@@ -1,4 +1,4 @@
-const firebaseConfig = {   
+const firebaseConfig = {
   apiKey: "AIzaSyAyrTkqm_ksTU4dC3ul_cXQc596VptdhXY",
   authDomain: "elementa-31166.firebaseapp.com",
   projectId: "elementa-31166",
