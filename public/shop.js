@@ -416,17 +416,19 @@ async function renderShopCosmetics({
         imgSrc: src,
         type: wrapperClass.replace('shop-','').replace('-option',''), // e.g. 'avatar'
         price,
-        onConfirm: async () => {
-            if (!unlocked.includes(src)) {
-              unlocked.push(src);
-              await setUnlocked(unlocked);
-            }
-            await renderShopCosmetics({
-              gridId, options, prices, getUnlocked, setUnlocked, unlockMsg, wrapperClass, imgClass
-            });
-            showToast(unlockMsg);
-            return true;  
-         }
+onConfirm: async () => {
+  const purchased = await purchaseCosmetic(price, async () => {
+    if (!unlocked.includes(src)) {
+      unlocked.push(src);
+      await setUnlocked(unlocked);
+    }
+    await renderShopCosmetics({
+      gridId, options, prices, getUnlocked, setUnlocked, unlockMsg, wrapperClass, imgClass
+    });
+    showToast(unlockMsg);
+  });
+  return purchased;
+}
       });
     };
     wrapper.appendChild(img);
