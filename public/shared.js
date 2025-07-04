@@ -925,7 +925,7 @@ async function renderFriendsList() {
 window.sendFriendRequest = sendFriendRequest;
 window.acceptFriendRequest = acceptFriendRequest;
 window.declineFriendRequest = declineFriendRequest;
-window.renderFriendsList = renderFriendsList;
+window.renderFriendsList = renderFriendsList; 
 
 // Hook up modals and icon
 document.getElementById('friends-icon').onclick = function() {
