@@ -363,21 +363,21 @@ function getUnlockedAvatars() {
 }
 function setUnlockedAvatars(arr) {
   playerUnlockedAvatars = arr; 
-  saveAllProgressAndUI();
+  saveProgress();
 }
 function getUnlockedBanners() {
   return playerUnlockedBanners || [];
 }
 function setUnlockedBanners(arr) {
   playerUnlockedBanners = arr;  
-  saveAllProgressAndUI();
+  saveProgress();
 }
 function getUnlockedCardbacks() {
   return playerUnlockedCardbacks || [];
 }
 function setUnlockedCardbacks(arr) {
   playerUnlockedCardbacks = arr;
-  saveAllProgressAndUI();
+  saveProgress();
 }
 async function renderShopCosmetics({
   gridId,
