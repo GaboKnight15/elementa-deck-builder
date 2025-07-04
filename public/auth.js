@@ -142,6 +142,7 @@ auth.onAuthStateChanged(async user => {
     loadProfile(user);
     if (typeof loadPlayerQuestsAchievements === 'function') loadPlayerQuestsAchievements();
     window.appLoaded = true;  
+    saveAllProgressAndUI(); 
   } else {
     window.appLoaded = false; 
     isLoggingOut = true;
