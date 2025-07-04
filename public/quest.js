@@ -5,6 +5,12 @@ let activeQuests = [];
 let questResetTimestamp = 0;
 let playerAchievements = {};
 
+function getPlayerLevel() {
+  return playerLevel;
+}
+function getPlayerExp() {
+  return playerExp;
+}
 async function setQuestData(data) {
   playerQuests = data;
   if (!isLoggingOut) await saveProgress();
@@ -91,6 +97,10 @@ async function claimQuestReward(quest) {
   setQuestData(data);
   updateQuestsNotificationDot();
   await grantExp(10);
+  // --- Set/reset the timer for next quest refresh ---
+  window.questResetTimestamp = Date.now();
+  await saveProgress(); // Make sure questResetTimestamp is included in your saveProgress!
+  startQuestTimer(); // Restart timer display
   return true;
 }
 
@@ -258,10 +268,8 @@ function updateColorAchievements() {
   });
 }
 function getNextResetTime() {
-  const now = new Date();
-  // Next 00:00 UTC
-  const next = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
-  return next.getTime();
+  if (!window.questResetTimestamp) return Date.now();
+  return window.questResetTimestamp + 24 * 60 * 60 * 1000;
 }
 
 function formatTimer(ms) {
@@ -277,9 +285,16 @@ function startQuestTimer() {
   clearInterval(TimerInterval);
   function update() {
     const now = Date.now();
-    const remain = getNextResetTime() - now;
+    const nextReset = getNextResetTime();
+    const remain = nextReset - now;
     const el = document.getElementById('quests-timer');
-    if (el) el.textContent = 'Refreshes in: ' + formatTimer(remain);
+    if (el) {
+      if (remain > 0) {
+        el.textContent = 'Refreshes in: ' + formatTimer(remain);
+      } else {
+        el.textContent = 'New quests available!';
+      }
+    }
     if (remain <= 0) {
       refreshQuests();
       renderQuests();
@@ -316,12 +331,15 @@ async function setActiveQuests(quests) {
 }
 
 async function refreshQuests() {
-  const newQuests = getRandomQuests(QUEST_POOL, 3);
-  await setActiveQuests(newQuests);
-  await resetQuestProgress('');
+  // ... your logic to pick new quests ...
+  // Reset quest progress
+  playerQuests = {};
+  // Optionally, update the timestamp here if you also want resets on manual refresh
+  // window.questResetTimestamp = Date.now();
+  await saveProgress();
   await renderQuests();
+  startQuestTimer();
 }
-updateColorAchievements();
 
 async function updateQuestsNotificationDot() {
   const  = await getActiveQuests();
@@ -348,9 +366,6 @@ function updateAchievementsNotificationDot() {
 function expToNextLevel(level) {
   return 100 + (level - 1) * 100; // Example: 100, 200, 300, ...
 }
-
-function getPlayerLevel() { return playerLevel; }
-function getPlayerExp() { return playerExp; }
 
 async function grantExp(amount) {
   if (!amount) return;
@@ -381,7 +396,6 @@ function renderPlayerLevel() {
   }
   if (expNum) expNum.textContent = exp + " / " + needed;
 }
-
 
 // OPEN/CLOSE LOGIC
 document.getElementById('quests-icon').onclick = function() {
