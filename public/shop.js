@@ -363,6 +363,8 @@ function getUnlockedAvatars() {
 }
 function setUnlockedAvatars(arr) {
   playerUnlockedAvatars = arr;
+  firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid)
+  .set({ unlockedAvatars: arr }, {merge: true});    
   saveAllProgressAndUI();
 }
 function getUnlockedBanners() {
@@ -370,6 +372,8 @@ function getUnlockedBanners() {
 }
 function setUnlockedBanners(arr) {
   playerUnlockedBanners = arr;
+  firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid)
+  .set({ unlockedBanners: arr }, {merge: true});     
   saveAllProgressAndUI();
 }
 function getUnlockedCardbacks() {
@@ -377,6 +381,8 @@ function getUnlockedCardbacks() {
 }
 function setUnlockedCardbacks(arr) {
   playerUnlockedCardbacks = arr;
+  firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid)
+  .set({ unlockedCardbacks: arr }, {merge: true});
   saveAllProgressAndUI();
 }
 async function renderShopCosmetics({
