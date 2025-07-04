@@ -13,14 +13,14 @@ function getPlayerExp() {
 }
 function setQuestData(data) {
   playerQuests = data;
-  if (!isLoggingOut) saveProgress();
+  saveProgress();
 }
 function getQuestData() {
   return playerQuests;
 }
 function setAchievementData(data) { 
   playerAchievements = data;
-  if (!isLoggingOut) saveProgress(); 
+  saveProgress(); 
 }
 function getAchievementData() {
   return playerAchievements;
