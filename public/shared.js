@@ -102,10 +102,43 @@ function loadAllPlayerProgress(callback) {
 }
 async function saveAllProgressAndUI() {
   await saveAllProgress();
-  updateCurrencyDisplay();
-  updateCollectionDependentUI();
-  renderPlayerLevel();
-  // ...other UI updates as needed
+
+  // Currency and essence displays
+  if (typeof updateCurrencyDisplay === "function") updateCurrencyDisplay();
+  if (typeof updateEssenceDisplay === "function") updateEssenceDisplay();
+
+  // Collection and deck UIs
+  if (typeof updateCollectionDependentUI === "function") updateCollectionDependentUI();
+  if (typeof renderGallery === "function") renderGallery();
+  if (typeof renderDeckSelection === "function") renderDeckSelection();
+  if (typeof renderDeckBuilder === "function") renderDeckBuilder();
+  if (typeof renderDeckList === "function") renderDeckList();
+  if (typeof renderCurrentDeck === "function") renderCurrentDeck();
+
+  // Player progress and levels
+  if (typeof renderPlayerLevel === "function") renderPlayerLevel();
+  if (typeof renderPlayerProfile === "function") renderPlayerProfile();
+
+  // Quests, achievements, notifications
+  if (typeof renderQuests === "function") renderQuests();
+  if (typeof renderAchievements === "function") renderAchievements();
+  if (typeof renderFriendNotifications === "function") renderFriendNotifications();
+
+  // Shop and cosmetics
+  if (typeof renderShop === "function") renderShop();
+  if (typeof renderShopAvatars === "function") renderShopAvatars();
+  if (typeof renderShopBanners === "function") renderShopBanners();
+  if (typeof renderShopCardbacks === "function") renderShopCardbacks();
+
+  // Other UI elements (settings, banners, etc.)
+  if (typeof renderProfileAvatars === "function") renderProfileAvatars();
+  if (typeof renderProfileBanners === "function") renderProfileBanners();
+  if (typeof renderProfileCardbacks === "function") renderProfileCardbacks();
+
+  // Any other custom or modal updates
+  if (typeof refreshCosmeticSelectors === "function") refreshCosmeticSelectors();
+  if (typeof refreshNotifications === "function") refreshNotifications();
+  if (typeof refreshUI === "function") refreshUI();
 }
 
 // --- END UNIFIED FIREBASE LOAD/SAVE ---
