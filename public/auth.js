@@ -229,12 +229,8 @@ profileChangePicBtn.onclick = async function() {
     if (!user) return;
     firebase.firestore().collection('users').doc(user.uid)
       .set({ profilePic: iconUrl }, {merge: true})
-      .then(() => {
-        profilePic.src = iconUrl + '?v=' + Date.now();
-        renderProfileIcons(iconUrl);
-        profileIconModal.style.display = 'none';
-        setTimeout(() => loadProfile(user), 500);  
-      })
+      const unlocked = await getUnlockedAvatars();
+      renderProfileIcons(iconUrl, unlocked);
       .catch(err => {
         console.error('[auth] Failed to update profile icon:', err);
       });
@@ -262,11 +258,8 @@ profileChangePicBtn.onclick = async function() {
     if (!user) return;
     firebase.firestore().collection('users').doc(user.uid)
       .set({ profileBanner: bannerUrl }, { merge: true })
-      .then(() => {
-        profileBanner.src = bannerUrl + '?v=' + Date.now();
-        renderProfileBanners(bannerUrl);
-        profileBannerModal.style.display = 'none';
-      })
+      const unlocked = await getUnlockedBanners();
+      renderProfileBanners(bannerUrl, unlocked);
       .catch(err => {
         console.error('[auth] Failed to update profile banner:', err);
       });
