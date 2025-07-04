@@ -224,17 +224,18 @@ profileChangePicBtn.onclick = async function() {
   };
     
   // --- Avatar Selection ---
-  function selectProfileIcon(iconUrl) {
-    const user = auth.currentUser;
-    if (!user) return;
-    firebase.firestore().collection('users').doc(user.uid)
-      .set({ profilePic: iconUrl }, {merge: true})
-      const unlocked = await getUnlockedAvatars();
-      renderProfileIcons(iconUrl, unlocked);
-      .catch(err => {
-        console.error('[auth] Failed to update profile icon:', err);
-      });
+async function selectProfileIcon(iconUrl) {
+  const user = auth.currentUser;
+  if (!user) return;
+  try {
+    await firebase.firestore().collection('users').doc(user.uid)
+      .set({ profilePic: iconUrl }, {merge: true});
+    const unlocked = await getUnlockedAvatars();
+    renderProfileIcons(iconUrl, unlocked);
+  } catch (err) {
+    console.error('[auth] Failed to update profile icon:', err);
   }
+}
     
   // --- Banner Modal ---
   profileBanner.onclick = async function() {
@@ -253,17 +254,18 @@ profileChangePicBtn.onclick = async function() {
     }
   };
    // --- Banner Selection ---
-  function selectProfileBanner(bannerUrl) {
-    const user = auth.currentUser;
-    if (!user) return;
-    firebase.firestore().collection('users').doc(user.uid)
-      .set({ profileBanner: bannerUrl }, { merge: true })
-      const unlocked = await getUnlockedBanners();
-      renderProfileBanners(bannerUrl, unlocked);
-      .catch(err => {
-        console.error('[auth] Failed to update profile banner:', err);
-      });
-  }   
+async function selectProfileBanner(bannerUrl) {
+  const user = auth.currentUser;
+  if (!user) return;
+  try {
+    await firebase.firestore().collection('users').doc(user.uid)
+      .set({ profileBanner: bannerUrl }, { merge: true });
+    const unlocked = await getUnlockedBanners();
+    renderProfileBanners(bannerUrl, unlocked);
+  } catch (err) {
+    console.error('[auth] Failed to update profile banner:', err);
+  }
+}
   // --- Signup/Login logic for modal/profile menu ---
  profileArea.onclick = function(e) {
     e.stopPropagation();
