@@ -168,13 +168,14 @@ function getRandomCards(n, setName) {
 // CURRENCY DEDUCTION
 async function purchaseCosmetic(cost, purchaseCallback) {
   let balance = getCurrency();
-  if (balance < cost) {
+  if (typeof balance !== "number" || balance < cost) {
     alert("Not enough coins!");
     return false;
   }
   playerCurrency = balance - cost;
+  updateCurrencyDisplay();    
   await saveAllProgressAndUI();
-  await purchaseCallback(); // <-- Await here for async updates
+  if (typeof purchaseCallback === "function") await purchaseCallback(); // <-- Await here for async updates
   return true;
 }
 // Helper: Track which cards are "new" when opening a pack
