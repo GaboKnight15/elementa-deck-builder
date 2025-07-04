@@ -211,10 +211,9 @@ if (typeof firebase !== "undefined" && firebase.auth) {
       if (mainHeader) mainHeader.style.display = "";
       if (appMain) appMain.style.display = "";
       if (loginMenu) loginMenu.style.display = "none";
-      loadAllPlayerProgress(() => {
-        if (typeof window.renderGallery === "function") window.renderGallery();
-        if (typeof window.renderShop === "function") window.renderShop();
-      });
+      await loadProgress();
+      if (typeof window.renderGallery === "function") window.renderGallery();
+      if (typeof window.renderShop === "function") window.renderShop();
       await renderFriendNotifications();
     } else {
       // Reset variables/UI on logout
@@ -324,9 +323,21 @@ function getEssenceHtml(amount) {
     <span>${amount}</span>
   </span>`;
 }
-
+async function setCurrency(amount) {
+  playerCurrency = amount;
+  updateCurrencyDisplay();
+  await saveProgress();
+}
 function getCurrency() {
   return playerCurrency;
+}
+async function setAchievementData(data) { 
+  playerAchievements = data;
+  if (!isLoggingOut) await saveProgress(); 
+}
+async function setQuestData(data) {
+  playerQuests = data;
+  if (!isLoggingOut) await saveProgress();
 }
 function getQuestData() {
   return playerQuests;
@@ -486,17 +497,6 @@ function getAchievementData()    { return playerAchievements; }
 function setAchievementData(data){ 
   playerAchievements = data;
   if (!isLoggingOut) await saveProgress(); 
-}
-
-function loadQuests() {
-  return new Promise(resolve => {
-    loadProgress(data => resolve(data.quests || {}));
-  });
-}
-function loadAchievements() {
-  return new Promise(resolve => {
-    loadProgress(data => resolve(data.achievements || {}));
-  });
 }
 
 // 3. Get progress for an achievement
