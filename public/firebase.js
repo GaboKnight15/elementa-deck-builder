@@ -73,6 +73,7 @@ function loadSingleField(field, callback) {
 }
 
 async function saveAllProgress() {
+  if (!window.appLoaded) return;
   await saveProgress({
     collection: playerCollection,
     deckSlots: deckSlots,
