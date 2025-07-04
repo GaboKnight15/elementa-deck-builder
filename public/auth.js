@@ -71,6 +71,8 @@ const bannerOptions = [
 ];
 const defaultBanner = "CardImages/Banners/DefaultBanner.png";
 
+let isLoggingOut = false;
+let appLoaded = false;
 // --- Load Profile From Firestore ---
 function loadProfile(user) {
   if (!user) return;
