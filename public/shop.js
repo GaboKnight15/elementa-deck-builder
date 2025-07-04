@@ -417,7 +417,7 @@ function renderShopCosmetics({
       <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins">
       <span>${price}</span>
     `;
-    img.onclick = function() => {
+    img.onclick = function() {
       showCosmeticConfirmModal({
         imgSrc: src,
         type: wrapperClass.replace('shop-','').replace('-option',''), // e.g. 'avatar'
