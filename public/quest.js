@@ -415,11 +415,16 @@ document.getElementById('quests-modal').onclick = function(e) {
 };
 
 window.renderDailyQuests = renderDailyQuests;
-    updateQuestsNotificationDot();
-    startDailyQuestTimer();
+window.renderAchievements = renderAchievements;
+window.renderPlayerLevel = renderPlayerLevel;
+window.updateQuestsNotificationDot = updateQuestsNotificationDot;
+window.updateAchievementsNotificationDot = updateAchievementsNotificationDot;
+window.startDailyQuestTimer = startDailyQuestTimer;
 
-    updateAchievementsNotificationDot();
-  (async () => {
-    await resetQuestsIfNeeded();
-    if ((await getActiveDailyQuests()).length === 0) await refreshDailyQuests();
-    await renderDailyQuests();
+window.addEventListener('DOMContentLoaded', function() {
+  window.renderDailyQuests();
+  window.updateQuestsNotificationDot();
+  window.startDailyQuestTimer();
+  window.updateAchievementsNotificationDot();
+  window.renderPlayerLevel();
+});
