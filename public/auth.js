@@ -71,8 +71,6 @@
   ];
 const defaultBanner = "CardImages/Banners/DefaultBanner.png";
 
-let isLoggingOut = false;
-let appLoaded = false;
 // --- Auth state changes ---
 auth.onAuthStateChanged(async user => {
   if (user) {
