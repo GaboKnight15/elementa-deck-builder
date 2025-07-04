@@ -1,3 +1,8 @@
+let playerLevel = 1;
+let playerExp = 0;
+let playerQuests = {};
+let playerAchievements = {};
+
 async function setAchievementData(data) { 
   playerAchievements = data;
   if (!isLoggingOut) await saveProgress(); 
@@ -130,7 +135,21 @@ async function renderDailyQuests() {
     list.appendChild(entry);
   }
 }
-// 4. Increment achievement progress by value (default 1)
+function getAchievementData()    { return playerAchievements; }
+function setAchievementData(data){ 
+  playerAchievements = data;
+  if (!isLoggingOut) await saveProgress(); 
+}
+
+// 3. Get progress for an achievement
+function getAchievementProgress(ach) {
+  let data = getAchievementData();
+  if (!data[ach.id]) {
+    data[ach.id] = { progress: 0, completed: false, claimed: false };
+    setAchievementData(data);
+  }
+  return data[ach.id];
+}
 function incrementAchievementProgress(achievementId, amount = 1) {
   let data = getAchievementData();
   const ach = ACHIEVEMENTS.find(a => a.id === achievementId);
