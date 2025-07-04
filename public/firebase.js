@@ -28,35 +28,43 @@ firebase.auth().onAuthStateChanged(function(user) {
  * Save all player progress (currency, collection, decks, cosmetics, etc)
  * @param {Object} progressObj - An object with all fields to save (example: {currency: 100, collection: {...}, ...})
  */ 
-window.appLoaded = false;
-async function saveProgress(progressObj) {
+async function saveAllProgress() {
   const user = firebase.auth().currentUser;
   if (!user) return;
-  // Optionally, attach displayName/email for admin/debugging
-  let username = user.displayName || (user.email ? user.email.split('@')[0] : "");
-  await firebase.firestore().collection('users').doc(user.uid).set(
-    { ...progressObj, displayName: username, email: user.email || "" },
-    { merge: true }
-  );
+  const data = {
+    collection: window.playerCollection || {},
+    deckSlots: window.deckSlots || ["Deck 1"],
+    decks: window.decks || { "Deck 1": {} },
+    currentDeckSlot: window.currentDeckSlot || "Deck 1",
+    currency: typeof window.playerCurrency === 'number' ? window.playerCurrency : 0,
+    essence: typeof window.playerEssence === 'number' ? window.playerEssence : 0,
+    quests: window.playerQuests || {},
+    achievements: window.playerAchievements || {},
+    level: typeof window.playerLevel === 'number' ? window.playerLevel : 1,
+    exp: typeof window.playerExp === 'number' ? window.playerExp : 0,
+    unlockedAvatars: window.playerUnlockedAvatars || [],
+    unlockedBanners: window.playerUnlockedBanners || [],
+    unlockedCardbacks: window.playerUnlockedCardbacks || []
+  };
+  await firebase.firestore().collection('users').doc(user.uid).set(data, { merge: true });
 }
 
 /**
- * Load all player progress (currency, collection, decks, cosmetics, etc)
- * @param {Function} callback - function(data) called with the loaded user data
+ * Load ALL player progress (await this after login, before using player data)
+ * Returns: Object with all player data or sensible defaults if not found.
  */
-function loadProgress(callback) {
+async function loadAllProgress() {
   const user = firebase.auth().currentUser;
-  if (!user) { callback({}); return; }
-  firebase.firestore().collection('users').doc(user.uid).get()
-    .then(doc => {
-      if (doc.exists) callback(doc.data());
-      else callback({});
-    })
-    .catch(() => callback({}));
+  if (!user) return {};
+  const doc = await firebase.firestore().collection('users').doc(user.uid).get();
+  if (!doc.exists) return {};
+  return doc.data();
 }
 
-// --- OPTIONAL: Single-field helpers if you want them --- //
-
+/**
+ * Save a single field. Use only for user profile or settings, NOT for game progress.
+ * Example: saveSingleField('profilePic', newUrl)
+ */
 async function saveSingleField(field, value) {
   const user = firebase.auth().currentUser;
   if (!user) return;
@@ -65,6 +73,10 @@ async function saveSingleField(field, value) {
   await firebase.firestore().collection('users').doc(user.uid).set(obj, { merge: true });
 }
 
+/**
+ * Load a single field. Use only for user profile or settings, NOT for game progress.
+ * Example: loadSingleField('profilePic', val => { ... })
+ */
 function loadSingleField(field, callback) {
   const user = firebase.auth().currentUser;
   if (!user) { callback(null); return; }
@@ -73,45 +85,8 @@ function loadSingleField(field, callback) {
     .catch(() => callback(null));
 }
 
-async function saveAllProgress() {
-  const user = firebase.auth().currentUser;
-  if (!user) return;
-  const data = {
-    collection: playerCollection,
-    deckSlots: deckSlots,
-    decks: decks,
-    currentDeckSlot: currentDeckSlot,
-    currency: playerCurrency,
-    essence: playerEssence,
-    quests: playerQuests,
-    achievements: playerAchievements,
-    level: playerLevel,
-    exp: playerExp,
-    unlockedAvatars: playerUnlockedAvatars,
-    unlockedBanners: playerUnlockedBanners,
-    unlockedCardbacks: playerUnlockedCardbacks
-  };
-  await firebase.firestore().collection('users').doc(user.uid).set(data, { merge: true });
-}
-async function loadAllProgress() {
-  const user = firebase.auth().currentUser;
-  if (!user) return {};
-  const doc = await firebase.firestore().collection('users').doc(user.uid).get();
-  if (!doc.exists) return {};
-  return doc.data();
-}
-/**
- * Example usage for cosmetics, currency, decks, etc.
- * saveSingleField('currency', 100)
- * loadSingleField('currency', value => { ... })
- * saveSingleField('unlockedAvatars', ["img1.png", "img2.png"])
- * loadSingleField('unlockedAvatars', arr => { ... })
- */
-
 // --- Make functions available globally --- //
-window.saveProgress = saveProgress;
-window.loadProgress = loadProgress;
-window.saveSingleField = saveSingleField;
-window.loadSingleField = loadSingleField;
 window.saveAllProgress = saveAllProgress;
 window.loadAllProgress = loadAllProgress;
+window.saveSingleField = saveSingleField;
+window.loadSingleField = loadSingleField;
