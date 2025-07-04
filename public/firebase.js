@@ -25,7 +25,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 }); 
 
 const auth = firebase.auth();
-
+ 
 function saveProgress() {
   const user = firebase.auth().currentUser;
   if (!user) {
