@@ -32,12 +32,12 @@ async function resetQuestsIfNeeded() {
   const now = new Date();
   const resets = await getQuestResets();
   let changed = false;
-  // Daily reset at 00:00 UTC
-  const lastDaily = resets.lastDailyReset ? new Date(resets.lastDailyReset) : null;
+  //  reset at 00:00 UTC
+  const last = resets.lastReset ? new Date(resets.lastReset) : null;
   const nowUtc = new Date(now.toISOString().split('T')[0] + "T00:00:00.000Z");
-  if (!lastDaily || nowUtc > lastDaily) {
-    await resetQuestProgress('daily');
-    resets.lastDailyReset = nowUtc.toISOString();
+  if (!last || nowUtc > last) {
+    await resetQuestProgress('');
+    resets.lastReset = nowUtc.toISOString();
     changed = true;
   }
   if (changed) await setQuestResets(resets);
@@ -46,7 +46,7 @@ async function resetQuestsIfNeeded() {
 async function resetQuestProgress(type) {
   let quests = getQuestData();
   // Use only active Quests for the given type
-  const activeQuests = await getActiveDailyQuests();
+  const activeQuests = await getActiveQuests();
   for (const quest of activeQuests) {
     quests[quest.id] = { progress: 0, completed: false, claimed: false };
   }
@@ -66,8 +66,8 @@ function getQuestProgress(quest) {
 // 5. Increment Quest progress by 1 (call from shop.js or elsewhere)
 async function incrementQuestProgress(questId) {
   let data = getQuestData();
-  const daily = await getActiveDailyQuests();
-  const quest = daily.find(m => m.id === questId);
+  const  = await getActiveQuests();
+  const quest = .find(m => m.id === questId);
   if (!quest) return;
   if (!data[questId]) data[questId] = { progress: 0, completed: false, claimed: false };
   if (data[questId].completed) return; // Already complete, no more progress
@@ -75,7 +75,7 @@ async function incrementQuestProgress(questId) {
   data[questId].progress = Math.min(quest.goal, (data[questId].progress || 0) + 1);
   if (data[questId].progress >= quest.goal) data[questId].completed = true;
   await setQuestData(data);
-  await renderDailyQuests();
+  await renderQuests();
   await updateQuestsNotificationDot();
 }
 
@@ -91,11 +91,11 @@ async function claimQuestReward(quest) {
 }
 
 // 7. Renderers
-async function renderDailyQuests() {
-  const list = document.getElementById('daily-quests-list');
+async function renderQuests() {
+  const list = document.getElementById('quests-list');
   if (!list) return;
   list.innerHTML = '';
-  const quests = await getActiveDailyQuests();
+  const quests = await getActiveQuests();
   for (const quest of quests) {
     const progress = getQuestProgress(quest);
     if (progress.claimed) continue;
@@ -116,7 +116,7 @@ async function renderDailyQuests() {
     `;
     if (progress.completed && !progress.claimed) {
       const btn = document.createElement('button');
-      btn.className = 'btn-primary Quest-claim-btn';
+      btn.className = 'btn-primary quest-claim-btn';
       btn.textContent = 'Claim';
       btn.onclick = async () => {
         await claimQuestReward(quest);
@@ -136,10 +136,6 @@ async function renderDailyQuests() {
   }
 }
 function getAchievementData()    { return playerAchievements; }
-function setAchievementData(data){ 
-  playerAchievements = data;
-  if (!isLoggingOut) await saveProgress(); 
-}
 
 // 3. Get progress for an achievement
 function getAchievementProgress(ach) {
@@ -245,7 +241,6 @@ function updateColorAchievements() {
   const collection = getCollection();
   ACHIEVEMENTS.forEach(ach => {
     if (ach.color) {
-      // Get all card ids for this color
       const colorCardIds = dummyCards
         .filter(card => card.color && (
           (Array.isArray(card.color) && card.color.includes(ach.color)) ||
@@ -260,7 +255,7 @@ function updateColorAchievements() {
     }
   });
 }
-function getNextDailyResetTime() {
+function getNextResetTime() {
   const now = new Date();
   // Next 00:00 UTC
   const next = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
@@ -274,23 +269,23 @@ function formatTimer(ms) {
   const s = total % 60;
   return `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
 }
-let dailyTimerInterval = null;
+let TimerInterval = null;
 
-function startDailyQuestTimer() {
-  clearInterval(dailyTimerInterval);
+function startQuestTimer() {
+  clearInterval(TimerInterval);
   function update() {
     const now = Date.now();
-    const remain = getNextDailyResetTime() - now;
-    const el = document.getElementById('daily-quests-timer');
+    const remain = getNextResetTime() - now;
+    const el = document.getElementById('quests-timer');
     if (el) el.textContent = 'Refreshes in: ' + formatTimer(remain);
     if (remain <= 0) {
-      refreshDailyQuests();
-      renderDailyQuests();
-      startDailyQuestTimer(); // restart for next cycle
+      refreshQuests();
+      renderQuests();
+      startQuestTimer();
     }
   }
   update();
-  dailyTimerInterval = setInterval(update, 1000);
+  TimerInterval = setInterval(update, 1000);
 }
 function getRandomQuests(pool, count) {
   // Simple random unique selection
@@ -304,36 +299,33 @@ function getRandomQuests(pool, count) {
 }
 
 // --- FIREBASE-BASED Quest STATE ---
-
-async function getActiveDailyQuests() {
+async function getActiveQuests() {
   const user = firebase.auth().currentUser;
   if (!user) return [];
   const doc = await firebase.firestore().collection('users').doc(user.uid).get();
-  return (doc.exists && doc.data().activeDailyQuests) ? doc.data().activeDailyQuests : [];
+  return (doc.exists && doc.data().activeQuests) ? doc.data().activeQuests : [];
 }
 
-async function setActiveDailyQuests(quests) {
+async function setActiveQuests(quests) {
   const user = firebase.auth().currentUser;
   if (!user) return;
   await firebase.firestore().collection('users').doc(user.uid).set(
-    { activeDailyQuests: quests }, { merge: true }
+    { activeQuests: quests }, { merge: true }
   );
 }
 
-// Call this on timer expiry or at startup if needed
-async function refreshDailyQuests() {
-  const newQuests = getRandomQuests(DAILY_QUEST_POOL, 3);
-  await setActiveDailyQuests(newQuests);
-  await resetQuestProgress('daily');
-  await renderDailyQuests();
+async function refreshQuests() {
+  const newQuests = getRandomQuests(QUEST_POOL, 3);
+  await setActiveQuests(newQuests);
+  await resetQuestProgress('');
+  await renderQuests();
 }
-// In addToCollection, after updating collection:
 updateColorAchievements();
 
 async function updateQuestsNotificationDot() {
-  const daily = await getActiveDailyQuests();
+  const  = await getActiveQuests();
   const questData = getQuestData();
-  const hasClaimable = daily.some(m => {
+  const hasClaimable = .some(m => {
     const p = questData[m.id];
     return p && p.completed && !p.claimed;
   });
@@ -352,7 +344,6 @@ function updateAchievementsNotificationDot() {
 }
 
 // PLAYER LEVEL
-// Level curve: you may adjust as you wish!
 function expToNextLevel(level) {
   return 100 + (level - 1) * 100; // Example: 100, 200, 300, ...
 }
@@ -360,7 +351,6 @@ function expToNextLevel(level) {
 function getPlayerLevel() { return playerLevel; }
 function getPlayerExp() { return playerExp; }
 
-// Grant EXP, handle level up
 async function grantExp(amount) {
   if (!amount) return;
   playerExp += amount;
@@ -411,20 +401,11 @@ document.getElementById('close-achievements-modal').onclick = function() {
 document.getElementById('achievements-modal').onclick = function(e) {
   if (e.target === this) this.style.display = 'none';
 };
-// 8. Modal open/close and init for Achievements
-document.getElementById('achievements-icon').onclick = function() {
-  renderAchievements();
-  document.getElementById('achievements-modal').style.display = 'flex';
-};
 document.getElementById('close-achievements-modal').onclick = function() {
   document.getElementById('achievements-modal').style.display = 'none';
 };
 document.getElementById('achievements-modal').onclick = function(e) {
   if (e.target === this) this.style.display = 'none';
-};
-document.getElementById('quests-icon').onclick = function() {
-  renderDailyQuests();
-  document.getElementById('quests-modal').style.display = 'flex';
 };
 document.getElementById('close-quests-modal').onclick = function() {
   document.getElementById('quests-modal').style.display = 'none';
@@ -433,17 +414,19 @@ document.getElementById('quests-modal').onclick = function(e) {
   if (e.target === this) this.style.display = 'none';
 };
 
-window.renderDailyQuests = renderDailyQuests;
+// Expose quest/achievement/level functions globally for use in other scripts or inline HTML
+window.renderQuests = renderQuests;
 window.renderAchievements = renderAchievements;
 window.renderPlayerLevel = renderPlayerLevel;
 window.updateQuestsNotificationDot = updateQuestsNotificationDot;
 window.updateAchievementsNotificationDot = updateAchievementsNotificationDot;
-window.startDailyQuestTimer = startDailyQuestTimer;
+window.startQuestTimer = startQuestTimer;
 
+// Initialize on page load
 window.addEventListener('DOMContentLoaded', function() {
-  window.renderDailyQuests();
+  window.renderQuests();
   window.updateQuestsNotificationDot();
-  window.startDailyQuestTimer();
+  window.startQuestTimer();
   window.updateAchievementsNotificationDot();
   window.renderPlayerLevel();
 });
