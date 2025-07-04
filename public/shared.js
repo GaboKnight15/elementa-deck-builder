@@ -189,9 +189,6 @@ function setNewlyUnlockedCards(arr) {
   localStorage.setItem(NEW_CARD_KEY, JSON.stringify(arr));
 }
 
-function saveQuests() {
-  return saveSingleField('quests', playerQuests);
-}
 // FIREBASE GALLERY
 async function setCollection(collection) {
   playerCollection = collection;
@@ -333,10 +330,6 @@ function getCurrency() {
 }
 function getQuestData() {
   return playerQuests;
-}
-async function setQuestData(data) {
-  playerQuests = data;
-  await saveQuests();
 }
 
 async function getQuestResets() {
@@ -923,15 +916,6 @@ function expToNextLevel(level) {
 
 function getPlayerLevel() { return playerLevel; }
 function getPlayerExp() { return playerExp; }
-
-async function savePlayerLevelExp() {
-  const uid = firebase.auth().currentUser?.uid;
-  if (!uid) return;
-  await firebase.firestore().collection('users').doc(uid).set({
-    level: playerLevel,
-    exp: playerExp
-  }, { merge: true });
-}
 
 // Grant EXP, handle level up
 async function grantExp(amount) {
