@@ -98,6 +98,7 @@ function loadProfile(user) {
 
 // --- Auth state changes ---
 auth.onAuthStateChanged(function(user) {
+  console.log("[auth] onAuthStateChanged", user);  
   if (user) {
     // Load all player progress and update variables
     loadProgress(function() {
@@ -317,44 +318,50 @@ document.addEventListener('DOMContentLoaded', function () {
     signup();
   };
 
-  function signup() {
-    const email = loginEmailInput.value.trim();
-    const password = loginPasswordInput.value;
-    const username = loginUsernameInput.value.trim();
-    loginError.textContent = "";
-    if (!username) {
-      loginError.textContent = "Enter a username.";
-      return;
-    }
-    auth.createUserWithEmailAndPassword(email, password)
-      .then(function(userCredential) {
-        return userCredential.user.updateProfile({
-          displayName: username
-        }).then(function() {
-          // Set initial profile in Firestore
-          return firebase.firestore().collection('users').doc(userCredential.user.uid)
-            .set({
-              username: username,
-              profilePic: defaultIcon,
-              profileBanner: defaultBanner,
-              unlockedAvatars: [defaultIcon],
-              unlockedBanners: [defaultBanner]
-            }, {merge: true});
-        });
-      })
-      .catch(function(err) {
-        loginError.textContent = err.message;
-      });
+function signup() {
+  const email = loginEmailInput.value.trim();
+  const password = loginPasswordInput.value;
+  const username = loginUsernameInput.value.trim();
+  loginError.textContent = "";
+  if (!username) {
+    loginError.textContent = "Enter a username.";
+    return;
   }
-  function login() {
-    const email = loginEmailInput.value.trim();
-    const password = loginPasswordInput.value;
-    loginError.textContent = "";
-    auth.signInWithEmailAndPassword(email, password)
-      .catch(function(err) {
-        loginError.textContent = err.message;
+  auth.createUserWithEmailAndPassword(email, password)
+    .then(function(userCredential) {
+      console.log("[auth] Signup successful", userCredential.user);
+      return userCredential.user.updateProfile({
+        displayName: username
+      }).then(function() {
+        // Set initial profile in Firestore
+        return firebase.firestore().collection('users').doc(userCredential.user.uid)
+          .set({
+            username: username,
+            profilePic: defaultIcon,
+            profileBanner: defaultBanner,
+            unlockedAvatars: [defaultIcon],
+            unlockedBanners: [defaultBanner]
+          }, {merge: true});
       });
-  }
+    })
+    .catch(function(err) {
+      loginError.textContent = err.message;
+      console.error("[auth] Signup failed", err);
+    });
+}
+function login() {
+  const email = loginEmailInput.value.trim();
+  const password = loginPasswordInput.value;
+  loginError.textContent = "";
+  auth.signInWithEmailAndPassword(email, password)
+    .then(function(userCredential) {
+      console.log("[auth] Login successful", userCredential.user);
+    })
+    .catch(function(err) {
+      loginError.textContent = err.message;
+      console.error("[auth] Login failed", err);
+    });
+}
 
   profileLogoutBtn.onclick = function() { auth.signOut(); };
 });
