@@ -71,8 +71,6 @@ const bannerOptions = [
 ];
 const defaultBanner = "CardImages/Banners/DefaultBanner.png";
 
-let isLoggingOut = false;
-let appLoaded = false;
 // --- Load Profile From Firestore ---
 function loadProfile(user) {
   if (!user) return;
@@ -115,18 +113,14 @@ auth.onAuthStateChanged(function(user) {
       updateCollectionDependentUI();
       renderShop();
 
-      isLoggingOut = false;
       profileArea.style.display = '';
       profileMenu.classList.remove('active');
       loginMenu.classList.remove('active');
       appMain.classList.add('active');
       mainNav.classList.add('active');
-      loadProfile(user);
-      window.appLoaded = true;  
+      loadProfile(user);  
     });
   } else {
-    window.appLoaded = false; 
-    isLoggingOut = true;
     profileArea.style.display = 'none';
     profileMenu.classList.remove('active');
     loginMenu.classList.add('active');
@@ -158,7 +152,6 @@ auth.onAuthStateChanged(function(user) {
     updateCurrencyDisplay();
     updateEssenceDisplay();
     updateCollectionDependentUI();
-    setTimeout(() => { isLoggingOut = false; }, 1000);
   }
 });
 
