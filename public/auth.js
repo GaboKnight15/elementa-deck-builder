@@ -188,37 +188,37 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!user) return [defaultIcon];
     const doc = await firebase.firestore().collection('users').doc(user.uid).get();
     if (doc.exists && doc.data().unlockedAvatars) {
+      playerUnlockedAvatars = doc.data().unlockedAvatars;  
       return doc.data().unlockedAvatars;
     }
     return [defaultIcon];
   } 
   // --- Render Profile Avatars ---
-  async function renderProfileIcons(selectedIcon) {
-    profileIcons.innerHTML = "";
-    const unlocked = await getUnlockedAvatars();
-    iconOptions.forEach(iconUrl => {
-      if (!unlocked.includes(iconUrl)) return; // Only show unlocked
-      const img = document.createElement('img');
-      img.src = iconUrl;
-      img.className = (iconUrl === selectedIcon) ? "selected" : "";
-      img.onclick = () => selectProfileIcon(iconUrl);
-      profileIcons.appendChild(img);
-    });
-  }
+async function renderProfileIcons(selectedIcon, unlocked) {
+  profileIcons.innerHTML = "";
+  iconOptions.forEach(iconUrl => {
+    if (!unlocked.includes(iconUrl)) return;
+    const img = document.createElement('img');
+    img.src = iconUrl;
+    img.className = (iconUrl === selectedIcon) ? "selected" : "";
+    img.onclick = () => selectProfileIcon(iconUrl);
+    profileIcons.appendChild(img);
+  });
+}
   async function getUnlockedBanners() {
     const user = auth.currentUser;
     if (!user) return [defaultBanner];
     const doc = await firebase.firestore().collection('users').doc(user.uid).get();
     if (doc.exists && doc.data().unlockedBanners) {
+      playerUnlockedBanners = doc.data().unlockedBanners;   
       return doc.data().unlockedBanners;
     }
     return [defaultBanner];
   }
 
   // --- Render Banners ---
-  async function renderProfileBanners(selectedBanner) {
+  async function renderProfileBanners(selectedBanner, unlocked) {
     profileBanners.innerHTML = "";
-    const unlocked = await getUnlockedBanners();
     bannerOptions.forEach(bannerUrl => {
       if (!unlocked.includes(bannerUrl)) return;
       const img = document.createElement('img');
@@ -230,11 +230,12 @@ document.addEventListener('DOMContentLoaded', function () {
   }
     
   // --- Open/Close Avatar Modal ---
-  profileChangePicBtn.onclick = function() {
-    const currentIcon = profilePic.src.split('?')[0];
-    renderProfileIcons(currentIcon);
-    profileIconModal.style.display = 'flex';
-  };
+profileChangePicBtn.onclick = async function() {
+  const currentIcon = profilePic.src.split('?')[0];
+  const unlocked = await getUnlockedAvatars();
+  renderProfileIcons(currentIcon, unlocked);
+  profileIconModal.style.display = 'flex';
+};
   closeProfileIconModalBtn.onclick = function() {
     profileIconModal.style.display = 'none';
   };
@@ -262,11 +263,13 @@ document.addEventListener('DOMContentLoaded', function () {
   }
     
   // --- Banner Modal ---
-  profileBanner.onclick = function() {
+  profileBanner.onclick = async function() {
     const currentBanner = profileBanner.src.split('?')[0];
+    const unlocked = await getUnlockedBanners();  
     renderProfileBanners(currentBanner);
     profileBannerModal.style.display = 'flex';
   };
+    
   closeProfileBannerModalBtn.onclick = function() {
     profileBannerModal.style.display = 'none';
   };
