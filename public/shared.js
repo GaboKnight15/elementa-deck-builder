@@ -549,8 +549,7 @@ document.getElementById('friends-modal').onclick = function(e) {
 // INITIALIZACION 
 // On load, check for resets
 window.addEventListener('DOMContentLoaded', function() {
-
-    updateCurrencyDisplay();
-    updateEssenceDisplay();
-  })();
+  updateCurrencyDisplay();
+  updateEssenceDisplay();
+});
 });
