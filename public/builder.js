@@ -1,6 +1,3 @@
-// ========================== 
-// === GALLERY LOGIC ===
-// ==========================
 // ==========================
 // === CONSTANTS & STATE ===
 // ==========================
@@ -267,7 +264,7 @@ closeDeckCardbackModalBtn.onclick = () => (deckCardbackModal.style.display = "no
 function showDeckTileMenu(deckName) {
   deckMenuTitle.textContent = deckName;
   updateDeckBanner(deckName);
-  updateDeckCardback(deckName); // <-- add this
+  updateDeckCardback(deckName);
   deckMenuModal.style.display = 'flex';
   deckMenuModal.dataset.deckName = deckName;
 }
@@ -623,14 +620,14 @@ function renderBuilder() {
 // ==========================
 
 // Deck slot events
-  deckSlotSelect.addEventListener('change', async () => {
+  deckSlotSelect.addEventListener('change', () => {
     currentDeckSlot = deckSlotSelect.value;
-    await saveProgress();
+    saveProgress();
     updateDeckDisplay();
     renderBuilder();
   });
 // ADD DECK SLOT 
-  addDeckSlotBtn.addEventListener('click', async () => {
+  addDeckSlotBtn.addEventListener('click', () => {
     let newName = prompt("Deck name?", `Deck ${deckSlots.length + 1}`);
     if (!newName) return;
     if (deckSlots.includes(newName)) {
@@ -640,14 +637,14 @@ function renderBuilder() {
     deckSlots.push(newName);
     decks[newName] = {};
     currentDeckSlot = newName;
-    await saveProgress();
+    saveProgress();
     refreshDeckSlotSelect();
     updateDeckDisplay();
     renderBuilder();
   });
 
 // DELETE DECK SLOT
-  deleteDeckSlotBtn.addEventListener('click', async () => {
+  deleteDeckSlotBtn.addEventListener('click', () => {
     if (deckSlots.length === 1) {
       alert("You must have at least one deck.");
       return;
@@ -657,7 +654,7 @@ function renderBuilder() {
     deckSlots.splice(idx, 1);
     delete decks[currentDeckSlot];
     currentDeckSlot = deckSlots[Math.max(idx - 1, 0)];
-    await saveProgress();
+    saveProgress();
     refreshDeckSlotSelect();
     updateDeckDisplay();
     renderBuilder();
@@ -696,7 +693,7 @@ backBuilderBtn.onclick = showDeckSelection;
 // ==========================
 // === INITIALIZATION ===
 // ==========================
-(async () => {
+(function () => {
   refreshDeckSlotSelect();
   updateDeckDisplay();
 })();
