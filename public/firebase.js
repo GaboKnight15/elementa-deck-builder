@@ -25,8 +25,16 @@ firebase.auth().onAuthStateChanged(function(user) {
 }); 
 
 const auth = firebase.auth();
- 
+
+function isAppReady() {
+  return window.appLoaded === true;
+}
+
 function saveProgress() {
+  if (!isAppReady()) {
+    console.warn("[saveProgress] App not loaded/authenticated. Progress not saved.");
+    return;
+  }
   const user = firebase.auth().currentUser;
   if (!user) {
     console.warn("[saveProgress] No authenticated user. Progress not saved.");
@@ -77,6 +85,11 @@ function saveProgress() {
 }
 
 function loadProgress(cb) {
+  if (!isAppReady()) {
+    console.warn("[loadProgress] App not loaded/authenticated. Progress not loaded.");
+    if (typeof cb === "function") cb();
+    return;
+  }
   const user = firebase.auth().currentUser;
   if (!user) {
     console.warn("[loadProgress] No authenticated user. Progress not loaded.");
