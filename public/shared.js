@@ -202,46 +202,6 @@ function updateCollectionDependentUI() {
   // Add other UI updates that depend on collection here if needed
 }
 
-if (typeof firebase !== "undefined" && firebase.auth) {
-  firebase.auth().onAuthStateChanged(async function(user) {
-    const mainHeader = document.getElementById('main-header');
-    const appMain = document.getElementById('app-main');
-    const loginMenu = document.getElementById('login-menu');
-    if (user) {
-      if (mainHeader) mainHeader.style.display = "";
-      if (appMain) appMain.style.display = "";
-      if (loginMenu) loginMenu.style.display = "none";
-      await loadProgress();
-      if (typeof window.renderGallery === "function") window.renderGallery();
-      if (typeof window.renderShop === "function") window.renderShop();
-      await renderDailyQuests();
-      await renderFriendNotifications();
-    } else {
-      // Reset variables/UI on logout
-      if (mainHeader) mainHeader.style.display = "none";
-      if (appMain) appMain.style.display = "none";
-      if (loginMenu) loginMenu.style.display = "";
-      playerCollection = {};
-      playerCurrency = 0;
-      playerEssence = 0;
-      playerLevel = 1;
-      playerExp = 0;
-      playerUnlockedAvatars = [];
-      playerUnlockedBanners = [];
-      playerUnlockedCardbacks = [];
-      deckSlots = ["Deck 1"];
-      decks = { "Deck 1": {} };
-      currentDeckSlot = "Deck 1";
-      setTimeout(() => renderPlayerLevel(), 0);
-      const dot = document.getElementById('friends-notification-dot');
-      if (dot) dot.style.display = 'none';
-      if (typeof window.renderGallery === "function") window.renderGallery();
-      if (typeof window.renderShop === "function") window.renderShop();
-      if (typeof renderDailyQuests === "function") renderDailyQuests();
-    }
-  });
-}
-
 // ADD CARDS TO COLLECTION 
 async function addToCollection(cardId, amount = 1) {
   const collection = getCollection();
@@ -931,6 +891,7 @@ async function grantExp(amount) {
     showToast(`Level Up! You reached Lv ${playerLevel}!`);
   }
   await saveProgress();
+  renderPlayerLevel();
   return leveledUp;
 }
 
@@ -940,9 +901,15 @@ function renderPlayerLevel() {
   const expBar = document.getElementById('player-exp-bar-fill');
   const expNum = document.getElementById('player-exp-numbers');
   const needed = expToNextLevel(playerLevel);
-  if (expBar) expBar.style.width = Math.min(100, Math.round((playerExp / needed) * 100)) + "%";
-  if (expNum) expNum.textContent = playerExp + "/" + needed;
+  const exp = typeof playerExp === "number" ? playerExp : 0;
+  if (expBar) {
+    // Clamp percentage between 0 and 100
+    const percent = Math.max(0, Math.min(100, (exp / needed) * 100));
+    expBar.style.width = percent + "%";
+  }
+  if (expNum) expNum.textContent = exp + " / " + needed;
 }
+
 
 // MENU INSIDE VIEWPORT
 function placeMenuWithinViewport(menu, triggerRect, preferred = "bottom") {
