@@ -9,8 +9,6 @@ const packOpeningModal = document.getElementById('pack-opening-modal');
 const packOpeningModalContent = document.getElementById('pack-opening-modal-content');
 const openedPackRowModal = document.getElementById('opened-pack-row-modal');
 const closePackOpeningModalBtn = document.getElementById('close-pack-opening-modal');
-// These should match your iconOptions in auth.js!
-// Arrays of image paths
 const allAvatarOptions = [
       "CardImages/Avatars/Faelyra.png",
       "CardImages/Avatars/Kaelyn.png",
@@ -56,9 +54,7 @@ const allCardbackOptions = [
 const packPrices = {
   "StandardPack": 100,
   "StandardPack2": 100,
-  // Add more if you have more packs, e.g. "RiseOfDragons": 200,
 };
-// Price maps
 const avatarPrices = {
       "CardImages/Avatars/Faelyra.png": 100,
       "CardImages/Avatars/Kaelyn.png": 100,
@@ -102,10 +98,8 @@ const cardbackPrices = {
   "OtherImages/Cardbacks/DefaultCardback.png": 100
 };
 
-// Modal for confirmation
 let cosmeticConfirmModal = null;
 
-// Modal Creation Utility
 function showCosmeticConfirmModal({imgSrc, type, price, onConfirm}) {
   if (cosmeticConfirmModal) 
   cosmeticConfirmModal.remove();
@@ -132,16 +126,17 @@ function showCosmeticConfirmModal({imgSrc, type, price, onConfirm}) {
   document.body.appendChild(cosmeticConfirmModal);
 
   // Confirm
-  cosmeticConfirmModal.querySelector('#cosmetic-get-btn').onclick = async function() {
-  this.disabled = true;
-  const purchaseSucceeded = await onConfirm();
-  if (purchaseSucceeded === false) {
-    this.disabled = false; // re-enable so user can try again
-    return;
-  }
-  cosmeticConfirmModal.remove();
-  cosmeticConfirmModal = null;
-};
+  cosmeticConfirmModal.querySelector('#cosmetic-get-btn').onclick = function() {
+    this.disabled = true;
+    onConfirm(function(purchaseSucceeded) {
+      if (purchaseSucceeded === false) {
+        cosmeticConfirmModal.querySelector('#cosmetic-get-btn').disabled = false; // re-enable so user can try again
+        return;
+      }
+      cosmeticConfirmModal.remove();
+      cosmeticConfirmModal = null;
+    });
+  };
   // Cancel
   cosmeticConfirmModal.querySelector('#cosmetic-cancel-btn').onclick = function() {
     cosmeticConfirmModal.remove();
@@ -157,7 +152,6 @@ function showCosmeticConfirmModal({imgSrc, type, price, onConfirm}) {
 }
 // RNG
 function getRandomCards(n, setName) {
-  // Only cards whose set matches setName
   const available = dummyCards.filter(card => Array.isArray(card.set) ? card.set.includes(setName) : card.set === setName);
   const result = [];
   for (let i = 0; i < n; i++) {
@@ -168,17 +162,20 @@ function getRandomCards(n, setName) {
   return result;
 }
 // CURRENCY DEDUCTION
-async function purchaseCosmetic(cost, purchaseCallback) {
+function purchaseCosmetic(cost, purchaseCallback, done) {
   let balance = getCurrency();
   if (typeof balance !== "number" || balance < cost) {
     alert("Not enough coins!");
+    if (typeof done === "function") done(false);
     return false;
   }
   playerCurrency = balance - cost;
-  updateCurrencyDisplay();    
-  await saveProgress();
-  if (typeof purchaseCallback === "function") await purchaseCallback(); // <-- Await here for async updates
-  return true;
+  saveProgress();
+  if (typeof purchaseCallback === "function") purchaseCallback(function() {
+    saveProgress();
+    if (typeof done === "function") done(true);
+  });
+  else if (typeof done === "function") done(true);
 }
 // Helper: Track which cards are "new" when opening a pack
 function getNewlyUnlockedCards() {
@@ -191,11 +188,10 @@ function setNewlyUnlockedCards(arr) {
 let lastPackCards = [];
 let lastPackNewIds = [];
 // Open pack logic
-async function openPack(type) {
+function openPack(type) {
   const collection = getCollection(); 
   const cards = getRandomCards(10, type);
 
-  // Determine which cards are "new" in this pack (not owned before this pack)
   lastPackNewIds = [];
   cards.forEach(card => {
     if (!collection[card.id]) lastPackNewIds.push(card.id);
@@ -255,19 +251,26 @@ async function openPack(type) {
     }, 250 * i);
   });
 
-  // Update collection and "new" list
-  for (const card of cards) {
-    await addToCollection(card.id, 1);
+  let addCardsCount = 0;
+  function addNextCard() {
+    if (addCardsCount < cards.length) {
+      addToCollection(cards[addCardsCount].id, 1);
+      addCardsCount++;
+      setTimeout(addNextCard, 0);
+    } else {
+      // Update the global "new" list for gallery etc.
+      if (lastPackNewIds.length > 0) {
+        let newCards = getNewlyUnlockedCards();
+        lastPackNewIds.forEach(id => {
+          if (!newCards.includes(id)) newCards.push(id);
+        });
+        setNewlyUnlockedCards(newCards);
+      }
+      if (window.renderGallery) window.renderGallery();
+      if (typeof done === "function") done();
+    }
   }
-  // Update the global "new" list for gallery etc.
-  if (lastPackNewIds.length > 0) {
-    let newCards = getNewlyUnlockedCards();
-    lastPackNewIds.forEach(id => {
-      if (!newCards.includes(id)) newCards.push(id);
-    });
-    setNewlyUnlockedCards(newCards);
-  }
-  if (window.renderGallery) window.renderGallery();
+  addNextCard();
 }
 
 // Handle closing the modal
@@ -330,15 +333,16 @@ function renderShopPacks() {
         imgSrc: img.src,
         type: 'pack',
         price,
-        onConfirm: async () => {
-          const purchased = await purchaseCosmetic(price, async () => {
-            await openPack(packName);
-          });
-          if (purchased && typeof incrementQuestProgress === 'function') {
-            await incrementQuestProgress('purchase_pack_daily');
-            await incrementQuestProgress('purchase_pack_weekly');
-          }
-          return purchased;
+        onConfirm: function(cb) {
+          purchaseCosmetic(price, function(done) {
+            openPack(packName, function() {
+              if (typeof incrementQuestProgress === 'function') {
+                incrementQuestProgress('purchase_pack_daily');
+                incrementQuestProgress('purchase_pack_weekly');
+              }
+              if (typeof done === "function") done();
+            });
+          }, cb);
         }
       });
     };
@@ -379,7 +383,7 @@ function setUnlockedCardbacks(arr) {
   playerUnlockedCardbacks = arr;
   saveProgress();
 }
-async function renderShopCosmetics({
+function renderShopCosmetics({
   gridId,
   options,
   prices,
@@ -391,7 +395,7 @@ async function renderShopCosmetics({
 }) {
   const grid = document.getElementById(gridId);
   if (!grid) return;
-  let unlocked = await getUnlocked();      
+  let unlocked = getUnlocked();      
   grid.innerHTML = '';
 
   options.forEach(src => {
@@ -413,24 +417,24 @@ async function renderShopCosmetics({
       <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins">
       <span>${price}</span>
     `;
-    img.onclick = () => {
+    img.onclick = function() => {
       showCosmeticConfirmModal({
         imgSrc: src,
         type: wrapperClass.replace('shop-','').replace('-option',''), // e.g. 'avatar'
         price,
-onConfirm: async () => {
-  const purchased = await purchaseCosmetic(price, async () => {
-    if (!unlocked.includes(src)) {
-      unlocked.push(src);
-      await setUnlocked(unlocked);
-    }
-    await renderShopCosmetics({
-      gridId, options, prices, getUnlocked, setUnlocked, unlockMsg, wrapperClass, imgClass
-    });
-    showToast(unlockMsg);
-  });
-  return purchased;
-}
+        onConfirm: function(cb) {
+          purchaseCosmetic(price, function(done) {
+            if (!unlocked.includes(src)) {
+              unlocked.push(src);
+              setUnlocked(unlocked);
+            }
+            renderShopCosmetics({
+              gridId, options, prices, getUnlocked, setUnlocked, unlockMsg, wrapperClass, imgClass
+            });
+            showToast(unlockMsg);
+            if (typeof done === "function") done();
+          }, cb);
+        }
       });
     };
     wrapper.appendChild(img);
@@ -441,7 +445,7 @@ onConfirm: async () => {
 
 // --- USE THE GENERIC FUNCTION FOR EACH COSMETIC TYPE ---
 function renderShopAvatars() {
-  return renderShopCosmetics({
+  renderShopCosmetics({
     gridId: 'shop-avatars-grid',
     options: allAvatarOptions,
     prices: avatarPrices,
@@ -453,7 +457,7 @@ function renderShopAvatars() {
   });
 }
 function renderShopBanners() {
-  return renderShopCosmetics({
+  renderShopCosmetics({
     gridId: 'shop-banners-grid',
     options: allBannerOptions,
     prices: bannerPrices,
@@ -465,7 +469,7 @@ function renderShopBanners() {
   });
 }
 function renderShopCardbacks() {
-  return renderShopCosmetics({
+  renderShopCosmetics({
     gridId: 'shop-cardbacks-grid',
     options: allCardbackOptions,
     prices: cardbackPrices,
@@ -500,12 +504,10 @@ document.querySelectorAll('.shop-free-btn').forEach(btn => {
   };
 });
 
-async function renderShop() {
-      await Promise.all([
-        renderShopCardbacks(),
-        renderShopBanners(),
-        renderShopAvatars()
-      ]);
+function renderShop() {
+      renderShopCardbacks(),
+      renderShopBanners(),
+      renderShopAvatars()
       renderShopPacks();
 }
 window.renderShop = renderShop;
