@@ -518,4 +518,3 @@ window.addEventListener('DOMContentLoaded', function() {
   updateCurrencyDisplay();
   updateEssenceDisplay();
 });
-});
