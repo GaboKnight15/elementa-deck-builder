@@ -544,8 +544,7 @@ function updateDeckDisplay() {
   }
 }
   cardCount.textContent = total;
-  setCurrentDeck(deck);
-  await saveProgress();
+  await setCurrentDeck(deck);
 }
 function getCardCategory(card) {
   return card.category ? card.category.toLowerCase() : '';
@@ -624,14 +623,14 @@ function renderBuilder() {
 // ==========================
 
 // Deck slot events
-  deckSlotSelect.addEventListener('change', () => {
+  deckSlotSelect.addEventListener('change', async () => {
     currentDeckSlot = deckSlotSelect.value;
     await saveProgress();
     updateDeckDisplay();
     renderBuilder();
   });
 // ADD DECK SLOT 
-  addDeckSlotBtn.addEventListener('click', () => {
+  addDeckSlotBtn.addEventListener('click', async () => {
     let newName = prompt("Deck name?", `Deck ${deckSlots.length + 1}`);
     if (!newName) return;
     if (deckSlots.includes(newName)) {
@@ -648,7 +647,7 @@ function renderBuilder() {
   });
 
 // DELETE DECK SLOT
-  deleteDeckSlotBtn.addEventListener('click', () => {
+  deleteDeckSlotBtn.addEventListener('click', async () => {
     if (deckSlots.length === 1) {
       alert("You must have at least one deck.");
       return;
@@ -690,7 +689,7 @@ backBuilderBtn.onclick = showDeckSelection;
     for (const key in deck) {
       delete deck[key];
     }
-    setCurrentDeck(deck);
+    await setCurrentDeck(deck);
     updateDeckDisplay();
     renderBuilder();
   };
