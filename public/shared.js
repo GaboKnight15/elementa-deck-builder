@@ -214,6 +214,7 @@ if (typeof firebase !== "undefined" && firebase.auth) {
       await loadProgress();
       if (typeof window.renderGallery === "function") window.renderGallery();
       if (typeof window.renderShop === "function") window.renderShop();
+      await renderDailyQuests();
       await renderFriendNotifications();
     } else {
       // Reset variables/UI on logout
@@ -236,6 +237,7 @@ if (typeof firebase !== "undefined" && firebase.auth) {
       if (dot) dot.style.display = 'none';
       if (typeof window.renderGallery === "function") window.renderGallery();
       if (typeof window.renderShop === "function") window.renderShop();
+      if (typeof renderDailyQuests === "function") renderDailyQuests();
     }
   });
 }
@@ -694,8 +696,8 @@ async function setActiveDailyQuests(quests) {
 async function refreshDailyQuests() {
   const newQuests = getRandomQuests(DAILY_QUEST_POOL, 3);
   await setActiveDailyQuests(newQuests);
-  // Also reset progress!
   await resetQuestProgress('daily');
+  await renderDailyQuests();
 }
 // In addToCollection, after updating collection:
 updateColorAchievements();
@@ -988,7 +990,7 @@ function placeMenuWithinViewport(menu, triggerRect, preferred = "bottom") {
 }
 
 // INITIALIZACION 
-
+window.renderDailyQuests = renderDailyQuests;
 // On load, check for resets
 window.addEventListener('DOMContentLoaded', async () => {
   await resetQuestsIfNeeded();
