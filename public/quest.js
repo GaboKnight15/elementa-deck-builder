@@ -268,8 +268,10 @@ function updateColorAchievements() {
   });
 }
 function getNextResetTime() {
-  // Fallback: add 24h to now if timestamp is not set
-  if (!window.questResetTimestamp) return Date.now() + 24 * 60 * 60 * 1000;
+  if (!window.questResetTimestamp) {
+    // Set it to now so that the next reset is 24 hours ahead
+    window.questResetTimestamp = Date.now();
+  }
   return window.questResetTimestamp + 24 * 60 * 60 * 1000;
 }
 
@@ -332,11 +334,8 @@ async function setActiveQuests(quests) {
 }
 
 async function refreshQuests() {
-  // ... your logic to pick new quests ...
-  // Reset quest progress
   playerQuests = {};
-  // Optionally, update the timestamp here if you also want resets on manual refresh
-  // window.questResetTimestamp = Date.now();
+  window.questResetTimestamp = Date.now();
   await saveProgress();
   await renderQuests();
   startQuestTimer();
