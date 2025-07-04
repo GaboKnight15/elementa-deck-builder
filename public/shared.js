@@ -61,7 +61,6 @@ const ACHIEVEMENTS = [
   }
 ];
 
-let isLoggingOut = false;
 let playerLevel = 1;
 let playerExp = 0;
 let playerCurrency = 0;
