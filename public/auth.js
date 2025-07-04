@@ -111,7 +111,6 @@ auth.onAuthStateChanged(async user => {
         playerAchievements = data.achievements || {};
         playerLevel = data.level || 1;
         playerExp = data.exp || 0;
-        // Always include the default avatar/banner if missing
         playerUnlockedAvatars = (data.unlockedAvatars && data.unlockedAvatars.length > 0)
           ? data.unlockedAvatars
           : [defaultIcon];
