@@ -23,7 +23,7 @@ firebase.auth().onAuthStateChanged(function(user) {
       { merge: true }
     );
   }
-});
+}); 
 /**
  * Save all player progress (currency, collection, decks, cosmetics, etc)
  * @param {Object} progressObj - An object with all fields to save (example: {currency: 100, collection: {...}, ...})
