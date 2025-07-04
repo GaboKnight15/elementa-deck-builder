@@ -1,4 +1,4 @@
-    // New login/signup menu elements  
+    // New login/signup menu elements
   const loginMenu          = document.getElementById('login-menu'); 
   const loginForm          = document.getElementById('login-form');
   const loginBtn           = document.getElementById('login-btn');
