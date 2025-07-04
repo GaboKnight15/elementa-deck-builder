@@ -28,7 +28,10 @@ const auth = firebase.auth();
 
 function saveProgress() {
   const user = firebase.auth().currentUser;
-  if (!user) return;
+  if (!user) {
+    console.warn("[saveProgress] No authenticated user. Progress not saved.");
+    return;
+  }
   const data = {
     collection: window.playerCollection || {},
     deckSlots: window.deckSlots || ["Deck 1"],
@@ -76,6 +79,7 @@ function saveProgress() {
 function loadProgress(cb) {
   const user = firebase.auth().currentUser;
   if (!user) {
+    console.warn("[loadProgress] No authenticated user. Progress not loaded.");
     if (typeof cb === "function") cb();
     return;
   }
