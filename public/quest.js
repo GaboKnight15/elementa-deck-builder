@@ -11,56 +11,71 @@ function getPlayerLevel() {
 function getPlayerExp() {
   return playerExp;
 }
-async function setQuestData(data) {
+function setQuestData(data) {
   playerQuests = data;
-  if (!isLoggingOut) await saveProgress();
+  if (!isLoggingOut) saveProgress();
 }
 function getQuestData() {
   return playerQuests;
 }
-async function setAchievementData(data) { 
+function setAchievementData(data) { 
   playerAchievements = data;
-  if (!isLoggingOut) await saveProgress(); 
+  if (!isLoggingOut) saveProgress(); 
 }
 function getAchievementData() {
   return playerAchievements;
 }
-async function getQuestResets() {
+function getQuestResets(cb) {
   const user = firebase.auth().currentUser;
-  if (!user) return {};
-  const doc = await firebase.firestore().collection('users').doc(user.uid).get();
-  return (doc.exists && doc.data().questResets) ? doc.data().questResets : {};
-}
-async function setQuestResets(obj) {
-  const user = firebase.auth().currentUser;
-  if (!user) return;
-  await firebase.firestore().collection('users').doc(user.uid).set(
-    { questResets: obj }, { merge: true }
-  );
-}
-async function resetQuestsIfNeeded() {
-  const now = new Date();
-  const resets = await getQuestResets();
-  let changed = false;
-  //  reset at 00:00 UTC
-  const last = resets.lastReset ? new Date(resets.lastReset) : null;
-  const nowUtc = new Date(now.toISOString().split('T')[0] + "T00:00:00.000Z");
-  if (!last || nowUtc > last) {
-    await resetQuestProgress('');
-    resets.lastReset = nowUtc.toISOString();
-    changed = true;
+  if (!user) {
+    if (typeof cb === "function") cb({});
+    return;
   }
-  if (changed) await setQuestResets(resets);
+  firebase.firestore().collection('users').doc(user.uid).get()
+    .then(function(doc) {
+      const resets = (doc.exists && doc.data().questResets) ? doc.data().questResets : {};
+      if (typeof cb === "function") cb(resets);
+    })
+    .catch(function() {
+      if (typeof cb === "function") cb({});
+    });
+}
+function setQuestResets(obj, cb) {
+  const user = firebase.auth().currentUser;
+  if (!user) {
+    if (typeof cb === "function") cb();
+    return;
+  }
+  firebase.firestore().collection('users').doc(user.uid).set(
+    { questResets: obj }, { merge: true }
+  ).then(function() {
+    if (typeof cb === "function") cb();
+  });
+}
+function resetQuestsIfNeeded() {
+  const now = new Date();
+  getQuestResets(function(resets) {
+    let changed = false;
+    //  reset at 00:00 UTC
+    const last = resets.lastReset ? new Date(resets.lastReset) : null;
+    const nowUtc = new Date(now.toISOString().split('T')[0] + "T00:00:00.000Z");
+    if (!last || nowUtc > last) {
+      resetQuestProgress('');
+      resets.lastReset = nowUtc.toISOString();
+      changed = true;
+    }
+    if (changed) setQuestResets(resets);
+  });
 }
 // 3. Reset Quest progress for a type
-async function resetQuestProgress(type) {
+function resetQuestProgress(type) {
   let quests = getQuestData();
-  // Use only active Quests for the given type
-  const activeQuests = await getActiveQuests();
-  for (const quest of activeQuests) {
-    quests[quest.id] = { progress: 0, completed: false, claimed: false };
-  }
-  setQuestData(quests);
+  getActiveQuests(function(activeQuests) {
+    for (const quest of activeQuests) {
+      quests[quest.id] = { progress: 0, completed: false, claimed: false };
+    }
+    setQuestData(quests);
+  });
 }
 
 // 4. Get progress for a Quest
@@ -74,80 +89,87 @@ function getQuestProgress(quest) {
 }
 
 // 5. Increment Quest progress by 1 (call from shop.js or elsewhere)
-async function incrementQuestProgress(questId) {
+function incrementQuestProgress(questId) {
   let data = getQuestData();
-  const questsList = await getActiveQuests();
-  const quest = questsList.find(m => m.id === questId);
-  if (!quest) return;
-  if (!data[questId]) data[questId] = { progress: 0, completed: false, claimed: false };
-  if (data[questId].completed) return;
+  getActiveQuests(function(questsList) {
+    const quest = questsList.find(m => m.id === questId);
+    if (!quest) return;
+    if (!data[questId]) data[questId] = { progress: 0, completed: false, claimed: false };
+    if (data[questId].completed) return;
 
-  data[questId].progress = Math.min(quest.goal, (data[questId].progress || 0) + 1);
-  if (data[questId].progress >= quest.goal) data[questId].completed = true;
-  await setQuestData(data);
-  await renderQuests();
-  await updateQuestsNotificationDot();
+    data[questId].progress = Math.min(quest.goal, (data[questId].progress || 0) + 1);
+    if (data[questId].progress >= quest.goal) data[questId].completed = true;
+    setQuestData(data);
+    renderQuests();
+    updateQuestsNotificationDot();
+  });
 }
 
-async function claimQuestReward(quest) {
+function claimQuestReward(quest, cb) {
   let data = getQuestData();
-  if (!data[quest.id] || !data[quest.id].completed || data[quest.id].claimed) return false;
+  if (!data[quest.id] || !data[quest.id].completed || data[quest.id].claimed) {
+    if (typeof cb === "function") cb(false);
+    return false;
+  }
   setCurrency(getCurrency() + quest.reward.amount);
   data[quest.id].claimed = true;
   setQuestData(data);
   updateQuestsNotificationDot();
-  await grantExp(10);
+  grantExp(10);
   // --- Set/reset the timer for next quest refresh ---
   window.questResetTimestamp = Date.now();
-  await saveProgress(); // Make sure questResetTimestamp is included in your saveProgress!
-  startQuestTimer(); // Restart timer display
+  saveProgress();
+  startQuestTimer();
+  if (typeof cb === "function") cb(true);
   return true;
 }
 
 // 7. Renderers
-async function renderQuests() {
+function renderQuests() {
   const list = document.getElementById('quests-list');
   if (!list) return;
   list.innerHTML = '';
-  const quests = await getActiveQuests();
-  for (const quest of quests) {
-    const progress = getQuestProgress(quest);
-    if (progress.claimed) continue;
-    const percent = Math.min(100, Math.round((progress.progress / quest.goal) * 100));
-    const entry = document.createElement('div');
-    entry.className = 'quest-entry';
+  getActiveQuests(function(quests) {
+    for (const quest of quests) {
+      const progress = getQuestProgress(quest);
+      if (progress.claimed) continue;
+      const percent = Math.min(100, Math.round((progress.progress / quest.goal) * 100));
+      const entry = document.createElement('div');
+      entry.className = 'quest-entry';
 
-    entry.innerHTML = `
-      <div class="quest-desc">${quest.description}</div>
-      <div class="quest-progress-bar-wrap">
-        <div class="quest-progress-bar" style="width:${percent}%;"></div>
-      </div>
-      <div style="font-size:0.96em;color:#fff;text-align:right;">${progress.progress} / ${quest.goal}</div>
-      <div class="quest-reward">
-        <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins" style="width:18px;">
-        +${quest.reward.amount}
-      </div>
-    `;
-    if (progress.completed && !progress.claimed) {
-      const btn = document.createElement('button');
-      btn.className = 'btn-primary quest-claim-btn';
-      btn.textContent = 'Claim';
-      btn.onclick = async () => {
-        await claimQuestReward(quest);
-        entry.classList.add('achievement-fade-out');
-        setTimeout(() => {
-          entry.remove();
-        }, 800);
-      };
-      entry.appendChild(btn);
-    } else if (progress.claimed) {
-      const badge = document.createElement('div');
-      badge.className = 'quest-claimed-badge';
-      badge.textContent = 'Claimed!';
-      entry.appendChild(badge);
+      entry.innerHTML = `
+        <div class="quest-desc">${quest.description}</div>
+        <div class="quest-progress-bar-wrap">
+          <div class="quest-progress-bar" style="width:${percent}%;"></div>
+        </div>
+        <div style="font-size:0.96em;color:#fff;text-align:right;">${progress.progress} / ${quest.goal}</div>
+        <div class="quest-reward">
+          <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins" style="width:18px;">
+          +${quest.reward.amount}
+        </div>
+      `;
+      if (progress.completed && !progress.claimed) {
+        const btn = document.createElement('button');
+        btn.className = 'btn-primary quest-claim-btn';
+        btn.textContent = 'Claim';
+        btn.onclick = function() {
+          claimQuestReward(quest, function() {
+            entry.classList.add('achievement-fade-out');
+            setTimeout(() => {
+              entry.remove();
+            }, 800);
+          });
+        };
+        entry.appendChild(btn);
+      } else if (progress.claimed) {
+        const badge = document.createElement('div');
+        badge.className = 'quest-claimed-badge';
+        badge.textContent = 'Claimed!';
+        entry.appendChild(badge);
+      }
+      list.appendChild(entry);
     }
-    list.appendChild(entry);
-  }
+  });
 }
 
 function getAchievementProgress(ach) {
@@ -185,14 +207,18 @@ function setAchievementProgress(achievementId, value) {
 }
 
 // 6. Claim achievement reward
-async function claimAchievementReward(ach) {
+function claimAchievementReward(ach, cb) {
   let data = getAchievementData();
-  if (!data[ach.id] || !data[ach.id].completed || data[ach.id].claimed) return false;
+  if (!data[ach.id] || !data[ach.id].completed || data[ach.id].claimed) {
+    if (typeof cb === "function") cb(false);
+    return false;
+  }
   setCurrency(getCurrency() + ach.reward.amount);
   data[ach.id].claimed = true;
   setAchievementData(data);
   updateAchievementsNotificationDot();
-  await grantExp(10);
+  grantExp(10);
+  if (typeof cb === "function") cb(true);
   return true;
 }
 
@@ -223,12 +249,13 @@ function renderAchievements() {
       const btn = document.createElement('button');
       btn.className = 'btn-primary quest-claim-btn';
       btn.textContent = 'Claim';
-      btn.onclick = async () => {
-        await claimAchievementReward(ach);
-        entry.classList.add('achievement-fade-out');
-        setTimeout(() => {
-          entry.remove();
-        }, 800);
+      btn.onclick = function() {
+        claimAchievementReward(ach, function() {
+          entry.classList.add('achievement-fade-out');
+          setTimeout(() => {
+            entry.remove();
+          }, 800);
+        });
       };
       entry.appendChild(btn);
     } else if (progress.claimed) {
@@ -318,38 +345,53 @@ function getRandomQuests(pool, count) {
 }
 
 // --- FIREBASE-BASED Quest STATE ---
-async function getActiveQuests() {
+function getActiveQuests(cb) {
   const user = firebase.auth().currentUser;
-  if (!user) return [];
-  const doc = await firebase.firestore().collection('users').doc(user.uid).get();
-  return (doc.exists && doc.data().activeQuests) ? doc.data().activeQuests : [];
+  if (!user) {
+    if (typeof cb === "function") cb([]);
+    return;
+  }
+  firebase.firestore().collection('users').doc(user.uid).get()
+    .then(function(doc) {
+      const quests = (doc.exists && doc.data().activeQuests) ? doc.data().activeQuests : [];
+      if (typeof cb === "function") cb(quests);
+    })
+    .catch(function() {
+      if (typeof cb === "function") cb([]);
+    });
 }
 
-async function setActiveQuests(quests) {
+function setActiveQuests(quests, cb) {
   const user = firebase.auth().currentUser;
-  if (!user) return;
-  await firebase.firestore().collection('users').doc(user.uid).set(
+  if (!user) {
+    if (typeof cb === "function") cb();
+    return;
+  }
+  firebase.firestore().collection('users').doc(user.uid).set(
     { activeQuests: quests }, { merge: true }
-  );
+  ).then(function() {
+    if (typeof cb === "function") cb();
+  });
 }
 
-async function refreshQuests() {
+function refreshQuests() {
   playerQuests = {};
   window.questResetTimestamp = Date.now();
-  await saveProgress();
-  await renderQuests();
+  saveProgress();
+  renderQuests();
   startQuestTimer();
 }
 
-async function updateQuestsNotificationDot() {
-  const questsList = await getActiveQuests();
-  const questData = getQuestData();
-  const hasClaimable = questsList.some(m => {
-    const p = questData[m.id];
-    return p && p.completed && !p.claimed;
+function updateQuestsNotificationDot() {
+  getActiveQuests(function(questsList) {
+    const questData = getQuestData();
+    const hasClaimable = questsList.some(m => {
+      const p = questData[m.id];
+      return p && p.completed && !p.claimed;
+    });
+    const dot = document.getElementById('quests-notification-dot');
+    if (dot) dot.style.display = hasClaimable ? 'block' : 'none';
   });
-  const dot = document.getElementById('quests-notification-dot');
-  if (dot) dot.style.display = hasClaimable ? 'block' : 'none';
 }
 
 function updateAchievementsNotificationDot() {
@@ -367,7 +409,7 @@ function expToNextLevel(level) {
   return 100 + (level - 1) * 100; // Example: 100, 200, 300, ...
 }
 
-async function grantExp(amount) {
+function grantExp(amount) {
   if (!amount) return;
   playerExp += amount;
   let leveledUp = false;
@@ -377,7 +419,7 @@ async function grantExp(amount) {
     leveledUp = true;
     showToast(`Level Up! You reached Lv ${playerLevel}!`);
   }
-  await saveProgress();
+  saveProgress();
   renderPlayerLevel();
   return leveledUp;
 }
