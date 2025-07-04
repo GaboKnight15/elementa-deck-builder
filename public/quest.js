@@ -76,11 +76,11 @@ function getQuestProgress(quest) {
 // 5. Increment Quest progress by 1 (call from shop.js or elsewhere)
 async function incrementQuestProgress(questId) {
   let data = getQuestData();
-  const  = await getActiveQuests();
-  const quest = .find(m => m.id === questId);
+  const questsList = await getActiveQuests();
+  const quest = questsList.find(m => m.id === questId);
   if (!quest) return;
   if (!data[questId]) data[questId] = { progress: 0, completed: false, claimed: false };
-  if (data[questId].completed) return; // Already complete, no more progress
+  if (data[questId].completed) return;
 
   data[questId].progress = Math.min(quest.goal, (data[questId].progress || 0) + 1);
   if (data[questId].progress >= quest.goal) data[questId].completed = true;
@@ -342,9 +342,9 @@ async function refreshQuests() {
 }
 
 async function updateQuestsNotificationDot() {
-  const  = await getActiveQuests();
+  const questsList = await getActiveQuests();
   const questData = getQuestData();
-  const hasClaimable = .some(m => {
+  const hasClaimable = questsList.some(m => {
     const p = questData[m.id];
     return p && p.completed && !p.claimed;
   });
