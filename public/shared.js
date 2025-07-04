@@ -25,7 +25,7 @@ const dummyCards = [
 
 const COLOR_QUESTS = ['green', 'red', 'blue', 'yellow', 'purple', 'gray', 'black', 'white'];
 // Quest LIST
-const DAILY_QUEST_POOL = [
+const QUEST_POOL = [
   { id: 'purchase_pack_daily', type: 'daily', description: 'Purchase a Booster Pack', goal: 1, reward: { type: 'currency', amount: 100 } },
   { id: 'collect_green_card_daily', type: 'daily', description: 'Collect a Green Card', goal: 1, reward: { type: 'currency', amount: 80 } },
   { id: 'collect_red_card_daily', type: 'daily', description: 'Collect a Red Card', goal: 1, reward: { type: 'currency', amount: 80 } },
@@ -218,8 +218,8 @@ async function addToCollection(cardId, amount = 1) {
   const newlyAddedCard = dummyCards.find(c => c.id === cardId);
   if (newlyAddedCard) {
     const cardColors = Array.isArray(newlyAddedCard.color) ? newlyAddedCard.color : [newlyAddedCard.color];
-    const dailyQuests = await getActiveDailyQuests();
-    for (const quest of dailyQuests) {
+    const quests = await getActiveQuests();
+    for (const quest of quests) {
       for (const color of COLOR_QUESTS) {
         if (
           quest.id && quest.id.includes(`${color}_card`) &&
@@ -233,8 +233,8 @@ async function addToCollection(cardId, amount = 1) {
 
   // --- Unique Card Quest ---
   if (!wasOwned && collection[cardId] > 0) {
-    const dailyQuests = await getActiveDailyQuests();
-    for (const quest of dailyQuests) {
+    const quests = await getActiveQuests();
+    for (const quest of quests) {
       if (quest.id && quest.id.includes('unique_card')) {
         await incrementQuestProgress(quest.id);
       }
