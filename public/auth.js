@@ -119,7 +119,6 @@ auth.onAuthStateChanged(function(user) {
       appMain.classList.add('active');
       mainNav.classList.add('active');
       loadProfile(user);
-      if (typeof loadPlayerQuestsAchievements === 'function') loadPlayerQuestsAchievements();
       window.appLoaded = true;  
     });
   } else {
