@@ -1,6 +1,8 @@
 let playerLevel = 1;
 let playerExp = 0;
 let playerQuests = {};
+let activeQuests = [];
+let questResetTimestamp = 0;
 let playerAchievements = {};
 
 async function setAchievementData(data) { 
