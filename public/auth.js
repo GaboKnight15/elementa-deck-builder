@@ -98,29 +98,8 @@ const defaultBanner = "CardImages/Banners/DefaultBanner.png";
 // --- Auth state changes ---
 auth.onAuthStateChanged(async user => {
   if (user) {
-    // Load all progress BEFORE updating UI
-    await new Promise(resolve => {
-      loadProgress(data => {
-        playerCollection = data.collection || {};
-        deckSlots = data.deckSlots || ["Deck 1"];
-        decks = data.decks || { "Deck 1": {} };
-        currentDeckSlot = data.currentDeckSlot || "Deck 1";
-        playerCurrency = data.currency || 0;
-        playerEssence = data.essence || 0;
-        playerQuests = data.quests || {};
-        playerAchievements = data.achievements || {};
-        playerLevel = data.level || 1;
-        playerExp = data.exp || 0;
-        playerUnlockedAvatars = (data.unlockedAvatars && data.unlockedAvatars.length > 0)
-          ? data.unlockedAvatars
-          : [defaultIcon];
-        playerUnlockedBanners = (data.unlockedBanners && data.unlockedBanners.length > 0)
-          ? data.unlockedBanners
-          : [defaultBanner];
-        playerUnlockedCardbacks = data.unlockedCardbacks || [];
-        resolve();
-      });
-    });
+    // Load all player progress and update variables
+    await loadProgress();
 
     // Now update UI
     renderPlayerLevel();
