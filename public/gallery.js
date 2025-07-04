@@ -85,7 +85,7 @@ function createCardGallery(card) {
       playerCollection = collection;
       playerEssence -= cost;
       updateEssenceDisplay();  
-      saveProgress();
+      guardedSaveProgress();
 
       // Mark as new if previously not owned
       if (!wasOwned && collection[card.id] > 0) {
@@ -117,7 +117,7 @@ function createCardGallery(card) {
       playerCollection = collection;
       playerEssence += refund;
       updateEssenceDisplay();
-      saveProgress();
+      guardedSaveProgress();
       renderGallery();
     };
     actionRow.appendChild(voidBtnImg);
