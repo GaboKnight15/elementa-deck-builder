@@ -74,8 +74,9 @@ function loadSingleField(field, callback) {
 }
 
 async function saveAllProgress() {
-  if (!window.appLoaded) return;
-  await saveProgress({
+  const user = firebase.auth().currentUser;
+  if (!user) return;
+  const data = {
     collection: playerCollection,
     deckSlots: deckSlots,
     decks: decks,
@@ -89,7 +90,15 @@ async function saveAllProgress() {
     unlockedAvatars: playerUnlockedAvatars,
     unlockedBanners: playerUnlockedBanners,
     unlockedCardbacks: playerUnlockedCardbacks
-  });
+  };
+  await firebase.firestore().collection('users').doc(user.uid).set(data, { merge: true });
+}
+async function loadAllProgress() {
+  const user = firebase.auth().currentUser;
+  if (!user) return {};
+  const doc = await firebase.firestore().collection('users').doc(user.uid).get();
+  if (!doc.exists) return {};
+  return doc.data();
 }
 /**
  * Example usage for cosmetics, currency, decks, etc.
@@ -105,3 +114,4 @@ window.loadProgress = loadProgress;
 window.saveSingleField = saveSingleField;
 window.loadSingleField = loadSingleField;
 window.saveAllProgress = saveAllProgress;
+window.loadAllProgress = loadAllProgress;
