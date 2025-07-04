@@ -9,7 +9,6 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 window.auth = firebase.auth();
 
-// --- NEW: Set username/displayName in Firestore after login/signup ---
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     let username = user.displayName 
@@ -27,7 +26,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 
 const auth = firebase.auth();
 
-async function saveProgress() {
+function saveProgress() {
   const user = firebase.auth().currentUser;
   if (!user) return;
   const data = {
@@ -45,49 +44,63 @@ async function saveProgress() {
     unlockedBanners: window.playerUnlockedBanners || [],
     unlockedCardbacks: window.playerUnlockedCardbacks || []
   };
-  await firebase.firestore().collection('users').doc(user.uid).set(data, { merge: true });
-
-  // Update UI everywhere after save
-  if (typeof updateCurrencyDisplay === "function") updateCurrencyDisplay();
-  if (typeof updateEssenceDisplay === "function") updateEssenceDisplay();
-  if (typeof updateCollectionDependentUI === "function") updateCollectionDependentUI();
-  if (typeof renderGallery === "function") renderGallery();
-  if (typeof renderDeckSelection === "function") renderDeckSelection();
-  if (typeof renderDeckBuilder === "function") renderDeckBuilder();
-  if (typeof renderDeckList === "function") renderDeckList();
-  if (typeof renderCurrentDeck === "function") renderCurrentDeck();
-  if (typeof renderPlayerLevel === "function") renderPlayerLevel();
-  if (typeof renderPlayerProfile === "function") renderPlayerProfile();
-  if (typeof renderQuests === "function") renderQuests();
-  if (typeof renderAchievements === "function") renderAchievements();
-  if (typeof renderFriendNotifications === "function") renderFriendNotifications();
-  if (typeof renderShop === "function") renderShop();
-  if (typeof renderShopAvatars === "function") renderShopAvatars();
-  if (typeof renderShopBanners === "function") renderShopBanners();
-  if (typeof renderShopCardbacks === "function") renderShopCardbacks();
-  if (typeof renderProfileAvatars === "function") renderProfileAvatars();
-  if (typeof renderProfileBanners === "function") renderProfileBanners();
-  if (typeof renderProfileCardbacks === "function") renderProfileCardbacks();
+  firebase.firestore().collection('users').doc(user.uid).set(data, { merge: true })
+    .then(function() {
+      // Update UI everywhere after save
+      if (typeof updateCurrencyDisplay === "function") updateCurrencyDisplay();
+      if (typeof updateEssenceDisplay === "function") updateEssenceDisplay();
+      if (typeof updateCollectionDependentUI === "function") updateCollectionDependentUI();
+      if (typeof renderGallery === "function") renderGallery();
+      if (typeof renderDeckSelection === "function") renderDeckSelection();
+      if (typeof renderDeckBuilder === "function") renderDeckBuilder();
+      if (typeof renderDeckList === "function") renderDeckList();
+      if (typeof renderCurrentDeck === "function") renderCurrentDeck();
+      if (typeof renderPlayerLevel === "function") renderPlayerLevel();
+      if (typeof renderPlayerProfile === "function") renderPlayerProfile();
+      if (typeof renderQuests === "function") renderQuests();
+      if (typeof renderAchievements === "function") renderAchievements();
+      if (typeof renderFriendNotifications === "function") renderFriendNotifications();
+      if (typeof renderShop === "function") renderShop();
+      if (typeof renderShopAvatars === "function") renderShopAvatars();
+      if (typeof renderShopBanners === "function") renderShopBanners();
+      if (typeof renderShopCardbacks === "function") renderShopCardbacks();
+      if (typeof renderProfileAvatars === "function") renderProfileAvatars();
+      if (typeof renderProfileBanners === "function") renderProfileBanners();
+      if (typeof renderProfileCardbacks === "function") renderProfileCardbacks();
+    })
+    .catch(function(error) {
+      console.error("Error saving progress:", error);
+    });
 }
 
-async function loadProgress() {
+function loadProgress(cb) {
   const user = firebase.auth().currentUser;
-  if (!user) return;
-  const doc = await firebase.firestore().collection('users').doc(user.uid).get();
-  const data = doc.exists ? doc.data() : {};
-  window.playerCollection = data.collection || {};
-  window.deckSlots = data.deckSlots || ["Deck 1"];
-  window.decks = data.decks || { "Deck 1": {} };
-  window.currentDeckSlot = data.currentDeckSlot || "Deck 1";
-  window.playerCurrency = data.currency || 0;
-  window.playerEssence = data.essence || 0;
-  window.playerQuests = data.quests || {};
-  window.playerAchievements = data.achievements || {};
-  window.playerLevel = data.level || 1;
-  window.playerExp = data.exp || 0;
-  window.playerUnlockedAvatars = data.unlockedAvatars || [];
-  window.playerUnlockedBanners = data.unlockedBanners || [];
-  window.playerUnlockedCardbacks = data.unlockedCardbacks || [];
+  if (!user) {
+    if (typeof cb === "function") cb();
+    return;
+  }
+  firebase.firestore().collection('users').doc(user.uid).get()
+    .then(function(doc) {
+      const data = doc.exists ? doc.data() : {};
+      window.playerCollection = data.collection || {};
+      window.deckSlots = data.deckSlots || ["Deck 1"];
+      window.decks = data.decks || { "Deck 1": {} };
+      window.currentDeckSlot = data.currentDeckSlot || "Deck 1";
+      window.playerCurrency = data.currency || 0;
+      window.playerEssence = data.essence || 0;
+      window.playerQuests = data.quests || {};
+      window.playerAchievements = data.achievements || {};
+      window.playerLevel = data.level || 1;
+      window.playerExp = data.exp || 0;
+      window.playerUnlockedAvatars = data.unlockedAvatars || [];
+      window.playerUnlockedBanners = data.unlockedBanners || [];
+      window.playerUnlockedCardbacks = data.unlockedCardbacks || [];
+      if (typeof cb === "function") cb();
+    })
+    .catch(function(error) {
+      console.error("Error loading progress:", error);
+      if (typeof cb === "function") cb(error);
+    });
 }
 
 window.saveProgress = saveProgress;
