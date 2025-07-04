@@ -71,6 +71,30 @@
   ];
 const defaultBanner = "CardImages/Banners/DefaultBanner.png";
 
+  // --- Load Profile From Firestore ---
+  function loadProfile(user) {
+    if (!user) return;
+    firebase.firestore().collection('users').doc(user.uid).get()
+      .then(doc => {
+        let icon = defaultIcon;
+        let name = user.displayName || user.email;
+        let banner = defaultBanner;
+        if (doc.exists) {
+          const data = doc.data();
+          if (data && data.profilePic) icon = data.profilePic;
+          if (data && data.username) name = data.username;
+          if (data && data.profileBanner) banner = data.profileBanner;
+        }
+        profilePic.src = icon;
+        profileUsernameDisplay.textContent = name;
+        profileBanner.src = banner;
+      })
+      .catch(err => {
+        profilePic.src = defaultIcon;
+        profileBanner.src = defaultBanner;
+        profileUsernameDisplay.textContent = user.displayName || user.email || "";
+      });
+  }
 // --- Auth state changes ---
 auth.onAuthStateChanged(async user => {
   if (user) {
@@ -338,29 +362,4 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   profileLogoutBtn.onclick = () => auth.signOut();
-    
-  // --- Load Profile From Firestore ---
-  function loadProfile(user) {
-    if (!user) return;
-    firebase.firestore().collection('users').doc(user.uid).get()
-      .then(doc => {
-        let icon = defaultIcon;
-        let name = user.displayName || user.email;
-        let banner = defaultBanner;
-        if (doc.exists) {
-          const data = doc.data();
-          if (data && data.profilePic) icon = data.profilePic;
-          if (data && data.username) name = data.username;
-          if (data && data.profileBanner) banner = data.profileBanner;
-        }
-        profilePic.src = icon;
-        profileUsernameDisplay.textContent = name;
-        profileBanner.src = banner;
-      })
-      .catch(err => {
-        profilePic.src = defaultIcon;
-        profileBanner.src = defaultBanner;
-        profileUsernameDisplay.textContent = user.displayName || user.email || "";
-      });
-  }
 });
