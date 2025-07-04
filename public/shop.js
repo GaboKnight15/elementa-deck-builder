@@ -107,7 +107,9 @@ let cosmeticConfirmModal = null;
 
 // Modal Creation Utility
 function showCosmeticConfirmModal({imgSrc, type, price, onConfirm}) {
-  if (cosmeticConfirmModal) cosmeticConfirmModal.remove();
+  if (cosmeticConfirmModal) 
+  cosmeticConfirmModal.remove();
+  cosmeticConfirmModal = null;
   cosmeticConfirmModal = document.createElement('div');
   cosmeticConfirmModal.className = 'modal';
   cosmeticConfirmModal.style.display = 'flex';
