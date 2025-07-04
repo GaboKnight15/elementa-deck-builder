@@ -959,13 +959,15 @@ function placeMenuWithinViewport(menu, triggerRect, preferred = "bottom") {
 // INITIALIZACION 
 window.renderDailyQuests = renderDailyQuests;
 // On load, check for resets
-window.addEventListener('DOMContentLoaded', async () => {
-  await resetQuestsIfNeeded();
-  if ((await getActiveDailyQuests()).length === 0) await refreshDailyQuests();
-  await renderDailyQuests();
-  updateCurrencyDisplay();
-  updateEssenceDisplay();
-  startDailyQuestTimer();
-  updateQuestsNotificationDot();
-  updateAchievementsNotificationDot();
+window.addEventListener('DOMContentLoaded', function() {
+  (async () => {
+    await resetQuestsIfNeeded();
+    if ((await getActiveDailyQuests()).length === 0) await refreshDailyQuests();
+    await renderDailyQuests();
+    updateCurrencyDisplay();
+    updateEssenceDisplay();
+    startDailyQuestTimer();
+    updateQuestsNotificationDot();
+    updateAchievementsNotificationDot();
+  })();
 });
