@@ -78,72 +78,6 @@ let deckSlots = ["Deck 1"];
 let decks = { "Deck 1": {} };
 let currentDeckSlot = "Deck 1";
 
-function loadAllPlayerProgress(callback) {
-  loadProgress(data => {
-    playerLevel = data.level || 1;
-    playerExp = data.exp || 0;
-    playerCurrency = data.currency || 0;
-    playerEssence = data.essence || 0;
-    playerCollection = data.collection || {};
-    playerQuests = data.quests || {};
-    playerAchievements = data.achievements || {};
-    playerUnlockedAvatars = data.unlockedAvatars || [];
-    playerUnlockedBanners = data.unlockedBanners || [];
-    playerUnlockedCardbacks = data.unlockedCardbacks || [];
-    deckSlots = data.deckSlots || ["Deck 1"];
-    decks = data.decks || { "Deck 1": {} };
-    currentDeckSlot = data.currentDeckSlot || "Deck 1";
-    if (typeof callback === "function") callback();
-    updateCurrencyDisplay();
-    updateCollectionDependentUI();
-    renderPlayerLevel();
-    // ...other UI updates as needed
-  });
-}
-async function saveAllProgressAndUI() {
-  await saveAllProgress();
-
-  // Currency and essence displays
-  if (typeof updateCurrencyDisplay === "function") updateCurrencyDisplay();
-  if (typeof updateEssenceDisplay === "function") updateEssenceDisplay();
-
-  // Collection and deck UIs
-  if (typeof updateCollectionDependentUI === "function") updateCollectionDependentUI();
-  if (typeof renderGallery === "function") renderGallery();
-  if (typeof renderDeckSelection === "function") renderDeckSelection();
-  if (typeof renderDeckBuilder === "function") renderDeckBuilder();
-  if (typeof renderDeckList === "function") renderDeckList();
-  if (typeof renderCurrentDeck === "function") renderCurrentDeck();
-
-  // Player progress and levels
-  if (typeof renderPlayerLevel === "function") renderPlayerLevel();
-  if (typeof renderPlayerProfile === "function") renderPlayerProfile();
-
-  // Quests, achievements, notifications
-  if (typeof renderQuests === "function") renderQuests();
-  if (typeof renderAchievements === "function") renderAchievements();
-  if (typeof renderFriendNotifications === "function") renderFriendNotifications();
-
-  // Shop and cosmetics
-  if (typeof renderShop === "function") renderShop();
-  if (typeof renderShopAvatars === "function") renderShopAvatars();
-  if (typeof renderShopBanners === "function") renderShopBanners();
-  if (typeof renderShopCardbacks === "function") renderShopCardbacks();
-
-  // Other UI elements (settings, banners, etc.)
-  if (typeof renderProfileAvatars === "function") renderProfileAvatars();
-  if (typeof renderProfileBanners === "function") renderProfileBanners();
-  if (typeof renderProfileCardbacks === "function") renderProfileCardbacks();
-
-  // Any other custom or modal updates
-  if (typeof refreshCosmeticSelectors === "function") refreshCosmeticSelectors();
-  if (typeof refreshNotifications === "function") refreshNotifications();
-  if (typeof refreshUI === "function") refreshUI();
-}
-
-// --- END UNIFIED FIREBASE LOAD/SAVE ---
-
-
 // --- CURRENCY DISPLAY ---
 function updateCurrencyDisplay() {
   const el = document.getElementById('currency-amount');
@@ -261,7 +195,7 @@ function saveQuests() {
 // FIREBASE GALLERY
 async function setCollection(collection) {
   playerCollection = collection;
-  saveAllProgressAndUI();
+  await saveProgress();
 }
 function getCollection() {
   return playerCollection || {};
@@ -315,7 +249,7 @@ async function addToCollection(cardId, amount = 1) {
   const collection = getCollection();
   const wasOwned = collection[cardId] > 0;
   collection[cardId] = (collection[cardId] || 0) + amount;
-  saveAllProgressAndUI();
+  await saveProgress();
 
   // If just unlocked, mark as new
   if (!wasOwned && collection[cardId] > 0) {
@@ -366,7 +300,7 @@ function getCurrencyHtml(amount) {
 }
 async function addCoins(amount) {
   playerCurrency += amount;
-  saveAllProgressAndUI();
+  await saveProgress();
 }
 const addCoinsBtn = document.getElementById('add-coins-btn');
 if (addCoinsBtn) {
@@ -381,7 +315,7 @@ function getEssence() {
 function setEssence(amount) {
   playerEssence = amount;
   updateEssenceDisplay();
-  saveAllProgressAndUI();
+  await saveProgress();
 }
 function updateEssenceDisplay() {
   const el = document.getElementById('essence-amount');
@@ -473,7 +407,7 @@ async function incrementQuestProgress(questId) {
 function setCurrency(amount) {
   playerCurrency = amount;
   updateCurrencyDisplay();
-  saveAllProgressAndUI();
+  await saveProgress();
 }
 
 async function claimQuestReward(quest) {
@@ -558,7 +492,7 @@ document.getElementById('achievements-modal').onclick = function(e) {
 function getAchievementData()    { return playerAchievements; }
 function setAchievementData(data){ 
   playerAchievements = data;
-  if (!isLoggingOut) saveAllProgressAndUI(); 
+  if (!isLoggingOut) await saveProgress(); 
 }
 
 function loadQuests() {
@@ -1010,7 +944,7 @@ async function grantExp(amount) {
     leveledUp = true;
     showToast(`Level Up! You reached Lv ${playerLevel}!`);
   }
-  saveAllProgressAndUI();
+  await saveProgress();
   return leveledUp;
 }
 
