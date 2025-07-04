@@ -24,10 +24,9 @@ firebase.auth().onAuthStateChanged(function(user) {
     );
   }
 }); 
-/**
- * Save all player progress (currency, collection, decks, cosmetics, etc)
- * @param {Object} progressObj - An object with all fields to save (example: {currency: 100, collection: {...}, ...})
- */ 
+
+const auth = firebase.auth();
+
 async function saveProgress() {
   const user = firebase.auth().currentUser;
   if (!user) return;
@@ -71,9 +70,6 @@ async function saveProgress() {
   if (typeof renderProfileCardbacks === "function") renderProfileCardbacks();
 }
 
-/**
- * Load ALL player progress and update variables
- */
 async function loadProgress() {
   const user = firebase.auth().currentUser;
   if (!user) return;
