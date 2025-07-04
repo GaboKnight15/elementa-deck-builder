@@ -64,13 +64,9 @@ const ACHIEVEMENTS = [
 
 let isLoggingOut = false;
 let appLoaded = false;
-let playerLevel = 1;
-let playerExp = 0;
 let playerCurrency = 0;
 let playerEssence = 0;
 let playerCollection = {};
-let playerQuests = {};
-let playerAchievements = {};
 let playerUnlockedAvatars = [];
 let playerUnlockedBanners = [];
 let playerUnlockedCardbacks = [];
@@ -293,35 +289,6 @@ async function setCurrency(amount) {
 function getCurrency() {
   return playerCurrency;
 }
-
-
-// 6. Claim Quest reward
-function setCurrency(amount) {
-  playerCurrency = amount;
-  updateCurrencyDisplay();
-  await saveProgress();
-}
-
-
-// 2. Persistence Helpers
-function getAchievementData()    { return playerAchievements; }
-function setAchievementData(data){ 
-  playerAchievements = data;
-  if (!isLoggingOut) await saveProgress(); 
-}
-
-// 3. Get progress for an achievement
-function getAchievementProgress(ach) {
-  let data = getAchievementData();
-  if (!data[ach.id]) {
-    data[ach.id] = { progress: 0, completed: false, claimed: false };
-    setAchievementData(data);
-  }
-  return data[ach.id];
-}
-
-
-
 
 // NOTIFICATIONS
 function showToast(message) {
