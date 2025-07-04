@@ -5,10 +5,6 @@ let activeQuests = [];
 let questResetTimestamp = 0;
 let playerAchievements = {};
 
-async function setAchievementData(data) { 
-  playerAchievements = data;
-  if (!isLoggingOut) await saveProgress(); 
-}
 async function setQuestData(data) {
   playerQuests = data;
   if (!isLoggingOut) await saveProgress();
@@ -16,7 +12,13 @@ async function setQuestData(data) {
 function getQuestData() {
   return playerQuests;
 }
-
+async function setAchievementData(data) { 
+  playerAchievements = data;
+  if (!isLoggingOut) await saveProgress(); 
+}
+function getAchievementData() {
+  return playerAchievements;
+}
 async function getQuestResets() {
   const user = firebase.auth().currentUser;
   if (!user) return {};
@@ -137,9 +139,7 @@ async function renderQuests() {
     list.appendChild(entry);
   }
 }
-function getAchievementData()    { return playerAchievements; }
 
-// 3. Get progress for an achievement
 function getAchievementProgress(ach) {
   let data = getAchievementData();
   if (!data[ach.id]) {
@@ -290,7 +290,6 @@ function startQuestTimer() {
   TimerInterval = setInterval(update, 1000);
 }
 function getRandomQuests(pool, count) {
-  // Simple random unique selection
   const copy = [...pool];
   const selected = [];
   while (selected.length < count && copy.length > 0) {
