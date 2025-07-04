@@ -61,9 +61,6 @@ const ACHIEVEMENTS = [
   }
 ];
 
-
-let isLoggingOut = false;
-let appLoaded = false;
 let playerCurrency = 0;
 let playerEssence = 0;
 let playerCollection = {};
