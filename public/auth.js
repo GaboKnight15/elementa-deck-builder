@@ -101,7 +101,7 @@ auth.onAuthStateChanged(function(user) {
   console.log("[auth] onAuthStateChanged", user);  
   if (user) {
     // Load all player progress and update variables
-    loadProgress(function() {
+    window.loadProgress(function() {
       // Now update UI
       renderPlayerLevel();
       renderGallery();
