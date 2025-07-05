@@ -17,6 +17,8 @@ const profileBannerModal = document.getElementById('profile-banner-modal');
 const profileBanners = document.getElementById('profile-banners');
 const closeProfileBannerModalBtn = document.getElementById('close-profile-banner-modal');
 
+const defaultIcon = "CardImages/Avatars/Default.png";
+const defaultBanner = "CardImages/Banners/DefaultBanner.png";
 // --- Profile Icon Choices ---
 const iconOptions = [ 
     "CardImages/Avatars/Faelyra.png",
@@ -43,7 +45,6 @@ const iconOptions = [
     "CardImages/Avatars/Nochtyros.png",
     "CardImages/Avatars/Solaryth.png"
 ];
-const defaultIcon = "CardImages/Avatars/Default.png";
   
 const bannerOptions = [
   "CardImages/Banners/Verdara.png",
@@ -58,7 +59,7 @@ const bannerOptions = [
   "CardImages/Banners/Solmara.png",   
   "CardImages/Banners/DefaultBanner.png"
 ];
-const defaultBanner = "CardImages/Banners/DefaultBanner.png";
+
 
 // --- Load Profile From Firestore ---
 function loadProfile(user) {
