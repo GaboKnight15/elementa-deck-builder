@@ -1,6 +1,3 @@
-window.onerror = function (msg, url, line, col, error) {
-  alert(`JS Error: ${msg}\nAt ${line}:${col}`);
-};
 // CARD LIST //
 const dummyCards = [
 { id: 'basicfairy', name: 'Fairy', rarity: 'Basic', image: 'CardImages/BasicCreatures/Fairy.png', category: 'creature', color: 'green', type: 'fairy', hp: 1, atk: 1, def: 0, cost: 0, archetype: 'Fairy', ability: 'flying'},
@@ -1336,12 +1333,6 @@ phaseNameSpan.onclick = function() { nextPhaseBtn.click(); };
 // ==========================
 // === INITIALIZATION ===
 // ==========================
-  loadDeckState();
-  refreshDeckSlotSelect();
-  updateDeckDisplay();
-  renderGallery();
-  updatePhaseBar();
-  showBuilder();
 
 // FILTER COLOR EVENTS
   document.getElementById('filter-color').addEventListener('change', (e) => {
@@ -1650,4 +1641,3 @@ function getCurrentPhaseIndex() {
   );
 }
 // Call this after any phase or turn change
-updatePhaseBar();
