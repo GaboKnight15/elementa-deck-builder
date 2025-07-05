@@ -27,21 +27,18 @@ auth.onAuthStateChanged(function(user) {
     let username = user.displayName 
       || (user.email ? user.email.split('@')[0] : "")
       || "";
-    firebase.firestore().collection('users').doc(user.uid).set(
-      {
-        displayName: username,
-        email: user.email || "",
-        lastLogin: firebase.firestore.FieldValue.serverTimestamp()
-      },
-      { merge: true }
-    );
+    db.collection('users').doc(user.uid).set({
+      displayName: username,
+      email: user.email || "",
+      lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
   }
 });
 
 function saveProgress() {
-  const user = firebase.auth().currentUser;
+  const user = auth.currentUser;
   if (!user) {
-    console.warn("No user logged in, cannot save progress. Call stack:", new Error().stack);
+    console.warn("No user logged in, cannot save progress.");
     return;
   }
   const data = {
@@ -59,7 +56,7 @@ function saveProgress() {
     unlockedBanners: window.playerUnlockedBanners || [],
     unlockedCardbacks: window.playerUnlockedCardbacks || []
   };
-  firebase.firestore().collection('users').doc(user.uid).set(data, { merge: true })
+  db.collection('users').doc(user.uid).set(data, { merge: true })
     .then(() => { console.log("Progress saved!"); })
     .catch((error) => { console.error("Error saving progress: ", error); });
 }
@@ -72,11 +69,9 @@ function loadProgress(cb) {
     if (typeof cb === "function") cb({});
     return;
   }
-  firebase.firestore().collection('users').doc(user.uid).get()
+  db.collection('users').doc(user.uid).get()
     .then((doc) => {
       const data = doc.exists ? doc.data() : {};
-      console.log("RAW LOADED DATA FROM FIRESTORE:", data);
-
       // Assign loaded data, defaulting ONLY if undefined (not using ||)
       window.playerCollection = typeof data.collection !== "undefined" ? data.collection : {};
       window.deckSlots = typeof data.deckSlots !== "undefined" ? data.deckSlots : ["Deck 1"];
@@ -91,7 +86,6 @@ function loadProgress(cb) {
       window.playerUnlockedAvatars = typeof data.unlockedAvatars !== "undefined" ? data.unlockedAvatars : [];
       window.playerUnlockedBanners = typeof data.unlockedBanners !== "undefined" ? data.unlockedBanners : [];
       window.playerUnlockedCardbacks = typeof data.unlockedCardbacks !== "undefined" ? data.unlockedCardbacks : [];
-
       if (typeof cb === "function") cb({
         collection: window.playerCollection,
         deckSlots: window.deckSlots,
@@ -173,9 +167,7 @@ auth.onAuthStateChanged(function(user) {
       renderQuests();
       updateQuestsNotificationDot();  
       startQuestTimer();
-      updateAchievementsNotificationDot();
-      
-        
+      updateAchievementsNotificationDot();    
       profileArea.style.display = '';
       profileMenu.classList.remove('active');
       loginMenu.classList.remove('active');
@@ -194,7 +186,6 @@ auth.onAuthStateChanged(function(user) {
     loginEmailInput.value = "";
     loginPasswordInput.value = "";
     loginError.textContent = "";
-
     playerCollection = {};
     deckSlots = ["Deck 1"];
     decks = { "Deck 1": {} };
@@ -289,4 +280,6 @@ function login() {
       console.error("[auth] Login failed", err);
     });
 }
+window.login = login;
+window.signup = signup;
 profileLogoutBtn.onclick = function() { auth.signOut(); };
