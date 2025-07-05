@@ -492,16 +492,16 @@ document.querySelectorAll('.shop-free-btn').forEach(btn => {
     const type = btn.dataset.type;
     switch(type) {
       case 'profile-pic':
-        alert("You unlocked a new avatar! (Feature coming soon)");
+        showToast("You unlocked a new avatar! (Feature coming soon)", { type: "info" });
         break;
       case 'banner':
-        alert("You unlocked a new banner! (Feature coming soon)");
+        showToast("You unlocked a new banner! (Feature coming soon)", { type: "info" });
         break;
       case 'cardback':
-        alert("You unlocked a new sleeve! (Feature coming soon)");
+        showToast("You unlocked a new sleeve! (Feature coming soon)", { type: "info" });
         break;
       case 'single-card':
-        alert("You unlocked a new card! (Feature coming soon)");
+        showToast("You unlocked a new card! (Feature coming soon)", { type: "info" });
         break;
     }
   };
