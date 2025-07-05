@@ -180,6 +180,7 @@ auth.onAuthStateChanged(function(user) {
     renderBuilder();
     updateCurrencyDisplay();
     updateEssenceDisplay();
+    renderShop();
     updateCollectionDependentUI();
   }
 });
