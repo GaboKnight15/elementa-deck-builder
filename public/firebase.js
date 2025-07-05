@@ -109,31 +109,6 @@ function loadProgress(cb) {
 }
 window.loadProgress = loadProgress;
 
-// --- Load Profile From Firestore ---
-function loadProfile(user) {
-  if (!user) return;
-  firebase.firestore().collection('users').doc(user.uid).get()
-    .then(doc => {
-      let icon = defaultIcon;
-      let name = user.displayName || user.email;
-      let banner = defaultBanner;
-      if (doc.exists) {
-        const data = doc.data();
-        if (data && data.profilePic) icon = data.profilePic;
-        if (data && data.username) name = data.username;
-        if (data && data.profileBanner) banner = data.profileBanner;
-      }
-      profilePic.src = icon;
-      profileUsernameDisplay.textContent = name;
-      profileBanner.src = banner;
-    })
-    .catch(err => {
-      profilePic.src = defaultIcon;
-      profileBanner.src = defaultBanner;
-      profileUsernameDisplay.textContent = user.displayName || user.email || "";
-    });
-}
-
 // --- Auth state changes ---
 auth.onAuthStateChanged(function(user) {
   if (user) {
@@ -209,19 +184,6 @@ auth.onAuthStateChanged(function(user) {
     updateCollectionDependentUI();
   }
 });
-  // --- Auth logic for login/signup ---
-  loginForm.onsubmit = function(e) {
-    e.preventDefault();
-    login();
-  };
-  loginBtn.onclick = function(e) {
-    e.preventDefault();
-    login();
-  };
-  signupBtn.onclick = function(e) {
-    e.preventDefault();
-    signup();
-  };
 
 function signup() {
   const email = loginEmailInput.value.trim();
@@ -282,4 +244,30 @@ function login() {
 }
 window.login = login;
 window.signup = signup;
-profileLogoutBtn.onclick = function() { auth.signOut(); };
+if (profileLogoutBtn) profileLogoutBtn.onclick = function() { auth.signOut(); };
+// --- Attach event handlers ---
+if (loginForm) loginForm.onsubmit = function(e) {
+  e.preventDefault();
+  login();
+};
+if (loginBtn) loginBtn.onclick = function(e) {
+  e.preventDefault();
+  login();
+};
+if (signupBtn) signupBtn.onclick = function(e) {
+  e.preventDefault();
+  signup();
+};
+  // --- Auth logic for login/signup ---
+  loginForm.onsubmit = function(e) {
+    e.preventDefault();
+    login();
+  };
+  loginBtn.onclick = function(e) {
+    e.preventDefault();
+    login();
+  };
+  signupBtn.onclick = function(e) {
+    e.preventDefault();
+    signup();
+  };
