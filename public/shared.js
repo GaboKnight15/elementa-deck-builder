@@ -61,21 +61,21 @@ const ACHIEVEMENTS = [
   }
 ];
 
-let playerCurrency = 0;
-let playerEssence = 0;
-let playerCollection = {};
-let playerUnlockedAvatars = [];
-let playerUnlockedBanners = [];
-let playerUnlockedCardbacks = [];
-let deckSlots = ["Deck 1"];
-let decks = { "Deck 1": {} };
-let currentDeckSlot = "Deck 1";
+window.playerCurrency = 0;
+window.playerEssence = 0;
+window.playerCollection = {};
+window.playerUnlockedAvatars = [];
+window.playerUnlockedBanners = [];
+window.playerUnlockedCardbacks = [];
+window.deckSlots = ["Deck 1"];
+window.decks = { "Deck 1": {} };
+window.currentDeckSlot = "Deck 1";
 const addCoinsBtn = document.getElementById('add-coins-btn');
 
 // --- CURRENCY DISPLAY ---
 function updateCurrencyDisplay() {
   const el = document.getElementById('currency-amount');
-  if (el) el.textContent = playerCurrency;
+  if (el) el.textContent = window.playerCurrency;
 }
 // ==========================
 // === SECTION NAVIGATION ===
@@ -197,9 +197,8 @@ function addToCollection(cardId, amount = 1) {
   if (typeof updateUniqueCardsAchievement === 'function') {updateUniqueCardsAchievement();}
 }
 
-function getCurrencyHtml(amount) { /* unchanged */ }
 function addCoins(amount) {
-  playerCurrency += amount;
+  window.playerCurrency += amount;
   saveProgress();
   updateCurrencyDisplay();
 }
@@ -219,7 +218,7 @@ function updateEssenceDisplay() {
   const el = document.getElementById('essence-amount');
   if (el) el.textContent = playerEssence;
 }
-function getEssenceHtml(amount) { /* unchanged */ }
+
 function setCurrency(amount) {
   playerCurrency = amount;
   updateCurrencyDisplay();
