@@ -207,4 +207,3 @@ function renderGallery() {
 // === INITIALIZATION ===
 // ==========================
 window.renderGallery = renderGallery;
-renderGallery();
