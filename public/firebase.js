@@ -30,7 +30,7 @@ auth.onAuthStateChanged(function(user) {
 function saveProgress() {
   const user = firebase.auth().currentUser;
   if (!user) {
-    console.warn("No user logged in, cannot save progress.");
+    console.warn("No user logged in, cannot save progress. Call stack:", new Error().stack);
     return;
   }
   const data = {
