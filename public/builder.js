@@ -541,7 +541,6 @@ function updateDeckDisplay() {
   }
 }
   cardCount.textContent = total;
-  setCurrentDeck(deck);
 }
 function getCardCategory(card) {
   return card.category ? card.category.toLowerCase() : '';
