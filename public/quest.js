@@ -13,14 +13,14 @@ function getPlayerExp() {
 }
 function setQuestData(data) {
   playerQuests = data;
-  guardedSaveProgress();
+  saveProgress();
 }
 function getQuestData() {
   return playerQuests;
 }
 function setAchievementData(data) { 
   playerAchievements = data;
-  guardedSaveProgress(); 
+  saveProgress(); 
 }
 function getAchievementData() {
   return playerAchievements;
@@ -118,7 +118,7 @@ function claimQuestReward(quest, cb) {
   grantExp(10);
   // --- Set/reset the timer for next quest refresh ---
   window.questResetTimestamp = Date.now();
-  guardedSaveProgress();
+  saveProgress();
   startQuestTimer();
   if (typeof cb === "function") cb(true);
   return true;
@@ -377,7 +377,7 @@ function setActiveQuests(quests, cb) {
 function refreshQuests() {
   playerQuests = {};
   window.questResetTimestamp = Date.now();
-  guardedSaveProgress();
+  saveProgress();
   renderQuests();
   startQuestTimer();
 }
@@ -419,7 +419,7 @@ function grantExp(amount) {
     leveledUp = true;
     showToast(`Level Up! You reached Lv ${playerLevel}!`);
   }
-  guardedSaveProgress();
+  saveProgress();
   renderPlayerLevel();
   return leveledUp;
 }
