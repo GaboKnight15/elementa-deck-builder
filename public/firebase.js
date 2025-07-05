@@ -59,6 +59,7 @@ function loadProgress(cb) {
   }
   db.collection('users').doc(user.uid).get()
     .then((doc) => {
+      console.log("Loaded progress from Firestore:", data);
       const data = doc.exists ? doc.data() : {};
       // Assign loaded data, defaulting ONLY if undefined (not using ||)
       window.playerCollection = typeof data.collection !== "undefined" ? data.collection : {};
@@ -99,6 +100,7 @@ window.loadProgress = loadProgress;
 
 // --- Auth state changes ---
 auth.onAuthStateChanged(function(user) {
+  console.log("onAuthStateChanged fired, user:", user);
   if (user) {
     let username = user.displayName 
       || (user.email ? user.email.split('@')[0] : "")
@@ -111,6 +113,7 @@ auth.onAuthStateChanged(function(user) {
 
     // Only now, after login, load progress, then render UI
     window.loadProgress(function(data) {
+      console.log("Progress loaded:", data);
       data = data || {};
       window.playerCollection = data.collection;
       window.deckSlots = data.deckSlots;
@@ -149,6 +152,7 @@ auth.onAuthStateChanged(function(user) {
       loadProfile(user);  
     });
   } else {
+    console.log("User logged out, setting defaults");
     // Reset UI and data to logged-out state
     mainHeader.style.display = 'none';
     profileArea.style.display = 'none';
