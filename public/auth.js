@@ -101,6 +101,7 @@ auth.onAuthStateChanged(function(user) {
   if (user) {
     // Load progress from Firestore on login
     window.loadProgress(function(data) {
+      data = data || {};  
       // Populate your in-memory data (with defaults if needed)
       window.playerCollection = data.collection || {};
       window.deckSlots = data.deckSlots || ["Deck 1"];
