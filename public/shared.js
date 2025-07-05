@@ -23,15 +23,6 @@ const dummyCards = [
 { id: 'basicshadowforest', name: 'Shadow Forest', rarity: 'Basic', image: 'CardImages/Domains/Black Basic Location.png', category: 'domain', color: 'black', type: 'domain', hp: 5, cost: 1, set: 'StandardPack2'},
 ];
 
-window.playerCurrency = 0;
-window.playerEssence = 0;
-window.playerCollection = {};
-window.playerUnlockedAvatars = [];
-window.playerUnlockedBanners = [];
-window.playerUnlockedCardbacks = [];
-window.deckSlots = ["Deck 1"];
-window.decks = { "Deck 1": {} };
-window.currentDeckSlot = "Deck 1";
 const addCoinsBtn = document.getElementById('add-coins-btn');
 
 // --- CURRENCY DISPLAY ---
