@@ -56,10 +56,15 @@ function loadProgress(user, cb) {
     if (typeof cb === "function") cb({});
     return;
   }
-  db.collection('users').doc(user.uid).get()
+ const docRef = db.collection('users').doc(user.uid);
+  console.log("Attempting to load progress for user:", user.uid);
+  docRef.get()
     .then((doc) => {
+      if (!doc.exists) {
+        console.warn("No progress doc found for user:", user.uid);
+      }
       const data = doc.exists ? doc.data() : {};
-      console.log("Loaded progress from Firestore:", data);
+      console.log("Loaded data from Firestore:", data);
 
       // Defensive assignments for all fields!
 window.playerCurrency        = Number(data.currency) || 0;
@@ -86,20 +91,10 @@ window.loadProgress = loadProgress;
 
 // --- Auth state changes ---
 auth.onAuthStateChanged(function(user) {
+  console.log("AUTH STATE CHANGED, user:", user ? user.uid : user);
   if (user) {
-    let username = user.displayName 
-      || (user.email ? user.email.split('@')[0] : "")
-      || "";
-    db.collection('users').doc(user.uid).set({
-      displayName: username,
-      email: user.email || "",
-      lastLogin: firebase.firestore.FieldValue.serverTimestamp()
-    }, { merge: true });
-
-    // Only now, after login, load progress, then render UI
-    window.loadProgress(user, function(data) {
-      console.log("Loaded from Firestore:", data);
-      console.log("Currency after fix:", window.playerCurrency, typeof window.playerCurrency);
+    window.loadProgress(user, function() {
+      console.log("After load, window.playerCurrency =", window.playerCurrency);
       // Only now, render UI
       renderPlayerLevel();
       renderGallery();
