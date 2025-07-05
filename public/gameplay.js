@@ -1197,4 +1197,3 @@ function animateCardMove(cardDiv, destinationDiv, callback) {
 // Make available globally if called from client.js:
 window.setupBattlefieldGame = setupBattlefieldGame;
 window.handleOpponentAction = handleOpponentAction;
-updatePhase();
