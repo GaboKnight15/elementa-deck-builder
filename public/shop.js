@@ -171,8 +171,10 @@ function purchaseCosmetic(cost, purchaseCallback, done) {
   }
   playerCurrency = balance - cost;
   saveProgress();
+  updateCurrencyDisplay();
   if (typeof purchaseCallback === "function") purchaseCallback(function() {
     saveProgress();
+    updateCurrencyDisplay();
     if (typeof done === "function") done(true);
   });
   else if (typeof done === "function") done(true);
