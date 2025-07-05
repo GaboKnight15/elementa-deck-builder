@@ -69,6 +69,7 @@ function loadProgress(cb) {
       window.decks = data.decks || { "Deck 1": {} };
       window.currentDeckSlot = data.currentDeckSlot || "Deck 1";
       window.playerCurrency = data.currency || 0;
+          console.log("Loaded currency from Firestore:", window.playerCurrency); // <-- Test
       window.playerEssence = data.essence || 0;
       window.playerQuests = data.quests || {};
       window.playerAchievements = data.achievements || {};
