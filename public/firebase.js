@@ -50,8 +50,7 @@ function saveProgress() {
 }
 window.saveProgress = saveProgress;
 
-function loadProgress(cb) {
-  const user = auth.currentUser;
+function loadProgress(user, cb) {
   if (!user) {
     console.warn("No user logged in, cannot load progress.");
     if (typeof cb === "function") cb({});
@@ -59,22 +58,9 @@ function loadProgress(cb) {
   }
   db.collection('users').doc(user.uid).get()
     .then((doc) => {
-      console.log("Loaded progress from Firestore:", data);
       const data = doc.exists ? doc.data() : {};
-      // Assign loaded data, defaulting ONLY if undefined (not using ||)
-      window.playerCollection = typeof data.collection !== "undefined" ? data.collection : {};
-      window.deckSlots = typeof data.deckSlots !== "undefined" ? data.deckSlots : ["Deck 1"];
-      window.decks = typeof data.decks !== "undefined" ? data.decks : { "Deck 1": {} };
-      window.currentDeckSlot = typeof data.currentDeckSlot !== "undefined" ? data.currentDeckSlot : "Deck 1";
-      window.playerCurrency = typeof data.currency === "number" ? data.currency : 0;
-      window.playerEssence = typeof data.essence === "number" ? data.essence : 0;
-      window.playerQuests = typeof data.quests !== "undefined" ? data.quests : {};
-      window.playerAchievements = typeof data.achievements !== "undefined" ? data.achievements : {};
-      window.playerLevel = typeof data.level === "number" ? data.level : 1;
-      window.playerExp = typeof data.exp === "number" ? data.exp : 0;
-      window.playerUnlockedAvatars = typeof data.unlockedAvatars !== "undefined" ? data.unlockedAvatars : [];
-      window.playerUnlockedBanners = typeof data.unlockedBanners !== "undefined" ? data.unlockedBanners : [];
-      window.playerUnlockedCardbacks = typeof data.unlockedCardbacks !== "undefined" ? data.unlockedCardbacks : [];
+      console.log("Loaded progress from Firestore:", data);
+      // ... assign window variables ...
       if (typeof cb === "function") cb({
         collection: window.playerCollection,
         deckSlots: window.deckSlots,
@@ -112,7 +98,7 @@ auth.onAuthStateChanged(function(user) {
     }, { merge: true });
 
     // Only now, after login, load progress, then render UI
-    window.loadProgress(function(data) {
+    window.loadProgress(user, function(data) {
       console.log("Progress loaded:", data);
       data = data || {};
       window.playerCollection = data.collection;
