@@ -84,7 +84,6 @@ function loadProfile(user) {
       profileUsernameDisplay.textContent = user.displayName || user.email || "";
     });
 }
-profileLogoutBtn.onclick = function() { auth.signOut(); };
 // --- Profile / Auth DOM Elements ---
 document.addEventListener('DOMContentLoaded', function () {
   // --- ICON CHOICES ---
