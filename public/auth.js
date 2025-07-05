@@ -102,20 +102,19 @@ auth.onAuthStateChanged(function(user) {
     // Load progress from Firestore on login
     window.loadProgress(function(data) {
       data = data || {};  
-      // Populate your in-memory data (with defaults if needed)
-      window.playerCollection = data.collection || {};
-      window.deckSlots = data.deckSlots || ["Deck 1"];
-      window.decks = data.decks || { "Deck 1": {} };
-      window.currentDeckSlot = data.currentDeckSlot || "Deck 1";
-      window.playerCurrency = (typeof data.currency === 'number') ? data.currency : 0;
-      window.playerEssence = (typeof data.essence === 'number') ? data.essence : 0;
-      window.playerQuests = data.quests || {};
-      window.playerAchievements = data.achievements || {};
-      window.playerLevel = (typeof data.level === 'number') ? data.level : 1;
-      window.playerExp = (typeof data.exp === 'number') ? data.exp : 0;
-      window.playerUnlockedAvatars = data.unlockedAvatars || [];
-      window.playerUnlockedBanners = data.unlockedBanners || [];
-      window.playerUnlockedCardbacks = data.unlockedCardbacks || [];
+      window.playerCollection = data.collection;
+      window.deckSlots = data.deckSlots;
+      window.decks = data.decks;
+      window.currentDeckSlot = data.currentDeckSlot;
+      window.playerCurrency = data.currency;
+      window.playerEssence = data.essence;
+      window.playerQuests = data.quests;
+      window.playerAchievements = data.achievements;
+      window.playerLevel = data.level;
+      window.playerExp = data.exp;
+      window.playerUnlockedAvatars = data.unlockedAvatars;
+      window.playerUnlockedBanners = data.unlockedBanners;
+      window.playerUnlockedCardbacks = data.unlockedCardbacks;
 
       // Update your UI here...
       renderPlayerLevel();
