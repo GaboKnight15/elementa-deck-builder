@@ -60,7 +60,22 @@ function loadProgress(user, cb) {
     .then((doc) => {
       const data = doc.exists ? doc.data() : {};
       console.log("Loaded progress from Firestore:", data);
-      // ... assign window variables ...
+
+      // Defensive assignments for all fields!
+      window.playerCollection      = typeof data.collection !== "undefined" ? data.collection : {};
+      window.deckSlots             = Array.isArray(data.deckSlots) ? data.deckSlots : ["Deck 1"];
+      window.decks                 = typeof data.decks !== "undefined" ? data.decks : { "Deck 1": {} };
+      window.currentDeckSlot       = typeof data.currentDeckSlot !== "undefined" ? data.currentDeckSlot : "Deck 1";
+      window.playerCurrency        = typeof data.currency === "number" ? data.currency : 0;
+      window.playerEssence         = typeof data.essence === "number" ? data.essence : 0;
+      window.playerQuests          = typeof data.quests !== "undefined" ? data.quests : {};
+      window.playerAchievements    = typeof data.achievements !== "undefined" ? data.achievements : {};
+      window.playerLevel           = typeof data.level === "number" ? data.level : 1;
+      window.playerExp             = typeof data.exp === "number" ? data.exp : 0;
+      window.playerUnlockedAvatars = Array.isArray(data.unlockedAvatars) ? data.unlockedAvatars : [];
+      window.playerUnlockedBanners = Array.isArray(data.unlockedBanners) ? data.unlockedBanners : [];
+      window.playerUnlockedCardbacks = Array.isArray(data.unlockedCardbacks) ? data.unlockedCardbacks : [];
+
       if (typeof cb === "function") cb({
         collection: window.playerCollection,
         deckSlots: window.deckSlots,
@@ -101,19 +116,21 @@ auth.onAuthStateChanged(function(user) {
     window.loadProgress(user, function(data) {
       console.log("Progress loaded:", data);
       data = data || {};
-      window.playerCollection = data.collection;
-      window.deckSlots = data.deckSlots;
-      window.decks = data.decks;
-      window.currentDeckSlot = data.currentDeckSlot;
-      window.playerCurrency = data.currency;
-      window.playerEssence = data.essence;
-      window.playerQuests = data.quests;
-      window.playerAchievements = data.achievements;
-      window.playerLevel = data.level;
-      window.playerExp = data.exp;
-      window.playerUnlockedAvatars = data.unlockedAvatars;
-      window.playerUnlockedBanners = data.unlockedBanners;
-      window.playerUnlockedCardbacks = data.unlockedCardbacks;
+
+      // Defensive assignments, again (for safety)
+      window.playerCollection      = typeof data.collection !== "undefined" ? data.collection : {};
+      window.deckSlots             = Array.isArray(data.deckSlots) ? data.deckSlots : ["Deck 1"];
+      window.decks                 = typeof data.decks !== "undefined" ? data.decks : { "Deck 1": {} };
+      window.currentDeckSlot       = typeof data.currentDeckSlot !== "undefined" ? data.currentDeckSlot : "Deck 1";
+      window.playerCurrency        = typeof data.currency === "number" ? data.currency : 0;
+      window.playerEssence         = typeof data.essence === "number" ? data.essence : 0;
+      window.playerQuests          = typeof data.quests !== "undefined" ? data.quests : {};
+      window.playerAchievements    = typeof data.achievements !== "undefined" ? data.achievements : {};
+      window.playerLevel           = typeof data.level === "number" ? data.level : 1;
+      window.playerExp             = typeof data.exp === "number" ? data.exp : 0;
+      window.playerUnlockedAvatars = Array.isArray(data.unlockedAvatars) ? data.unlockedAvatars : [];
+      window.playerUnlockedBanners = Array.isArray(data.unlockedBanners) ? data.unlockedBanners : [];
+      window.playerUnlockedCardbacks = Array.isArray(data.unlockedCardbacks) ? data.unlockedCardbacks : [];
 
       // Only now, render UI
       renderPlayerLevel();
@@ -160,8 +177,8 @@ auth.onAuthStateChanged(function(user) {
     window.playerAchievements = {};
     window.playerLevel = 1;
     window.playerExp = 0;
-    window.playerUnlockedAvatars = [defaultIcon];
-    window.playerUnlockedBanners = [defaultBanner];
+    window.playerUnlockedAvatars = [typeof defaultIcon !== "undefined" ? defaultIcon : ""];
+    window.playerUnlockedBanners = [typeof defaultBanner !== "undefined" ? defaultBanner : ""];
     window.playerUnlockedCardbacks = [];
     renderPlayerLevel();
     renderGallery();
