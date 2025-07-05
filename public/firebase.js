@@ -20,7 +20,8 @@ const loginUsernameInput = document.getElementById('login-username-input');
 const loginEmailInput    = document.getElementById('login-email-input');
 const loginPasswordInput = document.getElementById('login-password-input');
 const loginError         = document.getElementById('login-error');
-const profileLogoutBtn       = document.getElementById('profile-logout-btn');
+const mainHeader         = document.getElementById('main-header');
+const profileLogoutBtn   = document.getElementById('profile-logout-btn');
  
 auth.onAuthStateChanged(function(user) {
   if (user) {
@@ -142,7 +143,8 @@ auth.onAuthStateChanged(function(user) {
       renderQuests();
       updateQuestsNotificationDot();  
       startQuestTimer();
-      updateAchievementsNotificationDot();    
+      updateAchievementsNotificationDot();
+      mainHeader.style.display = '';
       profileArea.style.display = '';
       profileMenu.classList.remove('active');
       loginMenu.classList.remove('active');
@@ -152,6 +154,7 @@ auth.onAuthStateChanged(function(user) {
     });
   } else {
     // Reset UI and data to logged-out state
+    mainHeader.style.display = 'none';
     profileArea.style.display = 'none';
     profileMenu.classList.remove('active');
     loginMenu.classList.add('active');
