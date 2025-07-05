@@ -36,13 +36,6 @@ const ACHIEVEMENTS = [
   }
 ];
 
-window.playerLevel = 1;
-window.playerExp = 0;
-window.playerQuests = {};
-window.activeQuests = [];
-window.questResetTimestamp = 0;
-window.playerAchievements = {};
-
 function getPlayerLevel() {
   return playerLevel;
 }
