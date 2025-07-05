@@ -127,7 +127,12 @@ auth.onAuthStateChanged(function(user) {
       updateEssenceDisplay();
       updateCollectionDependentUI();
       renderShop();
-
+      renderQuests();
+      updateQuestsNotificationDot();  
+      startQuestTimer();
+      updateAchievementsNotificationDot();
+      
+        
       profileArea.style.display = '';
       profileMenu.classList.remove('active');
       loginMenu.classList.remove('active');
