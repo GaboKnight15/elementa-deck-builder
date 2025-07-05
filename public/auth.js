@@ -107,12 +107,12 @@ auth.onAuthStateChanged(function(user) {
       window.deckSlots = data.deckSlots || ["Deck 1"];
       window.decks = data.decks || { "Deck 1": {} };
       window.currentDeckSlot = data.currentDeckSlot || "Deck 1";
-      window.playerCurrency = data.currency || 0;
-      window.playerEssence = data.essence || 0;
+      window.playerCurrency = (typeof data.currency === 'number') ? data.currency : 0;
+      window.playerEssence = (typeof data.essence === 'number') ? data.essence : 0;
       window.playerQuests = data.quests || {};
       window.playerAchievements = data.achievements || {};
-      window.playerLevel = data.level || 1;
-      window.playerExp = data.exp || 0;
+      window.playerLevel = (typeof data.level === 'number') ? data.level : 1;
+      window.playerExp = (typeof data.exp === 'number') ? data.exp : 0;
       window.playerUnlockedAvatars = data.unlockedAvatars || [];
       window.playerUnlockedBanners = data.unlockedBanners || [];
       window.playerUnlockedCardbacks = data.unlockedCardbacks || [];
@@ -346,18 +346,31 @@ function signup() {
   auth.createUserWithEmailAndPassword(email, password)
     .then(function(userCredential) {
       console.log("[auth] Signup successful", userCredential.user);
+      // Set initial profile and progress fields in Firestore for new user
+      const userDoc = firebase.firestore().collection('users').doc(userCredential.user.uid);
       return userCredential.user.updateProfile({
         displayName: username
       }).then(function() {
-        // Set initial profile in Firestore
-        return firebase.firestore().collection('users').doc(userCredential.user.uid)
-          .set({
-            username: username,
-            profilePic: defaultIcon,
-            profileBanner: defaultBanner,
-            unlockedAvatars: [defaultIcon],
-            unlockedBanners: [defaultBanner]
-          }, {merge: true});
+        // Set profile fields and initialize all progress fields
+        return userDoc.set({
+          username: username,
+          profilePic: defaultIcon,
+          profileBanner: defaultBanner,
+          unlockedAvatars: [defaultIcon],
+          unlockedBanners: [defaultBanner],
+          // --- Progress fields ---
+          collection: {},
+          deckSlots: ["Deck 1"],
+          decks: { "Deck 1": {} },
+          currentDeckSlot: "Deck 1",
+          currency: 0,
+          essence: 0,
+          quests: {},
+          achievements: {},
+          level: 1,
+          exp: 0,
+          unlockedCardbacks: []
+        }, {merge: true});
       });
     })
     .catch(function(err) {
