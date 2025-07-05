@@ -137,7 +137,7 @@ function setNewlyUnlockedCards(arr) {
 // FIREBASE GALLERY
 function setCollection(collection) {
   playerCollection = collection;
-  guardedSaveProgress();
+  saveProgress();
 }
 function getCollection() {
   return playerCollection || {};
@@ -152,7 +152,7 @@ function addToCollection(cardId, amount = 1) {
   const collection = getCollection();
   const wasOwned = collection[cardId] > 0;
   collection[cardId] = (collection[cardId] || 0) + amount;
-  guardedSaveProgress();
+  saveProgress();
 
   // If just unlocked, mark as new
   if (!wasOwned && collection[cardId] > 0) {
@@ -200,7 +200,7 @@ function addToCollection(cardId, amount = 1) {
 function getCurrencyHtml(amount) { /* unchanged */ }
 function addCoins(amount) {
   playerCurrency += amount;
-  guardedSaveProgress();
+  saveProgress();
   updateCurrencyDisplay();
 }
 if (addCoinsBtn) {
@@ -213,7 +213,7 @@ function getEssence() { return playerEssence; }
 function setEssence(amount) {
   playerEssence = amount;
   updateEssenceDisplay();
-  guardedSaveProgress();
+  saveProgress();
 }
 function updateEssenceDisplay() {
   const el = document.getElementById('essence-amount');
@@ -223,7 +223,7 @@ function getEssenceHtml(amount) { /* unchanged */ }
 function setCurrency(amount) {
   playerCurrency = amount;
   updateCurrencyDisplay();
-  guardedSaveProgress();
+  saveProgress();
 }
 function getCurrency() {
   return playerCurrency;
