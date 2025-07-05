@@ -62,19 +62,19 @@ function loadProgress(user, cb) {
       console.log("Loaded progress from Firestore:", data);
 
       // Defensive assignments for all fields!
-      window.playerCollection      = typeof data.collection !== "undefined" ? data.collection : {};
-      window.deckSlots             = Array.isArray(data.deckSlots) ? data.deckSlots : ["Deck 1"];
-      window.decks                 = typeof data.decks !== "undefined" ? data.decks : { "Deck 1": {} };
-      window.currentDeckSlot       = typeof data.currentDeckSlot !== "undefined" ? data.currentDeckSlot : "Deck 1";
-      window.playerCurrency        = typeof data.currency === "number" ? data.currency : 0;
-      window.playerEssence         = typeof data.essence === "number" ? data.essence : 0;
-      window.playerQuests          = typeof data.quests !== "undefined" ? data.quests : {};
-      window.playerAchievements    = typeof data.achievements !== "undefined" ? data.achievements : {};
-      window.playerLevel           = typeof data.level === "number" ? data.level : 1;
-      window.playerExp             = typeof data.exp === "number" ? data.exp : 0;
-      window.playerUnlockedAvatars = Array.isArray(data.unlockedAvatars) ? data.unlockedAvatars : [];
-      window.playerUnlockedBanners = Array.isArray(data.unlockedBanners) ? data.unlockedBanners : [];
-      window.playerUnlockedCardbacks = Array.isArray(data.unlockedCardbacks) ? data.unlockedCardbacks : [];
+window.playerCurrency        = Number(data.currency) || 0;
+window.playerEssence         = Number(data.essence) || 0;
+window.playerLevel           = Number(data.level) || 1;
+window.playerExp             = Number(data.exp) || 0;
+window.deckSlots             = Array.isArray(data.deckSlots) ? data.deckSlots : ["Deck 1"];
+window.decks                 = typeof data.decks !== "undefined" ? data.decks : { "Deck 1": {} };
+window.currentDeckSlot       = typeof data.currentDeckSlot !== "undefined" ? data.currentDeckSlot : "Deck 1";
+window.playerCollection      = typeof data.collection !== "undefined" ? data.collection : {};
+window.playerQuests          = typeof data.quests !== "undefined" ? data.quests : {};
+window.playerAchievements    = typeof data.achievements !== "undefined" ? data.achievements : {};
+window.playerUnlockedAvatars = Array.isArray(data.unlockedAvatars) ? data.unlockedAvatars : [];
+window.playerUnlockedBanners = Array.isArray(data.unlockedBanners) ? data.unlockedBanners : [];
+window.playerUnlockedCardbacks = Array.isArray(data.unlockedCardbacks) ? data.unlockedCardbacks : [];
       if (typeof cb === "function") cb();
     })
     .catch((error) => {
@@ -98,6 +98,8 @@ auth.onAuthStateChanged(function(user) {
 
     // Only now, after login, load progress, then render UI
     window.loadProgress(user, function(data) {
+      console.log("Loaded from Firestore:", data);
+      console.log("Currency after fix:", window.playerCurrency, typeof window.playerCurrency);
       // Only now, render UI
       renderPlayerLevel();
       renderGallery();
