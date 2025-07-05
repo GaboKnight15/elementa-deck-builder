@@ -98,11 +98,25 @@ function loadProfile(user) {
 
 // --- Auth state changes ---
 auth.onAuthStateChanged(function(user) {
-  console.log("[auth] onAuthStateChanged", user);  
   if (user) {
-    // Load all player progress and update variables
-    window.loadProgress(function() {
-      // Now update UI
+    // Load progress from Firestore on login
+    window.loadProgress(function(data) {
+      // Populate your in-memory data (with defaults if needed)
+      window.playerCollection = data.collection || {};
+      window.deckSlots = data.deckSlots || ["Deck 1"];
+      window.decks = data.decks || { "Deck 1": {} };
+      window.currentDeckSlot = data.currentDeckSlot || "Deck 1";
+      window.playerCurrency = data.currency || 0;
+      window.playerEssence = data.essence || 0;
+      window.playerQuests = data.quests || {};
+      window.playerAchievements = data.achievements || {};
+      window.playerLevel = data.level || 1;
+      window.playerExp = data.exp || 0;
+      window.playerUnlockedAvatars = data.unlockedAvatars || [];
+      window.playerUnlockedBanners = data.unlockedBanners || [];
+      window.playerUnlockedCardbacks = data.unlockedCardbacks || [];
+
+      // Update your UI here...
       renderPlayerLevel();
       renderGallery();
       refreshDeckSlotSelect();
@@ -121,6 +135,7 @@ auth.onAuthStateChanged(function(user) {
       loadProfile(user);  
     });
   } else {
+    // Reset UI and data to logged-out state
     profileArea.style.display = 'none';
     profileMenu.classList.remove('active');
     loginMenu.classList.add('active');
