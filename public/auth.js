@@ -100,7 +100,7 @@ function loadProfile(user) {
 auth.onAuthStateChanged(function(user) {
   if (user) {
     // Load progress from Firestore on login
-    window.loadProgress(function(data) {
+    window.loadProgress(user, function(data) {
       data = data || {};  
       window.playerCollection = data.collection;
       window.deckSlots = data.deckSlots;
