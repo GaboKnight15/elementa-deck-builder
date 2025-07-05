@@ -1,9 +1,47 @@
-let playerLevel = 1;
-let playerExp = 0;
-let playerQuests = {};
-let activeQuests = [];
-let questResetTimestamp = 0;
-let playerAchievements = {};
+const COLOR_QUESTS = ['green', 'red', 'blue', 'yellow', 'purple', 'gray', 'black', 'white'];
+// Quest LIST
+const QUEST_POOL = [
+  { id: 'purchase_pack_daily', type: 'daily', description: 'Purchase a Booster Pack', goal: 1, reward: { type: 'currency', amount: 100 } },
+  { id: 'collect_green_card_daily', type: 'daily', description: 'Collect a Green Card', goal: 1, reward: { type: 'currency', amount: 80 } },
+  { id: 'collect_red_card_daily', type: 'daily', description: 'Collect a Red Card', goal: 1, reward: { type: 'currency', amount: 80 } },
+  { id: 'collect_blue_card_daily', type: 'daily', description: 'Collect a Blue Card', goal: 1, reward: { type: 'currency', amount: 80 } },
+  { id: 'collect_yellow_card_daily', type: 'daily', description: 'Collect a Yellow Card', goal: 1, reward: { type: 'currency', amount: 80 } },
+  { id: 'collect_purple_card_daily', type: 'daily', description: 'Collect a Purple Card', goal: 1, reward: { type: 'currency', amount: 80 } },
+  { id: 'collect_gray_card_daily', type: 'daily', description: 'Collect a Gray Card', goal: 1, reward: { type: 'currency', amount: 80 } },
+  { id: 'collect_black_card_daily', type: 'daily', description: 'Collect a Black Card', goal: 1, reward: { type: 'currency', amount: 80 } },
+  { id: 'collect_white_card_daily', type: 'daily', description: 'Collect a White Card', goal: 1, reward: { type: 'currency', amount: 80 } },
+
+];
+const ACHIEVEMENTS = [
+  {
+    id: 'collect_3_green_cards',
+    description: 'Collect 3 green cards',
+    goal: 3,
+    color: 'green',
+    reward: { type: 'currency', amount: 200 }
+  },
+  {
+    id: 'collect_3_red_cards',
+    description: 'Collect 3 red cards',
+    goal: 3,
+    color: 'red',
+    reward: { type: 'currency', amount: 200 }
+  },
+  // ...add more colors as needed
+  {
+  id: 'collect_20_unique_cards',
+  description: 'Collect 20 different cards',
+  goal: 20,
+  reward: { type: 'currency', amount: 500 }
+  }
+];
+
+window.playerLevel = 1;
+window.playerExp = 0;
+window.playerQuests = {};
+window.activeQuests = [];
+window.questResetTimestamp = 0;
+window.playerAchievements = {};
 
 function getPlayerLevel() {
   return playerLevel;
