@@ -170,9 +170,9 @@ function purchaseCosmetic(cost, purchaseCallback, done) {
     return false;
   }
   playerCurrency = balance - cost;
-  guardedSaveProgress();
+  saveProgress();
   if (typeof purchaseCallback === "function") purchaseCallback(function() {
-    guardedSaveProgress();
+    saveProgress();
     if (typeof done === "function") done(true);
   });
   else if (typeof done === "function") done(true);
@@ -367,21 +367,21 @@ function getUnlockedAvatars() {
 }
 function setUnlockedAvatars(arr) {
   playerUnlockedAvatars = arr; 
-  guardedSaveProgress();
+  saveProgress();
 }
 function getUnlockedBanners() {
   return playerUnlockedBanners || [];
 }
 function setUnlockedBanners(arr) {
   playerUnlockedBanners = arr;  
-  guardedSaveProgress();
+  saveProgress();
 }
 function getUnlockedCardbacks() {
   return playerUnlockedCardbacks || [];
 }
 function setUnlockedCardbacks(arr) {
   playerUnlockedCardbacks = arr;
-  guardedSaveProgress();
+  saveProgress();
 }
 function renderShopCosmetics({
   gridId,
