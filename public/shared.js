@@ -182,7 +182,55 @@ function getCurrency() {
 }
 
 // NOTIFICATIONS
-function showToast(message) { /* unchanged */ }
+function showToast(message, options = {}) {
+  // Options: { duration: ms, type: 'success'|'error'|'info' }
+  const duration = options.duration || 2500;
+  const type = options.type || 'info';
+
+  // Create toast container if not exists
+  let container = document.getElementById('toast-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'toast-container';
+    container.style.position = 'fixed';
+    container.style.bottom = '24px';
+    container.style.left = '50%';
+    container.style.transform = 'translateX(-50%)';
+    container.style.display = 'flex';
+    container.style.flexDirection = 'column';
+    container.style.alignItems = 'center';
+    container.style.zIndex = '99999';
+    document.body.appendChild(container);
+  }
+
+  // Create toast message
+  const toast = document.createElement('div');
+  toast.className = 'toast-message ' + type;
+  toast.textContent = message;
+
+  // Styles
+  toast.style.background = type === 'success' ? '#3cb371'
+    : type === 'error' ? '#e74c3c'
+    : '#222b3b';
+  toast.style.color = '#fff';
+  toast.style.padding = '12px 32px';
+  toast.style.margin = '6px 0';
+  toast.style.borderRadius = '8px';
+  toast.style.fontSize = '1.05em';
+  toast.style.boxShadow = '0 2px 8px #0006';
+  toast.style.opacity = '0';
+  toast.style.transition = 'opacity 0.3s';
+
+  // Mount and animate
+  container.appendChild(toast);
+  setTimeout(() => { toast.style.opacity = '1'; }, 30);
+
+  // Remove after duration
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    setTimeout(() => toast.remove(), 300);
+  }, duration);
+}
 
 // --- FRIEND INVITE SYSTEM WITH FIRESTORE ---
 
