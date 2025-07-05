@@ -22,19 +22,6 @@ const loginPasswordInput = document.getElementById('login-password-input');
 const loginError         = document.getElementById('login-error');
 const mainHeader         = document.getElementById('main-header');
 const profileLogoutBtn   = document.getElementById('profile-logout-btn');
- 
-auth.onAuthStateChanged(function(user) {
-  if (user) {
-    let username = user.displayName 
-      || (user.email ? user.email.split('@')[0] : "")
-      || "";
-    db.collection('users').doc(user.uid).set({
-      displayName: username,
-      email: user.email || "",
-      lastLogin: firebase.firestore.FieldValue.serverTimestamp()
-    }, { merge: true });
-  }
-});
 
 function saveProgress() {
   const user = auth.currentUser;
@@ -113,9 +100,18 @@ window.loadProgress = loadProgress;
 // --- Auth state changes ---
 auth.onAuthStateChanged(function(user) {
   if (user) {
-    // Load progress from Firestore on login
+    let username = user.displayName 
+      || (user.email ? user.email.split('@')[0] : "")
+      || "";
+    db.collection('users').doc(user.uid).set({
+      displayName: username,
+      email: user.email || "",
+      lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+
+    // Only now, after login, load progress, then render UI
     window.loadProgress(function(data) {
-      data = data || {};  
+      data = data || {};
       window.playerCollection = data.collection;
       window.deckSlots = data.deckSlots;
       window.decks = data.decks;
@@ -130,7 +126,7 @@ auth.onAuthStateChanged(function(user) {
       window.playerUnlockedBanners = data.unlockedBanners;
       window.playerUnlockedCardbacks = data.unlockedCardbacks;
 
-      // Update your UI here...
+      // Only now, render UI
       renderPlayerLevel();
       renderGallery();
       refreshDeckSlotSelect();
