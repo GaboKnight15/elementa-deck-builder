@@ -10,7 +10,7 @@ firebase.initializeApp(firebaseConfig);
 window.auth = firebase.auth();
 
 const auth = firebase.auth();
-
+ 
 auth.onAuthStateChanged(function(user) {
   if (user) {
     let username = user.displayName 
