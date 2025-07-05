@@ -693,8 +693,6 @@ backBuilderBtn.onclick = showDeckSelection;
 // ==========================
 // === INITIALIZATION ===
 // ==========================
-refreshDeckSlotSelect();
-updateDeckDisplay();
 
 window.refreshDeckSlotSelect = refreshDeckSlotSelect;
 window.updateDeckDisplay = updateDeckDisplay;
