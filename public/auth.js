@@ -1,19 +1,8 @@
-// New login/signup menu elements
-const loginMenu          = document.getElementById('login-menu'); 
-const loginForm          = document.getElementById('login-form');
-const loginBtn           = document.getElementById('login-btn');
-const signupBtn          = document.getElementById('signup-btn');
-const loginUsernameInput = document.getElementById('login-username-input');
-const loginEmailInput    = document.getElementById('login-email-input');
-const loginPasswordInput = document.getElementById('login-password-input');
-const loginError         = document.getElementById('login-error');
-
 const profileArea            = document.getElementById('profile-area');
 const profileMenu            = document.getElementById('profile-menu');
 const profilePic             = document.getElementById('profile-pic');
 const profileUsernameDisplay = document.getElementById('profile-username-display');
 const profileChangePicBtn    = document.getElementById('change-profile-btn');
-const profileLogoutBtn       = document.getElementById('profile-logout-btn');
 
 const profileIconModal          = document.getElementById('profile-icon-modal');
 const profileIcons              = document.getElementById('profile-icons');
@@ -71,109 +60,7 @@ const bannerOptions = [
 ];
 const defaultBanner = "CardImages/Banners/DefaultBanner.png";
 
-// --- Load Profile From Firestore ---
-function loadProfile(user) {
-  if (!user) return;
-  firebase.firestore().collection('users').doc(user.uid).get()
-    .then(doc => {
-      let icon = defaultIcon;
-      let name = user.displayName || user.email;
-      let banner = defaultBanner;
-      if (doc.exists) {
-        const data = doc.data();
-        if (data && data.profilePic) icon = data.profilePic;
-        if (data && data.username) name = data.username;
-        if (data && data.profileBanner) banner = data.profileBanner;
-      }
-      profilePic.src = icon;
-      profileUsernameDisplay.textContent = name;
-      profileBanner.src = banner;
-    })
-    .catch(err => {
-      profilePic.src = defaultIcon;
-      profileBanner.src = defaultBanner;
-      profileUsernameDisplay.textContent = user.displayName || user.email || "";
-    });
-}
 
-// --- Auth state changes ---
-auth.onAuthStateChanged(function(user) {
-  if (user) {
-    // Load progress from Firestore on login
-    window.loadProgress(user, function(data) {
-      data = data || {};  
-      window.playerCollection = data.collection;
-      window.deckSlots = data.deckSlots;
-      window.decks = data.decks;
-      window.currentDeckSlot = data.currentDeckSlot;
-      window.playerCurrency = data.currency;
-      window.playerEssence = data.essence;
-      window.playerQuests = data.quests;
-      window.playerAchievements = data.achievements;
-      window.playerLevel = data.level;
-      window.playerExp = data.exp;
-      window.playerUnlockedAvatars = data.unlockedAvatars;
-      window.playerUnlockedBanners = data.unlockedBanners;
-      window.playerUnlockedCardbacks = data.unlockedCardbacks;
-
-      // Update your UI here...
-      renderPlayerLevel();
-      renderGallery();
-      refreshDeckSlotSelect();
-      updateDeckDisplay();
-      renderBuilder();
-      updateCurrencyDisplay();
-      updateEssenceDisplay();
-      updateCollectionDependentUI();
-      renderShop();
-      renderQuests();
-      updateQuestsNotificationDot();  
-      startQuestTimer();
-      updateAchievementsNotificationDot();
-      
-        
-      profileArea.style.display = '';
-      profileMenu.classList.remove('active');
-      loginMenu.classList.remove('active');
-      appMain.classList.add('active');
-      mainNav.classList.add('active');
-      loadProfile(user);  
-    });
-  } else {
-    // Reset UI and data to logged-out state
-    profileArea.style.display = 'none';
-    profileMenu.classList.remove('active');
-    loginMenu.classList.add('active');
-    appMain.classList.remove('active');
-    mainNav.classList.remove('active');
-    loginUsernameInput.value = "";
-    loginEmailInput.value = "";
-    loginPasswordInput.value = "";
-    loginError.textContent = "";
-
-    playerCollection = {};
-    deckSlots = ["Deck 1"];
-    decks = { "Deck 1": {} };
-    currentDeckSlot = "Deck 1";
-    playerCurrency = 0;
-    playerEssence = 0;
-    playerQuests = {};
-    playerAchievements = {};
-    playerLevel = 1;
-    playerExp = 0;
-    playerUnlockedAvatars = [defaultIcon];
-    playerUnlockedBanners = [defaultBanner];
-    playerUnlockedCardbacks = [];
-    renderPlayerLevel();
-    renderGallery();
-    refreshDeckSlotSelect();
-    updateDeckDisplay();
-    renderBuilder();
-    updateCurrencyDisplay();
-    updateEssenceDisplay();
-    updateCollectionDependentUI();
-  }
-});
 
 // --- Profile / Auth DOM Elements ---
 document.addEventListener('DOMContentLoaded', function () {
@@ -318,78 +205,4 @@ document.addEventListener('DOMContentLoaded', function () {
   profileMenu.onclick = function(e) { 
     e.stopPropagation(); 
   };
-
-  // --- Auth logic for login/signup ---
-  loginForm.onsubmit = function(e) {
-    e.preventDefault();
-    login();
-  };
-  loginBtn.onclick = function(e) {
-    e.preventDefault();
-    login();
-  };
-  signupBtn.onclick = function(e) {
-    e.preventDefault();
-    signup();
-  };
-
-function signup() {
-  const email = loginEmailInput.value.trim();
-  const password = loginPasswordInput.value;
-  const username = loginUsernameInput.value.trim();
-  loginError.textContent = "";
-  if (!username) {
-    loginError.textContent = "Enter a username.";
-    return;
-  }
-  auth.createUserWithEmailAndPassword(email, password)
-    .then(function(userCredential) {
-      console.log("[auth] Signup successful", userCredential.user);
-      // Set initial profile and progress fields in Firestore for new user
-      const userDoc = firebase.firestore().collection('users').doc(userCredential.user.uid);
-      return userCredential.user.updateProfile({
-        displayName: username
-      }).then(function() {
-        // Set profile fields and initialize all progress fields
-        return userDoc.set({
-          username: username,
-          profilePic: defaultIcon,
-          profileBanner: defaultBanner,
-          unlockedAvatars: [defaultIcon],
-          unlockedBanners: [defaultBanner],
-          // --- Progress fields ---
-          collection: {},
-          deckSlots: ["Deck 1"],
-          decks: { "Deck 1": {} },
-          currentDeckSlot: "Deck 1",
-          currency: 0,
-          essence: 0,
-          quests: {},
-          achievements: {},
-          level: 1,
-          exp: 0,
-          unlockedCardbacks: []
-        }, {merge: true});
-      });
-    })
-    .catch(function(err) {
-      loginError.textContent = err.message;
-      console.error("[auth] Signup failed", err);
-    });
-}
-function login() {
-  const email = loginEmailInput.value.trim();
-  const password = loginPasswordInput.value;
-  loginError.textContent = "";
-  auth.signInWithEmailAndPassword(email, password)
-    .then(function(userCredential) {
-      console.log("[auth] Login successful", userCredential.user);
-    })
-    .catch(function(err) {
-      loginError.textContent = err.message;
-      console.error("[auth] Login failed", err);
-    });
-}
-
-  profileLogoutBtn.onclick = function() { auth.signOut(); };
 });
