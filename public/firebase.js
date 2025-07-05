@@ -58,7 +58,7 @@ function loadProgress(cb) {
   const user = firebase.auth().currentUser;
   if (!user) {
     console.warn("No user logged in, cannot load progress.");
-    if (typeof cb === "function") cb();
+    if (typeof cb === "function") cb({});
     return;
   }
   firebase.firestore().collection('users').doc(user.uid).get()
@@ -77,11 +77,11 @@ function loadProgress(cb) {
       window.playerUnlockedAvatars = data.unlockedAvatars || [];
       window.playerUnlockedBanners = data.unlockedBanners || [];
       window.playerUnlockedCardbacks = data.unlockedCardbacks || [];
-      if (typeof cb === "function") cb();
+      if (typeof cb === "function") cb(data);
     })
     .catch((error) => {
-      console.error("Error loading progress: ", error);
-      if (typeof cb === "function") cb(error);
+      console.error("Error loading progress:", error);
+      if (typeof cb === "function") cb({}); // Call with empty object, NOT the error
     });
 }
 window.loadProgress = loadProgress;
