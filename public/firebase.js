@@ -161,19 +161,19 @@ auth.onAuthStateChanged(function(user) {
     loginEmailInput.value = "";
     loginPasswordInput.value = "";
     loginError.textContent = "";
-    playerCollection = {};
-    deckSlots = ["Deck 1"];
-    decks = { "Deck 1": {} };
-    currentDeckSlot = "Deck 1";
-    playerCurrency = 0;
-    playerEssence = 0;
-    playerQuests = {};
-    playerAchievements = {};
-    playerLevel = 1;
-    playerExp = 0;
-    playerUnlockedAvatars = [defaultIcon];
-    playerUnlockedBanners = [defaultBanner];
-    playerUnlockedCardbacks = [];
+    window.playerCollection = {};
+    window.deckSlots = ["Deck 1"];
+    window.decks = { "Deck 1": {} };
+    window.currentDeckSlot = "Deck 1";
+    window.playerCurrency = 0;
+    window.playerEssence = 0;
+    window.playerQuests = {};
+    window.playerAchievements = {};
+    window.playerLevel = 1;
+    window.playerExp = 0;
+    window.playerUnlockedAvatars = [defaultIcon];
+    window.playerUnlockedBanners = [defaultBanner];
+    window.playerUnlockedCardbacks = [];
     renderPlayerLevel();
     renderGallery();
     refreshDeckSlotSelect();
@@ -258,16 +258,3 @@ if (signupBtn) signupBtn.onclick = function(e) {
   e.preventDefault();
   signup();
 };
-  // --- Auth logic for login/signup ---
-  loginForm.onsubmit = function(e) {
-    e.preventDefault();
-    login();
-  };
-  loginBtn.onclick = function(e) {
-    e.preventDefault();
-    login();
-  };
-  signupBtn.onclick = function(e) {
-    e.preventDefault();
-    signup();
-  };
