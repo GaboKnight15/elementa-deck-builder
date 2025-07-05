@@ -64,13 +64,51 @@ function loadProgress(cb) {
   firebase.firestore().collection('users').doc(user.uid).get()
     .then((doc) => {
       const data = doc.exists ? doc.data() : {};
-      console.log("RAW LOADED DATA FROM FIRESTORE:", data); // <-- Test
+      console.log("RAW LOADED DATA FROM FIRESTORE:", data);
+      // Fallback for old users: initialize missing progress fields if not present
+      let needsInit = false;
+      if (typeof data.currency !== 'number') needsInit = true;
+      if (typeof data.essence !== 'number') needsInit = true;
+      if (!data.collection) needsInit = true;
+      if (!data.deckSlots) needsInit = true;
+      if (!data.decks) needsInit = true;
+      if (!data.currentDeckSlot) needsInit = true;
+      if (!data.quests) needsInit = true;
+      if (!data.achievements) needsInit = true;
+      if (typeof data.level !== 'number') needsInit = true;
+      if (typeof data.exp !== 'number') needsInit = true;
+      if (!data.unlockedAvatars) needsInit = true;
+      if (!data.unlockedBanners) needsInit = true;
+      if (!data.unlockedCardbacks) needsInit = true;
+
+      // If progress fields missing, set defaults and merge into doc
+      if (needsInit) {
+        const defaultFields = {
+          collection: data.collection || {},
+          deckSlots: data.deckSlots || ["Deck 1"],
+          decks: data.decks || { "Deck 1": {} },
+          currentDeckSlot: data.currentDeckSlot || "Deck 1",
+          currency: typeof data.currency === 'number' ? data.currency : 0,
+          essence: typeof data.essence === 'number' ? data.essence : 0,
+          quests: data.quests || {},
+          achievements: data.achievements || {},
+          level: typeof data.level === 'number' ? data.level : 1,
+          exp: typeof data.exp === 'number' ? data.exp : 0,
+          unlockedAvatars: data.unlockedAvatars || [],
+          unlockedBanners: data.unlockedBanners || [],
+          unlockedCardbacks: data.unlockedCardbacks || []
+        };
+        firebase.firestore().collection('users').doc(user.uid).set(defaultFields, { merge: true });
+        // Use these defaults for now
+        Object.assign(data, defaultFields);
+      }
+
       window.playerCollection = data.collection || {};
       window.deckSlots = data.deckSlots || ["Deck 1"];
       window.decks = data.decks || { "Deck 1": {} };
       window.currentDeckSlot = data.currentDeckSlot || "Deck 1";
       window.playerCurrency = (typeof data.currency === 'number') ? data.currency : 0;
-          console.log("Loaded currency from Firestore:", window.playerCurrency); // <-- Test
+      console.log("Loaded currency from Firestore:", window.playerCurrency);
       window.playerEssence = (typeof data.essence === 'number') ? data.essence : 0;
       window.playerQuests = data.quests || {};
       window.playerAchievements = data.achievements || {};
@@ -83,7 +121,7 @@ function loadProgress(cb) {
     })
     .catch((error) => {
       console.error("Error loading progress:", error);
-      if (typeof cb === "function") cb({}); // Call with empty object, NOT the error
+      if (typeof cb === "function") cb({});
     });
 }
 window.loadProgress = loadProgress;
