@@ -165,13 +165,14 @@ function getRandomCards(n, setName) {
 function purchaseCosmetic(cost, purchaseCallback, done) {
   let balance = getCurrency();
   if (typeof balance !== "number" || balance < cost) {
-    alert("Not enough coins!");
+    showToast("Not enough coins!", { type: "error" });
     if (typeof done === "function") done(false);
     return false;
   }
   playerCurrency = balance - cost;
   saveProgress();
   updateCurrencyDisplay();
+  showToast("Purchase successful!", { type: "success" });    
   if (typeof purchaseCallback === "function") purchaseCallback(function() {
     saveProgress();
     updateCurrencyDisplay();
