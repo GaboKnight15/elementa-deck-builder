@@ -64,17 +64,18 @@ function loadProgress(cb) {
   firebase.firestore().collection('users').doc(user.uid).get()
     .then((doc) => {
       const data = doc.exists ? doc.data() : {};
+      console.log("RAW LOADED DATA FROM FIRESTORE:", data); // <-- Test
       window.playerCollection = data.collection || {};
       window.deckSlots = data.deckSlots || ["Deck 1"];
       window.decks = data.decks || { "Deck 1": {} };
       window.currentDeckSlot = data.currentDeckSlot || "Deck 1";
-      window.playerCurrency = data.currency || 0;
+      window.playerCurrency = (typeof data.currency === 'number') ? data.currency : 0;
           console.log("Loaded currency from Firestore:", window.playerCurrency); // <-- Test
-      window.playerEssence = data.essence || 0;
+      window.playerEssence = (typeof data.essence === 'number') ? data.essence : 0;
       window.playerQuests = data.quests || {};
       window.playerAchievements = data.achievements || {};
-      window.playerLevel = data.level || 1;
-      window.playerExp = data.exp || 0;
+      window.playerLevel = (typeof data.level === 'number') ? data.level : 1;
+      window.playerExp = (typeof data.exp === 'number') ? data.exp : 0;
       window.playerUnlockedAvatars = data.unlockedAvatars || [];
       window.playerUnlockedBanners = data.unlockedBanners || [];
       window.playerUnlockedCardbacks = data.unlockedCardbacks || [];
