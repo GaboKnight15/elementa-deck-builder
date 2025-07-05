@@ -55,7 +55,6 @@ function saveProgress() {
 window.saveProgress = saveProgress;
 
 function loadProgress(cb) {
-  const user = firebase.auth().currentUser;
   if (!user) {
     console.warn("No user logged in, cannot load progress.");
     if (typeof cb === "function") cb({});
