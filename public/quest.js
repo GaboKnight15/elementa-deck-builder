@@ -478,12 +478,3 @@ window.renderPlayerLevel = renderPlayerLevel;
 window.updateQuestsNotificationDot = updateQuestsNotificationDot;
 window.updateAchievementsNotificationDot = updateAchievementsNotificationDot;
 window.startQuestTimer = startQuestTimer;
-
-// Initialize on page load
-window.addEventListener('DOMContentLoaded', function() {
-  window.renderQuests();
-  window.updateQuestsNotificationDot();
-  window.startQuestTimer();
-  window.updateAchievementsNotificationDot();
-  window.renderPlayerLevel();
-});
