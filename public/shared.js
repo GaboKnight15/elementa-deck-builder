@@ -64,12 +64,58 @@ if (typeof window.renderGallery === 'function') {
 // ==========================
 // === RENDERING / UI ===
 // ==========================
-function getCardBgClass(card) { /* unchanged */ }
+function getCardBgClass(card) {
+  let colors = Array.isArray(card.color) ? card.color : [card.color];
+  colors = colors.filter(Boolean).map(c => c.toLowerCase());
+  if (colors.length === 1) return `card-bg-${colors[0]}`;
+  if (colors.length === 2) return `card-bg-${colors[0]}-${colors[1]}`;
+  return `card-bg-gold`;
+}
 // LOADING SCREEN
-function showLoadingOverlay() { /* unchanged */ }
-function hideLoadingOverlay() { /* unchanged */ }
+function showLoadingOverlay() {
+  const overlay = document.getElementById('loading-overlay');
+  if (overlay) overlay.style.display = 'flex';
+}
+function hideLoadingOverlay() {
+  const overlay = document.getElementById('loading-overlay');
+  if (overlay) overlay.style.display = 'none';
+}
 // VIEW CARDS
-function showFullCardModal(cardObj) { /* unchanged */ }
+function showFullCardModal(cardObj) {
+  const card = dummyCards.find(c => c.id === (cardObj.cardId || cardObj.id));
+  if (!card) return;
+  const collection = getCollection();
+  const owned = collection[card.id] || 0;
+
+  const modal = document.getElementById('image-modal');
+  const modalContent = document.getElementById('modal-img-content');
+  const modalImg = document.getElementById('modal-img');
+  if (modalContent) {
+    modalContent.innerHTML = `
+      <img src="${card.image}" alt="${card.name}" ${owned === 0 ? 'class="card-image-locked"' : ''}>
+      <div style="text-align:center;">
+        ${card.hp !== undefined ? `HP: ${card.hp}` : ''}
+        ${card.atk !== undefined ? ` | ATK: ${card.atk}` : ''}
+        ${card.def !== undefined ? ` | DEF: ${card.def}` : ''}
+        ${card.cost !== undefined ? ` | Cost: ${card.cost}` : ''}
+      </div>
+      <div style="text-align:center;margin:8px 0;">
+        ${card.rarity || ''} ${Array.isArray(card.type) ? card.type.join(', ') : card.type || ''}
+      </div>
+      <div style="text-align:center;font-size:0.98em;color:#555;">
+        ${card.text || ''}
+      </div>
+    `;
+    modal.style.display = 'flex';
+    if (modalImg) modalImg.style.display = "none";
+  } else {
+    modalImg.src = card.image;
+    if (owned === 0) modalImg.classList.add('card-image-locked');
+    else modalImg.classList.remove('card-image-locked');
+    modalImg.style.display = "block";
+    modal.style.display = "flex";
+  }
+}
 // IMAGE MODAL CLOSE
 document.getElementById('image-modal').onclick = (e) => {
   if (e.target.id === 'image-modal') {
