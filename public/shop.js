@@ -97,9 +97,9 @@ const cardbackPrices = {
   "OtherImages/Cardbacks/Cardback2.png": 100,
   "OtherImages/Cardbacks/DefaultCardback.png": 100
 };
-const INDIVIDUAL_CARDS_SHOP_KEY = "shopIndividualCards";
-const INDIVIDUAL_CARDS_RESET_KEY = "shopIndividualCardsReset";
-const INDIVIDUAL_CARDS_PURCHASED_KEY = "shopIndividualCardsPurchased";
+const INDIVIDUAL_CARDS_SHOP_KEY = getUserShopKey(INDIVIDUAL_CARDS_SHOP_KEY_BASE);
+const INDIVIDUAL_CARDS_RESET_KEY = getUserShopKey(INDIVIDUAL_CARDS_RESET_KEY_BASE);
+const INDIVIDUAL_CARDS_PURCHASED_KEY = getUserShopKey(INDIVIDUAL_CARDS_PURCHASED_KEY_BASE);
 const INDIVIDUAL_CARD_SLOTS = [
   { rarity: "Legendary", count: 1 },
   { rarity: "Epic", count: 2 },
@@ -510,15 +510,18 @@ function getRandomCardsByRarity(rarity, count, excludeIds=[]) {
   return selected;
 }
 
+
 function getOrGenerateDailyShopCards() {
+  const SHOP_KEY = getUserShopKey("shopIndividualCards");
+  const RESET_KEY = getUserShopKey("shopIndividualCardsReset");
+  const PURCHASED_KEY = getUserShopKey("shopIndividualCardsPurchased");
+  
   const today = getTodayUtcDateString();
-  const lastReset = localStorage.getItem(INDIVIDUAL_CARDS_RESET_KEY);
+  const lastReset = localStorage.getItem(RESET_KEY);
   let shopCards = [];
   if (lastReset === today) {
-    // Already generated for today
-    shopCards = JSON.parse(localStorage.getItem(INDIVIDUAL_CARDS_SHOP_KEY)) || [];
+    shopCards = JSON.parse(localStorage.getItem(SHOP_KEY)) || [];
   } else {
-    // Generate new selection
     shopCards = [];
     let excludeIds = [];
     INDIVIDUAL_CARD_SLOTS.forEach(slot => {
@@ -526,24 +529,27 @@ function getOrGenerateDailyShopCards() {
       excludeIds.push(...cards.map(c => c.id));
       shopCards.push(...cards);
     });
-    localStorage.setItem(INDIVIDUAL_CARDS_SHOP_KEY, JSON.stringify(shopCards));
-    localStorage.setItem(INDIVIDUAL_CARDS_RESET_KEY, today);
-    localStorage.setItem(INDIVIDUAL_CARDS_PURCHASED_KEY, JSON.stringify([]));
+    localStorage.setItem(SHOP_KEY, JSON.stringify(shopCards));
+    localStorage.setItem(RESET_KEY, today);
+    localStorage.setItem(PURCHASED_KEY, JSON.stringify([]));
   }
   return shopCards;
 }
 function getPurchasedShopCards() {
-  return JSON.parse(localStorage.getItem(INDIVIDUAL_CARDS_PURCHASED_KEY)) || [];
+  const PURCHASED_KEY = getUserShopKey("shopIndividualCardsPurchased");
+  return JSON.parse(localStorage.getItem(PURCHASED_KEY)) || [];
 }
 function markShopCardPurchased(cardId) {
+  const PURCHASED_KEY = getUserShopKey("shopIndividualCardsPurchased");
   let purchased = getPurchasedShopCards();
   if (!purchased.includes(cardId)) {
     purchased.push(cardId);
-    localStorage.setItem(INDIVIDUAL_CARDS_PURCHASED_KEY, JSON.stringify(purchased));
+    localStorage.setItem(PURCHASED_KEY, JSON.stringify(purchased));
   }
 }
 function resetPurchasedShopCards() {
-  localStorage.setItem(INDIVIDUAL_CARDS_PURCHASED_KEY, JSON.stringify([]));
+  const PURCHASED_KEY = getUserShopKey("shopIndividualCardsPurchased");
+  localStorage.setItem(PURCHASED_KEY, JSON.stringify([]));
 }
 
 function renderIndividualCardsShop(shouldAnimateFlip = false) {
@@ -815,7 +821,9 @@ function formatTimerMs(ms) {
   return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
 }
 function forceRefreshIndividualShopCards() {
-  // Always pick new cards and reset purchased, using today's date
+  const SHOP_KEY = getUserShopKey("shopIndividualCards");
+  const RESET_KEY = getUserShopKey("shopIndividualCardsReset");
+  const PURCHASED_KEY = getUserShopKey("shopIndividualCardsPurchased");
   const today = getTodayUtcDateString();
   let shopCards = [];
   let excludeIds = [];
@@ -824,9 +832,9 @@ function forceRefreshIndividualShopCards() {
     excludeIds.push(...cards.map(c => c.id));
     shopCards.push(...cards);
   });
-  localStorage.setItem(INDIVIDUAL_CARDS_SHOP_KEY, JSON.stringify(shopCards));
-  localStorage.setItem(INDIVIDUAL_CARDS_RESET_KEY, today);
-  resetPurchasedShopCards();
+  localStorage.setItem(SHOP_KEY, JSON.stringify(shopCards));
+  localStorage.setItem(RESET_KEY, today);
+  localStorage.setItem(PURCHASED_KEY, JSON.stringify([]));
 }
   // FLIP ANIMATION //
 function animateCardFlipSequence(cardDivs, onAfterFlip) {
@@ -843,6 +851,10 @@ function animateCardFlipSequence(cardDivs, onAfterFlip) {
       }, 600); // after flip
     }, 180 * i);
   });
+}
+function getUserShopKey(base) {
+  const uid = getCurrentUserId() || "default";
+  return `${base}_${uid}`;
 }
 // INITIALIZATION //
 function renderShop() {
