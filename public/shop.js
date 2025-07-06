@@ -632,80 +632,80 @@ function updateIndividualCardsTimer() {
 
 let flipDivs = [];
       
-  INDIVIDUAL_CARD_SLOTS.forEach(slot => {
-    shopCards.filter(card => card.rarity === slot.rarity).forEach(card => {
-      const owned = (getCollection()[card.id] || 0) > 0;
-      const isPurchased = purchased.includes(card.id);
-          
-      // ---- FLIP STRUCTURE ----
-      const cardOuterDiv = document.createElement('div');
-      cardOuterDiv.className = 'shop-individual-card';
+INDIVIDUAL_CARD_SLOTS.forEach(slot => {
+  shopCards.filter(card => card.rarity === slot.rarity).forEach(card => {
+    const isPurchased = purchased.includes(card.id);
 
-      // Flippable card
-      const cardFlipDiv = document.createElement('div');
-      cardFlipDiv.className = 'opened-card opened-card-flip';
-      cardFlipDiv.style.margin = "0 auto";
-      cardFlipDiv.style.width = "90px";
-      cardFlipDiv.style.height = "128px";
+    // ---- FLIP STRUCTURE ----
+    const cardOuterDiv = document.createElement('div');
+    cardOuterDiv.className = 'shop-individual-card';
 
-      // inner
-      const inner = document.createElement('div');
-      inner.className = 'opened-card-inner';
+    // Flippable card
+    const cardFlipDiv = document.createElement('div');
+    cardFlipDiv.className = 'opened-card opened-card-flip';
+    cardFlipDiv.style.margin = "0 auto";
+    cardFlipDiv.style.width = "90px";
+    cardFlipDiv.style.height = "128px";
 
-      // back
-      const back = document.createElement('div');
-      back.className = 'opened-card-back';
-      const backImg = document.createElement('img');
-      backImg.src = "CardImages/Domains/placeholder.png";
-      backImg.alt = "Card Back";
-      backImg.style.width = "90px";
-      backImg.style.height = "128px";
-      back.appendChild(backImg);
+    // inner
+    const inner = document.createElement('div');
+    inner.className = 'opened-card-inner';
 
-      // front
-      const front = document.createElement('div');
-      front.className = 'opened-card-front';
-      const frontImg = document.createElement('img');
-      frontImg.src = card.image;
-      frontImg.alt = card.name;
-      frontImg.style.width = "90px";
-      frontImg.style.height = "128px";
-      if (owned || isPurchased) frontImg.style.filter = 'grayscale(1) brightness(0.7)';
-      front.appendChild(frontImg);
+    // back
+    const back = document.createElement('div');
+    back.className = 'opened-card-back';
+    const backImg = document.createElement('img');
+    backImg.src = "CardImages/Domains/placeholder.png";
+    backImg.alt = "Card Back";
+    backImg.style.width = "90px";
+    backImg.style.height = "128px";
+    back.appendChild(backImg);
 
-      // Modal on click
-      front.onclick = function() {
-        showIndividualCardModal(card, isPurchased || owned);
-      };
+    // front
+    const front = document.createElement('div');
+    front.className = 'opened-card-front';
+    const frontImg = document.createElement('img');
+    frontImg.src = card.image;
+    frontImg.alt = card.name;
+    frontImg.style.width = "90px";
+    frontImg.style.height = "128px";
+    // Only gray out if purchased during this shop cycle
+    if (isPurchased) frontImg.style.filter = 'grayscale(1) brightness(0.7)';
+    front.appendChild(frontImg);
 
-      inner.appendChild(back);
-      inner.appendChild(front);
-      cardFlipDiv.appendChild(inner);
-      cardOuterDiv.appendChild(cardFlipDiv);
+    // Modal on click
+    front.onclick = function() {
+      showIndividualCardModal(card, isPurchased);
+    };
 
-      // Card details below
-      const name = document.createElement('div');
-      name.className = 'shop-individual-card-name';
-      name.style.color = "#ffe066";
-      name.textContent = card.name;
-      cardOuterDiv.appendChild(name);
+    inner.appendChild(back);
+    inner.appendChild(front);
+    cardFlipDiv.appendChild(inner);
+    cardOuterDiv.appendChild(cardFlipDiv);
 
-      const priceDiv = document.createElement('div');
-      priceDiv.className = 'currency-display';
-      priceDiv.innerHTML = `<img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins"><span>${individualCardPrices[card.rarity]}</span>`;
-      cardOuterDiv.appendChild(priceDiv);
+    // Card details below
+    const name = document.createElement('div');
+    name.className = 'shop-individual-card-name';
+    name.style.color = "#ffe066";
+    name.textContent = card.name;
+    cardOuterDiv.appendChild(name);
 
-      const rarityBadge = document.createElement('div');
-      rarityBadge.className = 'shop-individual-card-rarity';
-      rarityBadge.textContent = card.rarity;
-      cardOuterDiv.appendChild(rarityBadge);
+    const priceDiv = document.createElement('div');
+    priceDiv.className = 'currency-display';
+    priceDiv.innerHTML = `<img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins"><span>${individualCardPrices[card.rarity]}</span>`;
+    cardOuterDiv.appendChild(priceDiv);
 
-      if (owned || isPurchased) cardOuterDiv.classList.add('card-locked');
+    const rarityBadge = document.createElement('div');
+    rarityBadge.className = 'shop-individual-card-rarity';
+    rarityBadge.textContent = card.rarity;
+    cardOuterDiv.appendChild(rarityBadge);
 
-      container.appendChild(cardOuterDiv);
-      flipDivs.push(cardFlipDiv);
-    });
+    if (isPurchased) cardOuterDiv.classList.add('card-locked');
+
+    container.appendChild(cardOuterDiv);
+    flipDivs.push(cardFlipDiv);
   });
+});
 
   // --- ANIMATE FLIP IF REQUESTED ---
   if (shouldAnimateFlip) {
@@ -755,7 +755,7 @@ function showIndividualCardModal(card, isPurchased) {
   document.body.appendChild(modal);
 
   // "Get" button logic
-  modal.querySelector('#individual-card-get-btn').onclick = function() {
+ modal.querySelector('#individual-card-get-btn').onclick = function() {
     if (isPurchased) return;
     // Currency check
     const price = individualCardPrices[card.rarity];
