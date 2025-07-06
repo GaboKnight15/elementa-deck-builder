@@ -359,6 +359,12 @@ button {
 #quests-modal .quests-timer {
   margin-bottom: 10px;
 }
+.achievement-image {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  margin-right: 12px;
+}
 .achievement-fade-out {
   animation: achievement-fade-out 0.8s forwards cubic-bezier(.6,.1,.6,1);
   pointer-events: none;
