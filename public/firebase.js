@@ -105,6 +105,7 @@ auth.onAuthStateChanged(function(user) {
       updateEssenceDisplay();
       updateCollectionDependentUI();
       renderShop();
+      ensureQuestSlots();
       renderQuests();
       updateQuestsNotificationDot();  
       startQuestTimer();
