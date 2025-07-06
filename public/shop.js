@@ -844,6 +844,6 @@ function renderShop() {
       renderShopBanners(),
       renderShopAvatars()
       renderShopPacks();
-      renderIndividualCardsShop(true);
+      renderIndividualCardsShop(false);
 }
 window.renderShop = renderShop;
