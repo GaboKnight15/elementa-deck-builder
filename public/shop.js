@@ -724,6 +724,9 @@ function showIndividualCardModal(card, isPurchased) {
   // Remove existing modal
   let modal = document.getElementById('individual-card-modal');
   if (modal) modal.remove();
+  // Get the amount owned from the collection
+  const collection = getCollection();
+  const ownedCount = collection[card.id] || 0;
 
   modal = document.createElement('div');
   modal.id = 'individual-card-modal';
@@ -732,6 +735,9 @@ function showIndividualCardModal(card, isPurchased) {
   modal.innerHTML = `
     <div class="modal-content" style="max-width:380px;align-items:center;">
       <h3>${card.name}</h3>
+      <div style="margin-top:2px;font-size:1.05em;color:#ffe066;margin-bottom:4px;">
+        Owned: <b>${ownedCount}</b>
+      </div>
       <img src="${card.image}" alt="${card.name}" style="width:180px;margin:12px auto;display:block;">
       <div style="margin:10px 0;">
         <span class="shop-individual-card-rarity">${card.rarity}</span>
@@ -741,8 +747,8 @@ function showIndividualCardModal(card, isPurchased) {
         </span>
       </div>
       <div style="display:flex;gap:18px;justify-content:center;margin-top:10px;">
-        <button id="individual-card-get-btn" class="btn-primary"${isPurchased ? " disabled" : ""}>Get</button>
-        <button id="individual-card-cancel-btn" class="btn-secondary">Cancel</button>
+        <button id="individual-card-get-btn" class="btn-secondary"${isPurchased ? " disabled" : ""}>Get</button>
+        <button id="individual-card-cancel-btn" class="btn-negative-secondary">Cancel</button>
       </div>
     </div>
   `;
