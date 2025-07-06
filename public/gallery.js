@@ -72,6 +72,14 @@ function createCardGallery(card) {
     createBtnImg.alt = 'Create';
     createBtnImg.title = 'Create (spend Essence to make 1 copy)';
     createBtnImg.className = "gallery-action-btn";
+    // Set styles dynamically
+    createBtnImg.style.cursor = "pointer";
+    createBtnImg.style.width = "38px";
+    createBtnImg.style.height = "38px";
+    createBtnImg.style.maxWidth = "38px";
+    createBtnImg.style.maxHeight = "38px";
+    createBtnImg.style.objectFit = "contain";
+    createBtnImg.style.transition = "transform 0.15s, box-shadow 0.15s";
     createBtnImg.onclick = function(e) {
       e.stopPropagation();
       const cost = 50;
@@ -105,6 +113,14 @@ function createCardGallery(card) {
     voidBtnImg.alt = 'Void';
     voidBtnImg.title = 'Void (destroy 1 copy for Essence)';
     voidBtnImg.className = "gallery-action-btn";
+    // Set styles dynamically
+    voidBtnImg.style.cursor = "pointer";
+    voidBtnImg.style.width = "38px";
+    voidBtnImg.style.height = "38px";
+    voidBtnImg.style.maxWidth = "38px";
+    voidBtnImg.style.maxHeight = "38px";
+    voidBtnImg.style.objectFit = "contain";
+    voidBtnImg.style.transition = "transform 0.15s, box-shadow 0.15s";
     voidBtnImg.onclick = function(e) {
       e.stopPropagation();
       const collection = getCollection();
