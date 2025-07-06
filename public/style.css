@@ -1269,6 +1269,53 @@ button {
   z-index: 1100;
   gap: 15px;
 }
+/* 1. Profile Panel: Ensure it fits the left sidebar */
+#battlefield-leftbar .profile-panel,
+#battlefield-leftbar .profile,
+#my-profile, #opponent-profile {
+  max-width: 98%;        /* Prevent overflow */
+  width: 100%;           /* Fill parent */
+  box-sizing: border-box;
+  margin: 0 auto 8px auto; /* Center and give space below */
+  padding: 8px 8px 8px 8px; /* Adjust padding as needed */
+  border-radius: 12px;
+  background: #232a3c;
+  display: flex;
+  align-items: center;
+  gap: 0.9em;
+  overflow: hidden;
+}
+#my-profile img, #opponent-profile img {
+  max-width: 44px;
+  max-height: 44px;
+  border-radius: 50%;
+}
+
+/* 2. Phase Bar: Prevent overflow in rightbar */
+#battlefield-rightbar, .battlefield-rightbar {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+#phase-bar {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: auto;
+  display: flex;
+  flex-wrap: wrap; /* Allows phase items to wrap if too wide */
+  justify-content: center;
+  margin: 0 auto;
+}
+
+#phase-badge {
+  max-width: 100%;
+  box-sizing: border-box;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .card-battlefield {
   transition: transform 0.18s, box-shadow 0.18s;
   position: relative;
