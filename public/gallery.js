@@ -192,6 +192,23 @@ function renderGallery() {
     gallery.appendChild(cardDiv);
   }); 
 }
+// FAVORITE CARDS
+function getFavoriteCards() {
+  return Array.isArray(window.favoriteCards) ? window.favoriteCards : [];
+}
+function isFavorite(cardId) {
+  return getFavoriteCards().includes(cardId);
+}
+function toggleFavorite(cardId) {
+  if (!window.favoriteCards) window.favoriteCards = [];
+  const idx = window.favoriteCards.indexOf(cardId);
+  if (idx >= 0) {
+    window.favoriteCards.splice(idx, 1);
+  } else {
+    window.favoriteCards.push(cardId);
+  }
+  saveProgress();
+}
 // ==========================
 // === EVENT LISTENERS ===
 // ==========================
