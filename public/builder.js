@@ -83,19 +83,20 @@ function renderDeckSelection() {
     const slotName = deckSlots[i];
     const tile = document.createElement('div');
     tile.className = 'deck-slot-tile';
+    tile.style.position = "relative"; // Ensure positioning for the star/button
     if (slotName) {
       const deck = decks[slotName] || {};
 
-    if (deck.highlightArt) {
-      const validLegendary = Object.keys(deck)
-        .map(cardId => dummyCards.find(card => card.id === cardId && card.rarity === 'Legendary'))
-        .filter(Boolean)
-        .some(card => (card.artwork || card.image) === deck.highlightArt);
-      if (!validLegendary) {
-        delete deck.highlightArt;
-        saveProgress();
+      if (deck.highlightArt) {
+        const validLegendary = Object.keys(deck)
+          .map(cardId => dummyCards.find(card => card.id === cardId && card.rarity === 'Legendary'))
+          .filter(Boolean)
+          .some(card => (card.artwork || card.image) === deck.highlightArt);
+        if (!validLegendary) {
+          delete deck.highlightArt;
+          saveProgress();
+        }
       }
-    }
       if (deck.highlightArt) {
         tile.style.backgroundImage = `url('${deck.highlightArt}')`;
         tile.style.backgroundSize = "cover";
@@ -104,6 +105,33 @@ function renderDeckSelection() {
       } else {
         tile.textContent = slotName;
       }
+
+      // --- ACTIVE DECK BUTTON/STAR ---
+      const isActive = slotName === currentDeckSlot;
+      const activeBtn = document.createElement('button');
+      activeBtn.innerHTML = isActive ? '⭐ Active' : '☆ Set Active';
+      activeBtn.className = 'deck-active-btn';
+      activeBtn.style.position = 'absolute';
+      activeBtn.style.top = '7px';
+      activeBtn.style.right = '7px';
+      activeBtn.style.fontSize = '1em';
+      activeBtn.style.background = 'none';
+      activeBtn.style.border = 'none';
+      activeBtn.style.color = '#ffe066';
+      activeBtn.style.cursor = 'pointer';
+      activeBtn.style.zIndex = '5';
+      if (isActive) {
+        activeBtn.disabled = true;
+        tile.classList.add('active-deck-tile'); // for CSS highlight
+      }
+      activeBtn.onclick = (e) => {
+        e.stopPropagation();
+        currentDeckSlot = slotName;
+        saveProgress();
+        renderDeckSelection();
+      };
+      tile.appendChild(activeBtn);
+
       tile.onclick = (e) => {
         showDeckTileMenu(slotName);
       };
