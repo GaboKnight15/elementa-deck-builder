@@ -454,24 +454,6 @@ button {
   margin: 0;
   box-shadow: 0 1px 4px rgba(0,0,0,0.12);
 }
-
-.gallery-action-btn {
-  cursor: pointer;
-  background: none;
-  border: none;
-  width: 38px;
-  height: 38px;
-  max-width: 38px;
-  max-height: 38px;
-  object-fit: contain;
-  border-radius: 8px;
-  transition: transform 0.15s, box-shadow 0.15s;
-}
-
-.gallery-action-btn:hover {
-  transform: scale(1.15);
-  box-shadow: 0 0 10px 2px #ffd70080;
-}
 #gallery-builder-cards {
   display: grid;
   background: #1a2533;
