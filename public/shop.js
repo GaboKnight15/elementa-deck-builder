@@ -189,7 +189,13 @@ function purchaseCosmetic(cost, purchaseCallback, done) {
   playerCurrency = balance - cost;
   saveProgress();
   updateCurrencyDisplay();
-  showToast("Purchase successful!", { type: "success" });    
+  showToast("Purchase successful!", { type: "success" });
+// EXP FROM COSMETICS   
+  if (typeof grantExp === "function") {
+    const exp = Math.max(1, Math.floor(cost / 10)); // tweak divisor for balance
+    grantExp(exp);
+    showToast(`You gained ${exp} EXP!`, { type: "success", duration: 1800 });
+  }
   if (typeof purchaseCallback === "function") purchaseCallback(function() {
     saveProgress();
     updateCurrencyDisplay();
