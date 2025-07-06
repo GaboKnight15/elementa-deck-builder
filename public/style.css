@@ -2177,11 +2177,21 @@ button {
   width: 56px;
   height: 80px;
   object-fit: cover;
-  border-radius: 7px;
-  margin-bottom: 6px;
-  border: 2px solid #ffe06644;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px #0005;
   background: #232a3c;
-  transition: box-shadow 0.18s, filter 0.18s;
+  transition: box-shadow 0.18s, transform 0.15s;
+  display: block;
+  margin: 0 auto;
+  cursor: pointer;
+}
+.shop-cardback-img:hover,
+.shop-cardback-option:hover .shop-cardback-img {
+  box-shadow: 0 6px 18px #50eaffcc, 0 0 0 2px #ffe066;
+  transform: scale(1.07) translateY(-3px);
+  outline: 2px solid #ffe066;
+  outline-offset: 2px;
+  z-index: 2;
 }
 .shop-cardback-img.unlocked {
   border-color: #ffe066;
