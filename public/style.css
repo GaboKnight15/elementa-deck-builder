@@ -534,7 +534,21 @@ button {
   flex-direction: column;
   min-width: 0;
 }
-
+.active-deck-tile {
+  border: 2.5px solid #ffe066;
+  box-shadow: 0 0 12px #ffe066cc;
+}
+.deck-active-btn {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  font-size: 1em;
+  background: none;
+  border: none;
+  color: #ffe066;
+  cursor: pointer;
+  z-index: 5;
+}
 #deck-panel {
   position: static !important;
   width: 220px;
