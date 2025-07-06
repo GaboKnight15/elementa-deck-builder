@@ -584,7 +584,7 @@ function renderIndividualCardsShop(shouldAnimateFlip = false) {
       updateCurrencyDisplay();
       forceRefreshIndividualShopCards();
       showToast("Cards refreshed!", {type:"success"});
-      renderIndividualCardsShop();
+      renderIndividualCardsShop(true);
     };
     header.appendChild(refreshBtn);
 
@@ -605,7 +605,7 @@ function updateIndividualCardsTimer() {
   // Auto-refresh at midnight
   if (ms <= 0) {
     forceRefreshIndividualShopCards();
-    renderIndividualCardsShop();
+    renderIndividualCardsShop(true);
   }
 }
   clearInterval(individualCardsTimerInterval);
@@ -844,6 +844,6 @@ function renderShop() {
       renderShopBanners(),
       renderShopAvatars()
       renderShopPacks();
-      renderIndividualCardsShop();
+      renderIndividualCardsShop(true);
 }
 window.renderShop = renderShop;
