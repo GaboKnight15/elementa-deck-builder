@@ -454,6 +454,10 @@ button {
   margin: 0;
   box-shadow: 0 1px 4px rgba(0,0,0,0.12);
 }
+.gallery-action-btn:hover {
+  transform: scale(1.15);
+  box-shadow: 0 0 10px 2px #ffd70080;
+}
 #gallery-builder-cards {
   display: grid;
   background: #1a2533;
