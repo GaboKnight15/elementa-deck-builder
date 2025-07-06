@@ -2,15 +2,15 @@ const COLOR_QUESTS = ['green', 'red', 'blue', 'yellow', 'purple', 'gray', 'black
 // Quest LIST
 const QUEST_SLOTS = 5;
 const QUEST_POOL = [
-  { id: 'purchase_pack_daily', type: 'daily', description: 'Purchase a Booster Pack', goal: 1, reward: { type: 'currency', amount: 100 }, image: 'images/quests/purchase_pack.png'},
-  { id: 'collect_green_card_daily', type: 'daily', description: 'Collect a Green Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'images/quests/purchase_pack.png'},
-  { id: 'collect_red_card_daily', type: 'daily', description: 'Collect a Red Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'images/quests/purchase_pack.png'},
-  { id: 'collect_blue_card_daily', type: 'daily', description: 'Collect a Blue Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'images/quests/purchase_pack.png'},
-  { id: 'collect_yellow_card_daily', type: 'daily', description: 'Collect a Yellow Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'images/quests/purchase_pack.png'},
-  { id: 'collect_purple_card_daily', type: 'daily', description: 'Collect a Purple Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'images/quests/purchase_pack.png'},
-  { id: 'collect_gray_card_daily', type: 'daily', description: 'Collect a Gray Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'images/quests/purchase_pack.png'},
-  { id: 'collect_black_card_daily', type: 'daily', description: 'Collect a Black Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'images/quests/purchase_pack.png'},
-  { id: 'collect_white_card_daily', type: 'daily', description: 'Collect a White Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'images/quests/purchase_pack.png'},
+  { id: 'purchase_pack_daily', type: 'daily', description: 'Purchase a Booster Pack', goal: 1, reward: { type: 'currency', amount: 100 }, image: 'CardImages/Blank/Pack.png'},
+  { id: 'collect_green_card_daily', type: 'daily', description: 'Collect a Green Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'CardImages/Blank/GreenCard.png'},
+  { id: 'collect_red_card_daily', type: 'daily', description: 'Collect a Red Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'CardImages/Blank/RedCard.png'},
+  { id: 'collect_blue_card_daily', type: 'daily', description: 'Collect a Blue Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'CardImages/Blank/BlueCard.png'},
+  { id: 'collect_yellow_card_daily', type: 'daily', description: 'Collect a Yellow Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'CardImages/Blank/YellowCard.png'},
+  { id: 'collect_purple_card_daily', type: 'daily', description: 'Collect a Purple Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'CardImages/Blank/PurpleCard.png'},
+  { id: 'collect_gray_card_daily', type: 'daily', description: 'Collect a Gray Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'CardImages/Blank/GrayCard.png'},
+  { id: 'collect_black_card_daily', type: 'daily', description: 'Collect a Black Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'CardImages/Blank/BlackCard.png'},
+  { id: 'collect_white_card_daily', type: 'daily', description: 'Collect a White Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'CardImages/Blank/WhiteCard.png'},
 
 ];
 const ACHIEVEMENTS = [
@@ -19,21 +19,24 @@ const ACHIEVEMENTS = [
     description: 'Collect 3 green cards',
     goal: 3,
     color: 'green',
-    reward: { type: 'currency', amount: 200 }
+    reward: { type: 'currency', amount: 200 },
+    image: 'images/achievements/green_cards.png'
   },
   {
     id: 'collect_3_red_cards',
     description: 'Collect 3 red cards',
     goal: 3,
     color: 'red',
-    reward: { type: 'currency', amount: 200 }
+    reward: { type: 'currency', amount: 200 },
+    image: 'images/achievements/green_cards.png'
   },
   // ...add more colors as needed
   {
   id: 'collect_20_unique_cards',
   description: 'Collect 20 different cards',
   goal: 20,
-  reward: { type: 'currency', amount: 500 }
+  reward: { type: 'currency', amount: 500 },
+  image: 'images/achievements/green_cards.png'
   }
 ];
 
@@ -319,45 +322,49 @@ function renderAchievements() {
   const list = document.getElementById('achievements-list');
   if (!list) return;
   list.innerHTML = '';
-  ACHIEVEMENTS.forEach(ach => {
-    const progress = getAchievementProgress(ach);
-    if (progress.claimed) return;
-    const percent = Math.min(100, Math.round((progress.progress / ach.goal) * 100));
-    const entry = document.createElement('div');
-    entry.className = 'quest-entry';
+ACHIEVEMENTS.forEach(ach => {
+  const progress = getAchievementProgress(ach);
+  const percent = Math.min(100, Math.round((progress.progress / ach.goal) * 100));
+  const entry = document.createElement('div');
+  entry.className = 'quest-entry';
 
-    entry.innerHTML = `
-      <div class="quest-desc">${ach.description}</div>
-      <div class="quest-progress-bar-wrap">
-        <div class="quest-progress-bar" style="width:${percent}%;"></div>
+  entry.innerHTML = `
+    <div style="display:flex;align-items:center;">
+      <img src="${ach.image || 'images/achievements/placeholder.png'}" alt="Achievement" class="achievement-image" style="width:40px;height:40px;object-fit:contain;margin-right:12px;">
+      <div style="flex:1;">
+        <div class="quest-desc">${ach.description}</div>
+        <div class="quest-progress-bar-wrap">
+          <div class="quest-progress-bar" style="width:${percent}%;"></div>
+        </div>
+        <div style="font-size:0.96em;color:#fff;text-align:right;">${progress.progress} / ${ach.goal}</div>
+        <div class="quest-reward">
+          <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins" style="width:18px;">
+          +${ach.reward.amount}
+        </div>
       </div>
-      <div style="font-size:0.96em;color:#fff;text-align:right;">${progress.progress} / ${ach.goal}</div>
-      <div class="quest-reward">
-        <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins" style="width:18px;">
-        +${ach.reward.amount}
-      </div>
-    `;
-    if (progress.completed && !progress.claimed) {
-      const btn = document.createElement('button');
-      btn.className = 'btn-primary quest-claim-btn';
-      btn.textContent = 'Claim';
-      btn.onclick = function() {
-        claimAchievementReward(ach, function() {
-          entry.classList.add('achievement-fade-out');
-          setTimeout(() => {
-            entry.remove();
-          }, 800);
-        });
-      };
-      entry.appendChild(btn);
-    } else if (progress.claimed) {
-      const badge = document.createElement('div');
-      badge.className = 'quest-claimed-badge';
-      badge.textContent = 'Claimed!';
-      entry.appendChild(badge);
-    }
-    list.appendChild(entry);
-  });
+    </div>
+  `;
+  if (progress.completed && !progress.claimed) {
+    const btn = document.createElement('button');
+    btn.className = 'btn-primary quest-claim-btn';
+    btn.textContent = 'Claim';
+    btn.onclick = function() {
+      claimAchievementReward(ach, function() {
+        entry.classList.add('achievement-fade-out');
+        setTimeout(() => {
+          entry.remove();
+        }, 800);
+      });
+    };
+    entry.appendChild(btn);
+  } else if (progress.claimed) {
+    const badge = document.createElement('div');
+    badge.className = 'quest-claimed-badge';
+    badge.textContent = 'Claimed!';
+    entry.appendChild(badge);
+  }
+  list.appendChild(entry);
+});
 }
 
 function updateUniqueCardsAchievement() {
