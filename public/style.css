@@ -2146,14 +2146,19 @@ button {
   margin-top: 14px;
 }
 .shop-individual-card {
-  background: #232a39;
+  background: #232a3c;
   border-radius: 12px;
   box-shadow: 0 1px 8px #0002;
   padding: 12px;
   width: 130px;
   text-align: center;
   position: relative;
-  transition: box-shadow .2s;
+  transition: box-shadow .18s, transform .18s;
+}
+.shop-individual-card:hover {
+  box-shadow: 0 6px 24px #50eaffcc, 0 1px 8px #0002;
+  transform: translateY(-6px) scale(1.045);
+  z-index: 2;
 }
 .shop-individual-card.card-locked img {
   filter: grayscale(1) brightness(0.7);
@@ -2165,6 +2170,11 @@ button {
   border-radius: 6px;
   margin-bottom: 6px;
   background: #161a22;
+  transition: box-shadow .18s, filter .18s;
+}
+.shop-individual-card:hover .shop-individual-card-img {
+  box-shadow: 0 8px 24px #50eaff55;
+  filter: brightness(1.08) saturate(1.08);
 }
 .shop-individual-card-name {
   font-size: 1em;
