@@ -1,15 +1,16 @@
 const COLOR_QUESTS = ['green', 'red', 'blue', 'yellow', 'purple', 'gray', 'black', 'white'];
 // Quest LIST
+const QUEST_SLOTS = 5;
 const QUEST_POOL = [
-  { id: 'purchase_pack_daily', type: 'daily', description: 'Purchase a Booster Pack', goal: 1, reward: { type: 'currency', amount: 100 } },
-  { id: 'collect_green_card_daily', type: 'daily', description: 'Collect a Green Card', goal: 1, reward: { type: 'currency', amount: 80 } },
-  { id: 'collect_red_card_daily', type: 'daily', description: 'Collect a Red Card', goal: 1, reward: { type: 'currency', amount: 80 } },
-  { id: 'collect_blue_card_daily', type: 'daily', description: 'Collect a Blue Card', goal: 1, reward: { type: 'currency', amount: 80 } },
-  { id: 'collect_yellow_card_daily', type: 'daily', description: 'Collect a Yellow Card', goal: 1, reward: { type: 'currency', amount: 80 } },
-  { id: 'collect_purple_card_daily', type: 'daily', description: 'Collect a Purple Card', goal: 1, reward: { type: 'currency', amount: 80 } },
-  { id: 'collect_gray_card_daily', type: 'daily', description: 'Collect a Gray Card', goal: 1, reward: { type: 'currency', amount: 80 } },
-  { id: 'collect_black_card_daily', type: 'daily', description: 'Collect a Black Card', goal: 1, reward: { type: 'currency', amount: 80 } },
-  { id: 'collect_white_card_daily', type: 'daily', description: 'Collect a White Card', goal: 1, reward: { type: 'currency', amount: 80 } },
+  { id: 'purchase_pack_daily', type: 'daily', description: 'Purchase a Booster Pack', goal: 1, reward: { type: 'currency', amount: 100 }, image: 'images/quests/purchase_pack.png'},
+  { id: 'collect_green_card_daily', type: 'daily', description: 'Collect a Green Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'images/quests/purchase_pack.png'},
+  { id: 'collect_red_card_daily', type: 'daily', description: 'Collect a Red Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'images/quests/purchase_pack.png'},
+  { id: 'collect_blue_card_daily', type: 'daily', description: 'Collect a Blue Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'images/quests/purchase_pack.png'},
+  { id: 'collect_yellow_card_daily', type: 'daily', description: 'Collect a Yellow Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'images/quests/purchase_pack.png'},
+  { id: 'collect_purple_card_daily', type: 'daily', description: 'Collect a Purple Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'images/quests/purchase_pack.png'},
+  { id: 'collect_gray_card_daily', type: 'daily', description: 'Collect a Gray Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'images/quests/purchase_pack.png'},
+  { id: 'collect_black_card_daily', type: 'daily', description: 'Collect a Black Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'images/quests/purchase_pack.png'},
+  { id: 'collect_white_card_daily', type: 'daily', description: 'Collect a White Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'images/quests/purchase_pack.png'},
 
 ];
 const ACHIEVEMENTS = [
@@ -161,30 +162,44 @@ function renderQuests() {
   if (!list) return;
   list.innerHTML = '';
   getActiveQuests(function(quests) {
-    for (const quest of quests) {
-      const progress = getQuestProgress(quest);
+    for (let i = 0; i < QUEST_SLOTS; i++) {
+      const quest = quests[i];
+      if (!quest) {
+        const entry = document.createElement('div');
+        entry.className = 'quest-entry empty-quest-slot';
+        entry.innerHTML = `<div class="quest-desc">Empty Quest Slot</div>`;
+        list.appendChild(entry);
+        continue;
+      }
+      const questDef = QUEST_POOL.find(q => q.id === (quest.id || quest));
+      if (!questDef) continue;
+      const progress = getQuestProgress(questDef);
       if (progress.claimed) continue;
-      const percent = Math.min(100, Math.round((progress.progress / quest.goal) * 100));
+      const percent = Math.min(100, Math.round((progress.progress / questDef.goal) * 100));
       const entry = document.createElement('div');
       entry.className = 'quest-entry';
-
-      entry.innerHTML = `
-        <div class="quest-desc">${quest.description}</div>
-        <div class="quest-progress-bar-wrap">
-          <div class="quest-progress-bar" style="width:${percent}%;"></div>
-        </div>
-        <div style="font-size:0.96em;color:#fff;text-align:right;">${progress.progress} / ${quest.goal}</div>
-        <div class="quest-reward">
-          <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins" style="width:18px;">
-          +${quest.reward.amount}
-        </div>
-      `;
+entry.innerHTML = `
+  <div style="display:flex;align-items:center;">
+    <img src="${questDef.image || 'images/quests/placeholder.png'}" alt="Quest" class="quest-image" style="width:40px;height:40px;object-fit:contain;margin-right:12px;">
+    <div style="flex:1;">
+      <div class="quest-desc">${questDef.description}</div>
+      <div class="quest-progress-bar-wrap">
+        <div class="quest-progress-bar" style="width:${percent}%;"></div>
+      </div>
+      <div style="font-size:0.96em;color:#fff;text-align:right;">${progress.progress} / ${questDef.goal}</div>
+      <div class="quest-reward">
+        <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins" style="width:18px;">
+        +${questDef.reward.amount}
+      </div>
+    </div>
+  </div>
+`;
       if (progress.completed && !progress.claimed) {
         const btn = document.createElement('button');
         btn.className = 'btn-primary quest-claim-btn';
         btn.textContent = 'Claim';
         btn.onclick = function() {
-          claimQuestReward(quest, function() {
+          claimQuestReward(questDef, function() {
             entry.classList.add('achievement-fade-out');
             setTimeout(() => {
               entry.remove();
@@ -203,6 +218,52 @@ function renderQuests() {
   });
 }
 
+function ensureQuestSlots(cb) {
+  const user = firebase.auth().currentUser;
+  if (!user) return;
+  const userDoc = firebase.firestore().collection('users').doc(user.uid);
+
+  userDoc.get().then(doc => {
+    const data = doc.exists ? doc.data() : {};
+    const lastQuestDate = data.lastQuestDate || null;
+    const today = getTodayUtcDateString();
+    let needsUpdate = (lastQuestDate !== today);
+    let activeQuests = Array.isArray(data.activeQuests) ? data.activeQuests.slice(0, QUEST_SLOTS) : [];
+    // Only keep valid quests
+    activeQuests = activeQuests.filter(q => !!q && QUEST_POOL.some(poolQuest => poolQuest.id === (q.id || q)));
+
+    if (needsUpdate) {
+      // Fill empty slots with unique quests not already in activeQuests
+      const existingIds = activeQuests.map(q => q.id || q);
+      let pool = QUEST_POOL.filter(q => !existingIds.includes(q.id));
+      while (activeQuests.length < QUEST_SLOTS && pool.length > 0) {
+        const idx = Math.floor(Math.random() * pool.length);
+        activeQuests.push(pool.splice(idx, 1)[0]);
+      }
+      // If pool too small, allow duplicates very rarely
+      while (activeQuests.length < QUEST_SLOTS) {
+        const idx = Math.floor(Math.random() * QUEST_POOL.length);
+        activeQuests.push(QUEST_POOL[idx]);
+      }
+      userDoc.set({
+        activeQuests,
+        lastQuestDate: today
+      }, { merge: true }).then(() => {
+        if (typeof cb === "function") cb(activeQuests);
+        renderQuests();
+      });
+    } else {
+      // No reset needed
+      if (typeof cb === "function") cb(activeQuests);
+      renderQuests();
+    }
+  });
+}
+function getTodayUtcDateString() {
+  const now = new Date();
+  return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()))
+    .toISOString().split("T")[0];
+}
 function getAchievementProgress(ach) {
   let data = getAchievementData();
   if (!data[ach.id]) {
