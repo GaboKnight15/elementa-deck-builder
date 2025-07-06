@@ -546,7 +546,7 @@ function resetPurchasedShopCards() {
   localStorage.setItem(INDIVIDUAL_CARDS_PURCHASED_KEY, JSON.stringify([]));
 }
 
-function renderIndividualCardsShop() {
+function renderIndividualCardsShop(shouldAnimateFlip = false) {
   const shopSingleCardsDiv = document.getElementById('shop-single-cards');
   if (!shopSingleCardsDiv) return;
 
