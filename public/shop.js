@@ -582,18 +582,7 @@ function renderIndividualCardsShop() {
       playerCurrency -= INDIVIDUAL_CARDS_REFRESH_COST;
       saveProgress();
       updateCurrencyDisplay();
-      // Pick new cards & reset purchased state
-      localStorage.setItem(INDIVIDUAL_CARDS_RESET_KEY, getTodayUtcDateString()); // Mark as today's date, so timer stays correct
-      // Actually re-generate new cards
-      let shopCards = [];
-      let excludeIds = [];
-      INDIVIDUAL_CARD_SLOTS.forEach(slot => {
-        const cards = getRandomCardsByRarity(slot.rarity, slot.count, excludeIds);
-        excludeIds.push(...cards.map(c => c.id));
-        shopCards.push(...cards);
-      });
-      localStorage.setItem(INDIVIDUAL_CARDS_SHOP_KEY, JSON.stringify(shopCards));
-      resetPurchasedShopCards();
+      forceRefreshIndividualShopCards();
       showToast("Cards refreshed!", {type:"success"});
       renderIndividualCardsShop();
     };
@@ -604,15 +593,20 @@ function renderIndividualCardsShop() {
 
   // Update timer every second
   const timerDiv = header.querySelector('.individual-cards-timer');
-  function updateIndividualCardsTimer() {
-    const ms = getNextUtcMidnightMs();
-    timerDiv.textContent = `New cards available in ${formatTimerMs(ms)}`;
-    // Disable refresh if not enough coins
-    const refreshBtn = header.querySelector('.individual-cards-refresh-btn');
-    if (refreshBtn) {
-      refreshBtn.disabled = getCurrency() < INDIVIDUAL_CARDS_REFRESH_COST;
-    }
+function updateIndividualCardsTimer() {
+  const ms = getNextUtcMidnightMs();
+  timerDiv.textContent = `New cards available in ${formatTimerMs(ms)}`;
+  // Disable refresh if not enough coins
+  const refreshBtn = header.querySelector('.individual-cards-refresh-btn');
+  if (refreshBtn) {
+    refreshBtn.disabled = getCurrency() < INDIVIDUAL_CARDS_REFRESH_COST;
   }
+  // Auto-refresh at midnight
+  if (ms <= 0) {
+    forceRefreshIndividualShopCards();
+    renderIndividualCardsShop();
+  }
+}
   clearInterval(individualCardsTimerInterval);
   updateIndividualCardsTimer();
   individualCardsTimerInterval = setInterval(updateIndividualCardsTimer, 1000);
@@ -762,6 +756,20 @@ function formatTimerMs(ms) {
   const m = Math.floor((total % 3600) / 60);
   // Only HH:MM
   return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+}
+function forceRefreshIndividualShopCards() {
+  // Always pick new cards and reset purchased, using today's date
+  const today = getTodayUtcDateString();
+  let shopCards = [];
+  let excludeIds = [];
+  INDIVIDUAL_CARD_SLOTS.forEach(slot => {
+    const cards = getRandomCardsByRarity(slot.rarity, slot.count, excludeIds);
+    excludeIds.push(...cards.map(c => c.id));
+    shopCards.push(...cards);
+  });
+  localStorage.setItem(INDIVIDUAL_CARDS_SHOP_KEY, JSON.stringify(shopCards));
+  localStorage.setItem(INDIVIDUAL_CARDS_RESET_KEY, today);
+  localStorage.setItem(INDIVIDUAL_CARDS_PURCHASED_KEY, JSON.stringify([]));
 }
 // INITIALIZATION //
 function renderShop() {
