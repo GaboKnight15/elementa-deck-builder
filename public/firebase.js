@@ -31,6 +31,7 @@ function saveProgress() {
   }
   const data = {
     collection: window.playerCollection || {},
+    favoriteCards: window.favoriteCards || [],
     deckSlots: window.deckSlots || ["Deck 1"],
     decks: window.decks || { "Deck 1": {} },
     currentDeckSlot: window.currentDeckSlot || "Deck 1",
@@ -75,6 +76,7 @@ window.deckSlots             = Array.isArray(data.deckSlots) ? data.deckSlots : 
 window.decks                 = typeof data.decks !== "undefined" ? data.decks : { "Deck 1": {} };
 window.currentDeckSlot       = typeof data.currentDeckSlot !== "undefined" ? data.currentDeckSlot : "Deck 1";
 window.playerCollection      = typeof data.collection !== "undefined" ? data.collection : {};
+window.favoriteCards         = Array.isArray(data.favoriteCards) ? data.favoriteCards : [];
 window.playerQuests          = typeof data.quests !== "undefined" ? data.quests : {};
 window.playerAchievements    = typeof data.achievements !== "undefined" ? data.achievements : {};
 window.playerUnlockedAvatars = Array.isArray(data.unlockedAvatars) ? data.unlockedAvatars : [];
