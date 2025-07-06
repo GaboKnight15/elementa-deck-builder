@@ -820,7 +820,7 @@ function forceRefreshIndividualShopCards() {
   });
   localStorage.setItem(INDIVIDUAL_CARDS_SHOP_KEY, JSON.stringify(shopCards));
   localStorage.setItem(INDIVIDUAL_CARDS_RESET_KEY, today);
-  localStorage.setItem(INDIVIDUAL_CARDS_PURCHASED_KEY, JSON.stringify([]));
+  resetPurchasedShopCards();
 }
   // FLIP ANIMATION //
 function animateCardFlipSequence(cardDivs, onAfterFlip) {
