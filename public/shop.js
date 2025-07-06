@@ -680,28 +680,6 @@ function getTodayUtcDateString() {
     .toISOString().split("T")[0];
 }
 // INITIALIZATION //
-
-// Cosmetic shop free unlock handlers
-document.querySelectorAll('.shop-free-btn').forEach(btn => {
-  btn.onclick = function() {
-    const type = btn.dataset.type;
-    switch(type) {
-      case 'profile-pic':
-        showToast("You unlocked a new avatar! (Feature coming soon)", { type: "info" });
-        break;
-      case 'banner':
-        showToast("You unlocked a new banner! (Feature coming soon)", { type: "info" });
-        break;
-      case 'cardback':
-        showToast("You unlocked a new sleeve! (Feature coming soon)", { type: "info" });
-        break;
-      case 'single-card':
-        showToast("You unlocked a new card! (Feature coming soon)", { type: "info" });
-        break;
-    }
-  };
-});
-
 function renderShop() {
       renderShopCardbacks(),
       renderShopBanners(),
