@@ -97,7 +97,21 @@ const cardbackPrices = {
   "OtherImages/Cardbacks/Cardback2.png": 100,
   "OtherImages/Cardbacks/DefaultCardback.png": 100
 };
-
+const INDIVIDUAL_CARDS_SHOP_KEY = "shopIndividualCards";
+const INDIVIDUAL_CARDS_RESET_KEY = "shopIndividualCardsReset";
+const INDIVIDUAL_CARDS_PURCHASED_KEY = "shopIndividualCardsPurchased";
+const INDIVIDUAL_CARD_SLOTS = [
+  { rarity: "Legendary", count: 1 },
+  { rarity: "Epic", count: 2 },
+  { rarity: "Rare", count: 3 },
+  { rarity: "Common", count: 4 }
+];
+const individualCardPrices = {
+  "Legendary": 1000,
+  "Epic": 400,
+  "Rare": 120,
+  "Common": 30
+};
 let cosmeticConfirmModal = null;
 
 function showCosmeticConfirmModal({imgSrc, type, price, onConfirm}) {
@@ -483,7 +497,188 @@ function renderShopCardbacks() {
     imgClass: 'shop-cardback-img'
   });
 }
+function getRandomCardsByRarity(rarity, count, excludeIds=[]) {
+  const pool = dummyCards.filter(card => card.rarity === rarity && !excludeIds.includes(card.id));
+  const selected = [];
+  while (selected.length < count && pool.length > 0) {
+    const idx = Math.floor(Math.random() * pool.length);
+    selected.push(pool.splice(idx, 1)[0]);
+  }
+  return selected;
+}
 
+function getOrGenerateDailyShopCards() {
+  const today = getTodayUtcDateString();
+  const lastReset = localStorage.getItem(INDIVIDUAL_CARDS_RESET_KEY);
+  let shopCards = [];
+  if (lastReset === today) {
+    // Already generated for today
+    shopCards = JSON.parse(localStorage.getItem(INDIVIDUAL_CARDS_SHOP_KEY)) || [];
+  } else {
+    // Generate new selection
+    shopCards = [];
+    let excludeIds = [];
+    INDIVIDUAL_CARD_SLOTS.forEach(slot => {
+      const cards = getRandomCardsByRarity(slot.rarity, slot.count, excludeIds);
+      excludeIds.push(...cards.map(c => c.id));
+      shopCards.push(...cards);
+    });
+    localStorage.setItem(INDIVIDUAL_CARDS_SHOP_KEY, JSON.stringify(shopCards));
+    localStorage.setItem(INDIVIDUAL_CARDS_RESET_KEY, today);
+    localStorage.setItem(INDIVIDUAL_CARDS_PURCHASED_KEY, JSON.stringify([]));
+  }
+  return shopCards;
+}
+function getPurchasedShopCards() {
+  return JSON.parse(localStorage.getItem(INDIVIDUAL_CARDS_PURCHASED_KEY)) || [];
+}
+function markShopCardPurchased(cardId) {
+  let purchased = getPurchasedShopCards();
+  if (!purchased.includes(cardId)) {
+    purchased.push(cardId);
+    localStorage.setItem(INDIVIDUAL_CARDS_PURCHASED_KEY, JSON.stringify(purchased));
+  }
+}
+function resetPurchasedShopCards() {
+  localStorage.setItem(INDIVIDUAL_CARDS_PURCHASED_KEY, JSON.stringify([]));
+}
+function renderIndividualCardsShop() {
+  const shopSingleCardsDiv = document.getElementById('shop-single-cards');
+  if (!shopSingleCardsDiv) return;
+
+  // Clear previous
+  let container = shopSingleCardsDiv.querySelector('.individual-cards-shop-grid');
+  if (container) container.remove();
+  container = document.createElement('div');
+  container.className = 'individual-cards-shop-grid';
+  shopSingleCardsDiv.appendChild(container);
+
+  // Reset cards if it's a new day
+  const today = getTodayUtcDateString();
+  if (localStorage.getItem(INDIVIDUAL_CARDS_RESET_KEY) !== today) {
+    getOrGenerateDailyShopCards();
+    resetPurchasedShopCards();
+  }
+
+  const shopCards = getOrGenerateDailyShopCards();
+  const purchased = getPurchasedShopCards();
+  // Show in the specified order
+  INDIVIDUAL_CARD_SLOTS.forEach(slot => {
+    shopCards.filter(card => card.rarity === slot.rarity).forEach(card => {
+      const owned = (getCollection()[card.id] || 0) > 0;
+      const isPurchased = purchased.includes(card.id);
+      const cardDiv = document.createElement('div');
+      cardDiv.className = 'shop-individual-card';
+      if (owned || isPurchased) cardDiv.classList.add('card-locked');
+
+      // Card image
+      const img = document.createElement('img');
+      img.src = card.image;
+      img.alt = card.name;
+      img.className = 'shop-individual-card-img';
+      img.style.cursor = 'pointer';
+      if (owned || isPurchased) img.style.filter = 'grayscale(1) brightness(0.7)';
+      img.onclick = function() {
+        showIndividualCardModal(card, isPurchased || owned);
+      };
+      cardDiv.appendChild(img);
+
+      // Name and price
+      const name = document.createElement('div');
+      name.className = 'shop-individual-card-name';
+      name.textContent = card.name;
+      cardDiv.appendChild(name);
+
+      const priceDiv = document.createElement('div');
+      priceDiv.className = 'currency-display';
+      priceDiv.innerHTML = `<img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins"><span>${individualCardPrices[card.rarity]}</span>`;
+      cardDiv.appendChild(priceDiv);
+
+      // Rarity badge
+      const rarityBadge = document.createElement('div');
+      rarityBadge.className = 'shop-individual-card-rarity';
+      rarityBadge.textContent = card.rarity;
+      cardDiv.appendChild(rarityBadge);
+
+      container.appendChild(cardDiv);
+    });
+  });
+}
+function showIndividualCardModal(card, isPurchased) {
+  // Remove existing modal
+  let modal = document.getElementById('individual-card-modal');
+  if (modal) modal.remove();
+
+  modal = document.createElement('div');
+  modal.id = 'individual-card-modal';
+  modal.className = 'modal';
+  modal.style.display = 'flex';
+  modal.innerHTML = `
+    <div class="modal-content" style="max-width:380px;align-items:center;">
+      <h3>${card.name}</h3>
+      <img src="${card.image}" alt="${card.name}" style="width:180px;margin:12px auto;display:block;">
+      <div style="margin:10px 0;">
+        <span class="shop-individual-card-rarity">${card.rarity}</span>
+        <span class="currency-display" style="margin-left:18px;">
+          <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins">
+          <span>${individualCardPrices[card.rarity]}</span>
+        </span>
+      </div>
+      <div style="display:flex;gap:18px;justify-content:center;margin-top:10px;">
+        <button id="individual-card-get-btn" class="btn-primary"${isPurchased ? " disabled" : ""}>Get</button>
+        <button id="individual-card-cancel-btn" class="btn-secondary">Cancel</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+
+  // "Get" button logic
+  modal.querySelector('#individual-card-get-btn').onclick = function() {
+    if (isPurchased) return;
+    // Currency check
+    const price = individualCardPrices[card.rarity];
+    if (getCurrency() < price) {
+      showToast("Not enough coins!", { type: "error" });
+      return;
+    }
+    // Add to collection
+    const collection = getCollection();
+    const wasOwned = collection[card.id] > 0;
+    collection[card.id] = (collection[card.id] || 0) + 1;
+    playerCollection = collection;
+    playerCurrency -= price;
+    saveProgress();
+    updateCurrencyDisplay();
+    // Mark as purchased
+    markShopCardPurchased(card.id);
+    // Optionally: mark as "new"
+    if (!wasOwned && collection[card.id] > 0) {
+      const newCards = getNewlyUnlockedCards();
+      if (!newCards.includes(card.id)) {
+        newCards.push(card.id);
+        setNewlyUnlockedCards(newCards);
+      }
+    }
+    showToast(`${card.name} added to your collection!`, { type: "success" });
+    renderIndividualCardsShop();
+    if (window.renderGallery) window.renderGallery();
+    modal.remove();
+  };
+  // Cancel button
+  modal.querySelector('#individual-card-cancel-btn').onclick = () => {
+    modal.remove();
+  };
+  // Click outside closes
+  modal.onclick = function(e) {
+    if (e.target === modal) modal.remove();
+  };
+}
+// TIMER FOR SINGLE CARDS //
+function getTodayUtcDateString() {
+  const now = new Date();
+  return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()))
+    .toISOString().split("T")[0];
+}
 // INITIALIZATION //
 
 // Cosmetic shop free unlock handlers
@@ -512,5 +707,6 @@ function renderShop() {
       renderShopBanners(),
       renderShopAvatars()
       renderShopPacks();
+      renderIndividualCardsShop();
 }
 window.renderShop = renderShop;
