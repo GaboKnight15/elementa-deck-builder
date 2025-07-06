@@ -2139,6 +2139,45 @@ button {
 .shop-cardback-img.unlocked {
   border-color: #ffe066;
 }
+.individual-cards-shop-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-top: 14px;
+}
+.shop-individual-card {
+  background: #232a39;
+  border-radius: 12px;
+  box-shadow: 0 1px 8px #0002;
+  padding: 12px;
+  width: 130px;
+  text-align: center;
+  position: relative;
+  transition: box-shadow .2s;
+}
+.shop-individual-card.card-locked img {
+  filter: grayscale(1) brightness(0.7);
+}
+.shop-individual-card-img {
+  width: 90px;
+  height: 128px;
+  object-fit: contain;
+  border-radius: 6px;
+  margin-bottom: 6px;
+  background: #161a22;
+}
+.shop-individual-card-name {
+  font-size: 1em;
+  margin-bottom: 4px;
+  color: #ffe066;
+  font-weight: bold;
+}
+.shop-individual-card-rarity {
+  font-size: .92em;
+  margin-bottom: 3px;
+  color: #b5d7f7;
+  font-weight: bold;
+}
 #toast-container .toast-message {
   cursor: pointer;
 }
