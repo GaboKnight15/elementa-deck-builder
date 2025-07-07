@@ -31,4 +31,19 @@ document.addEventListener("DOMContentLoaded", function() {
     localStorage.setItem('settings-music', this.checked ? 'on' : 'off');
     // Add logic for enabling/disabling music if needed
   };
+    // Logout button logic
+  const settingsLogoutBtn = document.getElementById('settings-logout-btn');
+  if (settingsLogoutBtn) {
+    settingsLogoutBtn.onclick = function() {
+      // If you have a function like logout() defined in auth.js:
+      if (typeof logout === "function") {
+        logout();
+      } else if (typeof firebase !== 'undefined' && firebase.auth) {
+        firebase.auth().signOut().then(function() {
+          location.reload();
+        });
+      }
+    };
+  }
+});
 });
