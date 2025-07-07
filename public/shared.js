@@ -47,7 +47,12 @@ document.querySelectorAll('#main-nav button[data-section]').forEach(btn => {
     const specialActions = {
       'gallery-section' : window.renderGallery,
       'builder-section' : window.showDeckSelection,
-      'gameplay-section': window.setupBattlefieldGame,
+      'gameplay-section': function() {
+        document.querySelectorAll('section[id$="-section"]').forEach(section => {
+          section.classList.remove('active');
+        });
+        document.getElementById('mode-select-section').classList.add('active');
+      },
       'shop-section'    : window.renderShop
     };
     if (typeof specialActions[target] === 'function') {
