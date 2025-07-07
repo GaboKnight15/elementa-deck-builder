@@ -495,7 +495,7 @@ function refreshQuests() {
   window.questResetTimestamp = Date.now();
   saveProgress();
   renderQuests();
-  startQuestTimer();
+  startQuestTimers();
 }
 
 function updateQuestsNotificationDot() {
@@ -593,4 +593,4 @@ window.renderAchievements = renderAchievements;
 window.renderPlayerLevel = renderPlayerLevel;
 window.updateQuestsNotificationDot = updateQuestsNotificationDot;
 window.updateAchievementsNotificationDot = updateAchievementsNotificationDot;
-window.startQuestTimer = startQuestTimer;
+window.startQuestTimers = startQuestTimers;
