@@ -47,10 +47,24 @@ const DEFAULT_CPU_DECKS = [
     id: 'green',
     name: 'Verdant Might',
     color: 'green',
+    image: 'CardImages/BasicCreatures/Goblin.png',
     cards: [
-      { id: 'card001', amount: 4 },
-      { id: 'card002', amount: 3 },
-      { id: 'card003', amount: 2 },
+      { id: 'basicfairy', amount: 4 },
+      { id: 'basicgoblin', amount: 3 },
+      { id: 'basicforest', amount: 4 },
+      // ... etc
+    ]
+  },
+  {
+    id: 'red',
+    name: 'Cinder Storm',
+    color: 'red',
+    image: 'CardImages/BasicCreatures/Emberling.png',
+    cards: [
+      { id: 'basicemberling', amount: 4 },
+      { id: 'basicfirepixie', amount: 3 },
+      { id: 'basichellcharger', amount: 2 },
+      { id: 'basicvolcano', amount: 4 },
       // ... etc
     ]
   },
@@ -69,28 +83,6 @@ const phaseBadge = document.getElementById('phase-badge');
 // === RENDERING / UI ===
 // ==========================
 // Handle mode selection
-document.querySelectorAll('.mode-btn').forEach(btn => {
-  btn.addEventListener('click', function() {
-    window.selectedGameMode = btn.dataset.mode; // solo, private, casual, ranked
-
-    // Hide the mode select, show gameplay
-    document.querySelectorAll('section[id$="-section"]').forEach(section => section.classList.remove('active'));
-    document.getElementById('gameplay-section').classList.add('active');
-
-    // Call gameplay setup (customize by mode if you want)
-    if (window.selectedGameMode === 'solo') {
-      if (typeof window.setupBattlefieldGame === 'function') window.setupBattlefieldGame();
-    }
-    // For other modes, you may want to add custom logic later
-    // else if (window.selectedGameMode === 'private') { ... }
-    // else if (window.selectedGameMode === 'casual') { ... }
-    // else if (window.selectedGameMode === 'ranked') { ... }
-    // For now, just use solo logic for all
-    else {
-      if (typeof window.setupBattlefieldGame === 'function') window.setupBattlefieldGame();
-    }
-  });
-});
 document.querySelector('.mode-btn[data-mode="solo"]').addEventListener('click', function() {
   showCpuDeckModal();
 });
@@ -176,8 +168,10 @@ function generateUniqueId() {
 function startSoloGame() {
   // Build decks
   const cpuDeckArray = buildCpuDeck(window.selectedCpuDeck);
-  const playerDeckArray = buildPlayerDeck(window.selectedPlayerDeck); // similar logic
-
+  const playerDeckArray = buildPlayerDeck(window.selectedPlayerDeck);
+  
+  document.querySelectorAll('section[id$="-section"]').forEach(section => section.classList.remove('active'));
+  document.getElementById('gameplay-section').classList.add('active');
   // Set up gameState
   gameState.playerDeck = shuffle(playerDeckArray);
   gameState.playerHand = [];
