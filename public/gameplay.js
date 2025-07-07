@@ -42,7 +42,20 @@ const PHASES = [
   turn: "player",
   phase: "draw"
 };
-
+const DEFAULT_CPU_DECKS = [
+  {
+    id: 'green',
+    name: 'Verdant Might',
+    color: 'green',
+    cards: [
+      { id: 'card001', amount: 4 },
+      { id: 'card002', amount: 3 },
+      { id: 'card003', amount: 2 },
+      // ... etc
+    ]
+  },
+  // ...repeat for other colors
+];
 // ==========================
 // === DOM REFERENCES ===
 // ==========================
@@ -78,6 +91,135 @@ document.querySelectorAll('.mode-btn').forEach(btn => {
     }
   });
 });
+document.querySelector('.mode-btn[data-mode="solo"]').addEventListener('click', function() {
+  showCpuDeckModal();
+});
+function showCpuDeckModal() {
+  const modal = document.getElementById('cpu-deck-modal');
+  const list = document.getElementById('cpu-deck-list');
+  list.innerHTML = '';
+  DEFAULT_CPU_DECKS.forEach(deck => {
+    const div = document.createElement('div');
+    div.className = 'cpu-deck-option';
+    div.style.cursor = 'pointer';
+    div.style.border = '2px solid ' + deck.color;
+    div.style.borderRadius = '12px';
+    div.style.padding = '12px';
+    div.style.background = '#232a3c';
+    div.style.width = '120px';
+    div.innerHTML = `
+      <img src="${deck.image}" alt="${deck.name}" style="width:100%;height:80px;object-fit:cover;border-radius:8px;">
+      <div style="font-weight:bold;color:${deck.color};margin:7px 0 3px 0;">${deck.name}</div>
+      <div style="font-size:0.93em;color:#bbb;">${deck.description}</div>
+    `;
+    div.onclick = () => {
+      modal.style.display = 'none';
+      // Store selected CPU deck (in window or gameState)
+      window.selectedCpuDeck = deck;
+      showPlayerDeckModal();
+    };
+    list.appendChild(div);
+  });
+  document.getElementById('close-cpu-deck-modal').onclick = () => { modal.style.display = 'none'; };
+  modal.style.display = 'flex';
+}
+function showPlayerDeckModal() {
+  const modal = document.getElementById('player-deck-modal');
+  const list = document.getElementById('player-deck-list');
+  list.innerHTML = '';
+
+  // Get your player's decks from your deck manager (builder.js, etc)
+  const playerDecks = getPlayerDecks(); // You must implement this
+
+  // Get the active deck id for default highlight
+  const activeId = getActiveDeckId(); // Implement this or use your builder.js logic
+
+  playerDecks.forEach(deck => {
+    const div = document.createElement('div');
+    div.className = 'player-deck-option';
+    div.style.cursor = 'pointer';
+    div.style.border = deck.id === activeId ? '3px solid #ffe066' : '2px solid #333';
+    div.style.borderRadius = '12px';
+    div.style.padding = '12px';
+    div.style.background = '#232a3c';
+    div.style.width = '120px';
+    div.innerHTML = `
+      <img src="${deck.image}" alt="${deck.name}" style="width:100%;height:80px;object-fit:cover;border-radius:8px;">
+      <div style="font-weight:bold;color:#ffe066;margin:7px 0 3px 0;">${deck.name}</div>
+    `;
+    div.onclick = () => {
+      modal.style.display = 'none';
+      window.selectedPlayerDeck = deck;
+      startSoloGame(); // Implement this to launch the game with selected decks
+    };
+    list.appendChild(div);
+  });
+  document.getElementById('close-player-deck-modal').onclick = () => { modal.style.display = 'none'; };
+  modal.style.display = 'flex';
+}
+function buildCpuDeck(deckDef) {
+  const deck = [];
+  deckDef.cards.forEach(cardEntry => {
+    for (let i = 0; i < cardEntry.amount; i++) {
+      deck.push({ cardId: cardEntry.id, instanceId: generateUniqueId() });
+    }
+  });
+  return deck;
+}
+
+// Example usage:
+const greenCpuDeck = buildCpuDeck(DEFAULT_CPU_DECKS.find(d => d.id === 'green'));
+
+function generateUniqueId() {
+  return 'id-' + Math.random().toString(36).substr(2, 9) + '-' + Date.now();
+}
+function startSoloGame() {
+  // Build decks
+  const cpuDeckArray = buildCpuDeck(window.selectedCpuDeck);
+  const playerDeckArray = buildPlayerDeck(window.selectedPlayerDeck); // similar logic
+
+  // Set up gameState
+  gameState.playerDeck = shuffle(playerDeckArray);
+  gameState.playerHand = [];
+  gameState.playerCreatures = [];
+  gameState.playerDomains = [];
+  gameState.playerVoid = [];
+
+  gameState.opponentDeck = shuffle(cpuDeckArray);
+  gameState.opponentHand = [];
+  gameState.opponentCreatures = [];
+  gameState.opponentDomains = [];
+  gameState.opponentVoid = [];
+
+  gameState.turn = "player";
+  gameState.phase = "draw";
+
+  // Render and set up the game as normal
+  renderGameState();
+  setupDropZones();
+  updatePhase();
+  // Setup drag and drop handlers
+  ['player-creatures-zone', 'player-domains-zone'].forEach(zoneId => {
+    const zone = document.getElementById(zoneId);
+    if (!zone) return;
+    zone.ondragover = (e) => {
+      e.preventDefault();
+      zone.classList.add('drag-over');
+    };
+    zone.ondragleave = () => zone.classList.remove('drag-over');
+    zone.ondrop = (e) => {
+      e.preventDefault();
+      zone.classList.remove('drag-over');
+      const instanceId = e.dataTransfer.getData('text/plain');
+      let targetArr = zoneId === "player-creatures-zone" ? gameState.playerCreatures : gameState.playerDomains;
+      moveCard(instanceId, gameState.playerHand, targetArr, {orientation: "vertical"});
+      renderGameState();
+      setupDropZones();
+    };
+  });
+  document.getElementById('my-profile').style.display = '';
+  renderProfile('my-profile', getMyProfileInfo());
+}
 // Only run this from client.js after both players are ready!
 // Called when entering gameplay for solo playtest (not from sync)
 function setupBattlefieldGame() {
