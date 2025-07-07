@@ -362,33 +362,23 @@
       <div id="my-profile" class="profile-panel"></div>
     </div>
   
-    <div id="battlefield">  
-      <!-- OPPONENT HAND -->
-      <div id="opponent-hand" class="hand-area"></div>
-      <!-- OPPONENT DOMAIN ZONES -->
-      <div class="zone-row" id="opponent-domains-zone"></div>
-      <!-- OPPONENT CREATURE ZONES -->
-      <div class="zone-row" id="opponent-creatures-zone"></div>
-      <!-- PLAYER CREATURE ZONES -->
-      <div class="zone-row" id="player-creatures-zone"></div>
-      <!-- PLAYER DOMAIN ZONES -->
-      <div class="zone-row" id="player-domains-zone"></div>
-      <!-- PLAYER HAND-->
-      <div id="player-hand" class="hand-area"></div>
-    </div>
+<div id="battlefield">
+  <div id="opponent-hand"           class="hand-area"></div>
+  <div id="opponent-domains-zone"   class="zone-row"></div>
+  <div id="opponent-creatures-zone" class="zone-row"></div>
+  <div id="player-creatures-zone"   class="zone-row"></div>
+  <div id="player-domains-zone"     class="zone-row"></div>
+  <div id="player-hand"             class="hand-area"></div>
+</div>
     
   <!-- BATTLEFIELD RIGHTBAR -->
     <div id="battlefield-rightbar">
       <div id="opponent-deck-zone"></div>
       <div id="opponent-void-zone"></div>
-      <!-- PHASE BAR -->
-       <div id="phase-bar">
-        <div id="phase-badge" tabindex="0">
-          <span id="phase-player"></span>
-          <button id="next-phase-btn" class="btn-primary">Change</button>
-          <span id="phase-name"></span>
-        </div>
-      </div>
+      <!-- PHASES -->
+<div id="phase-badge" tabindex="0" style="margin: 0 auto 10px auto;">
+  <button id="next-phase-btn" class="btn-primary">Next Phase</button>
+</div>
       <div id="player-void-zone"></div>
       <div id="player-deck-zone"></div>
     </div>
@@ -423,12 +413,11 @@
 </section>  
 </div>
 
-<!-- quests MODAL -->
+<!-- QUESTS MODAL -->
 <div id="quests-modal" class="modal">
   <div class="modal-content" style="min-width:600px;max-width:800px;">
     <h3>Quests</h3>
     <div id="quests-columns" style="display:flex;gap:0;justify-content:space-between;align-items:flex-start;">
-      <!-- Daily -->
       <div style="flex:1;padding:0 18px;">
         <div style="font-weight:bold;font-size:1.13em;margin-bottom:8px;">Quests</div>
         <div id="daily-quests-timer" class="quests-timer"></div>
@@ -466,8 +455,8 @@
   </div>
 </div>
                         <!-- Modal for full image view -->
-<div id="deck-selection-modal"></div>
   <!-- DECK MODAL -->
+  <div id="deck-selection-modal"></div>
 <div id="deck-modal" class="modal">
   <div class="modal-content">
     <div class="modal-card-list"></div>
