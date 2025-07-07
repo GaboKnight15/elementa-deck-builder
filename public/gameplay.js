@@ -120,11 +120,15 @@ function showPlayerDeckModal() {
   const list = document.getElementById('player-deck-list');
   list.innerHTML = '';
 
-  // Get your player's decks from your deck manager (builder.js, etc)
-  const playerDecks = getPlayerDecks(); // You must implement this
+  // Use globally-exposed builder functions!
+  const playerDecks = window.getPlayerDecks ? window.getPlayerDecks() : [];
+  const activeId = window.getActiveDeckId ? window.getActiveDeckId() : null;
 
-  // Get the active deck id for default highlight
-  const activeId = getActiveDeckId(); // Implement this or use your builder.js logic
+  if (!playerDecks.length) {
+    list.innerHTML = '<div style="color:#ffe066;">No decks found! Please build a deck first.</div>';
+    modal.style.display = 'flex';
+    return;
+  }
 
   playerDecks.forEach(deck => {
     const div = document.createElement('div');
@@ -142,7 +146,7 @@ function showPlayerDeckModal() {
     div.onclick = () => {
       modal.style.display = 'none';
       window.selectedPlayerDeck = deck;
-      startSoloGame(); // Implement this to launch the game with selected decks
+      startSoloGame();
     };
     list.appendChild(div);
   });
@@ -168,7 +172,7 @@ function generateUniqueId() {
 function startSoloGame() {
   // Build decks
   const cpuDeckArray = buildCpuDeck(window.selectedCpuDeck);
-  const playerDeckArray = buildPlayerDeck(window.selectedPlayerDeck);
+  const playerDeckArray = window.buildDeck(window.selectedPlayerDeck.deckObj);
   
   document.querySelectorAll('section[id$="-section"]').forEach(section => section.classList.remove('active'));
   document.getElementById('gameplay-section').classList.add('active');
