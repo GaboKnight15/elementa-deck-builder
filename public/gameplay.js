@@ -55,6 +55,29 @@ const phaseBadge = document.getElementById('phase-badge');
 // ==========================
 // === RENDERING / UI ===
 // ==========================
+// Handle mode selection
+document.querySelectorAll('.mode-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    window.selectedGameMode = btn.dataset.mode; // solo, private, casual, ranked
+
+    // Hide the mode select, show gameplay
+    document.querySelectorAll('section[id$="-section"]').forEach(section => section.classList.remove('active'));
+    document.getElementById('gameplay-section').classList.add('active');
+
+    // Call gameplay setup (customize by mode if you want)
+    if (window.selectedGameMode === 'solo') {
+      if (typeof window.setupBattlefieldGame === 'function') window.setupBattlefieldGame();
+    }
+    // For other modes, you may want to add custom logic later
+    // else if (window.selectedGameMode === 'private') { ... }
+    // else if (window.selectedGameMode === 'casual') { ... }
+    // else if (window.selectedGameMode === 'ranked') { ... }
+    // For now, just use solo logic for all
+    else {
+      if (typeof window.setupBattlefieldGame === 'function') window.setupBattlefieldGame();
+    }
+  });
+});
 // Only run this from client.js after both players are ready!
 // Called when entering gameplay for solo playtest (not from sync)
 function setupBattlefieldGame() {
