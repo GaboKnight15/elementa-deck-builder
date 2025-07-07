@@ -50,6 +50,7 @@ button {
   gap: 1.2em;
   flex: 2 1 auto;
   background: #1a2533
+  margin-bottom: 10px;
 }
  
 .header-row {
@@ -192,7 +193,6 @@ button {
   overflow-y: auto;
 }
 /* For modal overlay and content (if not already styled) */
-#settings-modal { /* ...already likely styled with .modal... */ }
 #settings-menu {
   display: flex;
   flex-direction: column;
