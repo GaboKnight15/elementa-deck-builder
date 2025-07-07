@@ -99,6 +99,15 @@
       <span id="achievements-notification-dot" class="header-notification-dot" style="display:none;"></span>
     </span>
   </div>
+  <!-- SETTINGS BURGER BUTTON -->
+  <span id="settings-burger-wrapper" style="position:relative;display:inline-block;">
+    <img src="OtherImages/Icons/Burger.png" 
+       alt="Settings" 
+       id="settings-burger" 
+       class="header-action-icon" 
+       title="Settings"
+       style="width:32px;height:32px;cursor:pointer;">
+  </span>
 </header>
 
                               <!-- NAVIGATION -->
@@ -485,7 +494,28 @@
     <button id="close-pack-opening-modal" class="btn-secondary" style="margin-top:18px;">Close</button>
   </div>
 </div>
-  
+<!-- SETTINGS MODAL -->
+<div id="settings-modal" class="modal">
+  <div class="modal-content" style="min-width:320px;max-width:400px;">
+    <h3>Settings</h3>
+    <div id="settings-menu">
+      <div class="settings-item" id="settings-notices">
+        <label>
+          <span>Notices</span>
+          <input type="checkbox" id="toggle-notices">
+        </label>
+      </div>
+      <div class="settings-item" id="settings-music">
+        <label>
+          <span>Music</span>
+          <input type="checkbox" id="toggle-music">
+        </label>
+      </div>
+      <!-- Add more settings here -->
+    </div>
+    <button id="close-settings-modal" class="btn-negative-secondary" style="margin-top:16px;">Close</button>
+  </div>
+</div>  
 <!-- SOUND EFFECTS -->  
 <audio id="card-flip-sound" src="SoundEffects/CardFlip.mp3" preload="auto"></audio>
   
@@ -499,6 +529,7 @@
 <script src="auth.js"></script>   
 <!-- APP -->
 <script src="shared.js"></script>
+<script src="settings.js"></script>  
 <script src="quest.js"></script>  
 <script src="gallery.js"></script>
 <script src="builder.js"></script>
