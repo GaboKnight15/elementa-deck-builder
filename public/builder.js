@@ -727,3 +727,24 @@ window.renderBuilder = renderBuilder;
 window.buildDeck = buildDeck;
 window.getCurrentDeck = getCurrentDeck;
 window.showDeckSelection = showDeckSelection;
+
+  // GLOBAL DECK SELECTION
+window.getPlayerDecks = function() {
+  // Returns array of all player decks for selection modal
+  // Each deck: { id, name, image, deckObj }
+  return deckSlots.map(deckName => {
+    const deckObj = decks[deckName] || {};
+    // Use highlightArt, bannerArt, or a default image for the deck image:
+    let image = deckObj.highlightArt || deckObj.bannerArt || "CardImages/Banners/DefaultBanner.png";
+    return {
+      id: deckName,
+      name: deckName,
+      image,
+      deckObj
+    };
+  });
+};
+
+window.getActiveDeckId = function() {
+  return currentDeckSlot;
+};
