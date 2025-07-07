@@ -372,7 +372,7 @@ button {
 #quests-columns > div {
   min-width: 0;
 }
-#quests-modal .quests-timer {
+#quests-modal {
   margin-bottom: 10px;
 }
 .achievement-image {
@@ -385,7 +385,7 @@ button {
   animation: achievement-fade-out 0.8s forwards cubic-bezier(.6,.1,.6,1);
   pointer-events: none;
 }
-.quests-timer {
+#quests-timer {
   text-align: center;
   font-size: 1.1em;
   color: #ffe066;
