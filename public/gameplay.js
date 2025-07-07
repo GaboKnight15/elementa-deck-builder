@@ -1037,16 +1037,8 @@ function getCurrentPhaseIndex() {
   );
 }
 function updatePhase() {
-  const phaseBadge = document.getElementById('phase-badge');
-  const phaseNameSpan = document.getElementById('phase-name');
-
-  // Set background class for player/opponent
-  phaseBadge.classList.remove('opponent-turn', 'player-turn');
-  phaseBadge.classList.add(gameState.turn === 'opponent' ? 'opponent-turn' : 'player-turn');
-
-  // Set phase name and color class
-  phaseNameSpan.textContent = PHASE_DISPLAY_NAMES[gameState.phase] || gameState.phase;
-  phaseNameSpan.className = PHASE_CLASS[gameState.phase];
+  const phaseLabel = document.getElementById('phase-label');
+  if (phaseLabel) phaseLabel.textContent = PHASE_DISPLAY_NAMES[gameState.phase] || gameState.phase;
 }
 // Phase control events
 nextPhaseBtn.onclick = () => {
