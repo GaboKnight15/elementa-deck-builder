@@ -1037,8 +1037,19 @@ function getCurrentPhaseIndex() {
   );
 }
 function updatePhase() {
-  const phaseLabel = document.getElementById('phase-label');
-  if (phaseLabel) phaseLabel.textContent = PHASE_DISPLAY_NAMES[gameState.phase] || gameState.phase;
+  const phaseBadge = document.getElementById('phase-badge');
+  const phaseNameSpan = document.getElementById('phase-name');
+  // Remove old classes
+  phaseBadge.classList.remove('opponent-turn', 'player-turn');
+  phaseBadge.classList.add(gameState.turn === 'opponent' ? 'opponent-turn' : 'player-turn');
+
+  if (phaseNameSpan) {
+    // Remove all phase color classes
+    phaseNameSpan.classList.remove('phase-draw', 'phase-essence', 'phase-action', 'phase-end');
+    // Set phase name and color class
+    phaseNameSpan.textContent = PHASE_DISPLAY_NAMES[gameState.phase] || gameState.phase;
+    phaseNameSpan.classList.add(PHASE_CLASS[gameState.phase]);
+  }
 }
 // Phase control events
 nextPhaseBtn.onclick = () => {
