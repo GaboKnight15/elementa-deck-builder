@@ -191,6 +191,22 @@ button {
   box-sizing: border-box;
   overflow-y: auto;
 }
+/* For burger icon hover effect */
+#settings-burger:hover {
+  filter: brightness(1.2);
+}
+/* For modal overlay and content (if not already styled) */
+#settings-modal { /* ...already likely styled with .modal... */ }
+#settings-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+.settings-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 .currency-display {
   display: inline-flex;
   align-items: center;
