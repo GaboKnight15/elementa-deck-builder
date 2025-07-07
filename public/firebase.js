@@ -21,7 +21,6 @@ const loginEmailInput    = document.getElementById('login-email-input');
 const loginPasswordInput = document.getElementById('login-password-input');
 const loginError         = document.getElementById('login-error');
 const mainHeader         = document.getElementById('main-header');
-const profileLogoutBtn   = document.getElementById('profile-logout-btn');
 
 function saveProgress() {
   const user = auth.currentUser;
@@ -217,7 +216,6 @@ function login() {
 }
 window.login = login;
 window.signup = signup;
-if (profileLogoutBtn) profileLogoutBtn.onclick = function() { auth.signOut(); };
 // --- Attach event handlers ---
 if (loginForm) loginForm.onsubmit = function(e) {
   e.preventDefault();
