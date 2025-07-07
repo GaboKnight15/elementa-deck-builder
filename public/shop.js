@@ -97,6 +97,11 @@ const cardbackPrices = {
   "OtherImages/Cardbacks/Cardback2.png": 100,
   "OtherImages/Cardbacks/DefaultCardback.png": 100
 };
+// --- Shop Key Bases for localStorage ---
+const INDIVIDUAL_CARDS_SHOP_KEY_BASE = "shopIndividualCards";
+const INDIVIDUAL_CARDS_RESET_KEY_BASE = "shopIndividualCardsReset";
+const INDIVIDUAL_CARDS_PURCHASED_KEY_BASE = "shopIndividualCardsPurchased";
+
 const INDIVIDUAL_CARDS_SHOP_KEY = getUserShopKey(INDIVIDUAL_CARDS_SHOP_KEY_BASE);
 const INDIVIDUAL_CARDS_RESET_KEY = getUserShopKey(INDIVIDUAL_CARDS_RESET_KEY_BASE);
 const INDIVIDUAL_CARDS_PURCHASED_KEY = getUserShopKey(INDIVIDUAL_CARDS_PURCHASED_KEY_BASE);
