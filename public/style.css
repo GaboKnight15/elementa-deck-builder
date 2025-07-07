@@ -191,16 +191,30 @@ button {
   box-sizing: border-box;
   overflow-y: auto;
 }
-/* For burger icon hover effect */
-#settings-burger:hover {
-  filter: brightness(1.2);
-}
 /* For modal overlay and content (if not already styled) */
 #settings-modal { /* ...already likely styled with .modal... */ }
 #settings-menu {
   display: flex;
   flex-direction: column;
   gap: 1em;
+}
+#settings-burger-wrapper {
+  position: absolute;
+  top: 18px;
+  right: 24px;
+  z-index: 101;
+  display: inline-block;
+}
+#settings-burger {
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  filter: drop-shadow(0 1px 6px #0004);
+  transition: transform 0.12s, filter 0.15s;
+}
+#settings-burger:hover, #settings-burger:focus {
+  transform: scale(1.10);
+  filter: drop-shadow(0 2px 12px #ffe066dd);
 }
 .settings-item {
   display: flex;
