@@ -109,7 +109,7 @@ auth.onAuthStateChanged(function(user) {
       ensureQuestSlots();
       renderQuests();
       updateQuestsNotificationDot();  
-      startQuestTimer();
+      startQuestTimers();
       updateAchievementsNotificationDot();
       mainHeader.style.display = '';
       profileArea.style.display = '';
