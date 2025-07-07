@@ -1207,6 +1207,30 @@ button {
   position: relative;
   transition: box-shadow 0.17s, background 0.18s;
 }
+
+/* GAME MODE SELECTION */
+.mode-options {
+  display: flex;
+  gap: 36px;
+  justify-content: center;
+  margin: 30px 0;
+}
+.mode-btn {
+  font-size: 2em;
+  padding: 30px 48px;
+  border-radius: 20px;
+  border: none;
+  background: #22304a;
+  color: #ffe066;
+  font-weight: bold;
+  box-shadow: 0 3px 16px #0003;
+  cursor: pointer;
+  transition: background .15s;
+}
+.mode-btn:hover {
+  background: #30487a;
+  color: #fff;
+}
 .card-battlefield-wrapper {
   display: flex;
   flex-direction: column;
