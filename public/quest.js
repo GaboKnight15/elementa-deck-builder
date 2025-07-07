@@ -148,18 +148,18 @@ function claimQuestReward(quest, cb) {
   }
   setCurrency(getCurrency() + quest.reward.amount);
   data[quest.id].claimed = true;
+  // Set per-quest resetAt (24 hours from now)
+  data[quest.id].resetAt = Date.now() + 24 * 60 * 60 * 1000;
   setQuestData(data);
   updateQuestsNotificationDot();
   grantExp(10);
-  // --- Set/reset the timer for next quest refresh ---
-  window.questResetTimestamp = Date.now();
   saveProgress();
-  startQuestTimer();
+  renderQuests();
+  startQuestTimers();
   if (typeof cb === "function") cb(true);
   return true;
 }
 
-// 7. Renderers
 function renderQuests() {
   const list = document.getElementById('quests-list');
   if (!list) return;
@@ -177,26 +177,31 @@ function renderQuests() {
       const questDef = QUEST_POOL.find(q => q.id === (quest.id || quest));
       if (!questDef) continue;
       const progress = getQuestProgress(questDef);
-      if (progress.claimed) continue;
+      // Show timer if claimed
+      let timerHtml = '';
+      if (progress.claimed && progress.resetAt) {
+        timerHtml = `<div class="quest-timer" id="quest-timer-${questDef.id}" style="font-size:0.93em;color:#ffe066;margin-bottom:2px;"></div>`;
+      }
       const percent = Math.min(100, Math.round((progress.progress / questDef.goal) * 100));
       const entry = document.createElement('div');
       entry.className = 'quest-entry';
-entry.innerHTML = `
-  <div style="display:flex;align-items:center;">
-    <img src="${questDef.image || 'images/quests/placeholder.png'}" alt="Quest" class="quest-image" style="width:40px;height:40px;object-fit:contain;margin-right:12px;">
-    <div style="flex:1;">
-      <div class="quest-desc">${questDef.description}</div>
-      <div class="quest-progress-bar-wrap">
-        <div class="quest-progress-bar" style="width:${percent}%;"></div>
-      </div>
-      <div style="font-size:0.96em;color:#fff;text-align:right;">${progress.progress} / ${questDef.goal}</div>
-      <div class="quest-reward">
-        <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins" style="width:18px;">
-        +${questDef.reward.amount}
-      </div>
-    </div>
-  </div>
-`;
+      entry.innerHTML = `
+        <div style="display:flex;align-items:center;">
+          <img src="${questDef.image || 'images/quests/placeholder.png'}" alt="Quest" class="quest-image" style="width:40px;height:40px;object-fit:contain;margin-right:12px;">
+          <div style="flex:1;">
+            <div class="quest-desc">${questDef.description}</div>
+            ${timerHtml}
+            <div class="quest-progress-bar-wrap">
+              <div class="quest-progress-bar" style="width:${percent}%;"></div>
+            </div>
+            <div style="font-size:0.96em;color:#fff;text-align:right;">${progress.progress} / ${questDef.goal}</div>
+            <div class="quest-reward">
+              <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins" style="width:18px;">
+              +${questDef.reward.amount}
+            </div>
+          </div>
+        </div>
+      `;
       if (progress.completed && !progress.claimed) {
         const btn = document.createElement('button');
         btn.className = 'btn-primary quest-claim-btn';
@@ -218,6 +223,8 @@ entry.innerHTML = `
       }
       list.appendChild(entry);
     }
+    // Start all quest timers after rendering
+    startQuestTimers();
   });
 }
 
@@ -410,28 +417,38 @@ function formatTimer(ms) {
 }
 let TimerInterval = null;
 
-function startQuestTimer() {
-  clearInterval(TimerInterval);
+function startQuestTimers() {
+  clearInterval(window._allQuestTimers);
   function update() {
-    const now = Date.now();
-    const nextReset = getNextResetTime();
-    const remain = nextReset - now;
-    const el = document.getElementById('quests-timer');
-    if (el) {
-      if (remain > 0) {
-        el.textContent = 'Refreshes in: ' + formatTimer(remain);
-      } else {
-        el.textContent = 'New quests available!';
+    let data = getQuestData();
+    let updated = false;
+    for (const questId in data) {
+      const quest = data[questId];
+      if (quest.claimed && quest.resetAt) {
+        const el = document.getElementById('quest-timer-' + questId);
+        const remain = quest.resetAt - Date.now();
+        if (el) {
+          if (remain > 0) {
+            el.textContent = 'New quest in: ' + formatTimer(remain);
+          } else {
+            el.textContent = 'New quest available!';
+          }
+        }
+        // When timer ends, reset this quest
+        if (remain <= 0 && quest.claimed) {
+          // Remove/reset this quest slot (you could replace with a new random quest)
+          data[questId] = { progress: 0, completed: false, claimed: false };
+          updated = true;
+        }
       }
     }
-    if (remain <= 0) {
-      refreshQuests();
+    if (updated) {
+      setQuestData(data);
       renderQuests();
-      startQuestTimer();
     }
   }
   update();
-  TimerInterval = setInterval(update, 1000);
+  window._allQuestTimers = setInterval(update, 1000);
 }
 function getRandomQuests(pool, count) {
   const copy = [...pool];
