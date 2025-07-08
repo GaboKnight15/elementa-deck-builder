@@ -2,7 +2,6 @@
 // === GALLERY LOGIC ===
 // ==========================
 const gallery = document.getElementById('gallery-cards');
-const minKept = getMinimumKeptForRarity(card);
 const filterSelectLabels = {
   'filter-color-gallery': 'Color',
   'filter-category-gallery': 'Category',
@@ -25,6 +24,7 @@ function getMinimumKeptForRarity(card) {
   if (!card.rarity) return 1; // Default fallback
   switch (card.rarity.toLowerCase()) {
     case 'legendary': return 1;
+    case 'epic':      return 2;
     case 'rare':      return 3;
     case 'common':    return 4;
     default:          return 1;
@@ -153,9 +153,8 @@ function createCardGallery(card) {
       const collection = getCollection();
       const ownedCount = collection[card.id] || 0;
       const minKept = getMinimumKeptForRarity(card);
-
       if (ownedCount <= minKept) {
-        showToast(`You must keep at least ${minKept} copy/copies of this card (${card.rarity || "Unknown rarity"}).`);
+        showToast(`You must keep at least ${minKept} of this card (${card.rarity || "Unknown rarity"}).`);
         return;
       }
       const refund = 10;
