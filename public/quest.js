@@ -186,21 +186,21 @@ function renderQuests() {
       const entry = document.createElement('div');
       entry.className = 'quest-entry';
       entry.innerHTML = `
-        <div style="display:flex;align-items:center;">
-          <img src="${questDef.image || 'images/quests/placeholder.png'}" alt="Quest" class="quest-image" style="width:40px;height:40px;object-fit:contain;margin-right:12px;">
-          <div style="flex:1;">
+          <img src="${questDef.image || 'CardImages/Domains/placeholder.png'}" alt="Quest" class="quest-image">
+          <div class="quest-main">
             <div class="quest-desc">${questDef.description}</div>
             ${timerHtml}
-            <div class="quest-progress-bar-wrap">
-              <div class="quest-progress-bar" style="width:${percent}%;"></div>
-            </div>
-            <div style="font-size:0.96em;color:#fff;text-align:right;">${progress.progress} / ${questDef.goal}</div>
-            <div class="quest-reward">
-              <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins" style="width:18px;">
-              +${questDef.reward.amount}
+            <div class="quest-progress-row">
+              <div class="quest-progress-bar-wrap">
+                <div class="quest-progress-bar" style="width:${percent}%;"></div>
+              </div>
+              <div class="quest-progress-numbers">${progress.progress} / ${questDef.goal}</div>
+              <div class="quest-reward">
+                <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins">
+                +${questDef.reward.amount}
+              </div>
             </div>
           </div>
-        </div>
       `;
       if (progress.completed && !progress.claimed) {
         const btn = document.createElement('button');
