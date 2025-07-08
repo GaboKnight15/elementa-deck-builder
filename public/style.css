@@ -1173,11 +1173,11 @@ button {
 }
 #deck-selection-grid {
   display: grid;
-  grid-template-columns: repeat(3, 140px);
+  grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 180px);
   gap: 2em;
   justify-content: center;
-  align-items: center;
+  align-items: start;
   margin: 1em auto;
 }
 .deck-slot-tile {
