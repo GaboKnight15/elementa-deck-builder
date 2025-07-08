@@ -110,7 +110,7 @@ function createCardGallery(card) {
       e.stopPropagation();
       const cost = 50;
       if (playerEssence < cost) {
-        alert('Not enough Essence!');
+        showToast("Not enough Essence", {type:"error"});
         return;
       }
       const collection = getCollection();
@@ -155,7 +155,7 @@ function createCardGallery(card) {
       const minKept = getMinimumKeptForRarity(card);
 
       if (ownedCount <= minKept) {
-        alert(`You must keep at least ${minKept} copy/copies of this card (${card.rarity || "Unknown rarity"}).`);
+        showToast(`You must keep at least ${minKept} copy/copies of this card (${card.rarity || "Unknown rarity"}).`);
         return;
       }
       const refund = 10;
