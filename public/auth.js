@@ -77,6 +77,7 @@ function loadProfile(user) {
         if (data && data.profileBanner) banner = data.profileBanner;
       }
       profilePic.src = icon;
+      if (profilePicMenu) profilePicMenu.src = icon;
       profileUsernameDisplay.textContent = name;
       profileBanner.src = banner;
     })
@@ -178,6 +179,8 @@ profileIconModal.onclick = function(e) {
     firebase.firestore().collection('users').doc(user.uid)
       .set({ profilePic: iconUrl }, {merge: true})
       .then(function() {
+      if (profilePic) profilePic.src = iconUrl;
+      if (profilePicMenu) profilePicMenu.src = iconUrl;          
         getUnlockedAvatars(function(unlocked) {
           renderProfileIcons(iconUrl, unlocked);
         });
