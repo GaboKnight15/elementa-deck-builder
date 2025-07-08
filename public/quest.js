@@ -165,6 +165,7 @@ function renderQuests() {
   if (!list) return;
   list.innerHTML = '';
   getActiveQuests(function(quests) {
+    const displayedQuests = (quests || []).slice(0, QUEST_SLOTS);
     for (let i = 0; i < QUEST_SLOTS; i++) {
       const quest = quests[i];
       if (!quest) {
@@ -186,21 +187,21 @@ function renderQuests() {
       const entry = document.createElement('div');
       entry.className = 'quest-entry';
       entry.innerHTML = `
-          <img src="${questDef.image || 'CardImages/Domains/placeholder.png'}" alt="Quest" class="quest-image">
-          <div class="quest-main">
-            <div class="quest-desc">${questDef.description}</div>
-            ${timerHtml}
-            <div class="quest-progress-row">
-              <div class="quest-progress-bar-wrap">
-                <div class="quest-progress-bar" style="width:${percent}%;"></div>
-              </div>
-              <div class="quest-progress-numbers">${progress.progress} / ${questDef.goal}</div>
-              <div class="quest-reward">
-                <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins">
-                +${questDef.reward.amount}
-              </div>
+        <img src="${questDef.image || 'CardImages/Domains/placeholder.png'}" alt="Quest" class="quest-image">
+        <div class="quest-main">
+          <div class="quest-desc">${questDef.description}</div>
+          ${timerHtml}
+          <div class="quest-progress-row">
+            <div class="quest-progress-bar-wrap">
+              <div class="quest-progress-bar" style="width:${percent}%;"></div>
+            </div>
+            <div class="quest-progress-numbers">${progress.progress} / ${questDef.goal}</div>
+            <div class="quest-reward">
+              <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins">
+              +${questDef.reward.amount}
             </div>
           </div>
+        </div>
       `;
       if (progress.completed && !progress.claimed) {
         const btn = document.createElement('button');
