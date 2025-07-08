@@ -88,6 +88,7 @@ function createCardGallery(card) {
     createBtnImg.title = 'Create (spend Essence to make 1 copy)';
     createBtnImg.className = "gallery-action-btn";
     // Set styles dynamically
+    createBtnImg.style.background = "none";
     createBtnImg.style.cursor = "pointer";
     createBtnImg.style.width = "38px";
     createBtnImg.style.height = "38px";
@@ -129,6 +130,7 @@ function createCardGallery(card) {
     voidBtnImg.title = 'Void (destroy 1 copy for Essence)';
     voidBtnImg.className = "gallery-action-btn";
     // Set styles dynamically
+    voidBtnImg.style.background = "none";
     voidBtnImg.style.cursor = "pointer";
     voidBtnImg.style.width = "38px";
     voidBtnImg.style.height = "38px";
