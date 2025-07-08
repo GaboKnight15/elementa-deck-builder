@@ -39,7 +39,7 @@ button {
   display: none; 
 }
 #app-main.active {
-  display: block;
+  display: block;    
 }
 #main-nav {
   display: none;
