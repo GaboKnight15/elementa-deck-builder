@@ -139,7 +139,7 @@ button {
 #profile-menu {
   display: none;
   position: absolute;
-  top: 70px;          /* adjust as needed for your header height */
+  top: 16px;          /* adjust as needed for your header height */
   left: 16px;         /* adjust to align with your profile icon */
   min-width: 220px;
   max-width: 320px;
@@ -1880,6 +1880,32 @@ button {
   gap: 9px;
   margin-bottom: 10px;
 }
+/* Profile pic as button */
+.profile-pic-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: box-shadow 0.18s, outline 0.17s;
+}
+.profile-pic-btn img {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 3px solid #ffe066;
+  box-shadow: 0 2px 8px #0005;
+  object-fit: cover;
+  transition: filter 0.16s, box-shadow 0.16s;
+}
+.profile-pic-btn:hover img,
+.profile-pic-btn:focus img {
+  filter: brightness(1.09) drop-shadow(0 1px 8px #ffe066cc);
+  box-shadow: 0 0 16px #ffe06699;
+  outline: 2px solid #ffe066;
+  outline-offset: 1px;
+}
 #profile-username-display {
   color: #ffe066; /* Futuristic yellow accent */
   font-size: 1.65em; /* Bigger */
@@ -2548,7 +2574,14 @@ button {
   flex-direction: column;
   align-items: center;
 }
-
+.profile-banner-container img {
+  width: 100%;
+  max-width: 320px;
+  height: 84px;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px #0005;
+}
 #profile-banners img {
   width: 210px;
   height: 45px;
