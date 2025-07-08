@@ -667,6 +667,7 @@ button {
   font-size: 1.15em;
   font-weight: 600;
   color: #23245a;
+  margin: 0.2em 0 0 0;
 }
 .card > div:last-child {
   font-size: 0.9em;
