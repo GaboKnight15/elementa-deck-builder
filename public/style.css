@@ -57,7 +57,7 @@ button {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 2.5em;
+  gap: 2vw;
   width: 100%;
   padding: 0.6em 2vw 0.6em 2vw;
   background: #23232a;
@@ -67,7 +67,7 @@ button {
 .header-profile {
   display: flex;
   align-items: center;
-  gap: 1em;
+  min-width: 0;
 }
 .header-row h1 {
   flex: 1 0 auto;
@@ -76,6 +76,7 @@ button {
 .elementa-title {
   font-family: 'Orbitron', 'Segoe UI', Arial, sans-serif;
   font-size: 2.8em;
+  text-align: center;
   letter-spacing: 0.08em;
   color: #fff;
   text-shadow:
@@ -85,6 +86,8 @@ button {
     0 0 64px #1956ff;
   animation: elementa-glow 2.5s ease-in-out infinite alternate;
   transition: text-shadow 0.4s;
+  min-width: 0;
+  white-space: nowrap;
 }
 
 @keyframes elementa-glow {
@@ -287,7 +290,8 @@ button {
   filter: drop-shadow(0 1px 4px #0008);
 }
 #header-icons {
-  position: absolute;
+  position: static;
+  align-items: center;
   top: 16px;
   right: 24px;
   display: flex;
