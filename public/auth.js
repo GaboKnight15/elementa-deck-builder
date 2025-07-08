@@ -186,6 +186,7 @@ profileIconModal.onclick = function(e) {
         getUnlockedAvatars(function(unlocked) {
           renderProfileIcons(iconUrl, unlocked);
         });
+        if (profileIconModal) profileIconModal.style.display = 'none';
       })
       .catch(function(err) {
         console.error('[auth] Failed to update profile icon:', err);
@@ -218,6 +219,7 @@ profileIconModal.onclick = function(e) {
         getUnlockedBanners(function(unlocked) {
           renderProfileBanners(bannerUrl, unlocked);
         });
+        if (profileBannerModal) profileBannerModal.style.display = 'none';
       })
       .catch(function(err) {
         console.error('[auth] Failed to update profile banner:', err);
