@@ -612,6 +612,11 @@ button {
   align-items: flex-start;
   font-size: 1em;
 }
+.card-unavailable {
+    opacity: 0.5;
+    filter: grayscale(0.7);
+    pointer-events: none; /* Optional: if you want to fully disable click/drag */
+}
 /* In style.css */
 #deck-view-modal-title {
   text-align: center;
