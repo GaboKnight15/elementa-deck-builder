@@ -142,7 +142,7 @@ function renderDeckSelection() {
         let newName = prompt("Deck name?");
         if (!newName) return;
         if (deckSlots.includes(newName)) {
-          alert("Deck name already exists!");
+          showToast("Deck name already exists!", {type:"error"});
           return;
         }
         deckSlots[i] = newName;
@@ -328,7 +328,7 @@ renameDeckBtn.onclick = function() {
   let newName = prompt("Rename deck to:", deckName);
   if (!newName || newName === deckName) return;
   if (deckSlots.includes(newName)) {
-    alert("Deck name already exists!");
+    showToast("Deck name already exists!", {type:"error"});
     return;
   }
   let idx = deckSlots.indexOf(deckName);
@@ -344,7 +344,7 @@ renameDeckBtn.onclick = function() {
 deleteDeckBtn.onclick = function() {
   const deckName = deckMenuModal.dataset.deckName;
   if (deckSlots.length === 1) {
-    alert("You must have at least one deck.");
+    showToast("You must have at least 1 deck", {type:"error"});
     return;
   }
   if (!confirm(`Delete "${deckName}"? This cannot be undone.`)) return;
@@ -663,7 +663,7 @@ function renderBuilder() {
     let newName = prompt("Deck name?", `Deck ${deckSlots.length + 1}`);
     if (!newName) return;
     if (deckSlots.includes(newName)) {
-      alert("Deck name already exists!");
+      showToast("Deck name already exists!", {type:"error"});
       return;
     }
     deckSlots.push(newName);
@@ -678,7 +678,7 @@ function renderBuilder() {
 // DELETE DECK SLOT
   deleteDeckSlotBtn.addEventListener('click', () => {
     if (deckSlots.length === 1) {
-      alert("You must have at least one deck.");
+      showToast("You must have at least 1 deck!", {type:"error"});
       return;
     }
     if (!confirm(`Delete "${currentDeckSlot}"? This cannot be undone.`)) return;
