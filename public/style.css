@@ -457,6 +457,10 @@ button {
   font-weight: bold;
   letter-spacing: 1px;
 }
+
+
+/* ============================= GALLERY =========================== */
+
 #gallery-cards {
   display: grid;
   background: #1a2533;
