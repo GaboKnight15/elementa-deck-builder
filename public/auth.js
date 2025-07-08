@@ -1,7 +1,6 @@
 const profileArea            = document.getElementById('profile-area');
 const profileMenu            = document.getElementById('profile-menu');
 const profilePic             = document.getElementById('profile-pic');
-const profilePicMenuBtn      = document.getElementById('profile-pic-btn');
 let profilePicMenuBtn        = document.getElementById('profile-pic-btn');
 const profilePicMenu         = document.getElementById('profile-pic-menu');
 const profileUsernameDisplay = document.getElementById('profile-username-display');
@@ -111,8 +110,7 @@ if (!profilePicMenuBtn) {
   // Create the button if it doesn't exist
   profilePicMenuBtn = document.createElement('button');
   profilePicMenuBtn.id = 'profile-pic-btn';
-  profilePicMenuBtn.style.display = 'none'; // Hide it, so it doesn't disrupt your UI
-  // Optionally, add it to the DOM in a logical place, e.g.:
+  profilePicMenuBtn.style.display = 'none';
   document.body.appendChild(profilePicMenuBtn);
 }
   // --- Render Profile Avatars ---
