@@ -21,7 +21,8 @@ const closeProfileBannerModalBtn = document.getElementById('close-profile-banner
 const defaultIcon = "CardImages/Avatars/Default.png";
 const defaultBanner = "CardImages/Banners/DefaultBanner.png";
 // --- Profile Icon Choices ---
-const iconOptions = [ 
+const iconOptions = [
+    "CardImages/Avatars/Default.png",
     "CardImages/Avatars/Faelyra.png",
     "CardImages/Avatars/Kaelyn.png",
     "CardImages/Avatars/Zaryon.png",
@@ -48,6 +49,7 @@ const iconOptions = [
 ];
   
 const bannerOptions = [
+  "CardImages/Banners/DefaultBanner.png",
   "CardImages/Banners/Verdara.png",
   "CardImages/Banners/Ashkar.png",
   "CardImages/Banners/Pearlhaven.png",
