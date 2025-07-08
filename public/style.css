@@ -319,47 +319,80 @@ button {
   pointer-events: none;
   display: block;
 }
+.quest-main {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
 #quests-icon-wrapper, #achievements-icon-wrapper {
   position: relative;
   display: inline-block;
 }
 .quest-entry {
-  background: #232a3c;
-  border-radius: 10px;
-  margin: 10px 0;
-  padding: 12px 14px 10px 14px;
-  box-shadow: 0 2px 10px #0005;
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  align-items: flex-start;
+  background: #232a3c;
+  border-radius: 12px;
+  margin: 18px 0 0 0;
+  padding: 14px 14px 14px 14px;
+  box-shadow: 0 2px 12px #0004;
+  gap: 18px;
+  width: 100%;
+  min-width: 0;
 }
 .quest-desc {
-  font-size: 1.05em;
+  font-size: 1.11em;
   color: #ffe066;
-  font-weight: 500;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.quest-progress-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
 }
 .quest-progress-bar-wrap {
-  width: 100%;
+  flex: 1 1 0;
   background: #1a2234;
   border-radius: 7px;
-  height: 16px;
-  margin: 5px 0 0 0;
+  height: 15px;
   overflow: hidden;
   border: 1.5px solid #314175;
+  margin: 0;
+  min-width: 0;
+  position: relative;
 }
 .quest-progress-bar {
   height: 100%;
-  transition: width 0.4s;
   background: linear-gradient(90deg,#50eaff 0%,#ffe066 100%);
   border-radius: 7px 0 0 7px;
+  transition: width 0.4s;
+}
+.quest-progress-numbers {
+  min-width: 60px;
+  text-align: right;
+  color: #fff;
+  font-size: 1em;
+  margin-left: 8px;
+  font-weight: 500;
+  text-shadow: 0 1px 2px #0007;
 }
 .quest-reward {
-  color: #ffe066;
-  font-size: 1em;
-  margin-top: 2px;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
+  margin-left: 14px;
+  color: #ffe066;
+  font-weight: bold;
+  font-size: 1.08em;
+  white-space: nowrap;
+}
+.quest-reward .currency-icon {
+  width: 22px;
+  height: 22px;
+  margin: 0;
 }
 .quest-claim-btn {
   margin-top: 5px;
@@ -376,7 +409,9 @@ button {
   width: 40px;
   height: 40px;
   object-fit: contain;
-  margin-right: 12px;
+  margin-right: 0;
+  flex-shrink: 0;
+  align-self: flex-start;
 }
 @keyframes achievement-fade-out {
   0% {
