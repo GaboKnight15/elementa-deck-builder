@@ -412,6 +412,7 @@ function refreshDeckSlotSelect() {
 function createCardBuilder(card, ownedCount) {
     const deck = getCurrentDeck();
     const currentInDeck = deck[card.id] || 0;
+    const available = ownedCount - currentInDeck;
     const div = document.createElement('div');
     div.className = 'card-builder';
 
@@ -446,8 +447,12 @@ function createCardBuilder(card, ownedCount) {
     // OWNED BADGE
     const ownedBadge = document.createElement('div');
     ownedBadge.className = 'card-count-badge';
-    ownedBadge.textContent = ownedCount;
+    ownedBadge.textContent = available;
     div.appendChild(ownedBadge);
+      // GRAY OUT IF unavailable
+    if (available <= 0) {
+        div.classList.add('card-unavailable'); // You can style this class in CSS
+    }
   
     const btn = document.createElement('button');
     btn.textContent = "Add";
