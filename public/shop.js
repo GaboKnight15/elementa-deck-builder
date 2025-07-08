@@ -589,7 +589,7 @@ function renderIndividualCardsShop(shouldAnimateFlip = false) {
     const refreshBtn = document.createElement('button');
     refreshBtn.type = 'button';
     refreshBtn.className = 'btn-secondary individual-cards-refresh-btn';
-    refreshBtn.innerHTML = `Refresh Cards <span style="font-size:0.95em;color:#ffe066;">(${INDIVIDUAL_CARDS_REFRESH_COST} <img src="OtherImages/Currency/Coins.png" style="width:18px;vertical-align:middle;margin-left:1px;">)</span>`;
+    refreshBtn.innerHTML = `Refresh <span style="font-size:0.95em;color:#ffe066;">(${INDIVIDUAL_CARDS_REFRESH_COST} <img src="OtherImages/Currency/Coins.png" style="width:18px;vertical-align:middle;margin-left:1px;">)</span>`;
     refreshBtn.onclick = function() {
       if (getCurrency() < INDIVIDUAL_CARDS_REFRESH_COST) {
         showToast("Not enough coins to refresh!", {type:"error"});
