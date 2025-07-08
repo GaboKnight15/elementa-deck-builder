@@ -1296,6 +1296,27 @@ button {
   background: #22304a;
   overflow: hidden;
 }
+
+/* CPU Deck Selection Hover */
+.cpu-deck-option,
+.player-deck-option {
+  transition: 
+    box-shadow 0.18s, 
+    border-color 0.18s, 
+    transform 0.13s, 
+    filter 0.16s;
+  box-shadow: 0 2px 10px #0002;
+}
+
+.cpu-deck-option:hover, .cpu-deck-option:focus,
+.player-deck-option:hover, .player-deck-option:focus {
+  box-shadow: 0 8px 24px 0 #ffe06699, 0 1px 8px #0004;
+  border-color: #ffe066 !important;
+  transform: scale(1.07);
+  z-index: 2;
+  cursor: pointer;
+  filter: brightness(1.08) saturate(1.07);
+}
 #battlefield {
   flex: 1 1 0%;
   min-width: 0;
