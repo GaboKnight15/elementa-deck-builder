@@ -1162,14 +1162,14 @@ button {
   box-shadow: 0 0 8px 2px #3b82f6;
   border: 2px dashed #3b82f6;
 }
-.deck-selection-grid {
+#deck-selection-grid {
   display: grid;
   grid-template-columns: repeat(3, 140px);
   grid-template-rows: repeat(3, 180px);
   gap: 2em;
   justify-content: center;
   align-items: center;
-  margin: 4em auto;
+  margin: 1em auto;
 }
 .deck-slot-tile {
   display: flex;
