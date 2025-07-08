@@ -148,21 +148,27 @@ document.addEventListener('DOMContentLoaded', function () {
   }
     
 // --- Open/Close Avatar Modal ---
-profilePicMenuBtn.onclick = function() {
-  const currentIcon = profilePicMenu.src.split('?')[0];
-  getUnlockedAvatars(function(unlocked) {
-    renderProfileIcons(currentIcon, unlocked);
-    profileIconModal.style.display = 'flex';
-  });
-};
-  closeProfileIconModalBtn.onclick = function() {
-    profileIconModal.style.display = 'none';
+if (profilePicMenuBtn) {
+  profilePicMenuBtn.onclick = function() {
+    const currentIcon = profilePicMenu && profilePicMenu.src ? profilePicMenu.src.split('?')[0] : "";
+    getUnlockedAvatars(function(unlocked) {
+      renderProfileIcons(currentIcon, unlocked);
+      if (profileIconModal) profileIconModal.style.display = 'flex';
+    });
   };
+}
+if (closeProfileIconModalBtn) {
+  closeProfileIconModalBtn.onclick = function() {
+    if (profileIconModal) profileIconModal.style.display = 'none';
+  };
+}
+if (profileIconModal) {
   profileIconModal.onclick = function(e) {
     if (e.target === profileIconModal) {
       profileIconModal.style.display = 'none';
     }
   };
+}
     
   // --- Avatar Selection ---
   function selectProfileIcon(iconUrl) {
