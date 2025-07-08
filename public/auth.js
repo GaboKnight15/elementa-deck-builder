@@ -1,8 +1,9 @@
 const profileArea            = document.getElementById('profile-area');
 const profileMenu            = document.getElementById('profile-menu');
 const profilePic             = document.getElementById('profile-pic');
+const profilePicMenuBtn      = document.getElementById('profile-pic-btn');
+const profilePicMenu         = document.getElementById('profile-pic-menu');
 const profileUsernameDisplay = document.getElementById('profile-username-display');
-const profileChangePicBtn    = document.getElementById('change-profile-btn');
 
 const profileIconModal          = document.getElementById('profile-icon-modal');
 const profileIcons              = document.getElementById('profile-icons');
@@ -146,14 +147,14 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
     
-  // --- Open/Close Avatar Modal ---
-  profileChangePicBtn.onclick = function() {
-    const currentIcon = profilePic.src.split('?')[0];
-    getUnlockedAvatars(function(unlocked) {
-      renderProfileIcons(currentIcon, unlocked);
-      profileIconModal.style.display = 'flex';
-    });
-  };
+// --- Open/Close Avatar Modal ---
+profilePicMenuBtn.onclick = function() {
+  const currentIcon = profilePicMenu.src.split('?')[0];
+  getUnlockedAvatars(function(unlocked) {
+    renderProfileIcons(currentIcon, unlocked);
+    profileIconModal.style.display = 'flex';
+  });
+};
   closeProfileIconModalBtn.onclick = function() {
     profileIconModal.style.display = 'none';
   };
