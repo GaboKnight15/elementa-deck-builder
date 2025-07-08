@@ -1,4 +1,4 @@
-const profileArea            = document.getElementById('profile-area');
+const profileArea            = document.getElementById('profile-area'); 
 const profileMenu            = document.getElementById('profile-menu');
 const profilePic             = document.getElementById('profile-pic');
 let profilePicMenuBtn        = document.getElementById('profile-pic-btn');
