@@ -1067,6 +1067,13 @@ button {
   outline: none;
   margin-right: 0.6em;
 }
+
+/* Ensure dropdown options are readable on dark theme */
+.filter-select option {
+  background: #22304a;
+  color: #ffe066;
+}
+
 .filter-select:focus, .filter-select:hover {
   border-color: #7aa6ff;
   box-shadow: 0 0 0 2px #5081ff88;
