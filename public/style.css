@@ -1095,6 +1095,10 @@ button {
   margin: 1em auto;
   width: fit-content;
 }
+
+
+/* ============================= FILTER OPTIONS =========================== */
+
 .filter-select {
   background: linear-gradient(90deg, #22304a 0%, #1a2533 100%);
   color: #f7faff;
@@ -1109,13 +1113,10 @@ button {
   outline: none;
   margin-right: 0.6em;
 }
-
-/* Ensure dropdown options are readable on dark theme */
 .filter-select option {
   background: #22304a;
   color: #ffe066;
 }
-
 .filter-select:focus, .filter-select:hover {
   border-color: #7aa6ff;
   box-shadow: 0 0 0 2px #5081ff88;
@@ -1163,8 +1164,8 @@ button {
 }
 .deck-selection-grid {
   display: grid;
-  grid-template-columns: repeat(3, 140px); /* adjust size as needed */
-  grid-template-rows: repeat(3, 180px);    /* adjust size as needed */
+  grid-template-columns: repeat(3, 140px);
+  grid-template-rows: repeat(3, 180px);
   gap: 2em;
   justify-content: center;
   align-items: center;
@@ -1182,7 +1183,7 @@ button {
   font-size: 1.2em;
   cursor: pointer;
   height: 160px;
-  width: 120px;
+  width: 200px;
   transition: box-shadow 0.18s, background 0.18s;
 }
 .deck-slot-tile.empty {
@@ -1219,6 +1220,7 @@ button {
   padding: 3px 12px;
   border-radius: 10px;
 }
+
 /* <--- DECK AND VOID MODALS */
 .modal {
   display: none;
@@ -1352,6 +1354,9 @@ button {
 .card-bg-gold {
   background: linear-gradient(135deg, #3a371b 0%, #232326 50%, #39381b 100%);
 }
+
+/* ============================= GBATTLEFIELD DESIGN =========================== */
+
 #gameplay-container {
   display: flex;
   flex-direction: row;
@@ -1360,7 +1365,6 @@ button {
   background: #22304a;
   overflow: hidden;
 }
-
 /* CPU Deck Selection Hover */
 .cpu-deck-option,
 .player-deck-option {
@@ -1371,7 +1375,6 @@ button {
     filter 0.16s;
   box-shadow: 0 2px 10px #0002;
 }
-
 .cpu-deck-option:hover, .cpu-deck-option:focus,
 .player-deck-option:hover, .player-deck-option:focus {
   box-shadow: 0 8px 24px 0 #ffe06699, 0 1px 8px #0004;
@@ -1416,15 +1419,14 @@ button {
   gap: 26px;
   padding: 10px 0 10px 0;
 }
-/* 1. Profile Panel: Ensure it fits the left sidebar */
 #battlefield-leftbar .profile-panel,
 #battlefield-leftbar .profile,
 #my-profile, #opponent-profile {
-  max-width: 98%;        /* Prevent overflow */
-  width: 100%;           /* Fill parent */
+  max-width: 98%;
+  width: 100%;
   box-sizing: border-box;
-  margin: 0 auto 8px auto; /* Center and give space below */
-  padding: 8px 8px 8px 8px; /* Adjust padding as needed */
+  margin: 0 auto 8px auto;
+  padding: 8px 8px 8px 8px;
   border-radius: 12px;
   background: #232a3c;
   display: flex;
@@ -1437,7 +1439,6 @@ button {
   max-height: 44px;
   border-radius: 50%;
 }
-
 .card-battlefield {
   transition: transform 0.18s, box-shadow 0.18s;
   position: relative;
@@ -2649,18 +2650,10 @@ button {
   cursor: pointer;
   border: 2px solid #393e69;
 }
-
 #profile-banner-modal .modal-content {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-#profile-banner:hover,
-#profile-banner:focus {
-  box-shadow: 0 0 0 4px #50eaff99, 0 8px 28px #ffe06655;
-  outline: 2px solid #50eaff;
-  outline-offset: 2px;
-  transform: scale(1.03);
 }
 .profile-banner-container img {
   width: 100%;
@@ -2680,6 +2673,24 @@ button {
   cursor: pointer;
   transition: border 0.2s;
 }
-#profile-banners img.selected {
-  border-color: #ffdb64;
+#profile-banners img {
+  width: 84px;
+  height: 44px;
+  border-radius: 8px;
+  margin: 7px 7px 7px 0;
+  box-shadow: 0 1px 8px #0005;
+  cursor: pointer;
+  border: 2.5px solid transparent;
+  transition: box-shadow 0.16s, border 0.14s, transform 0.15s;
+  background: #232a3c;
+  object-fit: cover;
+}
+#profile-banners img.selected,
+#profile-banners img:hover, 
+#profile-banners img:focus {
+  border: 2.5px solid #50eaff;
+  box-shadow: 0 0 16px #50eaffcc, 0 0 34px #ffe06644;
+  transform: scale(1.07);
+  outline: none;
+  z-index: 2;
 }
