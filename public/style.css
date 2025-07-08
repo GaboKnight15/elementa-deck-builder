@@ -233,6 +233,7 @@ button {
   align-items: center;
   gap: 15px;
   margin-bottom: 2px;
+  order: 1;
 }
 .currency-display {
   display: flex;
@@ -247,6 +248,7 @@ button {
   gap: 8px;
   min-width: 170px;
   margin-top: 2px;
+  order: 2;
 }
 #player-level-label {
   font-weight: bold;
@@ -1809,10 +1811,20 @@ button {
     border-color 0.22s cubic-bezier(.4,1.6,.3,1),
     transform 0.23s cubic-bezier(.4,1.6,.3,1);
 }
+#profile-menu #profile-pic-menu {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto 10px auto;
+  box-shadow: 0 2px 8px #0006;
+}
 .profile-info-stack {
   display: flex;
   flex-direction: column;
-  gap: 0.25em;
+  align-items: flex-start;
+  gap: 2px;
 }
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-12px);}
