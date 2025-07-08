@@ -2,6 +2,21 @@
 // === GALLERY LOGIC ===
 // ==========================
 const gallery = document.getElementById('gallery-cards');
+const filterSelectLabels = {
+  'filter-color-gallery': 'Color',
+  'filter-category-gallery': 'Category',
+  'filter-type-gallery': 'Type',
+  'filter-rarity-gallery': 'Rarity',
+  'filter-archetype-gallery': 'Archetype',
+  'filter-ability-gallery': 'Ability',
+  // Builder filters if needed...
+  'filter-color-builder': 'Color',
+  'filter-category-builder': 'Category',
+  'filter-type-builder': 'Type',
+  'filter-rarity-builder': 'Rarity',
+  'filter-archetype-builder': 'Archetype',
+  'filter-ability-builder': 'Ability'
+};
 // ==========================
 // === RENDERING CARDS ===
 // ==========================
@@ -225,6 +240,40 @@ function toggleFavorite(cardId) {
   }
   saveProgress();
 }
+function updateFilterPlaceholder(select) {
+  const id = select.id;
+  const label = filterSelectLabels[id];
+  if (!label) return;
+  const firstOption = select.options[0];
+  if (select.value === "") {
+    firstOption.textContent = label;
+  } else {
+    firstOption.textContent = "All";
+  }
+}
+
+// Apply to all filter selects
+function setupFilterSelectPlaceholders() {
+  Object.keys(filterSelectLabels).forEach(id => {
+    const select = document.getElementById(id);
+    if (!select) return;
+    // Initial update
+    updateFilterPlaceholder(select);
+    // On change
+    select.addEventListener('change', () => updateFilterPlaceholder(select));
+    // On focus, show "All" for first option (for dropdown clarity)
+    select.addEventListener('focus', function() {
+      if (select.options[0].textContent !== "All") {
+        select.options[0].textContent = "All";
+      }
+    });
+    // On blur, restore placeholder if needed
+    select.addEventListener('blur', () => updateFilterPlaceholder(select));
+  });
+}
+
+// On DOM ready
+document.addEventListener('DOMContentLoaded', setupFilterSelectPlaceholders);
 // ==========================
 // === EVENT LISTENERS ===
 // ==========================
