@@ -2,6 +2,7 @@ const profileArea            = document.getElementById('profile-area');
 const profileMenu            = document.getElementById('profile-menu');
 const profilePic             = document.getElementById('profile-pic');
 const profilePicMenuBtn      = document.getElementById('profile-pic-btn');
+let profilePicMenuBtn        = document.getElementById('profile-pic-btn');
 const profilePicMenu         = document.getElementById('profile-pic-menu');
 const profileUsernameDisplay = document.getElementById('profile-username-display');
 
@@ -105,7 +106,15 @@ document.addEventListener('DOMContentLoaded', function () {
         if (typeof cb === "function") cb([defaultIcon]);
       });
   } 
-
+    
+if (!profilePicMenuBtn) {
+  // Create the button if it doesn't exist
+  profilePicMenuBtn = document.createElement('button');
+  profilePicMenuBtn.id = 'profile-pic-btn';
+  profilePicMenuBtn.style.display = 'none'; // Hide it, so it doesn't disrupt your UI
+  // Optionally, add it to the DOM in a logical place, e.g.:
+  document.body.appendChild(profilePicMenuBtn);
+}
   // --- Render Profile Avatars ---
   function renderProfileIcons(selectedIcon, unlocked) {
     profileIcons.innerHTML = "";
@@ -148,27 +157,21 @@ document.addEventListener('DOMContentLoaded', function () {
   }
     
 // --- Open/Close Avatar Modal ---
-if (profilePicMenuBtn) {
-  profilePicMenuBtn.onclick = function() {
-    const currentIcon = profilePicMenu && profilePicMenu.src ? profilePicMenu.src.split('?')[0] : "";
-    getUnlockedAvatars(function(unlocked) {
-      renderProfileIcons(currentIcon, unlocked);
-      if (profileIconModal) profileIconModal.style.display = 'flex';
-    });
-  };
-}
-if (closeProfileIconModalBtn) {
-  closeProfileIconModalBtn.onclick = function() {
-    if (profileIconModal) profileIconModal.style.display = 'none';
-  };
-}
-if (profileIconModal) {
-  profileIconModal.onclick = function(e) {
-    if (e.target === profileIconModal) {
-      profileIconModal.style.display = 'none';
-    }
-  };
-}
+profilePicMenuBtn.onclick = function() {
+  const currentIcon = profilePicMenu && profilePicMenu.src ? profilePicMenu.src.split('?')[0] : "";
+  getUnlockedAvatars(function(unlocked) {
+    renderProfileIcons(currentIcon, unlocked);
+    if (profileIconModal) profileIconModal.style.display = 'flex';
+  });
+};
+closeProfileIconModalBtn.onclick = function() {
+  if (profileIconModal) profileIconModal.style.display = 'none';
+};
+profileIconModal.onclick = function(e) {
+  if (e.target === profileIconModal) {
+    profileIconModal.style.display = 'none';
+  }
+};
     
   // --- Avatar Selection ---
   function selectProfileIcon(iconUrl) {
