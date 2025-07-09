@@ -1178,15 +1178,18 @@ button {
 }
 #deck-selection-grid {
   display: grid;
+  width: 100%;
   grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(3, 180px);
-  gap: 2em;
+  grid-template-rows: repeat(3, 1fr);
+  gap: 18px 18px; 
   justify-content: center;
-  align-items: start;
-  margin: 1em auto;
+  align-items: center;
+  margin: auto;
 }
 .deck-slot-tile {
   display: flex;
+  position: relative;
+  cursor: pointer;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -1198,11 +1201,32 @@ button {
   cursor: pointer;
   height: 160px;
   width: 200px;
+  padding: 10px 8px 12px 8px;
   transition: box-shadow 0.18s, background 0.18s;
 }
 .deck-slot-tile.empty {
-  background: #283040;
-  color: #aaa;
+  background: #2a3345;
+  color: #ffe066;
+  opacity: 0.92;
+  font-size: 1.13em;
+  justify-content: center;
+  align-items: center;
+  min-height: 0;
+}
+.deck-slot-title-overlay {
+  background: rgba(24, 28, 45, 0.72);
+  color: #fff;
+  font-size: 1.05em;
+  font-weight: bold;
+  text-align: center;
+  padding: 4px 10px;
+  border-radius: 8px;
+  position: absolute;
+  left: 50%;
+  top: 8px;
+  transform: translateX(-50%);
+  z-index: 3;
+  pointer-events: none;
 }
 .deck-slot-tile:hover {
   box-shadow: 0 6px 32px #3458e6aa;
