@@ -1573,6 +1573,39 @@ button {
   right: 4px;
   bottom: 4px;
 }
+.essence-pool {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  z-index: 4;
+  pointer-events: none; /* so it doesn't block card clicks */
+}
+.essence-icon {
+  width: 22px; height: 22px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.essence-img {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid #fff;
+  background: #222;
+}
+.essence-amount {
+  position: absolute;
+  bottom: -5px; right: -5px;
+  color: #fff;
+  background: rgba(0,0,0,0.7);
+  border-radius: 8px;
+  font-size: 0.8em;
+  min-width: 14px;
+  text-align: center;
+}
 /* ATTACHED CARDS */
 .attached-cards-stack {
   pointer-events: none;
