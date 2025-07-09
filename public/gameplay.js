@@ -1464,7 +1464,18 @@ function showChampionSelectionModal(deckArr, onSelected) {
   // Build modal UI to display champion cards (similar to your deck modals)
   // On click, call onSelected(chosenChampionInstanceId)
 }
-
+function selectChampionFromDeck(deckArr, onSelected) {
+  const champions = deckArr.filter(cardObj => {
+    const card = dummyCards.find(c => c.id === cardObj.cardId);
+    return card && card.category === "champion";
+  });
+  if (champions.length === 1) {
+    onSelected(champions[0]);
+    return;
+  }
+  // Show modal: display champions, let player click one to select
+  // On click: onSelected(selectedChampion)
+}
 // Then, in your game start:
 showChampionSelectionModal(gameState.playerDeck, function(chosenChampion) {
   // Remove from deck, place on field
