@@ -1571,6 +1571,19 @@ function doEssencePhase(playerOrOpponent) {
   // Optionally: show animation/notification
   renderGameState();
 }
+
+// ESSENCE CONSUPTION LOGIC
+showEssencePaymentModal({
+  cost: { red: 1, blue: 2 },
+  onPaid: function() {
+    // Continue with the action (play card, activate ability, etc)
+  },
+  eligibleCards: getAllEssenceSources(), // returns player's Domains, Champions, etc.
+});
+function getAllEssenceSources() {
+  return [...gameState.playerDomains, ...gameState.playerCreatures /* add more if needed */];
+}
+
 // ATTACK LOGIC
 function startAttackTargeting(attackerId, attackerZone, cardDiv) {
   attackMode.attackerId = attackerId;
