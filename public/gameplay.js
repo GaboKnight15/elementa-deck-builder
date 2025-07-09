@@ -905,7 +905,8 @@ function renderCardOnField(cardObj, zoneId) {
     cardDiv.style.position = 'relative';
     cardDiv.appendChild(stackDiv);
   }
-
+const essenceDiv = renderEssencePool(cardObj);
+if (essenceDiv) cardDiv.appendChild(essenceDiv);
   // HP BADGE
   const hpBadge = document.createElement('span');
   hpBadge.className = 'hp-badge-heart';
@@ -945,6 +946,37 @@ function renderCardOnField(cardObj, zoneId) {
   return wrapper;
 }
 
+function renderEssencePool(cardObj) {
+  if (!cardObj.essence) return null;
+  const poolDiv = document.createElement('div');
+  poolDiv.className = 'essence-pool';
+  // Loop through all essence types
+  const ESSENCE_TYPES = ['green','red','blue','white','black','yellow','purple','orange'];
+  ESSENCE_TYPES.forEach(type => {
+    const amount = cardObj.essence[type] || 0;
+    if (amount > 0) {
+      const icon = document.createElement('div');
+      icon.className = `essence-icon essence-${type}`;
+      icon.title = `${type} Essence: ${amount}`;
+      icon.innerHTML = `<img src="EssenceIcons/${type}.png" class="essence-img"><span class="essence-amount">${amount}</span>`;
+      poolDiv.appendChild(icon);
+    }
+  });
+  return poolDiv;
+}
+function addEssence(cardObj, type, amount) {
+  if (!cardObj.essence) cardObj.essence = {};
+  cardObj.essence[type] = (cardObj.essence[type] || 0) + amount;
+  renderGameState();
+}
+function consumeEssence(cardObj, type, amount) {
+  if (cardObj.essence && cardObj.essence[type] >= amount) {
+    cardObj.essence[type] -= amount;
+    renderGameState();
+    return true;
+  }
+  return false;
+}
 // Actions in zones
 var currentCardMenuState = null;
 
