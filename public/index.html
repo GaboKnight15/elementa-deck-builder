@@ -482,7 +482,28 @@
     <button id="close-player-deck-modal" class="btn-negative-secondary" style="margin-top:14px;">Cancel</button>
   </div>
 </div>
-  
+
+<!-- PRIVATE LOBBY MODAL -->
+<div id="private-lobby-modal" class="modal" style="display:none;">
+  <div class="modal-content" style="max-width:400px;">
+    <h3>Private Lobby</h3>
+    <div id="private-lobby-options">
+      <button id="create-lobby-btn" class="btn-primary" style="margin-bottom:8px;">Create Lobby</button>
+      <div style="margin: 12px 0; text-align: center;">or</div>
+      <input id="join-lobby-code-input" placeholder="Enter Lobby Code..." style="width:90%;margin-bottom:8px;">
+      <button id="join-lobby-btn" class="btn-secondary">Join Lobby</button>
+    </div>
+    <div id="lobby-created-view" style="display:none;text-align:center;">
+      <div style="margin-bottom:8px;">Lobby Code:</div>
+      <div id="lobby-code-display" style="font-size:1.4em;font-weight:bold;letter-spacing:2px;margin-bottom:8px;"></div>
+      <div style="color:#bbb;margin-bottom:10px;">Share this code with your opponent.<br>Waiting for them to join...</div>
+      <button id="cancel-lobby-btn" class="btn-negative-secondary">Cancel</button>
+    </div>
+    <div id="lobby-join-status" style="display:none;color:#ffe066;text-align:center;margin-top:18px;"></div>
+  </div>
+</div>
+
+
 <!-- SOUND EFFECTS -->  
 <audio id="card-flip-sound" src="SoundEffects/CardFlip.mp3" preload="auto"></audio>
   
