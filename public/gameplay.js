@@ -1558,16 +1558,111 @@ if (gameState.opponentMainDomain && gameState.opponentMainDomain.currentHP <= 0)
   alert("You win! Opponent's Main Domain was destroyed.");
   // End game or restart logic here
 }
-// After decks are loaded but before shuffling/drawing:
-function showChampionSelectionModal(deckArr, onSelected) {
-  const champions = getChampionsFromDeck(deckArr);
-  // Find all Champions in this deck
-  const championCards = deckArr.filter(cardObj => {
+function showMainDomainSelectionModal(deckArr, onSelected) {
+  closeAllModals();
+  let modal = document.getElementById('maindomain-select-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'maindomain-select-modal';
+    modal.className = 'modal';
+    const content = document.createElement('div');
+    content.className = 'modal-content';
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+  }
+  const content = modal.querySelector('.modal-content');
+  content.innerHTML = "<h3>Select Your Main Domain</h3>";
+
+  // Filter main domains
+  const mainDomains = deckArr.filter(cardObj => {
     const card = dummyCards.find(c => c.id === cardObj.cardId);
-    return card && card.trait === "champion";
+    return card && card.category === "domain" && card.type === "maindomain";
   });
-  // Build modal UI to display champion cards (similar to your deck modals)
-  // On click, call onSelected(chosenChampionInstanceId)
+  if (!mainDomains.length) {
+    content.innerHTML += "<div style='color:#e25555;'>No Main Domains found!</div>";
+    return;
+  }
+  const row = document.createElement('div');
+  row.style.display = 'flex';
+  row.style.gap = '20px';
+
+  mainDomains.forEach(cardObj => {
+    const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+    const cardDiv = document.createElement('div');
+    cardDiv.style.cursor = 'pointer';
+    cardDiv.style.border = '3px solid #ffe066';
+    cardDiv.style.borderRadius = '10px';
+    cardDiv.style.background = '#232a3c';
+    cardDiv.style.padding = '10px';
+    cardDiv.style.textAlign = 'center';
+    cardDiv.innerHTML = `
+      <img src="${cardData.image}" alt="${cardData.name}" style="width:90px;display:block;margin-bottom:6px;">
+      <div style="font-weight:bold;color:#ffe066">${cardData.name}</div>
+    `;
+    cardDiv.onclick = () => {
+      modal.style.display = 'none';
+      onSelected(cardObj);
+    };
+    row.appendChild(cardDiv);
+  });
+
+  content.appendChild(row);
+
+  modal.onclick = function(e) {
+    if (e.target === modal) modal.style.display = 'none';
+  };
+  modal.style.display = 'flex';
+}
+                                                // CHAMPION SELECTION //
+function showChampionSelectionModal(deckArr, onSelected) {
+  closeAllModals();
+  let modal = document.getElementById('champion-select-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'champion-select-modal';
+    modal.className = 'modal';
+    const content = document.createElement('div');
+    content.className = 'modal-content';
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+  }
+  const content = modal.querySelector('.modal-content');
+  content.innerHTML = "<h3>Select Your Champion</h3>";
+  const champions = getChampionsFromDeck(deckArr);
+  if (!champions.length) {
+    content.innerHTML += "<div style='color:#e25555;'>No champions found!</div>";
+    return;
+  }
+  const row = document.createElement('div');
+  row.style.display = 'flex';
+  row.style.gap = '20px';
+
+  champions.forEach(cardObj => {
+    const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+    const cardDiv = document.createElement('div');
+    cardDiv.style.cursor = 'pointer';
+    cardDiv.style.border = '3px solid #ffe066';
+    cardDiv.style.borderRadius = '10px';
+    cardDiv.style.background = '#232a3c';
+    cardDiv.style.padding = '10px';
+    cardDiv.style.textAlign = 'center';
+    cardDiv.innerHTML = `
+      <img src="${cardData.image}" alt="${cardData.name}" style="width:90px;display:block;margin-bottom:6px;">
+      <div style="font-weight:bold;color:#ffe066">${cardData.name}</div>
+    `;
+    cardDiv.onclick = () => {
+      modal.style.display = 'none';
+      onSelected(cardObj);
+    };
+    row.appendChild(cardDiv);
+  });
+
+  content.appendChild(row);
+
+  modal.onclick = function(e) {
+    if (e.target === modal) modal.style.display = 'none';
+  };
+  modal.style.display = 'flex';
 }
 function selectChampionFromDeck(deckArr, onSelected) {
   const champions = deckArr.filter(cardObj => {
@@ -1604,25 +1699,42 @@ showChampionSelectionModal(gameState.playerDeck, function(chosenChampion) {
 });
 function initiateMainDomainAndChampionSelection(deckArr, afterSelection) {
   // Main Domain
-  const mainDomain = extractMainDomainFromDeck(deckArr);
-  if (mainDomain) {
-    mainDomain.currentHP = getBaseHp(mainDomain.cardId);
-    gameState.playerMainDomain = mainDomain;
-    gameState.playerDomains.unshift(mainDomain);
+  const mainDomains = deckArr.filter(cardObj => {
+    const card = dummyCards.find(c => c.id === cardObj.cardId);
+    return card && card.category === "domain" && card.type === "maindomain";
+  });
+  function afterMainDomain(mainDomain) {
+    if (mainDomain) {
+      mainDomain.currentHP = getBaseHp(mainDomain.cardId);
+      gameState.playerMainDomain = mainDomain;
+      // Remove from deck if you want to, or keep as-is (unshift if not present)
+      gameState.playerDomains.unshift(mainDomain);
+      // Remove from deckArr so it's not drawn again
+      const idx = deckArr.findIndex(c => c.instanceId === mainDomain.instanceId);
+      if (idx !== -1) deckArr.splice(idx, 1);
+    }
+
+    // Champion selection
+    const champions = getChampionsFromDeck(deckArr);
+    if (champions.length === 1) {
+      placeChampionOnField(champions[0]);
+      if (afterSelection) afterSelection();
+    } else if (champions.length > 1) {
+      showChampionSelectionModal(deckArr, chosenChampion => {
+        placeChampionOnField(chosenChampion);
+        if (afterSelection) afterSelection();
+      });
+    } else {
+      if (afterSelection) afterSelection();
+    }
   }
 
-  // Champions
-  const champions = getChampionsFromDeck(deckArr);
-  if (champions.length === 1) {
-    placeChampionOnField(champions[0]);
-    if (afterSelection) afterSelection();
-  } else if (champions.length > 1) {
-    showChampionSelectionModal(deckArr, chosenChampion => {
-      placeChampionOnField(chosenChampion);
-      if (afterSelection) afterSelection();
-    });
+  if (mainDomains.length === 1) {
+    afterMainDomain(mainDomains[0]);
+  } else if (mainDomains.length > 1) {
+    showMainDomainSelectionModal(deckArr, afterMainDomain);
   } else {
-    if (afterSelection) afterSelection();
+    afterMainDomain(null); // none found
   }
 }
 
