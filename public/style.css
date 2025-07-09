@@ -76,9 +76,7 @@ button {
 }
 .elementa-title {
   font-family: 'Orbitron', 'Segoe UI', Arial, sans-serif;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  position: static;
   margin: 0;
   z-index: 0;
   font-size: 2.8em;
@@ -297,7 +295,6 @@ button {
   filter: drop-shadow(0 1px 4px #0008);
 }
 #header-icons {
-  position: relative;
   align-items: center;
   display: flex;
   gap: 18px;
