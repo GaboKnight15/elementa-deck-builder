@@ -1669,6 +1669,10 @@ button {
   transition: outline 0.15s, box-shadow 0.15s;
   z-index: 10;
 }
+.attack-mode-backdrop {
+  background: rgba(0,0,0,0.55);
+  transition: background 0.2s;
+}
 /* VIEW STYLE */
 #image-modal.modal {
   display: none;
