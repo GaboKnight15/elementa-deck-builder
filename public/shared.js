@@ -14,13 +14,13 @@ const dummyCards = [
 { id: 'basicimp', name: 'Imp', rarity: 'Rare', image: 'CardImages/BasicCreatures/Imp.png', category: 'creature', color: 'black', type: 'demon', hp: 1, atk: 1, def: 0, cost: 0, archetype: 'Skullframe', ability: ['ambush','flying'], set: 'StandardPack'},
 { id: 'basicvampire', name: 'Vampire', rarity: 'Rare', image: 'CardImages/BasicCreatures/Vampire.png', category: 'creature', color: 'black', type: 'demon', hp: 3, atk: 2, def: 0, cost: 1, archetype: 'Vampiric', ability: ['drain','flying'], set: 'StandardPack'},
 { id: 'basicforest', name: 'Forest', rarity: 'Epic', image: 'CardImages/Domains/Green Basic Location.png', category: 'domain', color: 'green', type: 'domain', hp: 5, cost: 1, set: 'StandardPack2'},
-{ id: 'basicvolcano', name: 'Volcano', rarity: 'Legendary', image: 'CardImages/Domains/Red Basic Location.png', category: 'domain', color: 'red', type: 'domain', hp: 5, cost: 1, set: 'StandardPack2'},
+{ id: 'basicvolcano', name: 'Volcano', rarity: 'Legendary', image: 'CardImages/Domains/Red Basic Location.png', category: 'domain', color: 'red', type: 'maindomain', hp: 5, cost: 1, set: 'StandardPack2'},
 { id: 'basicocean', name: 'Ocean', rarity: 'Epic', image: 'CardImages/Domains/Blue Basic Location.png', category: 'domain', color: 'blue', type: 'domain', hp: 5, cost: 1, set: 'StandardPack2'},
-{ id: 'basicmountain', name: 'Mountain', rarity: 'Legendary', image: 'CardImages/Domains/Gray Basic Location.png', category: 'domain', color: 'gray', type: 'domain', hp: 5, cost: 1, set: 'StandardPack2', artwork: "CardImages/Artworks/Mountain.png"},
+{ id: 'basicmountain', name: 'Mountain', rarity: 'Legendary', image: 'CardImages/Domains/Gray Basic Location.png', category: 'domain', color: 'gray', type: 'maindomain', hp: 5, cost: 1, set: 'StandardPack2', artwork: "CardImages/Artworks/Mountain.png"},
 { id: 'basicswamp', name: 'Swamp', rarity: 'Epic', image: 'CardImages/Domains/Purple Basic Location.png', category: 'domain', color: 'purple', type: 'domain', hp: 5, cost: 1, set: 'StandardPack2'},
 { id: 'basicpeaks', name: 'Peaks', rarity: 'Epic', image: 'CardImages/Domains/Yellow Basic Location.png', category: 'domain', color: 'yellow', type: 'domain', hp: 5, cost: 1, set: 'StandardPack2'},
 { id: 'basicplains', name: 'Plains', rarity: 'Epic', image: 'CardImages/Domains/White Basic Location.png', category: 'domain', color: 'white', type: 'domain', hp: 5, cost: 1, set: 'StandardPack2'},
-{ id: 'basicshadowforest', name: 'Shadow Forest', rarity: 'Legendary', image: 'CardImages/Domains/Black Basic Location.png', category: 'domain', color: 'black', type: 'domain', hp: 5, cost: 1, set: 'StandardPack2'},
+{ id: 'basicshadowforest', name: 'Shadow Forest', rarity: 'Legendary', image: 'CardImages/Domains/Black Basic Location.png', category: 'domain', color: 'black', type: 'maindomain', hp: 5, cost: 1, set: 'StandardPack2'},
 ];
 
 const addCoinsBtn = document.getElementById('add-coins-btn');
