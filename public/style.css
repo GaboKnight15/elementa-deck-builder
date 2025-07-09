@@ -68,6 +68,7 @@ button {
   display: flex;
   align-items: center;
   min-width: 0;
+  flex: 0 0 auto;
 }
 .header-row h1 {
   flex: 1 0 auto;
@@ -75,6 +76,11 @@ button {
 }
 .elementa-title {
   font-family: 'Orbitron', 'Segoe UI', Arial, sans-serif;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  z-index: 0;
   font-size: 2.8em;
   text-align: center;
   letter-spacing: 0.08em;
@@ -209,7 +215,8 @@ button {
   gap: 1em;
 }
 #settings-burger-wrapper {
-  position: absolute;
+  position: static;
+  margin-left: 10px;
   top: 18px;
   right: 24px;
   z-index: 101;
@@ -290,13 +297,12 @@ button {
   filter: drop-shadow(0 1px 4px #0008);
 }
 #header-icons {
-  position: static;
+  position: relative;
   align-items: center;
-  top: 16px;
-  right: 24px;
   display: flex;
   gap: 18px;
-  z-index: 100;
+  z-index: 1;
+  margin-left: auto;
 }
 .header-action-icon {
   width: 36px;
@@ -2535,6 +2541,21 @@ button {
   #profile-pic {
     width: 46px;
     height: 46px;
+  }
+  .header-row {
+    flex-direction: column;
+    gap: 0.5em;
+    align-items: stretch;
+  }
+  .elementa-title {
+    position: static;
+    transform: none;
+    text-align: center;
+    margin: 0 auto;
+  }
+  #header-icons {
+    justify-content: flex-end;
+    margin: 0 auto;
   }
   .container {
     padding-right: 270px;
