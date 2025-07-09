@@ -969,6 +969,7 @@ button {
     transform 0.13s;
   outline: none;
   text-shadow: 0 1px 4px #1115;
+  position: relative;
 }
 .btn-primary:hover,
 .btn-primary:focus {
@@ -977,6 +978,7 @@ button {
   border-color: #7aa6ff;
   box-shadow: 0 6px 28px #1a2244bb, 0 0 0 3px #5081ff88;
   transform: scale(1.065);
+  z-index: 5000;
 }
 .btn-primary:active {
   background: linear-gradient(90deg, #232e5a 0%, #3249e8 100%);
