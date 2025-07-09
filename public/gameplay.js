@@ -371,9 +371,14 @@ function createCardMenu(buttons = []) {
     btn.type = "button";
     btn.className = 'btn-secondary';
     btn.innerText = btnConf.text;
-    btn.onclick = btnConf.onClick;
+    btn.onclick = function(e) {
+      e.stopPropagation();
+      btnConf.onClick.call(this, e);
+      closeAllMenus(); // Always close after any button
+    };
     menu.appendChild(btn);
   });
+  menu.onclick = function(e) { e.stopPropagation(); };
   return menu;
 }
 
@@ -447,85 +452,86 @@ function drawCards(who, n) {
 
 // HAND OPTIONS MENU
 function showHandCardMenu(instanceId, cardDiv) {
-  // Remove any existing menu
-  document.querySelectorAll('.card-menu').forEach(m => m.remove());
+  closeAllMenus();
 
   const cardObj = gameState.playerHand.find(c => c.instanceId === instanceId);
 
   // Define actions
   const buttons = [
-{
-  text: "Play",
-  onClick: async function(e) {
-    e.stopPropagation();
-    const menu = this.closest('.card-menu');
-    if (menu) menu.remove();
-    const cardObj = gameState.playerHand.find(c => c.instanceId === instanceId);
-    const cardData = dummyCards.find(c => c.id === cardObj.cardId);
-    showEssencePaymentModal({
-      card: cardData,
-      cost: cardData.cost, // e.g. {red:1, green:2, colorless:1}
-      eligibleCards: getAllEssenceSources(),
-      onPaid: async function() {
+    {
+      text: "Play",
+      onClick: async function(e) {
+        e.stopPropagation();
+        closeAllMenus();
+        const cardObj = gameState.playerHand.find(c => c.instanceId === instanceId);
+        const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+        showEssencePaymentModal({
+          card: cardData,
+          cost: cardData.cost,
+          eligibleCards: getAllEssenceSources(),
+          onPaid: async function() {
+            await moveCardUniversal({
+              instanceId,
+              fromArr: gameState.playerHand,
+              toArr: gameState.playerCreatures,
+              extra: { orientation: "vertical" },
+              fromZoneId: "player-hand",
+              toZoneId: "player-creatures-zone"
+            });
+          }
+        });
+      }
+    },
+    {
+      text: "Send to Void",
+      onClick: async function(e) {
+        e.stopPropagation();
         await moveCardUniversal({
           instanceId,
           fromArr: gameState.playerHand,
-          toArr: gameState.playerCreatures,
-          extra: { orientation: "vertical" },
+          toArr: gameState.playerVoid,
           fromZoneId: "player-hand",
-          toZoneId: "player-creatures-zone"
+          toZoneId: "player-void-zone"
         });
+        closeAllMenus();
       }
-    });
-  }
-},
-{
-  text: "Send to Void",
-  onClick: async function(e) {
-    e.stopPropagation();
-    await moveCardUniversal({
-      instanceId,
-      fromArr: gameState.playerHand,
-      toArr: gameState.playerVoid,
-      fromZoneId: "player-hand",
-      toZoneId: "player-void-zone"
-    });
-    this.closest('.card-menu').remove();
-  }
-},
-{
-  text: "Return to Deck",
-  onClick: async function(e) {
-    e.stopPropagation();
-    await moveCardUniversal({
-      instanceId,
-      fromArr: gameState.playerHand,
-      toArr: gameState.playerDeck,
-      fromZoneId: "player-hand",
-      toZoneId: "player-deck-zone"
-    });
-    this.closest('.card-menu').remove();
-  }
-},
+    },
+    {
+      text: "Return to Deck",
+      onClick: async function(e) {
+        e.stopPropagation();
+        await moveCardUniversal({
+          instanceId,
+          fromArr: gameState.playerHand,
+          toArr: gameState.playerDeck,
+          fromZoneId: "player-hand",
+          toZoneId: "player-deck-zone"
+        });
+        closeAllMenus();
+      }
+    },
     {
       text: "View",
       onClick: function(e) {
         e.stopPropagation();
         showFullCardModal(cardObj);
-        this.closest('.card-menu').remove();
+        closeAllMenus();
       }
     }
   ];
   const menu = createCardMenu(buttons);
 
   // Position relative to cardDiv
-const rect = cardDiv.getBoundingClientRect();
-placeMenuWithinViewport(menu, rect);
+  const rect = cardDiv.getBoundingClientRect();
+  placeMenuWithinViewport(menu, rect);
+
+  // Prevent menu click from closing (in case outside handler runs)
+  menu.onclick = function(e) { e.stopPropagation(); };
 
   // Hide menu when clicking elsewhere
   setTimeout(() => {
     document.body.addEventListener('click', function handler() {
-      menu.remove();
+      closeAllMenus();
       document.body.removeEventListener('click', handler);
     }, { once: true });
   }, 10);
@@ -602,62 +608,60 @@ function appendDeckZone(parentDiv, deckArray, who) {
   countDiv.textContent = deckArray.length;
   deckCard.appendChild(countDiv);
   deckZone.appendChild(deckCard);
-// DECK MENU
+
   if (who === "player") {
-  deckCard.onclick = (e) => {
-    e.stopPropagation();
-    // Remove any other open card-menu
-    document.querySelectorAll('.card-menu').forEach(m => m.remove());
-    
-    // Define deck actions as menu buttons
-    const buttons = [
-      {
-        text: "Draw",
-        onClick: function(ev) {
-          ev.stopPropagation();
-          if (gameState.turn === "player" && gameState.playerDeck.length > 0) {
-            moveCard(gameState.playerDeck[0].instanceId, gameState.playerDeck, gameState.playerHand);
+    deckCard.onclick = (e) => {
+      e.stopPropagation();
+      closeAllMenus();
+
+      const buttons = [
+        {
+          text: "Draw",
+          onClick: function(ev) {
+            ev.stopPropagation();
+            if (gameState.turn === "player" && gameState.playerDeck.length > 0) {
+              moveCard(gameState.playerDeck[0].instanceId, gameState.playerDeck, gameState.playerHand);
+              renderGameState();
+              setupDropZones();
+            }
+            closeAllMenus();
+          }
+        },
+        {
+          text: "Shuffle",
+          onClick: function(ev) {
+            ev.stopPropagation();
+            gameState.playerDeck = shuffle(gameState.playerDeck);
             renderGameState();
             setupDropZones();
+            closeAllMenus();
           }
-          this.closest('.card-menu').remove();
-        }
-      },
-      {
-        text: "Shuffle",
-        onClick: function(ev) {
-          ev.stopPropagation();
-          gameState.playerDeck = shuffle(gameState.playerDeck);
-          renderGameState();
-          setupDropZones();
-          this.closest('.card-menu').remove();
-        }
-      },
-      {
-        text: "Search",
-        onClick: function(ev) {
-          ev.stopPropagation();
-          if (gameState.playerDeck.length > 0) {
-            openDeckModal();
+        },
+        {
+          text: "Search",
+          onClick: function(ev) {
+            ev.stopPropagation();
+            if (gameState.playerDeck.length > 0) {
+              openDeckModal();
+            }
+            closeAllMenus();
           }
-          this.closest('.card-menu').remove();
         }
-      }
-    ];
-    // CREATE MENU
-    const menu = createCardMenu(buttons);
-    const rect = deckCard.getBoundingClientRect();
-    placeMenuWithinViewport(menu, rect);
+      ];
+      const menu = createCardMenu(buttons);
+      const rect = deckCard.getBoundingClientRect();
+      placeMenuWithinViewport(menu, rect);
 
-    // Hide menu when clicking elsewhere
-    setTimeout(() => {
-      document.body.addEventListener('click', function handler() {
-        menu.remove();
-        document.body.removeEventListener('click', handler);
-      }, { once: true });
-    }, 10);
-  };
-}
+      menu.onclick = function(e) { e.stopPropagation(); };
+
+      setTimeout(() => {
+        document.body.addEventListener('click', function handler() {
+          closeAllMenus();
+          document.body.removeEventListener('click', handler);
+        }, { once: true });
+      }, 10);
+    };
+  }
   parentDiv.appendChild(deckZone);
 }
 // VOID ZONE
@@ -688,6 +692,7 @@ function appendVoidZone(parentDiv, voidArray, who) {
 
   voidCard.onclick = (e) => {
     e.stopPropagation();
+    closeAllMenus();
     openVoidModal();
   };
 
@@ -705,6 +710,9 @@ function closeAllModals() {
   document.querySelectorAll('.modal').forEach(modal => {
     modal.style.display = 'none';
   });
+}
+function closeAllMenus() {
+  document.querySelectorAll('.card-menu').forEach(m => m.remove());
 }
 // OPEN DECK MODAL
 function openDeckModal() {
@@ -1014,11 +1022,8 @@ function consumeEssence(cardObj, type, amount) {
 var currentCardMenuState = null;
 
 function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
-  // Remove any existing card menus
-  document.querySelectorAll('.card-menu').forEach(m => m.remove());
-
+  closeAllMenus();
   currentCardMenuState = { instanceId, zoneId, orientation };
-
   // Define menu options
   const buttons = [
     {
@@ -1036,7 +1041,7 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
             renderGameState();
           }
         }
-        this.closest('.card-menu').remove();
+        closeAllMenus();
       }
     },
     {
@@ -1044,7 +1049,7 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
       onClick: function(e) {
         e.stopPropagation();
         startAttackTargeting(instanceId, zoneId, cardDiv);
-        this.closest('.card-menu').remove();
+        closeAllMenus();
       }
     },
     {
@@ -1061,7 +1066,7 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
         }
         renderGameState();
         setupDropZones();
-        this.closest('.card-menu').remove();
+        closeAllMenus();
       }
     },
     {
@@ -1078,7 +1083,7 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
         }
         renderGameState();
         setupDropZones();
-        this.closest('.card-menu').remove();
+        closeAllMenus();
       }
     },
     {
@@ -1095,7 +1100,7 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
         }
         renderGameState();
         setupDropZones();
-        this.closest('.card-menu').remove();
+        closeAllMenus();
       }
     },
     {
@@ -1112,7 +1117,7 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
         }
         renderGameState();
         setupDropZones();
-        this.closest('.card-menu').remove();
+        closeAllMenus();
       }
     },
     {
@@ -1126,27 +1131,25 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
             showFullCardModal(cardObj);
           }
         }
-        this.closest('.card-menu').remove();
+        closeAllMenus();
       }
     }
   ];
 
-  // Create and show the menu
+// Create and show the menu
   const menu = createCardMenu(buttons);
-
-  // Position menu absolutely near cardDiv
-const rect = cardDiv.getBoundingClientRect();
-placeMenuWithinViewport(menu, rect);
-
+// Position menu absolutely near cardDiv
+  const rect = cardDiv.getBoundingClientRect();
+  placeMenuWithinViewport(menu, rect);
+  
+  menu.onclick = function(e) { e.stopPropagation(); };
   // Hide menu when clicking elsewhere
   setTimeout(() => {
     document.body.addEventListener('click', function handler() {
-      menu.remove();
+      closeAllMenus();
       document.body.removeEventListener('click', handler);
     }, { once: true });
   }, 10);
-
-  menu.onclick = function(e) { e.stopPropagation(); };
 }
 
 // ==== VOID MODAL ====
@@ -1204,7 +1207,7 @@ function openVoidModal() {
   img.onclick = (e) => {
     e.stopPropagation();
     // Remove all card menus in this modal
-    modal.querySelectorAll('.card-menu').forEach(m => m.remove());
+    closeAllMenus();
     const buttons = [
       {
         text: "Return to Hand",
@@ -1212,7 +1215,7 @@ function openVoidModal() {
           e.stopPropagation();
           moveCard(cardObj.instanceId, gameState.playerVoid, gameState.playerHand);
           openVoidModal();
-          modal.querySelectorAll('.card-menu').forEach(m => m.remove());
+          closeAllMenus();
         }
       },
       {
@@ -1221,7 +1224,7 @@ function openVoidModal() {
           e.stopPropagation();
           moveCard(cardObj.instanceId, gameState.playerVoid, gameState.playerDeck);
           openVoidModal();
-          modal.querySelectorAll('.card-menu').forEach(m => m.remove());
+          closeAllMenus();
         }
       },
       {
@@ -1229,24 +1232,25 @@ function openVoidModal() {
         onClick: function(e) {
           e.stopPropagation();
           showFullCardModal(cardObj);
-          modal.querySelectorAll('.card-menu').forEach(m => m.remove());
+          closeAllMenus();
         }
       }
     ];
-    const menu = createCardMenu(buttons);
-    wrapper.appendChild(menu);
-    setTimeout(() => {
-      document.body.addEventListener('click', function handler() {
-        modal.querySelectorAll('.card-menu').forEach(m => m.remove());
-        document.body.removeEventListener('click', handler);
-      }, { once: true });
-    }, 10);
-  };
+        const menu = createCardMenu(buttons);
+        wrapper.appendChild(menu);
+        menu.onclick = function(e) { e.stopPropagation(); };
+        setTimeout(() => {
+          document.body.addEventListener('click', function handler() {
+            closeAllMenus();
+            document.body.removeEventListener('click', handler);
+          }, { once: true });
+        }, 10);
+      };
 
-  cardDiv.appendChild(img);
-  wrapper.appendChild(cardDiv);
-  list.appendChild(wrapper);
-});
+      cardDiv.appendChild(img);
+      wrapper.appendChild(cardDiv);
+      list.appendChild(wrapper);
+    });
   }
   modal.style.display = 'block';
 }
