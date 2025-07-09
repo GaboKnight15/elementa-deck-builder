@@ -148,11 +148,16 @@ function createCardGallery(card) {
     voidBtnImg.style.maxHeight = "38px";
     voidBtnImg.style.objectFit = "contain";
     voidBtnImg.style.transition = "transform 0.15s, box-shadow 0.15s";
+    const minKept = getMinimumKeptForRarity(card);
+    if (owned <= minKept) {
+      voidBtnImg.style.opacity = "0.5";
+      voidBtnImg.style.pointerEvents = "none";
+      voidBtnImg.title = `You must keep at least ${minKept} copies of this card (${card.rarity || "Unknown rarity"}).`;
+    }
     voidBtnImg.onclick = function(e) {
       e.stopPropagation();
       const collection = getCollection();
       const ownedCount = collection[card.id] || 0;
-      const minKept = getMinimumKeptForRarity(card);
       if (ownedCount <= minKept) {
         showToast(`You must keep at least ${minKept} of this card (${card.rarity || "Unknown rarity"}).`);
         return;
@@ -186,11 +191,6 @@ function createCardGallery(card) {
     div.appendChild(countBadge);
 
     return div;
-}
-if (owned <= minKept) {
-  voidBtnImg.style.opacity = "0.5";
-  voidBtnImg.style.pointerEvents = "none";
-  voidBtnImg.title = `You must keep at least ${minKept} copies of this card (${card.rarity || "Unknown rarity"}).`;
 }
 
 function renderGallery() {
