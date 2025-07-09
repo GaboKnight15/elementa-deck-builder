@@ -13,7 +13,31 @@ const status = document.getElementById('status');
 const chatInput = document.getElementById('chat-input');
 const sendChatBtn = document.getElementById('send-chat-btn');
 const chatLog = document.getElementById('chat-log');
+// Connect modal lobby buttons to the same room/deck logic
+const createLobbyBtn = document.getElementById('create-lobby-btn');
+const joinLobbyBtn = document.getElementById('join-lobby-btn');
+const joinLobbyCodeInput = document.getElementById('join-lobby-code-input');
+const lobbyModalStatus = document.getElementById('lobby-join-status');
 
+if (createLobbyBtn && joinLobbyBtn) {
+  createLobbyBtn.onclick = () => {
+    const code = generateRoomId().toUpperCase();
+    currentRoomId = code;
+    socket.emit('join room', code);
+    document.getElementById('lobby-code-display').textContent = code;
+    status.textContent = `Room created! Share this code: ${code}`;
+    submitDeckToServer();
+  };
+
+  joinLobbyBtn.onclick = () => {
+    const code = joinLobbyCodeInput.value.trim().toUpperCase();
+    if (!code) return alert('Enter a lobby code!');
+    currentRoomId = code;
+    socket.emit('join room', code);
+    status.textContent = `Joined room: ${code}. Waiting for opponent...`;
+    submitDeckToServer();
+  };
+}
 let myDeckObj = null;
 let opponentDeckReceived = false;
 
