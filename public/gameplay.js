@@ -39,6 +39,8 @@ const PHASES = [
   opponentCreatures: [],
   opponentDomains: [],
   opponentVoid: [],
+  playerMainDomain: null,
+  opponentMainDomain: null,
   turn: "player",
   phase: "draw"
 };
@@ -395,6 +397,7 @@ function renderGameState() {
   renderRowZone('player-creatures-zone', gameState.playerCreatures, "creature");
   renderRowZone('player-domains-zone', gameState.playerDomains, "domain");
   renderRightbarZones();
+  renderMainDomain()
 }
 
 function shuffle(array) {
@@ -1394,6 +1397,36 @@ function animateCardMove(cardDiv, destinationDiv, callback) {
 }
 
 // AUTOMATIZATION
+function extractMainDomainFromDeck(deckArr) {
+  const idx = deckArr.findIndex(cardObj => {
+    const card = dummyCards.find(c => c.id === cardObj.cardId);
+    return card && card.type === "domain" && card.isMainDomain; // or use id === "MainDomain"
+  });
+  if (idx !== -1) {
+    return deckArr.splice(idx, 1)[0];
+  }
+  return null;
+}
+function renderMainDomain() {
+  const playerDiv = document.getElementById('player-main-domain-zone');
+  const oppDiv = document.getElementById('opponent-main-domain-zone');
+  playerDiv.innerHTML = '';
+  oppDiv.innerHTML = '';
+  if (gameState.playerMainDomain) {
+    playerDiv.appendChild(renderCardOnField(gameState.playerMainDomain, "player-main-domain-zone"));
+  }
+  if (gameState.opponentMainDomain) {
+    oppDiv.appendChild(renderCardOnField(gameState.opponentMainDomain, "opponent-main-domain-zone"));
+  }
+}
+if (gameState.playerMainDomain && gameState.playerMainDomain.currentHP <= 0) {
+  alert("You lose! Your Main Domain was destroyed.");
+  // End game or restart logic here
+}
+if (gameState.opponentMainDomain && gameState.opponentMainDomain.currentHP <= 0) {
+  alert("You win! Opponent's Main Domain was destroyed.");
+  // End game or restart logic here
+}
 function startAttackTargeting(attackerId, attackerZone, cardDiv) {
   attackMode.attackerId = attackerId;
   attackMode.attackerZone = attackerZone;
