@@ -223,6 +223,15 @@ function startSoloGame() {
       setupDropZones();
     };
   });
+  gameState.playerDeck = shuffle(playerDeckArray);
+  gameState.playerHand = [];
+  // Draw initial hand
+  const INITIAL_HAND_SIZE = 5; // or your preferred number
+  for (let i = 0; i < INITIAL_HAND_SIZE; i++) {
+    if (gameState.playerDeck.length > 0) {
+      gameState.playerHand.push(gameState.playerDeck.shift());
+    }
+  }
   document.getElementById('my-profile').style.display = '';
   renderProfile('my-profile', getMyProfileInfo());
 }
@@ -1246,7 +1255,10 @@ function updatePhase() {
   }
   if (gameState.turn === "opponent") {
     setTimeout(runCpuTurn, 500);
-  }
+  }  
+  if (gameState.phase === "action") {
+    resetAttackFlags(gameState.turn);
+  }    
 }
 // Phase control events
 nextPhaseBtn.onclick = () => {
@@ -1460,12 +1472,6 @@ if (champions.length === 1) {
   continueGameSetup();
 }
 
-playerDeck = shuffle(playerDeck);
-gameState.playerHand = [];
-for (let i = 0; i < INITIAL_HAND_SIZE; i++) {
-  drawCardFromDeckToHand(playerDeck, gameState.playerHand);
-}
-
 function extractMainDomainFromDeck(deckArr) {
   const idx = deckArr.findIndex(cardObj => {
     const card = dummyCards.find(c => c.id === cardObj.cardId);
@@ -1482,16 +1488,6 @@ function renderMainDomain() {
   const oppDiv = document.getElementById('opponent-main-domain-zone');
   playerDiv.innerHTML = '';
   oppDiv.innerHTML = '';
-  // Inside your renderRowZone for domains:
-for (const cardObj of cardArray) {
-  const cardData = dummyCards.find(c => c.id === cardObj.cardId);
-  const dom = renderCardOnField(cardObj, zoneId);
-  if (cardData && cardData.isMainDomain) {
-    dom.classList.add('main-domain-highlight');
-    // Or add a visual badge
-  }
-  zoneDiv.appendChild(dom);
-}
   if (gameState.playerMainDomain) {
     playerDiv.appendChild(renderCardOnField(gameState.playerMainDomain, "player-main-domain-zone"));
   }
@@ -1790,14 +1786,6 @@ function showEssencePaymentModal(opts) {
 
   updateReqDiv();
 }
-
-showEssencePaymentModal({
-  cost: { red: 1, blue: 2 },
-  onPaid: function() {
-    // Continue with the action (play card, activate ability, etc)
-  },
-  eligibleCards: getAllEssenceSources(), // returns player's Domains, Champions, etc.
-});
   
 function getAllEssenceSources() {
   return [...gameState.playerDomains, ...gameState.playerCreatures /* add more if needed */];
@@ -1915,10 +1903,6 @@ function resetAttackFlags(turn) {
   arr.forEach(creature => { creature.hasAttacked = false; });
 }
 
-// In your phase update, add:
-if (gameState.phase === "action") {
-  resetAttackFlags(gameState.turn);
-}
 
 // --- Attacking UI: Highlight available targets ---
 // In startAttackTargeting, you should already have logic similar to:
