@@ -1233,9 +1233,12 @@ function updatePhase() {
     phaseNameSpan.className = PHASE_CLASS[gameState.phase];
     phaseNameSpan.textContent = PHASE_DISPLAY_NAMES[gameState.phase] || gameState.phase;
   }
+  if (gameState.phase === "essence") {
+    doEssencePhase(gameState.turn);
+  }
   if (gameState.turn === "opponent") {
-  setTimeout(runCpuTurn, 500);
-}
+    setTimeout(runCpuTurn, 500);
+  }
 }
 // Phase control events
 nextPhaseBtn.onclick = () => {
@@ -1540,6 +1543,34 @@ showChampionSelectionModal(gameState.playerDeck, function(chosenChampion) {
   gameState.playerChampion = chosenChampion;
   // Proceed to initial hand draw...
 });
+
+// ESSENCE GENERATION
+function generateEssenceForCard(cardObj) {
+  // Support both string and array for color
+  const colors = Array.isArray(cardObj.color) ? cardObj.color : [cardObj.color];
+  colors.forEach(type => {
+    addEssence(cardObj, type, 1); // or use cardObj.essenceGeneration[type] if you want variable output
+  });
+}
+function doEssencePhase(playerOrOpponent) {
+  // Get the correct arrays
+  const domains = playerOrOpponent === "player" ? gameState.playerDomains : gameState.opponentDomains;
+  const creatures = playerOrOpponent === "player" ? gameState.playerCreatures : gameState.opponentCreatures;
+  // Optionally filter for Champions only
+  const champions = creatures.filter(cardObj => {
+    const card = dummyCards.find(c => c.id === cardObj.cardId);
+    return card && card.category === "champion";
+  });
+
+  // Domains
+  domains.forEach(generateEssenceForCard);
+  // Champions
+  champions.forEach(generateEssenceForCard);
+
+  // Optionally: show animation/notification
+  renderGameState();
+}
+// ATTACK LOGIC
 function startAttackTargeting(attackerId, attackerZone, cardDiv) {
   attackMode.attackerId = attackerId;
   attackMode.attackerZone = attackerZone;
