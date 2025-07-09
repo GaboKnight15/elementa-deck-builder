@@ -1442,6 +1442,24 @@ if (gameState.opponentMainDomain && gameState.opponentMainDomain.currentHP <= 0)
   alert("You win! Opponent's Main Domain was destroyed.");
   // End game or restart logic here
 }
+// After decks are loaded but before shuffling/drawing:
+function showChampionSelectionModal(deckArr, onSelected) {
+  // Find all Champions in this deck
+  const championCards = deckArr.filter(cardObj => {
+    const card = dummyCards.find(c => c.id === cardObj.cardId);
+    return card && card.category === "champion";
+  });
+  // Build modal UI to display champion cards (similar to your deck modals)
+  // On click, call onSelected(chosenChampionInstanceId)
+}
+
+// Then, in your game start:
+showChampionSelectionModal(gameState.playerDeck, function(chosenChampion) {
+  // Remove from deck, place on field
+  removeChampionFromDeck(gameState.playerDeck, chosenChampion.instanceId);
+  gameState.playerChampion = chosenChampion;
+  // Proceed to initial hand draw...
+});
 function startAttackTargeting(attackerId, attackerZone, cardDiv) {
   attackMode.attackerId = attackerId;
   attackMode.attackerZone = attackerZone;
