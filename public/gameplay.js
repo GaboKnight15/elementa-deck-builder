@@ -1473,24 +1473,6 @@ function animateCardMove(cardDiv, destinationDiv, callback) {
 
 // AUTOMATIZATION
 // INITIAL CARD SELECTION
-const mainDomain = extractMainDomainFromDeck(gameState.playerDeck);
-if (mainDomain) {
-  mainDomain.currentHP = getBaseHp(mainDomain.cardId);
-  gameState.playerDomains.unshift(mainDomain); // Place at start of domains row
-}
-// 2. Champion selection - show modal if >1, else auto
-const champions = getChampionsFromDeck(gameState.playerDeck);
-if (champions.length === 1) {
-  placeChampionOnField(champions[0]);
-  continueGameSetup();
-} else if (champions.length > 1) {
-  showChampionSelectionModal(gameState.playerDeck, chosenChampion => {
-    placeChampionOnField(chosenChampion);
-    continueGameSetup();
-  });
-} else {
-  continueGameSetup();
-}
 function showGameStartAnimation(callback) {
   // Create overlay
   let overlay = document.createElement('div');
