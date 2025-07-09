@@ -1560,7 +1560,7 @@ function showChampionSelectionModal(deckArr, onSelected) {
   // Find all Champions in this deck
   const championCards = deckArr.filter(cardObj => {
     const card = dummyCards.find(c => c.id === cardObj.cardId);
-    return card && card.category === "champion";
+    return card && card.trait === "champion";
   });
   // Build modal UI to display champion cards (similar to your deck modals)
   // On click, call onSelected(chosenChampionInstanceId)
@@ -1568,7 +1568,7 @@ function showChampionSelectionModal(deckArr, onSelected) {
 function selectChampionFromDeck(deckArr, onSelected) {
   const champions = deckArr.filter(cardObj => {
     const card = dummyCards.find(c => c.id === cardObj.cardId);
-    return card && card.category === "champion";
+    return card && card.trait === "champion";
   });
   if (champions.length === 1) {
     onSelected(champions[0]);
@@ -1580,7 +1580,7 @@ function selectChampionFromDeck(deckArr, onSelected) {
 function getChampionsFromDeck(deckArr) {
   return deckArr.filter(cardObj => {
     const card = dummyCards.find(c => c.id === cardObj.cardId);
-    return card && card.category === "champion";
+    return card && card.trait === "champion";
   });
 }
 
