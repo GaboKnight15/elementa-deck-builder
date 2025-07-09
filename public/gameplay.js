@@ -435,15 +435,22 @@ function showHandCardMenu(instanceId, cardDiv) {
     e.stopPropagation();
     const menu = this.closest('.card-menu');
     if (menu) menu.remove();
-    // Delay slightly before starting animation to ensure sourceDiv is still in DOM
-    await new Promise(resolve => setTimeout(resolve, 20));
-    await moveCardUniversal({
-      instanceId,
-      fromArr: gameState.playerHand,
-      toArr: gameState.playerCreatures,
-      extra: { orientation: "vertical" },
-      fromZoneId: "player-hand",
-      toZoneId: "player-creatures-zone"
+    const cardObj = gameState.playerHand.find(c => c.instanceId === instanceId);
+    const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+    showEssencePaymentModal({
+      card: cardData,
+      cost: cardData.cost, // e.g. {red:1, green:2, colorless:1}
+      eligibleCards: getAllEssenceSources(),
+      onPaid: async function() {
+        await moveCardUniversal({
+          instanceId,
+          fromArr: gameState.playerHand,
+          toArr: gameState.playerCreatures,
+          extra: { orientation: "vertical" },
+          fromZoneId: "player-hand",
+          toZoneId: "player-creatures-zone"
+        });
+      }
     });
   }
 },
