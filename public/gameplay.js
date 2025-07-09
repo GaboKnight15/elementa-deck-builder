@@ -428,7 +428,6 @@ function renderGameState() {
   renderRowZone('player-creatures-zone', gameState.playerCreatures, "creature");
   renderRowZone('player-domains-zone', gameState.playerDomains, "domain");
   renderRightbarZones();
-  renderMainDomain()
 }
 
 function shuffle(array) {
@@ -1520,18 +1519,6 @@ function extractMainDomainFromDeck(deckArr) {
   return null;
 }
 
-function renderMainDomain() {
-  const playerDiv = document.getElementById('player-main-domain-zone');
-  const oppDiv = document.getElementById('opponent-main-domain-zone');
-  playerDiv.innerHTML = '';
-  oppDiv.innerHTML = '';
-  if (gameState.playerMainDomain) {
-    playerDiv.appendChild(renderCardOnField(gameState.playerMainDomain, "player-main-domain-zone"));
-  }
-  if (gameState.opponentMainDomain) {
-    oppDiv.appendChild(renderCardOnField(gameState.opponentMainDomain, "opponent-main-domain-zone"));
-  }
-}
 if (gameState.playerMainDomain && gameState.playerMainDomain.currentHP <= 0) {
   alert("You lose! Your Main Domain was destroyed.");
   // End game or restart logic here
