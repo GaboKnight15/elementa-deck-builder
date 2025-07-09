@@ -1297,8 +1297,8 @@ button {
 .modal-card-wrapper {
   width: 110px;
   min-width: 110px;
-  height: 165px;
-  min-height: 165px;
+  height: 150px;
+  min-height: 150px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1420,6 +1420,7 @@ button {
   z-index: 1100;
 }
 #battlefield-rightbar {
+  background: transparent !important;
   width: 140px;
   min-width: 110px;
   display: flex;
