@@ -11,12 +11,13 @@ app.use(express.static('public')); // Serve files from the "public" folder
 io.on('connection', (socket) => {
   console.log('A user connected:', socket.id);
 
-  socket.on('join room', (roomId) => {
-    socket.join(roomId);
-    socket.roomId = roomId;
-    socket.to(roomId).emit('opponent joined', socket.id);
-    console.log(`Socket ${socket.id} joined room ${roomId}`);
-  });
+socket.on('join room', (roomId) => {
+  socket.join(roomId);
+  socket.roomId = roomId;
+  // Emit to both: everyone in the room (including the joining socket)
+  io.in(roomId).emit('opponent joined', socket.id);
+  console.log(`Socket ${socket.id} joined room ${roomId}`);
+});
 
   socket.on('game action', (roomId, action) => {
     socket.to(roomId).emit('game action', action);
