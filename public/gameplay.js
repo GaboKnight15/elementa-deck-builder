@@ -958,7 +958,7 @@ function renderEssencePool(cardObj) {
       const icon = document.createElement('div');
       icon.className = `essence-icon essence-${type}`;
       icon.title = `${type} Essence: ${amount}`;
-      icon.innerHTML = `<img src="EssenceIcons/${type}.png" class="essence-img"><span class="essence-amount">${amount}</span>`;
+      icon.innerHTML = `<img src="OtherIcons/Essence/${type}.png" class="essence-img"><span class="essence-amount">${amount}</span>`;
       poolDiv.appendChild(icon);
     }
   });
