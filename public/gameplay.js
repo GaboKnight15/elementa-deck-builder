@@ -1400,18 +1400,33 @@ function animateCardMove(cardDiv, destinationDiv, callback) {
 function extractMainDomainFromDeck(deckArr) {
   const idx = deckArr.findIndex(cardObj => {
     const card = dummyCards.find(c => c.id === cardObj.cardId);
-    return card && card.type === "domain" && card.isMainDomain; // or use id === "MainDomain"
+    return card && card.category === "domain" && card.type === "maindomain";
   });
   if (idx !== -1) {
     return deckArr.splice(idx, 1)[0];
   }
   return null;
 }
+const mainDomain = extractMainDomainFromDeck(gameState.playerDeck);
+if (mainDomain) {
+  mainDomain.currentHP = getBaseHp(mainDomain.cardId);
+  gameState.playerDomains.unshift(mainDomain); // Place at start of domains row
+}
 function renderMainDomain() {
   const playerDiv = document.getElementById('player-main-domain-zone');
   const oppDiv = document.getElementById('opponent-main-domain-zone');
   playerDiv.innerHTML = '';
   oppDiv.innerHTML = '';
+  // Inside your renderRowZone for domains:
+for (const cardObj of cardArray) {
+  const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+  const dom = renderCardOnField(cardObj, zoneId);
+  if (cardData && cardData.isMainDomain) {
+    dom.classList.add('main-domain-highlight');
+    // Or add a visual badge
+  }
+  zoneDiv.appendChild(dom);
+}
   if (gameState.playerMainDomain) {
     playerDiv.appendChild(renderCardOnField(gameState.playerMainDomain, "player-main-domain-zone"));
   }
