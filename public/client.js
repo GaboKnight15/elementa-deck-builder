@@ -1,4 +1,4 @@
-// --- CLIENT.JS (revised for gameplay-only lobby/chat and correct deck sync) ---
+// --- CLIENT.JS (revised for gameplay-only lobby/chat and correct deck sync, DRYed up) ---
 
 const socket = io();
 let currentRoomId = null;
@@ -13,59 +13,68 @@ const status = document.getElementById('status');
 const chatInput = document.getElementById('chat-input');
 const sendChatBtn = document.getElementById('send-chat-btn');
 const chatLog = document.getElementById('chat-log');
-// Connect modal lobby buttons to the same room/deck logic
+// Modal lobby elements
 const createLobbyBtn = document.getElementById('create-lobby-btn');
 const joinLobbyBtn = document.getElementById('join-lobby-btn');
 const joinLobbyCodeInput = document.getElementById('join-lobby-code-input');
 const lobbyModalStatus = document.getElementById('lobby-join-status');
+const lobbyCodeDisplay = document.getElementById('lobby-code-display');
 
-if (createLobbyBtn && joinLobbyBtn) {
-  createLobbyBtn.onclick = () => {
-    const code = generateRoomId().toUpperCase();
-    currentRoomId = code;
-    socket.emit('join room', code);
-    document.getElementById('lobby-code-display').textContent = code;
-    status.textContent = `Room created! Share this code: ${code}`;
-    submitDeckToServer();
-  };
-
-  joinLobbyBtn.onclick = () => {
-    const code = joinLobbyCodeInput.value.trim().toUpperCase();
-    if (!code) return alert('Enter a lobby code!');
-    currentRoomId = code;
-    socket.emit('join room', code);
-    status.textContent = `Joined room: ${code}. Waiting for opponent...`;
-    submitDeckToServer();
-  };
-}
 let myDeckObj = null;
 let opponentDeckReceived = false;
 
-// Utility to generate random room code
+// --- Utility to generate random room code ---
 function generateRoomId() {
-  return Math.random().toString(36).substr(2, 6);
+  // 5 uppercase letters/numbers (e.g. "A1B2C")
+  return Math.random().toString(36).substr(2, 5).toUpperCase();
 }
 
-// --- Create/Join Room Handlers ---
-createBtn.onclick = () => {
-  const roomId = generateRoomId();
+// --- DRY: Unified room join/create logic for classic and modal UI ---
+function joinOrCreateRoom(roomId, asCreator = false) {
   currentRoomId = roomId;
   socket.emit('join room', roomId);
-  status.textContent = `Room created! Share this code: ${roomId}`;
+  if (status) {
+    status.textContent = asCreator
+      ? `Room created! Share this code: ${roomId}`
+      : `Joined room: ${roomId}. Waiting for opponent...`;
+  }
+  if (lobbyCodeDisplay && asCreator) {
+    lobbyCodeDisplay.textContent = roomId;
+  }
   submitDeckToServer();
-};
+}
 
-joinBtn.onclick = () => {
-  const roomId = roomInput.value.trim();
-  if (!roomId) return alert('Enter a room code!');
-  currentRoomId = roomId;
-  socket.emit('join room', roomId);
-  status.textContent = `Joined room: ${roomId}. Waiting for opponent...`;
-  submitDeckToServer();
-};
+// --- Classic UI: Create/Join room ---
+if (createBtn) {
+  createBtn.onclick = () => joinOrCreateRoom(generateRoomId(), true);
+}
+if (joinBtn) {
+  joinBtn.onclick = () => {
+    const roomId = (roomInput?.value || "").trim().toUpperCase();
+    if (!roomId) return alert('Enter a room code!');
+    joinOrCreateRoom(roomId, false);
+  };
+}
+
+// --- Modal UI: Create/Join room ---
+if (createLobbyBtn) {
+  createLobbyBtn.onclick = () => {
+    const code = generateRoomId();
+    joinOrCreateRoom(code, true);
+  };
+}
+if (joinLobbyBtn) {
+  joinLobbyBtn.onclick = () => {
+    const code = (joinLobbyCodeInput?.value || "").trim().toUpperCase();
+    if (!code) return alert('Enter a lobby code!');
+    joinOrCreateRoom(code, false);
+  };
+}
+
 socket.on('opponent joined', (opponentId) => {
-  status.textContent = "Opponent joined! You can start chatting.";
+  if (status) status.textContent = "Opponent joined! You can start chatting.";
 });
+
 // --- Submit deck to server for multiplayer sync ---
 function submitDeckToServer() {
   if (typeof loadDeckState === "function") loadDeckState();
@@ -79,46 +88,47 @@ function submitDeckToServer() {
 
 // --- Receive opponent's deck and start game ---
 socket.on('opponent deck', (deckObj) => {
-  // Set up gameplay state with correct decks:
   if (typeof buildDeck === "function" && typeof shuffle === "function") {
-    // Your deck: already set in your game state by your own game start logic
-    // Opponent's deck:
     if (window.gameState) {
       gameState.opponentDeck = shuffle(buildDeck(deckObj));
       opponentDeckReceived = true;
-      // (Optional) Start the game UI if both decks are ready
       startMultiplayerGameIfReady();
     }
   }
 });
 
-// (Optional) helper to handle both players being ready:
+// --- Helper to handle both players being ready ---
 function startMultiplayerGameIfReady() {
   // Only show gameplay/chat when both players have decks
   if (opponentDeckReceived) {
+    // Optionally: Start the game here if needed
+    // e.g. window.setupBattlefieldGame && window.setupBattlefieldGame();
   }
 }
 
 // --- Chat Logic ---
-chatInput.addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') {
-    sendChatBtn.click();
-    e.preventDefault();
-  }
-});
-sendChatBtn.onclick = () => {
-  const msg = chatInput.value.trim();
-  if (msg && currentRoomId) {
-    socket.emit('game message', currentRoomId, msg);
-    appendChatMessage(`You: ${msg}`);
-    chatInput.value = '';
-  }
-};
+if (chatInput) {
+  chatInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      sendChatBtn?.click();
+      e.preventDefault();
+    }
+  });
+}
+if (sendChatBtn) {
+  sendChatBtn.onclick = () => {
+    const msg = (chatInput?.value || "").trim();
+    if (msg && currentRoomId) {
+      socket.emit('game message', currentRoomId, msg);
+      appendChatMessage(`You: ${msg}`);
+      chatInput.value = '';
+    }
+  };
+}
 
 socket.on('game message', (data) => {
   if (data.sender === socket.id) {
-    // This is your own message echoed back from the server, ignore.
-    return;
+    return; // This is your own message echoed back from the server, ignore.
   }
   appendChatMessage(`Opponent: ${data.msg}`);
 });
@@ -130,10 +140,11 @@ function appendChatMessage(msg) {
   chatLog.scrollTop = chatLog.scrollHeight;
 }
 
-// After both players have chosen/joined a room and decks are exchanged:
+// --- Deck Sync (optional, for advanced server flows) ---
 socket.on('sync deck', (deckObj) => {
-  // For your own player:
-  startGameWithSyncedDeck(deckObj);
+  if (typeof startGameWithSyncedDeck === "function") {
+    startGameWithSyncedDeck(deckObj);
+  }
 });
 
 // --- Game Actions Sync ---
@@ -150,49 +161,53 @@ socket.on('your deck', (deckObj) => {
 
 // --- Hide lobby/chat when leaving/ending gameplay (optional helper) ---
 function endGameCleanup() {
-  chatLog.innerHTML = "";
+  if (chatLog) chatLog.innerHTML = "";
   opponentDeckReceived = false;
   // Any other cleanup...
 }
 
 function playCard(instanceId, fromZone, toZone) {
   // 1. Locally update state
-  moveCard(instanceId, fromZone, toZone);
-  renderGameState();
-  setupDropZones();
+  if (typeof moveCard === "function") moveCard(instanceId, fromZone, toZone);
+  if (typeof renderGameState === "function") renderGameState();
+  if (typeof setupDropZones === "function") setupDropZones();
   // 2. Sync with opponent
   socket.emit('play card', { roomId: currentRoomId, instanceId, fromZone, toZone });
 }
 
 // Listen for opponent actions
 socket.on('opponent play card', (data) => {
-  // Update opponent's state accordingly
-  moveCard(data.instanceId, data.fromZone, data.toZone, /*isOpponent=*/true);
-  renderGameState();
-  setupDropZones();
+  if (typeof moveCard === "function") moveCard(data.instanceId, data.fromZone, data.toZone, /*isOpponent=*/true);
+  if (typeof renderGameState === "function") renderGameState();
+  if (typeof setupDropZones === "function") setupDropZones();
 });
 
 socket.on('opponent game action', action => {
-  handleOpponentAction(action); // already present in your gameplay.js
+  if (typeof handleOpponentAction === "function") handleOpponentAction(action);
 });
 
-// PROFILE DETAILS IN GAME
+// --- Profile details in game ---
 function showMyProfile() {
-  renderProfile('my-profile', getMyProfileInfo());
-  document.getElementById('my-profile').style.display = '';
+  if (typeof renderProfile === "function") {
+    renderProfile('my-profile', getMyProfileInfo());
+    document.getElementById('my-profile').style.display = '';
+  }
 }
 function getMyProfileInfo() {
   return {
-    username: document.getElementById('profile-username-display').textContent,
-    avatar: document.getElementById('profile-pic').src,
-    banner: document.getElementById('profile-banner').src
+    username: document.getElementById('profile-username-display')?.textContent || '',
+    avatar: document.getElementById('profile-pic')?.src || '',
+    banner: document.getElementById('profile-banner')?.src || ''
   };
 }
 socket.emit('profile', getMyProfileInfo());
 socket.on('opponent profile', profileObj => {
-  renderProfile('opponent-profile', profileObj);
-  document.getElementById('opponent-profile').style.display = '';
+  if (typeof renderProfile === "function") {
+    renderProfile('opponent-profile', profileObj);
+    document.getElementById('opponent-profile').style.display = '';
+  }
 });
+
 // --- Export for use in other scripts, if needed ---
 window.endGameCleanup = endGameCleanup;
 
