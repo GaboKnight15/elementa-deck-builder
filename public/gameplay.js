@@ -1751,7 +1751,7 @@ function showEssencePaymentModal(opts) {
   const confirmBtn = document.createElement('button');
   confirmBtn.type = 'button';
   confirmBtn.className = 'btn-primary';
-  confirmBtn.textContent = 'Confirm Payment';
+  confirmBtn.textContent = 'Confirm';
   confirmBtn.disabled = true;
   confirmBtn.style.marginTop = '12px';
   confirmBtn.onclick = function() {
