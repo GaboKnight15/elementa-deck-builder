@@ -1573,6 +1573,217 @@ function doEssencePhase(playerOrOpponent) {
 }
 
 // ESSENCE CONSUPTION LOGIC
+function showEssencePaymentModal(opts) {
+  closeAllModals();
+  // Setup modal base
+  let modal = document.getElementById('essence-payment-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'essence-payment-modal';
+    modal.className = 'modal';
+    document.body.appendChild(modal);
+  }
+  modal.innerHTML = '';
+  modal.style.display = 'flex';
+  modal.onclick = function(e) { if (e.target === modal) modal.style.display = 'none'; };
+
+  // Modal content
+  const content = document.createElement('div');
+  content.className = 'modal-content';
+  content.onclick = e => e.stopPropagation();
+  modal.appendChild(content);
+
+  // Header: Show card/ability being played/activated
+  const card = opts.card;
+  const cardData = card || {};
+  const img = document.createElement('img');
+  img.src = cardData.image || '';
+  img.alt = cardData.name || '';
+  img.style.width = '100px';
+  img.style.borderRadius = '8px';
+  img.style.marginRight = '12px';
+
+  const header = document.createElement('div');
+  header.style.display = 'flex';
+  header.style.alignItems = 'center';
+  header.style.marginBottom = '10px';
+  header.innerHTML = `<div style="font-size:1.2em;font-weight:bold;">Pay Essence Cost</div>`;
+  if (cardData.image) header.prepend(img);
+  content.appendChild(header);
+
+  // Requirement display
+  const reqDiv = document.createElement('div');
+  reqDiv.className = 'essence-requirements';
+  reqDiv.style.marginBottom = '8px';
+  let requirements = [];
+  for (const color in opts.cost) {
+    requirements.push({color, needed: opts.cost[color], paid: 0});
+  }
+  reqDiv.innerHTML = `<b>Essence Required:</b> ${
+    requirements.map(r => `<span style="margin-right:8px;">
+      <img src="OtherIcons/Essence/${r.color}.png" style="width:22px;vertical-align:middle">${r.needed}</span>`).join('')
+  }`;
+  content.appendChild(reqDiv);
+
+  // Payment assignment state
+  let paymentPlan = []; // {cardObj, color, sourceIdx} for each assigned Essence
+  let reqPaid = Object.fromEntries(requirements.map(r => [r.color, 0]));
+
+  // Helper to check if requirement is full
+  function isPaidFull() {
+    for (const r of requirements) {
+      if (reqPaid[r.color] < r.needed) return false;
+    }
+    return true;
+  }
+
+  // Show eligible sources and their Essence
+  const sourcesDiv = document.createElement('div');
+  sourcesDiv.className = 'essence-source-list';
+  sourcesDiv.style.display = 'flex';
+  sourcesDiv.style.flexWrap = 'wrap';
+  sourcesDiv.style.gap = '18px';
+  sourcesDiv.style.margin = '10px 0 18px 0';
+
+  // List of {cardObj, color, idx (the nth essence of that color on this card)}
+  let selectableEssenceUnits = [];
+  opts.eligibleCards.forEach(sourceCard => {
+    const cardDiv = document.createElement('div');
+    cardDiv.className = 'essence-source-card';
+    cardDiv.style.minWidth = '90px';
+    cardDiv.style.background = '#20283e';
+    cardDiv.style.border = '2px solid #333';
+    cardDiv.style.padding = '7px';
+    cardDiv.style.borderRadius = '9px';
+    cardDiv.style.position = 'relative';
+
+    // Card name/img
+    const smallImg = document.createElement('img');
+    smallImg.src = (dummyCards.find(c=>c.id===sourceCard.cardId)||{}).image || '';
+    smallImg.style.width = '34px';
+    smallImg.style.borderRadius = '4px';
+    smallImg.style.marginBottom = '6px';
+    cardDiv.appendChild(smallImg);
+
+    const nameDiv = document.createElement('div');
+    nameDiv.textContent = (dummyCards.find(c=>c.id===sourceCard.cardId)||{}).name || '';
+    nameDiv.style.fontSize = '0.95em';
+    nameDiv.style.marginBottom = '4px';
+    cardDiv.appendChild(nameDiv);
+
+    // Essence icons
+    const essenceWrap = document.createElement('div');
+    essenceWrap.style.display = 'flex';
+    essenceWrap.style.flexWrap = 'wrap';
+    essenceWrap.style.gap = '5px';
+    const ESSENCE_TYPES = ['green','red','blue','white','black','yellow','purple','orange'];
+    ESSENCE_TYPES.forEach(type => {
+      let amt = (sourceCard.essence && sourceCard.essence[type]) || 0;
+      for (let i = 0; i < amt; i++) {
+        const icon = document.createElement('img');
+        icon.src = `OtherIcons/Essence/${type}.png`;
+        icon.className = 'essence-img';
+        icon.style.width = '22px';
+        icon.style.borderRadius = '50%';
+        icon.style.cursor = 'pointer';
+        icon.style.border = '2px solid #aaa';
+        icon.style.background = '#222';
+        icon.style.margin = '1px';
+        icon.title = type.charAt(0).toUpperCase()+type.slice(1) + " Essence (click to select)";
+
+        // Track selection
+        let assigned = false;
+        icon.onclick = function() {
+          // Only allow if requirement for that color or colorless is not full
+          let targetColor = type;
+          let paidForThisType = reqPaid[type] < (opts.cost[type]||0);
+          let paidForColorless = (opts.cost.colorless && reqPaid.colorless < opts.cost.colorless);
+          if (!paidForThisType && !paidForColorless) return;
+
+          // Assign to color-specific if still needed, else to colorless
+          let assignToColor = paidForThisType ? type : 'colorless';
+
+          // Don't double assign this icon
+          if (assigned) return;
+
+          // Mark as assigned
+          assigned = true;
+          reqPaid[assignToColor]++;
+          paymentPlan.push({cardObj: sourceCard, color: type, essenceIdx: i});
+
+          icon.style.opacity = '0.4';
+          icon.style.border = '2.5px solid #ffe066';
+
+          // Update requirement display
+          updateReqDiv();
+
+          // Enable confirm if done
+          updateConfirmBtn();
+        };
+        selectableEssenceUnits.push({icon, cardObj: sourceCard, color: type, idx: i, assigned: ()=>assigned});
+        essenceWrap.appendChild(icon);
+      }
+    });
+    cardDiv.appendChild(essenceWrap);
+
+    sourcesDiv.appendChild(cardDiv);
+  });
+  content.appendChild(sourcesDiv);
+  // Requirement "progress" update
+  function updateReqDiv() {
+    reqDiv.innerHTML = `<b>Essence Required:</b> ${
+      requirements.map(r => {
+        let filled = reqPaid[r.color];
+        let total = r.needed;
+        let color = filled === total ? "#9ee68f" : "#ffe066";
+        return `<span style="margin-right:8px;">
+          <img src="OtherIcons/Essence/${r.color}.png" style="width:22px;vertical-align:middle;filter:${filled===total?"grayscale(0)":"grayscale(0.5)"}">
+          <span style="color:${color};font-weight:bold;">${filled}/${total}</span>
+        </span>`;
+      }).join('')
+    }`;
+  }
+
+  // Confirm button
+  const confirmBtn = document.createElement('button');
+  confirmBtn.type = 'button';
+  confirmBtn.className = 'btn-primary';
+  confirmBtn.textContent = 'Confirm Payment';
+  confirmBtn.disabled = true;
+  confirmBtn.style.marginTop = '12px';
+  confirmBtn.onclick = function() {
+    // Actually deduct the paid Essence
+    for (const pay of paymentPlan) {
+      if (!pay.cardObj.essence) continue;
+      if (!pay.cardObj.essence[pay.color] || pay.cardObj.essence[pay.color] <= 0) continue;
+      pay.cardObj.essence[pay.color]--;
+    }
+    // Optional: increment global stats here
+    // e.g. gameState.essenceSpent = (gameState.essenceSpent||0) + paymentPlan.length;
+
+    modal.style.display = 'none';
+    if (opts.onPaid) opts.onPaid(paymentPlan);
+  };
+  content.appendChild(confirmBtn);
+
+  function updateConfirmBtn() {
+    confirmBtn.disabled = !isPaidFull();
+  }
+
+  // Cancel button
+  const cancelBtn = document.createElement('button');
+  cancelBtn.type = 'button';
+  cancelBtn.textContent = 'Cancel';
+  cancelBtn.className = 'btn-secondary';
+  cancelBtn.style.marginLeft = '8px';
+  cancelBtn.onclick = function() {
+    modal.style.display = 'none';
+  };
+  content.appendChild(cancelBtn);
+
+  updateReqDiv();
+}
+
 showEssencePaymentModal({
   cost: { red: 1, blue: 2 },
   onPaid: function() {
@@ -1580,6 +1791,7 @@ showEssencePaymentModal({
   },
   eligibleCards: getAllEssenceSources(), // returns player's Domains, Champions, etc.
 });
+  
 function getAllEssenceSources() {
   return [...gameState.playerDomains, ...gameState.playerCreatures /* add more if needed */];
 }
