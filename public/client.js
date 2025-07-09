@@ -72,7 +72,16 @@ if (joinLobbyBtn) {
 }
 
 socket.on('opponent joined', (opponentId) => {
-  if (status) status.textContent = "Opponent joined! You can start chatting.";
+  // Hide the lobby modal if visible
+  const lobbyModal = document.getElementById('private-lobby-modal');
+  if (lobbyModal) lobbyModal.style.display = 'none';
+
+  // Show deck selection for both players
+  if (typeof showPlayerDeckModal === "function") {
+    showPlayerDeckModal();
+  }
+  // Optionally update status somewhere else
+  if (status) status.textContent = "Both players joined! Choose your deck.";
 });
 
 // --- Submit deck to server for multiplayer sync ---
