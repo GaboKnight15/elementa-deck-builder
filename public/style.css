@@ -1641,6 +1641,15 @@ button {
   outline: none;
 }
 /* CARD ANIMATION BATTLEFIELD */
+#game-start-overlay {
+  animation: gameStartPop 1.2s cubic-bezier(.33,1.62,.46,.98);
+}
+@keyframes gameStartPop {
+  0%   { opacity:0; transform:scale(0.9);}
+  15%  { opacity:1; transform:scale(1.06);}
+  80%  { opacity:1; transform:scale(1);}
+  100% { opacity:0; }
+}
 .card-move-animate {
   box-shadow: 0 10px 42px #50eaffcc, 0 2px 14px #0006;
   border-radius: 12px;
