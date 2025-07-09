@@ -1613,6 +1613,13 @@ button {
   will-change: left, top, transform, opacity;
   pointer-events: none;
 }
+.attack-target-highlight {
+  outline: 3px solid #ffe066;
+  box-shadow: 0 0 16px #ffe066cc;
+  cursor: pointer;
+  transition: outline 0.15s, box-shadow 0.15s;
+  z-index: 10;
+}
 /* VIEW STYLE */
 #image-modal.modal {
   display: none;
