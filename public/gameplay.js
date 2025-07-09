@@ -1398,15 +1398,25 @@ function animateCardMove(cardDiv, destinationDiv, callback) {
 
 // AUTOMATIZATION
 // INITIAL CARD SELECTION
-const champion = selectChampionFromDeck(playerDeck); // Modal or auto
-if (champion) {
-  gameState.playerCreatures.unshift(champion); // Put on field
-}
 const mainDomain = extractMainDomainFromDeck(gameState.playerDeck);
 if (mainDomain) {
   mainDomain.currentHP = getBaseHp(mainDomain.cardId);
   gameState.playerDomains.unshift(mainDomain); // Place at start of domains row
 }
+// 2. Champion selection - show modal if >1, else auto
+const champions = getChampionsFromDeck(gameState.playerDeck);
+if (champions.length === 1) {
+  placeChampionOnField(champions[0]);
+  continueGameSetup();
+} else if (champions.length > 1) {
+  showChampionSelectionModal(gameState.playerDeck, chosenChampion => {
+    placeChampionOnField(chosenChampion);
+    continueGameSetup();
+  });
+} else {
+  continueGameSetup();
+}
+
 playerDeck = shuffle(playerDeck);
 gameState.playerHand = [];
 for (let i = 0; i < INITIAL_HAND_SIZE; i++) {
@@ -1456,6 +1466,7 @@ if (gameState.opponentMainDomain && gameState.opponentMainDomain.currentHP <= 0)
 }
 // After decks are loaded but before shuffling/drawing:
 function showChampionSelectionModal(deckArr, onSelected) {
+  const champions = getChampionsFromDeck(deckArr);
   // Find all Champions in this deck
   const championCards = deckArr.filter(cardObj => {
     const card = dummyCards.find(c => c.id === cardObj.cardId);
@@ -1475,6 +1486,20 @@ function selectChampionFromDeck(deckArr, onSelected) {
   }
   // Show modal: display champions, let player click one to select
   // On click: onSelected(selectedChampion)
+}
+function getChampionsFromDeck(deckArr) {
+  return deckArr.filter(cardObj => {
+    const card = dummyCards.find(c => c.id === cardObj.cardId);
+    return card && card.category === "champion";
+  });
+}
+
+function placeChampionOnField(championCardObj) {
+  // Remove from deck
+  const idx = gameState.playerDeck.findIndex(c => c.instanceId === championCardObj.instanceId);
+  if (idx !== -1) gameState.playerDeck.splice(idx, 1);
+  // Place on field (creatures array)
+  gameState.playerCreatures.unshift(championCardObj);
 }
 // Then, in your game start:
 showChampionSelectionModal(gameState.playerDeck, function(chosenChampion) {
