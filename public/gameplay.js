@@ -41,6 +41,7 @@ const PHASES = [
   opponentVoid: [],
   playerMainDomain: null,
   opponentMainDomain: null,
+
   turn: "player",
   phase: "draw"
 };
