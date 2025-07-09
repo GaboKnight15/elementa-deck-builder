@@ -2090,6 +2090,89 @@ function startAttackTargeting(attackerId, attackerZone, cardDiv) {
   };
   setTimeout(() => document.body.addEventListener('click', attackMode.cancelHandler, { once: true }), 10);
 }
+// =========== PRIVATE LOBBY UI ===========
+
+// Show modal when user selects Private mode
+document.querySelector('.mode-btn[data-mode="private"]').addEventListener('click', function() {
+  showPrivateLobbyModal();
+});
+
+function showPrivateLobbyModal() {
+  closeAllModals();
+  const modal = document.getElementById('private-lobby-modal');
+  document.getElementById('private-lobby-options').style.display = '';
+  document.getElementById('lobby-created-view').style.display = 'none';
+  document.getElementById('lobby-join-status').style.display = 'none';
+  modal.style.display = 'flex';
+
+  document.getElementById('create-lobby-btn').onclick = () => {
+    // Generate lobby code, show code, hide options
+    const lobbyCode = generateLobbyCode();
+    document.getElementById('private-lobby-options').style.display = 'none';
+    document.getElementById('lobby-created-view').style.display = '';
+    document.getElementById('lobby-code-display').textContent = lobbyCode;
+    // TODO: Call backend or socket to create the lobby
+    window.currentLobbyCode = lobbyCode;
+    createPrivateLobby(lobbyCode);
+  };
+
+  document.getElementById('join-lobby-btn').onclick = () => {
+    const code = document.getElementById('join-lobby-code-input').value.trim().toUpperCase();
+    if (!code) return;
+    // TODO: Call backend or socket to join the lobby
+    document.getElementById('lobby-join-status').style.display = '';
+    document.getElementById('lobby-join-status').textContent = 'Joining lobby...';
+    joinPrivateLobby(code);
+  };
+
+  document.getElementById('cancel-lobby-btn').onclick = () => {
+    modal.style.display = 'none';
+    // TODO: Cancel lobby on backend/socket if needed
+    cancelPrivateLobby();
+  };
+  // Clicking outside modal closes it
+  modal.onclick = function(e) { if (e.target === modal) modal.style.display = 'none'; };
+}
+
+// Generates a simple 5-character code
+function generateLobbyCode() {
+  return Math.random().toString(36).substring(2,7).toUpperCase();
+}
+
+// Placeholder: fill these in with your socket logic
+function createPrivateLobby(code) {
+  // Example: socket.emit('create-lobby', { code });
+  // Wait for opponent, then call onPrivateLobbyReady()
+}
+function joinPrivateLobby(code) {
+  // Example: socket.emit('join-lobby', { code });
+  // On success: onPrivateLobbyReady();
+}
+function cancelPrivateLobby() {
+  // Example: socket.emit('cancel-lobby', { code: window.currentLobbyCode });
+}
+
+// Called when both players are in the lobby and ready to select decks
+function onPrivateLobbyReady() {
+  document.getElementById('private-lobby-modal').style.display = 'none';
+  showPlayerDeckModal(); // or showOpponentDeckModal for the other player
+  // After deck chosen, sync and then call startPrivateGame()
+}
+
+// After both decks selected, call this:
+function startPrivateGame() {
+  // Set up gameState, profiles, etc.
+  document.querySelectorAll('section[id$="-section"]').forEach(section => section.classList.remove('active'));
+  document.getElementById('gameplay-section').classList.add('active');
+  // Render chat, profiles, battlefield as in solo
+  // Show Game Start animation, Main Domain & Champion selection
+  showGameStartAnimation(() => {
+    initiateMainDomainAndChampionSelection(gameState.playerDeck, () => {
+      // Draw hand, set up game, etc
+      // ...
+    });
+  });
+}
 // Make available globally if called from client.js:
 window.setupBattlefieldGame = setupBattlefieldGame;
 window.handleOpponentAction = handleOpponentAction;
