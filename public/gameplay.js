@@ -1844,22 +1844,111 @@ function endAttackTargeting() {
   attackMode.attackerId = null;
   attackMode.attackerZone = null;
 }
-function resolveAttack(attackerId, targetId) {
-  // Find attacker and target card objects
-  const attacker = gameState.playerCreatures.find(c => c.instanceId === attackerId);
-  const target = gameState.opponentCreatures.find(c => c.instanceId === targetId);
-  if (!attacker || !target) return;
+function resolveAttack(attackerId, defenderId) {
+  // Find attacker and defender card objects and their arrays
+  let attacker, defender, attackerArr, defenderArr, attackerVoid, defenderVoid;
+  // Figure out who is the attacker (player or opponent)
+  attacker = gameState.playerCreatures.find(c => c.instanceId === attackerId);
+  defender = gameState.opponentCreatures.find(c => c.instanceId === defenderId);
+  attackerArr = gameState.playerCreatures;
+  defenderArr = gameState.opponentCreatures;
+  attackerVoid = gameState.playerVoid;
+  defenderVoid = gameState.opponentVoid;
 
-  // Simple damage logic: both deal damage to each other equal to their attack (expand as needed)
-  target.currentHP = (target.currentHP || getBaseHp(target.cardId)) - (attacker.attack || 1);
-  attacker.currentHP = (attacker.currentHP || getBaseHp(attacker.cardId)) - (target.attack || 1);
+  // If not found, try the reverse (opponent attacks player)
+  if (!attacker || !defender) {
+    attacker = gameState.opponentCreatures.find(c => c.instanceId === attackerId);
+    defender = gameState.playerCreatures.find(c => c.instanceId === defenderId);
+    attackerArr = gameState.opponentCreatures;
+    defenderArr = gameState.playerCreatures;
+    attackerVoid = gameState.opponentVoid;
+    defenderVoid = gameState.playerVoid;
+  }
+  if (!attacker || !defender) return;
 
-  // If anyone dies, move to void
-  if (target.currentHP <= 0) moveCard(target.instanceId, gameState.opponentCreatures, gameState.opponentVoid);
-  if (attacker.currentHP <= 0) moveCard(attacker.instanceId, gameState.playerCreatures, gameState.playerVoid);
+  // Only allow if not already attacked this turn and during Action Phase
+  if (attacker.hasAttacked || gameState.phase !== "action" || gameState.turn !== getCardOwner(attacker)) return;
+
+  // Attack logic
+  if (defender.orientation === "horizontal") {
+    // Both deal ATK to each other (Armor first, then HP)
+    dealCombatDamage(attacker, defender, attacker.atk);
+    dealCombatDamage(defender, attacker, defender.atk);
+  } else if (defender.orientation === "vertical") {
+    // Attacker's ATK - defender's DEF (if >0, deal this much to defender)
+    let damage = Math.max(0, attacker.atk - defender.def);
+    dealCombatDamage(attacker, defender, damage);
+    // Defender does not deal damage back
+  }
+
+  attacker.hasAttacked = true;
+
+  // Check for deaths (destroyed = HP <= 0)
+  if (attacker.currentHP <= 0) moveCard(attacker.instanceId, attackerArr, attackerVoid);
+  if (defender.currentHP <= 0) moveCard(defender.instanceId, defenderArr, defenderVoid);
 
   renderGameState();
   setupDropZones();
+}
+// --- Damage Helper: Deals armor/HP damage ---
+function dealCombatDamage(source, target, amount) {
+  if (!target) return;
+  if (target.armor && target.armor > 0) {
+    let armorAbsorb = Math.min(target.armor, amount);
+    target.armor -= armorAbsorb;
+    amount -= armorAbsorb;
+  }
+  if (amount > 0) {
+    target.currentHP = (typeof target.currentHP === "number" ? target.currentHP : getBaseHp(target.cardId)) - amount;
+  }
+}
+// --- Utility: Determine card owner as "player" or "opponent" ---
+function getCardOwner(cardObj) {
+  if (gameState.playerCreatures.includes(cardObj) || gameState.playerDomains.includes(cardObj)) return "player";
+  if (gameState.opponentCreatures.includes(cardObj) || gameState.opponentDomains.includes(cardObj)) return "opponent";
+  return null;
+}
+
+// --- Reset hasAttacked for all creatures at start of player's/opponent's action phase ---
+function resetAttackFlags(turn) {
+  const arr = turn === "player" ? gameState.playerCreatures : gameState.opponentCreatures;
+  arr.forEach(creature => { creature.hasAttacked = false; });
+}
+
+// In your phase update, add:
+if (gameState.phase === "action") {
+  resetAttackFlags(gameState.turn);
+}
+
+// --- Attacking UI: Highlight available targets ---
+// In startAttackTargeting, you should already have logic similar to:
+function startAttackTargeting(attackerId, attackerZone, cardDiv) {
+  attackMode.attackerId = attackerId;
+  attackMode.attackerZone = attackerZone;
+
+  // 1. Highlight all valid targets (e.g., opponent creatures)
+  const targets = gameState.opponentCreatures;
+  targets.forEach(cardObj => {
+    const targetDiv = findCardDivInZone('opponent-creatures-zone', cardObj.instanceId);
+    if (targetDiv) {
+      targetDiv.classList.add('attack-target-highlight'); // Add CSS for highlight
+      // Optional: darken background for all but highlighted cards
+      document.getElementById('battlefield').classList.add('attack-mode-backdrop'); // Add CSS overlay for modal/dark effect
+      targetDiv.onclick = function(e) {
+        e.stopPropagation();
+        resolveAttack(attackerId, cardObj.instanceId);
+        endAttackTargeting();
+        document.getElementById('battlefield').classList.remove('attack-mode-backdrop');
+      };
+    }
+  });
+
+  // 2. Add a cancel handler (clicking elsewhere cancels)
+  attackMode.cancelHandler = function(e) {
+    endAttackTargeting();
+    document.getElementById('battlefield').classList.remove('attack-mode-backdrop');
+  };
+  setTimeout(() => document.body.addEventListener('click', attackMode.cancelHandler, { once: true }), 10);
 }
 // Make available globally if called from client.js:
 window.setupBattlefieldGame = setupBattlefieldGame;
