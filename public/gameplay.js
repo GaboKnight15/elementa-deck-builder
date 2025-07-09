@@ -1397,6 +1397,22 @@ function animateCardMove(cardDiv, destinationDiv, callback) {
 }
 
 // AUTOMATIZATION
+// INITIAL CARD SELECTION
+const champion = selectChampionFromDeck(playerDeck); // Modal or auto
+if (champion) {
+  gameState.playerCreatures.unshift(champion); // Put on field
+}
+const mainDomain = extractMainDomainFromDeck(gameState.playerDeck);
+if (mainDomain) {
+  mainDomain.currentHP = getBaseHp(mainDomain.cardId);
+  gameState.playerDomains.unshift(mainDomain); // Place at start of domains row
+}
+playerDeck = shuffle(playerDeck);
+gameState.playerHand = [];
+for (let i = 0; i < INITIAL_HAND_SIZE; i++) {
+  drawCardFromDeckToHand(playerDeck, gameState.playerHand);
+}
+
 function extractMainDomainFromDeck(deckArr) {
   const idx = deckArr.findIndex(cardObj => {
     const card = dummyCards.find(c => c.id === cardObj.cardId);
@@ -1407,11 +1423,7 @@ function extractMainDomainFromDeck(deckArr) {
   }
   return null;
 }
-const mainDomain = extractMainDomainFromDeck(gameState.playerDeck);
-if (mainDomain) {
-  mainDomain.currentHP = getBaseHp(mainDomain.cardId);
-  gameState.playerDomains.unshift(mainDomain); // Place at start of domains row
-}
+
 function renderMainDomain() {
   const playerDiv = document.getElementById('player-main-domain-zone');
   const oppDiv = document.getElementById('opponent-main-domain-zone');
