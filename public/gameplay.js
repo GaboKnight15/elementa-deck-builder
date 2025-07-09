@@ -1698,10 +1698,7 @@ function initiateMainDomainAndChampionSelection(deckArr, afterSelection) {
 
     // Champion selection
     const champions = getChampionsFromDeck(deckArr);
-    if (champions.length === 1) {
-      placeChampionOnField(champions[0]);
-      if (afterSelection) afterSelection();
-    } else if (champions.length > 1) {
+    if (champions.length >= 1) {
       showChampionSelectionModal(deckArr, chosenChampion => {
         placeChampionOnField(chosenChampion);
         if (afterSelection) afterSelection();
@@ -1711,12 +1708,10 @@ function initiateMainDomainAndChampionSelection(deckArr, afterSelection) {
     }
   }
 
-  if (mainDomains.length === 1) {
-    afterMainDomain(mainDomains[0]);
-  } else if (mainDomains.length > 1) {
+  if (mainDomains.length >= 1) {
     showMainDomainSelectionModal(deckArr, afterMainDomain);
   } else {
-    afterMainDomain(null); // none found
+    afterMainDomain(null);
   }
 }
 
