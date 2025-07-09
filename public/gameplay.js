@@ -78,6 +78,17 @@ const DEFAULT_CPU_DECKS = [
   },
   // ...repeat for other colors
 ];
+const ESSENCE_IMAGE_MAP = {
+  red: "OtherImages/Essence/red.png",
+  green: "OtherImages/Essence/green.png",
+  blue: "OtherImages/Essence/blue.png",
+  white: "OtherImages/Essence/white.png",
+  black: "OtherImages/Essence/black.png",
+  yellow: "OtherImages/Essence/yellow.png",
+  purple: "OtherImages/Essence/purple.png",
+  orange: "OtherImages/Essence/orange.png",
+  colorless: "OtherImages/Essence/EssenceOne.png"
+};
 // ==========================
 // === DOM REFERENCES ===
 // ==========================
@@ -223,17 +234,22 @@ function startSoloGame() {
       setupDropZones();
     };
   });
-  gameState.playerDeck = shuffle(playerDeckArray);
-  gameState.playerHand = [];
-  // Draw initial hand
-  const INITIAL_HAND_SIZE = 5; // or your preferred number
-  for (let i = 0; i < INITIAL_HAND_SIZE; i++) {
-    if (gameState.playerDeck.length > 0) {
-      gameState.playerHand.push(gameState.playerDeck.shift());
-    }
-  }
-  document.getElementById('my-profile').style.display = '';
-  renderProfile('my-profile', getMyProfileInfo());
+ // Show the "Game Start" animation, then main domain & champion selection, then draw opening hand
+  showGameStartAnimation(() => {
+    initiateMainDomainAndChampionSelection(gameState.playerDeck, () => {
+      // After selection, draw opening hand
+      const INITIAL_HAND_SIZE = 5;
+      for (let i = 0; i < INITIAL_HAND_SIZE; i++) {
+        if (gameState.playerDeck.length > 0) {
+          gameState.playerHand.push(gameState.playerDeck.shift());
+        }
+      }
+      document.getElementById('my-profile').style.display = '';
+      renderProfile('my-profile', getMyProfileInfo());
+      renderGameState();
+      setupDropZones();
+    });
+  });
 }
 // Only run this from client.js after both players are ready!
 // Called when entering gameplay for solo playtest (not from sync)
@@ -1471,7 +1487,42 @@ if (champions.length === 1) {
 } else {
   continueGameSetup();
 }
+function showGameStartAnimation(callback) {
+  // Create overlay
+  let overlay = document.createElement('div');
+  overlay.id = 'game-start-overlay';
+  overlay.style.position = 'fixed';
+  overlay.style.top = 0;
+  overlay.style.left = 0;
+  overlay.style.width = '100vw';
+  overlay.style.height = '100vh';
+  overlay.style.background = 'rgba(10,20,40,0.90)';
+  overlay.style.display = 'flex';
+  overlay.style.alignItems = 'center';
+  overlay.style.justifyContent = 'center';
+  overlay.style.zIndex = 99999;
+  overlay.style.transition = 'opacity 0.7s';
 
+  let text = document.createElement('div');
+  text.innerText = 'Game Start!';
+  text.style.color = '#ffe066';
+  text.style.fontSize = '3.2em';
+  text.style.letterSpacing = '0.1em';
+  text.style.textShadow = '0 4px 16px #000a, 0 1px 0 #fff9';
+  text.style.fontWeight = 'bold';
+  text.style.opacity = '0.97';
+
+  overlay.appendChild(text);
+  document.body.appendChild(overlay);
+
+  setTimeout(() => {
+    overlay.style.opacity = 0;
+    setTimeout(() => {
+      overlay.remove();
+      if (callback) callback();
+    }, 700); // match transition
+  }, 1200); // show for 1.2 seconds
+}
 function extractMainDomainFromDeck(deckArr) {
   const idx = deckArr.findIndex(cardObj => {
     const card = dummyCards.find(c => c.id === cardObj.cardId);
@@ -1547,6 +1598,29 @@ showChampionSelectionModal(gameState.playerDeck, function(chosenChampion) {
   gameState.playerChampion = chosenChampion;
   // Proceed to initial hand draw...
 });
+function initiateMainDomainAndChampionSelection(deckArr, afterSelection) {
+  // Main Domain
+  const mainDomain = extractMainDomainFromDeck(deckArr);
+  if (mainDomain) {
+    mainDomain.currentHP = getBaseHp(mainDomain.cardId);
+    gameState.playerMainDomain = mainDomain;
+    gameState.playerDomains.unshift(mainDomain);
+  }
+
+  // Champions
+  const champions = getChampionsFromDeck(deckArr);
+  if (champions.length === 1) {
+    placeChampionOnField(champions[0]);
+    if (afterSelection) afterSelection();
+  } else if (champions.length > 1) {
+    showChampionSelectionModal(deckArr, chosenChampion => {
+      placeChampionOnField(chosenChampion);
+      if (afterSelection) afterSelection();
+    });
+  } else {
+    if (afterSelection) afterSelection();
+  }
+}
 
 // ESSENCE GENERATION
 function generateEssenceForCard(cardObj) {
@@ -1618,24 +1692,33 @@ function showEssencePaymentModal(opts) {
   const reqDiv = document.createElement('div');
   reqDiv.className = 'essence-requirements';
   reqDiv.style.marginBottom = '8px';
+
+  // Convert opts.cost to array of {color, needed, paid}
   let requirements = [];
-  for (const color in opts.cost) {
-    requirements.push({color, needed: opts.cost[color], paid: 0});
+  if (typeof opts.cost === "number" && opts.cost === 0) {
+    // No requirement
+    requirements = [];
+  } else if (typeof opts.cost === "object" && opts.cost !== null) {
+    for (const color in opts.cost) {
+      requirements.push({color, needed: opts.cost[color], paid: 0});
+    }
   }
-  reqDiv.innerHTML = `<b>Essence Required:</b> ${
-    requirements.map(r => `<span style="margin-right:8px;">
-      <img src="OtherIcons/Essence/${r.color}.png" style="width:22px;vertical-align:middle">${r.needed}</span>`).join('')
-  }`;
+
+  // Payment state trackers
+  let reqPaid = {};
+  requirements.forEach(r => { reqPaid[r.color] = 0; });
+
+  // Initial requirements display
+  updateReqDiv(requirements, reqPaid, reqDiv);
   content.appendChild(reqDiv);
 
-  // Payment assignment state
-  let paymentPlan = []; // {cardObj, color, sourceIdx} for each assigned Essence
-  let reqPaid = Object.fromEntries(requirements.map(r => [r.color, 0]));
+  // Payment assignment state (array of {cardObj, color, essenceIdx})
+  let paymentPlan = [];
 
   // Helper to check if requirement is full
   function isPaidFull() {
     for (const r of requirements) {
-      if (reqPaid[r.color] < r.needed) return false;
+      if ((reqPaid[r.color] || 0) < r.needed) return false;
     }
     return true;
   }
@@ -1679,79 +1762,55 @@ function showEssencePaymentModal(opts) {
     essenceWrap.style.display = 'flex';
     essenceWrap.style.flexWrap = 'wrap';
     essenceWrap.style.gap = '5px';
-    const ESSENCE_TYPES = ['green','red','blue','white','black','yellow','purple','orange'];
-    ESSENCE_TYPES.forEach(type => {
+    for (const type in ESSENCE_IMAGE_MAP) {
       let amt = (sourceCard.essence && sourceCard.essence[type]) || 0;
       for (let i = 0; i < amt; i++) {
         const icon = document.createElement('img');
-        icon.src = `OtherIcons/Essence/${type}.png`;
+        icon.src = ESSENCE_IMAGE_MAP[type];
         icon.className = 'essence-img';
         icon.style.width = '22px';
         icon.style.borderRadius = '50%';
-        icon.style.cursor = 'pointer';
+        icon.style.cursor = "pointer";
         icon.style.border = '2px solid #aaa';
         icon.style.background = '#222';
         icon.style.margin = '1px';
         icon.title = type.charAt(0).toUpperCase()+type.slice(1) + " Essence (click to select)";
 
-        // Track selection
         let assigned = false;
         icon.onclick = function() {
-          // Only allow if requirement for that color or colorless is not full
-          let targetColor = type;
-          let paidForThisType = reqPaid[type] < (opts.cost[type]||0);
-          let paidForColorless = (opts.cost.colorless && reqPaid.colorless < opts.cost.colorless);
-          if (!paidForThisType && !paidForColorless) return;
+          // Only assign if there is a remaining unpaid requirement of this type or colorless
+          // Priority: assign to color-specific if needed, else colorless
+          let assignColor = null;
+          if ((reqPaid[type] || 0) < (opts.cost[type] || 0)) {
+            assignColor = type;
+          } else if (type !== "colorless" && (opts.cost.colorless && (reqPaid.colorless || 0) < opts.cost.colorless)) {
+            assignColor = "colorless";
+          }
+          if (!assignColor || assigned) return;
 
-          // Assign to color-specific if still needed, else to colorless
-          let assignToColor = paidForThisType ? type : 'colorless';
-
-          // Don't double assign this icon
-          if (assigned) return;
-
-          // Mark as assigned
-          assigned = true;
-          reqPaid[assignToColor]++;
+          reqPaid[assignColor]++;
           paymentPlan.push({cardObj: sourceCard, color: type, essenceIdx: i});
-
+          assigned = true;
           icon.style.opacity = '0.4';
           icon.style.border = '2.5px solid #ffe066';
 
-          // Update requirement display
-          updateReqDiv();
-
-          // Enable confirm if done
+          updateReqDiv(requirements, reqPaid, reqDiv);
           updateConfirmBtn();
         };
         selectableEssenceUnits.push({icon, cardObj: sourceCard, color: type, idx: i, assigned: ()=>assigned});
         essenceWrap.appendChild(icon);
       }
-    });
+    }
     cardDiv.appendChild(essenceWrap);
-
     sourcesDiv.appendChild(cardDiv);
   });
   content.appendChild(sourcesDiv);
-  // Requirement "progress" update
-  function updateReqDiv() {
-    reqDiv.innerHTML = `<b>Essence Required:</b> ${
-      requirements.map(r => {
-        let filled = reqPaid[r.color];
-        let total = r.needed;
-        let color = filled === total ? "#9ee68f" : "#ffe066";
-        return `<span style="margin-right:8px;">
-          <img src="OtherIcons/Essence/${r.color}.png" style="width:22px;vertical-align:middle;filter:${filled===total?"grayscale(0)":"grayscale(0.5)"}">
-          <span style="color:${color};font-weight:bold;">${filled}/${total}</span>
-        </span>`;
-      }).join('')
-    }`;
-  }
 
   // Confirm button
   const confirmBtn = document.createElement('button');
   confirmBtn.type = 'button';
   confirmBtn.className = 'btn-primary';
-  confirmBtn.textContent = 'Confirm';
+  confirmBtn.textContent = 'Confirm Payment';
   confirmBtn.disabled = true;
   confirmBtn.style.marginTop = '12px';
   confirmBtn.onclick = function() {
@@ -1761,9 +1820,6 @@ function showEssencePaymentModal(opts) {
       if (!pay.cardObj.essence[pay.color] || pay.cardObj.essence[pay.color] <= 0) continue;
       pay.cardObj.essence[pay.color]--;
     }
-    // Optional: increment global stats here
-    // e.g. gameState.essenceSpent = (gameState.essenceSpent||0) + paymentPlan.length;
-
     modal.style.display = 'none';
     if (opts.onPaid) opts.onPaid(paymentPlan);
   };
@@ -1777,14 +1833,34 @@ function showEssencePaymentModal(opts) {
   const cancelBtn = document.createElement('button');
   cancelBtn.type = 'button';
   cancelBtn.textContent = 'Cancel';
-  cancelBtn.className = 'btn-secondary';
+  cancelBtn.className = 'btn-negative-secondary';
   cancelBtn.style.marginLeft = '8px';
   cancelBtn.onclick = function() {
     modal.style.display = 'none';
   };
   content.appendChild(cancelBtn);
-
-  updateReqDiv();
+}
+  // Requirement "progress" update
+function updateReqDiv(requirements, reqPaid, reqDiv) {
+  // requirements: array of {color, needed, paid}
+  // reqPaid: {color: number}
+  reqDiv.innerHTML = `<b>Essence Required:</b> ${
+    requirements.map(r => {
+      const imgSrc = ESSENCE_IMAGE_MAP[r.color] || ESSENCE_IMAGE_MAP.colorless;
+      // For each required essence, display one icon per required unit
+      let icons = "";
+      for (let i = 0; i < r.needed; i++) {
+        // If this unit is paid, show full color, else gray
+        const isPaid = i < (reqPaid[r.color] || 0);
+        icons += `<img src="${imgSrc}" 
+          style="width:24px;height:24px;vertical-align:middle;margin-right:2px;
+          filter:${isPaid ? "none" : "grayscale(0.7) brightness(1.1)"};
+          opacity:${isPaid ? "1" : "0.7"};
+          transition:filter 0.2s,opacity 0.2s;">`;
+      }
+      return `<span style="margin-right:12px;display:inline-flex;align-items:center;">${icons}</span>`;
+    }).join('')
+  }`;
 }
   
 function getAllEssenceSources() {
