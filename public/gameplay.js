@@ -42,6 +42,11 @@ const PHASES = [
   turn: "player",
   phase: "draw"
 };
+let attackMode = {
+  attackerId: null,
+  attackerZone: null,
+  cancelHandler: null
+};
 const DEFAULT_CPU_DECKS = [
   {
     id: 'green',
@@ -967,6 +972,14 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
       }
     },
     {
+      text: "Attack",
+      onClick: function(e) {
+        e.stopPropagation();
+        startAttackTargeting(instanceId, zoneId, cardDiv);
+        this.closest('.card-menu').remove();
+      }
+    },
+    {
       text: "Return to Hand",
       onClick: function(e) {
         e.stopPropagation();
@@ -1185,6 +1198,9 @@ function updatePhase() {
     phaseNameSpan.className = PHASE_CLASS[gameState.phase];
     phaseNameSpan.textContent = PHASE_DISPLAY_NAMES[gameState.phase] || gameState.phase;
   }
+  if (gameState.turn === "opponent") {
+  setTimeout(runCpuTurn, 500);
+}
 }
 // Phase control events
 nextPhaseBtn.onclick = () => {
@@ -1290,6 +1306,27 @@ function findCardDivInZone(zoneId, instanceId) {
     return div.dataset.instanceId === instanceId;
   });
 }
+// ==== CPU Automation ====
+function runCpuTurn() {
+  if (gameState.turn !== "opponent") return;
+  switch (gameState.phase) {
+    case "draw":
+      drawCards("opponent", 1);
+      setTimeout(nextPhaseBtn.click, 800);
+      break;
+    case "essence":
+      // Add CPU logic for playing Essence cards here
+      setTimeout(nextPhaseBtn.click, 800);
+      break;
+    case "action":
+      // Add CPU logic for playing creatures, attacking, etc here
+      setTimeout(nextPhaseBtn.click, 1200);
+      break;
+    case "end":
+      setTimeout(nextPhaseBtn.click, 800);
+      break;
+  }
+}
 // --- Universal move function with optional animation ---
 async function moveCardUniversal({
   instanceId,
@@ -1354,6 +1391,65 @@ function animateCardMove(cardDiv, destinationDiv, callback) {
     animCard.remove();
     if (callback) callback();
   });
+}
+
+// AUTOMATIZATION
+function startAttackTargeting(attackerId, attackerZone, cardDiv) {
+  attackMode.attackerId = attackerId;
+  attackMode.attackerZone = attackerZone;
+
+  // 1. Highlight all valid targets (e.g., opponent creatures)
+  const targets = gameState.opponentCreatures;
+  targets.forEach(cardObj => {
+    const targetDiv = findCardDivInZone('opponent-creatures-zone', cardObj.instanceId);
+    if (targetDiv) {
+      targetDiv.classList.add('attack-target-highlight');
+      targetDiv.onclick = function(e) {
+        e.stopPropagation();
+        resolveAttack(attackerId, cardObj.instanceId);
+        endAttackTargeting();
+      };
+    }
+  });
+
+  // 2. Add a cancel handler (clicking elsewhere cancels)
+  attackMode.cancelHandler = function(e) {
+    endAttackTargeting();
+  };
+  setTimeout(() => document.body.addEventListener('click', attackMode.cancelHandler, { once: true }), 10);
+}
+function endAttackTargeting() {
+  // Remove highlights and listeners
+  gameState.opponentCreatures.forEach(cardObj => {
+    const targetDiv = findCardDivInZone('opponent-creatures-zone', cardObj.instanceId);
+    if (targetDiv) {
+      targetDiv.classList.remove('attack-target-highlight');
+      targetDiv.onclick = null; // Remove attack targeting handler
+    }
+  });
+  if (attackMode.cancelHandler) {
+    document.body.removeEventListener('click', attackMode.cancelHandler);
+    attackMode.cancelHandler = null;
+  }
+  attackMode.attackerId = null;
+  attackMode.attackerZone = null;
+}
+function resolveAttack(attackerId, targetId) {
+  // Find attacker and target card objects
+  const attacker = gameState.playerCreatures.find(c => c.instanceId === attackerId);
+  const target = gameState.opponentCreatures.find(c => c.instanceId === targetId);
+  if (!attacker || !target) return;
+
+  // Simple damage logic: both deal damage to each other equal to their attack (expand as needed)
+  target.currentHP = (target.currentHP || getBaseHp(target.cardId)) - (attacker.attack || 1);
+  attacker.currentHP = (attacker.currentHP || getBaseHp(attacker.cardId)) - (target.attack || 1);
+
+  // If anyone dies, move to void
+  if (target.currentHP <= 0) moveCard(target.instanceId, gameState.opponentCreatures, gameState.opponentVoid);
+  if (attacker.currentHP <= 0) moveCard(attacker.instanceId, gameState.playerCreatures, gameState.playerVoid);
+
+  renderGameState();
+  setupDropZones();
 }
 // Make available globally if called from client.js:
 window.setupBattlefieldGame = setupBattlefieldGame;
