@@ -2233,7 +2233,7 @@ button {
   transform: scale(1.07);
   box-shadow: 0 8px 32px #50eaffcc, 0 0 0 5px #ffe066cc;
   border-color: #ffe066;
-  z-index: 2;
+  z-index: 5000;
   filter: brightness(1.1) saturate(1.13);
 }
 .shop-pack-option {
@@ -2800,7 +2800,12 @@ button {
   object-fit: cover;
   border-radius: 10px 10px 0 0;
   cursor: pointer;
+  transition: box-shadow 0.2s, transform 0.2s;
   border: 2px solid #393e69;
+}
+#profile-banner:hover {
+  box-shadow: 0 0 0 4px #ffe06699, 0 2px 12px #0006;
+  transform: scale(1.03);
 }
 #profile-banner-modal .modal-content {
   display: flex;
