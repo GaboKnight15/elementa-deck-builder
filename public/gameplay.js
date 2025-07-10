@@ -1380,8 +1380,13 @@ function getCurrentPhaseIndex() {
 function updatePhase() {
   const phaseBadge = document.getElementById('phase-badge');
   const phaseNameSpan = document.getElementById('phase-name');
+  const nextPhaseBtn = document.getElementById('next-phase-btn');
   phaseBadge.classList.remove('opponent-turn', 'player-turn');
   phaseBadge.classList.add(gameState.turn === 'opponent' ? 'opponent-turn' : 'player-turn');
+  // Display the current phase on the button
+  if (nextPhaseBtn) {
+    nextPhaseBtn.textContent = PHASE_DISPLAY_NAMES[gameState.phase] || gameState.phase;
+  }  
   if (phaseNameSpan) {
     phaseNameSpan.className = PHASE_CLASS[gameState.phase];
     phaseNameSpan.textContent = PHASE_DISPLAY_NAMES[gameState.phase] || gameState.phase;
@@ -1407,7 +1412,6 @@ nextPhaseBtn.onclick = () => {
   renderGameState && renderGameState();
   setupDropZones();
 };
-phaseBadge.onclick = function() { nextPhaseBtn.click(); };
 
 // MULTIPLAYER START
 function emitGameAction(action) {
