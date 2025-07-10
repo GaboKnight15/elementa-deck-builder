@@ -99,7 +99,6 @@ auth.onAuthStateChanged(function(user) {
       // Only now, render UI
       renderPlayerLevel();
       renderGallery();
-      refreshDeckSlotSelect();
       updateDeckDisplay();
       renderBuilder();
       updateCurrencyDisplay();
@@ -147,7 +146,6 @@ auth.onAuthStateChanged(function(user) {
     window.playerUnlockedCardbacks = [];
     renderPlayerLevel();
     renderGallery();
-    refreshDeckSlotSelect();
     updateDeckDisplay();
     renderBuilder();
     updateCurrencyDisplay();
