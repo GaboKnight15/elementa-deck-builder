@@ -29,7 +29,7 @@ const ACHIEVEMENT_COLORS = [
   { color: 'white',  image: 'CardImages/Blank/WhiteCard.png' },
 ];
 const ACHIEVEMENTS = [
-  generateColorAchievements(),
+  ...generateColorAchievements(),
   // ...add more colors as needed
   {
   id: 'collect_20_unique_cards',
@@ -167,7 +167,7 @@ function renderQuests() {
   getActiveQuests(function(quests) {
     const displayedQuests = (quests || []).slice(0, QUEST_SLOTS);
     for (let i = 0; i < QUEST_SLOTS; i++) {
-      const quest = quests[i];
+      const quest = displayedQuests[i];
       if (!quest) {
         const entry = document.createElement('div');
         entry.className = 'quest-entry empty-quest-slot';
