@@ -13,71 +13,23 @@ const QUEST_POOL = [
   { id: 'collect_white_card', type: 'quest', description: 'Collect a White Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'CardImages/Blank/WhiteCard.png', progress: 0, claimed: false, completed: false, refillAt: null},
   { questId: null, refillAt: 1720000000000 },
 ];
+const ACHIEVEMENT_COLOR_TIERS = [
+  { tier: 1, goal: 10,  description: "Collect 10 {color} cards", reward: 100 },
+  { tier: 2, goal: 100, description: "Collect 100 {color} cards", reward: 300 },
+  { tier: 3, goal: 500, description: "Collect 500 {color} cards", reward: 1000 }
+];
+const ACHIEVEMENT_COLORS = [
+  { color: 'green',  image: 'CardImages/Blank/GreenCard.png' },
+  { color: 'red',    image: 'CardImages/Blank/RedCard.png' },
+  { color: 'blue',   image: 'CardImages/Blank/BlueCard.png' },
+  { color: 'yellow', image: 'CardImages/Blank/YellowCard.png' },
+  { color: 'purple', image: 'CardImages/Blank/PurpleCard.png' },
+  { color: 'gray',   image: 'CardImages/Blank/GrayCard.png' },
+  { color: 'black',  image: 'CardImages/Blank/BlackCard.png' },
+  { color: 'white',  image: 'CardImages/Blank/WhiteCard.png' },
+];
 const ACHIEVEMENTS = [
-  {
-    id: 'collect_10_green_cards',
-    description: 'Collect 3 green cards',
-    goal: 10,
-    color: 'green',
-    reward: { type: 'currency', amount: 200 },
-    image: 'CardImages/Blank/GreenCard.png'
-  },
-  {
-    id: 'collect_10_red_cards',
-    description: 'Collect 3 red cards',
-    goal: 10,
-    color: 'red',
-    reward: { type: 'currency', amount: 200 },
-    image: 'CardImages/Blank/RedCard.png'
-  },
-  {
-    id: 'collect_10_blue_cards',
-    description: 'Collect 3 blue cards',
-    goal: 10,
-    color: 'blue',
-    reward: { type: 'currency', amount: 200 },
-    image: 'CardImages/Blank/BlueCard.png'
-  },
-  {
-    id: 'collect_10_yellow_cards',
-    description: 'Collect 3 yellow cards',
-    goal: 10,
-    color: 'yellow',
-    reward: { type: 'currency', amount: 200 },
-    image: 'CardImages/Blank/YellowCard.png'
-  },
-  {
-    id: 'collect_10_purple_cards',
-    description: 'Collect 3 purple cards',
-    goal: 10,
-    color: 'purple',
-    reward: { type: 'currency', amount: 200 },
-    image: 'CardImages/Blank/PurpleCard.png'
-  },
-  {
-    id: 'collect_10_gray_cards',
-    description: 'Collect 3 gray cards',
-    goal: 10,
-    color: 'gray',
-    reward: { type: 'currency', amount: 200 },
-    image: 'CardImages/Blank/GrayCard.png'
-  },
-  {
-    id: 'collect_10_black_cards',
-    description: 'Collect 3 black cards',
-    goal: 10,
-    color: 'black',
-    reward: { type: 'currency', amount: 200 },
-    image: 'CardImages/Blank/BlackCard.png'
-  },
-  {
-    id: 'collect_3_white_cards',
-    description: 'Collect 10 white cards',
-    goal: 10,
-    color: 'white',
-    reward: { type: 'currency', amount: 200 },
-    image: 'CardImages/Blank/WhiteCard.png'
-  },
+  generateColorAchievements(),
   // ...add more colors as needed
   {
   id: 'collect_20_unique_cards',
@@ -322,6 +274,24 @@ function getTodayUtcDateString() {
   const now = new Date();
   return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()))
     .toISOString().split("T")[0];
+}
+// ACHIVEMENTS LOGIC
+function generateColorAchievements() {
+  const achievements = [];
+  for (const colorObj of ACHIEVEMENT_COLORS) {
+    for (const tier of ACHIEVEMENT_COLOR_TIERS) {
+      achievements.push({
+        id: `collect_${tier.goal}_${colorObj.color}_cards`,
+        description: tier.description.replace('{color}', colorObj.color.charAt(0).toUpperCase() + colorObj.color.slice(1)),
+        goal: tier.goal,
+        color: colorObj.color,
+        reward: { type: 'currency', amount: tier.reward },
+        image: colorObj.image,
+        tier: tier.tier
+      });
+    }
+  }
+  return achievements;
 }
 function getAchievementProgress(ach) {
   let data = getAchievementData();
