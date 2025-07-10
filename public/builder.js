@@ -17,7 +17,6 @@ const deckTitle         = document.getElementById('deck-title');
 const deckList          = document.getElementById('deck-list');
 const cardCount         = document.getElementById('card-count');
 const deckPanel         = document.getElementById('deck-panel');
-const deckSlotSelect    = document.getElementById('deckSlotSelect');
 
 // NEW DECK HANDLER OPTIONS
 const deckMenuModal = document.getElementById('deck-menu-modal');
@@ -67,7 +66,6 @@ function showDeckBuilder() {
   deckBuilderUI.style.display = '';
   builderContainer.style.display = '';
   deckPanel.style.display = '';
-  refreshDeckSlotSelect();
   updateDeckDisplay();
   renderBuilder();
 }
@@ -391,17 +389,6 @@ function setCurrentDeck(deckObj) {
     decks[currentDeckSlot] = deckObj;
     saveProgress();
   }
-function refreshDeckSlotSelect() {
-    deckSlotSelect.innerHTML = "";
-    deckSlots.forEach(slot => {
-      const opt = document.createElement('option');
-      opt.value = slot;
-      opt.textContent = slot;
-      deckSlotSelect.appendChild(opt);
-    });
-    deckSlotSelect.value = currentDeckSlot;
-    deckTitle.textContent = currentDeckSlot;
-  }
 // ==========================
 // === RENDERING CARDS ===
 // ==========================
@@ -647,14 +634,6 @@ function renderBuilder() {
 // === EVENT LISTENERS ===
 // ==========================
 
-// Deck slot events
-  deckSlotSelect.addEventListener('change', () => {
-    currentDeckSlot = deckSlotSelect.value;
-    saveProgress();
-    updateDeckDisplay();
-    renderBuilder();
-  });
-
 // FILTER COLOR EVENTS
   document.getElementById('filter-color-builder').addEventListener('change', (e) => {
     const color = e.target.value.toLowerCase();
@@ -689,8 +668,6 @@ backBuilderBtn.onclick = showDeckSelection;
 // ==========================
 // === INITIALIZATION ===
 // ==========================
-
-window.refreshDeckSlotSelect = refreshDeckSlotSelect;
 window.updateDeckDisplay = updateDeckDisplay;
 window.renderBuilder = renderBuilder;
 window.buildDeck = buildDeck;
