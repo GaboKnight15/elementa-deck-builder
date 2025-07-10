@@ -1444,7 +1444,7 @@ button {
   margin: 0 auto;
   background: #1a2533;    
 }
-.battlefield-side {
+#battlefield-opponent-bg, #battlefield-player-bg {
   position: relative;
   width: 100%;
   min-height: 180px;
