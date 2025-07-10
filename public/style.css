@@ -1462,7 +1462,9 @@ button {
   transition: background-image 0.3s, background-color 0.3s;
 }
 #battlefield-opponent-bg > .zone-row,
-#battlefield-player-bg > .hand-area {
+#battlefield-player-bg > .zone-row,
+#battlefield-player-bg > .hand-area,
+#battlefield-opponent-bg > .hand-area {
   background: rgba(30, 38, 56, 0.5);
 }
 
