@@ -56,6 +56,7 @@ const DEFAULT_CPU_DECKS = [
     name: 'Verdant Might',
     color: 'green',
     image: 'CardImages/BasicCreatures/Goblin.png',
+    bannerArt: 'CardImages/Banners/ForestBanner.png',
     cards: [
       { id: 'basicfairy', amount: 4 },
       { id: 'basicgoblin', amount: 3 },
@@ -65,9 +66,10 @@ const DEFAULT_CPU_DECKS = [
   },
   {
     id: 'red',
-    name: 'Cinder Storm',
+    name: 'Ember  Tyranny',
     color: 'red',
     image: 'CardImages/BasicCreatures/Emberling.png',
+    bannerArt: 'CardImages/Banners/VolcanoBanner.png',
     cards: [
       { id: 'basicemberling', amount: 4 },
       { id: 'basicfirepixie', amount: 3 },
@@ -76,6 +78,90 @@ const DEFAULT_CPU_DECKS = [
       // ... etc
     ]
   },
+    {
+    id: 'blue',
+    name: 'Tidebound Will',
+    color: 'blue',
+    image: 'CardImages/BasicCreatures/WaterElemental.png',
+    bannerArt: 'CardImages/Banners/OceanBanner.png',
+    cards: [
+      { id: 'basicemberling', amount: 4 },
+      { id: 'basicfirepixie', amount: 3 },
+      { id: 'basichellcharger', amount: 2 },
+      { id: 'basicocean', amount: 4 },
+      // ... etc
+    ]
+  },
+  {
+    id: 'yellow',
+    name: 'Surgecallers Rite',
+    color: 'yellow',
+    image: 'CardImages/BasicCreatures/Emberling.png',
+    bannerArt: 'CardImages/Banners/PeaksBanner.png',
+    cards: [
+      { id: 'basicemberling', amount: 4 },
+      { id: 'basicfirepixie', amount: 3 },
+      { id: 'basichellcharger', amount: 2 },
+      { id: 'basicpeaks', amount: 4 },
+      // ... etc
+    ]
+  },
+  {
+    id: 'purple',
+    name: 'Venom Bloom',
+    color: 'purple',
+    image: 'CardImages/BasicCreatures/Emberling.png',
+    bannerArt: 'CardImages/Banners/SwampBanner.png',
+    cards: [
+      { id: 'basicemberling', amount: 4 },
+      { id: 'basicfirepixie', amount: 3 },
+      { id: 'basichellcharger', amount: 2 },
+      { id: 'basicswamp', amount: 4 },
+      // ... etc
+    ]
+  },
+  {
+    id: 'gray',
+    name: 'Ironroot Vow',
+    color: 'gray',
+    image: 'CardImages/BasicCreatures/Emberling.png',
+    bannerArt: 'CardImages/Banners/MountainBanner.png',
+    cards: [
+      { id: 'basicemberling', amount: 4 },
+      { id: 'basicfirepixie', amount: 3 },
+      { id: 'basicdesertwolf', amount: 2 },
+      { id: 'basicmountain', amount: 4 },
+      // ... etc
+    ]
+  },
+  {
+    id: 'black',
+    name: 'Shadowy Descent',
+    color: 'black',
+    image: 'CardImages/BasicCreatures/Emberling.png',
+    bannerArt: 'CardImages/Banners/ShadowForestBanner.png',
+    cards: [
+      { id: 'basicemberling', amount: 4 },
+      { id: 'basicfirepixie', amount: 3 },
+      { id: 'basichellcharger', amount: 2 },
+      { id: 'basicshadowforest', amount: 4 },
+      // ... etc
+    ]
+  },
+  {
+    id: 'white',
+    name: 'Radiant Oath',
+    color: 'white',
+    image: 'CardImages/BasicCreatures/Emberling.png',
+    bannerArt: 'CardImages/Banners/ShadowPlains.png',
+    cards: [
+      { id: 'basicemberling', amount: 4 },
+      { id: 'basicfirepixie', amount: 3 },
+      { id: 'basichellcharger', amount: 2 },
+      { id: 'basicplains', amount: 4 },
+      // ... etc
+    ]
+  },  
   // ...repeat for other colors
 ];
 const ESSENCE_IMAGE_MAP = {
