@@ -15,20 +15,68 @@ const QUEST_POOL = [
 ];
 const ACHIEVEMENTS = [
   {
-    id: 'collect_3_green_cards',
+    id: 'collect_10_green_cards',
     description: 'Collect 3 green cards',
-    goal: 3,
+    goal: 10,
     color: 'green',
     reward: { type: 'currency', amount: 200 },
-    image: 'images/achievements/green_cards.png'
+    image: 'CardImages/Blank/GreenCard.png'
   },
   {
-    id: 'collect_3_red_cards',
+    id: 'collect_10_red_cards',
     description: 'Collect 3 red cards',
-    goal: 3,
+    goal: 10,
     color: 'red',
     reward: { type: 'currency', amount: 200 },
-    image: 'images/achievements/green_cards.png'
+    image: 'CardImages/Blank/RedCard.png'
+  },
+  {
+    id: 'collect_10_blue_cards',
+    description: 'Collect 3 blue cards',
+    goal: 10,
+    color: 'blue',
+    reward: { type: 'currency', amount: 200 },
+    image: 'CardImages/Blank/BlueCard.png'
+  },
+  {
+    id: 'collect_10_yellow_cards',
+    description: 'Collect 3 yellow cards',
+    goal: 10,
+    color: 'yellow',
+    reward: { type: 'currency', amount: 200 },
+    image: 'CardImages/Blank/YellowCard.png'
+  },
+  {
+    id: 'collect_10_purple_cards',
+    description: 'Collect 3 purple cards',
+    goal: 10,
+    color: 'purple',
+    reward: { type: 'currency', amount: 200 },
+    image: 'CardImages/Blank/PurpleCard.png'
+  },
+  {
+    id: 'collect_10_gray_cards',
+    description: 'Collect 3 gray cards',
+    goal: 10,
+    color: 'gray',
+    reward: { type: 'currency', amount: 200 },
+    image: 'CardImages/Blank/GrayCard.png'
+  },
+  {
+    id: 'collect_10_black_cards',
+    description: 'Collect 3 black cards',
+    goal: 10,
+    color: 'black',
+    reward: { type: 'currency', amount: 200 },
+    image: 'CardImages/Blank/BlackCard.png'
+  },
+  {
+    id: 'collect_3_white_cards',
+    description: 'Collect 10 white cards',
+    goal: 10,
+    color: 'white',
+    reward: { type: 'currency', amount: 200 },
+    image: 'CardImages/Blank/WhiteCard.png'
   },
   // ...add more colors as needed
   {
