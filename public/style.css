@@ -1461,14 +1461,11 @@ button {
   margin-top: 8px;
   transition: background-image 0.3s, background-color 0.3s;
 }
-
-.battlefield-opponent {
-  /* Optional: different styling or mirroring for opponent */
+#battlefield-opponent-bg > .zone-row,
+#battlefield-player-bg > .hand-area {
+  background: rgba(30, 38, 56, 0.5);
 }
 
-.battlefield-player {
-  /* Optional: styling for player side */
-}
 #battlefield-leftbar {
   width: 100%;
   margin-bottom: 18px;
