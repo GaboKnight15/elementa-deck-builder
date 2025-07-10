@@ -892,6 +892,16 @@ button {
   align-items: center;
   gap: 6px;
 }
+#builder-container {
+  /* Ensure it takes up the full viewport or parent height */
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;  /* center horizontally */
+  align-items: center;      /* center vertically */
+  /* Optional: remove padding/margin if added elsewhere */
+  padding: 0;
+  margin: 0;
+}
 /* STATS AND DETAILS IN CARD GALLERY  */
 
 
