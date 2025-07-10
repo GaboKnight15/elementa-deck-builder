@@ -82,7 +82,7 @@ const DEFAULT_CPU_DECKS = [
     id: 'blue',
     name: 'Tidebound Will',
     color: 'blue',
-    image: 'CardImages/BasicCreatures/Water Elemental.png',
+    image: 'CardImages/BasicCreatures/WaterElemental.png',
     bannerArt: 'CardImages/Banners/OceanBanner.png',
     cards: [
       { id: 'basicemberling', amount: 4 },
@@ -124,7 +124,7 @@ const DEFAULT_CPU_DECKS = [
     id: 'gray',
     name: 'Ironroot Vow',
     color: 'gray',
-    image: 'CardImages/BasicCreatures/Golemites.png',
+    image: 'CardImages/BasicCreatures/Emberling.png',
     bannerArt: 'CardImages/Banners/MountainBanner.png',
     cards: [
       { id: 'basicemberling', amount: 4 },
@@ -457,26 +457,7 @@ function setBattlefieldBannerBackground(player, bannerUrl) {
   const el = document.getElementById(
     player === "player" ? "battlefield-player-bg" : "battlefield-opponent-bg"
   );
-  if (!el) return;
-
-  // Try to load the image (only for non-default banners)
-  if (bannerUrl !== "CardImages/Banners/DefaultBanner.png") {
-    const img = new window.Image();
-    img.onload = function() {
-      el.style.backgroundImage = `url('${bannerUrl}')`;
-      el.style.backgroundSize = "cover";
-      el.style.backgroundPosition = "center";
-      el.style.backgroundRepeat = "no-repeat";
-    };
-    img.onerror = function() {
-      // fallback
-      el.style.backgroundImage = "url('CardImages/Banners/DefaultBanner.png')";
-      el.style.backgroundSize = "cover";
-      el.style.backgroundPosition = "center";
-      el.style.backgroundRepeat = "no-repeat";
-    };
-    img.src = bannerUrl;
-  } else {
+  if (el && bannerUrl) {
     el.style.backgroundImage = `url('${bannerUrl}')`;
     el.style.backgroundSize = "cover";
     el.style.backgroundPosition = "center";
