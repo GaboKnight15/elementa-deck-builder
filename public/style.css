@@ -1590,10 +1590,7 @@ button {
   color: #667;
   opacity: 0.8;
 }
-.battlefield-side > .zone-row,
-.battlefield-side > .hand-area {
-  background: rgba(30, 38, 56, 0.5);
-}
+
 .zone-row {
   background: linear-gradient(120deg, #212d3e 90%, #1a2533 100%);
   border-radius: 14px;
