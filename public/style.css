@@ -1231,6 +1231,7 @@ button {
 .deck-slot-tile:hover {
   box-shadow: 0 6px 32px #3458e6aa;
   background: #314175;
+  z-index: 5000;
 }
 .highlight-art-choice {
   width: 96px;
