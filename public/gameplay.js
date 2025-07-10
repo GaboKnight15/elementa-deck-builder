@@ -1137,29 +1137,72 @@ function consumeEssence(cardObj, type, amount) {
 // Actions in zones
 var currentCardMenuState = null;
 
+function showSetHpModal(cardObj, onSet) {
+  // Remove any existing HP modal
+  let modal = document.getElementById('set-hp-modal');
+  if (modal) modal.remove();
+
+  modal = document.createElement('div');
+  modal.id = 'set-hp-modal';
+  modal.className = 'modal';
+  modal.style.display = 'flex';
+  modal.style.alignItems = 'center';
+  modal.style.justifyContent = 'center';
+  modal.onclick = function(e) { if (e.target === modal) modal.remove(); };
+
+  const content = document.createElement('div');
+  content.className = 'modal-content';
+  content.onclick = e => e.stopPropagation();
+
+  content.innerHTML = `
+    <h3>Set HP</h3>
+    <div style="margin-bottom:10px;">
+      <input id="set-hp-input" type="number" min="0" max="99" value="${cardObj.currentHP || 0}" style="width:60px;padding:6px 10px;font-size:1.15em;border-radius:7px;">
+    </div>
+    <button id="set-hp-confirm" class="btn-primary" style="margin-right:8px;">Set</button>
+    <button id="set-hp-cancel" class="btn-negative-secondary">Cancel</button>
+  `;
+
+  modal.appendChild(content);
+  document.body.appendChild(modal);
+
+  document.getElementById('set-hp-confirm').onclick = function() {
+    const val = parseInt(document.getElementById('set-hp-input').value, 10);
+    if (!isNaN(val) && val >= 0 && val <= 99) {
+      modal.remove();
+      onSet(val);
+    } else {
+      document.getElementById('set-hp-input').style.border = "2px solid #e25555";
+    }
+  };
+  document.getElementById('set-hp-cancel').onclick = () => modal.remove();
+
+  document.getElementById('set-hp-input').focus();
+}
+
 function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
   closeAllMenus();
   currentCardMenuState = { instanceId, zoneId, orientation };
   // Define menu options
   const buttons = [
-    {
-      text: "Set HP",
-      onClick: function(e) {
-        e.stopPropagation();
-        let arr = getZoneArray(zoneId);
-        if (arr) {
-          let cardObj = arr.find(card => card.instanceId === instanceId);
-          if (!cardObj) return;
-          let newHp = prompt("Set HP (1-99):", cardObj.currentHP);
-          let num = parseInt(newHp, 10);
-          if (!isNaN(num) && num > 0 && num <= 99) {
-            cardObj.currentHP = num;
-            renderGameState();
-          }
-        }
+{
+  text: "Set HP",
+  onClick: function(e) {
+    e.stopPropagation();
+    let arr = getZoneArray(zoneId);
+    if (arr) {
+      let cardObj = arr.find(card => card.instanceId === instanceId);
+      if (!cardObj) return;
+      showSetHpModal(cardObj, function(newHp) {
+        cardObj.currentHP = newHp;
+        renderGameState();
         closeAllMenus();
-      }
-    },
+      });
+    } else {
+      closeAllMenus();
+    }
+  }
+},
     {
       text: "Attack",
       onClick: function(e) {
