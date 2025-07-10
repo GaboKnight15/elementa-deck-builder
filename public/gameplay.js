@@ -190,6 +190,10 @@ function generateUniqueId() {
 }
 function startSoloGame() {
   // Build decks
+  const playerBanner = window.selectedPlayerDeck?.bannerArt || "CardImages/Banners/DefaultBanner.png";
+  const cpuBanner = window.selectedCpuDeck?.bannerArt || "CardImages/Banners/DefaultBanner.png";
+  setBattlefieldBannerBackground("player", playerBanner);
+  setBattlefieldBannerBackground("opponent", cpuBanner);
   const cpuDeckArray = buildCpuDeck(window.selectedCpuDeck);
   const playerDeckArray = window.buildDeck(window.selectedPlayerDeck.deckObj);
   
@@ -361,6 +365,33 @@ function getZoneNameForArray(arr) {
   if (arr === gameState.playerVoid) return 'playerVoid';
   if (arr === gameState.opponentVoid) return 'opponentVoid';
   return '';
+}
+// BATTLEFIELD BACKGROUNDS
+function setBattlefieldBannerBackground(player, bannerUrl) {
+  const el = document.getElementById(
+    player === "player" ? "battlefield-player-bg" : "battlefield-opponent-bg"
+  );
+  if (el && bannerUrl) {
+    el.style.backgroundImage = `url('${bannerUrl}')`;
+    el.style.backgroundSize = "cover";
+    el.style.backgroundPosition = "center";
+    el.style.backgroundRepeat = "no-repeat";
+  }
+}
+
+// Call this after both decks are chosen:
+function setupBattlefieldBanners() {
+  // Player's deck
+  const playerDeck = window.selectedPlayerDeck?.deckObj || getCurrentDeck();
+  if (playerDeck.bannerArt) {
+    setBattlefieldBannerBackground("player", playerDeck.bannerArt);
+  }
+
+  // Opponent's deck (multiplayer: use their deck, solo: use default or CPU deck banner)
+  const opponentDeck = window.selectedOpponentDeck?.deckObj || window.selectedCpuDeck || {};
+  if (opponentDeck.bannerArt) {
+    setBattlefieldBannerBackground("opponent", opponentDeck.bannerArt);
+  }
 }
 // CREATE CARD MENUS
 function createCardMenu(buttons = []) {
