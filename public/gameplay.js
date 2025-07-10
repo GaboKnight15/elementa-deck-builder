@@ -1591,8 +1591,8 @@ function animateCardMove(cardDiv, destinationDiv, callback) {
   });
 }
 
-// AUTOMATIZATION
-// INITIAL CARD SELECTION
+
+// START GAME
 function showGameStartAnimation(callback) {
   // Create overlay
   let overlay = document.createElement('div');
@@ -1629,6 +1629,58 @@ function showGameStartAnimation(callback) {
     }, 700); // match transition
   }, 1200); // show for 1.2 seconds
 }
+
+// END GAME ANIMATION
+function showEndGameAnimation(message, color = '#ffe066', callback = null) {
+  let overlay = document.createElement('div');
+  overlay.id = 'game-end-overlay';
+  overlay.style.position = 'fixed';
+  overlay.style.top = 0;
+  overlay.style.left = 0;
+  overlay.style.width = '100vw';
+  overlay.style.height = '100vh';
+  overlay.style.background = 'rgba(10,20,40,0.92)';
+  overlay.style.display = 'flex';
+  overlay.style.alignItems = 'center';
+  overlay.style.justifyContent = 'center';
+  overlay.style.zIndex = 99999;
+  overlay.style.transition = 'opacity 0.7s';
+
+  let text = document.createElement('div');
+  text.innerText = message;
+  text.style.color = color;
+  text.style.fontSize = '3.2em';
+  text.style.letterSpacing = '0.1em';
+  text.style.textShadow = '0 4px 16px #000a, 0 1px 0 #fff9';
+  text.style.fontWeight = 'bold';
+  text.style.opacity = '0.97';
+
+  overlay.appendChild(text);
+  document.body.appendChild(overlay);
+
+  setTimeout(() => {
+    overlay.style.opacity = 0;
+    setTimeout(() => {
+      overlay.remove();
+      if (callback) callback();
+    }, 1100); // slightly longer so player can see it
+  }, 1700); // show for 1.7 seconds
+}
+function checkEndGame() {
+  if (gameState.playerMainDomain && gameState.playerMainDomain.currentHP <= 0) {
+    showEndGameAnimation("Defeat", "#e25555");
+    // disable actions, offer rematch, etc.
+    return true;
+  }
+  if (gameState.opponentMainDomain && gameState.opponentMainDomain.currentHP <= 0) {
+    showEndGameAnimation("Victory", "#ffe066");
+    // disable actions, offer rematch, etc.
+    return true;
+  }
+  return false;
+}
+
+// MAIN DOMAIN SETUP LOGIC
 function extractMainDomainFromDeck(deckArr) {
   const idx = deckArr.findIndex(cardObj => {
     const card = dummyCards.find(c => c.id === cardObj.cardId);
@@ -1641,12 +1693,12 @@ function extractMainDomainFromDeck(deckArr) {
 }
 
 if (gameState.playerMainDomain && gameState.playerMainDomain.currentHP <= 0) {
-  alert("You lose! Your Main Domain was destroyed.");
-  // End game or restart logic here
+  showEndGameAnimation("Defeat", "#e25555");
+  // Optionally: disable further actions, or trigger a reset
 }
 if (gameState.opponentMainDomain && gameState.opponentMainDomain.currentHP <= 0) {
-  alert("You win! Opponent's Main Domain was destroyed.");
-  // End game or restart logic here
+  showEndGameAnimation("Victory", "#ffe066");
+  // Optionally: disable further actions, or trigger a reset
 }
 function showMainDomainSelectionModal(deckArr, onSelected) {
   closeAllModals();
