@@ -1444,31 +1444,6 @@ button {
   margin: 0 auto;
   background: #1a2533;    
 }
-.battlefield-side {
-  position: relative;
-  width: 100%;
-  min-height: 180px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  align-items: stretch;
-  /* Default background, can be overridden by JS */
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  border-radius: 18px;
-  margin-bottom: 8px;
-  margin-top: 8px;
-  transition: background-image 0.3s, background-color 0.3s;
-}
-
-.battlefield-opponent {
-  /* Optional: different styling or mirroring for opponent */
-}
-
-.battlefield-player {
-  /* Optional: styling for player side */
-}
 #battlefield-leftbar {
   width: 100%;
   margin-bottom: 18px;
