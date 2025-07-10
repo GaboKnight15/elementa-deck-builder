@@ -18,8 +18,6 @@ const deckList          = document.getElementById('deck-list');
 const cardCount         = document.getElementById('card-count');
 const deckPanel         = document.getElementById('deck-panel');
 const deckSlotSelect    = document.getElementById('deckSlotSelect');
-const addDeckSlotBtn    = document.getElementById('addDeckSlotBtn');
-const deleteDeckSlotBtn = document.getElementById('deleteDeckSlotBtn');
 
 // NEW DECK HANDLER OPTIONS
 const deckMenuModal = document.getElementById('deck-menu-modal');
@@ -155,8 +153,6 @@ function renderDeckSelection() {
     grid.appendChild(tile);
   }
 }
-
-builderBackBtn.onclick = showDeckSelection;
   
 function showDeckTileMenu(deckName) {
   deckMenuTitle.textContent = deckName;
@@ -658,39 +654,7 @@ function renderBuilder() {
     updateDeckDisplay();
     renderBuilder();
   });
-// ADD DECK SLOT 
-  addDeckSlotBtn.addEventListener('click', () => {
-    let newName = prompt("Deck name?", `Deck ${deckSlots.length + 1}`);
-    if (!newName) return;
-    if (deckSlots.includes(newName)) {
-      showToast("Deck name already exists!", {type:"error"});
-      return;
-    }
-    deckSlots.push(newName);
-    decks[newName] = {};
-    currentDeckSlot = newName;
-    saveProgress();
-    refreshDeckSlotSelect();
-    updateDeckDisplay();
-    renderBuilder();
-  });
 
-// DELETE DECK SLOT
-  deleteDeckSlotBtn.addEventListener('click', () => {
-    if (deckSlots.length === 1) {
-      showToast("You must have at least 1 deck!", {type:"error"});
-      return;
-    }
-    if (!confirm(`Delete "${currentDeckSlot}"? This cannot be undone.`)) return;
-    let idx = deckSlots.indexOf(currentDeckSlot);
-    deckSlots.splice(idx, 1);
-    delete decks[currentDeckSlot];
-    currentDeckSlot = deckSlots[Math.max(idx - 1, 0)];
-    saveProgress();
-    refreshDeckSlotSelect();
-    updateDeckDisplay();
-    renderBuilder();
-  });
 // FILTER COLOR EVENTS
   document.getElementById('filter-color-builder').addEventListener('change', (e) => {
     const color = e.target.value.toLowerCase();
