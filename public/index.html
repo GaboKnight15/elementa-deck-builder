@@ -242,30 +242,31 @@
   
                     <!-- BATTLEFIELD UI -->  
 <section id="gameplay-section" class="section">  
-  <div id="gameplay-container" class="section-container">
-    <div id="battlefield-bg-layer"></div>
+<div id="gameplay-container" class="section-container">
+  <div id="battlefield-bg-opponent" class="battlefield-bg-half"></div>
+  <div id="battlefield-bg-player" class="battlefield-bg-half"></div>
   <!-- BATTLEFIELD RIGHTBAR -->
-    <div id="battlefield-leftbar">
-      <div id="lobby-topbar" class="lobby-topbar" style="display:none;">
-        <button id="leave-btn" class="btn-negative">Leave</button>
-        <button id="new-match-btn" class="btn-secondary">New Match</button>
+  <div id="battlefield-leftbar">
+    <div id="lobby-topbar" class="lobby-topbar" style="display:none;">
+      <button id="leave-btn" class="btn-negative">Leave</button>
+      <button id="new-match-btn" class="btn-secondary">New Match</button>
     </div>
     <div id="opponent-profile" class="profile-panel" style="display:none;"></div>
     <!-- LOBBY UI -->
-      <div id="lobby-ui">
-        <button id="create-btn" class="btn-secondary">Create Game</button>
-        <input id="room-code-input" placeholder="Enter code to join...">
-        <button id="join-btn" class="btn-secondary">Join Game</button>
-        <div id="status"></div>
-      </div>
-      <!-- CHAT UI -->
-      <div id="chat-ui">
-        <div id="chat-log"></div>
-        <button id="send-chat-btn">Send</button>     
-        <input id="chat-input" placeholder="Type message...">
-      </div>
-      <div id="my-profile" class="profile-panel"></div>
+    <div id="lobby-ui">
+      <button id="create-btn" class="btn-secondary">Create Game</button>
+      <input id="room-code-input" placeholder="Enter code to join...">
+      <button id="join-btn" class="btn-secondary">Join Game</button>
+      <div id="status"></div>
     </div>
+      <!-- CHAT UI -->
+    <div id="chat-ui">
+      <div id="chat-log"></div>
+      <button id="send-chat-btn">Send</button>     
+      <input id="chat-input" placeholder="Type message...">
+    </div>
+    <div id="my-profile" class="profile-panel"></div>
+  </div>
   
 <div id="battlefield">
   <div id="battlefield-opponent-bg">
