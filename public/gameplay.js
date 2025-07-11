@@ -724,11 +724,17 @@ function appendDeckZone(parentDiv, deckArray, who) {
   deckZone.className = 'deck-zone';
   const deckCard = document.createElement('div');
   deckCard.className = 'card-deck';
-let deckCardback = "CardImages/Domains/placeholder.png";
-if (who === "opponent" && window.selectedCpuDeck && window.selectedCpuDeck.cardbackArt) {
+  let deckCardback = "CardImages/Domains/placeholder.png";
+  if (who === "opponent" && window.selectedCpuDeck && window.selectedCpuDeck.cardbackArt) {
   deckCardback = window.selectedCpuDeck.cardbackArt;
-}
-img.src = deckCardback;
+  }
+  const img = document.createElement('img');
+  img.src = deckCardback;
+  img.alt = (who === "player" ? "Your Deck" : "Opponent's Deck");
+  img.style.width = "56px";
+  img.style.display = "block";
+  img.style.margin = "0 auto";
+  deckCard.appendChild(img);
 
   const countDiv = document.createElement('div');
   countDiv.style.textAlign = 'center';
