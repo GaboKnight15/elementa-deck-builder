@@ -468,7 +468,12 @@ function setBattlefieldBannerBackground(player, bannerUrl) {
     player === "player" ? "battlefield-player-bg" : "battlefield-opponent-bg"
   );
   if (el && bannerUrl) {
-    el.style.backgroundImage = `url('${bannerUrl}')`;
+    if (player === "opponent") {
+      el.style.setProperty('--opponent-bg', `url('${bannerUrl}')`);
+      el.style.backgroundImage = 'none'; // Remove legacy, handled by CSS variable
+    } else {
+      el.style.backgroundImage = `url('${bannerUrl}')`;
+    }
     el.style.backgroundSize = "cover";
     el.style.backgroundPosition = "center";
     el.style.backgroundRepeat = "no-repeat";
