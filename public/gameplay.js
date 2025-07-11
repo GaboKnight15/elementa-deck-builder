@@ -1888,13 +1888,6 @@ function placeChampionOnField(championCardObj) {
   // Place on field (creatures array)
   gameState.playerCreatures.unshift(championCardObj);
 }
-// Then, in your game start:
-showChampionSelectionModal(gameState.playerDeck, function(chosenChampion) {
-  // Remove from deck, place on field
-  removeChampionFromDeck(gameState.playerDeck, chosenChampion.instanceId);
-  gameState.playerChampion = chosenChampion;
-  // Proceed to initial hand draw...
-});
 function initiateMainDomainAndChampionSelection(deckArr, afterSelection) {
   // Main Domain
   const mainDomains = deckArr.filter(cardObj => {
