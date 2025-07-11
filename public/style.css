@@ -2466,22 +2466,6 @@ button {
   align-items: start;
   box-sizing: border-box;
 }
-#shop-banners-grid img, #shop-cardbacks-grid img {
-  width: 156px;
-  height: 84px;
-  object-fit: cover;
-  border-radius: 16px;
-  box-shadow: 0 2px 10px #0002;
-  border: 2px solid #24304a;
-  background: #222c3b;
-  display: block;
-  margin-bottom: 6px;
-  transition: transform 0.12s;
-}
-#shop-banners-grid img:hover, #shop-cardbacks-grid img:hover {
-  transform: scale(1.04);
-  cursor: pointer;
-}
 .shop-banner-option {
   display: flex;
   flex-direction: column;
