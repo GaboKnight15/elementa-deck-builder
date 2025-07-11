@@ -5,20 +5,42 @@ const socketIo = require('socket.io');
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
+const rooms = {};
 
 app.use(express.static('public')); // Serve files from the "public" folder
 
 io.on('connection', (socket) => {
   console.log('A user connected:', socket.id);
 
-socket.on('join room', (roomId) => {
-  socket.join(roomId);
-  socket.roomId = roomId;
-  // Emit to both: everyone in the room (including the joining socket)
-  io.in(roomId).emit('opponent joined', socket.id);
-  console.log(`Socket ${socket.id} joined room ${roomId}`);
-});
+  socket.on('join room', (roomId) => {
+    socket.join(roomId);
+    socket.roomId = roomId;
+// Track players in the room
+    if (!rooms[roomId]) rooms[roomId] = { players: [], decks: {} };
+    if (!rooms[roomId].players.includes(socket.id)) rooms[roomId].players.push(socket.id);
+// Emit to both: everyone in the room (including the joining socket)
+    io.in(roomId).emit('opponent joined', socket.id);
+    console.log(`Socket ${socket.id} joined room ${roomId}`);
+  });
+// DECK SUBMITS
+  socket.on('submit deck', (roomId, deckObj) => {
+    if (!rooms[roomId]) rooms[roomId] = { players: [], decks: {} };
+    rooms[roomId].decks[socket.id] = deckObj;
 
+    // If both decks are submitted
+    if (
+      rooms[roomId].players.length === 2 &&
+      rooms[roomId].decks[rooms[roomId].players[0]] &&
+      rooms[roomId].decks[rooms[roomId].players[1]]
+    ) {
+      // Send opponent's deck to each player
+      const player1 = rooms[roomId].players[0];
+      const player2 = rooms[roomId].players[1];
+
+      io.to(player1).emit('opponent deck', rooms[roomId].decks[player2]);
+      io.to(player2).emit('opponent deck', rooms[roomId].decks[player1]);
+    }
+  });
   socket.on('game action', (roomId, action) => {
     socket.to(roomId).emit('game action', action);
   });
