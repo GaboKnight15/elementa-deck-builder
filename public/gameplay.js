@@ -463,16 +463,14 @@ function getZoneNameForArray(arr) {
   return '';
 }
 // BATTLEFIELD BACKGROUNDS
-function setBattlefieldBannerBackground(player, bannerUrl) {
-  const bgLayer = document.getElementById('battlefield-bg-layer');
-  if (bgLayer && bannerUrl) {
-    bgLayer.style.setProperty('--battlefield-bg', `url('${bannerUrl}')`);
-    // Flip for opponent, normal for player
-    if (player === "opponent") {
-      bgLayer.style.setProperty('--battlefield-bg-flip', 'scaleY(-1)');
-    } else {
-      bgLayer.style.setProperty('--battlefield-bg-flip', 'none');
-    }
+function setBattlefieldBannerBackgrounds(playerBannerUrl, opponentBannerUrl) {
+  const oppBg = document.getElementById('battlefield-bg-opponent');
+  const playerBg = document.getElementById('battlefield-bg-player');
+  if (oppBg && opponentBannerUrl) {
+    oppBg.style.backgroundImage = `url('${opponentBannerUrl}')`;
+  }
+  if (playerBg && playerBannerUrl) {
+    playerBg.style.backgroundImage = `url('${playerBannerUrl}')`;
   }
 }
 
