@@ -1366,26 +1366,67 @@ button {
 
 /* GAME MODE SELECTION */
 .mode-options {
-  display: flex;
-  gap: 36px;
-  justify-content: center;
-  margin: 30px 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 38px;
+  justify-items: center;
+  align-items: center;
+  width: 100%;
+  max-width: 600px;
+  margin: 60px auto 0 auto;
+  min-height: 480px;
 }
 .mode-btn {
-  font-size: 2em;
-  padding: 30px 48px;
-  border-radius: 20px;
-  border: none;
-  background: #22304a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 220px;
+  height: 220px;
+  background: #161c26;
+  border-radius: 26px;
+  box-shadow: 0 8px 32px #0008;
+  border: 3px solid #232a3c;
   color: #ffe066;
+  font-size: 2em;
   font-weight: bold;
-  box-shadow: 0 3px 16px #0003;
+  letter-spacing: 0.02em;
   cursor: pointer;
-  transition: background .15s;
+  transition: transform 0.16s, box-shadow 0.16s, border 0.14s;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+  outline: none;
 }
-.mode-btn:hover {
-  background: #30487a;
-  color: #fff;
+
+.mode-btn img {
+  width: 84px;
+  height: 84px;
+  margin-bottom: 18px;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px #000a;
+  object-fit: cover;
+  background: #22304a;
+  transition: filter 0.2s;
+}
+
+.mode-btn span {
+  margin: 0;
+  font-size: 1.32em;
+  font-family: 'Orbitron', 'Segoe UI', Arial, sans-serif;
+  color: #ffe066;
+  letter-spacing: 0.03em;
+  text-shadow: 0 1px 8px #0009;
+}
+
+.mode-btn:hover, .mode-btn:focus {
+  transform: scale(1.06);
+  box-shadow: 0 12px 40px #ffe06633, 0 4px 18px #0009;
+  border-color: #ffe066;
+  filter: brightness(1.07);
+  z-index: 2;
 }
 .card-battlefield-wrapper {
   display: flex;
@@ -2652,6 +2693,23 @@ button {
   }
   .container {
     padding-right: 270px;
+  }
+        .mode-options {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(4, 1fr);
+    gap: 26px;
+    min-height: unset;
+  }
+  .mode-btn {
+    width: 94vw;
+    max-width: 340px;
+    height: 140px;
+    font-size: 1.14em;
+  }
+  .mode-btn img {
+    width: 54px;
+    height: 54px;
+    margin-bottom: 9px;
   }
   .deck.hide {
      transform: translateX(100%);
