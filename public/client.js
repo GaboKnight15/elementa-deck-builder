@@ -89,6 +89,7 @@ socket.on('opponent joined', (opponentId) => {
 
 // --- Submit deck to server for multiplayer sync ---
 function submitDeckToServer() {
+  if (isSpectator) return;
   if (typeof loadDeckState === "function") loadDeckState();
   if (typeof getCurrentDeck === "function") {
     myDeckObj = getCurrentDeck();
@@ -199,6 +200,7 @@ function endGameCleanup() {
 }
 
 function playCard(instanceId, fromZone, toZone) {
+  if (isSpectator) return;
   // 1. Locally update state
   if (typeof moveCard === "function") moveCard(instanceId, fromZone, toZone);
   if (typeof renderGameState === "function") renderGameState();
