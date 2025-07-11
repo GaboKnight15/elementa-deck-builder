@@ -1460,7 +1460,6 @@ nextPhaseBtn.onclick = () => {
   idx = (idx + 1) % PHASES.length;
   gameState.turn = PHASES[idx].turn;
   gameState.phase = PHASES[idx].phase;
-  if (gameState.phase === 'draw') drawCards(gameState.turn, 1);
   updatePhase();
   renderGameState && renderGameState();
   setupDropZones();
