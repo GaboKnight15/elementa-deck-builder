@@ -284,6 +284,7 @@ function generateUniqueId() {
   return 'id-' + Math.random().toString(36).substr(2, 9) + '-' + Date.now();
 }
 function startSoloGame() {
+  setBattlefieldLeftbarVisibility(false);
   // Build decks
   const playerBanner = window.selectedPlayerDeck?.bannerArt || "CardImages/Banners/DefaultBanner.png";
   const cpuBanner = window.selectedCpuDeck?.bannerArt || "CardImages/Banners/DefaultBanner.png";
@@ -2389,6 +2390,7 @@ function onPrivateLobbyReady() {
 
 // After both decks selected, call this:
 function startPrivateGame() {
+  setBattlefieldLeftbarVisibility(true);
   // Set up gameState, profiles, etc.
   document.querySelectorAll('section[id$="-section"]').forEach(section => section.classList.remove('active'));
   document.getElementById('gameplay-section').classList.add('active');
@@ -2400,6 +2402,11 @@ function startPrivateGame() {
       // ...
     });
   });
+}
+function setBattlefieldLeftbarVisibility(visible) {
+  const leftbar = document.getElementById('battlefield-leftbar');
+  if (!leftbar) return;
+  leftbar.style.display = visible ? '' : 'none';
 }
 // Make available globally if called from client.js:
 window.setupBattlefieldGame = setupBattlefieldGame;
