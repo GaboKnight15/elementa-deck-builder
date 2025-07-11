@@ -537,6 +537,8 @@ function renderGameState() {
     playerHandDiv.appendChild(div);
   }
 // RENDER OPPONENT HAND FACEDOWN
+const opponentHandDiv = document.getElementById('opponent-hand');
+opponentHandDiv.innerHTML = '';
 let opponentCardback = (window.selectedCpuDeck && window.selectedCpuDeck.cardbackArt)
   ? window.selectedCpuDeck.cardbackArt
   : "OtherImages/Cardbacks/DefaultCardback.png"; // fallback
