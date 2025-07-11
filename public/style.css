@@ -1426,7 +1426,21 @@ button {
   width: 100vw;
   height: 100vh;
   background: #22304a;
-  overflow: hidden;
+  overflow: visible;
+}
+#battlefield-bg-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: var(--battlefield-bg, none);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.45;
+  border-radius: 18px;
+  transform: var(--battlefield-bg-flip, none);
+  transition: background-image 0.4s, opacity 0.3s;
 }
 /* CPU Deck Selection Hover */
 .cpu-deck-option,
