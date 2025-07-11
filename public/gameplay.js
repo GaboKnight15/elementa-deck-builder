@@ -464,19 +464,15 @@ function getZoneNameForArray(arr) {
 }
 // BATTLEFIELD BACKGROUNDS
 function setBattlefieldBannerBackground(player, bannerUrl) {
-  const el = document.getElementById(
-    player === "player" ? "battlefield-player-bg" : "battlefield-opponent-bg"
-  );
-  if (el && bannerUrl) {
+  const bgLayer = document.getElementById('battlefield-bg-layer');
+  if (bgLayer && bannerUrl) {
+    bgLayer.style.setProperty('--battlefield-bg', `url('${bannerUrl}')`);
+    // Flip for opponent, normal for player
     if (player === "opponent") {
-      el.style.setProperty('--opponent-bg', `url('${bannerUrl}')`);
-      el.style.backgroundImage = 'none'; // Remove legacy, handled by CSS variable
+      bgLayer.style.setProperty('--battlefield-bg-flip', 'scaleY(-1)');
     } else {
-      el.style.backgroundImage = `url('${bannerUrl}')`;
+      bgLayer.style.setProperty('--battlefield-bg-flip', 'none');
     }
-    el.style.backgroundSize = "cover";
-    el.style.backgroundPosition = "center";
-    el.style.backgroundRepeat = "no-repeat";
   }
 }
 
