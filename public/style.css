@@ -1475,6 +1475,25 @@ button {
   margin-top: 8px;
   transition: background-image 0.3s, background-color 0.3s;
 }
+#battlefield-opponent-bg {
+  background: none !important; /* Remove default background */
+}
+#battlefield-opponent-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: var(--opponent-bg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transform: scaleY(-1); /* Only the image is flipped */
+  pointer-events: none;
+}
+#battlefield-opponent-bg > * {
+  position: relative;
+  z-index: 1;
+}
 #battlefield-opponent-bg > .zone-row,
 #battlefield-player-bg > .zone-row,
 #battlefield-player-bg > .hand-area,
@@ -1482,9 +1501,6 @@ button {
   background: rgba(30, 38, 56, 0.5);
 }
 /* FLIP OPPONENTS BACKGROUND */
-#battlefield-opponent-bg {
-  transform: scaleY(-1);
-}
 
 #battlefield-leftbar {
   width: 100%;
@@ -1572,6 +1588,7 @@ button {
   gap: 10px;
   border: 2px solid #333;
   overflow-x: auto;
+  overflow-y: hidden;
   box-sizing: border-box;
   margin-bottom: 10px;
   margin-top: 10px;
