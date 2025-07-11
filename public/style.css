@@ -1493,7 +1493,7 @@ button {
   max-width: 240px;
   height: 100%;     
   background: #232a3c;
-  display: flex;
+  display: none;
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
