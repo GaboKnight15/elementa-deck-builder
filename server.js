@@ -48,6 +48,9 @@ io.on('connection', (socket) => {
   socket.on('game action', (action) => {
     socket.to(action.roomId).emit('opponent game action', action);
   });
+  socket.on('game action', (roomId, action) => {
+    io.in(roomId).emit('game action', action); // io.in, not socket.to
+  });
   socket.on('profile', (profileObj) => {
     // Send to everyone else in the room (assume socket.roomId is set on join)
     // You may want to store roomId on socket when joining
@@ -55,6 +58,7 @@ io.on('connection', (socket) => {
       socket.to(socket.roomId).emit('opponent profile', profileObj);
     }
   });
+  
   socket.on('sync deck', (roomId, deckObj) => {
     socket.to(roomId).emit('sync deck', deckObj);
   });
@@ -70,9 +74,28 @@ socket.on('game message', (roomId, msg) => {
     socket.to(data.roomId).emit('opponent play card', data);
   });
 
+  socket.on('play card', (data) => {
+    if (rooms[data.roomId]?.players.includes(socket.id)) {
+      socket.to(data.roomId).emit('opponent play card', data);
+    } // else ignore if not a player
+  });
+  
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
   });
+
+    socket.on('spectate room', (roomId) => {
+    socket.join(roomId);
+    socket.roomId = roomId;
+    if (!rooms[roomId]) rooms[roomId] = { players: [], decks: {}, spectators: []};
+    if (!rooms[roomId].spectators.includes(socket.id)) rooms[roomId].spectators.push(socket.id);
+    // Send a special message so client can adjust UI
+    socket.emit('spectator joined', roomId);
+
+    // Optionally, send current game state if you store it on the server
+    // Otherwise, just let the client catch up as actions come in
+  });
+  
 });
 
 const PORT = process.env.PORT || 3000;
