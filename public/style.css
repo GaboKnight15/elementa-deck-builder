@@ -1481,6 +1481,10 @@ button {
 #battlefield-opponent-bg > .hand-area {
   background: rgba(30, 38, 56, 0.5);
 }
+/* FLIP OPPONENTS BACKGROUND */
+#battlefield-opponent-bg {
+  transform: scaleY(-1);
+}
 
 #battlefield-leftbar {
   width: 100%;
