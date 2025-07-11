@@ -45,6 +45,8 @@ document.querySelectorAll('#main-nav button[data-section]').forEach(btn => {
     if (targetSection) targetSection.classList.add('active');
     // Special section actions
     const specialActions = {
+      'home-section' : function() {
+      },
       'gallery-section' : window.renderGallery,
       'builder-section' : window.showDeckSelection,
       'gameplay-section': function() {
