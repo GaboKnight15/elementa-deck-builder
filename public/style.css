@@ -1572,6 +1572,7 @@ button {
   gap: 10px;
   border: 2px solid #333;
   overflow-x: auto;
+  overflow-y: hidden;
   box-sizing: border-box;
   margin-bottom: 10px;
   margin-top: 10px;
