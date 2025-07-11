@@ -1481,11 +1481,29 @@ button {
 #battlefield-opponent-bg > .hand-area {
   background: rgba(30, 38, 56, 0.5);
 }
-/* FLIP OPPONENTS BACKGROUND */
 #battlefield-opponent-bg {
-  transform: scaleY(-1);
+  position: relative;
+  overflow: hidden;
+  background: none !important; /* Remove standard background, handled by ::before */
 }
 
+#battlefield-opponent-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: inherit;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transform: scaleY(-1);
+  pointer-events: none;
+  /* If you use a specific background image via JS, you may want to set it as a CSS variable and reference here */
+}
+#battlefield-opponent-bg > * {
+  position: relative;
+  z-index: 1;
+}
 #battlefield-leftbar {
   width: 100%;
   margin-bottom: 18px;
