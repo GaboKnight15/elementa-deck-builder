@@ -41,13 +41,7 @@ io.on('connection', (socket) => {
       io.to(player2).emit('opponent deck', rooms[roomId].decks[player1]);
     }
   });
-  socket.on('game action', (roomId, action) => {
-    socket.to(roomId).emit('game action', action);
-  });
 
-  socket.on('game action', (action) => {
-    socket.to(action.roomId).emit('opponent game action', action);
-  });
   socket.on('game action', (roomId, action) => {
     io.in(roomId).emit('game action', action); // io.in, not socket.to
   });
@@ -69,10 +63,6 @@ socket.on('game message', (roomId, msg) => {
     msg
   });
 });
-
-  socket.on('play card', (data) => {
-    socket.to(data.roomId).emit('opponent play card', data);
-  });
 
   socket.on('play card', (data) => {
     if (rooms[data.roomId]?.players.includes(socket.id)) {
