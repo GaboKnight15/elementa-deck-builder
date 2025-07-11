@@ -19,7 +19,10 @@ const joinLobbyBtn = document.getElementById('join-lobby-btn');
 const joinLobbyCodeInput = document.getElementById('join-lobby-code-input');
 const lobbyModalStatus = document.getElementById('lobby-join-status');
 const lobbyCodeDisplay = document.getElementById('lobby-code-display');
+const spectateBtn = document.getElementById('spectate-btn');
+const spectateRoomInput = document.getElementById('spectate-room-input');
 
+let isSpectator = false;
 let myDeckObj = null;
 let opponentDeckReceived = false;
 
@@ -149,6 +152,26 @@ function appendChatMessage(msg) {
   chatLog.scrollTop = chatLog.scrollHeight;
 }
 
+if (spectateBtn) {
+  spectateBtn.onclick = () => {
+    const roomId = (spectateRoomInput?.value || "").trim().toUpperCase();
+    if (!roomId) return alert('Enter a room code!');
+    isSpectator = true;
+    socket.emit('spectate room', roomId);
+    // Hide lobby, show gameplay UI, but as spectator
+    // Optionally, update the UI to indicate spectator mode
+    status.textContent = `Spectating room: ${roomId}`;
+    // Disable all gameplay controls (hand, buttons, etc)
+    setSpectatorUI();
+  };
+}
+
+function setSpectatorUI() {
+  // Example: just hide controls, or set a flag for the rest of your code
+  document.getElementById('player-hand').style.display = 'none';
+  document.getElementById('next-phase-btn').style.display = 'none';
+  // ... disable any actions
+}
 // --- Deck Sync (optional, for advanced server flows) ---
 socket.on('sync deck', (deckObj) => {
   if (typeof startGameWithSyncedDeck === "function") {
