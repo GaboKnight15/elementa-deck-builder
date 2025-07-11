@@ -55,8 +55,9 @@ const DEFAULT_CPU_DECKS = [
     id: 'green',
     name: 'Verdant Might',
     color: 'green',
-    image: 'CardImages/BasicCreatures/Goblin.png',
-    bannerArt: 'CardImages/Banners/ForestBanner.png',
+    image: 'CardImages/BasicCreatures/Fairy.png',
+    bannerArt: 'CardImages/Banners/GreenBanner.png',
+    cardbackArt: 'OtherImages/Cardbacks/GreenCardback.png',
     cards: [
       { id: 'basicfairy', amount: 4 },
       { id: 'basicgoblin', amount: 3 },
@@ -66,10 +67,11 @@ const DEFAULT_CPU_DECKS = [
   },
   {
     id: 'red',
-    name: 'Ember  Tyranny',
+    name: 'Ember Tyranny',
     color: 'red',
     image: 'CardImages/BasicCreatures/Emberling.png',
-    bannerArt: 'CardImages/Banners/VolcanoBanner.png',
+    bannerArt: 'CardImages/Banners/RedBanner.png',
+    cardbackArt: 'OtherImages/Cardbacks/RedCardback.png',
     cards: [
       { id: 'basicemberling', amount: 4 },
       { id: 'basicfirepixie', amount: 3 },
@@ -83,7 +85,8 @@ const DEFAULT_CPU_DECKS = [
     name: 'Tidebound Will',
     color: 'blue',
     image: 'CardImages/BasicCreatures/WaterElemental.png',
-    bannerArt: 'CardImages/Banners/OceanBanner.png',
+    bannerArt: 'CardImages/Banners/BlueBanner.png',
+    cardbackArt: 'OtherImages/Cardbacks/BlueCardback.png',
     cards: [
       { id: 'basicemberling', amount: 4 },
       { id: 'basicfirepixie', amount: 3 },
@@ -97,7 +100,8 @@ const DEFAULT_CPU_DECKS = [
     name: 'Surgecallers Rite',
     color: 'yellow',
     image: 'CardImages/BasicCreatures/Emberling.png',
-    bannerArt: 'CardImages/Banners/PeaksBanner.png',
+    bannerArt: 'CardImages/Banners/YellowBanner.png',
+    cardbackArt: 'OtherImages/Cardbacks/YellowCardback.png',
     cards: [
       { id: 'basicemberling', amount: 4 },
       { id: 'basicfirepixie', amount: 3 },
@@ -111,7 +115,8 @@ const DEFAULT_CPU_DECKS = [
     name: 'Venom Bloom',
     color: 'purple',
     image: 'CardImages/BasicCreatures/Emberling.png',
-    bannerArt: 'CardImages/Banners/SwampBanner.png',
+    bannerArt: 'CardImages/Banners/PurpleBanner.png',
+    cardbackArt: 'OtherImages/Cardbacks/PurpleCardback.png',
     cards: [
       { id: 'basicemberling', amount: 4 },
       { id: 'basicfirepixie', amount: 3 },
@@ -124,8 +129,9 @@ const DEFAULT_CPU_DECKS = [
     id: 'gray',
     name: 'Ironroot Vow',
     color: 'gray',
-    image: 'CardImages/BasicCreatures/Emberling.png',
-    bannerArt: 'CardImages/Banners/MountainBanner.png',
+    image: 'CardImages/BasicCreatures/Golemites.png',
+    bannerArt: 'CardImages/Banners/GrayBanner.png',
+    cardbackArt: 'OtherImages/Cardbacks/GrayCardback.png',
     cards: [
       { id: 'basicemberling', amount: 4 },
       { id: 'basicfirepixie', amount: 3 },
@@ -138,8 +144,9 @@ const DEFAULT_CPU_DECKS = [
     id: 'black',
     name: 'Shadowy Descent',
     color: 'black',
-    image: 'CardImages/BasicCreatures/Emberling.png',
-    bannerArt: 'CardImages/Banners/ShadowForestBanner.png',
+    image: 'CardImages/BasicCreatures/Imp.png',
+    bannerArt: 'CardImages/Banners/BlackBanner.png',
+    cardbackArt: 'OtherImages/Cardbacks/BlackCardback.png',
     cards: [
       { id: 'basicemberling', amount: 4 },
       { id: 'basicfirepixie', amount: 3 },
@@ -153,7 +160,8 @@ const DEFAULT_CPU_DECKS = [
     name: 'Radiant Oath',
     color: 'white',
     image: 'CardImages/BasicCreatures/Emberling.png',
-    bannerArt: 'CardImages/Banners/ShadowPlains.png',
+    bannerArt: 'CardImages/Banners/WhiteBanner.png',
+    cardbackArt: 'OtherImages/Cardbacks/WhiteCardback.png',
     cards: [
       { id: 'basicemberling', amount: 4 },
       { id: 'basicfirepixie', amount: 3 },
@@ -213,6 +221,7 @@ function showCpuDeckModal() {
       modal.style.display = 'none';
       // Store selected CPU deck (in window or gameState)
       window.selectedCpuDeck = deck;
+      window.selectedCpuDeck.cardbackArt = "OtherImages/Cardbacks/DefaultCardback.png";
       showPlayerDeckModal();
     };
     list.appendChild(div);
@@ -527,19 +536,21 @@ function renderGameState() {
     };
     playerHandDiv.appendChild(div);
   }
-  // RENDER OPPONENT HAND FACEDOWN
-  const opponentHandDiv = document.getElementById('opponent-hand');
-  opponentHandDiv.innerHTML = '';
-  for (let i = 0; i < gameState.opponentHand.length; i++) {
-    const div = document.createElement('div');
-    div.className = 'card-battlefield';
-    const img = document.createElement('img');
-    img.src = "CardImages/Domains/placeholder.png"; // Use your card back image
-    img.alt = "Opponent's card";
-    img.style.width = "80px";
-    div.appendChild(img);
-    opponentHandDiv.appendChild(div);
-  }
+// RENDER OPPONENT HAND FACEDOWN
+let opponentCardback = (window.selectedCpuDeck && window.selectedCpuDeck.cardbackArt)
+  ? window.selectedCpuDeck.cardbackArt
+  : "OtherImages/Cardbacks/DefaultCardback.png"; // fallback
+
+for (let i = 0; i < gameState.opponentHand.length; i++) {
+  const div = document.createElement('div');
+  div.className = 'card-battlefield';
+  const img = document.createElement('img');
+  img.src = opponentCardback;
+  img.alt = "Opponent's card";
+  img.style.width = "80px";
+  div.appendChild(img);
+  opponentHandDiv.appendChild(div);
+}
   renderRowZone('opponent-creatures-zone', gameState.opponentCreatures, "creature");
   renderRowZone('opponent-domains-zone', gameState.opponentDomains, "domain");
   renderRowZone('player-creatures-zone', gameState.playerCreatures, "creature");
@@ -711,12 +722,11 @@ function appendDeckZone(parentDiv, deckArray, who) {
   deckZone.className = 'deck-zone';
   const deckCard = document.createElement('div');
   deckCard.className = 'card-deck';
-  const img = document.createElement('img');
-  img.src = "CardImages/Domains/placeholder.png";
-  img.alt = who + "'s Deck";
-  img.style.width = "60px";
-  img.style.opacity = "0.85";
-  deckCard.appendChild(img);
+let deckCardback = "CardImages/Domains/placeholder.png";
+if (who === "opponent" && window.selectedCpuDeck && window.selectedCpuDeck.cardbackArt) {
+  deckCardback = window.selectedCpuDeck.cardbackArt;
+}
+img.src = deckCardback;
 
   const countDiv = document.createElement('div');
   countDiv.style.textAlign = 'center';
