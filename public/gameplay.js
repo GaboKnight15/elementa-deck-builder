@@ -889,6 +889,7 @@ gameState.playerDeck.forEach((cardObj, idx) => {
         onClick: function(ev) {
           ev.stopPropagation();
           moveCard(cardObj.instanceId, gameState.playerDeck, gameState.playerHand);
+          renderGameState();
           openDeckModal();
           modal.querySelectorAll('.card-menu').forEach(m => m.remove());
         }
@@ -898,6 +899,7 @@ gameState.playerDeck.forEach((cardObj, idx) => {
         onClick: function(ev) {
           ev.stopPropagation();
           moveCard(cardObj.instanceId, gameState.playerDeck, gameState.playerVoid);
+          renderGameState();
           openDeckModal();
           modal.querySelectorAll('.card-menu').forEach(m => m.remove());
         }
@@ -1383,7 +1385,7 @@ function openVoidModal() {
         onClick: function(e) {
           e.stopPropagation();
           moveCard(cardObj.instanceId, gameState.playerVoid, gameState.playerHand);
-          openVoidModal();
+          renderGameState();
           closeAllMenus();
         }
       },
@@ -1392,7 +1394,7 @@ function openVoidModal() {
         onClick: function(e) {
           e.stopPropagation();
           moveCard(cardObj.instanceId, gameState.playerVoid, gameState.playerDeck);
-          openVoidModal();
+          renderGameState();
           closeAllMenus();
         }
       },
