@@ -236,6 +236,20 @@ button {
   justify-content: space-between;
   align-items: center;
 }
+#home-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 40vh;
+  text-align: center;
+}
+
+#home-container h2 {
+  font-size: 2em;
+  color: #ffe066;
+  margin-bottom: 0.8em;
+}
 #currency-display {
   display: flex;
   align-items: center;
