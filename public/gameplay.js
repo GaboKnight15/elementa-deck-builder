@@ -173,14 +173,14 @@ const DEFAULT_CPU_DECKS = [
   // ...repeat for other colors
 ];
 const ESSENCE_IMAGE_MAP = {
-  red: "OtherImages/Essence/red.png",
-  green: "OtherImages/Essence/green.png",
-  blue: "OtherImages/Essence/blue.png",
-  white: "OtherImages/Essence/white.png",
-  black: "OtherImages/Essence/black.png",
-  yellow: "OtherImages/Essence/yellow.png",
-  purple: "OtherImages/Essence/purple.png",
-  orange: "OtherImages/Essence/orange.png",
+  red: "OtherImages/Essence/EssenceRed.png",
+  green: "OtherImages/Essence/EssenceGreen.png",
+  blue: "OtherImages/Essence/EssenceBlue.png",
+  white: "OtherImages/Essence/EssenceWhite.png",
+  black: "OtherImages/Essence/EssenceBlack.png",
+  yellow: "OtherImages/Essence/EssenceYellow.png",
+  purple: "OtherImages/Essence/EssencePurple.png",
+  gray: "OtherImages/Essence/EssenceGray.png",
   colorless: "OtherImages/Essence/EssenceOne.png"
 };
 // ==========================
@@ -1196,7 +1196,7 @@ function renderEssencePool(cardObj) {
   const poolDiv = document.createElement('div');
   poolDiv.className = 'essence-pool';
   // Loop through all essence types
-  const ESSENCE_TYPES = ['green','red','blue','white','black','yellow','purple','orange'];
+  const ESSENCE_TYPES = ['green','red','blue','yellow','purple','gray','black','white'];
   ESSENCE_TYPES.forEach(type => {
     const amount = cardObj.essence[type] || 0;
     if (amount > 0) {
@@ -2175,7 +2175,7 @@ function showEssencePaymentModal(opts) {
   const confirmBtn = document.createElement('button');
   confirmBtn.type = 'button';
   confirmBtn.className = 'btn-primary';
-  confirmBtn.textContent = 'Confirm Payment';
+  confirmBtn.textContent = 'Confirm';
   confirmBtn.disabled = true;
   confirmBtn.style.marginTop = '12px';
   confirmBtn.onclick = function() {
