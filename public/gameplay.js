@@ -2052,7 +2052,7 @@ function showEssencePaymentModal(opts) {
   header.style.display = 'flex';
   header.style.alignItems = 'center';
   header.style.marginBottom = '10px';
-  header.innerHTML = `<div style="font-size:1.2em;font-weight:bold;">Pay Essence Cost</div>`;
+  header.innerHTML = `<div style="font-size:1.2em;font-weight:bold;">Essence Cost</div>`;
   if (cardData.image) header.prepend(img);
   content.appendChild(header);
 
