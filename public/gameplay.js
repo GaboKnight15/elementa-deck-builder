@@ -1989,11 +1989,14 @@ function initiateMainDomainAndChampionSelection(deckArr, afterSelection) {
 
 // ESSENCE GENERATION
 function generateEssenceForCard(cardObj) {
-  // Support both string and array for color
-  const colors = Array.isArray(cardObj.color) ? cardObj.color : [cardObj.color];
-  colors.forEach(type => {
-    addEssence(cardObj, type, 1); // or use cardObj.essenceGeneration[type] if you want variable output
-  });
+  // Find the card definition in dummyCards
+  const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
+  if (!cardDef) return;
+  if (cardDef.essence) {
+    for (const type in cardDef.essence) {
+      addEssence(cardObj, type, cardDef.essence[type]);
+    }
+  }
 }
 function doEssencePhase(playerOrOpponent) {
   // Get the correct arrays
