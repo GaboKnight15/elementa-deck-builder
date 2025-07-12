@@ -365,13 +365,11 @@ function setupBattlefieldGame() {
     gameState.opponentDeck = shuffle(buildDeck(deckObj)); // or a CPU deck
   }
 
-  gameState.playerDeck = shuffle(buildDeck(deckObj));
   gameState.playerHand = [];
   gameState.playerCreatures = [];
   gameState.playerDomains = [];
   gameState.playerVoid = [];
 
-  gameState.opponentDeck = shuffle(buildDeck(deckObj));
   gameState.opponentHand = [];
   gameState.opponentCreatures = [];
   gameState.opponentDomains = [];
