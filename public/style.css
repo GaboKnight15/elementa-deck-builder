@@ -682,14 +682,6 @@ button {
   width: 100%;
   margin: 0 0 16px 0;
 }
-    /* CARD NAME */
-.card h4 {
-  font-size: 1.15em;
-  font-weight: 600;
-  color: #23245a;
-  margin: 0;
-  display: inline-block;
-}
 .card > div:last-child {
   font-size: 0.9em;
   color: #667;
