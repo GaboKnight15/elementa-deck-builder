@@ -15,28 +15,25 @@ io.on('connection', (socket) => {
   socket.on('join room', (roomId) => {
     socket.join(roomId);
     socket.roomId = roomId;
-// Track players in the room
     if (!rooms[roomId]) rooms[roomId] = { players: [], decks: {} };
-    if (!rooms[roomId].players.includes(socket.id)) rooms[roomId].players.push(socket.id);
-// Emit to both: everyone in the room (including the joining socket)
+    if (!rooms[roomId].players.includes(socket.id)) {
+      rooms[roomId].players.push(socket.id);
+      // Remove duplicates
+      rooms[roomId].players = [...new Set(rooms[roomId].players)];
+    }
     io.in(roomId).emit('opponent joined', socket.id);
-    console.log(`Socket ${socket.id} joined room ${roomId}`);
   });
+  
 // DECK SUBMITS
   socket.on('submit deck', (roomId, deckObj) => {
     if (!rooms[roomId]) rooms[roomId] = { players: [], decks: {} };
     rooms[roomId].decks[socket.id] = deckObj;
 
-    // If both decks are submitted
-    if (
-      rooms[roomId].players.length === 2 &&
-      rooms[roomId].decks[rooms[roomId].players[0]] &&
-      rooms[roomId].decks[rooms[roomId].players[1]]
-    ) {
-      // Send opponent's deck to each player
-      const player1 = rooms[roomId].players[0];
-      const player2 = rooms[roomId].players[1];
-
+    // Use only current deck submissions, not players array
+    const playerIds = Object.keys(rooms[roomId].decks);
+    if (playerIds.length === 2) {
+      const player1 = playerIds[0];
+      const player2 = playerIds[1];
       io.to(player1).emit('opponent deck', rooms[roomId].decks[player2]);
       io.to(player2).emit('opponent deck', rooms[roomId].decks[player1]);
     }
@@ -72,6 +69,10 @@ socket.on('game message', (roomId, msg) => {
   
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
+    for (const [roomId, room] of Object.entries(rooms)) {
+      room.players = room.players.filter(id => id !== socket.id);
+      delete room.decks[socket.id];
+    }
   });
 
     socket.on('spectate room', (roomId) => {
