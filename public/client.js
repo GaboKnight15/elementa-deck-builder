@@ -87,6 +87,18 @@ socket.on('opponent joined', (opponentId) => {
   if (status) status.textContent = "Both players joined! Choose your deck.";
 });
 
+function startMultiplayerGameIfReady() {
+  if (opponentDeckReceived) {
+    // Ensure your own deck is in gameState.playerDeck
+    if (!gameState.playerDeck.length && myDeckObj) {
+      gameState.playerDeck = shuffle(buildDeck(myDeckObj));
+    }
+    // Start up the battlefield
+    if (typeof setupBattlefieldGame === "function") {
+      setupBattlefieldGame();
+    }
+  }
+}
 // --- Submit deck to server for multiplayer sync ---
 function submitDeckToServer() {
   if (isSpectator) return;
