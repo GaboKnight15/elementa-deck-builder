@@ -2909,9 +2909,9 @@ button {
     padding: 0 2vw;
   }
   .card-battlefield, .card-gallery, .card-builder {
-    width: 62vw !important;
-    max-width: 128px !important;
-    min-width: 80px !important;
+    width: 62vw;
+    max-width: 128px;
+    min-width: 80px;
     margin: 0 2.5vw;
     font-size: 0.95em;
   }
@@ -3010,7 +3010,7 @@ button {
 }
 @media (max-width: 600px) and (orientation: portrait) {
   .card-battlefield, .card-gallery, .card-builder {
-    width: 94vw !important;
+    width: 94vw;
     max-width: 98vw;
     min-width: 60px;
   }
