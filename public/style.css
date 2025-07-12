@@ -1551,7 +1551,7 @@ button {
   min-width: 160px;
   max-width: 240px;
   height: 100%;     
-  background: #232a3c;
+  background: #1a2533;
   display: none;
   flex-direction: column;
   align-items: flex-start;
@@ -1569,6 +1569,7 @@ button {
   align-items: center;
   gap: 26px;
   padding: 10px 0 10px 0;
+  background: #1a2533;
 }
 #battlefield-leftbar .profile-panel,
 #battlefield-leftbar .profile,
