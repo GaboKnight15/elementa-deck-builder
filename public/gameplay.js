@@ -678,7 +678,7 @@ function showHandCardMenu(instanceId, cardDiv) {
       }
     });
   }
-}
+},
     {
       text: "Send to Void",
       onClick: async function(e) {
