@@ -1215,8 +1215,7 @@ function renderEssencePool(cardObj) {
       const icon = document.createElement('div');
       icon.className = `essence-icon essence-${type}`;
       icon.title = `${type} Essence: ${amount}`;
-      icon.innerHTML = `<img src="OtherImages/Essence/${type}.png" class="essence-img"><span class="essence-amount">${amount}</span>`;
-      poolDiv.appendChild(icon);
+      icon.innerHTML = `<img src="${ESSENCE_IMAGE_MAP[type]}" class="essence-img"><span class="essence-amount">${amount}</span>`;      poolDiv.appendChild(icon);
     }
   });
   return poolDiv;
@@ -1259,7 +1258,7 @@ function showSetHpModal(cardObj, onSet) {
     <div style="margin-bottom:10px;">
       <input id="set-hp-input" type="number" min="0" max="99" value="${cardObj.currentHP || 0}" style="width:60px;padding:6px 10px;font-size:1.15em;border-radius:7px;">
     </div>
-    <button id="set-hp-confirm" class="btn-primary" style="margin-right:8px;">Set</button>
+    <button id="set-hp-confirm" class="btn-secondary" style="margin-right:8px;">Set</button>
     <button id="set-hp-cancel" class="btn-negative-secondary">Cancel</button>
   `;
 
@@ -2018,7 +2017,7 @@ function doEssencePhase(playerOrOpponent) {
   // Optionally filter for Champions only
   const champions = creatures.filter(cardObj => {
     const card = dummyCards.find(c => c.id === cardObj.cardId);
-    return card && card.category === "champion";
+    return card && card.trait === "champion";
   });
 
   // Domains
