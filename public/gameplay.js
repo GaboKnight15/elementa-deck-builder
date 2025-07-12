@@ -324,16 +324,32 @@ function startSoloGame() {
       zone.classList.add('drag-over');
     };
     zone.ondragleave = () => zone.classList.remove('drag-over');
-    zone.ondrop = (e) => {
-      e.preventDefault();
-      zone.classList.remove('drag-over');
-      const instanceId = e.dataTransfer.getData('text/plain');
-      let targetArr = zoneId === "player-creatures-zone" ? gameState.playerCreatures : gameState.playerDomains;
-      moveCard(instanceId, gameState.playerHand, targetArr, {orientation: "vertical"});
-      renderGameState();
-      setupDropZones();
-    };
-  });
+zone.ondrop = (e) => {
+  e.preventDefault();
+  zone.classList.remove('drag-over');
+  const instanceId = e.dataTransfer.getData('text/plain');
+  const cardObj = gameState.playerHand.find(c => c.instanceId === instanceId);
+  if (!cardObj) return;
+
+  // Find card definition
+  const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
+  if (!cardDef) return;
+
+  // Determine allowed category for this zone
+  const allowedCategory =
+    zoneId === "player-creatures-zone" ? "creature" :
+    zoneId === "player-domains-zone" ? "domain" : null;
+
+  if (cardDef.category !== allowedCategory) {
+    alert("You can only play " + allowedCategory + " cards here!");
+    return;
+  }
+
+  let targetArr = zoneId === "player-creatures-zone" ? gameState.playerCreatures : gameState.playerDomains;
+  moveCard(instanceId, gameState.playerHand, targetArr, {orientation: "vertical"});
+  renderGameState();
+  setupDropZones();
+};
  // Show the "Game Start" animation, then main domain & champion selection, then draw opening hand
   showGameStartAnimation(() => {
     initiateMainDomainAndChampionSelection(gameState.playerDeck, () => {
@@ -625,29 +641,43 @@ function showHandCardMenu(instanceId, cardDiv) {
   // Define actions
   const buttons = [
     {
-      text: "Play",
-      onClick: async function(e) {
-        e.stopPropagation();
-        closeAllMenus();
-        const cardObj = gameState.playerHand.find(c => c.instanceId === instanceId);
-        const cardData = dummyCards.find(c => c.id === cardObj.cardId);
-        showEssencePaymentModal({
-          card: cardData,
-          cost: cardData.cost,
-          eligibleCards: getAllEssenceSources(),
-          onPaid: async function() {
-            await moveCardUniversal({
-              instanceId,
-              fromArr: gameState.playerHand,
-              toArr: gameState.playerCreatures,
-              extra: { orientation: "vertical" },
-              fromZoneId: "player-hand",
-              toZoneId: "player-creatures-zone"
-            });
-          }
+  text: "Play",
+  onClick: async function(e) {
+    e.stopPropagation();
+    closeAllMenus();
+    const cardObj = gameState.playerHand.find(c => c.instanceId === instanceId);
+    const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+
+    // Determine allowed target zone
+    let targetArr, toZoneId;
+    if (cardData.category === "creature") {
+      targetArr = gameState.playerCreatures;
+      toZoneId = "player-creatures-zone";
+    } else if (cardData.category === "domain") {
+      targetArr = gameState.playerDomains;
+      toZoneId = "player-domains-zone";
+    } else {
+      alert("You can only play " + allowedCategory + " cards here!");
+      return;
+    }
+
+    showEssencePaymentModal({
+      card: cardData,
+      cost: cardData.cost,
+      eligibleCards: getAllEssenceSources(),
+      onPaid: async function() {
+        await moveCardUniversal({
+          instanceId,
+          fromArr: gameState.playerHand,
+          toArr: targetArr,
+          extra: { orientation: "vertical" },
+          fromZoneId: "player-hand",
+          toZoneId
         });
       }
-    },
+    });
+  }
+}
     {
       text: "Send to Void",
       onClick: async function(e) {
