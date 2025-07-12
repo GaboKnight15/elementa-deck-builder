@@ -1040,7 +1040,17 @@ function renderCardOnField(cardObj, zoneId) {
   } else if (hpPercent <= 0.5) {
     barColor = "#ff9800"; // orange
   }
-  
+  // In renderCardOnField, after you set bar.style.width = ...:
+if (typeof cardObj._prevHP === "number" && cardObj._prevHP !== currentHP) {
+  if (currentHP < cardObj._prevHP) {
+    bar.classList.add("hp-bar-damage");
+    setTimeout(() => bar.classList.remove("hp-bar-damage"), 300);
+  } else {
+    bar.classList.add("hp-bar-heal");
+    setTimeout(() => bar.classList.remove("hp-bar-heal"), 300);
+  }
+}
+cardObj._prevHP = currentHP; // Store for next render
   // Create the main card div
   const cardDiv = document.createElement('div');
   cardDiv.className = 'card-battlefield';
