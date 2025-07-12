@@ -1886,7 +1886,7 @@ button {
 .hp-bar-wrap {
   width: 80%;
   height: 8px;
-  background: #ddd;
+  background: rgba(34, 48, 74, 0.45);
   border-radius: 4px;
   margin: 4px auto 0 auto;
   overflow: hidden;
@@ -1895,9 +1895,17 @@ button {
 .hp-bar {
   height: 100%;
   border-radius: 4px;
-  transition: width 0.2s, background 0.2s;
+  background: #4caf50;
+  transition: width 0.4s cubic-bezier(.7,1.4,.5,1.01), background-color 0.3s;
 }
-
+.hp-bar-damage {
+  background: #e53935 !important;
+  box-shadow: 0 0 10px #e53935cc;
+}
+.hp-bar-heal {
+  background: #47e09a !important;
+  box-shadow: 0 0 10px #47e09acc;
+}
 /* PHASE STYLE */
 #phase-badge {
   display: flex;
