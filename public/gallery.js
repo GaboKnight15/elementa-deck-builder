@@ -86,8 +86,10 @@ function createCardGallery(card) {
     };
     div.appendChild(img);
 
-    const name = document.createElement('h4');
-    name.textContent = card.name;
+    const nameDiv = document.createElement('div');
+    nameDiv.textContent = card.name;
+    nameDiv.className = 'card-name';
+  
     const actionRow = document.createElement('div');
     actionRow.className = "action-row";
 
@@ -173,7 +175,7 @@ function createCardGallery(card) {
     actionRow.appendChild(voidBtnImg);
     
     div.appendChild(actionRow);
-    div.appendChild(name);
+    div.appendChild(nameDiv);
 
     // "New!" badge
     const newCards = getNewlyUnlockedCards();
