@@ -758,7 +758,7 @@ function showIndividualCardModal(card, isPurchased) {
       <img src="${card.image}" alt="${card.name}" style="width:180px;margin:12px auto;display:block;">
       <div style="margin:10px 0;">
         <span class="shop-individual-card-rarity">${card.rarity}</span>
-        <span class="currency-display" style="margin-left:18px;">
+        <span class="currency-display" style="text-align:center;">
           <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins">
           <span>${individualCardPrices[card.rarity]}</span>
         </span>
