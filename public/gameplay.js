@@ -651,6 +651,19 @@ function showHandCardMenu(instanceId, cardDiv) {
 
     // Determine allowed target zone
     let targetArr, toZoneId;
+    if (!cardData.cost || (typeof cardData.cost === "number" && cardData.cost === 0) ||
+    (typeof cardData.cost === "object" && Object.values(cardData.cost).reduce((a,b)=>a+b,0) === 0)) {
+    // No cost, play immediately
+    await moveCardUniversal({
+      instanceId,
+      fromArr: gameState.playerHand,
+      toArr: targetArr,
+      extra: { orientation: "vertical" },
+      fromZoneId: "player-hand",
+      toZoneId
+    });
+    return;
+    }
     if (cardData.category === "creature") {
       targetArr = gameState.playerCreatures;
       toZoneId = "player-creatures-zone";
