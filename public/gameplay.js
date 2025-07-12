@@ -355,6 +355,15 @@ function startSoloGame() {
 // Called when entering gameplay for solo playtest (not from sync)
 function setupBattlefieldGame() {
   const deckObj = getCurrentDeck();
+  if (!gameState.playerDeck || !gameState.playerDeck.length) {
+    const deckObj = getCurrentDeck();
+    gameState.playerDeck = shuffle(buildDeck(deckObj));
+  }
+  // Do NOT overwrite opponentDeck if already set (multiplayer)
+  if (!gameState.opponentDeck || !gameState.opponentDeck.length) {
+    // For solo, use your own deck or a dummy/cpu deck
+    gameState.opponentDeck = shuffle(buildDeck(deckObj)); // or a CPU deck
+  }
 
   gameState.playerDeck = shuffle(buildDeck(deckObj));
   gameState.playerHand = [];
@@ -367,9 +376,18 @@ function setupBattlefieldGame() {
   gameState.opponentCreatures = [];
   gameState.opponentDomains = [];
   gameState.opponentVoid = [];
+
+  gameState.turn = "player";
+  gameState.phase = "draw";
+  
+  // Show gameplay UI    
+  document.querySelectorAll('section[id$="-section"]').forEach(section => section.classList.remove('active'));
+  document.getElementById('gameplay-section').classList.add('active');
+  
   renderGameState();
   setupDropZones();
-
+  updatePhase();
+  
   // Setup drag and drop handlers
   ['player-creatures-zone', 'player-domains-zone'].forEach(zoneId => {
     const zone = document.getElementById(zoneId);
@@ -389,8 +407,23 @@ function setupBattlefieldGame() {
       setupDropZones();
     };
   });
+
   document.getElementById('my-profile').style.display = '';
   renderProfile('my-profile', getMyProfileInfo());
+  // Show "Game Start" animation, then domain/champion selection, then draw hand
+  showGameStartAnimation(() => {
+    initiateMainDomainAndChampionSelection(gameState.playerDeck, () => {
+      // After selection, draw opening hand
+      const INITIAL_HAND_SIZE = 5;
+      for (let i = 0; i < INITIAL_HAND_SIZE; i++) {
+        if (gameState.playerDeck.length > 0) {
+          gameState.playerHand.push(gameState.playerDeck.shift());
+        }
+      }
+      renderGameState();
+      setupDropZones();
+    });
+  });
 }
 function getZoneArray(zoneId) {
   switch (zoneId) {
