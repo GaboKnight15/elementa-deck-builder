@@ -1666,60 +1666,49 @@ async function moveCardUniversal({
   destinationDiv = null,
   animationType = "move"
 }) {
-  // Try to infer DOM nodes if not supplied
-  if (!sourceDiv && fromZoneId) {
-    sourceDiv = findCardDivInZone(fromZoneId, instanceId);
+  if (animationType !== "none" && fromZoneId && toZoneId) {
+    // Fade out, move, then fade in
+    animateCardFade(instanceId, fromZoneId, toZoneId, () => {
+      moveCard(instanceId, fromArr, toArr, extra);
+      renderGameState();
+      setupDropZones();
+    });
+  } else {
+    moveCard(instanceId, fromArr, toArr, extra);
+    renderGameState();
+    setupDropZones();
   }
-  if (!destinationDiv && toZoneId) {
-    // For animation, we often animate to the zone, not to a particular card
-    destinationDiv = document.getElementById(toZoneId);
-  }
-  // Animate if possible and requested
-  if (animationType !== "none" && sourceDiv && destinationDiv) {
-    await new Promise(resolve => animateCardMove(sourceDiv, destinationDiv, resolve));
-  }
-  // Move in state
-  moveCard(instanceId, fromArr, toArr, extra);
-  // Rerender
-  renderGameState();
-  setupDropZones();
 }
   // CARD ANIMATIONS
-function animateCardMove(cardDiv, destinationDiv, callback) {
-  // Get starting and ending positions
-  const startRect = cardDiv.getBoundingClientRect();
-  const endRect = destinationDiv.getBoundingClientRect();
-
-  // Clone the cardDiv for animation
-  const animCard = cardDiv.cloneNode(true);
-  animCard.style.position = 'fixed';
-  animCard.style.left = startRect.left + 'px';
-  animCard.style.top = startRect.top + 'px';
-  animCard.style.width = startRect.width + 'px';
-  animCard.style.height = startRect.height + 'px';
-  animCard.style.pointerEvents = 'none';
-  animCard.style.zIndex = 10000;
-  animCard.classList.add('card-move-animate');
-
-  document.body.appendChild(animCard);
-
-  // Force reflow for transition
-  void animCard.offsetWidth;
-
-  // Animate to destination
-  animCard.style.transition = 'all 0.5s cubic-bezier(.33,1.62,.46,.98)';
-  animCard.style.left = endRect.left + 'px';
-  animCard.style.top = endRect.top + 'px';
-  animCard.style.transform = 'scale(1.15) rotate(-5deg)';
-  animCard.style.opacity = '0.92';
-
-  // After transition, remove it and call callback
-  animCard.addEventListener('transitionend', () => {
-    animCard.remove();
-    if (callback) callback();
+function animateCardFade(instanceId, fromZoneId, toZoneId, callback) {
+  // Find the card div in the fromZone
+  const fromZone = document.getElementById(fromZoneId);
+  if (!fromZone) { callback && callback(); return; }
+  const cardDiv = Array.from(fromZone.querySelectorAll('.card-battlefield')).find(div => {
+    return div.dataset.instanceId === instanceId;
   });
-}
+  if (!cardDiv) { callback && callback(); return; }
 
+  // Fade out
+  cardDiv.classList.add('card-fade-out');
+  setTimeout(() => {
+    // After fade out, run the callback (move card in state), then fade in at destination
+    callback && callback();
+
+    // Allow fade-in at destination (after next render)
+    setTimeout(() => {
+      const toZone = document.getElementById(toZoneId);
+      if (!toZone) return;
+      const newCardDiv = Array.from(toZone.querySelectorAll('.card-battlefield')).find(div => {
+        return div.dataset.instanceId === instanceId;
+      });
+      if (newCardDiv) {
+        newCardDiv.classList.add('card-fade-in');
+        setTimeout(() => newCardDiv.classList.remove('card-fade-in'), 200);
+      }
+    }, 30);
+  }, 180);
+}
 
 // START GAME
 function showGameStartAnimation(callback) {
@@ -2474,6 +2463,7 @@ function setBattlefieldLeftbarVisibility(visible) {
   if (!leftbar) return;
   leftbar.style.display = visible ? '' : 'none';
 }
+  
 // Make available globally if called from client.js:
 window.setupBattlefieldGame = setupBattlefieldGame;
 window.handleOpponentAction = handleOpponentAction;
