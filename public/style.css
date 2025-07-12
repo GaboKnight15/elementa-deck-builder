@@ -1790,13 +1790,18 @@ button {
   80%  { opacity:1; transform:scale(1);}
   100% { opacity:0; }
 }
-.card-move-animate {
-  box-shadow: 0 10px 42px #50eaffcc, 0 2px 14px #0006;
-  border-radius: 12px;
-  opacity: 1;
-  transition: all 0.5s cubic-bezier(.33,1.62,.46,.98);
-  will-change: left, top, transform, opacity;
+.card-fade-out {
+  opacity: 0;
+  transition: opacity 0.18s;
   pointer-events: none;
+}
+.card-fade-in {
+  opacity: 0 !important;
+  animation: card-fade-in-keyframes 0.18s forwards;
+}
+@keyframes card-fade-in-keyframes {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 .main-domain-highlight {
   border: 3px solid #ffd700;
