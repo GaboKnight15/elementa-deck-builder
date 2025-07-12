@@ -1032,7 +1032,15 @@ function renderCardOnField(cardObj, zoneId) {
   const baseHP = getBaseHp(cardObj.cardId);
   const currentHP = cardObj.currentHP;
   const hpPercent = Math.max(0, Math.min(1, currentHP / baseHP));
-
+  // HP Bar just below the card
+  const barWrap = document.createElement('div');
+  barWrap.className = 'hp-bar-wrap';
+  const bar = document.createElement('div');
+  bar.className = 'hp-bar';
+  bar.style.width = `${Math.round(hpPercent * 100)}%`;
+  bar.style.backgroundColor = barColor;
+  barWrap.appendChild(bar);
+  wrapper.appendChild(barWrap);;
   // Color logic
   let barColor = "#4caf50"; // green
   if (hpPercent <= 0.25) {
@@ -1194,16 +1202,6 @@ if (essenceDiv) cardDiv.appendChild(essenceDiv);
   wrapper.style.alignItems = 'center';
 
   wrapper.appendChild(cardDiv);
-
-  // HP Bar just below the card
-  const barWrap = document.createElement('div');
-  barWrap.className = 'hp-bar-wrap';
-  const bar = document.createElement('div');
-  bar.className = 'hp-bar';
-  bar.style.width = `${Math.round(hpPercent * 100)}%`;
-  bar.style.backgroundColor = barColor;
-  barWrap.appendChild(bar);
-  wrapper.appendChild(barWrap);;
   
   // MANUAL HP UPDATE
   cardDiv.onclick = function(e) {
