@@ -918,7 +918,6 @@ function closeAllMenus() {
 }
 // OPEN DECK MODAL
 function openDeckModal() {
-  closeAllModals();
   const modal = document.getElementById('deck-modal');
   // Always attach the close-on-backdrop handler
   modal.onclick = function(e) {
@@ -966,8 +965,8 @@ gameState.playerDeck.forEach((cardObj, idx) => {
           ev.stopPropagation();
           moveCard(cardObj.instanceId, gameState.playerDeck, gameState.playerHand);
           renderGameState();
+          closeAllMenus();
           openDeckModal();
-          modal.querySelectorAll('.card-menu').forEach(m => m.remove());
         }
       },
       {
@@ -976,8 +975,8 @@ gameState.playerDeck.forEach((cardObj, idx) => {
           ev.stopPropagation();
           moveCard(cardObj.instanceId, gameState.playerDeck, gameState.playerVoid);
           renderGameState();
+          closeAllMenus();
           openDeckModal();
-          modal.querySelectorAll('.card-menu').forEach(m => m.remove());
         }
       },
       {
@@ -985,7 +984,7 @@ gameState.playerDeck.forEach((cardObj, idx) => {
         onClick: function(ev) {
           ev.stopPropagation();
           showFullCardModal(cardObj);
-          modal.querySelectorAll('.card-menu').forEach(m => m.remove());
+          closeAllMenus();
         }
       }
     ];
@@ -1401,7 +1400,6 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
 
 // ==== VOID MODAL ====
 function openVoidModal() {
-  closeAllModals();
   let modal = document.getElementById('void-modal');
   if (!modal) {
     modal = document.createElement('div');
@@ -1463,6 +1461,7 @@ function openVoidModal() {
           moveCard(cardObj.instanceId, gameState.playerVoid, gameState.playerHand);
           renderGameState();
           closeAllMenus();
+          openVoidModal();
         }
       },
       {
@@ -1472,6 +1471,7 @@ function openVoidModal() {
           moveCard(cardObj.instanceId, gameState.playerVoid, gameState.playerDeck);
           renderGameState();
           closeAllMenus();
+          openVoidModal();
         }
       },
       {
