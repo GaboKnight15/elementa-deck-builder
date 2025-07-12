@@ -349,7 +349,8 @@ zone.ondrop = (e) => {
   moveCard(instanceId, gameState.playerHand, targetArr, {orientation: "vertical"});
   renderGameState();
   setupDropZones();
-};
+  };
+});
  // Show the "Game Start" animation, then main domain & champion selection, then draw opening hand
   showGameStartAnimation(() => {
     initiateMainDomainAndChampionSelection(gameState.playerDeck, () => {
