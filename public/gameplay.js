@@ -2508,20 +2508,28 @@ function setBattlefieldLeftbarVisibility(visible) {
   if (!leftbar) return;
   leftbar.style.display = visible ? '' : 'none';
 }
-document.querySelectorAll('.mode-option').forEach(option => {
-  option.addEventListener('click', function() {
-    const mode = this.dataset.mode;
-    if (mode === "solo") {
-      showCpuDeckModal();
-    } else if (mode === "private") {
-      showPrivateLobbyModal();
-    } else if (mode === "casual") {
-      // If you have a function for casual lobby
-      showPublicLobbyModal && showPublicLobbyModal();
-    } else if (mode === "ranked") {
-      // If you have a function for ranked lobby
-      showRankedLobbyModal && showRankedLobbyModal();
-    }
+document.querySelector('.mode-option[data-mode="solo"]').addEventListener('click', function() {
+  showCpuDeckModal();
+});
+document.querySelector('.mode-option[data-mode="private"]').addEventListener('click', function() {
+  showPrivateLobbyModal();
+});
+document.querySelector('.mode-option[data-mode="casual"]').addEventListener('click', function() {
+  if (typeof showPublicLobbyModal === "function") showPublicLobbyModal();
+});
+document.querySelector('.mode-option[data-mode="ranked"]').addEventListener('click', function() {
+  if (typeof showRankedLobbyModal === "function") showRankedLobbyModal();
+});
+document.addEventListener('DOMContentLoaded', function() {
+  ['solo','private','casual','ranked'].forEach(mode => {
+    const el = document.querySelector(`.mode-option[data-mode="${mode}"]`);
+    if (!el) return;
+    el.addEventListener('click', function() {
+      if (mode === "solo") showCpuDeckModal();
+      else if (mode === "private") showPrivateLobbyModal();
+      else if (mode === "casual" && typeof showPublicLobbyModal === "function") showPublicLobbyModal();
+      else if (mode === "ranked" && typeof showRankedLobbyModal === "function") showRankedLobbyModal();
+    });
   });
 });
   
