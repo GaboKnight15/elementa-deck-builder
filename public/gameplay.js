@@ -2532,7 +2532,19 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 });
-  
+
+// BACK IMAGES
+// CPU Deck Modal: Back to Mode Selection
+document.getElementById('cpu-back-btn').addEventListener('click', function() {
+  document.getElementById('cpu-deck-modal').style.display = 'none';
+  document.getElementById('mode-select-section').style.display = '';
+});
+
+// Player Deck Modal: Back to CPU Deck Selection
+document.getElementById('player-back-btn').addEventListener('click', function() {
+  document.getElementById('player-deck-modal').style.display = 'none';
+  document.getElementById('cpu-deck-modal').style.display = '';
+});  
 // Make available globally if called from client.js:
 window.setupBattlefieldGame = setupBattlefieldGame;
 window.handleOpponentAction = handleOpponentAction;
