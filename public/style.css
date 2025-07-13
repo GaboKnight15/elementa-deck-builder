@@ -1378,56 +1378,28 @@ button {
   margin: 60px auto 0 auto;
   min-height: 480px;
 }
-.mode-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 220px;
-  height: 220px;
-  background: #161c26;
-  border-radius: 26px;
-  box-shadow: 0 8px 32px #0008;
-  border: 3px solid #232a3c;
-  color: #ffe066;
-  font-size: 2em;
-  font-weight: bold;
-  letter-spacing: 0.02em;
-  cursor: pointer;
-  transition: transform 0.16s, box-shadow 0.16s, border 0.14s;
-  margin: 0;
-  padding: 0;
-  position: relative;
-  overflow: hidden;
-  outline: none;
-}
-
-.mode-btn img {
+.mode-menu-img {
   width: 84px;
   height: 84px;
-  margin-bottom: 18px;
-  border-radius: 16px;
-  box-shadow: 0 2px 12px #000a;
-  object-fit: cover;
-  background: #22304a;
-  transition: filter 0.2s;
+  object-fit: contain;
+  margin-bottom: 12px;
+  filter: drop-shadow(0 2px 10px #1a2244cc);
+  /* FADE OUT EFFECT ON EDGES */
+  mask-image: 
+    linear-gradient(to right,  transparent 0%,  black 10%, black 90%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%,  black 10%, black 90%, transparent 100%);
+  -webkit-mask-image: 
+    linear-gradient(to right,  transparent 0%,  black 10%, black 90%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%,  black 10%, black 90%, transparent 100%);
+  mask-composite: intersect;
+  -webkit-mask-composite: source-in;
 }
-
-.mode-btn span {
-  margin: 0;
-  font-size: 1.32em;
-  font-family: 'Orbitron', 'Segoe UI', Arial, sans-serif;
-  color: #ffe066;
-  letter-spacing: 0.03em;
-  text-shadow: 0 1px 8px #0009;
+.mode-option {
+  transition: transform 0.14s;
 }
-
-.mode-btn:hover, .mode-btn:focus {
+.mode-option:hover,
+.mode-option:focus {
   transform: scale(1.06);
-  box-shadow: 0 12px 40px #ffe06633, 0 4px 18px #0009;
-  border-color: #ffe066;
-  filter: brightness(1.07);
-  z-index: 2;
 }
 .card-battlefield-wrapper {
   display: flex;
