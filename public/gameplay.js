@@ -1225,18 +1225,29 @@ function renderCardOnField(cardObj, zoneId) {
 
 function renderEssencePool(cardObj) {
   if (!cardObj.essence) return null;
+  // Track previous essence for animation (per card)
+  if (!cardObj._prevEssence) cardObj._prevEssence = {};
+
   const poolDiv = document.createElement('div');
   poolDiv.className = 'essence-pool';
   // Loop through all essence types
   const ESSENCE_TYPES = ['green','red','blue','yellow','purple','gray','black','white'];
   ESSENCE_TYPES.forEach(type => {
     const amount = cardObj.essence[type] || 0;
+    const prevAmount = cardObj._prevEssence[type] || 0;
     if (amount > 0) {
       const icon = document.createElement('div');
       icon.className = `essence-icon essence-${type}`;
       icon.title = `${type} Essence: ${amount}`;
-      icon.innerHTML = `<img src="${ESSENCE_IMAGE_MAP[type]}" class="essence-img"><span class="essence-amount">${amount}</span>`;      poolDiv.appendChild(icon);
+      icon.innerHTML = `<img src="${ESSENCE_IMAGE_MAP[type]}" class="essence-img"><span class="essence-amount">${amount}</span>`;
+      // Animate pop if new essence appears or increases
+      if (amount > prevAmount) {
+        setTimeout(() => animateEssencePop(icon), 20); // Allow DOM insert first
+      }
+      poolDiv.appendChild(icon);
     }
+    // Update tracker for next render
+    cardObj._prevEssence[type] = amount;
   });
   return poolDiv;
 }
@@ -2009,8 +2020,8 @@ function initiateMainDomainAndChampionSelection(deckArr, afterSelection) {
       });
     } else {
       if (afterSelection) afterSelection();
-    }
-  }
+    }https://github.com/GaboKnight15/elementa-deck-builder/blob/main/public/gameplay.js
+  }https://github.com/GaboKnight15/elementa-deck-builder/blob/main/public/gameplay.js
 
   if (mainDomains.length >= 1) {
     showMainDomainSelectionModal(deckArr, afterMainDomain);
@@ -2048,7 +2059,12 @@ function doEssencePhase(playerOrOpponent) {
   // Optionally: show animation/notification
   renderGameState();
 }
-
+function animateEssencePop(icon) {
+  icon.classList.add('essence-pop');
+  icon.addEventListener('animationend', () => {
+    icon.classList.remove('essence-pop');
+  }, { once: true });
+}
 // ESSENCE CONSUPTION LOGIC
 function showEssencePaymentModal(opts) {
   closeAllModals();
