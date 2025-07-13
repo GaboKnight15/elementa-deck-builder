@@ -196,9 +196,7 @@ const phaseBadge = document.getElementById('phase-badge');
 // === RENDERING / UI ===
 // ==========================
 // Handle mode selection
-document.querySelector('.mode-btn[data-mode="solo"]').addEventListener('click', function() {
-  showCpuDeckModal();
-});
+
 function showCpuDeckModal() {
   const modal = document.getElementById('cpu-deck-modal');
   const list = document.getElementById('cpu-deck-list');
@@ -2428,11 +2426,6 @@ function startAttackTargeting(attackerId, attackerZone, cardDiv) {
 }
 // =========== PRIVATE LOBBY UI ===========
 
-// Show modal when user selects Private mode
-document.querySelector('.mode-btn[data-mode="private"]').addEventListener('click', function() {
-  showPrivateLobbyModal();
-});
-
 function showPrivateLobbyModal() {
   closeAllModals();
   const modal = document.getElementById('private-lobby-modal');
@@ -2515,6 +2508,22 @@ function setBattlefieldLeftbarVisibility(visible) {
   if (!leftbar) return;
   leftbar.style.display = visible ? '' : 'none';
 }
+document.querySelectorAll('.mode-option').forEach(option => {
+  option.addEventListener('click', function() {
+    const mode = this.dataset.mode;
+    if (mode === "solo") {
+      showCpuDeckModal();
+    } else if (mode === "private") {
+      showPrivateLobbyModal();
+    } else if (mode === "casual") {
+      // If you have a function for casual lobby
+      showPublicLobbyModal && showPublicLobbyModal();
+    } else if (mode === "ranked") {
+      // If you have a function for ranked lobby
+      showRankedLobbyModal && showRankedLobbyModal();
+    }
+  });
+});
   
 // Make available globally if called from client.js:
 window.setupBattlefieldGame = setupBattlefieldGame;
