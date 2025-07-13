@@ -1806,6 +1806,23 @@ button {
   from { opacity: 0; }
   to { opacity: 1; }
 }
+@keyframes essence-pop {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.essence-pop {
+  animation: essence-pop 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+}
 .main-domain-highlight {
   border: 3px solid #ffd700;
   box-shadow: 0 0 20px #ffd70088;
