@@ -1223,13 +1223,15 @@ button {
 }
 #deck-selection-grid {
   display: grid;
+  flex-wrap: wrap;
   width: 100%;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
   gap: 18px 18px; 
   justify-content: center;
   align-items: center;
-  margin: auto;
+  margin: 24px auto 30px auto;
+  box-sizing: border-box;
 }
 .deck-slot-tile {
   display: flex;
