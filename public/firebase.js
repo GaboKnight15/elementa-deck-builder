@@ -20,7 +20,6 @@ const loginUsernameInput = document.getElementById('login-username-input');
 const loginEmailInput    = document.getElementById('login-email-input');
 const loginPasswordInput = document.getElementById('login-password-input');
 const loginError         = document.getElementById('login-error');
-const mainHeader         = document.getElementById('main-header');
 
 function saveProgress() {
   const user = auth.currentUser;
@@ -110,7 +109,6 @@ auth.onAuthStateChanged(function(user) {
       updateQuestsNotificationDot();  
       startQuestTimers();
       updateAchievementsNotificationDot();
-      mainHeader.style.display = '';
       profileArea.style.display = '';
       profileMenu.classList.remove('active');
       loginMenu.classList.remove('active');
@@ -121,7 +119,6 @@ auth.onAuthStateChanged(function(user) {
   } else {
     console.log("User logged out, setting defaults");
     // Reset UI and data to logged-out state
-    mainHeader.style.display = 'none';
     profileArea.style.display = 'none';
     profileMenu.classList.remove('active');
     loginMenu.classList.add('active');
