@@ -33,6 +33,36 @@ function updateCurrencyDisplay() {
 // ==========================
 // === SECTION NAVIGATION ===
 // ==========================
+
+// HOME SCREEN
+document.querySelectorAll('.home-menu-btn').forEach(btn => {
+  btn.onclick = function() {
+    // Simulate click on main nav or call your navigation function
+    const section = btn.getAttribute('data-section');
+    // Hide all sections
+    document.querySelectorAll('section[id$="-section"]').forEach(sectionEl => {
+      sectionEl.classList.remove('active');
+    });
+    // Show the target section
+    document.getElementById(section).classList.add('active');
+    // Optionally call the special action if needed (copy from your shared.js)
+    const specialActions = {
+      'home-section' : function() {},
+      'gallery-section' : window.renderGallery,
+      'builder-section' : window.showDeckSelection,
+      'gameplay-section': function() {
+        document.querySelectorAll('section[id$="-section"]').forEach(sectionEl => {
+          sectionEl.classList.remove('active');
+        });
+        document.getElementById('mode-select-section').classList.add('active');
+      },
+      'shop-section'    : window.renderShop
+    };
+    if (typeof specialActions[section] === 'function') {
+      specialActions[section]();
+    }
+  };
+});
 document.querySelectorAll('#main-nav button[data-section]').forEach(btn => {
   btn.addEventListener('click', () => {
     // Hide all sections
