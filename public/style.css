@@ -278,6 +278,15 @@ button {
   object-fit: contain;
   margin-bottom: 16px;
   filter: drop-shadow(0 2px 10px #1a2244cc);
+  /* FADE OUT EFFECT ON EDGES */    
+  mask-image: 
+    linear-gradient(to right,  transparent 0%,  black 10%, black 90%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%,  black 10%, black 90%, transparent 100%);
+  -webkit-mask-image: 
+    linear-gradient(to right,  transparent 0%,  black 10%, black 90%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%,  black 10%, black 90%, transparent 100%);
+  mask-composite: intersect;
+  -webkit-mask-composite: source-in;
 }
 #currency-display {
   display: flex;
@@ -3047,6 +3056,18 @@ button {
     padding: 1vw !important;
     font-size: 1em !important;
   }
+  #deck-selection-grid {
+    gap: 16px 12px;
+    max-width: 98vw;
+    min-height: 120px;
+    padding: 0 2vw;
+  }
+  .deck-slot-tile {
+    width: 98vw;
+    max-width: 220px;
+    height: 120px;
+    font-size: 1em;
+  }
 }
 
 /* Optional: portrait-specific adjustments */
@@ -3060,6 +3081,18 @@ button {
     width: 90vw !important;
     min-width: 34vw;
     max-width: 99vw;
+  }
+  #deck-selection-grid {
+    gap: 16px 12px;
+    max-width: 98vw;
+    min-height: 120px;
+    padding: 0 2vw;
+  }
+  .deck-slot {
+    width: 98vw;
+    max-width: 220px;
+    height: 120px;
+    font-size: 1em;
   }
 }
 
@@ -3140,7 +3173,15 @@ button {
     height: 84px;
     margin-bottom: 18px;
   }
-
+  #deck-selection-grid {
+    gap: 24px 22px;
+    max-width: 96vw;
+  }
+  .deck-slot {
+    width: 170px;
+    height: 200px;
+    font-size: 1.12em;
+  }
   /* Gallery, builder, hand: larger cards, more margin */
   .card-battlefield, .card-gallery, .card-builder {
     width: 120px;
@@ -3154,21 +3195,18 @@ button {
     min-height: 72px;
     max-height: 120px;
   }
-
   /* Modal adjustments */
   .modal-content {
     max-width: 90vw !important;
     padding: 2vw !important;
     font-size: 1.08em !important;
   }
-
   /* Buttons */
   .btn-primary {
     width: 70vw;
     font-size: 1.08em !important;
     padding: 0.55em 2em !important;
   }
-
   /* Misc tweaks */
   .trash-icon {
     display: block;
