@@ -1032,6 +1032,12 @@ function renderCardOnField(cardObj, zoneId) {
   const baseHP = getBaseHp(cardObj.cardId);
   const currentHP = cardObj.currentHP;
   const hpPercent = Math.max(0, Math.min(1, currentHP / baseHP));
+  let barColor = "#4caf50"; // green
+  if (hpPercent <= 0.25) {
+    barColor = "#e53935"; // red
+  } else if (hpPercent <= 0.5) {
+    barColor = "#ff9800"; // orange
+  }
   // HP Bar just below the card
   const barWrap = document.createElement('div');
   barWrap.className = 'hp-bar-wrap';
