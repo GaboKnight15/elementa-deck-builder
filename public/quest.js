@@ -240,22 +240,44 @@ function ensureQuestSlots(cb) {
     const today = getTodayUtcDateString();
     let needsUpdate = (lastQuestDate !== today);
     let activeQuests = Array.isArray(data.activeQuests) ? data.activeQuests.slice(0, QUEST_SLOTS) : [];
-    // Only keep valid quests
+    // Only keep valid quests and ensure unique IDs
     activeQuests = activeQuests.filter(q => !!q && QUEST_POOL.some(poolQuest => poolQuest.id === (q.id || q)));
+
+    // Ensure NO duplicate quest IDs
+    let uniqueQuestIds = new Set();
+    activeQuests = activeQuests.filter(q => {
+      const id = q.id || q;
+      if (uniqueQuestIds.has(id)) return false;
+      uniqueQuestIds.add(id);
+      return true;
+    });
 
     if (needsUpdate) {
       // Fill empty slots with unique quests not already in activeQuests
-      const existingIds = activeQuests.map(q => q.id || q);
-      let pool = QUEST_POOL.filter(q => !existingIds.includes(q.id));
+      const existingIds = new Set(activeQuests.map(q => q.id || q));
+      let pool = QUEST_POOL.filter(q => !existingIds.has(q.id));
+
       while (activeQuests.length < QUEST_SLOTS && pool.length > 0) {
         const idx = Math.floor(Math.random() * pool.length);
-        activeQuests.push(pool.splice(idx, 1)[0]);
+        const quest = pool.splice(idx, 1)[0];
+        activeQuests.push(quest);
+        existingIds.add(quest.id);
       }
-      // If pool too small, allow duplicates very rarely
-      while (activeQuests.length < QUEST_SLOTS) {
-        const idx = Math.floor(Math.random() * QUEST_POOL.length);
-        activeQuests.push(QUEST_POOL[idx]);
+
+      // Fallback: If pool too small, add more from remaining unique quests (should never duplicate)
+      if (activeQuests.length < QUEST_SLOTS) {
+        let poolAll = QUEST_POOL.filter(q => !existingIds.has(q.id));
+        while (activeQuests.length < QUEST_SLOTS && poolAll.length > 0) {
+          const idx = Math.floor(Math.random() * poolAll.length);
+          const quest = poolAll.splice(idx, 1)[0];
+          activeQuests.push(quest);
+          existingIds.add(quest.id);
+        }
       }
+
+      // Final safety: slice in case of accidental overflow
+      activeQuests = activeQuests.slice(0, QUEST_SLOTS);
+
       userDoc.set({
         activeQuests,
         lastQuestDate: today
@@ -264,7 +286,16 @@ function ensureQuestSlots(cb) {
         renderQuests();
       });
     } else {
-      // No reset needed
+      // No reset needed, but ensure only 5 unique quests are present
+      let uniqueQuestIds = new Set();
+      activeQuests = activeQuests.filter(q => {
+        const id = q.id || q;
+        if (uniqueQuestIds.has(id)) return false;
+        uniqueQuestIds.add(id);
+        return true;
+      });
+      activeQuests = activeQuests.slice(0, QUEST_SLOTS);
+
       if (typeof cb === "function") cb(activeQuests);
       renderQuests();
     }
