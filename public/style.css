@@ -2901,21 +2901,17 @@ button {
 }
 
 /* --- MOBILE AND SMALL SCREENS --- */
-
-@media (max-width: 750px), (max-height: 600px) {
+@media (max-width: 767px) {
   body {
     font-size: 15px;
     padding: 0;
     margin: 0;
   }
-
   .section,
   .section.active {
     padding: 0.5em 0.1em !important;
     min-height: 100vh;
   }
-
-  /* Gameplay zones stack vertically */
   #battlefield {
     flex-direction: column !important;
     align-items: stretch !important;
@@ -2925,10 +2921,11 @@ button {
     flex-direction: column;
     gap: 0.5em;
     padding: 0.5em 1vw;
+    align-items: stretch;
   }
   #battlefield-leftbar,
   #battlefield-rightbar {
-    display: none !important; /* Hide sidebars on mobile */
+    display: none !important;
   }
   #player-hand,
   #opponent-hand {
@@ -2936,6 +2933,8 @@ button {
     overflow-x: auto;
     justify-content: flex-start;
     padding: 0 2vw;
+    min-height: 52px;
+    max-height: 75px;
   }
   .card-battlefield, .card-gallery, .card-builder {
     width: 62vw;
@@ -2960,9 +2959,6 @@ button {
     height: 22px;
     font-size: 0.76em;
   }
-}
-
-@media (max-width: 600px) {
   #profile-menu {
     left: 50%;
     transform: translateX(-50%);
@@ -2977,11 +2973,6 @@ button {
     width: 46px;
     height: 46px;
   }
-  .header-row {
-    flex-direction: column;
-    gap: 0.5em;
-    align-items: stretch;
-  }
   .elementa-title {
     position: static;
     transform: none;
@@ -2994,6 +2985,24 @@ button {
   }
   .container {
     padding-right: 270px;
+  }
+  #home-container {
+    gap: 12px;
+    max-width: 98vw;
+  }
+  .home-menu-btn {
+    width: 42vw;
+    height: 42vw;
+    max-width: 120px;
+    max-height: 120px;
+    min-width: 70px;
+    min-height: 70px;
+    font-size: 1em;
+  }
+  .home-menu-img {
+    width: 36px;
+    height: 36px;
+    margin-bottom: 8px;
   }
   .mode-options {
     grid-template-columns: 1fr;
@@ -3037,7 +3046,9 @@ button {
     font-size: 1em !important;
   }
 }
-@media (max-width: 600px) and (orientation: portrait) {
+
+/* Optional: portrait-specific adjustments */
+@media (max-width: 767px) and (orientation: portrait) {
   .card-battlefield, .card-gallery, .card-builder {
     width: 94vw;
     max-width: 98vw;
@@ -3049,18 +3060,34 @@ button {
     max-width: 99vw;
   }
 }
-@media (max-height: 430px) and (orientation: landscape) {
+
+/* Optional: landscape-specific adjustments for very short screens */
+@media (max-width: 812px) and (max-height: 430px) and (orientation: landscape) {
   .section, .section.active {
     padding: 0.1em 0.1em !important;
     min-height: 100vh;
   }
-  #player-hand, #opponent-hand {
-    min-height: 52px;
-    max-height: 75px;
-    padding: 0 1vw;
+  #home-container {
+    gap: 8px;
+    max-width: 96vw;
+    min-height: unset;
+  }
+  .home-menu-btn {
+    width: 38vw;
+    height: 38vw;
+    max-width: 88px;
+    max-height: 88px;
+    min-width: 60px;
+    min-height: 60px;
+    font-size: 0.95em;
+  }
+  .home-menu-img {
+    width: 28px;
+    height: 28px;
+    margin-bottom: 6px;
   }
   .card-battlefield, .card-gallery, .card-builder {
-    height: 60px !important;
+    height: 60px;
     max-height: 90px;
     min-width: 48px;
     font-size: 0.9em;
@@ -3071,29 +3098,84 @@ button {
     max-width: 90vw;
   }
 }
+
 /* Mobile CSS Adjustments 900px for tablets*/
-@media (max-width: 900px) {
-.deck {
-    width: 95vw;
+@media (min-width: 768px) and (max-width: 1024px) {
+  /* Deck panel: wider and taller for tablet */
+  .deck {
+    width: 60vw;
+    min-width: 290px;
+    max-width: 560px;
     left: unset;
     right: 0;
     top: 56px;
-    max-width: 100vw;
     border-left: none;
     border-top: 2px solid #ccc;
-    height: 88vh;
-    box-shadow: 0 -2px 14px rgba(0,0,0,0.08);
+    height: 92vh;
+    box-shadow: 0 -2px 16px rgba(0,0,0,0.10);
     transform: translateX(100%);
+    font-size: 1.07em;
   }
 
-.trash-icon {
-  display: block;
-  pointer-events: none;
-}
-.card.dragging {
-  opacity: 0.3;
-  filter: blur(2px) grayscale(1);
-  transition: opacity 0.1s, filter 0.15s;
-  box-shadow: 0 0 24px 4px #3b82f6bb;
-}
+  /* Home menu grid: bigger icons, more space, grid stays 2x2 */
+  #home-container {
+    gap: 22px;
+    max-width: 540px;
+    min-height: 44vh;
+    padding: 2em 0;
+  }
+  .home-menu-btn {
+    width: 180px;
+    height: 180px;
+    max-width: 220px;
+    max-height: 220px;
+    min-width: 120px;
+    min-height: 120px;
+    font-size: 1.18em;
+  }
+  .home-menu-img {
+    width: 84px;
+    height: 84px;
+    margin-bottom: 18px;
+  }
+
+  /* Gallery, builder, hand: larger cards, more margin */
+  .card-battlefield, .card-gallery, .card-builder {
+    width: 120px;
+    min-width: 90px;
+    max-width: 160px;
+    margin: 0 10px;
+    font-size: 1.08em;
+  }
+  #player-hand, #opponent-hand {
+    padding: 0 2vw;
+    min-height: 72px;
+    max-height: 120px;
+  }
+
+  /* Modal adjustments */
+  .modal-content {
+    max-width: 90vw !important;
+    padding: 2vw !important;
+    font-size: 1.08em !important;
+  }
+
+  /* Buttons */
+  .btn-primary {
+    width: 70vw;
+    font-size: 1.08em !important;
+    padding: 0.55em 2em !important;
+  }
+
+  /* Misc tweaks */
+  .trash-icon {
+    display: block;
+    pointer-events: none;
+  }
+  .card.dragging {
+    opacity: 0.3;
+    filter: blur(2px) grayscale(1);
+    transition: opacity 0.1s, filter 0.15s;
+    box-shadow: 0 0 24px 4px #3b82f6bb;
+  }
 }
