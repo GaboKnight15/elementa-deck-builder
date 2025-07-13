@@ -1032,6 +1032,15 @@ function renderCardOnField(cardObj, zoneId) {
   const baseHP = getBaseHp(cardObj.cardId);
   const currentHP = cardObj.currentHP;
   const hpPercent = Math.max(0, Math.min(1, currentHP / baseHP));
+
+  // Create the wrapper FIRST so it can be used below
+  const wrapper = document.createElement('div');
+  wrapper.className = 'card-battlefield-wrapper';
+  wrapper.style.display = 'flex';
+  wrapper.style.flexDirection = 'column';
+  wrapper.style.alignItems = 'center';
+
+  // HP bar color logic
   let barColor = "#4caf50"; // green
   if (hpPercent <= 0.25) {
     barColor = "#e53935"; // red
@@ -1046,18 +1055,20 @@ function renderCardOnField(cardObj, zoneId) {
   bar.style.width = `${Math.round(hpPercent * 100)}%`;
   bar.style.backgroundColor = barColor;
   barWrap.appendChild(bar);
-  wrapper.appendChild(barWrap);;
-  // In renderCardOnField, after you set bar.style.width = ...:
-if (typeof cardObj._prevHP === "number" && cardObj._prevHP !== currentHP) {
-  if (currentHP < cardObj._prevHP) {
-    bar.classList.add("hp-bar-damage");
-    setTimeout(() => bar.classList.remove("hp-bar-damage"), 300);
-  } else {
-    bar.classList.add("hp-bar-heal");
-    setTimeout(() => bar.classList.remove("hp-bar-heal"), 300);
+  wrapper.appendChild(barWrap);
+
+  // HP change animation
+  if (typeof cardObj._prevHP === "number" && cardObj._prevHP !== currentHP) {
+    if (currentHP < cardObj._prevHP) {
+      bar.classList.add("hp-bar-damage");
+      setTimeout(() => bar.classList.remove("hp-bar-damage"), 300);
+    } else {
+      bar.classList.add("hp-bar-heal");
+      setTimeout(() => bar.classList.remove("hp-bar-heal"), 300);
+    }
   }
-}
-cardObj._prevHP = currentHP; // Store for next render
+  cardObj._prevHP = currentHP; // Store for next render
+
   // Create the main card div
   const cardDiv = document.createElement('div');
   cardDiv.className = 'card-battlefield';
@@ -1126,46 +1137,46 @@ cardObj._prevHP = currentHP; // Store for next render
       attDiv.style.pointerEvents = 'auto';
       attDiv.title = attachData.name;
 
-  // ATTACHMENT MENU
-  attDiv.onclick = (e) => {
-  e.stopPropagation();
-  // Remove any open menus first
-  attDiv.querySelectorAll('.card-menu').forEach(m => m.remove());
-  // Create menu
-  const buttons = [
-    {
-      text: "View",
-      onClick: function(ev) {
-        ev.stopPropagation();
-        showFullCardModal(attachObj);
-        this.closest('.card-menu').remove();
-      }
-    },
-    {
-      text: "Detach",
-      onClick: function(ev) {
-        ev.stopPropagation();
-        cardObj.attachedCards.splice(i, 1);
-        gameState.playerVoid.push(attachObj);
-        renderGameState();
-        setupDropZones();
-        this.closest('.card-menu').remove();
-      }
-    }
-  ];
-  const menu = createCardMenu(buttons);
-  menu.style.left = '70px'; // optional: offset menu to the right of attachment
-  attDiv.appendChild(menu);
-  menu.style.display = 'block';
+      // ATTACHMENT MENU
+      attDiv.onclick = (e) => {
+        e.stopPropagation();
+        // Remove any open menus first
+        attDiv.querySelectorAll('.card-menu').forEach(m => m.remove());
+        // Create menu
+        const buttons = [
+          {
+            text: "View",
+            onClick: function(ev) {
+              ev.stopPropagation();
+              showFullCardModal(attachObj);
+              this.closest('.card-menu').remove();
+            }
+          },
+          {
+            text: "Detach",
+            onClick: function(ev) {
+              ev.stopPropagation();
+              cardObj.attachedCards.splice(i, 1);
+              gameState.playerVoid.push(attachObj);
+              renderGameState();
+              setupDropZones();
+              this.closest('.card-menu').remove();
+            }
+          }
+        ];
+        const menu = createCardMenu(buttons);
+        menu.style.left = '70px'; // optional: offset menu to the right of attachment
+        attDiv.appendChild(menu);
+        menu.style.display = 'block';
 
-  // Hide menu if click elsewhere
-  setTimeout(() => {
-    document.body.addEventListener('click', function handler() {
-      menu.remove();
-      document.body.removeEventListener('click', handler);
-    }, { once: true });
-  }, 10);
-};
+        // Hide menu if click elsewhere
+        setTimeout(() => {
+          document.body.addEventListener('click', function handler() {
+            menu.remove();
+            document.body.removeEventListener('click', handler);
+          }, { once: true });
+        }, 10);
+      };
 
       const img = document.createElement('img');
       img.src = attachData.image;
@@ -1179,8 +1190,11 @@ cardObj._prevHP = currentHP; // Store for next render
     cardDiv.style.position = 'relative';
     cardDiv.appendChild(stackDiv);
   }
-const essenceDiv = renderEssencePool(cardObj);
-if (essenceDiv) cardDiv.appendChild(essenceDiv);
+
+  // Essence pool rendering
+  const essenceDiv = renderEssencePool(cardObj);
+  if (essenceDiv) cardDiv.appendChild(essenceDiv);
+
   // HP BADGE
   const hpBadge = document.createElement('span');
   hpBadge.className = 'hp-badge-heart';
@@ -1193,20 +1207,15 @@ if (essenceDiv) cardDiv.appendChild(essenceDiv);
   `;
   cardDiv.appendChild(hpBadge);
 
-  // Return a wrapper with cardDiv + hp bar below
-  const wrapper = document.createElement('div');
-  wrapper.className = 'card-battlefield-wrapper';
-  wrapper.style.display = 'flex';
-  wrapper.style.flexDirection = 'column';
-  wrapper.style.alignItems = 'center';
-
+  // Add cardDiv to wrapper
   wrapper.appendChild(cardDiv);
-  
+
   // MANUAL HP UPDATE
   cardDiv.onclick = function(e) {
     e.stopPropagation();
     showCardActionMenu(cardObj.instanceId, zoneId, cardObj.orientation || "vertical", cardDiv);
   };
+
   return wrapper;
 }
 
