@@ -2018,8 +2018,8 @@ function initiateMainDomainAndChampionSelection(deckArr, afterSelection) {
       });
     } else {
       if (afterSelection) afterSelection();
-    }https://github.com/GaboKnight15/elementa-deck-builder/blob/main/public/gameplay.js
-  }https://github.com/GaboKnight15/elementa-deck-builder/blob/main/public/gameplay.js
+    }
+  }
 
   if (mainDomains.length >= 1) {
     showMainDomainSelectionModal(deckArr, afterMainDomain);
