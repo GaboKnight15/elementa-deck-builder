@@ -1,14 +1,14 @@
 body {
-  font-family: sans-serif;
-  width: 100%;
-  min-height: 100vh;
-  margin: 0; 
-  padding: 0; 
-  display: flex;
-  flex-direction: column; 
-  align-items: center;
-  background: #1a2533 !important; 
-  overflow-x: hidden;
+      font-family: sans-serif;
+      min-height: 100vh;
+      width: 100vw;
+      margin: 0; 
+      padding: 0; 
+      display: flex;
+      flex-direction: column; 
+      align-items: center; 
+      background: #1a2533 !important; 
+      overflow-x: hidden;
 } 
 header { 
   position: relative;
@@ -175,7 +175,7 @@ button {
   display: none;
   opacity: 0;
   pointer-events: none;
-  width: 100%;
+  width: 100vw;
   min-height: calc(100vh - 80px);
   transform: translateY(60px) scale(0.97);
   filter: blur(10px) brightness(0.7);
@@ -273,7 +273,6 @@ button {
   background: #253047;
 }
 .home-menu-img {
-  max-width: 100%;
   width: 84px;
   height: 84px;
   object-fit: contain;
@@ -531,7 +530,7 @@ button {
   box-sizing: border-box;
   padding: 1em 0.2em;
   overflow-x: auto;
-  max-width: 100%;
+  max-width: 100vw;
 }
 .new-card-badge {
   position: absolute;
@@ -787,7 +786,7 @@ button {
 }
 #deck-banner-img {
   width: 100%;
-  max-width: 100%;
+  max-width: 320px;
   height: 120px;
   object-fit: cover;
   border-radius: 10px;
@@ -3012,7 +3011,6 @@ button {
     font-size: 1em;
   }
   .home-menu-img {
-    max-width: 100%;
     width: 36px;
     height: 36px;
     margin-bottom: 8px;
