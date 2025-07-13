@@ -1047,13 +1047,6 @@ function renderCardOnField(cardObj, zoneId) {
   bar.style.backgroundColor = barColor;
   barWrap.appendChild(bar);
   wrapper.appendChild(barWrap);;
-  // Color logic
-  let barColor = "#4caf50"; // green
-  if (hpPercent <= 0.25) {
-    barColor = "#e53935"; // red
-  } else if (hpPercent <= 0.5) {
-    barColor = "#ff9800"; // orange
-  }
   // In renderCardOnField, after you set bar.style.width = ...:
 if (typeof cardObj._prevHP === "number" && cardObj._prevHP !== currentHP) {
   if (currentHP < cardObj._prevHP) {
