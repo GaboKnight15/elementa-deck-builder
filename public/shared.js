@@ -534,6 +534,32 @@ document.getElementById('close-friends-modal').onclick = function() {
 document.getElementById('friends-modal').onclick = function(e) {
   if (e.target === this) this.style.display = 'none';
 };
+// PARTICLE EFFECT
+document.addEventListener("DOMContentLoaded", function() {
+  // Only load particles when Home is visible (optional, can always load)
+  particlesJS('home-particles', {
+    particles: {
+      number: { value: 40, density: { enable: true, value_area: 800 } },
+      color: { value: "#ffe066" },
+      shape: { type: "circle" },
+      opacity: { value: 0.4, random: true },
+      size: { value: 8, random: true },
+      line_linked: { enable: true, distance: 110, color: "#ffe066", opacity: 0.13, width: 1 },
+      move: { enable: true, speed: 1.1 }
+    },
+    interactivity: {
+      detect_on: "canvas",
+      events: {
+        onhover: { enable: true, mode: "repulse" },
+        onclick: { enable: false }
+      },
+      modes: {
+        repulse: { distance: 90 }
+      }
+    },
+    retina_detect: true
+  });
+});
 // Expose to global
 window.sendFriendRequest = sendFriendRequest;
 window.acceptFriendRequest = acceptFriendRequest;
