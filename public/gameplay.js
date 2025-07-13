@@ -650,30 +650,34 @@ function showHandCardMenu(instanceId, cardDiv) {
     const cardData = dummyCards.find(c => c.id === cardObj.cardId);
 
     // Determine allowed target zone
-    let targetArr, toZoneId;
-    if (!cardData.cost || (typeof cardData.cost === "number" && cardData.cost === 0) ||
-    (typeof cardData.cost === "object" && Object.values(cardData.cost).reduce((a,b)=>a+b,0) === 0)) {
-    // No cost, play immediately
-    await moveCardUniversal({
-      instanceId,
-      fromArr: gameState.playerHand,
-      toArr: targetArr,
-      extra: { orientation: "vertical" },
-      fromZoneId: "player-hand",
-      toZoneId
-    });
-    return;
-    }
-    if (cardData.category === "creature") {
-      targetArr = gameState.playerCreatures;
-      toZoneId = "player-creatures-zone";
-    } else if (cardData.category === "domain") {
-      targetArr = gameState.playerDomains;
-      toZoneId = "player-domains-zone";
-    } else {
-      alert("You can only play " + allowedCategory + " cards here!");
-      return;
-    }
+let targetArr, toZoneId;
+if (cardData.category === "creature") {
+  targetArr = gameState.playerCreatures;
+  toZoneId = "player-creatures-zone";
+} else if (cardData.category === "domain") {
+  targetArr = gameState.playerDomains;
+  toZoneId = "player-domains-zone";
+} else {
+  alert("You can only play creature or domain cards here!");
+  return;
+}
+
+if (
+  !cardData.cost ||
+  (typeof cardData.cost === "number" && cardData.cost === 0) ||
+  (typeof cardData.cost === "object" && Object.values(cardData.cost).reduce((a, b) => a + b, 0) === 0)
+) {
+  // No cost, play immediately
+  await moveCardUniversal({
+    instanceId,
+    fromArr: gameState.playerHand,
+    toArr: targetArr,
+    extra: { orientation: "vertical" },
+    fromZoneId: "player-hand",
+    toZoneId
+  });
+  return;
+}
 
     showEssencePaymentModal({
       card: cardData,
