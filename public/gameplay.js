@@ -1899,7 +1899,6 @@ function showMainDomainSelectionModal(deckArr, onSelected) {
     cardDiv.style.textAlign = 'center';
     cardDiv.innerHTML = `
       <img src="${cardData.image}" alt="${cardData.name}" style="width:90px;display:block;margin-bottom:6px;">
-      <div style="font-weight:bold;color:#ffe066">${cardData.name}</div>
     `;
     cardDiv.onclick = () => {
       modal.style.display = 'none';
@@ -1950,7 +1949,6 @@ function showChampionSelectionModal(deckArr, onSelected) {
     cardDiv.style.textAlign = 'center';
     cardDiv.innerHTML = `
       <img src="${cardData.image}" alt="${cardData.name}" style="width:90px;display:block;margin-bottom:6px;">
-      <div style="font-weight:bold;color:#ffe066">${cardData.name}</div>
     `;
     cardDiv.onclick = () => {
       modal.style.display = 'none';
