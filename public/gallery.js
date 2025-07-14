@@ -184,7 +184,7 @@ function createCardGallery(card) {
     // Show count badge
     const countBadge = document.createElement('div');
     countBadge.className = 'card-count-badge';
-    countBadge.textContent = owned;
+    countBadge.textContent = 'x' + owned;
     div.appendChild(countBadge);
 
     return div;
