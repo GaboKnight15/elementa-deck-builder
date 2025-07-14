@@ -783,6 +783,7 @@ function renderRowZone(zoneId, cardArray, category) {
   }
 }
 function renderRightbarZones() {
+  const rightbar = document.getElementById('battlefield-rightbar');
   // OPPONENT DECK
   const oppDeckDiv = document.getElementById('opponent-deck-zone');
   oppDeckDiv.innerHTML = '';
