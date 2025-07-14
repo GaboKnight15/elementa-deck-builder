@@ -543,6 +543,77 @@ button {
   margin: 0;
   box-shadow: 0 1px 4px rgba(0,0,0,0.12);
 }
+/* Modal content: row layout for card image + info */
+.full-card-modal-content {
+  display: flex;
+  flex-direction: row;
+  gap: 32px;
+  align-items: flex-start;
+  justify-content: center;
+  max-width: 760px;
+  width: 96vw;
+  background: #202a38;
+  border-radius: 18px;
+  padding: 2.2em 2.1em 1.7em 2.1em;
+  box-shadow: 0 6px 32px #0009;
+  position: relative;
+}
+
+/* Image container: restrict card width */
+.full-card-image-container {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 320px;
+  width: 23vw;
+}
+.full-card-image-container img {
+  width: 100%;
+  max-width: 280px;
+  min-width: 200px;
+  height: auto;
+  border-radius: 14px;
+  box-shadow: 0 3px 18px #0004;
+}
+
+/* Info box to the right */
+.full-card-info {
+  flex: 1 1 0;
+  background: #232a3c;
+  border-radius: 12px;
+  padding: 1.3em 1.2em 1.2em 1.2em;
+  color: #ffe066;
+  display: flex;
+  flex-direction: column;
+  min-width: 200px;
+  max-width: 320px;
+  gap: 0.7em;
+  box-shadow: 0 2px 12px #0002;
+}
+.full-card-info-title {
+  font-size: 1.4em;
+  font-weight: bold;
+  color: #ffe066;
+  margin-bottom: 0.5em;
+  text-shadow: 0 1px 4px #000a;
+}
+.full-card-info-section {
+  font-size: 1.08em;
+  margin-bottom: 0.5em;
+}
+.full-card-info-label {
+  color: #b4b8d1;
+  font-weight: 600;
+  margin-right: 0.3em;
+}
+.full-card-action-row {
+  margin-top: auto;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
 .gallery-action-btn:hover {
   transform: scale(1.15);
   box-shadow: 0 0 10px 2px #ffd70080;
