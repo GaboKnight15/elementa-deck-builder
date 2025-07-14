@@ -547,16 +547,16 @@ button {
 .full-card-modal-content {
   display: flex;
   flex-direction: row;
+  gap: 32px;
   align-items: flex-start;
   justify-content: center;
-  gap: 24px;
-  padding: 2em 2em 1.3em 2em;
-  background: #202a38;
-  border-radius: 18px;
-  box-shadow: 0 6px 32px #0009;
-  position: relative;
   max-width: 760px;
   width: 96vw;
+  background: #202a38;
+  border-radius: 18px;
+  padding: 2.2em 2.1em 1.7em 2.1em;
+  box-shadow: 0 6px 32px #0009;
+  position: relative;
 }
 
 .full-card-image-container {
@@ -564,8 +564,16 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 325px;
+  max-width: 320px;
   width: 23vw;
+}
+.full-card-image-container img {
+  width: 100%;
+  max-width: 280px;
+  min-width: 200px;
+  height: auto;
+  border-radius: 14px;
+  box-shadow: 0 3px 18px #0004;
 }
 
 .full-card-info {
@@ -576,14 +584,12 @@ button {
   color: #ffe066;
   display: flex;
   flex-direction: column;
-  min-width: 220px;
-  max-width: 350px;
+  min-width: 200px;
+  max-width: 320px;
   gap: 0.7em;
   box-shadow: 0 2px 12px #0002;
-  /* REMOVE any absolute positioning! */
   position: static;
 }
-
 .full-card-info-title {
   font-size: 1.35em;
   font-weight: bold;
@@ -599,12 +605,6 @@ button {
   color: #b4b8d1;
   font-weight: 600;
   margin-right: 0.3em;
-}
-.full-card-action-row {
-  margin-top: auto;
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
 }
 
 .gallery-action-btn:hover {
