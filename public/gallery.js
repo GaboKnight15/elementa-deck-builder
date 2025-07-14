@@ -255,25 +255,32 @@ function createCreateCardButton(card, onActionDone) {
   btn.style.transition = "transform 0.15s, box-shadow 0.15s";
   btn.onclick = function(e) {
     e.stopPropagation();
-    if (playerEssence < cost) {
-      showToast("Not enough Essence", {type:"error"});
-      return;
-    }
-    const collection = getCollection();
-    const wasOwned = collection[card.id] > 0;
-    collection[card.id] = (collection[card.id] || 0) + 1;
-    playerCollection = collection;
-    playerEssence -= cost;
-    updateEssenceDisplay();
-    saveProgress();
-    if (!wasOwned && collection[card.id] > 0) {
-      const newCards = getNewlyUnlockedCards();
-      if (!newCards.includes(card.id)) {
-        newCards.push(card.id);
-        setNewlyUnlockedCards(newCards);
+    showEssenceConfirmModal({
+      action: "create",
+      card,
+      amount: cost,
+      onConfirm: function() {
+        if (playerEssence < cost) {
+          showToast("Not enough Essence", {type:"error"});
+          return;
+        }
+        const collection = getCollection();
+        const wasOwned = collection[card.id] > 0;
+        collection[card.id] = (collection[card.id] || 0) + 1;
+        playerCollection = collection;
+        playerEssence -= cost;
+        updateEssenceDisplay();
+        saveProgress();
+        if (!wasOwned && collection[card.id] > 0) {
+          const newCards = getNewlyUnlockedCards();
+          if (!newCards.includes(card.id)) {
+            newCards.push(card.id);
+            setNewlyUnlockedCards(newCards);
+          }
+        }
+        if (onActionDone) onActionDone();
       }
-    }
-    if (onActionDone) onActionDone();
+    });
   };
   return btn;
 }
@@ -303,20 +310,66 @@ function createVoidCardButton(card, onActionDone) {
   }
   btn.onclick = function(e) {
     e.stopPropagation();
-    const collection = getCollection();
-    const ownedCount = collection[card.id] || 0;
-    if (ownedCount <= minKept) {
-      showToast(`You must keep at least ${minKept} of this card (${card.rarity || "Unknown rarity"}).`);
-      return;
-    }
-    collection[card.id] -= 1;
-    playerCollection = collection;
-    playerEssence += refund;
-    updateEssenceDisplay();
-    saveProgress();
-    if (onActionDone) onActionDone();
+    showEssenceConfirmModal({
+      action: "void",
+      card,
+      amount: refund,
+      onConfirm: function() {
+        const collection = getCollection();
+        const ownedCount = collection[card.id] || 0;
+        if (ownedCount <= minKept) {
+          showToast(`You must keep at least ${minKept} of this card (${card.rarity || "Unknown rarity"}).`);
+          return;
+        }
+        collection[card.id] -= 1;
+        playerCollection = collection;
+        playerEssence += refund;
+        updateEssenceDisplay();
+        saveProgress();
+        if (onActionDone) onActionDone();
+      }
+    });
   };
   return btn;
+}
+// CREATE/VOID CONFIRM MODAL
+function showEssenceConfirmModal({ 
+  action, // "create" or "void"
+  card, 
+  amount, 
+  onConfirm 
+}) {
+  const modal = document.getElementById('essence-confirm-modal');
+  const msgDiv = document.getElementById('essence-confirm-msg');
+  const cardImg = document.getElementById('essence-confirm-card-img');
+  const amtDiv = document.getElementById('essence-confirm-amount');
+  const confirmBtn = document.getElementById('essence-confirm-btn');
+  const cancelBtn = document.getElementById('essence-cancel-btn');
+  // Set message
+  msgDiv.textContent = 
+    action === "create"
+      ? `Are you sure you want to create '${card.name}' for `
+      : `Are you sure you want to void '${card.name}' for `;
+  // Card image
+  cardImg.src = card.image;
+  cardImg.alt = card.name;
+  // Amount with icon
+  amtDiv.innerHTML = `${amount} <img src="OtherImages/Icons/Essence.png" alt="Essence" style="width:24px;height:24px;vertical-align:middle;">`;
+  // Show modal
+  modal.style.display = "flex";
+  // Confirm handler
+  confirmBtn.onclick = function() {
+    modal.style.display = "none";
+    if (typeof onConfirm === "function") onConfirm();
+  };
+  // Cancel handler
+  cancelBtn.onclick = function() {
+    modal.style.display = "none";
+  };
+  // Close on outside click
+  modal.onclick = function(e) {
+    if (e.target === modal) modal.style.display = "none";
+  };
 }
 // On DOM ready
 document.addEventListener('DOMContentLoaded', setupFilterSelectPlaceholders);
