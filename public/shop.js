@@ -140,8 +140,8 @@ function showCosmeticConfirmModal({imgSrc, type, price, onConfirm}) {
         <span>${price}</span>
       </div>
       <div style="display:flex;gap:18px;justify-content:center;margin-top:8px;">
-        <button id="cosmetic-get-btn" class="btn-primary">Get</button>
-        <button id="cosmetic-cancel-btn" class="btn-secondary">Cancel</button>
+        <button id="cosmetic-get-btn" class="btn-secondary">Get</button>
+        <button id="cosmetic-cancel-btn" class="btn-negative-secondary">Cancel</button>
       </div>
     </div>
   `;
