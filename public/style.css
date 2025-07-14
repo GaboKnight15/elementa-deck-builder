@@ -628,6 +628,9 @@ button {
   box-shadow: 0 0 12px #ffe066cc;
 }
 .deck-active-btn {
+  margin-top: auto;            /* Push button to the bottom */
+  margin-bottom: 28px;         /* Space from bottom edge, adjust as needed */
+  align-self: center; 
   position: absolute;
   top: 7px;
   right: 7px;
@@ -637,6 +640,11 @@ button {
   color: #ffe066;
   cursor: pointer;
   z-index: 5;
+}
+.deck-active-btn:disabled {
+  opacity: 0.85;
+  filter: grayscale(0.3);
+  cursor: default;
 }
 #deck-panel {
   position: static !important;
@@ -884,15 +892,14 @@ button {
   gap: 6px;
 }
 #builder-container {
-  /* Ensure it takes up the full viewport or parent height */
   min-height: 100vh;
   display: flex;
-  justify-content: center;  /* center horizontally */
-  align-items: center;      /* center vertically */
-  /* Optional: remove padding/margin if added elsewhere */
+  justify-content: center;
+  align-items: center;
   padding: 0;
   margin: 0;
 }
+
 /* STATS AND DETAILS IN CARD GALLERY  */
 
 
@@ -1180,9 +1187,10 @@ button {
 #deck-selection-grid {
   display: grid;
   flex-wrap: wrap;
-  width: 100%;
+  margin: 0 auto;
+  width: auto;
+  height: auto;
   grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(3, 1fr);
   gap: 18px 18px; 
   justify-content: center;
   align-items: center;
@@ -1208,6 +1216,25 @@ button {
   max-height: 90vh;
   padding: 10px 8px 12px 8px;
   transition: box-shadow 0.18s, background 0.18s;
+}
+.deck-slot-highlight-img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 768/1075;
+  object-fit: cover;
+  opacity: 0.85;
+  border-radius: 24px 24px 0 0;
+  /* Fade out effect: */
+  mask-image: 
+    linear-gradient(to right,  transparent 0%,  black 10%, black 90%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%,  black 10%, black 90%, transparent 100%);
+  -webkit-mask-image: 
+    linear-gradient(to right,  transparent 0%,  black 10%, black 90%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%,  black 10%, black 90%, transparent 100%);
+  mask-composite: intersect;
+  -webkit-mask-composite: source-in;
+  filter: drop-shadow(0 2px 16px #1a2244cc);
+  display: block;
 }
 .deck-slot-tile.empty {
   background: #2a3345;
