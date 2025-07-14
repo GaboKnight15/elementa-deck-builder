@@ -192,6 +192,7 @@ function createCardGallery(card) {
 
 function renderGallery() {
   gallery.innerHTML = '';
+  const ownershipFilter = document.getElementById('filter-ownership-gallery')?.value || "owned";
   const selectedColor = document.getElementById('filter-color-gallery').value.toLowerCase();
   const selectedType = document.getElementById('filter-type-gallery').value.toLowerCase();
   const selectedRarity = document.getElementById('filter-rarity-gallery').value.toLowerCase();
@@ -200,8 +201,17 @@ function renderGallery() {
   const selectedAbility = document.getElementById('filter-ability-gallery').value.toLowerCase();
   const selectedCategory = document.getElementById('filter-category-gallery').value.toLowerCase();
 
-  // Filter cards as usual
+  const collection = getCollection();
+
   const filteredCards = dummyCards.filter(card => {
+    const ownedCount = collection[card.id] || 0;
+
+    // Ownership filter logic
+    if (ownershipFilter === "owned" && ownedCount <= 0) return false;
+    if (ownershipFilter === "undiscovered" && ownedCount > 0) return false;
+    if (ownershipFilter === "locked" && !card.locked) return false;
+    // "all" shows everything
+
     if (nameFilter && !card.name.toLowerCase().includes(nameFilter)) return false;
     if (selectedColor) {
       const colors = Array.isArray(card.color) ? card.color.map(c => c.toLowerCase()) : [card.color.toLowerCase()];
@@ -231,13 +241,13 @@ function renderGallery() {
     }
     return true;
   });
-  if (filteredCards.length === 0) return;
 
+  if (filteredCards.length === 0) return;
 
   filteredCards.forEach(card => {
     const cardDiv = createCardGallery(card);
     gallery.appendChild(cardDiv);
-  }); 
+  });
 }
 // FAVORITE CARDS
 function getFavoriteCards() {
@@ -294,6 +304,8 @@ document.addEventListener('DOMContentLoaded', setupFilterSelectPlaceholders);
 // === EVENT LISTENERS ===
 // ==========================
 // GALLERY EVENT FILTERS
+  document.getElementById('filter-ownership-gallery').addEventListener('change', renderGallery);
+  document.getElementById('filter-ownership-gallery').value = "owned";
   document.getElementById('filter-name-gallery').addEventListener('input', renderGallery);
   document.getElementById('filter-color-gallery').addEventListener('change', renderGallery);
   document.getElementById('filter-category-gallery').addEventListener('change', renderGallery);
