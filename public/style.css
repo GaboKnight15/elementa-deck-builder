@@ -993,12 +993,17 @@ button {
 }
 #builder-container {
   min-height: 100vh;
-  display: flex;
+  display: block;
   justify-content: center;
   align-items: flex-start;    /* <-- Change this! */
   padding: 20px 0 0 0;       /* Add top padding, adjust as needed */
   margin: 0;
   box-sizing: border-box;
+}
+#builder-container.flex-layout {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
 }
 
 /* STATS AND DETAILS IN CARD GALLERY  */
