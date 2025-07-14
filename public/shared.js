@@ -216,32 +216,53 @@ function showFullCardModal(cardObj) {
 
   const modal = document.getElementById('image-modal');
   const modalContent = document.getElementById('modal-img-content');
-  const modalImg = document.getElementById('modal-img');
-  if (modalContent) {
-    modalContent.innerHTML = `
-      <img src="${card.image}" alt="${card.name}" ${owned === 0 ? 'class="card-image-locked"' : ''}>
-      <div style="text-align:center;">
-        ${card.hp !== undefined ? `HP: ${card.hp}` : ''}
-        ${card.atk !== undefined ? ` | ATK: ${card.atk}` : ''}
-        ${card.def !== undefined ? ` | DEF: ${card.def}` : ''}
-        ${card.cost !== undefined ? ` | Cost: ${card.cost}` : ''}
-      </div>
-      <div style="text-align:center;margin:8px 0;">
-        ${card.rarity || ''} ${Array.isArray(card.type) ? card.type.join(', ') : card.type || ''}
-      </div>
-      <div style="text-align:center;font-size:0.98em;color:#555;">
-        ${card.text || ''}
-      </div>
-    `;
-    modal.style.display = 'flex';
-    if (modalImg) modalImg.style.display = "none";
-  } else {
-    modalImg.src = card.image;
-    if (owned === 0) modalImg.classList.add('card-image-locked');
-    else modalImg.classList.remove('card-image-locked');
-    modalImg.style.display = "block";
-    modal.style.display = "flex";
+  if (!modalContent) return;
+
+  // Build info fields
+  function labeled(label, value) {
+    return value ? `<div class="full-card-info-section"><span class="full-card-info-label">${label}:</span> ${value}</div>` : '';
   }
+
+  // Abilities/description
+  let detailsHtml = '';
+  detailsHtml += labeled("Category", card.category);
+  detailsHtml += labeled("Rarity", card.rarity);
+  detailsHtml += labeled("Archetype", Array.isArray(card.archetype) ? card.archetype.join(", ") : card.archetype);
+  detailsHtml += labeled("Type", Array.isArray(card.type) ? card.type.join(", ") : card.type);
+  detailsHtml += labeled("Ability", Array.isArray(card.ability) ? card.ability.join(", ") : card.ability);
+
+  let statsRow = '';
+  if (card.hp !== undefined || card.atk !== undefined || card.def !== undefined || card.cost !== undefined) {
+    statsRow = '<div class="full-card-info-section">' +
+      (card.hp !== undefined ? `<span class="full-card-info-label">HP:</span> ${card.hp} ` : '') +
+      (card.atk !== undefined ? `<span class="full-card-info-label">ATK:</span> ${card.atk} ` : '') +
+      (card.def !== undefined ? `<span class="full-card-info-label">DEF:</span> ${card.def} ` : '') +
+      (card.cost !== undefined ? `<span class="full-card-info-label">Cost:</span> ${card.cost}` : '') +
+      '</div>';
+  }
+
+  // Card text (effect)
+  let textHtml = '';
+  if (card.text) {
+    textHtml = `<div class="full-card-info-section" style="font-size:1.08em;color:#ffe066">${card.text}</div>`;
+  }
+
+  // Compose modal content (flex row)
+  modalContent.innerHTML = `
+    <div class="full-card-modal-content">
+      <div class="full-card-image-container">
+        <img src="${card.image}" alt="${card.name}" class="${owned === 0 ? 'card-image-locked' : ''}">
+      </div>
+      <div class="full-card-info">
+        <div class="full-card-info-title">${card.name}</div>
+        ${detailsHtml}
+        ${statsRow}
+        ${textHtml}
+      </div>
+    </div>
+  `;
+
+  modal.style.display = 'flex';
 }
 // IMAGE MODAL CLOSE
 document.getElementById('image-modal').onclick = (e) => {
