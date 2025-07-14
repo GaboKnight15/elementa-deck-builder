@@ -791,7 +791,9 @@ function renderRightbarZones() {
   const oppVoidDiv = document.getElementById('opponent-void-zone');
   oppVoidDiv.innerHTML = '';
   appendVoidZone(oppVoidDiv, gameState.opponentVoid, "opponent");
-
+  // Phase badge (center)
+  const phaseBadge = document.getElementById('phase-badge');
+  rightbar.appendChild(phaseBadge);
   // PLAYER VOID
   const playerVoidDiv = document.getElementById('player-void-zone');
   playerVoidDiv.innerHTML = '';
