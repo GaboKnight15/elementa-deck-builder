@@ -352,12 +352,20 @@ function showDeckViewModal(deckName) {
     img.className = 'modal-card-img';
     img.src = card.image;
     img.alt = card.name;
+
+    // Add click handler to show modal
+    img.onclick = (e) => {
+      e.stopPropagation();
+      showFullCardModal(card);
+    };
+
     wrapper.appendChild(img);
+
     const badge = document.createElement('div');
     badge.textContent = `x${count}`;
     badge.className = 'deck-count-badge badge-top-left';
     wrapper.appendChild(badge);
-    
+
     deckViewModalList.appendChild(wrapper);
     total += count;
   }
