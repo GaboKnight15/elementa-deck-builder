@@ -95,7 +95,7 @@ function createCardGallery(card) {
 
     img.onclick = (e) => {
       e.stopPropagation();
-      showFullCardModal(cardObj);
+      showFullCardModal(card);
       // Remove "new" badge after viewing
       const newCards = getNewlyUnlockedCards().filter(id => id !== card.id);
       setNewlyUnlockedCards(newCards);
@@ -122,7 +122,7 @@ function createCardGallery(card) {
     // Show count badge
     const countBadge = document.createElement('div');
     countBadge.className = 'card-count-badge';
-    countBadge.textContent = 'x' + owned;
+    countBadge.textContent = owned;
     div.appendChild(countBadge);
 
     return div;
