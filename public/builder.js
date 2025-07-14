@@ -93,40 +93,28 @@ function renderDeckSelection() {
           saveProgress();
         }
       }
-      if (deck.highlightArt) {
-        tile.style.backgroundImage = `url('${deck.highlightArt}')`;
-        tile.style.backgroundSize = "cover";
-        tile.style.backgroundPosition = "center";
-        tile.innerHTML = `<div class="deck-slot-title-overlay">${slotName}</div>`;
-      } else {
-        tile.textContent = slotName;
-      }
+if (deck.highlightArt) {
+  tile.innerHTML = `
+    <img class="deck-slot-highlight-img" src="${deck.highlightArt}" alt="highlight" />
+    <div class="deck-slot-title-overlay">${slotName}</div>
+  `;
+} else {
+  tile.textContent = slotName;
+}
 
       // --- ACTIVE DECK BUTTON/STAR ---
       const isActive = slotName === currentDeckSlot;
-      const activeBtn = document.createElement('button');
-      activeBtn.innerHTML = isActive ? '⭐ Active' : '☆ Set Active';
-      activeBtn.className = 'deck-active-btn';
-      activeBtn.style.position = 'absolute';
-      activeBtn.style.top = '7px';
-      activeBtn.style.right = '7px';
-      activeBtn.style.fontSize = '1em';
-      activeBtn.style.background = 'none';
-      activeBtn.style.border = 'none';
-      activeBtn.style.color = '#ffe066';
-      activeBtn.style.cursor = 'pointer';
-      activeBtn.style.zIndex = '5';
-      if (isActive) {
-        activeBtn.disabled = true;
-        tile.classList.add('active-deck-tile'); // for CSS highlight
-      }
-      activeBtn.onclick = (e) => {
-        e.stopPropagation();
-        currentDeckSlot = slotName;
-        saveProgress();
-        renderDeckSelection();
-      };
-      tile.appendChild(activeBtn);
+     const activeBtn = document.createElement('button');
+activeBtn.innerHTML = isActive ? '⭐ Active' : '☆ Set Active';
+activeBtn.className = 'deck-active-btn';
+activeBtn.disabled = isActive;
+activeBtn.onclick = (e) => {
+  e.stopPropagation();
+  currentDeckSlot = slotName;
+  saveProgress();
+  renderDeckSelection();
+};
+tile.appendChild(activeBtn);
 
       tile.onclick = (e) => {
         showDeckTileMenu(slotName);
@@ -365,9 +353,6 @@ function showDeckViewModal(deckName) {
     img.src = card.image;
     img.alt = card.name;
     wrapper.appendChild(img);
-    const name = document.createElement('div');
-    name.textContent = card.name;
-    wrapper.appendChild(name);
     const badge = document.createElement('div');
     badge.textContent = `x${count}`;
     badge.className = 'deck-count-badge badge-top-left';
@@ -378,6 +363,7 @@ function showDeckViewModal(deckName) {
   }
   deckViewModal.style.display = 'flex';
 }
+closeDeckViewModalBtn.classList.add('btn-negative-secondary');
 closeDeckViewModalBtn.onclick = function() {
   deckViewModal.style.display = 'none';
 };
