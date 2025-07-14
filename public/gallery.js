@@ -457,6 +457,86 @@ function showFullCardModalGallery(card) {
   modalContent.appendChild(flexContainer);
   modal.style.display = 'flex';
 }
+function createCreateCardButton(card, onActionDone) {
+  const owned = getCollection()[card.id] || 0;
+  const btn = document.createElement('img');
+  btn.src = 'OtherImages/Icons/Essence.png';
+  btn.alt = 'Create';
+  btn.title = 'Create (spend Essence to make 1 copy)';
+  btn.className = "gallery-action-btn";
+  btn.style.background = "none";
+  btn.style.cursor = "pointer";
+  btn.style.width = "38px";
+  btn.style.height = "38px";
+  btn.style.maxWidth = "38px";
+  btn.style.maxHeight = "38px";
+  btn.style.objectFit = "contain";
+  btn.style.transition = "transform 0.15s, box-shadow 0.15s";
+  btn.onclick = function(e) {
+    e.stopPropagation();
+    const cost = 50;
+    if (playerEssence < cost) {
+      showToast("Not enough Essence", {type:"error"});
+      return;
+    }
+    const collection = getCollection();
+    const wasOwned = collection[card.id] > 0;
+    collection[card.id] = (collection[card.id] || 0) + 1;
+    playerCollection = collection;
+    playerEssence -= cost;
+    updateEssenceDisplay();
+    saveProgress();
+    if (!wasOwned && collection[card.id] > 0) {
+      const newCards = getNewlyUnlockedCards();
+      if (!newCards.includes(card.id)) {
+        newCards.push(card.id);
+        setNewlyUnlockedCards(newCards);
+      }
+    }
+    if (onActionDone) onActionDone();
+  };
+  return btn;
+}
+
+function createVoidCardButton(card, onActionDone) {
+  const owned = getCollection()[card.id] || 0;
+  const btn = document.createElement('img');
+  btn.src = 'OtherImages/Icons/Void.png';
+  btn.alt = 'Void';
+  btn.title = 'Void (destroy 1 copy for Essence)';
+  btn.className = "gallery-action-btn";
+  btn.style.background = "none";
+  btn.style.cursor = "pointer";
+  btn.style.width = "38px";
+  btn.style.height = "38px";
+  btn.style.maxWidth = "38px";
+  btn.style.maxHeight = "38px";
+  btn.style.objectFit = "contain";
+  btn.style.transition = "transform 0.15s, box-shadow 0.15s";
+  const minKept = getMinimumKeptForRarity(card);
+  if (owned <= minKept) {
+    btn.style.opacity = "0.5";
+    btn.style.pointerEvents = "none";
+    btn.title = `You must keep at least ${minKept} copies of this card (${card.rarity || "Unknown rarity"}).`;
+  }
+  btn.onclick = function(e) {
+    e.stopPropagation();
+    const collection = getCollection();
+    const ownedCount = collection[card.id] || 0;
+    if (ownedCount <= minKept) {
+      showToast(`You must keep at least ${minKept} of this card (${card.rarity || "Unknown rarity"}).`);
+      return;
+    }
+    const refund = 10;
+    collection[card.id] -= 1;
+    playerCollection = collection;
+    playerEssence += refund;
+    updateEssenceDisplay();
+    saveProgress();
+    if (onActionDone) onActionDone();
+  };
+  return btn;
+}
 // On DOM ready
 document.addEventListener('DOMContentLoaded', setupFilterSelectPlaceholders);
 // ==========================
