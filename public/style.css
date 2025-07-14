@@ -547,37 +547,27 @@ button {
 .full-card-modal-content {
   display: flex;
   flex-direction: row;
-  gap: 32px;
   align-items: flex-start;
   justify-content: center;
-  max-width: 760px;
-  width: 96vw;
+  gap: 24px;
+  padding: 2em 2em 1.3em 2em;
   background: #202a38;
   border-radius: 18px;
-  padding: 2.2em 2.1em 1.7em 2.1em;
   box-shadow: 0 6px 32px #0009;
   position: relative;
+  max-width: 760px;
+  width: 96vw;
 }
 
-/* Image container: restrict card width */
 .full-card-image-container {
   flex: 0 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 320px;
+  max-width: 325px;
   width: 23vw;
 }
-.full-card-image-container img {
-  width: 100%;
-  max-width: 280px;
-  min-width: 200px;
-  height: auto;
-  border-radius: 14px;
-  box-shadow: 0 3px 18px #0004;
-}
 
-/* Info box to the right */
 .full-card-info {
   flex: 1 1 0;
   background: #232a3c;
@@ -586,13 +576,16 @@ button {
   color: #ffe066;
   display: flex;
   flex-direction: column;
-  min-width: 200px;
-  max-width: 320px;
+  min-width: 220px;
+  max-width: 350px;
   gap: 0.7em;
   box-shadow: 0 2px 12px #0002;
+  /* REMOVE any absolute positioning! */
+  position: static;
 }
+
 .full-card-info-title {
-  font-size: 1.4em;
+  font-size: 1.35em;
   font-weight: bold;
   color: #ffe066;
   margin-bottom: 0.5em;
