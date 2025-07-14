@@ -60,7 +60,7 @@ function createCardGallery(card) {
             case 'white':   div.classList.add('card-element-light'); break;
         }
     });
-    
+
     const img = document.createElement('img');
     img.src = card.image;
     img.onerror = function() {
@@ -85,91 +85,12 @@ function createCardGallery(card) {
       renderGallery();
     };
     div.appendChild(img);
-  
+
     const actionRow = document.createElement('div');
     actionRow.className = "action-row";
-
-    // Essence ("Create") button
-    const createBtnImg = document.createElement('img');
-    createBtnImg.src = 'OtherImages/Icons/Essence.png';
-    createBtnImg.alt = 'Create';
-    createBtnImg.title = 'Create (spend Essence to make 1 copy)';
-    createBtnImg.className = "gallery-action-btn";
-    // Set styles dynamically
-    createBtnImg.style.background = "none";
-    createBtnImg.style.cursor = "pointer";
-    createBtnImg.style.width = "38px";
-    createBtnImg.style.height = "38px";
-    createBtnImg.style.maxWidth = "38px";
-    createBtnImg.style.maxHeight = "38px";
-    createBtnImg.style.objectFit = "contain";
-    createBtnImg.style.transition = "transform 0.15s, box-shadow 0.15s";
-    createBtnImg.onclick = function(e) {
-      e.stopPropagation();
-      const cost = 50;
-      if (playerEssence < cost) {
-        showToast("Not enough Essence", {type:"error"});
-        return;
-      }
-      const collection = getCollection();
-      const wasOwned = collection[card.id] > 0;
-      collection[card.id] = (collection[card.id] || 0) + 1;
-      playerCollection = collection;
-      playerEssence -= cost;
-      updateEssenceDisplay();  
-      saveProgress();
-
-      // Mark as new if previously not owned
-      if (!wasOwned && collection[card.id] > 0) {
-        const newCards = getNewlyUnlockedCards();
-        if (!newCards.includes(card.id)) {
-          newCards.push(card.id);
-          setNewlyUnlockedCards(newCards);
-        }
-      }
-      renderGallery();
-    };
-    actionRow.appendChild(createBtnImg);
-
-    // Void button
-    const voidBtnImg = document.createElement('img');
-    voidBtnImg.src = 'OtherImages/Icons/Void.png';
-    voidBtnImg.alt = 'Void';
-    voidBtnImg.title = 'Void (destroy 1 copy for Essence)';
-    voidBtnImg.className = "gallery-action-btn";
-    // Set styles dynamically
-    voidBtnImg.style.background = "none";
-    voidBtnImg.style.cursor = "pointer";
-    voidBtnImg.style.width = "38px";
-    voidBtnImg.style.height = "38px";
-    voidBtnImg.style.maxWidth = "38px";
-    voidBtnImg.style.maxHeight = "38px";
-    voidBtnImg.style.objectFit = "contain";
-    voidBtnImg.style.transition = "transform 0.15s, box-shadow 0.15s";
-    const minKept = getMinimumKeptForRarity(card);
-    if (owned <= minKept) {
-      voidBtnImg.style.opacity = "0.5";
-      voidBtnImg.style.pointerEvents = "none";
-      voidBtnImg.title = `You must keep at least ${minKept} copies of this card (${card.rarity || "Unknown rarity"}).`;
-    }
-    voidBtnImg.onclick = function(e) {
-      e.stopPropagation();
-      const collection = getCollection();
-      const ownedCount = collection[card.id] || 0;
-      if (ownedCount <= minKept) {
-        showToast(`You must keep at least ${minKept} of this card (${card.rarity || "Unknown rarity"}).`);
-        return;
-      }
-      const refund = 10;
-      collection[card.id] -= 1;
-      playerCollection = collection;
-      playerEssence += refund;
-      updateEssenceDisplay();
-      saveProgress();
-      renderGallery();
-    };
-    actionRow.appendChild(voidBtnImg);
-    
+    // --- Use helper functions for buttons ---
+    actionRow.appendChild(createCreateCardButton(card, renderGallery));
+    actionRow.appendChild(createVoidCardButton(card, renderGallery));
     div.appendChild(actionRow);
 
     // "New!" badge
@@ -180,7 +101,7 @@ function createCardGallery(card) {
       newBadge.textContent = 'New!';
       div.appendChild(newBadge);
     }
-    
+
     // Show count badge
     const countBadge = document.createElement('div');
     countBadge.className = 'card-count-badge';
