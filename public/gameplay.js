@@ -1872,6 +1872,7 @@ function showMainDomainSelectionModal(deckArr, onSelected) {
     modal.appendChild(content);
     document.body.appendChild(modal);
   }
+    modal.style.background = "rgba(20,30,40,0.92)";
   const content = modal.querySelector('.modal-content');
   content.innerHTML = "<h3>Select Your Main Domain</h3>";
 
@@ -1927,6 +1928,7 @@ function showChampionSelectionModal(deckArr, onSelected) {
     modal.appendChild(content);
     document.body.appendChild(modal);
   }
+    modal.style.background = "rgba(20,30,40,0.92)";
   const content = modal.querySelector('.modal-content');
   content.innerHTML = "<h3>Select Your Champion</h3>";
   const champions = getChampionsFromDeck(deckArr);
