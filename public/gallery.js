@@ -78,7 +78,7 @@ function createCardGallery(card) {
 
     img.onclick = (e) => {
       e.stopPropagation();
-      showFullCardModalGallery(cardObj);
+      showFullCardModalGallery(card);
       // Remove "new" badge after viewing
       const newCards = getNewlyUnlockedCards().filter(id => id !== card.id);
       setNewlyUnlockedCards(newCards);
@@ -297,17 +297,17 @@ function setupFilterSelectPlaceholders() {
     select.addEventListener('blur', () => updateFilterPlaceholder(select));
   });
 }
-function showFullCardModalGallery(cardObj) {
-  // Find the card data
-  const card = dummyCards.find(c => c.id === (cardObj.cardId || cardObj.id));
-  if (!card) return;
+function showFullCardModalGallery(card) {
+  // Find the card data (card is already the object we want!)
+  const foundCard = dummyCards.find(c => c.id === (card.cardId || card.id));
+  if (!foundCard) return;
   const collection = getCollection();
-  const owned = collection[card.id] || 0;
+  const owned = collection[foundCard.id] || 0;
 
   // Build action row (Create/Void)
   const actionRow = document.createElement('div');
   actionRow.className = "full-card-action-row";
-  
+
   // Create Button
   const createBtnImg = document.createElement('img');
   createBtnImg.src = 'OtherImages/Icons/Essence.png';
@@ -327,16 +327,16 @@ function showFullCardModalGallery(cardObj) {
       return;
     }
     const collection = getCollection();
-    const wasOwned = collection[card.id] > 0;
-    collection[card.id] = (collection[card.id] || 0) + 1;
+    const wasOwned = collection[foundCard.id] > 0;
+    collection[foundCard.id] = (collection[foundCard.id] || 0) + 1;
     playerCollection = collection;
     playerEssence -= cost;
     updateEssenceDisplay();
     saveProgress();
-    if (!wasOwned && collection[card.id] > 0) {
+    if (!wasOwned && collection[foundCard.id] > 0) {
       const newCards = getNewlyUnlockedCards();
-      if (!newCards.includes(card.id)) {
-        newCards.push(card.id);
+      if (!newCards.includes(foundCard.id)) {
+        newCards.push(foundCard.id);
         setNewlyUnlockedCards(newCards);
       }
     }
@@ -356,22 +356,22 @@ function showFullCardModalGallery(cardObj) {
   voidBtnImg.style.width = "38px";
   voidBtnImg.style.height = "38px";
   voidBtnImg.style.objectFit = "contain";
-  const minKept = getMinimumKeptForRarity(card);
+  const minKept = getMinimumKeptForRarity(foundCard);
   if (owned <= minKept) {
     voidBtnImg.style.opacity = "0.5";
     voidBtnImg.style.pointerEvents = "none";
-    voidBtnImg.title = `You must keep at least ${minKept} copies of this card (${card.rarity || "Unknown rarity"}).`;
+    voidBtnImg.title = `You must keep at least ${minKept} copies of this card (${foundCard.rarity || "Unknown rarity"}).`;
   }
   voidBtnImg.onclick = function(e) {
     e.stopPropagation();
     const collection = getCollection();
-    const ownedCount = collection[card.id] || 0;
+    const ownedCount = collection[foundCard.id] || 0;
     if (ownedCount <= minKept) {
-      showToast(`You must keep at least ${minKept} of this card (${card.rarity || "Unknown rarity"}).`);
+      showToast(`You must keep at least ${minKept} of this card (${foundCard.rarity || "Unknown rarity"}).`);
       return;
     }
     const refund = 10;
-    collection[card.id] -= 1;
+    collection[foundCard.id] -= 1;
     playerCollection = collection;
     playerEssence += refund;
     updateEssenceDisplay();
@@ -391,8 +391,8 @@ function showFullCardModalGallery(cardObj) {
   const imgContainer = document.createElement('div');
   imgContainer.className = "full-card-image-container";
   const img = document.createElement('img');
-  img.src = card.image;
-  img.alt = card.name;
+  img.src = foundCard.image;
+  img.alt = foundCard.name;
   if (owned === 0) img.classList.add("card-image-locked");
   imgContainer.appendChild(img);
 
@@ -403,16 +403,16 @@ function showFullCardModalGallery(cardObj) {
   // Name/title
   const titleDiv = document.createElement('div');
   titleDiv.className = "full-card-info-title";
-  titleDiv.textContent = card.name;
+  titleDiv.textContent = foundCard.name;
   infoBox.appendChild(titleDiv);
 
   // Info fields
   const fields = [
-    { label: "Category", value: card.category },
-    { label: "Rarity", value: card.rarity },
-    { label: "Archetype", value: Array.isArray(card.archetype) ? card.archetype.join(", ") : card.archetype },
-    { label: "Type", value: Array.isArray(card.type) ? card.type.join(", ") : card.type },
-    { label: "Ability", value: Array.isArray(card.ability) ? card.ability.join(", ") : card.ability }
+    { label: "Category", value: foundCard.category },
+    { label: "Rarity", value: foundCard.rarity },
+    { label: "Archetype", value: Array.isArray(foundCard.archetype) ? foundCard.archetype.join(", ") : foundCard.archetype },
+    { label: "Type", value: Array.isArray(foundCard.type) ? foundCard.type.join(", ") : foundCard.type },
+    { label: "Ability", value: Array.isArray(foundCard.ability) ? foundCard.ability.join(", ") : foundCard.ability }
   ];
   fields.forEach(field => {
     if (field.value) {
@@ -424,24 +424,24 @@ function showFullCardModalGallery(cardObj) {
   });
 
   // Stats
-  if (card.hp !== undefined || card.atk !== undefined || card.def !== undefined || card.cost !== undefined) {
+  if (foundCard.hp !== undefined || foundCard.atk !== undefined || foundCard.def !== undefined || foundCard.cost !== undefined) {
     const statsRow = document.createElement('div');
     statsRow.className = "full-card-info-section";
     statsRow.innerHTML =
-      (card.hp !== undefined ? `<span class="full-card-info-label">HP:</span> ${card.hp} ` : "") +
-      (card.atk !== undefined ? `<span class="full-card-info-label">ATK:</span> ${card.atk} ` : "") +
-      (card.def !== undefined ? `<span class="full-card-info-label">DEF:</span> ${card.def} ` : "") +
-      (card.cost !== undefined ? `<span class="full-card-info-label">Cost:</span> ${card.cost}` : "");
+      (foundCard.hp !== undefined ? `<span class="full-card-info-label">HP:</span> ${foundCard.hp} ` : "") +
+      (foundCard.atk !== undefined ? `<span class="full-card-info-label">ATK:</span> ${foundCard.atk} ` : "") +
+      (foundCard.def !== undefined ? `<span class="full-card-info-label">DEF:</span> ${foundCard.def} ` : "") +
+      (foundCard.cost !== undefined ? `<span class="full-card-info-label">Cost:</span> ${foundCard.cost}` : "");
     infoBox.appendChild(statsRow);
   }
 
   // Card text
-  if (card.text) {
+  if (foundCard.text) {
     const textDiv = document.createElement('div');
     textDiv.className = "full-card-info-section";
     textDiv.style.fontSize = "1.08em";
     textDiv.style.color = "#ffe066";
-    textDiv.textContent = card.text;
+    textDiv.textContent = foundCard.text;
     infoBox.appendChild(textDiv);
   }
 
