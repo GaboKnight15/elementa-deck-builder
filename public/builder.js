@@ -58,6 +58,7 @@ function showDeckSelection() {
   deckSelectionGrid.style.display = '';
   deckBuilderUI.style.display = 'none';
   builderContainer.style.display = '';
+  builderContainer.classList.add('flex-layout');
   deckPanel.style.display = 'none';
   renderDeckSelection();
 }
@@ -65,6 +66,7 @@ function showDeckBuilder() {
   deckSelectionGrid.style.display = 'none';
   deckBuilderUI.style.display = '';
   builderContainer.style.display = '';
+  builderContainer.classList.remove('flex-layout');
   deckPanel.style.display = '';
   updateDeckDisplay();
   renderBuilder();
