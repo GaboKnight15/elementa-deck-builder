@@ -17,6 +17,19 @@ const filterSelectLabels = {
   'filter-archetype-builder': 'Archetype',
   'filter-ability-builder': 'Ability'
 };
+const CREATE_ESSENCE_COST = {
+  common: 5,
+  rare: 25,
+  epic: 100,
+  legendary: 500
+};
+
+const VOID_ESSENCE_REFUND = {
+  common: 1,
+  rare: 5,
+  epic: 20,
+  legendary: 100
+};
 // ==========================
 // === RENDERING CARDS ===
 // ==========================
@@ -29,6 +42,10 @@ function getMinimumKeptForRarity(card) {
     case 'common':    return 4;
     default:          return 1;
   }
+}
+function getRarityKey(card) {
+  // Defensive: default to 'common' if missing/unknown
+  return (card.rarity || 'common').toLowerCase();
 }
 function createCardGallery(card) {
     const collection = getCollection();
@@ -383,7 +400,9 @@ function createCreateCardButton(card, onActionDone) {
   const btn = document.createElement('img');
   btn.src = 'OtherImages/Icons/Essence.png';
   btn.alt = 'Create';
-  btn.title = 'Create (spend Essence to make 1 copy)';
+  const rarityKey = getRarityKey(card);
+  const cost = CREATE_ESSENCE_COST[rarityKey] || 5;
+  btn.title = `Create (costs ${cost} Essence)`;
   btn.className = "gallery-action-btn";
   btn.style.background = "none";
   btn.style.cursor = "pointer";
@@ -395,7 +414,6 @@ function createCreateCardButton(card, onActionDone) {
   btn.style.transition = "transform 0.15s, box-shadow 0.15s";
   btn.onclick = function(e) {
     e.stopPropagation();
-    const cost = 50;
     if (playerEssence < cost) {
       showToast("Not enough Essence", {type:"error"});
       return;
@@ -424,7 +442,9 @@ function createVoidCardButton(card, onActionDone) {
   const btn = document.createElement('img');
   btn.src = 'OtherImages/Icons/Void.png';
   btn.alt = 'Void';
-  btn.title = 'Void (destroy 1 copy for Essence)';
+  const rarityKey = getRarityKey(card);
+  const refund = VOID_ESSENCE_REFUND[rarityKey] || 1;
+  btn.title = `Void (refunds ${refund} Essence)`;
   btn.className = "gallery-action-btn";
   btn.style.background = "none";
   btn.style.cursor = "pointer";
@@ -448,7 +468,6 @@ function createVoidCardButton(card, onActionDone) {
       showToast(`You must keep at least ${minKept} of this card (${card.rarity || "Unknown rarity"}).`);
       return;
     }
-    const refund = 10;
     collection[card.id] -= 1;
     playerCollection = collection;
     playerEssence += refund;
