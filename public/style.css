@@ -32,23 +32,11 @@ button {
   border-radius: 4px;
   cursor: pointer;
 }
-
 #app-main { 
   display: none;
 }
 #app-main.active {
   display: block;    
-}
-#main-nav {
-  display: none;
-}
-#main-nav.active {
-  display: flex;
-  justify-content: center;
-  gap: 1.2em;
-  flex: 2 1 auto;
-  background: #1a2533
-  margin-bottom: 10px;
 }
 /* Add these or adjust as needed */
  #login-menu {
