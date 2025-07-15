@@ -29,56 +29,56 @@
 <div id="app-main">  
 
 <!-- HOME -->
-<section id="home-section" class="section">
+<section id="home-section" class="section-active">
   <div id="home-container" class="section-container">
     <div id="home-particles" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;"></div>
-    <div class="home-top-bar">
-      <!-- PROFILE AREA -->
-      <div id="profile-area">  
-        <img id="profile-pic" src="CardImages/Avatars/Default.png" alt="Profile">
-        <div class="profile-info-stack">
-          <!-- COINS -->
-          <div id="currency-display">
-            <span class="currency-display">
-              <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins">
-              <span id="currency-amount">0</span>
-            </span>
-            <!-- ESSENCE -->
-            <span class="currency-display">
-              <img class="currency-icon" src="OtherImages/Icons/Essence.png" alt="Essence">
-              <span id="essence-amount">0</span>
-            </span> 
-          </div>
-          <!-- PLAYER LEVEL -->  
-          <div id="player-level-widget">
-            <span id="player-level-label">Lv 1</span>
-            <div id="player-exp-bar-bg">
-              <div id="player-exp-bar-fill"></div>
-            </div>
-            <span id="player-exp-numbers">0/100</span>
-          </div>
-        </div>
-      </div>
-      <button id="add-coins-btn" style="position:absolute;top:40px;right:30px;z-index:999;">100 Coins</button>
-      <!-- QUESTS & ACHIEVEMENTS ICONS -->
-      <div id="header-icons">
-        <div style="position:relative; display:inline-block;"> 
-          <img id="friends-icon" src="OtherImages/Icons/Friends.png" alt="Friends" style="width:32px;cursor:pointer;">
-          <span id="friends-notification-dot" class="header-notification-dot" style="display:none;"></span>
-        </div>
-        <span id="quests-icon-wrapper" style="position:relative;display:inline-block;">
-          <img src="OtherImages/Icons/Quest.png" alt="quests" id="quests-icon" class="header-action-icon" title="quests">
-          <span id="quests-notification-dot" class="header-notification-dot" style="display:none;"></span>
+<div class="home-top-bar">
+  <!-- Left: profile area -->
+  <div id="profile-area">
+    <img id="profile-pic" src="CardImages/Avatars/Default.png" alt="Profile">
+    <div class="profile-info-stack">
+      <!-- COINS -->
+      <div id="currency-display">
+        <span class="currency-display">
+          <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins">
+          <span id="currency-amount">0</span>
         </span>
-        <span id="achievements-icon-wrapper" style="position:relative;display:inline-block;">
-          <img src="OtherImages/Icons/Rewards.png" alt="Achievements" id="achievements-icon" class="header-action-icon" title="Achievements">
-          <span id="achievements-notification-dot" class="header-notification-dot" style="display:none;"></span>
-        </span>
-        <span id="settings-burger-wrapper" style="position:relative;display:inline-block;">
-          <img src="OtherImages/Icons/Settings.png" alt="Settings" id="settings-burger" class="header-action-icon" title="Settings">
+        <!-- ESSENCE -->
+        <span class="currency-display">
+          <img class="currency-icon" src="OtherImages/Icons/Essence.png" alt="Essence">
+          <span id="essence-amount">0</span>
         </span>
       </div>
-    </div> <!-- END .home-top-bar -->
+      <!-- PLAYER LEVEL -->
+      <div id="player-level-widget">
+        <span id="player-level-label">Lv 1</span>
+        <div id="player-exp-bar-bg">
+          <div id="player-exp-bar-fill"></div>
+        </div>
+        <span id="player-exp-numbers">0/100</span>
+      </div>
+    </div>
+  </div>
+  <!-- Right: header icons -->
+  <div id="header-icons">
+    <div style="position:relative; display:inline-block;">
+      <img id="friends-icon" src="OtherImages/Icons/Friends.png" alt="Friends" class="header-action-icon">
+      <span id="friends-notification-dot" class="header-notification-dot" style="display:none;"></span>
+    </div>
+    <span id="quests-icon-wrapper" style="position:relative;display:inline-block;">
+      <img src="OtherImages/Icons/Quest.png" alt="quests" id="quests-icon" class="header-action-icon" title="quests">
+      <span id="quests-notification-dot" class="header-notification-dot" style="display:none;"></span>
+    </span>
+    <span id="achievements-icon-wrapper" style="position:relative;display:inline-block;">
+      <img src="OtherImages/Icons/Rewards.png" alt="Achievements" id="achievements-icon" class="header-action-icon" title="Achievements">
+      <span id="achievements-notification-dot" class="header-notification-dot" style="display:none;"></span>
+    </span>
+    <span id="settings-burger-wrapper" style="position:relative;display:inline-block;">
+      <img src="OtherImages/Icons/Settings.png" alt="Settings" id="settings-burger" class="header-action-icon" title="Settings">
+    </span>
+  </div>
+</div>
+<button id="add-coins-btn" style="position:absolute;top:40px;right:30px;z-index:999;">100 Coins</button>- END .home-top-bar -->
     <div id="home-menu-icons" style="display:grid; flex-wrap:wrap; gap:24px; justify-content:center; margin:2em 0;">
       <div class="home-menu-btn" data-section="gallery-section">
         <img src="OtherImages/Icons/Gallery.png" alt="Gallery" class="home-menu-img"/>
@@ -101,7 +101,7 @@
   </div>
 </section>
                               <!-- GALLERY -->
-<section id="gallery-section" class="section active">
+<section id="gallery-section" class="section">
   <div id="gallery-container" class="section-container">
         <!-- SECTION HEADER START -->
     <div id="gallery-header" class="section-header">
