@@ -206,36 +206,36 @@ function updateCurrencyDisplay() {
 // ==========================
 
 // HOME SCREEN
+// Always use only .active to show sections!
 document.querySelectorAll('.home-menu-btn').forEach(btn => {
   btn.onclick = function() {
-    // Simulate click on main nav or call your navigation function
     const section = btn.getAttribute('data-section');
     // Hide all sections
     document.querySelectorAll('section[id$="-section"]').forEach(sectionEl => {
       sectionEl.classList.remove('active');
     });
-    // Show the target section
-    document.getElementById(section).classList.add('active');
-    // Optionally call the special action if needed (copy from your shared.js)
+    // Special actions for navigation
     const specialActions = {
-      'home-section' : function() {},
       'gallery-section' : window.renderGallery,
       'builder-section' : window.showDeckSelection,
       'gameplay-section': function() {
-        document.querySelectorAll('section[id$="-section"]').forEach(sectionEl => {
-          sectionEl.classList.remove('active');
-        });
+        // Show only mode-select-section when clicking Play
         document.getElementById('mode-select-section').classList.add('active');
       },
       'shop-section'    : window.renderShop
     };
-    if (typeof specialActions[section] === 'function') {
-      specialActions[section]();
+    if (section === 'gameplay-section') {
+      // Show mode select only
+      if (typeof specialActions['gameplay-section'] === 'function') specialActions['gameplay-section']();
+    } else {
+      document.getElementById(section).classList.add('active');
+      if (typeof specialActions[section] === 'function') specialActions[section]();
     }
   };
 });
-document.querySelectorAll('section[id$="-section"]').forEach(section => section.classList.remove('section-active', 'active'));
-document.getElementById('home-section').classList.add('section-active');
+// On page load, hide all, show home
+document.querySelectorAll('section[id$="-section"]').forEach(section => section.classList.remove('active'));
+document.getElementById('home-section').classList.add('active');
 
 if (typeof window.renderGallery === 'function') {
   window.renderGallery(); // keep if you want to pre-render gallery cards in the background; remove if not needed
