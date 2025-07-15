@@ -355,7 +355,7 @@ button {
   margin: 0;
 }
 .home-menu-btn:hover, .home-menu-btn:focus {
-  transform: scale(1.07) translateY(-10px) rotate(-1.5deg);
+  transform: scale(1.07) translateY(-10px);
   box-shadow: 0 10px 40px #50eaff99, 0 0 0 8px #ffe06644;
   background: #253047;
   border: 3.5px solid #ffe066;
