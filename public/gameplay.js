@@ -2525,7 +2525,39 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 });
+function enterBattlefield() {
+  // Hide the menu header, show the in-game header
+  document.getElementById('gameplay-header').style.display = 'none';
+  document.getElementById('battlefield-header').style.display = 'flex';
+  // ...rest of your enter logic...
+}
 
+function exitBattlefieldToMenu() {
+  // Show the menu header, hide the in-game header
+  document.getElementById('battlefield-header').style.display = 'none';
+  document.getElementById('gameplay-header').style.display = 'flex';
+  // ...rest of your exit logic...
+  // e.g., show mode select or gameplay lobby
+}
+// Gameplay (menu) header
+document.getElementById('gameplay-settings-btn').onclick = function() {
+  document.getElementById('settings-modal').style.display = 'flex';
+};
+document.getElementById('gameplay-back-btn').onclick = function() {
+  document.getElementById('gameplay-section').classList.remove('active');
+  document.getElementById('home-section').classList.add('active');
+};
+
+// Battlefield (in-game) header
+document.getElementById('battlefield-settings-btn').onclick = function() {
+  document.getElementById('settings-modal').style.display = 'flex';
+};
+document.getElementById('battlefield-back-btn').onclick = function() {
+  // Example: leave match or show confirmation
+  if (confirm("Leave the game and return to menu?")) {
+    exitBattlefieldToMenu();
+  }
+};
 // BACK IMAGES
 // CPU Deck Modal: Back to Mode Selection
 document.getElementById('cpu-back-btn').addEventListener('click', function() {
