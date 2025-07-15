@@ -220,14 +220,14 @@ function showCpuDeckModal() {
       // Store selected CPU deck (in window or gameState)
       window.selectedCpuDeck = deck;
       window.selectedCpuDeck.cardbackArt = "OtherImages/Cardbacks/DefaultCardback.png";
-      showPlayerDeckModal();
+      showPlayerDeckModal('solo');
     };
     list.appendChild(div);
   });
   document.getElementById('close-cpu-deck-modal').onclick = () => { modal.style.display = 'none'; };
   modal.style.display = 'flex';
 }
-function showPlayerDeckModal() {
+function showPlayerDeckModal(mode) {
   const modal = document.getElementById('player-deck-modal');
   const list = document.getElementById('player-deck-list');
   list.innerHTML = '';
@@ -2480,7 +2480,7 @@ function cancelPrivateLobby() {
 // Called when both players are in the lobby and ready to select decks
 function onPrivateLobbyReady() {
   document.getElementById('private-lobby-modal').style.display = 'none';
-  showPlayerDeckModal(); // or showOpponentDeckModal for the other player
+  showPlayerDeckModal('private'); // or showOpponentDeckModal for the other player
   // After deck chosen, sync and then call startPrivateGame()
 }
 
