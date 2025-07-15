@@ -2,7 +2,7 @@
 
 const socket = io();
 let currentRoomId = null;
-
+window.socket = window.io ? window.io() : undefined;
 // UI elements
 const lobbyUI = document.getElementById('lobby-ui');
 const chatUI = document.getElementById('chat-ui');
@@ -264,7 +264,11 @@ socket.on('room error', (msg) => {
 });
 
 // Add this socket event listener (only once, after socket connection):
-window.socket.on('casual-match-found', function(matchData) {
-  document.getElementById('casual-searching-modal').style.display = 'none';
-  if (typeof startCasualGame === "function") startCasualGame(matchData);
-});
+if (window.socket) {
+  window.socket.on('casual-match-found', function(matchData) {
+    document.getElementById('casual-searching-modal').style.display = 'none';
+    if (typeof startCasualGame === "function") startCasualGame(matchData);
+  });
+} else {
+  console.error("Socket.io not initialized!");
+}
