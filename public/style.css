@@ -137,6 +137,61 @@ button {
   box-sizing: border-box;
   overflow-y: auto;
 }
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #232a3c;
+  padding: 0.8em 2.2em 0.8em 1.1em;
+  border-bottom: 2px solid #28314a;
+  min-height: 54px;
+  width: 100%;
+  box-sizing: border-box;
+  z-index: 20;
+}
+.section-header-left,
+.section-header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+.section-header-title {
+  flex: 1 1 auto;
+  text-align: center;
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #ffe066;
+  letter-spacing: 0.02em;
+  text-shadow: 0 1px 4px #000b;
+  margin: 0 0.5em;
+  user-select: none;
+  white-space: nowrap;
+}
+.section-header-btn {
+  cursor: pointer;
+  width: 35px;
+  height: 35px;
+  object-fit: contain;
+  border-radius: 7px;
+  transition: background 0.13s, box-shadow 0.13s;
+  background: none;
+  border: none;
+  padding: 3px;
+}
+.section-header-btn:hover {
+  background: #2a3550;
+  box-shadow: 0 2px 14px #ffe06655;
+}
+.section-header-essence {
+  font-size: 1.08em;
+  color: #ffe066;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-right: 12px;
+}
 /* For modal overlay and content (if not already styled) */
 #settings-menu {
   display: flex;
