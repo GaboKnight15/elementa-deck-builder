@@ -122,6 +122,14 @@ const INDIVIDUAL_CARDS_REFRESH_COST = 250;
 let individualCardsTimerInterval = null;
 let cosmeticConfirmModal = null;
 
+document.getElementById('shop-settings-btn').onclick = function() {
+  document.getElementById('settings-modal').style.display = 'flex';
+};
+document.getElementById('shop-back-btn').onclick = function() {
+  document.getElementById('shop-section').classList.remove('active');
+  document.getElementById('home-section').classList.add('active');
+};
+
 function showCosmeticConfirmModal({imgSrc, type, price, onConfirm}) {
   if (cosmeticConfirmModal) 
   cosmeticConfirmModal.remove();
@@ -874,5 +882,6 @@ function renderShop() {
       renderShopAvatars()
       renderShopPacks();
       renderIndividualCardsShop(false);
+      updateCurrencyDisplay();
 }
 window.renderShop = renderShop;
