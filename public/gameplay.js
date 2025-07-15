@@ -2526,14 +2526,39 @@ function cancelCasualMatchmaking() {
 }
 
 function startCasualGame(matchData) {
-  // Set up opponent info, decks, etc. from matchData
-  // This will be very similar to startPrivateGame/startSoloGame
+  // 1. Decks
+  gameState = gameState || {};
+  gameState.playerDeck = shuffle(buildDeck(window.selectedPlayerDeck.deckObj || window.selectedPlayerDeck));
+  gameState.opponentDeck = shuffle(buildDeck(matchData.opponentDeck));
+
+  // 2. Profiles
+  gameState.playerProfile = getMyProfileInfo && getMyProfileInfo();
+  if (matchData.opponentProfile) {
+    gameState.opponentProfile = matchData.opponentProfile;
+    if (typeof renderProfile === "function") {
+      renderProfile('opponent-profile', matchData.opponentProfile);
+      document.getElementById('opponent-profile').style.display = '';
+    }
+  }
+
+  // 3. Reset multiplayer state if needed
+  opponentDeckReceived = true; // If you use this flag to gate start, set it here.
+
+  // 4. UI Transition
   setBattlefieldLeftbarVisibility(true);
   document.querySelectorAll('section[id$="-section"]').forEach(section => section.classList.remove('active'));
   document.getElementById('gameplay-section').classList.add('active');
   enterBattlefield();
-  // Setup decks, profiles, etc.
-  // Optionally: run showGameStartAnimation and initiateMainDomainAndChampionSelection
+
+  // 5. Animations and selection
+  showGameStartAnimation(() => {
+    initiateMainDomainAndChampionSelection(gameState.playerDeck, () => {
+      // Draw hand, set up initial turn, etc.
+    });
+  });
+
+  // 6. Chat, etc. (if needed)
+  if (typeof resetChatLog === "function") resetChatLog();
 }
 function setBattlefieldLeftbarVisibility(visible) {
   const leftbar = document.getElementById('battlefield-leftbar');
