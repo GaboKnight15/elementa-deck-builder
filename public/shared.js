@@ -215,7 +215,7 @@ document.querySelectorAll('.home-menu-btn').forEach(btn => {
       sectionEl.classList.remove('section-active','active');
     });
     // Show the target section
-    document.getElementById(section).classList.add('active');
+    document.getElementById(section).classList.add('section-active');
     // Optionally call the special action if needed (copy from your shared.js)
     const specialActions = {
       'home-section' : function() {},
