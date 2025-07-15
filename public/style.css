@@ -2727,14 +2727,34 @@ button {
   display: flex;
   flex-wrap: wrap;
   gap: 28px 24px;
+  justify-content: flex-start;
 }
 .shop-banner-option {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  width: 120px;
+  width: 160px;
   margin-bottom: 10px;
+}
+.shop-banner-img {
+  width: 160px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 9px;
+  box-shadow: 0 2px 8px #0005;
+  background: #232a3c;
+  margin-bottom: 0.3em;
+  transition: box-shadow 0.15s, transform 0.13s;
+}
+.shop-banner-img:hover,
+.shop-banner-img:focus {
+  box-shadow: 0 6px 18px #50eaffcc;
+  transform: scale(1.07);
+  outline: 2px solid #ffe066;
+}
+.shop-banner-img.unlocked {
+  border-color: #ffe066;
 }
 .shop-avatar-img {
   width: 68px;
@@ -2756,25 +2776,6 @@ button {
   box-shadow: 0 4px 18px #50eaffcc, 0 0 0 2.5px #ffe066;
   border-color: #ffe066;
   outline: none;
-}
-.shop-banner-img {
-  width: 160px;
-  height: 80px;
-  object-fit: cover;
-  border-radius: 9px;
-  box-shadow: 0 2px 8px #0005;
-  background: #232a3c;
-  margin-bottom: 0.3em;
-  transition: box-shadow 0.15s, transform 0.13s;
-}
-.shop-banner-img:hover,
-.shop-banner-img:focus {
-  box-shadow: 0 6px 18px #50eaffcc;
-  transform: scale(1.07);
-  outline: 2px solid #ffe066;
-}
-.shop-banner-img.unlocked {
-  border-color: #ffe066;
 }
 #shop-cardbacks-grid {
   display: flex;
