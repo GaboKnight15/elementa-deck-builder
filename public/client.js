@@ -158,17 +158,6 @@ socket.on('game message', (data) => {
   appendChatMessage(`Opponent: ${data.msg}`);
 });
 
-// CASUAL MATCHMAKING
-function startCasualMatchmaking() {
-  // Example: using Socket.IO
-  window.socket.emit('casual-join', {
-    deck: window.selectedPlayerDeck // send minimal deck data if needed
-  });
-}
-function cancelCasualMatchmaking() {
-  window.socket.emit('casual-cancel');
-}
-
 function appendChatMessage(msg) {
   const div = document.createElement('div');
   div.textContent = msg;
@@ -272,4 +261,10 @@ window.endGameCleanup = endGameCleanup;
 socket.on('room error', (msg) => {
   alert(msg);
   endGameCleanup();
+});
+
+// Add this socket event listener (only once, after socket connection):
+window.socket.on('casual-match-found', function(matchData) {
+  document.getElementById('casual-searching-modal').style.display = 'none';
+  if (typeof startCasualGame === "function") startCasualGame(matchData);
 });
