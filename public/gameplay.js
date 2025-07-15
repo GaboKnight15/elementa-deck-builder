@@ -2505,7 +2505,6 @@ function startPrivateGame() {
 function onCasualDeckSelected(deck) {
   window.selectedPlayerDeck = deck;
   showCasualSearchingModal();
-  // Start matchmaking (socket or API)
   startCasualMatchmaking();
 }
 function showCasualSearchingModal() {
@@ -2515,6 +2514,17 @@ function showCasualSearchingModal() {
     document.getElementById('casual-searching-modal').style.display = 'none';
   };
 }
+// Start matchmaking (emit socket event)
+function startCasualMatchmaking() {
+  window.socket.emit('casual-join', {
+    deck: window.selectedPlayerDeck
+  });
+}
+// Cancel matchmaking
+function cancelCasualMatchmaking() {
+  window.socket.emit('casual-cancel');
+}
+
 function startCasualGame(matchData) {
   // Set up opponent info, decks, etc. from matchData
   // This will be very similar to startPrivateGame/startSoloGame
@@ -2537,7 +2547,7 @@ document.querySelector('.mode-option[data-mode="private"]').addEventListener('cl
   showPrivateLobbyModal();
 });
 document.querySelector('.mode-option[data-mode="casual"]').addEventListener('click', function() {
-  if (typeof showPublicLobbyModal === "function") showPublicLobbyModal();
+  showPlayerDeckModal('casual');
 });
 document.querySelector('.mode-option[data-mode="ranked"]').addEventListener('click', function() {
   if (typeof showRankedLobbyModal === "function") showRankedLobbyModal();
@@ -2608,7 +2618,5 @@ window.setupBattlefieldGame = setupBattlefieldGame;
 window.handleOpponentAction = handleOpponentAction;
 window.socket.on('casual-match-found', function(matchData) {
   document.getElementById('casual-searching-modal').style.display = 'none';
-  // Save match/opponent info if needed
-  // Setup game state, decks, etc.
   startCasualGame(matchData);
 });
