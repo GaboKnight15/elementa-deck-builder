@@ -47,6 +47,14 @@ function getRarityKey(card) {
   // Defensive: default to 'common' if missing/unknown
   return (card.rarity || 'common').toLowerCase();
 }
+document.getElementById('gallery-settings-btn').onclick = function() {
+  document.getElementById('settings-modal').style.display = 'flex';
+};
+document.getElementById('gallery-back-btn').onclick = function() {
+  // For example, return to home or previous section
+  document.getElementById('gallery-section').classList.remove('active');
+  document.getElementById('home-section').classList.add('active');
+};
 function createCardGallery(card) {
     const collection = getCollection();
     const owned = collection[card.id] || 0;
