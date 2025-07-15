@@ -119,6 +119,8 @@ const addCoinsBtn = document.getElementById('add-coins-btn');
 function updateCurrencyDisplay() {
   const el = document.getElementById('currency-amount');
   if (el) el.textContent = window.playerCurrency;
+  const shopEl = document.getElementById('shop-currency-amount');
+  if (shopEl) shopEl.textContent = window.playerCurrency;
 }
 // ==========================
 // === SECTION NAVIGATION ===
