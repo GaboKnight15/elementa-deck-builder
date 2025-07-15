@@ -258,7 +258,9 @@ function showPlayerDeckModal() {
     div.onclick = () => {
       modal.style.display = 'none';
       window.selectedPlayerDeck = deck;
-      startSoloGame();
+      if (mode === 'solo') startSoloGame();
+      else if (mode === 'private') startPrivateGame();
+      else if (mode === 'casual') onCasualDeckSelected(deck);
     };
     list.appendChild(div);
   });
@@ -2498,6 +2500,31 @@ function startPrivateGame() {
     });
   });
 }
+
+// CASUAL MODE
+function onCasualDeckSelected(deck) {
+  window.selectedPlayerDeck = deck;
+  showCasualSearchingModal();
+  // Start matchmaking (socket or API)
+  startCasualMatchmaking();
+}
+function showCasualSearchingModal() {
+  document.getElementById('casual-searching-modal').style.display = 'flex';
+  document.getElementById('cancel-casual-search-btn').onclick = function() {
+    cancelCasualMatchmaking();
+    document.getElementById('casual-searching-modal').style.display = 'none';
+  };
+}
+function startCasualGame(matchData) {
+  // Set up opponent info, decks, etc. from matchData
+  // This will be very similar to startPrivateGame/startSoloGame
+  setBattlefieldLeftbarVisibility(true);
+  document.querySelectorAll('section[id$="-section"]').forEach(section => section.classList.remove('active'));
+  document.getElementById('gameplay-section').classList.add('active');
+  enterBattlefield();
+  // Setup decks, profiles, etc.
+  // Optionally: run showGameStartAnimation and initiateMainDomainAndChampionSelection
+}
 function setBattlefieldLeftbarVisibility(visible) {
   const leftbar = document.getElementById('battlefield-leftbar');
   if (!leftbar) return;
@@ -2579,3 +2606,9 @@ document.getElementById('player-back-btn').addEventListener('click', function() 
 // Make available globally if called from client.js:
 window.setupBattlefieldGame = setupBattlefieldGame;
 window.handleOpponentAction = handleOpponentAction;
+window.socket.on('casual-match-found', function(matchData) {
+  document.getElementById('casual-searching-modal').style.display = 'none';
+  // Save match/opponent info if needed
+  // Setup game state, decks, etc.
+  startCasualGame(matchData);
+});
