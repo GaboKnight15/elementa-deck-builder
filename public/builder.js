@@ -84,7 +84,7 @@ function renderDeckSelection() {
   grid.innerHTML = '';
 
   // Always 9 slots (fill with deck names, then "Empty Slot")
-  for (let i = 0; i < 9; i++) {
+  for (let i = 0; i < 12; i++) {
     const slotName = deckSlots[i];
     const tile = document.createElement('div');
     tile.className = 'deck-slot-tile';
