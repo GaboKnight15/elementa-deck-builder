@@ -709,12 +709,6 @@ INDIVIDUAL_CARD_SLOTS.forEach(slot => {
     cardOuterDiv.appendChild(cardFlipDiv);
 
     // Card details below
-    const name = document.createElement('div');
-    name.className = 'shop-individual-card-name';
-    name.style.color = "#ffe066";
-    name.textContent = card.name;
-    cardOuterDiv.appendChild(name);
-
     const priceDiv = document.createElement('div');
     priceDiv.className = 'currency-display';
     priceDiv.innerHTML = `<img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins"><span>${individualCardPrices[card.rarity]}</span>`;
@@ -766,7 +760,7 @@ function showIndividualCardModal(card, isPurchased) {
       <img src="${card.image}" alt="${card.name}" style="width:180px;margin:12px auto;display:block;">
       <div style="margin:10px 0;">
         <span class="shop-individual-card-rarity">${card.rarity}</span>
-        <span class="currency-display" style="text-align:center;">
+        <span class="currency-display" style="text-align:center;margin-top:10px;">
           <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins">
           <span>${individualCardPrices[card.rarity]}</span>
         </span>
