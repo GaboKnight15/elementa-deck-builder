@@ -194,6 +194,7 @@ function renderGallery() {
     const cardDiv = createCardGallery(card);
     gallery.appendChild(cardDiv);
   });
+  updateEssenceDisplay();
 }
 // FAVORITE CARDS
 function getFavoriteCards() {
