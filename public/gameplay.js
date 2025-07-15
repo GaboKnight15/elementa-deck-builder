@@ -2541,6 +2541,10 @@ function exitBattlefieldToMenu() {
   // ...rest of your exit logic...
   // e.g., show mode select or gameplay lobby
 }
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('battlefield-header').style.display = 'none';
+  document.getElementById('gameplay-header').style.display = 'flex';
+});
 // Gameplay (menu) header
 document.getElementById('gameplay-settings-btn').onclick = function() {
   document.getElementById('settings-modal').style.display = 'flex';
