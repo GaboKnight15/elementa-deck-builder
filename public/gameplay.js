@@ -970,7 +970,10 @@ function openDeckModal() {
 gameState.playerDeck.forEach((cardObj, idx) => {
   const card = dummyCards.find(c => c.id === cardObj.cardId);
   if (!card) return;
-
+  
+  const wrapper = document.createElement('div');
+  wrapper.className = 'modal-card-wrapper';
+  
   const cardDiv = document.createElement('div');
   cardDiv.className = 'card-battlefield';
 
@@ -1024,7 +1027,8 @@ gameState.playerDeck.forEach((cardObj, idx) => {
       }, { once: true });
     }, 10);
   };
-
+  wrapper.appendChild(cardDiv);
+  list.appendChild(wrapper);
   cardDiv.appendChild(img);
 });
 
@@ -1482,10 +1486,13 @@ function openVoidModal() {
   if (voidCards.length === 0) {
     list.innerHTML = '<div style="color:#999;">Void is empty.</div>';
   } else {
-    voidCards.forEach((cardObj, idx) => {
+  voidCards.forEach((cardObj, idx) => {
   const card = dummyCards.find(c => c.id === cardObj.cardId);
   if (!card) return;
-
+    
+  const wrapper = document.createElement('div');
+  wrapper.className = 'modal-card-wrapper';
+    
   const cardDiv = document.createElement('div');
   cardDiv.className = 'card-battlefield';
 
@@ -1541,7 +1548,8 @@ function openVoidModal() {
           }, { once: true });
         }, 10);
       };
-
+      wrapper.appendChild(cardDiv);
+      list.appendChild(wrapper);
       cardDiv.appendChild(img);
     });
   }
