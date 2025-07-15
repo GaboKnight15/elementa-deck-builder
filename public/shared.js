@@ -212,7 +212,7 @@ document.querySelectorAll('.home-menu-btn').forEach(btn => {
     const section = btn.getAttribute('data-section');
     // Hide all sections
     document.querySelectorAll('section[id$="-section"]').forEach(sectionEl => {
-      sectionEl.classList.remove('active');
+      sectionEl.classList.remove('section-active','active');
     });
     // Show the target section
     document.getElementById(section).classList.add('active');
@@ -234,10 +234,11 @@ document.querySelectorAll('.home-menu-btn').forEach(btn => {
     }
   };
 });
-document.querySelectorAll('section[id$="-section"]').forEach(section => section.classList.remove('active'));
-document.getElementById('gallery-section').classList.add('active');
+document.querySelectorAll('section[id$="-section"]').forEach(section => section.classList.remove('section-active', 'active'));
+document.getElementById('home-section').classList.add('section-active');
+
 if (typeof window.renderGallery === 'function') {
-  window.renderGallery();
+  window.renderGallery(); // keep if you want to pre-render gallery cards in the background; remove if not needed
 }
 
 // ==========================
