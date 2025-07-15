@@ -155,35 +155,6 @@ document.querySelectorAll('.home-menu-btn').forEach(btn => {
     }
   };
 });
-document.querySelectorAll('#main-nav button[data-section]').forEach(btn => {
-  btn.addEventListener('click', () => {
-    // Hide all sections
-    document.querySelectorAll('section[id$="-section"]').forEach(section => {
-      section.classList.remove('active');
-    });
-    // Show the target section
-    const target = btn.getAttribute('data-section');
-    const targetSection = document.getElementById(target);
-    if (targetSection) targetSection.classList.add('active');
-    // Special section actions
-    const specialActions = {
-      'home-section' : function() {
-      },
-      'gallery-section' : window.renderGallery,
-      'builder-section' : window.showDeckSelection,
-      'gameplay-section': function() {
-        document.querySelectorAll('section[id$="-section"]').forEach(section => {
-          section.classList.remove('active');
-        });
-        document.getElementById('mode-select-section').classList.add('active');
-      },
-      'shop-section'    : window.renderShop
-    };
-    if (typeof specialActions[target] === 'function') {
-      specialActions[target]();
-    }
-  });
-});
 document.querySelectorAll('section[id$="-section"]').forEach(section => section.classList.remove('active'));
 document.getElementById('gallery-section').classList.add('active');
 if (typeof window.renderGallery === 'function') {
