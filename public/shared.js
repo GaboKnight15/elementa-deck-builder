@@ -364,6 +364,8 @@ function setEssence(amount) {
 function updateEssenceDisplay() {
   const el = document.getElementById('essence-amount');
   if (el) el.textContent = playerEssence;
+  const galleryEl = document.getElementById('gallery-essence-amount');
+  if (galleryEl) galleryEl.textContent = playerEssence;
 }
 
 function setCurrency(amount) {
