@@ -1355,7 +1355,7 @@ button {
   gap: 18px 18px; 
   justify-content: center;
   align-items: center;
-  margin: 24px auto 30px auto;
+  margin: 10px auto 30px auto;
   box-sizing: border-box;
 }
 .deck-slot-tile {
