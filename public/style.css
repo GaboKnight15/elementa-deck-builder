@@ -688,69 +688,82 @@ button {
   box-shadow: 0 1px 4px rgba(0,0,0,0.12);
 }
 /* Modal content: row layout for card image + info */
-.full-card-modal-content {
+.full-card-modal-flex {
   display: flex;
   flex-direction: row;
-  gap: 32px;
   align-items: flex-start;
-  justify-content: center;
-  max-width: 760px;
-  width: 96vw;
-  background: #202a38;
-  border-radius: 18px;
-  padding: 2.2em 2.1em 1.7em 2.1em;
-  box-shadow: 0 6px 32px #0009;
-  position: relative;
+  gap: 32px;
+  min-width: 350px;
+  min-height: 240px;
+  padding: 22px 18px;
 }
-
 .full-card-image-container {
-  flex: 0 0 auto;
+  min-width: 140px;
+  max-width: 170px;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  max-width: 320px;
-  width: 23vw;
+  align-items: flex-start;
+  justify-content: flex-end;
 }
-.full-card-image-container img {
-  width: 100%;
-  max-width: 280px;
-  min-width: 200px;
-  height: auto;
-  border-radius: 14px;
-  box-shadow: 0 3px 18px #0004;
-}
-
-.full-card-info {
-  flex: 1 1 0;
+.full-card-modal-img {
+  width: 130px;
+  max-width: 130px;
+  border-radius: 9px;
+  box-shadow: 0 3px 18px #0007;
   background: #232a3c;
-  border-radius: 12px;
-  padding: 1.3em 1.2em 1.2em 1.2em;
+  display: block;
+}
+.full-card-info-panel {
+  min-width: 210px;
+  max-width: 330px;
   color: #ffe066;
+  background: none;
+  padding: 0 0 0 0;
+  font-size: 1.05em;
+  font-family: inherit;
   display: flex;
   flex-direction: column;
-  min-width: 200px;
-  max-width: 320px;
-  gap: 0.7em;
-  box-shadow: 0 2px 12px #0002;
-  position: static;
+  gap: 5px;
 }
 .full-card-info-title {
-  font-size: 1.35em;
-  font-weight: bold;
+  font-weight: 700;
+  font-size: 1.4em;
+  margin-bottom: 2px;
   color: #ffe066;
-  margin-bottom: 0.5em;
-  text-shadow: 0 1px 4px #000a;
+  text-shadow: 0 2px 8px #000,0 2px 2px #ffe06622;
 }
-.full-card-info-section {
-  font-size: 1.08em;
-  margin-bottom: 0.5em;
+.full-card-info-row {
+  margin-bottom: 3px;
+  color: #ffe066de;
+  font-size: 1.09em;
+  display: flex;
+  gap: 0.4em;
 }
 .full-card-info-label {
-  color: #b4b8d1;
+  color: #ffe066;
   font-weight: 600;
-  margin-right: 0.3em;
+  margin-right: 4px;
+}
+.full-card-info-section {
+  color: #ffe066be;
+  margin-bottom: 2px;
 }
 
+.cost-color {
+  font-weight: 600;
+  color: #ffe066;
+  background: #232a3c;
+  border-radius: 4px;
+  padding: 0 5px;
+  margin-left: 3px;
+  margin-right: 3px;
+  font-size: 0.99em;
+  display: inline-block;
+}
+.cost-color span {
+  color: #ffe06699;
+  font-size: 0.93em;
+  margin-left: 0.2em;
+}
 .gallery-action-btn:hover {
   transform: scale(1.15);
   box-shadow: 0 0 10px 2px #ffd70080;
