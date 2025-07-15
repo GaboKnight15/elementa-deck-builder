@@ -271,44 +271,59 @@ function showFullCardModal(cardObj) {
   const modalContent = document.getElementById('modal-img-content');
   if (!modalContent) return;
 
-  // Build info fields
-  function labeled(label, value) {
-    return value ? `<div class="full-card-info-section"><span class="full-card-info-label">${label}:</span> ${value}</div>` : '';
+  // Format cost display nicely
+  function formatCost(cost) {
+    if (cost === undefined || cost === null || cost === "" || cost === 0) return "0";
+    if (typeof cost === "number") return cost.toString();
+    if (typeof cost === "object") {
+      let arr = [];
+      for (let color in cost) {
+        if (!cost.hasOwnProperty(color)) continue;
+        arr.push(`<span class="cost-color cost-${color}">${cost[color]} <span>${color}</span></span>`);
+      }
+      return arr.join(" ");
+    }
+    return cost.toString();
   }
 
-  // Abilities/description
-  let detailsHtml = '';
-  detailsHtml += labeled("Category", card.category);
-  detailsHtml += labeled("Rarity", card.rarity);
-  detailsHtml += labeled("Archetype", Array.isArray(card.archetype) ? card.archetype.join(", ") : card.archetype);
-  detailsHtml += labeled("Type", Array.isArray(card.type) ? card.type.join(", ") : card.type);
-  detailsHtml += labeled("Ability", Array.isArray(card.ability) ? card.ability.join(", ") : card.ability);
+  // Info rows
+  function labeled(label, value) {
+    if (!value && value !== 0) return '';
+    return `<div class="full-card-info-row"><span class="full-card-info-label">${label}:</span> <span>${value}</span></div>`;
+  }
+
+  // Compose info HTML
+  let infoHtml = '';
+  infoHtml += `<div class="full-card-info-title">${card.name}</div>`;
+  infoHtml += labeled("Category", card.category);
+  infoHtml += labeled("Rarity", card.rarity);
+  infoHtml += labeled("Archetype", Array.isArray(card.archetype) ? card.archetype.join(", ") : card.archetype);
+  infoHtml += labeled("Type", Array.isArray(card.type) ? card.type.join(", ") : card.type);
+  infoHtml += labeled("Ability", Array.isArray(card.ability) ? card.ability.join(", ") : card.ability);
 
   let statsRow = '';
   if (card.hp !== undefined || card.atk !== undefined || card.def !== undefined || card.cost !== undefined) {
-    statsRow = '<div class="full-card-info-section">' +
-      (card.hp !== undefined ? `<span class="full-card-info-label">HP:</span> ${card.hp} ` : '') +
-      (card.atk !== undefined ? `<span class="full-card-info-label">ATK:</span> ${card.atk} ` : '') +
-      (card.def !== undefined ? `<span class="full-card-info-label">DEF:</span> ${card.def} ` : '') +
-      (card.cost !== undefined ? `<span class="full-card-info-label">Cost:</span> ${card.cost}` : '') +
+    statsRow = '<div class="full-card-info-row">' +
+      (card.hp !== undefined ? `<span class="full-card-info-label">HP:</span> <span>${card.hp}</span> ` : '') +
+      (card.atk !== undefined ? `<span class="full-card-info-label">ATK:</span> <span>${card.atk}</span> ` : '') +
+      (card.def !== undefined ? `<span class="full-card-info-label">DEF:</span> <span>${card.def}</span> ` : '') +
+      (card.cost !== undefined ? `<span class="full-card-info-label">Cost:</span> <span>${formatCost(card.cost)}</span>` : '') +
       '</div>';
   }
 
-  // Card text (effect)
   let textHtml = '';
   if (card.text) {
-    textHtml = `<div class="full-card-info-section" style="font-size:1.08em;color:#ffe066">${card.text}</div>`;
+    textHtml = `<div class="full-card-info-section" style="font-size:1.08em;color:#ffe066;margin-top:10px;">${card.text}</div>`;
   }
 
-  // Compose modal content (flex row)
+  // Compose modal content (side-by-side)
   modalContent.innerHTML = `
-    <div class="full-card-modal-content">
+    <div class="full-card-modal-flex">
       <div class="full-card-image-container">
-        <img src="${card.image}" alt="${card.name}" class="${owned === 0 ? 'card-image-locked' : ''}">
+        <img src="${card.image}" alt="${card.name}" class="full-card-modal-img ${owned === 0 ? 'card-image-locked' : ''}">
       </div>
-      <div class="full-card-info">
-        <div class="full-card-info-title">${card.name}</div>
-        ${detailsHtml}
+      <div class="full-card-info-panel">
+        ${infoHtml}
         ${statsRow}
         ${textHtml}
       </div>
