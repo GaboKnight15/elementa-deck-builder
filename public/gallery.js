@@ -357,8 +357,8 @@ function showEssenceConfirmModal({
   // Set message
   msgDiv.textContent = 
     action === "create"
-      ? `Are you sure you want to create '${card.name}' for `
-      : `Are you sure you want to void '${card.name}' for `;
+      ? `Create '${card.name}' ? `
+      : `Void '${card.name}' ? `;
   // Card image
   cardImg.src = card.image;
   cardImg.alt = card.name;
