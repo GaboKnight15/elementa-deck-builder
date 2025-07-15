@@ -281,6 +281,8 @@ button {
 }
 #home-container {
   display: flex;
+  max-width: 100vw;
+  width: 100%;
   position: relative;
   z-index: 1;
   gap: 32px;
@@ -1702,7 +1704,7 @@ button {
 .mode-option:hover .mode-menu-img,
 .mode-option:focus .mode-menu-img {
   filter: drop-shadow(0 4px 32px #ffe066cc) brightness(1.08);
-  transform: scale(1.08) rotate(-2deg);
+  transform: scale(1.08);
 }
 .mode-option > div {
   color: #ffe066;
@@ -1744,7 +1746,7 @@ button {
 .mode-option:hover, .mode-option:focus {
   background: #253047;
   border: 3px solid #ffe066;
-  transform: scale(1.08) translateY(-10px) rotate(-1.5deg);
+  transform: scale(1.08) translateY(-10px);
   box-shadow: 0 8px 40px #ffe06677, 0 0 0 8px #ffe06633;
   z-index: 10;
 }
