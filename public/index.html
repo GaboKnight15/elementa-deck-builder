@@ -529,28 +529,24 @@
   </div>
 </div>
 <!-- SETTINGS MODAL -->
-<div id="settings-modal" class="modal">
-  <div class="modal-content" style="min-width:320px;max-width:400px;">
-    <h3>Settings</h3>
-    <div id="settings-menu">
-      <div class="settings-item" id="settings-notices">
-        <label>
-          <span>Notices</span>
-          <input type="checkbox" id="toggle-notices">
-        </label>
-      </div>
-      <div class="settings-item" id="settings-music">
-        <label>
-          <span>Music</span>
-          <input type="checkbox" id="toggle-music">
-        </label>
-      </div>
-      <div class="settings-item" id="settings-logout" style="margin-top:20px;">
-        <button id="settings-logout-btn" class="btn-negative">Logout</button>
-      </div>
-      <!-- Add more settings here -->
+<!-- SETTINGS MENU (Popover) -->
+<div id="settings-menu-pop" class="settings-menu-pop">
+  <div id="settings-menu-inner">
+    <div class="settings-item" id="settings-notices">
+      <label>
+        <span>Notices</span>
+        <input type="checkbox" id="toggle-notices">
+      </label>
     </div>
-    <button id="close-settings-modal" class="btn-negative-secondary" style="margin-top:16px;">Close</button>
+    <div class="settings-item" id="settings-music">
+      <label>
+        <span>Music</span>
+        <input type="checkbox" id="toggle-music">
+      </label>
+    </div>
+    <div class="settings-item" id="settings-logout" style="margin-top:20px;">
+      <button id="settings-logout-btn" class="btn-negative">Logout</button>
+    </div>
   </div>
 </div>
 
