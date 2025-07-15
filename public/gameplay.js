@@ -293,8 +293,7 @@ function startSoloGame() {
   
   document.querySelectorAll('section[id$="-section"]').forEach(section => section.classList.remove('active'));
   document.getElementById('gameplay-section').classList.add('active');
-  document.getElementById('gameplay-header').style.display = 'none';
-  document.getElementById('battlefield-header').style.display = 'flex';
+  enterBattlefield();
   // Set up gameState
   gameState.playerDeck = shuffle(playerDeckArray);
   gameState.playerHand = [];
@@ -2489,8 +2488,7 @@ function startPrivateGame() {
   // Set up gameState, profiles, etc.
   document.querySelectorAll('section[id$="-section"]').forEach(section => section.classList.remove('active'));
   document.getElementById('gameplay-section').classList.add('active');
-  document.getElementById('battlefield-header').style.display = 'none';
-  document.getElementById('gameplay-header').style.display = 'flex';
+  enterBattlefield();
   // Render chat, profiles, battlefield as in solo
   // Show Game Start animation, Main Domain & Champion selection
   showGameStartAnimation(() => {
