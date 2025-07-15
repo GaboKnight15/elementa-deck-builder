@@ -172,6 +172,16 @@
                       <!-- DECK BUILDER -->
 <section id="builder-section" class="section">  
   <div id="builder-container" class="section-container">
+                  <!-- BUILDER SECTION HEADER -->
+    <div id="builder-header" class="section-header">
+      <div class="section-header-left">
+        <img id="builder-back-btn" src="OtherImages/Icons/Back.png" alt="Back" class="section-header-btn" title="Back" />
+      </div>
+      <div class="section-header-title">My Decks</div>
+      <div class="section-header-right">
+        <img id="builder-settings-btn" src="OtherImages/Icons/Settings.png" alt="Settings" class="section-header-btn" title="Settings" />
+      </div>
+    </div>
     <!-- Deck Tile Context Menu Modal -->
     <div id="deck-menu-modal" class="modal" style="display:none;">
       <div class="modal-content deck-menu-modal-content">
@@ -248,6 +258,15 @@
                       <!-- GAME MODE SELECTION -->  
 <section id="mode-select-section" class="section">
 <div id="mode-select-container" class="section-container">
+  <div id="gameplay-header" class="section-header">
+    <div class="section-header-left">
+      <img id="gameplay-back-btn" src="OtherImages/Icons/Back.png" alt="Back" class="section-header-btn" title="Back" />
+    </div>
+    <div class="section-header-title">Game Modes</div>
+    <div class="section-header-right">
+      <img id="gameplay-settings-btn" src="OtherImages/Icons/Settings.png" alt="Settings" class="section-header-btn" title="Settings" />
+    </div>
+  </div>
   <div class="mode-options" style="display: flex; gap: 32px; justify-content: center; margin-top: 2em;">
     <div class="mode-option" data-mode="solo" tabindex="0" style="text-align:center;cursor:pointer;">
       <img src="OtherImages/Modes/Solo.png" alt="Solo" class="mode-menu-img"/>
@@ -311,6 +330,14 @@
     
   <!-- BATTLEFIELD RIGHTBAR -->
     <div id="battlefield-rightbar">
+      <div id="battlefield-header" style="display:none;" class="section-header">
+        <div class="section-header-left">
+          <img id="battlefield-back-btn" src="OtherImages/Icons/Back.png" alt="Back" class="section-header-btn" title="Back" />
+        </div>
+        <div class="section-header-right">
+          <img id="battlefield-settings-btn" src="OtherImages/Icons/Settings.png" alt="Settings" class="section-header-btn" title="Settings" />
+        </div>
+      </div>
       <div id="opponent-deck-zone"></div>
       <div id="opponent-void-zone"></div>
       <!-- PHASES -->
@@ -326,6 +353,19 @@
                     <!-- SHOP -->
 <section id="shop-section" class="section">
   <div id="shop-container" class="section-container">
+    <div id="shop-header" class="section-header">
+      <div class="section-header-left">
+        <img id="shop-back-btn" src="OtherImages/Icons/Back.png" alt="Back" class="section-header-btn" title="Back" />
+      </div>
+      <div class="section-header-title">Shop</div>
+      <div class="section-header-right">
+        <span id="shop-currency-display" class="section-header-currency">
+          <img src="OtherImages/Icons/Currency.png" alt="Currency" style="width:22px;height:22px;vertical-align:middle;">
+          <span id="shop-currency-amount">0</span>
+        </span>
+        <img id="shop-settings-btn" src="OtherImages/Icons/Settings.png" alt="Settings" class="section-header-btn" title="Settings" />
+      </div>
+    </div>
     <div id="pack-options">
       <img class="pack-image" src="CardImages/Packs/StandardPack.png" alt="Standard Pack" data-pack="StandardPack">
       <img class="pack-image" src="CardImages/Packs/StandardPack2.png" alt="Standard Pack 2" data-pack="StandardPack2">
