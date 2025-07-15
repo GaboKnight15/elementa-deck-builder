@@ -787,25 +787,34 @@ function renderRowZone(zoneId, cardArray, category) {
 }
 function renderRightbarZones() {
   const rightbar = document.getElementById('battlefield-rightbar');
-  // OPPONENT DECK
+  rightbar.innerHTML = ''; // Clear all children so ordering is correct
+
+  // Get all zone containers
   const oppDeckDiv = document.getElementById('opponent-deck-zone');
+  const oppVoidDiv = document.getElementById('opponent-void-zone');
+  const phaseBadge = document.getElementById('phase-badge');
+  const playerVoidDiv = document.getElementById('player-void-zone');
+  const playerDeckDiv = document.getElementById('player-deck-zone');
+
+  // Fill the zones with current cards
   oppDeckDiv.innerHTML = '';
   appendDeckZone(oppDeckDiv, gameState.opponentDeck, "opponent");
-  // OPPONENT VOID
-  const oppVoidDiv = document.getElementById('opponent-void-zone');
+
   oppVoidDiv.innerHTML = '';
   appendVoidZone(oppVoidDiv, gameState.opponentVoid, "opponent");
-  // Phase badge (center)
-  const phaseBadge = document.getElementById('phase-badge');
-  rightbar.appendChild(phaseBadge);
-  // PLAYER VOID
-  const playerVoidDiv = document.getElementById('player-void-zone');
+
   playerVoidDiv.innerHTML = '';
   appendVoidZone(playerVoidDiv, gameState.playerVoid, "player");
-  // PLAYER DECK
-  const playerDeckDiv = document.getElementById('player-deck-zone');
+
   playerDeckDiv.innerHTML = '';
   appendDeckZone(playerDeckDiv, gameState.playerDeck, "player");
+
+  // Append in desired order
+  rightbar.appendChild(oppDeckDiv);
+  rightbar.appendChild(oppVoidDiv);
+  rightbar.appendChild(phaseBadge);
+  rightbar.appendChild(playerVoidDiv);
+  rightbar.appendChild(playerDeckDiv);
 }
 // Helper to create and append the deck zone card at the end
 function appendDeckZone(parentDiv, deckArray, who) {
