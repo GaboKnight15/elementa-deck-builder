@@ -54,6 +54,13 @@ const cardbackOptions = [
   "OtherImages/Cardbacks/DefaultCardback.png"
 ];
 
+document.getElementById('builder-settings-btn').onclick = function() {
+  document.getElementById('settings-modal').style.display = 'flex';
+};
+document.getElementById('builder-back-btn').onclick = function() {
+  document.getElementById('builder-section').classList.remove('active');
+  document.getElementById('home-section').classList.add('active');
+};
 function showDeckSelection() {
   deckSelectionGrid.style.display = '';
   deckBuilderUI.style.display = 'none';
