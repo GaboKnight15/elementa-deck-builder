@@ -3135,6 +3135,14 @@ button {
 .card-element-poison:hover { animation: glow-poison 1.2s infinite alternate; }
 .card-element-dark:hover { animation: glow-dark 1.2s infinite alternate; }
 .card-element-light:hover { animation: glow-light 1.2s infinite alternate; }
+.card-gallery.card-element-leaves  { background: linear-gradient(120deg, #5bd98a 70%, #314175 100%); }
+.card-gallery.card-element-fire    { background: linear-gradient(120deg, #ff6c5c 70%, #314175 100%); }
+.card-gallery.card-element-water   { background: linear-gradient(120deg, #30cfff 70%, #314175 100%); }
+.card-gallery.card-element-thunder { background: linear-gradient(120deg, #ffe066 70%, #314175 100%); }
+.card-gallery.card-element-ground  { background: linear-gradient(120deg, #c0a36e 70%, #314175 100%); }
+.card-gallery.card-element-poison  { background: linear-gradient(120deg, #b84cff 70%, #314175 100%); }
+.card-gallery.card-element-dark    { background: linear-gradient(120deg, #222 70%, #314175 100%); }
+.card-gallery.card-element-light   { background: linear-gradient(120deg, #f9fafc 70%, #314175 100%); }
 .card-locked:hover {
   transform: translateY(-5px) scale(1.05);
   box-shadow: 0 10px 24px rgba(0,0,0,0.4);
