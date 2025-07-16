@@ -1084,9 +1084,42 @@ function renderCardOnField(cardObj, zoneId) {
   cardDiv.className = 'card-battlefield';
   cardDiv.dataset.instanceId = cardObj.instanceId;
   cardDiv.style.position = 'relative';
-
-  // Add card image
+  // --- FIRE PARTICLES FOR RED CARDS ---
   const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+  if (cardData && cardData.color === 'red') {
+    const effectId = `fire-effect-${cardObj.instanceId}`;
+    if (!cardDiv.querySelector(`#${effectId}`)) {
+      const effectDiv = document.createElement('div');
+      effectDiv.id = effectId;
+      effectDiv.style.position = 'absolute';
+      effectDiv.style.top = 0;
+      effectDiv.style.left = 0;
+      effectDiv.style.width = '100%';
+      effectDiv.style.height = '100%';
+      effectDiv.style.pointerEvents = 'none';
+      effectDiv.style.zIndex = 0;
+      cardDiv.appendChild(effectDiv);
+
+      setTimeout(() => {
+        if (window.particlesJS) {
+          particlesJS(effectId, {
+            particles: {
+              number: { value: 30, density: { enable: true, value_area: 200 } },
+              color: { value: ['#ff9800', '#ff4500', '#ffd700', '#ff0000'] },
+              shape: { type: 'circle' },
+              opacity: { value: 0.8, random: true, anim: { enable: true, speed: 1, opacity_min: 0.4, sync: false } },
+              size: { value: 7, random: true, anim: { enable: true, speed: 2, size_min: 3, sync: false } },
+              line_linked: { enable: false },
+              move: { enable: true, speed: 3, direction: 'top', random: true, straight: false, out_mode: 'out', bounce: false }
+            },
+            interactivity: { detect_on: 'canvas', events: { onhover: { enable: false }, onclick: { enable: false }, resize: true } },
+            retina_detect: true
+          });
+        }
+      }, 0);
+    }
+  }
+  // Add card image
   if (cardData && cardData.image) {
     const img = document.createElement('img');
     img.src = cardData.image;
