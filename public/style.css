@@ -679,49 +679,56 @@ button {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  gap: 32px;
-  min-width: 350px;
-  min-height: 240px;
-  padding: 22px 18px;
+  gap: 28px;
+  min-width: 320px;
+  max-width: 640px;
+  padding: 28px 16px;
+  margin: 0 auto;
 }
+
 .full-card-image-container {
-  min-width: 140px;
-  max-width: 170px;
+  min-width: 0;
+  max-width: 220px;
   display: flex;
   align-items: flex-start;
   justify-content: flex-end;
 }
+
 .full-card-modal-img {
-  width: 130px;
-  max-width: 130px;
-  border-radius: 9px;
+  width: 170px;
+  max-width: 170px;
+  border-radius: 11px;
   box-shadow: 0 3px 18px #0007;
   background: #232a3c;
   display: block;
 }
+
 .full-card-info-panel {
-  min-width: 210px;
-  max-width: 330px;
+  min-width: 180px;
+  max-width: 320px;
   color: #ffe066;
   background: none;
-  padding: 0 0 0 0;
-  font-size: 1.05em;
+  padding: 6px 0 0 0;
+  font-size: 1.02em;
   font-family: inherit;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 7px;
+  align-items: flex-start;
 }
+
 .full-card-info-title {
   font-weight: 700;
-  font-size: 1.4em;
-  margin-bottom: 2px;
+  font-size: 1.23em;
+  margin-bottom: 6px;
   color: #ffe066;
   text-shadow: 0 2px 8px #000,0 2px 2px #ffe06622;
 }
+
 .full-card-info-row {
-  margin-bottom: 3px;
+  margin-bottom: 4px;
   color: #ffe066de;
-  font-size: 1.09em;
+  font-size: 1.08em;
   display: flex;
   gap: 0.4em;
 }
@@ -733,8 +740,8 @@ button {
 .full-card-info-section {
   color: #ffe066be;
   margin-bottom: 2px;
+  font-size: 1.05em;
 }
-
 .cost-color {
   font-weight: 600;
   color: #ffe066;
