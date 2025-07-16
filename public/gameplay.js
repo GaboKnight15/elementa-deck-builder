@@ -1088,7 +1088,8 @@ function renderCardOnField(cardObj, zoneId) {
   // --- FIRE PARTICLES FOR RED CARDS ---
   const cardData = dummyCards.find(c => c.id === cardObj.cardId);
   if (cardData && cardData.color === 'red') {
-    const effectId = `fire-effect-${cardObj.instanceId}`;
+    const safeInstanceId = cardObj.instanceId.replace(/[^a-zA-Z0-9_-]/g, "_");
+    const effectId = `fire-effect-${safeInstanceId}`;
     if (!cardDiv.querySelector(`#${effectId}`)) {
       const effectDiv = document.createElement('div');
       effectDiv.id = effectId;
@@ -1102,7 +1103,7 @@ function renderCardOnField(cardObj, zoneId) {
       cardDiv.appendChild(effectDiv);
 
       setTimeout(() => {
-        if (window.particlesJS) {
+        if (window.particlesJS && document.getElementById(effectId)) {
           particlesJS(effectId, {
             particles: {
               number: { value: 30, density: { enable: true, value_area: 200 } },
