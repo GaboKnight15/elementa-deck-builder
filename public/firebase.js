@@ -113,7 +113,6 @@ auth.onAuthStateChanged(function(user) {
       profileMenu.classList.remove('active');
       loginMenu.classList.remove('active');
       appMain.classList.add('active');
-      mainNav.classList.add('active');
       loadProfile(user);  
     });
   } else {
@@ -123,7 +122,6 @@ auth.onAuthStateChanged(function(user) {
     profileMenu.classList.remove('active');
     loginMenu.classList.add('active');
     appMain.classList.remove('active');
-    mainNav.classList.remove('active');
     loginUsernameInput.value = "";
     loginEmailInput.value = "";
     loginPasswordInput.value = "";
