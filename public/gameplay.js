@@ -276,6 +276,9 @@ function buildCpuDeck(deckDef) {
   return deck;
 }
 
+// Example usage:
+const greenCpuDeck = buildCpuDeck(DEFAULT_CPU_DECKS.find(d => d.id === 'green'));
+
 function generateUniqueId() {
   return 'id-' + Math.random().toString(36).substr(2, 9) + '-' + Date.now();
 }
