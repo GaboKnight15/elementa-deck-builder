@@ -649,8 +649,6 @@ function renderBuilder() {
       document.body.classList.add(`theme-${color}`);
     }
   });
-
-backBuilderBtn.onclick = showDeckSelection;
 // GALLERY EVENT FILTERS
   document.getElementById('filter-name-builder').addEventListener('input', renderBuilder);
   document.getElementById('filter-color-builder').addEventListener('change', renderBuilder);
