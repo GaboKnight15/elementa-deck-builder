@@ -145,7 +145,7 @@ button {
   gap: 16px;
   min-width: 0;
 }
-.section-header-title {
+.section-header-center {
   flex: 1 1 auto;
   text-align: center;
   font-size: 1.5em;
@@ -2455,7 +2455,7 @@ button {
   cursor: pointer;
 }
 
-.profile-info-stack {
+#profile-info-stack {
   display: flex;
   flex-direction: column;
   justify-content: center;
