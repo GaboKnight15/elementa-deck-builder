@@ -1832,6 +1832,7 @@ button {
   background: rgba(30, 38, 56, 0.5);
 }
 #battlefield-opponent-bg {
+  background-image: var(--opponent-bg);
   position: relative;
   overflow: hidden;
   background: none !important; /* Remove standard background, handled by ::before */
