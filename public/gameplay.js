@@ -50,6 +50,8 @@ let attackMode = {
   attackerZone: null,
   cancelHandler: null
 };
+const difficulties = ["easy", "normal", "hard"];
+let currentDifficulty = 0; // Index: 0, 1, 2
 const DEFAULT_CPU_DECKS = [
   {
     id: 'green',
