@@ -657,15 +657,6 @@ function renderBuilder() {
   document.getElementById('filter-rarity-builder').addEventListener('change', renderBuilder);
   document.getElementById('filter-archetype-builder').addEventListener('change', renderBuilder);
   document.getElementById('filter-ability-builder').addEventListener('change', renderBuilder);
-  document.getElementById('reset-deck-btn').onclick = () => {
-    const deck = getCurrentDeck();
-    for (const key in deck) {
-      delete deck[key];
-    }
-    setCurrentDeck(deck);
-    updateDeckDisplay();
-    renderBuilder();
-  };
 // ==========================
 // === INITIALIZATION ===
 // ==========================
