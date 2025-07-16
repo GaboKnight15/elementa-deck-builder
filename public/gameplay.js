@@ -50,90 +50,128 @@ let attackMode = {
   attackerZone: null,
   cancelHandler: null
 };
-const CPU_DECKS_EASY = [
-  { id: 'green', name: 'Verdant Might', color: 'green', image: 'CardImages/BasicCreatures/Fairy.png',
-    bannerArt: 'CardImages/Banners/GreenBanner.png', cardbackArt: 'OtherImages/Cardbacks/GreenCardback.png',
+const DEFAULT_CPU_DECKS = [
+  {
+    id: 'green',
+    name: 'Verdant Might',
+    color: 'green',
+    image: 'CardImages/BasicCreatures/Fairy.png',
+    bannerArt: 'CardImages/Banners/GreenBanner.png',
+    cardbackArt: 'OtherImages/Cardbacks/GreenCardback.png',
     cards: [
       { id: 'basicfairy', amount: 4 },
       { id: 'basicgoblin', amount: 3 },
       { id: 'basicforest', amount: 4 },
       // ... etc
-    ]},
-  { id: 'red', name: 'Ember Tyranny', color: 'red', image: 'CardImages/BasicCreatures/Emberling.png',
-    bannerArt: 'CardImages/Banners/RedBanner.png', cardbackArt: 'OtherImages/Cardbacks/RedCardback.png',
+    ]
+  },
+  {
+    id: 'red',
+    name: 'Ember Tyranny',
+    color: 'red',
+    image: 'CardImages/BasicCreatures/Emberling.png',
+    bannerArt: 'CardImages/Banners/RedBanner.png',
+    cardbackArt: 'OtherImages/Cardbacks/RedCardback.png',
     cards: [
       { id: 'basicemberling', amount: 4 },
       { id: 'basicfirepixie', amount: 3 },
       { id: 'basichellcharger', amount: 2 },
       { id: 'basicvolcano', amount: 4 },
       // ... etc
-    ]},
-    { id: 'blue', name: 'Tidebound Will', color: 'blue', image: 'CardImages/BasicCreatures/WaterElemental.png',
-    bannerArt: 'CardImages/Banners/BlueBanner.png', cardbackArt: 'OtherImages/Cardbacks/BlueCardback.png',
+    ]
+  },
+    {
+    id: 'blue',
+    name: 'Tidebound Will',
+    color: 'blue',
+    image: 'CardImages/BasicCreatures/WaterElemental.png',
+    bannerArt: 'CardImages/Banners/BlueBanner.png',
+    cardbackArt: 'OtherImages/Cardbacks/BlueCardback.png',
     cards: [
       { id: 'basicemberling', amount: 4 },
       { id: 'basicfirepixie', amount: 3 },
       { id: 'basichellcharger', amount: 2 },
       { id: 'basicocean', amount: 4 },
       // ... etc
-    ]},
-  { id: 'yellow', name: 'Surgecallers Rite', color: 'yellow', image: 'CardImages/BasicCreatures/Emberling.png',
-    bannerArt: 'CardImages/Banners/YellowBanner.png', cardbackArt: 'OtherImages/Cardbacks/YellowCardback.png',
+    ]
+  },
+  {
+    id: 'yellow',
+    name: 'Surgecallers Rite',
+    color: 'yellow',
+    image: 'CardImages/BasicCreatures/Emberling.png',
+    bannerArt: 'CardImages/Banners/YellowBanner.png',
+    cardbackArt: 'OtherImages/Cardbacks/YellowCardback.png',
     cards: [
       { id: 'basicemberling', amount: 4 },
       { id: 'basicfirepixie', amount: 3 },
       { id: 'basichellcharger', amount: 2 },
       { id: 'basicpeaks', amount: 4 },
       // ... etc
-    ]},
-  { id: 'purple', name: 'Venom Bloom', color: 'purple', image: 'CardImages/BasicCreatures/Emberling.png',
-    bannerArt: 'CardImages/Banners/PurpleBanner.png', cardbackArt: 'OtherImages/Cardbacks/PurpleCardback.png',
+    ]
+  },
+  {
+    id: 'purple',
+    name: 'Venom Bloom',
+    color: 'purple',
+    image: 'CardImages/BasicCreatures/Emberling.png',
+    bannerArt: 'CardImages/Banners/PurpleBanner.png',
+    cardbackArt: 'OtherImages/Cardbacks/PurpleCardback.png',
     cards: [
       { id: 'basicemberling', amount: 4 },
       { id: 'basicfirepixie', amount: 3 },
       { id: 'basichellcharger', amount: 2 },
       { id: 'basicswamp', amount: 4 },
       // ... etc
-    ]},
-  { id: 'gray', name: 'Ironroot Vow', color: 'gray', image: 'CardImages/BasicCreatures/Golemites.png',
-    bannerArt: 'CardImages/Banners/GrayBanner.png', cardbackArt: 'OtherImages/Cardbacks/GrayCardback.png',
+    ]
+  },
+  {
+    id: 'gray',
+    name: 'Ironroot Vow',
+    color: 'gray',
+    image: 'CardImages/BasicCreatures/Golemites.png',
+    bannerArt: 'CardImages/Banners/GrayBanner.png',
+    cardbackArt: 'OtherImages/Cardbacks/GrayCardback.png',
     cards: [
       { id: 'basicemberling', amount: 4 },
       { id: 'basicfirepixie', amount: 3 },
       { id: 'basicdesertwolf', amount: 2 },
       { id: 'basicmountain', amount: 4 },
       // ... etc
-    ]},
-  { id: 'black', name: 'Shadowy Descent', color: 'black', image: 'CardImages/BasicCreatures/Imp.png',
-    bannerArt: 'CardImages/Banners/BlackBanner.png', cardbackArt: 'OtherImages/Cardbacks/BlackCardback.png',
+    ]
+  },
+  {
+    id: 'black',
+    name: 'Shadowy Descent',
+    color: 'black',
+    image: 'CardImages/BasicCreatures/Imp.png',
+    bannerArt: 'CardImages/Banners/BlackBanner.png',
+    cardbackArt: 'OtherImages/Cardbacks/BlackCardback.png',
     cards: [
       { id: 'basicemberling', amount: 4 },
       { id: 'basicfirepixie', amount: 3 },
       { id: 'basichellcharger', amount: 2 },
       { id: 'basicshadowforest', amount: 4 },
       // ... etc
-    ]},
-  { id: 'white', name: 'Radiant Oath', color: 'white', image: 'CardImages/BasicCreatures/Emberling.png',
-    bannerArt: 'CardImages/Banners/WhiteBanner.png', cardbackArt: 'OtherImages/Cardbacks/WhiteCardback.png',
+    ]
+  },
+  {
+    id: 'white',
+    name: 'Radiant Oath',
+    color: 'white',
+    image: 'CardImages/BasicCreatures/Emberling.png',
+    bannerArt: 'CardImages/Banners/WhiteBanner.png',
+    cardbackArt: 'OtherImages/Cardbacks/WhiteCardback.png',
     cards: [
       { id: 'basicemberling', amount: 4 },
       { id: 'basicfirepixie', amount: 3 },
       { id: 'basichellcharger', amount: 2 },
       { id: 'basicplains', amount: 4 },
       // ... etc
-    ]},  
+    ]
+  },  
   // ...repeat for other colors
 ];
-const CPU_DECKS_NORMAL = [/* 8 normal decks */];
-const CPU_DECKS_HARD = [/* 8 hard decks */];
-const CPU_DECKS_BY_DIFFICULTY = {
-  easy: CPU_DECKS_EASY,
-  normal: CPU_DECKS_NORMAL,
-  hard: CPU_DECKS_HARD
-};
-const difficulties = ["easy", "normal", "hard"];
-let currentDifficulty = 0; // Index: 0, 1, 2
-
 const ESSENCE_IMAGE_MAP = {
   red: "OtherImages/Essence/EssenceRed.png",
   green: "OtherImages/Essence/EssenceGreen.png",
@@ -158,103 +196,36 @@ const phaseBadge = document.getElementById('phase-badge');
 // === RENDERING / UI ===
 // ==========================
 // Handle mode selection
-function renderCpuDeckList(difficulty) {
-  // Get the correct list element for the given difficulty
-  const list = document.getElementById(`cpu-deck-list-${difficulty}`);
-  if (!list) return;
+function showCpuDeckModal() {
+  const modal = document.getElementById('cpu-deck-modal');
+  const list = document.getElementById('cpu-deck-list');
   list.innerHTML = '';
-
-  // Loop through all decks for this difficulty
-  (CPU_DECKS_BY_DIFFICULTY[difficulty] || []).forEach(deck => {
+  DEFAULT_CPU_DECKS.forEach(deck => {
     const div = document.createElement('div');
     div.className = 'cpu-deck-option';
     div.style.cursor = 'pointer';
-    div.style.border = `2px solid ${deck.color || "#888"}`;
+    div.style.border = '2px solid ' + deck.color;
     div.style.borderRadius = '12px';
     div.style.padding = '12px';
     div.style.background = '#232a3c';
     div.style.width = '120px';
-    div.style.boxSizing = 'border-box';
-    div.style.display = 'flex';
-    div.style.flexDirection = 'column';
-    div.style.alignItems = 'center';
-    div.style.justifyContent = 'flex-start';
-    div.style.position = 'relative';
     div.innerHTML = `
-      <img src="${deck.image || 'CardImages/Domains/placeholder.png'}" 
-           alt="${deck.name || 'Deck'}" 
-           style="width:100%;height:80px;object-fit:cover;border-radius:8px;box-shadow:0 2px 6px #0006;">
-      <div style="font-weight:bold;color:${deck.color || '#ffe066'};margin:7px 0 3px 0;text-align:center;">
-        ${deck.name || 'Unnamed Deck'}
-      </div>
-      <div style="font-size:0.93em;color:#bbb;text-align:center;">
-        ${(deck.description || '')}
-      </div>
+      <img src="${deck.image}" alt="${deck.name}" style="width:100%;height:80px;object-fit:cover;border-radius:8px;">
+      <div style="font-weight:bold;color:${deck.color};margin:7px 0 3px 0;">${deck.name}</div>
+      <div style="font-size:0.93em;color:#bbb;">${deck.description}</div>
     `;
     div.onclick = () => {
-      document.getElementById('cpu-deck-modal').style.display = 'none';
+      modal.style.display = 'none';
+      // Store selected CPU deck (in window or gameState)
       window.selectedCpuDeck = deck;
-      // Set cardbackArt default if not present
-      window.selectedCpuDeck.cardbackArt = deck.cardbackArt || "OtherImages/Cardbacks/DefaultCardback.png";
+      window.selectedCpuDeck.cardbackArt = "OtherImages/Cardbacks/DefaultCardback.png";
       showPlayerDeckModal('solo');
     };
     list.appendChild(div);
   });
-}
-function showCpuDeckModal(difficultyIdx = 0, animateDirection = null) {
-  currentDifficulty = difficultyIdx;
-  const modal = document.getElementById('cpu-deck-modal');
-  modal.style.display = 'flex';
-
-  // Render decks for all pages (if needed, or only once on init)
-  difficulties.forEach(diff => renderCpuDeckList(diff));
-
-  // Show/hide pages, add/remove animation classes
-  document.querySelectorAll('.cpu-deck-page').forEach((page, i) => {
-    if (i === currentDifficulty) {
-      page.classList.add('active');
-      page.style.opacity = '1';
-      page.style.pointerEvents = 'auto';
-      page.style.transform = 'translateX(0)';
-    } else {
-      page.classList.remove('active');
-      page.style.opacity = '0';
-      page.style.pointerEvents = 'none';
-      page.style.transform = (i < currentDifficulty) ? 'translateX(-120%)' : 'translateX(120%)';
-    }
-    page.classList.remove('slide-out-left', 'slide-in-right');
-  });
-
-  document.getElementById('cpu-deck-arrow-left').style.display = currentDifficulty > 0 ? 'block' : 'none';
-  document.getElementById('cpu-deck-arrow-right').style.display = currentDifficulty < difficulties.length - 1 ? 'block' : 'none';
-
-  // Cancel/Back buttons
   document.getElementById('close-cpu-deck-modal').onclick = () => { modal.style.display = 'none'; };
-  document.getElementById('cpu-back-btn').onclick = () => { modal.style.display = 'none'; };
-
-  // Animate if needed
-  if (animateDirection) {
-    const pages = document.querySelectorAll('.cpu-deck-page');
-    const from = animateDirection === "right" ? currentDifficulty - 1 : currentDifficulty + 1;
-    const to = currentDifficulty;
-    if (pages[from] && pages[to]) {
-      pages[from].classList.add(animateDirection === "right" ? 'slide-out-left' : 'slide-in-right');
-      pages[to].classList.add('active');
-      setTimeout(() => {
-        pages[from].classList.remove('active', 'slide-out-left', 'slide-in-right');
-        pages[to].classList.remove('slide-out-left', 'slide-in-right');
-      }, 320);
-    }
-  }
+  modal.style.display = 'flex';
 }
-
-// Arrow navigation
-document.getElementById('cpu-deck-arrow-left').onclick = function() {
-  if (currentDifficulty > 0) showCpuDeckModal(currentDifficulty - 1, "left");
-};
-document.getElementById('cpu-deck-arrow-right').onclick = function() {
-  if (currentDifficulty < difficulties.length - 1) showCpuDeckModal(currentDifficulty + 1, "right");
-};
 function showPlayerDeckModal(mode) {
   const modal = document.getElementById('player-deck-modal');
   const list = document.getElementById('player-deck-list');
