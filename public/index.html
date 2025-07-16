@@ -557,12 +557,27 @@
   </div>
 </div>
 
-  <!-- CPU Deck Selection Modal -->
+<!-- CPU Deck Selection Modal -->
 <div id="cpu-deck-modal" class="modal" style="display:none;">
-  <div class="modal-content" style="max-width:600px;">
+  <div class="modal-content" style="max-width:600px; position:relative; overflow:hidden;">
     <img id="cpu-back-btn" src="OtherImages/Icons/Back.png" alt="Back" style="position:absolute;top:16px;left:16px;width:36px;height:36px;cursor:pointer;z-index:2;"/>
-    <h3>Choose Your Opponent's Deck</h3>
-    <div id="cpu-deck-list" style="display:flex;flex-wrap:wrap;gap:16px;justify-content:center;"></div>
+    <h3 style="margin-top:32px;">Choose Your Opponent's Deck</h3>
+
+    <!-- Arrow navigation -->
+    <img id="cpu-deck-arrow-left" src="OtherImages/Icons/ArrowLeft.png" alt="Previous" style="position:absolute;top:50%;left:4px;transform:translateY(-50%);width:34px;height:34px;cursor:pointer;z-index:2;display:none;" />
+    <img id="cpu-deck-arrow-right" src="OtherImages/Icons/ArrowRight.png" alt="Next" style="position:absolute;top:50%;right:4px;transform:translateY(-50%);width:34px;height:34px;cursor:pointer;z-index:2;display:block;" />
+
+    <div id="cpu-deck-pages-wrapper">
+      <div class="cpu-deck-page active" data-difficulty="easy">
+        <div id="cpu-deck-list-easy" class="cpu-deck-list"></div>
+      </div>
+      <div class="cpu-deck-page" data-difficulty="normal">
+        <div id="cpu-deck-list-normal" class="cpu-deck-list"></div>
+      </div>
+      <div class="cpu-deck-page" data-difficulty="hard">
+        <div id="cpu-deck-list-hard" class="cpu-deck-list"></div>
+      </div>
+    </div>
     <button id="close-cpu-deck-modal" class="btn-negative-secondary" style="margin-top:14px;">Cancel</button>
   </div>
 </div>
