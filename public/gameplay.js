@@ -787,8 +787,6 @@ function renderRowZone(zoneId, cardArray, category) {
 }
 function renderRightbarZones() {
   const rightbar = document.getElementById('battlefield-rightbar');
-  rightbar.innerHTML = ''; // Clear all children so ordering is correct
-
   // Get all zone containers
   const oppDeckDiv = document.getElementById('opponent-deck-zone');
   const oppVoidDiv = document.getElementById('opponent-void-zone');
