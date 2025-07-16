@@ -219,14 +219,14 @@ function showCpuDeckModal() {
       // Store selected CPU deck (in window or gameState)
       window.selectedCpuDeck = deck;
       window.selectedCpuDeck.cardbackArt = "OtherImages/Cardbacks/DefaultCardback.png";
-      showPlayerDeckModal('solo');
+      showPlayerDeckModal();
     };
     list.appendChild(div);
   });
   document.getElementById('close-cpu-deck-modal').onclick = () => { modal.style.display = 'none'; };
   modal.style.display = 'flex';
 }
-function showPlayerDeckModal(mode) {
+function showPlayerDeckModal() {
   const modal = document.getElementById('player-deck-modal');
   const list = document.getElementById('player-deck-list');
   list.innerHTML = '';
@@ -257,9 +257,7 @@ function showPlayerDeckModal(mode) {
     div.onclick = () => {
       modal.style.display = 'none';
       window.selectedPlayerDeck = deck;
-      if (mode === 'solo') startSoloGame();
-      else if (mode === 'private') startPrivateGame();
-      else if (mode === 'casual') onCasualDeckSelected(deck);
+      startSoloGame();
     };
     list.appendChild(div);
   });
