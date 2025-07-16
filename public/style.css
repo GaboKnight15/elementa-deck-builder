@@ -125,42 +125,6 @@ button {
   box-sizing: border-box;
   overflow-y: auto;
 }
-#home-container {
-  display: flex;
-  max-width: 100vw;
-  width: 100%;
-  position: relative;
-  z-index: 1;
-  gap: 32px;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 40vh;
-  margin: 2em auto;
-  text-align: center;
-}
-#builder-container {
-  min-height: 100vh;
-  display: block;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 20px 0 0 0;
-  margin: 0;
-  box-sizing: border-box;
-}
-#builder-container.flex-layout {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-}
-#gameplay-container {
-  display: flex;
-  flex-direction: row;
-  width: 100vw;
-  height: 100vh;
-  background: #22304a;
-  overflow: hidden;
-}
 .section-header {
   display: flex;
   top: 0;
