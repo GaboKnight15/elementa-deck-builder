@@ -584,7 +584,7 @@ button {
 #gallery-cards {
   display: grid;
   background: #1a2533;
-  grid-template-columns: repeat(auto-fit, 140px);
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 0.1em;
   justify-items: center;
   align-items: start;
@@ -592,8 +592,6 @@ button {
   box-sizing: border-box;
   padding: 1em 0.2em;
   overflow-x: auto;
-  max-height: 100%;
-  overflow-y: auto;
   max-width: 100vw;
 }
 .new-card-badge {
@@ -2340,10 +2338,6 @@ button {
 
 /* PROFILE AREA */
 #profile-area {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  z-index: 5000;
   cursor: pointer;
   background: none !important;
   padding: 0 !important;
