@@ -55,6 +55,7 @@ const DEFAULT_CPU_DECKS = [
     id: 'green',
     name: 'Verdant Might',
     color: 'green',
+    difficulty: '⭐',
     image: 'CardImages/BasicCreatures/Fairy.png',
     bannerArt: 'CardImages/Banners/GreenBanner.png',
     cardbackArt: 'OtherImages/Cardbacks/GreenCardback.png',
@@ -69,6 +70,7 @@ const DEFAULT_CPU_DECKS = [
     id: 'red',
     name: 'Ember Tyranny',
     color: 'red',
+    difficulty: '⭐',
     image: 'CardImages/BasicCreatures/Emberling.png',
     bannerArt: 'CardImages/Banners/RedBanner.png',
     cardbackArt: 'OtherImages/Cardbacks/RedCardback.png',
@@ -84,6 +86,7 @@ const DEFAULT_CPU_DECKS = [
     id: 'blue',
     name: 'Tidebound Will',
     color: 'blue',
+    difficulty: '⭐',
     image: 'CardImages/BasicCreatures/WaterElemental.png',
     bannerArt: 'CardImages/Banners/BlueBanner.png',
     cardbackArt: 'OtherImages/Cardbacks/BlueCardback.png',
@@ -99,6 +102,7 @@ const DEFAULT_CPU_DECKS = [
     id: 'yellow',
     name: 'Surgecallers Rite',
     color: 'yellow',
+    difficulty: '⭐',
     image: 'CardImages/BasicCreatures/Emberling.png',
     bannerArt: 'CardImages/Banners/YellowBanner.png',
     cardbackArt: 'OtherImages/Cardbacks/YellowCardback.png',
@@ -114,6 +118,7 @@ const DEFAULT_CPU_DECKS = [
     id: 'purple',
     name: 'Venom Bloom',
     color: 'purple',
+    difficulty: '⭐',
     image: 'CardImages/BasicCreatures/Emberling.png',
     bannerArt: 'CardImages/Banners/PurpleBanner.png',
     cardbackArt: 'OtherImages/Cardbacks/PurpleCardback.png',
@@ -129,6 +134,7 @@ const DEFAULT_CPU_DECKS = [
     id: 'gray',
     name: 'Ironroot Vow',
     color: 'gray',
+    difficulty: '⭐',
     image: 'CardImages/BasicCreatures/Golemites.png',
     bannerArt: 'CardImages/Banners/GrayBanner.png',
     cardbackArt: 'OtherImages/Cardbacks/GrayCardback.png',
@@ -144,6 +150,7 @@ const DEFAULT_CPU_DECKS = [
     id: 'black',
     name: 'Shadowy Descent',
     color: 'black',
+    difficulty: '⭐',
     image: 'CardImages/BasicCreatures/Imp.png',
     bannerArt: 'CardImages/Banners/BlackBanner.png',
     cardbackArt: 'OtherImages/Cardbacks/BlackCardback.png',
@@ -159,6 +166,7 @@ const DEFAULT_CPU_DECKS = [
     id: 'white',
     name: 'Radiant Oath',
     color: 'white',
+    difficulty: '⭐',
     image: 'CardImages/BasicCreatures/Emberling.png',
     bannerArt: 'CardImages/Banners/WhiteBanner.png',
     cardbackArt: 'OtherImages/Cardbacks/WhiteCardback.png',
@@ -210,9 +218,9 @@ function showCpuDeckModal() {
     div.style.background = '#232a3c';
     div.style.width = '120px';
     div.innerHTML = `
-      <img src="${deck.image}" alt="${deck.name}" style="width:100%;height:80px;object-fit:cover;border-radius:8px;">
+      <img src="${deck.image}" alt="${deck.name}" style="width:64px;height:90px;object-fit:cover;border-radius:8px;display:block;margin:0 auto;">
       <div style="font-weight:bold;color:${deck.color};margin:7px 0 3px 0;">${deck.name}</div>
-      <div style="font-size:0.93em;color:#bbb;">${deck.description}</div>
+      <div style="font-size:0.93em;color:#bbb;">${deck.difficulty}</div>
     `;
     div.onclick = () => {
       modal.style.display = 'none';
