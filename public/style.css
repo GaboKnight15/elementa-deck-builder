@@ -584,7 +584,7 @@ button {
 #gallery-cards {
   display: grid;
   background: #1a2533;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fit, 140px);
   gap: 0.1em;
   justify-items: center;
   align-items: start;
@@ -592,6 +592,8 @@ button {
   box-sizing: border-box;
   padding: 1em 0.2em;
   overflow-x: auto;
+  max-height: 100%;
+  overflow-y: auto;
   max-width: 100vw;
 }
 .new-card-badge {
@@ -1916,10 +1918,6 @@ button {
   background: linear-gradient(135deg, #ececec 60%, #f3e6fa 100%);
 }
 /* Gameplay CSS */
-#gameplay-container {
-  display: flex
-;
-
 .zone.drag-over {
   outline: 2px dashed #007bff;
   background: #e0f3ff;
@@ -2342,16 +2340,16 @@ button {
 
 /* PROFILE AREA */
 #profile-area {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 5000;
   cursor: pointer;
   background: none !important;
   padding: 0 !important;
   box-shadow: none !important;
   border-radius: 50%;
   gap: 10px;
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  z-index: 5000;
   transition: none;
   display: flex;
   align-items: center;
