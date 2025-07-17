@@ -285,7 +285,9 @@ function showGalleryCardMenu(card, anchorBtn) {
 // Hide menu if click outside
 document.addEventListener('click', function(e) {
   const menu = document.getElementById('gallery-card-menu');
-  if (menu && menu.style.display === "block") {
+  if (!menu) return;
+  // Only close if click is OUTSIDE the menu and not the menu button
+  if (menu.style.display === "block" && !menu.contains(e.target) && !e.target.classList.contains('gallery-card-menu-btn')) {
     menu.style.display = "none";
     menu._activeCard = null;
   }
