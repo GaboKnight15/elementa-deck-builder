@@ -103,54 +103,26 @@ function createCardGallery(card) {
 
     div.appendChild(img);
   
-    const menu = document.createElement('div');
-    menu.className = "card-action-menu";
+// Add menu button (three dots)
+const menuBtn = document.createElement('button');
+menuBtn.className = "gallery-card-menu-btn";
+menuBtn.innerHTML = "&#x22EE;"; // vertical ellipsis
+menuBtn.style.position = "absolute";
+menuBtn.style.top = "8px";
+menuBtn.style.right = "8px";
+menuBtn.style.background = "none";
+menuBtn.style.border = "none";
+menuBtn.style.color = "#ffe066";
+menuBtn.style.fontSize = "20px";
+menuBtn.style.cursor = "pointer";
+div.style.position = "relative";
+div.appendChild(menuBtn);
 
-    const viewRow = document.createElement('div');
-    viewRow.className = "card-action-row";
-    viewRow.tabIndex = 0;
-    viewRow.style.cursor = "pointer";
-    viewRow.onclick = (e) => {
-      e.stopPropagation();
-      showFullCardModal(card);
-      // Remove "new" badge after viewing
-      const newCards = getNewlyUnlockedCards().filter(id => id !== card.id);
-      setNewlyUnlockedCards(newCards);
-      renderGallery();
-    };
-    const viewIcon = document.createElement('img');
-    viewIcon.src = "OtherImages/Icons/View.png"; // placeholder, upload your magnifying glass later
-    viewIcon.alt = "View";
-    viewIcon.className = "action-menu-icon";
-    viewRow.appendChild(viewIcon);
-    viewRow.appendChild(document.createTextNode("View"));
-    menu.appendChild(viewRow);
-
-    // --- Create Option ---
-    const createBtn = createCreateCardButton(card, renderGallery);
-    const createRow = document.createElement('div');
-    createRow.className = "card-action-row";
-    createRow.appendChild(createBtn);
-    createRow.appendChild(document.createTextNode("Create"));
-    // Remove label from button, use only image
-    createBtn.style.marginRight = "10px";
-    // Remove background/border if needed
-    createBtn.style.background = "none";
-    createBtn.style.border = "none";
-    menu.appendChild(createRow);
-
-    // -- Void Option --
-     const voidBtn = createVoidCardButton(card, renderGallery);
-    const voidRow = document.createElement('div');
-    voidRow.className = "card-action-row";
-    voidRow.appendChild(voidBtn);
-    voidRow.appendChild(document.createTextNode("Void"));
-    voidBtn.style.marginRight = "10px";
-    voidBtn.style.background = "none";
-    voidBtn.style.border = "none";
-    menu.appendChild(voidRow);
-
-    div.appendChild(menu);
+// Show menu on click
+menuBtn.onclick = function(e) {
+  e.stopPropagation();
+  showGalleryCardMenu(card, menuBtn);
+};
 
     // "New!" badge
     const newCards = getNewlyUnlockedCards();
@@ -278,7 +250,46 @@ function setupFilterSelectPlaceholders() {
     select.addEventListener('blur', () => updateFilterPlaceholder(select));
   });
 }
+function showGalleryCardMenu(card, anchorBtn) {
+  const menu = document.getElementById('gallery-card-menu');
+  if (!menu) return;
 
+  // Position the menu (below the button)
+  const rect = anchorBtn.getBoundingClientRect();
+  menu.style.left = window.scrollX + rect.right - 170 + "px"; // tweak as needed
+  menu.style.top = window.scrollY + rect.bottom + 8 + "px"; // tweak as needed
+  menu.style.display = "block";
+
+  // Save which card is active
+  menu._activeCard = card;
+
+  // Set up handlers for actions
+  document.getElementById('gallery-card-view-btn').onclick = function() {
+    showFullCardModal(card);
+    menu.style.display = "none";
+    // Remove "new" badge
+    const newCards = getNewlyUnlockedCards().filter(id => id !== card.id);
+    setNewlyUnlockedCards(newCards);
+    renderGallery();
+  };
+  document.getElementById('gallery-card-create-btn').onclick = function() {
+    createCreateCardButton(card, renderGallery).onclick(new MouseEvent('click'));
+    menu.style.display = "none";
+  };
+  document.getElementById('gallery-card-void-btn').onclick = function() {
+    createVoidCardButton(card, renderGallery).onclick(new MouseEvent('click'));
+    menu.style.display = "none";
+  };
+}
+
+// Hide menu if click outside
+document.addEventListener('click', function(e) {
+  const menu = document.getElementById('gallery-card-menu');
+  if (menu && menu.style.display === "block") {
+    menu.style.display = "none";
+    menu._activeCard = null;
+  }
+});
 function createCreateCardButton(card, onActionDone) {
   const owned = getCollection()[card.id] || 0;
   const btn = document.createElement('img');
@@ -376,7 +387,7 @@ function createVoidCardButton(card, onActionDone) {
   return btn;
 }
 // CREATE/VOID CONFIRM MODAL
-function showEssenceConfirmModal({ 
+function showEssenceConfirmModal({
   action, // "create" or "void"
   card, 
   amount, 
