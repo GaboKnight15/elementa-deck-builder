@@ -1174,6 +1174,21 @@ button {
   border-radius: 10px;
   margin-left: 5px;
 }
+.deck-card-count-badge {
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  background: #222a33;
+  color: #ffe066;
+  font-weight: bold;
+  font-size: 1.12em;
+  padding: 3px 12px 3px 8px;
+  border-radius: 8px;
+  z-index: 2;
+  pointer-events: none;
+  user-select: none;
+  box-shadow: 0 1px 4px #0003;
+}
 /* ICONS: TRASH, Plus */
 .icon-btn {
   background: linear-gradient(90deg, #3249e8 0%, #1c254e 100%);
@@ -1629,6 +1644,7 @@ button {
 }
 .modal-card-wrapper {
   display: flex;
+  position: relative;
   align-items: center;
   justify-content: center;
   background: rgba(255,255,255,0.04); /* barely visible */
