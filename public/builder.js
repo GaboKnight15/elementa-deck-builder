@@ -348,6 +348,7 @@ function showDeckViewModal(deckName) {
     if (!card) continue;
     const wrapper = document.createElement('div');
     wrapper.className = 'modal-card-wrapper';
+
     const img = document.createElement('img');
     img.className = 'modal-card-img';
     img.src = card.image;
@@ -361,9 +362,10 @@ function showDeckViewModal(deckName) {
 
     wrapper.appendChild(img);
 
+    // This badge is already being created per card
     const badge = document.createElement('div');
     badge.textContent = `x${count}`;
-    badge.className = 'deck-count-badge badge-top-left';
+    badge.className = 'deck-card-count-badge';
     wrapper.appendChild(badge);
 
     deckViewModalList.appendChild(wrapper);
