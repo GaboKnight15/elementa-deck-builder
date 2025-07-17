@@ -237,38 +237,83 @@ function showCpuDeckModal() {
 function showPlayerDeckModal() {
   const modal = document.getElementById('player-deck-modal');
   const list = document.getElementById('player-deck-list');
+  const defaultList = document.getElementById('default-player-deck-list');
   list.innerHTML = '';
+  defaultList.innerHTML = '';
 
   // Use globally-exposed builder functions!
   const playerDecks = window.getPlayerDecks ? window.getPlayerDecks() : [];
   const activeId = window.getActiveDeckId ? window.getActiveDeckId() : null;
 
+  // Render player's own decks
   if (!playerDecks.length) {
-    list.innerHTML = '<div style="color:#ffe066;">No decks found! Please build a deck first.</div>';
-    modal.style.display = 'flex';
-    return;
+    list.innerHTML = '<div style="color:#ffe066;">No decks found! Please build a deck or select a starter deck below.</div>';
+  } else {
+    playerDecks.forEach(deck => {
+      const div = document.createElement('div');
+      div.className = 'player-deck-option';
+      div.style.cursor = 'pointer';
+      div.style.border = deck.id === activeId ? '3px solid #ffe066' : '2px solid #333';
+      div.style.borderRadius = '12px';
+      div.style.padding = '12px';
+      div.style.background = '#232a3c';
+      div.style.width = '120px';
+      div.innerHTML = `
+        <img src="${deck.image}" alt="${deck.name}" style="width:100%;height:80px;object-fit:cover;border-radius:8px;">
+        <div style="font-weight:bold;color:#ffe066;margin:7px 0 3px 0;">${deck.name}</div>
+      `;
+      div.onclick = () => {
+        modal.style.display = 'none';
+        window.selectedPlayerDeck = deck;
+        startSoloGame();
+      };
+      list.appendChild(div);
+    });
   }
 
-  playerDecks.forEach(deck => {
-    const div = document.createElement('div');
-    div.className = 'player-deck-option';
-    div.style.cursor = 'pointer';
-    div.style.border = deck.id === activeId ? '3px solid #ffe066' : '2px solid #333';
-    div.style.borderRadius = '12px';
-    div.style.padding = '12px';
-    div.style.background = '#232a3c';
-    div.style.width = '120px';
-    div.innerHTML = `
-      <img src="${deck.image}" alt="${deck.name}" style="width:100%;height:80px;object-fit:cover;border-radius:8px;">
-      <div style="font-weight:bold;color:#ffe066;margin:7px 0 3px 0;">${deck.name}</div>
-    `;
-    div.onclick = () => {
-      modal.style.display = 'none';
-      window.selectedPlayerDeck = deck;
-      startSoloGame();
-    };
-    list.appendChild(div);
-  });
+  // --- DEFAULT DECKS SECTION ---
+  // Use DEFAULT_CPU_DECKS for player starter decks
+  const defaultDecks = window.DEFAULT_CPU_DECKS || [];
+
+  if (Array.isArray(defaultDecks) && defaultDecks.length > 0) {
+    // Section header
+    const label = document.createElement('div');
+    label.textContent = "Starter Decks";
+    label.style.color = "#ffe066";
+    label.style.fontWeight = "bold";
+    label.style.margin = "0 0 10px 0";
+    label.style.textAlign = "center";
+    defaultList.appendChild(label);
+
+    const row = document.createElement('div');
+    row.style.display = "flex";
+    row.style.flexWrap = "wrap";
+    row.style.gap = "18px";
+    row.style.justifyContent = "center";
+
+    defaultDecks.forEach(deck => {
+      const div = document.createElement('div');
+      div.className = 'default-player-deck-option';
+      div.style.cursor = 'pointer';
+      div.style.border = '2px solid #444';
+      div.style.borderRadius = '12px';
+      div.style.padding = '12px';
+      div.style.background = '#232a3c';
+      div.style.width = '120px';
+      div.innerHTML = `
+        <img src="${deck.image}" alt="${deck.name}" style="width:100%;height:80px;object-fit:cover;border-radius:8px;">
+        <div style="font-weight:bold;color:#ffe066;margin:7px 0 3px 0;">${deck.name}</div>
+      `;
+      div.onclick = () => {
+        modal.style.display = 'none';
+        window.selectedPlayerDeck = deck;
+        startSoloGame();
+      };
+      row.appendChild(div);
+    });
+    defaultList.appendChild(row);
+  }
+
   document.getElementById('close-player-deck-modal').onclick = () => { modal.style.display = 'none'; };
   modal.style.display = 'flex';
 }
