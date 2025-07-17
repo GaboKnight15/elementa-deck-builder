@@ -279,15 +279,6 @@ window.renderDeckCardbackChoices = function() {
 
 closeDeckCardbackModalBtn.onclick = () => (deckCardbackModal.style.display = "none");
 
-// When opening deck menu, update cardback image too
-function showDeckTileMenu(deckName) {
-  deckMenuTitle.textContent = deckName;
-  updateDeckBanner(deckName);
-  updateDeckCardback(deckName);
-  deckMenuModal.style.display = 'flex';
-  deckMenuModal.dataset.deckName = deckName;
-}
-
 function closeDeckTileMenu() {
   deckMenuModal.style.display = 'none';
 }
