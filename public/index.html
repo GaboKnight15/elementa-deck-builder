@@ -388,30 +388,29 @@
 </div>
 
                                                           <!-- MODALS --> 
-  <!-- PROFILE MENU -->
-    <div id="profile-menu">
-      <div id="profile-account-section">
-        <div id="profile-banner-container">
-          <img id="profile-banner" src="CardImages/Banners/DefaultBanner.png" alt="Banner">
-        </div>
-        <div id="profile-info">
-          <button id="profile-pic-btn" title="Change Avatar">
-            <img id="profile-pic-menu" src="CardImages/Avatars/Default.png" alt="Profile">
-          </button>
-          <div id="profile-username-display"></div>
-        </div>
-      </div>
+<!-- PROFILE MENU -->
+<div id="profile-menu">
+  <div id="profile-account-section">
+    <div id="profile-banner-container">
+      <img id="profile-banner" src="CardImages/Banners/DefaultBanner.png" alt="Banner">
     </div>
-  
-  <!-- PROFILE ICONS MODAL -->
-  <div id="profile-icon-modal" class="modal">
-    <div id="profile-icon-modal-content" class="modal-content">
-      <h3>Choose your Avatar</h3>
-      <div id="profile-icons"></div>
-      <button id="close-profile-icon-modal" class="btn-negative" style="margin-top:14px;">Cancel</button>
+    <div id="profile-info">
+      <button id="profile-pic-btn" title="Change Avatar">
+        <img id="profile-pic-menu" src="CardImages/Avatars/Default.png" alt="Profile">
+      </button>
+      <div id="profile-username-display"></div>
     </div>
   </div>
-  <!-- BANNER MODAL -->
+</div>
+<!-- PROFILE ICONS MODAL -->
+<div id="profile-icon-modal" class="modal">
+  <div id="profile-icon-modal-content" class="modal-content">
+    <h3>Choose your Avatar</h3>
+    <div id="profile-icons"></div>
+    <button id="close-profile-icon-modal" class="btn-negative" style="margin-top:14px;">Cancel</button>
+  </div>
+</div>
+<!-- BANNER MODAL -->
 <div id="profile-banner-modal" class="modal">
   <div id="profile-banner-modal-content" class="modal-content">
     <h3>Choose your Banner</h3>
@@ -419,7 +418,6 @@
     <button id="close-profile-banner-modal" class="btn-negative" style="margin-top:14px;">Cancel</button>
   </div>
 </div>
-  
 <!-- QUESTS MODAL -->
 <div id="quests-modal" class="modal">
   <div class="modal-content" style="min-width:600px;max-width:800px;">
@@ -433,7 +431,6 @@
     <button id="close-quests-modal" class="btn-negative-secondary" style="margin-top:16px;">Close</button>
   </div>
 </div>
-
 <!-- ACHIEVEMENTS MODAL -->
 <div id="achievements-modal" class="modal">
   <div class="modal-content">
@@ -441,8 +438,7 @@
     <div id="achievements-list"></div>
     <button id="close-achievements-modal" class="btn-negative-secondary" style="margin-top:14px;">Close</button>
   </div>
-</div> 
-  
+</div>
 <!-- FRIEND LIST MODAL -->  
 <div id="friends-modal" class="modal" style="display:none;">
   <div class="modal-content">
@@ -459,7 +455,6 @@
     <button id="close-friends-modal" class="btn-negative-secondary" style="margin-top:14px;">Close</button>
   </div>
 </div>
-                        <!-- Modal for full image view -->
 <!-- DECK VIEW MODAL -->
 <div id="deck-view-modal" class="modal" style="display:none;">
   <div class="modal-content">
@@ -484,26 +479,24 @@
     <button id="close-deck-cardback-modal" class="btn-negative-secondary" style="margin-top:14px;">Cancel</button>
   </div>
 </div>
-  <!-- DECK MODAL -->
-  <div id="deck-selection-modal"></div>
+<!-- DECK MODAL -->
+<div id="deck-selection-modal"></div>
 <div id="deck-modal" class="modal">
   <div class="modal-content">
     <div class="modal-card-list"></div>
   </div>
 </div>
-  
-  <!-- VOID MODAL -->
+<!-- VOID MODAL -->
 <div id="void-modal" class="modal">
   <div class="modal-content">
     <h3>Void</h3>
     <div class="modal-card-list"></div>
   </div>
 </div>
-  
 <!-- SHOW FULL IMAGE -->
-  <div id="image-modal" class="modal" style="display:none; align-items:center; justify-content:center;">
-    <div id="modal-img-content"></div>
-  </div>
+<div id="image-modal" class="modal" style="display:none; align-items:center; justify-content:center;">
+  <div id="modal-img-content"></div>
+</div>
 <!-- GALLERY CARD CONTEXT MENU -->
 <div id="gallery-card-menu" class="modal" style="display:none; position:absolute; z-index:1000;">
   <div class="modal-content" style="min-width:180px;padding:0;">
@@ -525,8 +518,8 @@
     <img id="essence-confirm-card-img" src="" alt="" class="essence-confirm-card-img" />
     <div id="essence-confirm-amount" style="margin: 10px 0;"></div>
     <div class="essence-confirm-btn-row">
-      <button id="essence-confirm-btn" class="btn-secondary">Confirm</button>
-      <button id="essence-cancel-btn" class="btn-negative-secondary">Cancel</button>
+      <button id="essence-confirm-btn" class="btn-secondary">✓</button>
+      <button id="essence-cancel-btn" class="btn-negative-secondary">✕</button>
     </div>
   </div>
 </div>  
@@ -538,7 +531,6 @@
     <button id="close-highlight-art-btn" class="btn-negative-secondary">Close</button>
   </div>
 </div>
-  
 <!-- PACK OPENING MODAL -->
 <div id="pack-opening-modal" class="modal">
   <div class="modal-content" id="pack-opening-modal-content" style="max-width: 980px;">
@@ -547,8 +539,8 @@
     <button id="close-pack-opening-modal" class="btn-negative-secondary" style="margin-top:18px;">Close</button>
   </div>
 </div>
-<!-- SETTINGS MODAL -->
-<!-- SETTINGS MENU (Popover) -->
+                                                  <!-- MENUS -->
+<!-- SETTINGS MENU -->
 <div id="settings-menu-pop" class="settings-menu-pop">
   <div id="settings-menu-inner">
     <div class="settings-item" id="settings-notices">
@@ -573,7 +565,7 @@
 <div id="cpu-deck-modal" class="modal" style="display:none;">
   <div class="modal-content cpu-player-modal-content" style="max-width:900px;width:90vw;">
     <img id="cpu-back-btn" src="OtherImages/Icons/Back.png" alt="Back" style="position:absolute;top:16px;left:16px;width:36px;height:36px;cursor:pointer;z-index:2;"/>
-    <h3>Opponent Decks</h3>
+    <div class="modal-title">Opponent Decks</div>
     <div id="cpu-deck-list" style="display:flex;flex-wrap:wrap;gap:16px;justify-content:center;"></div>
     <button id="close-cpu-deck-modal" class="btn-negative-secondary" style="margin-top:14px;">Cancel</button>
   </div>
@@ -583,9 +575,9 @@
 <div id="player-deck-modal" class="modal" style="display:none;">
   <div class="modal-content cpu-player-modal-content" style="max-width:900px;width:90vw;">
     <img id="player-back-btn" src="OtherImages/Icons/Back.png" alt="Back" style="position:absolute;top:16px;left:16px;width:36px;height:36px;cursor:pointer;z-index:2;"/>
-    <h3>My Decks</h3>
+    <div class="modal-title">My Decks</div>
     <div id="player-deck-list" style="display:flex;flex-wrap:wrap;gap:16px;justify-content:center;"></div>
-    <h3>Default Decks</h3>
+    <div class="modal-title">Default Decks</div>
     <div id="default-player-deck-list" style="margin-top:24px;"></div>
     <button id="close-player-deck-modal" class="btn-negative-secondary" style="margin-top:14px;">Cancel</button>
   </div>
@@ -594,7 +586,7 @@
 <!-- PRIVATE LOBBY MODAL -->
 <div id="private-lobby-modal" class="modal" style="display:none;">
   <div class="modal-content" style="max-width:400px;">
-    <h3>Private Lobby</h3>
+    <div class="modal-title">Private Lobby</div>
     <div id="private-lobby-options">
       <button id="create-lobby-btn" class="btn-primary" style="margin-bottom:8px;">Create Lobby</button>
       <div style="margin: 12px 0; text-align: center;">or</div>
