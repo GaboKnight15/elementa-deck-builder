@@ -101,7 +101,16 @@ function createCardGallery(card) {
       div.classList.add('card-locked');
     }
 
-    img.onclick = (e) => {
+    div.appendChild(img);
+  
+    const menu = document.createElement('div');
+    menu.className = "card-action-menu";
+
+    const viewRow = document.createElement('div');
+    viewRow.className = "card-action-row";
+    viewRow.tabIndex = 0;
+    viewRow.style.cursor = "pointer";
+    viewRow.onclick = (e) => {
       e.stopPropagation();
       showFullCardModal(card);
       // Remove "new" badge after viewing
@@ -109,14 +118,39 @@ function createCardGallery(card) {
       setNewlyUnlockedCards(newCards);
       renderGallery();
     };
-    div.appendChild(img);
+    const viewIcon = document.createElement('img');
+    viewIcon.src = "OtherImages/Icons/View.png"; // placeholder, upload your magnifying glass later
+    viewIcon.alt = "View";
+    viewIcon.className = "action-menu-icon";
+    viewRow.appendChild(viewIcon);
+    viewRow.appendChild(document.createTextNode("View"));
+    menu.appendChild(viewRow);
 
-    const actionRow = document.createElement('div');
-    actionRow.className = "action-row";
-    // --- Use helper functions for buttons ---
-    actionRow.appendChild(createCreateCardButton(card, renderGallery));
-    actionRow.appendChild(createVoidCardButton(card, renderGallery));
-    div.appendChild(actionRow);
+    // --- Create Option ---
+    const createBtn = createCreateCardButton(card, renderGallery);
+    const createRow = document.createElement('div');
+    createRow.className = "card-action-row";
+    createRow.appendChild(createBtn);
+    createRow.appendChild(document.createTextNode("Create"));
+    // Remove label from button, use only image
+    createBtn.style.marginRight = "10px";
+    // Remove background/border if needed
+    createBtn.style.background = "none";
+    createBtn.style.border = "none";
+    menu.appendChild(createRow);
+
+    // -- Void Option --
+     const voidBtn = createVoidCardButton(card, renderGallery);
+    const voidRow = document.createElement('div');
+    voidRow.className = "card-action-row";
+    voidRow.appendChild(voidBtn);
+    voidRow.appendChild(document.createTextNode("Void"));
+    voidBtn.style.marginRight = "10px";
+    voidBtn.style.background = "none";
+    voidBtn.style.border = "none";
+    menu.appendChild(voidRow);
+
+    div.appendChild(menu);
 
     // "New!" badge
     const newCards = getNewlyUnlockedCards();
