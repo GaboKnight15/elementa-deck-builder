@@ -56,7 +56,7 @@ const DEFAULT_CPU_DECKS = [
     name: 'Verdant Might',
     color: 'green',
     difficulty: '⭐',
-    image: 'CardImages/BasicCreatures/Fairy.png',
+    image: 'CardImages/Artworks/Fairy.png',
     bannerArt: 'CardImages/Banners/GreenBanner.png',
     cardbackArt: 'OtherImages/Cardbacks/GreenCardback.png',
     cards: [
@@ -71,7 +71,7 @@ const DEFAULT_CPU_DECKS = [
     name: 'Ember Tyranny',
     color: 'red',
     difficulty: '⭐',
-    image: 'CardImages/BasicCreatures/Emberling.png',
+    image: 'CardImages/Artworks/Emberling.png',
     bannerArt: 'CardImages/Banners/RedBanner.png',
     cardbackArt: 'OtherImages/Cardbacks/RedCardback.png',
     cards: [
@@ -87,7 +87,7 @@ const DEFAULT_CPU_DECKS = [
     name: 'Tidebound Will',
     color: 'blue',
     difficulty: '⭐',
-    image: 'CardImages/BasicCreatures/WaterElemental.png',
+    image: 'CardImages/Artworks/WaterElemental.png',
     bannerArt: 'CardImages/Banners/BlueBanner.png',
     cardbackArt: 'OtherImages/Cardbacks/BlueCardback.png',
     cards: [
@@ -103,7 +103,7 @@ const DEFAULT_CPU_DECKS = [
     name: 'Surgecallers Rite',
     color: 'yellow',
     difficulty: '⭐',
-    image: 'CardImages/BasicCreatures/Emberling.png',
+    image: 'CardImages/Artworks/Emberling.png',
     bannerArt: 'CardImages/Banners/YellowBanner.png',
     cardbackArt: 'OtherImages/Cardbacks/YellowCardback.png',
     cards: [
@@ -119,7 +119,7 @@ const DEFAULT_CPU_DECKS = [
     name: 'Venom Bloom',
     color: 'purple',
     difficulty: '⭐',
-    image: 'CardImages/BasicCreatures/Emberling.png',
+    image: 'CardImages/Artworks/Emberling.png',
     bannerArt: 'CardImages/Banners/PurpleBanner.png',
     cardbackArt: 'OtherImages/Cardbacks/PurpleCardback.png',
     cards: [
@@ -135,7 +135,7 @@ const DEFAULT_CPU_DECKS = [
     name: 'Ironroot Vow',
     color: 'gray',
     difficulty: '⭐',
-    image: 'CardImages/BasicCreatures/Golemites.png',
+    image: 'CardImages/Artworks/Golemites.png',
     bannerArt: 'CardImages/Banners/GrayBanner.png',
     cardbackArt: 'OtherImages/Cardbacks/GrayCardback.png',
     cards: [
@@ -151,7 +151,7 @@ const DEFAULT_CPU_DECKS = [
     name: 'Shadowy Descent',
     color: 'black',
     difficulty: '⭐',
-    image: 'CardImages/BasicCreatures/Imp.png',
+    image: 'CardImages/Artworks/Imp.png',
     bannerArt: 'CardImages/Banners/BlackBanner.png',
     cardbackArt: 'OtherImages/Cardbacks/BlackCardback.png',
     cards: [
@@ -167,7 +167,7 @@ const DEFAULT_CPU_DECKS = [
     name: 'Radiant Oath',
     color: 'white',
     difficulty: '⭐',
-    image: 'CardImages/BasicCreatures/Emberling.png',
+    image: 'CardImages/Artworks/Emberling.png',
     bannerArt: 'CardImages/Banners/WhiteBanner.png',
     cardbackArt: 'OtherImages/Cardbacks/WhiteCardback.png',
     cards: [
