@@ -504,7 +504,21 @@
   <div id="image-modal" class="modal" style="display:none; align-items:center; justify-content:center;">
     <div id="modal-img-content"></div>
   </div>
-<!-- CREATE/VOID CARDS -->  
+<!-- GALLERY CARD CONTEXT MENU -->
+<div id="gallery-card-menu" class="modal" style="display:none; position:absolute; z-index:1000;">
+  <div class="modal-content" style="min-width:180px;padding:0;">
+    <button id="gallery-card-view-btn" class="settings-item" style="width:100%;text-align:left;"> 
+      <img src="OtherImages/Icons/View.png" alt="View" style="width:20px;vertical-align:middle;margin-right:10px;"> View
+    </button>
+    <button id="gallery-card-create-btn" class="settings-item" style="width:100%;text-align:left;">
+      <img src="OtherImages/Icons/Essence.png" alt="Create" style="width:20px;vertical-align:middle;margin-right:10px;"> Create
+    </button>
+    <button id="gallery-card-void-btn" class="settings-item" style="width:100%;text-align:left;">
+      <img src="OtherImages/Icons/Void.png" alt="Void" style="width:20px;vertical-align:middle;margin-right:10px;"> Void
+    </button>
+  </div>
+</div>
+<!-- CREATE/VOID CARDS -->
 <div id="essence-confirm-modal" class="modal" style="display:none; align-items:center; justify-content:center;">
   <div class="essence-confirm-content">
     <div id="essence-confirm-msg"></div>
