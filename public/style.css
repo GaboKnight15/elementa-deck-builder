@@ -126,8 +126,7 @@ button {
 #home-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;   /* vertical center */
-  align-items: center;       /* horizontal center */
+  align-items: center;
   height: 100vh;
 }
 #gameplay-container {
@@ -145,6 +144,9 @@ button {
   width: 100%;
   box-sizing: border-box;
   z-index: 20;
+}
+#battlefield-header {
+  background: none;
 }
 .section-header-left,
 .section-header-right {
