@@ -354,7 +354,7 @@ button {
   box-shadow: 0 10px 40px #50eaff99, 0 0 0 8px #ffe06644;
   background: #253047;
   border: 3.5px solid #ffe066;
-  z-index: 10;
+  z-index: 9999;
 }
 .home-menu-img {
   width: 180px;
