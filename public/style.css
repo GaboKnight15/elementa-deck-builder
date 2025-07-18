@@ -1832,6 +1832,24 @@ button {
   overflow-y: auto; /* Allow scrolling if too many decks */
   /* Prevent weird shrinking and allow all decks to show in grid */
 }
+.deck-art-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: drop-shadow(0 2px 10px #1a2244cc);
+  transition: filter 0.18s, transform 0.18s;
+  /* FADE OUT EFFECT ON EDGES */
+  mask-image:
+    linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+  -webkit-mask-image:
+    linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+  mask-composite: intersect;
+  -webkit-mask-composite: source-in;
+  display: block;
+  margin: 0 auto;
+}
 .cpu-deck-option img {
   width: 100%;
   height: 140px;
@@ -1843,29 +1861,12 @@ button {
   z-index: 1;
 }
 
-.cpu-deck-option .art-fade {
-  position: absolute;
-  left: 12px; right: 12px;
-  bottom: 52px; /* Fade starts above text area */
-  height: 60px;
-  pointer-events: none;
-  z-index: 2;
-  background: linear-gradient(to bottom, rgba(34,42,60,0) 0%, rgba(34,42,60,0.9) 100%);
-  border-radius: 0 0 12px 12px;
-}
 .cpu-deck-option .deck-name {
   font-weight: bold;
   color: var(--deck-color, #ffe066);
   margin: 7px 0 3px 0;
   font-size: 1.05em;
   text-align: center;
-}
-
-.cpu-deck-option .deck-star {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 4px;
 }
 
 .cpu-deck-option .deck-difficulty {
@@ -1884,18 +1885,6 @@ button {
   margin: 0 auto;
   position: relative;
   z-index: 1;
-}
-
-.player-deck-option .art-fade,
-.default-player-deck-option .art-fade {
-  position: absolute;
-  left: 12px; right: 12px;
-  bottom: 50px;
-  height: 60px;
-  pointer-events: none;
-  z-index: 2;
-  background: linear-gradient(to bottom, rgba(34,42,60,0) 0%, rgba(34,42,60,0.9) 100%);
-  border-radius: 0 0 12px 12px;
 }
 
 .player-deck-option .deck-name,
