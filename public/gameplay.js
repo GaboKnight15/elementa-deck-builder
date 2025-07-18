@@ -297,36 +297,42 @@ function showPlayerDeckModal() {
   // The "Default Decks" title is already in your HTML, so just fill the list
   const defaultDecks = DEFAULT_CPU_DECKS;
 
-  if (Array.isArray(defaultDecks) && defaultDecks.length > 0) {
+if (Array.isArray(defaultDecks) && defaultDecks.length > 0) {
+  // Create the row container
+  const row = document.createElement('div');
+  row.style.display = "flex";
+  row.style.flexWrap = "wrap";
+  row.style.gap = "16px";
+  row.style.justifyContent = "center";
 
-defaultDecks.forEach(deck => {
-  const div = document.createElement('div');
-  div.className = 'default-player-deck-option';
-  div.style.cursor = 'pointer';
-  div.style.border = '2px solid ' + deck.color;
-  div.style.borderRadius = '12px';
-  div.style.padding = '12px';
-  div.style.background = '#232a3c';
-  div.style.width = '120px';
-  div.innerHTML = `
-    <div style="position:relative; width:100%; height:140px; display: flex; align-items: center; justify-content: center;">
-      <img src="${deck.image}" alt="${deck.name}" class="deck-art-img">
-    </div>
-    <div class="deck-name" style="--deck-color:${deck.color}; text-align:center;">${deck.name}</div>
-    <div class="deck-difficulty" style="text-align:center;">${deck.difficulty}</div>
-  `;
-  div.onclick = () => {
-    modal.style.display = 'none';
-    window.selectedPlayerDeck = {
-      ...deck,
-      deckObj: deck
+  defaultDecks.forEach(deck => {
+    const div = document.createElement('div');
+    div.className = 'default-player-deck-option';
+    div.style.cursor = 'pointer';
+    div.style.border = '2px solid ' + deck.color;
+    div.style.borderRadius = '12px';
+    div.style.padding = '12px';
+    div.style.background = '#232a3c';
+    div.style.width = '120px';
+    div.innerHTML = `
+      <div style="position:relative; width:100%; height:140px; display: flex; align-items: center; justify-content: center;">
+        <img src="${deck.image}" alt="${deck.name}" class="deck-art-img">
+      </div>
+      <div class="deck-name" style="--deck-color:${deck.color}; text-align:center;">${deck.name}</div>
+      <div class="deck-difficulty" style="text-align:center;">${deck.difficulty}</div>
+    `;
+    div.onclick = () => {
+      modal.style.display = 'none';
+      window.selectedPlayerDeck = {
+        ...deck,
+        deckObj: deck
+      };
+      startSoloGame();
     };
-    startSoloGame();
-  };
-  row.appendChild(div);
-});
-    defaultList.appendChild(row);
-  }
+    row.appendChild(div);
+  });
+  defaultList.appendChild(row);
+}
 
   document.getElementById('close-player-deck-modal').onclick = () => { modal.style.display = 'none'; };
   modal.style.display = 'flex';
