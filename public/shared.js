@@ -18,7 +18,8 @@ const dummyCards = [
  category: 'creature', color: 'gray', type: 'elemental', hp: 3, atk: 2, def: 0, cost: 0, archetype: 'Golemheart', ability: 'burn', set: 'StandardPack'},
 {id: 'basicwolfblack', name: 'Wolf', rarity: 'Common', image: 'CardImages/BasicCreatures/Wolf.png', 
  category: 'creature', color: 'black', type: 'beast', hp: 3, atk: 2, def: 0, cost: {colorless: 1}, archetype: 'Moonfang', ability: 'ambush', set: 'StandardPack'},
-{id: 'basicskeleton', name: 'Skeleton', rarity: 'Common', image: 'CardImages/BasicCreatures/Skeleton.png', category: 'creature', color: 'black', type: 'undead', hp: 1, atk: 1, def: 0, cost: 0, archetype: 'Skullframe', set: 'StandardPack'},
+{id: 'basicskeleton', name: 'Skeleton', rarity: 'Common', image: 'CardImages/BasicCreatures/Skeleton.png',
+ category: 'creature', color: 'black', type: 'undead', hp: 1, atk: 1, def: 0, cost: 0, archetype: 'Skullframe', set: 'StandardPack'},
 {id: 'basicbat', name: 'Bat', rarity: 'Common', image: 'CardImages/BasicCreatures/Bat.png', 
  category: 'creature', color: 'black', type: 'vampire', hp: 3, atk: 2, def: 0, cost: {colorless: 1}, archetype: 'Vampiric', ability: ['drain','flying'], set: 'StandardPack'},
 {id: 'basicimp', name: 'Imp', rarity: 'Common', image: 'CardImages/BasicCreatures/Imp.png', 
@@ -191,22 +192,6 @@ const dummyCards = [
 {id: 'maindomain8', name: 'Nocthyra', rarity: 'Legendary', image: 'CardImages/Domains/Black Domain.png', 
  category: 'domain', color: 'black', type: 'maindomain', hp: 20, cost: 0, essence: {black: 1}, set: 'StandardPack2'},
 ];
-const COST_IMAGE_MAP = {
-  red: "OtherImages/Essence/EssenceRed.png",
-  blue: "OtherImages/Essence/EssenceBlue.png",
-  green: "OtherImages/Essence/EssenceGreen.png",
-  yellow: "OtherImages/Essence/EssenceYellow.png",
-  purple: "OtherImages/Essence/EssencePurple.png",
-  gray: "OtherImages/Essence/EssenceGray.png",
-  black: "OtherImages/Essence/EssenceBlack.png",
-  white: "OtherImages/Essence/EssenceWhite.png",
-  // For colorless cost ("X" = 1, 2, 3, ...)
-  X1: "OtherImages/Essence/EssenceOne.png",
-  X2: "OtherImages/Essence/EssenceTwo.png",
-  X3: "OtherImages/Essence/EssenceThree.png",
-  X4: "OtherImages/Essence/EssenceFour.png",
-  // ...etc
-};
 const addCoinsBtn = document.getElementById('add-coins-btn');
 
 // --- CURRENCY DISPLAY ---
