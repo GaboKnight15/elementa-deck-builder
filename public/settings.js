@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
   function hideSettingsMenu(e) {
     menu.classList.remove('active');
-  }
+  } 
 
   // Prevent menu click from closing it
   menu.onclick = function(e) { e.stopPropagation(); };
