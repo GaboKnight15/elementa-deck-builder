@@ -237,9 +237,13 @@ function showCpuDeckModal() {
     div.style.background = '#232a3c';
     div.style.width = '120px';
     div.innerHTML = `
-      <img src="${deck.image}" alt="${deck.name}" style="width:64px;height:90px;object-fit:cover;border-radius:8px;display:block;margin:0 auto;">
-      <div style="font-weight:bold;color:${deck.color};margin:7px 0 3px 0;">${deck.name}</div>
-      <div style="font-size:0.93em;color:#bbb;">${deck.difficulty}</div>
+      <div style="position:relative; width:100%; height:140px;">
+        <img src="${deck.image}" alt="${deck.name}">
+        <div class="art-fade"></div>
+      </div>
+      <div class="deck-star"><span>★</span></div>
+      <div class="deck-name" style="--deck-color:${deck.color};">${deck.name}</div>
+      <div class="deck-difficulty">${deck.difficulty}</div>
     `;
     div.onclick = () => {
       modal.style.display = 'none';
