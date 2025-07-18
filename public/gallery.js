@@ -102,27 +102,6 @@ function createCardGallery(card) {
     }
 
     div.appendChild(img);
-  
-// Add menu button (three dots)
-const menuBtn = document.createElement('button');
-menuBtn.className = "gallery-card-menu-btn";
-menuBtn.innerHTML = "&#x22EE;"; // vertical ellipsis
-menuBtn.style.position = "absolute";
-menuBtn.style.top = "8px";
-menuBtn.style.right = "8px";
-menuBtn.style.background = "none";
-menuBtn.style.border = "none";
-menuBtn.style.color = "#ffe066";
-menuBtn.style.fontSize = "20px";
-menuBtn.style.cursor = "pointer";
-div.style.position = "relative";
-div.appendChild(menuBtn);
-
-// Show menu on click
-menuBtn.onclick = function(e) {
-  e.stopPropagation();
-  showGalleryCardMenu(card, menuBtn);
-};
 
     // "New!" badge
     const newCards = getNewlyUnlockedCards();
@@ -138,8 +117,12 @@ menuBtn.onclick = function(e) {
     countBadge.className = 'card-count-badge';
     countBadge.textContent = owned;
     div.appendChild(countBadge);
-
-    return div;
+  
+    div.onclick = function(e) {
+      e.stopPropagation();
+      showGalleryCardMenu(card, div);
+    };
+  return div;
 }
 
 function renderGallery() {
@@ -250,15 +233,23 @@ function setupFilterSelectPlaceholders() {
     select.addEventListener('blur', () => updateFilterPlaceholder(select));
   });
 }
-function showGalleryCardMenu(card, anchorBtn) {
+function showGalleryCardMenu(card, anchorDiv) {
   const menu = document.getElementById('gallery-card-menu');
   if (!menu) return;
 
-  // Position the menu (below the button)
-  const rect = anchorBtn.getBoundingClientRect();
-  menu.style.left = window.scrollX + rect.right - 170 + "px"; // tweak as needed
-  menu.style.top = window.scrollY + rect.bottom + 8 + "px"; // tweak as needed
-  menu.style.display = "block";
+  // Make it a centered modal (like profile/settings)
+  menu.style.position = "fixed";
+  menu.style.left = "50%";
+  menu.style.top = "50%";
+  menu.style.transform = "translate(-50%, -50%)";
+  menu.style.zIndex = "1000";
+  menu.style.display = "flex";
+  menu.style.flexDirection = "column";
+  menu.style.alignItems = "center";
+  menu.style.justifyContent = "center";
+  menu.style.minWidth = "220px";
+  menu.style.padding = "0";
+  menu.style.background = "";
 
   // Save which card is active
   menu._activeCard = card;
@@ -267,7 +258,6 @@ function showGalleryCardMenu(card, anchorBtn) {
   document.getElementById('gallery-card-view-btn').onclick = function() {
     showFullCardModal(card);
     menu.style.display = "none";
-    // Remove "new" badge
     const newCards = getNewlyUnlockedCards().filter(id => id !== card.id);
     setNewlyUnlockedCards(newCards);
     renderGallery();
@@ -282,6 +272,14 @@ function showGalleryCardMenu(card, anchorBtn) {
   };
 }
 
+document.addEventListener('click', function(e) {
+  const menu = document.getElementById('gallery-card-menu');
+  if (!menu) return;
+  if (menu.style.display === "block" && !menu.contains(e.target)) {
+    menu.style.display = "none";
+    menu._activeCard = null;
+  }
+});
 // Hide menu if click outside
 document.addEventListener('click', function(e) {
   const menu = document.getElementById('gallery-card-menu');
