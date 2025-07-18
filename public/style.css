@@ -23,15 +23,7 @@ label {
   font-weight: 600;
   letter-spacing: 0.03em;
 }
-button {
-  padding: 0.4em 0.6em;
-  margin-top: 0.5em;
-  background-color: #007BFF;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
+button {}
 #app-main { 
   display: none;
 }
@@ -280,27 +272,8 @@ button {
   outline: none;
 }
 /* Logout button style */
-#settings-logout-btn {
-  background: #e74c3c;
-  color: #fffbe6;
-  font-weight: 700;
-  border: none;
-  border-radius: 7px;
-  padding: 9px 0;
-  width: 100%;
-  margin-top: 2px;
-  cursor: pointer;
-  font-size: 1.08em;
-  transition: background 0.14s, color 0.14s, box-shadow 0.14s;
-  box-shadow: 0 1px 5px #0003;
-}
-
-#settings-logout-btn:hover, #settings-logout-btn:focus {
-  background: #ff6c5c;
-  color: #222b3b;
-  box-shadow: 0 4px 16px #e74c3c44;
-  outline: 2px solid #ffe066;
-}
+#settings-logout-btn {}
+#settings-logout-btn:hover, #settings-logout-btn:focus {}
 #home-particles {
   position: absolute;
   top: 0; left: 0;
@@ -313,10 +286,16 @@ button {
   width: 100% !important;
   height: 100% !important;
 }
+.grid {
+  display: grid;
+  justify-items: center;
+  align-items: start;
+  width: 100%;
+  box-sizing: border-box;
+}
 #home-menu-icons {
   display: grid !important;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  grid-template-rows: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 32px 32px;
   justify-content: center;
   align-items: center;
@@ -1352,6 +1331,7 @@ button {
   outline: none;
   text-shadow: 0 1px 4px #1115;
   cursor: pointer;
+  margin-top:18px;
 }
 .btn-negative:hover,
 .btn-negative:focus {
@@ -1389,6 +1369,7 @@ button {
   outline: none;
   text-shadow: 0 1px 3px #1115;
   cursor: pointer;
+  margin-top:14px;
 }
 .btn-negative-secondary:hover,
 .btn-negative-secondary:focus {
