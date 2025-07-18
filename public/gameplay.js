@@ -264,7 +264,6 @@ function showPlayerDeckModal() {
   list.innerHTML = '';
   defaultList.innerHTML = '';
 
-  // Use globally-exposed builder functions!
   const playerDecks = window.getPlayerDecks ? window.getPlayerDecks() : [];
   const activeId = window.getActiveDeckId ? window.getActiveDeckId() : null;
 
@@ -277,13 +276,13 @@ function showPlayerDeckModal() {
       div.className = 'player-deck-option';
       div.style.cursor = 'pointer';
       div.style.border = deck.id === activeId ? '3px solid #ffe066' : '2px solid #333';
-      div.style.borderRadius = '12px';
-      div.style.padding = '12px';
-      div.style.background = '#232a3c';
-      div.style.width = '120px';
+
       div.innerHTML = `
-        <img src="${deck.image}" alt="${deck.name}" style="width:100%;height:80px;object-fit:cover;border-radius:8px;">
-        <div style="font-weight:bold;color:#ffe066;margin:7px 0 3px 0;">${deck.name}</div>
+        <div style="position:relative; width:100%; height:130px;">
+          <img src="${deck.image}" alt="${deck.name}">
+          <div class="art-fade"></div>
+        </div>
+        <div class="deck-name">${deck.name}</div>
       `;
       div.onclick = () => {
         modal.style.display = 'none';
@@ -295,7 +294,6 @@ function showPlayerDeckModal() {
   }
 
   // --- DEFAULT DECKS SECTION ---
-  // Use DEFAULT_CPU_DECKS for player starter decks
   const defaultDecks = window.DEFAULT_CPU_DECKS || [];
 
   if (Array.isArray(defaultDecks) && defaultDecks.length > 0) {
@@ -319,13 +317,13 @@ function showPlayerDeckModal() {
       div.className = 'default-player-deck-option';
       div.style.cursor = 'pointer';
       div.style.border = '2px solid #444';
-      div.style.borderRadius = '12px';
-      div.style.padding = '12px';
-      div.style.background = '#232a3c';
-      div.style.width = '120px';
+
       div.innerHTML = `
-        <img src="${deck.image}" alt="${deck.name}" style="width:100%;height:80px;object-fit:cover;border-radius:8px;">
-        <div style="font-weight:bold;color:#ffe066;margin:7px 0 3px 0;">${deck.name}</div>
+        <div style="position:relative; width:100%; height:130px;">
+          <img src="${deck.image}" alt="${deck.name}">
+          <div class="art-fade"></div>
+        </div>
+        <div class="deck-name">${deck.name}</div>
       `;
       div.onclick = () => {
         modal.style.display = 'none';
