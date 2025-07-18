@@ -203,7 +203,7 @@
       </div>
     </div>
 <!-- DECK SLOTS -->
-    <div id="deck-selection-grid"></div>
+    <div id="deck-selection-grid" class="grid"></div>
       <div id="deck-builder-ui">
         <div class="builder-main">
   <!-- FILTER GALLERY BUILDER -->
@@ -371,7 +371,7 @@
     <div id="shop-cosmetics">
       <div id="shop-profile-pics" class="shop-division">
       <h3>Avatars</h3>
-        <div id="shop-avatars-grid"></div>
+        <div id="shop-avatars-grid" class= "grid"></div>
       </div>
     <div id="shop-banners" class="shop-division">
       <h3>Banners</h3>
@@ -388,26 +388,12 @@
 </div>
 
                                                           <!-- MODALS --> 
-<!-- PROFILE MENU -->
-<div id="profile-menu">
-  <div id="profile-account-section">
-    <div id="profile-banner-container">
-      <img id="profile-banner" src="CardImages/Banners/DefaultBanner.png" alt="Banner">
-    </div>
-    <div id="profile-info">
-      <button id="profile-pic-btn" title="Change Avatar">
-        <img id="profile-pic-menu" src="CardImages/Avatars/Default.png" alt="Profile">
-      </button>
-      <div id="profile-username-display"></div>
-    </div>
-  </div>
-</div>
 <!-- PROFILE ICONS MODAL -->
 <div id="profile-icon-modal" class="modal">
   <div id="profile-icon-modal-content" class="modal-content">
     <h3>Choose your Avatar</h3>
     <div id="profile-icons"></div>
-    <button id="close-profile-icon-modal" class="btn-negative" style="margin-top:14px;">Cancel</button>
+    <button id="close-profile-icon-modal" class="btn-negative">Cancel</button>
   </div>
 </div>
 <!-- BANNER MODAL -->
@@ -415,7 +401,7 @@
   <div id="profile-banner-modal-content" class="modal-content">
     <h3>Choose your Banner</h3>
     <div id="profile-banners"></div>
-    <button id="close-profile-banner-modal" class="btn-negative" style="margin-top:14px;">Cancel</button>
+    <button id="close-profile-banner-modal" class="btn-negative">Cancel</button>
   </div>
 </div>
 <!-- QUESTS MODAL -->
@@ -428,7 +414,7 @@
         <div id="quests-list"></div>
       </div>
     </div>
-    <button id="close-quests-modal" class="btn-negative-secondary" style="margin-top:16px;">Close</button>
+    <button id="close-quests-modal" class="btn-negative-secondary">Close</button>
   </div>
 </div>
 <!-- ACHIEVEMENTS MODAL -->
@@ -436,11 +422,11 @@
   <div class="modal-content">
     <h3>Achievements</h3>
     <div id="achievements-list"></div>
-    <button id="close-achievements-modal" class="btn-negative-secondary" style="margin-top:14px;">Close</button>
+    <button id="close-achievements-modal" class="btn-negative-secondary">Close</button>
   </div>
 </div>
 <!-- FRIEND LIST MODAL -->  
-<div id="friends-modal" class="modal" style="display:none;">
+<div id="friends-modal" class="modal">
   <div class="modal-content">
     <h2>Your Friends</h2>
     <input id="add-friend-id" placeholder="Enter Friend ID" />
@@ -452,11 +438,11 @@
       </button>
     </div>
     <div id="friends-list"></div>
-    <button id="close-friends-modal" class="btn-negative-secondary" style="margin-top:14px;">Close</button>
+    <button id="close-friends-modal" class="btn-negative-secondary">Close</button>
   </div>
 </div>
 <!-- DECK VIEW MODAL -->
-<div id="deck-view-modal" class="modal" style="display:none;">
+<div id="deck-view-modal" class="modal">
   <div class="modal-content">
     <h3 id="deck-view-modal-title"></h3>
     <div class="modal-card-list" id="deck-view-modal-list"></div>
@@ -466,27 +452,27 @@
 <!-- BANNER MODAL DECK -->
 <div id="deck-banner-modal" class="modal">
   <div class="modal-content">
-    <h3>Choose Banner Artwork</h3>
+    <h3>Banners</h3>
     <div id="deck-banner-art-list"></div>
-    <button id="close-deck-banner-modal" class="btn-negative-secondary" style="margin-top:14px;">Cancel</button>
+    <button id="close-deck-banner-modal" class="btn-negative-secondary">Cancel</button>
   </div>
 </div>
 <!-- CARD BACK MODAL DECK -->
 <div id="deck-cardback-modal" class="modal">
   <div class="modal-content">
-    <h3>Choose Deck Cardback</h3>
+    <h3>Cardbacks</h3>
     <div id="deck-cardback-art-list"></div>
-    <button id="close-deck-cardback-modal" class="btn-negative-secondary" style="margin-top:14px;">Cancel</button>
+    <button id="close-deck-cardback-modal" class="btn-negative-secondary">Cancel</button>
   </div>
 </div>
-<!-- DECK MODAL -->
+<!-- BATTLEFIELD DECK MODAL -->
 <div id="deck-selection-modal"></div>
 <div id="deck-modal" class="modal">
   <div class="modal-content">
     <div class="modal-card-list"></div>
   </div>
 </div>
-<!-- VOID MODAL -->
+<!-- BATTLEFIELD VOID MODAL -->
 <div id="void-modal" class="modal">
   <div class="modal-content">
     <h3>Void</h3>
@@ -494,25 +480,12 @@
   </div>
 </div>
 <!-- SHOW FULL IMAGE -->
-<div id="image-modal" class="modal" style="display:none; align-items:center; justify-content:center;">
+<div id="image-modal" class="modal">
   <div id="modal-img-content"></div>
 </div>
-<!-- GALLERY CARD CONTEXT MENU -->
-<div id="gallery-card-menu" class="modal" style="display:none; position:absolute; z-index:1000;">
-  <div class="modal-content">
-    <button id="gallery-card-view-btn" class="settings-item" style="width:100%;text-align:left;"> 
-      <img src="OtherImages/Icons/View.png" alt="View" style="width:20px;vertical-align:middle;margin-right:10px;"> View
-    </button>
-    <button id="gallery-card-create-btn" class="settings-item" style="width:100%;text-align:left;">
-      <img src="OtherImages/Icons/Essence.png" alt="Create" style="width:20px;vertical-align:middle;margin-right:10px;"> Create
-    </button>
-    <button id="gallery-card-void-btn" class="settings-item" style="width:100%;text-align:left;">
-      <img src="OtherImages/Icons/Void.png" alt="Void" style="width:20px;vertical-align:middle;margin-right:10px;"> Void
-    </button>
-  </div>
-</div>
+
 <!-- CREATE/VOID CARDS -->
-<div id="essence-confirm-modal" class="modal" style="display:none; align-items:center; justify-content:center;">
+<div id="essence-confirm-modal" class="modal">
   <div class="essence-confirm-content">
     <div id="essence-confirm-msg"></div>
     <img id="essence-confirm-card-img" src="" alt="" class="essence-confirm-card-img" />
@@ -536,55 +509,34 @@
   <div class="modal-content" id="pack-opening-modal-content" style="max-width: 980px;">
     <h3>Pack Opened!</h3>
     <div id="opened-pack-row-modal" style="display:flex;flex-wrap:wrap;justify-content:center;gap:12px;"></div>
-    <button id="close-pack-opening-modal" class="btn-negative-secondary" style="margin-top:18px;">Close</button>
-  </div>
-</div>
-                                                  <!-- MENUS -->
-<!-- SETTINGS MENU -->
-<div id="settings-menu-pop" class="settings-menu-pop">
-  <div id="settings-menu-inner">
-    <div class="settings-item" id="settings-notices">
-      <label>
-        <span>Notices</span>
-        <input type="checkbox" id="toggle-notices">
-      </label>
-    </div>
-    <div class="settings-item" id="settings-music">
-      <label>
-        <span>Music</span>
-        <input type="checkbox" id="toggle-music">
-      </label>
-    </div>
-    <div class="settings-item" id="settings-logout" style="margin-top:20px;">
-      <button id="settings-logout-btn" class="btn-negative">Logout</button>
-    </div>
+    <button id="close-pack-opening-modal" class="btn-negative-secondary">Close</button>
   </div>
 </div>
 
-  <!-- CPU Deck Selection Modal -->
-<div id="cpu-deck-modal" class="modal" style="display:none;">
+  <!-- CPU DECK SELECTION -->
+<div id="cpu-deck-modal" class="modal">
   <div class="modal-content cpu-player-modal-content" style="max-width:900px;width:90vw;">
     <img id="cpu-back-btn" src="OtherImages/Icons/Back.png" alt="Back" style="position:absolute;top:16px;left:16px;width:36px;height:36px;cursor:pointer;z-index:2;"/>
     <div class="modal-title">Opponent Decks</div>
     <div id="cpu-deck-list" style="display:flex;flex-wrap:wrap;gap:16px;justify-content:center;"></div>
-    <button id="close-cpu-deck-modal" class="btn-negative-secondary" style="margin-top:14px;">Cancel</button>
+    <button id="close-cpu-deck-modal" class="btn-negative-secondary">Cancel</button>
   </div>
 </div>
 
-<!-- Player Deck Selection Modal -->
-<div id="player-deck-modal" class="modal" style="display:none;">
+<!-- PLAYER DECK SELECTION -->
+<div id="player-deck-modal" class="modal">
   <div class="modal-content cpu-player-modal-content" style="max-width:900px;width:90vw;">
     <img id="player-back-btn" src="OtherImages/Icons/Back.png" alt="Back" style="position:absolute;top:16px;left:16px;width:36px;height:36px;cursor:pointer;z-index:2;"/>
     <div class="modal-title">My Decks</div>
     <div id="player-deck-list" style="display:flex;flex-wrap:wrap;gap:16px;justify-content:center;"></div>
     <div class="modal-title">Default Decks</div>
     <div id="default-player-deck-list" style="margin-top:24px;"></div>
-    <button id="close-player-deck-modal" class="btn-negative-secondary" style="margin-top:14px;">Cancel</button>
+    <button id="close-player-deck-modal" class="btn-negative-secondary">Cancel</button>
   </div>
 </div>
 
 <!-- PRIVATE LOBBY MODAL -->
-<div id="private-lobby-modal" class="modal" style="display:none;">
+<div id="private-lobby-modal" class="modal">
   <div class="modal-content" style="max-width:400px;">
     <div class="modal-title">Private Lobby</div>
     <div id="private-lobby-options">
@@ -606,13 +558,65 @@
 </div>
 
 <!-- CASUAL MODE --> 
-<div id="casual-searching-modal" class="modal" style="display:none;">
+<div id="casual-searching-modal" class="modal">
   <div class="modal-content">
     <h2>Searching for players...</h2>
     <div class="spinner"></div>
     <button id="cancel-casual-search-btn" class="btn-negative-secondary">Cancel</button>
   </div>
 </div>
+
+  
+                                                  <!-- MENUS -->
+<!-- PROFILE MENU -->
+<div id="profile-menu">
+  <div id="profile-account-section">
+    <div id="profile-banner-container">
+      <img id="profile-banner" src="CardImages/Banners/DefaultBanner.png" alt="Banner">
+    </div>
+    <div id="profile-info">
+      <button id="profile-pic-btn" title="Change Avatar">
+        <img id="profile-pic-menu" src="CardImages/Avatars/Default.png" alt="Profile">
+      </button>
+      <div id="profile-username-display"></div>
+    </div>
+  </div>
+</div>
+<!-- SETTINGS MENU -->
+<div id="settings-menu-pop" class="menu">
+  <div id="settings-menu-inner">
+    <div class="settings-item" id="settings-notices">
+      <label>
+        <span>Notices</span>
+        <input type="checkbox" id="toggle-notices">
+      </label>
+    </div>
+    <div class="settings-item" id="settings-music">
+      <label>
+        <span>Music</span>
+        <input type="checkbox" id="toggle-music">
+      </label>
+    </div>
+    <div class="settings-item" id="settings-logout" style="margin-top:20px;">
+      <button id="settings-logout-btn" class="btn-negative">Logout</button>
+    </div>
+  </div>
+</div>
+<!-- GALLERY CARD CONTEXT MENU -->
+<div id="gallery-card-menu" class="modal" style="display:none; position:absolute; z-index:1000;">
+  <div class="modal-content">
+    <button id="gallery-card-view-btn" class="settings-item" style="width:100%;text-align:left;"> 
+      <img src="OtherImages/Icons/View.png" alt="View" style="width:20px;vertical-align:middle;margin-right:10px;"> View
+    </button>
+    <button id="gallery-card-create-btn" class="settings-item" style="width:100%;text-align:left;">
+      <img src="OtherImages/Icons/Essence.png" alt="Create" style="width:20px;vertical-align:middle;margin-right:10px;"> Create
+    </button>
+    <button id="gallery-card-void-btn" class="settings-item" style="width:100%;text-align:left;">
+      <img src="OtherImages/Icons/Void.png" alt="Void" style="width:20px;vertical-align:middle;margin-right:10px;"> Void
+    </button>
+  </div>
+</div>
+
   
 <!-- SOUND EFFECTS -->  
 <audio id="card-flip-sound" src="SoundEffects/CardFlip.mp3" preload="auto"></audio>
