@@ -130,6 +130,10 @@ button {
   align-items: center;       /* horizontal center */
   height: 100vh;
 }
+#gameplay-container {
+  display: flex;
+  flex-direction: row;
+}
 .section-header {
   display: flex;
   top: 0;
