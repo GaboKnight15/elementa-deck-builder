@@ -118,12 +118,17 @@ button {
   max-height: 100%;
   overflow: hidden;
   display: block;
-  flex-direction: column;
   background: #1a2533;
-  justify-content: flex-start;
   align-items: center;
   box-sizing: border-box;
   overflow-y: auto;
+}
+#home-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;   /* vertical center */
+  align-items: center;       /* horizontal center */
+  height: 100vh;
 }
 .section-header {
   display: flex;
@@ -311,6 +316,7 @@ button {
   align-items: center;
   max-width: 740px;
   min-height: 480px;
+  margin: 0 auto;
 }
 .home-menu-btn {
   display: flex;
@@ -2207,13 +2213,17 @@ button {
 }
 
 #modal-img-content img {
-  max-width: 98vw;
-  max-height: 95vh;
   width: auto;
   height: auto;
   display: block;
   margin: 0 auto 26px auto;
   box-shadow: 0 8px 40px #0008;
+}
+.card-cost-images img {
+  width: 26px;
+  height: 26px;
+  margin-right: 2px;
+  vertical-align: middle;
 }
 /* HEART ICON */
 .hp-badge-heart {
@@ -2401,10 +2411,6 @@ button {
 
 /* PROFILE AREA */
 #profile-area {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  z-index: 5000;
   cursor: pointer;
   background: none !important;
   padding: 0 !important;
