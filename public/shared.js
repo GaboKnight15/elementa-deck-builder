@@ -91,7 +91,7 @@ const dummyCards = [
 {id: 'SkullframeUnyielding', name: 'Skullframe Unyielding', rarity: 'Common', image: 'CardImages/Skullframe/Skullframe Unyielding.png', 
  category: 'Creature', color: 'black', type: 'Undead', hp: 4, atk: 1, def: 0, cost: {colorless: 1, black: 1}, archetype: 'Skullframe', ability: 'rush', set: 'StandardPack'},
 {id: 'SkullframeAcolyte', name: 'Skullframe Acolyte', rarity: 'Common', image: 'CardImages/Skullframe/Skullframe Acolyte.png', 
- category: 'Creature', color: ['black', 'purple'], type: 'Undead', hp: 5, atk: 3, def: 1, cost: {colorless: 1, , purple: 1, black: 1}, archetype: 'Skullframe', ability: 'burn', set: 'StandardPack'},
+ category: 'Creature', color: ['black', 'purple'], type: 'Undead', hp: 5, atk: 3, def: 1, cost: {colorless: 1, purple: 1, black: 1}, archetype: 'Skullframe', ability: 'burn', set: 'StandardPack'},
 {id: 'SkullframeCryptwinds', name: 'Skullframe Cryptwinds', rarity: 'Rare', image: 'CardImages/Skullframe/Skullframe Cryptwinds.png', 
  category: 'Creature', color: ['black', 'purple'], type: ['Dragon','Undead'], hp: 12, atk: 6, def: 2, cost: {colorless: 1, black: 2}, archetype: 'Skullframe', ability: 'Flying', set: 'StandardPack'},
 {id: 'SkullframeSpectralDragon', name: 'Skullframe Spectral Dragon', rarity: 'Epic', image: 'CardImages/Skullframe/Skullframe Spectral Dragon.png', 
