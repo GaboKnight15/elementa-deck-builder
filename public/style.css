@@ -607,9 +607,7 @@ button {
 
 #gallery-cards {
   display: grid;
-  background: #1a2533;
   grid-template-columns: repeat(auto-fit, 140px);
-  gap: 0.1em;
   justify-items: center;
   align-items: start;
   width: 100%;
