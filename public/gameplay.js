@@ -294,7 +294,7 @@ function showPlayerDeckModal() {
   }
 
   // --- DEFAULT DECKS SECTION ---
-  const defaultDecks = window.DEFAULT_CPU_DECKS || [];
+  const defaultDecks = DEFAULT_CPU_DECKS;
 
   if (Array.isArray(defaultDecks) && defaultDecks.length > 0) {
     // Section header
