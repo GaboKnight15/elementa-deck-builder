@@ -65,7 +65,7 @@ const dummyCards = [
 {id: 'SmolderingGolemheart', name: 'Smoldering Golemheart', rarity: 'Rare', image: 'CardImages/Golems/Smoldering Golemheart .png', 
  category: 'Creature', color: ['red', 'gray'], type: 'Elemental', hp: 5, armor: 3, atk: 5, def: 2, cost: {colorless: 6, red: 1, gray: 1}, archetype: 'Golemheart', ability: 'Burn', set: 'StandardPack'},
 {id: 'GolemheartSentinel', name: 'Golemheart Sentinel', rarity: 'Rare', image: 'CardImages/Golems/Golemheart Sentinel.png', 
- category: 'Creature', color: ['red', 'gray'], type: 'Elemental', hp: 7, armor, 3, atk: 3, def: 2, cost: {colorless: 1, red: 1, gray: 1}, archetype: 'Golemheart', ability: 'Protect', set: 'StandardPack'},
+ category: 'Creature', color: ['red', 'gray'], type: 'Elemental', hp: 7, armor: 3, atk: 3, def: 2, cost: {colorless: 1, red: 1, gray: 1}, archetype: 'Golemheart', ability: 'Protect', set: 'StandardPack'},
 {id: 'FireGolem', name: 'Fire Golem', rarity: 'Common', image: 'CardImages/Golems/Fire Golem.png', 
  category: 'Creature', color: ['red', 'gray'], type: ['Elemental','Golem'], hp: 3, atk: 2, def: 1, cost: {red: 1, gray: 1}, archetype: ['Firelands','Golemheart'], ability: 'Burn', set: 'StandardPack'},
 {id: 'KaelgorranElementalPrimordial', name: 'Kaelgorran, Elemental Primordial', rarity: 'Legendary', image: 'CardImages/Golems/Kaelgorran, Elemental Primordial.png', 
