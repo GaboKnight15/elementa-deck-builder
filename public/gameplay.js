@@ -237,17 +237,14 @@ function showCpuDeckModal() {
     div.style.background = '#232a3c';
     div.style.width = '120px';
     div.innerHTML = `
-      <div style="position:relative; width:100%; height:140px;">
-        <img src="${deck.image}" alt="${deck.name}">
-        <div class="art-fade"></div>
+      <div style="position:relative; width:100%; height:140px; display: flex; align-items: center; justify-content: center;">
+        <img src="${deck.image}" alt="${deck.name}" class="deck-art-img">
       </div>
-      <div class="deck-star"><span>★</span></div>
-      <div class="deck-name" style="--deck-color:${deck.color};">${deck.name}</div>
-      <div class="deck-difficulty">${deck.difficulty}</div>
+      <div class="deck-name" style="--deck-color:${deck.color}; text-align:center;">${deck.name}</div>
+      <div class="deck-difficulty" style="text-align:center;">${deck.difficulty}</div>
     `;
     div.onclick = () => {
       modal.style.display = 'none';
-      // Store selected CPU deck (in window or gameState)
       window.selectedCpuDeck = deck;
       window.selectedCpuDeck.cardbackArt = "OtherImages/Cardbacks/DefaultCardback.png";
       showPlayerDeckModal();
@@ -257,81 +254,77 @@ function showCpuDeckModal() {
   document.getElementById('close-cpu-deck-modal').onclick = () => { modal.style.display = 'none'; };
   modal.style.display = 'flex';
 }
+
 function showPlayerDeckModal() {
   const modal = document.getElementById('player-deck-modal');
-  const list = document.getElementById('player-deck-list');
+  const playerList = document.getElementById('player-deck-list');
   const defaultList = document.getElementById('default-player-deck-list');
-  list.innerHTML = '';
+  playerList.innerHTML = '';
   defaultList.innerHTML = '';
 
   const playerDecks = window.getPlayerDecks ? window.getPlayerDecks() : [];
   const activeId = window.getActiveDeckId ? window.getActiveDeckId() : null;
 
-  // Render player's own decks
+  // Render player's own decks (above)
   if (!playerDecks.length) {
-    list.innerHTML = '<div style="color:#ffe066;">No decks found! Please build a deck or select a starter deck below.</div>';
+    playerList.innerHTML = '<div style="color:#ffe066;">No decks found! Please build a deck or select a starter deck below.</div>';
   } else {
     playerDecks.forEach(deck => {
       const div = document.createElement('div');
       div.className = 'player-deck-option';
       div.style.cursor = 'pointer';
       div.style.border = deck.id === activeId ? '3px solid #ffe066' : '2px solid #333';
-
+      div.style.borderRadius = '12px';
+      div.style.padding = '12px';
+      div.style.background = '#232a3c';
+      div.style.width = '120px';
       div.innerHTML = `
-        <div style="position:relative; width:100%; height:130px;">
-          <img src="${deck.image}" alt="${deck.name}">
-          <div class="art-fade"></div>
+        <div style="position:relative; width:100%; height:140px; display: flex; align-items: center; justify-content: center;">
+          <img src="${deck.image}" alt="${deck.name}" class="deck-art-img">
         </div>
-        <div class="deck-name">${deck.name}</div>
+        <div class="deck-name" style="text-align:center;">${deck.name}</div>
       `;
       div.onclick = () => {
         modal.style.display = 'none';
         window.selectedPlayerDeck = deck;
         startSoloGame();
       };
-      list.appendChild(div);
+      playerList.appendChild(div);
     });
   }
 
-  // --- DEFAULT DECKS SECTION ---
+  // --- DEFAULT DECKS SECTION (below player's decks) ---
+  // The "Default Decks" title is already in your HTML, so just fill the list
   const defaultDecks = DEFAULT_CPU_DECKS;
 
   if (Array.isArray(defaultDecks) && defaultDecks.length > 0) {
-    // Section header
-    const label = document.createElement('div');
-    label.textContent = "Starter Decks";
-    label.style.color = "#ffe066";
-    label.style.fontWeight = "bold";
-    label.style.margin = "0 0 10px 0";
-    label.style.textAlign = "center";
-    defaultList.appendChild(label);
 
-    const row = document.createElement('div');
-    row.style.display = "flex";
-    row.style.flexWrap = "wrap";
-    row.style.gap = "18px";
-    row.style.justifyContent = "center";
-
-    defaultDecks.forEach(deck => {
-      const div = document.createElement('div');
-      div.className = 'default-player-deck-option';
-      div.style.cursor = 'pointer';
-      div.style.border = '2px solid #444';
-
-      div.innerHTML = `
-        <div style="position:relative; width:100%; height:130px;">
-          <img src="${deck.image}" alt="${deck.name}">
-          <div class="art-fade"></div>
-        </div>
-        <div class="deck-name">${deck.name}</div>
-      `;
-      div.onclick = () => {
-        modal.style.display = 'none';
-        window.selectedPlayerDeck = deck;
-        startSoloGame();
-      };
-      row.appendChild(div);
-    });
+defaultDecks.forEach(deck => {
+  const div = document.createElement('div');
+  div.className = 'default-player-deck-option';
+  div.style.cursor = 'pointer';
+  div.style.border = '2px solid ' + deck.color;
+  div.style.borderRadius = '12px';
+  div.style.padding = '12px';
+  div.style.background = '#232a3c';
+  div.style.width = '120px';
+  div.innerHTML = `
+    <div style="position:relative; width:100%; height:140px; display: flex; align-items: center; justify-content: center;">
+      <img src="${deck.image}" alt="${deck.name}" class="deck-art-img">
+    </div>
+    <div class="deck-name" style="--deck-color:${deck.color}; text-align:center;">${deck.name}</div>
+    <div class="deck-difficulty" style="text-align:center;">${deck.difficulty}</div>
+  `;
+  div.onclick = () => {
+    modal.style.display = 'none';
+    window.selectedPlayerDeck = {
+      ...deck,
+      deckObj: deck
+    };
+    startSoloGame();
+  };
+  row.appendChild(div);
+});
     defaultList.appendChild(row);
   }
 
