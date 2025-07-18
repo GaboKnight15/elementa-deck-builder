@@ -191,7 +191,22 @@ const dummyCards = [
 {id: 'maindomain8', name: 'Nocthyra', rarity: 'Legendary', image: 'CardImages/Domains/Black Domain.png', 
  category: 'domain', color: 'black', type: 'maindomain', hp: 20, cost: 0, essence: {black: 1}, set: 'StandardPack2'},
 ];
-
+const COST_IMAGE_MAP = {
+  red: "OtherImages/Essence/EssenceRed.png",
+  blue: "OtherImages/Essence/EssenceBlue.png",
+  green: "OtherImages/Essence/EssenceGreen.png",
+  yellow: "OtherImages/Essence/EssenceYellow.png",
+  purple: "OtherImages/Essence/EssencePurple.png",
+  gray: "OtherImages/Essence/EssenceGray.png",
+  black: "OtherImages/Essence/EssenceBlack.png",
+  white: "OtherImages/Essence/EssenceWhite.png",
+  // For colorless cost ("X" = 1, 2, 3, ...)
+  X1: "OtherImages/Essence/EssenceOne.png",
+  X2: "OtherImages/Essence/EssenceTwo.png",
+  X3: "OtherImages/Essence/EssenceThree.png",
+  X4: "OtherImages/Essence/EssenceFour.png",
+  // ...etc
+};
 const addCoinsBtn = document.getElementById('add-coins-btn');
 
 // --- CURRENCY DISPLAY ---
@@ -271,21 +286,6 @@ function showFullCardModal(cardObj) {
   const modalContent = document.getElementById('modal-img-content');
   if (!modalContent) return;
 
-  // Format cost display nicely
-  function formatCost(cost) {
-    if (cost === undefined || cost === null || cost === "" || cost === 0) return "0";
-    if (typeof cost === "number") return cost.toString();
-    if (typeof cost === "object") {
-      let arr = [];
-      for (let color in cost) {
-        if (!cost.hasOwnProperty(color)) continue;
-        arr.push(`<span class="cost-color cost-${color}">${cost[color]} <span>${color}</span></span>`);
-      }
-      return arr.join(" ");
-    }
-    return cost.toString();
-  }
-
   // Info rows
   function labeled(label, value) {
     if (!value && value !== 0) return '';
@@ -307,7 +307,7 @@ function showFullCardModal(cardObj) {
       (card.hp !== undefined ? `<span class="full-card-info-label">HP:</span> <span>${card.hp}</span> ` : '') +
       (card.atk !== undefined ? `<span class="full-card-info-label">ATK:</span> <span>${card.atk}</span> ` : '') +
       (card.def !== undefined ? `<span class="full-card-info-label">DEF:</span> <span>${card.def}</span> ` : '') +
-      (card.cost !== undefined ? `<span class="full-card-info-label">Cost:</span> <span>${formatCost(card.cost)}</span>` : '') +
+      `<span class="full-card-info-label">Cost:</span> <span>${renderCardCost(card.cost)}</span>` +
       '</div>';
   }
 
@@ -332,12 +332,74 @@ function showFullCardModal(cardObj) {
 
   modal.style.display = 'flex';
 }
+
 // IMAGE MODAL CLOSE
 document.getElementById('image-modal').onclick = (e) => {
   if (e.target.id === 'image-modal') {
     document.getElementById('image-modal').style.display = "none";
   }
 };
+
+// Cost mapping and renderer (returns HTML string)
+const COST_IMAGE_MAP = {
+  red: "OtherImages/Essence/EssenceRed.png",
+  blue: "OtherImages/Essence/EssenceBlue.png",
+  green: "OtherImages/Essence/EssenceGreen.png",
+  yellow: "OtherImages/Essence/EssenceYellow.png",
+  purple: "OtherImages/Essence/EssencePurple.png",
+  gray: "OtherImages/Essence/EssenceGray.png",
+  black: "OtherImages/Essence/EssenceBlack.png",
+  white: "OtherImages/Essence/EssenceWhite.png",
+  X1: "OtherImages/Essence/EssenceOne.png",
+  X2: "OtherImages/Essence/EssenceTwo.png",
+  X3: "OtherImages/Essence/EssenceThree.png",
+  X4: "OtherImages/Essence/EssenceFour.png",
+  X5: "OtherImages/Essence/EssenceFive.png",
+  X6: "OtherImages/Essence/EssenceSix.png",
+  X7: "OtherImages/Essence/EssenceSeven.png",
+  X8: "OtherImages/Essence/EssenceEight.png",
+  X9: "OtherImages/Essence/EssenceNine.png",
+  X10: "OtherImages/Essence/EssenceTen.png"
+};
+
+function renderCardCost(costData) {
+  // Accepts either {red:2, blue:1, ...} or [{color:'red',amount:2}, ...]
+  let html = '';
+  if (!costData) return '0';
+
+  // Array style: [{color: 'red', amount: 2}, {colorless: 3}]
+  if (Array.isArray(costData)) {
+    costData.forEach(c => {
+      if (c.color && COST_IMAGE_MAP[c.color]) {
+        for (let i = 0; i < (c.amount || 1); i++) {
+          html += `<img src="${COST_IMAGE_MAP[c.color]}" alt="${c.color}" style="width:26px;height:26px;vertical-align:middle;margin-right:2px;">`;
+        }
+      } else if (c.colorless) {
+        const key = 'X' + c.colorless;
+        if (COST_IMAGE_MAP[key]) {
+          html += `<img src="${COST_IMAGE_MAP[key]}" alt="Colorless" style="width:26px;height:26px;vertical-align:middle;margin-right:2px;">`;
+        }
+      }
+    });
+    return html || '0';
+  }
+
+  // Object style: {red: 2, blue: 1, colorless: 3}
+  for (const key in costData) {
+    if (!costData.hasOwnProperty(key)) continue;
+    if (key === 'colorless' || key === 'X') {
+      const imgKey = 'X' + costData[key];
+      if (COST_IMAGE_MAP[imgKey]) {
+        html += `<img src="${COST_IMAGE_MAP[imgKey]}" alt="Colorless" style="width:26px;height:26px;vertical-align:middle;margin-right:2px;">`;
+      }
+    } else if (COST_IMAGE_MAP[key]) {
+      for (let i = 0; i < costData[key]; i++) {
+        html += `<img src="${COST_IMAGE_MAP[key]}" alt="${key}" style="width:26px;height:26px;vertical-align:middle;margin-right:2px;">`;
+      }
+    }
+  }
+  return html || '0';
+}
 const COLLECTION_KEY = "cardCollection";
 const NEW_CARD_KEY = "newlyUnlockedCards";
 
