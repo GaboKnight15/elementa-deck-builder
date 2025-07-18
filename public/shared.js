@@ -195,6 +195,27 @@ const dummyCards = [
 {id: 'maindomain8', name: 'Nocthyra', rarity: 'Legendary', image: 'CardImages/Domains/Black Domain.png', 
  category: 'domain', color: 'black', type: 'maindomain', hp: 20, cost: 0, essence: {black: 1}, set: 'StandardPack2'},
 ];
+// Cost mapping and renderer (returns HTML string)
+const COST_IMAGE_MAP = {
+  red: "OtherImages/Essence/EssenceRed.png",
+  blue: "OtherImages/Essence/EssenceBlue.png",
+  green: "OtherImages/Essence/EssenceGreen.png",
+  yellow: "OtherImages/Essence/EssenceYellow.png",
+  purple: "OtherImages/Essence/EssencePurple.png",
+  gray: "OtherImages/Essence/EssenceGray.png",
+  black: "OtherImages/Essence/EssenceBlack.png",
+  white: "OtherImages/Essence/EssenceWhite.png",
+  X1: "OtherImages/Essence/EssenceOne.png",
+  X2: "OtherImages/Essence/EssenceTwo.png",
+  X3: "OtherImages/Essence/EssenceThree.png",
+  X4: "OtherImages/Essence/EssenceFour.png",
+  X5: "OtherImages/Essence/EssenceFive.png",
+  X6: "OtherImages/Essence/EssenceSix.png",
+  X7: "OtherImages/Essence/EssenceSeven.png",
+  X8: "OtherImages/Essence/EssenceEight.png",
+  X9: "OtherImages/Essence/EssenceNine.png",
+  X10: "OtherImages/Essence/EssenceTen.png"
+};
 const addCoinsBtn = document.getElementById('add-coins-btn');
 
 // --- CURRENCY DISPLAY ---
@@ -326,28 +347,6 @@ document.getElementById('image-modal').onclick = (e) => {
   if (e.target.id === 'image-modal') {
     document.getElementById('image-modal').style.display = "none";
   }
-};
-
-// Cost mapping and renderer (returns HTML string)
-const COST_IMAGE_MAP = {
-  red: "OtherImages/Essence/EssenceRed.png",
-  blue: "OtherImages/Essence/EssenceBlue.png",
-  green: "OtherImages/Essence/EssenceGreen.png",
-  yellow: "OtherImages/Essence/EssenceYellow.png",
-  purple: "OtherImages/Essence/EssencePurple.png",
-  gray: "OtherImages/Essence/EssenceGray.png",
-  black: "OtherImages/Essence/EssenceBlack.png",
-  white: "OtherImages/Essence/EssenceWhite.png",
-  X1: "OtherImages/Essence/EssenceOne.png",
-  X2: "OtherImages/Essence/EssenceTwo.png",
-  X3: "OtherImages/Essence/EssenceThree.png",
-  X4: "OtherImages/Essence/EssenceFour.png",
-  X5: "OtherImages/Essence/EssenceFive.png",
-  X6: "OtherImages/Essence/EssenceSix.png",
-  X7: "OtherImages/Essence/EssenceSeven.png",
-  X8: "OtherImages/Essence/EssenceEight.png",
-  X9: "OtherImages/Essence/EssenceNine.png",
-  X10: "OtherImages/Essence/EssenceTen.png"
 };
 
 function renderCardCost(costData) {
