@@ -1028,7 +1028,7 @@ function openDeckModal() {
     list.className = 'modal-card-list';
     modal.querySelector('.modal-content').appendChild(list);
   }
-  list.innerHTML = "<h3>Select a card and choose an action</h3>";
+  list.innerHTML = "<h3>Deck</h3>";
 
 gameState.playerDeck.forEach((cardObj, idx) => {
   const card = dummyCards.find(c => c.id === cardObj.cardId);
