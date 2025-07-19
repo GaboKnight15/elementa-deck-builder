@@ -2013,6 +2013,7 @@ button {}
 .card-battlefield:focus img {
   transform: scale(1.08) translateY(-10px);
   box-shadow: 0 8px 24px rgba(0,0,0,0.22);
+  z-index: 10;
 }
 .hand-area {
   min-height: 60px;
