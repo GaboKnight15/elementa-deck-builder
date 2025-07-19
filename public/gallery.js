@@ -234,25 +234,62 @@ function setupFilterSelectPlaceholders() {
   });
 }
 function showGalleryCardMenu(card, anchorDiv) {
+  // Get the menu DOM element
   const menu = document.getElementById('gallery-card-menu');
   if (!menu) return;
 
-  // Make it a centered modal (like profile/settings)
-  menu.style.position = "fixed";
-  menu.style.left = "50%";
-  menu.style.top = "50%";
-  menu.style.transform = "translate(-50%, -50%)";
+  // Remove modal-specific classes/styles
+  menu.className = "menu";
+  menu.style.display = "block";
+  menu.style.position = "absolute";
   menu.style.zIndex = "1000";
-  menu.style.display = "flex";
-  menu.style.flexDirection = "column";
-  menu.style.alignItems = "center";
-  menu.style.justifyContent = "center";
-  menu.style.minWidth = "220px";
+  menu.style.minWidth = "180px";
+  menu.style.boxShadow = "0 6px 32px #000b";
+  menu.style.borderRadius = "14px";
+  menu.style.background = "#253047";
   menu.style.padding = "0";
-  menu.style.background = "";
-
-  // Save which card is active
+  menu.style.transition = "opacity 0.2s";
   menu._activeCard = card;
+
+  // Remove any previous outside click handler
+  if (window._galleryMenuOutsideHandler) {
+    document.body.removeEventListener('mousedown', window._galleryMenuOutsideHandler);
+    window._galleryMenuOutsideHandler = null;
+  }
+  // Add new outside click handler
+  window._galleryMenuOutsideHandler = function(e) {
+    if (!menu.contains(e.target)) {
+      menu.style.display = "none";
+      menu._activeCard = null;
+      document.body.removeEventListener('mousedown', window._galleryMenuOutsideHandler);
+      window._galleryMenuOutsideHandler = null;
+    }
+  };
+  setTimeout(() => {
+    document.body.addEventListener('mousedown', window._galleryMenuOutsideHandler);
+  }, 10);
+
+  // Position the menu near the card
+  const rect = anchorDiv.getBoundingClientRect();
+  const scrollY = window.scrollY || document.documentElement.scrollTop;
+  const scrollX = window.scrollX || document.documentElement.scrollLeft;
+  // By default, show to the right and slightly below the card
+  let top = rect.top + scrollY + 10;
+  let left = rect.right + scrollX + 12;
+
+  // If not enough space to the right, show to the left
+  if (left + menu.offsetWidth > window.innerWidth) {
+    left = rect.left + scrollX - menu.offsetWidth - 12;
+    if (left < 0) left = 10;
+  }
+  // If not enough space below, show above
+  if (top + menu.offsetHeight > window.innerHeight) {
+    top = rect.bottom + scrollY - menu.offsetHeight - 10;
+    if (top < 0) top = 10;
+  }
+
+  menu.style.left = `${left}px`;
+  menu.style.top = `${top}px`;
 
   // Set up handlers for actions
   document.getElementById('gallery-card-view-btn').onclick = function() {
@@ -271,25 +308,6 @@ function showGalleryCardMenu(card, anchorDiv) {
     menu.style.display = "none";
   };
 }
-
-document.addEventListener('click', function(e) {
-  const menu = document.getElementById('gallery-card-menu');
-  if (!menu) return;
-  if (menu.style.display === "block" && !menu.contains(e.target)) {
-    menu.style.display = "none";
-    menu._activeCard = null;
-  }
-});
-// Hide menu if click outside
-document.addEventListener('click', function(e) {
-  const menu = document.getElementById('gallery-card-menu');
-  if (!menu) return;
-  // Only close if click is OUTSIDE the menu and not the menu button
-  if (menu.style.display === "block" && !menu.contains(e.target) && !e.target.classList.contains('gallery-card-menu-btn')) {
-    menu.style.display = "none";
-    menu._activeCard = null;
-  }
-});
 function createCreateCardButton(card, onActionDone) {
   const owned = getCollection()[card.id] || 0;
   const btn = document.createElement('img');
