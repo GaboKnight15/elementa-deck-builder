@@ -218,6 +218,19 @@ const COST_IMAGE_MAP = {
 };
 const addCoinsBtn = document.getElementById('add-coins-btn');
 
+function renderStatIcon(statType, value) {
+  // statType: "hp", "atk", "def", "cost"
+  // value: number
+  // Use COST_IMAGE_MAP["X" + value]
+  const key = "X" + value;
+  const imgSrc = COST_IMAGE_MAP[key];
+  if (imgSrc) {
+    // Tooltip for accessibility
+    return `<img src="${imgSrc}" alt="${statType.charAt(0).toUpperCase() + statType.slice(1)}: ${value}" class="stat-img stat-${statType}" style="width:22px;height:22px;vertical-align:middle;margin-right:2px;">`;
+  } else {
+    return `<span>${value}</span>`;
+  }
+}
 // --- CURRENCY DISPLAY ---
 function updateCurrencyDisplay() {
   const el = document.getElementById('currency-amount');
@@ -312,12 +325,12 @@ function showFullCardModal(cardObj) {
 
   let statsRow = '';
   if (card.hp !== undefined || card.atk !== undefined || card.def !== undefined || card.cost !== undefined) {
-    statsRow = '<div class="full-card-info-row">' +
-      (card.hp !== undefined ? `<span class="full-card-info-label">HP:</span> <span>${card.hp}</span> ` : '') +
-      (card.atk !== undefined ? `<span class="full-card-info-label">ATK:</span> <span>${card.atk}</span> ` : '') +
-      (card.def !== undefined ? `<span class="full-card-info-label">DEF:</span> <span>${card.def}</span> ` : '') +
-      `<span class="full-card-info-label">Cost:</span> <span>${renderCardCost(card.cost)}</span>` +
-      '</div>';
+statsRow = '<div class="full-card-info-row">' +
+  (card.hp !== undefined ? `<span class="full-card-info-label">HP:</span> ${renderStatIcon('hp', card.hp)} ` : '') +
+  (card.atk !== undefined ? `<span class="full-card-info-label">ATK:</span> ${renderStatIcon('atk', card.atk)} ` : '') +
+  (card.def !== undefined ? `<span class="full-card-info-label">DEF:</span> ${renderStatIcon('def', card.def)} ` : '') +
+  `<span class="full-card-info-label">Cost:</span> ${renderCardCost(card.cost)}` +
+  '</div>';
   }
 
   let textHtml = '';
