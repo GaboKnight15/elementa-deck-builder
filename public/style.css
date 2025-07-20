@@ -1777,8 +1777,6 @@ button {}
 .player-deck-option {
   transition: box-shadow 0.18s, border-color 0.18s, transform 0.13s, filter 0.16s;
   box-shadow: 0 2px 10px #0002;
-  width: 150px; /* Make option bigger */
-  min-height: 230px;
   border-radius: 16px;
   padding: 12px;
   background: #232a3c;
