@@ -457,7 +457,6 @@ button {}
   background: #232a3c;
   border-radius: 12px;
   margin: 18px 0 0 0;
-  padding: 14px 14px 14px 14px;
   box-shadow: 0 2px 12px #0004;
   gap: 18px;
   width: 100%;
@@ -493,11 +492,9 @@ button {}
   transition: width 0.4s;
 }
 .quest-progress-numbers {
-  min-width: 60px;
   text-align: right;
   color: #fff;
   font-size: 1em;
-  font-weight: 500;
   text-shadow: 0 1px 2px #0007;
 }
 .quest-reward {
@@ -761,6 +758,12 @@ button {}
   color: #ffe066be;
   margin-bottom: 2px;
   font-size: 1.05em;
+}
+.stat-img {
+  width: 22px;
+  height: 22px;
+  vertical-align: middle;
+  margin-right: 2px;
 }
 .cost-color {
   font-weight: 600;
@@ -2269,7 +2272,6 @@ button {}
 #modal-img-content img {
   width: auto;
   height: auto;
-  margin: 0 auto 26px auto;
   box-shadow: 0 8px 40px #0008;
 }
 .card-cost-images img {
