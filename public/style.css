@@ -229,7 +229,6 @@ button {}
   transition: background 0.14s, color 0.14s;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   border: none;
   outline: none;
   border-bottom: 1px solid #28314a;
@@ -620,14 +619,13 @@ button {}
   border: none;
   color: #ffe066;
   font-size: 1em;
-  padding: 12px 22px;
   cursor: pointer;
   width: 100%;
   text-align: left;
   transition: background 0.15s;
   display: flex;
   align-items: center;
-  gap: 8px;
+
 }
 #gallery-card-menu button.settings-item:hover {
   background: #27344a;
