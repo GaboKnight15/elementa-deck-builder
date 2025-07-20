@@ -903,15 +903,11 @@ button {}
   box-shadow: 0 0 12px #ffe066cc;
 }
 .deck-active-btn {
-  margin-top: auto;            /* Push button to the bottom */
-  margin-bottom: 28px;         /* Space from bottom edge, adjust as needed */
   align-self: center; 
   position: absolute;
-  top: 7px;
-  right: 7px;
+  bottom: 7px;
   font-size: 1em;
   background: none;
-  border: none;
   color: #ffe066;
   cursor: pointer;
   z-index: 5;
