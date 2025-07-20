@@ -64,6 +64,8 @@ const DEFAULT_CPU_DECKS = [
       { id: 'ForestFairy', amount: 4 },
       { id: 'ForestGoblin', amount: 4 },
       { id: 'HeartwoodEmeralds', amount: 4 },
+      { id: 'LifeGrowth', amount: 4 },
+      { id: 'EssenceSurge', amount: 4 },
       { id: 'basicforest', amount: 4 },
       
       // ... etc
@@ -78,11 +80,12 @@ const DEFAULT_CPU_DECKS = [
     bannerArt: 'CardImages/Banners/RedBanner.png',
     cardbackArt: 'OtherImages/Cardbacks/RedCardback.png',
     cards: [
-      { id: 'maindomain2', amount: 1 },
-      { id: 'basicemberling', amount: 4 },
-      { id: 'basicfirepixie', amount: 3 },
-      { id: 'basichellcharger', amount: 2 },
-      { id: 'artifact007', amount: 4 },
+      { id: 'Ashkar', amount: 1 },
+      { id: 'Emberling', amount: 4 },
+      { id: 'FirePixie', amount: 4 },
+      { id: 'Hellcharger', amount: 2 },
+      { id: 'CindercoreEmber', amount: 4 },
+      { id: 'EssenceAssault', amount: 4 },
       { id: 'basicvolcano', amount: 4 },
       // ... etc
     ]
@@ -96,11 +99,10 @@ const DEFAULT_CPU_DECKS = [
     bannerArt: 'CardImages/Banners/BlueBanner.png',
     cardbackArt: 'OtherImages/Cardbacks/BlueCardback.png',
     cards: [
-      { id: 'maindomain3', amount: 1 },
-      { id: 'basicemberling', amount: 4 },
-      { id: 'basicfirepixie', amount: 3 },
-      { id: 'basichellcharger', amount: 2 },
-      { id: 'artifact008', amount: 4 },
+      { id: 'Marinthae', amount: 1 },
+      { id: 'WaterElemental', amount: 4 },
+      { id: 'TidecallersPearl', amount: 4 },
+      { id: 'EssenceRift', amount: 4 },
       { id: 'basicocean', amount: 4 },
       // ... etc
     ]
@@ -114,11 +116,9 @@ const DEFAULT_CPU_DECKS = [
     bannerArt: 'CardImages/Banners/YellowBanner.png',
     cardbackArt: 'OtherImages/Cardbacks/YellowCardback.png',
     cards: [
-      { id: 'maindomain4', amount: 1 },
-      { id: 'basicemberling', amount: 4 },
-      { id: 'basicfirepixie', amount: 3 },
-      { id: 'basichellcharger', amount: 2 },
-      { id: 'artifact009', amount: 4 },
+      { id: 'Aetherion', amount: 1 },
+      { id: 'StormcoreDynamo', amount: 4 },
+      { id: 'EssenceBolt', amount: 4 },
       { id: 'basicpeaks', amount: 4 },
       // ... etc
     ]
@@ -132,11 +132,10 @@ const DEFAULT_CPU_DECKS = [
     bannerArt: 'CardImages/Banners/PurpleBanner.png',
     cardbackArt: 'OtherImages/Cardbacks/PurpleCardback.png',
     cards: [
-      { id: 'maindomain5', amount: 1 },
-      { id: 'basicemberling', amount: 4 },
-      { id: 'basicfirepixie', amount: 3 },
-      { id: 'basichellcharger', amount: 2 },
-      { id: 'artifact010', amount: 4 },
+      { id: 'Virkul', amount: 1 },
+      { id: 'Goblin', amount: 4 },
+      { id: 'PlagueThornTalisman', amount: 4 },
+      { id: 'EssenceBreak', amount: 4 },
       { id: 'basicswamp', amount: 4 },
       // ... etc
     ]
@@ -150,11 +149,11 @@ const DEFAULT_CPU_DECKS = [
     bannerArt: 'CardImages/Banners/GrayBanner.png',
     cardbackArt: 'OtherImages/Cardbacks/GrayCardback.png',
     cards: [
-      { id: 'maindomain6', amount: 1 },
-      { id: 'basicgolemites', amount: 4 },
-      { id: 'basicfirepixie', amount: 3 },
-      { id: 'basicwolfgray', amount: 2 },
-      { id: 'artifact011', amount: 4 },
+      { id: 'Drakzul', amount: 1 },
+      { id: 'Golemites', amount: 4 },
+      { id: 'DesertWolf', amount: 4 },
+      { id: 'TitansAnvil', amount: 4 },
+      { id: 'EssenceBarrier', amount: 4 },
       { id: 'basicmountain', amount: 4 },
       // ... etc
     ]
@@ -168,13 +167,14 @@ const DEFAULT_CPU_DECKS = [
     bannerArt: 'CardImages/Banners/BlackBanner.png',
     cardbackArt: 'OtherImages/Cardbacks/BlackCardback.png',
     cards: [
-      { id: 'maindomain8', amount: 1 },
-      { id: 'basicwolfblack', amount: 4 },
-      { id: 'basicskeleton', amount: 4 },
-      { id: 'basicbat', amount: 4 },
-      { id: 'basicimp', amount: 4 },
+      { id: 'Nocthyra', amount: 1 },
+      { id: 'Imp', amount: 4 },
+      { id: 'Skeleton', amount: 4 },
+      { id: 'Bat', amount: 4 },
+      { id: 'Vampire', amount: 4 },
       { id: 'basicvampire', amount: 4 },
-      { id: 'artifact012', amount: 4 },
+      { id: 'VeiloftheForgotten', amount: 4 },
+      { id: 'EssencePurge', amount: 4 },
       { id: 'basicshadowforest', amount: 4 },
       // ... etc
     ]
@@ -188,11 +188,11 @@ const DEFAULT_CPU_DECKS = [
     bannerArt: 'CardImages/Banners/WhiteBanner.png',
     cardbackArt: 'OtherImages/Cardbacks/WhiteCardback.png',
     cards: [
-      { id: 'maindomain7', amount: 1 },
-      { id: 'basicemberling', amount: 4 },
-      { id: 'basicfirepixie', amount: 3 },
-      { id: 'basichellcharger', amount: 2 },
-      { id: 'artifact013', amount: 4 },
+      { id: 'Solmara', amount: 1 },
+      { id: 'AngelicWarrior', amount: 4 },
+      { id: 'basicfirepixie', amount: 4 },
+      { id: 'LumenSpire', amount: 4 },
+      { id: 'EssenceBlessing', amount: 4 },
       { id: 'basicplains', amount: 4 },
       // ... etc
     ]
