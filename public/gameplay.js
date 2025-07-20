@@ -60,10 +60,10 @@ const DEFAULT_CPU_DECKS = [
     bannerArt: 'CardImages/Banners/GreenBanner.png',
     cardbackArt: 'OtherImages/Cardbacks/GreenCardback.png',
     cards: [
-      { id: 'maindomain1', amount: 1 },
-      { id: 'basicfairy', amount: 4 },
-      { id: 'basicgoblin', amount: 4 },
-      { id: 'artifact006', amount: 4 },
+      { id: 'Verdara', amount: 1 },
+      { id: 'ForestFairy', amount: 4 },
+      { id: 'ForestGoblin', amount: 4 },
+      { id: 'HeartwoodEmeralds', amount: 4 },
       { id: 'basicforest', amount: 4 },
       
       // ... etc
@@ -233,9 +233,7 @@ function showCpuDeckModal() {
     div.style.cursor = 'pointer';
     div.style.border = '2px solid ' + deck.color;
     div.style.borderRadius = '12px';
-    div.style.padding = '12px';
     div.style.background = '#232a3c';
-    div.style.width = '120px';
     div.innerHTML = `
       <div style="position:relative; width:100%; height:140px; display: flex; align-items: center; justify-content: center;">
         <img src="${deck.image}" alt="${deck.name}" class="deck-art-img">
