@@ -359,10 +359,6 @@ button {}
   order: 1;
 }
 .currency-display {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 1.08em;
   color: #ffe066;
 }
 #player-level-widget {
@@ -927,9 +923,6 @@ button {}
 }
 #deck-panel {
   position: static !important;
-  width: 220px;
-  min-width: 180px;
-  max-width: 100%;
   height: auto;
   background: linear-gradient(120deg, #232a3c 80%, #191f2c 100%);
   color: #f7faff;
@@ -940,7 +933,6 @@ button {}
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  font-size: 1em;
 }
 .card-unavailable {
     opacity: 0.5;
@@ -1168,13 +1160,8 @@ button {}
   background-color: gray;
 }
 .deck-count-badge {
-  background: #22304a;
   color: #ffdb64;
   font-weight: bold;
-  font-size: 0.98em;
-  padding: 2px 9px;
-  border-radius: 10px;
-  margin-left: 5px;
 }
 .deck-card-count-badge {
   position: absolute;
