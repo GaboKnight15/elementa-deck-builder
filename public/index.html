@@ -530,7 +530,7 @@
     <div class="modal-title">My Decks</div>
     <div id="player-deck-list" style="display:flex;flex-wrap:wrap;gap:16px;justify-content:center;"></div>
     <div class="modal-title" style="margin-top:28px;">Default Decks</div>
-    <div id="default-player-deck-list" style="margin-top:24px;"></div>
+    <div id="default-player-deck-list"></div>
     <button id="close-player-deck-modal" class="btn-negative-secondary">Cancel</button>
   </div>
 </div>
@@ -540,7 +540,7 @@
   <div class="modal-content" style="max-width:400px;">
     <div class="modal-title">Private Lobby</div>
     <div id="private-lobby-options">
-      <button id="create-lobby-btn" class="btn-primary" style="margin-bottom:8px;">Create Lobby</button>
+      <button id="create-lobby-btn" class="btn-primary">Create Lobby</button>
       <div style="margin: 12px 0; text-align: center;">or</div>
       <input id="join-lobby-code-input" placeholder="Enter Lobby Code..." style="width:90%;margin-bottom:8px;">
       <button id="join-lobby-btn" class="btn-secondary">Join Lobby</button>
@@ -550,7 +550,7 @@
     <div id="lobby-created-view" style="display:none;text-align:center;">
       <div style="margin-bottom:8px;">Lobby Code:</div>
       <div id="lobby-code-display" style="font-size:1.4em;font-weight:bold;letter-spacing:2px;margin-bottom:8px;"></div>
-      <div style="color:#bbb;margin-bottom:10px;">Share this code with your opponent.<br>Waiting for them to join...</div>
+      <div style="color:#bbb;">Waiting for opponent to join...</div>
       <button id="cancel-lobby-btn" class="btn-negative-secondary">Cancel</button>
     </div>
     <div id="lobby-join-status" style="display:none;color:#ffe066;text-align:center;margin-top:18px;"></div>
