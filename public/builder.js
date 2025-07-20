@@ -525,13 +525,6 @@ function updateDeckDisplay() {
   const badge = document.createElement('span');
   badge.textContent = `×${count}`;
   badge.className = 'deck-count-badge';
-  badge.style.background = '#22304a';
-  badge.style.color = '#ffdb64';
-  badge.style.fontWeight = 'bold';
-  badge.style.fontSize = '1em';
-  badge.style.padding = '3px 12px';
-  badge.style.borderRadius = '10px';
-  badge.style.marginLeft = '5px';
 
   const removeBtn = document.createElement('button');
   removeBtn.className = 'icon-btn-negative';
