@@ -1009,16 +1009,29 @@ button {}
   opacity: 1;
   transition: filter 0.3s, opacity 0.3s;
 }
-.deck-menu-modal-content {
+#deck-menu {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  background: #253047;
+  border-radius: 16px;
+  box-shadow: 0 6px 32px #000b;
+  padding: 16px 12px 12px 12px;
+  min-width: 200px;
+  z-index: 1000;
+  position: absolute;
   gap: 10px;
 }
-.deck-menu-modal-content h3 {
+.deck-menu-content {
+  gap: 10px;
+}
+.deck-menu-content h3 {
   margin-bottom: 0.8em;
   text-align: center;
 }
-#deck-menu-modal .btn-secondary,
-#deck-menu-modal .btn-primary,
-#deck-menu-modal .btn-negative {
+#deck-menu .btn-secondary,
+#deck-menu .btn-primary,
+#deck-menu .btn-negative {
   width: 100%;
   margin: 0.2em 0;
 }
