@@ -617,6 +617,7 @@ document.getElementById('quests-modal').onclick = function(e) {
 };
 document.getElementById('achievements-icon').onclick = function() {
   document.getElementById('achievements-modal').style.display = 'flex';
+  if (typeof renderAchievements === "function") renderAchievements();
 };
 document.getElementById('close-achievements-modal').onclick = function() {
   document.getElementById('achievements-modal').style.display = 'none';
