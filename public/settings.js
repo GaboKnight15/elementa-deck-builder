@@ -21,21 +21,45 @@ document.addEventListener("DOMContentLoaded", function() {
   burgers.forEach(burger => {
     burger.onclick = function(e) {
       e.stopPropagation();
-      // Position menu below the icon (optional: adjust top/right for your layout)
-      menu.classList.toggle('active');
+
+      // Position menu below/right of the icon
+      const rect = burger.getBoundingClientRect();
+      const scrollX = window.scrollX || window.pageXOffset;
+      const scrollY = window.scrollY || window.pageYOffset;
+      let left = rect.right + 12 + scrollX;
+      let top = rect.top + scrollY;
+
+      // If menu would overflow right, show to left of icon
+      if (left + menu.offsetWidth > window.innerWidth) {
+        left = rect.left - menu.offsetWidth - 12 + scrollX;
+        if (left < 0) left = 10;
+      }
+      // If menu would overflow bottom, adjust up
+      if (top + menu.offsetHeight > window.innerHeight) {
+        top = window.innerHeight - menu.offsetHeight - 10 + scrollY;
+        if (top < 0) top = 10;
+      }
+
+      menu.style.left = left + 'px';
+      menu.style.top = top + 'px';
+      menu.style.position = "absolute";
+      menu.classList.add('active');
+      menu.style.display = 'block';
+
       // Load saved settings (example)
       toggleNotices.checked = localStorage.getItem('settings-notices') === 'on';
       toggleMusic.checked = localStorage.getItem('settings-music') === 'on';
 
       // Hide on outside click
       setTimeout(() => {
-        document.body.addEventListener('click', hideSettingsMenu, { once: true });
+        document.body.addEventListener('mousedown', hideSettingsMenu, { once: true });
       }, 10);
     };
   });
 
   function hideSettingsMenu(e) {
     menu.classList.remove('active');
+    menu.style.display = 'none';
   } 
 
   // Prevent menu click from closing it
