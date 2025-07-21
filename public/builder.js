@@ -11,6 +11,7 @@ const DECKS_KEY = "decks";
 const builderContainer  = document.getElementById('builder-container');
 const deckSelectionGrid = document.getElementById('deck-selection-grid');
 const deckBuilderUI     = document.getElementById('deck-builder-ui');
+const deckSelectionBackBtn = document.getElementById('deck-selection-back-btn');
 const builderBackBtn    = document.getElementById('builder-back-btn');
 const builderGallery    = document.getElementById('gallery-builder-cards');
 const deckTitle         = document.getElementById('deck-title');
@@ -60,6 +61,13 @@ document.getElementById('builder-settings-btn').onclick = function() {
 document.getElementById('builder-back-btn').onclick = function() {
   showDeckSelection();
 };
+
+if (deckSelectionBackBtn) {
+  deckSelectionBackBtn.onclick = function() {
+    document.getElementById('builder-section').classList.remove('active');
+    document.getElementById('home-section').classList.add('active');
+  };
+}
 
 window.currentDeckSlot = window.currentDeckSlot || "";
 window.getActiveDeckId = function() {
