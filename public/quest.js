@@ -238,41 +238,34 @@ function ensureQuestSlots(cb) {
     const data = doc.exists ? doc.data() : {};
     const lastQuestDate = data.lastQuestDate || null;
     const today = getTodayUtcDateString();
+
     let needsUpdate = (lastQuestDate !== today);
     let activeQuests = Array.isArray(data.activeQuests) ? data.activeQuests.slice(0, QUEST_SLOTS) : [];
-    // Only keep valid quests and ensure unique IDs
-    activeQuests = activeQuests.filter(q => !!q && QUEST_POOL.some(poolQuest => poolQuest.id === (q.id || q)));
 
-    // Ensure NO duplicate quest IDs
+    // Only keep valid quests and ensure unique IDs
     let uniqueQuestIds = new Set();
     activeQuests = activeQuests.filter(q => {
       const id = q.id || q;
       if (uniqueQuestIds.has(id)) return false;
       uniqueQuestIds.add(id);
-      return true;
+      return QUEST_POOL.some(poolQuest => poolQuest.id === id);
     });
 
-    if (needsUpdate) {
+    if (needsUpdate || activeQuests.length < QUEST_SLOTS) {
       // Fill empty slots with unique quests not already in activeQuests
       const existingIds = new Set(activeQuests.map(q => q.id || q));
+      // Deep copy QUEST_POOL and shuffle
       let pool = QUEST_POOL.filter(q => !existingIds.has(q.id));
+      pool = pool.filter(q => q.id); // skip pool entries without id
 
-      while (activeQuests.length < QUEST_SLOTS && pool.length > 0) {
-        const idx = Math.floor(Math.random() * pool.length);
-        const quest = pool.splice(idx, 1)[0];
-        activeQuests.push(quest);
-        existingIds.add(quest.id);
+      // Shuffle pool
+      for (let i = pool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
       }
 
-      // Fallback: If pool too small, add more from remaining unique quests (should never duplicate)
-      if (activeQuests.length < QUEST_SLOTS) {
-        let poolAll = QUEST_POOL.filter(q => !existingIds.has(q.id));
-        while (activeQuests.length < QUEST_SLOTS && poolAll.length > 0) {
-          const idx = Math.floor(Math.random() * poolAll.length);
-          const quest = poolAll.splice(idx, 1)[0];
-          activeQuests.push(quest);
-          existingIds.add(quest.id);
-        }
+      while (activeQuests.length < QUEST_SLOTS && pool.length > 0) {
+        activeQuests.push(pool.pop());
       }
 
       // Final safety: slice in case of accidental overflow
@@ -286,7 +279,7 @@ function ensureQuestSlots(cb) {
         renderQuests();
       });
     } else {
-      // No reset needed, but ensure only 5 unique quests are present
+      // No reset needed, just ensure exactly 5 unique quests
       let uniqueQuestIds = new Set();
       activeQuests = activeQuests.filter(q => {
         const id = q.id || q;
@@ -374,54 +367,73 @@ function claimAchievementReward(ach, cb) {
   return true;
 }
 
-// 7. Render Achievements Modal
 function renderAchievements() {
   const list = document.getElementById('achievements-list');
   if (!list) return;
   list.innerHTML = '';
-ACHIEVEMENTS.forEach(ach => {
-  const progress = getAchievementProgress(ach);
-  const percent = Math.min(100, Math.round((progress.progress / ach.goal) * 100));
-  const entry = document.createElement('div');
-  entry.className = 'quest-entry';
 
-  entry.innerHTML = `
-    <div style="display:flex;align-items:center;">
-      <img src="${ach.image || 'images/achievements/placeholder.png'}" alt="Achievement" class="achievement-image" style="width:40px;height:40px;object-fit:contain;margin-right:12px;">
-      <div style="flex:1;">
-        <div class="quest-desc">${ach.description}</div>
-        <div class="quest-progress-bar-wrap">
-          <div class="quest-progress-bar" style="width:${percent}%;"></div>
-        </div>
-        <div style="font-size:0.96em;color:#fff;text-align:right;">${progress.progress} / ${ach.goal}</div>
-        <div class="quest-reward">
-          <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins" style="width:18px;">
-          +${ach.reward.amount}
+  // Sort: unclaimed first, then claimed
+  const sortedAchievements = [...ACHIEVEMENTS].sort((a, b) => {
+    const pa = getAchievementProgress(a);
+    const pb = getAchievementProgress(b);
+    // Unclaimed first
+    if ((pa.claimed ? 1 : 0) !== (pb.claimed ? 1 : 0)) {
+      return (pa.claimed ? 1 : 0) - (pb.claimed ? 1 : 0);
+    }
+    // Completed next
+    if ((pa.completed ? 1 : 0) !== (pb.completed ? 1 : 0)) {
+      return (pb.completed ? 1 : 0) - (pa.completed ? 1 : 0);
+    }
+    // Otherwise, sort by id or description
+    return (a.description || '').localeCompare(b.description || '');
+  });
+
+  sortedAchievements.forEach(ach => {
+    // Defensive: skip empty or malformed objects
+    if (!ach || !ach.id || !ach.description) return;
+
+    const progress = getAchievementProgress(ach);
+    const percent = Math.min(100, Math.round((progress.progress / ach.goal) * 100));
+    const entry = document.createElement('div');
+    entry.className = 'quest-entry';
+
+    if (progress.claimed) entry.classList.add('achievement-claimed');
+
+    entry.innerHTML = `
+      <div style="display:flex;align-items:center;">
+        <img src="${ach.image || 'images/achievements/placeholder.png'}" alt="Achievement" class="achievement-image" style="width:40px;height:40px;object-fit:contain;margin-right:12px;">
+        <div style="flex:1;">
+          <div class="quest-desc">${ach.description}</div>
+          <div class="quest-progress-bar-wrap">
+            <div class="quest-progress-bar" style="width:${percent}%;"></div>
+          </div>
+          <div style="font-size:0.96em;color:#fff;text-align:right;">${progress.progress} / ${ach.goal}</div>
+          <div class="quest-reward">
+            <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins" style="width:18px;">
+            +${ach.reward.amount}
+          </div>
         </div>
       </div>
-    </div>
-  `;
-  if (progress.completed && !progress.claimed) {
-    const btn = document.createElement('button');
-    btn.className = 'btn-primary quest-claim-btn';
-    btn.textContent = 'Claim';
-    btn.onclick = function() {
-      claimAchievementReward(ach, function() {
-        entry.classList.add('achievement-fade-out');
-        setTimeout(() => {
-          entry.remove();
-        }, 800);
-      });
-    };
-    entry.appendChild(btn);
-  } else if (progress.claimed) {
-    const badge = document.createElement('div');
-    badge.className = 'quest-claimed-badge';
-    badge.textContent = 'Claimed!';
-    entry.appendChild(badge);
-  }
-  list.appendChild(entry);
-});
+    `;
+    if (progress.completed && !progress.claimed) {
+      const btn = document.createElement('button');
+      btn.className = 'btn-primary quest-claim-btn';
+      btn.textContent = 'Claim';
+      btn.onclick = function() {
+        claimAchievementReward(ach, function() {
+          // Instead of removing, just re-render (to gray out and move to bottom)
+          renderAchievements();
+        });
+      };
+      entry.appendChild(btn);
+    } else if (progress.claimed) {
+      const badge = document.createElement('div');
+      badge.className = 'quest-claimed-badge';
+      badge.textContent = 'Claimed!';
+      entry.appendChild(badge);
+    }
+    list.appendChild(entry);
+  });
 }
 
 function updateUniqueCardsAchievement() {
@@ -645,3 +657,4 @@ window.renderPlayerLevel = renderPlayerLevel;
 window.updateQuestsNotificationDot = updateQuestsNotificationDot;
 window.updateAchievementsNotificationDot = updateAchievementsNotificationDot;
 window.startQuestTimers = startQuestTimers;
+window.ACHIEVEMENTS = ACHIEVEMENTS;
