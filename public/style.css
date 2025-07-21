@@ -361,6 +361,21 @@ button {}
 .currency-display {
   color: #ffe066;
 }
+#player-badge-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px;
+}
+.player-badge-img {
+  transition: box-shadow 0.2s;
+}
+.player-badge-img:hover {
+  box-shadow: 0 2px 12px #ffe066cc;
+}
+.player-badge-menu {
+  /* already styled in JS, but you can move here if preferred */
+}
 #player-level-widget {
   display: flex;
   align-items: center;
