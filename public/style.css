@@ -121,6 +121,10 @@ button {}
   align-items: center;
   height: 100vh;
 }
+#gallery-container {
+  display: flex;
+  flex-direction: column;
+}
 #gameplay-container {
   display: flex;
   flex-direction: row;
