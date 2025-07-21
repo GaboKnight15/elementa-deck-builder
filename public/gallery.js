@@ -176,9 +176,11 @@ function renderGallery() {
     }
     return true;
   });
-
+  
+  // Call progress updater here!
+  updateGalleryCollectionProgress(filteredCards);
+  
   if (filteredCards.length === 0) return;
-
   filteredCards.forEach(card => {
     const cardDiv = createCardGallery(card);
     gallery.appendChild(cardDiv);
@@ -442,6 +444,45 @@ function showEssenceConfirmModal({
   modal.onclick = function(e) {
     if (e.target === modal) modal.style.display = "none";
   };
+}
+function updateGalleryCollectionProgress(filteredCards) {
+  // All cards matching the current filters (already passed in as filteredCards)
+  const collection = getCollection();
+  // Count owned
+  const owned = filteredCards.filter(card => (collection[card.id] || 0) > 0).length;
+  const total = filteredCards.length;
+
+  // Show extra info if filter is by rarity/color/etc.
+  let filterInfo = '';
+  const selectedRarity = document.getElementById('filter-rarity-gallery').value;
+  const selectedColor = document.getElementById('filter-color-gallery').value;
+  const selectedCategory = document.getElementById('filter-category-gallery').value;
+  const selectedType = document.getElementById('filter-type-gallery').value;
+  const selectedArchetype = document.getElementById('filter-archetype-gallery').value;
+  const selectedAbility = document.getElementById('filter-ability-gallery').value;
+  const nameFilter = document.getElementById('filter-name-gallery').value;
+
+  // Build context string for filter
+  if (selectedRarity) filterInfo += `Rarity: <b>${selectedRarity}</b> `;
+  if (selectedColor) filterInfo += `Color: <b>${selectedColor}</b> `;
+  if (selectedCategory) filterInfo += `Category: <b>${selectedCategory}</b> `;
+  if (selectedType) filterInfo += `Type: <b>${selectedType}</b> `;
+  if (selectedArchetype) filterInfo += `Archetype: <b>${selectedArchetype}</b> `;
+  if (selectedAbility) filterInfo += `Ability: <b>${selectedAbility}</b> `;
+  if (nameFilter) filterInfo += `Name: <b>${nameFilter}</b> `;
+
+  // Compose display string
+  let str = '';
+  if (total === 0) {
+    str = 'No cards match the selected filters.';
+  } else {
+    str = `Collected <b>${owned}</b> / <b>${total}</b>`;
+    if (filterInfo) str += ` (${filterInfo.trim()})`;
+  }
+
+  // Update the div
+  const progDiv = document.getElementById('gallery-collection-progress');
+  if (progDiv) progDiv.innerHTML = str;
 }
 // On DOM ready
 document.addEventListener('DOMContentLoaded', setupFilterSelectPlaceholders);
