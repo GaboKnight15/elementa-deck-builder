@@ -132,7 +132,7 @@ activeBtn.onclick = (e) => {
 tile.appendChild(activeBtn);
 
       tile.onclick = (e) => {
-        showDeckTileMenu(slotName);
+        showDeckTileMenu(slotName, tile);
       };
     } else {
       tile.classList.add('empty');
@@ -155,20 +155,58 @@ tile.appendChild(activeBtn);
   }
 }
   
-function showDeckTileMenu(deckName) {
+function showDeckTileMenu(deckName, anchorElem) {
+  // Set content as before
   deckMenuTitle.textContent = deckName;
   updateDeckBanner(deckName);
   updateDeckCardback(deckName);
-  // Card count
   const deck = decks[deckName] || {};
   const count = Object.values(deck)
-    .filter(v => typeof v === 'number') // Only card counts
+    .filter(v => typeof v === 'number')
     .reduce((a, b) => a + b, 0);
   deckCardCount.textContent = `${count} cards`;
 
-  deckMenuModal.style.display = 'flex';
-  deckMenuModal.dataset.deckName = deckName;
+  // Show as menu
+  const menu = document.getElementById('deck-menu');
+  menu.style.display = 'block';
+  menu.dataset.deckName = deckName;
+
+  // Position near anchorElem
+  if (anchorElem) {
+    const rect = anchorElem.getBoundingClientRect();
+    const scrollX = window.scrollX || window.pageXOffset;
+    const scrollY = window.scrollY || window.pageYOffset;
+
+    let left = rect.right + 12 + scrollX; // 12px to the right
+    let top = rect.top + scrollY;
+
+    // If menu would overflow right, show to left of tile
+    if (left + menu.offsetWidth > window.innerWidth) {
+      left = rect.left - menu.offsetWidth - 12 + scrollX;
+      if (left < 0) left = 10;
+    }
+    // If menu would overflow bottom, adjust up
+    if (top + menu.offsetHeight > window.innerHeight) {
+      top = window.innerHeight - menu.offsetHeight - 10 + scrollY;
+      if (top < 0) top = 10;
+    }
+
+    menu.style.left = left + 'px';
+    menu.style.top = top + 'px';
+    menu.style.transform = ""; // Don't center
+  } else {
+    // fallback: center
+    menu.style.left = "50vw";
+    menu.style.top = "50vh";
+    menu.style.transform = "translate(-50%, -50%)";
+  }
 }
+document.addEventListener('mousedown', function(e) {
+  const menu = document.getElementById('deck-menu');
+  if (menu.style.display === 'block' && !menu.contains(e.target)) {
+    menu.style.display = 'none';
+  }
+});
 setHighlightArtBtn.onclick = function() {
   highlightArtModal.style.display = "flex";
   highlightArtList.innerHTML = "";
