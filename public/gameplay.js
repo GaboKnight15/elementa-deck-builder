@@ -245,7 +245,7 @@ function showCpuDeckModal() {
       modal.style.display = 'none';
       window.selectedCpuDeck = deck;
       window.selectedCpuDeck.cardbackArt = "OtherImages/Cardbacks/DefaultCardback.png";
-      showPlayerDeckModal();
+      startSoloGame();
     };
     list.appendChild(div);
   });
@@ -2604,7 +2604,11 @@ function showCasualSearchingModal() {
 // Start matchmaking (emit socket event)
 function startCasualMatchmaking() {
   window.socket.emit('casual-join', {
-    deck: window.selectedPlayerDeck
+    deck: window.getCurrentDeck(),
+    deckName: window.getActiveDeckId(),
+    bannerArt: window.getCurrentDeck().bannerArt,
+    highlightArt: window.getCurrentDeck().highlightArt,
+    cardbackArt: window.getCurrentDeck().cardbackArt
   });
 }
 // Cancel matchmaking
@@ -2659,7 +2663,8 @@ document.querySelector('.mode-option[data-mode="private"]').addEventListener('cl
   showPrivateLobbyModal();
 });
 document.querySelector('.mode-option[data-mode="casual"]').addEventListener('click', function() {
-  showPlayerDeckModal('casual');
+  showCasualSearchingModal();
+  startCasualMatchmaking();
 });
 document.querySelector('.mode-option[data-mode="ranked"]').addEventListener('click', function() {
   if (typeof showRankedLobbyModal === "function") showRankedLobbyModal();
