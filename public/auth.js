@@ -178,15 +178,16 @@ profileIconModal.onclick = function(e) {
   function selectProfileIcon(iconUrl) {
     const user = auth.currentUser;
     if (!user) return;
+    window.playerProfilePic = iconUrl;
     firebase.firestore().collection('users').doc(user.uid)
       .set({ profilePic: iconUrl }, {merge: true})
       .then(function() {
-      if (profilePic) profilePic.src = iconUrl;
-      if (profilePicMenu) profilePicMenu.src = iconUrl;          
-        getUnlockedAvatars(function(unlocked) {
-          renderProfileIcons(iconUrl, unlocked);
-        });
-        if (profileIconModal) profileIconModal.style.display = 'none';
+          if (profilePic) profilePic.src = iconUrl;
+          if (profilePicMenu) profilePicMenu.src = iconUrl;          
+          getUnlockedAvatars(function(unlocked) {
+              renderProfileIcons(iconUrl, unlocked);
+          });
+          if (profileIconModal) profileIconModal.style.display = 'none';
       })
       .catch(function(err) {
         console.error('[auth] Failed to update profile icon:', err);
@@ -213,6 +214,7 @@ profileIconModal.onclick = function(e) {
   function selectProfileBanner(bannerUrl) {
     const user = auth.currentUser;
     if (!user) return;
+    window.playerProfileBanner = bannerUrl;
     firebase.firestore().collection('users').doc(user.uid)
       .set({ profileBanner: bannerUrl }, { merge: true })
       .then(function() {
