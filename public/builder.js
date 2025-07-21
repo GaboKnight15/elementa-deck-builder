@@ -61,6 +61,12 @@ document.getElementById('builder-back-btn').onclick = function() {
   document.getElementById('builder-section').classList.remove('active');
   document.getElementById('home-section').classList.add('active');
 };
+
+window.currentDeckSlot = window.currentDeckSlot || "";
+window.getActiveDeckId = function() {
+  return window.currentDeckSlot;
+};
+
 function showDeckSelection() {
   deckSelectionGrid.style.display = '';
   deckBuilderUI.style.display = 'none';
