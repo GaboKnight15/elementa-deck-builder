@@ -679,3 +679,4 @@ window.getPlayerDecks = function() {
 window.getActiveDeckId = function() {
   return currentDeckSlot;
 };
+window.showDeckTileMenu = showDeckTileMenu;
