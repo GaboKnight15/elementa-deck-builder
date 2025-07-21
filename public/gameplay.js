@@ -2704,9 +2704,9 @@ function renderModePlayerDeckTile() {
 }
 
 // Always show deck management menu on click (reuse builder.js logic)
-document.getElementById('mode-player-deck-tile').onclick = function () {
+document.getElementById('mode-player-deck-tile').onclick = function (e) {
   let deckName = window.getActiveDeckId ? window.getActiveDeckId() : '';
-  if (window.showDeckTileMenu && deckName) window.showDeckTileMenu(deckName);
+  if (window.showDeckTileMenu && deckName) window.showDeckTileMenu(deckName, this);
 };
 // Button: open deck selection modal
 document.getElementById('mode-player-deck-btn').onclick = function () {
