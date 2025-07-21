@@ -126,8 +126,6 @@ button {}
   flex-direction: column;
 }
 #gameplay-container {
-  display: flex;
-  flex-direction: row;
 }
 .section-header {
   display: flex;
