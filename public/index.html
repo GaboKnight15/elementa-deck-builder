@@ -191,26 +191,7 @@
         <img id="builder-settings-btn" src="OtherImages/Icons/Settings.png" alt="Settings" class="section-header-btn" title="Settings" />
       </div>
     </div>
-    <!-- Deck Tile Context Menu Modal -->
-    <div id="deck-menu-modal" class="modal" style="display:none;">
-      <div class="modal-content deck-menu-modal-content">
-    <!-- Banner and Cardback container, side by side -->
-        <div id="deck-banner-container">
-          <img id="deck-banner-img" src="CardImages/Banners/DefaultBanner.png" alt="Deck Banner">
-        </div>
-        <div id="deck-title-row" style="display: flex; align-items: center; gap: 14px; margin-bottom: 10px;">
-          <h3 id="deck-menu-title" style="margin:0; font-size:1.3em;"></h3>
-          <span id="deck-card-count" style="background:#22304a;color:#ffe066;font-weight:bold;border-radius:9px;padding:4px 13px;font-size:1em;box-shadow:0 1px 4px #0002;"></span>
-          <img id="deck-cardback-img" src="OtherImages/Cardbacks/DefaultCardback.png" alt="Deck Cardback"style="width:44px;height:62px;object-fit:cover;cursor:pointer;border-radius:7px;box-shadow:0 2px 8px #0005;">
-        </div>
-        <button id="edit-deck-btn" class="btn-primary">Edit Deck</button>
-        <button id="view-deck-btn" class="btn-secondary">View Deck</button>
-        <button id="set-highlight-art-btn" class="btn-secondary">Highlight Card</button>
-        <button id="rename-deck-btn" class="btn-secondary">Rename</button>
-        <button id="delete-deck-btn" class="btn-negative-secondary">Delete</button>
-        <button id="close-deck-menu-btn" class="btn-negative-secondary">Cancel</button>
-      </div>
-    </div>
+    
 <!-- DECK SLOTS -->
     <div id="deck-selection-grid" class="grid"></div>
       <div id="deck-builder-ui">
@@ -630,7 +611,25 @@
     </button>
   </div>
 </div>
-
+    <!-- Deck Tile Context Menu Modal -->
+<div id="deck-menu-modal" class="menu" style="display:none;">
+  <div class="modal-content deck-menu-modal-content">
+    <div id="deck-banner-container">
+      <img id="deck-banner-img" src="CardImages/Banners/DefaultBanner.png" alt="Deck Banner">
+    </div>
+    <div id="deck-title-row" style="display: flex; align-items: center; gap: 14px; margin-bottom: 10px;">
+      <h3 id="deck-menu-title" style="margin:0; font-size:1.3em;"></h3>
+      <span id="deck-card-count" style="background:#22304a;color:#ffe066;font-weight:bold;border-radius:9px;padding:4px 13px;font-size:1em;box-shadow:0 1px 4px #0002;"></span>
+      <img id="deck-cardback-img" src="OtherImages/Cardbacks/DefaultCardback.png" alt="Deck Cardback"style="width:44px;height:62px;object-fit:cover;cursor:pointer;border-radius:7px;box-shadow:0 2px 8px #0005;">
+    </div>
+    <button id="edit-deck-btn" class="btn-primary">Edit Deck</button>
+    <button id="view-deck-btn" class="btn-secondary">View Deck</button>
+    <button id="set-highlight-art-btn" class="btn-secondary">Highlight Card</button>
+    <button id="rename-deck-btn" class="btn-secondary">Rename</button>
+    <button id="delete-deck-btn" class="btn-negative-secondary">Delete</button>
+    <button id="close-deck-menu-btn" class="btn-negative-secondary">Cancel</button>
+  </div>
+</div>
   
 <!-- SOUND EFFECTS -->  
 <audio id="card-flip-sound" src="SoundEffects/CardFlip.mp3" preload="auto"></audio>
