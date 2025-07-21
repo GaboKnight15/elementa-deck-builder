@@ -2756,9 +2756,18 @@ document.getElementById('battlefield-settings-btn').onclick = function() {
   document.getElementById('settings-modal').style.display = 'flex';
 };
 document.getElementById('battlefield-back-btn').onclick = function() {
-  // Example: leave match or show confirmation
   if (confirm("Leave the game and return to menu?")) {
-    exitBattlefieldToMenu();
+    // Hide the gameplay/battlefield section
+    document.getElementById('gameplay-section').classList.remove('active');
+    document.getElementById('battlefield-header').style.display = 'none';
+
+    // Show the mode select screen
+    document.getElementById('mode-select-section').classList.add('active');
+    document.getElementById('gameplay-header').style.display = 'flex';
+
+    // Optionally reset any battlefield/game state here
+    // Optionally call exitBattlefieldToMenu() if you have extra logic there
+    if (typeof exitBattlefieldToMenu === "function") exitBattlefieldToMenu();
   }
 };
 // BACK IMAGES
