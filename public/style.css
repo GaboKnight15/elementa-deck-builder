@@ -462,6 +462,10 @@ button {}
   position: relative;
   display: inline-block;
 }
+.achievement-claimed {
+  opacity: 0.5;
+  filter: grayscale(1);
+}
 .quest-entry {
   display: flex;
   align-items: flex-start;
