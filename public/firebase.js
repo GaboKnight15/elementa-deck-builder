@@ -37,6 +37,8 @@ function saveProgress() {
     essence: typeof window.playerEssence === 'number' ? window.playerEssence : 0,
     quests: window.playerQuests || {},
     achievements: window.playerAchievements || {},
+    profilePic: window.profilePic ? window.profilePic.src : defaultIcon,
+    profileBanner: window.playerProfileBanner || defaultBanner,
     level: typeof window.playerLevel === 'number' ? window.playerLevel : 1,
     exp: typeof window.playerExp === 'number' ? window.playerExp : 0,
     unlockedAvatars: window.playerUnlockedAvatars || [],
@@ -66,6 +68,8 @@ function loadProgress(user, cb) {
       console.log("Loaded data from Firestore:", data);
 
       // Defensive assignments for all fields!
+window.playerProfilePic      = icon;
+window.playerProfileBanner   = banner;
 window.playerCurrency        = Number(data.currency) || 0;
 window.playerEssence         = Number(data.essence) || 0;
 window.playerLevel           = Number(data.level) || 1;
