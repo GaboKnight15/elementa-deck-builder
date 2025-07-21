@@ -2703,6 +2703,22 @@ document.getElementById('mode-player-deck-tile').onclick = function () {
   let deckName = window.getActiveDeckId ? window.getActiveDeckId() : '';
   if (window.showDeckTileMenu && deckName) window.showDeckTileMenu(deckName);
 };
+// Button: open deck selection modal
+document.getElementById('mode-player-deck-btn').onclick = function () {
+  if (window.showPlayerDeckModal)
+    window.showPlayerDeckModal();
+};
+// Re-render when needed (after deck changes)
+if (window.renderDeckSelection) {
+  const origRender = window.renderDeckSelection;
+  window.renderDeckSelection = function() {
+    origRender.apply(this, arguments);
+    renderModePlayerDeckTile();
+  };
+}
+document.addEventListener('DOMContentLoaded', renderModePlayerDeckTile);
+
+
 function enterBattlefield() {
   // Hide the menu header, show the in-game header
   document.getElementById('gameplay-header').style.display = 'none';
