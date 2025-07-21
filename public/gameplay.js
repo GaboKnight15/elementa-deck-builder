@@ -2784,7 +2784,3 @@ if (window.socket) {
 } else {
   console.error("Socket.io not initialized!");
 }
-window.selectedPlayerDeck = {
-  ...selectedDeck,   // Spread for shallow copy (for deck metadata)
-  deckObj: { ...selectedDeck.deckObj } // Deep copy the card list if needed
-};
