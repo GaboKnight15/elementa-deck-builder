@@ -867,10 +867,13 @@ function renderPlayerPower() {
   const el = document.getElementById('player-power-label');
   if (el) el.textContent = power;
 
-  // Only show toast if lastPlayerPower exists and power increased
-  if (lastPlayerPower !== null && power > lastPlayerPower) {
+  if (lastPlayerPower !== null && power !== lastPlayerPower) {
     const diff = power - lastPlayerPower;
-    showToast(`Power increased by ${diff}!`, { type: "success" }); // Or customize as you like
+    if (diff > 0) {
+      showToast(`Power increased by ${diff}!`, { type: "success" });
+    } else if (diff < 0) {
+      showToast(`Power decreased by ${-diff}.`, { type: "info" });
+    }
   }
   lastPlayerPower = power;
 }
