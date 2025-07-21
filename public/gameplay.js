@@ -243,9 +243,9 @@ function showCpuDeckModal() {
     `;
     div.onclick = () => {
       modal.style.display = 'none';
-      window.currentDeckSlot = deck.id; // Set active slot!
-      if (window.renderModePlayerDeckTile) window.renderModePlayerDeckTile(); // Re-render deck tile
-      // Optionally, trigger any other UI updates needed
+      window.selectedCpuDeck = deck;
+      window.currentDeckSlot = deck.id;
+      if (window.renderModePlayerDeckTile) window.renderModePlayerDeckTile();
     };
     list.appendChild(div);
   });
