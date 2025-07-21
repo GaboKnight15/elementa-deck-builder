@@ -19,7 +19,7 @@ const cardCount         = document.getElementById('card-count');
 const deckPanel         = document.getElementById('deck-panel');
 
 // NEW DECK HANDLER OPTIONS
-const deckMenuModal = document.getElementById('deck-menu-modal');
+const deckMenu = document.getElementById('deck-menu');
 const deckMenuTitle = document.getElementById('deck-menu-title');
 const viewDeckBtn = document.getElementById('view-deck-btn');
 const editDeckBtn = document.getElementById('edit-deck-btn');
@@ -212,7 +212,7 @@ setHighlightArtBtn.onclick = function() {
   highlightArtList.innerHTML = "";
 
   // Only Legendary cards currently in this deck
-  const deckName = deckMenuModal.dataset.deckName;
+  const deckName = deckMenu.dataset.deckName;
   const deck = decks[deckName] && decks[deckName].cards ? decks[deckName].cards : decks[deckName] || {};
   const legendaryCards = Object.keys(deck)
     .map(cardId => dummyCards.find(card => card.id === cardId && card.rarity === 'Legendary'))
@@ -252,7 +252,7 @@ deckBannerImg.onclick = function() {
   deckBannerArtList.innerHTML = "";
 
   // Use only cards in the selected deck
-  const deckName = deckMenuModal.dataset.deckName;
+  const deckName = deckMenu.dataset.deckName;
   const deck = decks[deckName] && decks[deckName].cards ? decks[deckName].cards : decks[deckName] || {};
   const artworkSet = new Set();
 
@@ -294,7 +294,7 @@ function updateDeckCardback(deckName) {
 deckCardbackImg.onclick = function() {
   deckCardbackModal.style.display = "flex";
   deckCardbackArtList.innerHTML = "";
-  const deckName = deckMenuModal.dataset.deckName;
+  const deckName = deckMenu.dataset.deckName;
   const deck = decks[deckName] || {};
   const unlocked = getUnlockedCardbacks ? getUnlockedCardbacks() : 
     (window.getUnlockedCardbacks ? window.getUnlockedCardbacks() : 
@@ -324,24 +324,24 @@ window.renderDeckCardbackChoices = function() {
 closeDeckCardbackModalBtn.onclick = () => (deckCardbackModal.style.display = "none");
 
 function closeDeckTileMenu() {
-  deckMenuModal.style.display = 'none';
+  deckMenu.style.display = 'none';
 }
 closeDeckMenuBtn.onclick = closeDeckTileMenu;
-deckMenuModal.addEventListener('click', function(e) {
-  if (e.target === deckMenuModal) closeDeckTileMenu();
+deckMenu.addEventListener('click', function(e) {
+  if (e.target === deckMenu) closeDeckTileMenu();
 });
 deckViewModal.addEventListener('click', function(e) {
   if (e.target === deckViewModal) deckViewModal.style.display = 'none';
 });
 // View Deck
 viewDeckBtn.onclick = function() {
-  const deckName = deckMenuModal.dataset.deckName;
+  const deckName = deckMenu.dataset.deckName;
   showDeckViewModal(deckName);
   closeDeckTileMenu();
 };
 // Edit Deck
 editDeckBtn.onclick = function() {
-  const deckName = deckMenuModal.dataset.deckName;
+  const deckName = deckMenu.dataset.deckName;
   currentDeckSlot = deckName;
   saveProgress();
   closeDeckTileMenu();
@@ -349,7 +349,7 @@ editDeckBtn.onclick = function() {
 };
 // Rename
 renameDeckBtn.onclick = function() {
-  const deckName = deckMenuModal.dataset.deckName;
+  const deckName = deckMenu.dataset.deckName;
   closeDeckTileMenu();
   let newName = prompt("Rename deck to:", deckName);
   if (!newName || newName === deckName) return;
@@ -368,7 +368,7 @@ renameDeckBtn.onclick = function() {
 };
 // Delete
 deleteDeckBtn.onclick = function() {
-  const deckName = deckMenuModal.dataset.deckName;
+  const deckName = deckMenu.dataset.deckName;
   if (deckSlots.length === 1) {
     showToast("You must have at least 1 deck", {type:"error"});
     return;
