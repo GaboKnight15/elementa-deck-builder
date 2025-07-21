@@ -471,6 +471,7 @@ function renderShopCosmetics({
               gridId, options, prices, getUnlocked, setUnlocked, unlockMsg, wrapperClass, imgClass
             });
             showToast(unlockMsg);
+            if (typeof window.renderPlayerPower === "function") window.renderPlayerPower();
             if (typeof done === "function") done();
           }, cb);
         }
