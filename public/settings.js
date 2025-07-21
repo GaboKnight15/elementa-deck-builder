@@ -24,25 +24,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
       // Position menu below/right of the icon
       const rect = burger.getBoundingClientRect();
-      const scrollX = window.scrollX || window.pageXOffset;
-      const scrollY = window.scrollY || window.pageYOffset;
-      let left = rect.right + 12 + scrollX;
-      let top = rect.top + scrollY;
-
-      // If menu would overflow right, show to left of icon
-      if (left + menu.offsetWidth > window.innerWidth) {
-        left = rect.left - menu.offsetWidth - 12 + scrollX;
-        if (left < 0) left = 10;
-      }
-      // If menu would overflow bottom, adjust up
-      if (top + menu.offsetHeight > window.innerHeight) {
-        top = window.innerHeight - menu.offsetHeight - 10 + scrollY;
-        if (top < 0) top = 10;
-      }
-
-      menu.style.left = left + 'px';
-      menu.style.top = top + 'px';
-      menu.style.position = "absolute";
+      placeMenuWithinViewport(menu, rect, "bottom");
       menu.classList.add('active');
       menu.style.display = 'block';
 
