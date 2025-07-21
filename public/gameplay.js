@@ -2676,6 +2676,33 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 });
+// Helper to render the deck tile in the mode select screen
+function renderModePlayerDeckTile() {
+  const slotDiv = document.getElementById('mode-player-deck-tile');
+  if (!slotDiv) return;
+  slotDiv.innerHTML = '';
+  let deckName = window.getActiveDeckId ? window.getActiveDeckId() : '';
+  let deck = window.decks && deckName ? window.decks[deckName] : null;
+  if (!deck) {
+    slotDiv.textContent = 'No Deck Selected';
+    slotDiv.classList.add('empty');
+    return;
+  }
+  slotDiv.classList.remove('empty');
+  // Show banner/highlight/cardback
+  let image = deck.highlightArt || deck.bannerArt || "CardImages/Banners/DefaultBanner.png";
+  slotDiv.innerHTML = `
+    <img class="deck-slot-highlight-img" src="${image}" alt="highlight" />
+    <div class="deck-slot-title-overlay">${deckName}</div>
+    <img class="deck-slot-cardback-img" src="${deck.cardbackArt || "OtherImages/Cardbacks/DefaultCardback.png"}" alt="Cardback" style="position:absolute;top:8px;right:8px;width:32px;height:44px;border-radius:6px;box-shadow:0 1px 5px #0005;">
+  `;
+}
+
+// Always show deck management menu on click (reuse builder.js logic)
+document.getElementById('mode-player-deck-tile').onclick = function () {
+  let deckName = window.getActiveDeckId ? window.getActiveDeckId() : '';
+  if (window.showDeckTileMenu && deckName) window.showDeckTileMenu(deckName);
+};
 function enterBattlefield() {
   // Hide the menu header, show the in-game header
   document.getElementById('gameplay-header').style.display = 'none';
@@ -2736,3 +2763,7 @@ if (window.socket) {
 } else {
   console.error("Socket.io not initialized!");
 }
+window.selectedPlayerDeck = {
+  ...selectedDeck,   // Spread for shallow copy (for deck metadata)
+  deckObj: { ...selectedDeck.deckObj } // Deep copy the card list if needed
+};
