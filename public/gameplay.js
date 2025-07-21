@@ -128,7 +128,7 @@ const DEFAULT_CPU_DECKS = [
     name: 'Venom Bloom',
     color: 'purple',
     difficulty: '⭐',
-    image: 'CardImages/Artworks/Goblin.png',
+    image: 'CardImages/Avatars/Goblin.png',
     bannerArt: 'CardImages/Banners/PurpleBanner.png',
     cardbackArt: 'OtherImages/Cardbacks/PurpleCardback.png',
     cards: [
@@ -163,7 +163,7 @@ const DEFAULT_CPU_DECKS = [
     name: 'Shadowy Descent',
     color: 'black',
     difficulty: '⭐',
-    image: 'CardImages/Avatars/Imp.png',
+    image: 'CardImages/Avatars/Wolf.png',
     bannerArt: 'CardImages/Banners/BlackBanner.png',
     cardbackArt: 'OtherImages/Cardbacks/BlackCardback.png',
     cards: [
