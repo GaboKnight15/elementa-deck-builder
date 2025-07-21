@@ -36,7 +36,7 @@ const ACHIEVEMENTS = [
   description: 'Collect 20 different cards',
   goal: 20,
   reward: { type: 'currency', amount: 500 },
-  image: 'images/achievements/green_cards.png'
+  image: 'OtherImages/Icons/Rewards.png'
   }
 ];
 
