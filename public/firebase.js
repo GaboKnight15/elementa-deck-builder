@@ -97,6 +97,7 @@ auth.onAuthStateChanged(function(user) {
       console.log("After load, window.playerCurrency =", window.playerCurrency);
       // Only now, render UI
       renderPlayerLevel();
+      renderPlayerPower();
       renderGallery();
       updateDeckDisplay();
       renderBuilder();
