@@ -43,7 +43,7 @@ function saveProgress() {
     unlockedBanners: window.playerUnlockedBanners || [],
     unlockedCardbacks: window.playerUnlockedCardbacks || []
   };
-  db.collection('users').doc(user.uid).set(data, { merge: true })
+  db.collection('users').doc(user.uid).set(data)
     .then(() => { console.log("Progress saved!"); })
     .catch((error) => { console.error("Error saving progress: ", error); });
 }
