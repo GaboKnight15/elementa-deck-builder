@@ -229,17 +229,37 @@ profileIconModal.onclick = function(e) {
   // --- Signup/Login logic for modal/profile menu ---
   profileArea.onclick = function(e) {
     e.stopPropagation();
-    profileMenu.classList.toggle('active');
+    // Position the profile menu next to the profile image
+    if (!profileMenu) return;
+    profileMenu.style.display = 'block';
+    profileMenu.style.position = 'absolute';
+    profileMenu.style.zIndex = 2000;
+    // Find the anchor element (profilePic or profileArea)
+    // Prefer profilePic if it exists and is visible
+    const anchorEl = profilePic || profileArea;
+    const rect = anchorEl.getBoundingClientRect();
+    // Position below the profile pic, left-aligned
+    const top = rect.bottom + window.scrollY + 8;
+    const left = rect.left + window.scrollX;
+    profileMenu.style.top = `${top}px`;
+    profileMenu.style.left = `${left}px`;
+    // Optional: min width, bg, etc. for consistency (can move to CSS)
+    profileMenu.style.minWidth = '240px';
+    profileMenu.style.background = '#232a3c';
+    profileMenu.style.borderRadius = '16px';
+    profileMenu.style.boxShadow = '0 6px 24px #000a';
   };
+  // Hide menu on outside click
   document.addEventListener('click', (e) => {
     if (
-      profileMenu.classList.contains('active') &&
+      profileMenu.style.display === 'block' &&
       !profileMenu.contains(e.target) &&
       !profileArea.contains(e.target)
     ) {
-      profileMenu.classList.remove('active');
+      profileMenu.style.display = 'none';
     }
   });
+  // Prevent menu from closing if clicking inside it
   profileMenu.onclick = function(e) { 
     e.stopPropagation(); 
   };
