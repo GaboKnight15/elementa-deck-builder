@@ -243,9 +243,9 @@ function showCpuDeckModal() {
     `;
     div.onclick = () => {
       modal.style.display = 'none';
-      window.selectedCpuDeck = deck;
-      window.selectedCpuDeck.cardbackArt = "OtherImages/Cardbacks/DefaultCardback.png";
-      startSoloGame();
+      window.currentDeckSlot = deck.id; // Set active slot!
+      if (window.renderModePlayerDeckTile) window.renderModePlayerDeckTile(); // Re-render deck tile
+      // Optionally, trigger any other UI updates needed
     };
     list.appendChild(div);
   });
