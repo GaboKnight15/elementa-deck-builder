@@ -84,7 +84,8 @@ const dummyCards = [
  category: 'Creature', color: 'blue', type: 'Construct', hp: 20, atk: 8, def: 5, cost: {colorless: 6, blue: 2},
  archetype: 'Coralbound', ability: 'Protect', trait: 'Champion', set: 'StandardPack'},
 
-{id: 'glimmerscale4', name: 'Wyrm of Thorns and Sunfire', rarity: 'Rare', image: 'CardImages/Glimmerscales/Wyrm of Thorns and Sunfire.png', category: 'Creature', color: ['green', 'red', 'white'], type: 'dragon', hp: 9, atk: 5, def: 2, cost: 3, ability: ['intimidate','Flying'], set: 'StandardPack'},
+{id: 'glimmerscale4', name: 'Wyrm of Thorns and Sunfire', rarity: 'Rare', image: 'CardImages/Glimmerscale/Wyrm of Thorns and Sunfire.png', 
+ category: 'Creature', color: ['green', 'red', 'white'], type: ['Dragon','Fairy'], hp: 10, atk: 3, def: 1, cost: {green: 1, red: 1, white: 1}, ability: ['Flying','Intimidate'], set: 'StandardPack'},
 
 {id: 'SkullframeDefector', name: 'Skullframe Defector', rarity: 'Common', image: 'CardImages/Skullframe/Skullframe Defector.png', 
  category: 'Creature', color: 'black', type: 'Undead', hp: 3, atk: 2, def: 1, cost: {colorless: 1}, archetype: 'Skullframe', ability: 'burn', set: 'StandardPack'},
@@ -119,7 +120,7 @@ const dummyCards = [
  category: 'Creature', color: ['blue', 'gray'], type: 'Avian', hp: 9, atk: 5, def: 2, cost: {blue: 1, gray: 1}, archetype: 'Frostlands', ability: ['Ice Armor','Flying'], set: 'StandardPack'},
 {id: 'FrostlandsRuneforgedAutomaton', name: 'Frostlands Runeforged Automaton', rarity: 'Rare', image: 'CardImages/Frostlands/Frostlands Runeforged Automaton.png', 
  category: 'Creature', color: ['blue', 'gray'], type: 'Construct', hp: 9, atk: 5, def: 2, cost: {colorless: 2, blue: 1, gray: 1}, archetype: 'Frostlands', ability: 'Ice Armor', set: 'StandardPack'},
-{id: 'FrostlandsRuneforgedColossus', name: 'Frostlands Runeforged Colossus', rarity: 'Epic', image: 'CardImages/Frostlands/Frostlands Runeforged Titan.png', 
+{id: 'FrostlandsRuneforgedColossus', name: 'Frostlands Runeforged Colossus', rarity: 'Epic', image: 'CardImages/Frostlands/Frostlands Runeforged Colossus.png', 
  category: 'Creature', color: ['blue', 'gray'], type: 'Construct', hp: 9, atk: 5, def: 2, cost: {colorless: 4, blue: 1, gray: 1}, archetype: 'Frostlands', ability: ['Ice Armor','Crush'], set: 'StandardPack'},
 {id: 'EirawenFrostlandsQueenFA', name: 'Eirawen, Frostlands Queen', rarity: 'Legendary', image: 'CardImages/Frostlands/Eirawen, Frostlands Queen.png', 
  category: 'Creature', color: ['blue', 'gray'], type: ['Mage','Champion'], hp: 11, atk: 1, def: 0, cost: {blue: 2, gray: 1}, archetype: 'Frostlands', ability: ['Ice Armor','Flying'], set: 'StandardPack'},
