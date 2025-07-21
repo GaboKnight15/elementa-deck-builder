@@ -831,6 +831,43 @@ function showPlayerBadgeMenu(badgeImgEl) {
   menu.onclick = (e) => e.stopPropagation();
 }
 
+ // ACCOUNT POWER
+function calculatePlayerPower() {
+  let power = 0;
+  const collection = window.playerCollection || {};
+  const avatars = window.playerUnlockedAvatars || [];
+  const banners = window.playerUnlockedBanners || [];
+  const cardbacks = window.playerUnlockedCardbacks || [];
+
+  // Assume dummyCards is your master card list with rarity info
+  const seen = new Set();
+  for (const card of dummyCards) {
+    if (!seen.has(card.id) && collection[card.id] > 0) {
+      seen.add(card.id);
+      switch (card.rarity) {
+        case 'common': power += 1; break;
+        case 'rare': power += 3; break;
+        case 'epic': power += 10; break;
+        case 'legendary': power += 25; break;
+        default: power += 0;
+      }
+    }
+  }
+
+  // Cosmetics: only unique ones
+  power += (new Set(avatars)).size * 5;
+  power += (new Set(banners)).size * 5;
+  power += (new Set(cardbacks)).size * 5;
+
+  return power;
+}
+function renderPlayerPower() {
+  const power = calculatePlayerPower();
+  const el = document.getElementById('player-power-label');
+  if (el) el.textContent = power;
+}
+
+
 // Set up badge click handler
 document.addEventListener('DOMContentLoaded', function() {
   const badgeImg = document.getElementById('player-badge-img');
