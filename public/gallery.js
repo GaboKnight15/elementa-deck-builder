@@ -446,13 +446,10 @@ function showEssenceConfirmModal({
   };
 }
 function updateGalleryCollectionProgress(filteredCards) {
-  // All cards matching the current filters (already passed in as filteredCards)
   const collection = getCollection();
-  // Count owned
   const owned = filteredCards.filter(card => (collection[card.id] || 0) > 0).length;
   const total = filteredCards.length;
 
-  // Show extra info if filter is by rarity/color/etc.
   let filterInfo = '';
   const selectedRarity = document.getElementById('filter-rarity-gallery').value;
   const selectedColor = document.getElementById('filter-color-gallery').value;
@@ -461,8 +458,6 @@ function updateGalleryCollectionProgress(filteredCards) {
   const selectedArchetype = document.getElementById('filter-archetype-gallery').value;
   const selectedAbility = document.getElementById('filter-ability-gallery').value;
   const nameFilter = document.getElementById('filter-name-gallery').value;
-
-  // Build context string for filter
   if (selectedRarity) filterInfo += `Rarity: <b>${selectedRarity}</b> `;
   if (selectedColor) filterInfo += `Color: <b>${selectedColor}</b> `;
   if (selectedCategory) filterInfo += `Category: <b>${selectedCategory}</b> `;
@@ -471,16 +466,18 @@ function updateGalleryCollectionProgress(filteredCards) {
   if (selectedAbility) filterInfo += `Ability: <b>${selectedAbility}</b> `;
   if (nameFilter) filterInfo += `Name: <b>${nameFilter}</b> `;
 
-  // Compose display string
   let str = '';
+  const ownershipFilter = document.getElementById('filter-ownership-gallery').value;
   if (total === 0) {
     str = 'No cards match the selected filters.';
+  } else if (ownershipFilter === "owned") {
+    str = `Owned <b>${owned}</b>`;
+    if (filterInfo) str += ` (${filterInfo.trim()})`;
   } else {
     str = `Collected <b>${owned}</b> / <b>${total}</b>`;
     if (filterInfo) str += ` (${filterInfo.trim()})`;
   }
 
-  // Update the div
   const progDiv = document.getElementById('gallery-collection-progress');
   if (progDiv) progDiv.innerHTML = str;
 }
@@ -491,7 +488,7 @@ document.addEventListener('DOMContentLoaded', setupFilterSelectPlaceholders);
 // ==========================
 // GALLERY EVENT FILTERS
   document.getElementById('filter-ownership-gallery').addEventListener('change', renderGallery);
-  document.getElementById('filter-ownership-gallery').value = "owned";
+  document.getElementById('filter-ownership-gallery').value = "all";
   document.getElementById('filter-name-gallery').addEventListener('input', renderGallery);
   document.getElementById('filter-color-gallery').addEventListener('change', renderGallery);
   document.getElementById('filter-category-gallery').addEventListener('change', renderGallery);
