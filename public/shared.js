@@ -218,6 +218,7 @@ const COST_IMAGE_MAP = {
   X10: "OtherImages/Essence/EssenceTen.png"
 };
 const addCoinsBtn = document.getElementById('add-coins-btn');
+let lastPlayerPower = null;
 
 function renderStatIcon(statType, value) {
   // statType: "hp", "atk", "def", "cost"
@@ -865,6 +866,13 @@ function renderPlayerPower() {
   const power = calculatePlayerPower();
   const el = document.getElementById('player-power-label');
   if (el) el.textContent = power;
+
+  // Only show toast if lastPlayerPower exists and power increased
+  if (lastPlayerPower !== null && power > lastPlayerPower) {
+    const diff = power - lastPlayerPower;
+    showToast(`Power increased by ${diff}!`, { type: "success" }); // Or customize as you like
+  }
+  lastPlayerPower = power;
 }
 
 
