@@ -384,6 +384,7 @@ function getCurrentDeck() {
 function setCurrentDeck(deckObj) {
     decks[currentDeckSlot] = deckObj;
     saveProgress();
+    if (window.renderModePlayerDeckTile) window.renderModePlayerDeckTile();
   }
 // ==========================
 // === RENDERING CARDS ===
