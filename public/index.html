@@ -423,11 +423,20 @@
   </div>
 </div>
 <!-- ACHIEVEMENTS MODAL -->
-<div id="achievements-modal" class="modal">
-  <div class="modal-content">
-    <h3>Achievements</h3>
+<div id="achievements-modal" class="modal fullpage-modal" style="display:none;">
+  <div class="achievements-sidebar">
+    <button id="achievements-back-btn" class="btn-back" style="background:none;border:none;cursor:pointer;padding:0;margin:0 0 18px 24px;">
+      <img src="OtherImages/Icons/Back.png" alt="Back" style="width:34px;height:34px;vertical-align:middle;">
+    </button>
+    <div class="achievements-tabs">
+      <button class="achievements-tab" data-category="general">General</button>
+      <button class="achievements-tab" data-category="color">Colors</button>
+      <button class="achievements-tab" data-category="progression">Progression</button>
+      <!-- Add more as needed -->
+    </div>
+  </div>
+  <div class="achievements-content">
     <div id="achievements-list"></div>
-    <button id="close-achievements-modal" class="btn-negative-secondary">Close</button>
   </div>
 </div>
 <!-- FRIEND LIST MODAL -->  
