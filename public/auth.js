@@ -228,41 +228,47 @@ profileIconModal.onclick = function(e) {
       });
   }
 
-  // --- Signup/Login logic for modal/profile menu ---
-  profileArea.onclick = function(e) {
-    e.stopPropagation();
-    // Position the profile menu next to the profile image
-    if (!profileMenu) return;
-    profileMenu.style.display = 'block';
-    profileMenu.style.position = 'absolute';
-    profileMenu.style.zIndex = 2000;
-    // Find the anchor element (profilePic or profileArea)
-    // Prefer profilePic if it exists and is visible
-    const anchorEl = profilePic || profileArea;
-    const rect = anchorEl.getBoundingClientRect();
-    // Position below the profile pic, left-aligned
+// --- Profile menu open logic ---
+profileArea.onclick = function(e) {
+  e.stopPropagation();
+  // Menu rules: close all other open menus
+  document.querySelectorAll('.menu').forEach(m => {
+    if (m !== profileMenu) m.style.display = 'none';
+  });
+
+  // Show menu
+  profileMenu.style.display = 'block';
+  profileMenu.style.position = 'absolute';
+  profileMenu.style.zIndex = 2000;
+
+  // Use placeMenuWithinViewport from shared.js to position near profile image
+  // Anchor is profilePic if available, else profileArea
+  const anchorEl = profilePic || profileArea;
+  const rect = anchorEl.getBoundingClientRect();
+  if (typeof placeMenuWithinViewport === 'function') {
+    placeMenuWithinViewport(profileMenu, rect, 'below');
+  } else {
+    // fallback: position below anchor
     const top = rect.bottom + window.scrollY + 8;
     const left = rect.left + window.scrollX;
     profileMenu.style.top = `${top}px`;
     profileMenu.style.left = `${left}px`;
-    // Optional: min width, bg, etc. for consistency (can move to CSS)
-    profileMenu.style.minWidth = '240px';
-    profileMenu.style.background = '#232a3c';
-    profileMenu.style.borderRadius = '16px';
-    profileMenu.style.boxShadow = '0 6px 24px #000a';
-  };
-  // Hide menu on outside click
-  document.addEventListener('click', (e) => {
-    if (
-      profileMenu.style.display === 'block' &&
-      !profileMenu.contains(e.target) &&
-      !profileArea.contains(e.target)
-    ) {
-      profileMenu.style.display = 'none';
-    }
-  });
-  // Prevent menu from closing if clicking inside it
-  profileMenu.onclick = function(e) { 
-    e.stopPropagation(); 
-  };
+  }
+};
+
+// Hide menu on outside click (like other menus)
+document.body.addEventListener('click', function(e) {
+  if (
+    profileMenu.style.display === 'block' &&
+    !profileMenu.contains(e.target) &&
+    !profileArea.contains(e.target)
+  ) {
+    profileMenu.style.display = 'none';
+  }
+});
+
+// Prevent menu from closing if clicking inside
+profileMenu.onclick = function(e) {
+  e.stopPropagation();
+};
 });
