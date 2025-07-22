@@ -1923,7 +1923,14 @@ button {}
 
 /* ============================= BATTLEFIELD DESIGN =========================== */
 /* CPU Deck Selection Hover */
-.cpu-deck-option,
+.cpu-deck-option {
+  box-sizing: border-box;
+  transition: box-shadow 0.12s;
+  overflow: hidden;
+}
+.cpu-deck-option:hover {
+  box-shadow: 0 0 0 3px #ffe066;
+}
 .player-deck-option {
   transition: box-shadow 0.18s, border-color 0.18s, transform 0.13s, filter 0.16s;
   box-shadow: 0 2px 10px #0002;
@@ -1938,8 +1945,6 @@ button {}
   overflow: hidden;
   box-sizing: border-box;
 }
-
-.cpu-deck-option:hover, .cpu-deck-option:focus,
 .player-deck-option:hover, .player-deck-option:focus {
   box-shadow: 0 8px 24px 0 #ffe06699, 0 1px 8px #0004;
   border-color: #ffe066 !important;
@@ -1990,7 +1995,9 @@ button {}
   position: relative;
   z-index: 1;
 }
-
+.deck-name {
+  pointer-events: none;
+}
 .cpu-deck-option .deck-name {
   font-weight: bold;
   color: var(--deck-color, #ffe066);
@@ -2004,6 +2011,9 @@ button {}
   color: #bbb;
   margin-bottom: 0;
   text-align: center;
+}
+.deck-difficulty {
+  pointer-events: none;
 }
 .player-deck-option img,
 .default-player-deck-option img {
