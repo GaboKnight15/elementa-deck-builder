@@ -246,6 +246,7 @@ function showCpuDeckModal() {
       window.selectedCpuDeck = deck;
       window.currentDeckSlot = deck.id;
       if (window.renderModePlayerDeckTile) window.renderModePlayerDeckTile();
+      if (typeof startSoloGame === "function") startSoloGame();
     };
     list.appendChild(div);
   });
