@@ -2739,13 +2739,34 @@ function renderModePlayerDeckTile() {
     <div class="deck-slot-title-overlay">${deckName}</div>
     <img class="deck-slot-cardback-img" src="${deckObj.cardbackArt || "OtherImages/Cardbacks/DefaultCardback.png"}" alt="Cardback" style="position:absolute;top:8px;right:8px;width:32px;height:44px;border-radius:6px;box-shadow:0 1px 4px #0003;">
   `;
+  
+  // --- CARD COUNT WARNING MESSAGE --- //
+  // Count total cards in the deck
+  const totalCards = deckObj && typeof deckObj === "object"
+    ? Object.values(deckObj).filter(v => typeof v === 'number').reduce((a, b) => a + b, 0)
+    : 0;
 
+  // Show warning if deck has less than 50 cards
+  if (totalCards < 50) {
+    const warningDiv = document.createElement('div');
+    warningDiv.textContent = "Deck cannot be used, less than 50 cards";
+    warningDiv.style.color = "#e25555";
+    warningDiv.style.fontWeight = "bold";
+    warningDiv.style.fontSize = "1em";
+    warningDiv.style.textAlign = "center";
+    warningDiv.style.marginTop = "12px";
+    slotDiv.appendChild(warningDiv);
+  }
   // Remove existing click handler
   slotDiv.onclick = null;
 
   // Only allow menu for user decks
   if (!isDefaultDeck) {
     slotDiv.onclick = function (e) {
+      if (totalCards < 50) {
+        // Optionally, show a toast or shake animation here
+        return;
+      }      
       let deckName = window.getActiveDeckId ? window.getActiveDeckId() : '';
       let deck = window.decks && deckName ? window.decks[deckName] : null;
       if (!deck) {
