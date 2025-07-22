@@ -142,7 +142,7 @@ function renderGallery() {
     const ownedCount = collection[card.id] || 0;
 
     // Ownership filter logic
-    if (ownershipFilter === "owned" && ownedCount <= 0) return false;
+    if (ownershipFilter === "Owned" && ownedCount <= 0) return false;
     if (ownershipFilter === "Undiscovered" && ownedCount > 0) return false;
     if (ownershipFilter === "Locked" && !card.locked) return false;
     // "all" shows everything
@@ -488,7 +488,6 @@ document.addEventListener('DOMContentLoaded', setupFilterSelectPlaceholders);
 // ==========================
 // GALLERY EVENT FILTERS
   document.getElementById('filter-ownership-gallery').addEventListener('change', renderGallery);
-  document.getElementById('filter-ownership-gallery').value = "all";
   document.getElementById('filter-name-gallery').addEventListener('input', renderGallery);
   document.getElementById('filter-color-gallery').addEventListener('change', renderGallery);
   document.getElementById('filter-category-gallery').addEventListener('change', renderGallery);
