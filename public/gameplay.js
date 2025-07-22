@@ -269,9 +269,12 @@ function showPlayerDeckModal() {
     playerList.innerHTML = '<div style="color:#ffe066;">No decks found! Please build a deck or select a starter deck below.</div>';
   } else {
     playerDecks.forEach(deck => {
+      const totalCards = deck.deckObj && typeof deck.deckObj === "object"
+      ? Object.values(deck.deckObj).filter(v => typeof v === 'number').reduce((a, b) => a + b, 0)
+      : 0;
       const div = document.createElement('div');
       div.className = 'player-deck-option';
-      div.style.cursor = 'pointer';
+      div.style.cursor = totalCards >= 50 ? 'pointer' : 'not-allowed';
       div.style.border = deck.id === activeId ? '3px solid #ffe066' : '2px solid #333';
       div.style.padding = '12px';
       div.style.background = '#232a3c';
@@ -281,13 +284,15 @@ function showPlayerDeckModal() {
         </div>
         <div class="deck-name" style="text-align:center;">${deck.name}</div>
       `;
-      div.onclick = () => {
-        // Only select the deck and update the mode deck slot
-        window.selectedPlayerDeck = deck;
-        if (typeof renderModePlayerDeckTile === "function") renderModePlayerDeckTile();
-        modal.style.display = 'none';
-        // Do NOT startSoloGame() here!
-      };
+      if (totalCards >= 50) {
+        div.onclick = () => {
+          window.selectedPlayerDeck = deck;
+          if (typeof renderModePlayerDeckTile === "function") renderModePlayerDeckTile();
+          modal.style.display = 'none';
+        };
+      } else {
+        div.onclick = null; // Do not allow selection
+      }
       playerList.appendChild(div);
     });
   }
@@ -2736,46 +2741,13 @@ function renderModePlayerDeckTile() {
     <div class="deck-slot-title-overlay">${deckName}</div>
     <img class="deck-slot-cardback-img" src="${deckObj.cardbackArt || "OtherImages/Cardbacks/DefaultCardback.png"}" alt="Cardback" style="position:absolute;top:8px;right:8px;width:32px;height:44px;border-radius:6px;box-shadow:0 1px 4px #0003;">
   `;
-  
-  // --- CARD COUNT WARNING MESSAGE --- //
-  // Count total cards in the deck
-  const totalCards = deckObj && typeof deckObj === "object"
-    ? Object.values(deckObj).filter(v => typeof v === 'number').reduce((a, b) => a + b, 0)
-    : 0;
-
-  // Show warning if deck has less than 50 cards
-  if (totalCards < 50) {
-    const warningDiv = document.createElement('div');
-    warningDiv.textContent = "Deck cannot be used, less than 50 cards";
-    warningDiv.style.color = "#e25555";
-    warningDiv.style.fontWeight = "bold";
-    warningDiv.style.fontSize = "1em";
-    warningDiv.style.textAlign = "center";
-    warningDiv.style.marginTop = "12px";
-    slotDiv.appendChild(warningDiv);
-  }
-  // Remove existing click handler
-  slotDiv.onclick = null;
-
-  // Only allow menu for user decks
-  if (!isDefaultDeck) {
-    slotDiv.onclick = function (e) {
-      if (totalCards < 50) {
-        // Optionally, show a toast or shake animation here
-        return;
-      }      
-      let deckName = window.getActiveDeckId ? window.getActiveDeckId() : '';
-      let deck = window.decks && deckName ? window.decks[deckName] : null;
-      if (!deck) {
-        if (window.showPlayerDeckModal) window.showPlayerDeckModal();
-      } else {
-        if (window.showDeckTileMenu && deckName) window.showDeckTileMenu(deckName, this);
-      }
-    };
-  }
+  slotDiv.onclick = function(e) {
+    if (window.showPlayerDeckModal)
+      window.showPlayerDeckModal();
+  };
 }
 
-// Always show deck management menu or open deck selection modal on click
+// Always open deck selection modal on slot click in Modes
 document.getElementById('mode-player-deck-tile').onclick = function (e) {
   if (window.showPlayerDeckModal)
     window.showPlayerDeckModal();
