@@ -1938,6 +1938,7 @@ button {}
   justify-content: flex-end;
   position: relative;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 .cpu-deck-option:hover, .cpu-deck-option:focus,
