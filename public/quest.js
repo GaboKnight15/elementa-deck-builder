@@ -616,6 +616,69 @@ function renderPlayerLevel() {
   }
   if (expNum) expNum.textContent = exp + " / " + needed;
 }
+// Render achievements for category
+function renderAchievementsCategory(category) {
+  const list = document.getElementById('achievements-list');
+  if (!list) return;
+  list.innerHTML = '';
+
+  let achievementsToShow = [];
+  if (category === 'general') {
+    achievementsToShow = ACHIEVEMENTS.filter(a => !a.color && a.id.indexOf('progress') === -1);
+  } else if (category === 'color') {
+    achievementsToShow = ACHIEVEMENTS.filter(a => !!a.color);
+  } else if (category === 'progression') {
+    achievementsToShow = ACHIEVEMENTS.filter(a => a.id && a.id.indexOf('progress') !== -1 );
+    // Or however you define progression achievements
+  }
+
+  // ... Render logic is same as before, just for achievementsToShow ...
+  achievementsToShow.forEach(ach => {
+    // Defensive: skip empty or malformed objects
+    if (!ach || !ach.id || !ach.description) return;
+
+    const progress = getAchievementProgress(ach);
+    const percent = Math.min(100, Math.round((progress.progress / ach.goal) * 100));
+    const entry = document.createElement('div');
+    entry.className = 'quest-entry';
+
+    if (progress.claimed) entry.classList.add('achievement-claimed');
+
+    entry.innerHTML = `
+      <div style="display:flex;align-items:center;">
+        <img src="${ach.image || 'images/achievements/placeholder.png'}" alt="Achievement" class="achievement-image" style="width:40px;height:40px;object-fit:contain;margin-right:12px;">
+        <div style="flex:1;">
+          <div class="quest-desc">${ach.description}</div>
+          <div class="quest-progress-bar-wrap">
+            <div class="quest-progress-bar" style="width:${percent}%;"></div>
+          </div>
+          <div style="font-size:0.96em;color:#fff;text-align:right;">${progress.progress} / ${ach.goal}</div>
+          <div class="quest-reward">
+            <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins" style="width:18px;">
+            +${ach.reward.amount}
+          </div>
+        </div>
+      </div>
+    `;
+    if (progress.completed && !progress.claimed) {
+      const btn = document.createElement('button');
+      btn.className = 'btn-primary quest-claim-btn';
+      btn.textContent = 'Claim';
+      btn.onclick = function() {
+        claimAchievementReward(ach, function() {
+          renderAchievementsCategory(category);
+        });
+      };
+      entry.appendChild(btn);
+    } else if (progress.claimed) {
+      const badge = document.createElement('div');
+      badge.className = 'quest-claimed-badge';
+      badge.textContent = 'Claimed!';
+      entry.appendChild(badge);
+    }
+    list.appendChild(entry);
+  });
+}
 
 // OPEN/CLOSE LOGIC
 document.getElementById('quests-icon').onclick = function() {
@@ -627,19 +690,25 @@ document.getElementById('close-quests-modal').onclick = function() {
 document.getElementById('quests-modal').onclick = function(e) {
   if (e.target === this) this.style.display = 'none';
 };
-document.getElementById('achievements-icon').onclick = function() {
-  document.getElementById('achievements-modal').style.display = 'flex';
-  if (typeof renderAchievements === "function") renderAchievements();
-};
-document.getElementById('close-achievements-modal').onclick = function() {
-  document.getElementById('achievements-modal').style.display = 'none';
-};
+
+document.getElementById('achievements-icon').onclick = openAchievementsModalDefault;
+
 document.getElementById('achievements-modal').onclick = function(e) {
   if (e.target === this) this.style.display = 'none';
 };
-document.getElementById('close-achievements-modal').onclick = function() {
+document.getElementById('achievements-back-btn').onclick = function() {
   document.getElementById('achievements-modal').style.display = 'none';
+  document.getElementById('home-section').classList.add('active');
 };
+// Tab switching logic
+document.querySelectorAll('.achievements-tab').forEach(tab => {
+  tab.onclick = function() {
+    document.querySelectorAll('.achievements-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const category = tab.getAttribute('data-category');
+    renderAchievementsCategory(category);
+  };
+});
 document.getElementById('achievements-modal').onclick = function(e) {
   if (e.target === this) this.style.display = 'none';
 };
