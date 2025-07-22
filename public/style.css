@@ -591,8 +591,7 @@ button {}
   margin: 0;
 }
 .quest-claim-btn {
-  margin-top: 5px;
-  align-self: flex-end;
+  align-self: center;
 }
 .quest-claimed-badge {
   color: #6fd891;
