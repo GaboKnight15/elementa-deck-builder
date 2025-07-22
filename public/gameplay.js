@@ -2748,13 +2748,14 @@ function renderModePlayerDeckTile() {
 
 // Always show deck management menu or open deck selection modal on click
 document.getElementById('mode-player-deck-tile').onclick = function (e) {
+  // Updated logic: If no deck is selected, open deck selection modal.
   let deckName = window.getActiveDeckId ? window.getActiveDeckId() : '';
   let deck = window.decks && deckName ? window.decks[deckName] : null;
-  if (!deck) {
-    // No deck selected, open selection modal
+
+  // If deck is not selected or is empty (no cards), open selection modal
+  if (!deck || Object.keys(deck).length === 0) {
     if (window.showPlayerDeckModal) window.showPlayerDeckModal();
   } else {
-    // Deck selected, open deck-menu for that deck
     if (window.showDeckTileMenu && deckName) window.showDeckTileMenu(deckName, this);
   }
 };
