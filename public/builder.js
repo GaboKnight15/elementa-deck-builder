@@ -114,6 +114,9 @@ function renderDeckSelection() {
     tile.style.position = "relative"; // Ensure positioning for the star/button
     if (slotName) {
       const deck = decks[slotName] || {};
+      const count = Object.values(deck)
+        .filter(v => typeof v === 'number')
+        .reduce((a, b) => a + b, 0);
 
 if (deck.highlightArt) {
   tile.innerHTML = `
@@ -123,10 +126,20 @@ if (deck.highlightArt) {
 } else {
   tile.textContent = slotName;
 }
-
+      // --- CARD COUNT WARNING MESSAGE --- //
+      if (count < 50) {
+        const warningDiv = document.createElement('div');
+        warningDiv.textContent = "Deck cannot be used, less than 50 cards";
+        warningDiv.style.color = "#e25555";
+        warningDiv.style.fontWeight = "bold";
+        warningDiv.style.fontSize = "1em";
+        warningDiv.style.textAlign = "center";
+        warningDiv.style.marginBottom = "5px";
+        tile.appendChild(warningDiv);
+      }
       // --- ACTIVE DECK BUTTON/STAR ---
-      const isActive = slotName === currentDeckSlot;
-     const activeBtn = document.createElement('button');
+const isActive = slotName === currentDeckSlot;
+const activeBtn = document.createElement('button');
 activeBtn.innerHTML = isActive ? '⭐ Active' : '☆ Set Active';
 activeBtn.className = 'deck-active-btn';
 activeBtn.disabled = isActive;
