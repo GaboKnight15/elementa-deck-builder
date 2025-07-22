@@ -2477,8 +2477,6 @@ button {}
   background: linear-gradient(90deg, #2456a6 0%, #14315b 100%);
   color: #e5e7ef;
   font-family: 'Segoe UI', 'Arial', sans-serif;
-  font-size: 1.18em;
-  font-weight: 600;
   border-radius: 12px;
   border: 2.5px solid #428fff;
   box-shadow: 0 2px 16px #2456a644, 0 1.5px 0 #15336666 inset;
@@ -2527,8 +2525,6 @@ button {}
   border-radius: 7px;
   padding: 4px 24px;
   background: rgba(255,255,255,0.06);
-  font-size: 1.12em;
-  font-weight: 700;
   letter-spacing: 0.09em;
   text-transform: uppercase;
   margin-left: 16px;
