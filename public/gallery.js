@@ -127,7 +127,7 @@ function createCardGallery(card) {
 
 function renderGallery() {
   gallery.innerHTML = '';
-  const ownershipFilter = document.getElementById('filter-ownership-gallery')?.value || "owned";
+  const ownershipFilter = document.getElementById('filter-ownership-gallery')?.value || "Owned";
   const selectedColor = document.getElementById('filter-color-gallery').value.toLowerCase();
   const selectedType = document.getElementById('filter-type-gallery').value.toLowerCase();
   const selectedRarity = document.getElementById('filter-rarity-gallery').value.toLowerCase();
@@ -143,8 +143,8 @@ function renderGallery() {
 
     // Ownership filter logic
     if (ownershipFilter === "owned" && ownedCount <= 0) return false;
-    if (ownershipFilter === "undiscovered" && ownedCount > 0) return false;
-    if (ownershipFilter === "locked" && !card.locked) return false;
+    if (ownershipFilter === "Undiscovered" && ownedCount > 0) return false;
+    if (ownershipFilter === "Locked" && !card.locked) return false;
     // "all" shows everything
 
     if (nameFilter && !card.name.toLowerCase().includes(nameFilter)) return false;
