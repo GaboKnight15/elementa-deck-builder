@@ -37,7 +37,7 @@ function saveProgress() {
     essence: typeof window.playerEssence === 'number' ? window.playerEssence : 0,
     quests: window.playerQuests || {},
     achievements: window.playerAchievements || {},
-    profilePic: window.profilePic ? window.profilePic.src : defaultIcon,
+    profilePic: window.playerProfilePic || defaultIcon,
     profileBanner: window.playerProfileBanner || defaultBanner,
     level: typeof window.playerLevel === 'number' ? window.playerLevel : 1,
     exp: typeof window.playerExp === 'number' ? window.playerExp : 0,
