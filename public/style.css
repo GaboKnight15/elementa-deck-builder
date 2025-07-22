@@ -122,10 +122,10 @@ button {}
   height: 100vh;
 }
 #gallery-container {
-  display: flex;
-  flex-direction: column;
 }
+
 #gameplay-container {
+  display: flex;
 }
 .section-header {
   display: flex;
@@ -1010,23 +1010,6 @@ button {}
   transition: filter 0.3s, opacity 0.3s;
 }
 /* ---- Deck Menu Styles ---- */
-#deck-menu {
-  display: none;
-  position: absolute;
-  z-index: 1000;
-  background: linear-gradient(120deg, #22304a 80%, #1a2533 100%);
-  color: #e5e7ef;
-  border-radius: 22px;
-  box-shadow: 0 8px 40px 0 #141e2fbb, 0 1.5px 0 #22304a inset;
-  border: 2.5px solid #314175;
-  padding: 26px 30px 24px 30px;
-  min-width: 320px;
-  max-width: 410px;
-  animation: fadeIn 0.17s;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
 
 #deck-menu .deck-menu-content {
   display: flex;
@@ -1045,8 +1028,6 @@ button {}
 
 #deck-menu #deck-banner-img {
   width: 100%;
-  max-width: 340px;
-  height: auto;
   border-radius: 14px;
   box-shadow: 0 3px 18px #0007;
   object-fit: cover;
@@ -1062,9 +1043,6 @@ button {}
 }
 
 #deck-menu-title {
-  font-size: 1.3em;
-  font-weight: bold;
-  color: #fff;
   margin: 0;
 }
 
@@ -1087,51 +1065,6 @@ button {}
   box-shadow: 0 2px 8px #0005;
 }
 
-#deck-menu button {
-  width: 100%;
-  margin: 0;
-  margin-top: 0px;
-  margin-bottom: 0px;
-  padding: 12px 0;
-  font-size: 1.09em;
-  font-weight: 600;
-  border-radius: 11px;
-  box-shadow: 0 2px 10px #0003;
-  border: 2px solid #314175;
-  background: linear-gradient(90deg, #32406e 70%, #253047 100%);
-  color: #ffe066;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s, border 0.15s, box-shadow 0.15s;
-  display: block;
-  text-align: center;
-  margin-bottom: 8px;
-}
-
-#deck-menu button:focus,
-#deck-menu button:hover {
-  background: linear-gradient(90deg, #3e508a 70%, #314175 100%);
-  color: #fff;
-  box-shadow: 0 4px 18px #31417599;
-  border: 2px solid #ffe066;
-}
-
-#deck-menu button.btn-negative-secondary {
-  background: linear-gradient(90deg, #b63a3a 70%, #7d2332 100%);
-  color: #fff;
-  border: 2px solid #a32d2d;
-  margin-bottom: 0px;
-  margin-right: 8px;
-  width: 47%;
-  display: inline-block;
-}
-
-#deck-menu button.btn-negative-secondary:focus,
-#deck-menu button.btn-negative-secondary:hover {
-  background: linear-gradient(90deg, #d94f4f 70%, #a32d2d 100%);
-  color: #ffe066;
-  border: 2px solid #ffe066;
-}
-
 #deck-menu .deck-menu-content .btn-row {
   display: flex;
   flex-direction: row;
@@ -1142,26 +1075,11 @@ button {}
   margin-bottom: 0;
 }
 
-@media screen and (max-width: 600px) {
-  #deck-menu {
-    min-width: 90vw;
-    max-width: 98vw;
-    padding: 12px 4vw 18px 4vw;
-  }
-  #deck-menu #deck-banner-img {
-    max-width: 97vw;
-  }
-}
 .deck-menu-content h3 {
   margin-bottom: 0.8em;
   text-align: center;
 }
-#deck-menu .btn-secondary,
-#deck-menu .btn-primary,
-#deck-menu .btn-negative {
-  width: 100%;
-  margin: 0.2em 0;
-}
+
 #deck-banner-container {
   width: 100%;
   display: flex;
@@ -1767,6 +1685,9 @@ button {}
   }
 }
 .menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   position: absolute;
   z-index: 1000;
   background: linear-gradient(120deg, #22304a 80%, #1a2533 100%);
@@ -1778,18 +1699,7 @@ button {}
   min-width: 220px;
   max-width: 410px;
   animation: fadeIn 0.17s;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
   gap: 12px;
-}
-.menu h3,
-.menu .menu-title {
-  font-size: 1.2em;
-  font-weight: bold;
-  color: #ffe066;
-  margin: 0 0 8px 0;
-  text-align: center;
 }
 
 .menu-content {
@@ -1797,32 +1707,6 @@ button {}
   flex-direction: column;
   gap: 12px;
   width: 100%;
-}
-
-/* Generic menu button styles */
-.menu button {
-  width: 100%;
-  margin: 0 0 8px 0;
-  padding: 12px 0;
-  font-size: 1.09em;
-  font-weight: 600;
-  border-radius: 11px;
-  box-shadow: 0 2px 10px #0003;
-  border: 2px solid #314175;
-  background: linear-gradient(90deg, #32406e 70%, #253047 100%);
-  color: #ffe066;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s, border 0.15s, box-shadow 0.15s;
-  display: block;
-  text-align: center;
-}
-
-.menu button:focus,
-.menu button:hover {
-  background: linear-gradient(90deg, #3e508a 70%, #314175 100%);
-  color: #fff;
-  box-shadow: 0 4px 18px #31417599;
-  border: 2px solid #ffe066;
 }
 
 /* Negative/secondary actions for menu */
