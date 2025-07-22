@@ -182,17 +182,26 @@
                       <!-- DECK BUILDER -->
 <section id="builder-section" class="section">  
   <div id="builder-container" class="section-container">
-                  <!-- BUILDER SECTION HEADER -->
-    <div id="builder-header" class="section-header">
+    <!-- DECK SELECTION HEADER (shown in deck grid view) -->
+    <div id="deck-selection-header" class="section-header" style="display:flex;">
+      <div class="section-header-left">
+        <img id="deck-selection-back-btn" src="OtherImages/Icons/Back.png" alt="Back" class="section-header-btn" title="Back" />
+      </div>
+      <div class="section-header-center">My Decks</div>
+      <div class="section-header-right">
+        <img id="deck-selection-settings-btn" src="OtherImages/Icons/Settings.png" alt="Settings" class="section-header-btn" title="Settings" />
+      </div>
+    </div>
+    <!-- DECK EDITOR HEADER (shown in deck editor view, hidden by default) -->
+    <div id="builder-header" class="section-header" style="display:none;">
       <div class="section-header-left">
         <img id="builder-back-btn" src="OtherImages/Icons/Back.png" alt="Back" class="section-header-btn" title="Back" />
       </div>
-      <div class="section-header-center">My Decks</div>
+      <div class="section-header-center">Edit Deck</div>
       <div class="section-header-right">
         <img id="builder-settings-btn" src="OtherImages/Icons/Settings.png" alt="Settings" class="section-header-btn" title="Settings" />
       </div>
     </div>
-    
 <!-- DECK SLOTS -->
     <div id="deck-selection-grid" class="grid"></div>
       <div id="deck-builder-ui">
