@@ -465,6 +465,21 @@ button {}
   flex-direction: column;
   min-width: 0;
 }
+/* Limit the modal-content height and make its achievements-list scrollable */
+#achievements-modal .modal-content {
+  max-height: 80vh; /* or a fixed value like 650px */
+  min-height: 420px; /* optional, for aesthetic */
+  overflow: hidden; /* Prevent the whole modal from scrolling */
+  display: flex;
+  flex-direction: column;
+}
+
+#achievements-list {
+  flex: 1 1 auto;
+  min-height: 0; /* Ensures proper flexbox scrolling */
+  overflow-y: auto;
+  padding-right: 8px; /* Optional: for visible scrollbar */
+}
 #quests-icon-wrapper, #achievements-icon-wrapper {
   position: relative;
   display: inline-block;
