@@ -2780,22 +2780,10 @@ function renderModePlayerDeckTile() {
 
 // Always show deck management menu or open deck selection modal on click
 document.getElementById('mode-player-deck-tile').onclick = function (e) {
-  // Updated logic: If no deck is selected, open deck selection modal.
-  let deckName = window.getActiveDeckId ? window.getActiveDeckId() : '';
-  let deck = window.decks && deckName ? window.decks[deckName] : null;
-
-  // If deck is not selected or is empty (no cards), open selection modal
-  if (!deck || Object.keys(deck).length === 0) {
-    if (window.showPlayerDeckModal) window.showPlayerDeckModal();
-  } else {
-    if (window.showDeckTileMenu && deckName) window.showDeckTileMenu(deckName, this);
-  }
-};
-// Button: open deck selection modal
-document.getElementById('mode-change-deck-btn').onclick = function () {
   if (window.showPlayerDeckModal)
     window.showPlayerDeckModal();
 };
+
 // Re-render when needed (after deck changes)
 if (window.renderDeckSelection) {
   const origRender = window.renderDeckSelection;
