@@ -281,51 +281,50 @@ function showPlayerDeckModal() {
         <div class="deck-name" style="text-align:center;">${deck.name}</div>
       `;
       div.onclick = () => {
-        modal.style.display = 'none';
+        // Only select the deck and update the mode deck slot
         window.selectedPlayerDeck = deck;
-        startSoloGame();
+        if (typeof renderModePlayerDeckTile === "function") renderModePlayerDeckTile();
+        modal.style.display = 'none';
+        // Do NOT startSoloGame() here!
       };
       playerList.appendChild(div);
     });
   }
 
-  // --- DEFAULT DECKS SECTION (below player's decks) ---
-  // The "Default Decks" title is already in your HTML, so just fill the list
+  // --- DEFAULT DECKS SECTION ---
   const defaultDecks = DEFAULT_CPU_DECKS;
-
-if (Array.isArray(defaultDecks) && defaultDecks.length > 0) {
-  // Create the row container
-  const row = document.createElement('div');
-  row.style.display = "flex";
-  row.style.flexWrap = "wrap";
-  row.style.gap = "16px";
-  row.style.justifyContent = "center";
-
-  defaultDecks.forEach(deck => {
-    const div = document.createElement('div');
-    div.className = 'default-player-deck-option';
-    div.style.cursor = 'pointer';
-    div.style.border = '2px solid ' + deck.color;
-    div.style.borderRadius = '12px';
-    div.style.background = '#232a3c';
-    div.innerHTML = `
-      <div style="position:relative; width:100%; height:140px; display: flex; align-items: center; justify-content: center;">
-        <img src="${deck.image}" alt="${deck.name}" class="deck-art-img">
-      </div>
-      <div class="deck-name" style="--deck-color:${deck.color}; text-align:center;">${deck.name}</div>
-    `;
-    div.onclick = () => {
-      modal.style.display = 'none';
-      window.selectedPlayerDeck = {
-        ...deck,
-        deckObj: deck
+  if (Array.isArray(defaultDecks) && defaultDecks.length > 0) {
+    const row = document.createElement('div');
+    row.style.display = "flex";
+    row.style.flexWrap = "wrap";
+    row.style.gap = "16px";
+    row.style.justifyContent = "center";
+    defaultDecks.forEach(deck => {
+      const div = document.createElement('div');
+      div.className = 'default-player-deck-option';
+      div.style.cursor = 'pointer';
+      div.style.border = '2px solid ' + deck.color;
+      div.style.borderRadius = '12px';
+      div.style.background = '#232a3c';
+      div.innerHTML = `
+        <div style="position:relative; width:100%; height:140px; display: flex; align-items: center; justify-content: center;">
+          <img src="${deck.image}" alt="${deck.name}" class="deck-art-img">
+        </div>
+        <div class="deck-name" style="--deck-color:${deck.color}; text-align:center;">${deck.name}</div>
+      `;
+      div.onclick = () => {
+        window.selectedPlayerDeck = {
+          ...deck,
+          deckObj: deck
+          isDefaultDeck: true
+        };
+        if (typeof renderModePlayerDeckTile === "function") renderModePlayerDeckTile();
+        modal.style.display = 'none';
       };
-      startSoloGame();
-    };
-    row.appendChild(div);
-  });
-  defaultList.appendChild(row);
-}
+      row.appendChild(div);
+    });
+    defaultList.appendChild(row);
+  }
 
   document.getElementById('close-player-deck-modal').onclick = () => { modal.style.display = 'none'; };
   modal.style.display = 'flex';
@@ -2685,22 +2684,47 @@ document.addEventListener('DOMContentLoaded', function() {
 function renderModePlayerDeckTile() {
   const slotDiv = document.getElementById('mode-player-deck-tile');
   if (!slotDiv) return;
+
   slotDiv.innerHTML = '';
-  let deckName = window.getActiveDeckId ? window.getActiveDeckId() : '';
-  let deck = window.decks && deckName ? window.decks[deckName] : null;
-  if (!deck) {
+  let deckName, deckObj, isDefaultDeck = false;
+
+  if (window.selectedPlayerDeck) {
+    deckName = window.selectedPlayerDeck.name || window.selectedPlayerDeck.id;
+    deckObj = window.selectedPlayerDeck.deckObj || window.selectedPlayerDeck;
+    isDefaultDeck = !!window.selectedPlayerDeck.isDefaultDeck;
+  } else {
+    deckName = window.getActiveDeckId ? window.getActiveDeckId() : '';
+    deckObj = window.decks && deckName ? window.decks[deckName] : null;
+  }
+
+  if (!deckObj) {
     slotDiv.textContent = 'No Deck Selected';
     slotDiv.classList.add('empty');
     return;
   }
   slotDiv.classList.remove('empty');
-  // Show banner/highlight/cardback
-  let image = deck.highlightArt || deck.bannerArt || "CardImages/Banners/DefaultBanner.png";
+  let image = deckObj.highlightArt || deckObj.bannerArt || "CardImages/Banners/DefaultBanner.png";
   slotDiv.innerHTML = `
     <img class="deck-slot-highlight-img" src="${image}" alt="highlight" />
     <div class="deck-slot-title-overlay">${deckName}</div>
-    <img class="deck-slot-cardback-img" src="${deck.cardbackArt || "OtherImages/Cardbacks/DefaultCardback.png"}" alt="Cardback" style="position:absolute;top:8px;right:8px;width:32px;height:44px;border-radius:6px;box-shadow:0 1px 5px #0005;">
+    <img class="deck-slot-cardback-img" src="${deckObj.cardbackArt || "OtherImages/Cardbacks/DefaultCardback.png"}" alt="Cardback" style="position:absolute;top:8px;right:8px;width:32px;height:44px;border-radius:6px;box-shadow:0 1px 4px #0003;">
   `;
+
+  // Remove existing click handler
+  slotDiv.onclick = null;
+
+  // Only allow menu for user decks
+  if (!isDefaultDeck) {
+    slotDiv.onclick = function (e) {
+      let deckName = window.getActiveDeckId ? window.getActiveDeckId() : '';
+      let deck = window.decks && deckName ? window.decks[deckName] : null;
+      if (!deck) {
+        if (window.showPlayerDeckModal) window.showPlayerDeckModal();
+      } else {
+        if (window.showDeckTileMenu && deckName) window.showDeckTileMenu(deckName, this);
+      }
+    };
+  }
 }
 
 // Always show deck management menu or open deck selection modal on click
