@@ -6,6 +6,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 const rooms = {};
+let casualQueue = [];
 
 app.use(express.static('public')); // Serve files from the "public" folder
 
@@ -23,7 +24,25 @@ io.on('connection', (socket) => {
     }
     io.in(roomId).emit('opponent joined', socket.id);
   });
+
   
+// CASUAL MATCHMAKING
+  socket.on('casual-join', (playerData) => {
+    // Add player to queue
+    casualQueue.push({ socket, playerData });
+    // If there are at least two players, match them up
+    if (casualQueue.length >= 2) {
+      const p1 = casualQueue.shift();
+      const p2 = casualQueue.shift();
+      // Send 'casual-match-found' to both players
+      p1.socket.emit('casual-match-found', { opponentDeck: p2.playerData, opponentProfile: {} });
+      p2.socket.emit('casual-match-found', { opponentDeck: p1.playerData, opponentProfile: {} });
+    }
+  });
+
+  socket.on('casual-cancel', () => {
+    casualQueue = casualQueue.filter(q => q.socket !== socket);
+  });  
 // DECK SUBMITS
   socket.on('submit deck', (roomId, deckObj) => {
     if (!rooms[roomId]) rooms[roomId] = { players: [], decks: {} };
