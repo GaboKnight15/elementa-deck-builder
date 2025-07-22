@@ -215,29 +215,32 @@ document.addEventListener('mousedown', function(e) {
   }
 });
 setHighlightArtBtn.onclick = function() {
+  // Close the deck menu before opening the modal
+  closeDeckTileMenu();
+
+  // Show the highlight art modal
   highlightArtModal.style.display = "flex";
   highlightArtList.innerHTML = "";
 
-  // Only Legendary cards currently in this deck
-  const deckName = deckMenu.dataset.deckName;
-  const deck = decks[deckName] && decks[deckName].cards ? decks[deckName].cards : decks[deckName] || {};
-  const legendaryCards = Object.keys(deck)
-    .map(cardId => dummyCards.find(card => card.id === cardId && card.rarity === 'Legendary'))
-    .filter(Boolean);
+  // Use unlocked avatars if available, fallback to iconOptions if not
+  const avatarOptions = Array.isArray(window.playerUnlockedAvatars) && window.playerUnlockedAvatars.length > 0
+    ? window.playerUnlockedAvatars
+    : (typeof iconOptions !== "undefined" ? iconOptions : []);
 
-  if (legendaryCards.length === 0) {
-    highlightArtList.innerHTML = "<div style='color:#eee'>No Legendary cards in this deck.</div>";
+  if (avatarOptions.length === 0) {
+    highlightArtList.innerHTML = "<div style='color:#eee'>No avatar artwork available.</div>";
     return;
   }
-  legendaryCards.forEach(card => {
+
+  avatarOptions.forEach(avatarPath => {
     const img = document.createElement('img');
-    // Use card.artwork if you have a separate artwork property, else use .image
-    img.src = card.artwork || card.image;
-    img.alt = card.name;
+    img.src = avatarPath;
+    img.alt = avatarPath.split('/').pop().replace('.png', '');
     img.className = "highlight-art-choice";
-    img.title = card.name;
+    img.title = img.alt;
     img.onclick = () => {
-      decks[deckName].highlightArt = card.artwork || card.image;
+      const deckName = deckMenu.dataset.deckName;
+      decks[deckName].highlightArt = avatarPath;
       saveProgress();
       renderDeckSelection();
       highlightArtModal.style.display = "none";
