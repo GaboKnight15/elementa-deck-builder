@@ -687,6 +687,16 @@ function renderBuilder() {
       document.body.classList.add(`theme-${color}`);
     }
   });
+// Make sure this is run after DOM is loaded
+document.addEventListener("DOMContentLoaded", function() {
+  const deckSelectionBackBtn = document.getElementById('deck-selection-back-btn');
+  if (deckSelectionBackBtn) {
+    deckSelectionBackBtn.onclick = function() {
+      document.getElementById('builder-section').classList.remove('active');
+      document.getElementById('home-section').classList.add('active');
+    };
+  }
+});
 // GALLERY EVENT FILTERS
   document.getElementById('filter-name-builder').addEventListener('input', renderBuilder);
   document.getElementById('filter-color-builder').addEventListener('change', renderBuilder);
