@@ -206,6 +206,7 @@ const COST_IMAGE_MAP = {
   gray: "OtherImages/Essence/EssenceGray.png",
   black: "OtherImages/Essence/EssenceBlack.png",
   white: "OtherImages/Essence/EssenceWhite.png",
+  X0: "OtherImages/Essence/EssenceZero.png",
   X1: "OtherImages/Essence/EssenceOne.png",
   X2: "OtherImages/Essence/EssenceTwo.png",
   X3: "OtherImages/Essence/EssenceThree.png",
@@ -215,7 +216,17 @@ const COST_IMAGE_MAP = {
   X7: "OtherImages/Essence/EssenceSeven.png",
   X8: "OtherImages/Essence/EssenceEight.png",
   X9: "OtherImages/Essence/EssenceNine.png",
-  X10: "OtherImages/Essence/EssenceTen.png"
+  X10: "OtherImages/Essence/EssenceTen.png",
+  X11: "OtherImages/Essence/EssenceEleven.png",
+  X12: "OtherImages/Essence/EssenceTwelve.png",
+  X13: "OtherImages/Essence/EssenceThirteen.png",
+  X14: "OtherImages/Essence/EssenceFourteen.png",
+  X15: "OtherImages/Essence/EssenceFifteen.png",
+  X16: "OtherImages/Essence/EssenceSixteen.png",
+  X17: "OtherImages/Essence/EssenceSeventeen.png",
+  X18: "OtherImages/Essence/EssenceEighteen.png",
+  X19: "OtherImages/Essence/EssenceNineteen.png",
+  X20: "OtherImages/Essence/EssenceTwenty.png"
 };
 const addCoinsBtn = document.getElementById('add-coins-btn');
 let lastPlayerPower = null;
