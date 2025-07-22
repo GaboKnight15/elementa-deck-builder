@@ -347,17 +347,34 @@ function generateUniqueId() {
 }
 function startSoloGame() {
   setBattlefieldLeftbarVisibility(false);
-  // Build decks
-  const playerBanner = window.selectedPlayerDeck?.bannerArt || "CardImages/Banners/DefaultBanner.png";
-  const cpuBanner = window.selectedCpuDeck?.bannerArt || "CardImages/Banners/DefaultBanner.png";
+  // Make sure selectedPlayerDeck and selectedCpuDeck are set
+  const playerDeckObj = window.selectedPlayerDeck?.deckObj || window.selectedPlayerDeck;
+  const cpuDeckObj = window.selectedCpuDeck;
+
+  // Fallback for player deck: use currentDeckSlot if nothing is selected
+  let playerDeckArray;
+  if (playerDeckObj) {
+    playerDeckArray = window.buildDeck(playerDeckObj);
+  } else if (window.getCurrentDeck) {
+    playerDeckArray = window.buildDeck(window.getCurrentDeck());
+  } else {
+    playerDeckArray = [];
+  }
+
+  // Fallback for CPU deck
+  let cpuDeckArray = cpuDeckObj ? buildCpuDeck(cpuDeckObj) : [];
+
+  // Banners
+  const playerBanner = playerDeckObj?.bannerArt || "CardImages/Banners/DefaultBanner.png";
+  const cpuBanner = cpuDeckObj?.bannerArt || "CardImages/Banners/DefaultBanner.png";
   setBattlefieldBannerBackground("player", playerBanner);
   setBattlefieldBannerBackground("opponent", cpuBanner);
-  const cpuDeckArray = buildCpuDeck(window.selectedCpuDeck);
-  const playerDeckArray = window.buildDeck(window.selectedPlayerDeck.deckObj);
-  
+
+  // UI transition
   document.querySelectorAll('section[id$="-section"]').forEach(section => section.classList.remove('active'));
   document.getElementById('gameplay-section').classList.add('active');
   enterBattlefield();
+
   // Set up gameState
   gameState.playerDeck = shuffle(playerDeckArray);
   gameState.playerHand = [];
@@ -378,6 +395,7 @@ function startSoloGame() {
   renderGameState();
   setupDropZones();
   updatePhase();
+
   // Setup drag and drop handlers
   ['player-creatures-zone', 'player-domains-zone'].forEach(zoneId => {
     const zone = document.getElementById(zoneId);
@@ -387,34 +405,35 @@ function startSoloGame() {
       zone.classList.add('drag-over');
     };
     zone.ondragleave = () => zone.classList.remove('drag-over');
-zone.ondrop = (e) => {
-  e.preventDefault();
-  zone.classList.remove('drag-over');
-  const instanceId = e.dataTransfer.getData('text/plain');
-  const cardObj = gameState.playerHand.find(c => c.instanceId === instanceId);
-  if (!cardObj) return;
+    zone.ondrop = (e) => {
+      e.preventDefault();
+      zone.classList.remove('drag-over');
+      const instanceId = e.dataTransfer.getData('text/plain');
+      const cardObj = gameState.playerHand.find(c => c.instanceId === instanceId);
+      if (!cardObj) return;
 
-  // Find card definition
-  const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
-  if (!cardDef) return;
+      // Find card definition
+      const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
+      if (!cardDef) return;
 
-  // Determine allowed category for this zone
-  const allowedCategory =
-    zoneId === "player-creatures-zone" ? "creature" :
-    zoneId === "player-domains-zone" ? "domain" : null;
+      // Determine allowed category for this zone
+      const allowedCategory =
+        zoneId === "player-creatures-zone" ? "creature" :
+        zoneId === "player-domains-zone" ? "domain" : null;
 
-  if (cardDef.category !== allowedCategory) {
-    alert("You can only play " + allowedCategory + " cards here!");
-    return;
-  }
+      if (cardDef.category !== allowedCategory) {
+        alert("You can only play " + allowedCategory + " cards here!");
+        return;
+      }
 
-  let targetArr = zoneId === "player-creatures-zone" ? gameState.playerCreatures : gameState.playerDomains;
-  moveCard(instanceId, gameState.playerHand, targetArr, {orientation: "vertical"});
-  renderGameState();
-  setupDropZones();
-  };
-});
- // Show the "Game Start" animation, then main domain & champion selection, then draw opening hand
+      let targetArr = zoneId === "player-creatures-zone" ? gameState.playerCreatures : gameState.playerDomains;
+      moveCard(instanceId, gameState.playerHand, targetArr, {orientation: "vertical"});
+      renderGameState();
+      setupDropZones();
+    };
+  });
+
+  // Show the "Game Start" animation, then main domain & champion selection, then draw opening hand
   showGameStartAnimation(() => {
     initiateMainDomainAndChampionSelection(gameState.playerDeck, () => {
       // After selection, draw opening hand
