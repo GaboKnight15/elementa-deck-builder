@@ -109,16 +109,6 @@ function renderDeckSelection() {
     if (slotName) {
       const deck = decks[slotName] || {};
 
-      if (deck.highlightArt) {
-        const validLegendary = Object.keys(deck)
-          .map(cardId => dummyCards.find(card => card.id === cardId && card.rarity === 'Legendary'))
-          .filter(Boolean)
-          .some(card => (card.artwork || card.image) === deck.highlightArt);
-        if (!validLegendary) {
-          delete deck.highlightArt;
-          saveProgress();
-        }
-      }
 if (deck.highlightArt) {
   tile.innerHTML = `
     <img class="deck-slot-highlight-img" src="${deck.highlightArt}" alt="highlight" />
