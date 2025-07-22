@@ -75,6 +75,8 @@ window.getActiveDeckId = function() {
 };
 
 function showDeckSelection() {
+  document.getElementById('deck-selection-header').style.display = 'flex';
+  document.getElementById('builder-header').style.display = 'none';
   deckSelectionGrid.style.display = '';
   deckBuilderUI.style.display = 'none';
   builderContainer.style.display = '';
@@ -83,6 +85,8 @@ function showDeckSelection() {
   renderDeckSelection();
 }
 function showDeckBuilder() {
+  document.getElementById('deck-selection-header').style.display = 'none';
+  document.getElementById('builder-header').style.display = 'flex';
   deckSelectionGrid.style.display = 'none';
   deckBuilderUI.style.display = '';
   builderContainer.style.display = '';
