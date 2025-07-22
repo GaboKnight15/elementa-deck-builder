@@ -11,7 +11,6 @@ const DECKS_KEY = "decks";
 const builderContainer  = document.getElementById('builder-container');
 const deckSelectionGrid = document.getElementById('deck-selection-grid');
 const deckBuilderUI     = document.getElementById('deck-builder-ui');
-const deckSelectionBackBtn = document.getElementById('deck-selection-back-btn');
 const builderBackBtn    = document.getElementById('builder-back-btn');
 const builderGallery    = document.getElementById('gallery-builder-cards');
 const deckTitle         = document.getElementById('deck-title');
@@ -61,7 +60,14 @@ document.getElementById('builder-settings-btn').onclick = function() {
 document.getElementById('builder-back-btn').onclick = function() {
   showDeckSelection();
 };
+const deckSelectionSettingsBtn = document.getElementById('deck-selection-settings-btn');
+if (deckSelectionSettingsBtn) {
+  deckSelectionSettingsBtn.onclick = function() {
+    document.getElementById('settings-modal').style.display = 'flex';
+  };
+}
 
+const deckSelectionBackBtn = document.getElementById('deck-selection-back-btn');
 if (deckSelectionBackBtn) {
   deckSelectionBackBtn.onclick = function() {
     document.getElementById('builder-section').classList.remove('active');
@@ -252,6 +258,7 @@ function updateDeckBanner(deckName) {
 
 // Make the banner image clickable to open the modal
 deckBannerImg.onclick = function() {
+  closeDeckTileMenu();
   deckBannerModal.style.display = "flex";
   deckBannerArtList.innerHTML = "";
 
@@ -296,6 +303,7 @@ function updateDeckCardback(deckName) {
 
 // Make cardback image clickable to open the modal
 deckCardbackImg.onclick = function() {
+  closeDeckTileMenu();
   deckCardbackModal.style.display = "flex";
   deckCardbackArtList.innerHTML = "";
   const deckName = deckMenu.dataset.deckName;
@@ -692,6 +700,27 @@ document.addEventListener("DOMContentLoaded", function() {
       document.getElementById('builder-section').classList.remove('active');
       document.getElementById('home-section').classList.add('active');
     };
+  }
+});
+// Banner modal: close when clicking outside modal content
+deckBannerModal.addEventListener('mousedown', function(e) {
+  // Only close if clicking the overlay, not a child
+  if (e.target === deckBannerModal) {
+    deckBannerModal.style.display = "none";
+  }
+});
+
+// Cardback modal: close when clicking outside modal content
+deckCardbackModal.addEventListener('mousedown', function(e) {
+  if (e.target === deckCardbackModal) {
+    deckCardbackModal.style.display = "none";
+  }
+});
+
+// Highlight card modal: close when clicking outside modal content
+highlightArtModal.addEventListener('mousedown', function(e) {
+  if (e.target === highlightArtModal) {
+    highlightArtModal.style.display = "none";
   }
 });
 // GALLERY EVENT FILTERS
