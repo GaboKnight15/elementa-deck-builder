@@ -617,6 +617,13 @@ function renderAchievementsCategory(category) {
     list.appendChild(entry);
   });
 }
+function openAchievementsModalDefault() {
+  document.getElementById('achievements-modal').style.display = 'flex';
+  document.querySelectorAll('.achievements-tab').forEach(t => t.classList.remove('active'));
+  const generalTab = document.querySelector('.achievements-tab[data-category="general"]');
+  if (generalTab) generalTab.classList.add('active');
+  renderAchievementsCategory('general');
+}
 
 // OPEN/CLOSE LOGIC
 document.getElementById('quests-icon').onclick = function() {
