@@ -783,48 +783,27 @@ function getCurrentPlayerBadgeImage() {
   return "OtherImages/PlayerLevel/Default.png";
 }
 
-// Menu creation logic
+// PLAYER BADGE MENU
 function showPlayerBadgeMenu(badgeImgEl) {
-  // Remove any existing menus
-  document.querySelectorAll('.player-badge-menu').forEach(m => m.remove());
-  
-  // Create menu
-  const menu = document.createElement('div');
-  menu.className = 'player-badge-menu';
-  menu.style.position = 'absolute';
-  menu.style.zIndex = 2000;
-  menu.style.minWidth = '210px';
-  menu.style.background = '#232a3c';
-  menu.style.boxShadow = '0 4px 20px #000a';
-  menu.style.borderRadius = '12px';
-  menu.style.padding = '12px 18px';
-  menu.style.color = '#ffe066';
-  menu.style.fontSize = '1.06em';
+  // Hide any existing menus
+  const menu = document.getElementById('player-badge-menu');
+  if (!menu) return;
 
-  // Fill in menu content
-  menu.innerHTML = `
-    <div style="margin-bottom: 10px; font-weight: bold;">Player Badge</div>
-    <div style="margin-bottom: 7px;">
-      <img src="${getCurrentPlayerBadgeImage()}"
-           style="width:46px; height:46px; border-radius:50%; border:2px solid #ffe066; box-shadow:0 1px 8px #0005; margin-right:10px; vertical-align:middle;">
-      <span>Level: <b id="player-badge-level-num">1</b></span>
-    </div>
-    <div style="margin-bottom: 7px;">Unique Cards Collected: <b>${getUniqueCollectedCardsCount()}</b></div>
-    <!-- Add more info here later -->
-  `;
+  // Update menu data
+  document.getElementById('player-badge-menu-img').src = getCurrentPlayerBadgeImage();
+  document.getElementById('player-badge-level-num').textContent = window.playerLevel || 1;
+  document.getElementById('player-badge-unique-cards').textContent = getUniqueCollectedCardsCount();
 
   // Position menu next to badge image
   const rect = badgeImgEl.getBoundingClientRect();
   menu.style.left = rect.right + 12 + 'px';
   menu.style.top = (rect.top - 6) + 'px';
-
-  // Append to body
-  document.body.appendChild(menu);
+  menu.style.display = 'block';
 
   // Hide on click elsewhere
   setTimeout(() => {
     document.body.addEventListener('click', function handler(e) {
-      if (!menu.contains(e.target)) menu.remove();
+      if (!menu.contains(e.target)) menu.style.display = 'none';
       document.body.removeEventListener('click', handler);
     }, { once: true });
   }, 20);
