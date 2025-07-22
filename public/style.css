@@ -465,13 +465,54 @@ button {}
   flex-direction: column;
   min-width: 0;
 }
-/* Limit the modal-content height and make its achievements-list scrollable */
-#achievements-modal .modal-content {
-  max-height: 80vh; /* or a fixed value like 650px */
-  min-height: 420px; /* optional, for aesthetic */
-  overflow: hidden; /* Prevent the whole modal from scrolling */
+/* ACHIEVEMENTS */
+.fullpage-modal {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  display: flex;
+  z-index: 99999;
+  background: rgba(17, 24, 39, 0.96);
+}
+.achievements-sidebar {
+  width: 220px;
+  background: #20283e;
   display: flex;
   flex-direction: column;
+  padding: 24px 0 0 0;
+}
+.btn-back {
+  margin: 0 0 18px 24px;
+  font-size: 1.1em;
+  background: none;
+  color: #ffe066;
+  border: none;
+  cursor: pointer;
+}
+.achievements-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-left: 24px;
+}
+.achievements-tab {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.05em;
+  padding: 10px 0;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 8px 0 0 8px;
+}
+.achievements-tab.active {
+  background: #232a3c;
+  color: #ffe066;
+}
+.achievements-content {
+  flex: 1 1 auto;
+  padding: 32px 32px 32px 0;
+  overflow-y: auto;
+  max-height: 100vh;
 }
 
 #achievements-list {
