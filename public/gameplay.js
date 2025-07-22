@@ -2703,13 +2703,20 @@ function renderModePlayerDeckTile() {
   `;
 }
 
-// Always show deck management menu on click (reuse builder.js logic)
+// Always show deck management menu or open deck selection modal on click
 document.getElementById('mode-player-deck-tile').onclick = function (e) {
   let deckName = window.getActiveDeckId ? window.getActiveDeckId() : '';
-  if (window.showDeckTileMenu && deckName) window.showDeckTileMenu(deckName, this);
+  let deck = window.decks && deckName ? window.decks[deckName] : null;
+  if (!deck) {
+    // No deck selected, open selection modal
+    if (window.showPlayerDeckModal) window.showPlayerDeckModal();
+  } else {
+    // Deck selected, open deck-menu for that deck
+    if (window.showDeckTileMenu && deckName) window.showDeckTileMenu(deckName, this);
+  }
 };
 // Button: open deck selection modal
-document.getElementById('mode-player-deck-btn').onclick = function () {
+document.getElementById('mode-change-deck-btn').onclick = function () {
   if (window.showPlayerDeckModal)
     window.showPlayerDeckModal();
 };
