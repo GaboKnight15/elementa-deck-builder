@@ -909,9 +909,7 @@ function appendDeckZone(parentDiv, deckArray, who) {
   const img = document.createElement('img');
   img.src = deckCardback;
   img.alt = (who === "player" ? "Your Deck" : "Opponent's Deck");
-  img.style.width = "56px";
-  img.style.display = "block";
-  img.style.margin = "0 auto";
+  img.style.width = "80px";
   deckCard.appendChild(img);
 
   const countDiv = document.createElement('div');
@@ -990,8 +988,7 @@ function appendVoidZone(parentDiv, voidArray, who) {
       const img = document.createElement('img');
       img.src = card.image;
       img.alt = card.name;
-      img.style.width = "60px";
-      img.style.opacity = "0.85";
+      img.style.width = "80px";
       voidCard.appendChild(img);
     }
   }
