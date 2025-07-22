@@ -368,72 +368,10 @@ function claimAchievementReward(ach, cb) {
 }
 
 function renderAchievements() {
-  const list = document.getElementById('achievements-list');
-  if (!list) return;
-  list.innerHTML = '';
-
-  // Sort: unclaimed first, then claimed
-  const sortedAchievements = [...ACHIEVEMENTS].sort((a, b) => {
-    const pa = getAchievementProgress(a);
-    const pb = getAchievementProgress(b);
-    // Unclaimed first
-    if ((pa.claimed ? 1 : 0) !== (pb.claimed ? 1 : 0)) {
-      return (pa.claimed ? 1 : 0) - (pb.claimed ? 1 : 0);
-    }
-    // Completed next
-    if ((pa.completed ? 1 : 0) !== (pb.completed ? 1 : 0)) {
-      return (pb.completed ? 1 : 0) - (pa.completed ? 1 : 0);
-    }
-    // Otherwise, sort by id or description
-    return (a.description || '').localeCompare(b.description || '');
-  });
-
-  sortedAchievements.forEach(ach => {
-    // Defensive: skip empty or malformed objects
-    if (!ach || !ach.id || !ach.description) return;
-
-    const progress = getAchievementProgress(ach);
-    const percent = Math.min(100, Math.round((progress.progress / ach.goal) * 100));
-    const entry = document.createElement('div');
-    entry.className = 'quest-entry';
-
-    if (progress.claimed) entry.classList.add('achievement-claimed');
-
-    entry.innerHTML = `
-      <div style="display:flex;align-items:center;">
-        <img src="${ach.image || 'images/achievements/placeholder.png'}" alt="Achievement" class="achievement-image" style="width:40px;height:40px;object-fit:contain;margin-right:12px;">
-        <div style="flex:1;">
-          <div class="quest-desc">${ach.description}</div>
-          <div class="quest-progress-bar-wrap">
-            <div class="quest-progress-bar" style="width:${percent}%;"></div>
-          </div>
-          <div style="font-size:0.96em;color:#fff;text-align:right;">${progress.progress} / ${ach.goal}</div>
-          <div class="quest-reward">
-            <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins" style="width:18px;">
-            +${ach.reward.amount}
-          </div>
-        </div>
-      </div>
-    `;
-    if (progress.completed && !progress.claimed) {
-      const btn = document.createElement('button');
-      btn.className = 'btn-primary quest-claim-btn';
-      btn.textContent = 'Claim';
-      btn.onclick = function() {
-        claimAchievementReward(ach, function() {
-          // Instead of removing, just re-render (to gray out and move to bottom)
-          renderAchievements();
-        });
-      };
-      entry.appendChild(btn);
-    } else if (progress.claimed) {
-      const badge = document.createElement('div');
-      badge.className = 'quest-claimed-badge';
-      badge.textContent = 'Claimed!';
-      entry.appendChild(badge);
-    }
-    list.appendChild(entry);
-  });
+  // Find the currently active tab/category
+  const activeTab = document.querySelector('.achievements-tab.active');
+  const category = activeTab ? activeTab.getAttribute('data-category') : 'general';
+  renderAchievementsCategory(category);
 }
 
 function updateUniqueCardsAchievement() {
