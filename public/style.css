@@ -799,7 +799,6 @@ button {}
   max-width: 320px;
   color: #ffe066;
   background: none;
-  padding: 6px 0 0 0;
   font-size: 1.02em;
   font-family: inherit;
   display: flex;
@@ -826,7 +825,6 @@ button {}
 .full-card-info-label {
   color: #ffe066;
   font-weight: 600;
-  margin-right: 4px;
 }
 .full-card-info-section {
   color: #ffe066be;
@@ -903,7 +901,7 @@ button {}
 #gallery-builder-cards {
   display: grid;
   background: #1a2533;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fit, 140px);
   gap: 0.2em;
   justify-items: center;
   align-items: start;
@@ -2399,14 +2397,10 @@ button {}
 #modal-img-content {
   display: flex;
   flex-direction: row;
-  gap: 32px;
   align-items: flex-start;
   justify-content: center;
-  max-width: 750px;
-  width: 92vw;
   background: #202a38;
   border-radius: 18px;
-  padding: 2em 2em 1.7em 2em;
   box-shadow: 0 6px 32px #0009;
   position: relative;
 }
