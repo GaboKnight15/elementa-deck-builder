@@ -315,7 +315,7 @@ function showPlayerDeckModal() {
       div.onclick = () => {
         window.selectedPlayerDeck = {
           ...deck,
-          deckObj: deck
+          deckObj: deck,
           isDefaultDeck: true
         };
         if (typeof renderModePlayerDeckTile === "function") renderModePlayerDeckTile();
