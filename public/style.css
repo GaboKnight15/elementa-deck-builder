@@ -1709,20 +1709,6 @@ button {}
   width: 100%;
 }
 
-/* Negative/secondary actions for menu */
-.menu button.btn-negative-secondary {
-  background: linear-gradient(90deg, #b63a3a 70%, #7d2332 100%);
-  color: #fff;
-  border: 2px solid #a32d2d;
-}
-
-.menu button.btn-negative-secondary:focus,
-.menu button.btn-negative-secondary:hover {
-  background: linear-gradient(90deg, #d94f4f 70%, #a32d2d 100%);
-  color: #ffe066;
-  border: 2px solid #ffe066;
-}
-
 /* For horizontal button rows in menus */
 .menu .btn-row {
   display: flex;
