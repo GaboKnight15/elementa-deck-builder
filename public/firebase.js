@@ -67,6 +67,9 @@ function loadProgress(user, cb) {
       const data = doc.exists ? doc.data() : {};
       console.log("Loaded data from Firestore:", data);
 
+      let icon = typeof data.profilePic === "string" ? data.profilePic : (typeof defaultIcon !== "undefined" ? defaultIcon : "");
+      let banner = typeof data.profileBanner === "string" ? data.profileBanner : (typeof defaultBanner !== "undefined" ? defaultBanner : "");
+
       // Defensive assignments for all fields!
 window.playerProfilePic      = icon;
 window.playerProfileBanner   = banner;
