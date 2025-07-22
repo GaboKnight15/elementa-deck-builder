@@ -2608,11 +2608,6 @@ function startPrivateGame() {
 }
 
 // CASUAL MODE
-function onCasualDeckSelected(deck) {
-  window.selectedPlayerDeck = deck;
-  showCasualSearchingModal();
-  startCasualMatchmaking();
-}
 function showCasualSearchingModal() {
   document.getElementById('casual-searching-modal').style.display = 'flex';
   document.getElementById('cancel-casual-search-btn').onclick = function() {
@@ -2622,12 +2617,27 @@ function showCasualSearchingModal() {
 }
 // Start matchmaking (emit socket event)
 function startCasualMatchmaking() {
+  // Use deck from Modes if selected, fallback to builder slot
+  let selectedDeckObj =
+    window.selectedPlayerDeck?.deckObj ||
+    window.selectedPlayerDeck ||
+    (window.getCurrentDeck && window.getCurrentDeck());
+
+  let selectedDeckName =
+    window.selectedPlayerDeck?.name ||
+    window.selectedPlayerDeck?.id ||
+    (window.getActiveDeckId && window.getActiveDeckId());
+
+  let bannerArt = selectedDeckObj?.bannerArt;
+  let highlightArt = selectedDeckObj?.highlightArt;
+  let cardbackArt = selectedDeckObj?.cardbackArt;
+
   window.socket.emit('casual-join', {
-    deck: window.getCurrentDeck(),
-    deckName: window.getActiveDeckId(),
-    bannerArt: window.getCurrentDeck().bannerArt,
-    highlightArt: window.getCurrentDeck().highlightArt,
-    cardbackArt: window.getCurrentDeck().cardbackArt
+    deck: selectedDeckObj,
+    deckName: selectedDeckName,
+    bannerArt: bannerArt,
+    highlightArt: highlightArt,
+    cardbackArt: cardbackArt
   });
 }
 // Cancel matchmaking
