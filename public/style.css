@@ -1921,11 +1921,11 @@ button {}
   pointer-events: none;
 }
 
-#battlefield-bg-opponent {
+#battlefield-opponent-bg {
   top: 0;
 }
 
-#battlefield-bg-player {
+#battlefield-player-bg {
   bottom: 0;
 }
 #battlefield-leftbar,
@@ -2070,7 +2070,6 @@ button {}
 
 
 /* BATTLEFIELD CSS */
-
 #battlefield {
   flex: 1 1 0%;
   min-width: 0;
@@ -2103,9 +2102,6 @@ button {}
   align-items: center;
   justify-content: flex-start;
   background: rgba(24, 32, 48, 0.70);
-  height: 100%;
-  width: 140px;
-  min-width: 110px;
   gap: 26px;
   background: #1a2533;
   box-sizing: border-box;
