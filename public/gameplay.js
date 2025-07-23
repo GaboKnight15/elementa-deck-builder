@@ -933,13 +933,22 @@ function renderRightbarZones() {
 }
 // Helper to create and append the deck zone card at the end
 function appendDeckZone(parentDiv, deckArray, who) {
+  
   const deckZone = document.createElement('div');
   deckZone.className = 'deck-zone';
+  
   const deckCard = document.createElement('div');
   deckCard.className = 'card-deck';
+  
   let deckCardback = "CardImages/Domains/placeholder.png";
-  if (who === "opponent" && window.selectedCpuDeck && window.selectedCpuDeck.cardbackArt) {
-  deckCardback = window.selectedCpuDeck.cardbackArt;
+  if (who === "player") {
+    if (window.selectedPlayerDeck && window.selectedPlayerDeck.cardbackArt) {
+      deckCardback = window.selectedPlayerDeck.cardbackArt;
+    }
+  } else if (who === "opponent") {
+    if (window.selectedOpponentDeck && window.selectedOpponentDeck.cardbackArt) {
+      deckCardback = window.selectedOpponentDeck.cardbackArt;
+    }
   }
   const img = document.createElement('img');
   img.src = deckCardback;
@@ -1717,6 +1726,14 @@ function emitGameAction(action) {
     socket.emit('game action', { ...action, roomId: currentRoomId });
   }
 }
+// Example draw for multiplayer
+function drawCardMultiplayer() {
+  // Draw locally
+  drawCards("player", 1);
+  // Notify opponent
+  emitGameAction({ type: "draw_card" });
+}
+
 function showLobbyUI() {
   document.getElementById('lobby-ui').style.display = '';
   document.getElementById('chat-ui').style.display = 'none';
@@ -1773,7 +1790,7 @@ function handleOpponentAction(action) {
     case "draw_card":
       // Opponent drew a card
       if (gameState.opponentDeck.length > 0) {
-        const card = gameState.opponentDeck.pop();
+        const card = gameState.opponentDeck.shift();
         gameState.opponentHand.push(card);
         renderGameState();
       }
