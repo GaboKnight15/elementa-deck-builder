@@ -393,7 +393,6 @@ function startSoloGame() {
   // UI transition
   document.querySelectorAll('section[id$="-section"]').forEach(section => section.classList.remove('active'));
   document.getElementById('gameplay-section').classList.add('active');
-  enterBattlefield();
 
   // Set up gameState
   gameState.playerDeck = shuffle(playerDeckArray);
@@ -2612,7 +2611,6 @@ function startPrivateGame() {
   // Set up gameState, profiles, etc.
   document.querySelectorAll('section[id$="-section"]').forEach(section => section.classList.remove('active'));
   document.getElementById('gameplay-section').classList.add('active');
-  enterBattlefield();
   // Render chat, profiles, battlefield as in solo
   // Show Game Start animation, Main Domain & Champion selection
   showGameStartAnimation(() => {
@@ -2664,8 +2662,12 @@ function cancelCasualMatchmaking() {
 function startCasualGame(matchData) {
   // 1. Decks
   gameState = gameState || {};
-  gameState.playerDeck = shuffle(buildDeck(window.selectedPlayerDeck.deckObj || window.selectedPlayerDeck));
-  gameState.opponentDeck = shuffle(buildDeck(matchData.opponentDeck));
+  
+  let myDeckObj = window.selectedPlayerDeck?.deckObj || window.selectedPlayerDeck;
+  let opponentDeckObj = matchData.opponentDeck?.deckObj || matchData.opponentDeck;
+  
+  gameState.playerDeck = shuffle(buildDeck(myDeckObj));
+  gameState.opponentDeck = shuffle(buildDeck(opponentDeckObj));
 
   // 2. Profiles
   gameState.playerProfile = getMyProfileInfo && getMyProfileInfo();
@@ -2677,19 +2679,22 @@ function startCasualGame(matchData) {
     }
   }
 
-  // 3. Reset multiplayer state if needed
-  opponentDeckReceived = true; // If you use this flag to gate start, set it here.
-
   // 4. UI Transition
   setBattlefieldLeftbarVisibility(true);
   document.querySelectorAll('section[id$="-section"]').forEach(section => section.classList.remove('active'));
   document.getElementById('gameplay-section').classList.add('active');
-  enterBattlefield();
+
+  // 4. Render field and set up initial turn
+  renderGameState();
+  setupDropZones();
+  updatePhase();
 
   // 5. Animations and selection
   showGameStartAnimation(() => {
     initiateMainDomainAndChampionSelection(gameState.playerDeck, () => {
       // Draw hand, set up initial turn, etc.
+      renderGameState();
+      setupDropZones();
     });
   });
 
@@ -2777,21 +2782,6 @@ if (window.renderDeckSelection) {
 }
 document.addEventListener('DOMContentLoaded', renderModePlayerDeckTile);
 
-
-function enterBattlefield() {
-  // Hide the menu header, show the in-game header
-  document.getElementById('gameplay-header').style.display = 'none';
-  document.getElementById('battlefield-header').style.display = 'flex';
-  // ...rest of your enter logic...
-}
-
-function exitBattlefieldToMenu() {
-  // Show the menu header, hide the in-game header
-  document.getElementById('battlefield-header').style.display = 'none';
-  document.getElementById('gameplay-header').style.display = 'flex';
-  // ...rest of your exit logic...
-  // e.g., show mode select or gameplay lobby
-}
 document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('battlefield-header').style.display = 'none';
   document.getElementById('gameplay-header').style.display = 'flex';
@@ -2818,10 +2808,6 @@ document.getElementById('battlefield-back-btn').onclick = function() {
     // Show the mode select screen
     document.getElementById('mode-select-section').classList.add('active');
     document.getElementById('gameplay-header').style.display = 'flex';
-
-    // Optionally reset any battlefield/game state here
-    // Optionally call exitBattlefieldToMenu() if you have extra logic there
-    if (typeof exitBattlefieldToMenu === "function") exitBattlefieldToMenu();
   }
 };
 // BACK IMAGES
