@@ -2831,7 +2831,6 @@ if (window.socket) {
 
 // Make available globally if called from client.js:
 window.setupBattlefieldGame = setupBattlefieldGame;
-window.handleOpponentAction = handleOpponentAction;
 if (window.socket) {
   window.socket.on('casual-match-found', function(matchData) {
     document.getElementById('casual-searching-modal').style.display = 'none';
