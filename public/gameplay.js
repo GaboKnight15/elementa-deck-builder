@@ -645,7 +645,8 @@ function setBattlefieldBannerBackground(player, bannerUrl) {
     el.style.backgroundRepeat = "no-repeat";
   }
 }
-
+document.getElementById('battlefield-bg-opponent').style.backgroundImage = `url('${opponentBannerUrl}')`;
+document.getElementById('battlefield-bg-player').style.backgroundImage = `url('${playerBannerUrl}')`;
 // Call this after both decks are chosen:
 function setupBattlefieldBanners() {
   // Player's deck
