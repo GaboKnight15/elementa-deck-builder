@@ -195,23 +195,6 @@ function endGameCleanup() {
   // Any other cleanup...
 }
 
-function playCard(instanceId, fromZone, toZone) {
-  if (isSpectator) return;
-  // 1. Locally update state
-  if (typeof moveCard === "function") moveCard(instanceId, fromZone, toZone);
-  if (typeof renderGameState === "function") renderGameState();
-  if (typeof setupDropZones === "function") setupDropZones();
-  // 2. Sync with opponent
-  socket.emit('play card', { roomId: currentRoomId, instanceId, fromZone, toZone });
-}
-
-// Listen for opponent actions
-socket.on('opponent play card', (data) => {
-  if (typeof moveCard === "function") moveCard(data.instanceId, data.fromZone, data.toZone, /*isOpponent=*/true);
-  if (typeof renderGameState === "function") renderGameState();
-  if (typeof setupDropZones === "function") setupDropZones();
-});
-
 socket.on('opponent game action', action => {
   if (typeof handleOpponentAction === "function") handleOpponentAction(action);
 });
