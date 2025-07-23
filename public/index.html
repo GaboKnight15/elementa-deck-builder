@@ -294,6 +294,8 @@
                     <!-- BATTLEFIELD UI -->  
 <section id="gameplay-section" class="section">  
 <div id="gameplay-container" class="section-container">
+  <div id="battlefield-opponent-bg" class="battlefield-bg-half"></div>
+  <div id="battlefield-player-bg" class="battlefield-bg-half"></div>
   <!-- BATTLEFIELD RIGHTBAR -->
   <div id="battlefield-leftbar">
     <div id="lobby-topbar" class="lobby-topbar" style="display:none;">
@@ -317,39 +319,35 @@
     <div id="my-profile" class="profile-panel"></div>
   </div>
   
-<div id="battlefield">
-  <div id="battlefield-opponent-bg">
-    <div id="opponent-hand"           class="hand-area"></div>
-    <div id="opponent-domains-zone"   class="zone-row"></div>
-    <div id="opponent-creatures-zone" class="zone-row"></div>
-  </div>
-  <div id="battlefield-player-bg">
-    <div id="player-creatures-zone"   class="zone-row"></div>
-    <div id="player-domains-zone"     class="zone-row"></div>
-    <div id="player-hand"             class="hand-area"></div>
-  </div>
+<div id="battlefield" style="position:relative;">
+  <div id="opponent-hand"           class="hand-area"></div>
+  <div id="opponent-domains-zone"   class="zone-row"></div>
+  <div id="opponent-creatures-zone" class="zone-row"></div>
+  <div id="player-creatures-zone"   class="zone-row"></div>
+  <div id="player-domains-zone"     class="zone-row"></div>
+  <div id="player-hand"             class="hand-area"></div>
 </div>
     
-  <!-- BATTLEFIELD RIGHTBAR -->
-    <div id="battlefield-rightbar">
-      <div id="battlefield-header" class="section-header">
-        <div class="section-header-left">
-          <img id="battlefield-back-btn" src="OtherImages/Icons/Back.png" alt="Back" class="section-header-btn" title="Back" />
-        </div>
-        <div class="section-header-right">
-          <img id="battlefield-settings-btn" src="OtherImages/Icons/Settings.png" alt="Settings" class="section-header-btn" title="Settings" />
-        </div>
+<!-- BATTLEFIELD RIGHTBAR -->
+  <div id="battlefield-rightbar">
+    <div id="battlefield-header" class="section-header">
+      <div class="section-header-left">
+        <img id="battlefield-back-btn" src="OtherImages/Icons/Back.png" alt="Back" class="section-header-btn" title="Back" />
       </div>
-      <div id="opponent-deck-zone"></div>
-      <div id="opponent-void-zone"></div>
-      <!-- PHASES -->
-<div id="phase-badge">
-  <button id="next-phase-btn" class="btn-primary"></button>
-</div>
-      <div id="player-void-zone"></div>
-      <div id="player-deck-zone"></div>
+      <div class="section-header-right">
+        <img id="battlefield-settings-btn" src="OtherImages/Icons/Settings.png" alt="Settings" class="section-header-btn" title="Settings" />
+      </div>
     </div>
+    <div id="opponent-deck-zone"></div>
+    <div id="opponent-void-zone"></div>
+  <!-- PHASES -->
+    <div id="phase-badge">
+      <button id="next-phase-btn" class="btn-primary"></button>
+    </div>
+    <div id="player-void-zone"></div>
+    <div id="player-deck-zone"></div>
   </div>
+</div>
 </section>
 
                     <!-- SHOP -->
