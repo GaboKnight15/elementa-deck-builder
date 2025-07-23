@@ -89,14 +89,7 @@ socket.on('opponent joined', (opponentId) => {
 
 function startMultiplayerGameIfReady() {
   if (opponentDeckReceived) {
-    // Ensure your own deck is in gameState.playerDeck
-    if (!gameState.playerDeck.length && myDeckObj) {
-      gameState.playerDeck = shuffle(buildDeck(myDeckObj));
-    }
-    // Start up the battlefield
-    if (typeof setupBattlefieldGame === "function") {
-      setupBattlefieldGame();
-    }
+    setupBattlefieldGame();
   }
 }
 // --- Submit deck to server for multiplayer sync ---
@@ -121,15 +114,6 @@ socket.on('opponent deck', (deckObj) => {
     }
   }
 });
-
-// --- Helper to handle both players being ready ---
-function startMultiplayerGameIfReady() {
-  // Only show gameplay/chat when both players have decks
-  if (opponentDeckReceived) {
-    // Optionally: Start the game here if needed
-    // e.g. window.setupBattlefieldGame && window.setupBattlefieldGame();
-  }
-}
 
 // --- Chat Logic ---
 if (chatInput) {
