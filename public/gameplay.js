@@ -265,6 +265,7 @@ function showCpuDeckModal() {
     list.appendChild(div);
   });
   document.getElementById('close-cpu-deck-modal').onclick = () => { modal.style.display = 'none'; };
+  modal.onclick = function(e) {if (e.target === modal) modal.style.display = 'none';};
   modal.style.display = 'flex';
 }
 
@@ -319,34 +320,50 @@ function showPlayerDeckModal() {
     row.style.flexWrap = "wrap";
     row.style.gap = "16px";
     row.style.justifyContent = "center";
-    defaultDecks.forEach(deck => {
-      const div = document.createElement('div');
-      div.className = 'default-player-deck-option';
-      div.style.cursor = 'pointer';
-      div.style.border = '2px solid ' + deck.color;
-      div.style.borderRadius = '12px';
-      div.style.background = '#232a3c';
-      div.innerHTML = `
-        <div style="position:relative; width:100%; height:140px; display: flex; align-items: center; justify-content: center;">
-          <img src="${deck.image}" alt="${deck.name}" class="deck-art-img">
-        </div>
-        <div class="deck-name" style="--deck-color:${deck.color}; text-align:center;">${deck.name}</div>
-      `;
-      div.onclick = () => {
-        window.selectedPlayerDeck = {
-          ...deck,
-          deckObj: deck,
-          isDefaultDeck: true
-        };
-        if (typeof renderModePlayerDeckTile === "function") renderModePlayerDeckTile();
-        modal.style.display = 'none';
-      };
-      row.appendChild(div);
-    });
+defaultDecks.forEach(deck => {
+  const div = document.createElement('div');
+  div.className = 'default-player-deck-option';
+  div.style.position = 'relative';
+  div.style.width = '140px';
+  div.style.height = '140px';
+  div.style.border = '3px solid ' + deck.color;
+  div.style.borderRadius = '18px';
+  div.style.background = '#232a3c';
+  div.style.margin = '10px';
+  div.style.display = 'inline-block';
+  div.style.overflow = 'hidden';
+
+  div.innerHTML = `
+    <div style="position:relative;width:100%;height:100%;">
+      <img src="${deck.image}" alt="${deck.name}" class="deck-art-img" style="width:100%;height:100%;object-fit:cover;border-radius:16px;">
+      <div class="deck-name"
+        style="position:absolute;left:0;bottom:0;width:100%;background:rgba(10,12,20,0.75);color:${deck.color};font-weight:bold;text-align:center;font-size:1.09em;letter-spacing:0.5px;padding:5px 0;border-bottom-left-radius:16px;border-bottom-right-radius:16px;z-index:2;">
+        ${deck.name}
+      </div>
+      <div class="deck-difficulty"
+        style="position:absolute;top:8px;left:8px;z-index:2;">
+        <span style="display:inline-block;background:rgba(0,0,0,0.65);border-radius:50%;padding:3px 7px;font-size:1.14em;color:#ffe066;">
+          ⭐
+        </span>
+      </div>
+    </div>
+  `;
+  div.onclick = () => {
+    window.selectedPlayerDeck = {
+      ...deck,
+      deckObj: deck,
+      isDefaultDeck: true
+    };
+    if (typeof renderModePlayerDeckTile === "function") renderModePlayerDeckTile();
+    modal.style.display = 'none';
+  };
+  row.appendChild(div);
+});
     defaultList.appendChild(row);
   }
 
   document.getElementById('close-player-deck-modal').onclick = () => { modal.style.display = 'none'; };
+  modal.onclick = function(e) {if (e.target === modal) modal.style.display = 'none';};
   modal.style.display = 'flex';
 }
 function buildCpuDeck(deckDef) {
@@ -1033,21 +1050,14 @@ function cleanCard(cardObj) {
   return cleaned;
 }
 // CLOSE MODAL BEFORE OPENING A NEW ONE
-function closeAllModals() {
-  document.querySelectorAll('.modal').forEach(modal => {
-    modal.style.display = 'none';
-  });
-}
-function closeAllMenus() {
-  document.querySelectorAll('.card-menu').forEach(m => m.remove());
-}
+function closeAllModals() {document.querySelectorAll('.modal').forEach(modal => {modal.style.display = 'none';});}
+function closeAllMenus() {document.querySelectorAll('.card-menu').forEach(m => m.remove());}
+
 // OPEN DECK MODAL
 function openDeckModal() {
   const modal = document.getElementById('deck-modal');
   // Always attach the close-on-backdrop handler
-  modal.onclick = function(e) {
-    if (e.target === modal) modal.style.display = 'none';
-  };
+  modal.onclick = function(e) {if (e.target === modal) modal.style.display = 'none';};
   // Prevent modal-content clicks from closing the modal
   const modalContent = modal.querySelector('.modal-content');
   if (modalContent) {
