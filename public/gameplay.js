@@ -644,8 +644,6 @@ function setBattlefieldBackgrounds(playerBannerUrl, opponentBannerUrl) {
     opponentBg.style.backgroundRepeat = "no-repeat";
   }
 }
-document.getElementById('battlefield-bg-opponent').style.backgroundImage = `url('${opponentBannerUrl}')`;
-document.getElementById('battlefield-bg-player').style.backgroundImage = `url('${playerBannerUrl}')`;
 
 // CREATE CARD MENUS
 function createCardMenu(buttons = []) {
