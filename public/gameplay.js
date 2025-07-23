@@ -404,8 +404,7 @@ function startSoloGame() {
   // Banners
   const playerBanner = playerDeckObj?.bannerArt || "CardImages/Banners/DefaultBanner.png";
   const cpuBanner = cpuDeckObj?.bannerArt || "CardImages/Banners/DefaultBanner.png";
-  setBattlefieldBannerBackground("player", playerBanner);
-  setBattlefieldBannerBackground("opponent", cpuBanner);
+  setBattlefieldBackgrounds(playerBanner, cpuBanner);
 
   // UI transition
   document.querySelectorAll('section[id$="-section"]').forEach(section => section.classList.remove('active'));
@@ -629,38 +628,25 @@ function getZoneNameForArray(arr) {
   return '';
 }
 // BATTLEFIELD BACKGROUNDS
-function setBattlefieldBannerBackground(player, bannerUrl) {
-  const el = document.getElementById(
-    player === "player" ? "battlefield-player-bg" : "battlefield-opponent-bg"
-  );
-  if (el && bannerUrl) {
-    if (player === "opponent") {
-      el.style.setProperty('--opponent-bg', `url('${bannerUrl}')`);
-      el.style.backgroundImage = 'none'; // Remove old background
-    } else {
-      el.style.backgroundImage = `url('${bannerUrl}')`;
-    }
-    el.style.backgroundSize = "cover";
-    el.style.backgroundPosition = "center";
-    el.style.backgroundRepeat = "no-repeat";
+function setBattlefieldBackgrounds(playerBannerUrl, opponentBannerUrl) {
+  const playerBg = document.getElementById('battlefield-player-bg');
+  const opponentBg = document.getElementById('battlefield-opponent-bg');
+  if (playerBg && playerBannerUrl) {
+    playerBg.style.backgroundImage = `url('${playerBannerUrl}')`;
+    playerBg.style.backgroundSize = "cover";
+    playerBg.style.backgroundPosition = "center";
+    playerBg.style.backgroundRepeat = "no-repeat";
+  }
+  if (opponentBg && opponentBannerUrl) {
+    opponentBg.style.backgroundImage = `url('${opponentBannerUrl}')`;
+    opponentBg.style.backgroundSize = "cover";
+    opponentBg.style.backgroundPosition = "center";
+    opponentBg.style.backgroundRepeat = "no-repeat";
   }
 }
 document.getElementById('battlefield-bg-opponent').style.backgroundImage = `url('${opponentBannerUrl}')`;
 document.getElementById('battlefield-bg-player').style.backgroundImage = `url('${playerBannerUrl}')`;
-// Call this after both decks are chosen:
-function setupBattlefieldBanners() {
-  // Player's deck
-  const playerDeck = window.selectedPlayerDeck?.deckObj || getCurrentDeck();
-  if (playerDeck.bannerArt) {
-    setBattlefieldBannerBackground("player", playerDeck.bannerArt);
-  }
 
-  // Opponent's deck (multiplayer: use their deck, solo: use default or CPU deck banner)
-  const opponentDeck = window.selectedOpponentDeck?.deckObj || window.selectedCpuDeck || {};
-  if (opponentDeck.bannerArt) {
-    setBattlefieldBannerBackground("opponent", opponentDeck.bannerArt);
-  }
-}
 // CREATE CARD MENUS
 function createCardMenu(buttons = []) {
   const menu = document.createElement('div');
@@ -2688,7 +2674,7 @@ function cancelCasualMatchmaking() {
 }
 
 function startCasualGame(matchData) {
-  // 1. Decks
+
   gameState = gameState || {};
   
   let myDeckObj = window.selectedPlayerDeck?.deckObj || window.selectedPlayerDeck;
@@ -2696,8 +2682,11 @@ function startCasualGame(matchData) {
   
   gameState.playerDeck = shuffle(buildDeck(myDeckObj));
   gameState.opponentDeck = shuffle(buildDeck(opponentDeckObj));
-
-  // 2. Profiles
+  
+  const myBanner = myDeckObj?.bannerArt || "CardImages/Banners/DefaultBanner.png";
+  const opponentBanner = opponentDeckObj?.bannerArt || "CardImages/Banners/DefaultBanner.png";
+  setBattlefieldBackgrounds(myBanner, opponentBanner);
+  
   gameState.playerProfile = getMyProfileInfo && getMyProfileInfo();
   if (matchData.opponentProfile) {
     gameState.opponentProfile = matchData.opponentProfile;
@@ -2707,12 +2696,10 @@ function startCasualGame(matchData) {
     }
   }
 
-  // 4. UI Transition
   setBattlefieldLeftbarVisibility(true);
   document.querySelectorAll('section[id$="-section"]').forEach(section => section.classList.remove('active'));
   document.getElementById('gameplay-section').classList.add('active');
 
-  // 4. Render field and set up initial turn
   renderGameState();
   setupDropZones();
   updatePhase();
