@@ -533,7 +533,19 @@ function setupBattlefieldGame() {
       setupDropZones();
     };
   });
-
+  
+  if (gameState.playerHand.length === 0) {
+    for (let i = 0; i < 5; i++) {
+      if (gameState.playerDeck.length > 0)
+        gameState.playerHand.push(gameState.playerDeck.shift());
+    }
+  }
+  if (gameState.opponentHand.length === 0) {
+    for (let i = 0; i < 5; i++) {
+      if (gameState.opponentDeck.length > 0)
+        gameState.opponentHand.push(gameState.opponentDeck.shift());
+    }
+  }
   document.getElementById('my-profile').style.display = '';
   renderProfile('my-profile', getMyProfileInfo());
   // Show "Game Start" animation, then domain/champion selection, then draw hand
@@ -727,6 +739,7 @@ function drawCards(who, n) {
   }
   renderGameState();
   setupDropZones();
+  if (who === "player") emitPublicState();
 }
 
 
@@ -2828,7 +2841,19 @@ document.getElementById('cpu-back-btn').addEventListener('click', function() {
 document.getElementById('player-back-btn').addEventListener('click', function() {
   document.getElementById('player-deck-modal').style.display = 'none';
   document.getElementById('cpu-deck-modal').style.display = '';
-});  
+});
+
+if (window.socket) {
+  window.socket.on('opponent state update', (state) => {
+    // Update your local representation of opponent's state
+    gameState.opponentHand = new Array(state.handCount).fill({}); // Show N cardbacks
+    gameState.opponentCreatures = state.creatures || [];
+    gameState.opponentDomains = state.domains || [];
+    gameState.opponentVoid = state.voidCards || [];
+    renderGameState();
+  });
+}
+
 // Make available globally if called from client.js:
 window.setupBattlefieldGame = setupBattlefieldGame;
 window.handleOpponentAction = handleOpponentAction;
