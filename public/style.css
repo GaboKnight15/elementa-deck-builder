@@ -2078,53 +2078,6 @@ button {}
   margin: 0 auto;
   background: #1a2533;    
 }
-#battlefield-opponent-bg, #battlefield-player-bg {
-  position: relative;
-  width: 100%;
-  min-height: 180px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  align-items: stretch;
-  /* Default background, can be overridden by JS */
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  border-radius: 18px;
-  margin-bottom: 8px;
-  margin-top: 8px;
-  transition: background-image 0.3s, background-color 0.3s;
-}
-#battlefield-opponent-bg > .zone-row,
-#battlefield-player-bg > .zone-row,
-#battlefield-player-bg > .hand-area,
-#battlefield-opponent-bg > .hand-area {
-  background: rgba(30, 38, 56, 0.5);
-}
-#battlefield-opponent-bg {
-  background-image: var(--opponent-bg);
-  position: relative;
-  overflow: hidden;
-  background: none !important; /* Remove standard background, handled by ::before */
-}
-
-#battlefield-opponent-bg::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  background-image: inherit;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  transform: scaleY(-1);
-  pointer-events: none;
-  /* If you use a specific background image via JS, you may want to set it as a CSS variable and reference here */
-}
-#battlefield-opponent-bg > * {
-  position: relative;
-  z-index: 1;
-}
 #battlefield-leftbar {
   width: 100%;
   margin-bottom: 18px;
