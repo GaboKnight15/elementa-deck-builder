@@ -1717,20 +1717,6 @@ nextPhaseBtn.onclick = () => {
   setupDropZones();
 };
 
-// MULTIPLAYER START
-function emitGameAction(action) {
-  if (window.socket && window.currentRoomId) {
-    socket.emit('game action', { ...action, roomId: currentRoomId });
-  }
-}
-// Example draw for multiplayer
-function drawCardMultiplayer() {
-  // Draw locally
-  drawCards("player", 1);
-  // Notify opponent
-  emitGameAction({ type: "draw_card" });
-}
-
 function showLobbyUI() {
   document.getElementById('lobby-ui').style.display = '';
   document.getElementById('chat-ui').style.display = 'none';
@@ -1769,44 +1755,7 @@ function showChat() {
   document.getElementById('lobby-ui').style.display = 'none';
   document.getElementById('chat-ui').style.display = 'block';
 }
-function handleOpponentAction(action) {
-  switch (action.type) {
-    case "play_card":
-    // Find the card in opponentHand, move to opponentCreatures
-    moveCard(action.cardId, gameState.opponentHand, gameState.opponentCreatures, action.extra);
-    renderGameState();
-    break;
 
-    case "end_turn":
-      // Opponent ended their turn
-      gameState.isPlayerTurn = true;
-      renderGameState();
-      showStatusMessage("Your turn!");
-      break;
-
-    case "draw_card":
-      // Opponent drew a card
-      if (gameState.opponentDeck.length > 0) {
-        const card = gameState.opponentDeck.shift();
-        gameState.opponentHand.push(card);
-        renderGameState();
-      }
-      break;
-
-    case "chat":
-      // If you want to display chat messages inside gameplay
-      appendChatMessage(`Opponent: ${action.message}`);
-      break;
-
-    case "custom_action":
-      // Custom logic for any other action type
-      // Implement your specific logic here
-      break;
-
-    default:
-      console.warn("Unknown opponent action:", action);
-  }
-}
 // --- Helper: find card DOM element by instanceId in a given zone ---
 function findCardDivInZone(zoneId, instanceId) {
   const zone = document.getElementById(zoneId);
