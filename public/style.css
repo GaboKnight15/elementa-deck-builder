@@ -1933,7 +1933,6 @@ button {}
 #battlefield-rightbar {
   position: relative;
   z-index: 1;
-  background: transparent !important;
 }
 
 
@@ -2096,13 +2095,14 @@ button {}
   padding: 0.5em 0.5em 0.5em 0.5em;
   box-shadow: -2px 0 16px rgba(0,0,0,0.12);
   z-index: 1100;
+  background: rgba(24, 32, 48, 0.70);
 }
 #battlefield-rightbar {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  background: transparent !important;
+  background: rgba(24, 32, 48, 0.70);
   height: 100%;
   width: 140px;
   min-width: 110px;
@@ -2163,7 +2163,7 @@ button {}
   align-items: center;
   justify-content: center;
   padding: 8px 8px;
-  background: #181822;
+  background: rgba(24, 32, 48, 0.70);
   border-radius: 12px;
   box-shadow: 0 0 12px #0008;
   gap: 10px;
@@ -2213,7 +2213,7 @@ button {}
   min-height: 120px;
   width: 100%;
   gap: 18px;
-  background: linear-gradient(120deg, #212d3e 90%, #1a2533 100%);
+  background: rgba(24, 32, 48, 0.70); /* deep blue, 70% opacity */
   border-radius: 14px;
   box-shadow: 0 4px 24px #0a183b38, 0 1.5px 0 #253350 inset;
   margin: 8px 0;
