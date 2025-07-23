@@ -618,6 +618,11 @@ function moveCard(instanceId, fromArr, toArr, extra = {}) {
     toArr.push(cardObj);
   }
   setupDropZones();
+  if (fromArr === gameState.playerHand || fromArr === gameState.playerDeck ||
+      toArr === gameState.playerCreatures || toArr === gameState.playerDomains ||
+      toArr === gameState.playerVoid) {
+    emitPublicState();
+  }
 }
 // Helper to get zone name for an array reference
 function getZoneNameForArray(arr) {
@@ -2785,7 +2790,28 @@ function renderModePlayerDeckTile() {
       window.showPlayerDeckModal();
   };
 }
+function emitPublicState() {
+  if (!window.socket || !window.currentRoomId) return;
+  const publicState = {
+    deckCount: gameState.playerDeck.length,
+    handCount: gameState.playerHand.length,
+    creatures: gameState.playerCreatures.map(stripCardForSync),
+    domains: gameState.playerDomains.map(stripCardForSync),
+    voidCards: gameState.playerVoid.map(stripCardForSync)
+  };
+  window.socket.emit('player state', window.currentRoomId, publicState);
+}
 
+// Helper: Only send public info!
+function stripCardForSync(card) {
+  return {
+    cardId: card.cardId,
+    instanceId: card.instanceId,
+    currentHP: card.currentHP,
+    orientation: card.orientation,
+    // Add more as needed for your UI, but don't include full hand if not public!
+  };
+}
 // Always open deck selection modal on slot click in Modes
 document.getElementById('mode-player-deck-tile').onclick = function (e) {
   if (window.showPlayerDeckModal)
@@ -2845,8 +2871,8 @@ document.getElementById('player-back-btn').addEventListener('click', function() 
 
 if (window.socket) {
   window.socket.on('opponent state update', (state) => {
-    // Update your local representation of opponent's state
-    gameState.opponentHand = new Array(state.handCount).fill({}); // Show N cardbacks
+    gameState.opponentDeck = new Array(state.deckCount).fill({});
+    gameState.opponentHand = new Array(state.handCount).fill({});
     gameState.opponentCreatures = state.creatures || [];
     gameState.opponentDomains = state.domains || [];
     gameState.opponentVoid = state.voidCards || [];
