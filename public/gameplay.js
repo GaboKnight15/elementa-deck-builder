@@ -340,12 +340,6 @@ defaultDecks.forEach(deck => {
         style="position:absolute;left:0;bottom:0;width:100%;background:rgba(10,12,20,0.75);color:${deck.color};font-weight:bold;text-align:center;font-size:1.09em;letter-spacing:0.5px;padding:5px 0;border-bottom-left-radius:16px;border-bottom-right-radius:16px;z-index:2;">
         ${deck.name}
       </div>
-      <div class="deck-difficulty"
-        style="position:absolute;top:8px;left:8px;z-index:2;">
-        <span style="display:inline-block;background:rgba(0,0,0,0.65);border-radius:50%;padding:3px 7px;font-size:1.14em;color:#ffe066;">
-          ⭐
-        </span>
-      </div>
     </div>
   `;
   div.onclick = () => {
