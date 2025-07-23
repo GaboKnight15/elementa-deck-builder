@@ -57,7 +57,12 @@ io.on('connection', (socket) => {
       io.to(player2).emit('opponent deck', rooms[roomId].decks[player1]);
     }
   });
-
+  
+  socket.on('player state', (roomId, state) => {
+    // Send to the other player (not self)
+    socket.to(roomId).emit('opponent state update', state);
+  });
+  
   socket.on('game action', (roomId, action) => {
     io.in(roomId).emit('game action', action); // io.in, not socket.to
   });
