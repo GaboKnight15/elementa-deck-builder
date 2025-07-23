@@ -104,17 +104,6 @@ function submitDeckToServer() {
   }
 }
 
-function emitPublicState() {
-  if (!window.socket || !window.currentRoomId) return;
-  // Only send public info, not your full hand
-  const publicState = {
-    handCount: gameState.playerHand.length,
-    creatures: gameState.playerCreatures.map(c => c.cardId ? { ...c } : c),
-    domains: gameState.playerDomains.map(c => c.cardId ? { ...c } : c),
-    voidCards: gameState.playerVoid.map(c => c.cardId ? { ...c } : c)
-  };
-  window.socket.emit('player state', window.currentRoomId, publicState);
-}
 // --- Receive opponent's deck and start game ---
 socket.on('opponent deck', (deckObj) => {
   if (typeof buildDeck === "function" && typeof shuffle === "function") {
