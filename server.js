@@ -63,19 +63,12 @@ io.on('connection', (socket) => {
     socket.to(roomId).emit('opponent state update', state);
   });
   
-  socket.on('game action', (roomId, action) => {
-    io.in(roomId).emit('game action', action); // io.in, not socket.to
-  });
   socket.on('profile', (profileObj) => {
     // Send to everyone else in the room (assume socket.roomId is set on join)
     // You may want to store roomId on socket when joining
     if (socket.roomId) {
       socket.to(socket.roomId).emit('opponent profile', profileObj);
     }
-  });
-  
-  socket.on('sync deck', (roomId, deckObj) => {
-    socket.to(roomId).emit('sync deck', deckObj);
   });
 
 socket.on('game message', (roomId, msg) => {
@@ -85,12 +78,6 @@ socket.on('game message', (roomId, msg) => {
   });
 });
 
-  socket.on('play card', (data) => {
-    if (rooms[data.roomId]?.players.includes(socket.id)) {
-      socket.to(data.roomId).emit('opponent play card', data);
-    } // else ignore if not a player
-  });
-  
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
     for (const [roomId, room] of Object.entries(rooms)) {
