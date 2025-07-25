@@ -234,6 +234,12 @@ socket.on('room error', (msg) => {
 if (window.socket) {
   window.socket.on('casual-match-found', function(matchData) {
     document.getElementById('casual-searching-modal').style.display = 'none';
+    // Set the room ID for future chat/game messages
+    if (matchData.roomId) {
+      currentRoomId = matchData.roomId;
+      // Join the room explicitly if necessary
+      socket.emit('join room', currentRoomId);
+    }
     if (typeof startCasualGame === "function") startCasualGame(matchData);
   });
 } else {
