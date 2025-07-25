@@ -377,7 +377,6 @@ function generateUniqueId() {
   return 'id-' + Math.random().toString(36).substr(2, 9) + '-' + Date.now();
 }
 function startSoloGame() {
-  setBattlefieldLeftbarVisibility(false);
   // Make sure selectedPlayerDeck and selectedCpuDeck are set
   const playerDeckObj = window.selectedPlayerDeck?.deckObj || window.selectedPlayerDeck;
   const cpuDeckObj = window.selectedCpuDeck;
@@ -2627,7 +2626,6 @@ function onPrivateLobbyReady() {
 
 // After both decks selected, call this:
 function startPrivateGame() {
-  setBattlefieldLeftbarVisibility(true);
   // Set up gameState, profiles, etc.
   document.querySelectorAll('section[id$="-section"]').forEach(section => section.classList.remove('active'));
   document.getElementById('gameplay-section').classList.add('active');
@@ -2702,7 +2700,6 @@ function startCasualGame(matchData) {
     }
   }
 
-  setBattlefieldLeftbarVisibility(true);
   document.querySelectorAll('section[id$="-section"]').forEach(section => section.classList.remove('active'));
   document.getElementById('gameplay-section').classList.add('active');
 
@@ -2722,11 +2719,7 @@ function startCasualGame(matchData) {
   // 6. Chat, etc. (if needed)
   if (typeof resetChatLog === "function") resetChatLog();
 }
-function setBattlefieldLeftbarVisibility(visible) {
-  const leftbar = document.getElementById('battlefield-leftbar');
-  if (!leftbar) return;
-  leftbar.style.display = visible ? '' : 'none';
-}
+
 document.querySelector('.mode-option[data-mode="solo"]').addEventListener('click', function() {
   showCpuDeckModal();
 });
