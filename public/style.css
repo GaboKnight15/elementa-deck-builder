@@ -1928,7 +1928,6 @@ button {}
 #battlefield-player-bg {
   bottom: 0;
 }
-#battlefield-leftbar,
 #battlefield,
 #battlefield-rightbar {
   position: relative;
@@ -2082,18 +2081,13 @@ button {}
 }
 #battlefield-leftbar {
   display: flex;
+  position: relative;
   flex-direction: column;
-  align-items: flex-start;
   justify-content: flex-start;
-  width: 100%;
-  margin-bottom: 18px;
-  min-width: 160px;
-  max-width: 240px;
-  height: 100%;     
+  height: 90%;     
   padding: 0.5em 0.5em 0.5em 0.5em;
   box-shadow: -2px 0 16px rgba(0,0,0,0.12);
   z-index: 1100;
-  background: rgba(24, 32, 48, 0.70);
 }
 #battlefield-rightbar {
   display: flex;
@@ -2109,13 +2103,11 @@ button {}
   max-width: 98%;
   width: 100%;
   box-sizing: border-box;
-  margin: 0 auto 8px auto;
   padding: 8px 8px 8px 8px;
   border-radius: 12px;
-  background: #232a3c;
+  background: rgba(24, 32, 48, 0.70); /* deep blue, 70% opacity */
   display: flex;
   align-items: center;
-  gap: 0.9em;
   overflow: hidden;
 }
 #my-profile img, #opponent-profile img {
@@ -3220,13 +3212,18 @@ button {}
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  background: #20283a;
+  justify-content: center;
+  height: 320px;
+  max-height: 40vh;
+  background: rgba(24, 32, 48, 0.70);
   border-radius: 12px;
   box-shadow: 0 2px 10px #0006;
   padding: 12px 8px 10px 8px;
+  margin-bottom: 12px;
 }
 #chat-ui input {
+  flex: 1 1 auto;
+  padding: 7px 12px;
   padding: 0.4em 0.6em;
   border-radius: 7px;
   border: 1.5px solid #4761e6;
@@ -3245,20 +3242,45 @@ button {}
   width: 100%;
 }
 #chat-log {
-  height: 220px;
-  background: #fff;
+  flex: 1 1 auto;
   overflow-y: auto;
-  padding: 6px;
-  font-size: 0.95em;
-  border-radius: 6px;
+  height: 220px;           /* Set a fixed height */
+  max-height: 220px;       /* Or use max-height for responsiveness */
+  padding: 8px;
+  background: #20283e;
+  border-radius: 8px;
   margin-bottom: 8px;
+  font-size: 1em;
+  color: #ffe066;
+  box-shadow: 0 1px 6px #0002;
 }
 .log-message { color: #111; }
 .log-action { color: #0077ff; font-weight: bold; }
 .log-system { color: #888; font-style: italic; }
 #chat-input-row { display: flex; gap: 6px; }
-#chat-input { flex: 1; }
-
+#chat-input { 
+  flex: 1 1 auto;
+  padding: 7px 12px;
+  font-size: 1em;
+  border-radius: 8px;
+  border: 1.5px solid #314175;
+  background: #232a3c;
+  color: #ffe066;
+}
+#send-chat-btn {
+  background: #ffe066;
+  color: #232a3c;
+  border-radius: 8px;
+  padding: 7px 16px;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 1px 4px #0003;
+  transition: background 0.13s;
+}
+#send-chat-btn:hover {
+  background: #fff59d;
+}
 /* ===== ELEMENT GLOW KEYFRAMES ===== */
 
 @keyframes glow-leaves {
