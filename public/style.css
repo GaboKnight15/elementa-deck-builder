@@ -3162,21 +3162,6 @@ button {}
 #toast-container .toast-message.error { background: #e74c3c; }
 #toast-container .toast-message.info  { background: #222b3b; }
 
-#lobby-ui {
-  margin-bottom: 22px;
-  /* Optional: background, border, padding for better appearance */
-  background: #20283a;
-  border-radius: 12px;
-  box-shadow: 0 2px 10px #0006;
-  padding: 12px 8px 10px 8px;
-}
-.lobby-topbar {
-  width: 100%;
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-bottom: 12px;
-}
 .profile-panel {
   max-width: 100%;
   width: 100%;      
