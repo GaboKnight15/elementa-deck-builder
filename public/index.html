@@ -296,19 +296,22 @@
 <div id="gameplay-container" class="section-container">
   <div id="battlefield-opponent-bg" class="battlefield-bg-half"></div>
   <div id="battlefield-player-bg" class="battlefield-bg-half"></div>
-  <!-- BATTLEFIELD RIGHTBAR -->
+  
+  <!-- BATTLEFIELD LEFTBAR -->
   <div id="battlefield-leftbar">
     <!-- OPPONENT PROFILE (BATTLEFIELD) -->
     <div id="opponent-profile" class="profile-panel""></div>
     <!-- CHAT/LOG UI -->
     <div id="chat-ui">
       <div id="chat-log"></div>
-      <button id="send-chat-btn">Send</button>     
-      <input id="chat-input" placeholder="Type message...">
-    </div>
+      <div id="chat-input-row">
+        <input id="chat-input" placeholder="Type message...">
+        <button id="send-chat-btn">Send</button>
+      </div>
     <!-- MY PROFILE (BATTLEFIELD) -->
     <div id="my-profile" class="profile-panel"></div>
   </div>
+  
 <!-- BATTLEFIELD CENTER -->  
 <div id="battlefield" style="position:relative;">
   <div id="opponent-hand"           class="hand-area"></div>
