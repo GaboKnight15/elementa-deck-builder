@@ -420,6 +420,14 @@ function startSoloGame() {
   gameState.turn = "player";
   gameState.phase = "draw";
 
+  // --- RENDER PROFILES ---
+  document.getElementById('my-profile').style.display = '';
+  renderProfile('my-profile', getMyProfileInfo());
+
+  // CPU profile rendering (add these lines)
+  document.getElementById('opponent-profile').style.display = '';
+  renderProfile('opponent-profile', getCpuProfile(cpuDeckObj));
+
   // Render and set up the game as normal
   renderGameState();
   setupDropZones();
@@ -1787,18 +1795,12 @@ function logAction(text) {
 function logSystem(text) {
   appendChatLog('system', text);
 }
-
-// --- Example: Use logAction in game logic ---
-function moveCard(instanceId, fromArr, toArr, extra = {}) {
-  // ...your move logic...
-  // After moving a card, append to log
-  logAction(`Card ${instanceId} moved from ${getZoneNameForArray(fromArr)} to ${getZoneNameForArray(toArr)}.`);
-  setupDropZones();
-  if (fromArr === gameState.playerHand || fromArr === gameState.playerDeck ||
-      toArr === gameState.playerCreatures || toArr === gameState.playerDomains ||
-      toArr === gameState.playerVoid) {
-    emitPublicState();
-  }
+function getCpuProfile(deck) {
+  return {
+    username: deck.name, // e.g. "Verdant Might"
+    avatar: deck.image,  // e.g. 'CardImages/Avatars/Fairy.png'
+    banner: deck.bannerArt, // e.g. 'CardImages/Banners/GreenBanner.png'
+  };
 }
 
 // --- Helper: find card DOM element by instanceId in a given zone ---
