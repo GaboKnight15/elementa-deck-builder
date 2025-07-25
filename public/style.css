@@ -3217,12 +3217,15 @@ button {}
   border-radius: 6px;
 }
 #chat-ui {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
   background: #20283a;
   border-radius: 12px;
   box-shadow: 0 2px 10px #0006;
   padding: 12px 8px 10px 8px;
 }
-#lobby-ui input,
 #chat-ui input {
   padding: 0.4em 0.6em;
   border-radius: 7px;
@@ -3233,30 +3236,28 @@ button {}
   font-size: 1em;
   outline: none;
 }
-#lobby-ui input:focus,
+
 #chat-ui input:focus {
   border-color: #7aa6ff;
 }
-#lobby-ui button,
+
 #chat-ui button {
   width: 100%;
 }
 #chat-log {
-  min-height: 100px;
-  background: #232a3c;
-  color: #e5e7ef;
-  border-radius: 8px;
-  padding: 0.7em;
+  height: 220px;
+  background: #fff;
   overflow-y: auto;
-  font-size: 0.98em;
-  max-height: 30vh;
+  padding: 6px;
+  font-size: 0.95em;
+  border-radius: 6px;
+  margin-bottom: 8px;
 }
-#status {
-  color: #ffdb64;
-  font-size: 0.97em;
-  padding: 0.3em 0 0.1em 0;
-  min-height: 1.5em;
-}
+.log-message { color: #111; }
+.log-action { color: #0077ff; font-weight: bold; }
+.log-system { color: #888; font-style: italic; }
+#chat-input-row { display: flex; gap: 6px; }
+#chat-input { flex: 1; }
 
 /* ===== ELEMENT GLOW KEYFRAMES ===== */
 
