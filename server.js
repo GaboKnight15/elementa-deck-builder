@@ -28,15 +28,34 @@ io.on('connection', (socket) => {
   
 // CASUAL MATCHMAKING
   socket.on('casual-join', (playerData) => {
-    // Add player to queue
     casualQueue.push({ socket, playerData });
-    // If there are at least two players, match them up
     if (casualQueue.length >= 2) {
       const p1 = casualQueue.shift();
       const p2 = casualQueue.shift();
-      // Send 'casual-match-found' to both players
-      p1.socket.emit('casual-match-found', { opponentDeck: p2.playerData, opponentProfile: {} });
-      p2.socket.emit('casual-match-found', { opponentDeck: p1.playerData, opponentProfile: {} });
+
+      // Generate a unique room ID for this match
+      const roomId = 'casual_' + Math.random().toString(36).substr(2, 7).toUpperCase();
+
+      // Join both players to the room
+      p1.socket.join(roomId);
+      p2.socket.join(roomId);
+      p1.socket.roomId = roomId;
+      p2.socket.roomId = roomId;
+
+      // Optionally store the room
+      rooms[roomId] = { players: [p1.socket.id, p2.socket.id], decks: {} };
+
+      // Send 'casual-match-found' to both with the roomId
+      p1.socket.emit('casual-match-found', {
+        roomId,
+        opponentDeck: p2.playerData,
+        opponentProfile: {}
+      });
+      p2.socket.emit('casual-match-found', {
+        roomId,
+        opponentDeck: p1.playerData,
+        opponentProfile: {}
+      });
     }
   });
 
