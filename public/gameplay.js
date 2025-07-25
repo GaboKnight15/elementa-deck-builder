@@ -1717,33 +1717,28 @@ nextPhaseBtn.onclick = () => {
   setupDropZones();
 };
 
-function showLobbyUI() {
-  document.getElementById('lobby-ui').style.display = '';
-  document.getElementById('chat-ui').style.display = 'none';
-  document.getElementById('lobby-topbar').style.display = 'none';
-  document.getElementById('opponent-profile').style.display = 'none';
-  document.getElementById('my-profile').style.display = 'none';
-}
+// --- Render both profiles after game start ---
 function showGameUI(myProfile, opponentProfile) {
-  document.getElementById('lobby-ui').style.display = 'none';
   document.getElementById('chat-ui').style.display = '';
-  document.getElementById('lobby-topbar').style.display = '';
   document.getElementById('opponent-profile').style.display = '';
   document.getElementById('my-profile').style.display = '';
   renderProfile('my-profile', myProfile);
   renderProfile('opponent-profile', opponentProfile);
 }
+// PROFILE RENDERING (already present)
 function renderProfile(elId, profile) {
   const el = document.getElementById(elId);
   if (!el || !profile) return;
   el.innerHTML = `
-    <img src="${profile.avatar}" alt="Profile">
+    <img src="${profile.avatar}" alt="Profile" class="profile-avatar" style="width:48px;border-radius:16px;">
     <div>
       <div class="profile-username">${profile.username}</div>
-      <img class="profile-banner" src="${profile.banner}" alt="Banner">
+      <img class="profile-banner" src="${profile.banner}" alt="Banner" style="width:100%;margin-top:4px;">
     </div>
   `;
 }
+
+// Get profile info from DOM or gameState (already in your gameplay.js)
 function getMyProfileInfo() {
   return {
     username: document.getElementById('profile-username-display').textContent,
@@ -1751,9 +1746,59 @@ function getMyProfileInfo() {
     banner: document.getElementById('profile-banner').src
   };
 }
-function showChat() {
-  document.getElementById('lobby-ui').style.display = 'none';
-  document.getElementById('chat-ui').style.display = 'block';
+// --- Log system: append to chat-log ---
+function appendChatLog(type, text) {
+  const logDiv = document.getElementById('chat-log');
+  const entry = document.createElement('div');
+  entry.className = `log-${type}`;
+  entry.textContent = text;
+  logDiv.appendChild(entry);
+  logDiv.scrollTop = logDiv.scrollHeight;
+}
+
+// --- Chat send logic ---
+document.getElementById('send-chat-btn').onclick = function() {
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if (msg.length) {
+    // Send to server (if multiplayer)
+    if (window.socket && window.currentRoomId) {
+      window.socket.emit('chat', window.currentRoomId, msg);
+    }
+    // Locally append
+    appendChatLog('message', `${gameState.playerProfile?.username || 'You'}: ${msg}`);
+    input.value = '';
+  }
+};
+
+// --- Receive chat from server ---
+if (window.socket) {
+  window.socket.on('chat', (sender, msg) => {
+    appendChatLog('message', `${sender}: ${msg}`);
+  });
+}
+
+// --- Example: Append action log ---
+function logAction(text) {
+  appendChatLog('action', text);
+}
+
+// --- Example: Append system log ---
+function logSystem(text) {
+  appendChatLog('system', text);
+}
+
+// --- Example: Use logAction in game logic ---
+function moveCard(instanceId, fromArr, toArr, extra = {}) {
+  // ...your move logic...
+  // After moving a card, append to log
+  logAction(`Card ${instanceId} moved from ${getZoneNameForArray(fromArr)} to ${getZoneNameForArray(toArr)}.`);
+  setupDropZones();
+  if (fromArr === gameState.playerHand || fromArr === gameState.playerDeck ||
+      toArr === gameState.playerCreatures || toArr === gameState.playerDomains ||
+      toArr === gameState.playerVoid) {
+    emitPublicState();
+  }
 }
 
 // --- Helper: find card DOM element by instanceId in a given zone ---
