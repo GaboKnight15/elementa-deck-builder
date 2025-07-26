@@ -747,6 +747,29 @@ button {}
   margin: 0;
   box-shadow: 0 1px 4px rgba(0,0,0,0.12);
 }
+.card-foil {
+  position: relative;
+  overflow: hidden;
+}
+.card-foil img.card-art-image {
+  filter: brightness(1.2) saturate(1.2) contrast(1.08);
+}
+.card-foil::before {
+  content: "";
+  position: absolute;
+  left: -70%;
+  top: 0;
+  width: 140%;
+  height: 100%;
+  background: linear-gradient(115deg, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0.35) 40%, rgba(255,255,255,0.09) 70%);
+  pointer-events: none;
+  z-index: 2;
+  animation: foil-shine 2.5s linear infinite;
+}
+@keyframes foil-shine {
+  0% { left: -70%; }
+  100% { left: 100%; }
+}
 /* Modal content: row layout for card image + info */
 .full-card-modal-flex {
   display: flex;
