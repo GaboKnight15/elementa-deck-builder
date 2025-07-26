@@ -511,8 +511,6 @@ button {}
   margin: 18px 0 0 0;
   box-shadow: 0 2px 12px #0004;
   gap: 18px;
-  width: 100%;
-  min-width: 0;
 }
 .quest-desc {
   font-size: 1.11em;
@@ -565,9 +563,9 @@ button {}
   margin: 0;
 }
 .quest-claimable {
-  background: linear-gradient(90deg, #2ecc40 0%, #27ae60 100%);
+  background: linear-gradient(90deg, #00710d 0%, #009941 100%);
   box-shadow: 0 2px 14px #27ae6020;
-  border: 2px solid #2ecc40;
+  border: 2px solid #009911;
   cursor: pointer;
   transition: background 0.2s, box-shadow 0.2s;
 }
@@ -1614,9 +1612,7 @@ button {}
   padding: 4px 10px;
   border-radius: 8px;
   position: absolute;
-  left: 50%;
   top: 8px;
-  transform: translateX(-50%);
   z-index: 3;
   pointer-events: none;
 }
@@ -1630,13 +1626,11 @@ button {}
   font-weight: bold;
   font-size: 1.05em;
   text-align: center;
-  margin-bottom: 3px;
-  margin-top: 6px;
   text-shadow: 0 2px 6px rgba(0,0,0,0.35);
   background: rgba(0,0,0,0.12);
   border-radius: 8px;
   padding: 2px 4px;
-  position: relative;
+  position: absolute;
   z-index: 2;
 }
 .highlight-art-choice {
