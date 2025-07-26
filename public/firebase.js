@@ -87,6 +87,7 @@ window.playerAchievements    = typeof data.achievements !== "undefined" ? data.a
 window.playerUnlockedAvatars = Array.isArray(data.unlockedAvatars) ? data.unlockedAvatars : [];
 window.playerUnlockedBanners = Array.isArray(data.unlockedBanners) ? data.unlockedBanners : [];
 window.playerUnlockedCardbacks = Array.isArray(data.unlockedCardbacks) ? data.unlockedCardbacks : [];
+window.playerFoilCards       = typeof data.foilCards !== "undefined" ? data.foilCards : {};
       if (typeof cb === "function") cb();
     })
     .catch((error) => {
