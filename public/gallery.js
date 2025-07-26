@@ -30,6 +30,11 @@ const VOID_ESSENCE_REFUND = {
   epic: 20,
   legendary: 100
 };
+const isFoil = window.playerFoilCards && window.playerFoilCards[card.id];
+if (isFoil) {
+  div.classList.add('card-foil');
+  img.classList.add('card-foil');
+}
 // ==========================
 // === RENDERING CARDS ===
 // ==========================
@@ -481,6 +486,22 @@ function updateGalleryCollectionProgress(filteredCards) {
   const progDiv = document.getElementById('gallery-collection-progress');
   if (progDiv) progDiv.innerHTML = str;
 }
+
+// FOIL LOGIC
+function upgradeCardToFoil(cardId) {
+  const userId = firebase.auth().currentUser.uid;
+  const userRef = firebase.firestore().collection('users').doc(userId);
+  userRef.get().then(doc => {
+    const foilCards = doc.data()?.foilCards || {};
+    foilCards[cardId] = true;
+    userRef.set({ foilCards }, { merge: true }).then(() => {
+      window.playerFoilCards = foilCards; // update global state
+      showToast("Card upgraded to foil!", {type:"success"});
+      if (typeof updateCollectionDependentUI === "function") updateCollectionDependentUI();
+    });
+  });
+}
+
 // On DOM ready
 document.addEventListener('DOMContentLoaded', setupFilterSelectPlaceholders);
 // ==========================
