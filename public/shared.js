@@ -799,7 +799,7 @@ function getUniqueCollectedCardsCount() {
 // Placeholder for badge image selection (replace with your unlock logic)
 function getCurrentPlayerBadgeImage() {
   // For now, just default, later use player level or unlocks
-  return "OtherImages/PlayerLevel/Default.png";
+  return "OtherImages/Levels/One.png";
 }
 
 // PLAYER BADGE MENU
