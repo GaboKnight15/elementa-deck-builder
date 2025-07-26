@@ -127,20 +127,16 @@ if (deck.highlightArt) {
   tile.textContent = slotName;
 }
       // --- CARD COUNT WARNING MESSAGE --- //
-      if (count < 50) {
-        const warningDiv = document.createElement('div');
-        warningDiv.textContent = "Deck cannot be used, less than 50 cards";
-        warningDiv.style.color = "#e25555";
-        warningDiv.style.fontWeight = "bold";
-        warningDiv.style.fontSize = "1em";
-        warningDiv.style.textAlign = "center";
-        warningDiv.style.marginBottom = "5px";
-        tile.appendChild(warningDiv);
-      }
+let warningDiv = null;
+if (count < 50) {
+  warningDiv = document.createElement('div');
+  warningDiv.className = 'deck-slot-warning';
+  warningDiv.textContent = "Deck cannot be used, less than 50 cards";
+}
       // --- ACTIVE DECK BUTTON/STAR ---
 const isActive = slotName === currentDeckSlot;
 const activeBtn = document.createElement('button');
-activeBtn.innerHTML = isActive ? '⭐ Active' : '☆ Set Active';
+activeBtn.innerHTML = isActive ? '⭐ Active' : '☆ Inactive';
 activeBtn.className = 'deck-active-btn';
 activeBtn.disabled = isActive;
 activeBtn.onclick = (e) => {
@@ -149,6 +145,8 @@ activeBtn.onclick = (e) => {
   saveProgress();
   renderDeckSelection();
 };
+      
+if (warningDiv) tile.appendChild(warningDiv);
 tile.appendChild(activeBtn);
 
       tile.onclick = (e) => {
