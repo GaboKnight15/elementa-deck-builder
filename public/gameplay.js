@@ -1736,13 +1736,7 @@ function showGameUI(myProfile, opponentProfile) {
 function renderProfile(panelId, profileObj) {
   const panel = document.getElementById(panelId);
   if (!panel) return;
-  // Set background banner
-  if (profileObj.banner) {
-    panel.style.backgroundImage = `url('${profileObj.banner}')`;
-  } else {
-    panel.style.backgroundImage = "none";
-  }
-  // Set avatar and username as usual...
+  panel.style.backgroundImage = `url('${profileObj.banner}')`;
   panel.querySelector('.profile-avatar').src = profileObj.avatar;
   panel.querySelector('.profile-username').textContent = profileObj.username;
 }
