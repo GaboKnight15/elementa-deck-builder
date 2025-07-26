@@ -43,9 +43,6 @@ const ACHIEVEMENTS = [
 function getPlayerLevel() {
   return playerLevel;
 }
-function getPlayerExp() {
-  return playerExp;
-}
 function setQuestData(data) {
   playerQuests = data;
   saveProgress();
@@ -152,7 +149,6 @@ function claimQuestReward(quest, cb) {
   data[quest.id].resetAt = Date.now() + 24 * 60 * 60 * 1000;
   setQuestData(data);
   updateQuestsNotificationDot();
-  grantExp(10);
   saveProgress();
   renderQuests();
   startQuestTimers();
@@ -375,7 +371,7 @@ function claimAchievementReward(ach, cb) {
   data[ach.id].claimed = true;
   setAchievementData(data);
   updateAchievementsNotificationDot();
-  grantExp(10);
+  renderPlayerPower();
   if (typeof cb === "function") cb(true);
   return true;
 }
