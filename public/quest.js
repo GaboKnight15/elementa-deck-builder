@@ -164,24 +164,27 @@ function renderQuests() {
     // Always slice to maximum QUEST_SLOTS
     const displayedQuests = (quests || []).filter(q => !!q && !!q.id).slice(0, QUEST_SLOTS);
 
-    // Separate claimed and unclaimed for sorting
-    const questEntries = [];
-    const claimedEntries = [];
+    let renderedCount = 0;
     for (let i = 0; i < QUEST_SLOTS; i++) {
       const quest = displayedQuests[i];
       if (!quest) {
         const entry = document.createElement('div');
         entry.className = 'quest-entry empty-quest-slot';
         entry.innerHTML = `<div class="quest-desc">Empty Quest Slot</div>`;
-        questEntries.push(entry);
+        list.appendChild(entry);
+        renderedCount++;
         continue;
       }
       const questDef = QUEST_POOL.find(q => q.id === (quest.id || quest));
       if (!questDef) continue;
       const progress = getQuestProgress(questDef);
-      // Show timer if claimed
+
+      // If claimed, skip rendering (quests disappear once claimed)
+      if (progress.claimed) continue;
+
+      // Timer HTML if needed
       let timerHtml = '';
-      if (progress.claimed && progress.resetAt) {
+      if (progress.resetAt) {
         timerHtml = `<div class="quest-timer" id="quest-timer-${questDef.id}" style="font-size:0.93em;color:#ffe066;margin-bottom:2px;"></div>`;
       }
       const percent = Math.min(100, Math.round((progress.progress / questDef.goal) * 100));
@@ -210,30 +213,24 @@ function renderQuests() {
         entry.style.cursor = 'pointer';
         entry.onclick = function() {
           claimQuestReward(questDef, function() {
-            entry.classList.remove('quest-claimable');
-            entry.classList.add('quest-claimed-badge');
-            entry.onclick = null;
-            renderQuests(); // To push claimed to bottom
+            renderQuests(); // Re-render to remove claimed quest
           });
         };
-        questEntries.push(entry);
-      } else if (progress.claimed) {
-        // Claimed: add greenish badge, push to bottom
-        const badge = document.createElement('div');
-        badge.className = 'quest-claimed-badge';
-        badge.textContent = 'Claimed!';
-        entry.appendChild(badge);
-        claimedEntries.push(entry);
-        entry.classList.add('quest-claimed');
-        entry.onclick = null;
       } else {
-        questEntries.push(entry);
         entry.onclick = null;
       }
+      list.appendChild(entry);
+      renderedCount++;
     }
-    // Append unclaimed first, then claimed at the bottom
-    questEntries.forEach(e => list.appendChild(e));
-    claimedEntries.forEach(e => list.appendChild(e));
+
+    // Fill empty slots if claimed quests were present
+    while (renderedCount < QUEST_SLOTS) {
+      const entry = document.createElement('div');
+      entry.className = 'quest-entry empty-quest-slot';
+      entry.innerHTML = `<div class="quest-desc">Empty Quest Slot</div>`;
+      list.appendChild(entry);
+      renderedCount++;
+    }
 
     startQuestTimers();
   });
@@ -579,17 +576,23 @@ function renderAchievementsCategory(category) {
     // Or however you define progression achievements
   }
 
-  // ... Render logic is same as before, just for achievementsToShow ...
+  // Sort: unclaimed first, claimed at bottom
+  const unclaimed = [];
+  const claimed = [];
   achievementsToShow.forEach(ach => {
-    // Defensive: skip empty or malformed objects
     if (!ach || !ach.id || !ach.description) return;
-
     const progress = getAchievementProgress(ach);
+    if (progress.claimed) {
+      claimed.push({ ach, progress });
+    } else {
+      unclaimed.push({ ach, progress });
+    }
+  });
+
+  function createEntry(ach, progress, category) {
     const percent = Math.min(100, Math.round((progress.progress / ach.goal) * 100));
     const entry = document.createElement('div');
     entry.className = 'quest-entry';
-
-    if (progress.claimed) entry.classList.add('achievement-claimed');
 
     entry.innerHTML = `
       <div style="display:flex;align-items:center;">
@@ -612,22 +615,29 @@ function renderAchievementsCategory(category) {
       </div>
     `;
     if (progress.completed && !progress.claimed) {
-      const btn = document.createElement('button');
-      btn.className = 'btn-primary quest-claim-btn';
-      btn.textContent = 'Claim';
-      btn.onclick = function() {
+      entry.classList.add('quest-claimable');
+      entry.style.cursor = 'pointer';
+      entry.onclick = function() {
         claimAchievementReward(ach, function() {
           renderAchievementsCategory(category);
         });
       };
-      entry.appendChild(btn);
     } else if (progress.claimed) {
-      const badge = document.createElement('div');
-      badge.className = 'quest-claimed-badge';
-      badge.textContent = 'Claimed!';
-      entry.appendChild(badge);
+      entry.classList.add('achievement-claimed');
+      entry.style.opacity = '0.7';
+      entry.onclick = null;
+    } else {
+      entry.onclick = null;
     }
-    list.appendChild(entry);
+    return entry;
+  }
+
+  // Unclaimed achievements first (including claimable), then claimed at the bottom
+  unclaimed.forEach(({ ach, progress }) => {
+    list.appendChild(createEntry(ach, progress, category));
+  });
+  claimed.forEach(({ ach, progress }) => {
+    list.appendChild(createEntry(ach, progress, category));
   });
 }
 function openAchievementsModalDefault() {
