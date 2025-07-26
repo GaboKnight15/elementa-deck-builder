@@ -168,13 +168,16 @@ function renderQuests() {
     // Always slice to maximum QUEST_SLOTS
     const displayedQuests = (quests || []).filter(q => !!q && !!q.id).slice(0, QUEST_SLOTS);
 
+    // Separate claimed and unclaimed for sorting
+    const questEntries = [];
+    const claimedEntries = [];
     for (let i = 0; i < QUEST_SLOTS; i++) {
       const quest = displayedQuests[i];
       if (!quest) {
         const entry = document.createElement('div');
         entry.className = 'quest-entry empty-quest-slot';
         entry.innerHTML = `<div class="quest-desc">Empty Quest Slot</div>`;
-        list.appendChild(entry);
+        questEntries.push(entry);
         continue;
       }
       const questDef = QUEST_POOL.find(q => q.id === (quest.id || quest));
@@ -205,31 +208,40 @@ function renderQuests() {
           </div>
         </div>
       `;
+      // Claimable: entire entry clickable and greenish
       if (progress.completed && !progress.claimed) {
-        const btn = document.createElement('button');
-        btn.className = 'btn-primary quest-claim-btn';
-        btn.textContent = 'Claim';
-        btn.onclick = function() {
+        entry.classList.add('quest-claimable');
+        entry.style.cursor = 'pointer';
+        entry.onclick = function() {
           claimQuestReward(questDef, function() {
-            entry.classList.add('achievement-fade-out');
-            setTimeout(() => {
-              entry.remove();
-            }, 800);
+            entry.classList.remove('quest-claimable');
+            entry.classList.add('quest-claimed-badge');
+            entry.onclick = null;
+            renderQuests(); // To push claimed to bottom
           });
         };
-        entry.appendChild(btn);
+        questEntries.push(entry);
       } else if (progress.claimed) {
+        // Claimed: add greenish badge, push to bottom
         const badge = document.createElement('div');
         badge.className = 'quest-claimed-badge';
         badge.textContent = 'Claimed!';
         entry.appendChild(badge);
+        claimedEntries.push(entry);
+        entry.classList.add('quest-claimed');
+        entry.onclick = null;
+      } else {
+        questEntries.push(entry);
+        entry.onclick = null;
       }
-      list.appendChild(entry);
     }
+    // Append unclaimed first, then claimed at the bottom
+    questEntries.forEach(e => list.appendChild(e));
+    claimedEntries.forEach(e => list.appendChild(e));
+
     startQuestTimers();
   });
 }
-
 function ensureQuestSlots(cb) {
   const user = firebase.auth().currentUser;
   if (!user) return;
