@@ -2639,6 +2639,11 @@ function startPrivateGame() {
       // ...
     });
   });
+  document.getElementById('my-profile').style.display = '';
+  renderProfile('my-profile', getMyProfileInfo());
+
+  document.getElementById('opponent-profile').style.display = '';
+  renderProfile('opponent-profile', opponentProfileObj);
 }
 
 // CASUAL MODE
