@@ -165,7 +165,9 @@ function renderQuests() {
   if (!list) return;
   list.innerHTML = '';
   getActiveQuests(function(quests) {
-    const displayedQuests = (quests || []).slice(0, QUEST_SLOTS);
+    // Always slice to maximum QUEST_SLOTS
+    const displayedQuests = (quests || []).filter(q => !!q && !!q.id).slice(0, QUEST_SLOTS);
+
     for (let i = 0; i < QUEST_SLOTS; i++) {
       const quest = displayedQuests[i];
       if (!quest) {
@@ -224,7 +226,6 @@ function renderQuests() {
       }
       list.appendChild(entry);
     }
-    // Start all quest timers after rendering
     startQuestTimers();
   });
 }
