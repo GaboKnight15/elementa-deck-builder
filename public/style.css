@@ -606,16 +606,34 @@ button {}
   height: 22px;
   margin: 0;
 }
-.quest-claim-btn {
-  align-self: center;
+.quest-claimable {
+  background: linear-gradient(90deg, #2ecc40 0%, #27ae60 100%);
+  box-shadow: 0 2px 14px #27ae6020;
+  border: 2px solid #2ecc40;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.quest-claimable:hover {
+  background: linear-gradient(90deg, #27ae60 0%, #2ecc40 100%);
+  box-shadow: 0 4px 22px #27ae6040;
+}
+.quest-claimed {
+  opacity: 0.7;
+  background: linear-gradient(90deg, #234d2e 0%, #1c2e20 100%);
+  border: 2px solid #5fad69;
 }
 .quest-claimed-badge {
-  color: #6fd891;
+  background: #2ecc40;
+  color: #fff;
   font-weight: bold;
-  font-size: 0.95em;
-  margin-top: 4px;
-  align-self: flex-end;
+  border-radius: 8px;
+  padding: 2px 12px;
+  margin-left: 12px;
+  margin-top: 3px;
+  display: inline-block;
+  font-size: 1em;
 }
+
 .quest-image {
   width: 40px;
   height: 40px;
@@ -2606,8 +2624,9 @@ button {}
 
 /* AVATAR */
 #profile-pic {
-  width: 60px;
-  height: 60px;
+  position: absolute;
+  width: 90px;
+  height: 90px;
   border-radius: 50%;
   object-fit: cover;
   border: 2.5px solid #bbb;
