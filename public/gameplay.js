@@ -425,7 +425,7 @@ function startSoloGame() {
 
   // CPU profile rendering (add these lines)
   document.getElementById('opponent-profile').style.display = '';
-  renderProfile('opponent-profile', getCpuProfile(cpuDeckObj));
+  renderProfile('opponent-profile', getCpuProfile(selectedCpuDeck));
 
   // Render and set up the game as normal
   renderGameState();
@@ -1736,23 +1736,15 @@ function showGameUI(myProfile, opponentProfile) {
 function renderProfile(panelId, profileObj) {
   const panel = document.getElementById(panelId);
   if (!panel || !profileObj) return;
-
-  // Set banner as background if provided
-  if (profileObj.banner) {
-    panel.style.backgroundImage = `url('${profileObj.banner}')`;
-  }
-
+  // Banner
+  const bannerEl = panel.querySelector('.profile-banner');
+  if (bannerEl && profileObj.banner) bannerEl.src = profileObj.banner;
   // Avatar
   const avatarEl = panel.querySelector('.profile-avatar');
-  if (avatarEl && profileObj.avatar) {
-    avatarEl.src = profileObj.avatar;
-  }
-
+  if (avatarEl && profileObj.avatar) avatarEl.src = profileObj.avatar;
   // Username
   const usernameEl = panel.querySelector('.profile-username');
-  if (usernameEl && profileObj.username) {
-    usernameEl.textContent = profileObj.username;
-  }
+  if (usernameEl && profileObj.username) usernameEl.textContent = profileObj.username;
 }
 
 // Get profile info from DOM or gameState (already in your gameplay.js)
@@ -2712,7 +2704,12 @@ function startCasualGame(matchData) {
 
   document.querySelectorAll('section[id$="-section"]').forEach(section => section.classList.remove('active'));
   document.getElementById('gameplay-section').classList.add('active');
+  
+  document.getElementById('my-profile').style.display = '';
+  renderProfile('my-profile', getMyProfileInfo());
 
+  document.getElementById('opponent-profile').style.display = '';
+  renderProfile('opponent-profile', opponentProfileObj);
   renderGameState();
   setupDropZones();
   updatePhase();
