@@ -229,7 +229,15 @@ const COST_IMAGE_MAP = {
   X20: "OtherImages/Essence/EssenceTwenty.png"
 };
 const addCoinsBtn = document.getElementById('add-coins-btn');
+const LEVEL_THRESHOLDS = [0, 100, 250, 500, 1000, 2000, 4000, 8000];
 let lastPlayerPower = null;
+
+function getPlayerLevelFromPower(power) {
+  for (let i = LEVEL_THRESHOLDS.length - 1; i >= 0; i--) {
+    if (power >= LEVEL_THRESHOLDS[i]) return i + 1;
+  }
+  return 1;
+}
 
 function renderStatIcon(statType, value) {
   // statType: "hp", "atk", "def", "cost"
@@ -850,6 +858,16 @@ function calculatePlayerPower() {
   power += (new Set(banners)).size * 5;
   power += (new Set(cardbacks)).size * 5;
 
+ // Achievements: +10 for each claimed achievement
+  if (typeof getAchievementData === "function" && typeof ACHIEVEMENTS !== "undefined") {
+    const achievementData = getAchievementData();
+    let achievementsClaimed = 0;
+    ACHIEVEMENTS.forEach(ach => {
+      const progress = achievementData[ach.id];
+      if (progress && progress.claimed) achievementsClaimed++;
+    });
+    power += achievementsClaimed * 10;
+  }
   return power;
 }
 function renderPlayerPower() {
@@ -857,17 +875,12 @@ function renderPlayerPower() {
   const el = document.getElementById('player-power-label');
   if (el) el.textContent = power;
 
-  if (lastPlayerPower !== null && power !== lastPlayerPower) {
+  if (lastPlayerPower !== null && power > lastPlayerPower) {
     const diff = power - lastPlayerPower;
-    if (diff > 0) {
-      showToast(`Power increased by ${diff}!`, { type: "success" });
-    } else if (diff < 0) {
-      showToast(`Power decreased by ${-diff}.`, { type: "info" });
-    }
+    showToast(`Power increased by ${diff}!`, { type: "success" });
   }
   lastPlayerPower = power;
 }
-
 
 // Set up badge click handler
 document.addEventListener('DOMContentLoaded', function() {
