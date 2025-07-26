@@ -1735,10 +1735,24 @@ function showGameUI(myProfile, opponentProfile) {
 // PROFILE RENDERING (already present)
 function renderProfile(panelId, profileObj) {
   const panel = document.getElementById(panelId);
-  if (!panel) return;
-  panel.style.backgroundImage = `url('${profileObj.banner}')`;
-  panel.querySelector('.profile-avatar').src = profileObj.avatar;
-  panel.querySelector('.profile-username').textContent = profileObj.username;
+  if (!panel || !profileObj) return;
+
+  // Set banner as background if provided
+  if (profileObj.banner) {
+    panel.style.backgroundImage = `url('${profileObj.banner}')`;
+  }
+
+  // Avatar
+  const avatarEl = panel.querySelector('.profile-avatar');
+  if (avatarEl && profileObj.avatar) {
+    avatarEl.src = profileObj.avatar;
+  }
+
+  // Username
+  const usernameEl = panel.querySelector('.profile-username');
+  if (usernameEl && profileObj.username) {
+    usernameEl.textContent = profileObj.username;
+  }
 }
 
 // Get profile info from DOM or gameState (already in your gameplay.js)
