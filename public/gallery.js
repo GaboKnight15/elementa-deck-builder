@@ -48,6 +48,16 @@ function getMinimumKeptForRarity(card) {
     default:          return 1;
   }
 }
+function getFoilConsumeAmount(card) {
+  if (!card.rarity) return 1;
+  switch (card.rarity.toLowerCase()) {
+    case 'legendary': return 1;
+    case 'epic':      return 2;
+    case 'rare':      return 3;
+    case 'common':    return 4;
+    default:          return 1;
+  }
+}
 function getRarityKey(card) {
   // Defensive: default to 'common' if missing/unknown
   return (card.rarity || 'common').toLowerCase();
@@ -314,6 +324,47 @@ function showGalleryCardMenu(card, anchorDiv) {
     createVoidCardButton(card, renderGallery).onclick(new MouseEvent('click'));
     menu.style.display = "none";
   };
+  // === FOIL BUTTON ===
+  const modalContent = menu.querySelector('.modal-content');
+  let foilBtn = modalContent.querySelector('#gallery-card-foil-btn');
+  if (foilBtn) foilBtn.remove();
+
+  foilBtn = document.createElement('button');
+  foilBtn.id = "gallery-card-foil-btn";
+  foilBtn.className = "settings-item";
+  foilBtn.style.width = "100%";
+  foilBtn.style.textAlign = "left";
+  foilBtn.innerHTML =
+    `<img src="OtherImages/Icons/Foil.png" alt="Foil" style="width:20px;vertical-align:middle;margin-right:10px;"> Foil`;
+
+  const owned = getCollection()[card.id] || 0;
+  const consumeAmt = getFoilConsumeAmount(card);
+  const alreadyFoil = window.playerFoilCards && window.playerFoilCards[card.id];
+
+  // Disable button if already foil or not enough copies
+  if (alreadyFoil) {
+    foilBtn.disabled = true;
+    foilBtn.title = "Already foil!";
+    foilBtn.style.opacity = "0.4";
+  } else if (owned < consumeAmt * 2) {
+    foilBtn.disabled = true;
+    foilBtn.title = `You need at least ${consumeAmt * 2} copies to foil this card.`;
+    foilBtn.style.opacity = "0.4";
+  }
+
+  foilBtn.onclick = function(e) {
+    e.stopPropagation();
+    consumeCardsForFoil(card, renderGallery);
+    menu.style.display = "none";
+  };
+
+  // Insert Foil button below Void button
+  const voidBtn = modalContent.querySelector('#gallery-card-void-btn');
+  if (voidBtn && voidBtn.nextSibling) {
+    modalContent.insertBefore(foilBtn, voidBtn.nextSibling);
+  } else {
+    modalContent.appendChild(foilBtn);
+  }  
 }
 function createCreateCardButton(card, onActionDone) {
   const owned = getCollection()[card.id] || 0;
@@ -501,7 +552,41 @@ function upgradeCardToFoil(cardId) {
     });
   });
 }
+function consumeCardsForFoil(card, onDone) {
+  const owned = getCollection()[card.id] || 0;
+  const consumeAmt = getFoilConsumeAmount(card);
+  const minKept = getMinimumKeptForRarity(card);
+  if (owned < consumeAmt * 2) {
+    showToast(`You need at least ${consumeAmt * 2} copies to foil this card! (You own ${owned})`, {type:"error"});
+    return;
+  }
 
+  // Confirmation modal (reuse your modal pattern!)
+  showEssenceConfirmModal({
+    action: "foil",
+    card,
+    amount: consumeAmt,
+    onConfirm: function() {
+      // Remove cards from collection
+      const collection = getCollection();
+      collection[card.id] = (collection[card.id] || 0) - consumeAmt;
+      if (collection[card.id] < minKept) collection[card.id] = minKept; // Safety
+      window.playerCollection = collection;
+      // Mark foil in Firebase
+      const userId = firebase.auth().currentUser.uid;
+      const userRef = firebase.firestore().collection('users').doc(userId);
+      // Merge foilCards with new value
+      const foilCards = window.playerFoilCards || {};
+      foilCards[card.id] = true;
+      userRef.set({ collection, foilCards }, { merge: true }).then(() => {
+        window.playerFoilCards = foilCards;
+        showToast("Card upgraded to foil!", {type:"success"});
+        if (onDone) onDone();
+        if (typeof updateCollectionDependentUI === "function") updateCollectionDependentUI();
+      });
+    }
+  });
+}
 // On DOM ready
 document.addEventListener('DOMContentLoaded', setupFilterSelectPlaceholders);
 // ==========================
