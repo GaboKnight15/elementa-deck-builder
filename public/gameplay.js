@@ -2829,10 +2829,6 @@ if (window.renderDeckSelection) {
 }
 document.addEventListener('DOMContentLoaded', renderModePlayerDeckTile);
 
-document.addEventListener('DOMContentLoaded', function() {
-  document.getElementById('battlefield-header').style.display = 'none';
-  document.getElementById('gameplay-header').style.display = 'flex';
-});
 // Gameplay (menu) header
 document.getElementById('gameplay-settings-btn').onclick = function() {
   document.getElementById('settings-modal').style.display = 'flex';
@@ -2843,20 +2839,33 @@ document.getElementById('gameplay-back-btn').onclick = function() {
 };
 
 // Battlefield (in-game) header
-document.getElementById('battlefield-settings-btn').onclick = function() {
-  document.getElementById('settings-modal').style.display = 'flex';
-};
 document.getElementById('battlefield-back-btn').onclick = function() {
   if (confirm("Leave the game and return to menu?")) {
-    // Hide the gameplay/battlefield section
     document.getElementById('gameplay-section').classList.remove('active');
-    document.getElementById('battlefield-header').style.display = 'none';
-
-    // Show the mode select screen
     document.getElementById('mode-select-section').classList.add('active');
     document.getElementById('gameplay-header').style.display = 'flex';
   }
 };
+document.addEventListener('DOMContentLoaded', function() {
+  // Settings button (top right of battlefield)
+  var settingsBtn = document.getElementById('battlefield-settings-btn');
+  if (settingsBtn) {
+    settingsBtn.onclick = function() {
+      document.getElementById('settings-modal').style.display = 'flex';
+    };
+  }
+  // Back button (top left of battlefield)
+  var backBtn = document.getElementById('battlefield-back-btn');
+  if (backBtn) {
+    backBtn.onclick = function() {
+      if (confirm("Leave the game and return to menu?")) {
+        document.getElementById('gameplay-section').classList.remove('active');
+        document.getElementById('mode-select-section').classList.add('active');
+        document.getElementById('gameplay-header').style.display = 'flex';
+      }
+    };
+  }
+});
 // BACK IMAGES
 // CPU Deck Modal: Back to Mode Selection
 document.getElementById('cpu-back-btn').addEventListener('click', function() {
