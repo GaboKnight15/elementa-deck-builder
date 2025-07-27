@@ -1772,7 +1772,7 @@ document.getElementById('send-chat-btn').onclick = function() {
   if (msg.length) {
     // Send to server (if multiplayer)
     if (window.socket && window.currentRoomId) {
-      window.socket.emit('chat', window.currentRoomId, msg);
+      window.socket.emit('game message', window.currentRoomId, msg);
     }
     // Locally append
     appendChatLog('message', `${gameState.playerProfile?.username || 'You'}: ${msg}`);
@@ -1782,8 +1782,8 @@ document.getElementById('send-chat-btn').onclick = function() {
 
 // --- Receive chat from server ---
 if (window.socket) {
-  window.socket.on('chat', (sender, msg) => {
-    appendChatLog('message', `${sender}: ${msg}`);
+  window.socket.on('game message', (data) => {
+    appendChatLog('message', `${data.sender}: ${data.msg}`);
   });
 }
 
