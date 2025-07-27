@@ -957,7 +957,7 @@ function appendDeckZone(parentDiv, deckArray, who) {
   const img = document.createElement('img');
   img.src = deckCardback;
   img.alt = (who === "player" ? "Your Deck" : "Opponent's Deck");
-  img.style.width = "80px";
+  img.style.width = "100%";
   deckCard.appendChild(img);
 
   const countDiv = document.createElement('div');
