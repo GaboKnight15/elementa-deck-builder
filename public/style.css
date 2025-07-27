@@ -2187,7 +2187,13 @@ button {}
   color: #667;
   opacity: 0.8;
 }
-
+.deck-void-row {
+  text-align: center;
+  margin: 4px 0 4px 0;
+  font-size: 1.05em;
+  color: #ffe066;
+  letter-spacing: 0.5px;
+}
 .zone-row {
   display: flex;
   flex-direction: row;
