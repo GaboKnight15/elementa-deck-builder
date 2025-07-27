@@ -929,12 +929,18 @@ function renderRightbarZones() {
   playerDeckDiv.innerHTML = '';
   appendDeckZone(playerDeckDiv, gameState.playerDeck, "player");
 
+  // Update deck/void counters
+  renderDeckVoidCountRow('opponent-count-row', gameState.opponentDeck.length, gameState.opponentVoid.length);
+  renderDeckVoidCountRow('player-count-row', gameState.playerDeck.length, gameState.playerVoid.length);
+
   // Append in desired order
+  rightbar.appendChild(document.getElementById('opponent-count-row'));
   rightbar.appendChild(oppDeckDiv);
   rightbar.appendChild(oppVoidDiv);
   rightbar.appendChild(phaseBadge);
   rightbar.appendChild(playerVoidDiv);
   rightbar.appendChild(playerDeckDiv);
+  rightbar.appendChild(document.getElementById('player-count-row'));
 }
 // Helper to create and append the deck zone card at the end
 function appendDeckZone(parentDiv, deckArray, who) {
@@ -1055,6 +1061,18 @@ function appendVoidZone(parentDiv, voidArray, who) {
   };
 
   parentDiv.appendChild(voidZone);
+}
+function renderDeckVoidCountRow(rowId, deckCount, voidCount) {
+  const row = document.getElementById(rowId);
+  if (!row) return;
+  row.innerHTML = `
+    <span style="display:inline-flex;align-items:center;gap:4px;">
+      <img src="OtherImages/Icons/Deck.png" alt="Deck" style="width:22px;height:22px;vertical-align:middle;">
+      <span style="font-weight:bold;">${deckCount}</span>
+      <img src="OtherImages/Icons/Void.png" alt="Void" style="width:22px;height:22px;vertical-align:middle;margin-left:12px;">
+      <span style="font-weight:bold;">${voidCount}</span>
+    </span>
+  `;
 }
 // REMOVE STAT CHANGES
 function cleanCard(cardObj) {
