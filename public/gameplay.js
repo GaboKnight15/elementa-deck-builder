@@ -628,8 +628,8 @@ function moveCard(instanceId, fromArr, toArr, extra = {}) {
   if (fromArr === gameState.playerHand || fromArr === gameState.playerDeck ||
       toArr === gameState.playerCreatures || toArr === gameState.playerDomains ||
       toArr === gameState.playerVoid) {
-    emitPublicState();
   }
+  emitPublicState();
 }
 // Helper to get zone name for an array reference
 function getZoneNameForArray(arr) {
@@ -741,6 +741,7 @@ function shuffle(array) {
     [array[i], array[j]] = [array[j], array[i]];
   }
   return array;
+  emitPublicState();
 }
 
 function drawCards(who, n) {
@@ -751,7 +752,7 @@ function drawCards(who, n) {
   }
   renderGameState();
   setupDropZones();
-  if (who === "player") emitPublicState();
+  emitPublicState();
 }
 
 
@@ -1750,9 +1751,9 @@ function renderProfile(panelId, profileObj) {
 // Get profile info from DOM or gameState (already in your gameplay.js)
 function getMyProfileInfo() {
   return {
-    username: document.getElementById('profile-username-display').textContent,
-    avatar: document.getElementById('profile-pic').src,
-    banner: document.getElementById('profile-banner').src
+    username: document.getElementById('profile-username-display')?.textContent || '',
+    avatar: document.getElementById('profile-pic')?.src || '',
+    banner: document.getElementById('profile-banner')?.src || ''
   };
 }
 // --- Log system: append to chat-log ---
@@ -2881,6 +2882,7 @@ document.getElementById('player-back-btn').addEventListener('click', function() 
 
 if (window.socket) {
   window.socket.on('opponent state update', (state) => {
+    console.log("Opponent deck count received:", state.deckCount);
     gameState.opponentDeck = new Array(state.deckCount).fill({});
     gameState.opponentHand = new Array(state.handCount).fill({});
     gameState.opponentCreatures = state.creatures || [];
@@ -2889,6 +2891,19 @@ if (window.socket) {
     renderGameState();
   });
 }
+
+// When joining a multiplayer match
+socket.on('casual-match-found', function(matchData) {
+  // join the room
+  socket.emit('join room', matchData.roomId);
+
+  // emit your profile AFTER joining
+  socket.emit('profile', getMyProfileInfo());
+});
+socket.on('opponent profile', function(profileObj) {
+  renderProfile('opponent-profile', profileObj);
+  document.getElementById('opponent-profile').style.display = '';
+});
 
 // Make available globally if called from client.js:
 window.setupBattlefieldGame = setupBattlefieldGame;
