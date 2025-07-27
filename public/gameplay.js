@@ -6,28 +6,10 @@
 // === CONSTANTS & STATE ===
 // ==========================
 // Map phase keys to your custom names
-const PHASE_DISPLAY_NAMES = {
-  draw: "Draw Phase",
-  essence: "Essence Phase",
-  action: "Action Phase",
-  end: "End Phase"
-};
-const PHASE_CLASS = {
-  draw: 'phase-draw',
-  essence: 'phase-essence',
-  action: 'phase-action',
-  end: 'phase-end'
-};
-const PHASES = [
-  { turn: 'player', phase: 'draw' },
-  { turn: 'player', phase: 'essence' },
-  { turn: 'player', phase: 'action' },
-  { turn: 'player', phase: 'end' },
-  { turn: 'opponent', phase: 'draw' },
-  { turn: 'opponent', phase: 'essence' },
-  { turn: 'opponent', phase: 'action' },
-  { turn: 'opponent', phase: 'end' }
-];
+const PHASE_DISPLAY_NAMES = {draw: "Draw Phase", essence: "Essence Phase", action: "Action Phase", end: "End Phase"};
+const PHASE_CLASS = {draw: 'phase-draw', essence: 'phase-essence', action: 'phase-action', end: 'phase-end'};
+const PHASES = [{ turn: 'player', phase: 'draw' },{ turn: 'player', phase: 'essence' },{ turn: 'player', phase: 'action' },{ turn: 'player', phase: 'end' },
+  { turn: 'opponent', phase: 'draw' },{ turn: 'opponent', phase: 'essence' },{ turn: 'opponent', phase: 'action' },{ turn: 'opponent', phase: 'end' }];
  let gameState = {
   playerDeck: [],
   playerHand: [],
@@ -45,11 +27,8 @@ const PHASES = [
   turn: "player",
   phase: "draw"
 };
-let attackMode = {
-  attackerId: null,
-  attackerZone: null,
-  cancelHandler: null
-};
+
+let attackMode = {attackerId: null, attackerZone: null, cancelHandler: null};
 const DEFAULT_CPU_DECKS = [
   {
     id: 'green',
@@ -67,7 +46,6 @@ const DEFAULT_CPU_DECKS = [
       { id: 'LifeGrowth', amount: 4 },
       { id: 'EssenceSurge', amount: 4 },
       { id: 'basicforest', amount: 4 },
-      
       // ... etc
     ]
   },
@@ -395,12 +373,10 @@ function buildCpuDeck(deckDef) {
   return deck;
 }
 
-// Example usage:
-const greenCpuDeck = buildCpuDeck(DEFAULT_CPU_DECKS.find(d => d.id === 'green'));
-
 function generateUniqueId() {
   return 'id-' + Math.random().toString(36).substr(2, 9) + '-' + Date.now();
 }
+
 function startSoloGame() {
   // Make sure selectedPlayerDeck and selectedCpuDeck are set
   const playerDeckObj = window.selectedPlayerDeck?.deckObj || window.selectedPlayerDeck;
@@ -456,45 +432,6 @@ function startSoloGame() {
   renderGameState();
   setupDropZones();
   updatePhase();
-
-  // Setup drag and drop handlers
-  ['player-creatures-zone', 'player-domains-zone'].forEach(zoneId => {
-    const zone = document.getElementById(zoneId);
-    if (!zone) return;
-    zone.ondragover = (e) => {
-      e.preventDefault();
-      zone.classList.add('drag-over');
-    };
-    zone.ondragleave = () => zone.classList.remove('drag-over');
-    zone.ondrop = (e) => {
-      e.preventDefault();
-      zone.classList.remove('drag-over');
-      const instanceId = e.dataTransfer.getData('text/plain');
-      const cardObj = gameState.playerHand.find(c => c.instanceId === instanceId);
-      if (!cardObj) return;
-
-      // Find card definition
-      const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
-      if (!cardDef) return;
-
-      // Determine allowed category for this zone
-      const allowedCategory =
-        zoneId === "player-creatures-zone" ? "creature" :
-        zoneId === "player-domains-zone" ? "domain" : null;
-
-      if (cardDef.category !== allowedCategory) {
-        alert("You can only play " + allowedCategory + " cards here!");
-        return;
-      }
-
-      let targetArr = zoneId === "player-creatures-zone" ? gameState.playerCreatures : gameState.playerDomains;
-      moveCard(instanceId, gameState.playerHand, targetArr, {orientation: "vertical"});
-      renderGameState();
-      setupDropZones();
-    };
-  });
-
-  // Show the "Game Start" animation, then main domain & champion selection, then draw opening hand
   showGameStartAnimation(() => {
     initiateMainDomainAndChampionSelection(gameState.playerDeck, () => {
       // After selection, draw opening hand
@@ -2747,8 +2684,6 @@ function startCasualGame(matchData) {
   renderGameState();
   setupDropZones();
   updatePhase();
-
-  // 5. Animations and selection
   showGameStartAnimation(() => {
     initiateMainDomainAndChampionSelection(gameState.playerDeck, () => {
       // Draw hand, set up initial turn, etc.
@@ -2756,8 +2691,6 @@ function startCasualGame(matchData) {
       setupDropZones();
     });
   });
-
-  // 6. Chat, etc. (if needed)
   if (typeof resetChatLog === "function") resetChatLog();
 }
 
