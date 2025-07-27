@@ -1791,11 +1791,11 @@ function getMyProfileInfo() {
   };
 }
 // --- Log system: append to chat-log ---
-function appendChatLog(type, text) {
+function appendChatLog(type, sender, text, isMe = false) {
   const logDiv = document.getElementById('chat-log');
   const entry = document.createElement('div');
   entry.className = `log-${type}`;
-  entry.textContent = text;
+  entry.innerHTML = `<span class="chat-sender${isMe ? ' chat-sender-me' : ''}">${sender}:</span> <span>${text}</span>`;
   logDiv.appendChild(entry);
   logDiv.scrollTop = logDiv.scrollHeight;
 }
@@ -1804,23 +1804,17 @@ function appendChatLog(type, text) {
 document.getElementById('send-chat-btn').onclick = function() {
   const input = document.getElementById('chat-input');
   const msg = input.value.trim();
-  if (msg.length) {
-    // Send to server (if multiplayer)
-    if (window.socket && window.currentRoomId) {
-      window.socket.emit('game message', window.currentRoomId, msg);
-    }
-    // Locally append
-    appendChatLog('message', `${gameState.playerProfile?.username || 'You'}: ${msg}`);
+  if (msg.length && window.socket && window.currentRoomId) {
+    window.socket.emit('game message', window.currentRoomId, msg);
     input.value = '';
   }
 };
 
-// --- Receive chat from server ---
-if (window.socket) {
-  window.socket.on('game message', (data) => {
-    appendChatLog('message', `${data.sender}: ${data.msg}`);
-  });
-}
+window.socket.on('game message', (data) => {
+  // Highlight your own message
+  const isMe = (data.sender === gameState.playerProfile?.username);
+  appendChatLog('message', data.sender, data.msg, isMe);
+});
 
 // --- Example: Append action log ---
 function logAction(text) {
