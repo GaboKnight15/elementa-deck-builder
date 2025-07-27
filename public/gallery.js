@@ -17,19 +17,8 @@ const filterSelectLabels = {
   'filter-archetype-builder': 'Archetype',
   'filter-ability-builder': 'Ability'
 };
-const CREATE_ESSENCE_COST = {
-  common: 5,
-  rare: 25,
-  epic: 100,
-  legendary: 500
-};
-
-const VOID_ESSENCE_REFUND = {
-  common: 1,
-  rare: 5,
-  epic: 20,
-  legendary: 100
-};
+const CREATE_ESSENCE_COST = {common: 5, rare: 25, epic: 100, legendary: 500};
+const VOID_ESSENCE_REFUND = {common: 1, rare: 5, epic: 20, legendary: 100};
 const isFoil = window.playerFoilCards && window.playerFoilCards[card.id];
 if (isFoil) {
   div.classList.add('card-foil');
