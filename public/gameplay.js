@@ -967,11 +967,6 @@ function appendDeckZone(parentDiv, deckArray, who) {
   img.style.width = "100%";
   deckCard.appendChild(img);
 
-  const countDiv = document.createElement('div');
-  countDiv.style.textAlign = 'center';
-  countDiv.style.fontWeight = 'bold';
-  countDiv.textContent = deckArray.length;
-  deckCard.appendChild(countDiv);
   deckZone.appendChild(deckCard);
 
   if (who === "player") {
@@ -1047,11 +1042,7 @@ function appendVoidZone(parentDiv, voidArray, who) {
       voidCard.appendChild(img);
     }
   }
-  const countDiv = document.createElement('div');
-  countDiv.style.textAlign = 'center';
-  countDiv.style.fontWeight = 'bold';
-  countDiv.textContent = voidArray.length;
-  voidCard.appendChild(countDiv);
+
   voidZone.appendChild(voidCard);
 
   voidCard.onclick = (e) => {
@@ -2867,12 +2858,14 @@ document.getElementById('battlefield-back-btn').onclick = function() {
 };
 document.addEventListener('DOMContentLoaded', function() {
   // Settings button (top right of battlefield)
-  var settingsBtn = document.getElementById('battlefield-settings-btn');
-  if (settingsBtn) {
-    settingsBtn.onclick = function() {
-      document.getElementById('settings-modal').style.display = 'flex';
-    };
-  }
+var settingsBtn = document.getElementById('battlefield-settings-btn');
+if (settingsBtn) {
+  settingsBtn.onclick = function() {
+    var modal = document.getElementById('settings-menu-pop');
+    if (modal) modal.style.display = 'flex';
+    else console.warn("Settings modal not found!");
+  };
+}
   // Back button (top left of battlefield)
   var backBtn = document.getElementById('battlefield-back-btn');
   if (backBtn) {
