@@ -3249,6 +3249,17 @@ button {}
   color: #ffe066;
   box-shadow: 0 1px 6px #0002;
 }
+.chat-sender {
+  font-weight: bold;
+  color: #ffe066;
+}
+.chat-sender-me {
+  color: #ffe066;
+  text-shadow: 0 0 4px #181f2b;
+}
+.log-message {
+  margin: 2px 0;
+}
 .log-message { color: #111; }
 .log-action { color: #0077ff; font-weight: bold; }
 .log-system { color: #888; font-style: italic; }
