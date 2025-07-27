@@ -82,17 +82,16 @@ io.on('connection', (socket) => {
     socket.to(roomId).emit('opponent state update', state);
   });
   
-  socket.on('profile', (profileObj) => {
-    // Send to everyone else in the room (assume socket.roomId is set on join)
-    // You may want to store roomId on socket when joining
-    if (socket.roomId) {
-      socket.to(socket.roomId).emit('opponent profile', profileObj);
-    }
-  });
+socket.on('profile', (profileObj) => {
+  socket.username = profileObj.username;
+  if (socket.roomId) {
+    socket.to(socket.roomId).emit('opponent profile', profileObj);
+  }
+});
 
 socket.on('game message', (roomId, msg) => {
   io.to(roomId).emit('game message', {
-    sender: socket.id,
+    sender: socket.username,
     msg
   });
 });
