@@ -196,7 +196,32 @@ const DEFAULT_CPU_DECKS = [
       { id: 'basicplains', amount: 4 },
       // ... etc
     ]
-  },  
+  },
+  {
+    id: 'red2',
+    name: 'Forgebound Titans',
+    color: ['red','gray'],
+    difficulty: '⭐⭐',
+    image: 'CardImages/Avatars/Emberling.png',
+    bannerArt: 'CardImages/Banners/RedBanner.png',
+    cardbackArt: 'OtherImages/Cardbacks/RedCardback.png',
+    cards: [
+      { id: 'Ashkar', amount: 1 },
+      { id: 'SmolderingGolemheart', amount: 2 },
+      { id: 'GolemheartSentinel', amount: 3 },
+      { id: 'GolemheartGiant', amount: 3 },
+      { id: 'Golemites', amount: 4 },
+      { id: 'FireGolem', amount: 4 },
+      { id: 'GolemheartInfusor', amount: 4 },
+      { id: 'LifeGrowth', amount: 4 },
+      { id: 'EssenceAssault', amount: 4 },
+      { id: 'EssenceBarrier', amount: 4 },
+      { id: 'basicvolcano', amount: 4 },
+      { id: 'basicmountain', amount: 4 },
+      
+      // ... etc
+    ]
+  },
   // ...repeat for other colors
 ];
 const ESSENCE_IMAGE_MAP = {
