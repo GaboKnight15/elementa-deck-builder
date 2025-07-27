@@ -1,8 +1,7 @@
 // --- CLIENT.JS (revised for gameplay-only lobby/chat and correct deck sync, DRYed up) ---
 
 const socket = io();
-let currentRoomId = null;
-window.socket = window.io ? window.io() : undefined;
+window.socket = socket;
 // UI elements
 const lobbyUI = document.getElementById('lobby-ui');
 const chatUI = document.getElementById('chat-ui');
@@ -32,19 +31,11 @@ function generateRoomId() {
   return Math.random().toString(36).substr(2, 5).toUpperCase();
 }
 
-// --- DRY: Unified room join/create logic for classic and modal UI ---
+// When you join/create, emit nothing yet:
 function joinOrCreateRoom(roomId, asCreator = false) {
   currentRoomId = roomId;
   socket.emit('join room', roomId);
-  if (status) {
-    status.textContent = asCreator
-      ? `Room created! Share this code: ${roomId}`
-      : `Joined room: ${roomId}. Waiting for opponent...`;
-  }
-  if (lobbyCodeDisplay && asCreator) {
-    lobbyCodeDisplay.textContent = roomId;
-  }
-  submitDeckToServer();
+  // Do NOT submit deck/profile here!
 }
 
 // --- Classic UI: Create/Join room ---
@@ -75,16 +66,9 @@ if (joinLobbyBtn) {
 }
 
 socket.on('opponent joined', (opponentId) => {
-  // Hide the lobby modal if visible
-  const lobbyModal = document.getElementById('private-lobby-modal');
-  if (lobbyModal) lobbyModal.style.display = 'none';
-
-  // Show deck selection for both players
-  if (typeof showPlayerDeckModal === "function") {
-    showPlayerDeckModal();
-  }
-  // Optionally update status somewhere else
-  if (status) status.textContent = "Both players joined! Choose your deck.";
+  // Now emit deck and profile, room is ready
+  submitDeckToServer();
+  socket.emit('profile', getMyProfileInfo());
 });
 
 function startMultiplayerGameIfReady() {
