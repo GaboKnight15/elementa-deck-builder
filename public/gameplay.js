@@ -1020,10 +1020,10 @@ function renderDeckVoidCountRow(rowId, deckCount, voidCount) {
   if (!row) return;
   row.innerHTML = `
     <span style="display:inline-flex;align-items:center;gap:4px;">
-      <img src="OtherImages/Icons/Deck.png" alt="Deck" style="width:22px;height:22px;vertical-align:middle;">
-      <span style="font-weight:bold;">${deckCount}</span>
+      <img src="OtherImages/Icons/DefaultDeckBox.png" alt="Deck" style="width:22px;height:22px;vertical-align:middle;">
+      <span class="deck-count-number">${deckCount}</span>
       <img src="OtherImages/Icons/Void.png" alt="Void" style="width:22px;height:22px;vertical-align:middle;margin-left:12px;">
-      <span style="font-weight:bold;">${voidCount}</span>
+      <span class="deck-count-number">${voidCount}</span>
     </span>
   `;
 }
