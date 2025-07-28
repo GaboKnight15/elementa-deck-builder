@@ -113,24 +113,9 @@ if (sendChatBtn) {
     const msg = (chatInput?.value || "").trim();
     if (msg && currentRoomId) {
       socket.emit('game message', currentRoomId, msg);
-      appendChatMessage(`You: ${msg}`);
       chatInput.value = '';
     }
   };
-}
-
-socket.on('game message', (data) => {
-  if (data.sender === socket.id) {
-    return; // This is your own message echoed back from the server, ignore.
-  }
-  appendChatMessage(`Opponent: ${data.msg}`);
-});
-
-function appendChatMessage(msg) {
-  const div = document.createElement('div');
-  div.textContent = msg;
-  chatLog.appendChild(div);
-  chatLog.scrollTop = chatLog.scrollHeight;
 }
 
 if (spectateBtn) {
