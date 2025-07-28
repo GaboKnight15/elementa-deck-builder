@@ -1280,9 +1280,7 @@ function renderCardOnField(cardObj, zoneId) {
           }
         ];
         const menu = createCardMenu(buttons);
-        menu.style.left = '70px'; // optional: offset menu to the right of attachment
         attDiv.appendChild(menu);
-        menu.style.display = 'block';
 
         // Hide menu if click elsewhere
         setTimeout(() => {
@@ -2772,6 +2770,7 @@ function stripCardForSync(card) {
     instanceId: card.instanceId,
     currentHP: card.currentHP,
     orientation: card.orientation,
+    essence: card.essence,
     // Add more as needed for your UI, but don't include full hand if not public!
   };
 }
@@ -2845,9 +2844,9 @@ document.getElementById('player-back-btn').addEventListener('click', function() 
 
 if (window.socket) {
   window.socket.on('opponent state update', (state) => {
-    console.log("Opponent deck count received:", state.deckCount);
-    gameState.opponentDeck = new Array(state.deckCount).fill({});
-    gameState.opponentHand = new Array(state.handCount).fill({});
+    gameState.opponentDeck = Array.from({ length: state.deckCount }, () => ({}));
+    gameState.opponentHand = Array.from({ length: state.handCount }, () => ({}));
+    // Battlefield zones: use the real card objects sent from server
     gameState.opponentCreatures = state.creatures || [];
     gameState.opponentDomains = state.domains || [];
     gameState.opponentVoid = state.voidCards || [];
