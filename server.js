@@ -103,7 +103,18 @@ socket.on('game message', (roomId, msg) => {
       delete room.decks[socket.id];
     }
   });
-
+  
+  socket.on('leave game', (roomId) => {
+    // Remove player from room
+    socket.leave(roomId);
+    // Optionally clean up room players/decks
+    if (rooms[roomId]) {
+      rooms[roomId].players = rooms[roomId].players.filter(id => id !== socket.id);
+      delete rooms[roomId].decks[socket.id];
+    }
+    // Notify the other player
+    socket.to(roomId).emit('opponent_left');
+  });
     socket.on('spectate room', (roomId) => {
     socket.join(roomId);
     socket.roomId = roomId;
