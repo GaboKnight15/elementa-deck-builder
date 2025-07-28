@@ -2780,6 +2780,36 @@ document.getElementById('mode-player-deck-tile').onclick = function (e) {
     window.showPlayerDeckModal();
 };
 
+// RESET GAMESTATE WHEN A PLAYER LEAVES/CONCEDES
+function resetGameState() {
+  gameState = {
+    playerDeck: [],
+    playerHand: [],
+    playerCreatures: [],
+    playerDomains: [],
+    playerVoid: [],
+    opponentDeck: [],
+    opponentHand: [],
+    opponentCreatures: [],
+    opponentDomains: [],
+    opponentVoid: [],
+    playerMainDomain: null,
+    opponentMainDomain: null,
+    turn: "player",
+    phase: "draw"
+  };
+  renderGameState();
+  setupDropZones();
+  // Optionally hide gameplay UI
+  document.getElementById('gameplay-section').classList.remove('active');
+  document.getElementById('mode-select-section').classList.add('active');
+  // Hide profiles
+  document.getElementById('my-profile').style.display = 'none';
+  document.getElementById('opponent-profile').style.display = 'none';
+  // Clear chat
+  const logDiv = document.getElementById('chat-log');
+  if (logDiv) logDiv.innerHTML = '';
+}
 // Re-render when needed (after deck changes)
 if (window.renderDeckSelection) {
   const origRender = window.renderDeckSelection;
@@ -2799,36 +2829,38 @@ document.getElementById('gameplay-back-btn').onclick = function() {
   document.getElementById('home-section').classList.add('active');
 };
 
-// Battlefield (in-game) header
-document.getElementById('battlefield-back-btn').onclick = function() {
-  if (confirm("Leave the game and return to menu?")) {
-    document.getElementById('gameplay-section').classList.remove('active');
-    document.getElementById('mode-select-section').classList.add('active');
-    document.getElementById('gameplay-header').style.display = 'flex';
-  }
-};
+// ASSIGNMENTS
 document.addEventListener('DOMContentLoaded', function() {
   // Settings button (top right of battlefield)
-var settingsBtn = document.getElementById('battlefield-settings-btn');
-if (settingsBtn) {
-  settingsBtn.onclick = function() {
-    var modal = document.getElementById('settings-menu-pop');
-    if (modal) modal.style.display = 'flex';
-    else console.warn("Settings modal not found!");
-  };
-}
+  var settingsBtn = document.getElementById('battlefield-settings-btn');
+  if (settingsBtn) {
+    settingsBtn.onclick = function() {
+      var modal = document.getElementById('settings-menu-pop');
+      if (modal) modal.style.display = 'flex';
+      else console.warn("Settings modal not found!");
+    };
+  }
   // Back button (top left of battlefield)
   var backBtn = document.getElementById('battlefield-back-btn');
   if (backBtn) {
     backBtn.onclick = function() {
       if (confirm("Leave the game and return to menu?")) {
-        document.getElementById('gameplay-section').classList.remove('active');
-        document.getElementById('mode-select-section').classList.add('active');
-        document.getElementById('gameplay-header').style.display = 'flex';
+        if (window.socket && window.currentRoomId) {
+          window.socket.emit('leave game', window.currentRoomId);
+        }
+        resetGameState();
       }
     };
   }
 });
+
+if (window.socket) {
+  window.socket.on('opponent_left', () => {
+    // Show toast/message
+    showToast("Opponent has left the match.");
+    resetGameState();
+  });
+}
 // BACK IMAGES
 // CPU Deck Modal: Back to Mode Selection
 document.getElementById('cpu-back-btn').addEventListener('click', function() {
