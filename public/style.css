@@ -2196,6 +2196,15 @@ button {}
   color: #ffe066;
   letter-spacing: 0.5px;
 }
+.deck-count-number {
+  color: #ffe066;
+  font-weight: bold;
+  text-shadow:
+    -1px -1px 2px #8a5c00,
+     1px -1px 2px #8a5c00,
+    -1px  1px 2px #8a5c00,
+     1px  1px 2px #8a5c00;
+}
 .zone-row {
   display: flex;
   flex-direction: row;
