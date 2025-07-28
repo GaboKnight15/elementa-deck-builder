@@ -193,8 +193,8 @@ button {}
 }
 #battlefield-settings-btn {
   position: absolute;
-  top: 18px;
-  right: 18px;
+  top: 1px;
+  right: 5px;
   z-index: 50;
   width: 44px;
   height: 44px;
@@ -2098,7 +2098,7 @@ button {}
 #battlefield-leftbar .profile-panel,
 #battlefield-leftbar .profile,
 #my-profile, #opponent-profile {
-  max-width: 98%;
+  max-width: 100%;
   width: 100%;
   box-sizing: border-box;
   padding: 8px 8px 8px 8px;
@@ -2129,13 +2129,10 @@ button {}
   transition: box-shadow 0.18s, transform 0.18s;
   box-shadow: 0 3px 12px rgba(0,0,0,0.12);
 }
-.card-battlefield:hover,
-.card-battlefield:focus {
-  z-index: 10;
-}
+
 .card-battlefield:hover img,
 .card-battlefield:focus img {
-  transform: scale(1.08) translateY(-10px);
+  transform: scale(1.1) translateY(-5px);
   box-shadow: 0 8px 24px rgba(0,0,0,0.22);
   z-index: 10;
 }
@@ -2177,16 +2174,6 @@ button {}
   align-items: center;
   justify-content: center;
 }
-.void-zone::after {
-  content: "Void";
-  position: absolute;
-  left: 50%;
-  bottom: -1.2em;
-  transform: translateX(-50%);
-  font-size: 0.85em;
-  color: #667;
-  opacity: 0.8;
-}
 .deck-void-row {
   text-align: center;
   margin: 4px 0 4px 0;
@@ -2220,17 +2207,6 @@ button {}
   justify-content: center;
   position: relative;
 }
-.deck-zone::after {
-  content: "Deck";
-  position: absolute;
-  left: 50%;
-  bottom: -1.2em;
-  transform: translateX(-50%);
-  font-size: 0.85em;
-  color: #667;
-  opacity: 0.8;
-}
-
 .card-battlefield .hp-badge {
   font-size: 1em;
   padding: 2px 5px;
