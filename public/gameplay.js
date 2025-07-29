@@ -10,7 +10,7 @@ const PHASE_DISPLAY_NAMES = {draw: "Draw Phase", essence: "Essence Phase", actio
 const PHASE_CLASS = {draw: 'phase-draw', essence: 'phase-essence', action: 'phase-action', end: 'phase-end'};
 const PHASES = [{ turn: 'player', phase: 'draw' },{ turn: 'player', phase: 'essence' },{ turn: 'player', phase: 'action' },{ turn: 'player', phase: 'end' },
   { turn: 'opponent', phase: 'draw' },{ turn: 'opponent', phase: 'essence' },{ turn: 'opponent', phase: 'action' },{ turn: 'opponent', phase: 'end' }];
- let gameState = {
+let gameState = autoSyncGameState({
   playerDeck: [],
   playerHand: [],
   playerCreatures: [],
@@ -23,10 +23,9 @@ const PHASES = [{ turn: 'player', phase: 'draw' },{ turn: 'player', phase: 'esse
   opponentVoid: [],
   playerMainDomain: null,
   opponentMainDomain: null,
-
   turn: "player",
   phase: "draw"
-};
+});
 
 let attackMode = {attackerId: null, attackerZone: null, cancelHandler: null};
 const DEFAULT_CPU_DECKS = [
@@ -2782,7 +2781,7 @@ document.getElementById('mode-player-deck-tile').onclick = function (e) {
 
 // RESET GAMESTATE WHEN A PLAYER LEAVES/CONCEDES
 function resetGameState() {
-  gameState = {
+  gameState = autoSyncGameState({
     playerDeck: [],
     playerHand: [],
     playerCreatures: [],
@@ -2797,7 +2796,7 @@ function resetGameState() {
     opponentMainDomain: null,
     turn: "player",
     phase: "draw"
-  };
+  });
   renderGameState();
   setupDropZones();
   // Optionally hide gameplay UI
@@ -2819,7 +2818,52 @@ if (window.renderDeckSelection) {
   };
 }
 document.addEventListener('DOMContentLoaded', renderModePlayerDeckTile);
-
+// === PROXY GAMESTATE FOR AUTO-SYNC ===
+function autoSyncGameState(obj) {
+  function sync() {
+    if (typeof emitPublicState === "function") emitPublicState();
+  }
+  function makeReactive(target) {
+    return new Proxy(target, {
+      set(t, prop, val) {
+        const r = Reflect.set(t, prop, val);
+        sync();
+        return r;
+      },
+      deleteProperty(t, prop) {
+        const r = Reflect.deleteProperty(t, prop);
+        sync();
+        return r;
+      }
+    });
+  }
+  // Recursively wrap all arrays/objects in gameState
+  function deepProxy(o) {
+    if (Array.isArray(o)) {
+      o.forEach((item, i) => { if (typeof item === "object" && item !== null) o[i] = deepProxy(item); });
+      return new Proxy(o, {
+        set(t, prop, val) {
+          const r = Reflect.set(t, prop, val);
+          sync();
+          return r;
+        },
+        deleteProperty(t, prop) {
+          const r = Reflect.deleteProperty(t, prop);
+          sync();
+          return r;
+        }
+      });
+    } else if (typeof o === "object" && o !== null) {
+      for (const k in o) {
+        if (typeof o[k] === "object" && o[k] !== null) o[k] = deepProxy(o[k]);
+      }
+      return makeReactive(o);
+    } else {
+      return o;
+    }
+  }
+  return deepProxy(obj);
+}
 // Gameplay (menu) header
 document.getElementById('gameplay-settings-btn').onclick = function() {
   document.getElementById('settings-modal').style.display = 'flex';
