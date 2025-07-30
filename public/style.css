@@ -565,16 +565,11 @@ button {}
   display: flex;
   align-items: center;
   gap: 5px;
-  margin-left: 14px;
+  margin-left: 10px;
   color: #ffe066;
   font-weight: bold;
   font-size: 1.08em;
   white-space: nowrap;
-}
-.quest-reward .currency-icon {
-  width: 22px;
-  height: 22px;
-  margin: 0;
 }
 .quest-claimable {
   background: linear-gradient(90deg, #00710d 0%, #009941 100%);
