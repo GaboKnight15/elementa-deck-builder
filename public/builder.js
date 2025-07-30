@@ -273,36 +273,30 @@ deckBannerImg.onclick = function() {
   deckBannerModal.style.display = "flex";
   deckBannerArtList.innerHTML = "";
 
-  // Use only cards in the selected deck
   const deckName = deckMenu.dataset.deckName;
-  const deck = decks[deckName] && decks[deckName].cards ? decks[deckName].cards : decks[deckName] || {};
-  const artworkSet = new Set();
 
-  Object.keys(deck).forEach(cardId => {
-    const card = dummyCards.find(c => c.id === cardId);
-    if (!card || !card.artwork) return;
-    const art = card.artwork;
-   if (!artworkSet.has(art)) {
-      artworkSet.add(art);
+  // Use unlocked banners, like profile banner
+  getUnlockedBanners(function(unlocked) {
+    if (!unlocked || unlocked.length === 0) {
+      deckBannerArtList.innerHTML = "<div style='color:#eee'>No unlocked banners available.</div>";
+      return;
+    }
+
+    unlocked.forEach(bannerUrl => {
       const img = document.createElement('img');
-      img.src = art;
-      img.alt = card.name;
+      img.src = bannerUrl;
+      img.alt = bannerUrl.split('/').pop().replace('.png', '');
       img.className = "deck-banner-choice";
-      img.title = card.name;
+      img.title = img.alt;
       img.onclick = () => {
-        decks[deckName].bannerArt = art;
+        decks[deckName].bannerArt = bannerUrl;
         saveProgress();
         updateDeckBanner(deckName);
         deckBannerModal.style.display = "none";
       };
       deckBannerArtList.appendChild(img);
-    }
+    });
   });
-
-  // Fallback if no artwork in deck
-  if (artworkSet.size === 0) {
-    deckBannerArtList.innerHTML = "<div style='color:#eee'>No cards with artwork in this deck.</div>";
-  }
 };
 
 closeDeckBannerModalBtn.onclick = () => (deckBannerModal.style.display = "none");
