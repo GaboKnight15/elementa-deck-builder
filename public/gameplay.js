@@ -2605,6 +2605,7 @@ function startPrivateGame() {
   if (!window.selectedPlayerDeck) {
   showToast("No deck has been chosen");
   return;
+  }
   // Set up gameState, profiles, etc.
   document.querySelectorAll('section[id$="-section"]').forEach(section => section.classList.remove('active'));
   document.getElementById('gameplay-section').classList.add('active');
