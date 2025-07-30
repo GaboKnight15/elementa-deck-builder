@@ -378,6 +378,9 @@ function generateUniqueId() {
 }
 
 function startSoloGame() {
+  if (!window.selectedPlayerDeck) {
+  showToast("No deck has been chosen");
+  return;
   // Make sure selectedPlayerDeck and selectedCpuDeck are set
   const playerDeckObj = window.selectedPlayerDeck?.deckObj || window.selectedPlayerDeck;
   const cpuDeckObj = window.selectedCpuDeck;
@@ -1020,9 +1023,9 @@ function renderDeckVoidCountRow(rowId, deckCount, voidCount) {
   if (!row) return;
   row.innerHTML = `
     <span style="display:inline-flex;align-items:center;gap:4px;">
-      <img src="OtherImages/Icons/DefaultDeckBox.png" alt="Deck" style="width:22px;height:22px;vertical-align:middle;">
+      <img src="OtherImages/Icons/DefaultDeckBox.png" alt="Deck" style="width:30px;height:30px;">
       <span class="deck-count-number">${deckCount}</span>
-      <img src="OtherImages/Icons/Void.png" alt="Void" style="width:22px;height:22px;vertical-align:middle;margin-left:12px;">
+      <img src="OtherImages/Icons/Void.png" alt="Void" style="width:30px;height:30px;margin-left:10px;">
       <span class="deck-count-number">${voidCount}</span>
     </span>
   `;
@@ -2592,6 +2595,9 @@ function onPrivateLobbyReady() {
 
 // After both decks selected, call this:
 function startPrivateGame() {
+  if (!window.selectedPlayerDeck) {
+  showToast("No deck has been chosen");
+  return;
   // Set up gameState, profiles, etc.
   document.querySelectorAll('section[id$="-section"]').forEach(section => section.classList.remove('active'));
   document.getElementById('gameplay-section').classList.add('active');
@@ -2620,6 +2626,9 @@ function showCasualSearchingModal() {
 }
 // Start matchmaking (emit socket event)
 function startCasualMatchmaking() {
+  if (!window.selectedPlayerDeck) {
+  showToast("No deck has been chosen");
+  return; 
   // Use deck from Modes if selected, fallback to builder slot
   let selectedDeckObj =
     window.selectedPlayerDeck?.deckObj ||
