@@ -2174,13 +2174,7 @@ button {}
   align-items: center;
   justify-content: center;
 }
-.deck-void-row {
-  text-align: center;
-  margin: 4px 0 4px 0;
-  font-size: 1.05em;
-  color: #ffe066;
-  letter-spacing: 0.5px;
-}
+.deck-void-row {}
 .deck-count-number {
   color: #ffe066;
   font-weight: bold;
