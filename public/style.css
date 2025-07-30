@@ -1957,11 +1957,22 @@ button {}
   box-sizing: border-box;
   transition: box-shadow 0.12s;
   overflow: hidden;
-  
 }
 .cpu-deck-option:hover, .default-player-deck-option:hover {
   box-shadow: 0 0 0 3px #ffe066;
   cursor: pointer;
+}
+#player-deck-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+}
+.modal-content cpu-player-modal-content {
+  max-height: 80vh;
+  overflow-y: auto;
+  overflow-x: visible;
+  scrollbar-width: thin;
 }
 .player-deck-option {
   transition: box-shadow 0.18s, border-color 0.18s, transform 0.13s, filter 0.16s;
