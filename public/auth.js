@@ -144,6 +144,7 @@ if (!profilePicMenuBtn) {
         if (typeof cb === "function") cb([defaultBanner]);
       });
   }
+window.getUnlockedBanners = getUnlockedBanners;
   // --- Render Banners ---
   function renderProfileBanners(selectedBanner, unlocked) {
     profileBanners.innerHTML = "";
