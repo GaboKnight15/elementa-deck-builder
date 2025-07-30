@@ -379,8 +379,9 @@ function generateUniqueId() {
 
 function startSoloGame() {
   if (!window.selectedPlayerDeck) {
-  showToast("No deck has been chosen");
-  return;
+    showToast("No deck has been chosen");
+    return;
+  }
   // Make sure selectedPlayerDeck and selectedCpuDeck are set
   const playerDeckObj = window.selectedPlayerDeck?.deckObj || window.selectedPlayerDeck;
   const cpuDeckObj = window.selectedCpuDeck;
@@ -2603,8 +2604,8 @@ function onPrivateLobbyReady() {
 // After both decks selected, call this:
 function startPrivateGame() {
   if (!window.selectedPlayerDeck) {
-  showToast("No deck has been chosen");
-  return;
+    showToast("No deck has been chosen");
+    return;
   }
   // Set up gameState, profiles, etc.
   document.querySelectorAll('section[id$="-section"]').forEach(section => section.classList.remove('active'));
@@ -2635,8 +2636,9 @@ function showCasualSearchingModal() {
 // Start matchmaking (emit socket event)
 function startCasualMatchmaking() {
   if (!window.selectedPlayerDeck) {
-  showToast("No deck has been chosen");
-  return; 
+    showToast("No deck has been chosen");
+    return; 
+  }
   // Use deck from Modes if selected, fallback to builder slot
   let selectedDeckObj =
     window.selectedPlayerDeck?.deckObj ||
