@@ -331,8 +331,6 @@ defaultDecks.forEach(deck => {
   div.style.height = '140px';
   div.style.border = '3px solid ' + deck.color;
   div.style.borderRadius = '18px';
-  div.style.background = '#232a3c';
-  div.style.margin = '10px';
   div.style.display = 'inline-block';
   div.style.overflow = 'hidden';
 
