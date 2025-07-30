@@ -1662,12 +1662,19 @@ function getCurrentPhaseIndex() {
     p => p.turn === gameState.turn && p.phase === gameState.phase
   );
 }
+function getCurrentViewTurn() {
+  // If multiplayer, compare gameState.turn and your player identity
+  // For this example, assume you are always "player" and opponent is "opponent"
+  // If it's "player", show "Your turn". If "opponent", show "Opponent's turn"
+  return gameState.turn === "player" ? "Your turn" : "Opponent's turn";
+}
 function updatePhase() {
   const phaseBadge = document.getElementById('phase-badge');
   const phaseNameSpan = document.getElementById('phase-name');
   const nextPhaseBtn = document.getElementById('next-phase-btn');
   phaseBadge.classList.remove('opponent-turn', 'player-turn');
   phaseBadge.classList.add(gameState.turn === 'opponent' ? 'opponent-turn' : 'player-turn');
+  if (phasePlayerSpan) phasePlayerSpan.textContent = getCurrentViewTurn();
   // Display the current phase on the button
   if (nextPhaseBtn) {
     nextPhaseBtn.textContent = PHASE_DISPLAY_NAMES[gameState.phase] || gameState.phase;
@@ -1677,7 +1684,7 @@ function updatePhase() {
     phaseNameSpan.textContent = PHASE_DISPLAY_NAMES[gameState.phase] || gameState.phase;
   }
   if (gameState.phase === "essence") {
-    doEssencePhase(gameState.turn);
+    essencePhase(gameState.turn);
   }
   if (gameState.turn === "opponent") {
     setTimeout(runCpuTurn, 500);
@@ -2144,7 +2151,7 @@ function generateEssenceForCard(cardObj) {
     }
   }
 }
-function doEssencePhase(playerOrOpponent) {
+function essencePhase(playerOrOpponent) {
   // Get the correct arrays
   const domains = playerOrOpponent === "player" ? gameState.playerDomains : gameState.opponentDomains;
   const creatures = playerOrOpponent === "player" ? gameState.playerCreatures : gameState.opponentCreatures;
@@ -2767,7 +2774,9 @@ function emitPublicState() {
     handCount: gameState.playerHand.length,
     creatures: gameState.playerCreatures.map(stripCardForSync),
     domains: gameState.playerDomains.map(stripCardForSync),
-    voidCards: gameState.playerVoid.map(stripCardForSync)
+    voidCards: gameState.playerVoid.map(stripCardForSync),
+    phase: gameState.phase,
+    turn: gameState.turn
   };
   window.socket.emit('player state', window.currentRoomId, publicState);
 }
@@ -2891,6 +2900,8 @@ if (window.socket) {
     gameState.opponentCreatures = state.creatures || [];
     gameState.opponentDomains = state.domains || [];
     gameState.opponentVoid = state.voidCards || [];
+    gameState.opponentPhase = state.phase;
+    gameState.opponentTurn = state.turn;
     renderGameState();
   });
 }
