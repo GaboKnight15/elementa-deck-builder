@@ -599,7 +599,7 @@ function renderAchievementsCategory(category) {
         <img src="${ach.image || 'images/achievements/placeholder.png'}" alt="Achievement" class="achievement-image" style="width:40px;height:40px;object-fit:contain;margin-right:12px;">
         <div style="flex:1;">
           <div class="quest-desc" style="font-weight:bold;color:#ffe066;">${ach.description}</div>
-          <div style="display:flex;align-items:center;gap:12px;">
+          <div style="display:flex;align-items:center;">
             <div style="flex:1;">
               <div class="quest-progress-bar-wrap" style="margin-bottom:2px;">
                 <div class="quest-progress-bar" style="width:${percent}%;"></div>
@@ -607,7 +607,7 @@ function renderAchievementsCategory(category) {
               <div style="font-size:0.96em;color:#fff;text-align:left;">${progress.progress} / ${ach.goal}</div>
             </div>
             <div class="quest-reward" style="display:flex;align-items:center;gap:4px;min-width:70px;justify-content:flex-end;">
-              <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins" style="width:18px;">
+              <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins">
               <span style="font-weight:bold;font-size:1.1em;color:#ffe066;">+${ach.reward.amount}</span>
             </div>
           </div>
