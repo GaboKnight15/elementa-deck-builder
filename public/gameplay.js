@@ -474,7 +474,6 @@ function setupBattlefieldGame() {
   gameState.opponentDomains = [];
   gameState.opponentVoid = [];
 
-  gameState.turn = "player";
   gameState.phase = "draw";
   
   // Show gameplay UI    
@@ -521,6 +520,9 @@ function setupBattlefieldGame() {
   renderProfile('my-profile', getMyProfileInfo());
   // Show "Game Start" animation, then domain/champion selection, then draw hand
   showGameStartAnimation(() => {
+    showCoinFlipModal(function(whoStarts) {
+      gameState.turn = whoStarts;
+      gameState.phase = "draw";
     initiateMainDomainAndChampionSelection(gameState.playerDeck, () => {
       // After selection, draw opening hand
       const INITIAL_HAND_SIZE = 5;
@@ -531,6 +533,7 @@ function setupBattlefieldGame() {
       }
       renderGameState();
       setupDropZones();
+      });
     });
   });
 }
@@ -2768,6 +2771,77 @@ function renderModePlayerDeckTile() {
       window.showPlayerDeckModal();
   };
 }
+
+
+
+function showCoinFlipModal(onResult) {
+  // Create overlay/modal
+  let modal = document.createElement('div');
+  modal.className = 'modal';
+  modal.style.display = 'flex';
+  modal.style.position = 'fixed';
+  modal.style.top = 0;
+  modal.style.left = 0;
+  modal.style.width = '100vw';
+  modal.style.height = '100vh';
+  modal.style.alignItems = 'center';
+  modal.style.justifyContent = 'center';
+  modal.style.zIndex = 9999;
+  modal.style.background = 'rgba(16,20,24,0.92)';
+  modal.onclick = e => { if (e.target === modal) modal.remove(); };
+
+  // Flip logic
+  const isHeads = Math.random() < 0.5;
+  const headsImg = "OtherImages/Currency/Coins.png"; // Your dragon head image
+  const tailsImg = "OtherImages/Currency/CoinsTails.png"; // <-- Submit this image!
+  const chosenImg = isHeads ? headsImg : tailsImg;
+  const chosenText = isHeads ? "Heads" : "Tails";
+
+  // Coin image and message
+  const coin = document.createElement('img');
+  coin.src = headsImg;
+  coin.style.width = "120px";
+  coin.style.transition = "transform 1.2s cubic-bezier(.22,1.14,.32,1)";
+  coin.style.transform = "rotateY(0deg)";
+  coin.style.display = "block";
+  coin.style.margin = "0 auto";
+
+  const msg = document.createElement('div');
+  msg.style.color = "#ffe066";
+  msg.style.fontSize = "2em";
+  msg.style.textAlign = "center";
+  msg.style.marginTop = "24px";
+  msg.innerText = "Flipping the coin...";
+
+  // Compose modal
+  let content = document.createElement('div');
+  content.appendChild(coin);
+  content.appendChild(msg);
+  modal.appendChild(content);
+  document.body.appendChild(modal);
+
+  // Animate flip
+  setTimeout(() => {
+    coin.style.transform = "rotateY(540deg)";
+    setTimeout(() => {
+      coin.src = chosenImg;
+      msg.innerText = chosenText + "!\n" + (isHeads ? "You go first!" : "Opponent goes first!");
+      // Let player click to continue
+      const btn = document.createElement('button');
+      btn.innerText = "Start Game";
+      btn.className = "btn-primary";
+      btn.style.marginTop = "24px";
+      btn.onclick = () => {
+        modal.remove();
+        if (onResult) onResult(isHeads ? "player" : "opponent");
+      };
+      content.appendChild(btn);
+    }, 1100);
+  }, 400);
+}
+
+
+// SERVER SYNCHING //
 function emitPublicState() {
   if (!window.socket || !window.currentRoomId) return;
   const publicState = {
