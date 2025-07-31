@@ -101,21 +101,32 @@ document.addEventListener('DOMContentLoaded', function () {
     firebase.firestore().collection('users').doc(user.uid).get()
       .then(function(doc) {
         if (doc.exists && doc.data().unlockedAvatars) {
-          playerUnlockedAvatars = doc.data().unlockedAvatars;  
+          window.playerUnlockedAvatars = doc.data().unlockedAvatars;  
           if (typeof cb === "function") cb(doc.data().unlockedAvatars);
           return;
         }
         if (typeof cb === "function") cb([defaultIcon]);
       });
   } 
-    
-if (!profilePicMenuBtn) {
-  // Create the button if it doesn't exist
-  profilePicMenuBtn = document.createElement('button');
-  profilePicMenuBtn.id = 'profile-pic-btn';
-  profilePicMenuBtn.style.display = 'none';
-  document.body.appendChild(profilePicMenuBtn);
-}
+
+  function getUnlockedBanners(cb) {
+    const user = auth.currentUser;
+    if (!user) {
+      if (typeof cb === "function") cb([defaultBanner]);
+      return;
+    }
+    firebase.firestore().collection('users').doc(user.uid).get()
+      .then(function(doc) {
+        if (doc.exists && doc.data().unlockedBanners) {
+          // Update global just like avatars
+          window.playerUnlockedBanners = doc.data().unlockedBanners;
+          if (typeof cb === "function") cb(doc.data().unlockedBanners);
+          return;
+        }
+        if (typeof cb === "function") cb([defaultBanner]);
+      });
+  }
+
   // --- Render Profile Avatars ---
   function renderProfileIcons(selectedIcon, unlocked) {
     profileIcons.innerHTML = "";
@@ -128,23 +139,6 @@ if (!profilePicMenuBtn) {
       profileIcons.appendChild(img);
     });
   }
-  function getUnlockedBanners(cb) {
-    const user = auth.currentUser;
-    if (!user) {
-      if (typeof cb === "function") cb([defaultBanner]);
-      return;
-    }
-    firebase.firestore().collection('users').doc(user.uid).get()
-      .then(function(doc) {
-        if (doc.exists && doc.data().unlockedBanners) {
-          playerUnlockedBanners = doc.data().unlockedBanners;   
-          if (typeof cb === "function") cb(doc.data().unlockedBanners);
-          return;
-        }
-        if (typeof cb === "function") cb([defaultBanner]);
-      });
-  }
-window.getUnlockedBanners = getUnlockedBanners;
   // --- Render Banners ---
   function renderProfileBanners(selectedBanner, unlocked) {
     profileBanners.innerHTML = "";
@@ -211,6 +205,7 @@ profileIconModal.onclick = function(e) {
       profileBannerModal.style.display = 'none';
     }
   };
+
   // --- Banner Selection ---
   function selectProfileBanner(bannerUrl) {
     const user = auth.currentUser;
@@ -256,20 +251,28 @@ profileArea.onclick = function(e) {
     profileMenu.style.left = `${left}px`;
   }
 };
+    
+if (!profilePicMenuBtn) {
+  // Create the button if it doesn't exist
+  profilePicMenuBtn = document.createElement('button');
+  profilePicMenuBtn.id = 'profile-pic-btn';
+  profilePicMenuBtn.style.display = 'none';
+  document.body.appendChild(profilePicMenuBtn);
+}
 
 // Hide menu on outside click (like other menus)
-document.body.addEventListener('click', function(e) {
-  if (
-    profileMenu.style.display === 'block' &&
-    !profileMenu.contains(e.target) &&
-    !profileArea.contains(e.target)
-  ) {
-    profileMenu.style.display = 'none';
-  }
-});
+    document.body.addEventListener('click', function(e) {
+      if (
+        profileMenu.style.display === 'block' &&
+        !profileMenu.contains(e.target) &&
+        !profileArea.contains(e.target)
+      ) {
+        profileMenu.style.display = 'none';
+      }
+    });
 
 // Prevent menu from closing if clicking inside
-profileMenu.onclick = function(e) {
-  e.stopPropagation();
-};
+    profileMenu.onclick = function(e) {
+      e.stopPropagation();
+    };
 });
