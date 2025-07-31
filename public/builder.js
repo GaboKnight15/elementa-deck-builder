@@ -465,6 +465,7 @@ function createCardBuilder(card, ownedCount) {
     div.setAttribute('draggable', 'true');
     div.addEventListener('dragstart', function(e) {
       e.dataTransfer.setData('card-id', card.id);
+      e.dataTransfer.setData('from', 'gallery');
       e.dataTransfer.setDragImage(div, div.offsetWidth / 2, div.offsetHeight / 2);
       div.classList.add('dragging');
   });
@@ -526,12 +527,67 @@ deckList.addEventListener('drop', function(e) {
   e.preventDefault();
   deckList.classList.remove('drag-over');
   const cardId = e.dataTransfer.getData('card-id');
+  const from = e.dataTransfer.getData('from');
   if(cardId) {
-    addCardToDeck(cardId);
+    if (from === 'gallery') {
+      addCardToDeck(cardId);
+      updateDeckDisplay();
+      renderBuilder();
+    }
+  }
+});
+
+// --- DRAG OUT TO REMOVE FROM DECK PANEL --- //
+deckList.addEventListener('dragstart', function(e) {
+  // Find the card element being dragged from deckList
+  const li = e.target.closest('li.deck-draggable');
+  if (!li) return;
+  const cardId = li.getAttribute('data-card-id');
+  if (cardId) {
+    e.dataTransfer.setData('card-id', cardId);
+    e.dataTransfer.setData('from', 'deck');
+    // Optional: set drag image to card image
+    const img = li.querySelector('img');
+    if (img) e.dataTransfer.setDragImage(img, img.width / 2, img.height / 2);
+    li.classList.add('dragging');
+  }
+});
+deckList.addEventListener('dragend', function(e) {
+  // If not dropped on deckList, remove card
+  const li = e.target.closest('li.deck-draggable');
+  if (!li) return;
+  li.classList.remove('dragging');
+  // Check if drop was outside deckList
+  if (e.dataTransfer.dropEffect === 'none') {
+    const cardId = li.getAttribute('data-card-id');
+    if (cardId) {
+      removeCardFromDeck(cardId);
+      updateDeckDisplay();
+      renderBuilder();
+    }
+  }
+});
+
+// --- Allow dropping cards anywhere in document (to trigger removal if dropped outside deckList) --- //
+document.addEventListener('drop', function(e) {
+  const cardId = e.dataTransfer.getData('card-id');
+  const from = e.dataTransfer.getData('from');
+  // If dropped outside of deckList and from deck, remove
+  if (from === 'deck' && !e.target.closest('#deck-list')) {
+    removeCardFromDeck(cardId);
     updateDeckDisplay();
     renderBuilder();
   }
 });
+// --- Utility for removing a card from deck (removes one copy) --- //
+function removeCardFromDeck(cardId) {
+  const deck = getCurrentDeck();
+  if (!deck[cardId]) return;
+  deck[cardId]--;
+  if (deck[cardId] <= 0) delete deck[cardId];
+  setCurrentDeck(deck);
+}
+
 // DECK CREATION LOGIC
 function updateDeckDisplay() {
   const deck = getCurrentDeck();
@@ -573,44 +629,58 @@ function updateDeckDisplay() {
     heading.style.marginBottom = "2px";
     deckList.appendChild(heading);
 
-  for (const { card, count } of sections[key]) {
-  const li = document.createElement('li');
-  li.style.display = 'flex';
-  li.style.alignItems = 'center';
-  li.style.gap = '8px';
+    for (const { card, count } of sections[key]) {
+      const li = document.createElement('li');
+      li.style.display = 'flex';
+      li.style.alignItems = 'center';
+      li.style.gap = '8px';
+      li.classList.add('deck-draggable');
+      li.setAttribute('data-card-id', card.id);
+      li.setAttribute('draggable', 'true');
+      // Drag support for removing
+      li.addEventListener('dragstart', function(e) {
+        e.dataTransfer.setData('card-id', card.id);
+        e.dataTransfer.setData('from', 'deck');
+        if (li.querySelector('img')) {
+          const img = li.querySelector('img');
+          e.dataTransfer.setDragImage(img, img.width / 2, img.height / 2);
+        }
+        li.classList.add('dragging');
+      });
+      li.addEventListener('dragend', function(e) {
+        li.classList.remove('dragging');
+        // If not dropped on deckList, remove card
+        // (Handed by global drop listener)
+      });
+    
+      const img = document.createElement('img');
+      img.src = card.image;
+      img.alt = card.name;
+      img.style.width = '56px';
+      img.style.height = 'auto';
+      img.style.borderRadius = '6px';
+      img.style.display = 'block';
 
-  const img = document.createElement('img');
-  img.src = card.image;
-  img.alt = card.name;
-  img.style.width = '56px';
-  img.style.height = 'auto';
-  img.style.borderRadius = '6px';
-  img.style.display = 'block';
+      // COUNTER BADGE
+      const badge = document.createElement('span');
+      badge.textContent = `×${count}`;
+      badge.className = 'deck-count-badge';
 
-  // COUNTER BADGE
-  const badge = document.createElement('span');
-  badge.textContent = `×${count}`;
-  badge.className = 'deck-count-badge';
-
-  const removeBtn = document.createElement('button');
-  removeBtn.className = 'icon-btn-negative';
-  removeBtn.textContent = '−';
-  removeBtn.onclick = (e) => {
-    e.stopPropagation();
-    deck[card.id]--;
-    if (deck[card.id] <= 0) {
-      delete deck[card.id];
+      const removeBtn = document.createElement('button');
+      removeBtn.className = 'icon-btn-negative';
+      removeBtn.textContent = '−';
+      removeBtn.onclick = (e) => {
+        e.stopPropagation();
+        removeCardFromDeck(card.id);
+        updateDeckDisplay();
+        renderBuilder();
+      };
+      li.appendChild(img);
+      li.appendChild(badge);
+      li.appendChild(removeBtn);
+      deckList.appendChild(li);
+      }
     }
-    setCurrentDeck(deck);
-    updateDeckDisplay();
-    renderBuilder();
-  };
-  li.appendChild(img);
-  li.appendChild(badge);
-  li.appendChild(removeBtn);
-  deckList.appendChild(li);
-  }
-}
   cardCount.textContent = total;
 }
 function getCardCategory(card) {
