@@ -139,6 +139,151 @@ const CLICK_BURST_PRESET = {
   interactivity: { detect_on: 'canvas', events: { onhover: { enable: false }, onclick: { enable: false }, resize: true } },
   retina_detect: true
 };
+function createStarBurstAt(x, y, options = {}) {
+  const {
+    particleCount = 22,
+    radius = 43, // max burst radius in px
+    particleSize = 2,
+    duration = 750, // ms
+    colors = ['#ffd700', '#fffbe2', '#fff', '#ffe066', '#b3e0ff', '#cfa0ff']
+  } = options;
+
+  // Create canvas overlay
+  const canvas = document.createElement('canvas');
+  canvas.width = radius * 2;
+  canvas.height = radius * 2;
+  canvas.style.position = 'fixed';
+  canvas.style.left = (x - radius) + 'px';
+  canvas.style.top = (y - radius) + 'px';
+  canvas.style.pointerEvents = 'none';
+  canvas.style.zIndex = 9999;
+  document.body.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
+
+  // Generate particles
+  const particles = [];
+  for (let i = 0; i < particleCount; i++) {
+    const angle = (2 * Math.PI * i) / particleCount + (Math.random() * 0.3 - 0.15); // little random spread
+    const speed = (0.75 + Math.random() * 0.35) * radius; // px/sec
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    particles.push({
+      angle,
+      speed,
+      color,
+      size: particleSize + Math.random(),
+      // For star: random rotation
+      rotate: Math.random() * Math.PI,
+      // Start at center
+      x: radius, y: radius
+    });
+  }
+
+  let startTime;
+  function draw(now) {
+    if (!startTime) startTime = now;
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw all particles
+    particles.forEach(p => {
+      // Move outward with easing
+      const dist = progress * p.speed * (1 - 0.5 * progress); // ease out and slow at end
+      const px = p.x + Math.cos(p.angle) * dist;
+      const py = p.y + Math.sin(p.angle) * dist;
+      // Fade out near the edge: alpha diminishes with progress (faster at the end)
+      const alpha = 1 - Math.pow(progress, 1.5);
+
+      // Draw a little star (5-point)
+      drawStar(ctx, px, py, p.size, p.size * 2.1, 5, p.color, alpha, p.rotate);
+    });
+
+    if (progress < 1) {
+      requestAnimationFrame(draw);
+    } else {
+      canvas.remove();
+    }
+  }
+  requestAnimationFrame(draw);
+}
+
+// Helper: draw a simple 5-pointed star
+function drawStar(ctx, x, y, r1, r2, points, color, alpha, rotation = 0) {
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.beginPath();
+  ctx.translate(x, y);
+  ctx.rotate(rotation);
+  for (let i = 0; i < points * 2; i++) {
+    const angle = (Math.PI * i) / points;
+    const r = i % 2 === 0 ? r2 : r1;
+    ctx.lineTo(Math.cos(angle) * r, Math.sin(angle) * r);
+  }
+  ctx.closePath();
+  ctx.fillStyle = color;
+  ctx.shadowColor = color;
+  ctx.shadowBlur = 4;
+  ctx.fill();
+  ctx.restore();
+}
+
+// Attach click event for custom burst
+document.addEventListener('click', function(e) {
+  createStarBurstAt(e.clientX, e.clientY);
+});
+
+/**
+ * --- Mouse Trail: tiny fading stars (particles.js for performance) ---
+ */
+const TRAIL_PARTICLE_PRESET = {
+  particles: {
+    number: { value: 16, density: { enable: true, value_area: 60 } },
+    color: { value: ['#ffe066', '#fff', '#b3e0ff'] },
+    shape: { type: 'star' },
+    opacity: { value: 0.7, random: true, anim: { enable: true, speed: 1.2, opacity_min: 0.1, sync: false } },
+    size: { value: 1.6, random: true, anim: { enable: true, speed: 4, size_min: 0.6, sync: false } },
+    line_linked: { enable: false },
+    move: { enable: true, speed: 2, direction: 'top', random: true, straight: false, out_mode: 'out', bounce: false }
+  },
+  interactivity: { detect_on: 'canvas', events: { onhover: { enable: false }, onclick: { enable: false }, resize: true } },
+  retina_detect: true
+};
+
+// Helper to spawn a temporary particle effect at a screen position for trail
+function spawnTrailParticles(x, y, preset = TRAIL_PARTICLE_PRESET, duration = 170, size = 28) {
+  const effectId = 'mouse-trail-' + Date.now() + Math.floor(Math.random()*1000);
+  const effectDiv = document.createElement('div');
+  effectDiv.id = effectId;
+  effectDiv.style.position = 'fixed';
+  effectDiv.style.pointerEvents = 'none';
+  effectDiv.style.left = (x - size/2) + 'px';
+  effectDiv.style.top = (y - size/2) + 'px';
+  effectDiv.style.width = size + 'px';
+  effectDiv.style.height = size + 'px';
+  effectDiv.style.zIndex = 9999;
+  document.body.appendChild(effectDiv);
+
+  setTimeout(() => {
+    if (window.particlesJS) {
+      particlesJS(effectId, preset);
+    }
+  }, 0);
+
+  setTimeout(() => {
+    if (effectDiv.parentNode) effectDiv.parentNode.removeChild(effectDiv);
+  }, duration);
+}
+
+// --- Mouse trail effect: very frequent, very small
+let lastTrailTime = 0;
+document.addEventListener('mousemove', function(e) {
+  const now = Date.now();
+  if (now - lastTrailTime > 10) {
+    spawnTrailParticles(e.clientX, e.clientY, TRAIL_PARTICLE_PRESET, 150, 22);
+    lastTrailTime = now;
+  }
+});
 function applyCardParticles({ cardDiv, effectKey, particlesConfig }) {
   const safeId = String(effectKey).replace(/[^a-zA-Z0-9_-]/g, "_");
   const effectId = `card-effect-${safeId}`;
