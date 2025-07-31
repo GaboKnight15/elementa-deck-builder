@@ -264,6 +264,10 @@ closeHighlightArtBtn.onclick = () => highlightArtModal.style.display = "none";
 
 function updateDeckBanner(deckName) {
   const deck = decks[deckName] || {};
+  deckBannerImg.onerror = function() {
+    this.onerror = null;
+    this.src = "CardImages/Banners/DefaultBanner.png";
+  };
   deckBannerImg.src = deck.bannerArt || "CardImages/Banners/DefaultBanner.png";
 }
 
