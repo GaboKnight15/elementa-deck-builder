@@ -155,9 +155,14 @@ auth.onAuthStateChanged(function(user) {
     window.playerAchievements = {};
     window.playerLevel = 1;
     window.playerExp = 0;
-    window.playerUnlockedAvatars = [typeof defaultIcon !== "undefined" ? defaultIcon : ""];
-    window.playerUnlockedBanners = [typeof defaultBanner !== "undefined" ? defaultBanner : ""];
+    window.playerUnlockedAvatars = [];
+    window.unlockedAvatars = [];
+    window.playerUnlockedBanners = [];
+    window.unlockedBanners = [];
     window.playerUnlockedCardbacks = [];
+    window.unlockedCardbacks = [];
+    window.playerUnlockedCosmetics = [];
+    window.unlockedCosmetics = [];
     renderPlayerLevel();
     renderGallery();
     updateDeckDisplay();
