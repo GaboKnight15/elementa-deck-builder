@@ -273,6 +273,3 @@ profileMenu.onclick = function(e) {
   e.stopPropagation();
 };
 });
-window.playerUnlockedAvatars = doc.data().unlockedAvatars;
-window.playerUnlockedBanners = doc.data().unlockedBanners;
-window.playerUnlockedCardbacks = doc.data().unlockedCardbacks;
