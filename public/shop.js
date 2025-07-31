@@ -1,7 +1,14 @@
 // ========================== 
 // === SHOP LOGIC ===
 // ========================== 
-
+window.playerUnlockedAvatars = window.playerUnlockedAvatars || [];
+window.unlockedAvatars = window.unlockedAvatars || [];
+window.playerUnlockedBanners = window.playerUnlockedBanners || [];
+window.unlockedBanners = window.unlockedBanners || [];
+window.playerUnlockedCardbacks = window.playerUnlockedCardbacks || [];
+window.unlockedCardbacks = window.unlockedCardbacks || [];
+window.playerUnlockedCosmetics = window.playerUnlockedCosmetics || [];
+window.unlockedCosmetics = window.unlockedCosmetics || [];
 // DOM references 
 const shopSection = document.getElementById('shop-section');
 const shopContainer = document.getElementById('shop-container');
