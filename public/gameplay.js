@@ -2793,7 +2793,7 @@ function showCoinFlipModal(onResult) {
   // Flip logic
   const isHeads = Math.random() < 0.5;
   const headsImg = "OtherImages/Currency/Coins.png"; // Your dragon head image
-  const tailsImg = "OtherImages/Currency/CoinsTails.png"; // <-- Submit this image!
+  const tailsImg = "OtherImages/Currency/Coins.png"; // <-- Submit this image!
   const chosenImg = isHeads ? headsImg : tailsImg;
   const chosenText = isHeads ? "Heads" : "Tails";
 
