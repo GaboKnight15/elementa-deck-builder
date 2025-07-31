@@ -419,7 +419,8 @@ function getUnlockedBanners() {
   return (window.playerUnlockedBanners || window.unlockedBanners || []);
 }
 function setUnlockedBanners(arr) {
-  playerUnlockedBanners = arr;  
+  window.playerUnlockedBanners = arr;
+  window.unlockedBanners = arr;
   saveProgress();
 }
 function getUnlockedCardbacks() {
