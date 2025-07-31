@@ -402,21 +402,21 @@ function renderShopPacks() {
 }
 
 function getUnlockedAvatars() {
-  return playerUnlockedAvatars || [];
+  return (window.playerUnlockedAvatars || window.unlockedAvatars || []);
 }
 function setUnlockedAvatars(arr) {
   playerUnlockedAvatars = arr; 
   saveProgress();
 }
 function getUnlockedBanners() {
-  return playerUnlockedBanners || [];
+  return (window.playerUnlockedBanners || window.unlockedBanners || []);
 }
 function setUnlockedBanners(arr) {
   playerUnlockedBanners = arr;  
   saveProgress();
 }
 function getUnlockedCardbacks() {
-  return playerUnlockedCardbacks || [];
+  return (window.playerUnlockedCardbacks || window.unlockedCardbacks || []);
 }
 function setUnlockedCardbacks(arr) {
   playerUnlockedCardbacks = arr;
