@@ -148,3 +148,37 @@ function getParticlePresetForCard(cardData) {
   });
   return mergedConfig;
 }
+// Helper to spawn effect at (x, y)
+function spawnParticleEffectAt(x, y, presetKey = 'white', duration = 600) {
+  const effectId = 'mouse-effect-' + Date.now() + Math.floor(Math.random()*1000);
+  const effectDiv = document.createElement('div');
+  effectDiv.id = effectId;
+  effectDiv.style.position = 'fixed';
+  effectDiv.style.pointerEvents = 'none';
+  effectDiv.style.left = (x - 40) + 'px'; // center effect
+  effectDiv.style.top = (y - 40) + 'px';
+  effectDiv.style.width = '80px';
+  effectDiv.style.height = '80px';
+  effectDiv.style.zIndex = 9999;
+  document.body.appendChild(effectDiv);
+
+  setTimeout(() => {
+    if (window.particlesJS) {
+      particlesJS(effectId, PARTICLE_PRESETS[presetKey]);
+    }
+  }, 0);
+
+  setTimeout(() => {
+    if (effectDiv.parentNode) effectDiv.parentNode.removeChild(effectDiv);
+  }, duration);
+}
+
+// Mouse trail: On move
+document.addEventListener('mousemove', function(e) {
+  spawnParticleEffectAt(e.clientX, e.clientY, 'yellow', 300); // color & duration
+});
+
+// Click burst: On click
+document.addEventListener('click', function(e) {
+  spawnParticleEffectAt(e.clientX, e.clientY, 'red', 700); // color & duration
+});
