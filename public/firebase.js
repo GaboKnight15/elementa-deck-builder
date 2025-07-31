@@ -184,6 +184,8 @@ function signup() {
           profileBanner: defaultBanner,
           unlockedAvatars: [defaultIcon],
           unlockedBanners: [defaultBanner],
+          unlockedCardbacks: [],
+          unlockedCosmetics: [],
           // --- Progress fields ---
           collection: {},
           deckSlots: ["Deck 1"],
