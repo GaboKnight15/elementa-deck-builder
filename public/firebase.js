@@ -84,14 +84,20 @@ window.playerCollection      = typeof data.collection !== "undefined" ? data.col
 window.favoriteCards         = Array.isArray(data.favoriteCards) ? data.favoriteCards : [];
 window.playerQuests          = typeof data.quests !== "undefined" ? data.quests : {};
 window.playerAchievements    = typeof data.achievements !== "undefined" ? data.achievements : {};
+      
 window.playerUnlockedAvatars = Array.isArray(data.unlockedAvatars) ? data.unlockedAvatars : [];
-window.unlockedAvatars       = window.playerUnlockedAvatars;
+window.unlockedAvatars = window.playerUnlockedAvatars;
+      
 window.playerUnlockedBanners = Array.isArray(data.unlockedBanners) ? data.unlockedBanners : [];
-window.unlockedBanners       = window.playerUnlockedBanners;
+window.unlockedBanners = window.playerUnlockedBanners;
+      
 window.playerUnlockedCardbacks = Array.isArray(data.unlockedCardbacks) ? data.unlockedCardbacks : [];
-window.unlockedCardbacks     = window.playerUnlockedCardbacks;
+window.unlockedCardbacks = window.playerUnlockedCardbacks;
+      
 window.playerUnlockedCosmetics = Array.isArray(data.unlockedCosmetics) ? data.unlockedCosmetics : [];
-window.playerFoilCards       = typeof data.foilCards !== "undefined" ? data.foilCards : {};
+window.unlockedCosmetics = window.playerUnlockedCosmetics;
+      
+window.playerFoilCards = typeof data.foilCards !== "undefined" ? data.foilCards : {};
       if (typeof cb === "function") cb();
     })
     .catch((error) => {
