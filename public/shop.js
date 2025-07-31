@@ -441,7 +441,8 @@ function renderShopCosmetics({
 }) {
   const grid = document.getElementById(gridId);
   if (!grid) return;
-  let unlocked = getUnlocked();      
+  let unlocked = (typeof getUnlocked === "function" ? getUnlocked() : []);
+  if (!Array.isArray(unlocked)) unlocked = [];     
   grid.innerHTML = '';
 
   options.forEach(src => {
