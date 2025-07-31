@@ -495,8 +495,8 @@ function createCardBuilder(card, ownedCount) {
     ownedBadge.textContent = available;
     div.appendChild(ownedBadge);
       // GRAY OUT IF unavailable
-    if (available <= 0) {
-        div.classList.add('card-unavailable'); // You can style this class in CSS
+    if (available <= 0 || !canAddCard(card, currentInDeck, ownedCount)) {
+        div.classList.add('card-unavailable');
     }
   
     const btn = document.createElement('button');
