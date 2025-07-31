@@ -1,4 +1,4 @@
-// SETTINGS MENU LOGIC (Popover version, works across all sections)
+// SETTINGS MENU LOGIC (Popover version, works across all sections) 
 document.addEventListener("DOMContentLoaded", function() {
   // Support all settings icons in all sections
   const burgerIds = [
