@@ -104,6 +104,19 @@ const PARTICLE_PRESETS = {
     retina_detect: true
   }
 };
+const STAR_PARTICLE_PRESET = {
+  particles: {
+    number: { value: 40, density: { enable: true, value_area: 120 } },
+    color: { value: ['#ffe066', '#fff700', '#ffd700', '#fffde4', '#fff', '#b3e0ff', '#cfa0ff'] },
+    shape: { type: 'star' },
+    opacity: { value: 0.8, random: true, anim: { enable: true, speed: 1, opacity_min: 0.3, sync: false } },
+    size: { value: 3, random: true, anim: { enable: true, speed: 5, size_min: 1.5, sync: false } },
+    line_linked: { enable: false },
+    move: { enable: true, speed: 3, direction: 'top', random: true, straight: false, out_mode: 'out', bounce: false }
+  },
+  interactivity: { detect_on: 'canvas', events: { onhover: { enable: false }, onclick: { enable: false }, resize: true } },
+  retina_detect: true
+};
 function applyCardParticles({ cardDiv, effectKey, particlesConfig }) {
   const safeId = String(effectKey).replace(/[^a-zA-Z0-9_-]/g, "_");
   const effectId = `card-effect-${safeId}`;
@@ -148,23 +161,23 @@ function getParticlePresetForCard(cardData) {
   });
   return mergedConfig;
 }
-// Helper to spawn effect at (x, y)
-function spawnParticleEffectAt(x, y, presetKey = 'white', duration = 600) {
+// Helper to spawn a temporary particle effect at a screen position
+function spawnParticleEffectAt(x, y, preset = STAR_PARTICLE_PRESET, duration = 430, size = 44) {
   const effectId = 'mouse-effect-' + Date.now() + Math.floor(Math.random()*1000);
   const effectDiv = document.createElement('div');
   effectDiv.id = effectId;
   effectDiv.style.position = 'fixed';
   effectDiv.style.pointerEvents = 'none';
-  effectDiv.style.left = (x - 40) + 'px'; // center effect
-  effectDiv.style.top = (y - 40) + 'px';
-  effectDiv.style.width = '80px';
-  effectDiv.style.height = '80px';
+  effectDiv.style.left = (x - size/2) + 'px';
+  effectDiv.style.top = (y - size/2) + 'px';
+  effectDiv.style.width = size + 'px';
+  effectDiv.style.height = size + 'px';
   effectDiv.style.zIndex = 9999;
   document.body.appendChild(effectDiv);
 
   setTimeout(() => {
     if (window.particlesJS) {
-      particlesJS(effectId, PARTICLE_PRESETS[presetKey]);
+      particlesJS(effectId, preset);
     }
   }, 0);
 
@@ -173,12 +186,19 @@ function spawnParticleEffectAt(x, y, presetKey = 'white', duration = 600) {
   }, duration);
 }
 
-// Mouse trail: On move
+// --- Mouse trail effect ---
+// Appear more often (every 15ms), smaller & star-shaped
+let lastTrailTime = 0;
 document.addEventListener('mousemove', function(e) {
-  spawnParticleEffectAt(e.clientX, e.clientY, 'yellow', 300); // color & duration
+  const now = Date.now();
+  if (now - lastTrailTime > 15) {
+    spawnParticleEffectAt(e.clientX, e.clientY, STAR_PARTICLE_PRESET, 350, 40);
+    lastTrailTime = now;
+  }
 });
 
-// Click burst: On click
+// --- Mouse click effect ---
+// Slightly bigger, more bursty star effect
 document.addEventListener('click', function(e) {
-  spawnParticleEffectAt(e.clientX, e.clientY, 'red', 700); // color & duration
+  spawnParticleEffectAt(e.clientX, e.clientY, STAR_PARTICLE_PRESET, 600, 70);
 });
