@@ -85,8 +85,11 @@ window.favoriteCards         = Array.isArray(data.favoriteCards) ? data.favorite
 window.playerQuests          = typeof data.quests !== "undefined" ? data.quests : {};
 window.playerAchievements    = typeof data.achievements !== "undefined" ? data.achievements : {};
 window.playerUnlockedAvatars = Array.isArray(data.unlockedAvatars) ? data.unlockedAvatars : [];
+window.unlockedAvatars       = window.playerUnlockedAvatars;
 window.playerUnlockedBanners = Array.isArray(data.unlockedBanners) ? data.unlockedBanners : [];
+window.unlockedBanners       = window.playerUnlockedBanners;
 window.playerUnlockedCardbacks = Array.isArray(data.unlockedCardbacks) ? data.unlockedCardbacks : [];
+window.unlockedCardbacks     = window.playerUnlockedCardbacks;
 window.playerUnlockedCosmetics = Array.isArray(data.unlockedCosmetics) ? data.unlockedCosmetics : [];
 window.playerFoilCards       = typeof data.foilCards !== "undefined" ? data.foilCards : {};
       if (typeof cb === "function") cb();
