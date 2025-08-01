@@ -2531,7 +2531,6 @@ button {}
 
 /* AVATAR */
 #profile-pic {
-  position: absolute;
   width: 90px;
   height: 90px;
   border-radius: 50%;
