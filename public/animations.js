@@ -117,34 +117,13 @@ const STAR_PARTICLE_PRESET = {
   interactivity: { detect_on: 'canvas', events: { onhover: { enable: false }, onclick: { enable: false }, resize: true } },
   retina_detect: true
 };
-// Improved star burst for click effect: particles burst outward from center and fade out
-const CLICK_BURST_PRESET = {
-  particles: {
-    number: { value: 38, density: { enable: false } },
-    color: { value: ['#ffe066', '#fff700', '#ffd700', '#fffde4', '#fff', '#b3e0ff', '#cfa0ff'] },
-    shape: { type: 'star' },
-    opacity: { value: 0.92, random: true, anim: { enable: true, speed: 1.2, opacity_min: 0, sync: false } },
-    size: { value: 3, random: true, anim: { enable: true, speed: 6, size_min: 1.4, sync: false } },
-    line_linked: { enable: false },
-    move: {
-      enable: true,
-      speed: 5,
-      direction: "none", // 'none' for outward; works as a burst
-      random: true,
-      straight: false,
-      out_mode: "destroy", // destroy particles at the edge
-      bounce: false
-    }
-  },
-  interactivity: { detect_on: 'canvas', events: { onhover: { enable: false }, onclick: { enable: false }, resize: true } },
-  retina_detect: true
-};
+
 function createStarBurstAt(x, y, options = {}) {
   const {
-    particleCount = 22,
-    radius = 43, // max burst radius in px
-    particleSize = 2,
-    duration = 750, // ms
+    particleCount = 20,
+    radius = 32, // max burst radius in px (smaller than before)
+    particleSize = 1.1,
+    duration = 650, // ms (shorter than before)
     colors = ['#ffd700', '#fffbe2', '#fff', '#ffe066', '#b3e0ff', '#cfa0ff']
   } = options;
 
@@ -163,17 +142,15 @@ function createStarBurstAt(x, y, options = {}) {
   // Generate particles
   const particles = [];
   for (let i = 0; i < particleCount; i++) {
-    const angle = (2 * Math.PI * i) / particleCount + (Math.random() * 0.3 - 0.15); // little random spread
-    const speed = (0.75 + Math.random() * 0.35) * radius; // px/sec
+    const angle = (2 * Math.PI * i) / particleCount + (Math.random() * 0.5 - 0.25);
+    const speed = (0.82 + Math.random() * 0.22) * radius;
     const color = colors[Math.floor(Math.random() * colors.length)];
     particles.push({
       angle,
       speed,
       color,
-      size: particleSize + Math.random(),
-      // For star: random rotation
+      size: particleSize + Math.random() * 0.5,
       rotate: Math.random() * Math.PI,
-      // Start at center
       x: radius, y: radius
     });
   }
@@ -189,14 +166,12 @@ function createStarBurstAt(x, y, options = {}) {
     // Draw all particles
     particles.forEach(p => {
       // Move outward with easing
-      const dist = progress * p.speed * (1 - 0.5 * progress); // ease out and slow at end
+      const dist = progress * p.speed * (1 - 0.6 * progress);
       const px = p.x + Math.cos(p.angle) * dist;
       const py = p.y + Math.sin(p.angle) * dist;
-      // Fade out near the edge: alpha diminishes with progress (faster at the end)
-      const alpha = 1 - Math.pow(progress, 1.5);
-
-      // Draw a little star (5-point)
-      drawStar(ctx, px, py, p.size, p.size * 2.1, 5, p.color, alpha, p.rotate);
+      // Fade out near the edge: alpha diminishes with progress
+      const alpha = Math.max(0, 1 - Math.pow(progress, 1.2));
+      drawStar(ctx, px, py, p.size, p.size * 2, 5, p.color, alpha, p.rotate);
     });
 
     if (progress < 1) {
@@ -223,7 +198,7 @@ function drawStar(ctx, x, y, r1, r2, points, color, alpha, rotation = 0) {
   ctx.closePath();
   ctx.fillStyle = color;
   ctx.shadowColor = color;
-  ctx.shadowBlur = 4;
+  ctx.shadowBlur = 3;
   ctx.fill();
   ctx.restore();
 }
@@ -238,20 +213,20 @@ document.addEventListener('click', function(e) {
  */
 const TRAIL_PARTICLE_PRESET = {
   particles: {
-    number: { value: 16, density: { enable: true, value_area: 60 } },
+    number: { value: 12, density: { enable: true, value_area: 40 } },
     color: { value: ['#ffe066', '#fff', '#b3e0ff'] },
     shape: { type: 'star' },
-    opacity: { value: 0.7, random: true, anim: { enable: true, speed: 1.2, opacity_min: 0.1, sync: false } },
-    size: { value: 1.6, random: true, anim: { enable: true, speed: 4, size_min: 0.6, sync: false } },
+    opacity: { value: 0.6, random: true, anim: { enable: true, speed: 1.5, opacity_min: 0.05, sync: false } },
+    size: { value: 1, random: true, anim: { enable: true, speed: 3, size_min: 0.3, sync: false } },
     line_linked: { enable: false },
-    move: { enable: true, speed: 2, direction: 'top', random: true, straight: false, out_mode: 'out', bounce: false }
+    move: { enable: true, speed: 1.9, direction: 'top', random: true, straight: false, out_mode: 'out', bounce: false }
   },
   interactivity: { detect_on: 'canvas', events: { onhover: { enable: false }, onclick: { enable: false }, resize: true } },
   retina_detect: true
 };
 
 // Helper to spawn a temporary particle effect at a screen position for trail
-function spawnTrailParticles(x, y, preset = TRAIL_PARTICLE_PRESET, duration = 170, size = 28) {
+function spawnTrailParticles(x, y, preset = TRAIL_PARTICLE_PRESET, duration = 120, size = 14) {
   const effectId = 'mouse-trail-' + Date.now() + Math.floor(Math.random()*1000);
   const effectDiv = document.createElement('div');
   effectDiv.id = effectId;
@@ -275,12 +250,12 @@ function spawnTrailParticles(x, y, preset = TRAIL_PARTICLE_PRESET, duration = 17
   }, duration);
 }
 
-// --- Mouse trail effect: very frequent, very small
+// Mouse trail effect: very frequent, very small
 let lastTrailTime = 0;
 document.addEventListener('mousemove', function(e) {
   const now = Date.now();
-  if (now - lastTrailTime > 10) {
-    spawnTrailParticles(e.clientX, e.clientY, TRAIL_PARTICLE_PRESET, 150, 22);
+  if (now - lastTrailTime > 8) {
+    spawnTrailParticles(e.clientX, e.clientY, TRAIL_PARTICLE_PRESET, 100, 13);
     lastTrailTime = now;
   }
 });
@@ -367,15 +342,4 @@ document.addEventListener('mousemove', function(e) {
     );
     lastTrailTime = now;
   }
-});
-
-// --- Mouse click effect: centered burst using improved preset ---
-document.addEventListener('click', function(e) {
-  spawnParticleEffectAt(
-    e.clientX,
-    e.clientY,
-    CLICK_BURST_PRESET,
-    750,
-    92 // slightly larger for the burst
-  );
 });
