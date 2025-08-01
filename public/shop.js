@@ -147,9 +147,8 @@ function showCosmeticConfirmModal({imgSrc, type, price, onConfirm}) {
   cosmeticConfirmModal.style.alignItems = 'center';
   cosmeticConfirmModal.style.justifyContent = 'center';
   cosmeticConfirmModal.innerHTML = `
-    <div class="modal-content" style="align-items:center;max-width:320px;">
-      <h3>Are you sure you want to purchase?</h3>
-      <img src="${imgSrc}" alt="Cosmetic Preview" style="max-width:120px;max-height:120px;border-radius:12px;box-shadow:0 2px 10px #0005;margin:10px 0;">
+    <div class="modal-content">
+      <img src="${imgSrc}" alt="Cosmetic Preview" style="max-width:120px;max-height:120px;border-radius:12px;box-shadow:0 2px 10px #0005;">
       <div class="currency-display" style="margin:10px 0;">
         <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins">
         <span>${price}</span>
