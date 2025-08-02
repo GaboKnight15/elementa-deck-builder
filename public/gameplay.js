@@ -481,6 +481,12 @@ function showPlayerDeckModal() {
   modal.onclick = function(e) { if (e.target === modal) modal.style.display = 'none'; };
   modal.style.display = 'flex';
 }
+document.addEventListener('DOMContentLoaded', function() {
+  renderModePlayerDeckTile();
+
+  // Make sure ALL modals are hidden at startup
+  closeAllModals(); // This will hide player-deck-modal and any others
+});
 function buildCpuDeck(deckDef) {
   const deck = [];
   deckDef.cards.forEach(cardEntry => {
