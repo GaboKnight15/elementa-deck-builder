@@ -324,88 +324,145 @@ function showCpuDeckModal() {
 
 function showPlayerDeckModal() {
   const modal = document.getElementById('player-deck-modal');
-  const playerList = document.getElementById('player-deck-list');
-  const defaultList = document.getElementById('default-player-deck-list');
-  playerList.innerHTML = '';
-  defaultList.innerHTML = '';
 
-  const playerDecks = window.getPlayerDecks ? window.getPlayerDecks() : [];
-  const activeId = window.getActiveDeckId ? window.getActiveDeckId() : null;
+  // --- Create Tab Bar ---
+  let tabBar = document.createElement('div');
+  tabBar.className = 'deck-tab-bar';
+  tabBar.style.display = 'flex';
+  tabBar.style.justifyContent = 'center';
+  tabBar.style.gap = '20px';
+  tabBar.style.margin = '16px 0 12px 0';
 
-  // Render player's own decks (above)
-  if (!playerDecks.length) {
-    playerList.innerHTML = '<div style="color:#ffe066;">No decks found! Please build a deck or select a starter deck below.</div>';
-  } else {
-    playerDecks.forEach(deck => {
-      const totalCards = deck.deckObj && typeof deck.deckObj === "object"
-      ? Object.values(deck.deckObj).filter(v => typeof v === 'number').reduce((a, b) => a + b, 0)
-      : 0;
-      const div = document.createElement('div');
-      div.className = 'player-deck-option';
-      div.style.cursor = totalCards >= 50 ? 'pointer' : 'not-allowed';
-      div.style.border = deck.id === activeId ? '3px solid #ffe066' : '2px solid #333';
-      div.style.padding = '12px';
-      div.style.background = '#232a3c';
-      div.innerHTML = `
-        <div style="position:relative; width:100%; height:140px; display: flex; align-items: center; justify-content: center;">
-          <img src="${deck.image}" alt="${deck.name}" class="deck-art-img">
-        </div>
-        <div class="deck-name" style="text-align:center;">${deck.name}</div>
-      `;
-      if (totalCards >= 50) {
+  let myDecksTab = document.createElement('button');
+  myDecksTab.textContent = 'My Decks';
+  myDecksTab.className = 'deck-tab-btn selected';
+
+  let defaultDecksTab = document.createElement('button');
+  defaultDecksTab.textContent = 'Default Decks';
+  defaultDecksTab.className = 'deck-tab-btn';
+
+  tabBar.appendChild(myDecksTab);
+  tabBar.appendChild(defaultDecksTab);
+
+  // --- Create Panels ---
+  const playerList = document.createElement('div');
+  playerList.id = 'player-deck-list';
+  playerList.className = 'deck-tab-panel';
+
+  const defaultList = document.createElement('div');
+  defaultList.id = 'default-player-deck-list';
+  defaultList.className = 'deck-tab-panel';
+
+  // --- Render My Decks ---
+  function renderMyDecks() {
+    playerList.innerHTML = '';
+    const playerDecks = window.getPlayerDecks ? window.getPlayerDecks() : [];
+    const activeId = window.getActiveDeckId ? window.getActiveDeckId() : null;
+    if (!playerDecks.length) {
+      playerList.innerHTML = '<div style="color:#ffe066;">No decks found! Please build a deck or select a starter deck below.</div>';
+    } else {
+      playerDecks.forEach(deck => {
+        const totalCards = deck.deckObj && typeof deck.deckObj === "object"
+          ? Object.values(deck.deckObj).filter(v => typeof v === 'number').reduce((a, b) => a + b, 0)
+          : 0;
+        const div = document.createElement('div');
+        div.className = 'player-deck-option';
+        div.style.cursor = totalCards >= 50 ? 'pointer' : 'not-allowed';
+        div.style.border = deck.id === activeId ? '3px solid #ffe066' : '2px solid #333';
+        div.style.padding = '12px';
+        div.style.background = '#232a3c';
+        div.innerHTML = `
+          <div style="position:relative; width:100%; height:140px; display: flex; align-items: center; justify-content: center;">
+            <img src="${deck.image}" alt="${deck.name}" class="deck-art-img">
+          </div>
+          <div class="deck-name" style="text-align:center;">${deck.name}</div>
+        `;
+        if (totalCards >= 50) {
+          div.onclick = () => {
+            window.selectedPlayerDeck = deck;
+            if (typeof renderModePlayerDeckTile === "function") renderModePlayerDeckTile();
+            modal.style.display = 'none';
+          };
+        } else {
+          div.onclick = null;
+        }
+        playerList.appendChild(div);
+      });
+    }
+  }
+
+  // --- Render Default Decks ---
+  function renderDefaultDecks() {
+    defaultList.innerHTML = '';
+    const defaultDecks = DEFAULT_CPU_DECKS;
+    if (Array.isArray(defaultDecks) && defaultDecks.length > 0) {
+      const row = document.createElement('div');
+      row.style.display = "flex";
+      row.style.flexWrap = "wrap";
+      row.style.gap = "16px";
+      row.style.justifyContent = "center";
+      defaultDecks.forEach(deck => {
+        const div = document.createElement('div');
+        div.className = 'default-player-deck-option';
+        div.style.position = 'relative';
+        div.style.width = '140px';
+        div.style.height = '140px';
+        div.style.border = '3px solid ' + deck.color;
+        div.style.borderRadius = '18px';
+        div.style.display = 'inline-block';
+        div.style.overflow = 'hidden';
+
+        div.innerHTML = `
+          <div style="position:relative;width:100%;height:100%;">
+            <img src="${deck.image}" alt="${deck.name}" class="deck-art-img" style="width:100%;height:100%;object-fit:cover;border-radius:16px;">
+            <div class="deck-name"
+              style="position:absolute;left:0;bottom:0;width:100%;background:rgba(10,12,20,0.75);color:${deck.color};font-weight:bold;text-align:center;font-size:1.09em;letter-spacing:0.5px;padding:5px 0;">
+              ${deck.name}
+            </div>
+          </div>
+        `;
         div.onclick = () => {
-          window.selectedPlayerDeck = deck;
+          window.selectedPlayerDeck = {
+            ...deck,
+            deckObj: deck,
+            isDefaultDeck: true
+          };
           if (typeof renderModePlayerDeckTile === "function") renderModePlayerDeckTile();
           modal.style.display = 'none';
         };
-      } else {
-        div.onclick = null; // Do not allow selection
-      }
-      playerList.appendChild(div);
-    });
+        row.appendChild(div);
+      });
+      defaultList.appendChild(row);
+    }
   }
 
-  // --- DEFAULT DECKS SECTION ---
-  const defaultDecks = DEFAULT_CPU_DECKS;
-  if (Array.isArray(defaultDecks) && defaultDecks.length > 0) {
-    const row = document.createElement('div');
-    row.style.display = "flex";
-    row.style.flexWrap = "wrap";
-    row.style.gap = "16px";
-    row.style.justifyContent = "center";
-defaultDecks.forEach(deck => {
-  const div = document.createElement('div');
-  div.className = 'default-player-deck-option';
-  div.style.position = 'relative';
-  div.style.width = '140px';
-  div.style.height = '140px';
-  div.style.border = '3px solid ' + deck.color;
-  div.style.borderRadius = '18px';
-  div.style.display = 'inline-block';
-  div.style.overflow = 'hidden';
-
-  div.innerHTML = `
-    <div style="position:relative;width:100%;height:100%;">
-      <img src="${deck.image}" alt="${deck.name}" class="deck-art-img" style="width:100%;height:100%;object-fit:cover;border-radius:16px;">
-      <div class="deck-name"
-        style="position:absolute;left:0;bottom:0;width:100%;background:rgba(10,12,20,0.75);color:${deck.color};font-weight:bold;text-align:center;font-size:1.09em;letter-spacing:0.5px;padding:5px 0;border-bottom-left-radius:16px;border-bottom-right-radius:16px;z-index:2;">
-        ${deck.name}
-      </div>
-    </div>
-  `;
-  div.onclick = () => {
-    window.selectedPlayerDeck = {
-      ...deck,
-      deckObj: deck,
-      isDefaultDeck: true
-    };
-    if (typeof renderModePlayerDeckTile === "function") renderModePlayerDeckTile();
-    modal.style.display = 'none';
+  // --- Tab Switching Logic ---
+  myDecksTab.onclick = () => {
+    myDecksTab.classList.add('selected');
+    defaultDecksTab.classList.remove('selected');
+    playerList.style.display = '';
+    defaultList.style.display = 'none';
   };
-  row.appendChild(div);
-});
-    defaultList.appendChild(row);
-  }
+
+  defaultDecksTab.onclick = () => {
+    defaultDecksTab.classList.add('selected');
+    myDecksTab.classList.remove('selected');
+    playerList.style.display = 'none';
+    defaultList.style.display = '';
+  };
+
+  // --- Initial State ---
+  playerList.style.display = '';
+  defaultList.style.display = 'none';
+
+  renderMyDecks();
+  renderDefaultDecks();
+
+  // --- Modal Layout ---
+  modal.innerHTML = '';
+  modal.appendChild(tabBar);
+  modal.appendChild(playerList);
+  modal.appendChild(defaultList);
 
   document.getElementById('close-player-deck-modal').onclick = () => { modal.style.display = 'none'; };
   modal.onclick = function(e) {if (e.target === modal) modal.style.display = 'none';};
