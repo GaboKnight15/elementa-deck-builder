@@ -121,6 +121,21 @@ function createCardGallery(card) {
     countBadge.className = 'card-count-badge';
     countBadge.textContent = owned;
     div.appendChild(countBadge);
+
+    // Add star for favorite
+    if (isFavorite(card.id)) {
+      const star = document.createElement('img');
+      star.src = 'OtherImages/Icons/Star.png';
+      star.alt = 'Favorite';
+      star.className = 'gallery-favorite-star';
+      star.style.position = 'absolute';
+      star.style.top = '6px';
+      star.style.right = '6px';
+      star.style.width = '28px';
+      star.style.height = '28px';
+      star.style.zIndex = '5';
+      div.appendChild(star);
+    }
   
     div.onclick = function(e) {
       e.stopPropagation();
@@ -142,7 +157,7 @@ function renderGallery() {
 
   const collection = getCollection();
 
-  const filteredCards = dummyCards.filter(card => {
+  let filteredCards = dummyCards.filter(card => {
     const ownedCount = collection[card.id] || 0;
 
     // Ownership filter logic
@@ -180,6 +195,15 @@ function renderGallery() {
     }
     return true;
   });
+
+  // Sort favorites first
+  const favoriteIds = getFavoriteCards();
+  filteredCards.sort((a, b) => {
+    const aFav = favoriteIds.includes(a.id) ? -1 : 0;
+    const bFav = favoriteIds.includes(b.id) ? -1 : 0;
+    if (aFav !== bFav) return aFav - bFav;
+    return a.name.localeCompare(b.name);
+  });
   
   // Call progress updater here!
   updateGalleryCollectionProgress(filteredCards);
@@ -191,6 +215,8 @@ function renderGallery() {
   });
   updateEssenceDisplay();
 }
+
+
 // FAVORITE CARDS
 function getFavoriteCards() {
   return Array.isArray(window.favoriteCards) ? window.favoriteCards : [];
@@ -353,8 +379,34 @@ function showGalleryCardMenu(card, anchorDiv) {
     modalContent.insertBefore(foilBtn, voidBtn.nextSibling);
   } else {
     modalContent.appendChild(foilBtn);
-  }  
+  }
+  // === FAVORITE BUTTON ===
+  let favoriteBtn = modalContent.querySelector('#gallery-card-favorite-btn');
+  if (favoriteBtn) favoriteBtn.remove();
+
+  favoriteBtn = document.createElement('button');
+  favoriteBtn.id = "gallery-card-favorite-btn";
+  favoriteBtn.className = "settings-item";
+  favoriteBtn.style.width = "100%";
+  favoriteBtn.style.textAlign = "left";
+  const isFav = isFavorite(card.id);
+  favoriteBtn.innerHTML = `<img src="OtherImages/Icons/Star.png" alt="Favorite" style="width:20px;vertical-align:middle;margin-right:10px;"> ${isFav ? 'Unfavorite' : 'Favorite'}`;
+  favoriteBtn.onclick = function(e) {
+    e.stopPropagation();
+    toggleFavorite(card.id);
+    menu.style.display = "none";
+    renderGallery();
+  };
+  // Insert Favorite button below Void button and Foil button
+  if (foilBtn && foilBtn.nextSibling) {
+    modalContent.insertBefore(favoriteBtn, foilBtn.nextSibling);
+  } else {
+    modalContent.appendChild(favoriteBtn);
+  }
 }
+
+
+
 function createCreateCardButton(card, onActionDone) {
   const owned = getCollection()[card.id] || 0;
   const btn = document.createElement('img');
