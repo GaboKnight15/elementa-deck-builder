@@ -658,7 +658,6 @@ function updateDeckDisplay() {
       img.alt = card.name;
       img.style.width = '56px';
       img.style.height = 'auto';
-      img.style.borderRadius = '6px';
       img.style.display = 'block';
 
       // COUNTER BADGE
