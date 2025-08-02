@@ -230,43 +230,93 @@ function showCpuDeckModal() {
   const modal = document.getElementById('cpu-deck-modal');
   const list = document.getElementById('cpu-deck-list');
   list.innerHTML = '';
-  DEFAULT_CPU_DECKS.forEach(deck => {
-    const div = document.createElement('div');
-    div.className = 'cpu-deck-option';
-    div.style.position = 'relative';
-    div.style.width = '140px';
-    div.style.height = '140px';
-    div.style.border = '3px solid ' + deck.color;
-    div.style.borderRadius = '18px';
-    div.style.background = '#232a3c';
-    div.style.margin = '10px';
-    div.style.display = 'inline-block';
-    div.style.overflow = 'hidden';
 
-    div.innerHTML = `
-      <div style="position:relative;width:100%;height:100%;">
-        <img src="${deck.image}" alt="${deck.name}" class="deck-art-img" style="width:100%;height:100%;object-fit:cover;border-radius:16px;">
-        <div class="deck-name"
-          style="position:absolute;left:0;bottom:0;width:100%;background:rgba(10,12,20,0.75);color:${deck.color};font-weight:bold;text-align:center;font-size:1.09em;letter-spacing:0.5px;padding:5px 0;border-bottom-left-radius:16px;border-bottom-right-radius:16px;z-index:2;">
-          ${deck.name}
-        </div>
-        <div class="deck-difficulty"
-          style="position:absolute;top:8px;left:8px;z-index:2;">
-          <span style="display:inline-block;background:rgba(0,0,0,0.65);border-radius:50%;padding:3px 7px;font-size:1.14em;color:#ffe066;">
-            ${deck.difficulty}
-          </span>
-        </div>
-      </div>
-    `;
-    div.onclick = () => {
-      modal.style.display = 'none';
-      window.selectedCpuDeck = deck;
-      window.currentDeckSlot = deck.id;
-      if (window.renderModePlayerDeckTile) window.renderModePlayerDeckTile();
-      if (typeof startSoloGame === "function") startSoloGame();
+  // Difficulty options
+  const difficultyOptions = [
+    { label: "Easy", value: "⭐" },
+    { label: "Medium", value: "⭐⭐" },
+    { label: "Hard", value: "⭐⭐⭐" }
+  ];
+  let selectedDifficulty = difficultyOptions[0].value;
+
+  // Create difficulty selector row
+  let diffRow = document.createElement('div');
+  diffRow.className = 'cpu-difficulty-row';
+  diffRow.style.display = 'flex';
+  diffRow.style.justifyContent = 'center';
+  diffRow.style.gap = '16px';
+  diffRow.style.margin = '18px 0 10px 0';
+
+  difficultyOptions.forEach(opt => {
+    let btn = document.createElement('button');
+    btn.textContent = opt.label;
+    btn.className = 'cpu-difficulty-btn';
+    btn.style.padding = '8px 18px';
+    btn.style.borderRadius = '8px';
+    btn.style.fontWeight = 'bold';
+    btn.style.fontSize = '1.07em';
+    btn.style.background = selectedDifficulty === opt.value ? '#ffe066' : '#232a3c';
+    btn.style.color = selectedDifficulty === opt.value ? '#232a3c' : '#ffe066';
+    btn.onclick = () => {
+      selectedDifficulty = opt.value;
+      renderDeckOptions();
+      // highlight selected
+      Array.from(diffRow.children).forEach(b => {
+        b.style.background = b.textContent === opt.label ? '#ffe066' : '#232a3c';
+        b.style.color = b.textContent === opt.label ? '#232a3c' : '#ffe066';
+      });
     };
-    list.appendChild(div);
+    diffRow.appendChild(btn);
   });
+
+  // Insert at top of modal, above deck list
+  modal.innerHTML = '';
+  modal.appendChild(diffRow);
+  modal.appendChild(list);
+  // Render filtered deck options
+  function renderDeckOptions() {
+    list.innerHTML = '';
+    DEFAULT_CPU_DECKS.filter(deck => deck.difficulty === selectedDifficulty).forEach(deck => {
+      const div = document.createElement('div');
+      div.className = 'cpu-deck-option';
+      div.style.position = 'relative';
+      div.style.width = '140px';
+      div.style.height = '140px';
+      div.style.border = '3px solid ' + deck.color;
+      div.style.borderRadius = '18px';
+      div.style.background = '#232a3c';
+      div.style.margin = '10px';
+      div.style.display = 'inline-block';
+      div.style.overflow = 'hidden';
+
+      div.innerHTML = `
+        <div style="position:relative;width:100%;height:100%;">
+          <img src="${deck.image}" alt="${deck.name}" class="deck-art-img" style="width:100%;height:100%;object-fit:cover;border-radius:16px;">
+          <div class="deck-name"
+            style="position:absolute;left:0;bottom:0;width:100%;background:rgba(10,12,20,0.75);color:${deck.color};font-weight:bold;text-align:center;font-size:1.09em;letter-spacing:0.5px;padding:5px 0;">
+            ${deck.name}
+          </div>
+          <div class="deck-difficulty"
+            style="position:absolute;top:8px;left:8px;z-index:2;">
+            <span style="display:inline-block;background:rgba(0,0,0,0.65);border-radius:50%;padding:3px 7px;font-size:1.14em;color:#ffe066;">
+              ${deck.difficulty}
+            </span>
+          </div>
+        </div>
+      `;
+      div.onclick = () => {
+        modal.style.display = 'none';
+        window.selectedCpuDeck = deck;
+        window.currentDeckSlot = deck.id;
+        if (window.renderModePlayerDeckTile) window.renderModePlayerDeckTile();
+        if (typeof startSoloGame === "function") startSoloGame();
+      };
+      list.appendChild(div);
+    });
+  }
+
+  renderDeckOptions();
+
   document.getElementById('close-cpu-deck-modal').onclick = () => { modal.style.display = 'none'; };
   modal.onclick = function(e) {if (e.target === modal) modal.style.display = 'none';};
   modal.style.display = 'flex';
