@@ -1818,6 +1818,8 @@ button {}
   transform: scale(1.08);
 }
 .mode-option > div {
+  position: absolute;
+  bottom: 0px;
   color: #ffe066;
   font-weight: 700;
   font-size: 1.38em;
@@ -1987,6 +1989,7 @@ button {}
 }
 .deck-name {
   pointer-events: none;
+  
 }
 .cpu-deck-option .deck-name, .default-player-deck-option .deck-name {
   font-weight: bold;
@@ -2852,10 +2855,7 @@ button {}
   box-shadow: 0 2px 8px #0004;
   background: #16171e;
 }
-.opened-card div {
-  color: #ffdb64;
-  margin-top: 4px;
-}
+.opened-card div {}
 /* For a simple fade-in */
 @keyframes cardFadeIn {
   0% { opacity: 0; transform: scale(0.5) rotate(-10deg);}
@@ -3060,11 +3060,9 @@ button {}
   margin-top: 14px;
 }
 .shop-individual-card {
-  background: #232a3c;
   border-radius: 12px;
   box-shadow: 0 1px 8px #0002;
   padding: 12px;
-  width: 130px;
   text-align: center;
   position: relative;
   transition: box-shadow .18s, transform .18s;
