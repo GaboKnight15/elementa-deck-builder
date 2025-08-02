@@ -121,9 +121,9 @@ const STAR_PARTICLE_PRESET = {
 function createStarBurstAt(x, y, options = {}) {
   const {
     particleCount = 20,
-    radius = 32, // max burst radius in px (smaller than before)
+    radius = 32,
     particleSize = 1.1,
-    duration = 650, // ms (shorter than before)
+    duration = 300,
     colors = ['#ffd700', '#fffbe2', '#fff', '#ffe066', '#b3e0ff', '#cfa0ff']
   } = options;
 
@@ -166,7 +166,7 @@ function createStarBurstAt(x, y, options = {}) {
     // Draw all particles
     particles.forEach(p => {
       // Move outward with easing
-      const dist = progress * p.speed * (1 - 0.6 * progress);
+      const dist = progress * p.speed * 2 * (1 - 0.6 * progress);
       const px = p.x + Math.cos(p.angle) * dist;
       const py = p.y + Math.sin(p.angle) * dist;
       // Fade out near the edge: alpha diminishes with progress
@@ -251,28 +251,4 @@ function getParticlePresetForCard(cardData) {
     }
   });
   return mergedConfig;
-}
-// --- Helper to spawn the effect ---
-function spawnParticleEffectAt(x, y, preset, duration = 650, size = 80) {
-  const effectId = 'mouse-effect-' + Date.now() + Math.floor(Math.random()*1000);
-  const effectDiv = document.createElement('div');
-  effectDiv.id = effectId;
-  effectDiv.style.position = 'fixed';
-  effectDiv.style.pointerEvents = 'none';
-  effectDiv.style.left = (x - size/2) + 'px';
-  effectDiv.style.top = (y - size/2) + 'px';
-  effectDiv.style.width = size + 'px';
-  effectDiv.style.height = size + 'px';
-  effectDiv.style.zIndex = 9999;
-  document.body.appendChild(effectDiv);
-
-  setTimeout(() => {
-    if (window.particlesJS) {
-      particlesJS(effectId, preset);
-    }
-  }, 0);
-
-  setTimeout(() => {
-    if (effectDiv.parentNode) effectDiv.parentNode.removeChild(effectDiv);
-  }, duration);
 }
