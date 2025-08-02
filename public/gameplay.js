@@ -2750,15 +2750,23 @@ function renderModePlayerDeckTile() {
     deckObj = window.selectedPlayerDeck.deckObj || window.selectedPlayerDeck;
     isDefaultDeck = !!window.selectedPlayerDeck.isDefaultDeck;
   } else {
-    deckName = window.getActiveDeckId ? window.getActiveDeckId() : '';
-    deckObj = window.decks && deckName ? window.decks[deckName] : null;
-  }
-
-  if (!deckObj) {
+    // Don't fallback to builder.js active deck; require explicit selection!
     slotDiv.textContent = 'No Deck Selected';
     slotDiv.classList.add('empty');
+    // Optionally, add a hint
+    const hint = document.createElement('div');
+    hint.style.fontSize = '0.96em';
+    hint.style.color = '#ffe066';
+    hint.style.marginTop = '8px';
+    hint.textContent = 'Please select a deck before starting the game.';
+    slotDiv.appendChild(hint);
+    slotDiv.onclick = function(e) {
+      if (window.showPlayerDeckModal)
+        window.showPlayerDeckModal();
+    };
     return;
   }
+
   slotDiv.classList.remove('empty');
   let image = deckObj.highlightArt || deckObj.bannerArt || "CardImages/Banners/DefaultBanner.png";
   slotDiv.innerHTML = `
@@ -2771,8 +2779,6 @@ function renderModePlayerDeckTile() {
       window.showPlayerDeckModal();
   };
 }
-
-
 
 function showCoinFlipModal(onResult) {
   // Create overlay/modal
