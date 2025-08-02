@@ -327,19 +327,3 @@ function spawnParticleEffectAt(x, y, preset, duration = 650, size = 80) {
     if (effectDiv.parentNode) effectDiv.parentNode.removeChild(effectDiv);
   }, duration);
 }
-
-// --- Mouse trail effect (unchanged, uses star trails) ---
-let lastTrailTime = 0;
-document.addEventListener('mousemove', function(e) {
-  const now = Date.now();
-  if (now - lastTrailTime > 15) {
-    spawnParticleEffectAt(
-      e.clientX,
-      e.clientY,
-      STAR_PARTICLE_PRESET, // as previously defined
-      330,
-      38
-    );
-    lastTrailTime = now;
-  }
-});
