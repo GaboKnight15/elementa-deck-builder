@@ -260,7 +260,6 @@ function showCpuDeckModal() {
     btn.onclick = () => {
       selectedDifficulty = opt.value;
       renderDeckOptions();
-      // highlight selected
       Array.from(diffRow.children).forEach(b => {
         b.style.background = b.textContent === opt.label ? '#ffe066' : '#232a3c';
         b.style.color = b.textContent === opt.label ? '#232a3c' : '#ffe066';
@@ -269,11 +268,20 @@ function showCpuDeckModal() {
     diffRow.appendChild(btn);
   });
 
-  // Insert at top of modal, above deck list
+  // Rebuild modal
   modal.innerHTML = '';
   modal.appendChild(diffRow);
   modal.appendChild(list);
-  // Render filtered deck options
+
+  let closeBtn = document.createElement('button');
+  closeBtn.id = 'close-cpu-deck-modal';
+  closeBtn.textContent = 'Cancel';
+  closeBtn.className = 'btn-negative-secondary';
+  closeBtn.style.marginTop = '16px';
+  closeBtn.onclick = () => { modal.style.display = 'none'; };
+  modal.appendChild(closeBtn);
+
+  // Define and call renderDeckOptions INSIDE this function
   function renderDeckOptions() {
     list.innerHTML = '';
     DEFAULT_CPU_DECKS.filter(deck => deck.difficulty === selectedDifficulty).forEach(deck => {
@@ -314,11 +322,9 @@ function showCpuDeckModal() {
       list.appendChild(div);
     });
   }
-
   renderDeckOptions();
 
-  document.getElementById('close-cpu-deck-modal').onclick = () => { modal.style.display = 'none'; };
-  modal.onclick = function(e) {if (e.target === modal) modal.style.display = 'none';};
+  modal.onclick = function(e) { if (e.target === modal) modal.style.display = 'none'; };
   modal.style.display = 'flex';
 }
 
@@ -464,8 +470,15 @@ function showPlayerDeckModal() {
   modal.appendChild(playerList);
   modal.appendChild(defaultList);
 
-  document.getElementById('close-player-deck-modal').onclick = () => { modal.style.display = 'none'; };
-  modal.onclick = function(e) {if (e.target === modal) modal.style.display = 'none';};
+  let closeBtn = document.createElement('button');
+  closeBtn.id = 'close-player-deck-modal';
+  closeBtn.textContent = 'Cancel';
+  closeBtn.className = 'btn-negative-secondary';
+  closeBtn.style.marginTop = '16px';
+  closeBtn.onclick = () => { modal.style.display = 'none'; };
+  modal.appendChild(closeBtn);
+
+  modal.onclick = function(e) { if (e.target === modal) modal.style.display = 'none'; };
   modal.style.display = 'flex';
 }
 function buildCpuDeck(deckDef) {
