@@ -483,9 +483,7 @@ function showPlayerDeckModal() {
 }
 document.addEventListener('DOMContentLoaded', function() {
   renderModePlayerDeckTile();
-
-  // Make sure ALL modals are hidden at startup
-  closeAllModals(); // This will hide player-deck-modal and any others
+  closeAllModals();
 });
 function buildCpuDeck(deckDef) {
   const deck = [];
@@ -3048,12 +3046,6 @@ if (window.renderDeckSelection) {
     renderModePlayerDeckTile();
   };
 }
-document.addEventListener('DOMContentLoaded', function() {
-  renderModePlayerDeckTile();
-  // Make sure the modal is hidden at startup
-  const playerModal = document.getElementById('player-deck-modal');
-  if (playerModal) playerModal.style.display = 'none';
-});
 // Gameplay (menu) header
 document.getElementById('gameplay-settings-btn').onclick = function() {
   document.getElementById('settings-modal').style.display = 'flex';
