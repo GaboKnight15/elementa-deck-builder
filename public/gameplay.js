@@ -2753,13 +2753,6 @@ function renderModePlayerDeckTile() {
     // Don't fallback to builder.js active deck; require explicit selection!
     slotDiv.textContent = 'No Deck Selected';
     slotDiv.classList.add('empty');
-    // Optionally, add a hint
-    const hint = document.createElement('div');
-    hint.style.fontSize = '0.96em';
-    hint.style.color = '#ffe066';
-    hint.style.marginTop = '8px';
-    hint.textContent = 'Please select a deck before starting the game.';
-    slotDiv.appendChild(hint);
     slotDiv.onclick = function(e) {
       if (window.showPlayerDeckModal)
         window.showPlayerDeckModal();
