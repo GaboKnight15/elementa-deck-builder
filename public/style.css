@@ -779,6 +779,14 @@ button {}
   0% { left: -70%; }
   100% { left: 100%; }
 }
+.gallery-favorite-star {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 28px;
+  height: 28px;
+  z-index: 5;
+}
 /* Modal content: row layout for card image + info */
 .full-card-modal-flex {
   display: flex;
