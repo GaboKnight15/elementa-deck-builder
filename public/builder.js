@@ -711,7 +711,16 @@ function canAddCard(card, currentInDeck, ownedCount) {
     if (card.rarity && card.rarity.toLowerCase() === 'common' && count >= 3) return false;
     return true;
 }
-
+function addCardToDeck(cardId) {
+  const deck = getCurrentDeck();
+  const card = dummyCards.find(c => c.id === cardId);
+  if (!card) return;
+  const ownedCount = getCollection()[cardId] || 0;
+  const currentInDeck = deck[cardId] || 0;
+  if (!canAddCard(card, currentInDeck, ownedCount)) return;
+  deck[cardId] = (deck[cardId] || 0) + 1;
+  setCurrentDeck(deck);
+}
 function renderBuilder() {
     builderGallery.innerHTML = '';
     const collection = getCollection(); // Fetch up-to-date collection here
