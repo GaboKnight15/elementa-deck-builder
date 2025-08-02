@@ -1910,6 +1910,65 @@ button {}
 
 /* ============================= BATTLEFIELD DESIGN =========================== */
 /* CPU Deck Selection Hover */
+/* Modal column layout for deck selection modals */
+#cpu-deck-modal,
+#player-deck-modal {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0;
+  padding: 24px 0 16px 0;
+}
+
+/* Tabs/difficulty row at the top */
+.cpu-difficulty-row,
+.deck-tab-bar {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  margin-bottom: 18px;
+  justify-content: center;
+  width: 100%;
+}
+
+/* Deck lists as grid */
+#cpu-deck-list,
+#player-deck-list,
+#default-player-deck-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+  margin-bottom: 18px;
+  margin-top: 10px;
+}
+
+/* Cancel/close button at the bottom, centered */
+#close-cpu-deck-modal,
+#close-player-deck-modal {
+  align-self: center;
+  min-width: 120px;
+  margin-top: 22px;
+  margin-bottom: 8px;
+  font-size: 1.1em;
+}
+
+/* Make deck choices consistent in size */
+.cpu-deck-option,
+.player-deck-option,
+.default-player-deck-option {
+  box-sizing: border-box;
+}
+
+/* Make modal content not overflow vertically */
+#cpu-deck-modal,
+#player-deck-modal {
+  max-height: 90vh;
+  overflow-y: auto;
+}
 .cpu-deck-option, .default-player-deck-option {
   box-sizing: border-box;
   transition: box-shadow 0.12s;
