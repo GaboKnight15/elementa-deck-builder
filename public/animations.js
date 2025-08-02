@@ -208,57 +208,6 @@ document.addEventListener('click', function(e) {
   createStarBurstAt(e.clientX, e.clientY);
 });
 
-/**
- * --- Mouse Trail: tiny fading stars (particles.js for performance) ---
- */
-const TRAIL_PARTICLE_PRESET = {
-  particles: {
-    number: { value: 12, density: { enable: true, value_area: 40 } },
-    color: { value: ['#ffe066', '#fff', '#b3e0ff'] },
-    shape: { type: 'star' },
-    opacity: { value: 0.6, random: true, anim: { enable: true, speed: 1.5, opacity_min: 0.05, sync: false } },
-    size: { value: 1, random: true, anim: { enable: true, speed: 3, size_min: 0.3, sync: false } },
-    line_linked: { enable: false },
-    move: { enable: true, speed: 1.9, direction: 'top', random: true, straight: false, out_mode: 'out', bounce: false }
-  },
-  interactivity: { detect_on: 'canvas', events: { onhover: { enable: false }, onclick: { enable: false }, resize: true } },
-  retina_detect: true
-};
-
-// Helper to spawn a temporary particle effect at a screen position for trail
-function spawnTrailParticles(x, y, preset = TRAIL_PARTICLE_PRESET, duration = 120, size = 14) {
-  const effectId = 'mouse-trail-' + Date.now() + Math.floor(Math.random()*1000);
-  const effectDiv = document.createElement('div');
-  effectDiv.id = effectId;
-  effectDiv.style.position = 'fixed';
-  effectDiv.style.pointerEvents = 'none';
-  effectDiv.style.left = (x - size/2) + 'px';
-  effectDiv.style.top = (y - size/2) + 'px';
-  effectDiv.style.width = size + 'px';
-  effectDiv.style.height = size + 'px';
-  effectDiv.style.zIndex = 9999;
-  document.body.appendChild(effectDiv);
-
-  setTimeout(() => {
-    if (window.particlesJS) {
-      particlesJS(effectId, preset);
-    }
-  }, 0);
-
-  setTimeout(() => {
-    if (effectDiv.parentNode) effectDiv.parentNode.removeChild(effectDiv);
-  }, duration);
-}
-
-// Mouse trail effect: very frequent, very small
-let lastTrailTime = 0;
-document.addEventListener('mousemove', function(e) {
-  const now = Date.now();
-  if (now - lastTrailTime > 8) {
-    spawnTrailParticles(e.clientX, e.clientY, TRAIL_PARTICLE_PRESET, 100, 13);
-    lastTrailTime = now;
-  }
-});
 function applyCardParticles({ cardDiv, effectKey, particlesConfig }) {
   const safeId = String(effectKey).replace(/[^a-zA-Z0-9_-]/g, "_");
   const effectId = `card-effect-${safeId}`;
