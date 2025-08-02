@@ -1919,6 +1919,36 @@ button {}
   box-shadow: 0 0 0 3px #ffe066;
   cursor: pointer;
 }
+/* CPU Difficulty Row & Buttons */
+.cpu-difficulty-row {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin: 18px 0 10px 0;
+}
+.cpu-difficulty-btn {
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1.07em;
+  background: #232a3c;
+  color: #ffe066;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+}
+.cpu-difficulty-btn.selected,
+.cpu-difficulty-btn:active,
+.cpu-difficulty-btn:focus {
+  background: #ffe066;
+  color: #232a3c;
+  box-shadow: 0 0 0 2px #ffe06666;
+}
+.cpu-difficulty-btn:hover {
+  background: #ffe066;
+  color: #232a3c;
+}
 #player-deck-list {
   display: flex;
   flex-wrap: wrap;
