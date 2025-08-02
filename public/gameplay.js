@@ -555,18 +555,22 @@ function startSoloGame() {
   setupDropZones();
   updatePhase();
   showGameStartAnimation(() => {
-    initiateMainDomainAndChampionSelection(gameState.playerDeck, () => {
-      // After selection, draw opening hand
-      const INITIAL_HAND_SIZE = 5;
-      for (let i = 0; i < INITIAL_HAND_SIZE; i++) {
-        if (gameState.playerDeck.length > 0) {
-          gameState.playerHand.push(gameState.playerDeck.shift());
+    showCoinFlipModal(function(whoStarts) {
+      gameState.turn = whoStarts;
+      gameState.phase = "draw";
+      initiateMainDomainAndChampionSelection(gameState.playerDeck, () => {
+        // After selection, draw opening hand
+        const INITIAL_HAND_SIZE = 5;
+        for (let i = 0; i < INITIAL_HAND_SIZE; i++) {
+          if (gameState.playerDeck.length > 0) {
+            gameState.playerHand.push(gameState.playerDeck.shift());
+          }
         }
-      }
-      document.getElementById('my-profile').style.display = '';
-      renderProfile('my-profile', getMyProfileInfo());
-      renderGameState();
-      setupDropZones();
+        document.getElementById('my-profile').style.display = '';
+        renderProfile('my-profile', getMyProfileInfo());
+        renderGameState();
+        setupDropZones();
+      });
     });
   });
 }
@@ -2734,9 +2738,13 @@ function startPrivateGame() {
   // Render chat, profiles, battlefield as in solo
   // Show Game Start animation, Main Domain & Champion selection
   showGameStartAnimation(() => {
-    initiateMainDomainAndChampionSelection(gameState.playerDeck, () => {
-      // Draw hand, set up game, etc
-      // ...
+    showCoinFlipModal(function(whoStarts) {
+    gameState.turn = whoStarts;
+    gameState.phase = "draw";
+      initiateMainDomainAndChampionSelection(gameState.playerDeck, () => {
+        // Draw hand, set up game, etc
+        // ...
+      });
     });
   });
   document.getElementById('my-profile').style.display = '';
@@ -2823,10 +2831,14 @@ function startCasualGame(matchData) {
   setupDropZones();
   updatePhase();
   showGameStartAnimation(() => {
-    initiateMainDomainAndChampionSelection(gameState.playerDeck, () => {
-      // Draw hand, set up initial turn, etc.
-      renderGameState();
-      setupDropZones();
+    showCoinFlipModal(function(whoStarts) {
+      gameState.turn = whoStarts;
+      gameState.phase = "draw"; 
+      initiateMainDomainAndChampionSelection(gameState.playerDeck, () => {
+        // Draw hand, set up initial turn, etc.
+        renderGameState();
+        setupDropZones();
+      });
     });
   });
   if (typeof resetChatLog === "function") resetChatLog();
