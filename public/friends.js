@@ -317,6 +317,12 @@ document.getElementById('tab-blocked').onclick = function() {
 document.getElementById('close-friends-modal').onclick = function() {
   document.getElementById('friends-modal').style.display = 'none';
 };
+document.getElementById('requests-search-trigger').onclick = function() {
+  const value = document.getElementById('search-friends').value;
+  document.getElementById('player-search-input').value = value;
+  showPlayerSearchModal();
+  if (value) triggerPlayerSearch();
+};
 
 window.sendFriendRequest = sendFriendRequest;
 window.acceptFriendRequest = acceptFriendRequest;
