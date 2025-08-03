@@ -5,7 +5,80 @@ function getCurrentUserId() {
 function getCurrentUsername() {
   return firebase.auth().currentUser?.displayName; // or store in Firestore
 }
+// Show the player search modal
+function showPlayerSearchModal() {
+  document.getElementById('player-search-modal').style.display = 'flex';
+  document.getElementById('player-search-input').value = '';
+  document.getElementById('player-search-results').innerHTML = '';
+}
 
+// Close modal
+document.getElementById('close-player-search-modal').onclick = function() {
+  document.getElementById('player-search-modal').style.display = 'none';
+};
+
+// Trigger modal from the Requests tab (add button or event as needed)
+// For example, add this to your Requests tab logic:
+document.getElementById('player-search-trigger').onclick = function() {
+  triggerPlayerSearch();
+};
+// Also search on enter in the input box
+document.getElementById('player-search-input').addEventListener('keydown', function(e) {
+  if (e.key === "Enter") triggerPlayerSearch();
+});
+
+// Main search logic
+function triggerPlayerSearch() {
+  const query = document.getElementById('player-search-input').value.trim();
+  const resultsDiv = document.getElementById('player-search-results');
+  resultsDiv.innerHTML = '<div style="color:#ffe066;">Searching...</div>';
+  if (!query) {
+    resultsDiv.innerHTML = '<div style="color:#e25555;">Please enter a username or ID.</div>';
+    return;
+  }
+  // Username search
+  firebase.firestore().collection('users')
+    .where('username', '==', query).limit(5).get().then(function(snap) {
+      if (snap.empty) {
+        // Try by UID if not found by username
+        firebase.firestore().collection('users').doc(query).get().then(function(doc) {
+          if (!doc.exists) {
+            showToast('No players were found with that criteria.');
+            resultsDiv.innerHTML = '';
+            return;
+          }
+          displayPlayerSearchResults([ { uid: doc.id, ...doc.data() } ]);
+        });
+        return;
+      }
+      const players = snap.docs.map(doc => ({ uid: doc.id, ...doc.data() }));
+      displayPlayerSearchResults(players);
+    });
+}
+
+// Renders results in modal
+function displayPlayerSearchResults(players) {
+  const resultsDiv = document.getElementById('player-search-results');
+  if (!players.length) {
+    resultsDiv.innerHTML = '<div style="color:#e25555;">No players found.</div>';
+    return;
+  }
+  resultsDiv.innerHTML = '';
+  players.forEach(player => {
+    const tile = document.createElement('div');
+    tile.className = 'friend-profile-tile';
+    tile.style.marginBottom = '18px';
+    tile.innerHTML = `
+      <div style="position:relative;width:100%;height:100px;display:flex;align-items:center;">
+        ${player.banner ? `<img class="friend-banner" src="${player.banner}" style="left:0;top:0;width:100%;height:100%;object-fit:cover;opacity:0.55;position:absolute;border-radius:16px;">` : ''}
+        <img class="friend-avatar" src="${player.avatar || 'CardImages/Avatars/Default.png'}" alt="avatar" style="width:54px;height:54px;border-radius:50%;border:2px solid #ffe066;margin-left:16px;z-index:2;background:#232a3c;">
+        <span class="friend-username" style="margin-left:18px;z-index:2;font-weight:bold;color:#ffe066;font-size:1.13em;">${player.username || player.uid}</span>
+      </div>
+    `;
+    // Optionally add menu/options for sending request, viewing profile, etc
+    resultsDiv.appendChild(tile);
+  });
+}
 // Look up a user by username (returns {uid, username} or null)
 function findUserByUsername(username, cb) {
   if (!username) {
