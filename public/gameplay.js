@@ -301,12 +301,12 @@ div.innerHTML = `
   <div style="position:relative;width:100%;height:100%;">
     <img src="${deck.image}" alt="${deck.name}" class="deck-art-img" style="width:100%;height:100%;object-fit:cover;border-radius:16px;">
     <div class="deck-name"
-      style="position:absolute;top:0;left:0;width:100%;background:rgba(10,12,20,0.84);color:${deck.color};font-weight:bold;text-align:center;font-size:1.14em;letter-spacing:0.5px;padding:6px 0 4px 0;z-index:2;border-top-left-radius:16px;border-top-right-radius:16px;">
+      style="position:absolute;bottom:0;width:100%;background:rgba(10,12,20,0.84);color:${deck.color};letter-spacing:0.5px;padding:4px 0 4px 0;z-index:2;">
       ${deck.name}
     </div>
     <div class="deck-difficulty"
-      style="position:absolute;top:8px;left:8px;z-index:3;">
-      <span style="display:inline-block;background:rgba(0,0,0,0.65);border-radius:50%;padding:3px 7px;font-size:1.14em;color:#ffe066;">
+      style="position:absolute;top:1px;left:1px;z-index:3;">
+      <span style="background:rgba(0,0,0,0.65);border-radius:50%;padding:3px 3px;">
         ${deck.difficulty}
       </span>
     </div>
@@ -422,7 +422,7 @@ div.innerHTML = `
   <div style="position:relative;width:100%;height:100%;">
     <img src="${deck.image}" alt="${deck.name}" class="deck-art-img" style="width:100%;height:100%;object-fit:cover;border-radius:16px;">
     <div class="deck-name"
-      style="position:absolute;top:0;left:0;width:100%;background:rgba(10,12,20,0.84);color:${deck.color};font-weight:bold;text-align:center;font-size:1.14em;letter-spacing:0.5px;padding:6px 0 4px 0;z-index:2;border-top-left-radius:16px;border-top-right-radius:16px;">
+      style="position:absolute;bottom:0;width:100%;background:rgba(10,12,20,0.84);color:${deck.color};letter-spacing:0.5px;padding:4px 0 4px 0;z-index:2;">
       ${deck.name}
     </div>
   </div>
