@@ -1,5 +1,3 @@
-// --- FRIEND INVITE SYSTEM WITH FIRESTORE ---
-
 // Utility: get current user info
 function getCurrentUserId() {
   return firebase.auth().currentUser?.uid;
@@ -188,3 +186,8 @@ document.getElementById('tab-blocked').onclick = function() {
 document.getElementById('close-friends-modal').onclick = function() {
   document.getElementById('friends-modal').style.display = 'none';
 };
+
+window.sendFriendRequest = sendFriendRequest;
+window.acceptFriendRequest = acceptFriendRequest;
+window.declineFriendRequest = declineFriendRequest;
+window.renderFriendsList = renderFriendsList;
