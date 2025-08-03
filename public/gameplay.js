@@ -298,14 +298,14 @@ function showCpuDeckModal() {
       div.style.overflow = 'hidden';
 
 div.innerHTML = `
-  <div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+  <div style="position:relative;width:100%;height:100%;">
+    <img src="${deck.image}" alt="${deck.name}" class="deck-art-img" style="width:100%;height:100%;object-fit:cover;border-radius:16px;">
     <div class="deck-name"
-      style="text-align:center;font-weight:bold;margin-bottom:4px;color:${deck.color};font-size:1.09em;letter-spacing:0.5px;">
+      style="position:absolute;top:0;left:0;width:100%;background:rgba(10,12,20,0.84);color:${deck.color};font-weight:bold;text-align:center;font-size:1.14em;letter-spacing:0.5px;padding:6px 0 4px 0;z-index:2;border-top-left-radius:16px;border-top-right-radius:16px;">
       ${deck.name}
     </div>
-    <img src="${deck.image}" alt="${deck.name}" class="deck-art-img" style="width:100%;height:100%;object-fit:cover;border-radius:16px;">
     <div class="deck-difficulty"
-      style="position:absolute;top:8px;left:8px;z-index:2;">
+      style="position:absolute;top:8px;left:8px;z-index:3;">
       <span style="display:inline-block;background:rgba(0,0,0,0.65);border-radius:50%;padding:3px 7px;font-size:1.14em;color:#ffe066;">
         ${deck.difficulty}
       </span>
@@ -419,12 +419,12 @@ function showPlayerDeckModal() {
         div.style.overflow = 'hidden';
 
 div.innerHTML = `
-  <div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+  <div style="position:relative;width:100%;height:100%;">
+    <img src="${deck.image}" alt="${deck.name}" class="deck-art-img" style="width:100%;height:100%;object-fit:cover;border-radius:16px;">
     <div class="deck-name"
-      style="text-align:center;font-weight:bold;margin-bottom:4px;color:${deck.color};font-size:1.09em;letter-spacing:0.5px;">
+      style="position:absolute;top:0;left:0;width:100%;background:rgba(10,12,20,0.84);color:${deck.color};font-weight:bold;text-align:center;font-size:1.14em;letter-spacing:0.5px;padding:6px 0 4px 0;z-index:2;border-top-left-radius:16px;border-top-right-radius:16px;">
       ${deck.name}
     </div>
-    <img src="${deck.image}" alt="${deck.name}" class="deck-art-img" style="width:100%;height:100%;object-fit:cover;border-radius:16px;">
   </div>
 `;
         div.onclick = () => {
