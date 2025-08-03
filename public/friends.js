@@ -68,6 +68,10 @@ function displayPlayerSearchResults(players) {
     const tile = document.createElement('div');
     tile.className = 'friend-profile-tile';
     tile.style.marginBottom = '18px';
+    tile.style.cursor = 'pointer';
+    tile.dataset.uid = player.uid;
+    tile.dataset.username = player.username || player.uid;
+
     tile.innerHTML = `
       <div style="position:relative;width:100%;height:100px;display:flex;align-items:center;">
         ${player.banner ? `<img class="friend-banner" src="${player.banner}" style="left:0;top:0;width:100%;height:100%;object-fit:cover;opacity:0.55;position:absolute;border-radius:16px;">` : ''}
@@ -75,9 +79,63 @@ function displayPlayerSearchResults(players) {
         <span class="friend-username" style="margin-left:18px;z-index:2;font-weight:bold;color:#ffe066;font-size:1.13em;">${player.username || player.uid}</span>
       </div>
     `;
-    // Optionally add menu/options for sending request, viewing profile, etc
+
+    // Attach click handler for menu
+    tile.onclick = function(e) {
+      e.stopPropagation();
+      showPlayerSearchMenu(tile, player);
+    };
+
     resultsDiv.appendChild(tile);
   });
+}
+function showPlayerSearchMenu(tile, player) {
+  // Remove any existing menus
+  let menu = document.getElementById('player-search-menu');
+  if (menu) menu.remove();
+
+  menu = document.createElement('div');
+  menu.id = 'player-search-menu';
+  menu.className = 'menu';
+  menu.style.position = 'absolute';
+  menu.style.zIndex = 9999;
+  menu.style.minWidth = '160px';
+  menu.innerHTML = `
+    <button class="settings-item" style="width:100%;text-align:left;">
+      <img src="OtherImages/Icons/View.png" alt="View" style="width:20px;vertical-align:middle;margin-right:10px;"> View
+    </button>
+    <button class="settings-item" style="width:100%;text-align:left;">
+      <img src="OtherImages/Icons/Friends.png" alt="Add" style="width:20px;vertical-align:middle;margin-right:10px;"> Send Friend Request
+    </button>
+  `;
+
+  // "View" action
+  menu.children[0].onclick = function(e) {
+    e.stopPropagation();
+    showFullCardModal({ avatar: player.avatar, banner: player.banner, username: player.username, uid: player.uid });
+    menu.remove();
+  };
+  // "Send Friend Request" action
+  menu.children[1].onclick = function(e) {
+    e.stopPropagation();
+    sendFriendRequest(player.username || player.uid);
+    menu.remove();
+  };
+
+  // Position menu near tile
+  const rect = tile.getBoundingClientRect();
+  placeMenuWithinViewport(menu, rect);
+
+  // Remove menu if clicking outside
+  setTimeout(() => {
+    document.body.addEventListener('click', function handler(e) {
+      if (!menu.contains(e.target)) menu.remove();
+      document.body.removeEventListener('click', handler);
+    }, { once: true });
+  }, 20);
+
+  // Prevent menu from closing if clicked inside
+  menu.onclick = (e) => e.stopPropagation();
 }
 // Look up a user by username (returns {uid, username} or null)
 function findUserByUsername(username, cb) {
