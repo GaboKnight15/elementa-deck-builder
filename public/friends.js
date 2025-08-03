@@ -160,3 +160,31 @@ function renderFriendsList() {
     });
   });
 }
+
+document.getElementById('tab-friends').onclick = function() {
+  this.classList.add('selected');
+  document.getElementById('tab-requests').classList.remove('selected');
+  document.getElementById('tab-blocked').classList.remove('selected');
+  document.getElementById('panel-friends').style.display = '';
+  document.getElementById('panel-requests').style.display = 'none';
+  document.getElementById('panel-blocked').style.display = 'none';
+};
+document.getElementById('tab-requests').onclick = function() {
+  this.classList.add('selected');
+  document.getElementById('tab-friends').classList.remove('selected');
+  document.getElementById('tab-blocked').classList.remove('selected');
+  document.getElementById('panel-friends').style.display = 'none';
+  document.getElementById('panel-requests').style.display = '';
+  document.getElementById('panel-blocked').style.display = 'none';
+};
+document.getElementById('tab-blocked').onclick = function() {
+  this.classList.add('selected');
+  document.getElementById('tab-friends').classList.remove('selected');
+  document.getElementById('tab-requests').classList.remove('selected');
+  document.getElementById('panel-friends').style.display = 'none';
+  document.getElementById('panel-requests').style.display = 'none';
+  document.getElementById('panel-blocked').style.display = '';
+};
+document.getElementById('close-friends-modal').onclick = function() {
+  document.getElementById('friends-modal').style.display = 'none';
+};
