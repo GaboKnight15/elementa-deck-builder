@@ -445,21 +445,36 @@
   </div>
 </div>
 <!-- FRIEND LIST MODAL -->  
-<div id="friends-modal" class="modal">
-  <div class="modal-content">
-    <h2>Friends</h2>
-    <input id="add-friend-id" placeholder="Enter Friend ID" />
-    <button onclick="addFriend(document.getElementById('add-friend-id').value)">Add Friend</button>
-    <div style="margin-bottom:1em;">
-      <input id="add-friend-username" placeholder="Username" style="padding:4px 8px; border-radius:4px; border:1px solid #333;">
-      <button onclick="sendFriendRequest(document.getElementById('add-friend-username').value)" style="margin-left:8px;">
-        Add Friend
-      </button>
+<div id="friends-modal" class="modal" style="display:none;">
+  <div class="modal-content" style="min-width:580px;max-width:760px;padding:0;">
+    <!-- Tab Navigation -->
+    <div class="friends-tab-bar" style="display:flex;justify-content:center;gap:20px;margin:24px 0 12px 0;">
+      <button id="tab-friends" class="friends-tab-btn selected">Friends</button>
+      <button id="tab-requests" class="friends-tab-btn">Requests</button>
+      <button id="tab-blocked" class="friends-tab-btn">Blocked List</button>
     </div>
-    <div id="friends-list"></div>
-    <button id="close-friends-modal" class="btn-negative-secondary">Close</button>
+    <!-- Friends Panel -->
+    <div id="panel-friends" class="friends-tab-panel" style="display:;">
+      <!-- Friends list rendered here -->
+    </div>
+    <!-- Requests Panel -->
+    <div id="panel-requests" class="friends-tab-panel" style="display:none;">
+      <!-- Requests list rendered here -->
+      <div style="display:flex;justify-content:center;margin-bottom:16px;">
+        <input type="text" id="search-friends" placeholder="Search by ID or Username"
+          style="padding:7px 16px;font-size:1em;border-radius:7px;width:60%;border:1.5px solid #ffe066;background:#232a3c;color:#ffe066;">
+      </div>
+      <div id="panel-requests-sent"></div>
+      <div id="panel-requests-received"></div>
+    </div>
+    <!-- Blocked Panel -->
+    <div id="panel-blocked" class="friends-tab-panel" style="display:none;">
+      <!-- Blocked list rendered here -->
+    </div>
+    <button id="close-friends-modal" class="btn-negative-secondary" style="margin:18px auto 8px auto;display:block;">Close</button>
   </div>
 </div>
+  
 <!-- DECK VIEW MODAL -->
 <div id="deck-view-modal" class="modal">
   <div class="modal-content">
@@ -694,5 +709,6 @@
  
 </body> 
 </html>
+
 
 
