@@ -637,6 +637,10 @@ function updateDeckDisplay() {
       li.classList.add('deck-draggable');
       li.setAttribute('data-card-id', card.id);
       li.setAttribute('draggable', 'true');
+      li.onclick = function(e) {
+        if (e.target === removeBtn) return;
+        showFullCardModal(card);
+      };
       // Drag support for removing
       li.addEventListener('dragstart', function(e) {
         e.dataTransfer.setData('card-id', card.id);
