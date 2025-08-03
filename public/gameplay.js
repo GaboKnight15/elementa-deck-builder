@@ -379,9 +379,9 @@ function showPlayerDeckModal() {
         div.style.background = '#232a3c';
         div.innerHTML = `
           <div style="position:relative; width:100%; height:140px; display: flex; align-items: center; justify-content: center;">
-            <img src="${deck.image}" alt="${deck.name}" class="deck-art-img">
+            ${image ? `<img src="${image}" alt="${deck.name}" class="deck-art-img" style="width:100%;height:100%;object-fit:cover;border-radius:16px;">` : ''}
+            <div class="deck-name" style="text-align:center;">${deck.name}</div>
           </div>
-          <div class="deck-name" style="text-align:center;">${deck.name}</div>
         `;
         if (totalCards >= 50) {
           div.onclick = () => {
@@ -2897,7 +2897,7 @@ function renderModePlayerDeckTile() {
   }
 
   slotDiv.classList.remove('empty');
-  let image = deckObj.highlightArt || deckObj.bannerArt || "CardImages/Banners/DefaultBanner.png";
+  let image = deckObj.highlightArt ? deckObj.highlightArt : null;
   slotDiv.innerHTML = `
     <img class="deck-slot-highlight-img" src="${image}" alt="highlight" />
     <div class="deck-slot-title-overlay">${deckName}</div>
