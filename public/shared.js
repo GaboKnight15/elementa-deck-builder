@@ -386,7 +386,10 @@ document.getElementById('image-modal').onclick = (e) => {
 function renderCardCost(costData) {
   // Accepts either {red:2, blue:1, ...} or [{color:'red',amount:2}, ...]
   let html = '';
-  if (!costData) return '0';
+  if (!costData) {
+   // Show the zero image if cost is 0
+   return `<img src="${COST_IMAGE_MAP.X0}" alt="Cost: 0" style="width:26px;height:26px;vertical-align:middle;margin-right:2px;">`;
+  }
 
   // Array style: [{color: 'red', amount: 2}, {colorless: 3}]
   if (Array.isArray(costData)) {
@@ -419,7 +422,7 @@ function renderCardCost(costData) {
       }
     }
   }
-  return html || '0';
+  return html || `<img src="${COST_IMAGE_MAP.X0}" alt="Cost: 0" style="width:26px;height:26px;vertical-align:middle;margin-right:2px;">`;
 }
 const COLLECTION_KEY = "cardCollection";
 const NEW_CARD_KEY = "newlyUnlockedCards";
