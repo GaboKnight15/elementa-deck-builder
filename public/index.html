@@ -474,7 +474,21 @@
     <button id="close-friends-modal" class="btn-negative-secondary" style="margin:18px auto 8px auto;display:block;">Close</button>
   </div>
 </div>
-  
+
+<!-- PLAYER SEARCH MODAL -->
+<div id="player-search-modal" class="modal" style="display:none;">
+  <div class="modal-content" style="min-width:420px;max-width:540px;padding:0;display:flex;flex-direction:column;align-items:center;">
+    <div style="width:100%;display:flex;align-items:center;justify-content:center;margin-top:28px;">
+      <img id="player-search-trigger" src="OtherImages/Icons/View.png" alt="Search" title="Search"
+        style="width:34px;height:34px;cursor:pointer;margin-right:10px;filter:brightness(1.2);">
+      <input type="text" id="player-search-input" placeholder="Search by ID or Username"
+        style="padding:9px 18px;font-size:1.1em;border-radius:8px;width:70%;border:2px solid #ffe066;background:#232a3c;color:#ffe066;">
+    </div>
+    <div id="player-search-results" style="margin-top:22px;width:90%;"></div>
+    <button id="close-player-search-modal" class="btn-negative-secondary" style="margin:24px auto 10px auto;display:block;">Close</button>
+  </div>
+</div>
+
 <!-- DECK VIEW MODAL -->
 <div id="deck-view-modal" class="modal">
   <div class="modal-content">
@@ -709,6 +723,7 @@
  
 </body> 
 </html>
+
 
 
 
