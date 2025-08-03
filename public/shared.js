@@ -771,8 +771,3 @@ document.addEventListener("DOMContentLoaded", function() {
     retina_detect: true
   });
 });
-// Expose to global
-window.sendFriendRequest = sendFriendRequest;
-window.acceptFriendRequest = acceptFriendRequest;
-window.declineFriendRequest = declineFriendRequest;
-window.renderFriendsList = renderFriendsList; 
