@@ -444,7 +444,7 @@
     <div id="achievements-list"></div>
   </div>
 </div>
-<!-- FRIEND LIST MODAL -->  
+<!-- FRIEND LIST MODAL -->
 <div id="friends-modal" class="modal" style="display:none;">
   <div class="modal-content" style="min-width:580px;max-width:760px;padding:0;">
     <!-- Tab Navigation -->
@@ -455,7 +455,11 @@
     </div>
     <!-- Friends Panel -->
     <div id="panel-friends" class="friends-tab-panel" style="display:;">
-      <!-- Friends list rendered here -->
+      <div class="friend-profile-tile" onclick="showFriendMenu(this, friendData)">
+        <img class="friend-banner" src="BANNER_URL" alt="banner" />
+        <img class="friend-avatar" src="AVATAR_URL" alt="avatar" />
+        <span class="friend-username">USERNAME</span>
+      </div>
     </div>
     <!-- Requests Panel -->
     <div id="panel-requests" class="friends-tab-panel" style="display:none;">
@@ -709,6 +713,7 @@
  
 </body> 
 </html>
+
 
 
 
