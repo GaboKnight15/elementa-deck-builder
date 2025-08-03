@@ -724,7 +724,7 @@ button {}
 
 #gallery-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, 140px);
+  grid-template-columns: repeat(auto-fit, 130px);
   justify-items: center;
   align-items: start;
   width: 100%;
