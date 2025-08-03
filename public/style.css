@@ -63,7 +63,6 @@ button {}
   gap: 11px;
   animation: fadeIn 0.16s;
 }
-
 #profile-menu.active {
   display: flex;
 }
@@ -120,8 +119,17 @@ button {}
   height: 100vh;
 }
 #gallery-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  min-height: 100%;
+  box-sizing: border-box;
+  background: #1a2533;
+  overflow-y: auto;
+  padding-bottom: 40px;
 }
-
 #gameplay-container {
   display: flex;
   position: relative;
@@ -655,6 +663,7 @@ button {}
   max-height: 100%;
   overflow-y: auto;
   max-width: 100vw;
+  gap: 5px;
   z-index: 3;
 }
 #gallery-card-menu.modal {
@@ -1475,12 +1484,10 @@ button {}
   box-shadow: 0 2px 10px #1a224444;
   border-radius: 8px;
   padding: 0.25em 1.6em 0.25em 0.7em;
-  font-size: 1em;
   font-family: 'Segoe UI', 'Arial', sans-serif;
   font-weight: 500;
   transition: border-color 0.18s, box-shadow 0.19s, color 0.18s, background 0.18s;
   outline: none;
-  margin-right: 0.6em;
 }
 .filter-select option {
   background: #22304a;
@@ -1537,7 +1544,7 @@ button {}
   margin: 0 auto;
   width: auto;
   height: auto;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, max-content);
   gap: 18px 18px; 
   justify-content: center;
   align-items: center;
