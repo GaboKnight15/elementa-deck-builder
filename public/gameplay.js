@@ -371,6 +371,7 @@ function showPlayerDeckModal() {
         const totalCards = deck.deckObj && typeof deck.deckObj === "object"
           ? Object.values(deck.deckObj).filter(v => typeof v === 'number').reduce((a, b) => a + b, 0)
           : 0;
+        const image = deck.deckObj && deck.deckObj.highlightArt ? deck.deckObj.highlightArt : null;
         const div = document.createElement('div');
         div.className = 'player-deck-option';
         div.style.cursor = totalCards >= 50 ? 'pointer' : 'not-allowed';
