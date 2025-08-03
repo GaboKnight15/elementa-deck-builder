@@ -2205,17 +2205,11 @@ button {}
 .cpu-deck-option .deck-name, .default-player-deck-option .deck-name {
   font-weight: bold;
   color: var(--deck-color, #ffe066);
-  margin: 7px 0 3px 0;
   font-size: 1.05em;
   text-align: center;
 }
 
-.cpu-deck-option .deck-difficulty {
-  font-size: 0.93em;
-  color: #bbb;
-  margin-bottom: 0;
-  text-align: center;
-}
+.cpu-deck-option .deck-difficulty {}
 .deck-difficulty {
   pointer-events: none;
 }
