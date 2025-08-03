@@ -378,9 +378,12 @@ function showPlayerDeckModal() {
         div.style.padding = '12px';
         div.style.background = '#232a3c';
         div.innerHTML = `
-          <div style="position:relative; width:100%; height:140px; display: flex; align-items: center; justify-content: center;">
+          <div style="position:relative; width:100%; height:140px;">
             ${image ? `<img src="${image}" alt="${deck.name}" class="deck-art-img" style="width:100%;height:100%;object-fit:cover;border-radius:16px;">` : ''}
-            <div class="deck-name" style="text-align:center;">${deck.name}</div>
+            <div class="deck-name"
+              style="position:absolute;bottom:0;width:100%;background:rgba(10,12,20,0.84);color:#ffe066;font-weight:bold;text-align:center;font-size:1.09em;letter-spacing:0.5px;padding:4px 0 4px 0;z-index:2;border-bottom-left-radius:16px;border-bottom-right-radius:16px;">
+              ${deck.name}
+            </div>
           </div>
         `;
         if (totalCards >= 50) {
