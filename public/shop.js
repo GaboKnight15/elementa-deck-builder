@@ -55,8 +55,8 @@ const allBannerOptions = [
 ];
 const allCardbackOptions = [
   "OtherImages/Cardbacks/Cardback1.png",
-  "OtherImages/Cardbacks/Cardback2.png",
-  "OtherImages/Cardbacks/DefaultCardback.png"
+  "OtherImages/Cardbacks/FairyCardback.png",
+  "OtherImages/Cardbacks/CardbackDefault.png"
 ];
 const packPrices = {
   "StandardPack": 100,
@@ -101,8 +101,8 @@ const bannerPrices = {
 };
 const cardbackPrices = {
   "OtherImages/Cardbacks/Cardback1.png": 100,
-  "OtherImages/Cardbacks/Cardback2.png": 100,
-  "OtherImages/Cardbacks/DefaultCardback.png": 100
+  "OtherImages/Cardbacks/FairyCardback.png": 100,
+  "OtherImages/Cardbacks/CardbackDefault.png": 100
 };
 // --- Shop Key Bases for localStorage ---
 const INDIVIDUAL_CARDS_SHOP_KEY_BASE = "shopIndividualCards";
