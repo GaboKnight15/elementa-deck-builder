@@ -2931,8 +2931,8 @@ function showCoinFlipModal(onResult) {
 
   // Flip logic
   const isHeads = Math.random() < 0.5;
-  const headsImg = "OtherImages/Currency/Heads.png";
-  const tailsImg = "OtherImages/Currency/Tails.png";
+  const headsImg = "OtherImages/Icons/Heads.png";
+  const tailsImg = "OtherImages/Icons/Tails.png";
   const chosenImg = isHeads ? headsImg : tailsImg;
   const chosenText = isHeads ? "Heads" : "Tails";
 
