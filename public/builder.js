@@ -50,8 +50,8 @@ const closeDeckCardbackModalBtn = document.getElementById('close-deck-cardback-m
 // Cardback options (expand as needed)
 const cardbackOptions = [
   "OtherImages/Cardbacks/Cardback1.png",
-  "OtherImages/Cardbacks/Cardback2.png",
-  "OtherImages/Cardbacks/DefaultCardback.png"
+  "OtherImages/Cardbacks/FairyCardback.png",
+  "OtherImages/Cardbacks/CardbackDefault.png"
 ];
 
 document.getElementById('builder-settings-btn').onclick = function() {
