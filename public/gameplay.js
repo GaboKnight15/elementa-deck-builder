@@ -37,7 +37,7 @@ const DEFAULT_CPU_DECKS = [
     difficulty: '⭐',
     image: 'CardImages/Avatars/Fairy.png',
     bannerArt: 'CardImages/Banners/GreenBanner.png',
-    cardbackArt: 'OtherImages/Cardbacks/GreenCardback.png',
+    cardbackArt: 'OtherImages/Cardbacks/FairyCardback.png',
     cards: [
       { id: 'Verdara', amount: 1 },
       { id: 'ForestFairy', amount: 4 },
@@ -2931,8 +2931,8 @@ function showCoinFlipModal(onResult) {
 
   // Flip logic
   const isHeads = Math.random() < 0.5;
-  const headsImg = "OtherImages/Currency/Coins.png"; // Your dragon head image
-  const tailsImg = "OtherImages/Currency/Coins.png"; // <-- Submit this image!
+  const headsImg = "OtherImages/Currency/Heads.png";
+  const tailsImg = "OtherImages/Currency/Tails.png";
   const chosenImg = isHeads ? headsImg : tailsImg;
   const chosenText = isHeads ? "Heads" : "Tails";
 
