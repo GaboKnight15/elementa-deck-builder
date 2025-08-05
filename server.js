@@ -74,6 +74,9 @@ io.on('connection', (socket) => {
       const player2 = playerIds[1];
       io.to(player1).emit('opponent deck', rooms[roomId].decks[player2]);
       io.to(player2).emit('opponent deck', rooms[roomId].decks[player1]);
+      // --- NEW: Emit coin flip result ---
+      const whoStarts = Math.random() < 0.5 ? "player" : "opponent";
+      io.to(roomId).emit('coin-flip-result', whoStarts);
     }
   });
   
