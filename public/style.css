@@ -3357,13 +3357,10 @@ button {}
 #chat-log {
   flex: 1 1 auto;
   overflow-y: auto;
-  height: 220px;           /* Set a fixed height */
-  max-height: 220px;       /* Or use max-height for responsiveness */
   padding: 8px;
   background: #20283e;
   border-radius: 8px;
   margin-bottom: 8px;
-  font-size: 1em;
   color: #ffe066;
   box-shadow: 0 1px 6px #0002;
 }
@@ -3383,7 +3380,6 @@ button {}
 #chat-input { 
   flex: 1 1 auto;
   padding: 7px 12px;
-  font-size: 1em;
   border-radius: 8px;
   border: 1.5px solid #4761e6;
   background: #232a3c;
