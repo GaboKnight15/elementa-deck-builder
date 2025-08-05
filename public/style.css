@@ -983,7 +983,7 @@ button {}
 
 #gallery-builder-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, 100px);
+  grid-template-columns: repeat(auto-fit, 130px);
   gap: 0.2em;
   justify-items: center;
   align-items: start;
