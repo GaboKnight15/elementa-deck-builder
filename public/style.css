@@ -3525,4 +3525,40 @@ button {}
   z-index: 2;
 }
 
+/* SCROLLBARS */
+/* Custom scrollbar for dark theme with accent colors */
+body, .modal-content, #gallery-cards {
+  scrollbar-width: thin;
+  scrollbar-color: #ffe066 #20283e; /* thumb color, track color */
+}
+
+/* WebKit (Chrome, Edge, Safari) */
+body::-webkit-scrollbar,
+.modal-content::-webkit-scrollbar,
+#gallery-cards::-webkit-scrollbar {
+  width: 12px;
+  background: #20283e;
+}
+
+body::-webkit-scrollbar-thumb,
+.modal-content::-webkit-scrollbar-thumb,
+#gallery-cards::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #ffe066 60%, #a98b00 100%);
+  border-radius: 10px;
+  border: 2px solid #181f2b;
+}
+
+body::-webkit-scrollbar-track,
+.modal-content::-webkit-scrollbar-track,
+#gallery-cards::-webkit-scrollbar-track {
+  background: #181f2b;
+  border-radius: 10px;
+}
+
+/* Optional: scrollbar corner (for horizontal+vertical) */
+body::-webkit-scrollbar-corner,
+.modal-content::-webkit-scrollbar-corner,
+#gallery-cards::-webkit-scrollbar-corner {
+  background: #232a3c;
+}
 /* --- MOBILE AND SMALL SCREENS --- */
