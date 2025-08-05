@@ -285,38 +285,35 @@ function updateDeckBanner(deckName) {
   deckBannerImg.src = deck.bannerArt || "CardImages/Banners/DefaultBanner.png";
 }
 
-// Make the banner image clickable to open the modal
+// --- NEW: BANNER LOGIC (update to match avatars/cardbacks) ---
 deckBannerImg.onclick = function() {
   closeDeckTileMenu();
   deckBannerModal.style.display = "flex";
   deckBannerArtList.innerHTML = "";
-
   const deckName = deckMenu.dataset.deckName;
+  const unlocked = getUnlockedBanners ? getUnlockedBanners() :
+    (window.getUnlockedBanners ? window.getUnlockedBanners() : ["CardImages/Banners/DefaultBanner.png"]); 
+  if (!unlocked || unlocked.length === 0) {
+    deckBannerArtList.innerHTML = "<div style='color:#eee'>No unlocked banners available.</div>";
+    return;
+  }
 
-  // Use unlocked banners, like profile banner
-  getUnlockedBanners(function(unlocked) {
-    if (!unlocked || unlocked.length === 0) {
-      deckBannerArtList.innerHTML = "<div style='color:#eee'>No unlocked banners available.</div>";
-      return;
-    }
-
-    unlocked.forEach(bannerUrl => {
-      const img = document.createElement('img');
-      img.src = bannerUrl;
-      img.alt = bannerUrl.split('/').pop().replace('.png', '');
-      img.className = "deck-banner-choice";
-      img.title = img.alt;
-      img.onclick = () => {
-        decks[deckName].bannerArt = bannerUrl;
-        saveProgress();
-        updateDeckBanner(deckName);
-        deckBannerModal.style.display = "none";
-      };
-      deckBannerArtList.appendChild(img);
-    });
+  unlocked.forEach(bannerUrl => {
+    const img = document.createElement('img');
+    img.src = bannerUrl;
+    img.alt = bannerUrl.split('/').pop().replace('.png', '');
+    img.className = "deck-banner-choice";
+    img.title = img.alt;
+    img.onclick = () => {
+      decks[deckName].bannerArt = bannerUrl;
+      saveProgress();
+      updateDeckBanner(deckName);
+      deckBannerModal.style.display = "none";
+      closeDeckTileMenu();
+    };
+    deckBannerArtList.appendChild(img);
   });
 };
-
 closeDeckBannerModalBtn.onclick = () => (deckBannerModal.style.display = "none");
 // Update displayed cardback in deck menu
 function updateDeckCardback(deckName) {
