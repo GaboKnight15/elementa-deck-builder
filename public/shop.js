@@ -54,9 +54,23 @@ const allBannerOptions = [
     "CardImages/Banners/Solmara.png", 
 ];
 const allCardbackOptions = [
+  "OtherImages/Cardbacks/CardbackDefault.png",
   "OtherImages/Cardbacks/Cardback1.png",
   "OtherImages/Cardbacks/FairyCardback.png",
-  "OtherImages/Cardbacks/CardbackDefault.png"
+  "OtherImages/Cardbacks/CBCindercore.png",
+  "OtherImages/Cardbacks/CBConstructs.png",
+  "OtherImages/Cardbacks/CBCoralbound.png",
+  "OtherImages/Cardbacks/CBFirelands.png",
+  "OtherImages/Cardbacks/CBGoblins.png",
+  "OtherImages/Cardbacks/CBGolemheart.png",
+  "OtherImages/Cardbacks/CBMerfolk.png",
+  "OtherImages/Cardbacks/CBMoonfang.png",
+  "OtherImages/Cardbacks/CBSatyr.png",
+  "OtherImages/Cardbacks/CBShadowbound.png",
+  "OtherImages/Cardbacks/CBStonebound.png",
+  "OtherImages/Cardbacks/CBStormcore.png",
+  "OtherImages/Cardbacks/CBVenomcore.png",
+  "OtherImages/Cardbacks/CBWoodframe.png"
 ];
 const packPrices = {
   "StandardPack": 100,
@@ -100,9 +114,23 @@ const bannerPrices = {
     "CardImages/Banners/Solmara.png": 100 
 };
 const cardbackPrices = {
+  "OtherImages/Cardbacks/CardbackDefault.png": 10,
   "OtherImages/Cardbacks/Cardback1.png": 100,
   "OtherImages/Cardbacks/FairyCardback.png": 100,
-  "OtherImages/Cardbacks/CardbackDefault.png": 100
+  "OtherImages/Cardbacks/CBCindercore.png": 100,
+  "OtherImages/Cardbacks/CBConstructs.png": 100,
+  "OtherImages/Cardbacks/CBCoralbound.png": 100,
+  "OtherImages/Cardbacks/CBFirelands.png": 100,
+  "OtherImages/Cardbacks/CBGoblins.png": 100,
+  "OtherImages/Cardbacks/CBGolemheart.png": 100,
+  "OtherImages/Cardbacks/CBMerfolk.png": 100,
+  "OtherImages/Cardbacks/CBMoonfang.png": 100,
+  "OtherImages/Cardbacks/CBSatyr.png": 100,
+  "OtherImages/Cardbacks/CBShadowbound.png": 100,
+  "OtherImages/Cardbacks/CBStonebound.png": 100,
+  "OtherImages/Cardbacks/CBStormcore.png": 100,
+  "OtherImages/Cardbacks/CBVenomcore.png": 100,
+  "OtherImages/Cardbacks/CBWoodframe.png": 100
 };
 // --- Shop Key Bases for localStorage ---
 const INDIVIDUAL_CARDS_SHOP_KEY_BASE = "shopIndividualCards";
