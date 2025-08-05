@@ -890,8 +890,6 @@ button {}
 }
 .full-card-info-panel {
   color: #ffe066;
-  background: none;
-  font-size: 1.02em;
   font-family: inherit;
   display: flex;
   flex-direction: column;
@@ -906,9 +904,7 @@ button {}
   text-shadow: 0 2px 8px #000,0 2px 2px #ffe06622;
 }
 .full-card-info-row {
-  margin-bottom: 4px;
   color: #ffe066de;
-  font-size: 1.08em;
   display: flex;
   gap: 0.4em;
 }
@@ -1594,10 +1590,9 @@ button {}
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
   gap: 0.7em;
-  padding: 0.5em 1em;
   box-sizing: border-box;
-  overflow-x: auto;
 }
 #deck-list.drag-over {
   box-shadow: 0 0 8px 2px #3b82f6;
