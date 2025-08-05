@@ -2964,7 +2964,7 @@ function showCoinFlipModal(onResult) {
     coin.style.transform = "rotateY(540deg)";
     setTimeout(() => {
       coin.src = chosenImg;
-      msg.innerText = chosenText + "!\n" + (isHeads ? "You go first!" : "Opponent goes first!");
+      msg.innerText = chosenText + "!\n" + (isHeads ? "You go first" : "You go second");
       // Let player click to continue
       const btn = document.createElement('button');
       btn.innerText = "Start Game";
