@@ -2914,6 +2914,20 @@ function renderModePlayerDeckTile() {
 }
 
 function showCoinFlipModal(onResult) {
+  // Use forcedResult if provided, else pick randomly (for solo/casual play)
+  let isHeads;
+  if (typeof forcedResult !== "undefined") {
+    // Accept strings or booleans
+    if (forcedResult === "player" || forcedResult === "heads" || forcedResult === true) isHeads = true;
+    else isHeads = false;
+  } else {
+    isHeads = Math.random() < 0.5;
+  }
+  // Flip logic
+  const headsImg = "OtherImages/Icons/Heads.png";
+  const tailsImg = "OtherImages/Icons/Tails.png";
+  const chosenImg = isHeads ? headsImg : tailsImg;
+  const chosenText = isHeads ? "Heads" : "Tails";
   // Create overlay/modal
   let modal = document.createElement('div');
   modal.className = 'modal';
@@ -2921,13 +2935,6 @@ function showCoinFlipModal(onResult) {
   modal.style.position = 'fixed';
   modal.style.background = 'rgba(16,20,24,0.92)';
   modal.onclick = e => { if (e.target === modal) modal.remove(); };
-
-  // Flip logic
-  const isHeads = Math.random() < 0.5;
-  const headsImg = "OtherImages/Icons/Heads.png";
-  const tailsImg = "OtherImages/Icons/Tails.png";
-  const chosenImg = isHeads ? headsImg : tailsImg;
-  const chosenText = isHeads ? "Heads" : "Tails";
 
   // Coin image and message
   const coin = document.createElement('img');
@@ -2952,20 +2959,14 @@ function showCoinFlipModal(onResult) {
   modal.appendChild(content);
   document.body.appendChild(modal);
 
-  // Animate flip (simulate showing tails on the back side)
   setTimeout(() => {
     coin.style.transform = "rotateY(270deg)";
-    // At halfway point (270deg), swap to tails image temporarily
     setTimeout(() => {
       coin.src = tailsImg;
-      // finish the flip to 540deg (so it lands face up)
       coin.style.transform = "rotateY(540deg)";
-
-      // After animation, show result and chosen side
       setTimeout(() => {
         coin.src = chosenImg;
         msg.innerText = chosenText + "!\n" + (isHeads ? "You go first" : "You go second");
-        // Auto-advance after brief delay
         setTimeout(() => {
           modal.remove();
           if (onResult) onResult(isHeads ? "player" : "opponent");
@@ -3136,4 +3137,17 @@ if (window.socket) {
   });
 } else {
   console.error("Socket.io not initialized!");
+}
+if (window.socket) {
+  window.socket.on('coin-flip-result', function(result) {
+    // result should be "player" or "opponent" (or "heads"/"tails")
+    showCoinFlipModal(function(whoStarts) {
+      gameState.turn = whoStarts;
+      gameState.phase = "draw";
+      // ...continue with setup...
+      initiateMainDomainAndChampionSelection(gameState.playerDeck, () => {
+        // draw opening hand, etc.
+      });
+    }, result);
+  });
 }
