@@ -167,7 +167,21 @@ function endGameCleanup() {
 socket.on('opponent game action', action => {
   if (typeof handleOpponentAction === "function") handleOpponentAction(action);
 });
-
+socket.on('coin-flip-result', (whoStarts) => {
+  // Call the gameplay modal and logic, passing whoStarts as the result
+  if (typeof showCoinFlipModal === "function") {
+    showCoinFlipModal(function(turn) {
+      window.gameState.turn = turn; // or use your setup function
+      window.gameState.phase = "draw";
+      // Continue with your main domain/champion selection and hand draw logic here
+      if (typeof initiateMainDomainAndChampionSelection === "function") {
+        initiateMainDomainAndChampionSelection(window.gameState.playerDeck, () => {
+          // Draw hand, etc.
+        });
+      }
+    }, whoStarts); // pass forced result
+  }
+});
 // --- Profile details in game ---
 function showMyProfile() {
   if (typeof renderProfile === "function") {
