@@ -2919,13 +2919,6 @@ function showCoinFlipModal(onResult) {
   modal.className = 'modal';
   modal.style.display = 'flex';
   modal.style.position = 'fixed';
-  modal.style.top = 0;
-  modal.style.left = 0;
-  modal.style.width = '100vw';
-  modal.style.height = '100vh';
-  modal.style.alignItems = 'center';
-  modal.style.justifyContent = 'center';
-  modal.style.zIndex = 9999;
   modal.style.background = 'rgba(16,20,24,0.92)';
   modal.onclick = e => { if (e.target === modal) modal.remove(); };
 
@@ -2959,23 +2952,26 @@ function showCoinFlipModal(onResult) {
   modal.appendChild(content);
   document.body.appendChild(modal);
 
-  // Animate flip
+  // Animate flip (simulate showing tails on the back side)
   setTimeout(() => {
-    coin.style.transform = "rotateY(540deg)";
+    coin.style.transform = "rotateY(270deg)";
+    // At halfway point (270deg), swap to tails image temporarily
     setTimeout(() => {
-      coin.src = chosenImg;
-      msg.innerText = chosenText + "!\n" + (isHeads ? "You go first" : "You go second");
-      // Let player click to continue
-      const btn = document.createElement('button');
-      btn.innerText = "Start Game";
-      btn.className = "btn-primary";
-      btn.style.marginTop = "24px";
-      btn.onclick = () => {
-        modal.remove();
-        if (onResult) onResult(isHeads ? "player" : "opponent");
-      };
-      content.appendChild(btn);
-    }, 1100);
+      coin.src = tailsImg;
+      // finish the flip to 540deg (so it lands face up)
+      coin.style.transform = "rotateY(540deg)";
+
+      // After animation, show result and chosen side
+      setTimeout(() => {
+        coin.src = chosenImg;
+        msg.innerText = chosenText + "!\n" + (isHeads ? "You go first" : "You go second");
+        // Auto-advance after brief delay
+        setTimeout(() => {
+          modal.remove();
+          if (onResult) onResult(isHeads ? "player" : "opponent");
+        }, 1300);
+      }, 450); // second half of the spin
+    }, 550); // half-spin duration
   }, 400);
 }
 
