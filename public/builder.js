@@ -498,11 +498,27 @@ function createCardBuilder(card, ownedCount) {
       this.src = "CardImages/Domains/placeholder.png";
     };
     img.alt = card.name;
-    img.onclick = (e) => {
-      e.stopPropagation();
-      showFullCardModal(card);
-    };
-    div.appendChild(img);
+  
+  // --- Use hold helper for card gallery ---
+  const { startHold, clearHold, mouseUp } = makeHoldHandlers(
+    () => showFullCardModal(card),
+    () => {
+      if (canAddCard(card, currentInDeck, ownedCount)) {
+        deck[card.id] = (deck[card.id] || 0) + 1;
+        setCurrentDeck(deck);
+        updateDeckDisplay();
+        renderBuilder();
+      }
+    }
+  );
+  img.addEventListener('mousedown', startHold);
+  img.addEventListener('touchstart', startHold);
+  img.addEventListener('mouseup', mouseUp);
+  img.addEventListener('touchend', mouseUp);
+  img.addEventListener('mouseleave', clearHold);
+  img.addEventListener('touchcancel', clearHold);
+
+  div.appendChild(img);
 
     // OWNED BADGE
     const ownedBadge = document.createElement('div');
@@ -512,22 +528,9 @@ function createCardBuilder(card, ownedCount) {
       // GRAY OUT IF unavailable
     if (available <= 0 || !canAddCard(card, currentInDeck, ownedCount)) {
         div.classList.add('card-unavailable');
+        img.style.pointerEvents = 'none';
     }
-  
-    const btn = document.createElement('button');
-    btn.textContent = "Add";
-    btn.classList.add('btn-secondary', 'btn-add');
-    btn.disabled = !canAddCard(card, currentInDeck, ownedCount);
-    btn.onclick = (e) => {
-      e.stopPropagation();
-      if (!canAddCard(card, currentInDeck, ownedCount)) return;
-      deck[card.id] = (deck[card.id] || 0) + 1;
-      setCurrentDeck(deck);
-      updateDeckDisplay();
-      renderBuilder();
-    };
-    div.appendChild(btn);
-    return div;
+  return div;
 }
 // --- DRAG AND DROP FOR DECK BUILDER --- //
 deckList.addEventListener('dragover', function(e) {
@@ -651,10 +654,21 @@ function updateDeckDisplay() {
       li.classList.add('deck-draggable');
       li.setAttribute('data-card-id', card.id);
       li.setAttribute('draggable', 'true');
-      li.onclick = function(e) {
-        if (e.target === removeBtn) return;
-        showFullCardModal(card);
-      };
+      // --- Use hold helper for deck list ---
+      const { startHold, clearHold, mouseUp } = makeHoldHandlers(
+        () => showFullCardModal(card),
+        () => {
+          removeCardFromDeck(card.id);
+          updateDeckDisplay();
+          renderBuilder();
+        }
+      );
+      li.addEventListener('mousedown', startHold);
+      li.addEventListener('touchstart', startHold);
+      li.addEventListener('mouseup', mouseUp);
+      li.addEventListener('touchend', mouseUp);
+      li.addEventListener('mouseleave', clearHold);
+      li.addEventListener('touchcancel', clearHold);
       // Drag support for removing
       li.addEventListener('dragstart', function(e) {
         e.dataTransfer.setData('card-id', card.id);
@@ -683,18 +697,8 @@ function updateDeckDisplay() {
       badge.textContent = `×${count}`;
       badge.className = 'deck-count-badge';
 
-      const removeBtn = document.createElement('button');
-      removeBtn.className = 'icon-btn-negative';
-      removeBtn.textContent = '−';
-      removeBtn.onclick = (e) => {
-        e.stopPropagation();
-        removeCardFromDeck(card.id);
-        updateDeckDisplay();
-        renderBuilder();
-      };
       li.appendChild(img);
       li.appendChild(badge);
-      li.appendChild(removeBtn);
       deckList.appendChild(li);
       }
     }
@@ -781,6 +785,28 @@ function renderBuilder() {
       builderGallery.appendChild(createCardBuilder(card, collection[card.id]));
     });
   }
+function makeHoldHandlers(onHold, onClick, holdTime = 400) {
+  let holdTimer = null;
+  let longHoldTriggered = false;
+
+  function startHold(e) {
+    longHoldTriggered = false;
+    holdTimer = setTimeout(() => {
+      longHoldTriggered = true;
+      onHold(e);
+    }, holdTime);
+  }
+  function clearHold(e) {
+    if (holdTimer) clearTimeout(holdTimer);
+  }
+  function mouseUp(e) {
+    clearHold();
+    if (!longHoldTriggered) {
+      onClick(e);
+    }
+  }
+  return { startHold, clearHold, mouseUp };
+}
 // ==========================
 // === EVENT LISTENERS ===
 // ==========================
