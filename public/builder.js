@@ -49,9 +49,23 @@ const deckCardbackArtList = document.getElementById('deck-cardback-art-list');
 const closeDeckCardbackModalBtn = document.getElementById('close-deck-cardback-modal');
 // Cardback options (expand as needed)
 const cardbackOptions = [
+  "OtherImages/Cardbacks/CardbackDefault.png",
   "OtherImages/Cardbacks/Cardback1.png",
   "OtherImages/Cardbacks/FairyCardback.png",
-  "OtherImages/Cardbacks/CardbackDefault.png"
+  "OtherImages/Cardbacks/CBCindercore.png",
+  "OtherImages/Cardbacks/CBConstructs.png",
+  "OtherImages/Cardbacks/CBCoralbound.png",
+  "OtherImages/Cardbacks/CBFirelands.png",
+  "OtherImages/Cardbacks/CBGoblins.png",
+  "OtherImages/Cardbacks/CBGolemheart.png",
+  "OtherImages/Cardbacks/CBMerfolk.png",
+  "OtherImages/Cardbacks/CBMoonfang.png",
+  "OtherImages/Cardbacks/CBSatyr.png",
+  "OtherImages/Cardbacks/CBShadowbound.png",
+  "OtherImages/Cardbacks/CBStonebound.png",
+  "OtherImages/Cardbacks/CBStormcore.png",
+  "OtherImages/Cardbacks/CBVenomcore.png",
+  "OtherImages/Cardbacks/CBWoodframe.png"
 ];
 
 document.getElementById('builder-settings-btn').onclick = function() {
