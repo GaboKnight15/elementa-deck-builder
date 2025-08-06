@@ -239,10 +239,7 @@ function renderGallery() {
     }
     return true;
   });
-  const favoriteIds = getFavoriteCards();
-  
   updateGalleryCollectionProgress(filteredCards);
-  
   if (filteredCards.length === 0) return;
   filteredCards.forEach(card => {
     const cardDiv = createCardGallery(card);
