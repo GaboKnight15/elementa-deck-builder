@@ -3452,6 +3452,27 @@ button {}
   0%,100% { box-shadow: 0 0 28px 12px #fff9c4, 0 0 44px 12px #fffde7;}
   50%     { box-shadow: 0 0 44px 16px #ffffff, 0 0 80px 24px #fffde7;}
 }
+/* ============================= GALLERY RARITY WRAPPERS =========================== */
+.card-gallery.card-rarity-common {
+  border: 3px solid #181818;
+  box-shadow: 0 2px 12px #18181888, 0 2px 7px #0007;
+  background: #23232c;
+}
+.card-gallery.card-rarity-rare {
+  border: 3px solid #b77d3b;
+  box-shadow: 0 2px 16px #b77d3b88, 0 2px 7px #0007;
+  background: linear-gradient(110deg,#3b2f1e 60%,#b77d3b22 100%);
+}
+.card-gallery.card-rarity-epic {
+  border: 3px solid #bfc8d5;
+  box-shadow: 0 2px 16px #bfc8d555, 0 2px 7px #0007;
+  background: linear-gradient(110deg,#23232c 60%,#bfc8d522 100%);
+}
+.card-gallery.card-rarity-legendary {
+  border: 3px solid #ffe066;
+  box-shadow: 0 2px 18px #ffe06699, 0 2px 7px #0007;
+  background: linear-gradient(110deg,#23232c 60%,#ffe06622 100%);
+}
 .card-element-leaves:hover { animation: glow-leaves 1.2s infinite alternate; }
 .card-element-fire:hover { animation: glow-fire 1.2s infinite alternate; }
 .card-element-water:hover { animation: glow-water 1.2s infinite alternate; }
@@ -3460,14 +3481,6 @@ button {}
 .card-element-poison:hover { animation: glow-poison 1.2s infinite alternate; }
 .card-element-dark:hover { animation: glow-dark 1.2s infinite alternate; }
 .card-element-light:hover { animation: glow-light 1.2s infinite alternate; }
-.card-gallery.card-element-leaves  { background: linear-gradient(120deg, #5bd98a 70%, #314175 100%); }
-.card-gallery.card-element-fire    { background: linear-gradient(120deg, #ff6c5c 70%, #314175 100%); }
-.card-gallery.card-element-water   { background: linear-gradient(120deg, #30cfff 70%, #314175 100%); }
-.card-gallery.card-element-thunder { background: linear-gradient(120deg, #ffe066 70%, #314175 100%); }
-.card-gallery.card-element-ground  { background: linear-gradient(120deg, #c0a36e 70%, #314175 100%); }
-.card-gallery.card-element-poison  { background: linear-gradient(120deg, #b84cff 70%, #314175 100%); }
-.card-gallery.card-element-dark    { background: linear-gradient(120deg, #222 70%, #314175 100%); }
-.card-gallery.card-element-light   { background: linear-gradient(120deg, #f9fafc 70%, #314175 100%); }
 .card-locked:hover {
   transform: translateY(-5px) scale(1.05);
   box-shadow: 0 10px 24px rgba(0,0,0,0.4);
