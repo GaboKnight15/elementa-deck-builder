@@ -3371,8 +3371,18 @@ button {}
   margin-bottom: 8px;
   color: #ffe066;
   box-shadow: 0 1px 6px #0002;
-  word-break: break-word;
-  white-space: pre-line; /* allows line breaks and wraps */
+  word-break: break-all;      /* Break words anywhere */
+  overflow-wrap: anywhere;    /* Break at any point if needed */
+  hyphens: auto;              /* Add hyphens where dictionary allows */
+  white-space: pre-line;      /* Preserve line breaks, wrap text */
+}
+#chat-log .log-message,
+#chat-log .log-action,
+#chat-log .log-system {
+  word-break: break-all;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+  white-space: pre-line;
 }
 /* Sender styles are good as is */
 .chat-sender {
