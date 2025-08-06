@@ -3,6 +3,8 @@ let currentUserPage = 0;
 let lastVisibleUser = null;
 let userSearchPages = [];
 const USERS_PER_PAGE = 10;
+
+// SEARCH LOGIC
 function triggerPlayerSearch(page = 0) {
   const query = document.getElementById('player-search-input').value.trim();
   const resultsDiv = document.getElementById('player-search-results');
@@ -45,7 +47,7 @@ function getCurrentUserId() {
   return firebase.auth().currentUser?.uid;
 }
 function getCurrentUsername() {
-  return firebase.auth().currentUser?.displayName; // or store in Firestore
+  return firebase.auth().currentUser?.displayName;
 }
 // Show the player search modal
 function showPlayerSearchModal() {
@@ -61,41 +63,16 @@ document.getElementById('close-player-search-modal').onclick = function() {
 
 // For example, add this to your Requests tab logic:
 document.getElementById('player-search-trigger').onclick = function() {
-  triggerPlayerSearch();
+  userSearchPages = [];
+  triggerPlayerSearch(0);
 };
 // Also search on enter in the input box
 document.getElementById('player-search-input').addEventListener('keydown', function(e) {
-  if (e.key === "Enter") triggerPlayerSearch();
-});
-
-// Main search logic
-function triggerPlayerSearch() {
-  const query = document.getElementById('player-search-input').value.trim();
-  const resultsDiv = document.getElementById('player-search-results');
-  resultsDiv.innerHTML = '<div style="color:#ffe066;">Searching...</div>';
-  if (!query) {
-    resultsDiv.innerHTML = '<div style="color:#e25555;">Please enter a username or ID.</div>';
-    return;
+  if (e.key === "Enter") {
+    userSearchPages = [];
+    triggerPlayerSearch(0);
   }
-  // Username search
-  firebase.firestore().collection('users')
-    .where('username', '==', query).limit(5).get().then(function(snap) {
-      if (snap.empty) {
-        // Try by UID if not found by username
-        firebase.firestore().collection('users').doc(query).get().then(function(doc) {
-          if (!doc.exists) {
-            showToast('No players were found with that criteria.');
-            resultsDiv.innerHTML = '';
-            return;
-          }
-          displayPlayerSearchResults([ { uid: doc.id, ...doc.data() } ]);
-        });
-        return;
-      }
-      const players = snap.docs.map(doc => ({ uid: doc.id, ...doc.data() }));
-      displayPlayerSearchResults(players);
-    });
-}
+});
 
 // Renders results in modal, now with pagination controls
 function displayPlayerSearchResults(players, page = 0, isLastPage = false) {
@@ -383,7 +360,10 @@ document.getElementById('requests-search-trigger').onclick = function() {
   const value = document.getElementById('search-friends').value;
   document.getElementById('player-search-input').value = value;
   showPlayerSearchModal();
-  if (value) triggerPlayerSearch();
+  if (value) {
+    userSearchPages = [];
+    triggerPlayerSearch(0);
+  }
 };
 
 window.sendFriendRequest = sendFriendRequest;
