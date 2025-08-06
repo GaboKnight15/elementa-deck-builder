@@ -249,17 +249,8 @@ function renderGallery() {
     }
     return true;
   });
-
-  // Sort favorites first
   const favoriteIds = getFavoriteCards();
-  filteredCards.sort((a, b) => {
-    const aFav = favoriteIds.includes(a.id) ? -1 : 0;
-    const bFav = favoriteIds.includes(b.id) ? -1 : 0;
-    if (aFav !== bFav) return aFav - bFav;
-    return a.name.localeCompare(b.name);
-  });
   
-  // Call progress updater here!
   updateGalleryCollectionProgress(filteredCards);
   
   if (filteredCards.length === 0) return;
