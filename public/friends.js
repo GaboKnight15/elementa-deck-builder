@@ -1,3 +1,45 @@
+let currentSearchQuery = "";
+let currentUserPage = 0;
+let lastVisibleUser = null;
+let userSearchPages = [];
+const USERS_PER_PAGE = 10;
+function triggerPlayerSearch(page = 0) {
+  const query = document.getElementById('player-search-input').value.trim();
+  const resultsDiv = document.getElementById('player-search-results');
+  resultsDiv.innerHTML = '<div style="color:#ffe066;">Searching...</div>';
+  if (!query) {
+    resultsDiv.innerHTML = '<div style="color:#e25555;">Please enter a username or ID.</div>';
+    return;
+  }
+  currentSearchQuery = query;
+  currentUserPage = page;
+
+  // Page logic
+  let userQuery = firebase.firestore().collection('users')
+    .where('username', '>=', query)
+    .where('username', '<=', query + '\uf8ff')
+    .orderBy('username')
+    .limit(USERS_PER_PAGE);
+
+  // If not first page, use startAfter
+  if (userSearchPages[page - 1]) {
+    userQuery = userQuery.startAfter(userSearchPages[page - 1]);
+  }
+
+  userQuery.get().then(function(snap) {
+    if (snap.empty) {
+      resultsDiv.innerHTML = '<div style="color:#e25555;">No players found.</div>';
+      return;
+    }
+    // Save the last doc for next page
+    if (snap.docs.length > 0) {
+      lastVisibleUser = snap.docs[snap.docs.length - 1];
+      userSearchPages[page] = lastVisibleUser;
+    }
+    const players = snap.docs.map(doc => ({ uid: doc.id, ...doc.data() }));
+    displayPlayerSearchResults(players, page, snap.size < USERS_PER_PAGE);
+  });
+}
 // Utility: get current user info
 function getCurrentUserId() {
   return firebase.auth().currentUser?.uid;
@@ -17,7 +59,6 @@ document.getElementById('close-player-search-modal').onclick = function() {
   document.getElementById('player-search-modal').style.display = 'none';
 };
 
-// Trigger modal from the Requests tab (add button or event as needed)
 // For example, add this to your Requests tab logic:
 document.getElementById('player-search-trigger').onclick = function() {
   triggerPlayerSearch();
@@ -56,8 +97,8 @@ function triggerPlayerSearch() {
     });
 }
 
-// Renders results in modal
-function displayPlayerSearchResults(players) {
+// Renders results in modal, now with pagination controls
+function displayPlayerSearchResults(players, page = 0, isLastPage = false) {
   const resultsDiv = document.getElementById('player-search-results');
   if (!players.length) {
     resultsDiv.innerHTML = '<div style="color:#e25555;">No players found.</div>';
@@ -88,6 +129,27 @@ function displayPlayerSearchResults(players) {
 
     resultsDiv.appendChild(tile);
   });
+
+  // --- Pagination controls ---
+  const nav = document.createElement('div');
+  nav.style.display = 'flex';
+  nav.style.justifyContent = 'center';
+  nav.style.marginTop = '18px';
+  nav.style.gap = '16px';
+
+  if (typeof page !== 'undefined' && page > 0) {
+    const prevBtn = document.createElement('button');
+    prevBtn.textContent = "Previous";
+    prevBtn.onclick = () => triggerPlayerSearch(page - 1);
+    nav.appendChild(prevBtn);
+  }
+  if (!isLastPage) {
+    const nextBtn = document.createElement('button');
+    nextBtn.textContent = "Next";
+    nextBtn.onclick = () => triggerPlayerSearch(page + 1);
+    nav.appendChild(nextBtn);
+  }
+  resultsDiv.appendChild(nav);
 }
 function showPlayerSearchMenu(tile, player) {
   // Remove any existing menus
