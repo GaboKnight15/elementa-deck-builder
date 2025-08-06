@@ -24,9 +24,62 @@ if (isFoil) {
   div.classList.add('card-foil');
   img.classList.add('card-foil');
 }
+
+let showFavoritesOnly = false;
+
 // ==========================
 // === RENDERING CARDS ===
 // ==========================
+// Favorite filter icon logic
+document.addEventListener('DOMContentLoaded', function() {
+  const favIcon = document.getElementById('filter-favorites-gallery');
+  if (favIcon) {
+    favIcon.onclick = function() {
+      showFavoritesOnly = !showFavoritesOnly;
+      updateFavoriteFilterIcon();
+      renderGallery();
+    };
+    updateFavoriteFilterIcon();
+  }
+});
+// Add to DOMContentLoaded or after filter setup
+document.addEventListener('DOMContentLoaded', function() {
+  const resetBtn = document.getElementById('reset-gallery-filters-btn');
+  if (resetBtn) {
+    resetBtn.onclick = function() {
+      // Reset all filter values to default
+      document.getElementById('filter-name-gallery').value = "";
+      document.getElementById('filter-ownership-gallery').value = "Owned";
+      document.getElementById('filter-color-gallery').value = "";
+      document.getElementById('filter-category-gallery').value = "";
+      document.getElementById('filter-type-gallery').value = "";
+      document.getElementById('filter-rarity-gallery').value = "";
+      document.getElementById('filter-archetype-gallery').value = "";
+      document.getElementById('filter-ability-gallery').value = "";
+      // Reset favorites
+      showFavoritesOnly = false;
+      updateFavoriteFilterIcon();
+      // Update filter select placeholders if you use them
+      setupFilterSelectPlaceholders();
+      renderGallery();
+    };
+  }
+});
+// Update the icon appearance
+function updateFavoriteFilterIcon() {
+  const favIcon = document.getElementById('filter-favorites-gallery');
+  if (!favIcon) return;
+  if (showFavoritesOnly) {
+    favIcon.style.filter = 'none';
+    favIcon.style.opacity = '1';
+    favIcon.title = 'Showing favorites';
+  } else {
+    favIcon.style.filter = 'grayscale(1)';
+    favIcon.style.opacity = '0.6';
+    favIcon.title = 'Show only favorites';
+  }
+}
+
 function getMinimumKeptForRarity(card) {
   if (!card.rarity) return 1; // Default fallback
   switch (card.rarity.toLowerCase()) {
@@ -156,16 +209,17 @@ function renderGallery() {
   const selectedCategory = document.getElementById('filter-category-gallery').value.toLowerCase();
 
   const collection = getCollection();
-
+  
+  const favoriteIds = getFavoriteCards();
+  
   let filteredCards = dummyCards.filter(card => {
+    if (showFavoritesOnly && !favoriteIds.includes(card.id)) return false;
     const ownedCount = collection[card.id] || 0;
 
     // Ownership filter logic
     if (ownershipFilter === "Owned" && ownedCount <= 0) return false;
     if (ownershipFilter === "Undiscovered" && ownedCount > 0) return false;
     if (ownershipFilter === "Locked" && !card.locked) return false;
-    // "all" shows everything
-
     if (nameFilter && !card.name.toLowerCase().includes(nameFilter)) return false;
     if (selectedColor) {
       const colors = Array.isArray(card.color) ? card.color.map(c => c.toLowerCase()) : [card.color.toLowerCase()];
