@@ -2020,12 +2020,9 @@ button {}
 #default-player-deck-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 18px;
   justify-content: center;
   align-items: flex-start;
   width: 100%;
-  margin-bottom: 18px;
-  margin-top: 10px;
 }
 
 /* Cancel/close button at the bottom, centered */
@@ -2141,7 +2138,6 @@ button {}
   transition: box-shadow 0.18s, border-color 0.18s, transform 0.13s, filter 0.16s;
   box-shadow: 0 2px 10px #0002;
   border-radius: 16px;
-  padding: 12px;
   background: #232a3c;
   display: flex;
   flex-direction: column;
