@@ -112,6 +112,16 @@ document.getElementById('gallery-back-btn').onclick = function() {
   document.getElementById('gallery-section').classList.remove('active');
   document.getElementById('home-section').classList.add('active');
 };
+function getRarityBgClass(card) {
+  // Returns a CSS class for the rarity wrapper color
+  switch ((card.rarity || '').toLowerCase()) {
+    case 'common':    return 'card-rarity-common';
+    case 'rare':      return 'card-rarity-rare';
+    case 'epic':      return 'card-rarity-epic';
+    case 'legendary': return 'card-rarity-legendary';
+    default:          return 'card-rarity-common';
+  }
+}
 function createCardGallery(card) {
     const collection = getCollection();
     const owned = collection[card.id] || 0;
@@ -121,27 +131,7 @@ function createCardGallery(card) {
     if (card.rarity) {
       div.setAttribute('data-rarity', card.rarity);
     }
-    div.classList.add(getCardBgClass(card));
-
-    // === Add element classes for color(s) ===
-    let colors = card.color;
-    if (!Array.isArray(colors)) {
-        if (colors) colors = [colors];
-        else colors = [];
-    }
-    colors.forEach(color => {
-        switch (color.toLowerCase()) {
-            case 'green':   div.classList.add('card-element-leaves'); break;
-            case 'red':     div.classList.add('card-element-fire'); break;
-            case 'blue':    div.classList.add('card-element-water'); break;
-            case 'yellow':  div.classList.add('card-element-thunder'); break;
-            case 'gray':
-            case 'brown':   div.classList.add('card-element-ground'); break;
-            case 'purple':  div.classList.add('card-element-poison'); break;
-            case 'black':   div.classList.add('card-element-dark'); break;
-            case 'white':   div.classList.add('card-element-light'); break;
-        }
-    });
+    div.classList.add(getRarityBgClass(card));
 
     const img = document.createElement('img');
     img.src = card.image;
