@@ -21,10 +21,12 @@ const deckPanel         = document.getElementById('deck-panel');
 // NEW DECK HANDLER OPTIONS
 const deckMenu = document.getElementById('deck-menu');
 const deckMenuTitle = document.getElementById('deck-menu-title');
-const viewDeckBtn = document.getElementById('view-deck-btn');
-const editDeckBtn = document.getElementById('edit-deck-btn');
-const renameDeckBtn = document.getElementById('rename-deck-btn');
-const deleteDeckBtn = document.getElementById('delete-deck-btn');
+const viewDeckBtn = document.getElementById('view-deck-btn'); // DELETE LATER
+const editDeckBtn = document.getElementById('edit-deck-btn'); // DELETE LATER
+const viewDeckImgBtn = document.getElementById('view-deck-img-btn');
+const deleteDeckImgBtn = document.getElementById('delete-deck-img-btn'); 
+const renameDeckBtn = document.getElementById('rename-deck-btn'); // DELETE LATER
+const deleteDeckBtn = document.getElementById('delete-deck-btn'); // DELETE LATER
 const closeDeckMenuBtn = document.getElementById('close-deck-menu-btn');
 const deckViewModal = document.getElementById('deck-view-modal');
 const deckViewModalTitle = document.getElementById('deck-view-modal-title');
@@ -365,13 +367,17 @@ deckMenu.addEventListener('click', function(e) {
 deckViewModal.addEventListener('click', function(e) {
   if (e.target === deckViewModal) deckViewModal.style.display = 'none';
 });
-// View Deck
-viewDeckBtn.onclick = function() {
-  const deckName = deckMenu.dataset.deckName;
-  showDeckViewModal(deckName);
-  closeDeckTileMenu();
-};
-// Edit Deck
+
+// VIEW DECK BUTTON
+if (viewDeckImgBtn) {
+  viewDeckImgBtn.onclick = function() {
+    const deckName = deckMenu.dataset.deckName;
+    showDeckViewModal(deckName);
+    closeDeckTileMenu();
+  };
+}
+
+// EDIT DECK BUTTON
 editDeckBtn.onclick = function() {
   const deckName = deckMenu.dataset.deckName;
   currentDeckSlot = deckName;
@@ -379,7 +385,8 @@ editDeckBtn.onclick = function() {
   closeDeckTileMenu();
   showDeckBuilder();
 };
-// Rename
+
+// RENAME DECK BUTTON
 renameDeckBtn.onclick = function() {
   const deckName = deckMenu.dataset.deckName;
   closeDeckTileMenu();
@@ -398,22 +405,27 @@ renameDeckBtn.onclick = function() {
   saveProgress();
   renderDeckSelection();
 };
-// Delete
-deleteDeckBtn.onclick = function() {
-  const deckName = deckMenu.dataset.deckName;
-  if (deckSlots.length === 1) {
-    showToast("You must have at least 1 deck", {type:"error"});
-    return;
-  }
-  if (!confirm(`Delete "${deckName}"? This cannot be undone.`)) return;
-  let idx = deckSlots.indexOf(deckName);
-  deckSlots.splice(idx, 1);
-  delete decks[deckName];
-  currentDeckSlot = deckSlots[Math.max(idx - 1, 0)];
-  saveProgress();
-  closeDeckTileMenu();
-  renderDeckSelection();
-};
+
+// DELETE DECK BUTTON
+if (deleteDeckImgBtn) {
+  deleteDeckImgBtn.onclick = function() {
+    const deckName = deckMenu.dataset.deckName;
+    if (deckSlots.length === 1) {
+      showToast("You must have at least 1 deck", {type:"error"});
+      return;
+    }
+    if (!confirm(`Delete "${deckName}"? This cannot be undone.`)) return;
+    let idx = deckSlots.indexOf(deckName);
+    deckSlots.splice(idx, 1);
+    delete decks[deckName];
+    currentDeckSlot = deckSlots[Math.max(idx - 1, 0)];
+    saveProgress();
+    closeDeckTileMenu();
+    renderDeckSelection();
+  };
+}
+
+// VIEW DECK MODAL
 function showDeckViewModal(deckName) {
   deckViewModalTitle.textContent = deckName;
   deckViewModalList.innerHTML = "";
