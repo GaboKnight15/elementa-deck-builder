@@ -592,8 +592,6 @@ function placeMenuWithinViewport(menu, triggerRect, preferred = "bottom") {
   menu.style.position = 'absolute';
   menu.style.top = `${top}px`;
   menu.style.left = `${left}px`;
-  menu.style.zIndex = 9999;
-  menu.style.display = 'block';
 
   document.body.appendChild(menu);
 
