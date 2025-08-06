@@ -376,13 +376,11 @@ function showPlayerDeckModal() {
         div.className = 'player-deck-option';
         div.style.cursor = totalCards >= 50 ? 'pointer' : 'not-allowed';
         div.style.border = deck.id === activeId ? '3px solid #ffe066' : '2px solid #333';
-        div.style.padding = '12px';
-        div.style.background = '#232a3c';
         div.innerHTML = `
           <div style="position:relative; width:100%; height:140px;">
             ${image ? `<img src="${image}" alt="${deck.name}" class="deck-art-img" style="width:100%;height:100%;object-fit:cover;border-radius:16px;">` : ''}
             <div class="deck-name"
-              style="position:absolute;bottom:0;width:100%;background:rgba(10,12,20,0.84);color:#ffe066;font-weight:bold;text-align:center;font-size:1.09em;letter-spacing:0.5px;padding:4px 0 4px 0;z-index:2;border-bottom-left-radius:16px;border-bottom-right-radius:16px;">
+              style="position:absolute;bottom:0;width:100%;background:rgba(10,12,20,0.84);color:#ffe066;font-weight:bold;text-align:center;letter-spacing:0.5px;padding:4px 0 4px 0;z-index:2;">
               ${deck.name}
             </div>
           </div>
@@ -1043,21 +1041,41 @@ function renderRightbarZones() {
 }
 // Helper to create and append the deck zone card at the end
 function appendDeckZone(parentDiv, deckArray, who) {
-  
   const deckZone = document.createElement('div');
   deckZone.className = 'deck-zone';
-  
+
   const deckCard = document.createElement('div');
   deckCard.className = 'card-deck';
-  
-  let deckCardback = "CardImages/Domains/placeholder.png";
+
+  let deckCardback = "OtherImages/Cardbacks/DefaultCardback.png";
   if (who === "player") {
     if (window.selectedPlayerDeck && window.selectedPlayerDeck.cardbackArt) {
       deckCardback = window.selectedPlayerDeck.cardbackArt;
     }
+    // Fallback: Try gameState.playerProfile.cardbackArt if available
+    else if (gameState.playerProfile && gameState.playerProfile.cardbackArt) {
+      deckCardback = gameState.playerProfile.cardbackArt;
+    }
+    // Fallback: Try gameState.playerDeck.cardbackArt if available
+    else if (gameState.playerDeck && gameState.playerDeck.cardbackArt) {
+      deckCardback = gameState.playerDeck.cardbackArt;
+    }
   } else if (who === "opponent") {
+    // Multiplayer/casual
     if (window.selectedOpponentDeck && window.selectedOpponentDeck.cardbackArt) {
       deckCardback = window.selectedOpponentDeck.cardbackArt;
+    }
+    // Fallback: Opponent profile
+    else if (gameState.opponentProfile && gameState.opponentProfile.cardbackArt) {
+      deckCardback = gameState.opponentProfile.cardbackArt;
+    }
+    // Fallback: Opponent deck object
+    else if (gameState.opponentDeck && gameState.opponentDeck.cardbackArt) {
+      deckCardback = gameState.opponentDeck.cardbackArt;
+    }
+    // Solo CPU
+    else if (window.selectedCpuDeck && window.selectedCpuDeck.cardbackArt) {
+      deckCardback = window.selectedCpuDeck.cardbackArt;
     }
   }
   const img = document.createElement('img');
