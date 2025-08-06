@@ -75,6 +75,13 @@ const allCardbackOptions = [
 const packPrices = {
   "StandardPack": 100,
   "StandardPack2": 100,
+  "Scales of Ruin": 100,
+  "Wyrmheart Awakening": 100,
+  "Mischief Unbound": 100,
+  "Primordial Ascension": 100,
+  "Ironborn Protocol": 100,
+  "Savage Territory": 100,
+  "Feathered Omen": 100,
 };
 const avatarPrices = {
       "CardImages/Avatars/Faelyra.png": 100,
