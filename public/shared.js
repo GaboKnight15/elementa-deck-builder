@@ -747,7 +747,7 @@ function showProfileModal(playerData) {
       background-size: cover;
       background-position: center;
       padding: 30px 0 18px 0;
-      border-radius: 18px 18px 0 0;
+      border-radius: 18px;
       position: relative;
       text-align: center;
     ">
@@ -757,7 +757,7 @@ function showProfileModal(playerData) {
       </div>
       <div style="margin-top:6px;font-size:1.1em;font-weight:bold;color:#fff;">
         <img src="OtherImages/Icons/Power.png" style="width:24px;vertical-align:middle;margin-bottom:2px;">
-        <span style="color:#ffe066;">${power}</span> Power
+        <span style="color:#ffe066;">${power}</span>
       </div>
     </div>
   `;
@@ -786,7 +786,7 @@ function showProfileModal(playerData) {
       <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
         <img src="${badgeImageMap[badge.id] || 'OtherImages/Icons/Rewards.png'}"
              alt="${badge.name || badge.title || badge.id}"
-             style="width:54px;height:54px;${isOwned ? '' : 'filter:grayscale(1) brightness(0.6) opacity(0.5);'}border-radius:11px;box-shadow:0 2px 8px #0004;">
+             style="width:54px;height:54px;${isOwned ? '' : 'filter:grayscale(1) brightness(0.6) opacity(0.5);'}box-shadow:0 2px 8px #0004;">
         <span style="font-size:0.96em;color:${isOwned ? '#ffe066' : '#aaa'};white-space:nowrap;max-width:72px;overflow:hidden;text-overflow:ellipsis;">
           ${badge.name || badge.title || badge.id}
         </span>
