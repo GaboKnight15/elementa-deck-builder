@@ -714,9 +714,26 @@ function updateDeckDisplay() {
     { key: "spell", label: "Spells" },
     { key: "domain", label: "Domains" }
   ];
-
+  // Define rarity order
+  const rarityOrder = {
+    legendary: 0,
+    epic: 1,
+    rare: 2,
+    common: 3
+  };
+  
   for (const {key, label} of sectionNames) {
     if (sections[key].length === 0) continue;
+    // Sort by rarity first (legendary -> epic -> rare -> common), then by card name
+    sections[key].sort((a, b) => {
+      const ra = (a.card.rarity || '').toLowerCase();
+      const rb = (b.card.rarity || '').toLowerCase();
+      const orderA = rarityOrder.hasOwnProperty(ra) ? rarityOrder[ra] : 99;
+      const orderB = rarityOrder.hasOwnProperty(rb) ? rarityOrder[rb] : 99;
+      if (orderA !== orderB) return orderA - orderB;
+      // Secondary: sort by name if same rarity
+      return a.card.name.localeCompare(b.card.name);
+    });
     // Add section heading
     const heading = document.createElement('li');
     heading.textContent = label;
