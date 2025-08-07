@@ -27,6 +27,7 @@ function saveProgress() {
     console.warn("No user logged in, cannot save progress.");
     return;
   }
+  const power = typeof calculatePlayerPower === "function" ? calculatePlayerPower() : 0;
   const data = {
     collection: window.playerCollection || {},
     favoriteCards: window.favoriteCards || [],
@@ -44,6 +45,7 @@ function saveProgress() {
     unlockedAvatars: window.playerUnlockedAvatars || [],
     unlockedBanners: window.playerUnlockedBanners || [],
     unlockedCardbacks: window.playerUnlockedCardbacks || []
+    power: power
   };
   db.collection('users').doc(user.uid).set(data)
     .then(() => { console.log("Progress saved!"); })
@@ -98,6 +100,7 @@ window.playerUnlockedCosmetics = Array.isArray(data.unlockedCosmetics) ? data.un
 window.unlockedCosmetics = window.playerUnlockedCosmetics;
       
 window.playerFoilCards = typeof data.foilCards !== "undefined" ? data.foilCards : {};
+window.playerPower = typeof data.power === "number" ? data.power : (typeof calculatePlayerPower === "function" ? calculatePlayerPower() : 0);
       if (typeof cb === "function") cb();
     })
     .catch((error) => {
