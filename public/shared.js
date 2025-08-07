@@ -726,7 +726,96 @@ function renderPlayerPower() {
   }
   lastPlayerPower = power;
 }
+// --- PROFILE MODAL LOGIC ---
+// playerData: { username, profilePic, profileBanner, power, achievements: [badgeId,...], badges: [badgeId,...] }
+function showProfileModal(playerData) {
+  const modal = document.getElementById('profile-modal');
+  const content = document.getElementById('profile-modal-content');
+  if (!modal || !content) return;
 
+  // Default values if not provided
+  playerData = playerData || {};
+  const profileBanner = playerData.profileBanner || "CardImages/Banners/DefaultBanner.png";
+  const profilePic = playerData.profilePic || "CardImages/Avatars/Default.png";
+  const username = playerData.username || "Unknown Player";
+  const power = playerData.power || 0;
+
+  // --- 1. TOP: PROFILE INFO ---
+  let profileInfoSection = `
+    <div style="
+      background: url('${profileBanner}');
+      background-size: cover;
+      background-position: center;
+      padding: 30px 0 18px 0;
+      border-radius: 18px 18px 0 0;
+      position: relative;
+      text-align: center;
+    ">
+      <img src="${profilePic}" alt="Profile" style="width:92px;height:92px;border-radius:50%;border:4px solid #ffe066;box-shadow:0 2px 16px #000c;object-fit:cover;background:#1a1b23;position:relative;z-index:2;">
+      <div style="margin-top:10px;font-size:1.35em;font-weight:bold;color:#ffe066;text-shadow:0 2px 8px #000;">
+        ${username}
+      </div>
+      <div style="margin-top:6px;font-size:1.1em;font-weight:bold;color:#fff;">
+        <img src="OtherImages/Icons/Power.png" style="width:24px;vertical-align:middle;margin-bottom:2px;">
+        <span style="color:#ffe066;">${power}</span> Power
+      </div>
+    </div>
+  `;
+
+  // --- 2. BADGE SECTIONS ---
+  // You may already have ACHIEVEMENTS and BADGE_IMAGES in your code.
+  // For this example, we'll use ACHIEVEMENTS as all badges.
+  const allBadges = (typeof ACHIEVEMENTS !== "undefined") ? ACHIEVEMENTS : [];
+  const ownedBadges = (playerData.achievements || []).concat(playerData.badges || []);
+  const badgeImageMap = {}; // {badgeId: imageUrl}
+  if (allBadges.length) {
+    for (const badge of allBadges) {
+      badgeImageMap[badge.id] = badge.image || badge.img || "";
+    }
+  }
+
+  // Render all badges, grayed-out if not owned
+  let badgeSection = `
+    <div style="padding:22px 0 10px 0;text-align:center;">
+      <div style="font-weight:bold;font-size:1.18em;color:#ffe066;margin-bottom:12px;">Achievements & Badges</div>
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:12px;">
+  `;
+  for (const badge of allBadges) {
+    const isOwned = ownedBadges.includes(badge.id);
+    badgeSection += `
+      <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+        <img src="${badgeImageMap[badge.id] || 'OtherImages/Icons/Rewards.png'}"
+             alt="${badge.name || badge.title || badge.id}"
+             style="width:54px;height:54px;${isOwned ? '' : 'filter:grayscale(1) brightness(0.6) opacity(0.5);'}border-radius:11px;box-shadow:0 2px 8px #0004;">
+        <span style="font-size:0.96em;color:${isOwned ? '#ffe066' : '#aaa'};white-space:nowrap;max-width:72px;overflow:hidden;text-overflow:ellipsis;">
+          ${badge.name || badge.title || badge.id}
+        </span>
+      </div>
+    `;
+  }
+  badgeSection += "</div></div>";
+
+  // --- Assemble Modal Content ---
+  content.innerHTML = `
+    ${profileInfoSection}
+    ${badgeSection}
+    <button id="close-profile-modal" class="btn-negative-secondary" style="margin:24px auto 18px auto;display:block;">Close</button>
+  `;
+
+  // --- Close Logic ---
+  document.getElementById('close-profile-modal').onclick = function() {
+    modal.style.display = 'none';
+  };
+  modal.onclick = function(e) {
+    if (e.target === modal) modal.style.display = 'none';
+  };
+
+  // Show modal
+  modal.style.display = 'flex';
+}
+
+// Example usage (for testing in console):
+// showProfileModal({username:"Gabo", profilePic:"CardImages/Avatars/Faelyra.png", profileBanner:"CardImages/Banners/Verdara.png", power:1234, achievements:["achv1","achv2"], badges:["badge1"]});
 // FILTERS FOR GALLERY AND DECK BUILDER
 function filterCards({
   collection = getCollection(),
