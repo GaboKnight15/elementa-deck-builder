@@ -761,7 +761,7 @@ function addCardToDeck(cardId) {
 }
 function renderBuilder() {
     builderGallery.innerHTML = '';
-    const collection = getCollection(); // Fetch up-to-date collection here
+    const collection = getCollection();
     const selectedColor = document.getElementById('filter-color-builder').value.toLowerCase();
     const selectedType = document.getElementById('filter-type-builder').value.toLowerCase();
     const selectedRarity = document.getElementById('filter-rarity-builder').value.toLowerCase();
@@ -769,39 +769,24 @@ function renderBuilder() {
     const selectedArchetype = document.getElementById('filter-archetype-builder').value.toLowerCase();
     const selectedAbility = document.getElementById('filter-ability-builder').value.toLowerCase();
     const selectedCategory = document.getElementById('filter-category-builder').value.toLowerCase();
-    dummyCards.forEach(card => {
-      if (nameFilter && !card.name.toLowerCase().includes(nameFilter)) return;
-      if (selectedColor) {
-        const colors = Array.isArray(card.color) ? card.color.map(c => c.toLowerCase()) : [card.color.toLowerCase()];
-        if (!colors.includes(selectedColor)) return;
-      }
-      // Filter by category:
-      if (selectedCategory) {
-      if (!card.category || card.category.toLowerCase() !== selectedCategory) return;
-      }
-      if (selectedType) {
-        const types = Array.isArray(card.type) ? card.type.map(t => t.toLowerCase()) : [card.type.toLowerCase()];
-        if (!types.includes(selectedType)) return;
-      }
-      if (selectedRarity) {
-        if (card.rarity.toLowerCase() !== selectedRarity) return;
-      }
-      if (selectedArchetype) {
-        const archetypes = Array.isArray(card.archetype)
-          ? card.archetype.map(a => a.toLowerCase())
-          : [card.archetype?.toLowerCase()];
-        if (!archetypes.includes(selectedArchetype)) return;
-      }
-      if (selectedAbility) {
-        const abilities = Array.isArray(card.ability)
-          ? card.ability.map(a => a.toLowerCase())
-          : [card.ability?.toLowerCase()];
-        if (!abilities.includes(selectedAbility)) return;
-      }
-      if (!collection[card.id]) return;
-      builderGallery.appendChild(createCardBuilder(card, collection[card.id]));
-    });
-  }
+  
+  let filteredCards = filterCards({
+    collection,
+    favoriteIds,
+    nameFilter,
+    selectedColor,
+    selectedCategory,
+    selectedType,
+    selectedRarity,
+    selectedArchetype,
+    selectedAbility,
+    ownershipFilter: "Owned"
+  });
+
+  filteredCards.forEach(card => {
+    builderGallery.appendChild(createCardBuilder(card, collection[card.id]));
+  });
+}
 function makeHoldHandlers(onHold, onClick, holdTime = 400) {
   let holdTimer = null;
   let longHoldTriggered = false;
