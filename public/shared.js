@@ -746,7 +746,7 @@ let profileInfoSection = `
     background: url('${profileBanner}');
     background-size: cover;
     background-position: center;
-    border-radius: 18px 18px 0 0;
+    border-radius: 18px;
     display: flex;
     align-items: center;
     gap: 24px;
@@ -772,8 +772,8 @@ let profileInfoSection = `
         font-size: 1.1em; font-weight: bold; color: #fff;
         display: flex; align-items: center; gap: 8px;
       ">
-        <img src="OtherImages/Icons/Power.png" style="width:24px;vertical-align:middle;margin-bottom:2px;">
-        <span style="color:#ffe066;">${power}</span> Power
+        <img src="OtherImages/Icons/Power.png" style="width:24px;">
+        <span style="color:#ffe066;">${power}</span>
       </div>
     </div>
   </div>
