@@ -50,6 +50,8 @@ const deckCardbackModal = document.getElementById('deck-cardback-modal');
 const deckCardbackArtList = document.getElementById('deck-cardback-art-list');
 const closeDeckCardbackModalBtn = document.getElementById('close-deck-cardback-modal');
 
+let showFavoritesOnlyBuilder = false;
+
 // Cardback options (expand as needed)
 const cardbackOptions = [
   "OtherImages/Cardbacks/CardbackDefault.png",
@@ -834,6 +836,7 @@ function renderBuilder() {
   let filteredCards = filterCards({
     collection,
     favoriteIds,
+    showFavoritesOnly: showFavoritesOnlyBuilder,
     nameFilter,
     selectedColor,
     selectedCategory,
@@ -870,6 +873,32 @@ function makeHoldHandlers(onHold, onClick, holdTime = 400) {
   }
   return { startHold, clearHold, mouseUp };
 }
+function updateFavoriteFilterIconBuilder() {
+  const favIcon = document.getElementById('filter-favorites-builder');
+  if (!favIcon) return;
+  if (showFavoritesOnlyBuilder) {
+    favIcon.style.filter = 'none';
+    favIcon.style.opacity = '1';
+    favIcon.title = 'Showing favorites';
+  } else {
+    favIcon.style.filter = 'grayscale(1)';
+    favIcon.style.opacity = '0.6';
+    favIcon.title = 'Show only favorites';
+  }
+}
+
+// Setup event listener for builder favorite icon (on DOMContentLoaded)
+document.addEventListener('DOMContentLoaded', function() {
+  const favIcon = document.getElementById('filter-favorites-builder');
+  if (favIcon) {
+    favIcon.onclick = function() {
+      showFavoritesOnlyBuilder = !showFavoritesOnlyBuilder;
+      updateFavoriteFilterIconBuilder();
+      renderBuilder();
+    };
+    updateFavoriteFilterIconBuilder();
+  }
+});
 // ==========================
 // === EVENT LISTENERS ===
 // ==========================
@@ -918,13 +947,31 @@ highlightArtModal.addEventListener('mousedown', function(e) {
   }
 });
 // GALLERY EVENT FILTERS
-  document.getElementById('filter-name-builder').addEventListener('input', renderBuilder);
-  document.getElementById('filter-color-builder').addEventListener('change', renderBuilder);
-  document.getElementById('filter-category-builder').addEventListener('change', renderBuilder);
-  document.getElementById('filter-type-builder').addEventListener('change', renderBuilder);
-  document.getElementById('filter-rarity-builder').addEventListener('change', renderBuilder);
-  document.getElementById('filter-archetype-builder').addEventListener('change', renderBuilder);
-  document.getElementById('filter-ability-builder').addEventListener('change', renderBuilder);
+document.getElementById('filter-name-builder').addEventListener('input', renderBuilder);
+document.getElementById('filter-color-builder').addEventListener('change', renderBuilder);
+document.getElementById('filter-category-builder').addEventListener('change', renderBuilder);
+document.getElementById('filter-type-builder').addEventListener('change', renderBuilder);
+document.getElementById('filter-rarity-builder').addEventListener('change', renderBuilder);
+document.getElementById('filter-archetype-builder').addEventListener('change', renderBuilder);
+document.getElementById('filter-ability-builder').addEventListener('change', renderBuilder);
+document.addEventListener('DOMContentLoaded', function() {
+  const resetBtn = document.getElementById('reset-builder-filters-btn');
+  if (resetBtn) {
+    resetBtn.onclick = function() {
+      document.getElementById('filter-name-builder').value = "";
+      document.getElementById('filter-color-builder').value = "";
+      document.getElementById('filter-category-builder').value = "";
+      document.getElementById('filter-type-builder').value = "";
+      document.getElementById('filter-rarity-builder').value = "";
+      document.getElementById('filter-archetype-builder').value = "";
+      document.getElementById('filter-ability-builder').value = "";
+      // Reset favorites
+      showFavoritesOnlyBuilder = false;
+      updateFavoriteFilterIconBuilder();
+      renderBuilder();
+    };
+  }
+});
 // ==========================
 // === INITIALIZATION ===
 // ==========================
