@@ -49,6 +49,7 @@ const deckCardbackImg = document.getElementById('deck-cardback-img');
 const deckCardbackModal = document.getElementById('deck-cardback-modal');
 const deckCardbackArtList = document.getElementById('deck-cardback-art-list');
 const closeDeckCardbackModalBtn = document.getElementById('close-deck-cardback-modal');
+
 // Cardback options (expand as needed)
 const cardbackOptions = [
   "OtherImages/Cardbacks/CardbackDefault.png",
@@ -76,6 +77,14 @@ document.getElementById('builder-settings-btn').onclick = function() {
 document.getElementById('builder-back-btn').onclick = function() {
   showDeckSelection();
 };
+// SAVING DECK
+const saveDeckBtn = document.getElementById('save-deck-btn');
+if (saveDeckBtn) {
+  saveDeckBtn.onclick = function() {
+    saveProgress();
+    showToast("Deck saved!", { type: "success" });
+  };
+}
 const deckSelectionSettingsBtn = document.getElementById('deck-selection-settings-btn');
 if (deckSelectionSettingsBtn) {
   deckSelectionSettingsBtn.onclick = function() {
@@ -471,7 +480,6 @@ function getCurrentDeck() {
   }
 function setCurrentDeck(deckObj) {
     decks[currentDeckSlot] = deckObj;
-    saveProgress();
     if (window.renderModePlayerDeckTile) window.renderModePlayerDeckTile();
   }
 // ==========================
