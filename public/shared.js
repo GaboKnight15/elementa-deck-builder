@@ -727,21 +727,14 @@ function renderPlayerPower() {
   lastPlayerPower = power;
 }
 // --- PROFILE MODAL LOGIC ---
-// playerData: { username, profilePic, profileBanner, power, achievements: [badgeId,...], badges: [badgeId,...] }
-function showProfileModal(playerData) {
-  const modal = document.getElementById('profile-modal');
-  const content = document.getElementById('profile-modal-content');
-  if (!modal || !content) return;
-
-  // Default values if not provided
+function renderProfileInfoSection(playerData) {
   playerData = playerData || {};
   const profileBanner = playerData.profileBanner || "CardImages/Banners/DefaultBanner.png";
   const profilePic = playerData.profilePic || "CardImages/Avatars/Default.png";
   const username = playerData.username || "Unknown Player";
   const power = playerData.power || 0;
 
-  // --- 1. TOP: PROFILE INFO ---
-let profileInfoSection = `
+  return `
   <div style="
     background: url('${profileBanner}');
     background-size: cover;
@@ -777,9 +770,24 @@ let profileInfoSection = `
       </div>
     </div>
   </div>
-`;
+  `;
+}
+// playerData: { username, profilePic, profileBanner, power, achievements: [badgeId,...], badges: [badgeId,...] }
+function showProfileModal(playerData) {
+  const modal = document.getElementById('profile-modal');
+  const content = document.getElementById('profile-modal-content');
+  if (!modal || !content) return;
 
-  // --- 2. BADGE SECTIONS ---
+  // Default values if not provided
+  playerData = playerData || {};
+  const profileBanner = playerData.profileBanner || "CardImages/Banners/DefaultBanner.png";
+  const profilePic = playerData.profilePic || "CardImages/Avatars/Default.png";
+  const username = playerData.username || "Unknown Player";
+  const power = playerData.power || 0;
+
+ let profileInfoSection = renderProfileInfoSection(playerData);
+
+  // --- BADGE SECTIONS ---
   // You may already have ACHIEVEMENTS and BADGE_IMAGES in your code.
   // For this example, we'll use ACHIEVEMENTS as all badges.
   const allBadges = (typeof ACHIEVEMENTS !== "undefined") ? ACHIEVEMENTS : [];
