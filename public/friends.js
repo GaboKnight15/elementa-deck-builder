@@ -90,13 +90,18 @@ function displayPlayerSearchResults(players, page = 0, isLastPage = false) {
     tile.dataset.uid = player.uid;
     tile.dataset.username = player.username || player.uid;
 
-    tile.innerHTML = `
-      <div style="position:relative;width:100%;height:100px;display:flex;align-items:center;">
-        ${player.banner ? `<img class="friend-banner" src="${player.banner}" style="left:0;top:0;width:100%;height:100%;object-fit:cover;opacity:0.55;position:absolute;border-radius:16px;">` : ''}
-        <img class="friend-avatar" src="${player.avatar || 'CardImages/Avatars/Default.png'}" alt="avatar" style="width:54px;height:54px;border-radius:50%;border:2px solid #ffe066;margin-left:16px;z-index:2;background:#232a3c;">
-        <span class="friend-username" style="margin-left:18px;z-index:2;font-weight:bold;color:#ffe066;font-size:1.13em;">${player.username || player.uid}</span>
-      </div>
-    `;
+tile.innerHTML = renderProfileInfoSection({
+  profileBanner: player.banner,
+  profilePic: player.avatar || 'CardImages/Avatars/Default.png',
+  username: player.username || player.uid,
+  power: player.power || 0
+});
+tile.style.borderRadius = "18px"; // Match your modal
+tile.style.overflow = "hidden";
+tile.style.boxShadow = "0 1px 10px #0005";
+tile.style.marginBottom = "18px";
+tile.style.cursor = "pointer";
+tile.style.background = "#212a3b";  // so it blends if banner is missing
 
     // Attach click handler for menu
     tile.onclick = function(e) {
@@ -319,15 +324,27 @@ function renderFriendsList() {
     ids.forEach(fid => {
       const entry = document.createElement('div');
       entry.className = 'friend-entry';
-      entry.innerHTML = `
-        <span>${fid}</span>
-        <button onclick="viewFriendProfile('${fid}')">View</button>
-        <button onclick="removeFriend('${fid}')">Remove</button>
-      `;
+firebase.firestore().collection('users').doc(fid).get().then(function(friendDoc) {
+  const friendData = friendDoc.data() || {};
+  entry.innerHTML = `
+    ${renderProfileInfoSection({
+      profileBanner: friendData.banner,
+      profilePic: friendData.avatar || 'CardImages/Avatars/Default.png',
+      username: friendData.username || fid,
+      power: friendData.power || 0
+    })}
+    <div style="margin-top:8px;">
+      <button onclick="viewFriendProfile('${fid}')">View</button>
+      <button onclick="removeFriend('${fid}')">Remove</button>
+    </div>
+  `;
+});
       list.appendChild(entry);
     });
   });
 }
+
+document.getElementById('friend-profile-modal-content').innerHTML = renderProfileInfoSection(friendData);
 
 document.getElementById('tab-friends').onclick = function() {
   this.classList.add('selected');
