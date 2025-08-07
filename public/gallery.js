@@ -197,47 +197,21 @@ function renderGallery() {
   const selectedArchetype = document.getElementById('filter-archetype-gallery').value.toLowerCase();
   const selectedAbility = document.getElementById('filter-ability-gallery').value.toLowerCase();
   const selectedCategory = document.getElementById('filter-category-gallery').value.toLowerCase();
-
   const collection = getCollection();
-  
   const favoriteIds = getFavoriteCards();
   
-  let filteredCards = dummyCards.filter(card => {
-    if (showFavoritesOnly && !favoriteIds.includes(card.id)) return false;
-    const ownedCount = collection[card.id] || 0;
-
-    // Ownership filter logic
-    if (ownershipFilter === "Owned" && ownedCount <= 0) return false;
-    if (ownershipFilter === "Undiscovered" && ownedCount > 0) return false;
-    if (ownershipFilter === "Locked" && !card.locked) return false;
-    if (nameFilter && !card.name.toLowerCase().includes(nameFilter)) return false;
-    if (selectedColor) {
-      const colors = Array.isArray(card.color) ? card.color.map(c => c.toLowerCase()) : [card.color.toLowerCase()];
-      if (!colors.includes(selectedColor)) return false;
-    }
-    if (selectedCategory) {
-      if (!card.category || card.category.toLowerCase() !== selectedCategory) return false;
-    }
-    if (selectedType) {
-      const types = Array.isArray(card.type) ? card.type.map(t => t.toLowerCase()) : [card.type.toLowerCase()];
-      if (!types.includes(selectedType)) return false;
-    }
-    if (selectedRarity) {
-      if (card.rarity.toLowerCase() !== selectedRarity) return false;
-    }
-    if (selectedArchetype) {
-      const archetypes = Array.isArray(card.archetype)
-        ? card.archetype.map(a => a.toLowerCase())
-        : [card.archetype?.toLowerCase()];
-      if (!archetypes.includes(selectedArchetype)) return false;
-    }
-    if (selectedAbility) {
-      const abilities = Array.isArray(card.ability)
-        ? card.ability.map(a => a.toLowerCase())
-        : [card.ability?.toLowerCase()];
-      if (!abilities.includes(selectedAbility)) return false;
-    }
-    return true;
+  let filteredCards = filterCards({
+    collection,
+    favoriteIds,
+    showFavoritesOnly,
+    ownershipFilter,
+    nameFilter,
+    selectedColor,
+    selectedCategory,
+    selectedType,
+    selectedRarity,
+    selectedArchetype,
+    selectedAbility
   });
   updateGalleryCollectionProgress(filteredCards);
   if (filteredCards.length === 0) return;
@@ -247,7 +221,6 @@ function renderGallery() {
   });
   updateEssenceDisplay();
 }
-
 
 // FAVORITE CARDS
 function getFavoriteCards() {
