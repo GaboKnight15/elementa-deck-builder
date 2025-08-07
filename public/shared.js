@@ -727,6 +727,61 @@ function renderPlayerPower() {
   lastPlayerPower = power;
 }
 
+// FILTERS FOR GALLERY AND DECK BUILDER
+function filterCards({
+  collection = getCollection(),
+  favoriteIds = [],
+  showFavoritesOnly = false,
+  ownershipFilter = "Owned",
+  nameFilter = "",
+  selectedColor = "",
+  selectedCategory = "",
+  selectedType = "",
+  selectedRarity = "",
+  selectedArchetype = "",
+  selectedAbility = ""
+} = {}) {
+  return dummyCards.filter(card => {
+    const ownedCount = collection[card.id] || 0;
+
+    if (showFavoritesOnly && !favoriteIds.includes(card.id)) return false;
+    // Ownership filter logic
+    if (ownershipFilter === "Owned" && ownedCount <= 0) return false;
+    if (ownershipFilter === "Undiscovered" && ownedCount > 0) return false;
+    // You may want to keep "Locked" filter logic for the gallery only
+    if (ownershipFilter === "Locked" && !card.locked) return false;
+
+    if (nameFilter && !card.name.toLowerCase().includes(nameFilter)) return false;
+    if (selectedColor) {
+      const colors = Array.isArray(card.color) ? card.color.map(c => c.toLowerCase()) : [card.color.toLowerCase()];
+      if (!colors.includes(selectedColor)) return false;
+    }
+    if (selectedCategory) {
+      if (!card.category || card.category.toLowerCase() !== selectedCategory) return false;
+    }
+    if (selectedType) {
+      const types = Array.isArray(card.type) ? card.type.map(t => t.toLowerCase()) : [card.type.toLowerCase()];
+      if (!types.includes(selectedType)) return false;
+    }
+    if (selectedRarity) {
+      if (card.rarity.toLowerCase() !== selectedRarity) return false;
+    }
+    if (selectedArchetype) {
+      const archetypes = Array.isArray(card.archetype)
+        ? card.archetype.map(a => a.toLowerCase())
+        : [card.archetype?.toLowerCase()];
+      if (!archetypes.includes(selectedArchetype)) return false;
+    }
+    if (selectedAbility) {
+      const abilities = Array.isArray(card.ability)
+        ? card.ability.map(a => a.toLowerCase())
+        : [card.ability?.toLowerCase()];
+      if (!abilities.includes(selectedAbility)) return false;
+    }
+    return true;
+  });
+}
+window.filterCards = filterCards;
 // Set up badge click handler
 document.addEventListener('DOMContentLoaded', function() {
   const badgeImg = document.getElementById('player-badge-img');
