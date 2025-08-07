@@ -1117,6 +1117,8 @@ button {}
 #deck-panel {
   position: static !important;
   height: auto;
+  max-height: 80vh;
+  overflow-y: auto;
   background: linear-gradient(120deg, #232a3c 80%, #191f2c 100%);
   color: #f7faff;
   border-radius: 16px;
@@ -1126,6 +1128,21 @@ button {}
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  scrollbar-width: thin;
+  scrollbar-color: #ffe066 #232a3c;
+}
+#deck-panel::-webkit-scrollbar {
+  width: 8px;
+  background: #232a3c;
+}
+#deck-panel::-webkit-scrollbar-thumb {
+  background: #ffe066;
+  border-radius: 4px;
+}
+#deck-panel > ul, #deck-panel > .deck-list {
+  margin: 0;
+  padding: 0;
+  /* let the parent handle the scrolling */
 }
 .card-unavailable {
     opacity: 0.5;
