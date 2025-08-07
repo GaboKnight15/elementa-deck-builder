@@ -894,6 +894,29 @@ document.getElementById('close-friends-modal').onclick = function() {
 document.getElementById('friends-modal').onclick = function(e) {
   if (e.target === this) this.style.display = 'none';
 };
+// PROFILE MODAL
+document.addEventListener('DOMContentLoaded', function() {
+  const badgeImg = document.getElementById('player-badge-menu-img');
+  if (badgeImg) {
+    badgeImg.style.cursor = "pointer";
+    badgeImg.onclick = function(e) {
+      e.stopPropagation();
+      // Gather current player data for the modal
+      const playerData = {
+        username: window.playerUsername || (window.auth && window.auth.currentUser && window.auth.currentUser.displayName) || "Player",
+        profilePic: window.playerProfilePic || badgeImg.src,
+        profileBanner: window.playerProfileBanner || "CardImages/Banners/DefaultBanner.png",
+        power: typeof calculatePlayerPower === "function" ? calculatePlayerPower() : 0,
+        // Optionally, pass owned achievements/badges if available
+        achievements: (typeof getAchievementData === "function" && typeof ACHIEVEMENTS !== "undefined")
+          ? ACHIEVEMENTS.filter(a => getAchievementData()[a.id]?.claimed).map(a => a.id)
+          : [],
+        badges: [] // add badge ids as needed
+      };
+      showProfileModal(playerData);
+    };
+  }
+});
 // PARTICLE EFFECT
 document.addEventListener("DOMContentLoaded", function() {
   // Only load particles when Home is visible (optional, can always load)
