@@ -2953,8 +2953,29 @@ button {}
 }
 #pack-options {
   display: flex;
-  justify-content: center;
+  flex-direction: row;
+  gap: 22px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 16px 0 10px 0;
+  /* Optional: snap to packs when scrolling */
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: #ffe066 #1a2533;
+  max-width: 100vw;
+  /* Hide scrollbar on some browsers if desired */
   margin-top: 1.2em;
+}
+#pack-options::-webkit-scrollbar {
+  height: 10px;
+}
+#pack-options::-webkit-scrollbar-thumb {
+  background: #ffe066;
+  border-radius: 8px;
+}
+#pack-options::-webkit-scrollbar-track {
+  background: #253047;
+  border-radius: 8px;
 }
 .pack-image {
   width: 160px;
