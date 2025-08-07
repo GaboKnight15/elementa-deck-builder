@@ -672,26 +672,33 @@ function showPlayerBadgeMenu(badgeImgEl) {
 function calculatePlayerPower() {
   let power = 0;
   const collection = window.playerCollection || {};
+  const foilCards = window.playerFoilCards || {};
   const avatars = window.playerUnlockedAvatars || [];
   const banners = window.playerUnlockedBanners || [];
   const cardbacks = window.playerUnlockedCardbacks || [];
 
-  // Assume dummyCards is your master card list with rarity info
-  const seen = new Set();
   for (const card of dummyCards) {
-    if (!seen.has(card.id) && collection[card.id] > 0) {
-      seen.add(card.id);
-      switch (card.rarity) {
-        case 'common': power += 1; break;
-        case 'rare': power += 3; break;
-        case 'epic': power += 10; break;
-        case 'legendary': power += 25; break;
-        default: power += 0;
-      }
+    const owned = collection[card.id] || 0;
+    const rarity = (card.rarity || 'common').toLowerCase();
+
+    let maxCount = 0, perCardPower = 0, foilPower = 0;
+    switch (rarity) {
+      case 'common':    maxCount = 4; perCardPower = 1; foilPower = 2; break;
+      case 'rare':      maxCount = 3; perCardPower = 3; foilPower = 6; break;
+      case 'epic':      maxCount = 2; perCardPower = 10; foilPower = 20; break;
+      case 'legendary': maxCount = 1; perCardPower = 25; foilPower = 50; break;
+      default:          maxCount = 4; perCardPower = 1; foilPower = 2; break;
+    }
+    if (owned > 0) {
+      power += perCardPower;
+    }
+    // Foil: only if player has foil version of this card
+    if (foilCards[card.id]) {
+      power += foilPower;
     }
   }
 
-  // Cosmetics: only unique ones
+  // COSMETICS CONTRIBUTION
   power += (new Set(avatars)).size * 5;
   power += (new Set(banners)).size * 5;
   power += (new Set(cardbacks)).size * 5;
