@@ -822,6 +822,7 @@ function addCardToDeck(cardId) {
 function renderBuilder() {
     builderGallery.innerHTML = '';
     const collection = getCollection();
+    const favoriteIds = getFavoriteCards ? getFavoriteCards() : [];
     const selectedColor = document.getElementById('filter-color-builder').value.toLowerCase();
     const selectedType = document.getElementById('filter-type-builder').value.toLowerCase();
     const selectedRarity = document.getElementById('filter-rarity-builder').value.toLowerCase();
