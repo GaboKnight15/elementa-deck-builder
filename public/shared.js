@@ -741,26 +741,43 @@ function showProfileModal(playerData) {
   const power = playerData.power || 0;
 
   // --- 1. TOP: PROFILE INFO ---
-  let profileInfoSection = `
-    <div style="
-      background: url('${profileBanner}');
-      background-size: cover;
-      background-position: center;
-      padding: 30px 0 18px 0;
-      border-radius: 18px;
-      position: relative;
-      text-align: center;
+let profileInfoSection = `
+  <div style="
+    background: url('${profileBanner}');
+    background-size: cover;
+    background-position: center;
+    border-radius: 18px 18px 0 0;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    min-height: 120px;
+    padding: 24px 32px 24px 32px;
+    position: relative;
+  ">
+    <img src="${profilePic}" alt="Profile" style="
+      width: 88px; height: 88px; border-radius: 50%;
+      border: 4px solid #ffe066; box-shadow: 0 2px 16px #000c;
+      object-fit: cover; background: #1a1b23; z-index:2;
+      flex-shrink: 0;
     ">
-      <img src="${profilePic}" alt="Profile" style="width:92px;height:92px;border-radius:50%;border:4px solid #ffe066;box-shadow:0 2px 16px #000c;object-fit:cover;background:#1a1b23;position:relative;z-index:2;">
-      <div style="margin-top:10px;font-size:1.35em;font-weight:bold;color:#ffe066;text-shadow:0 2px 8px #000;">
+    <div style="display: flex; flex-direction: column; justify-content: center; align-items: flex-start;">
+      <div style="
+        font-size: 1.38em; font-weight: bold; color: #ffe066;
+        text-shadow: 0 2px 8px #000;
+        margin-bottom: 6px;
+        ">
         ${username}
       </div>
-      <div style="margin-top:6px;font-size:1.1em;font-weight:bold;color:#fff;">
+      <div style="
+        font-size: 1.1em; font-weight: bold; color: #fff;
+        display: flex; align-items: center; gap: 8px;
+      ">
         <img src="OtherImages/Icons/Power.png" style="width:24px;vertical-align:middle;margin-bottom:2px;">
-        <span style="color:#ffe066;">${power}</span>
+        <span style="color:#ffe066;">${power}</span> Power
       </div>
     </div>
-  `;
+  </div>
+`;
 
   // --- 2. BADGE SECTIONS ---
   // You may already have ACHIEVEMENTS and BADGE_IMAGES in your code.
@@ -777,7 +794,7 @@ function showProfileModal(playerData) {
   // Render all badges, grayed-out if not owned
   let badgeSection = `
     <div style="padding:22px 0 10px 0;text-align:center;">
-      <div style="font-weight:bold;font-size:1.18em;color:#ffe066;margin-bottom:12px;">Achievements & Badges</div>
+      <div style="font-weight:bold;font-size:1.18em;color:#ffe066;margin-bottom:12px;">Badges</div>
       <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:12px;">
   `;
   for (const badge of allBadges) {
@@ -785,11 +802,8 @@ function showProfileModal(playerData) {
     badgeSection += `
       <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
         <img src="${badgeImageMap[badge.id] || 'OtherImages/Icons/Rewards.png'}"
-             alt="${badge.name || badge.title || badge.id}"
-             style="width:54px;height:54px;${isOwned ? '' : 'filter:grayscale(1) brightness(0.6) opacity(0.5);'}box-shadow:0 2px 8px #0004;">
-        <span style="font-size:0.96em;color:${isOwned ? '#ffe066' : '#aaa'};white-space:nowrap;max-width:72px;overflow:hidden;text-overflow:ellipsis;">
-          ${badge.name || badge.title || badge.id}
-        </span>
+          alt="${badge.name || badge.title || badge.id}"
+          style="width:54px;height:54px;${isOwned ? '' : 'filter:grayscale(1) brightness(0.6) opacity(0.5);'}box-shadow:0 2px 8px #0004;">
       </div>
     `;
   }
@@ -799,7 +813,7 @@ function showProfileModal(playerData) {
   content.innerHTML = `
     ${profileInfoSection}
     ${badgeSection}
-    <button id="close-profile-modal" class="btn-negative-secondary" style="margin:24px auto 18px auto;display:block;">Close</button>
+    <button id="close-profile-modal" class="btn-negative-secondary"">Close</button>
   `;
 
   // --- Close Logic ---
