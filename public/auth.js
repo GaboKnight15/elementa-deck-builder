@@ -225,20 +225,16 @@ profileIconModal.onclick = function(e) {
   }
 
 // --- Profile menu open logic ---
-profileArea.onclick = function(e) {
+profilePic.onclick = function(e) {
   e.stopPropagation();
-  // Menu rules: close all other open menus
   document.querySelectorAll('.menu').forEach(m => {
     if (m !== profileMenu) m.style.display = 'none';
   });
 
-  // Show menu
   profileMenu.style.display = 'block';
   profileMenu.style.position = 'absolute';
   profileMenu.style.zIndex = 2000;
 
-  // Use placeMenuWithinViewport from shared.js to position near profile image
-  // Anchor is profilePic if available, else profileArea
   const anchorEl = profilePic || profileArea;
   const rect = anchorEl.getBoundingClientRect();
   if (typeof placeMenuWithinViewport === 'function') {
@@ -265,7 +261,7 @@ if (!profilePicMenuBtn) {
       if (
         profileMenu.style.display === 'block' &&
         !profileMenu.contains(e.target) &&
-        !profileArea.contains(e.target)
+        !profilePic.contains(e.target)
       ) {
         profileMenu.style.display = 'none';
       }
