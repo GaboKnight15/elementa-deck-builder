@@ -44,7 +44,7 @@ function saveProgress() {
     exp: typeof window.playerExp === 'number' ? window.playerExp : 0,
     unlockedAvatars: window.playerUnlockedAvatars || [],
     unlockedBanners: window.playerUnlockedBanners || [],
-    unlockedCardbacks: window.playerUnlockedCardbacks || []
+    unlockedCardbacks: window.playerUnlockedCardbacks || [],
     power: power
   };
   db.collection('users').doc(user.uid).set(data)
