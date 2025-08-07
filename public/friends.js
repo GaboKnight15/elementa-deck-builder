@@ -343,6 +343,21 @@ firebase.firestore().collection('users').doc(fid).get().then(function(friendDoc)
     });
   });
 }
+function viewFriendProfile(fid) {
+  const modal = document.getElementById('friend-profile-modal');
+  const content = document.getElementById('friend-profile-modal-content');
+  // Fetch friend data from Firestore
+  firebase.firestore().collection('users').doc(fid).get().then(function(doc) {
+    const friendData = doc.data() || {};
+    content.innerHTML = renderProfileInfoSection({
+      profileBanner: friendData.banner,
+      profilePic: friendData.avatar || 'CardImages/Avatars/Default.png',
+      username: friendData.username || fid,
+      power: friendData.power || 0
+    });
+    modal.style.display = 'flex';
+  });
+}
 
 document.getElementById('friend-profile-modal-content').innerHTML = renderProfileInfoSection(friendData);
 
