@@ -1293,6 +1293,11 @@ function getBaseHp(cardId) {
   return card ? card.hp : 1; // fallback to 1 if not found
 }
 function renderCardOnField(cardObj, zoneId) {
+  // Create the main card div
+  const cardDiv = document.createElement('div');
+  cardDiv.className = 'card-battlefield';
+  cardDiv.dataset.instanceId = cardObj.instanceId;
+  cardDiv.style.position = 'relative';
   // CURRENT HP
   if (typeof cardObj.currentHP !== "number") {
     cardObj.currentHP = getBaseHp(cardObj.cardId);
@@ -1375,11 +1380,6 @@ function renderCardOnField(cardObj, zoneId) {
   defBadge.style.zIndex = 9;
 
   cardDiv.appendChild(defBadge);
-  // Create the main card div
-  const cardDiv = document.createElement('div');
-  cardDiv.className = 'card-battlefield';
-  cardDiv.dataset.instanceId = cardObj.instanceId;
-  cardDiv.style.position = 'relative';
   // --- FIRE PARTICLES FOR RED CARDS ---
   const cardData = dummyCards.find(c => c.id === cardObj.cardId);
   const particlesConfig = getParticlePresetForCard(cardData);
