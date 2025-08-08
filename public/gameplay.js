@@ -717,6 +717,13 @@ function moveCard(instanceId, fromArr, toArr, extra = {}) {
     if (!toField) {
       delete cardObj.currentHP;
       delete cardObj.orientation;
+      const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
+      appendVisualLog({
+        sourceCard: { image: cardDef?.image, name: cardDef?.name, cardId: cardDef?.id },
+        action: "move",
+        dest: getZoneNameForArray(toArr) === 'playerVoid' ? "Void" : getZoneNameForArray(toArr),
+        who: fromArr === gameState.playerHand || fromArr === gameState.playerDeck || fromArr === gameState.playerDomains || fromArr === gameState.playerCreatures ? "player" : "opponent"
+      });
     }
     fromArr.splice(idx, 1);
     toArr.push(cardObj);
@@ -3065,6 +3072,61 @@ if (window.renderDeckSelection) {
     renderModePlayerDeckTile();
   };
 }
+
+// LOG LOGIC
+function renderLogAction({
+  sourceCard,        // { image, name, cardId }
+  action,            // "move", "attack", "target", etc.
+  dest,              // { image, name, cardId } OR "Void"/"Deck"/"Hand"/etc
+  who = "player"     // "player" or "opponent"
+}) {
+  const actionIcons = {
+    move: "→",
+    attack: "⚔️",
+    effect: "★",
+    draw: "⤵️",
+    // Add more as needed
+  };
+  const zoneIcons = {
+    Void: "OtherImages/Icons/Void.png",
+    Deck: "OtherImages/Icons/DefaultDeckBox.png",
+    Hand: "OtherImages/Icons/Hand.png",
+    // Add more as needed
+  };
+
+  function cardImg(card, extraClass = "") {
+    if (!card || !card.image) return "";
+    return `<img class="log-card-img ${extraClass}" src="${card.image}" 
+      data-cardid="${card.cardId}" title="${card.name}" 
+      style="border: 2px solid ${who === 'player' ? '#6f6' : '#e25555'}; border-radius:8px; width:38px; vertical-align:middle; cursor:pointer;">`;
+  }
+  function zoneImg(zone) {
+    return `<img class="log-zone-img" src="${zoneIcons[zone] || ''}" title="${zone}" style="width:32px;vertical-align:middle;">`;
+  }
+  let destHtml = typeof dest === "string" ? zoneImg(dest) : cardImg(dest, "log-dest-card");
+  let entryHtml = `
+    <div class="log-action ${who}" style="background:${who === 'player' ? '#232' : '#322'}11;padding:6px 4px;border-radius:7px;display:inline-flex;align-items:center;margin:2px 0;">
+      ${cardImg(sourceCard)}
+      <span class="log-arrow" style="font-size:1.3em;margin:0 7px 0 7px;">${actionIcons[action] || "→"}</span>
+      ${destHtml}
+    </div>
+  `;
+  return entryHtml;
+}
+function appendVisualLog(obj) {
+  const logDiv = document.getElementById('chat-log');
+  logDiv.insertAdjacentHTML('beforeend', renderLogAction(obj));
+  logDiv.scrollTop = logDiv.scrollHeight;
+}
+document.getElementById('chat-log').addEventListener('click', function(e) {
+  if (e.target.classList.contains('log-card-img')) {
+    const cardId = e.target.getAttribute('data-cardid');
+    const cardObj = dummyCards.find(c => c.id === cardId);
+    if (cardObj) showFullCardModal(cardObj);
+  }
+});
+
+
 // Gameplay (menu) header
 document.getElementById('gameplay-settings-btn').onclick = function() {
   document.getElementById('settings-modal').style.display = 'flex';
