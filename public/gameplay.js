@@ -2556,6 +2556,7 @@ function getAllEssenceSources() {
 function startAttackTargeting(attackerId, attackerZone, cardDiv) {
   attackMode.attackerId = attackerId;
   attackMode.attackerZone = attackerZone;
+  battlefield.classList.add('attack-mode-backdrop');
 
   // 1. Highlight all valid targets (e.g., opponent creatures)
   const targets = gameState.opponentCreatures;
@@ -2567,13 +2568,15 @@ function startAttackTargeting(attackerId, attackerZone, cardDiv) {
         e.stopPropagation();
         resolveAttack(attackerId, cardObj.instanceId);
         endAttackTargeting();
+        battlefield.classList.remove('attack-mode-backdrop');
       };
     }
   });
 
-  // 2. Add a cancel handler (clicking elsewhere cancels)
+// CANCEL ATTACK
   attackMode.cancelHandler = function(e) {
     endAttackTargeting();
+    battlefield.classList.remove('attack-mode-backdrop');
   };
   setTimeout(() => document.body.addEventListener('click', attackMode.cancelHandler, { once: true }), 10);
 }
@@ -2586,6 +2589,7 @@ function endAttackTargeting() {
       targetDiv.onclick = null; // Remove attack targeting handler
     }
   });
+  battlefield.classList.remove('attack-mode-backdrop');
   if (attackMode.cancelHandler) {
     document.body.removeEventListener('click', attackMode.cancelHandler);
     attackMode.cancelHandler = null;
