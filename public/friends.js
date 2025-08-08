@@ -345,7 +345,6 @@ firebase.firestore().collection('users').doc(fid).get().then(function(friendDoc)
 }
 function viewFriendProfile(fid) {
   const modal = document.getElementById('friend-profile-modal');
-  const content = document.getElementById('friend-profile-modal-content');
   // Fetch friend data from Firestore
   firebase.firestore().collection('users').doc(fid).get().then(function(doc) {
     const friendData = doc.data() || {};
