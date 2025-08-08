@@ -1336,7 +1336,45 @@ function renderCardOnField(cardObj, zoneId) {
     }
   }
   cardObj._prevHP = currentHP; // Store for next render
+  
+  // ATK & DEF BADGES
+  const atkBadge = document.createElement('span');
+  atkBadge.className = 'atk-badge';
+  const baseATK = typeof cardObj.atk === "number" ? cardObj.atk : (dummyCards.find(c => c.id === cardObj.cardId)?.atk || 0);
+  atkBadge.innerHTML = `
+    <img src="OtherImages/Icons/ATK.png" alt="ATK" style="width:22px;vertical-align:middle;">
+    <span style="font-weight:bold;color:#e25555;font-size:1.15em;">${baseATK}</span>
+  `;
+  atkBadge.style.position = "absolute";
+  atkBadge.style.bottom = "8px";
+  atkBadge.style.right = "8px";
+  atkBadge.style.background = "rgba(34,18,18,0.82)";
+  atkBadge.style.padding = "2px 8px";
+  atkBadge.style.borderRadius = "9px";
+  atkBadge.style.display = "inline-flex";
+  atkBadge.style.alignItems = "center";
+  atkBadge.style.zIndex = 9;
 
+  cardDiv.appendChild(atkBadge);
+
+  const defBadge = document.createElement('span');
+  defBadge.className = 'def-badge';
+  const baseDEF = typeof cardObj.def === "number" ? cardObj.def : (dummyCards.find(c => c.id === cardObj.cardId)?.def || 0);
+  defBadge.innerHTML = `
+    <img src="OtherImages/Icons/DEF.png" alt="DEF" style="width:22px;vertical-align:middle;">
+    <span style="font-weight:bold;color:#3af0ff;font-size:1.15em;">${baseDEF}</span>
+  `;
+  defBadge.style.position = "absolute";
+  defBadge.style.bottom = "8px";
+  defBadge.style.right = "52px";
+  defBadge.style.background = "rgba(18,26,34,0.82)";
+  defBadge.style.padding = "2px 8px";
+  defBadge.style.borderRadius = "9px";
+  defBadge.style.display = "inline-flex";
+  defBadge.style.alignItems = "center";
+  defBadge.style.zIndex = 9;
+
+  cardDiv.appendChild(defBadge);
   // Create the main card div
   const cardDiv = document.createElement('div');
   cardDiv.className = 'card-battlefield';
