@@ -3451,6 +3451,9 @@ button {}
 .log-message { color: #fff; margin: 2px 0; }        /* Was #111, now white for readability */
 .log-action  { color: #7fd3ff; font-weight: bold; } /* Optional: nice blue for actions */
 .log-system  { color: #cfcfcf; font-style: italic; } /* Optional: lighter gray for system */
+.log-action.player { background: #265c2622 !important; }
+.log-action.opponent { background: #7a292922 !important; }
+.log-card-img:hover, .log-zone-img:hover { box-shadow:0 0 8px #ffe066; }
 #chat-input-row { display: flex; gap: 6px; }
 #chat-input { 
   flex: 1 1 auto;
