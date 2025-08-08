@@ -1638,6 +1638,7 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
           for (let c of arr) {
             if (c.instanceId === instanceId) {
               c.orientation = (c.orientation === "horizontal") ? "vertical" : "horizontal";
+              appendPositionChangeLog(c, c.orientation);
             }
           }
         }
@@ -3146,13 +3147,29 @@ function renderLogAction({
   }
   let destHtml = typeof dest === "string" ? zoneImg(dest) : cardImg(dest, "log-dest-card");
   let entryHtml = `
-    <div class="log-action ${who}" style="background:${who === 'player' ? '#232' : '#322'}11;padding:6px 4px;border-radius:7px;display:inline-flex;align-items:center;margin:2px 0;">
+    <div class="log-action ${who}" style="background:${who === 'player' ? '#232' : '#322'}11;border-radius:7px;display:inline-flex;align-items:center;">
       ${cardImg(sourceCard)}
-      <span class="log-arrow" style="font-size:1.3em;margin:0 7px 0 7px;">${actionIcons[action] || "→"}</span>
+      <span class="log-arrow" style="margin:0 7px 0 7px;">${actionIcons[action] || "→"}</span>
       ${destHtml}
     </div>
   `;
   return entryHtml;
+}
+function appendPositionChangeLog(cardObj, newOrientation) {
+  const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
+  if (!cardDef) return;
+  const orientationIcon = newOrientation === "horizontal"
+    ? '<img src="OtherImages/Icons/Horizontal.png" alt="Horizontal" style="width:22px;vertical-align:middle;">'
+    : '<img src="OtherImages/Icons/Vertical.png" alt="Vertical" style="width:22px;vertical-align:middle;">';
+
+  const logDiv = document.getElementById('chat-log');
+  logDiv.insertAdjacentHTML('beforeend', `
+    <div class="log-action" style="padding:5px 0;">
+      <img src="${cardDef.image}" style="width:36px;vertical-align:middle;border-radius:6px;margin-right:7px;">
+      changed position to&nbsp;${orientationIcon}
+    </div>
+  `);
+  logDiv.scrollTop = logDiv.scrollHeight;
 }
 function appendVisualLog(obj) {
   const logDiv = document.getElementById('chat-log');
