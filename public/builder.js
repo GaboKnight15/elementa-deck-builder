@@ -692,6 +692,8 @@ function updateDeckDisplay() {
 
   // Group cards by category
   const sections = {
+    dominion: [],
+    champion: [],
     creature: [],
     artifact: [],
     spell: [],
@@ -701,14 +703,23 @@ function updateDeckDisplay() {
   for (const [id, count] of Object.entries(deck)) {
     const card = dummyCards.find(c => c.id === id);
     if (!card) continue;
+  const trait = card.trait ? card.trait.toLowerCase() : '';
+  if (trait === "dominion") {
+    sections.dominion.push({ card, count });
+  } else if (trait === "champion") {
+    sections.champion.push({ card, count });
+  } else {
     const cat = getCardCategory(card);
     if (sections.hasOwnProperty(cat)) {
       sections[cat].push({ card, count });
     }
+  }
     total += count;
   }
   // Section display order
   const sectionNames = [
+    { key: "dominion", label: "Dominion" },
+    { key: "champion", label: "Champion" },
     { key: "creature", label: "Creatures" },
     { key: "artifact", label: "Artifacts" },
     { key: "spell", label: "Spells" },
