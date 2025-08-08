@@ -45,24 +45,7 @@ button {}
 #login-menu.active {
   display: block;
 }
-#profile-menu {
-  display: none;
-  position: absolute;
-  top: 16px;          /* adjust as needed for your header height */
-  left: 16px;         /* adjust to align with your profile icon */
-  min-width: 220px;
-  max-width: 320px;
-  background: linear-gradient(120deg, #22304a 80%, #1a2533 100%);
-  color: #e5e7ef;
-  border-radius: 16px;
-  box-shadow: 0 6px 32px 0 #141e2f99, 0 1.5px 0 #22304a inset;
-  border: 2.5px solid #314175;
-  padding: 18px 16px 14px 16px;
-  z-index: 99999 !important;
-  flex-direction: column;
-  gap: 11px;
-  animation: fadeIn 0.16s;
-}
+#profile-menu {animation: fadeIn 0.16s;}
 #profile-menu.active {
   display: flex;
 }
@@ -1831,9 +1814,7 @@ button {}
   border-radius: 18px;
   box-shadow: 0 8px 36px 0 #141e2fbb, 0 1.5px 0 #22304a inset;
   border: 2px solid #314175;
-  padding: 22px 18px 18px 18px;
-  min-width: 220px;
-  max-width: 410px;
+  padding: 18px 18px 18px 18px;
   animation: fadeIn 0.17s;
   gap: 12px;
 }
@@ -3574,7 +3555,7 @@ button {}
   max-width: 280px;
   height: 60px;
   object-fit: cover;
-  border-radius: 10px 10px 0 0;
+  border-radius: 10px;
   cursor: pointer;
   transition: box-shadow 0.2s, transform 0.2s;
   border: 2px solid #393e69;
