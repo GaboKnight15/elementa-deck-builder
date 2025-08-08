@@ -2558,10 +2558,12 @@ function startAttackTargeting(attackerId, attackerZone, cardDiv) {
   attackMode.attackerZone = attackerZone;
   battlefield.classList.add('attack-mode-backdrop');
 
-  // 1. Highlight all valid targets (e.g., opponent creatures)
-  const targets = gameState.opponentCreatures;
+  const targets = getOpponentAttackableTargets();
+
   targets.forEach(cardObj => {
-    const targetDiv = findCardDivInZone('opponent-creatures-zone', cardObj.instanceId);
+    // Try both rows for finding the DOM element
+    let targetDiv = findCardDivInZone('opponent-creatures-zone', cardObj.instanceId)
+      || findCardDivInZone('opponent-domains-zone', cardObj.instanceId);
     if (targetDiv) {
       targetDiv.classList.add('attack-target-highlight');
       targetDiv.onclick = function(e) {
@@ -2573,12 +2575,24 @@ function startAttackTargeting(attackerId, attackerZone, cardDiv) {
     }
   });
 
-// CANCEL ATTACK
+  // Cancel handler
   attackMode.cancelHandler = function(e) {
     endAttackTargeting();
     battlefield.classList.remove('attack-mode-backdrop');
   };
   setTimeout(() => document.body.addEventListener('click', attackMode.cancelHandler, { once: true }), 10);
+}
+function getOpponentAttackableTargets() {
+  // Combine both battlefield zones
+  const allOpponentField = [
+    ...gameState.opponentCreatures,
+    ...gameState.opponentDomains
+  ];
+  // Only cards with allowed categories ("creature", "domain", "artifact")
+  return allOpponentField.filter(cardObj => {
+    const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
+    return cardDef && ["creature", "domain", "artifact"].includes(cardDef.category);
+  });
 }
 function endAttackTargeting() {
   // Remove highlights and listeners
@@ -2600,45 +2614,68 @@ function endAttackTargeting() {
 function resolveAttack(attackerId, defenderId) {
   // Find attacker and defender card objects and their arrays
   let attacker, defender, attackerArr, defenderArr, attackerVoid, defenderVoid;
-  // Figure out who is the attacker (player or opponent)
-  attacker = gameState.playerCreatures.find(c => c.instanceId === attackerId);
-  defender = gameState.opponentCreatures.find(c => c.instanceId === defenderId);
-  attackerArr = gameState.playerCreatures;
-  defenderArr = gameState.opponentCreatures;
-  attackerVoid = gameState.playerVoid;
-  defenderVoid = gameState.opponentVoid;
 
-  // If not found, try the reverse (opponent attacks player)
-  if (!attacker || !defender) {
-    attacker = gameState.opponentCreatures.find(c => c.instanceId === attackerId);
-    defender = gameState.playerCreatures.find(c => c.instanceId === defenderId);
+  // Try both sides for attacker (player or opponent)
+  attacker =
+    gameState.playerCreatures.find(c => c.instanceId === attackerId) ||
+    gameState.opponentCreatures.find(c => c.instanceId === attackerId);
+
+  // Try both sides for defender (creatures/domains)
+  defender =
+    gameState.opponentCreatures.find(c => c.instanceId === defenderId) ||
+    gameState.opponentDomains.find(c => c.instanceId === defenderId) ||
+    gameState.playerCreatures.find(c => c.instanceId === defenderId) ||
+    gameState.playerDomains.find(c => c.instanceId === defenderId);
+
+  // Find which arrays they belong to
+  if (gameState.playerCreatures.includes(attacker)) {
+    attackerArr = gameState.playerCreatures;
+    attackerVoid = gameState.playerVoid;
+  } else if (gameState.opponentCreatures.includes(attacker)) {
     attackerArr = gameState.opponentCreatures;
-    defenderArr = gameState.playerCreatures;
     attackerVoid = gameState.opponentVoid;
-    defenderVoid = gameState.playerVoid;
   }
+  if (gameState.playerCreatures.includes(defender)) {
+    defenderArr = gameState.playerCreatures;
+    defenderVoid = gameState.playerVoid;
+  } else if (gameState.opponentCreatures.includes(defender)) {
+    defenderArr = gameState.opponentCreatures;
+    defenderVoid = gameState.opponentVoid;
+  } else if (gameState.playerDomains.includes(defender)) {
+    defenderArr = gameState.playerDomains;
+    defenderVoid = gameState.playerVoid;
+  } else if (gameState.opponentDomains.includes(defender)) {
+    defenderArr = gameState.opponentDomains;
+    defenderVoid = gameState.opponentVoid;
+  }
+
   if (!attacker || !defender) return;
 
-  // Only allow if not already attacked this turn and during Action Phase
-  if (attacker.hasAttacked || gameState.phase !== "action" || gameState.turn !== getCardOwner(attacker)) return;
+  const defenderDef = dummyCards.find(c => c.id === defender.cardId);
+  if (!defenderDef || !["creature", "domain", "artifact"].includes(defenderDef.category)) return;
 
-  // Attack logic
-  if (defender.orientation === "horizontal") {
-    // Both deal ATK to each other (Armor first, then HP)
+  // === Attack Logic ===
+
+  // If defender is a creature, use facing/orientation logic
+  if (defenderDef.category === "creature") {
+    if (defender.orientation === "horizontal") {
+      dealCombatDamage(attacker, defender, attacker.atk);
+      dealCombatDamage(defender, attacker, defender.atk);
+    } else if (defender.orientation === "vertical") {
+      let damage = Math.max(0, attacker.atk - defender.def);
+      dealCombatDamage(attacker, defender, damage);
+      // Defender does not deal damage back
+    }
+  } else {
+    // Domains and artifacts: just take attacker's ATK as damage (no retaliation, ignore orientation)
     dealCombatDamage(attacker, defender, attacker.atk);
-    dealCombatDamage(defender, attacker, defender.atk);
-  } else if (defender.orientation === "vertical") {
-    // Attacker's ATK - defender's DEF (if >0, deal this much to defender)
-    let damage = Math.max(0, attacker.atk - defender.def);
-    dealCombatDamage(attacker, defender, damage);
-    // Defender does not deal damage back
   }
 
   attacker.hasAttacked = true;
 
-  // Check for deaths (destroyed = HP <= 0)
-  if (attacker.currentHP <= 0) moveCard(attacker.instanceId, attackerArr, attackerVoid);
-  if (defender.currentHP <= 0) moveCard(defender.instanceId, defenderArr, defenderVoid);
+  // Death checks: move to void if HP is 0 or less
+  if (attacker.currentHP <= 0 && attackerArr && attackerVoid) moveCard(attacker.instanceId, attackerArr, attackerVoid);
+  if (defender.currentHP <= 0 && defenderArr && defenderVoid) moveCard(defender.instanceId, defenderArr, defenderVoid);
 
   renderGameState();
   setupDropZones();
