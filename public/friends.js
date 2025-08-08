@@ -358,8 +358,6 @@ function viewFriendProfile(fid) {
   });
 }
 
-document.getElementById('friend-profile-modal-content').innerHTML = renderProfileInfoSection(friendData);
-
 document.getElementById('tab-friends').onclick = function() {
   this.classList.add('selected');
   document.getElementById('tab-requests').classList.remove('selected');
