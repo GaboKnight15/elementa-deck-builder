@@ -364,6 +364,7 @@ function showPlayerDeckModal() {
     playerList.innerHTML = '';
     const playerDecks = window.getPlayerDecks ? window.getPlayerDecks() : [];
     const activeId = window.getActiveDeckId ? window.getActiveDeckId() : null;
+    
     if (!playerDecks.length) {
       playerList.innerHTML = '<div style="color:#ffe066;">No decks found! Please build a deck or select a starter deck below.</div>';
     } else {
@@ -374,31 +375,46 @@ function showPlayerDeckModal() {
         const image = deck.deckObj && deck.deckObj.highlightArt ? deck.deckObj.highlightArt : null;
         const div = document.createElement('div');
         div.className = 'player-deck-option';
-        div.style.cursor = totalCards >= 50 ? 'pointer' : 'not-allowed';
-        div.style.border = deck.id === activeId ? '3px solid #ffe066' : '2px solid #333';
-        div.innerHTML = `
-          <div style="position:relative; width:100%; height:140px;">
-            ${image ? `<img src="${image}" alt="${deck.name}" class="deck-art-img" style="width:100%;height:100%;object-fit:cover;border-radius:16px;">` : ''}
-            <div class="deck-name"
-              style="position:absolute;bottom:0;width:100%;background:rgba(10,12,20,0.84);color:#ffe066;font-weight:bold;text-align:center;letter-spacing:0.5px;padding:4px 0 4px 0;z-index:2;">
-              ${deck.name}
-            </div>
-          </div>
-        `;
-        if (totalCards >= 50) {
-          div.onclick = () => {
-            window.selectedPlayerDeck = deck;
-            if (typeof renderModePlayerDeckTile === "function") renderModePlayerDeckTile();
-            modal.style.display = 'none';
-          };
-        } else {
-          div.onclick = null;
-        }
-        playerList.appendChild(div);
-      });
-    }
-  }
+        // --- Validate Dominion & Champion ---
+        const isValid = deckHasDominionAndChampion(deck.deckObj || deck);
 
+      div.style.cursor = (isValid && totalCards >= 50) ? 'pointer' : 'not-allowed';
+      div.style.border = deck.id === activeId ? '3px solid #ffe066' : '2px solid #333';
+      div.style.filter = isValid ? '' : 'grayscale(0.8) brightness(1.2)';
+      div.innerHTML = `
+        <div style="position:relative; width:100%; height:140px;">
+          ${image ? `<img src="${image}" alt="${deck.name}" class="deck-art-img" style="width:100%;height:100%;object-fit:cover;border-radius:16px;">` : ''}
+          <div class="deck-name"
+            style="position:absolute;bottom:0;width:100%;background:rgba(10,12,20,0.84);color:#ffe066;font-weight:bold;text-align:center;letter-spacing:0.5px;padding:4px 0 4px 0;z-index:2;">
+            ${deck.name}
+          </div>
+        </div>
+      `;
+
+      if (isValid && totalCards >= 50) {
+        div.onclick = () => {
+          window.selectedPlayerDeck = {
+            ...deck,
+            cardbackArt: (deck.deckObj && deck.deckObj.cardbackArt) || deck.cardbackArt || "OtherImages/Cardbacks/DefaultCardback.png",
+          };
+          if (typeof renderModePlayerDeckTile === "function") renderModePlayerDeckTile();
+          modal.style.display = 'none';
+        };
+      } else {
+        div.onclick = null;
+        // Add warning
+        if (!isValid) {
+          const warn = document.createElement('div');
+          warn.innerHTML = `<span style="color:#e25555;font-size:0.95em;">Deck must have at least 1 Dominion and 1 Champion.</span>`;
+          warn.style.marginTop = "7px";
+          div.appendChild(warn);
+        }
+      }
+
+      playerList.appendChild(div);
+    });
+  }
+}
   // --- Render Default Decks ---
   function renderDefaultDecks() {
     defaultList.innerHTML = '';
@@ -482,6 +498,31 @@ div.innerHTML = `
 
   modal.onclick = function(e) { if (e.target === modal) modal.style.display = 'none'; };
   modal.style.display = 'flex';
+}
+function deckHasDominionAndChampion(deckObj) {
+  // Flatten deck into a card list (if using a deckObj with counts)
+  let cardObjs = [];
+  if (Array.isArray(deckObj.cards)) {
+    deckObj.cards.forEach(entry => {
+      for (let i = 0; i < entry.amount; i++) cardObjs.push({ cardId: entry.id });
+    });
+  } else if (deckObj.deckObj) {
+    // If deckObj has a deckObj property which is a map of counts
+    for (const [cardId, amount] of Object.entries(deckObj.deckObj)) {
+      if (typeof amount === "number") {
+        for (let i = 0; i < amount; i++) cardObjs.push({ cardId });
+      }
+    }
+  }
+  let foundDominion = false, foundChampion = false;
+  for (const obj of cardObjs) {
+    const card = dummyCards.find(c => c.id === obj.cardId);
+    if (!card) continue;
+    if (card.trait && card.trait.toLowerCase() === "dominion") foundDominion = true;
+    if (card.trait && card.trait.toLowerCase() === "champion") foundChampion = true;
+    if (foundDominion && foundChampion) return true;
+  }
+  return false;
 }
 document.addEventListener('DOMContentLoaded', function() {
   renderModePlayerDeckTile();
