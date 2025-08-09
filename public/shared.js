@@ -852,7 +852,7 @@ function filterCards({
   selectedArchetypes,
   selectedAbilities
 }) {
-  return allCards.filter(card => {
+  return dummyCards.filter(card => {
     // Ownership filter (unchanged)
     if (ownershipFilter === "Owned" && (!collection[card.id] || collection[card.id] === 0)) return false;
     if (ownershipFilter === "Undiscovered" && (collection[card.id] || 0) > 0) return false;
