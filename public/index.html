@@ -140,29 +140,29 @@
         <option value="Locked">Locked</option>
         <option value="All">All</option>
       </select>
-      <select id="filter-color-gallery" class="filter-select">
+      <select id="filter-color-gallery" class="filter-select" multiple>
         <option value="">Color</option><option value="Green">Green</option><option value="Red">Red</option>
         <option value="Blue">Blue</option><option value="Gray">Gray</option><option value="Purple">Purple</option>
         <option value="Yellow">Yellow</option><option value="Black">Black</option><option value="White">White</option>
       </select>
-      <select id="filter-category-gallery" class="filter-select">
+      <select id="filter-category-gallery" class="filter-select" multiple>
         <option value="">Category</option><option value="Creature">Creature</option><option value="Artifact">Artifact</option>
         <option value="Spell">Spell</option><option value="Domain">Domain</option>
       </select>
-      <select id="filter-type-gallery" class="filter-select">
+      <select id="filter-type-gallery" class="filter-select" multiple>
         <option value="">Type</option><option value="Evolution">Evolution</option><option value="Fusion">Fusion</option><option value="elemental">Elemental</option><option value="dragon">Dragon</option><option value="construct">Construct</option><option value="beast">Beast</option> <option value="undead">Undead</option><option value="demon">Demon</option>
         <option value="Mage">Mage</option><option value="Equipment">Equipment</option><option value="Relic">Relic</option>
       </select>
-      <select id="filter-rarity-gallery" class="filter-select">
+      <select id="filter-rarity-gallery" class="filter-select" multiple>
         <option value="">Rarity</option><option value="Common">Common</option><option value="Rare">Rare</option>
         <option value="Epic">Epic</option><option value="Legendary">Legendary</option>
       </select>
-      <select id="filter-archetype-gallery" class="filter-select">
+      <select id="filter-archetype-gallery" class="filter-select" multiple>
         <option value="">Archetype</option><option value="Blazefeather">Blazefeather</option><option value="Cindercore">Cindercore</option>
         <option value="Coralbound">Coralbound</option><option value="Fireland">Fireland</option><option value="Frostland">Frostland</option>
         <option value="Golemheart">Golemheart</option><option value="Moonfang">Moonfang</option><option value="Skullframe">Skullframe</option><option value="Voltwing">Voltwing</option><option value="Zephyra">Zephyra</option>
       </select>
-      <select id="filter-ability-gallery" class="filter-select">
+      <select id="filter-ability-gallery" class="filter-select" multiple>
         <option value="">Ability</option><option value="Ambush">Ambush</option>
         <option value="Dive">Dive</option><option value="Burn">Burn</option><option value="Drain">Drain</option>
         <option value="Elusive">Elusive</option><option value="Flying">Flying</option><option value="Ice Armor">Ice Armor</option><option value="immunity">Immunity</option>
@@ -213,31 +213,31 @@
   <!-- FILTER GALLERY BUILDER -->
   <div id="filters-builder" class="filter-row">
     <input type="text" id="filter-name-builder" class="filter-name" placeholder="Search by name..." />
-    <select id="filter-color-builder" class="filter-select">
+    <select id="filter-color-builder" class="filter-select" multiple>
       <option value="">Color</option><option value="green">Green</option><option value="red">Red</option>
       <option value="blue">Blue</option><option value="gray">Gray</option><option value="purple">Purple</option>
       <option value="yellow">Yellow</option><option value="black">Black</option><option value="white">White</option>
     </select>
-    <select id="filter-category-builder" class="filter-select">
+    <select id="filter-category-builder" class="filter-select" multiple>
       <option value="">Category</option><option value="creature">Creature</option><option value="artifact">Artifact</option>
       <option value="spell">Spell</option><option value="domain">Domain</option>
     </select>
-    <select id="filter-type-builder" class="filter-select">
+    <select id="filter-type-builder" class="filter-select" multiple>
       <option value="">Type</option><option value="evolution">Evolution</option><option value="fusion">Fusion</option>
       <option value="elemental">Elemental</option><option value="dragon">Dragon</option><option value="construct">Construct</option>
       <option value="beast">Beast</option><option value="undead">Undead</option><option value="demon">Demon</option>
       <option value="mage">Mage</option><option value="equipment">Equipment</option><option value="relic">Relic</option>
     </select>
-    <select id="filter-rarity-builder" class="filter-select">
+    <select id="filter-rarity-builder" class="filter-select" multiple>
       <option value="">Rarity</option><option value="Common">Common</option><option value="Rare">Rare</option>
       <option value="Epic">Epic</option><option value="Legendary">Legendary</option>
     </select>
-    <select id="filter-archetype-builder" class="filter-select">
+    <select id="filter-archetype-builder" class="filter-select" multiple>
       <option value="">Archetype</option><option value="Blazefeather">Blazefeather</option><option value="Cindercore">Cindercore</option>
       <option value="Coralbound">Coralbound</option><option value="Fireland">Fireland</option><option value="Frostland">Frostland</option><option value="Golemheart">Golemheart</option><option value="Moonfang">Moonfang</option>
       <option value="Skullframe">Skullframe</option><option value="Voltwing">Voltwing</option><option value="Zephyra">Zephyra</option>
     </select>
-    <select id="filter-ability-builder" class="filter-select">
+    <select id="filter-ability-builder" class="filter-select" multiple>
       <option value="">Ability</option><option value="ambush">Ambush</option>
       <option value="dive">Dive</option><option value="burn">Burn</option><option value="drain">Drain</option><option value="elusive">Elusive</option><option value="flying">Flying</option>
       <option value="ice armor">Ice Armor</option><option value="immunity">Immunity</option><option value="intimidate">Intimidate</option>
@@ -744,6 +744,7 @@
  
 </body> 
 </html>
+
 
 
 
