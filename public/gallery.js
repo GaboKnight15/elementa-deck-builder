@@ -713,14 +713,8 @@ document.addEventListener('DOMContentLoaded', setupFilterSelectPlaceholders);
 // === EVENT LISTENERS ===
 // ==========================
 // GALLERY EVENT FILTERS
-  document.getElementById('filter-ownership-gallery').addEventListener('change', renderGallery);
-  document.getElementById('filter-name-gallery').addEventListener('input', renderGallery);
-  document.getElementById('filter-color-gallery').addEventListener('change', renderGallery);
-  document.getElementById('filter-category-gallery').addEventListener('change', renderGallery);
-  document.getElementById('filter-type-gallery').addEventListener('change', renderGallery);
-  document.getElementById('filter-rarity-gallery').addEventListener('change', renderGallery);
-  document.getElementById('filter-archetype-gallery').addEventListener('change', renderGallery);
-  document.getElementById('filter-ability-gallery').addEventListener('change', renderGallery);
+document.getElementById('filter-ownership-gallery').addEventListener('change', renderGallery);
+document.getElementById('filter-name-gallery').addEventListener('input', renderGallery);
 // ==========================
 // === INITIALIZATION ===
 // ==========================
