@@ -852,28 +852,28 @@ function addCardToDeck(cardId) {
 function renderBuilder() {
     builderGallery.innerHTML = '';
     const collection = getCollection();
-    const favoriteIds = getFavoriteCards ? getFavoriteCards() : [];
-    const selectedColor = document.getElementById('filter-color-builder').value.toLowerCase();
-    const selectedType = document.getElementById('filter-type-builder').value.toLowerCase();
-    const selectedRarity = document.getElementById('filter-rarity-builder').value.toLowerCase();
     const nameFilter = document.getElementById('filter-name-builder').value.toLowerCase();
-    const selectedArchetype = document.getElementById('filter-archetype-builder').value.toLowerCase();
-    const selectedAbility = document.getElementById('filter-ability-builder').value.toLowerCase();
-    const selectedCategory = document.getElementById('filter-category-builder').value.toLowerCase();
-  
-  let filteredCards = filterCards({
-    collection,
-    favoriteIds,
-    showFavoritesOnly: showFavoritesOnlyBuilder,
-    nameFilter,
-    selectedColor,
-    selectedCategory,
-    selectedType,
-    selectedRarity,
-    selectedArchetype,
-    selectedAbility,
-    ownershipFilter: "Owned"
-  });
+    const favoriteIds = getFavoriteCards ? getFavoriteCards() : [];
+    const selectedColors = getSelectedOptions('filter-color-builder').map(x => x.toLowerCase());
+    const selectedTypes = getSelectedOptions('filter-type-builder').map(x => x.toLowerCase());
+    const selectedRarities = getSelectedOptions('filter-rarity-builder').map(x => x.toLowerCase());
+    const selectedArchetypes = getSelectedOptions('filter-archetype-builder').map(x => x.toLowerCase());
+    const selectedAbilities = getSelectedOptions('filter-ability-builder').map(x => x.toLowerCase());
+    const selectedCategories = getSelectedOptions('filter-category-builder').map(x => x.toLowerCase());
+
+let filteredCards = filterCards({
+  collection,
+  favoriteIds,
+  showFavoritesOnly: showFavoritesOnlyBuilder,
+  nameFilter,
+  selectedColors,
+  selectedCategories,
+  selectedTypes,
+  selectedRarities,
+  selectedArchetypes,
+  selectedAbilities,
+  ownershipFilter: "Owned"
+});
 
   filteredCards.forEach(card => {
     builderGallery.appendChild(createCardBuilder(card, collection[card.id]));
