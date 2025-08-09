@@ -878,6 +878,10 @@ if (selectedRarities && selectedRarities.length) {
   const cardRarities = Array.isArray(card.rarity) ? card.rarity.map(r => r.toLowerCase()) : [String(card.rarity).toLowerCase()];
   if (!cardRarities.some(r => selectedRarities.includes(r))) return false;
 }
+if (selectedTraits && selectedTraits.length) {
+  const cardTraits = Array.isArray(card.trait) ? card.trait.map(t => t.toLowerCase()) : [String(card.trait || '').toLowerCase()];
+  if (!cardTraits.some(t => selectedTraits.includes(t))) return false;
+}
 if (selectedArchetypes && selectedArchetypes.length) {
   const cardArchetypes = Array.isArray(card.archetype) ? card.archetype.map(a => a.toLowerCase()) : [String(card.archetype).toLowerCase()];
   if (!cardArchetypes.some(a => selectedArchetypes.includes(a))) return false;
