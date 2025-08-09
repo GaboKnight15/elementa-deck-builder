@@ -846,7 +846,7 @@ function filterCards({
   ownershipFilter,
   nameFilter,
   selectedColors,
-  selectedCategory,
+  selectedCategories,
   selectedTypes,
   selectedRarities,
   selectedArchetypes,
@@ -864,7 +864,7 @@ function filterCards({
     // Color multi-filter
     if (selectedColors && selectedColors.length && (!card.color || !selectedColors.includes(card.color.toLowerCase()))) return false;
     // Category (single, as before)
-    if (selectedCategory && (!card.category || card.category.toLowerCase() !== selectedCategory)) return false;
+    if (selectedCategories && selectedCategories.length && (!card.category || !selectedCategories.includes(card.category.toLowerCase()))) return false;
     // Type multi-filter
     if (selectedTypes && selectedTypes.length && (!card.type || !selectedTypes.includes(card.type.toLowerCase()))) return false;
     // Rarity multi-filter
