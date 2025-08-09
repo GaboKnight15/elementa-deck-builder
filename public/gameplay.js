@@ -714,17 +714,29 @@ function moveCard(instanceId, fromArr, toArr, extra = {}) {
     const toField = fieldArrays.includes(toArr);
 
     // If moving OUT of field, remove currentHP & orientation so it resets next time
-    if (!toField) {
-      delete cardObj.currentHP;
-      delete cardObj.orientation;
-      const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
-      appendVisualLog({
-        sourceCard: { image: cardDef?.image, name: cardDef?.name, cardId: cardDef?.id },
-        action: "move",
-        dest: getZoneNameForArray(toArr) === 'playerVoid' ? "Void" : getZoneNameForArray(toArr),
-        who: fromArr === gameState.playerHand || fromArr === gameState.playerDeck || fromArr === gameState.playerDomains || fromArr === gameState.playerCreatures ? "player" : "opponent"
-      });
-    }
+if (!toField) {
+  delete cardObj.currentHP;
+  delete cardObj.orientation;
+}
+// Always log movement, regardless of zone:
+const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
+appendVisualLog({
+  sourceCard: { image: cardDef?.image, name: cardDef?.name, cardId: cardDef?.id },
+  action: "move",
+  dest: getZoneNameForArray(toArr) === 'playerVoid' ? "Void"
+       : getZoneNameForArray(toArr) === 'playerHand' ? "Hand"
+       : getZoneNameForArray(toArr) === 'playerDeck' ? "Deck"
+       : getZoneNameForArray(toArr) === 'playerDomains' ? "Domains"
+       : getZoneNameForArray(toArr) === 'playerCreatures' ? "Creatures"
+       : getZoneNameForArray(toArr) === 'opponentVoid' ? "Void"
+       : getZoneNameForArray(toArr) === 'opponentHand' ? "Hand"
+       : getZoneNameForArray(toArr) === 'opponentDeck' ? "Deck"
+       : getZoneNameForArray(toArr) === 'opponentDomains' ? "Domains"
+       : getZoneNameForArray(toArr) === 'opponentCreatures' ? "Creatures"
+       : getZoneNameForArray(toArr),
+  who: (fromArr === gameState.playerHand || fromArr === gameState.playerDeck ||
+        fromArr === gameState.playerDomains || fromArr === gameState.playerCreatures) ? "player" : "opponent"
+});
     fromArr.splice(idx, 1);
     toArr.push(cardObj);
   }
