@@ -557,7 +557,8 @@ function updateGalleryCollectionProgress(filteredCards) {
   const owned = filteredCards.filter(card => (collection[card.id] || 0) > 0).length;
   const total = filteredCards.length;
 
-  let filterInfo = '';
+  // Gather active filters as plain words for error message
+  let filterInfoArray = [];
   const selectedRarity = document.getElementById('filter-rarity-gallery').value;
   const selectedColor = document.getElementById('filter-color-gallery').value;
   const selectedCategory = document.getElementById('filter-category-gallery').value;
@@ -565,6 +566,16 @@ function updateGalleryCollectionProgress(filteredCards) {
   const selectedArchetype = document.getElementById('filter-archetype-gallery').value;
   const selectedAbility = document.getElementById('filter-ability-gallery').value;
   const nameFilter = document.getElementById('filter-name-gallery').value;
+  if (selectedRarity) filterInfoArray.push(selectedRarity);
+  if (selectedColor) filterInfoArray.push(selectedColor);
+  if (selectedCategory) filterInfoArray.push(selectedCategory);
+  if (selectedType) filterInfoArray.push(selectedType);
+  if (selectedArchetype) filterInfoArray.push(selectedArchetype);
+  if (selectedAbility) filterInfoArray.push(selectedAbility);
+  if (nameFilter) filterInfoArray.push(nameFilter);
+
+  // Old filter info (for parentheses in non-empty state)
+  let filterInfo = '';
   if (selectedRarity) filterInfo += `Rarity: <b>${selectedRarity}</b> `;
   if (selectedColor) filterInfo += `Color: <b>${selectedColor}</b> `;
   if (selectedCategory) filterInfo += `Category: <b>${selectedCategory}</b> `;
@@ -576,7 +587,12 @@ function updateGalleryCollectionProgress(filteredCards) {
   let str = '';
   const ownershipFilter = document.getElementById('filter-ownership-gallery').value;
   if (total === 0) {
-    str = 'No cards match the selected filters.';
+    if (filterInfoArray.length) {
+      str = `No cards match the selected filters: <b>${filterInfoArray.join(' ')}</b>`;
+    } else {
+      // No filters, just show a plain message (shouldn't happen with default "Owned" view)
+      str = 'No cards match the selected filters.';
+    }
   } else if (ownershipFilter === "owned") {
     str = `Owned <b>${owned}</b>`;
     if (filterInfo) str += ` (${filterInfo.trim()})`;
