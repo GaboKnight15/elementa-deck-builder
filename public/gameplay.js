@@ -1350,9 +1350,7 @@ const statBadgeRow = document.createElement('div');
 statBadgeRow.className = 'stat-badge-row';
 statBadgeRow.style.position = 'absolute';
 statBadgeRow.style.bottom = '8px';
-statBadgeRow.style.right = '8px';
 statBadgeRow.style.display = 'flex';
-statBadgeRow.style.gap = '8px';
 statBadgeRow.style.zIndex = 9;
 
 // ATK
@@ -1364,8 +1362,8 @@ atkBadge.style.background = "rgba(34,18,18,0.82)";
 atkBadge.style.padding = "2px 8px";
 atkBadge.style.borderRadius = "9px";
 atkBadge.innerHTML = `
-  <img src="OtherImages/Icons/ATK.png" alt="ATK" style="width:22px;vertical-align:middle;">
-  <span style="font-weight:bold;color:#e25555;font-size:1.15em;">${baseATK}</span>
+  <img src="OtherImages/Icons/ATK.png" alt="ATK">
+  <span style="font-weight:bold;color:#e25555;">${baseATK}</span>
 `;
 
 // DEF
@@ -1377,8 +1375,8 @@ defBadge.style.background = "rgba(18,26,34,0.82)";
 defBadge.style.padding = "2px 8px";
 defBadge.style.borderRadius = "9px";
 defBadge.innerHTML = `
-  <img src="OtherImages/Icons/DEF.png" alt="DEF" style="width:22px;vertical-align:middle;">
-  <span style="font-weight:bold;color:#3af0ff;font-size:1.15em;">${baseDEF}</span>
+  <img src="OtherImages/Icons/DEF.png" alt="DEF">
+  <span style="font-weight:bold;color:#3af0ff;">${baseDEF}</span>
 `;
 
 statBadgeRow.appendChild(atkBadge);
