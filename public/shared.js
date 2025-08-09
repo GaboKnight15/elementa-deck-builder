@@ -840,59 +840,48 @@ function showProfileModal(playerData) {
 // showProfileModal({username:"Gabo", profilePic:"CardImages/Avatars/Faelyra.png", profileBanner:"CardImages/Banners/Verdara.png", power:1234, achievements:["achv1","achv2"], badges:["badge1"]});
 // FILTERS FOR GALLERY AND DECK BUILDER
 function filterCards({
-  collection = getCollection(),
-  favoriteIds = [],
-  showFavoritesOnly = false,
-  ownershipFilter = "Owned",
-  nameFilter = "",
-  selectedColor = "",
-  selectedCategory = "",
-  selectedType = "",
-  selectedRarity = "",
-  selectedArchetype = "",
-  selectedAbility = ""
-} = {}) {
-  return dummyCards.filter(card => {
-    const ownedCount = collection[card.id] || 0;
-
-    if (showFavoritesOnly && !favoriteIds.includes(card.id)) return false;
-    // Ownership filter logic
-    if (ownershipFilter === "Owned" && ownedCount <= 0) return false;
-    if (ownershipFilter === "Undiscovered" && ownedCount > 0) return false;
-    // You may want to keep "Locked" filter logic for the gallery only
+  collection,
+  favoriteIds,
+  showFavoritesOnly,
+  ownershipFilter,
+  nameFilter,
+  selectedColors,
+  selectedCategory,
+  selectedTypes,
+  selectedRarities,
+  selectedArchetypes,
+  selectedAbilities
+}) {
+  return allCards.filter(card => {
+    // Ownership filter (unchanged)
+    if (ownershipFilter === "Owned" && (!collection[card.id] || collection[card.id] === 0)) return false;
+    if (ownershipFilter === "Undiscovered" && (collection[card.id] || 0) > 0) return false;
     if (ownershipFilter === "Locked" && !card.locked) return false;
-
+    // Name filter
     if (nameFilter && !card.name.toLowerCase().includes(nameFilter)) return false;
-    if (selectedColor) {
-      const colors = Array.isArray(card.color) ? card.color.map(c => c.toLowerCase()) : [card.color.toLowerCase()];
-      if (!colors.includes(selectedColor)) return false;
-    }
-    if (selectedCategory) {
-      if (!card.category || card.category.toLowerCase() !== selectedCategory) return false;
-    }
-    if (selectedType) {
-      const types = Array.isArray(card.type) ? card.type.map(t => t.toLowerCase()) : [card.type.toLowerCase()];
-      if (!types.includes(selectedType)) return false;
-    }
-    if (selectedRarity) {
-      if (card.rarity.toLowerCase() !== selectedRarity) return false;
-    }
-    if (selectedArchetype) {
-      const archetypes = Array.isArray(card.archetype)
-        ? card.archetype.map(a => a.toLowerCase())
-        : [card.archetype?.toLowerCase()];
-      if (!archetypes.includes(selectedArchetype)) return false;
-    }
-    if (selectedAbility) {
-      const abilities = Array.isArray(card.ability)
-        ? card.ability.map(a => a.toLowerCase())
-        : [card.ability?.toLowerCase()];
-      if (!abilities.includes(selectedAbility)) return false;
+    // Favorites
+    if (showFavoritesOnly && !favoriteIds.includes(card.id)) return false;
+    // Color multi-filter
+    if (selectedColors && selectedColors.length && (!card.color || !selectedColors.includes(card.color.toLowerCase()))) return false;
+    // Category (single, as before)
+    if (selectedCategory && (!card.category || card.category.toLowerCase() !== selectedCategory)) return false;
+    // Type multi-filter
+    if (selectedTypes && selectedTypes.length && (!card.type || !selectedTypes.includes(card.type.toLowerCase()))) return false;
+    // Rarity multi-filter
+    if (selectedRarities && selectedRarities.length && (!card.rarity || !selectedRarities.includes(card.rarity.toLowerCase()))) return false;
+    // Archetype multi-filter
+    if (selectedArchetypes && selectedArchetypes.length && (!card.archetype || !selectedArchetypes.includes(card.archetype.toLowerCase()))) return false;
+    // Ability multi-filter (if card.abilities is an array)
+    if (selectedAbilities && selectedAbilities.length) {
+      if (!card.abilities || !Array.isArray(card.abilities)) return false;
+      let found = card.abilities.some(abil => selectedAbilities.includes(abil.toLowerCase()));
+      if (!found) return false;
     }
     return true;
   });
 }
 window.filterCards = filterCards;
+
 // Set up badge click handler
 document.addEventListener('DOMContentLoaded', function() {
   const badgeImg = document.getElementById('player-badge-img');
