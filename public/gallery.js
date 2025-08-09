@@ -618,69 +618,64 @@ function updateGalleryCollectionProgress(filteredCards) {
   const collection = getCollection();
   const owned = filteredCards.filter(card => (collection[card.id] || 0) > 0).length;
   const total = filteredCards.length;
-  
-const selectedOwnerships = getFilterDropdownValues('filter-ownership-dropdown');
-const selectedColors = getFilterDropdownValues('filter-color-dropdown');
-const selectedCategories = getFilterDropdownValues('filter-category-dropdown');
-const selectedTypes = getFilterDropdownValues('filter-type-dropdown');
-const selectedRarities = getFilterDropdownValues('filter-rarity-dropdown');
-const selectedTraits = getFilterDropdownValues('filter-trait-dropdown');
-const selectedArchetypes = getFilterDropdownValues('filter-archetype-dropdown');
-const selectedAbilities = getFilterDropdownValues('filter-ability-dropdown');
-const nameInput = document.getElementById('filter-name-gallery');
-const nameFilter = nameInput ? nameInput.value : "";
-  
-let filterInfoArray = [];
-if (selectedRarities.length) filterInfoArray.push(...selectedRarities);
-if (selectedColors.length) filterInfoArray.push(...selectedColors);
-if (selectedCategories.length) filterInfoArray.push(...selectedCategories);
-if (selectedTypes.length) filterInfoArray.push(...selectedTypes);
-if (selectedTraits.length) filterInfoArray.push(...selectedTraits);
-if (selectedArchetypes.length) filterInfoArray.push(...selectedArchetypes);
-if (selectedAbilities.length) filterInfoArray.push(...selectedAbilities);
-if (nameFilter) filterInfoArray.push(nameFilter);
 
-  // Old filter info (for parentheses in non-empty state)
-let filterInfo = '';
-if (selectedRarities.length) filterInfo += `Rarity: <b>${selectedRarities.join(', ')}</b> `;
-if (selectedColors.length) filterInfo += `Color: <b>${selectedColors.join(', ')}</b> `;
-if (selectedTypes.length) filterInfo += `Type: <b>${selectedTypes.join(', ')}</b> `;
-if (selectedTraits.length) filterInfo += `Trait: <b>${selectedTraits.join(', ')}</b> `;
-if (selectedArchetypes.length) filterInfo += `Archetype: <b>${selectedArchetypes.join(', ')}</b> `;
-if (selectedAbilities.length) filterInfo += `Ability: <b>${selectedAbilities.join(', ')}</b> `;
-if (selectedCategories.length) filterInfo += `Category: <b>${selectedCategories.join(', ')}</b> `;
-if (nameFilter) filterInfo += `Name: <b>${nameFilter}</b> `;
+  // Ownership filter
+  const selectedOwnerships = getFilterDropdownValues('filter-ownership-dropdown');
+  const ownershipAll = selectedOwnerships.length === 0 || selectedOwnerships.includes("");
+  const ownershipSingle = selectedOwnerships.length === 1 ? selectedOwnerships[0] : null;
 
-  // Which "ownership" mode to use for progress count?
-  // Determine ownership summary mode
-  let showOwnedVsTotal = false;
-  let ownershipMode = "Owned";
-  if (selectedOwnerships.length === 0 || selectedOwnerships.includes("")) {
-    // "All" is selected
-    showOwnedVsTotal = true;
-  } else if (selectedOwnerships.length === 1) {
-    ownershipMode = selectedOwnerships[0];
-  } else {
-    showOwnedVsTotal = true; // Multiple selected, treat as mixed
-  }
+  // Gather all other filter values
+  const filterDropdownIds = [
+    'filter-rarity-dropdown',
+    'filter-color-dropdown',
+    'filter-type-dropdown',
+    'filter-trait-dropdown',
+    'filter-archetype-dropdown',
+    'filter-ability-dropdown',
+    'filter-category-dropdown'
+  ];
+  let filterInfoArray = [];
+  filterDropdownIds.forEach(id => {
+    const vals = getFilterDropdownValues(id);
+    if (vals.length > 0) filterInfoArray.push(...vals);
+  });
 
+  // Name filter
+  const nameInput = document.getElementById('filter-name-gallery');
+  const nameFilter = nameInput ? nameInput.value : "";
+  if (nameFilter) filterInfoArray.push(nameFilter);
+
+  // Join filter info with space (NO commas), no labels
+  const filterInfo = filterInfoArray.length ? filterInfoArray.join(' ') : '';
+
+  // Determine collection progress string
   let str = '';
   if (total === 0) {
-    if (filterInfoArray.length) {
-      str = `No cards match the selected filters: <b>${filterInfoArray.join(' ')}</b>`;
+    if (filterInfo) {
+      str = `No cards match the selected filters: <b>${filterInfo}</b>`;
     } else {
       str = 'No cards match the selected filters.';
     }
-  } else if (showOwnedVsTotal) {
-    str = `Owned <b>${owned}</b> / <b>${total}</b>`;
-    if (filterInfo) str += ` (${filterInfo.trim()})`;
-  } else if (ownershipMode.toLowerCase() === "owned") {
-    str = `Owned <b>${owned}</b>`;
-    if (filterInfo) str += ` (${filterInfo.trim()})`;
-  } else {
-    // For "Undiscovered", "Locked", etc., show a generic collected count
+  } else if (ownershipAll) {
+    // Show "Collected X/Y"
     str = `Collected <b>${owned}</b> / <b>${total}</b>`;
-    if (filterInfo) str += ` (${filterInfo.trim()})`;
+    if (filterInfo) str += ` (${filterInfo})`;
+  } else if (ownershipSingle === 'Undiscovered') {
+    // Show "Undiscovered X"
+    str = `Undiscovered <b>${total}</b>`;
+    if (filterInfo) str += ` (${filterInfo})`;
+  } else if (ownershipSingle === 'Locked') {
+    // Show "Locked X"
+    str = `Locked <b>${total}</b>`;
+    if (filterInfo) str += ` (${filterInfo})`;
+  } else if (ownershipSingle === 'Owned') {
+    // Show "Owned X"
+    str = `Owned <b>${owned}</b>`;
+    if (filterInfo) str += ` (${filterInfo})`;
+  } else {
+    // Multiple ownerships selected, fallback to Collected X/Y
+    str = `Collected <b>${owned}</b> / <b>${total}</b>`;
+    if (filterInfo) str += ` (${filterInfo})`;
   }
 
   const progDiv = document.getElementById('gallery-collection-progress');
@@ -695,7 +690,7 @@ function upgradeCardToFoil(cardId) {
     const foilCards = doc.data()?.foilCards || {};
     foilCards[cardId] = true;
     userRef.set({ foilCards }, { merge: true }).then(() => {
-      window.playerFoilCards = foilCards; // update global state
+      window.playerFoilCards = foilCards;
       showToast("Card upgraded to foil!", {type:"success"});
       if (typeof updateCollectionDependentUI === "function") updateCollectionDependentUI();
     });
