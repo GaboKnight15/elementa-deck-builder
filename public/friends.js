@@ -357,7 +357,111 @@ function viewFriendProfile(fid) {
     modal.style.display = 'flex';
   });
 }
+function renderDiscoverPanel() {
+  const usersDiv = document.getElementById('discover-users-list');
+  usersDiv.innerHTML = '<div style="color:#ffe066;">Loading random users...</div>';
+  // Fetch random users from server, exclude friends, blocked, self
+  // For now, get first 10 users as an example
+  const currentUid = getCurrentUserId();
+  firebase.firestore().collection('users').limit(20).get().then(snap => {
+    let users = snap.docs.map(doc => ({ uid: doc.id, ...doc.data() }));
+    // Exclude self, friends, blocked
+    // You should fetch your friends/blocked here for a real filter!
+    users = users.filter(u => u.uid !== currentUid);
+    usersDiv.innerHTML = '';
+    users.forEach(user => {
+      const entry = document.createElement('div');
+      entry.className = 'friend-profile-tile';
+      entry.innerHTML = `
+        ${renderProfileInfoSection({
+          profileBanner: user.banner,
+          profilePic: user.avatar || 'CardImages/Avatars/Default.png',
+          username: user.username || user.uid,
+          power: user.power || 0
+        })}
+        <div style="margin-top:8px;">
+          <button onclick="viewFriendProfile('${user.uid}')">View</button>
+          <button onclick="sendFriendRequest('${user.username || user.uid}')">Send Friend Request</button>
+          <button onclick="blockUser('${user.uid}')">Block</button>
+        </div>
+      `;
+      usersDiv.appendChild(entry);
+    });
+  });
+  // Search logic
+  document.getElementById('discover-search-btn').onclick = function() {
+    discoverSearch();
+  };
+  document.getElementById('discover-search-input').onkeydown = function(e) {
+    if (e.key === "Enter") discoverSearch();
+  };
+}
 
+function discoverSearch() {
+  const query = document.getElementById('discover-search-input').value.trim();
+  const usersDiv = document.getElementById('discover-users-list');
+  if (!query) return renderDiscoverPanel();
+  usersDiv.innerHTML = '<div style="color:#ffe066;">Searching...</div>';
+  firebase.firestore().collection('users')
+    .where('username', '>=', query)
+    .where('username', '<=', query + '\uf8ff')
+    .orderBy('username')
+    .limit(10)
+    .get().then(snap => {
+      let users = snap.docs.map(doc => ({ uid: doc.id, ...doc.data() }));
+      usersDiv.innerHTML = '';
+      users.forEach(user => {
+        const entry = document.createElement('div');
+        entry.className = 'friend-profile-tile';
+        entry.innerHTML = `
+          ${renderProfileInfoSection({
+            profileBanner: user.banner,
+            profilePic: user.avatar || 'CardImages/Avatars/Default.png',
+            username: user.username || user.uid,
+            power: user.power || 0
+          })}
+          <div style="margin-top:8px;">
+            <button onclick="viewFriendProfile('${user.uid}')">View</button>
+            <button onclick="sendFriendRequest('${user.username || user.uid}')">Send Friend Request</button>
+            <button onclick="blockUser('${user.uid}')">Block</button>
+          </div>
+        `;
+        usersDiv.appendChild(entry);
+      });
+    });
+}
+function blockUser(uid) {
+  const currentUid = getCurrentUserId();
+  if (!currentUid || !uid) return;
+  const userRef = firebase.firestore().collection('users').doc(currentUid);
+  userRef.get().then(doc => {
+    let blocked = doc.data()?.blocked || [];
+    if (!blocked.includes(uid)) blocked.push(uid);
+    // Remove from friends/requests too
+    let friends = doc.data()?.friends || [];
+    friends = friends.filter(id => id !== uid);
+    let friendRequests = doc.data()?.friendRequests || [];
+    friendRequests = friendRequests.filter(r => r.fromUid !== uid);
+    userRef.set({ blocked, friends, friendRequests }, { merge: true }).then(() => {
+      showToast('Blocked user.');
+      renderBlockedPanel();
+      renderFriendsList();
+    });
+  });
+}
+function unblockUser(uid) {
+  const currentUid = getCurrentUserId();
+  if (!currentUid || !uid) return;
+  const userRef = firebase.firestore().collection('users').doc(currentUid);
+  userRef.get().then(doc => {
+    let blocked = doc.data()?.blocked || [];
+    blocked = blocked.filter(id => id !== uid);
+    userRef.set({ blocked }, { merge: true }).then(() => {
+      showToast('Unblocked user.');
+      renderBlockedPanel();
+    });
+  });
+}
 document.getElementById('tab-friends').onclick = function() {
   this.classList.add('selected');
   document.getElementById('tab-requests').classList.remove('selected');
@@ -399,3 +503,6 @@ window.sendFriendRequest = sendFriendRequest;
 window.acceptFriendRequest = acceptFriendRequest;
 window.declineFriendRequest = declineFriendRequest;
 window.renderFriendsList = renderFriendsList;
+window.blockUser = blockUser;
+window.unblockUser = unblockUser;
+window.viewFriendProfile = viewFriendProfile;
