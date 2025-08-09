@@ -999,20 +999,6 @@ document.addEventListener('DOMContentLoaded', function() {
 // ==========================
 // === EVENT LISTENERS ===
 // ==========================
-
-// FILTER COLOR EVENTS
-  document.getElementById('filter-color-builder').addEventListener('change', (e) => {
-    const color = e.target.value.toLowerCase();
-    document.body.className = document.body.className
-      .split(' ')
-      .filter(cls => !cls.startsWith('theme-'))
-      .join(' ')
-      .trim();
-    if (color) {
-      document.body.classList.add(`theme-${color}`);
-    }
-  });
-// Make sure this is run after DOM is loaded
 document.addEventListener("DOMContentLoaded", function() {
   const deckSelectionBackBtn = document.getElementById('deck-selection-back-btn');
   if (deckSelectionBackBtn) {
