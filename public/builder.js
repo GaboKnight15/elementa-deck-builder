@@ -849,17 +849,84 @@ function addCardToDeck(cardId) {
   deck[cardId] = (deck[cardId] || 0) + 1;
   setCurrentDeck(deck);
 }
+function getSelectedOptions(selectId) {
+  const select = document.getElementById(selectId);
+  if (!select) return [];
+  // For <select multiple>
+  if (select.options) {
+    return Array.from(select.selectedOptions).map(opt => opt.value).filter(v => v);
+  }
+  // For custom dropdowns with checkboxes
+  const dropdown = document.getElementById(selectId.replace('gallery', 'dropdown'));
+  if (dropdown) {
+    return Array.from(dropdown.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value).filter(v => v);
+  }
+  return [];
+}
+function getFilterDropdownValues(dropdownId) {
+  const dropdown = document.getElementById(dropdownId);
+  if (!dropdown) return [];
+  const checked = Array.from(dropdown.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value).filter(v => v);
+  return checked;
+}
+
+function updateFilterLabel(dropdown, vals) {
+  const label = dropdown.querySelector('.filter-label');
+  const base = label.getAttribute('data-default') || label.textContent.split(':')[0];
+  if (vals.length === 0) {
+    label.textContent = base;
+    label.classList.remove('active');
+  } else {
+    label.textContent = base + ': ' + vals.join(', ');
+    label.classList.add('active');
+  }
+}
+
+// Dropdown open/close logic
+document.querySelectorAll('#filters-builder .filter-dropdown .filter-label').forEach(label => {
+  label.onclick = function(e) {
+    e.stopPropagation();
+    document.querySelectorAll('#filters-builder .filter-dropdown').forEach(dd => dd.classList.remove('open'));
+    label.parentElement.classList.toggle('open');
+  };
+});
+
+// Checkbox logic for builder filters
+document.querySelectorAll('#filters-builder .filter-dropdown .filter-option input[type="checkbox"]').forEach(cb => {
+  cb.onchange = function(e) {
+    const dropdown = cb.closest('.filter-dropdown');
+    let vals = Array.from(dropdown.querySelectorAll('input[type="checkbox"]:checked')).map(inp => inp.value).filter(Boolean);
+
+    if (cb.value === "") {
+      // "All" was toggled
+      if (cb.checked) {
+        dropdown.querySelectorAll('input[type="checkbox"]').forEach(inp => { if (inp.value !== "") inp.checked = false; });
+        vals = [];
+      }
+    } else {
+      // If any specific option checked, uncheck "All"
+      dropdown.querySelector('input[type="checkbox"][value=""]').checked = false;
+    }
+    updateFilterLabel(dropdown, vals);
+    renderBuilder();
+  };
+});
+
+// Close dropdowns on click elsewhere
+document.body.onclick = function() {
+  document.querySelectorAll('#filters-builder .filter-dropdown').forEach(dd => dd.classList.remove('open'));
+};
 function renderBuilder() {
     builderGallery.innerHTML = '';
     const collection = getCollection();
     const nameFilter = document.getElementById('filter-name-builder').value.toLowerCase();
     const favoriteIds = getFavoriteCards ? getFavoriteCards() : [];
-    const selectedColors = getSelectedOptions('filter-color-builder').map(x => x.toLowerCase());
-    const selectedTypes = getSelectedOptions('filter-type-builder').map(x => x.toLowerCase());
-    const selectedRarities = getSelectedOptions('filter-rarity-builder').map(x => x.toLowerCase());
-    const selectedArchetypes = getSelectedOptions('filter-archetype-builder').map(x => x.toLowerCase());
-    const selectedAbilities = getSelectedOptions('filter-ability-builder').map(x => x.toLowerCase());
-    const selectedCategories = getSelectedOptions('filter-category-builder').map(x => x.toLowerCase());
+    const selectedColors = getFilterDropdownValues('filter-color-builder-dropdown').map(x => x.toLowerCase());
+    const selectedTypes = getFilterDropdownValues('filter-type-builder-dropdown').map(x => x.toLowerCase());
+    const selectedRarities = getFilterDropdownValues('filter-rarity-builder-dropdown').map(x => x.toLowerCase());
+    const selectedArchetypes = getFilterDropdownValues('filter-archetype-builder-dropdown').map(x => x.toLowerCase());
+    const selectedAbilities = getFilterDropdownValues('filter-ability-builder-dropdown').map(x => x.toLowerCase());
+    const selectedCategories = getFilterDropdownValues('filter-category-builder-dropdown').map(x => x.toLowerCase());
 
 let filteredCards = filterCards({
   collection,
@@ -983,7 +1050,21 @@ document.getElementById('filter-rarity-builder').addEventListener('change', rend
 document.getElementById('filter-archetype-builder').addEventListener('change', renderBuilder);
 document.getElementById('filter-ability-builder').addEventListener('change', renderBuilder);
 document.addEventListener('DOMContentLoaded', function() {
-  const resetBtn = document.getElementById('reset-builder-filters-btn');
+  
+const resetBtn = document.getElementById('reset-builder-filters-btn');
+document.getElementById('reset-builder-filters-btn').onclick = function() {
+  document.getElementById('filter-name-builder').value = "";
+  document.querySelectorAll('#filters-builder .filter-dropdown').forEach(dd => {
+    // check "All"
+    dd.querySelector('input[type="checkbox"][value=""]').checked = true;
+    // uncheck others
+    dd.querySelectorAll('input[type="checkbox"]:not([value=""])').forEach(cb => cb.checked = false);
+    updateFilterLabel(dd, []);
+  });
+  showFavoritesOnlyBuilder = false;
+  updateFavoriteFilterIconBuilder();
+  renderBuilder();
+};
   if (resetBtn) {
     resetBtn.onclick = function() {
       document.getElementById('filter-name-builder').value = "";
