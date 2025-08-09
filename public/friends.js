@@ -513,6 +513,106 @@ document.getElementById('requests-search-trigger').onclick = function() {
   }
 };
 
+function renderProfileTile(user, context) {
+  const tile = document.createElement('div');
+  tile.className = 'friend-profile-tile';
+  tile.innerHTML = /* ... your profile info ... */;
+  tile.onclick = function(e) {
+    e.stopPropagation();
+    showProfileMenu(tile, user, context);
+  };
+  return tile;
+}
+
+function showProfileMenu(tile, user, context) {
+  // Remove any open menus
+  let menu = document.getElementById('friends-profile-menu');
+  if (menu) menu.remove();
+
+  menu = document.createElement('div');
+  menu.id = 'friends-profile-menu';
+  menu.className = 'menu';
+  menu.style.position = 'absolute';
+  menu.style.minWidth = '160px';
+
+  // Add context-appropriate actions
+  if (context === 'friends') {
+    menu.innerHTML += `<button class="settings-item" onclick="viewFriendProfile('${user.uid}')">View</button>`;
+    menu.innerHTML += `<button class="settings-item" onclick="removeFriend('${user.uid}')">Unfriend</button>`;
+    menu.innerHTML += `<button class="settings-item" onclick="blockUser('${user.uid}')">Block</button>`;
+  } else if (context === 'discover') {
+    menu.innerHTML += `<button class="settings-item" onclick="viewFriendProfile('${user.uid}')">View</button>`;
+    menu.innerHTML += `<button class="settings-item" onclick="sendFriendRequest('${user.username}')">Send Friend Request</button>`;
+    menu.innerHTML += `<button class="settings-item" onclick="blockUser('${user.uid}')">Block</button>`;
+  } else if (context === 'pending-received') {
+    menu.innerHTML += `<button class="settings-item" onclick="viewFriendProfile('${user.uid}')">View</button>`;
+    menu.innerHTML += `<button class="settings-item" onclick="acceptFriendRequest('${user.uid}', '${user.username}')">Accept</button>`;
+    menu.innerHTML += `<button class="settings-item" onclick="declineFriendRequest('${user.uid}')">Decline</button>`;
+    menu.innerHTML += `<button class="settings-item" onclick="blockUser('${user.uid}')">Block</button>`;
+  } else if (context === 'pending-sent') {
+    menu.innerHTML += `<button class="settings-item" onclick="viewFriendProfile('${user.uid}')">View</button>`;
+    menu.innerHTML += `<button class="settings-item" onclick="cancelSentRequest('${user.uid}')">Cancel Request</button>`;
+  } else if (context === 'blocked') {
+    menu.innerHTML += `<button class="settings-item" onclick="viewFriendProfile('${user.uid}')">View</button>`;
+    menu.innerHTML += `<button class="settings-item" onclick="unblockUser('${user.uid}')">Unblock</button>`;
+  } else {
+    // Fallback: just view
+    menu.innerHTML += `<button class="settings-item" onclick="viewFriendProfile('${user.uid}')">View</button>`;
+  }
+
+  // Place menu using shared.js util
+  const rect = tile.getBoundingClientRect();
+  placeMenuWithinViewport(menu, rect);
+
+  document.body.appendChild(menu);
+
+  // Remove on click outside
+  setTimeout(() => {
+    document.body.addEventListener('mousedown', function handler(e) {
+      if (!menu.contains(e.target)) menu.remove();
+      document.body.removeEventListener('mousedown', handler);
+    }, { once: true });
+  }, 20);
+
+  // Prevent menu from closing if clicked inside
+  menu.onclick = (e) => e.stopPropagation();
+}
+function renderRequestsPanel() {
+  // This should render both received and sent requests if you have both sections.
+  // Example placeholder:
+  const panel = document.getElementById('panel-requests');
+  if (!panel) return;
+  panel.innerHTML = `
+    <div id="panel-requests-received"></div>
+    <div id="panel-requests-sent"></div>
+  `;
+  // You can call your existing logic to populate these:
+  renderReceivedRequests();
+  renderSentRequests();
+}
+
+function renderBlockedPanel() {
+  // This should render the blocked users list.
+  const panel = document.getElementById('panel-blocked');
+  if (!panel) return;
+  panel.innerHTML = `<div id="blocked-users-list"></div>`;
+  renderBlockedUsersList();
+}
+
+// Minimal stubs for request/blocked panel population:
+function renderReceivedRequests() {
+  // Populate #panel-requests-received with incoming requests
+  // ... your code ...
+}
+function renderSentRequests() {
+  // Populate #panel-requests-sent with sent requests
+  // ... your code ...
+}
+function renderBlockedUsersList() {
+  // Populate #blocked-users-list with blocked users
+  // ... your code ...
+}
+
 window.sendFriendRequest = sendFriendRequest;
 window.acceptFriendRequest = acceptFriendRequest;
 window.declineFriendRequest = declineFriendRequest;
