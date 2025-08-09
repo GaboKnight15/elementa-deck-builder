@@ -652,14 +652,16 @@ if (selectedCategories.length) filterInfo += `Category: <b>${selectedCategories.
 if (nameFilter) filterInfo += `Name: <b>${nameFilter}</b> `;
 
   // Which "ownership" mode to use for progress count?
+  // Determine ownership summary mode
+  let showOwnedVsTotal = false;
   let ownershipMode = "Owned";
-  if (selectedOwnerships.length && !selectedOwnerships.includes("")) {
-    // If multiple selected, and only "Owned" is selected, treat as owned
-    if (selectedOwnerships.length === 1) {
-      ownershipMode = selectedOwnerships[0];
-    } else {
-      ownershipMode = "Mixed";
-    }
+  if (selectedOwnerships.length === 0 || selectedOwnerships.includes("")) {
+    // "All" is selected
+    showOwnedVsTotal = true;
+  } else if (selectedOwnerships.length === 1) {
+    ownershipMode = selectedOwnerships[0];
+  } else {
+    showOwnedVsTotal = true; // Multiple selected, treat as mixed
   }
 
   let str = '';
@@ -669,11 +671,11 @@ if (nameFilter) filterInfo += `Name: <b>${nameFilter}</b> `;
     } else {
       str = 'No cards match the selected filters.';
     }
+  } else if (showOwnedVsTotal) {
+    str = `Owned <b>${owned}</b> / <b>${total}</b>`;
+    if (filterInfo) str += ` (${filterInfo.trim()})`;
   } else if (ownershipMode.toLowerCase() === "owned") {
     str = `Owned <b>${owned}</b>`;
-    if (filterInfo) str += ` (${filterInfo.trim()})`;
-  } else if (ownershipMode === "Mixed") {
-    str = `<b>${owned}</b> / <b>${total}</b>`;
     if (filterInfo) str += ` (${filterInfo.trim()})`;
   } else {
     // For "Undiscovered", "Locked", etc., show a generic collected count
