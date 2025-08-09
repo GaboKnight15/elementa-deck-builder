@@ -46,23 +46,28 @@ document.addEventListener('DOMContentLoaded', function() {
 document.addEventListener('DOMContentLoaded', function() {
   const resetBtn = document.getElementById('reset-gallery-filters-btn');
   if (resetBtn) {
-    resetBtn.onclick = function() {
-      // Reset all filter values to default
-      document.getElementById('filter-name-gallery').value = "";
-      document.getElementById('filter-ownership-gallery').value = "Owned";
-      document.getElementById('filter-color-gallery').value = "";
-      document.getElementById('filter-category-gallery').value = "";
-      document.getElementById('filter-type-gallery').value = "";
-      document.getElementById('filter-rarity-gallery').value = "";
-      document.getElementById('filter-archetype-gallery').value = "";
-      document.getElementById('filter-ability-gallery').value = "";
-      // Reset favorites
-      showFavoritesOnly = false;
-      updateFavoriteFilterIcon();
-      // Update filter select placeholders if you use them
-      setupFilterSelectPlaceholders();
-      renderGallery();
-    };
+resetBtn.onclick = function() {
+  // Reset text input and ownership (if present)
+  const nameInput = document.getElementById('filter-name-gallery');
+  if (nameInput) nameInput.value = "";
+
+  const ownershipInput = document.getElementById('filter-ownership-gallery');
+  if (ownershipInput) ownershipInput.value = "Owned";
+
+  // Reset all custom dropdown filters: check "All", uncheck others, update label
+  document.querySelectorAll('#filters-gallery .filter-dropdown').forEach(dd => {
+    const allCb = dd.querySelector('input[type="checkbox"][value=""]');
+    if (allCb) allCb.checked = true;
+    dd.querySelectorAll('input[type="checkbox"]:not([value=""])').forEach(cb => cb.checked = false);
+    updateFilterLabel(dd, []);
+  });
+
+  // Reset favorites
+  showFavoritesOnly = false;
+  updateFavoriteFilterIcon();
+
+  renderGallery();
+};
   }
 });
 // Update the icon appearance
@@ -613,8 +618,8 @@ function updateGalleryCollectionProgress(filteredCards) {
   const owned = filteredCards.filter(card => (collection[card.id] || 0) > 0).length;
   const total = filteredCards.length;
 
-const selectedColors = getFilterDropdownValues('filter-color-dropdown'); // returns array
-const selectedCategories = getFilterDropdownValues('filter-category-dropdown'); // etc...
+const selectedColors = getFilterDropdownValues('filter-color-dropdown');
+const selectedCategories = getFilterDropdownValues('filter-category-dropdown');
 const selectedTypes = getFilterDropdownValues('filter-type-dropdown');
 const selectedRarities = getFilterDropdownValues('filter-rarity-dropdown');
 const selectedArchetypes = getFilterDropdownValues('filter-archetype-dropdown');
@@ -634,10 +639,10 @@ if (nameFilter) filterInfoArray.push(nameFilter);
 let filterInfo = '';
 if (selectedRarities.length) filterInfo += `Rarity: <b>${selectedRarities.join(', ')}</b> `;
 if (selectedColors.length) filterInfo += `Color: <b>${selectedColors.join(', ')}</b> `;
-if (selectedCategories.length) filterInfo += `Category: <b>${selectedCategories.join(', ')}</b> `;
 if (selectedTypes.length) filterInfo += `Type: <b>${selectedTypes.join(', ')}</b> `;
 if (selectedArchetypes.length) filterInfo += `Archetype: <b>${selectedArchetypes.join(', ')}</b> `;
 if (selectedAbilities.length) filterInfo += `Ability: <b>${selectedAbilities.join(', ')}</b> `;
+if (selectedCategories.length) filterInfo += `Category: <b>${selectedCategories.join(', ')}</b> `;
 if (nameFilter) filterInfo += `Name: <b>${nameFilter}</b> `;
 
   let str = '';
