@@ -376,15 +376,18 @@ div.innerHTML = `
     </div>
   </div>
 `;
-        div.onclick = () => {
-          window.selectedPlayerDeck = {
-            ...deck,
-            deckObj: deck,
-            isDefaultDeck: true
-          };
-          if (typeof renderModePlayerDeckTile === "function") renderModePlayerDeckTile();
-          modal.style.display = 'none';
-        };
+div.onclick = () => {
+  window.selectedPlayerDeck = {
+    ...deck,
+    deckObj: {
+      ...deck,
+      highlightArt: deck.image // Set highlight to avatar
+    },
+    isDefaultDeck: true
+  };
+  if (typeof renderModePlayerDeckTile === "function") renderModePlayerDeckTile();
+  modal.style.display = 'none';
+};
         row.appendChild(div);
       });
       defaultList.appendChild(row);
