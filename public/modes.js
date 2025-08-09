@@ -25,7 +25,7 @@ const DEFAULT_CPU_DECKS = [
     difficulty: '⭐',
     image: 'CardImages/Avatars/Emberling.png',
     bannerArt: 'CardImages/Banners/RedBanner.png',
-    cardbackArt: 'OtherImages/Cardbacks/RedCardback.png',
+    cardbackArt: 'OtherImages/Cardbacks/CBFirelands.png',
     cards: [
       { id: 'Ashkar', amount: 1 },
       { id: 'Emberling', amount: 4 },
