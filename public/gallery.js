@@ -186,22 +186,75 @@ function createCardGallery(card) {
     };
   return div;
 }
-function getSelectedOptions(selectId) {
-  const select = document.getElementById(selectId);
-  return Array.from(select.selectedOptions)
-    .map(opt => opt.value)
-    .filter(val => val && val !== "");
+// Helper: Read selected values for each filter dropdown (returns array or empty for "All")
+function getFilterDropdownValues(dropdownId) {
+  const dropdown = document.getElementById(dropdownId);
+  if (!dropdown) return [];
+  const checked = Array.from(dropdown.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value).filter(v => v);
+  return checked;
 }
+
+// Setup dropdown open/close
+document.querySelectorAll('.filter-dropdown .filter-label').forEach(label => {
+  label.onclick = function(e) {
+    e.stopPropagation();
+    // Close all others
+    document.querySelectorAll('.filter-dropdown').forEach(dd => dd.classList.remove('open'));
+    label.parentElement.classList.toggle('open');
+  };
+});
+
+// Option click handler (checkboxes, including "All" logic)
+document.querySelectorAll('.filter-dropdown .filter-option input[type="checkbox"]').forEach(cb => {
+  cb.onchange = function(e) {
+    const dropdown = cb.closest('.filter-dropdown');
+    const filterKey = dropdown.id.replace('filter-', '').replace('-dropdown', '');
+    let vals = Array.from(dropdown.querySelectorAll('input[type="checkbox"]:checked')).map(inp => inp.value).filter(Boolean);
+
+    if (cb.value === "") {
+      // "All" was toggled
+      if (cb.checked) {
+        dropdown.querySelectorAll('input[type="checkbox"]').forEach(inp => { if (inp.value !== "") inp.checked = false; });
+        vals = [];
+      }
+    } else {
+      // If any specific option checked, uncheck "All"
+      dropdown.querySelector('input[type="checkbox"][value=""]').checked = false;
+    }
+
+    // Optionally update label to show selection
+    updateFilterLabel(dropdown, vals);
+    renderGallery();
+  };
+});
+
+// Update label to show selected options or just filter name
+function updateFilterLabel(dropdown, vals) {
+  const label = dropdown.querySelector('.filter-label');
+  const base = label.getAttribute('data-default') || label.textContent.split(':')[0];
+  if (vals.length === 0) {
+    label.textContent = base;
+    label.classList.remove('active');
+  } else {
+    label.textContent = base + ': ' + vals.join(', ');
+    label.classList.add('active');
+  }
+}
+
+// Close dropdowns on click outside
+document.body.onclick = function() {
+  document.querySelectorAll('.filter-dropdown').forEach(dd => dd.classList.remove('open'));
+};
 function renderGallery() {
   gallery.innerHTML = '';
   const nameFilter = document.getElementById('filter-name-gallery').value.toLowerCase();
   const ownershipFilter = document.getElementById('filter-ownership-gallery')?.value || "Owned";
-  const selectedColors = getSelectedOptions('filter-color-gallery').map(x => x.toLowerCase());
-  const selectedTypes = getSelectedOptions('filter-type-gallery').map(x => x.toLowerCase());
-  const selectedRarities = getSelectedOptions('filter-rarity-gallery').map(x => x.toLowerCase());
-  const selectedArchetypes = getSelectedOptions('filter-archetype-gallery').map(x => x.toLowerCase());
-  const selectedAbilities = getSelectedOptions('filter-ability-gallery').map(x => x.toLowerCase());
-  const selectedCategories = getSelectedOptions('filter-category-gallery').map(x => x.toLowerCase());
+  const selectedColors = getFilterDropdownValues('filter-color-dropdown').map(x => x.toLowerCase());
+  const selectedTypes = getFilterDropdownValues('filter-type-dropdown').map(x => x.toLowerCase());
+  const selectedRarities = getFilterDropdownValues('filter-rarity-dropdown').map(x => x.toLowerCase());
+  const selectedArchetypes = getFilterDropdownValues('filter-archetype-dropdown').map(x => x.toLowerCase());
+  const selectedAbilities = getFilterDropdownValues('filter-ability-dropdown').map(x => x.toLowerCase());
+  const selectedCategories = getFilterDropdownValues('filter-category-dropdown').map(x => x.toLowerCase());
   const collection = getCollection();
   const favoriteIds = getFavoriteCards();
 
