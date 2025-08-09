@@ -566,7 +566,7 @@ function updateGalleryCollectionProgress(filteredCards) {
   const selectedAbility = document.getElementById('filter-ability-gallery').value;
   const nameFilter = document.getElementById('filter-name-gallery').value;
   if (selectedRarity) filterInfo += `Rarity: <b>${selectedRarity}</b> `;
-  if (selectedColors.length && !card.colors.some(c => selectedColors.includes(c.toLowerCase()))) return false;
+  if (selectedColor) filterInfo += `Color: <b>${selectedColor}</b> `;
   if (selectedCategory) filterInfo += `Category: <b>${selectedCategory}</b> `;
   if (selectedType) filterInfo += `Type: <b>${selectedType}</b> `;
   if (selectedArchetype) filterInfo += `Archetype: <b>${selectedArchetype}</b> `;
