@@ -849,6 +849,7 @@ function filterCards({
   selectedCategories,
   selectedTypes,
   selectedRarities,
+  selectedTraits,
   selectedArchetypes,
   selectedAbilities
 }) {
