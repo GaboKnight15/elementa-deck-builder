@@ -610,32 +610,32 @@ function updateGalleryCollectionProgress(filteredCards) {
   const owned = filteredCards.filter(card => (collection[card.id] || 0) > 0).length;
   const total = filteredCards.length;
 
-  // Gather active filters as plain words for error message
-  let filterInfoArray = [];
-  const selectedRarity = document.getElementById('filter-rarity-gallery').value;
-  const selectedColor = document.getElementById('filter-color-gallery').value;
-  const selectedCategory = document.getElementById('filter-category-gallery').value;
-  const selectedType = document.getElementById('filter-type-gallery').value;
-  const selectedArchetype = document.getElementById('filter-archetype-gallery').value;
-  const selectedAbility = document.getElementById('filter-ability-gallery').value;
-  const nameFilter = document.getElementById('filter-name-gallery').value;
-  if (selectedRarity) filterInfoArray.push(selectedRarity);
-  if (selectedColor) filterInfoArray.push(selectedColor);
-  if (selectedCategory) filterInfoArray.push(selectedCategory);
-  if (selectedType) filterInfoArray.push(selectedType);
-  if (selectedArchetype) filterInfoArray.push(selectedArchetype);
-  if (selectedAbility) filterInfoArray.push(selectedAbility);
-  if (nameFilter) filterInfoArray.push(nameFilter);
+const selectedColors = getFilterDropdownValues('filter-color-dropdown'); // returns array
+const selectedCategories = getFilterDropdownValues('filter-category-dropdown'); // etc...
+const selectedTypes = getFilterDropdownValues('filter-type-dropdown');
+const selectedRarities = getFilterDropdownValues('filter-rarity-dropdown');
+const selectedArchetypes = getFilterDropdownValues('filter-archetype-dropdown');
+const selectedAbilities = getFilterDropdownValues('filter-ability-dropdown');
+const nameFilter = document.getElementById('filter-name-gallery').value;
+  
+let filterInfoArray = [];
+if (selectedRarities.length) filterInfoArray.push(...selectedRarities);
+if (selectedColors.length) filterInfoArray.push(...selectedColors);
+if (selectedCategories.length) filterInfoArray.push(...selectedCategories);
+if (selectedTypes.length) filterInfoArray.push(...selectedTypes);
+if (selectedArchetypes.length) filterInfoArray.push(...selectedArchetypes);
+if (selectedAbilities.length) filterInfoArray.push(...selectedAbilities);
+if (nameFilter) filterInfoArray.push(nameFilter);
 
   // Old filter info (for parentheses in non-empty state)
-  let filterInfo = '';
-  if (selectedRarity) filterInfo += `Rarity: <b>${selectedRarity}</b> `;
-  if (selectedColor) filterInfo += `Color: <b>${selectedColor}</b> `;
-  if (selectedCategory) filterInfo += `Category: <b>${selectedCategory}</b> `;
-  if (selectedType) filterInfo += `Type: <b>${selectedType}</b> `;
-  if (selectedArchetype) filterInfo += `Archetype: <b>${selectedArchetype}</b> `;
-  if (selectedAbility) filterInfo += `Ability: <b>${selectedAbility}</b> `;
-  if (nameFilter) filterInfo += `Name: <b>${nameFilter}</b> `;
+let filterInfo = '';
+if (selectedRarities.length) filterInfo += `Rarity: <b>${selectedRarities.join(', ')}</b> `;
+if (selectedColors.length) filterInfo += `Color: <b>${selectedColors.join(', ')}</b> `;
+if (selectedCategories.length) filterInfo += `Category: <b>${selectedCategories.join(', ')}</b> `;
+if (selectedTypes.length) filterInfo += `Type: <b>${selectedTypes.join(', ')}</b> `;
+if (selectedArchetypes.length) filterInfo += `Archetype: <b>${selectedArchetypes.join(', ')}</b> `;
+if (selectedAbilities.length) filterInfo += `Ability: <b>${selectedAbilities.join(', ')}</b> `;
+if (nameFilter) filterInfo += `Name: <b>${nameFilter}</b> `;
 
   let str = '';
   const ownershipFilter = document.getElementById('filter-ownership-gallery').value;
