@@ -133,13 +133,15 @@
     </div>
 <!-- FILTER GALLERY -->
 <div id="filters-gallery" class="filter-row">
-  <input type="text" id="filter-name-gallery" placeholder="Search by name..." />
-  <select id="filter-ownership-gallery" class="filter-select">
-    <option value="Owned">Owned</option>
-    <option value="Undiscovered">Undiscovered</option>
-    <option value="Locked">Locked</option>
-    <option value="All">All</option>
-  </select>
+<div class="filter-dropdown" id="filter-ownership-dropdown">
+  <div class="filter-label" data-default="Ownership">Ownership</div>
+  <div class="filter-options">
+    <label class="filter-option"><input type="checkbox" value=""> All</label>
+    <label class="filter-option"><input type="checkbox" value="Owned"> Owned</label>
+    <label class="filter-option"><input type="checkbox" value="Undiscovered"> Undiscovered</label>
+    <label class="filter-option"><input type="checkbox" value="Locked"> Locked</label>
+  </div>
+</div>
 
   <!-- Custom Dropdown for Color -->
   <div class="filter-dropdown" id="filter-color-dropdown">
@@ -174,8 +176,6 @@
     <div class="filter-label" data-default="Type">Type</div>
     <div class="filter-options">
       <label class="filter-option"><input type="checkbox" value=""> All</label>
-      <label class="filter-option"><input type="checkbox" value="Evolution"> Evolution</label>
-      <label class="filter-option"><input type="checkbox" value="Fusion"> Fusion</label>
       <label class="filter-option"><input type="checkbox" value="Elemental"> Elemental</label>
       <label class="filter-option"><input type="checkbox" value="Dragon"> Dragon</label>
       <label class="filter-option"><input type="checkbox" value="Construct"> Construct</label>
@@ -329,8 +329,6 @@
     <div class="filter-label" data-default="Type">Type</div>
     <div class="filter-options">
       <label class="filter-option"><input type="checkbox" value=""> All</label>
-      <label class="filter-option"><input type="checkbox" value="Evolution"> Evolution</label>
-      <label class="filter-option"><input type="checkbox" value="Fusion"> Fusion</label>
       <label class="filter-option"><input type="checkbox" value="Elemental"> Elemental</label>
       <label class="filter-option"><input type="checkbox" value="Dragon"> Dragon</label>
       <label class="filter-option"><input type="checkbox" value="Construct"> Construct</label>
@@ -908,6 +906,7 @@
  
 </body> 
 </html>
+
 
 
 
