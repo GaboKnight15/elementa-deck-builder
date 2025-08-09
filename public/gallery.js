@@ -626,7 +626,8 @@ const selectedRarities = getFilterDropdownValues('filter-rarity-dropdown');
 const selectedTraits = getFilterDropdownValues('filter-trait-dropdown');
 const selectedArchetypes = getFilterDropdownValues('filter-archetype-dropdown');
 const selectedAbilities = getFilterDropdownValues('filter-ability-dropdown');
-const nameFilter = document.getElementById('filter-name-gallery').value;
+const nameInput = document.getElementById('filter-name-gallery');
+const nameFilter = nameInput ? nameInput.value : "";
   
 let filterInfoArray = [];
 if (selectedRarities.length) filterInfoArray.push(...selectedRarities);
@@ -649,19 +650,32 @@ if (selectedAbilities.length) filterInfo += `Ability: <b>${selectedAbilities.joi
 if (selectedCategories.length) filterInfo += `Category: <b>${selectedCategories.join(', ')}</b> `;
 if (nameFilter) filterInfo += `Name: <b>${nameFilter}</b> `;
 
+  // Which "ownership" mode to use for progress count?
+  let ownershipMode = "Owned";
+  if (selectedOwnerships.length && !selectedOwnerships.includes("")) {
+    // If multiple selected, and only "Owned" is selected, treat as owned
+    if (selectedOwnerships.length === 1) {
+      ownershipMode = selectedOwnerships[0];
+    } else {
+      ownershipMode = "Mixed";
+    }
+  }
+
   let str = '';
-  const ownershipFilter = document.getElementById('filter-ownership-gallery').value;
   if (total === 0) {
     if (filterInfoArray.length) {
       str = `No cards match the selected filters: <b>${filterInfoArray.join(' ')}</b>`;
     } else {
-      // No filters, just show a plain message (shouldn't happen with default "Owned" view)
       str = 'No cards match the selected filters.';
     }
-  } else if (ownershipFilter === "owned") {
+  } else if (ownershipMode.toLowerCase() === "owned") {
     str = `Owned <b>${owned}</b>`;
     if (filterInfo) str += ` (${filterInfo.trim()})`;
+  } else if (ownershipMode === "Mixed") {
+    str = `<b>${owned}</b> / <b>${total}</b>`;
+    if (filterInfo) str += ` (${filterInfo.trim()})`;
   } else {
+    // For "Undiscovered", "Locked", etc., show a generic collected count
     str = `Collected <b>${owned}</b> / <b>${total}</b>`;
     if (filterInfo) str += ` (${filterInfo.trim()})`;
   }
