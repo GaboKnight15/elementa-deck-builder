@@ -742,7 +742,6 @@ document.addEventListener('DOMContentLoaded', setupFilterSelectPlaceholders);
 // === EVENT LISTENERS ===
 // ==========================
 // GALLERY EVENT FILTERS
-document.getElementById('filter-ownership-gallery').addEventListener('change', renderGallery);
 document.getElementById('filter-name-gallery').addEventListener('input', renderGallery);
 // ==========================
 // === INITIALIZATION ===
