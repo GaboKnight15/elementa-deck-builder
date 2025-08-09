@@ -978,3 +978,6 @@ document.addEventListener("DOMContentLoaded", function() {
     retina_detect: true
   });
 });
+function isFoilCard(cardId) {
+  return window.playerFoilCards && window.playerFoilCards[cardId];
+}
