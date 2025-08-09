@@ -261,6 +261,7 @@ function renderGallery() {
   const selectedTypes = getFilterDropdownValues('filter-type-dropdown').map(x => x.toLowerCase());
   const selectedRarities = getFilterDropdownValues('filter-rarity-dropdown').map(x => x.toLowerCase());
   const selectedArchetypes = getFilterDropdownValues('filter-archetype-dropdown').map(x => x.toLowerCase());
+  const selectedTraits = getFilterDropdownValues('filter-trait-dropdown').map(x => x.toLowerCase());
   const selectedAbilities = getFilterDropdownValues('filter-ability-dropdown').map(x => x.toLowerCase());
   const selectedCategories = getFilterDropdownValues('filter-category-dropdown').map(x => x.toLowerCase());
   const collection = getCollection();
@@ -276,6 +277,7 @@ function renderGallery() {
     selectedCategories,
     selectedTypes,
     selectedRarities,
+    selectedTraits,
     selectedArchetypes,
     selectedAbilities
   });
