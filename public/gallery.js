@@ -186,32 +186,37 @@ function createCardGallery(card) {
     };
   return div;
 }
-
+function getSelectedOptions(selectId) {
+  const select = document.getElementById(selectId);
+  return Array.from(select.selectedOptions)
+    .map(opt => opt.value)
+    .filter(val => val && val !== "");
+}
 function renderGallery() {
   gallery.innerHTML = '';
-  const ownershipFilter = document.getElementById('filter-ownership-gallery')?.value || "Owned";
-  const selectedColor = document.getElementById('filter-color-gallery').value.toLowerCase();
-  const selectedType = document.getElementById('filter-type-gallery').value.toLowerCase();
-  const selectedRarity = document.getElementById('filter-rarity-gallery').value.toLowerCase();
   const nameFilter = document.getElementById('filter-name-gallery').value.toLowerCase();
-  const selectedArchetype = document.getElementById('filter-archetype-gallery').value.toLowerCase();
-  const selectedAbility = document.getElementById('filter-ability-gallery').value.toLowerCase();
-  const selectedCategory = document.getElementById('filter-category-gallery').value.toLowerCase();
+  const ownershipFilter = document.getElementById('filter-ownership-gallery')?.value || "Owned";
+  const selectedColors = getSelectedOptions('filter-color-gallery').map(x => x.toLowerCase());
+  const selectedTypes = getSelectedOptions('filter-type-gallery').map(x => x.toLowerCase());
+  const selectedRarities = getSelectedOptions('filter-rarity-gallery').map(x => x.toLowerCase());
+  const selectedArchetypes = getSelectedOptions('filter-archetype-gallery').map(x => x.toLowerCase());
+  const selectedAbilities = getSelectedOptions('filter-ability-gallery').map(x => x.toLowerCase());
+  const selectedCategories = getSelectedOptions('filter-category-gallery').map(x => x.toLowerCase());
   const collection = getCollection();
   const favoriteIds = getFavoriteCards();
-  
+
   let filteredCards = filterCards({
     collection,
     favoriteIds,
     showFavoritesOnly,
     ownershipFilter,
     nameFilter,
-    selectedColor,
-    selectedCategory,
-    selectedType,
-    selectedRarity,
-    selectedArchetype,
-    selectedAbility
+    selectedColors,
+    selectedCategories,
+    selectedTypes,
+    selectedRarities,
+    selectedArchetypes,
+    selectedAbilities
   });
   updateGalleryCollectionProgress(filteredCards);
   if (filteredCards.length === 0) return;
@@ -561,7 +566,7 @@ function updateGalleryCollectionProgress(filteredCards) {
   const selectedAbility = document.getElementById('filter-ability-gallery').value;
   const nameFilter = document.getElementById('filter-name-gallery').value;
   if (selectedRarity) filterInfo += `Rarity: <b>${selectedRarity}</b> `;
-  if (selectedColor) filterInfo += `Color: <b>${selectedColor}</b> `;
+  if (selectedColors.length && !card.colors.some(c => selectedColors.includes(c.toLowerCase()))) return false;
   if (selectedCategory) filterInfo += `Category: <b>${selectedCategory}</b> `;
   if (selectedType) filterInfo += `Type: <b>${selectedType}</b> `;
   if (selectedArchetype) filterInfo += `Archetype: <b>${selectedArchetype}</b> `;
