@@ -857,26 +857,35 @@ function filterCards({
     if (ownershipFilter === "Owned" && (!collection[card.id] || collection[card.id] === 0)) return false;
     if (ownershipFilter === "Undiscovered" && (collection[card.id] || 0) > 0) return false;
     if (ownershipFilter === "Locked" && !card.locked) return false;
-    // Name filter
+
     if (nameFilter && !card.name.toLowerCase().includes(nameFilter)) return false;
-    // Favorites
+
     if (showFavoritesOnly && !favoriteIds.includes(card.id)) return false;
     // Color multi-filter
-    if (selectedColors && selectedColors.length && (!card.color || !selectedColors.includes(card.color.toLowerCase()))) return false;
-    // Category (single, as before)
-    if (selectedCategories && selectedCategories.length && (!card.category || !selectedCategories.includes(card.category.toLowerCase()))) return false;
-    // Type multi-filter
-    if (selectedTypes && selectedTypes.length && (!card.type || !selectedTypes.includes(card.type.toLowerCase()))) return false;
-    // Rarity multi-filter
-    if (selectedRarities && selectedRarities.length && (!card.rarity || !selectedRarities.includes(card.rarity.toLowerCase()))) return false;
-    // Archetype multi-filter
-    if (selectedArchetypes && selectedArchetypes.length && (!card.archetype || !selectedArchetypes.includes(card.archetype.toLowerCase()))) return false;
-    // Ability multi-filter (if card.abilities is an array)
-    if (selectedAbilities && selectedAbilities.length) {
-      if (!card.abilities || !Array.isArray(card.abilities)) return false;
-      let found = card.abilities.some(abil => selectedAbilities.includes(abil.toLowerCase()));
-      if (!found) return false;
-    }
+if (selectedColors && selectedColors.length) {
+  const cardColors = Array.isArray(card.color) ? card.color.map(c => c.toLowerCase()) : [String(card.color).toLowerCase()];
+  if (!cardColors.some(c => selectedColors.includes(c))) return false;
+}
+if (selectedCategories && selectedCategories.length) {
+  const cardCategories = Array.isArray(card.category) ? card.category.map(c => c.toLowerCase()) : [String(card.category).toLowerCase()];
+  if (!cardCategories.some(c => selectedCategories.includes(c))) return false;
+}
+if (selectedTypes && selectedTypes.length) {
+  const cardTypes = Array.isArray(card.type) ? card.type.map(t => t.toLowerCase()) : [String(card.type).toLowerCase()];
+  if (!cardTypes.some(t => selectedTypes.includes(t))) return false;
+}
+if (selectedRarities && selectedRarities.length) {
+  const cardRarities = Array.isArray(card.rarity) ? card.rarity.map(r => r.toLowerCase()) : [String(card.rarity).toLowerCase()];
+  if (!cardRarities.some(r => selectedRarities.includes(r))) return false;
+}
+if (selectedArchetypes && selectedArchetypes.length) {
+  const cardArchetypes = Array.isArray(card.archetype) ? card.archetype.map(a => a.toLowerCase()) : [String(card.archetype).toLowerCase()];
+  if (!cardArchetypes.some(a => selectedArchetypes.includes(a))) return false;
+}
+if (selectedAbilities && selectedAbilities.length) {
+  const cardAbilities = Array.isArray(card.ability) ? card.ability.map(a => a.toLowerCase()) : [String(card.ability).toLowerCase()];
+  if (!cardAbilities.some(a => selectedAbilities.includes(a))) return false;
+}
     return true;
   });
 }
