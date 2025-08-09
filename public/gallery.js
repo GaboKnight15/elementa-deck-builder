@@ -255,7 +255,7 @@ document.addEventListener('mousedown', function(e) {
 function renderGallery() {
   gallery.innerHTML = '';
   const nameFilter = document.getElementById('filter-name-gallery').value.toLowerCase();
-  const ownershipFilter = document.getElementById('filter-ownership-gallery')?.value || "Owned";
+  const selectedOwnerships = getFilterDropdownValues('filter-ownership-dropdown').map(x => x); // No need to lowercase unless you want
   const selectedColors = getFilterDropdownValues('filter-color-dropdown').map(x => x.toLowerCase());
   const selectedTypes = getFilterDropdownValues('filter-type-dropdown').map(x => x.toLowerCase());
   const selectedRarities = getFilterDropdownValues('filter-rarity-dropdown').map(x => x.toLowerCase());
@@ -270,7 +270,7 @@ function renderGallery() {
     collection,
     favoriteIds,
     showFavoritesOnly,
-    ownershipFilter,
+    selectedOwnerships,
     nameFilter,
     selectedColors,
     selectedCategories,
