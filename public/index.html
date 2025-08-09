@@ -282,47 +282,118 @@
     <div id="deck-selection-grid" class="grid"></div>
       <div id="deck-builder-ui">
         <div class="builder-main">
-  <!-- FILTER GALLERY BUILDER -->
-  <div id="filters-builder" class="filter-row">
-    <input type="text" id="filter-name-builder" class="filter-name" placeholder="Search by name..." />
-    <select id="filter-color-builder" class="filter-select" multiple>
-      <option value="">Color</option><option value="green">Green</option><option value="red">Red</option>
-      <option value="blue">Blue</option><option value="gray">Gray</option><option value="purple">Purple</option>
-      <option value="yellow">Yellow</option><option value="black">Black</option><option value="white">White</option>
-    </select>
-    <select id="filter-category-builder" class="filter-select" multiple>
-      <option value="">Category</option><option value="creature">Creature</option><option value="artifact">Artifact</option>
-      <option value="spell">Spell</option><option value="domain">Domain</option>
-    </select>
-    <select id="filter-type-builder" class="filter-select" multiple>
-      <option value="">Type</option><option value="evolution">Evolution</option><option value="fusion">Fusion</option>
-      <option value="elemental">Elemental</option><option value="dragon">Dragon</option><option value="construct">Construct</option>
-      <option value="beast">Beast</option><option value="undead">Undead</option><option value="demon">Demon</option>
-      <option value="mage">Mage</option><option value="equipment">Equipment</option><option value="relic">Relic</option>
-    </select>
-    <select id="filter-rarity-builder" class="filter-select" multiple>
-      <option value="">Rarity</option><option value="Common">Common</option><option value="Rare">Rare</option>
-      <option value="Epic">Epic</option><option value="Legendary">Legendary</option>
-    </select>
-    <select id="filter-archetype-builder" class="filter-select" multiple>
-      <option value="">Archetype</option><option value="Blazefeather">Blazefeather</option><option value="Cindercore">Cindercore</option>
-      <option value="Coralbound">Coralbound</option><option value="Fireland">Fireland</option><option value="Frostland">Frostland</option><option value="Golemheart">Golemheart</option><option value="Moonfang">Moonfang</option>
-      <option value="Skullframe">Skullframe</option><option value="Voltwing">Voltwing</option><option value="Zephyra">Zephyra</option>
-    </select>
-    <select id="filter-ability-builder" class="filter-select" multiple>
-      <option value="">Ability</option><option value="ambush">Ambush</option>
-      <option value="dive">Dive</option><option value="burn">Burn</option><option value="drain">Drain</option><option value="elusive">Elusive</option><option value="flying">Flying</option>
-      <option value="ice armor">Ice Armor</option><option value="immunity">Immunity</option><option value="intimidate">Intimidate</option>
-      <option value="leap">Leap</option><option value="lifelink">Lifelink</option><option value="protect">Protect</option>
-      <option value="provoke">Provoke</option><option value="ranged">Ranged</option><option value="rush">Rush</option><option value="toxic">Toxic</option>
-    </select>
-    <img id="filter-favorites-gallery" src="OtherImages/Icons/Star.png" alt="Favorites" title="Show only favorites"
-      style="width:32px;height:32px;cursor:pointer;filter:grayscale(1);opacity:0.6;transition:filter 0.2s,opacity 0.2s;">
-    <button id="reset-gallery-filters-btn"
-      style="margin-left:10px;padding:6px 18px;border-radius:8px;background:#232a3c;color:#ffe066;font-weight:bold;border:1.5px solid #ffe066;cursor:pointer;">
-      Reset Filters
-    </button>
+<!-- FILTER GALLERY BUILDER (custom dropdowns) -->
+<div id="filters-builder" class="filter-row">
+  <input type="text" id="filter-name-builder" class="filter-name" placeholder="Search by name..." />
+
+  <!-- Color -->
+  <div class="filter-dropdown" id="filter-color-builder-dropdown">
+    <div class="filter-label" data-default="Color">Color</div>
+    <div class="filter-options">
+      <label class="filter-option"><input type="checkbox" value=""> All</label>
+      <label class="filter-option"><input type="checkbox" value="Green"> Green</label>
+      <label class="filter-option"><input type="checkbox" value="Red"> Red</label>
+      <label class="filter-option"><input type="checkbox" value="Blue"> Blue</label>
+      <label class="filter-option"><input type="checkbox" value="Gray"> Gray</label>
+      <label class="filter-option"><input type="checkbox" value="Purple"> Purple</label>
+      <label class="filter-option"><input type="checkbox" value="Yellow"> Yellow</label>
+      <label class="filter-option"><input type="checkbox" value="Black"> Black</label>
+      <label class="filter-option"><input type="checkbox" value="White"> White</label>
+    </div>
   </div>
+
+  <!-- Category -->
+  <div class="filter-dropdown" id="filter-category-builder-dropdown">
+    <div class="filter-label" data-default="Category">Category</div>
+    <div class="filter-options">
+      <label class="filter-option"><input type="checkbox" value=""> All</label>
+      <label class="filter-option"><input type="checkbox" value="Creature"> Creature</label>
+      <label class="filter-option"><input type="checkbox" value="Artifact"> Artifact</label>
+      <label class="filter-option"><input type="checkbox" value="Spell"> Spell</label>
+      <label class="filter-option"><input type="checkbox" value="Domain"> Domain</label>
+    </div>
+  </div>
+
+  <!-- Type -->
+  <div class="filter-dropdown" id="filter-type-builder-dropdown">
+    <div class="filter-label" data-default="Type">Type</div>
+    <div class="filter-options">
+      <label class="filter-option"><input type="checkbox" value=""> All</label>
+      <label class="filter-option"><input type="checkbox" value="Evolution"> Evolution</label>
+      <label class="filter-option"><input type="checkbox" value="Fusion"> Fusion</label>
+      <label class="filter-option"><input type="checkbox" value="Elemental"> Elemental</label>
+      <label class="filter-option"><input type="checkbox" value="Dragon"> Dragon</label>
+      <label class="filter-option"><input type="checkbox" value="Construct"> Construct</label>
+      <label class="filter-option"><input type="checkbox" value="Beast"> Beast</label>
+      <label class="filter-option"><input type="checkbox" value="Undead"> Undead</label>
+      <label class="filter-option"><input type="checkbox" value="Demon"> Demon</label>
+      <label class="filter-option"><input type="checkbox" value="Mage"> Mage</label>
+      <label class="filter-option"><input type="checkbox" value="Equipment"> Equipment</label>
+      <label class="filter-option"><input type="checkbox" value="Relic"> Relic</label>
+    </div>
+  </div>
+
+  <!-- Rarity -->
+  <div class="filter-dropdown" id="filter-rarity-builder-dropdown">
+    <div class="filter-label" data-default="Rarity">Rarity</div>
+    <div class="filter-options">
+      <label class="filter-option"><input type="checkbox" value=""> All</label>
+      <label class="filter-option"><input type="checkbox" value="Common"> Common</label>
+      <label class="filter-option"><input type="checkbox" value="Rare"> Rare</label>
+      <label class="filter-option"><input type="checkbox" value="Epic"> Epic</label>
+      <label class="filter-option"><input type="checkbox" value="Legendary"> Legendary</label>
+    </div>
+  </div>
+
+  <!-- Archetype -->
+  <div class="filter-dropdown" id="filter-archetype-builder-dropdown">
+    <div class="filter-label" data-default="Archetype">Archetype</div>
+    <div class="filter-options">
+      <label class="filter-option"><input type="checkbox" value=""> All</label>
+      <label class="filter-option"><input type="checkbox" value="Blazefeather"> Blazefeather</label>
+      <label class="filter-option"><input type="checkbox" value="Cindercore"> Cindercore</label>
+      <label class="filter-option"><input type="checkbox" value="Coralbound"> Coralbound</label>
+      <label class="filter-option"><input type="checkbox" value="Fireland"> Fireland</label>
+      <label class="filter-option"><input type="checkbox" value="Frostland"> Frostland</label>
+      <label class="filter-option"><input type="checkbox" value="Golemheart"> Golemheart</label>
+      <label class="filter-option"><input type="checkbox" value="Moonfang"> Moonfang</label>
+      <label class="filter-option"><input type="checkbox" value="Skullframe"> Skullframe</label>
+      <label class="filter-option"><input type="checkbox" value="Voltwing"> Voltwing</label>
+      <label class="filter-option"><input type="checkbox" value="Zephyra"> Zephyra</label>
+    </div>
+  </div>
+
+  <!-- Ability -->
+  <div class="filter-dropdown" id="filter-ability-builder-dropdown">
+    <div class="filter-label" data-default="Ability">Ability</div>
+    <div class="filter-options">
+      <label class="filter-option"><input type="checkbox" value=""> All</label>
+      <label class="filter-option"><input type="checkbox" value="Ambush"> Ambush</label>
+      <label class="filter-option"><input type="checkbox" value="Dive"> Dive</label>
+      <label class="filter-option"><input type="checkbox" value="Burn"> Burn</label>
+      <label class="filter-option"><input type="checkbox" value="Drain"> Drain</label>
+      <label class="filter-option"><input type="checkbox" value="Elusive"> Elusive</label>
+      <label class="filter-option"><input type="checkbox" value="Flying"> Flying</label>
+      <label class="filter-option"><input type="checkbox" value="Ice Armor"> Ice Armor</label>
+      <label class="filter-option"><input type="checkbox" value="Immunity"> Immunity</label>
+      <label class="filter-option"><input type="checkbox" value="Intimidate"> Intimidate</label>
+      <label class="filter-option"><input type="checkbox" value="Leap"> Leap</label>
+      <label class="filter-option"><input type="checkbox" value="Lifelink"> Lifelink</label>
+      <label class="filter-option"><input type="checkbox" value="Protect"> Protect</label>
+      <label class="filter-option"><input type="checkbox" value="Provoke"> Provoke</label>
+      <label class="filter-option"><input type="checkbox" value="Ranged"> Ranged</label>
+      <label class="filter-option"><input type="checkbox" value="Rush"> Rush</label>
+      <label class="filter-option"><input type="checkbox" value="Toxic"> Toxic</label>
+    </div>
+  </div>
+
+  <img id="filter-favorites-builder" src="OtherImages/Icons/Star.png" alt="Favorites" title="Show only favorites"
+    style="width:32px;height:32px;cursor:pointer;filter:grayscale(1);opacity:0.6;transition:filter 0.2s,opacity 0.2s;">
+  <button id="reset-builder-filters-btn"
+    style="margin-left:10px;padding:6px 18px;border-radius:8px;background:#232a3c;color:#ffe066;font-weight:bold;border:1.5px solid #ffe066;cursor:pointer;">
+    Reset Filters
+  </button>
+</div>
     <div id="gallery-builder-cards"></div>
   </div>    
         
@@ -816,6 +887,7 @@
  
 </body> 
 </html>
+
 
 
 
