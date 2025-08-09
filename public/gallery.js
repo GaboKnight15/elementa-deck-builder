@@ -618,7 +618,8 @@ function updateGalleryCollectionProgress(filteredCards) {
   const collection = getCollection();
   const owned = filteredCards.filter(card => (collection[card.id] || 0) > 0).length;
   const total = filteredCards.length;
-
+  
+const selectedOwnerships = getFilterDropdownValues('filter-ownership-dropdown');
 const selectedColors = getFilterDropdownValues('filter-color-dropdown');
 const selectedCategories = getFilterDropdownValues('filter-category-dropdown');
 const selectedTypes = getFilterDropdownValues('filter-type-dropdown');
