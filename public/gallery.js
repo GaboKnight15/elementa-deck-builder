@@ -237,11 +237,10 @@ document.querySelectorAll('.filter-dropdown .filter-option input[type="checkbox"
 function updateFilterLabel(dropdown, vals) {
   const label = dropdown.querySelector('.filter-label');
   const base = label.getAttribute('data-default') || label.textContent.split(':')[0];
+  label.textContent = base;
   if (vals.length === 0) {
-    label.textContent = base;
     label.classList.remove('active');
   } else {
-    label.textContent = base + ': ' + vals.join(', ');
     label.classList.add('active');
   }
 }
