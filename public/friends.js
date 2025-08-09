@@ -463,29 +463,43 @@ function unblockUser(uid) {
   });
 }
 document.getElementById('tab-friends').onclick = function() {
-  this.classList.add('selected');
-  document.getElementById('tab-requests').classList.remove('selected');
-  document.getElementById('tab-blocked').classList.remove('selected');
-  document.getElementById('panel-friends').style.display = '';
-  document.getElementById('panel-requests').style.display = 'none';
-  document.getElementById('panel-blocked').style.display = 'none';
+  selectFriendsTab();
+};
+document.getElementById('tab-discover').onclick = function() {
+  selectDiscoverTab();
 };
 document.getElementById('tab-requests').onclick = function() {
-  this.classList.add('selected');
-  document.getElementById('tab-friends').classList.remove('selected');
-  document.getElementById('tab-blocked').classList.remove('selected');
-  document.getElementById('panel-friends').style.display = 'none';
-  document.getElementById('panel-requests').style.display = '';
-  document.getElementById('panel-blocked').style.display = 'none';
+  selectRequestsTab();
 };
 document.getElementById('tab-blocked').onclick = function() {
-  this.classList.add('selected');
-  document.getElementById('tab-friends').classList.remove('selected');
-  document.getElementById('tab-requests').classList.remove('selected');
-  document.getElementById('panel-friends').style.display = 'none';
-  document.getElementById('panel-requests').style.display = 'none';
-  document.getElementById('panel-blocked').style.display = '';
+  selectBlockedTab();
 };
+
+function selectFriendsTab() {
+  setTab('friends');
+  renderFriendsList();
+}
+function selectDiscoverTab() {
+  setTab('discover');
+  renderDiscoverPanel();
+}
+function selectRequestsTab() {
+  setTab('requests');
+  renderRequestsPanel();
+}
+function selectBlockedTab() {
+  setTab('blocked');
+  renderBlockedPanel();
+}
+
+function setTab(tab) {
+  ['friends', 'discover', 'requests', 'blocked'].forEach(t => {
+    document.getElementById(`tab-${t}`).classList.remove('selected');
+    document.getElementById(`panel-${t}`).style.display = 'none';
+  });
+  document.getElementById(`tab-${tab}`).classList.add('selected');
+  document.getElementById(`panel-${tab}`).style.display = '';
+}
 document.getElementById('close-friends-modal').onclick = function() {
   document.getElementById('friends-modal').style.display = 'none';
 };
