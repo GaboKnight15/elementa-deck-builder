@@ -925,6 +925,7 @@ function renderBuilder() {
     const selectedTypes = getFilterDropdownValues('filter-type-builder-dropdown').map(x => x.toLowerCase());
     const selectedRarities = getFilterDropdownValues('filter-rarity-builder-dropdown').map(x => x.toLowerCase());
     const selectedArchetypes = getFilterDropdownValues('filter-archetype-builder-dropdown').map(x => x.toLowerCase());
+    const selectedTraits = getFilterDropdownValues('filter-trait-builder-dropdown').map(x => x.toLowerCase());
     const selectedAbilities = getFilterDropdownValues('filter-ability-builder-dropdown').map(x => x.toLowerCase());
     const selectedCategories = getFilterDropdownValues('filter-category-builder-dropdown').map(x => x.toLowerCase());
 
@@ -937,6 +938,7 @@ let filteredCards = filterCards({
   selectedCategories,
   selectedTypes,
   selectedRarities,
+  selectedTraits,
   selectedArchetypes,
   selectedAbilities,
   ownershipFilter: "Owned"
