@@ -3026,11 +3026,24 @@ function renderModePlayerDeckTile() {
     <img class="deck-slot-highlight-img" src="${image}" alt="highlight" />
     <div class="deck-slot-title-overlay">${deckName}</div>
     <img class="deck-slot-cardback-img" src="${deckObj.cardbackArt || "OtherImages/Cardbacks/DefaultCardback.png"}" alt="Cardback" style="position:absolute;right:8px;width:32px;height:44px;">
+    <img id="deck-slot-view-icon" src="OtherImages/Icons/View.png" alt="View Deck" 
+      style="position:absolute;top:8px;right:8px;width:30px;height:30px;z-index:10;cursor:pointer;filter:drop-shadow(0 0 4px #000b);">
   `;
   slotDiv.onclick = function(e) {
+    if (e.target && e.target.id === 'deck-slot-view-icon') return;
     if (window.showPlayerDeckModal)
       window.showPlayerDeckModal();
   };
+  // View icon click (open deck modal)
+  const viewIcon = slotDiv.querySelector('#deck-slot-view-icon');
+  if (viewIcon) {
+    viewIcon.onclick = function(e) {
+      e.stopPropagation();
+      if (typeof showDeckViewModal === "function") {
+        showDeckViewModal(deckName); // or pass deckObj if your showDeckViewModal takes the object
+      }
+    };
+  } 
 }
 
 function showCoinFlipModal(onResult) {
