@@ -843,7 +843,7 @@ function filterCards({
   collection,
   favoriteIds,
   showFavoritesOnly,
-  ownershipFilter,
+  selectedOwnerships,
   nameFilter,
   selectedColors,
   selectedCategories,
@@ -854,11 +854,21 @@ function filterCards({
   selectedAbilities
 }) {
   return dummyCards.filter(card => {
-    // Ownership filter (unchanged)
-    if (ownershipFilter === "Owned" && (!collection[card.id] || collection[card.id] === 0)) return false;
-    if (ownershipFilter === "Undiscovered" && (collection[card.id] || 0) > 0) return false;
-    if (ownershipFilter === "Locked" && !card.locked) return false;
-
+    // Ownership filter (custom multi-select logic)
+    if (selectedOwnerships && selectedOwnerships.length && !selectedOwnerships.includes("")) {
+      if (selectedOwnerships.includes("Owned") && (!collection[card.id] || collection[card.id] === 0))
+        return false;
+      if (selectedOwnerships.includes("Undiscovered") && (collection[card.id] || 0) > 0)
+        return false;
+      if (selectedOwnerships.includes("Locked") && !card.locked)
+        return false;
+      if (
+        !selectedOwnerships.includes("Owned") &&
+        !selectedOwnerships.includes("Undiscovered") &&
+        !selectedOwnerships.includes("Locked")
+      )
+        return false;
+    }
     if (nameFilter && !card.name.toLowerCase().includes(nameFilter)) return false;
 
     if (showFavoritesOnly && !favoriteIds.includes(card.id)) return false;
