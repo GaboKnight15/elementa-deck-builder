@@ -242,9 +242,12 @@ function updateFilterLabel(dropdown, vals) {
 }
 
 // Close dropdowns on click outside
-document.body.onclick = function() {
-  document.querySelectorAll('.filter-dropdown').forEach(dd => dd.classList.remove('open'));
-};
+document.addEventListener('mousedown', function(e) {
+  // If the click is outside any .filter-dropdown, close all
+  if (![...document.querySelectorAll('.filter-dropdown')].some(dd => dd.contains(e.target))) {
+    document.querySelectorAll('.filter-dropdown.open').forEach(dd => dd.classList.remove('open'));
+  }
+});
 function renderGallery() {
   gallery.innerHTML = '';
   const nameFilter = document.getElementById('filter-name-gallery').value.toLowerCase();
