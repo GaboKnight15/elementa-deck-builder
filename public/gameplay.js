@@ -29,7 +29,7 @@ const PHASES = [{ turn: 'player', phase: 'draw' },{ turn: 'player', phase: 'esse
 };
 
 let attackMode = {attackerId: null, attackerZone: null, cancelHandler: null};
-
+const INITIAL_HAND_SIZE = 5;
 const ESSENCE_IMAGE_MAP = {
   red: "OtherImages/Essence/EssenceRed.png",
   green: "OtherImages/Essence/EssenceGreen.png",
@@ -53,6 +53,23 @@ const phaseBadge = document.getElementById('phase-badge');
 // ==========================
 // === RENDERING / UI ===
 // ==========================
+// BATTLEFIELD BACKGROUNDS
+function setBattlefieldBackgrounds(playerBannerUrl, opponentBannerUrl) {
+  const playerBg = document.getElementById('battlefield-player-bg');
+  const opponentBg = document.getElementById('battlefield-opponent-bg');
+  if (playerBg && playerBannerUrl) {
+    playerBg.style.backgroundImage = `url('${playerBannerUrl}')`;
+    playerBg.style.backgroundSize = "cover";
+    playerBg.style.backgroundPosition = "center";
+    playerBg.style.backgroundRepeat = "no-repeat";
+  }
+  if (opponentBg && opponentBannerUrl) {
+    opponentBg.style.backgroundImage = `url('${opponentBannerUrl}')`;
+    opponentBg.style.backgroundSize = "cover";
+    opponentBg.style.backgroundPosition = "center";
+    opponentBg.style.backgroundRepeat = "no-repeat";
+  }
+}
 function setupBattlefieldUI({ isCpuGame = false, myDeckObj, opponentDeckObj, myProfile, opponentProfile }) {
   // Section activation
   document.querySelectorAll('section[id$="-section"]').forEach(section => section.classList.remove('active'));
@@ -158,12 +175,15 @@ function startSoloGame() {
       gameState.phase = "draw";
       initiateMainDomainAndChampionSelection(gameState.playerDeck, () => {
         // After selection, draw opening hand
-        const INITIAL_HAND_SIZE = 5;
-        for (let i = 0; i < INITIAL_HAND_SIZE; i++) {
-          if (gameState.playerDeck.length > 0) {
-            gameState.playerHand.push(gameState.playerDeck.shift());
-          }
-        }
+
+for (let i = 0; i < INITIAL_HAND_SIZE; i++) {
+  if (gameState.playerDeck.length > 0) {
+    gameState.playerHand.push(gameState.playerDeck.shift());
+  }
+  if (gameState.opponentDeck.length > 0) {
+    gameState.opponentHand.push(gameState.opponentDeck.shift());
+  }
+}
         document.getElementById('my-profile').style.display = '';
         renderProfile('my-profile', getMyProfileInfo());
         renderGameState();
@@ -195,7 +215,8 @@ function setupBattlefieldGame() {
   gameState.opponentCreatures = [];
   gameState.opponentDomains = [];
   gameState.opponentVoid = [];
-
+  
+  gameState.turn = "player";
   gameState.phase = "draw";
   
   // Show gameplay UI    
@@ -245,19 +266,26 @@ function setupBattlefieldGame() {
     showCoinFlipModal(function(whoStarts) {
       gameState.turn = whoStarts;
       gameState.phase = "draw";
-    initiateMainDomainAndChampionSelection(gameState.playerDeck, () => {
-      // After selection, draw opening hand
-      const INITIAL_HAND_SIZE = 5;
-      for (let i = 0; i < INITIAL_HAND_SIZE; i++) {
-        if (gameState.playerDeck.length > 0) {
-          gameState.playerHand.push(gameState.playerDeck.shift());
-        }
-      }
-      renderGameState();
-      setupDropZones();
+      initiateMainDomainAndChampionSelection(gameState.playerDeck, () => {
+        drawOpeningHands();
+        renderGameState();
+        setupDropZones();
       });
     });
   });
+}
+// ===================================
+// === GAME SETUP HELPER FUNCTIONS ===
+// ===================================
+function drawOpeningHands() {
+  for (let i = 0; i < INITIAL_HAND_SIZE; i++) {
+    if (gameState.playerDeck.length > 0) {
+      gameState.playerHand.push(gameState.playerDeck.shift());
+    }
+    if (gameState.opponentDeck.length > 0) {
+      gameState.opponentHand.push(gameState.opponentDeck.shift());
+    }
+  }
 }
 function getZoneArray(zoneId) {
   switch (zoneId) {
@@ -271,6 +299,23 @@ function getZoneArray(zoneId) {
     default: return null;
   }
 }
+// Helper to get zone name for an array reference
+function getZoneNameForArray(arr) {
+  if (arr === gameState.playerCreatures) return 'playerCreatures';
+  if (arr === gameState.playerDomains) return 'playerDomains';
+  if (arr === gameState.opponentCreatures) return 'opponentCreatures';
+  if (arr === gameState.opponentDomains) return 'opponentDomains';
+  if (arr === gameState.playerHand) return 'playerHand';
+  if (arr === gameState.opponentHand) return 'opponentHand';
+  if (arr === gameState.playerDeck) return 'playerDeck';
+  if (arr === gameState.opponentDeck) return 'opponentDeck';
+  if (arr === gameState.playerVoid) return 'playerVoid';
+  if (arr === gameState.opponentVoid) return 'opponentVoid';
+  return '';
+}
+// ===================================
+// ========== ACTIONS LOGIC ==========
+// ===================================
 // MOVE OBJECT
 function moveCard(instanceId, fromArr, toArr, extra = {}) {
   const idx = fromArr.findIndex(card => card.instanceId === instanceId);
@@ -338,37 +383,6 @@ appendVisualLog({
       toArr === gameState.playerVoid) {
   }
   emitPublicState();
-}
-// Helper to get zone name for an array reference
-function getZoneNameForArray(arr) {
-  if (arr === gameState.playerCreatures) return 'playerCreatures';
-  if (arr === gameState.playerDomains) return 'playerDomains';
-  if (arr === gameState.opponentCreatures) return 'opponentCreatures';
-  if (arr === gameState.opponentDomains) return 'opponentDomains';
-  if (arr === gameState.playerHand) return 'playerHand';
-  if (arr === gameState.opponentHand) return 'opponentHand';
-  if (arr === gameState.playerDeck) return 'playerDeck';
-  if (arr === gameState.opponentDeck) return 'opponentDeck';
-  if (arr === gameState.playerVoid) return 'playerVoid';
-  if (arr === gameState.opponentVoid) return 'opponentVoid';
-  return '';
-}
-// BATTLEFIELD BACKGROUNDS
-function setBattlefieldBackgrounds(playerBannerUrl, opponentBannerUrl) {
-  const playerBg = document.getElementById('battlefield-player-bg');
-  const opponentBg = document.getElementById('battlefield-opponent-bg');
-  if (playerBg && playerBannerUrl) {
-    playerBg.style.backgroundImage = `url('${playerBannerUrl}')`;
-    playerBg.style.backgroundSize = "cover";
-    playerBg.style.backgroundPosition = "center";
-    playerBg.style.backgroundRepeat = "no-repeat";
-  }
-  if (opponentBg && opponentBannerUrl) {
-    opponentBg.style.backgroundImage = `url('${opponentBannerUrl}')`;
-    opponentBg.style.backgroundSize = "cover";
-    opponentBg.style.backgroundPosition = "center";
-    opponentBg.style.backgroundRepeat = "no-repeat";
-  }
 }
 
 // CREATE CARD MENUS
@@ -467,9 +481,7 @@ function drawCards(who, n) {
 // HAND OPTIONS MENU
 function showHandCardMenu(instanceId, cardDiv) {
   closeAllMenus();
-
   const cardObj = gameState.playerHand.find(c => c.instanceId === instanceId);
-
   // Define actions
   const buttons = [
     {
@@ -2629,7 +2641,7 @@ function renderLogAction({
     if (!card || !card.image) return "";
     return `<img class="log-card-img ${extraClass}" src="${card.image}" 
       data-cardid="${card.cardId}" title="${card.name}" 
-      style="border: 2px solid ${who === 'player' ? '#6f6' : '#e25555'}; border-radius:8px; width:38px; vertical-align:middle; cursor:pointer;">`;
+      style="border: 2px solid ${who === 'player' ? '#6f6' : '#e25555'}; width:38px; vertical-align:middle; cursor:pointer;">`;
   }
   function zoneImg(zone) {
     return `<img class="log-zone-img" src="${zoneIcons[zone] || ''}" title="${zone}" style="width:32px;vertical-align:middle;">`;
@@ -2672,7 +2684,6 @@ document.getElementById('chat-log').addEventListener('click', function(e) {
     if (cardObj) showFullCardModal(cardObj);
   }
 });
-
 
 // Gameplay (menu) header
 document.getElementById('gameplay-settings-btn').onclick = function() {
