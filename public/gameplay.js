@@ -53,7 +53,38 @@ const phaseBadge = document.getElementById('phase-badge');
 // ==========================
 // === RENDERING / UI ===
 // ==========================
+function setupBattlefieldUI({ isCpuGame = false, myDeckObj, opponentDeckObj, myProfile, opponentProfile }) {
+  // Section activation
+  document.querySelectorAll('section[id$="-section"]').forEach(section => section.classList.remove('active'));
+  document.getElementById('gameplay-section').classList.add('active');
 
+  // Battlefield backgrounds
+  const myBanner = myDeckObj?.bannerArt || "CardImages/Banners/DefaultBanner.png";
+  const oppBanner = opponentDeckObj?.bannerArt || "CardImages/Banners/DefaultBanner.png";
+  setBattlefieldBackgrounds(myBanner, oppBanner);
+
+  // Profiles
+  document.getElementById('my-profile').style.display = '';
+  renderProfile('my-profile', myProfile);
+  document.getElementById('opponent-profile').style.display = '';
+  renderProfile('opponent-profile', opponentProfile);
+
+  // Chat input
+  const chatUI = document.getElementById('chat-ui');
+  if (chatUI) chatUI.style.display = '';
+  const chatInputRow = document.getElementById('chat-input-row');
+  if (chatInputRow) {
+    chatInputRow.style.display = isCpuGame ? 'none' : '';
+  }
+  // Always show log
+  const chatLog = document.getElementById('chat-log');
+  if (chatLog) chatLog.style.display = '';
+
+  // Battlefield and zones
+  renderGameState();
+  setupDropZones();
+  updatePhase();
+}
 
 function startSoloGame() {
   if (!window.selectedPlayerDeck) {
@@ -114,6 +145,13 @@ function startSoloGame() {
   renderGameState();
   setupDropZones();
   updatePhase();
+  setupBattlefieldUI({
+    isCpuGame: true,
+    myDeckObj: playerDeckObj,
+    opponentDeckObj: cpuDeckObj,
+    myProfile: getMyProfileInfo(),
+    opponentProfile: getCpuProfile(cpuDeckObj)
+  });
   showGameStartAnimation(() => {
     showCoinFlipModal(function(whoStarts) {
       gameState.turn = whoStarts;
@@ -2410,6 +2448,13 @@ function startCasualGame(matchData) {
   renderGameState();
   setupDropZones();
   updatePhase();
+  setupBattlefieldUI({
+    isCpuGame: false,
+    myDeckObj,
+    opponentDeckObj,
+    myProfile: getMyProfileInfo(),
+    opponentProfile: matchData.opponentProfile
+  });
   showGameStartAnimation(() => {
     showCoinFlipModal(function(whoStarts) {
       gameState.turn = whoStarts;
