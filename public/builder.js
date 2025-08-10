@@ -849,38 +849,6 @@ function addCardToDeck(cardId) {
   deck[cardId] = (deck[cardId] || 0) + 1;
   setCurrentDeck(deck);
 }
-function getSelectedOptions(selectId) {
-  const select = document.getElementById(selectId);
-  if (!select) return [];
-  // For <select multiple>
-  if (select.options) {
-    return Array.from(select.selectedOptions).map(opt => opt.value).filter(v => v);
-  }
-  // For custom dropdowns with checkboxes
-  const dropdown = document.getElementById(selectId.replace('gallery', 'dropdown'));
-  if (dropdown) {
-    return Array.from(dropdown.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value).filter(v => v);
-  }
-  return [];
-}
-function getFilterDropdownValues(dropdownId) {
-  const dropdown = document.getElementById(dropdownId);
-  if (!dropdown) return [];
-  const checked = Array.from(dropdown.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value).filter(v => v);
-  return checked;
-}
-
-function updateFilterLabel(dropdown, vals) {
-  const label = dropdown.querySelector('.filter-label');
-  const base = label.getAttribute('data-default') || label.textContent.split(':')[0];
-  if (vals.length === 0) {
-    label.textContent = base;
-    label.classList.remove('active');
-  } else {
-    label.textContent = base + ': ' + vals.join(', ');
-    label.classList.add('active');
-  }
-}
 
 // Dropdown open/close logic
 document.querySelectorAll('#filters-builder .filter-dropdown .filter-label').forEach(label => {
