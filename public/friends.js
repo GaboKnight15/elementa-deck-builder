@@ -85,7 +85,6 @@ function displayPlayerSearchResults(players, page = 0, isLastPage = false) {
   players.forEach(player => {
     const tile = document.createElement('div');
     tile.className = 'friend-profile-tile';
-    tile.style.marginBottom = '18px';
     tile.style.cursor = 'pointer';
     tile.dataset.uid = player.uid;
     tile.dataset.username = player.username || player.uid;
