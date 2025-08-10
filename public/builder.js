@@ -1014,44 +1014,27 @@ highlightArtModal.addEventListener('mousedown', function(e) {
 });
 // GALLERY EVENT FILTERS
 document.getElementById('filter-name-builder').addEventListener('input', renderBuilder);
-document.getElementById('filter-color-builder').addEventListener('change', renderBuilder);
-document.getElementById('filter-category-builder').addEventListener('change', renderBuilder);
-document.getElementById('filter-type-builder').addEventListener('change', renderBuilder);
-document.getElementById('filter-rarity-builder').addEventListener('change', renderBuilder);
-document.getElementById('filter-archetype-builder').addEventListener('change', renderBuilder);
-document.getElementById('filter-ability-builder').addEventListener('change', renderBuilder);
 document.addEventListener('DOMContentLoaded', function() {
   
 const resetBtn = document.getElementById('reset-builder-filters-btn');
-document.getElementById('reset-builder-filters-btn').onclick = function() {
-  document.getElementById('filter-name-builder').value = "";
-  document.querySelectorAll('#filters-builder .filter-dropdown').forEach(dd => {
-    // check "All"
-    dd.querySelector('input[type="checkbox"][value=""]').checked = true;
-    // uncheck others
-    dd.querySelectorAll('input[type="checkbox"]:not([value=""])').forEach(cb => cb.checked = false);
-    updateFilterLabel(dd, []);
-  });
-  showFavoritesOnlyBuilder = false;
-  updateFavoriteFilterIconBuilder();
-  renderBuilder();
-};
-  if (resetBtn) {
-    resetBtn.onclick = function() {
-      document.getElementById('filter-name-builder').value = "";
-      document.getElementById('filter-color-builder').value = "";
-      document.getElementById('filter-category-builder').value = "";
-      document.getElementById('filter-type-builder').value = "";
-      document.getElementById('filter-rarity-builder').value = "";
-      document.getElementById('filter-archetype-builder').value = "";
-      document.getElementById('filter-ability-builder').value = "";
-      // Reset favorites
-      showFavoritesOnlyBuilder = false;
-      updateFavoriteFilterIconBuilder();
-      renderBuilder();
-    };
-  }
-});
+if (resetBtn) {
+  resetBtn.onclick = function() {
+    // Clear the text filter
+    document.getElementById('filter-name-builder').value = "";
+    // Reset all dropdowns to "All"
+    document.querySelectorAll('#filters-builder .filter-dropdown').forEach(dd => {
+      // check "All"
+      dd.querySelector('input[type="checkbox"][value=""]').checked = true;
+      // uncheck others
+      dd.querySelectorAll('input[type="checkbox"]:not([value=""])').forEach(cb => cb.checked = false);
+      updateFilterLabel(dd, []);
+    });
+    // Reset favorites filter
+    showFavoritesOnlyBuilder = false;
+    updateFavoriteFilterIconBuilder();
+    renderBuilder();
+  };
+}
 // ==========================
 // === INITIALIZATION ===
 // ==========================
