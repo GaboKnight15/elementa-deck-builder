@@ -1086,7 +1086,12 @@ button {}
   width: 100%;
   gap: 1em;
 }
-
+#deck-menu-title {
+  transition: text-decoration 0.2s;
+}
+#deck-menu-title:hover {
+  text-decoration: underline;
+}
 .builder-main {
   flex: 1 1 0%;
   display: flex;
