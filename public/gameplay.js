@@ -485,85 +485,68 @@ function showHandCardMenu(instanceId, cardDiv) {
   // Define actions
   const buttons = [
     {
-  text: "Play",
-  onClick: async function(e) {
-    e.stopPropagation();
-    closeAllMenus();
-    const cardObj = gameState.playerHand.find(c => c.instanceId === instanceId);
-    const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+      text: "Play",
+      onClick: function(e) {
+        e.stopPropagation();
+        closeAllMenus();
+        const cardObj = gameState.playerHand.find(c => c.instanceId === instanceId);
+        const cardData = dummyCards.find(c => c.id === cardObj.cardId);
 
-    // Determine allowed target zone
-let targetArr, toZoneId;
-if (cardData.category === "creature") {
-  targetArr = gameState.playerCreatures;
-  toZoneId = "player-creatures-zone";
-} else if (cardData.category === "domain") {
-  targetArr = gameState.playerDomains;
-  toZoneId = "player-domains-zone";
-} else {
-  alert("You can only play creature or domain cards here!");
-  return;
-}
+        // Determine allowed target zone
+        let targetArr, toZoneId;
+        if (cardData.category === "creature") {
+          targetArr = gameState.playerCreatures;
+          toZoneId = "player-creatures-zone";
+        } else if (cardData.category === "domain") {
+          targetArr = gameState.playerDomains;
+          toZoneId = "player-domains-zone";
+        } else {
+          alert("You can only play creature or domain cards here!");
+          return;
+        }
 
-if (
-  !cardData.cost ||
-  (typeof cardData.cost === "number" && cardData.cost === 0) ||
-  (typeof cardData.cost === "object" && Object.values(cardData.cost).reduce((a, b) => a + b, 0) === 0)
-) {
-  // No cost, play immediately
-  await moveCardUniversal({
-    instanceId,
-    fromArr: gameState.playerHand,
-    toArr: targetArr,
-    extra: { orientation: "vertical" },
-    fromZoneId: "player-hand",
-    toZoneId
-  });
-  return;
-}
+        // No cost, play immediately
+        if (
+          !cardData.cost ||
+          (typeof cardData.cost === "number" && cardData.cost === 0) ||
+          (typeof cardData.cost === "object" && Object.values(cardData.cost).reduce((a, b) => a + b, 0) === 0)
+        ) {
+          moveCard(instanceId, gameState.playerHand, targetArr, { orientation: "vertical" });
+          renderGameState();
+          setupDropZones();
+          return;
+        }
 
-    showEssencePaymentModal({
-      card: cardData,
-      cost: cardData.cost,
-      eligibleCards: getAllEssenceSources(),
-      onPaid: async function() {
-        await moveCardUniversal({
-          instanceId,
-          fromArr: gameState.playerHand,
-          toArr: targetArr,
-          extra: { orientation: "vertical" },
-          fromZoneId: "player-hand",
-          toZoneId
+        // Otherwise, show payment modal and move after payment
+        showEssencePaymentModal({
+          card: cardData,
+          cost: cardData.cost,
+          eligibleCards: getAllEssenceSources(),
+          onPaid: function() {
+            moveCard(instanceId, gameState.playerHand, targetArr, { orientation: "vertical" });
+            renderGameState();
+            setupDropZones();
+          }
         });
       }
-    });
-  }
-},
+    },
     {
       text: "Send to Void",
-      onClick: async function(e) {
+      onClick: function(e) {
         e.stopPropagation();
-        await moveCardUniversal({
-          instanceId,
-          fromArr: gameState.playerHand,
-          toArr: gameState.playerVoid,
-          fromZoneId: "player-hand",
-          toZoneId: "player-void-zone"
-        });
+        moveCard(instanceId, gameState.playerHand, gameState.playerVoid);
+        renderGameState();
+        setupDropZones();
         closeAllMenus();
       }
     },
     {
       text: "Return to Deck",
-      onClick: async function(e) {
+      onClick: function(e) {
         e.stopPropagation();
-        await moveCardUniversal({
-          instanceId,
-          fromArr: gameState.playerHand,
-          toArr: gameState.playerDeck,
-          fromZoneId: "player-hand",
-          toZoneId: "player-deck-zone"
-        });
+        moveCard(instanceId, gameState.playerHand, gameState.playerDeck);
+        renderGameState();
+        setupDropZones();
         closeAllMenus();
       }
     },
@@ -1622,32 +1605,8 @@ function runCpuTurn() {
       break;
   }
 }
-// --- Universal move function with optional animation ---
-async function moveCardUniversal({
-  instanceId,
-  fromArr,
-  toArr,
-  extra = {},
-  fromZoneId = null,
-  toZoneId = null,
-  sourceDiv = null,
-  destinationDiv = null,
-  animationType = "move"
-}) {
-  if (animationType !== "none" && fromZoneId && toZoneId) {
-    // Fade out, move, then fade in
-    animateCardFade(instanceId, fromZoneId, toZoneId, () => {
-      moveCard(instanceId, fromArr, toArr, extra);
-      renderGameState();
-      setupDropZones();
-    });
-  } else {
-    moveCard(instanceId, fromArr, toArr, extra);
-    renderGameState();
-    setupDropZones();
-  }
-}
-  // CARD ANIMATIONS
+
+// CARD ANIMATIONS
 function animateCardFade(instanceId, fromZoneId, toZoneId, callback) {
   // Find the card div in the fromZone
   const fromZone = document.getElementById(fromZoneId);
