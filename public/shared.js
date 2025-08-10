@@ -531,6 +531,10 @@ function getCurrency() {
   return playerCurrency;
 }
 
+// CLOSE MODAL AND MENU HELPERS
+function closeAllModals() {document.querySelectorAll('.modal').forEach(modal => {modal.style.display = 'none';});}
+function closeAllMenus() {document.querySelectorAll('.card-menu').forEach(m => m.remove());}
+
 // NOTIFICATIONS
 function showToast(message, options = {}) {
   // Options: { duration: ms, type: 'success'|'error'|'info' }
