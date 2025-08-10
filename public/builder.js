@@ -1014,7 +1014,6 @@ highlightArtModal.addEventListener('mousedown', function(e) {
 });
 // GALLERY EVENT FILTERS
 document.getElementById('filter-name-builder').addEventListener('input', renderBuilder);
-document.addEventListener('DOMContentLoaded', function() {
   
 const resetBtn = document.getElementById('reset-builder-filters-btn');
 if (resetBtn) {
@@ -1043,6 +1042,7 @@ window.renderBuilder = renderBuilder;
 window.buildDeck = buildDeck;
 window.getCurrentDeck = getCurrentDeck;
 window.showDeckSelection = showDeckSelection;
+window.showDeckTileMenu = showDeckTileMenu;
 
   // GLOBAL DECK SELECTION
 window.getPlayerDecks = function() {
@@ -1064,4 +1064,3 @@ window.getPlayerDecks = function() {
 window.getActiveDeckId = function() {
   return currentDeckSlot;
 };
-window.showDeckTileMenu = showDeckTileMenu;
