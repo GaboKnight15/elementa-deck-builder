@@ -312,7 +312,7 @@ function showPlayerDeckModal() {
     const playerDecks = window.getPlayerDecks ? window.getPlayerDecks() : [];
     const activeId = window.getActiveDeckId ? window.getActiveDeckId() : null;
     if (!playerDecks.length) {
-      playerList.innerHTML = '<div style="color:#ffe066;">No decks found! Please build a deck or select a starter deck below.</div>';
+      playerList.innerHTML = '<div style="color:#ffe066;">No decks found! Please build a deck or select a Default deck</div>';
     } else {
       playerDecks.forEach(deck => {
         const totalCards = deck.deckObj && typeof deck.deckObj === "object"
