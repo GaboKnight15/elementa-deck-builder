@@ -377,14 +377,17 @@ div.innerHTML = `
   </div>
 `;
 div.onclick = () => {
-  window.selectedPlayerDeck = {
+window.selectedPlayerDeck = {
+  ...deck,
+  cardbackArt: decks[deckName].cardbackArt,
+  highlightArt: deck.image,
+  deckObj: {
     ...deck,
-    deckObj: {
-      ...deck,
-      highlightArt: deck.image // Set highlight to avatar
-    },
-    isDefaultDeck: true
-  };
+    cardbackArt: decks[deckName].cardbackArt,
+    highlightArt: deck.image
+  },
+  isDefaultDeck: true
+};
   if (typeof renderModePlayerDeckTile === "function") renderModePlayerDeckTile();
   modal.style.display = 'none';
 };
