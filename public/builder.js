@@ -21,12 +21,8 @@ const deckPanel         = document.getElementById('deck-panel');
 // NEW DECK HANDLER OPTIONS
 const deckMenu = document.getElementById('deck-menu');
 const deckMenuTitle = document.getElementById('deck-menu-title');
-const viewDeckBtn = document.getElementById('view-deck-btn'); // DELETE LATER
-const editDeckBtn = document.getElementById('edit-deck-btn'); // DELETE LATER
-const viewDeckImgBtn = document.getElementById('view-deck-img-btn');
-const deleteDeckImgBtn = document.getElementById('delete-deck-img-btn'); 
-const renameDeckBtn = document.getElementById('rename-deck-btn'); // DELETE LATER
-const deleteDeckBtn = document.getElementById('delete-deck-btn'); // DELETE LATER
+
+
 const closeDeckMenuBtn = document.getElementById('close-deck-menu-btn');
 const deckViewModal = document.getElementById('deck-view-modal');
 const deckViewModalTitle = document.getElementById('deck-view-modal-title');
@@ -36,7 +32,6 @@ const backBuilderBtn = document.getElementById('back-builder-btn');
 // HIGHLIGHTED CARD
 const highlightArtModal = document.getElementById('highlight-art-modal');
 const highlightArtList = document.getElementById('highlight-art-list');
-const setHighlightArtBtn = document.getElementById('set-highlight-art-btn');
 const closeHighlightArtBtn = document.getElementById('close-highlight-art-btn');
 // DECK BANNER
 const deckBannerImg = document.getElementById('deck-banner-img');
@@ -204,12 +199,13 @@ function showDeckTileMenu(deckName, anchorElem) {
   // Set content as before
   deckMenuTitle.textContent = deckName;
   updateDeckBanner(deckName);
+  updateDeckHighlightArt(deckName);
   updateDeckCardback(deckName);
   const deck = decks[deckName] || {};
   const count = Object.values(deck)
     .filter(v => typeof v === 'number')
     .reduce((a, b) => a + b, 0);
-  deckCardCount.textContent = `${count} cards`;
+  deckCardCount.textContent = `${count} / 50`;
 
   // Show as menu
   const menu = document.getElementById('deck-menu');
@@ -252,11 +248,42 @@ document.addEventListener('mousedown', function(e) {
     menu.style.display = 'none';
   }
 });
-setHighlightArtBtn.onclick = function() {
-  // Close the deck menu before opening the modal
-  closeDeckTileMenu();
 
-  // Show the highlight art modal
+// RENAME DECK
+deckMenuTitle.style.cursor = "pointer";
+deckMenuTitle.title = "Rename deck";
+deckMenuTitle.onclick = function() {
+  const deckName = deckMenu.dataset.deckName;
+  let newName = prompt("Rename deck to:", deckName);
+  if (!newName || newName === deckName) return;
+  if (deckSlots.includes(newName)) {
+    showToast("Deck name already exists!", {type:"error"});
+    return;
+  }
+  let idx = deckSlots.indexOf(deckName);
+  let deckData = decks[deckName];
+  deckSlots[idx] = newName;
+  decks[newName] = deckData;
+  delete decks[deckName];
+  currentDeckSlot = newName;
+  saveProgress();
+  renderDeckSelection();
+  // Optionally, update the menu title in place if menu is still open
+  deckMenuTitle.textContent = newName;
+};
+
+// --- HIGHLIGHT CARD ---
+const deckHighlightArtImg = document.getElementById('deck-highlight-art-img');
+function updateDeckHighlightArt(deckName) {
+  const deck = decks[deckName] || {};
+  deckHighlightArtImg.onerror = function() {
+    this.onerror = null;
+    this.src = "CardImages/Domains/placeholder.png";
+  };
+  deckHighlightArtImg.src = deck.highlightArt || "CardImages/Domains/placeholder.png";
+}
+deckHighlightArtImg.onclick = function() {
+  closeDeckTileMenu();
   highlightArtModal.style.display = "flex";
   highlightArtList.innerHTML = "";
 
@@ -279,16 +306,18 @@ setHighlightArtBtn.onclick = function() {
     img.onclick = () => {
       const deckName = deckMenu.dataset.deckName;
       decks[deckName].highlightArt = avatarPath;
-      saveProgress();
       renderDeckSelection();
       highlightArtModal.style.display = "none";
       closeDeckTileMenu();
+      updateDeckHighlightArt(deckName);
+      saveProgress();
     };
     highlightArtList.appendChild(img);
   });
 };
 closeHighlightArtBtn.onclick = () => highlightArtModal.style.display = "none";
 
+// --- BANNER ---
 function updateDeckBanner(deckName) {
   const deck = decks[deckName] || {};
   deckBannerImg.onerror = function() {
@@ -334,7 +363,7 @@ function updateDeckCardback(deckName) {
   deckCardbackImg.src = deck.cardbackArt || "OtherImages/Cardbacks/DefaultCardback.png";
 }
 
-// Make cardback image clickable to open the modal
+// --- CARDBACK ---
 deckCardbackImg.onclick = function() {
   closeDeckTileMenu();
   deckCardbackModal.style.display = "flex";
@@ -365,13 +394,14 @@ window.renderDeckCardbackChoices = function() {
     deckCardbackImg.onclick();
   }
 }
-
 closeDeckCardbackModalBtn.onclick = () => (deckCardbackModal.style.display = "none");
+
 
 function closeDeckTileMenu() {
   deckMenu.style.display = 'none';
 }
 closeDeckMenuBtn.onclick = closeDeckTileMenu;
+
 deckMenu.addEventListener('click', function(e) {
   if (e.target === deckMenu) closeDeckTileMenu();
 });
@@ -380,6 +410,7 @@ deckViewModal.addEventListener('click', function(e) {
 });
 
 // VIEW DECK BUTTON
+const viewDeckImgBtn = document.getElementById('view-deck-img-btn');
 if (viewDeckImgBtn) {
   viewDeckImgBtn.onclick = function() {
     const deckName = deckMenu.dataset.deckName;
@@ -389,35 +420,19 @@ if (viewDeckImgBtn) {
 }
 
 // EDIT DECK BUTTON
-editDeckBtn.onclick = function() {
-  const deckName = deckMenu.dataset.deckName;
-  currentDeckSlot = deckName;
-  saveProgress();
-  closeDeckTileMenu();
-  showDeckBuilder();
-};
-
-// RENAME DECK BUTTON
-renameDeckBtn.onclick = function() {
-  const deckName = deckMenu.dataset.deckName;
-  closeDeckTileMenu();
-  let newName = prompt("Rename deck to:", deckName);
-  if (!newName || newName === deckName) return;
-  if (deckSlots.includes(newName)) {
-    showToast("Deck name already exists!", {type:"error"});
-    return;
-  }
-  let idx = deckSlots.indexOf(deckName);
-  let deckData = decks[deckName];
-  deckSlots[idx] = newName;
-  decks[newName] = deckData;
-  delete decks[deckName];
-  currentDeckSlot = newName;
-  saveProgress();
-  renderDeckSelection();
-};
+const editDeckImgBtn = document.getElementById('edit-deck-img-btn');
+if (editDeckImgBtn) {
+  editDeckImgBtn.onclick = function() {
+    const deckName = deckMenu.dataset.deckName;
+    currentDeckSlot = deckName;
+    saveProgress();
+    closeDeckTileMenu();
+    showDeckBuilder();
+  };
+}
 
 // DELETE DECK BUTTON
+const deleteDeckImgBtn = document.getElementById('delete-deck-img-btn'); 
 if (deleteDeckImgBtn) {
   deleteDeckImgBtn.onclick = function() {
     const deckName = deckMenu.dataset.deckName;
