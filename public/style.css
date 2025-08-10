@@ -464,22 +464,37 @@ button {}
   min-height: 340px;
   padding: 18px 6px 0 6px;
 }
-.friend-profile-tile {
-  position: relative;
-  width: 220px;
-  height: 108px;
-  margin: 12px;
-  border-radius: 16px;
-  overflow: hidden;
-  background: #232a3c;
-  box-shadow: 0 1px 8px #0006;
-  cursor: pointer;
-  transition: box-shadow .16s;
+/* Container for user tiles in all tabs */
+#discover-users-list,
+#friends-list,
+#panel-requests-received,
+#panel-requests-sent,
+#blocked-users-list {
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 24px; /* space between tiles */
+  padding: 16px 0;
+}
+/* The profile tile itself */
+.friend-profile-tile {
+  box-sizing: border-box;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 1px 10px #0005;
+  background: #212a3b;
+  min-width: 340px;
+  max-width: 340px;
+  min-height: 120px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: transform 0.13s;
 }
 .friend-profile-tile:hover {
-  box-shadow: 0 2px 16px #ffe06688;
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 6px 20px #0007;
 }
 .friend-banner {
   position: absolute;
