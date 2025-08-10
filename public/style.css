@@ -3474,6 +3474,10 @@ button {}
   overflow-wrap: anywhere;    /* Break at any point if needed */
   hyphens: auto;              /* Add hyphens where dictionary allows */
   white-space: pre-line;      /* Preserve line breaks, wrap text */
+  scroll-behavior: smooth;
+  /* Optional: match your scrollbars */
+  scrollbar-color: #ffe066 #232a3c;
+  scrollbar-width: thin;
 }
 #chat-log .log-message,
 #chat-log .log-action,
