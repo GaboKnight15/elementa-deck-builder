@@ -800,9 +800,6 @@ function cleanCard(cardObj) {
   delete cleaned.orientation;
   return cleaned;
 }
-// CLOSE MODAL BEFORE OPENING A NEW ONE
-function closeAllModals() {document.querySelectorAll('.modal').forEach(modal => {modal.style.display = 'none';});}
-function closeAllMenus() {document.querySelectorAll('.card-menu').forEach(m => m.remove());}
 
 // OPEN DECK MODAL
 function openDeckModal() {
