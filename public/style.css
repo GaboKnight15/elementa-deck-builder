@@ -2882,20 +2882,8 @@ button {}
   display: none !important;
 }
 /* AVATAR SELECTION MODAL */
-#profile-icon-modal.modal {
-  display: none;
-  position: fixed;
-  z-index: 3000;
-  left: 0; top: 0;
-  width: 100vw; height: 100vh;
-  background: rgba(0,0,0,0.35);
-  align-items: center;
-  justify-content: center;
-}
 
-#profile-icon-modal-content {
-  min-width: 280px;
-}
+#profile-icon-modal-content {}
 #profile-icons {
   display: flex;
   flex-wrap: wrap;
