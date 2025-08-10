@@ -2656,20 +2656,42 @@ function renderLogAction({
   `;
   return entryHtml;
 }
-function appendPositionChangeLog(cardObj, newOrientation) {
+function appendPositionChangeLog(cardObj, newOrientation, prevOrientation) {
   const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
   if (!cardDef) return;
-  const orientationIcon = newOrientation === "horizontal"
-    ? '<img src="OtherImages/Icons/Horizontal.png" alt="Horizontal" style="width:22px;vertical-align:middle;">'
-    : '<img src="OtherImages/Icons/Vertical.png" alt="Vertical" style="width:22px;vertical-align:middle;">';
-
   const logDiv = document.getElementById('chat-log');
-  logDiv.insertAdjacentHTML('beforeend', `
-    <div class="log-action" style="padding:5px 0;">
-      <img src="${cardDef.image}" style="width:36px;vertical-align:middle;border-radius:6px;margin-right:7px;">
-      changed position to&nbsp;${orientationIcon}
-    </div>
-  `);
+
+  // Use the same structure as renderLogAction, but add rotation if needed
+  function cardImg(card, extraClass = "", rotate = 0) {
+    if (!card || !card.image) return "";
+    return `<img class="log-card-img ${extraClass}" src="${card.image}" 
+      data-cardid="${card.cardId}" title="${card.name}" 
+      style="border: 2px solid #ffe066; width:36px; vertical-align:middle; border-radius:6px; margin-right:7px; cursor:pointer;${rotate ? `transform:rotate(${rotate}deg);` : ''}">`;
+  }
+
+  let logHtml = `<div class="log-action" style="padding:5px 0;display:flex;align-items:center;">`;
+
+  if (prevOrientation === "vertical" && newOrientation === "horizontal") {
+    // ATK to DEF (vertical to horizontal)
+    logHtml += cardImg(cardDef, "", 0);
+    logHtml += `<img src="OtherImages/Icons/Tapped.png" alt="Tapped" style="width:28px;vertical-align:middle;margin:0 7px;">`;
+    logHtml += cardImg(cardDef, "", 90);
+    logHtml += `<span style="margin-left:10px;font-weight:bold;color:#ffe066;">changed from ATK to DEF</span>`;
+  } else if (prevOrientation === "horizontal" && newOrientation === "vertical") {
+    // DEF to ATK (horizontal to vertical)
+    logHtml += cardImg(cardDef, "", 90);
+    logHtml += `<img src="OtherImages/Icons/Untapped.png" alt="Untapped" style="width:28px;vertical-align:middle;margin:0 7px;">`;
+    logHtml += cardImg(cardDef, "", 0);
+    logHtml += `<span style="margin-left:10px;font-weight:bold;color:#ffe066;">changed from DEF to ATK</span>`;
+  } else {
+    // Fallback
+    logHtml += cardImg(cardDef, "", 0);
+    logHtml += cardImg(cardDef, "", 90);
+    logHtml += `<span style="margin-left:10px;font-weight:bold;color:#ffe066;">changed position</span>`;
+  }
+
+  logHtml += `</div>`;
+  logDiv.insertAdjacentHTML('beforeend', logHtml);
   logDiv.scrollTop = logDiv.scrollHeight;
 }
 function appendVisualLog(obj) {
