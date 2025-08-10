@@ -394,7 +394,10 @@ statsRow = '<div class="full-card-info-row">' +
   if (card.text) {
     textHtml = `<div class="full-card-info-section" style="font-size:1.08em;color:#ffe066;margin-top:10px;">${card.text}</div>`;
   }
-
+ let effectHtml = '';
+ if (card.effect) {
+   effectHtml = `<div class="full-card-info-section" style="font-size:1.08em;color:#ffe066;margin-top:10px;">${parseEffectText(card.effect)}</div>`;
+ }
   // Compose modal content (side-by-side)
   modalContent.innerHTML = `
     <div class="full-card-modal-flex">
@@ -404,6 +407,7 @@ statsRow = '<div class="full-card-info-row">' +
       <div class="full-card-info-panel">
         ${infoHtml}
         ${statsRow}
+        ${effectHtml}
         ${textHtml}
       </div>
     </div>
