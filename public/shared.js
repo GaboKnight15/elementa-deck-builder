@@ -145,7 +145,7 @@ const dummyCards = [
  category: 'Artifact', color: 'White', type: 'Relic', hp: 5, cost: {colorless: 2, white: 1}, archetype: '', ability: '', set: 'StandardPack'},
 
 {id: 'LifeGrowth', name: 'Life Growth', rarity: 'Common', image: 'CardImages/Spells/Life Growth.png', 
- category: 'Spell', color: 'Green', type: 'Spell', cost: {green: 1}, ability: 'burn', set: 'StandardPack'},
+ category: 'Spell', color: 'Green', type: 'Spell', cost: {green: 1}, effect: 'Gain {G}{G}', set: 'StandardPack'},
 {id: 'EssenceSurge', name: 'Essence Surge', rarity: 'Common', image: 'CardImages/Spells/Essence Surge.png', 
  category: 'Spell', color: 'Green', type: 'Spell', cost: {colorless: 2}, ability: 'Gain 3 essence', set: 'StandardPack'},
 {id: 'EssenceAssault', name: 'Essence Assault', rarity: 'Common', image: 'CardImages/Spells/Essence Assault.png', 
@@ -232,6 +232,42 @@ const addCoinsBtn = document.getElementById('add-coins-btn');
 const LEVEL_THRESHOLDS = [0, 100, 250, 500, 1000, 2000, 4000, 8000];
 let lastPlayerPower = null;
 
+// Use this to parse effect text with tokens into HTML with images/icons
+function parseEffectText(effect) {
+  if (!effect) return "";
+
+  // Map color codes to image paths
+  const ESSENCE_ICON = {
+    G:  "OtherImages/Icons/EssenceGreen.png",
+    R:  "OtherImages/Icons/EssenceRed.png",
+    U:  "OtherImages/Icons/EssenceBlue.png",
+    Y:  "OtherImages/Icons/EssenceYellow.png",
+    C:  "OtherImages/Icons/EssenceGray.png",
+    P:  "OtherImages/Icons/EssencePurple.png",
+    B:  "OtherImages/Icons/EssenceBlack.png",
+    W:  "OtherImages/Icons/EssenceWhite.png"
+  };
+
+  // Replace color icons {G},{R}, etc.
+  effect = effect.replace(/\{([GRUYCPBW])\}/g, (match, code) =>
+    `<img src="${ESSENCE_ICON[code]}" style="height:1.3em;vertical-align:middle;">`
+  );
+
+  // Replace tapped/untapped icons
+  effect = effect.replace(/\{CW\}/g,
+    '<img src="OtherImages/Icons/Tapped.png" style="height:1.3em;vertical-align:middle;" title="Tapped">'
+  );
+  effect = effect.replace(/\{CCW\}/g,
+    '<img src="OtherImages/Icons/Untapped.png" style="height:1.3em;vertical-align:middle;" title="Untapped">'
+  );
+
+  // Replace numbers {0}..{20} with bold numbers or custom spans
+  effect = effect.replace(/\{([0-9]|1[0-9]|20)\}/g, (match, num) =>
+    `<span style="font-weight:bold;color:#ffe066;font-size:1.12em;vertical-align:middle;">${num}</span>`
+  );
+
+  return effect;
+}
 function getPlayerLevelFromPower(power) {
   for (let i = LEVEL_THRESHOLDS.length - 1; i >= 0; i--) {
     if (power >= LEVEL_THRESHOLDS[i]) return i + 1;
