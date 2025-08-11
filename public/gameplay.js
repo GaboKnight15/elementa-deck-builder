@@ -958,7 +958,7 @@ atkBadge.style.background = "rgba(34,18,18,0.82)";
 atkBadge.style.padding = "2px 8px";
 atkBadge.style.borderRadius = "9px";
 atkBadge.innerHTML = `
-  <img src="OtherImages/Icons/ATK.png" alt="ATK">
+  <img src="OtherImages/Icons/CircleRed.png" alt="ATK">
   <span style="font-weight:bold;color:#e25555;">${baseATK}</span>
 `;
 
@@ -971,7 +971,7 @@ defBadge.style.background = "rgba(18,26,34,0.82)";
 defBadge.style.padding = "2px 8px";
 defBadge.style.borderRadius = "9px";
 defBadge.innerHTML = `
-  <img src="OtherImages/Icons/DEF.png" alt="DEF">
+  <img src="OtherImages/Icons/ShieldBlue.png" alt="DEF">
   <span style="font-weight:bold;color:#3af0ff;">${baseDEF}</span>
 `;
 
