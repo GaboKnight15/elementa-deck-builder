@@ -937,7 +937,9 @@ let filteredCards = filterCards({
   ownershipFilter: "Owned"
 });
 
-  filteredCards.forEach(card => {
+  filteredCards
+  .filter(card => collection[card.id] && collection[card.id] > 0)
+  .forEach(card => {
     builderGallery.appendChild(createCardBuilder(card, collection[card.id]));
   });
 }
