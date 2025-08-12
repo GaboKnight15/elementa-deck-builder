@@ -271,4 +271,37 @@ if (!profilePicMenuBtn) {
     profileMenu.onclick = function(e) {
       e.stopPropagation();
     };
+  const usernameDisplay = document.getElementById('profile-username-display');
+  if (!usernameDisplay) return;
+
+  usernameDisplay.style.cursor = "pointer";
+  usernameDisplay.title = "Click to change username";
+
+  usernameDisplay.onclick = function () {
+    // Get current username
+    const current = usernameDisplay.textContent || "";
+    const newName = prompt("Change your username:", current);
+    if (!newName || newName === current) return;
+
+    // Save to Firebase user and Firestore
+    const user = auth.currentUser;
+    if (!user) return;
+    // Update auth profile
+    user.updateProfile({ displayName: newName })
+      .then(() => {
+        // Update Firestore
+        return firebase.firestore().collection('users').doc(user.uid).set({
+          username: newName
+        }, { merge: true });
+      })
+      .then(() => {
+        usernameDisplay.textContent = newName;
+        if (typeof showToast === "function") showToast("Username updated!", { type: "success" });
+      })
+      .catch(err => {
+        console.error("[auth] Failed to update username:", err);
+        if (typeof showToast === "function") showToast("Failed to update username.", { type: "error" });
+      });
+  };
 });
+
