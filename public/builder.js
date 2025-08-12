@@ -843,16 +843,26 @@ function buildDeck(deckObj) {
   return deck;
 }
 function canAddCard(card, currentInDeck, ownedCount) {
-    const deck = getCurrentDeck();
-    const count = currentInDeck || 0;
-    const total = Object.values(deck).reduce((a, b) => a + b, 0);
-    if (total >= 50) return false;
-    if (count >= ownedCount) return false; // <-- Don't exceed owned
-    // Rarity limits
-    if (card.rarity && card.rarity.toLowerCase() === 'legendary' && count >= 1) return false;
-    if (card.rarity && card.rarity.toLowerCase() === 'rare' && count >= 2) return false;
-    if (card.rarity && card.rarity.toLowerCase() === 'common' && count >= 3) return false;
-    return true;
+  const deck = getCurrentDeck();
+  const count = currentInDeck || 0;
+  const total = Object.values(deck).reduce((a, b) => a + b, 0);
+
+  if (total >= 50) return false;
+  if (count >= ownedCount) return false;
+  // Rarity limits
+  if (card.rarity && card.rarity.toLowerCase() === 'legendary' && count >= 1) return false;
+  if (card.rarity && card.rarity.toLowerCase() === 'rare' && count >= 2) return false;
+  if (card.rarity && card.rarity.toLowerCase() === 'common' && count >= 3) return false;
+  if (card.trait && card.trait.toLowerCase() === 'dominion') {
+    for (const cardId in deck) {
+      const c = dummyCards.find(dc => dc.id === cardId);
+      if (c && c.trait && c.trait.toLowerCase() === 'dominion' && cardId !== card.id) {
+        return false;
+      }
+    }
+    if (count >= 1) return false;
+  }
+  return true;
 }
 function addCardToDeck(cardId) {
   const deck = getCurrentDeck();
