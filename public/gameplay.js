@@ -394,7 +394,15 @@ function createCardMenu(buttons = []) {
     btn.type = "button";
     btn.className = 'btn-secondary';
     btn.innerText = btnConf.text;
+    if (btnConf.disabled) {
+      btn.disabled = true;
+      btn.classList.add("btn-disabled");
+      btn.style.filter = "grayscale(1)";
+      btn.style.opacity = "0.5";
+      btn.style.cursor = "not-allowed";
+    }
     btn.onclick = function(e) {
+      if (btnConf.disabled) return;
       e.stopPropagation();
       btnConf.onClick.call(this, e);
       closeAllMenus(); // Always close after any button
@@ -657,14 +665,6 @@ function appendDeckZone(parentDiv, deckArray, who) {
   if (who === "player") {
     if (window.selectedPlayerDeck && window.selectedPlayerDeck.cardbackArt) {
       deckCardback = window.selectedPlayerDeck.cardbackArt;
-    }
-    // Fallback: Try gameState.playerProfile.cardbackArt if available
-    else if (gameState.playerProfile && gameState.playerProfile.cardbackArt) {
-      deckCardback = gameState.playerProfile.cardbackArt;
-    }
-    // Fallback: Try gameState.playerDeck.cardbackArt if available
-    else if (gameState.playerDeck && gameState.playerDeck.cardbackArt) {
-      deckCardback = gameState.playerDeck.cardbackArt;
     }
   } else if (who === "opponent") {
     // Multiplayer/casual
@@ -1268,13 +1268,16 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
     },
     {
       text: "Change Position",
+      disabled: cardObj.hasChangedPositionThisTurn,
       onClick: function(e) {
         e.stopPropagation();
+        if (cardObj.hasChangedPositionThisTurn) return;
         let arr = getZoneArray(zoneId);
         if (arr) {
           for (let c of arr) {
             if (c.instanceId === instanceId) {
               c.orientation = (c.orientation === "horizontal") ? "vertical" : "horizontal";
+              c.hasChangedPositionThisTurn = true;
               appendPositionChangeLog(c, c.orientation);
             }
           }
@@ -1488,6 +1491,14 @@ function updatePhase() {
   }  
   if (gameState.phase === "action") {
     resetAttackFlags(gameState.turn);
+    if (gameState.turn === "player") {
+      gameState.playerCreatures.forEach(card => card.hasChangedPositionThisTurn = false);
+      gameState.playerDomains.forEach(card => card.hasChangedPositionThisTurn = false);
+    }
+    if (gameState.turn === "opponent") {
+      gameState.opponentCreatures.forEach(card => card.hasChangedPositionThisTurn = false);
+      gameState.opponentDomains.forEach(card => card.hasChangedPositionThisTurn = false);
+    }
   }    
 }
 // Phase control events
@@ -2620,7 +2631,6 @@ function appendPositionChangeLog(cardObj, newOrientation, prevOrientation) {
   if (!cardDef) return;
   const logDiv = document.getElementById('chat-log');
 
-  // Use the same structure as renderLogAction, but add rotation if needed
   function cardImg(card, extraClass = "", rotate = 0) {
     if (!card || !card.image) return "";
     return `<img class="log-card-img ${extraClass}" src="${card.image}" 
@@ -2635,17 +2645,28 @@ function appendPositionChangeLog(cardObj, newOrientation, prevOrientation) {
     logHtml += cardImg(cardDef, "", 0);
     logHtml += `<img src="OtherImages/Icons/Tapped.png" alt="Tapped" style="width:28px;vertical-align:middle;margin:0 7px;">`;
     logHtml += cardImg(cardDef, "", 90);
-    logHtml += `<span style="margin-left:10px;font-weight:bold;color:#ffe066;">changed from ATK to DEF</span>`;
   } else if (prevOrientation === "horizontal" && newOrientation === "vertical") {
     // DEF to ATK (horizontal to vertical)
     logHtml += cardImg(cardDef, "", 90);
     logHtml += `<img src="OtherImages/Icons/Untapped.png" alt="Untapped" style="width:28px;vertical-align:middle;margin:0 7px;">`;
     logHtml += cardImg(cardDef, "", 0);
-    logHtml += `<span style="margin-left:10px;font-weight:bold;color:#ffe066;">changed from DEF to ATK</span>`;
   } else {
-    // Fallback
-    logHtml += cardImg(cardDef, "", 0);
-    logHtml += cardImg(cardDef, "", 90);
+    // Fallback: Show card before, then tap/untap, then after
+    // Determine which icon to show (tapped or untapped) based on the orientation change
+    let prevRotate = prevOrientation === "horizontal" ? 90 : 0;
+    let newRotate = newOrientation === "horizontal" ? 90 : 0;
+    // Heuristic: if changing to horizontal, show Tapped icon; if to vertical, show Untapped; else fallback to Tapped
+    let iconSrc = "OtherImages/Icons/Tapped.png";
+    let iconAlt = "Tapped";
+    if (prevOrientation !== newOrientation) {
+      if (newOrientation === "vertical") {
+        iconSrc = "OtherImages/Icons/Untapped.png";
+        iconAlt = "Untapped";
+      }
+    }
+    logHtml += cardImg(cardDef, "", prevRotate);
+    logHtml += `<img src="${iconSrc}" alt="${iconAlt}" style="width:28px;vertical-align:middle;margin:0 7px;">`;
+    logHtml += cardImg(cardDef, "", newRotate);
     logHtml += `<span style="margin-left:10px;font-weight:bold;color:#ffe066;">changed position</span>`;
   }
 
