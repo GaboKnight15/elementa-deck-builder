@@ -654,10 +654,9 @@ function appendDeckZone(parentDiv, deckArray, who) {
   deckCard.className = 'card-deck';
 
   let deckCardback = "OtherImages/Cardbacks/DefaultCardback.png";
-  if (who === "player") {
-    if (window.selectedPlayerDeck && window.selectedPlayerDeck.cardbackArt) {
-      deckCardback = window.selectedPlayerDeck.cardbackArt;
-    }
+  if (who === "player" && window.selectedPlayerDeck && window.selectedPlayerDeck.deckObj && window.selectedPlayerDeck.deckObj.cardbackArt
+  ) {
+    deckCardback = window.selectedPlayerDeck.deckObj.cardbackArt;
   } else if (who === "opponent") {
     // Multiplayer/casual
     if (window.selectedOpponentDeck && window.selectedOpponentDeck.cardbackArt) {
