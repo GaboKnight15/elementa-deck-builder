@@ -38,6 +38,7 @@ function saveProgress() {
     essence: typeof window.playerEssence === 'number' ? window.playerEssence : 0,
     quests: window.playerQuests || {},
     achievements: window.playerAchievements || {},
+    username: (window.profileUsernameDisplay && window.profileUsernameDisplay.textContent) || (auth.currentUser && auth.currentUser.displayName) || "",
     profilePic: window.playerProfilePic || defaultIcon,
     profileBanner: window.playerProfileBanner || defaultBanner,
     level: typeof window.playerLevel === 'number' ? window.playerLevel : 1,
@@ -73,6 +74,7 @@ function loadProgress(user, cb) {
       let banner = typeof data.profileBanner === "string" ? data.profileBanner : (typeof defaultBanner !== "undefined" ? defaultBanner : "");
 
       // Defensive assignments for all fields!
+window.playerUsername = newName;
 window.playerProfilePic      = icon;
 window.playerProfileBanner   = banner;
 window.playerCurrency        = Number(data.currency) || 0;
