@@ -1291,9 +1291,10 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
         if (arr) {
           for (let c of arr) {
             if (c.instanceId === instanceId) {
+              let prevOrientation = c.orientation;
               c.orientation = (c.orientation === "horizontal") ? "vertical" : "horizontal";
               c.hasChangedPositionThisTurn = true;
-              appendPositionChangeLog(c, c.orientation);
+              appendPositionChangeLog(c, c.orientation, prevOrientation);
             }
           }
         }
