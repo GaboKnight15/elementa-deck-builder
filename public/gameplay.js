@@ -946,27 +946,19 @@ const atkBadge = document.createElement('span');
 atkBadge.className = 'atk-badge';
 atkBadge.style.display = 'inline-flex';
 atkBadge.style.alignItems = 'center';
-atkBadge.style.background = "rgba(34,18,18,0.82)";
-atkBadge.style.padding = "2px 8px";
-atkBadge.style.borderRadius = "9px";
 atkBadge.innerHTML = `
   <img src="OtherImages/Icons/CircleRed.png" alt="ATK">
-  <span style="font-weight:bold;color:#e25555;">${baseATK}</span>
+  <span style="font-weight:bold;position: absolute;">${baseATK}</span>
 `;
-
 // DEF
 const defBadge = document.createElement('span');
 defBadge.className = 'def-badge';
 defBadge.style.display = 'inline-flex';
 defBadge.style.alignItems = 'center';
-defBadge.style.background = "rgba(18,26,34,0.82)";
-defBadge.style.padding = "2px 8px";
-defBadge.style.borderRadius = "9px";
 defBadge.innerHTML = `
   <img src="OtherImages/Icons/ShieldBlue.png" alt="DEF">
-  <span style="font-weight:bold;color:#3af0ff;">${baseDEF}</span>
+  <span style="font-weight:bold;position: absolute;">${baseDEF}</span>
 `;
-
 statBadgeRow.appendChild(atkBadge);
 statBadgeRow.appendChild(defBadge);
 
@@ -1213,26 +1205,28 @@ function showSetHpModal(cardObj, onSet) {
 function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
   closeAllMenus();
   currentCardMenuState = { instanceId, zoneId, orientation };
+  const arr = getZoneArray(zoneId);
+  const cardObj = arr ? arr.find(card => card.instanceId === instanceId) : null;
   // Define menu options
   const buttons = [
-{
-  text: "Set HP",
-  onClick: function(e) {
-    e.stopPropagation();
-    let arr = getZoneArray(zoneId);
-    if (arr) {
-      let cardObj = arr.find(card => card.instanceId === instanceId);
-      if (!cardObj) return;
-      showSetHpModal(cardObj, function(newHp) {
-        cardObj.currentHP = newHp;
-        renderGameState();
-        closeAllMenus();
-      });
-    } else {
-      closeAllMenus();
-    }
-  }
-},
+    {
+      text: "Set HP",
+      onClick: function(e) {
+        e.stopPropagation();
+        let arr = getZoneArray(zoneId);
+        if (arr) {
+          let cardObj = arr.find(card => card.instanceId === instanceId);
+          if (!cardObj) return;
+          showSetHpModal(cardObj, function(newHp) {
+            cardObj.currentHP = newHp;
+            renderGameState();
+            closeAllMenus();
+          });
+        } else {
+          closeAllMenus();
+        }
+      }
+    },
     {
       text: "Attack",
       onClick: function(e) {
@@ -1260,10 +1254,10 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
     },
     {
       text: "Change Position",
-      disabled: cardObj.hasChangedPositionThisTurn,
+      disabled: !cardObj || cardObj.hasChangedPositionThisTurn,
       onClick: function(e) {
         e.stopPropagation();
-        if (cardObj.hasChangedPositionThisTurn) return;
+        if (!cardObj || cardObj.hasChangedPositionThisTurn) return;
         let arr = getZoneArray(zoneId);
         if (arr) {
           for (let c of arr) {
@@ -1329,12 +1323,12 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
     }
   ];
 
-// Create and show the menu
+  // Create and show the menu
   const menu = createCardMenu(buttons);
-// Position menu absolutely near cardDiv
+  // Position menu absolutely near cardDiv
   const rect = cardDiv.getBoundingClientRect();
   placeMenuWithinViewport(menu, rect);
-  
+
   menu.onclick = function(e) { e.stopPropagation(); };
   // Hide menu when clicking elsewhere
   setTimeout(() => {
