@@ -1121,17 +1121,17 @@ if (category === "creature") {
   if (essenceDiv) cardDiv.appendChild(essenceDiv);
 
   // HP BADGE
-  const hpBadge = document.createElement('span');
-  hpBadge.className = 'hp-badge-heart';
-  hpBadge.innerHTML = `
-    <svg viewBox="0 0 32 32" class="hp-heart-svg" width="28" height="28">
-      <path d="M16 29s-11-7-11-15C5 5.8 13 5.8 16 12.5 19 5.8 27 5.8 27 14c0 8-11 15-11 15z"
-          fill="#e25555" stroke="#be2626" stroke-width="1"/>
-      <text x="16" y="20" text-anchor="middle" font-size="14" fill="#fff" font-family="Verdana" font-weight="bold">${cardObj.currentHP}</text>
-    </svg>
-  `;
-  cardDiv.appendChild(hpBadge);
-
+  if (category !== "spell") {
+    const hpBadge = document.createElement('span');
+    hpBadge.className = 'hp-badge-heart';
+    hpBadge.innerHTML = `
+      <svg viewBox="0 0 32 32" class="hp-heart-svg" width="28" height="28">
+        <path d="M16 29s-11-7-11-15C5 5.8 13 5.8 16 12.5 19 5.8 27 5.8 27 14c0 8-11 15-11 15z" fill="#e25555" stroke="#be2626" stroke-width="1"/>
+        <text x="16" y="20" text-anchor="middle" font-size="14" fill="#fff" font-family="Verdana" font-weight="bold">${cardObj.currentHP}</text>
+      </svg>
+    `;
+    cardDiv.appendChild(hpBadge);
+  }
   // Add cardDiv to wrapper
   wrapper.appendChild(cardDiv);
 
