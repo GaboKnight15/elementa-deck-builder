@@ -425,7 +425,6 @@ if (editDeckImgBtn) {
   editDeckImgBtn.onclick = function() {
     const deckName = deckMenu.dataset.deckName;
     currentDeckSlot = deckName;
-    saveProgress();
     closeDeckTileMenu();
     showDeckBuilder();
   };
