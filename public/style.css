@@ -2323,6 +2323,7 @@ button {}
 }
 #battlefield-leftbar {
   display: flex;
+  max-height: 100vh;
   position: relative;
   flex-direction: column;
   justify-content: flex-start;
@@ -2330,6 +2331,7 @@ button {}
   padding: 0.5em 0.5em 0.5em 0.5em;
   box-shadow: -2px 0 16px rgba(0,0,0,0.12);
   z-index: 1100;
+  overflow: hidden;
 }
 #battlefield-rightbar {
   display: flex;
@@ -3443,7 +3445,7 @@ button {}
   border-radius: 6px;
 }
 #chat-ui {
-  flex: 1;
+  flex: 1 1 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -3451,6 +3453,8 @@ button {}
   border-radius: 12px;
   box-shadow: 0 2px 10px #0006;
   padding: 12px 8px 10px 8px;
+  min-height: 0; /* Allows flex children to shrink */
+  max-height: 400px; /* You can adjust this */
 }
 #chat-ui input:focus {border-color: #7aa6ff;}
 #chat-ui button {
@@ -3459,6 +3463,10 @@ button {}
 #chat-log {
   flex: 1 1 auto;
   overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+  max-height: 320px;   /* Or whatever fits, but must be less than #battlefield-leftbar height minus profiles */
+  height: 320px;       /* You may use only max-height for flexibility */
   padding: 8px;
   background: #20283e;
   border-radius: 8px;
