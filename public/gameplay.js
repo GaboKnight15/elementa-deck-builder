@@ -175,15 +175,7 @@ function startSoloGame() {
       gameState.phase = "draw";
       initiateDominionAndChampionSelection(gameState.playerDeck, () => {
         // After selection, draw opening hand
-
-for (let i = 0; i < INITIAL_HAND_SIZE; i++) {
-  if (gameState.playerDeck.length > 0) {
-    gameState.playerHand.push(gameState.playerDeck.shift());
-  }
-  if (gameState.opponentDeck.length > 0) {
-    gameState.opponentHand.push(gameState.opponentDeck.shift());
-  }
-}
+        drawOpeningHands();
         document.getElementById('my-profile').style.display = '';
         renderProfile('my-profile', getMyProfileInfo());
         renderGameState();
