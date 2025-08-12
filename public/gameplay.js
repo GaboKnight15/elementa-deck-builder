@@ -21,8 +21,8 @@ const PHASES = [{ turn: 'player', phase: 'draw' },{ turn: 'player', phase: 'esse
   opponentCreatures: [],
   opponentDomains: [],
   opponentVoid: [],
-  playerMainDomain: null,
-  opponentMainDomain: null,
+  playerDominion: null,
+  opponentDominion: null,
 
   turn: "player",
   phase: "draw"
@@ -173,7 +173,7 @@ function startSoloGame() {
     showCoinFlipModal(function(whoStarts) {
       gameState.turn = whoStarts;
       gameState.phase = "draw";
-      initiateMainDomainAndChampionSelection(gameState.playerDeck, () => {
+      initiateDominionAndChampionSelection(gameState.playerDeck, () => {
         // After selection, draw opening hand
 
 for (let i = 0; i < INITIAL_HAND_SIZE; i++) {
@@ -266,7 +266,7 @@ function setupBattlefieldGame() {
     showCoinFlipModal(function(whoStarts) {
       gameState.turn = whoStarts;
       gameState.phase = "draw";
-      initiateMainDomainAndChampionSelection(gameState.playerDeck, () => {
+      initiateDominionAndChampionSelection(gameState.playerDeck, () => {
         drawOpeningHands();
         renderGameState();
         setupDropZones();
@@ -1723,24 +1723,22 @@ function showEndGameAnimation(message, color = '#ffe066', callback = null) {
   }, 1700); // show for 1.7 seconds
 }
 function checkEndGame() {
-  if (gameState.playerMainDomain && gameState.playerMainDomain.currentHP <= 0) {
+  if (gameState.playerDominion && gameState.playerDominion.currentHP <= 0) {
     showEndGameAnimation("Defeat", "#e25555");
     // disable actions, offer rematch, etc.
     return true;
   }
-  if (gameState.opponentMainDomain && gameState.opponentMainDomain.currentHP <= 0) {
+  if (gameState.opponentDominion && gameState.opponentDominion.currentHP <= 0) {
     showEndGameAnimation("Victory", "#ffe066");
     // disable actions, offer rematch, etc.
     return true;
   }
   return false;
 }
-
-// MAIN DOMAIN SETUP LOGIC
-function extractMainDomainFromDeck(deckArr) {
+function extractDominionFromDeck(deckArr) {
   const idx = deckArr.findIndex(cardObj => {
     const card = dummyCards.find(c => c.id === cardObj.cardId);
-    return card && card.category === "domain" && card.type === "maindomain";
+    return card && card.trait && card.trait.toLowerCase() === "dominion";
   });
   if (idx !== -1) {
     return deckArr.splice(idx, 1)[0];
@@ -1748,70 +1746,16 @@ function extractMainDomainFromDeck(deckArr) {
   return null;
 }
 
-if (gameState.playerMainDomain && gameState.playerMainDomain.currentHP <= 0) {
+if (gameState.playerDominion && gameState.playerDominion.currentHP <= 0) {
   showEndGameAnimation("Defeat", "#e25555");
   // Optionally: disable further actions, or trigger a reset
 }
-if (gameState.opponentMainDomain && gameState.opponentMainDomain.currentHP <= 0) {
+if (gameState.opponentDominion && gameState.opponentDominion.currentHP <= 0) {
   showEndGameAnimation("Victory", "#ffe066");
   // Optionally: disable further actions, or trigger a reset
 }
-function showMainDomainSelectionModal(deckArr, onSelected) {
-  closeAllModals();
-  let modal = document.getElementById('maindomain-select-modal');
-  if (!modal) {
-    modal = document.createElement('div');
-    modal.id = 'maindomain-select-modal';
-    modal.className = 'modal';
-    const content = document.createElement('div');
-    content.className = 'modal-content';
-    modal.appendChild(content);
-    document.body.appendChild(modal);
-  }
-    modal.style.background = "rgba(20,30,40,0.92)";
-  const content = modal.querySelector('.modal-content');
-  content.innerHTML = "<h3>Select Your Main Domain</h3>";
 
-  // Filter main domains
-  const mainDomains = deckArr.filter(cardObj => {
-    const card = dummyCards.find(c => c.id === cardObj.cardId);
-    return card && card.category === "domain" && card.type === "maindomain";
-  });
-  if (!mainDomains.length) {
-    content.innerHTML += "<div style='color:#e25555;'>No Main Domains found!</div>";
-    return;
-  }
-  const row = document.createElement('div');
-  row.style.display = 'flex';
-  row.style.gap = '20px';
-
-  mainDomains.forEach(cardObj => {
-    const cardData = dummyCards.find(c => c.id === cardObj.cardId);
-    const cardDiv = document.createElement('div');
-    cardDiv.style.cursor = 'pointer';
-    cardDiv.style.border = '3px solid #ffe066';
-    cardDiv.style.borderRadius = '10px';
-    cardDiv.style.background = '#232a3c';
-    cardDiv.style.padding = '10px';
-    cardDiv.style.textAlign = 'center';
-    cardDiv.innerHTML = `
-      <img src="${cardData.image}" alt="${cardData.name}" style="width:90px;display:block;margin-bottom:6px;">
-    `;
-    cardDiv.onclick = () => {
-      modal.style.display = 'none';
-      onSelected(cardObj);
-    };
-    row.appendChild(cardDiv);
-  });
-
-  content.appendChild(row);
-
-  modal.onclick = function(e) {
-    if (e.target === modal) modal.style.display = 'none';
-  };
-  modal.style.display = 'flex';
-}
-                                                // CHAMPION SELECTION //
+// CHAMPION SELECTION //
 function showChampionSelectionModal(deckArr, onSelected) {
   closeAllModals();
   let modal = document.getElementById('champion-select-modal');
@@ -1824,14 +1768,11 @@ function showChampionSelectionModal(deckArr, onSelected) {
     modal.appendChild(content);
     document.body.appendChild(modal);
   }
-    modal.style.background = "rgba(20,30,40,0.92)";
+  modal.style.background = "rgba(20,30,40,0.92)";
   const content = modal.querySelector('.modal-content');
   content.innerHTML = "<h3>Select Your Champion</h3>";
+  
   const champions = getChampionsFromDeck(deckArr);
-  if (!champions.length) {
-    content.innerHTML += "<div style='color:#e25555;'>No champions found!</div>";
-    return;
-  }
   const row = document.createElement('div');
   row.style.display = 'flex';
   row.style.gap = '20px';
@@ -1888,39 +1829,27 @@ function placeChampionOnField(championCardObj) {
   // Place on field (creatures array)
   gameState.playerCreatures.unshift(championCardObj);
 }
-function initiateMainDomainAndChampionSelection(deckArr, afterSelection) {
-  // Main Domain
-  const mainDomains = deckArr.filter(cardObj => {
-    const card = dummyCards.find(c => c.id === cardObj.cardId);
-    return card && card.category === "domain" && card.type === "maindomain";
-  });
-  function afterMainDomain(mainDomain) {
-    if (mainDomain) {
-      mainDomain.currentHP = getBaseHp(mainDomain.cardId);
-      gameState.playerMainDomain = mainDomain;
-      // Remove from deck if you want to, or keep as-is (unshift if not present)
-      gameState.playerDomains.unshift(mainDomain);
-      // Remove from deckArr so it's not drawn again
-      const idx = deckArr.findIndex(c => c.instanceId === mainDomain.instanceId);
-      if (idx !== -1) deckArr.splice(idx, 1);
-    }
-
-    // Champion selection
-    const champions = getChampionsFromDeck(deckArr);
-    if (champions.length >= 1) {
-      showChampionSelectionModal(deckArr, chosenChampion => {
-        placeChampionOnField(chosenChampion);
-        if (afterSelection) afterSelection();
-      });
-    } else {
-      if (afterSelection) afterSelection();
-    }
+function initiateDominionAndChampionSelection(deckArr, afterSelection) {
+  // Dominion
+  const dominionObj = extractDominionFromDeck(deckArr);
+  if (dominionObj) {
+    dominionObj.currentHP = getBaseHp(dominionObj.cardId);
+    gameState.playerDominion = dominionObj;
+    gameState.playerDomains.unshift(dominionObj);
+    // Remove from deckArr so it's not drawn again
+    const idx = deckArr.findIndex(c => c.instanceId === dominionObj.instanceId);
+    if (idx !== -1) deckArr.splice(idx, 1);
   }
 
-  if (mainDomains.length >= 1) {
-    showMainDomainSelectionModal(deckArr, afterMainDomain);
+  // Champion selection
+  const champions = getChampionsFromDeck(deckArr);
+  if (champions.length >= 1) {
+    showChampionSelectionModal(deckArr, chosenChampion => {
+      placeChampionOnField(chosenChampion);
+      if (afterSelection) afterSelection();
+    });
   } else {
-    afterMainDomain(null);
+    if (afterSelection) afterSelection();
   }
 }
 
@@ -2378,7 +2307,7 @@ function startPrivateGame() {
     showCoinFlipModal(function(whoStarts) {
     gameState.turn = whoStarts;
     gameState.phase = "draw";
-      initiateMainDomainAndChampionSelection(gameState.playerDeck, () => {
+      initiateDominionAndChampionSelection(gameState.playerDeck, () => {
         // Draw hand, set up game, etc
         // ...
       });
@@ -2438,7 +2367,7 @@ function startCasualGame(matchData) {
     showCoinFlipModal(function(whoStarts) {
       gameState.turn = whoStarts;
       gameState.phase = "draw"; 
-      initiateMainDomainAndChampionSelection(gameState.playerDeck, () => {
+      initiateDominionAndChampionSelection(gameState.playerDeck, () => {
         // Draw hand, set up initial turn, etc.
         renderGameState();
         setupDropZones();
@@ -2560,8 +2489,8 @@ function resetGameState() {
     opponentCreatures: [],
     opponentDomains: [],
     opponentVoid: [],
-    playerMainDomain: null,
-    opponentMainDomain: null,
+    playerDominion: null,
+    opponentDominion: null,
     turn: "player",
     phase: "draw"
   };
@@ -2774,8 +2703,8 @@ if (window.socket) {
       gameState.turn = whoStarts;
       gameState.phase = "draw";
       // ...continue with setup...
-      initiateMainDomainAndChampionSelection(gameState.playerDeck, () => {
-        // draw opening hand, etc.
+      initiateDominionAndChampionSelection(gameState.playerDeck, () => {
+        // Draw opening hand, setup, etc.
       });
     }, result);
   });
