@@ -880,6 +880,8 @@ function getBaseHp(cardId) {
   return card ? card.hp : 1; // fallback to 1 if not found
 }
 function renderCardOnField(cardObj, zoneId) {
+  const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+  const category = cardData?.category?.toLowerCase();
   // Create the main card div
   const cardDiv = document.createElement('div');
   cardDiv.className = 'card-battlefield';
@@ -931,39 +933,67 @@ function renderCardOnField(cardObj, zoneId) {
   }
   cardObj._prevHP = currentHP; // Store for next render
   
-  // ATK & DEF BADGES
-// --- COMBINED ATK/DEF BADGE ---
-const statBadgeRow = document.createElement('div');
-statBadgeRow.className = 'stat-badge-row';
-statBadgeRow.style.position = 'absolute';
-statBadgeRow.style.bottom = '8px';
-statBadgeRow.style.display = 'flex';
-statBadgeRow.style.zIndex = 9;
+ // ATK & DEF BADGES
+if (category === "creature") {
+  // ATK Badge
+  const atkBadge = document.createElement('span');
+  atkBadge.className = 'atk-badge';
+  atkBadge.style.position = 'absolute';
+  atkBadge.style.left = '7px';
+  atkBadge.style.bottom = '8px';
+  atkBadge.style.display = 'inline-flex';
+  atkBadge.style.alignItems = 'center';
+  atkBadge.style.justifyContent = 'center';
+  atkBadge.style.width = '32px';
+  atkBadge.style.height = '32px';
 
-// ATK
-const atkBadge = document.createElement('span');
-atkBadge.className = 'atk-badge';
-atkBadge.style.display = 'inline-flex';
-atkBadge.style.alignItems = 'center';
-atkBadge.innerHTML = `
-  <img src="OtherImages/Icons/CircleRed.png" alt="ATK">
-  <span style="font-weight:bold;position: absolute;">${baseATK}</span>
-`;
-// DEF
-const defBadge = document.createElement('span');
-defBadge.className = 'def-badge';
-defBadge.style.display = 'inline-flex';
-defBadge.style.alignItems = 'center';
-defBadge.innerHTML = `
-  <img src="OtherImages/Icons/ShieldBlue.png" alt="DEF">
-  <span style="font-weight:bold;position: absolute;">${baseDEF}</span>
-`;
-statBadgeRow.appendChild(atkBadge);
-statBadgeRow.appendChild(defBadge);
+  atkBadge.innerHTML = `
+    <span style="
+      position:absolute;
+      left:0;top:0;width:100%;height:100%;
+      display:flex;align-items:center;justify-content:center;
+      font-weight:bold;
+      color:#fff;
+      z-index:2;
+      pointer-events:none;
+      font-size:1.1em;
+      text-shadow: 0 1px 3px #000, 0 0 2px #fff;
+    ">${baseATK}</span>
+    <img src="OtherImages/Icons/CircleRed.png" alt="ATK" style="
+      width:32px;height:32px;z-index:1;position:relative;">
+  `;
+  cardDiv.appendChild(atkBadge);
 
-cardDiv.appendChild(statBadgeRow);
+  // DEF Badge
+  const defBadge = document.createElement('span');
+  defBadge.className = 'def-badge';
+  defBadge.style.position = 'absolute';
+  defBadge.style.right = '7px';
+  defBadge.style.bottom = '8px';
+  defBadge.style.display = 'inline-flex';
+  defBadge.style.alignItems = 'center';
+  defBadge.style.justifyContent = 'center';
+  defBadge.style.width = '32px';
+  defBadge.style.height = '32px';
+
+  defBadge.innerHTML = `
+    <span style="
+      position:absolute;
+      left:0;top:0;width:100%;height:100%;
+      display:flex;align-items:center;justify-content:center;
+      font-weight:bold;
+      color:#fff;
+      z-index:2;
+      pointer-events:none;
+      font-size:1.1em;
+      text-shadow: 0 1px 3px #000, 0 0 2px #fff;
+    ">${baseDEF}</span>
+    <img src="OtherImages/Icons/ShieldBlue.png" alt="DEF" style="
+      width:32px;height:32px;z-index:1;position:relative;">
+  `;
+  cardDiv.appendChild(defBadge);
+}
   // --- FIRE PARTICLES FOR RED CARDS ---
-  const cardData = dummyCards.find(c => c.id === cardObj.cardId);
   const particlesConfig = getParticlePresetForCard(cardData);
   if (particlesConfig) {
     applyCardParticles({
@@ -2507,87 +2537,83 @@ function renderLogAction({
   dest,              // { image, name, cardId } OR "Void"/"Deck"/"Hand"/etc
   who = "player"     // "player" or "opponent"
 }) {
-  const actionIcons = {
-    move: "→",
-    attack: "⚔️",
-    effect: "★",
-    draw: "⤵️",
+const actionIcons = {
+  move: "→",
+  attack: "⚔️",
+  effect: "★",
+  draw: "⤵️",
     // Add more as needed
-  };
-  const zoneIcons = {
-    Void: "OtherImages/Icons/Void.png",
-    Deck: "OtherImages/Icons/DefaultDeckBox.png",
-    Hand: "OtherImages/Icons/Hand.png",
+};
+const zoneIcons = {
+  Void: "OtherImages/Icons/Void.png",
+  Deck: "OtherImages/Icons/DefaultDeckBox.png",
+  Hand: "OtherImages/Icons/Hand.png",
     // Add more as needed
-  };
+};
 
-  function cardImg(card, extraClass = "") {
-    if (!card || !card.image) return "";
-    return `<img class="log-card-img ${extraClass}" src="${card.image}" 
-      data-cardid="${card.cardId}" title="${card.name}" 
-      style="border: 2px solid ${who === 'player' ? '#6f6' : '#e25555'}; width:38px; vertical-align:middle; cursor:pointer;">`;
-  }
-  function zoneImg(zone) {
-    return `<img class="log-zone-img" src="${zoneIcons[zone] || ''}" title="${zone}" style="width:32px;vertical-align:middle;">`;
-  }
-  let destHtml = typeof dest === "string" ? zoneImg(dest) : cardImg(dest, "log-dest-card");
-  let entryHtml = `
+// CARD IMAGE FOR LOG
+function cardImgLog(card, {
+  extraClass = "",
+  border = "",
+  width = 38,
+  rotate = 0,
+  borderRadius = "",
+  marginRight = "",
+  cursor = "pointer",
+  style = "",
+  who = "player"
+} = {}) {
+  if (!card || !card.image) return "";
+  // Default border logic (if not specified)
+  const borderStyle = border || `2px solid ${who === 'player' ? '#6f6' : '#e25555'}`;
+  // Compose style string
+  let styleStr = `border: ${borderStyle}; width:${width}px; vertical-align:middle; cursor:${cursor};`;
+  if (borderRadius) styleStr += ` border-radius:${borderRadius};`;
+  if (rotate) styleStr += ` transform:rotate(${rotate}deg);`;
+  if (marginRight) styleStr += ` margin-right:${marginRight};`;
+  if (style) styleStr += ` ${style}`;
+  return `<img class="log-card-img ${extraClass}" src="${card.image}" 
+    data-cardid="${card.cardId}" title="${card.name}" 
+    style="${styleStr}">`;
+}
+function zoneImgLog(zone) {
+  return `<img class="log-zone-img" src="${zoneIcons[zone] || ''}" title="${zone}" style="width:32px;vertical-align:middle;">`;
+}
+let destHtml = typeof dest === "string" ? zoneImgLog(dest) : cardImgLog(dest, "log-dest-card");
+let entryHtml = `
     <div class="log-action ${who}" style="background:${who === 'player' ? '#232' : '#322'}11;border-radius:7px;display:inline-flex;align-items:center;">
-      ${cardImg(sourceCard)}
+      ${cardImgLog(sourceCard)}
       <span class="log-arrow" style="margin:0 7px 0 7px;">${actionIcons[action] || "→"}</span>
       ${destHtml}
     </div>
   `;
   return entryHtml;
 }
+
+// CHANGE POSITION LOG
 function appendPositionChangeLog(cardObj, newOrientation, prevOrientation) {
   const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
   if (!cardDef) return;
   const logDiv = document.getElementById('chat-log');
-
-  function cardImg(card, extraClass = "", rotate = 0) {
-    if (!card || !card.image) return "";
-    return `<img class="log-card-img ${extraClass}" src="${card.image}" 
-      data-cardid="${card.cardId}" title="${card.name}" 
-      style="border: 2px solid #ffe066; width:36px; vertical-align:middle; border-radius:6px; margin-right:7px; cursor:pointer;${rotate ? `transform:rotate(${rotate}deg);` : ''}">`;
-  }
-
   let logHtml = `<div class="log-action" style="padding:5px 0;display:flex;align-items:center;">`;
 
   if (prevOrientation === "vertical" && newOrientation === "horizontal") {
-    // ATK to DEF (vertical to horizontal)
-    logHtml += cardImg(cardDef, "", 0);
+    // ATK to DEF
+    logHtml += cardImgLog(cardDef, { border: "2px solid #ffe066", width: 36, borderRadius: "6px", marginRight: "7px", rotate: 0 });
     logHtml += `<img src="OtherImages/Icons/Tapped.png" alt="Tapped" style="width:28px;vertical-align:middle;margin:0 7px;">`;
-    logHtml += cardImg(cardDef, "", 90);
+    logHtml += cardImgLog(cardDef, { border: "2px solid #ffe066", width: 36, borderRadius: "6px", marginRight: "7px", rotate: 90 });
   } else if (prevOrientation === "horizontal" && newOrientation === "vertical") {
-    // DEF to ATK (horizontal to vertical)
-    logHtml += cardImg(cardDef, "", 90);
+    // DEF to ATK
+    logHtml += cardImgLog(cardDef, { border: "2px solid #ffe066", width: 36, borderRadius: "6px", marginRight: "7px", rotate: 90 });
     logHtml += `<img src="OtherImages/Icons/Untapped.png" alt="Untapped" style="width:28px;vertical-align:middle;margin:0 7px;">`;
-    logHtml += cardImg(cardDef, "", 0);
-  } else {
-    // Fallback: Show card before, then tap/untap, then after
-    // Determine which icon to show (tapped or untapped) based on the orientation change
-    let prevRotate = prevOrientation === "horizontal" ? 90 : 0;
-    let newRotate = newOrientation === "horizontal" ? 90 : 0;
-    // Heuristic: if changing to horizontal, show Tapped icon; if to vertical, show Untapped; else fallback to Tapped
-    let iconSrc = "OtherImages/Icons/Tapped.png";
-    let iconAlt = "Tapped";
-    if (prevOrientation !== newOrientation) {
-      if (newOrientation === "vertical") {
-        iconSrc = "OtherImages/Icons/Untapped.png";
-        iconAlt = "Untapped";
-      }
-    }
-    logHtml += cardImg(cardDef, "", prevRotate);
-    logHtml += `<img src="${iconSrc}" alt="${iconAlt}" style="width:28px;vertical-align:middle;margin:0 7px;">`;
-    logHtml += cardImg(cardDef, "", newRotate);
-    logHtml += `<span style="margin-left:10px;font-weight:bold;color:#ffe066;">changed position</span>`;
+    logHtml += cardImgLog(cardDef, { border: "2px solid #ffe066", width: 36, borderRadius: "6px", marginRight: "7px", rotate: 0 });
   }
-
   logHtml += `</div>`;
   logDiv.insertAdjacentHTML('beforeend', logHtml);
   logDiv.scrollTop = logDiv.scrollHeight;
 }
+
+// APPEND TO LOG
 function appendVisualLog(obj) {
   const logDiv = document.getElementById('chat-log');
   logDiv.insertAdjacentHTML('beforeend', renderLogAction(obj));
