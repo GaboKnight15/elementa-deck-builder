@@ -348,24 +348,38 @@ if (!toField) {
   delete cardObj.orientation;
 }
 // Always log movement, regardless of zone:
-const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
-appendVisualLog({
-  sourceCard: { image: cardDef?.image, name: cardDef?.name, cardId: cardDef?.id },
-  action: "move",
-  dest: getZoneNameForArray(toArr) === 'playerVoid' ? "Void"
-       : getZoneNameForArray(toArr) === 'playerHand' ? "Hand"
-       : getZoneNameForArray(toArr) === 'playerDeck' ? "Deck"
-       : getZoneNameForArray(toArr) === 'playerDomains' ? "Domains"
-       : getZoneNameForArray(toArr) === 'playerCreatures' ? "Creatures"
-       : getZoneNameForArray(toArr) === 'opponentVoid' ? "Void"
-       : getZoneNameForArray(toArr) === 'opponentHand' ? "Hand"
-       : getZoneNameForArray(toArr) === 'opponentDeck' ? "Deck"
-       : getZoneNameForArray(toArr) === 'opponentDomains' ? "Domains"
-       : getZoneNameForArray(toArr) === 'opponentCreatures' ? "Creatures"
-       : getZoneNameForArray(toArr),
-  who: (fromArr === gameState.playerHand || fromArr === gameState.playerDeck ||
-        fromArr === gameState.playerDomains || fromArr === gameState.playerCreatures) ? "player" : "opponent"
-});
+const destZone = getZoneNameForArray(toArr);
+if (destZone === 'playerHand' || destZone === 'opponentHand') {
+  appendVisualLog({
+    sourceCard: {
+      image: cardDef?.image,
+      name: cardDef?.name,
+      cardId: cardDef?.id,
+      isDraw: true
+    },
+    action: "draw",
+    dest: "Hand",
+    who: (fromArr === gameState.playerDeck) ? "player" : "opponent"
+  });
+} else {
+  appendVisualLog({
+    sourceCard: { image: cardDef?.image, name: cardDef?.name, cardId: cardDef?.id },
+    action: "move",
+    dest: destZone === 'playerVoid' ? "Void"
+      : destZone === 'playerHand' ? "Hand"
+      : destZone === 'playerDeck' ? "Deck"
+      : destZone === 'playerDomains' ? "Domains"
+      : destZone === 'playerCreatures' ? "Creatures"
+      : destZone === 'opponentVoid' ? "Void"
+      : destZone === 'opponentHand' ? "Hand"
+      : destZone === 'opponentDeck' ? "Deck"
+      : destZone === 'opponentDomains' ? "Domains"
+      : destZone === 'opponentCreatures' ? "Creatures"
+      : destZone,
+    who: (fromArr === gameState.playerHand || fromArr === gameState.playerDeck ||
+          fromArr === gameState.playerDomains || fromArr === gameState.playerCreatures) ? "player" : "opponent"
+  });
+}
     fromArr.splice(idx, 1);
     toArr.push(cardObj);
   }
@@ -2570,7 +2584,9 @@ function cardImgLog(card, {
   marginRight = "",
   cursor = "pointer",
   style = "",
-  who = "player"
+  who = "player",
+  action = "",
+  isDraw = false
 } = {}) {
   // If drawing to hand AND it's the opponent's log, show cardback
   if (action === "draw" && who === "opponent") {
@@ -2598,10 +2614,10 @@ function zoneImgLog(zone) {
 
 let destHtml = typeof dest === "string"
   ? zoneImgLog(dest)
-  : cardImgLog(dest, { who, action });
+  : cardImgLog(dest, { who, action, isDraw: dest?.isDraw });
 let entryHtml = `
   <div class="log-action ${who}" style="background:${who === 'player' ? '#232' : '#322'}11;border-radius:7px;display:inline-flex;align-items:center;">
-    ${cardImgLog(sourceCard, { who, action })} <!-- also pass action here -->
+    ${cardImgLog(sourceCard, { who, action, isDraw: sourceCard?.isDraw })}
     <span class="log-arrow" style="margin:0 7px 0 7px;">${actionIcons[action] || "→"}</span>
     ${destHtml}
   </div>
