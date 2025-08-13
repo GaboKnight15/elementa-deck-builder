@@ -2572,8 +2572,15 @@ function cardImgLog(card, {
   style = "",
   who = "player"
 } = {}) {
+  // If drawing to hand AND it's the opponent's log, show cardback
+  if (action === "draw" && who === "opponent") {
+    let cardback = window.selectedOpponentDeck?.cardbackArt
+      || gameState.opponentProfile?.cardbackArt
+      || "OtherImages/Cardbacks/DefaultCardback.png";
+    return `<img class="log-card-img ${extraClass}" src="${cardback}" data-cardid="${card.cardId}" title="Cardback" style="border:2px solid #e25555;width:${width}px;vertical-align:middle;">`;
+  }
+  // Otherwise show actual card
   if (!card || !card.image) return "";
-  // Default border logic (if not specified)
   const borderStyle = border || `2px solid ${who === 'player' ? '#6f6' : '#e25555'}`;
   // Compose style string
   let styleStr = `border: ${borderStyle}; width:${width}px; vertical-align:middle; cursor:${cursor};`;
@@ -2588,14 +2595,17 @@ function cardImgLog(card, {
 function zoneImgLog(zone) {
   return `<img class="log-zone-img" src="${zoneIcons[zone] || ''}" title="${zone}" style="width:32px;vertical-align:middle;">`;
 }
-let destHtml = typeof dest === "string" ? zoneImgLog(dest) : cardImgLog(dest, "log-dest-card");
+
+let destHtml = typeof dest === "string"
+  ? zoneImgLog(dest)
+  : cardImgLog(dest, { who, action });
 let entryHtml = `
-    <div class="log-action ${who}" style="background:${who === 'player' ? '#232' : '#322'}11;border-radius:7px;display:inline-flex;align-items:center;">
-      ${cardImgLog(sourceCard)}
-      <span class="log-arrow" style="margin:0 7px 0 7px;">${actionIcons[action] || "→"}</span>
-      ${destHtml}
-    </div>
-  `;
+  <div class="log-action ${who}" style="background:${who === 'player' ? '#232' : '#322'}11;border-radius:7px;display:inline-flex;align-items:center;">
+    ${cardImgLog(sourceCard, { who, action })} <!-- also pass action here -->
+    <span class="log-arrow" style="margin:0 7px 0 7px;">${actionIcons[action] || "→"}</span>
+    ${destHtml}
+  </div>
+`;
   return entryHtml;
 }
 
