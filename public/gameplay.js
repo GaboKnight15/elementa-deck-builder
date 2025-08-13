@@ -1860,27 +1860,23 @@ function placeChampionOnField(championCardObj) {
   gameState.playerCreatures.unshift(championCardObj);
 }
 function initiateDominionAndChampionSelection(deckArr, afterSelection) {
-  // Dominion
+  // DOMINION SETUP
   const dominionObj = extractDominionFromDeck(deckArr);
   if (dominionObj) {
     dominionObj.currentHP = getBaseHp(dominionObj.cardId);
     gameState.playerDominion = dominionObj;
     gameState.playerDomains.unshift(dominionObj);
-    // Remove from deckArr so it's not drawn again
     const idx = deckArr.findIndex(c => c.instanceId === dominionObj.instanceId);
     if (idx !== -1) deckArr.splice(idx, 1);
+    renderGameState();
   }
-
-  // Champion selection
+  // CHAMPION SELECTION
   const champions = getChampionsFromDeck(deckArr);
-  if (champions.length >= 1) {
-    showChampionSelectionModal(deckArr, chosenChampion => {
-      placeChampionOnField(chosenChampion);
-      if (afterSelection) afterSelection();
-    });
-  } else {
+  showChampionSelectionModal(deckArr, chosenChampion => {
+    placeChampionOnField(chosenChampion);
+    renderGameState();
     if (afterSelection) afterSelection();
-  }
+  });
 }
 
 // ESSENCE GENERATION
@@ -2552,28 +2548,6 @@ if (window.renderDeckSelection) {
     renderModePlayerDeckTile();
   };
 }
-
-// LOG LOGIC
-function renderLogAction({
-  sourceCard,        // { image, name, cardId }
-  action,            // "move", "attack", "target", etc.
-  dest,              // { image, name, cardId } OR "Void"/"Deck"/"Hand"/etc
-  who = "player"     // "player" or "opponent"
-}) {
-const actionIcons = {
-  move: "→",
-  attack: "⚔️",
-  effect: "★",
-  draw: "⤵️",
-    // Add more as needed
-};
-const zoneIcons = {
-  Void: "OtherImages/Icons/Void.png",
-  Deck: "OtherImages/Icons/DefaultDeckBox.png",
-  Hand: "OtherImages/Icons/Hand.png",
-    // Add more as needed
-};
-
 // CARD IMAGE FOR LOG
 function cardImgLog(card, {
   extraClass = "",
@@ -2609,9 +2583,28 @@ function cardImgLog(card, {
     style="${styleStr}">`;
 }
 function zoneImgLog(zone) {
+  const zoneIcons = {
+    Void: "OtherImages/Icons/Void.png",
+    Deck: "OtherImages/Icons/DefaultDeckBox.png",
+    Hand: "OtherImages/Icons/Hand.png",
+      // Add more as needed
+  };  
   return `<img class="log-zone-img" src="${zoneIcons[zone] || ''}" title="${zone}" style="width:32px;vertical-align:middle;">`;
 }
-
+// LOG LOGIC
+function renderLogAction({
+  sourceCard,        // { image, name, cardId }
+  action,            // "move", "attack", "target", etc.
+  dest,              // { image, name, cardId } OR "Void"/"Deck"/"Hand"/etc
+  who = "player"     // "player" or "opponent"
+}) {
+const actionIcons = {
+  move: "→",
+  attack: "⚔️",
+  effect: "★",
+  draw: "⤵️",
+    // Add more as needed
+};
 let destHtml = typeof dest === "string"
   ? zoneImgLog(dest)
   : cardImgLog(dest, { who, action, isDraw: dest?.isDraw });
