@@ -2220,6 +2220,14 @@ function resolveAttack(attackerId, defenderId) {
   }
 
   if (!attacker || !defender) return;
+  
+  // Log the attack with visual info!
+  appendAttackLog({
+    attacker: attacker,
+    defender: defender,
+    defenderOrientation: defender.orientation,
+    who: getCardOwner(attacker)
+  });  
 
   const defenderDef = dummyCards.find(c => c.id === defender.cardId);
   if (!defenderDef || !["creature", "domain", "artifact"].includes(defenderDef.category)) return;
@@ -2589,6 +2597,40 @@ let entryHtml = `
     </div>
   `;
   return entryHtml;
+}
+
+// ATTACK LOG
+function appendAttackLog({ attacker, defender, defenderOrientation, who = "player" }) {
+  const logDiv = document.getElementById('chat-log');
+  if (!logDiv) return;
+  // Get card data
+  const attackerDef = dummyCards.find(c => c.id === attacker.cardId);
+  const defenderDef = dummyCards.find(c => c.id === defender.cardId);
+
+  // Compose the log HTML
+  let logHtml = `<div class="log-action attack ${who}" style="background:${who === 'player' ? '#232' : '#322'}11;border-radius:7px;display:inline-flex;align-items:center;">`;
+
+  // Attacker image
+  logHtml += cardImgLog(attackerDef, { width: 38, borderRadius: "6px", marginRight: "8px", who });
+
+  // Attack icon (custom image)
+  logHtml += `<img src="OtherImages/Icons/Attack.png" alt="Attack" style="width:32px;height:32px;vertical-align:middle;margin:0 9px;">`;
+
+  // Defender image
+  logHtml += cardImgLog(defenderDef, { width: 38, borderRadius: "6px", marginRight: "8px", who });
+
+  // Defender's position badge
+  if (defenderOrientation === "vertical") {
+    // ATK position
+    logHtml += `<span style="margin-left:6px;margin-right:2px;"><img src="OtherImages/Icons/Untapped.png" alt="ATK" style="width:24px;vertical-align:middle;"> ATK</span>`;
+  } else if (defenderOrientation === "horizontal") {
+    // DEF position
+    logHtml += `<span style="margin-left:6px;margin-right:2px;"><img src="OtherImages/Icons/Tapped.png" alt="DEF" style="width:24px;vertical-align:middle;"> DEF</span>`;
+  }
+
+  logHtml += `</div>`;
+  logDiv.insertAdjacentHTML('beforeend', logHtml);
+  logDiv.scrollTop = logDiv.scrollHeight;
 }
 
 // CHANGE POSITION LOG
