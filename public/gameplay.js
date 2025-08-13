@@ -324,13 +324,12 @@ function moveCard(instanceId, fromArr, toArr, extra = {}) {
       } else if (zoneName === 'playerVoid') {
         destinationArr = gameState.playerVoid;
       } else {
-        // Default: send to void
         destinationArr = gameState.playerVoid;
       }
       cardObj.attachedCards.forEach(att => {
         destinationArr.push(att);
       });
-      cardObj.attachedCards = []; // clear attachments
+      cardObj.attachedCards = [];
     }
 
     // Define which arrays are the field zones (battlefield)
@@ -349,31 +348,45 @@ if (!toField) {
 }
 // Always log movement, regardless of zone:
 const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
-appendVisualLog({
-  sourceCard: { image: cardDef?.image, name: cardDef?.name, cardId: cardDef?.id },
-  action: "move",
-  dest: getZoneNameForArray(toArr) === 'playerVoid' ? "Void"
-       : getZoneNameForArray(toArr) === 'playerHand' ? "Hand"
-       : getZoneNameForArray(toArr) === 'playerDeck' ? "Deck"
-       : getZoneNameForArray(toArr) === 'playerDomains' ? "Domains"
-       : getZoneNameForArray(toArr) === 'playerCreatures' ? "Creatures"
-       : getZoneNameForArray(toArr) === 'opponentVoid' ? "Void"
-       : getZoneNameForArray(toArr) === 'opponentHand' ? "Hand"
-       : getZoneNameForArray(toArr) === 'opponentDeck' ? "Deck"
-       : getZoneNameForArray(toArr) === 'opponentDomains' ? "Domains"
-       : getZoneNameForArray(toArr) === 'opponentCreatures' ? "Creatures"
-       : getZoneNameForArray(toArr),
-  who: (fromArr === gameState.playerHand || fromArr === gameState.playerDeck ||
-        fromArr === gameState.playerDomains || fromArr === gameState.playerCreatures) ? "player" : "opponent"
-});
+    // --- PATCH: Private draw log ---
+
+JavaScript
+const destZone = getZoneNameForArray(toArr);
+if (destZone === 'playerHand' || destZone === 'opponentHand') {
+  appendVisualLog({
+    sourceCard: {
+      image: cardDef?.image,
+      name: cardDef?.name,
+      cardId: cardDef?.id,
+      isDraw: true // <<<<<<
+    },
+    action: "draw",
+    dest: "Hand",
+    who: (fromArr === gameState.playerDeck) ? "player" : "opponent"
+  });
+} else {
+  appendVisualLog({
+    sourceCard: { image: cardDef?.image, name: cardDef?.name, cardId: cardDef?.id },
+    action: "move",
+    dest: destZone === 'playerVoid' ? "Void"
+      : destZone === 'playerHand' ? "Hand"
+      : destZone === 'playerDeck' ? "Deck"
+      : destZone === 'playerDomains' ? "Domains"
+      : destZone === 'playerCreatures' ? "Creatures"
+      : destZone === 'opponentVoid' ? "Void"
+      : destZone === 'opponentHand' ? "Hand"
+      : destZone === 'opponentDeck' ? "Deck"
+      : destZone === 'opponentDomains' ? "Domains"
+      : destZone === 'opponentCreatures' ? "Creatures"
+      : destZone,
+    who: (fromArr === gameState.playerHand || fromArr === gameState.playerDeck ||
+          fromArr === gameState.playerDomains || fromArr === gameState.playerCreatures) ? "player" : "opponent"
+  });
+}
     fromArr.splice(idx, 1);
     toArr.push(cardObj);
   }
   setupDropZones();
-  if (fromArr === gameState.playerHand || fromArr === gameState.playerDeck ||
-      toArr === gameState.playerCreatures || toArr === gameState.playerDomains ||
-      toArr === gameState.playerVoid) {
-  }
   emitPublicState();
 }
 
@@ -2572,10 +2585,16 @@ function cardImgLog(card, {
   style = "",
   who = "player"
 } = {}) {
+  // PATCH: Show cardback for opponent on private draw log
+  if (card?.isDraw && who !== "player") {
+    // Use opponent's cardback
+    let cardback = window.selectedOpponentDeck?.cardbackArt
+      || gameState.opponentProfile?.cardbackArt
+      || "OtherImages/Cardbacks/DefaultCardback.png";
+    return `<img class="log-card-img ${extraClass}" src="${cardback}" data-cardid="${card.cardId}" title="Cardback" style="border:2px solid #e25555;width:${width}px;vertical-align:middle;">`;
+  }
   if (!card || !card.image) return "";
-  // Default border logic (if not specified)
   const borderStyle = border || `2px solid ${who === 'player' ? '#6f6' : '#e25555'}`;
-  // Compose style string
   let styleStr = `border: ${borderStyle}; width:${width}px; vertical-align:middle; cursor:${cursor};`;
   if (borderRadius) styleStr += ` border-radius:${borderRadius};`;
   if (rotate) styleStr += ` transform:rotate(${rotate}deg);`;
@@ -2585,13 +2604,15 @@ function cardImgLog(card, {
     data-cardid="${card.cardId}" title="${card.name}" 
     style="${styleStr}">`;
 }
-function zoneImgLog(zone) {
-  return `<img class="log-zone-img" src="${zoneIcons[zone] || ''}" title="${zone}" style="width:32px;vertical-align:middle;">`;
-}
-let destHtml = typeof dest === "string" ? zoneImgLog(dest) : cardImgLog(dest, "log-dest-card");
-let entryHtml = `
+  function zoneImgLog(zone) {
+    return `<img class="log-zone-img" src="${zoneIcons[zone] || ''}" title="${zone}" style="width:32px;vertical-align:middle;">`;
+  }
+  let destHtml = typeof dest === "string"
+    ? zoneImgLog(dest)
+    : cardImgLog(dest, { who });
+  let entryHtml = `
     <div class="log-action ${who}" style="background:${who === 'player' ? '#232' : '#322'}11;border-radius:7px;display:inline-flex;align-items:center;">
-      ${cardImgLog(sourceCard)}
+      ${cardImgLog(sourceCard, { who })}
       <span class="log-arrow" style="margin:0 7px 0 7px;">${actionIcons[action] || "→"}</span>
       ${destHtml}
     </div>
@@ -2668,7 +2689,7 @@ function appendVisualLog(obj, fromSocket = false) {
 }
 // Update your socket listener:
 window.socket.on('game action log', (obj) => {
-  appendVisualLog(obj, true); // mark as from socket
+  appendVisualLog(obj, true);
 });
 document.getElementById('chat-log').addEventListener('click', function(e) {
   if (e.target.classList.contains('log-card-img')) {
