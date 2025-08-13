@@ -98,7 +98,9 @@ socket.on('game message', (roomId, msg) => {
     msg
   });
 });
-
+socket.on('game action log', (roomId, logData) => {
+  io.to(roomId).emit('game action log', logData);
+});
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
     for (const [roomId, room] of Object.entries(rooms)) {
