@@ -349,8 +349,6 @@ if (!toField) {
 // Always log movement, regardless of zone:
 const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
     // --- PATCH: Private draw log ---
-
-JavaScript
 const destZone = getZoneNameForArray(toArr);
 if (destZone === 'playerHand' || destZone === 'opponentHand') {
   appendVisualLog({
