@@ -151,12 +151,7 @@ socket.on('game action', (action) => {
     handleOpponentAction(action); // Defined in gameplay.js
   }
 });
-// --- Game Actions Sync for Chatlogs ---
-socket.on('game action log', (logData) => {
-  if (typeof appendVisualLog === "function") {
-    appendVisualLog(logData);
-  }
-});
+
 // --- Multiplayer Deck Sync (receive your deck too for confirmation, optional) ---
 socket.on('your deck', (deckObj) => {
   myDeckObj = deckObj;
