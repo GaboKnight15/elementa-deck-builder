@@ -312,6 +312,7 @@ function moveCard(instanceId, fromArr, toArr, extra = {}) {
   const idx = fromArr.findIndex(card => card.instanceId === instanceId);
   if (idx !== -1) {
     let cardObj = { ...fromArr[idx], ...extra };
+    let cardDef = dummyCards.find(c => c.id === cardObj.cardId);
 
     // If card has attachments and is leaving the field, detach them
     if (cardObj.attachedCards && cardObj.attachedCards.length > 0) {
@@ -2789,3 +2790,4 @@ if (window.socket) {
     }, result);
   });
 }
+window.gameState = window.gameState || {};
