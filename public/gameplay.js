@@ -2619,6 +2619,10 @@ function appendVisualLog(obj) {
   const logDiv = document.getElementById('chat-log');
   logDiv.insertAdjacentHTML('beforeend', renderLogAction(obj));
   logDiv.scrollTop = logDiv.scrollHeight;
+  // Emit to server for sync
+  if (window.socket && window.currentRoomId) {
+    window.socket.emit('game action log', window.currentRoomId, obj);
+  }
 }
 document.getElementById('chat-log').addEventListener('click', function(e) {
   if (e.target.classList.contains('log-card-img')) {
@@ -2721,3 +2725,6 @@ if (window.socket) {
     }, result);
   });
 }
+window.socket.on('game action log', (obj) => {
+  appendVisualLog(obj); // This will render the log for both players
+});
