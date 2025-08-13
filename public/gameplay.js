@@ -2657,15 +2657,19 @@ function appendPositionChangeLog(cardObj, newOrientation, prevOrientation) {
 }
 
 // APPEND TO LOG
-function appendVisualLog(obj) {
+function appendVisualLog(obj, fromSocket = false) {
   const logDiv = document.getElementById('chat-log');
   logDiv.insertAdjacentHTML('beforeend', renderLogAction(obj));
   logDiv.scrollTop = logDiv.scrollHeight;
-  // Emit to server for sync
-  if (window.socket && window.currentRoomId) {
+  // Only emit if not from socket
+  if (!fromSocket && window.socket && window.currentRoomId) {
     window.socket.emit('game action log', window.currentRoomId, obj);
   }
 }
+// Update your socket listener:
+window.socket.on('game action log', (obj) => {
+  appendVisualLog(obj, true); // mark as from socket
+});
 document.getElementById('chat-log').addEventListener('click', function(e) {
   if (e.target.classList.contains('log-card-img')) {
     const cardId = e.target.getAttribute('data-cardid');
@@ -2767,6 +2771,3 @@ if (window.socket) {
     }, result);
   });
 }
-window.socket.on('game action log', (obj) => {
-  appendVisualLog(obj); // This will render the log for both players
-});
