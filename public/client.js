@@ -171,6 +171,7 @@ socket.on('coin-flip-result', (whoStarts) => {
   // Call the gameplay modal and logic, passing whoStarts as the result
   if (typeof showCoinFlipModal === "function") {
     showCoinFlipModal(function(turn) {
+      if (!window.gameState) window.gameState = {};
       window.gameState.turn = turn; // or use your setup function
       window.gameState.phase = "draw";
       // Continue with your main domain/champion selection and hand draw logic here
