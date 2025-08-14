@@ -707,7 +707,7 @@ function appendDeckZone(parentDiv, deckArray, who) {
           text: "Draw",
           onClick: function(ev) {
             ev.stopPropagation();
-            if (gameState.turn === "player" && gameState.playerDeck.length > 0) {
+            if (gameState.playerDeck.length > 0) {
               moveCard(gameState.playerDeck[0].instanceId, gameState.playerDeck, gameState.playerHand);
               renderGameState();
               setupDropZones();
@@ -1848,7 +1848,7 @@ function selectChampionFromDeck(deckArr, onSelected) {
 function getChampionsFromDeck(deckArr) {
   return deckArr.filter(cardObj => {
     const card = dummyCards.find(c => c.id === cardObj.cardId);
-    return card && card.trait === "champion";
+    return card && typeof card.trait === "string" && card.trait.toLowerCase() === "champion";
   });
 }
 
@@ -2163,16 +2163,10 @@ function startAttackTargeting(attackerId, attackerZone, cardDiv) {
   setTimeout(() => document.body.addEventListener('click', attackMode.cancelHandler, { once: true }), 10);
 }
 function getOpponentAttackableTargets() {
-  // Combine both battlefield zones
-  const allOpponentField = [
+  return [
     ...gameState.opponentCreatures,
     ...gameState.opponentDomains
   ];
-  // Only cards with allowed categories ("creature", "domain", "artifact")
-  return allOpponentField.filter(cardObj => {
-    const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
-    return cardDef && ["creature", "domain", "artifact"].includes(cardDef.category);
-  });
 }
 function endAttackTargeting() {
   // Remove highlights and listeners
@@ -2240,8 +2234,7 @@ function resolveAttack(attackerId, defenderId) {
   });  
 
   const defenderDef = dummyCards.find(c => c.id === defender.cardId);
-  if (!defenderDef || !["creature", "domain", "artifact"].includes(defenderDef.category)) return;
-
+  if (!defenderDef) return;
   // === Attack Logic ===
 
   // If defender is a creature, use facing/orientation logic
@@ -2292,39 +2285,6 @@ function resetAttackFlags(turn) {
   const arr = turn === "player" ? gameState.playerCreatures : gameState.opponentCreatures;
   arr.forEach(creature => { creature.hasAttacked = false; });
 }
-
-
-// --- Attacking UI: Highlight available targets ---
-// In startAttackTargeting, you should already have logic similar to:
-function startAttackTargeting(attackerId, attackerZone, cardDiv) {
-  attackMode.attackerId = attackerId;
-  attackMode.attackerZone = attackerZone;
-
-  // 1. Highlight all valid targets (e.g., opponent creatures)
-  const targets = gameState.opponentCreatures;
-  targets.forEach(cardObj => {
-    const targetDiv = findCardDivInZone('opponent-creatures-zone', cardObj.instanceId);
-    if (targetDiv) {
-      targetDiv.classList.add('attack-target-highlight'); // Add CSS for highlight
-      // Optional: darken background for all but highlighted cards
-      document.getElementById('battlefield').classList.add('attack-mode-backdrop'); // Add CSS overlay for modal/dark effect
-      targetDiv.onclick = function(e) {
-        e.stopPropagation();
-        resolveAttack(attackerId, cardObj.instanceId);
-        endAttackTargeting();
-        document.getElementById('battlefield').classList.remove('attack-mode-backdrop');
-      };
-    }
-  });
-
-  // 2. Add a cancel handler (clicking elsewhere cancels)
-  attackMode.cancelHandler = function(e) {
-    endAttackTargeting();
-    document.getElementById('battlefield').classList.remove('attack-mode-backdrop');
-  };
-  setTimeout(() => document.body.addEventListener('click', attackMode.cancelHandler, { once: true }), 10);
-}
-
 
 // After both decks selected, call this:
 function startPrivateGame() {
@@ -2560,10 +2520,11 @@ function cardImgLog(card, {
   style = "",
   who = "player",
   action = "",
-  isDraw = false
+  isDraw = false,
+  showCardback = false
 } = {}) {
   // If drawing to hand AND it's the opponent's log, show cardback
-  if (action === "draw" && who === "opponent") {
+  if (showCardback) {
     let cardback = window.selectedOpponentDeck?.cardbackArt
       || gameState.opponentProfile?.cardbackArt
       || "OtherImages/Cardbacks/DefaultCardback.png";
@@ -2597,7 +2558,7 @@ function renderLogAction({
   action,            // "move", "attack", "target", etc.
   dest,              // { image, name, cardId } OR "Void"/"Deck"/"Hand"/etc
   who = "player"     // "player" or "opponent"
-}) {
+}, isMe = true) {
 const actionIcons = {
   move: "→",
   attack: "⚔️",
@@ -2605,12 +2566,13 @@ const actionIcons = {
   draw: "⤵️",
     // Add more as needed
 };
+let showCardback = action === "draw" && !isMe;
 let destHtml = typeof dest === "string"
   ? zoneImgLog(dest)
-  : cardImgLog(dest, { who, action, isDraw: dest?.isDraw });
+  : cardImgLog(dest, { who, action, isDraw: dest?.isDraw, showCardback });
 let entryHtml = `
   <div class="log-action ${who}" style="background:${who === 'player' ? '#232' : '#322'}11;border-radius:7px;display:inline-flex;align-items:center;">
-    ${cardImgLog(sourceCard, { who, action, isDraw: sourceCard?.isDraw })}
+    ${cardImgLog(sourceCard, { who, action, isDraw: sourceCard?.isDraw, showCardback })}
     <span class="log-arrow" style="margin:0 7px 0 7px;">${actionIcons[action] || "→"}</span>
     ${destHtml}
   </div>
@@ -2676,7 +2638,7 @@ function appendPositionChangeLog(cardObj, newOrientation, prevOrientation) {
 }
 
 // APPEND TO LOG
-function appendVisualLog(obj, fromSocket = false) {
+function appendVisualLog(obj, fromSocket = false, isMe = true) {
   const logDiv = document.getElementById('chat-log');
   logDiv.insertAdjacentHTML('beforeend', renderLogAction(obj));
   logDiv.scrollTop = logDiv.scrollHeight;
@@ -2687,7 +2649,7 @@ function appendVisualLog(obj, fromSocket = false) {
 }
 // Update your socket listener:
 window.socket.on('game action log', (obj) => {
-  appendVisualLog(obj, true); // mark as from socket
+  appendVisualLog(obj, true, false);
 });
 document.getElementById('chat-log').addEventListener('click', function(e) {
   if (e.target.classList.contains('log-card-img')) {
