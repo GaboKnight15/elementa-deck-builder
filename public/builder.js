@@ -914,6 +914,37 @@ document.querySelectorAll('#filters-builder .filter-dropdown .filter-option inpu
 document.body.onclick = function() {
   document.querySelectorAll('#filters-builder .filter-dropdown').forEach(dd => dd.classList.remove('open'));
 };
+function updateBuilderFilterSummary() {
+  // Filter dropdowns to include in summary
+  const filterDropdownIds = [
+    'filter-rarity-builder-dropdown',
+    'filter-color-builder-dropdown',
+    'filter-type-builder-dropdown',
+    'filter-trait-builder-dropdown',
+    'filter-archetype-builder-dropdown',
+    'filter-ability-builder-dropdown',
+    'filter-category-builder-dropdown'
+  ];
+  let filterInfoArray = [];
+  filterDropdownIds.forEach(id => {
+    const vals = getFilterDropdownValues(id);
+    if (vals.length > 0) filterInfoArray.push(...vals);
+  });
+
+  // Name filter
+  const nameInput = document.getElementById('filter-name-builder');
+  const nameFilter = nameInput ? nameInput.value.trim() : "";
+  if (nameFilter) filterInfoArray.push(nameFilter);
+
+  // Compose summary text
+  const summaryDiv = document.getElementById('builder-filter-summary');
+  if (!summaryDiv) return;
+  if (filterInfoArray.length) {
+    summaryDiv.innerHTML = `Active filters: <b>${filterInfoArray.join(' ')}</b>`;
+  } else {
+    summaryDiv.innerHTML = "";
+  }
+}
 function renderBuilder() {
     builderGallery.innerHTML = '';
     const collection = getCollection();
@@ -941,7 +972,7 @@ let filteredCards = filterCards({
   selectedAbilities,
   ownershipFilter: "Owned"
 });
-
+  updateBuilderFilterSummary();
   filteredCards
   .filter(card => collection[card.id] && collection[card.id] > 0)
   .forEach(card => {
