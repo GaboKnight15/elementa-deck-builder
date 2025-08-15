@@ -218,19 +218,19 @@ function sendFriendRequest(username) {
     }
     // Fetch their existing requests
     const ref = firebase.firestore().collection('users').doc(user.uid);
-    ref.get().then(function(doc) {
-      const requests = doc.data()?.friendRequests || [];
-      // Prevent duplicate requests
-      if (requests.some(r => r.fromUid === currentUid)) {
-        showToast("Request already sent!");
-        return;
-      }
-      // Add request
-      requests.push({ fromUid: currentUid, fromUsername: currentUsername });
-      ref.set({ friendRequests: requests }, { merge: true }).then(function() {
-        showToast("Friend request sent!");
-      });
-    });
+// New code for sending a friend request
+firebase.firestore()
+  .collection('users')
+  .doc(user.uid) // recipient's userId
+  .collection('requests')
+  .add({
+    fromUid: currentUid,
+    fromUsername: currentUsername,
+    timestamp: Date.now()
+  })
+  .then(() => {
+    showToast("Friend request sent!");
+  });
   });
 }
 
@@ -343,17 +343,19 @@ firebase.firestore().collection('users').doc(fid).get().then(function(friendDoc)
   });
 }
 function viewFriendProfile(fid) {
-  const modal = document.getElementById('friend-profile-modal');
-  // Fetch friend data from Firestore
   firebase.firestore().collection('users').doc(fid).get().then(function(doc) {
     const friendData = doc.data() || {};
-    content.innerHTML = renderProfileInfoSection({
-      profileBanner: friendData.banner,
-      profilePic: friendData.avatar || 'CardImages/Avatars/Default.png',
+    // Compose the modal data just like for the current user
+    const playerData = {
       username: friendData.username || fid,
-      power: friendData.power || 0
-    });
-    modal.style.display = 'flex';
+      profilePic: friendData.avatar || 'CardImages/Avatars/Default.png',
+      profileBanner: friendData.banner || 'CardImages/Banners/DefaultBanner.png',
+      power: friendData.power || 0,
+      // These arrays should be present in your Firestore user doc structure
+      achievements: Array.isArray(friendData.achievements) ? friendData.achievements : [],
+      badges: Array.isArray(friendData.badges) ? friendData.badges : []
+    };
+    showProfileModal(playerData); // This is imported from shared.js
   });
 }
 function renderDiscoverPanel() {
