@@ -2597,17 +2597,14 @@ function appendAttackLog({ attacker, defender, defenderOrientation, who = "playe
   // Attack icon (custom image)
   logHtml += `<img src="OtherImages/Icons/Attack.png" alt="Attack" style="width:32px;height:32px;vertical-align:middle;margin:0 9px;">`;
 
-  // Defender image
-  logHtml += cardImgLog(defenderDef, { width: 38, borderRadius: "6px", marginRight: "8px", who });
-
-  // Defender's position badge
-  if (defenderOrientation === "vertical") {
-    // ATK position
-    logHtml += `<span style="margin-left:6px;margin-right:2px;"><img src="OtherImages/Icons/Untapped.png" alt="ATK" style="width:24px;vertical-align:middle;"> ATK</span>`;
-  } else if (defenderOrientation === "horizontal") {
-    // DEF position
-    logHtml += `<span style="margin-left:6px;margin-right:2px;"><img src="OtherImages/Icons/Tapped.png" alt="DEF" style="width:24px;vertical-align:middle;"> DEF</span>`;
-  }
+  // Defender image (rotated if DEF)
+  logHtml += cardImgLog(defenderDef, { 
+    width: 38, 
+    borderRadius: "6px", 
+    marginRight: "8px", 
+    who, 
+    rotate: defenderOrientation === "horizontal" ? 90 : 0 
+  });
 
   logHtml += `</div>`;
   logDiv.insertAdjacentHTML('beforeend', logHtml);
@@ -2649,6 +2646,8 @@ function appendVisualLog(obj, fromSocket = false, isMe = true) {
 }
 // Update your socket listener:
 window.socket.on('game action log', (obj) => {
+  const myName = gameState.playerProfile?.username || "me";
+  if (obj.sender && obj.sender === myName) return;
   appendVisualLog(obj, true, false);
 });
 document.getElementById('chat-log').addEventListener('click', function(e) {
