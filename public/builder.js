@@ -485,6 +485,13 @@ function showDeckViewModal(deckName) {
     total += count;
   }
   deckViewModal.style.display = 'flex';
+  
+  deckViewModalTitle.innerHTML = `
+    <span>${deckName}</span>
+    <span style="font-size:0.9em; font-weight:normal; color:#ffe066; margin-left:18px;">
+      ${total} / 50 cards
+    </span>
+  `;  
 }
 closeDeckViewModalBtn.classList.add('btn-negative-secondary');
 closeDeckViewModalBtn.onclick = function() {
@@ -517,12 +524,12 @@ function createCardBuilder(card, ownedCount) {
       div.classList.add('dragging');
   });
   div.addEventListener('dragend', function(e) {
-        div.classList.remove('dragging');
-    });
-    if (card.rarity) {
+    div.classList.remove('dragging');
+  });
+  if (card.rarity) {
     div.setAttribute('data-rarity', card.rarity);
   }
-    div.classList.add(getCardBgClass(card));
+  div.classList.add(getRarityBgClass(card));
 
     const img = document.createElement('img');
     img.src = card.image;
@@ -646,7 +653,6 @@ deckList.addEventListener('drop', function(e) {
     }
   }
 });
-
 // --- DRAG OUT TO REMOVE FROM DECK PANEL --- //
 deckList.addEventListener('dragstart', function(e) {
   // Find the card element being dragged from deckList
