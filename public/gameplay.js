@@ -496,6 +496,7 @@ function drawCards(who, n) {
 function showHandCardMenu(instanceId, cardDiv) {
   closeAllMenus();
   const cardObj = gameState.playerHand.find(c => c.instanceId === instanceId);
+  const cardData = dummyCards.find(c => c.id === cardObj.cardId);
   // Define actions
   const buttons = [
     {
@@ -573,6 +574,19 @@ function showHandCardMenu(instanceId, cardDiv) {
       }
     }
   ];
+  if (cardData.skill && Array.isArray(cardData.skill) && cardData.skill.length > 0) {
+    cardData.skill.forEach(skillName => {
+      buttons.push({
+        text: skillName,
+        onClick: function(e) {
+          e.stopPropagation();
+          // Future: run skill logic here for this card
+          alert(`Activated skill: ${skillName}`);
+          closeAllMenus();
+        }
+      });
+    });
+  }  
   const menu = createCardMenu(buttons);
 
   // Position relative to cardDiv
@@ -1250,6 +1264,7 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
   currentCardMenuState = { instanceId, zoneId, orientation };
   const arr = getZoneArray(zoneId);
   const cardObj = arr ? arr.find(card => card.instanceId === instanceId) : null;
+  const cardData = dummyCards.find(c => c.id === cardObj.cardId);
   // Define menu options
   const buttons = [
     {
@@ -1366,7 +1381,19 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
       }
     }
   ];
-
+  if (cardData.skill && Array.isArray(cardData.skill)) {
+    cardData.skill.forEach(skillName => {
+      buttons.push({
+        text: skillName,
+        onClick: function(e) {
+          e.stopPropagation();
+          // Future: run skill logic here for this card
+          alert(`Activated skill: ${skillName}`);
+          closeAllMenus();
+        }
+      });
+    });
+  }
   // Create and show the menu
   const menu = createCardMenu(buttons);
   // Position menu absolutely near cardDiv
@@ -2138,7 +2165,12 @@ function startAttackTargeting(attackerId, attackerZone, cardDiv) {
   attackMode.attackerZone = attackerZone;
   battlefield.classList.add('attack-mode-backdrop');
 
-  const targets = getOpponentAttackableTargets();
+  // Find attacker object
+  let attacker =
+    gameState.playerCreatures.find(c => c.instanceId === attackerId) ||
+    gameState.opponentCreatures.find(c => c.instanceId === attackerId);
+
+  const targets = getOpponentAttackableTargets(attacker);
 
   targets.forEach(cardObj => {
     // Try both rows for finding the DOM element
@@ -2162,11 +2194,60 @@ function startAttackTargeting(attackerId, attackerZone, cardDiv) {
   };
   setTimeout(() => document.body.addEventListener('click', attackMode.cancelHandler, { once: true }), 10);
 }
-function getOpponentAttackableTargets() {
-  return [
-    ...gameState.opponentCreatures,
-    ...gameState.opponentDomains
+
+function getOpponentAttackableTargets(attackerObj = null) {
+  // Gather all opponent cards
+  const creatures = gameState.opponentCreatures;
+  const domains = gameState.opponentDomains;
+  const artifacts = gameState.opponentArtifacts || [];
+  const allOpponentField = [...creatures, ...domains, ...artifacts];
+
+  // Build map of colors to opponent creatures
+  const colorToCreatures = {};
+  creatures.forEach(creature => {
+    getCardColors(creature).forEach(color => {
+      if (!colorToCreatures[color]) colorToCreatures[color] = [];
+      colorToCreatures[color].push(creature);
+    });
+  });
+
+  // Domains and artifacts to filter
+  const domainsAndArtifacts = [...domains, ...artifacts];
+
+  // Filter out protected domains/artifacts
+  const protectedDomainsArtifacts = domainsAndArtifacts.filter(cardObj => {
+    const cardColors = getCardColors(cardObj);
+    // If ANY color of the domain/artifact has a protecting creature, it's protected
+    return cardColors.some(color => colorToCreatures[color] && colorToCreatures[color].length > 0);
+  });
+
+  // Only allow attack on protected domains/artifacts if no creature of that color exists
+  const attackableDomainsArtifacts = domainsAndArtifacts.filter(cardObj => !protectedDomainsArtifacts.includes(cardObj));
+
+  // Build initial target list applying color protection rule
+  let targets = [
+    ...creatures,
+    ...attackableDomainsArtifacts
   ];
+
+  // If no attackerObj provided, just return targets after color protection
+  if (!attackerObj) return targets;
+
+  // Now apply ability-based restrictions to this filtered list
+
+  // If attacker has Flying, ignore Protect (but NOT color protection)
+  if (attackerHasAbility(attackerObj, 'Flying')) {
+    return targets;
+  }
+
+  // If opponent has Protect, and attacker is NOT Flying, only Protect cards are valid (creatures with Protect)
+  const protectCards = targets.filter(cardObj => defenderHasAbility(cardObj, "Protect"));
+  if (protectCards.length > 0) {
+    return protectCards;
+  }
+
+  // Otherwise, return color-protected targets
+  return targets;
 }
 function endAttackTargeting() {
   // Remove highlights and listeners
@@ -2185,23 +2266,21 @@ function endAttackTargeting() {
   attackMode.attackerId = null;
   attackMode.attackerZone = null;
 }
+
 function resolveAttack(attackerId, defenderId) {
   // Find attacker and defender card objects and their arrays
   let attacker, defender, attackerArr, defenderArr, attackerVoid, defenderVoid;
 
-  // Try both sides for attacker (player or opponent)
   attacker =
     gameState.playerCreatures.find(c => c.instanceId === attackerId) ||
     gameState.opponentCreatures.find(c => c.instanceId === attackerId);
 
-  // Try both sides for defender (creatures/domains)
   defender =
     gameState.opponentCreatures.find(c => c.instanceId === defenderId) ||
     gameState.opponentDomains.find(c => c.instanceId === defenderId) ||
     gameState.playerCreatures.find(c => c.instanceId === defenderId) ||
     gameState.playerDomains.find(c => c.instanceId === defenderId);
 
-  // Find which arrays they belong to
   if (gameState.playerCreatures.includes(attacker)) {
     attackerArr = gameState.playerCreatures;
     attackerVoid = gameState.playerVoid;
@@ -2224,8 +2303,26 @@ function resolveAttack(attackerId, defenderId) {
   }
 
   if (!attacker || !defender) return;
-  
-  // Log the attack with visual info!
+
+  // --- ABILITY LOGIC ---
+  const attackerDef = dummyCards.find(c => c.id === attacker.cardId);
+  const defenderDef = dummyCards.find(c => c.id === defender.cardId);
+
+  // Defender has Flying: can only be attacked by Flying or Ranged
+  if (defenderHasAbility(defender, 'Flying')) {
+    if (!(attackerHasAbility(attacker, 'Flying') || attackerHasAbility(attacker, 'Ranged'))) {
+      showToast("You can only attack Flying creatures with Flying or Ranged cards!");
+      return;
+    }
+  }
+
+  // Ranged: does not receive retaliation when attacking
+  let attackerGetsRetaliation = true;
+  if (attackerHasAbility(attacker, 'Ranged') && defenderDef.category === "creature") {
+    attackerGetsRetaliation = false;
+  }
+
+  // --- LOG THE ATTACK ---
   appendAttackLog({
     attacker: attacker,
     defender: defender,
@@ -2233,28 +2330,25 @@ function resolveAttack(attackerId, defenderId) {
     who: getCardOwner(attacker)
   });  
 
-  const defenderDef = dummyCards.find(c => c.id === defender.cardId);
-  if (!defenderDef) return;
   // === Attack Logic ===
 
-  // If defender is a creature, use facing/orientation logic
   if (defenderDef.category === "creature") {
     if (defender.orientation === "horizontal") {
       dealCombatDamage(attacker, defender, attacker.atk);
-      dealCombatDamage(defender, attacker, defender.atk);
+      if (attackerGetsRetaliation) {
+        dealCombatDamage(defender, attacker, defender.atk);
+      }
     } else if (defender.orientation === "vertical") {
       let damage = Math.max(0, attacker.atk - defender.def);
       dealCombatDamage(attacker, defender, damage);
       // Defender does not deal damage back
     }
   } else {
-    // Domains and artifacts: just take attacker's ATK as damage (no retaliation, ignore orientation)
     dealCombatDamage(attacker, defender, attacker.atk);
   }
 
   attacker.hasAttacked = true;
 
-  // Death checks: move to void if HP is 0 or less
   if (attacker.currentHP <= 0 && attackerArr && attackerVoid) moveCard(attacker.instanceId, attackerArr, attackerVoid);
   if (defender.currentHP <= 0 && defenderArr && defenderVoid) moveCard(defender.instanceId, defenderArr, defenderVoid);
 
@@ -2643,6 +2737,23 @@ function appendVisualLog(obj, fromSocket = false, isMe = true) {
   if (!fromSocket && window.socket && window.currentRoomId) {
     window.socket.emit('game action log', window.currentRoomId, obj);
   }
+}
+
+// Helper functions for abilities and skills
+function attackerHasAbility(cardObj, abilityName) {
+  const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
+  return cardDef && Array.isArray(cardDef.ability) && cardDef.ability.includes(abilityName);
+}
+function defenderHasAbility(cardObj, abilityName) {
+  const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
+  return cardDef && Array.isArray(cardDef.ability) && cardDef.ability.includes(abilityName);
+}
+function getCardColors(cardObj) {
+  const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
+  if (!cardDef) return [];
+  if (Array.isArray(cardDef.color)) return cardDef.color;
+  if (typeof cardDef.color === "string") return [cardDef.color];
+  return [];
 }
 // Update your socket listener:
 window.socket.on('game action log', (obj) => {
