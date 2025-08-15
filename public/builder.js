@@ -940,7 +940,7 @@ function updateBuilderFilterSummary() {
   const summaryDiv = document.getElementById('builder-filter-summary');
   if (!summaryDiv) return;
   if (filterInfoArray.length) {
-    summaryDiv.innerHTML = `Active filters: <b>${filterInfoArray.join(' ')}</b>`;
+    summaryDiv.innerHTML = `<b>${filterInfoArray.join(' ')}</b>`;
   } else {
     summaryDiv.innerHTML = "";
   }
