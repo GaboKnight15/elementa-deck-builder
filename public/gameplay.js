@@ -2617,6 +2617,7 @@ function cardImgLog(card, {
   isDraw = false,
   showCardback = false
 } = {}) {
+  const cardId = card?.cardId || "";
   // If drawing to hand AND it's the opponent's log, show cardback
   if (showCardback) {
     let cardback = window.selectedOpponentDeck?.cardbackArt
@@ -2675,7 +2676,7 @@ let entryHtml = `
 }
 
 // ATTACK LOG
-function appendAttackLog({ attacker, defender, defenderOrientation, who = "player" }) {
+function appendAttackLog({ attacker, defender, defenderOrientation, who = "player" }, fromSocket = false, isMe = true) {
   const logDiv = document.getElementById('chat-log');
   if (!logDiv) return;
   // Get card data
@@ -2688,10 +2689,10 @@ function appendAttackLog({ attacker, defender, defenderOrientation, who = "playe
   // Attacker image
   logHtml += cardImgLog(attackerDef, { width: 38, borderRadius: "6px", marginRight: "8px", who });
 
-  // Attack icon (custom image)
+  // Attack icon
   logHtml += `<img src="OtherImages/Icons/Attack.png" alt="Attack" style="width:32px;height:32px;vertical-align:middle;margin:0 9px;">`;
 
-  // Defender image (rotated if DEF)
+  // Defender image
   logHtml += cardImgLog(defenderDef, { 
     width: 38, 
     borderRadius: "6px", 
@@ -2703,8 +2704,31 @@ function appendAttackLog({ attacker, defender, defenderOrientation, who = "playe
   logHtml += `</div>`;
   logDiv.insertAdjacentHTML('beforeend', logHtml);
   logDiv.scrollTop = logDiv.scrollHeight;
-}
 
+  // Only emit if not from socket
+  if (!fromSocket && window.socket && window.currentRoomId) {
+    // Add sender
+    const obj = {
+      attacker,
+      defender,
+      defenderOrientation,
+      who,
+      sender: gameState.playerProfile?.username || "me",
+      type: "attack"
+    };
+    window.socket.emit('game action log', window.currentRoomId, obj);
+  }
+}
+window.socket.on('game action log', (obj) => {
+  const myName = gameState.playerProfile?.username || "me";
+  const isMe = obj.sender && obj.sender === myName;
+  if (isMe) return;
+  if (obj.type === "attack") {
+    appendAttackLog(obj, true, false);
+  } else {
+    appendVisualLog(obj, true, false);
+  }
+});
 // CHANGE POSITION LOG
 function appendPositionChangeLog(cardObj, newOrientation, prevOrientation) {
   const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
@@ -2735,6 +2759,7 @@ function appendVisualLog(obj, fromSocket = false, isMe = true) {
   logDiv.scrollTop = logDiv.scrollHeight;
   // Only emit if not from socket
   if (!fromSocket && window.socket && window.currentRoomId) {
+    obj.sender = gameState.playerProfile?.username || "me";
     window.socket.emit('game action log', window.currentRoomId, obj);
   }
 }
@@ -2758,7 +2783,8 @@ function getCardColors(cardObj) {
 // Update your socket listener:
 window.socket.on('game action log', (obj) => {
   const myName = gameState.playerProfile?.username || "me";
-  if (obj.sender && obj.sender === myName) return;
+  const isMe = obj.sender && obj.sender === myName;
+  if (isMe) return;
   appendVisualLog(obj, true, false);
 });
 document.getElementById('chat-log').addEventListener('click', function(e) {
