@@ -348,39 +348,47 @@ if (!toField) {
   delete cardObj.orientation;
 }
 // Always log movement, regardless of zone:
+// Always log movement, regardless of zone:
 const destZone = getZoneNameForArray(toArr);
+const logObj = (destZone === 'playerHand' || destZone === 'opponentHand')
+  ? {
+      sourceCard: {
+        image: cardDef?.image,
+        name: cardDef?.name,
+        cardId: cardDef?.id,
+        isDraw: true
+      },
+      action: "draw",
+      dest: "Hand",
+      who: (fromArr === gameState.playerDeck) ? "player" : "opponent",
+      sender: gameState.playerProfile?.username || "me"
+    }
+  : {
+      sourceCard: { image: cardDef?.image, name: cardDef?.name, cardId: cardDef?.id },
+      action: "move",
+      dest: destZone === 'playerVoid' ? "Void"
+        : destZone === 'playerHand' ? "Hand"
+        : destZone === 'playerDeck' ? "Deck"
+        : destZone === 'playerDomains' ? "Domains"
+        : destZone === 'playerCreatures' ? "Creatures"
+        : destZone === 'opponentVoid' ? "Void"
+        : destZone === 'opponentHand' ? "Hand"
+        : destZone === 'opponentDeck' ? "Deck"
+        : destZone === 'opponentDomains' ? "Domains"
+        : destZone === 'opponentCreatures' ? "Creatures"
+        : destZone,
+      who: (fromArr === gameState.playerHand || fromArr === gameState.playerDeck ||
+            fromArr === gameState.playerDomains || fromArr === gameState.playerCreatures) ? "player" : "opponent",
+      sender: gameState.playerProfile?.username || "me"
+    };
+
+// Log locally for your own actions
+if (logObj.who === "player") {
+  appendVisualLog(logObj, false, true); // Show log for you
+}
+
+// Emit to socket for opponent to see
 if (window.socket && window.currentRoomId) {
-  const logObj = (destZone === 'playerHand' || destZone === 'opponentHand')
-    ? {
-        sourceCard: {
-          image: cardDef?.image,
-          name: cardDef?.name,
-          cardId: cardDef?.id,
-          isDraw: true
-        },
-        action: "draw",
-        dest: "Hand",
-        who: (fromArr === gameState.playerDeck) ? "player" : "opponent",
-        sender: gameState.playerProfile?.username || "me"
-      }
-    : {
-        sourceCard: { image: cardDef?.image, name: cardDef?.name, cardId: cardDef?.id },
-        action: "move",
-        dest: destZone === 'playerVoid' ? "Void"
-          : destZone === 'playerHand' ? "Hand"
-          : destZone === 'playerDeck' ? "Deck"
-          : destZone === 'playerDomains' ? "Domains"
-          : destZone === 'playerCreatures' ? "Creatures"
-          : destZone === 'opponentVoid' ? "Void"
-          : destZone === 'opponentHand' ? "Hand"
-          : destZone === 'opponentDeck' ? "Deck"
-          : destZone === 'opponentDomains' ? "Domains"
-          : destZone === 'opponentCreatures' ? "Creatures"
-          : destZone,
-        who: (fromArr === gameState.playerHand || fromArr === gameState.playerDeck ||
-              fromArr === gameState.playerDomains || fromArr === gameState.playerCreatures) ? "player" : "opponent",
-        sender: gameState.playerProfile?.username || "me"
-      };
   window.socket.emit('game action log', window.currentRoomId, logObj);
 }
     fromArr.splice(idx, 1);
@@ -2713,12 +2721,17 @@ function appendAttackLog({ attacker, defender, defenderOrientation, who = "playe
     window.socket.emit('game action log', window.currentRoomId, obj);
   }
 }
+
 window.socket.on('game action log', (obj) => {
   const myName = gameState.playerProfile?.username || "me";
   const isMe = obj.sender && obj.sender === myName;
   if (isMe) return;
   if (obj.type === "attack") {
     appendAttackLog(obj, true, false);
+  } else if (obj.type === "changePosition") {
+    // Find the card object using instanceId and cardId if needed
+    const cardObj = { cardId: obj.cardId, instanceId: obj.instanceId };
+    appendPositionChangeLog(cardObj, obj.newOrientation, obj.prevOrientation, true);
   } else {
     appendVisualLog(obj, true, false);
   }
@@ -2744,6 +2757,18 @@ function appendPositionChangeLog(cardObj, newOrientation, prevOrientation) {
   logHtml += `</div>`;
   logDiv.insertAdjacentHTML('beforeend', logHtml);
   logDiv.scrollTop = logDiv.scrollHeight;
+  // Only emit if not from socket
+  if (!fromSocket && window.socket && window.currentRoomId) {
+    const obj = {
+      cardId: cardObj.cardId,
+      instanceId: cardObj.instanceId,
+      newOrientation,
+      prevOrientation,
+      sender: gameState.playerProfile?.username || "me",
+      type: "changePosition"
+    };
+    window.socket.emit('game action log', window.currentRoomId, obj);
+  }
 }
 
 // APPEND TO LOG
@@ -2774,13 +2799,7 @@ function getCardColors(cardObj) {
   if (typeof cardDef.color === "string") return [cardDef.color];
   return [];
 }
-// Update your socket listener:
-window.socket.on('game action log', (obj) => {
-  const myName = gameState.playerProfile?.username || "me";
-  const isMe = obj.sender && obj.sender === myName;
-  if (isMe) return;
-  appendVisualLog(obj, true, false);
-});
+
 document.getElementById('chat-log').addEventListener('click', function(e) {
   if (e.target.classList.contains('log-card-img')) {
     const cardId = e.target.getAttribute('data-cardid');
