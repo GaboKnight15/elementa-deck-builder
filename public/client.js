@@ -144,7 +144,12 @@ socket.on('sync deck', (deckObj) => {
     startGameWithSyncedDeck(deckObj);
   }
 });
-
+socket.on('both-champions-selected', (champions) => {
+  closeWaitingForOpponentModal();
+  // Now both clients have both champions and can proceed
+  // Run the next animation, rendering, draw hand, etc.
+  startGameFieldAnimation(champions); // use a timeout for animation if desired
+});
 // --- Game Actions Sync ---
 socket.on('game action', (action) => {
   if (typeof handleOpponentAction === "function") {
