@@ -348,28 +348,48 @@ function moveCard(instanceId, fromArr, toArr, extra = {}) {
       delete cardObj.currentHP;
       delete cardObj.orientation;
     }
-    // Always log movement, regardless of zone:
-    const destZone = getZoneNameForArray(toArr);
-    const sourceZone = getZoneNameForArray(fromArr);
-    const logObj = {
-      sourceCard: { image: cardDef?.image, name: cardDef?.name, cardId: cardDef?.id },
-      action: "move",
-      dest: destZone === 'playerVoid' ? "Void"
-        : destZone === 'playerHand' ? "Hand"
-        : destZone === 'playerDeck' ? "Deck"
-        : destZone === 'playerDomains' ? "Domains"
-        : destZone === 'playerCreatures' ? "Creatures"
-        : destZone === 'opponentVoid' ? "Void"
-        : destZone === 'opponentHand' ? "Hand"
-        : destZone === 'opponentDeck' ? "Deck"
-        : destZone === 'opponentDomains' ? "Domains"
-        : destZone === 'opponentCreatures' ? "Creatures"
-        : destZone,
-      from: sourceZone,
-      who: (fromArr === gameState.playerHand || fromArr === gameState.playerDeck ||
-            fromArr === gameState.playerDomains || fromArr === gameState.playerCreatures) ? "player" : "opponent",
-      sender: gameState.playerProfile?.username || "me"
-    };
+    const isDrawToHand =
+      (fromArr === gameState.playerDeck && toArr === gameState.playerHand) ||
+      (fromArr === gameState.opponentDeck && toArr === gameState.opponentHand);
+    let logObj;
+    if (isDrawToHand) {
+      logObj = {
+        sourceCard: {
+          image: cardDef?.image,
+          name: cardDef?.name,
+          cardId: cardDef?.id,
+          isDraw: true // flag for rendering cardback for opponent
+        },
+        action: "draw",
+        dest: "Hand",
+        who: (fromArr === gameState.playerDeck) ? "player" : "opponent",
+        sender: gameState.playerProfile?.username || "me"
+      };
+    } else {
+      // Standard move log
+      const destZone = getZoneNameForArray(toArr);
+      const sourceZone = getZoneNameForArray(fromArr);
+      logObj = {
+        sourceCard: { image: cardDef?.image, name: cardDef?.name, cardId: cardDef?.id },
+        action: "move",
+        dest: destZone === 'playerVoid' ? "Void"
+          : destZone === 'playerHand' ? "Hand"
+          : destZone === 'playerDeck' ? "Deck"
+          : destZone === 'playerDomains' ? "Domains"
+          : destZone === 'playerCreatures' ? "Creatures"
+          : destZone === 'opponentVoid' ? "Void"
+          : destZone === 'opponentHand' ? "Hand"
+          : destZone === 'opponentDeck' ? "Deck"
+          : destZone === 'opponentDomains' ? "Domains"
+          : destZone === 'opponentCreatures' ? "Creatures"
+          : destZone,
+        from: sourceZone,
+        who: (fromArr === gameState.playerHand || fromArr === gameState.playerDeck ||
+              fromArr === gameState.playerDomains || fromArr === gameState.playerCreatures) ? "player" : "opponent",
+        sender: gameState.playerProfile?.username || "me"
+      };
+    }
+
     // Always append log locally (solo or multiplayer!)
     appendVisualLog(logObj, false, logObj.who === "player");
     // Only emit to socket if in multiplayer mode
