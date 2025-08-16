@@ -962,7 +962,7 @@ function renderCardOnField(cardObj, zoneId) {
     hpBadge.style.height = '34px';
     hpBadge.style.zIndex = 20;
     hpBadge.innerHTML = `
-      <img src="OtherImages/FieldIcons/Heart.png" style="width:34px;height:34px;">
+      <img src="OtherImages/FieldIcons/HP.png" style="width:34px;height:34px;">
       <span style="
         position:absolute;
         left:0;top:0;width:100%;height:100%;
@@ -985,7 +985,7 @@ function renderCardOnField(cardObj, zoneId) {
     atkBadge.style.height = '34px';
     atkBadge.style.zIndex = 20;
     atkBadge.innerHTML = `
-      <img src="OtherImages/Icons/CircleRed.png" style="width:34px;height:34px;">
+      <img src="OtherImages/FieldIcons/ATK.png" style="width:34px;height:34px;">
       <span style="
         position:absolute;
         left:0;top:0;width:100%;height:100%;
@@ -1008,7 +1008,7 @@ function renderCardOnField(cardObj, zoneId) {
     defBadge.style.height = '34px';
     defBadge.style.zIndex = 20;
     defBadge.innerHTML = `
-      <img src="OtherImages/Icons/ShieldBlue.png" style="width:34px;height:34px;">
+      <img src="OtherImages/FieldIcons/DEF.png" style="width:34px;height:34px;">
       <span style="
         position:absolute;
         left:0;top:0;width:100%;height:100%;
