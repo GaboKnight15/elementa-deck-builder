@@ -914,40 +914,154 @@ function renderCardOnField(cardObj, zoneId) {
   const cardData = dummyCards.find(c => c.id === cardObj.cardId);
   const category = cardData?.category?.toLowerCase();
 
-  // Create the main card div
+  // Main card div
   const cardDiv = document.createElement('div');
   cardDiv.className = 'card-battlefield';
   cardDiv.dataset.instanceId = cardObj.instanceId;
   cardDiv.style.position = 'relative';
+  cardDiv.style.width = '120px'; // or your card width
+  cardDiv.style.height = '170px'; // or your card height
 
-  // Create the wrapper FIRST so it can be used below
-  const wrapper = document.createElement('div');
-  wrapper.className = 'card-battlefield-wrapper';
-  wrapper.style.display = 'flex';
-  wrapper.style.flexDirection = 'column';
-  wrapper.style.alignItems = 'center';
-
-  // HP bar color logic
-  const baseHP = (typeof cardData.hp === "number") ? cardData.hp : undefined;
-  const currentHP = (typeof cardObj.currentHP === "number") ? cardObj.currentHP : baseHP;
-  const hpPercent = (baseHP && currentHP !== undefined) ? Math.max(0, Math.min(1, currentHP / baseHP)) : 1;
-  let barColor = "#4caf50"; // green
-  if (hpPercent <= 0.25) {
-    barColor = "#e53935"; // red
-  } else if (hpPercent <= 0.5) {
-    barColor = "#ff9800"; // orange
+  // Card image
+  if (cardData && cardData.image) {
+    const img = document.createElement('img');
+    img.src = cardData.image;
+    img.alt = cardData.name || "Card";
+    img.style.width = "100%";
+    img.style.height = "100%";
+    img.style.borderRadius = "8px";
+    if (cardObj.orientation === "horizontal") img.style.transform = "rotate(90deg)";
+    cardDiv.appendChild(img);
   }
 
-  // HP Bar just below the card
-  if (baseHP !== undefined) {
+  // --- Stat Overlays ---
+  const baseHP = typeof cardData.hp === "number" ? cardData.hp : undefined;
+  const currentHP = typeof cardObj.currentHP === "number" ? cardObj.currentHP : baseHP;
+  const baseATK = typeof cardObj.atk === "number" ? cardObj.atk : cardData.atk;
+  const baseDEF = typeof cardObj.def === "number" ? cardObj.def : cardData.def;
+  const currentArmor = typeof cardObj.armor === "number" ? cardObj.armor : cardData.armor;
+  const showStats = category !== "spell";
+
+  // HP Badge (bottom left)
+  if (showStats && typeof currentHP === "number") {
+    const hpBadge = document.createElement('div');
+    hpBadge.className = 'stat-badge stat-hp';
+    hpBadge.style.position = 'absolute';
+    hpBadge.style.left = '7px';
+    hpBadge.style.bottom = '38px';
+    hpBadge.style.width = '34px';
+    hpBadge.style.height = '34px';
+    hpBadge.style.zIndex = 20;
+    hpBadge.innerHTML = `
+      <img src="OtherImages/FieldIcons/Heart.png" style="width:34px;height:34px;">
+      <span style="
+        position:absolute;
+        left:0;top:0;width:100%;height:100%;
+        display:flex;align-items:center;justify-content:center;
+        font-weight:bold;font-size:1.13em;color:#fff;
+        text-shadow:0 1px 4px #232;
+        pointer-events:none;z-index:22;
+      ">${currentHP}</span>
+    `;
+    cardDiv.appendChild(hpBadge);
+  }
+
+  // ATK Badge (center bottom)
+  if (showStats && typeof baseATK === "number") {
+    const atkBadge = document.createElement('div');
+    atkBadge.className = 'stat-badge stat-atk';
+    atkBadge.style.position = 'absolute';
+    atkBadge.style.left = '41px';
+    atkBadge.style.bottom = '38px';
+    atkBadge.style.width = '34px';
+    atkBadge.style.height = '34px';
+    atkBadge.style.zIndex = 20;
+    atkBadge.innerHTML = `
+      <img src="OtherImages/Icons/CircleRed.png" style="width:34px;height:34px;">
+      <span style="
+        position:absolute;
+        left:0;top:0;width:100%;height:100%;
+        display:flex;align-items:center;justify-content:center;
+        font-weight:bold;font-size:1.13em;color:#fff;
+        text-shadow:0 1px 4px #232;
+        pointer-events:none;z-index:22;
+      ">${baseATK}</span>
+    `;
+    cardDiv.appendChild(atkBadge);
+  }
+
+  // DEF Badge (right bottom)
+  if (showStats && typeof baseDEF === "number") {
+    const defBadge = document.createElement('div');
+    defBadge.className = 'stat-badge stat-def';
+    defBadge.style.position = 'absolute';
+    defBadge.style.left = '75px';
+    defBadge.style.bottom = '38px';
+    defBadge.style.width = '34px';
+    defBadge.style.height = '34px';
+    defBadge.style.zIndex = 20;
+    defBadge.innerHTML = `
+      <img src="OtherImages/Icons/ShieldBlue.png" style="width:34px;height:34px;">
+      <span style="
+        position:absolute;
+        left:0;top:0;width:100%;height:100%;
+        display:flex;align-items:center;justify-content:center;
+        font-weight:bold;font-size:1.13em;color:#fff;
+        text-shadow:0 1px 4px #232;
+        pointer-events:none;z-index:22;
+      ">${baseDEF}</span>
+    `;
+    cardDiv.appendChild(defBadge);
+  }
+
+  // ARMOR Badge (center-left, vertical middle)
+  if (showStats && typeof currentArmor === "number" && currentArmor > 0) {
+    const armorBadge = document.createElement('div');
+    armorBadge.className = 'stat-badge stat-armor';
+    armorBadge.style.position = 'absolute';
+    armorBadge.style.left = '1px';
+    armorBadge.style.top = '50%';
+    armorBadge.style.transform = 'translateY(-50%)';
+    armorBadge.style.width = '34px';
+    armorBadge.style.height = '34px';
+    armorBadge.style.zIndex = 20;
+    armorBadge.innerHTML = `
+      <img src="OtherImages/FieldIcons/Armor.png" style="width:34px;height:34px;">
+      <span style="
+        position:absolute;
+        left:0;top:0;width:100%;height:100%;
+        display:flex;align-items:center;justify-content:center;
+        font-weight:bold;font-size:1.13em;color:#ffe066;
+        text-shadow:0 1px 4px #232;
+        pointer-events:none;z-index:22;
+      ">${currentArmor}</span>
+    `;
+    cardDiv.appendChild(armorBadge);
+  }
+
+  // --- HP Bar (move to bottom) ---
+  if (showStats && typeof currentHP === "number" && typeof baseHP === "number" && baseHP > 0) {
+    const hpPercent = Math.max(0, Math.min(1, currentHP / baseHP));
+    let barColor = "#4caf50"; // green
+    if (hpPercent <= 0.25) barColor = "#e53935";
+    else if (hpPercent <= 0.5) barColor = "#ff9800";
     const barWrap = document.createElement('div');
     barWrap.className = 'hp-bar-wrap';
+    barWrap.style.position = 'absolute';
+    barWrap.style.left = '6px';
+    barWrap.style.bottom = '8px';
+    barWrap.style.width = '108px';
+    barWrap.style.height = '12px';
+    barWrap.style.background = '#222c';
+    barWrap.style.borderRadius = '7px';
+    barWrap.style.zIndex = 19;
     const bar = document.createElement('div');
     bar.className = 'hp-bar';
+    bar.style.height = '100%';
     bar.style.width = `${Math.round(hpPercent * 100)}%`;
     bar.style.backgroundColor = barColor;
+    bar.style.borderRadius = '7px';
     barWrap.appendChild(bar);
-    wrapper.appendChild(barWrap);
 
     // HP change animation
     if (typeof cardObj._prevHP === "number" && cardObj._prevHP !== currentHP) {
@@ -960,152 +1074,18 @@ function renderCardOnField(cardObj, zoneId) {
       }
     }
     cardObj._prevHP = currentHP; // Store for next render
-  }
-  // --- ARMOR BADGE (center-left, absolute) ---
-  // check current armor (cardObj.armor) first, fallback to baseArmor (cardData.armor)
-  const currentArmor = typeof cardObj.armor === "number"
-    ? cardObj.armor
-    : (typeof cardData.armor === "number" ? cardData.armor : 0);
-  const hasArmor = currentArmor > 0;
 
-  if (hasArmor && category !== "spell") {
-    const armorBadge = document.createElement('span');
-    armorBadge.className = 'armor-badge';
-    armorBadge.style.position = 'absolute';
-    armorBadge.style.left = '0';
-    armorBadge.style.top = '50%';
-    armorBadge.style.transform = 'translateY(-50%)';
-    armorBadge.style.display = 'inline-flex';
-    armorBadge.style.alignItems = 'center';
-    armorBadge.style.justifyContent = 'flex-start';
-    armorBadge.style.width = '38px';
-    armorBadge.style.height = '38px';
-    armorBadge.style.zIndex = '25';
-
-    armorBadge.innerHTML = `
-      <img src="OtherImages/FieldIcons/Armor.png" alt="Armor" style="width:28px;height:28px;vertical-align:middle;">
-      <span style="font-weight:bold;color:#ffe066;font-size:1.17em;text-shadow:0 1px 3px #000;padding-left:4px;">${currentArmor}</span>
-    `;
-    cardDiv.appendChild(armorBadge);
-  }
-  
-  // --- BOTTOM STATS BADGE ROW ---
-  // Only for cards that have at least one stat (and not spells)
-  const hasHP = typeof cardData.hp === "number";
-  const hasATK = typeof cardData.atk === "number";
-  const hasDEF = typeof cardData.def === "number";
-  if ((hasHP || hasATK || hasDEF) && category !== "spell") {
-    const statsRow = document.createElement('div');
-    statsRow.className = 'card-bottom-stats-row';
-    statsRow.style.position = 'absolute';
-    statsRow.style.bottom = '6px';
-    statsRow.style.left = '0';
-    statsRow.style.width = '100%';
-    statsRow.style.display = 'flex';
-    statsRow.style.justifyContent = 'space-evenly';
-    statsRow.style.alignItems = 'center';
-    statsRow.style.zIndex = '10';
-
-    // HP badge
-    if (hasHP) {
-      const hpBadge = document.createElement('span');
-      hpBadge.className = 'hp-badge';
-      hpBadge.style.display = 'inline-flex';
-      hpBadge.style.alignItems = 'center';
-      hpBadge.innerHTML = `
-        <img src="OtherImages/FieldIcons/Heart.png" alt="HP" style="width:28px;height:28px;vertical-align:middle;">
-        <span style="font-weight:bold;color:#fff;font-size:1.14em;text-shadow:0 1px 3px #000;padding-left:4px;">${currentHP}</span>
-      `;
-      statsRow.appendChild(hpBadge);
-    }
-
-    // ATK badge
-    if (hasATK) {
-      const atkBadge = document.createElement('span');
-      atkBadge.className = 'atk-badge';
-      atkBadge.style.display = 'inline-flex';
-      atkBadge.style.alignItems = 'center';
-      atkBadge.innerHTML = `
-        <img src="OtherImages/Icons/CircleRed.png" alt="ATK" style="width:28px;height:28px;vertical-align:middle;">
-        <span style="font-weight:bold;color:#fff;font-size:1.14em;text-shadow:0 1px 3px #000;padding-left:4px;">${cardData.atk}</span>
-      `;
-      statsRow.appendChild(atkBadge);
-    }
-
-    // DEF badge
-    if (hasDEF) {
-      const defBadge = document.createElement('span');
-      defBadge.className = 'def-badge';
-      defBadge.style.display = 'inline-flex';
-      defBadge.style.alignItems = 'center';
-      defBadge.innerHTML = `
-        <img src="OtherImages/Icons/ShieldBlue.png" alt="DEF" style="width:28px;height:28px;vertical-align:middle;">
-        <span style="font-weight:bold;color:#fff;font-size:1.14em;text-shadow:0 1px 3px #000;padding-left:4px;">${cardData.def}</span>
-      `;
-      statsRow.appendChild(defBadge);
-    }
-
-    cardDiv.appendChild(statsRow);
+    cardDiv.appendChild(barWrap);
   }
 
-  // --- FIRE PARTICLES FOR RED CARDS ---
-  const particlesConfig = getParticlePresetForCard(cardData);
-  if (particlesConfig) {
-    applyCardParticles({
-      cardDiv,
-      effectKey: `${cardObj.instanceId}_${Array.isArray(cardData.color) ? cardData.color.join('_') : cardData.color}`,
-      particlesConfig
-    });
-  }
-
-  // Add card image
-  if (cardData && cardData.image) {
-    const img = document.createElement('img');
-    img.src = cardData.image;
-    img.alt = cardData.name || "Card";
-    if (cardObj.orientation === "horizontal") {
-      img.style.transform = "rotate(90deg)";
-    }
-    cardDiv.appendChild(img);
-  } else {
-    cardDiv.textContent = cardData ? cardData.name : "Unknown";
-  }
-
-  // Allow any card to receive attachments
-  cardDiv.ondragover = (e) => {
-    const draggedId = e.dataTransfer.getData("text/plain");
-    const draggedCard = gameState.playerHand.find(c => c.instanceId === draggedId);
-    if (draggedCard) {
-      e.preventDefault();
-      cardDiv.classList.add('drag-over');
-    }
-  };
-  cardDiv.ondragleave = () => cardDiv.classList.remove('drag-over');
-  cardDiv.ondrop = (e) => {
-    e.preventDefault();
-    cardDiv.classList.remove('drag-over');
-    const instanceId = e.dataTransfer.getData("text/plain");
-    const idx = gameState.playerHand.findIndex(c => c.instanceId === instanceId);
-    if (idx !== -1) {
-      const attachObj = gameState.playerHand.splice(idx, 1)[0];
-      if (!cardObj.attachedCards) cardObj.attachedCards = [];
-      cardObj.attachedCards.push({ ...attachObj });
-      renderGameState();
-      setupDropZones();
-    }
-  };
-
-  // ATTACHED CARDS ON TOP
+  // --- Attached Cards (right side, absolute) ---
   if (cardObj.attachedCards && cardObj.attachedCards.length > 0) {
     const stackDiv = document.createElement('div');
     stackDiv.className = 'attached-cards-stack';
     stackDiv.style.position = 'absolute';
-    stackDiv.style.right = '0%';
-    stackDiv.style.top = '50%';
-    stackDiv.style.transform = 'translateX(-50%)';
-    stackDiv.style.pointerEvents = 'none';
-    stackDiv.style.zIndex = '5';
-
+    stackDiv.style.right = '-62px'; // Hug the right, outside the card
+    stackDiv.style.top = '0px';
+    stackDiv.style.zIndex = '30';
     cardObj.attachedCards.forEach((attachObj, i) => {
       const attachData = dummyCards.find(c => c.id === attachObj.cardId);
       if (!attachData) return;
@@ -1114,8 +1094,8 @@ function renderCardOnField(cardObj, zoneId) {
       attDiv.style.width = '60px';
       attDiv.style.height = '85px';
       attDiv.style.position = 'absolute';
-      attDiv.style.left = '0';
       attDiv.style.top = `${i * 16}px`;
+      attDiv.style.right = '0px';
       attDiv.style.pointerEvents = 'auto';
       attDiv.title = attachData.name;
 
@@ -1159,16 +1139,16 @@ function renderCardOnField(cardObj, zoneId) {
       img.src = attachData.image;
       img.alt = attachData.name;
       img.style.width = '100%';
+      img.style.height = '100%';
       img.style.borderRadius = '8px';
       attDiv.appendChild(img);
 
       stackDiv.appendChild(attDiv);
     });
-    cardDiv.style.position = 'relative';
     cardDiv.appendChild(stackDiv);
   }
 
-  // Essence pool rendering
+  // Essence pool rendering (unchanged)
   const essenceDiv = renderEssencePool(cardObj);
   if (essenceDiv) cardDiv.appendChild(essenceDiv);
 
