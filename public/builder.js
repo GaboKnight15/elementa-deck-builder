@@ -78,6 +78,16 @@ document.getElementById('builder-back-btn').onclick = function() {
 const saveDeckBtn = document.getElementById('save-deck-btn');
 if (saveDeckBtn) {
   saveDeckBtn.onclick = function() {
+    const deck = getCurrentDeck();
+    // Count dominion cards in deck
+    let dominionCount = Object.entries(deck).reduce((sum, [cardId, count]) => {
+      const card = dummyCards.find(c => c.id === cardId);
+      return sum + ((card && card.trait && card.trait.toLowerCase() === 'dominion') ? count : 0);
+    }, 0);
+    if (dominionCount !== 1) {
+      showToast("Deck must have exactly one Dominion card.", { type: "error" });
+      return;
+    }
     saveProgress();
     showToast("Deck saved!", { type: "success" });
   };
@@ -861,9 +871,7 @@ function canAddCard(card, currentInDeck, ownedCount) {
   if (card.trait && card.trait.toLowerCase() === 'dominion') {
     for (const cardId in deck) {
       const c = dummyCards.find(dc => dc.id === cardId);
-      if (c && c.trait && c.trait.toLowerCase() === 'dominion' && cardId !== card.id) {
-        return false;
-      }
+      if (c && c.trait && c.trait.toLowerCase() === 'dominion') return false;
     }
     if (count >= 1) return false;
   }
