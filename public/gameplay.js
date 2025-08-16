@@ -340,29 +340,18 @@ function moveCard(instanceId, fromArr, toArr, extra = {}) {
       gameState.opponentCreatures,
       gameState.opponentDomains
     ];
+    const fromField = fieldArrays.includes(fromArr);
     const toField = fieldArrays.includes(toArr);
 
     // If moving OUT of field, remove currentHP & orientation so it resets next time
-if (!toField) {
-  delete cardObj.currentHP;
-  delete cardObj.orientation;
-}
-// Always log movement, regardless of zone:
-const destZone = getZoneNameForArray(toArr);
-const logObj = (destZone === 'playerHand' || destZone === 'opponentHand')
-  ? {
-      sourceCard: {
-        image: cardDef?.image,
-        name: cardDef?.name,
-        cardId: cardDef?.id,
-        isDraw: true
-      },
-      action: "draw",
-      dest: "Hand",
-      who: (fromArr === gameState.playerDeck) ? "player" : "opponent",
-      sender: gameState.playerProfile?.username || "me"
+    if (!toField) {
+      delete cardObj.currentHP;
+      delete cardObj.orientation;
     }
-  : {
+    // Always log movement, regardless of zone:
+    const destZone = getZoneNameForArray(toArr);
+    const sourceZone = getZoneNameForArray(fromArr);
+    const logObj = {
       sourceCard: { image: cardDef?.image, name: cardDef?.name, cardId: cardDef?.id },
       action: "move",
       dest: destZone === 'playerVoid' ? "Void"
@@ -376,6 +365,7 @@ const logObj = (destZone === 'playerHand' || destZone === 'opponentHand')
         : destZone === 'opponentDomains' ? "Domains"
         : destZone === 'opponentCreatures' ? "Creatures"
         : destZone,
+      from: sourceZone,
       who: (fromArr === gameState.playerHand || fromArr === gameState.playerDeck ||
             fromArr === gameState.playerDomains || fromArr === gameState.playerCreatures) ? "player" : "opponent",
       sender: gameState.playerProfile?.username || "me"
@@ -390,10 +380,6 @@ const logObj = (destZone === 'playerHand' || destZone === 'opponentHand')
     toArr.push(cardObj);
   }
   setupDropZones();
-  if (fromArr === gameState.playerHand || fromArr === gameState.playerDeck ||
-      toArr === gameState.playerCreatures || toArr === gameState.playerDomains ||
-      toArr === gameState.playerVoid) {
-  }
   emitPublicState();
 }
 
@@ -1316,9 +1302,9 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
         if (arr) {
           let card = arr.find(c => c.instanceId === instanceId);
           if (card) {
-              let prevOrientation = c.orientation;
-              const newOrientation = card.orientation === "horizontal" ? "vertical" : "horizontal";
-              changeCardPosition(card, newOrientation);
+            let prevOrientation = card.orientation;
+            const newOrientation = card.orientation === "horizontal" ? "vertical" : "horizontal";
+            changeCardPosition(card, newOrientation);
           }
         }
         closeAllMenus();
@@ -2916,7 +2902,7 @@ socket.on('casual-match-found', function(matchData) {
 });
 
 // After local selection:
-socket.emit('champion-selected', currentRoomId, chosenChampionData);
+socket.emit('champion-selected', window.currentRoomId, chosenChampionData);
 showWaitingForOpponentModal();
 socket.on('opponent profile', function(profileObj) {
   renderProfile('opponent-profile', profileObj);
