@@ -1044,6 +1044,7 @@ function renderCardOnField(cardObj, zoneId) {
     let barColor = "#4caf50"; // green
     if (hpPercent <= 0.25) barColor = "#e53935";
     else if (hpPercent <= 0.5) barColor = "#ff9800";
+    
     const barWrap = document.createElement('div');
     barWrap.className = 'hp-bar-wrap';
     barWrap.style.position = 'absolute';
@@ -1052,8 +1053,8 @@ function renderCardOnField(cardObj, zoneId) {
     barWrap.style.width = '100%';
     barWrap.style.height = '8%';
     barWrap.style.background = '#222c';
-    bar.style.borderRadius = '7px';
     barWrap.style.zIndex = 19;
+    
     const bar = document.createElement('div');
     bar.className = 'hp-bar';
     bar.style.height = '100%';
