@@ -947,8 +947,8 @@ function renderCardOnField(cardObj, zoneId) {
     const hpBadge = document.createElement('div');
     hpBadge.className = 'stat-badge stat-hp';
     hpBadge.style.position = 'absolute';
-    hpBadge.style.left = '7px';
-    hpBadge.style.bottom = '38px';
+    hpBadge.style.left = '0';
+    hpBadge.style.bottom = '0';
     hpBadge.style.width = '34px';
     hpBadge.style.height = '34px';
     hpBadge.style.zIndex = 20;
