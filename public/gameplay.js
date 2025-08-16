@@ -2634,6 +2634,7 @@ function cardImgLog(card, {
   showCardback = false
 } = {}) {
   const cardId = card?.cardId || "";
+  const instanceId = card?.instanceId || "";
   // If drawing to hand AND it's the opponent's log, show cardback
   if (showCardback) {
     let cardback = window.selectedOpponentDeck?.cardbackArt
@@ -2651,7 +2652,7 @@ function cardImgLog(card, {
   if (marginRight) styleStr += ` margin-right:${marginRight};`;
   if (style) styleStr += ` ${style}`;
   return `<img class="log-card-img ${extraClass}" src="${card.image}" 
-    data-cardid="${card.cardId}" title="${card.name}" 
+    data-cardid="${cardId}" data-instanceid="${instanceId}" title="${card.name}" 
     style="${styleStr}">`;
 }
 function zoneImgLog(zone) {
@@ -2849,8 +2850,17 @@ function getCardColors(cardObj) {
 
 document.getElementById('chat-log').addEventListener('click', function(e) {
   if (e.target.classList.contains('log-card-img')) {
+    const instanceId = e.target.getAttribute('data-instanceid');
     const cardId = e.target.getAttribute('data-cardid');
-    const cardObj = dummyCards.find(c => c.id === cardId);
+    let cardObj = null;
+    // Try to find by instanceId first
+    if (instanceId) {
+      cardObj = dummyCards.find(c => c.instanceId === instanceId);
+    }
+    // If not found, fallback to cardId
+    if (!cardObj && cardId) {
+      cardObj = dummyCards.find(c => c.id === cardId);
+    }
     if (cardObj) showFullCardModal(cardObj);
   }
 });
