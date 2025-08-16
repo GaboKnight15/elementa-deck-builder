@@ -2393,11 +2393,33 @@ button {}
 }
 
 .card-battlefield:hover img,
-.card-battlefield:focus img {
+.card-battlefield:focus img,
+.card-battlefield:hover .stat-badge,
+.card-battlefield:focus .stat-badge,
+.card-battlefield:hover .stat-badge span,
+.card-battlefield:focus .stat-badge span,
+.card-battlefield:hover .hp-bar-wrap,
+.card-battlefield:focus .hp-bar-wrap,
+.card-battlefield:hover .hp-bar,
+.card-battlefield:focus .hp-bar {
   transform: scale(1.1) translateY(-5px);
   box-shadow: 0 8px 24px rgba(0,0,0,0.22);
   z-index: 10;
+  filter: brightness(1.15) drop-shadow(0 0 6px #ffe066aa);
+  transition: filter 0.18s, box-shadow 0.18s, transform 0.18s;
 }
+
+.card-battlefield:hover .stat-badge span,
+.card-battlefield:focus .stat-badge span {
+  color: #ffe066 !important;
+  text-shadow: 0 0 8px #232, 0 0 4px #ffe066;
+}
+
+.card-battlefield:hover .hp-bar,
+.card-battlefield:focus .hp-bar {
+  box-shadow: 0 0 10px #ffe06688;
+}
+
 .hand-area {
   min-height: 60px;
   margin: 0 auto;
