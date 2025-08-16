@@ -916,17 +916,11 @@ function renderCardOnField(cardObj, zoneId) {
   // Create wrapper FIRST!
   const wrapper = document.createElement('div');
   wrapper.className = 'card-battlefield-wrapper';
-  wrapper.style.position = 'relative';
-  wrapper.style.width = '120px'; // adjust as needed
-  wrapper.style.height = '170px'; // adjust as needed
-  wrapper.style.display = 'inline-block';
+
   // Main card div
   const cardDiv = document.createElement('div');
   cardDiv.className = 'card-battlefield';
   cardDiv.dataset.instanceId = cardObj.instanceId;
-  cardDiv.style.position = 'relative';
-  cardDiv.style.width = '120px'; // or your card width
-  cardDiv.style.height = '170px'; // or your card height
 
   // Card image
   if (cardData && cardData.image) {
@@ -1089,7 +1083,7 @@ function renderCardOnField(cardObj, zoneId) {
     const stackDiv = document.createElement('div');
     stackDiv.className = 'attached-cards-stack';
     stackDiv.style.position = 'absolute';
-    stackDiv.style.right = '-62px'; // Hug the right, outside the card
+    stackDiv.style.right = '0px'; // Hug the right side, inside the card
     stackDiv.style.top = '0px';
     stackDiv.style.zIndex = '30';
     cardObj.attachedCards.forEach((attachObj, i) => {
@@ -1100,7 +1094,8 @@ function renderCardOnField(cardObj, zoneId) {
       attDiv.style.width = '60px';
       attDiv.style.height = '85px';
       attDiv.style.position = 'absolute';
-      attDiv.style.top = `${i * 16}px`;
+      attDiv.style.right = '0px';
+      attDiv.style.top = `${i * 18}px`;
       attDiv.style.right = '0px';
       attDiv.style.pointerEvents = 'auto';
       attDiv.title = attachData.name;
