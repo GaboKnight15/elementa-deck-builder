@@ -348,7 +348,6 @@ if (!toField) {
   delete cardObj.orientation;
 }
 // Always log movement, regardless of zone:
-// Always log movement, regardless of zone:
 const destZone = getZoneNameForArray(toArr);
 const logObj = (destZone === 'playerHand' || destZone === 'opponentHand')
   ? {
@@ -381,16 +380,12 @@ const logObj = (destZone === 'playerHand' || destZone === 'opponentHand')
             fromArr === gameState.playerDomains || fromArr === gameState.playerCreatures) ? "player" : "opponent",
       sender: gameState.playerProfile?.username || "me"
     };
-
-// Log locally for your own actions
-if (logObj.who === "player") {
-  appendVisualLog(logObj, false, true); // Show log for you
-}
-
-// Emit to socket for opponent to see
-if (window.socket && window.currentRoomId) {
-  window.socket.emit('game action log', window.currentRoomId, logObj);
-}
+    // Always append log locally (solo or multiplayer!)
+    appendVisualLog(logObj, false, logObj.who === "player");
+    // Only emit to socket if in multiplayer mode
+    if (window.socket && window.currentRoomId) {
+      window.socket.emit('game action log', window.currentRoomId, logObj);
+    }
     fromArr.splice(idx, 1);
     toArr.push(cardObj);
   }
@@ -1318,18 +1313,13 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
         if (!cardObj || cardObj.hasChangedPositionThisTurn) return;
         let arr = getZoneArray(zoneId);
         if (arr) {
-          for (let c of arr) {
-            if (c.instanceId === instanceId) {
+          let card = arr.find(c => c.instanceId === instanceId);
+          if (card) {
               let prevOrientation = c.orientation;
-              c.orientation = (c.orientation === "horizontal") ? "vertical" : "horizontal";
-              c.hasChangedPositionThisTurn = true;
-              appendPositionChangeLog(c, c.orientation, prevOrientation);
-            }
+              const newOrientation = card.orientation === "horizontal" ? "vertical" : "horizontal";
+              changeCardPosition(card, newOrientation);
           }
         }
-        renderGameState();
-        setupDropZones();
-        emitPublicState();
         closeAllMenus();
       }
     },
@@ -1660,6 +1650,12 @@ function runCpuTurn() {
   switch (gameState.phase) {
     case "draw":
       drawCards("opponent", 1);
+      appendVisualLog({
+        sourceCard: {/* info about drawn card or just {name:"Draw"} */},
+        action: "draw",
+        dest: "Hand",
+        who: "opponent"
+      }, false, false);
       setTimeout(nextPhaseBtn.click, 800);
       break;
     case "essence":
@@ -2781,7 +2777,18 @@ function appendPositionChangeLog(cardObj, newOrientation, prevOrientation) {
     window.socket.emit('game action log', window.currentRoomId, obj);
   }
 }
-
+// CHANGE POSITION HELPER
+function changeCardPosition(cardObj, newOrientation) {
+  if (!cardObj) return;
+  const prevOrientation = cardObj.orientation;
+  if (prevOrientation === newOrientation) return; // No change
+  cardObj.orientation = newOrientation;
+  cardObj.hasChangedPositionThisTurn = true;
+  appendPositionChangeLog(cardObj, newOrientation, prevOrientation);
+  renderGameState();
+  setupDropZones();
+  emitPublicState();
+}
 // APPEND TO LOG
 function appendVisualLog(obj, fromSocket = false, isMe = true) {
   const logDiv = document.getElementById('chat-log');
