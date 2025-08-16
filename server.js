@@ -91,7 +91,16 @@ socket.on('profile', (profileObj) => {
     socket.to(socket.roomId).emit('opponent profile', profileObj);
   }
 });
+// Add to rooms structure: rooms[roomId].champions = { [socket.id]: championData }
+socket.on('champion-selected', (roomId, championData) => {
+  if (!rooms[roomId].champions) rooms[roomId].champions = {};
+  rooms[roomId].champions[socket.id] = championData;
 
+  // If both have chosen, notify both clients
+  if (Object.keys(rooms[roomId].champions).length === 2) {
+    io.to(roomId).emit('both-champions-selected', rooms[roomId].champions);
+  }
+});
 socket.on('game message', (roomId, msg) => {
   io.to(roomId).emit('game message', {
     sender: socket.username,
