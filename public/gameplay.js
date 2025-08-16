@@ -958,11 +958,11 @@ function renderCardOnField(cardObj, zoneId) {
     hpBadge.style.position = 'absolute';
     hpBadge.style.left = '0';
     hpBadge.style.bottom = '0';
-    hpBadge.style.width = '34px';
-    hpBadge.style.height = '34px';
+    hpBadge.style.width = 'auto';
+    hpBadge.style.height = '25px';
     hpBadge.style.zIndex = 20;
     hpBadge.innerHTML = `
-      <img src="OtherImages/FieldIcons/HP.png" style="width:34px;height:34px;">
+      <img src="OtherImages/FieldIcons/HP.png" style="width:100%;height:100%;">
       <span style="
         position:absolute;
         left:0;top:0;width:100%;height:100%;
@@ -981,11 +981,11 @@ function renderCardOnField(cardObj, zoneId) {
     atkBadge.style.position = 'absolute';
     atkBadge.style.left = '30%';
     atkBadge.style.bottom = '0';
-    atkBadge.style.width = '34px';
-    atkBadge.style.height = '34px';
+    atkBadge.style.width = 'auto';
+    atkBadge.style.height = '25%';
     atkBadge.style.zIndex = 20;
     atkBadge.innerHTML = `
-      <img src="OtherImages/FieldIcons/ATK.png" style="width:34px;height:34px;">
+      <img src="OtherImages/FieldIcons/ATK.png" style="width:100%;height:100%;">
       <span style="
         position:absolute;
         left:0;top:0;width:100%;height:100%;
@@ -1004,11 +1004,11 @@ function renderCardOnField(cardObj, zoneId) {
     defBadge.style.position = 'absolute';
     defBadge.style.right = '0';
     defBadge.style.bottom = '0';
-    defBadge.style.width = '34px';
-    defBadge.style.height = '34px';
+    defBadge.style.width = 'auto';
+    defBadge.style.height = '25%';
     defBadge.style.zIndex = 20;
     defBadge.innerHTML = `
-      <img src="OtherImages/FieldIcons/DEF.png" style="width:34px;height:34px;">
+      <img src="OtherImages/FieldIcons/DEF.png" style="width:100%;height:100%;">
       <span style="
         position:absolute;
         left:0;top:0;width:100%;height:100%;
@@ -1028,11 +1028,11 @@ function renderCardOnField(cardObj, zoneId) {
     armorBadge.style.left = '1px';
     armorBadge.style.top = '50%';
     armorBadge.style.transform = 'translateY(-50%)';
-    armorBadge.style.width = '34px';
-    armorBadge.style.height = '34px';
+    armorBadge.style.width = 'auto';
+    armorBadge.style.height = '25%';
     armorBadge.style.zIndex = 20;
     armorBadge.innerHTML = `
-      <img src="OtherImages/FieldIcons/Armor.png" style="width:34px;height:34px;">
+      <img src="OtherImages/FieldIcons/Armor.png" style="width:100%;height:100%;">
       <span style="
         position:absolute;
         left:0;top:0;width:100%;height:100%;
@@ -1913,6 +1913,9 @@ function initiateDominionAndChampionSelection(deckArr, afterSelection) {
   showChampionSelectionModal(deckArr, chosenChampion => {
     placeChampionOnField(chosenChampion);
     renderGameState();
+    if (window.socket && window.currentRoomId) {
+      window.socket.emit('champion-selected', window.currentRoomId, chosenChampion);
+    }
     if (afterSelection) afterSelection();
   });
 }
@@ -2752,7 +2755,7 @@ window.socket.on('game action log', (obj) => {
   }
 });
 // CHANGE POSITION LOG
-function appendPositionChangeLog(cardObj, newOrientation, prevOrientation) {
+function appendPositionChangeLog(cardObj, newOrientation, prevOrientation, fromSocket = false) {
   const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
   if (!cardDef) return;
   const logDiv = document.getElementById('chat-log');
@@ -2932,7 +2935,6 @@ socket.on('casual-match-found', function(matchData) {
 });
 
 // After local selection:
-socket.emit('champion-selected', window.currentRoomId, chosenChampionData);
 showWaitingForOpponentModal();
 socket.on('opponent profile', function(profileObj) {
   renderProfile('opponent-profile', profileObj);
