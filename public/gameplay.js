@@ -349,36 +349,39 @@ if (!toField) {
 }
 // Always log movement, regardless of zone:
 const destZone = getZoneNameForArray(toArr);
-if (destZone === 'playerHand' || destZone === 'opponentHand') {
-  appendVisualLog({
-    sourceCard: {
-      image: cardDef?.image,
-      name: cardDef?.name,
-      cardId: cardDef?.id,
-      isDraw: true
-    },
-    action: "draw",
-    dest: "Hand",
-    who: (fromArr === gameState.playerDeck) ? "player" : "opponent"
-  });
-} else {
-  appendVisualLog({
-    sourceCard: { image: cardDef?.image, name: cardDef?.name, cardId: cardDef?.id },
-    action: "move",
-    dest: destZone === 'playerVoid' ? "Void"
-      : destZone === 'playerHand' ? "Hand"
-      : destZone === 'playerDeck' ? "Deck"
-      : destZone === 'playerDomains' ? "Domains"
-      : destZone === 'playerCreatures' ? "Creatures"
-      : destZone === 'opponentVoid' ? "Void"
-      : destZone === 'opponentHand' ? "Hand"
-      : destZone === 'opponentDeck' ? "Deck"
-      : destZone === 'opponentDomains' ? "Domains"
-      : destZone === 'opponentCreatures' ? "Creatures"
-      : destZone,
-    who: (fromArr === gameState.playerHand || fromArr === gameState.playerDeck ||
-          fromArr === gameState.playerDomains || fromArr === gameState.playerCreatures) ? "player" : "opponent"
-  });
+if (window.socket && window.currentRoomId) {
+  const logObj = (destZone === 'playerHand' || destZone === 'opponentHand')
+    ? {
+        sourceCard: {
+          image: cardDef?.image,
+          name: cardDef?.name,
+          cardId: cardDef?.id,
+          isDraw: true
+        },
+        action: "draw",
+        dest: "Hand",
+        who: (fromArr === gameState.playerDeck) ? "player" : "opponent",
+        sender: gameState.playerProfile?.username || "me"
+      }
+    : {
+        sourceCard: { image: cardDef?.image, name: cardDef?.name, cardId: cardDef?.id },
+        action: "move",
+        dest: destZone === 'playerVoid' ? "Void"
+          : destZone === 'playerHand' ? "Hand"
+          : destZone === 'playerDeck' ? "Deck"
+          : destZone === 'playerDomains' ? "Domains"
+          : destZone === 'playerCreatures' ? "Creatures"
+          : destZone === 'opponentVoid' ? "Void"
+          : destZone === 'opponentHand' ? "Hand"
+          : destZone === 'opponentDeck' ? "Deck"
+          : destZone === 'opponentDomains' ? "Domains"
+          : destZone === 'opponentCreatures' ? "Creatures"
+          : destZone,
+        who: (fromArr === gameState.playerHand || fromArr === gameState.playerDeck ||
+              fromArr === gameState.playerDomains || fromArr === gameState.playerCreatures) ? "player" : "opponent",
+        sender: gameState.playerProfile?.username || "me"
+      };
+  window.socket.emit('game action log', window.currentRoomId, logObj);
 }
     fromArr.splice(idx, 1);
     toArr.push(cardObj);
