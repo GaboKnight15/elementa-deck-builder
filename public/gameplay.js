@@ -963,8 +963,6 @@ function renderCardOnField(cardObj, zoneId) {
   }
   // --- ARMOR BADGE (center-left, absolute) ---
   // check current armor (cardObj.armor) first, fallback to baseArmor (cardData.armor)
-  const hasArmor = typeof cardObj.armor === "number" ? cardObj.armor > 0 :
-                   typeof cardData.armor === "number" ? cardData.armor > 0 : false;
   const currentArmor = typeof cardObj.armor === "number"
     ? cardObj.armor
     : (typeof cardData.armor === "number" ? cardData.armor : 0);
