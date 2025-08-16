@@ -1709,6 +1709,12 @@ function animateCardFade(instanceId, fromZoneId, toZoneId, callback) {
 
 // START GAME
 function showGameStartAnimation(callback) {
+  if (window.gameStartAnimationShown) return; // prevent repeats
+  window.gameStartAnimationShown = true;
+
+  // Remove any previous overlays
+  let oldOverlay = document.getElementById('game-start-overlay');
+  if (oldOverlay) oldOverlay.remove();
   // Create overlay
   let overlay = document.createElement('div');
   overlay.id = 'game-start-overlay';
@@ -2471,6 +2477,11 @@ function startCasualGame(matchData) {
 
 
 function showCoinFlipModal(onResult) {
+  if (window.coinFlipShown) return; // prevent repeats
+  window.coinFlipShown = true;
+  // Remove any previous overlays
+  let oldModal = document.getElementById('coin-flip-modal');
+  if (oldModal) oldModal.remove();
   // Use forcedResult if provided, else pick randomly (for solo/casual play)
   let isHeads;
   if (typeof forcedResult !== "undefined") {
@@ -2494,7 +2505,7 @@ function showCoinFlipModal(onResult) {
   modal.onclick = e => { if (e.target === modal) modal.remove(); };
 
   // Coin image and message
-  const coin = document.createElement('img');
+  let coin = document.createElement('img');
   coin.src = headsImg;
   coin.style.width = "120px";
   coin.style.transition = "transform 1.2s cubic-bezier(.22,1.14,.32,1)";
@@ -2928,3 +2939,5 @@ if (window.socket) {
   });
 }
 window.gameState = window.gameState || {};
+window.gameStartAnimationShown = false;
+window.coinFlipShown = false;
