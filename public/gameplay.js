@@ -2782,7 +2782,29 @@ function appendVisualLog(obj, fromSocket = false, isMe = true) {
     window.socket.emit('game action log', window.currentRoomId, obj);
   }
 }
-
+function showWaitingForOpponentModal() {
+  // Show loading spinner/modal
+  let modal = document.createElement('div');
+  modal.id = 'waiting-modal';
+  modal.className = 'modal';
+  modal.innerHTML = `<div class="modal-content" style="text-align:center;"><h3>Waiting for opponent...</h3><div class="spinner"></div></div>`;
+  document.body.appendChild(modal);
+}
+function closeWaitingForOpponentModal() {
+  let modal = document.getElementById('waiting-modal');
+  if (modal) modal.remove();
+}
+function startGameFieldAnimation(champions) {
+  // Show "Both champions revealed!" animation
+  showChampionsRevealModal(champions, () => {
+    // After animation (e.g., with setTimeout), proceed to render field, draw hand, etc.
+    setTimeout(() => {
+      renderGameField(); // Your function to render battlefield
+      drawOpeningHands();
+      // Any other startup logic
+    }, 1000); // 1 second animation
+  });
+}
 // Helper functions for abilities and skills
 function attackerHasAbility(cardObj, abilityName) {
   const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
@@ -2873,6 +2895,10 @@ socket.on('casual-match-found', function(matchData) {
   // emit your profile AFTER joining
   socket.emit('profile', getMyProfileInfo());
 });
+
+// After local selection:
+socket.emit('champion-selected', currentRoomId, chosenChampionData);
+showWaitingForOpponentModal();
 socket.on('opponent profile', function(profileObj) {
   renderProfile('opponent-profile', profileObj);
   document.getElementById('opponent-profile').style.display = '';
