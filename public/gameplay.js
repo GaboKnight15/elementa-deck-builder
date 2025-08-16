@@ -913,7 +913,13 @@ function getBaseHp(cardId) {
 function renderCardOnField(cardObj, zoneId) {
   const cardData = dummyCards.find(c => c.id === cardObj.cardId);
   const category = cardData?.category?.toLowerCase();
-
+  // Create wrapper FIRST!
+  const wrapper = document.createElement('div');
+  wrapper.className = 'card-battlefield-wrapper';
+  wrapper.style.position = 'relative';
+  wrapper.style.width = '120px'; // adjust as needed
+  wrapper.style.height = '170px'; // adjust as needed
+  wrapper.style.display = 'inline-block';
   // Main card div
   const cardDiv = document.createElement('div');
   cardDiv.className = 'card-battlefield';
