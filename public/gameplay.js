@@ -958,9 +958,8 @@ function renderCardOnField(cardObj, zoneId) {
         position:absolute;
         left:0;top:0;width:100%;height:100%;
         display:flex;align-items:center;justify-content:center;
-        font-weight:bold;font-size:1.13em;color:#fff;
-        text-shadow:0 1px 4px #232;
-        pointer-events:none;z-index:22;
+        font-weight:bold;color:#fff;
+        text-shadow:0 1px 4px #232;z-index:22;
       ">${currentHP}</span>
     `;
     cardDiv.appendChild(hpBadge);
@@ -971,8 +970,8 @@ function renderCardOnField(cardObj, zoneId) {
     const atkBadge = document.createElement('div');
     atkBadge.className = 'stat-badge stat-atk';
     atkBadge.style.position = 'absolute';
-    atkBadge.style.left = '41px';
-    atkBadge.style.bottom = '38px';
+    atkBadge.style.left = '30%';
+    atkBadge.style.bottom = '0';
     atkBadge.style.width = '34px';
     atkBadge.style.height = '34px';
     atkBadge.style.zIndex = 20;
@@ -982,9 +981,8 @@ function renderCardOnField(cardObj, zoneId) {
         position:absolute;
         left:0;top:0;width:100%;height:100%;
         display:flex;align-items:center;justify-content:center;
-        font-weight:bold;font-size:1.13em;color:#fff;
-        text-shadow:0 1px 4px #232;
-        pointer-events:none;z-index:22;
+        font-weight:bold;color:#fff;
+        text-shadow:0 1px 4px #232;z-index:22;
       ">${baseATK}</span>
     `;
     cardDiv.appendChild(atkBadge);
@@ -995,8 +993,8 @@ function renderCardOnField(cardObj, zoneId) {
     const defBadge = document.createElement('div');
     defBadge.className = 'stat-badge stat-def';
     defBadge.style.position = 'absolute';
-    defBadge.style.left = '75px';
-    defBadge.style.bottom = '38px';
+    defBadge.style.right = '0';
+    defBadge.style.bottom = '0';
     defBadge.style.width = '34px';
     defBadge.style.height = '34px';
     defBadge.style.zIndex = 20;
@@ -1006,9 +1004,8 @@ function renderCardOnField(cardObj, zoneId) {
         position:absolute;
         left:0;top:0;width:100%;height:100%;
         display:flex;align-items:center;justify-content:center;
-        font-weight:bold;font-size:1.13em;color:#fff;
-        text-shadow:0 1px 4px #232;
-        pointer-events:none;z-index:22;
+        font-weight:bold;color:#fff;
+        text-shadow:0 1px 4px #232;z-index:22;
       ">${baseDEF}</span>
     `;
     cardDiv.appendChild(defBadge);
@@ -1031,9 +1028,8 @@ function renderCardOnField(cardObj, zoneId) {
         position:absolute;
         left:0;top:0;width:100%;height:100%;
         display:flex;align-items:center;justify-content:center;
-        font-weight:bold;font-size:1.13em;color:#ffe066;
-        text-shadow:0 1px 4px #232;
-        pointer-events:none;z-index:22;
+        font-weight:bold;;color:#ffe066;
+        text-shadow:0 1px 4px #232;z-index:22;
       ">${currentArmor}</span>
     `;
     cardDiv.appendChild(armorBadge);
@@ -1048,12 +1044,12 @@ function renderCardOnField(cardObj, zoneId) {
     const barWrap = document.createElement('div');
     barWrap.className = 'hp-bar-wrap';
     barWrap.style.position = 'absolute';
-    barWrap.style.left = '6px';
-    barWrap.style.bottom = '8px';
-    barWrap.style.width = '108px';
-    barWrap.style.height = '12px';
+    barWrap.style.left = '0';
+    barWrap.style.bottom = '0';
+    barWrap.style.width = '100%';
+    barWrap.style.height = '8%';
     barWrap.style.background = '#222c';
-    barWrap.style.borderRadius = '7px';
+    bar.style.borderRadius = '7px';
     barWrap.style.zIndex = 19;
     const bar = document.createElement('div');
     bar.className = 'hp-bar';
