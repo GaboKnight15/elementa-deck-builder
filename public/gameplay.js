@@ -1278,6 +1278,7 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
           showSetHpModal(cardObj, function(newHp) {
             cardObj.currentHP = newHp;
             renderGameState();
+            emitPublicState();
             closeAllMenus();
           });
         } else {
@@ -1290,6 +1291,7 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
       onClick: function(e) {
         e.stopPropagation();
         startAttackTargeting(instanceId, zoneId, cardDiv);
+        emitPublicState();
         closeAllMenus();
       }
     },
@@ -1307,6 +1309,7 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
         }
         renderGameState();
         setupDropZones();
+        emitPublicState();
         closeAllMenus();
       }
     },
@@ -1329,6 +1332,7 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
         }
         renderGameState();
         setupDropZones();
+        emitPublicState();
         closeAllMenus();
       }
     },
@@ -1363,6 +1367,7 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
         }
         renderGameState();
         setupDropZones();
+        emitPublicState();
         closeAllMenus();
       }
     },
