@@ -51,7 +51,7 @@ let showFavoritesOnlyBuilder = false;
 const cardbackOptions = [
   "OtherImages/Cardbacks/CardbackDefault.png",
   "OtherImages/Cardbacks/Cardback1.png",
-  "OtherImages/Cardbacks/FairyCardback.png",
+  "OtherImages/Cardbacks/CBFairy.png",
   "OtherImages/Cardbacks/CBCindercore.png",
   "OtherImages/Cardbacks/CBConstructs.png",
   "OtherImages/Cardbacks/CBCoralbound.png",
