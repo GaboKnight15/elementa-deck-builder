@@ -38,7 +38,10 @@ function triggerPlayerSearch(page = 0) {
       lastVisibleUser = snap.docs[snap.docs.length - 1];
       userSearchPages[page] = lastVisibleUser;
     }
-    const players = snap.docs.map(doc => ({ uid: doc.id, ...doc.data() }));
+    const currentUid = getCurrentUserId();
+    const players = snap.docs
+      .map(doc => ({ uid: doc.id, ...doc.data() }))
+      .filter(player => player.uid !== currentUid);
     displayPlayerSearchResults(players, page, snap.size < USERS_PER_PAGE);
   });
 }
@@ -364,6 +367,13 @@ function renderDiscoverPanel() {
   usersDiv.innerHTML = '<div style="color:#ffe066;">Loading random users...</div>';
 
   const currentUid = getCurrentUserId();
+  users = users.filter(u =>
+    u.uid !== currentUid &&                     // not yourself
+    !friends.includes(u.uid) &&                 // not your friend
+    !blocked.includes(u.uid) &&                 // not blocked
+    !receivedReqs.includes(u.uid) &&            // haven't sent you a request
+    !sentRequests.includes(u.uid)               // you haven't sent them a request
+  );
   if (!currentUid) {
     usersDiv.innerHTML = '<div style="color:#e25555;">Please log in.</div>';
     return;
@@ -400,11 +410,20 @@ function renderDiscoverPanel() {
         );
 
         usersDiv.innerHTML = '';
+        usersDiv.style.display = 'flex';
+        usersDiv.style.flexWrap = 'wrap';
+        usersDiv.style.gap = '24px'; // spacing between tiles
+        usersDiv.style.justifyContent = 'flex-start';
+        
         if (!users.length) {
           usersDiv.innerHTML = '<div style="color:#888;">No users to discover!</div>';
         }
         users.forEach(user => {
           const tile = renderProfileTile(user, 'discover');
+          tile.style.flex = "0 0 30%";
+          tile.style.maxWidth = "32%";
+          tile.style.marginBottom = "24px";
+          tile.style.boxSizing = "border-box";
           usersDiv.appendChild(tile);
         });
       });
@@ -432,24 +451,23 @@ function discoverSearch() {
     .limit(10)
     .get().then(snap => {
       let users = snap.docs.map(doc => ({ uid: doc.id, ...doc.data() }));
+      const currentUid = getCurrentUserId();
+      users = users.filter(u => u.uid !== currentUid);
+
+      // --- Layout: 3 per row, flex ---
       usersDiv.innerHTML = '';
+      usersDiv.style.display = 'flex';
+      usersDiv.style.flexWrap = 'wrap';
+      usersDiv.style.gap = '24px';
+      usersDiv.style.justifyContent = 'flex-start';
+
       users.forEach(user => {
-        const entry = document.createElement('div');
-        entry.className = 'friend-profile-tile';
-        entry.innerHTML = `
-          ${renderProfileInfoSection({
-            profileBanner: user.banner,
-            profilePic: user.avatar || 'CardImages/Avatars/Default.png',
-            username: user.username || user.uid,
-            power: user.power || 0
-          })}
-          <div style="margin-top:8px;">
-            <button onclick="viewFriendProfile('${user.uid}')">View</button>
-            <button onclick="sendFriendRequest('${user.username || user.uid}')">Send Friend Request</button>
-            <button onclick="blockUser('${user.uid}')">Block</button>
-          </div>
-        `;
-        usersDiv.appendChild(entry);
+        const tile = renderProfileTile(user, 'discover');
+        tile.style.flex = "0 0 30%";
+        tile.style.maxWidth = "32%";
+        tile.style.marginBottom = "24px";
+        tile.style.boxSizing = "border-box";
+        usersDiv.appendChild(tile);
       });
     });
 }
