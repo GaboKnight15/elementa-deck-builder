@@ -464,7 +464,7 @@ const opponentHandDiv = document.getElementById('opponent-hand');
 opponentHandDiv.innerHTML = '';
 let opponentCardback = (window.selectedCpuDeck && window.selectedCpuDeck.cardbackArt)
   ? window.selectedCpuDeck.cardbackArt
-  : "OtherImages/Cardbacks/DefaultCardback.png"; // fallback
+  : "OtherImages/Cardbacks/CBDefault.png"; // fallback
 
 for (let i = 0; i < gameState.opponentHand.length; i++) {
   const div = document.createElement('div');
@@ -693,7 +693,7 @@ function appendDeckZone(parentDiv, deckArray, who) {
   const deckCard = document.createElement('div');
   deckCard.className = 'card-deck';
 
-  let deckCardback = "OtherImages/Cardbacks/DefaultCardback.png";
+  let deckCardback = "OtherImages/Cardbacks/CBDefault.png";
   if (who === "player" && window.selectedPlayerDeck && window.selectedPlayerDeck.deckObj && window.selectedPlayerDeck.deckObj.cardbackArt
   ) {
     deckCardback = window.selectedPlayerDeck.deckObj.cardbackArt;
@@ -2642,7 +2642,7 @@ function cardImgLog(card, {
   if (showCardback) {
     let cardback = window.selectedOpponentDeck?.cardbackArt
       || gameState.opponentProfile?.cardbackArt
-      || "OtherImages/Cardbacks/DefaultCardback.png";
+      || "OtherImages/Cardbacks/CBDefault.png";
     return `<img class="log-card-img ${extraClass}" src="${cardback}" data-cardid="${card.cardId}" title="Cardback" style="border:2px solid #e25555;width:${width}px;vertical-align:middle;">`;
   }
   // Otherwise show actual card
