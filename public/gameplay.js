@@ -2977,7 +2977,7 @@ function handleSearchEffect(criteria) {
     // Example: trait match
     if (criteria.trait && cardData.trait && cardData.trait.toLowerCase() === criteria.trait.toLowerCase()) return true;
     // Example: subtype match
-    if (criteria.subtype && cardData.subtype && cardData.subtype.toLowerCase() === criteria.subtype.toLowerCase()) return true;
+    if (criteria.type && cardData.type && cardData.subtype.toLowerCase() === criteria.subtype.toLowerCase()) return true;
     // Example: category match
     if (criteria.category && cardData.category && cardData.category.toLowerCase() === criteria.category.toLowerCase()) return true;
     return false;
