@@ -370,7 +370,7 @@ closeDeckBannerModalBtn.onclick = () => (deckBannerModal.style.display = "none")
 // Update displayed cardback in deck menu
 function updateDeckCardback(deckName) {
   const deck = decks[deckName] || {};
-  deckCardbackImg.src = deck.cardbackArt || "OtherImages/Cardbacks/DefaultCardback.png";
+  deckCardbackImg.src = deck.cardbackArt || "OtherImages/Cardbacks/CBDefault.png";
 }
 
 // --- CARDBACK ---
@@ -382,7 +382,7 @@ deckCardbackImg.onclick = function() {
   const deck = decks[deckName] || {};
   const unlocked = getUnlockedCardbacks ? getUnlockedCardbacks() : 
     (window.getUnlockedCardbacks ? window.getUnlockedCardbacks() : 
-      ["OtherImages/Cardbacks/DefaultCardback.png"]);
+      ["OtherImages/Cardbacks/CBDefault.png"]);
   unlocked.forEach(cb => {
     const img = document.createElement('img');
     img.src = cb;
