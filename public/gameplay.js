@@ -411,7 +411,8 @@ function createCardMenu(buttons = []) {
     const btn = document.createElement('button');
     btn.type = "button";
     btn.className = 'btn-secondary';
-    btn.innerText = btnConf.text;
+    if (btnConf.html) btn.innerHTML = btnConf.text;
+    else btn.innerText = btnConf.text;
     if (btnConf.disabled) {
       btn.disabled = true;
       btn.classList.add("btn-disabled");
@@ -509,10 +510,32 @@ function showHandCardMenu(instanceId, cardDiv) {
   closeAllMenus();
   const cardObj = gameState.playerHand.find(c => c.instanceId === instanceId);
   const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+  // --- Get category and cost display ---
+  let playLabel = "Play";
+  let costHtml = "";
+
+  if (cardData) {
+    const category = cardData.category ? cardData.category.toLowerCase() : '';
+    let cost = cardData.cost || {};
+    if (typeof cost === "number") {
+      // treat as colorless
+      cost = { colorless: cost };
+    }
+    costHtml = getEssenceCostDisplay(cost);
+
+    switch (category) {
+      case 'creature': playLabel = "Summon"; break;
+      case 'spell': playLabel = "Cast"; break;
+      case 'domain': playLabel = "Geomancy"; break;
+      case 'artifact': playLabel = "Equip"; break;
+      default: playLabel = "Play";
+    }
+  }
   // Define actions
   const buttons = [
     {
-      text: "Play",
+      text: `<span>${playLabel}</span> <span style="float:right;">${costHtml}</span>`,
+      html: true, // custom flag for HTML content
       onClick: function(e) {
         e.stopPropagation();
         closeAllMenus();
@@ -647,7 +670,35 @@ function renderRowZone(zoneId, cardArray, category) {
 
   // RENDER CARDS IN ZONES
   for (const cardObj of cardArray) {
-  zoneDiv.appendChild(renderCardOnField(cardObj, zoneId));
+    const cardEl = renderCardOnField(cardObj, zoneId);
+
+    // Enable dragging onto a battlefield card for attachments
+    const cardDiv = cardEl.querySelector('.card-battlefield');
+    if (cardDiv) {
+      cardDiv.ondragover = (e) => {
+        e.preventDefault();
+        cardDiv.classList.add('drag-over-attach');
+      };
+      cardDiv.ondragleave = () => cardDiv.classList.remove('drag-over-attach');
+      cardDiv.ondrop = (e) => {
+        e.preventDefault();
+        cardDiv.classList.remove('drag-over-attach');
+        const instanceId = e.dataTransfer.getData('text/plain');
+        const attachmentIdx = gameState.playerHand.findIndex(c => c.instanceId === instanceId);
+        if (attachmentIdx === -1) return;
+        const attachmentCardObj = gameState.playerHand[attachmentIdx];
+
+        // Only allow if attachmentCardObj is valid (equipment/aura/etc.)
+        // For now, allow any card for testing.
+        if (attachCard(cardObj, attachmentCardObj)) {
+          gameState.playerHand.splice(attachmentIdx, 1);
+          renderGameState();
+          setupDropZones();
+        }
+      };
+    }
+
+    zoneDiv.appendChild(cardEl);
   }
 }
 function renderRightbarZones() {
@@ -898,13 +949,21 @@ gameState.playerDeck.forEach((cardObj, idx) => {
       }
     ];
     const menu = createCardMenu(buttons);
-    wrapper.appendChild(menu);
+    document.body.appendChild(menu); // Append to body, not wrapper
+
+    // Position menu absolutely using the image rect
+    const rect = img.getBoundingClientRect();
+    placeMenuWithinViewport(menu, rect);
+
+    menu.onclick = function(e) { e.stopPropagation(); };
+
+    // Hide menu when clicking elsewhere
     setTimeout(() => {
-      document.body.addEventListener('click', function handler() {
-        modal.querySelectorAll('.card-menu').forEach(m => m.remove());
-        document.body.removeEventListener('click', handler);
-      }, { once: true });
-    }, 10);
+  document.body.addEventListener('click', function handler() {
+    menu.remove();
+    document.body.removeEventListener('click', handler);
+  }, { once: true });
+}, 10);
   };
   wrapper.appendChild(cardDiv);
   list.appendChild(wrapper);
@@ -1170,7 +1229,35 @@ function renderCardOnField(cardObj, zoneId) {
 
   return wrapper;
 }
-
+  // COST DISPLAY IN HAND
+function getEssenceCostDisplay(cost) {
+  // cost: {colorless: n, green: n, red: n, ...}
+  if (!cost || typeof cost !== 'object') return '';
+  const colorOrder = ['colorless', 'green', 'red', 'blue', 'white', 'black', 'yellow', 'purple', 'gray'];
+  const essenceMap = {
+    colorless: { img: 'OtherImages/Essence/EssenceOne.png', emoji: '2️⃣' }, // fallback emoji
+    green: { img: 'OtherImages/Essence/EssenceGreen.png', emoji: '🍃' },
+    red: { img: 'OtherImages/Essence/EssenceRed.png', emoji: '🔥' },
+    blue: { img: 'OtherImages/Essence/EssenceBlue.png', emoji: '💧' },
+    white: { img: 'OtherImages/Essence/EssenceWhite.png', emoji: '⚪' },
+    black: { img: 'OtherImages/Essence/EssenceBlack.png', emoji: '⚫' },
+    yellow: { img: 'OtherImages/Essence/EssenceYellow.png', emoji: '🟡' },
+    purple: { img: 'OtherImages/Essence/EssencePurple.png', emoji: '🟣' },
+    gray: { img: 'OtherImages/Essence/EssenceGray.png', emoji: '⬜' },
+  };
+  let html = '';
+  colorOrder.forEach(color => {
+    const amt = cost[color];
+    if (amt && amt > 0) {
+      if (color === 'colorless') {
+        html += `<span style="font-size:1.25em;margin:0 2px;">${'2️⃣'.repeat(amt)}</span>`;
+      } else {
+        html += `<img src="${essenceMap[color].img}" style="width:18px;height:18px;vertical-align:middle;margin:0 2px;" alt="${color}">`.repeat(amt);
+      }
+    }
+  });
+  return html;
+}
 function renderEssencePool(cardObj) {
   if (!cardObj.essence) return null;
   // Track previous essence for animation (per card)
@@ -1494,15 +1581,22 @@ function openVoidModal() {
         }
       }
     ];
-        const menu = createCardMenu(buttons);
-        wrapper.appendChild(menu);
-        menu.onclick = function(e) { e.stopPropagation(); };
-        setTimeout(() => {
-          document.body.addEventListener('click', function handler() {
-            closeAllMenus();
-            document.body.removeEventListener('click', handler);
-          }, { once: true });
-        }, 10);
+    const menu = createCardMenu(buttons);
+    document.body.appendChild(menu); // Append to body, not wrapper
+
+    // Position menu absolutely using the image rect
+    const rect = img.getBoundingClientRect();
+    placeMenuWithinViewport(menu, rect);
+
+    menu.onclick = function(e) { e.stopPropagation(); };
+
+    // Hide menu when clicking elsewhere
+    setTimeout(() => {
+      document.body.addEventListener('click', function handler() {
+        menu.remove();
+        document.body.removeEventListener('click', handler);
+      }, { once: true });
+    }, 10);
       };
       wrapper.appendChild(cardDiv);
       list.appendChild(wrapper);
@@ -1865,10 +1959,6 @@ function showChampionSelectionModal(deckArr, onSelected) {
   });
 
   content.appendChild(row);
-
-  modal.onclick = function(e) {
-    if (e.target === modal) modal.style.display = 'none';
-  };
   modal.style.display = 'flex';
 }
 function selectChampionFromDeck(deckArr, onSelected) {
@@ -2172,7 +2262,13 @@ function updateReqDiv(requirements, reqPaid, reqDiv) {
 function getAllEssenceSources() {
   return [...gameState.playerDomains, ...gameState.playerCreatures /* add more if needed */];
 }
-
+// ATTACHMENTS LOGIC
+function attachCard(targetCardObj, attachmentCardObj) {
+  if (!targetCardObj || !attachmentCardObj) return false;
+  targetCardObj.attachedCards = targetCardObj.attachedCards || [];
+  targetCardObj.attachedCards.push(attachmentCardObj);
+  return true;
+}
 // ATTACK LOGIC
 function startAttackTargeting(attackerId, attackerZone, cardDiv) {
   attackMode.attackerId = attackerId;
@@ -2849,6 +2945,55 @@ function getCardColors(cardObj) {
   if (Array.isArray(cardDef.color)) return cardDef.color;
   if (typeof cardDef.color === "string") return [cardDef.color];
   return [];
+}
+// ACTIVATING EFFECTS AND ABILITIES
+function activateCardEffect(cardObj, targetObj) {
+  const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
+  if (!cardDef || !cardDef.effect) return;
+  switch (cardDef.effect.type) {
+    case 'strike':
+      dealCombatDamage(cardObj, targetObj, cardDef.effect.amount);
+      break;
+    case 'heal':
+      targetObj.currentHP = Math.min(getBaseHp(targetObj.cardId), (targetObj.currentHP || 0) + cardDef.effect.amount);
+      break;
+    case 'search':
+      handleSearchEffect(cardDef.effect.criteria);
+      break;
+    case 'draw':
+      drawCards('player', cardDef.effect.amount);
+      break;
+    // ...add more cases as needed
+    default:
+      console.warn("Unknown effect type:", cardDef.effect.type);
+  }
+}
+// Helper function for search
+function handleSearchEffect(criteria) {
+  // Find matching cards in deck
+  const matches = gameState.playerDeck.filter(cardObj => {
+    const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+    if (!cardData) return false;
+    // Example: trait match
+    if (criteria.trait && cardData.trait && cardData.trait.toLowerCase() === criteria.trait.toLowerCase()) return true;
+    // Example: subtype match
+    if (criteria.subtype && cardData.subtype && cardData.subtype.toLowerCase() === criteria.subtype.toLowerCase()) return true;
+    // Example: category match
+    if (criteria.category && cardData.category && cardData.category.toLowerCase() === criteria.category.toLowerCase()) return true;
+    return false;
+  });
+
+  // Show a modal to let user select one of the matches
+  if (matches.length > 0) {
+    showDeckSearchModal(matches, selectedCardObj => {
+      // Move selected card to hand
+      moveCard(selectedCardObj.instanceId, gameState.playerDeck, gameState.playerHand);
+      renderGameState();
+      setupDropZones();
+    });
+  } else {
+    showToast("No matching cards found in deck.");
+  }
 }
 
 document.getElementById('chat-log').addEventListener('click', function(e) {
