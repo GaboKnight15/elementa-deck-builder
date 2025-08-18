@@ -54,7 +54,6 @@ const allBannerOptions = [
     "CardImages/Banners/Solmara.png", 
 ];
 const allCardbackOptions = [
-  "OtherImages/Cardbacks/CardbackDefault.png",
   "OtherImages/Cardbacks/Cardback1.png",
   "OtherImages/Cardbacks/FairyCardback.png",
   "OtherImages/Cardbacks/CBCindercore.png",
@@ -115,9 +114,8 @@ const bannerPrices = {
     "CardImages/Banners/Solmara.png": 100 
 };
 const cardbackPrices = {
-  "OtherImages/Cardbacks/CardbackDefault.png": 10,
-  "OtherImages/Cardbacks/Cardback1.png": 100,
-  "OtherImages/Cardbacks/FairyCardback.png": 100,
+  "OtherImages/Cardbacks/Cardback1.png": 10,
+  "OtherImages/Cardbacks/CBFairy.png": 100,
   "OtherImages/Cardbacks/CBCindercore.png": 100,
   "OtherImages/Cardbacks/CBConstructs.png": 100,
   "OtherImages/Cardbacks/CBCoralbound.png": 100,
