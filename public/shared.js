@@ -1161,18 +1161,6 @@ if (selectedAbilities && selectedAbilities.length) {
 }
 window.filterCards = filterCards;
 
-// Set up badge click handler
-document.addEventListener('DOMContentLoaded', function() {
-  const badgeImg = document.getElementById('player-badge-img');
-  if (badgeImg) {
-    // Set image (update this logic as you unlock more images)
-    badgeImg.src = getCurrentPlayerBadgeImage();
-    badgeImg.onclick = function(e) {
-      e.stopPropagation();
-      showPlayerBadgeMenu(badgeImg);
-    };
-  }
-});
 // Hook up modals and icon
 document.getElementById('friends-icon').onclick = function() {
   renderFriendsList();
@@ -1186,24 +1174,43 @@ document.getElementById('friends-modal').onclick = function(e) {
 };
 // PROFILE MODAL
 document.addEventListener('DOMContentLoaded', function() {
-  const badgeImg = document.getElementById('player-badge-menu-img');
-  if (badgeImg) {
-    badgeImg.style.cursor = "pointer";
-    badgeImg.onclick = function(e) {
+  const btn = document.getElementById('profile-panel');
+  const menu = document.getElementById('player-badge-menu');
+  if (btn && menu) {
+    btn.onclick = function(e) {
       e.stopPropagation();
-      // Gather current player data for the modal
+      // Gather current player data for the panel
       const playerData = {
         username: window.playerUsername || (window.auth && window.auth.currentUser && window.auth.currentUser.displayName) || "Player",
-        profilePic: window.playerProfilePic || badgeImg.src,
+        profilePic: window.playerProfilePic || btn.src || "CardImages/Avatars/Default.png",
         profileBanner: window.playerProfileBanner || "CardImages/Banners/DefaultBanner.png",
         power: typeof calculatePlayerPower === "function" ? calculatePlayerPower() : 0,
-        // Optionally, pass owned achievements/badges if available
         achievements: (typeof getAchievementData === "function" && typeof ACHIEVEMENTS !== "undefined")
           ? ACHIEVEMENTS.filter(a => getAchievementData()[a.id]?.claimed).map(a => a.id)
           : [],
         badges: [] // add badge ids as needed
       };
-      showProfileModal(playerData);
+      menu.innerHTML = "";
+      menu.appendChild(renderProfilePanel(playerData, {
+        onClick: () => {
+          showProfileModal(playerData);
+          menu.style.display = "none";
+        }
+      }));
+      menu.style.display = "block";
+      // Optional: position menu near button
+      const rect = btn.getBoundingClientRect();
+      menu.style.position = "absolute";
+      menu.style.left = rect.right + 12 + 'px';
+      menu.style.top = (rect.top - 6) + 'px';
+      // Hide menu when clicking outside
+      setTimeout(() => {
+        document.body.addEventListener('click', function handler(ev) {
+          if (!menu.contains(ev.target)) menu.style.display = 'none';
+          document.body.removeEventListener('click', handler);
+        }, { once: true });
+      }, 20);
+      menu.onclick = (ev) => ev.stopPropagation();
     };
   }
 });
