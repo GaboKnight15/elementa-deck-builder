@@ -721,6 +721,15 @@ function removeFriend(uid) {
     });
   });
 }
+document.addEventListener('DOMContentLoaded', function() {
+  const friendsIcon = document.getElementById('friends-icon');
+  if (friendsIcon) {
+    friendsIcon.onclick = function() {
+      document.getElementById('friends-modal').style.display = 'flex';
+      selectFriendsTab();
+    };
+  }
+});
 window.sendFriendRequest = sendFriendRequest;
 window.acceptFriendRequest = acceptFriendRequest;
 window.declineFriendRequest = declineFriendRequest;
