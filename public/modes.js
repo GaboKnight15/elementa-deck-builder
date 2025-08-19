@@ -6,7 +6,7 @@ const DEFAULT_CPU_DECKS = [
     difficulty: '⭐',
     image: 'CardImages/Avatars/Fairy.png',
     bannerArt: 'CardImages/Banners/GreenBanner.png',
-    cardbackArt: 'OtherImages/Cardbacks/FairyCardback.png',
+    cardbackArt: 'OtherImages/Cardbacks/CBFairy.png',
     cards: [
       { id: 'Verdara', amount: 1 },
       { id: 'ForestFairy', amount: 4 },
@@ -44,7 +44,7 @@ const DEFAULT_CPU_DECKS = [
     difficulty: '⭐',
     image: 'CardImages/Avatars/WaterElemental.png',
     bannerArt: 'CardImages/Banners/BlueBanner.png',
-    cardbackArt: 'OtherImages/Cardbacks/BlueCardback.png',
+    cardbackArt: 'OtherImages/Cardbacks/CBMerfolk.png',
     cards: [
       { id: 'Marinthae', amount: 1 },
       { id: 'WaterElemental', amount: 4 },
@@ -61,7 +61,7 @@ const DEFAULT_CPU_DECKS = [
     difficulty: '⭐',
     image: 'CardImages/Avatars/Thunderspawn.png',
     bannerArt: 'CardImages/Banners/YellowBanner.png',
-    cardbackArt: 'OtherImages/Cardbacks/YellowCardback.png',
+    cardbackArt: 'OtherImages/Cardbacks/CBStormcore.png',
     cards: [
       { id: 'Aetherion', amount: 1 },
       { id: 'StormcoreDynamo', amount: 4 },
@@ -77,7 +77,7 @@ const DEFAULT_CPU_DECKS = [
     difficulty: '⭐',
     image: 'CardImages/Avatars/Goblin.png',
     bannerArt: 'CardImages/Banners/PurpleBanner.png',
-    cardbackArt: 'OtherImages/Cardbacks/PurpleCardback.png',
+    cardbackArt: 'OtherImages/Cardbacks/CBGoblins.png',
     cards: [
       { id: 'Virkul', amount: 1 },
       { id: 'Goblin', amount: 4 },
@@ -94,7 +94,7 @@ const DEFAULT_CPU_DECKS = [
     difficulty: '⭐',
     image: 'CardImages/Avatars/RockLizard.png',
     bannerArt: 'CardImages/Banners/GrayBanner.png',
-    cardbackArt: 'OtherImages/Cardbacks/GrayCardback.png',
+    cardbackArt: 'OtherImages/Cardbacks/CBStonebound.png',
     cards: [
       { id: 'Drakzul', amount: 1 },
       { id: 'Golemites', amount: 4 },
@@ -112,7 +112,7 @@ const DEFAULT_CPU_DECKS = [
     difficulty: '⭐',
     image: 'CardImages/Avatars/Wolf.png',
     bannerArt: 'CardImages/Banners/BlackBanner.png',
-    cardbackArt: 'OtherImages/Cardbacks/BlackCardback.png',
+    cardbackArt: 'OtherImages/Cardbacks/CBMoonfang.png',
     cards: [
       { id: 'Nocthyra', amount: 1 },
       { id: 'Imp', amount: 4 },
