@@ -2359,24 +2359,7 @@ button {}
   gap: 26px;
   box-sizing: border-box;
 }
-#battlefield-leftbar .profile-panel,
-#battlefield-leftbar .profile,
-#my-profile, #opponent-profile {
-  max-width: 100%;
-  width: 100%;
-  box-sizing: border-box;
-  padding: 8px 8px 8px 8px;
-  border-radius: 12px;
-  background: rgba(24, 32, 48, 0.70); /* deep blue, 70% opacity */
-  display: flex;
-  align-items: center;
-  overflow: hidden;
-}
-#my-profile img, #opponent-profile img {
-  max-width: 44px;
-  max-height: 44px;
-  border-radius: 50%;
-}
+
 .card-battlefield {
   transition: transform 0.18s, box-shadow 0.18s;
   position: relative;
