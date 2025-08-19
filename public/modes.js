@@ -229,50 +229,74 @@ function showCpuDeckModal() {
   modal.appendChild(closeBtn);
 
   // Define and call renderDeckOptions INSIDE this function
-  function renderDeckOptions() {
-    list.innerHTML = '';
-    DEFAULT_CPU_DECKS.filter(deck => deck.difficulty === selectedDifficulty).forEach(deck => {
-      const div = document.createElement('div');
-      div.className = 'cpu-deck-option';
-      div.style.position = 'relative';
-      div.style.width = '140px';
-      div.style.height = '140px';
-      div.style.border = '3px solid ' + deck.color;
-      div.style.borderRadius = '18px';
-      div.style.background = '#232a3c';
-      div.style.margin = '10px';
-      div.style.display = 'inline-block';
-      div.style.overflow = 'hidden';
+function renderDeckOptions() {
+  list.innerHTML = '';
+  DEFAULT_CPU_DECKS.filter(deck => deck.difficulty === selectedDifficulty).forEach(deck => {
+    const div = document.createElement('div');
+    div.className = 'cpu-deck-option';
+    div.style.position = 'relative';
+    div.style.width = '140px';
+    div.style.height = '140px';
+    div.style.border = '3px solid ' + deck.color;
+    div.style.borderRadius = '18px';
+    div.style.background = '#232a3c';
+    div.style.margin = '10px';
+    div.style.display = 'inline-block';
+    div.style.overflow = 'hidden';
 
-div.innerHTML = `
-  <div style="position:relative;width:100%;height:100%;">
-    <img src="${deck.image}" alt="${deck.name}" class="deck-art-img" style="width:100%;height:100%;object-fit:cover;border-radius:16px;">
-    <div class="deck-name"
-      style="position:absolute;bottom:0;width:100%;background:rgba(10,12,20,0.84);color:${deck.color};letter-spacing:0.5px;padding:4px 0 4px 0;z-index:2;">
-      ${deck.name}
-    </div>
-    <div class="deck-difficulty"
-      style="position:absolute;top:1px;left:1px;z-index:3;">
-      <span style="background:rgba(0,0,0,0.65);border-radius:50%;padding:3px 3px;">
-        ${deck.difficulty}
-      </span>
-    </div>
-  </div>
-`;
-      div.onclick = () => {
-        modal.style.display = 'none';
-        window.selectedCpuDeck = deck;
-        window.currentDeckSlot = deck.id;
-        if (window.renderModePlayerDeckTile) window.renderModePlayerDeckTile();
-        if (typeof startSoloGame === "function") startSoloGame();
+    div.innerHTML = `
+      <div style="position:relative;width:100%;height:100%;">
+        <img src="${deck.image}" alt="${deck.name}" class="deck-art-img" style="width:100%;height:100%;object-fit:cover;border-radius:16px;">
+        <div class="deck-name"
+          style="position:absolute;bottom:0;width:100%;background:rgba(10,12,20,0.84);color:${deck.color};letter-spacing:0.5px;padding:4px 0 4px 0;z-index:2;">
+          ${deck.name}
+        </div>
+        <div class="deck-difficulty"
+          style="position:absolute;top:1px;left:1px;z-index:3;">
+          <span style="background:rgba(0,0,0,0.65);border-radius:50%;padding:3px 3px;">
+            ${deck.difficulty}
+          </span>
+        </div>
+      </div>
+    `;
+    div.onclick = () => {
+      modal.style.display = 'none';
+      window.selectedCpuDeck = deck;
+      window.currentDeckSlot = deck.id;
+      if (window.renderModePlayerDeckTile) window.renderModePlayerDeckTile();
+
+      // Build playerProfile from selected deck
+      const playerDeckObj = window.selectedPlayerDeck?.deckObj || window.selectedPlayerDeck;
+      const playerProfile = {
+        username: playerDeckObj?.ownerName || playerDeckObj?.username || "You",
+        avatar: playerDeckObj?.avatar || playerDeckObj?.image,
+        banner: playerDeckObj?.bannerArt,
+        power: playerDeckObj?.power || 0
       };
-      list.appendChild(div);
-    });
-  }
-  renderDeckOptions();
 
-  modal.onclick = function(e) { if (e.target === modal) modal.style.display = 'none'; };
-  modal.style.display = 'flex';
+      // Build opponentProfile from CPU deck
+      const opponentProfile = {
+        username: deck?.name,
+        avatar: deck?.image,
+        banner: deck?.bannerArt,
+        power: deck?.power || 0
+      };
+
+      startGame({
+        mode: "solo",
+        playerDeck: playerDeckObj,
+        opponentDeck: deck,
+        playerProfile: playerProfile,
+        opponentProfile: opponentProfile,
+        isCpuGame: true
+      });
+    };
+    list.appendChild(div);
+  });
+}
+renderDeckOptions();
+modal.onclick = function(e) { if (e.target === modal) modal.style.display = 'none'; };
+modal.style.display = 'flex';
 }
 
 function showPlayerDeckModal() {
