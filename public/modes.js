@@ -282,7 +282,7 @@ function renderDeckOptions() {
         power: deck?.power || 0
       };
 
-      startGame({
+      window.startGame({
         mode: "solo",
         playerDeck: playerDeckObj,
         opponentDeck: deck,
