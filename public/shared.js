@@ -796,35 +796,47 @@ function getCurrentPlayerBadgeImage() {
 }
 
 // PROFILE PANEL POP-UP
-badgeImg.onclick = function(e) {
-  e.stopPropagation();
-
+document.addEventListener('DOMContentLoaded', function() {
+  const badgeImg = document.getElementById('player-badge-img');
   const menu = document.getElementById('player-badge-menu');
-  menu.innerHTML = "";
-  menu.style.display = "block";
-
-  // Use your app's player data (already loaded elsewhere)
-  menu.appendChild(renderProfilePanel(window.currentPlayerData, {
-    onClick: () => {
-      showProfileModal(window.currentPlayerData);
-      menu.style.display = "none";
-    }
-  }));
-
-  // Positioning logic (unchanged)
-  const rect = badgeImg.getBoundingClientRect();
-  menu.style.left = rect.right + 12 + 'px';
-  menu.style.top = (rect.top - 6) + 'px';
-
-  setTimeout(() => {
-    document.body.addEventListener('click', function handler(ev) {
-      if (!menu.contains(ev.target)) menu.style.display = 'none';
-      document.body.removeEventListener('click', handler);
-    }, { once: true });
-  }, 20);
-
-  menu.onclick = (ev) => ev.stopPropagation();
-};
+  if (badgeImg && menu) {
+    badgeImg.onclick = function(e) {
+      e.stopPropagation();
+      // Gather current player data for the panel
+      const playerData = {
+        username: window.playerUsername || (window.auth && window.auth.currentUser && window.auth.currentUser.displayName) || "Player",
+        profilePic: window.playerProfilePic || badgeImg.src,
+        profileBanner: window.playerProfileBanner || "CardImages/Banners/DefaultBanner.png",
+        power: typeof calculatePlayerPower === "function" ? calculatePlayerPower() : 0,
+        achievements: (typeof getAchievementData === "function" && typeof ACHIEVEMENTS !== "undefined")
+          ? ACHIEVEMENTS.filter(a => getAchievementData()[a.id]?.claimed).map(a => a.id)
+          : [],
+        badges: [] // add badge ids as needed
+      };
+      menu.innerHTML = "";
+      menu.appendChild(renderProfilePanel(playerData, {
+        onClick: () => {
+          showProfileModal(playerData);
+          menu.style.display = "none";
+        }
+      }));
+      menu.style.display = "block";
+      // Optional: position menu near badge
+      const rect = badgeImg.getBoundingClientRect();
+      menu.style.position = "absolute";
+      menu.style.left = rect.right + 12 + 'px';
+      menu.style.top = (rect.top - 6) + 'px';
+      // Hide menu when clicking outside
+      setTimeout(() => {
+        document.body.addEventListener('click', function handler(ev) {
+          if (!menu.contains(ev.target)) menu.style.display = 'none';
+          document.body.removeEventListener('click', handler);
+        }, { once: true });
+      }, 20);
+      menu.onclick = (ev) => ev.stopPropagation();
+    };
+  }
+});
 
  // ACCOUNT POWER
 function calculatePlayerPower() {
@@ -1172,48 +1184,7 @@ document.getElementById('close-friends-modal').onclick = function() {
 document.getElementById('friends-modal').onclick = function(e) {
   if (e.target === this) this.style.display = 'none';
 };
-// PROFILE MODAL
-document.addEventListener('DOMContentLoaded', function() {
-  const btn = document.getElementById('profile-panel');
-  const menu = document.getElementById('player-badge-menu');
-  if (btn && menu) {
-    btn.onclick = function(e) {
-      e.stopPropagation();
-      // Gather current player data for the panel
-      const playerData = {
-        username: window.playerUsername || (window.auth && window.auth.currentUser && window.auth.currentUser.displayName) || "Player",
-        profilePic: window.playerProfilePic || btn.src || "CardImages/Avatars/Default.png",
-        profileBanner: window.playerProfileBanner || "CardImages/Banners/DefaultBanner.png",
-        power: typeof calculatePlayerPower === "function" ? calculatePlayerPower() : 0,
-        achievements: (typeof getAchievementData === "function" && typeof ACHIEVEMENTS !== "undefined")
-          ? ACHIEVEMENTS.filter(a => getAchievementData()[a.id]?.claimed).map(a => a.id)
-          : [],
-        badges: [] // add badge ids as needed
-      };
-      menu.innerHTML = "";
-      menu.appendChild(renderProfilePanel(playerData, {
-        onClick: () => {
-          showProfileModal(playerData);
-          menu.style.display = "none";
-        }
-      }));
-      menu.style.display = "block";
-      // Optional: position menu near button
-      const rect = btn.getBoundingClientRect();
-      menu.style.position = "absolute";
-      menu.style.left = rect.right + 12 + 'px';
-      menu.style.top = (rect.top - 6) + 'px';
-      // Hide menu when clicking outside
-      setTimeout(() => {
-        document.body.addEventListener('click', function handler(ev) {
-          if (!menu.contains(ev.target)) menu.style.display = 'none';
-          document.body.removeEventListener('click', handler);
-        }, { once: true });
-      }, 20);
-      menu.onclick = (ev) => ev.stopPropagation();
-    };
-  }
-});
+
 // PARTICLE EFFECT
 document.addEventListener("DOMContentLoaded", function() {
   // Only load particles when Home is visible (optional, can always load)
