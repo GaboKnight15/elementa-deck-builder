@@ -896,55 +896,6 @@ function renderPlayerPower() {
   }
   lastPlayerPower = power;
 }
-// --- PROFILE MODAL LOGIC ---
-function renderProfileInfoSection(playerData) {
-  playerData = playerData || {};
-  const profileBanner = playerData.profileBanner || "CardImages/Banners/DefaultBanner.png";
-  const profilePic = playerData.profilePic || "CardImages/Avatars/Default.png";
-  const username = playerData.username || "Unknown Player";
-  const power = playerData.power || 0;
-
-  return `
-  <div style="
-    background: url('${profileBanner}');
-    background-size: cover;
-    background-position: center;
-    border-radius: 18px;
-    display: flex;
-    align-items: center;
-    gap: 24px;
-    min-height: 120px;
-    padding: 24px 32px 24px 32px;
-    position: relative;
-  ">
-    <img src="${profilePic}" alt="Profile" style="
-      width: 88px; height: 88px; border-radius: 50%;
-      border: 4px solid #ffe066; box-shadow: 0 2px 16px #000c;
-      object-fit: cover; background: #1a1b23; z-index:2;
-      flex-shrink: 0;
-    ">
-    <div style="display: flex; flex-direction: column; justify-content: center; align-items: flex-start;">
-      <div style="
-        font-size: 1.38em; font-weight: bold; color: #ffe066;
-        text-shadow: 0 2px 8px #000;
-        margin-bottom: 6px;
-        ">
-        ${username}
-      </div>
-      <div style="
-        font-size: 1.1em; font-weight: bold; color: #fff;
-        display: flex; align-items: center; gap: 8px;
-      ">
-        <img src="OtherImages/Icons/Power.png" style="width:24px;">
-        <span style="color:#ffe066;">${power}</span>
-      </div>
-    </div>
-  </div>
-  `;
-}
-// PROFILE PANEL
-const tile = renderProfilePanel(playerData, { onClick: () => showProfileModal(playerData) });
-container.appendChild(tile);
 
 function renderProfilePanel(playerData, options = {}) {
   playerData = playerData || {};
@@ -1045,15 +996,6 @@ function showProfileModal(playerData) {
   const content = document.getElementById('profile-modal-content');
   if (!modal || !content) return;
 
-  // Default values if not provided
-  playerData = playerData || {};
-  const profileBanner = playerData.profileBanner || "CardImages/Banners/DefaultBanner.png";
-  const profilePic = playerData.profilePic || "CardImages/Avatars/Default.png";
-  const username = playerData.username || "Unknown Player";
-  const power = playerData.power || 0;
-
- let profileInfoSection = renderProfileInfoSection(playerData);
-
   // --- BADGE SECTIONS ---
   // You may already have ACHIEVEMENTS and BADGE_IMAGES in your code.
   // For this example, we'll use ACHIEVEMENTS as all badges.
@@ -1084,12 +1026,20 @@ function showProfileModal(playerData) {
   }
   badgeSection += "</div></div>";
 
-  // --- Assemble Modal Content ---
-  content.innerHTML = `
-    ${profileInfoSection}
+  // Clear previous content
+  content.innerHTML = "";
+
+  // Add the new profilePanel DOM node
+  const profilePanel = renderProfilePanel(playerData);
+  content.appendChild(profilePanel);
+
+  // Add badge section and close button as HTML
+  const badgesAndClose = document.createElement("div");
+  badgesAndClose.innerHTML = `
     ${badgeSection}
-    <button id="close-profile-modal" class="btn-negative-secondary"">Close</button>
+    <button id="close-profile-modal" class="btn-negative-secondary">Close</button>
   `;
+  content.appendChild(badgesAndClose);
 
   // --- Close Logic ---
   document.getElementById('close-profile-modal').onclick = function() {
