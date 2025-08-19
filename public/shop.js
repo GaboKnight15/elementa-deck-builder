@@ -17,119 +17,74 @@ const packOpeningModalContent = document.getElementById('pack-opening-modal-cont
 const openedPackRowModal = document.getElementById('opened-pack-row-modal');
 const closePackOpeningModalBtn = document.getElementById('close-pack-opening-modal');
 const allAvatarOptions = [
-      "CardImages/Avatars/Faelyra.png",
-      "CardImages/Avatars/Kaelyn.png",
-      "CardImages/Avatars/Zaryon.png",
-      "CardImages/Avatars/Zyra.png",
-      "CardImages/Avatars/Veniryss.png",
-      "CardImages/Avatars/Gravok.png",
-      "CardImages/Avatars/Nyzariel.png",
-      "CardImages/Avatars/Elyndra.png",
-      "CardImages/Avatars/Aureavian.png",
-      "CardImages/Avatars/Maldryss.png",
-      "CardImages/Avatars/Tydros.png",
-      "CardImages/Avatars/Ephoros.png",
-      "CardImages/Avatars/Mordrath.png",
-      "CardImages/Avatars/Raukhar.png",
-      "CardImages/Avatars/Velmira.png",
-      "CardImages/Avatars/Verdarok.png",
-      "CardImages/Avatars/Pyronyx.png",
-      "CardImages/Avatars/Abyndra.png",
-      "CardImages/Avatars/Voltrazek.png",
-      "CardImages/Avatars/Toxigon.png",
-      "CardImages/Avatars/Ferronyx.png",
-      "CardImages/Avatars/Nochtyros.png",
-      "CardImages/Avatars/Solaryth.png"
+      { src: "CardImages/Avatars/Fairy.png", price: 10 },
+      { src: "CardImages/Avatars/Emberling.png", price: 10 },
+      { src: "CardImages/Avatars/WaterElemental.png", price: 10 },
+      { src: "CardImages/Avatars/Thunderspawn.png", price: 10 },
+      { src: "CardImages/Avatars/Goblin.png", price: 10 },
+      { src: "CardImages/Avatars/RockLizard.png", price: 10 },
+      { src: "CardImages/Avatars/Wolf.png", price: 10 },
+      { src: "CardImages/Avatars/AngelicWarrior.png", price: 10 },
+  { src: "CardImages/Avatars/Faelyra.png", price: 100 },
+  { src: "CardImages/Avatars/Kaelyn.png", price: 100 },
+  { src: "CardImages/Avatars/Zaryon.png", price: 100 },
+  { src: "CardImages/Avatars/Zyra.png", price: 100 },
+  { src: "CardImages/Avatars/Veniryss.png", price: 100 },
+  { src: "CardImages/Avatars/Gravok.png", price: 100 },
+  { src: "CardImages/Avatars/Nyzariel.png", price: 100 },
+  { src: "CardImages/Avatars/Elyndra.png", price: 100 },
+  { src: "CardImages/Avatars/Aureavian.png", price: 100 },
+  { src: "CardImages/Avatars/Maldryss.png", price: 100 },
+  { src: "CardImages/Avatars/Tydros.png", price: 100 },
+  { src: "CardImages/Avatars/Ephoros.png", price: 100 },
+  { src: "CardImages/Avatars/Mordrath.png", price: 100 },
+  { src: "CardImages/Avatars/Raukhar.png", price: 100 },
+  { src: "CardImages/Avatars/Velmira.png", price: 100 },
+  { src: "CardImages/Avatars/Verdarok.png", price: 100 },
+  { src: "CardImages/Avatars/Pyronyx.png", price: 100 },
+  { src: "CardImages/Avatars/Abyndra.png", price: 100 },
+  { src: "CardImages/Avatars/Voltrazek.png", price: 100 },
+  { src: "CardImages/Avatars/Toxigon.png", price: 100 },
+  { src: "CardImages/Avatars/Ferronyx.png", price: 100 },
+  { src: "CardImages/Avatars/Nochtyros.png", price: 100 },
+  { src: "CardImages/Avatars/Solaryth.png", price: 100 }
 ];
+
 const allBannerOptions = [
-    "CardImages/Banners/Verdara.png",
-    "CardImages/Banners/Ashkar.png",
-    "CardImages/Banners/Pearlhaven.png",
-    "CardImages/Banners/Aetherion.png",
-    "CardImages/Banners/Drakzul.png",
-    "CardImages/Banners/GlimbarkFrontier.png",
-    "CardImages/Banners/SkywardArchipelago.png",
-    "CardImages/Banners/Duskhaven.png",
-    "CardImages/Banners/Nochtyra.png",
-    "CardImages/Banners/Solmara.png", 
+  { src: "CardImages/Banners/Verdara.png", price: 100 },
+  { src: "CardImages/Banners/Ashkar.png", price: 100 },
+  { src: "CardImages/Banners/Pearlhaven.png", price: 100 },
+  { src: "CardImages/Banners/Aetherion.png", price: 100 },
+  { src: "CardImages/Banners/Drakzul.png", price: 100 },
+  { src: "CardImages/Banners/GlimbarkFrontier.png", price: 100 },
+  { src: "CardImages/Banners/SkywardArchipelago.png", price: 100 },
+  { src: "CardImages/Banners/Duskhaven.png", price: 100 },
+  { src: "CardImages/Banners/Nochtyra.png", price: 100 },
+  { src: "CardImages/Banners/Solmara.png", price: 100 }
 ];
+
 const allCardbackOptions = [
-  "OtherImages/Cardbacks/Cardback1.png",
-  "OtherImages/Cardbacks/FairyCardback.png",
-  "OtherImages/Cardbacks/CBCindercore.png",
-  "OtherImages/Cardbacks/CBConstructs.png",
-  "OtherImages/Cardbacks/CBCoralbound.png",
-  "OtherImages/Cardbacks/CBFirelands.png",
-  "OtherImages/Cardbacks/CBGoblins.png",
-  "OtherImages/Cardbacks/CBGolemheart.png",
-  "OtherImages/Cardbacks/CBMerfolk.png",
-  "OtherImages/Cardbacks/CBMoonfang.png",
-  "OtherImages/Cardbacks/CBSatyr.png",
-  "OtherImages/Cardbacks/CBShadowbound.png",
-  "OtherImages/Cardbacks/CBStonebound.png",
-  "OtherImages/Cardbacks/CBStormcore.png",
-  "OtherImages/Cardbacks/CBVenomcore.png",
-  "OtherImages/Cardbacks/CBWoodframe.png"
+  { src: "OtherImages/Cardbacks/Cardback1.png", price: 10 },
+  { src: "OtherImages/Cardbacks/FairyCardback.png", price: 100 },
+  { src: "OtherImages/Cardbacks/CBCindercore.png", price: 100 },
+  { src: "OtherImages/Cardbacks/CBConstructs.png", price: 100 },
+  { src: "OtherImages/Cardbacks/CBCoralbound.png", price: 100 },
+  { src: "OtherImages/Cardbacks/CBFirelands.png", price: 100 },
+  { src: "OtherImages/Cardbacks/CBGoblins.png", price: 100 },
+  { src: "OtherImages/Cardbacks/CBGolemheart.png", price: 100 },
+  { src: "OtherImages/Cardbacks/CBMerfolk.png", price: 100 },
+  { src: "OtherImages/Cardbacks/CBMoonfang.png", price: 100 },
+  { src: "OtherImages/Cardbacks/CBSatyr.png", price: 100 },
+  { src: "OtherImages/Cardbacks/CBShadowbound.png", price: 100 },
+  { src: "OtherImages/Cardbacks/CBStonebound.png", price: 100 },
+  { src: "OtherImages/Cardbacks/CBStormcore.png", price: 100 },
+  { src: "OtherImages/Cardbacks/CBVenomcore.png", price: 100 },
+  { src: "OtherImages/Cardbacks/CBWoodframe.png", price: 100 }
 ];
 const packPrices = {
   "StandardPack": 100,
   "StandardPack2": 100,
   // "ScalesofRuin": 100,"WyrmheartAwakening": 100,"MischiefUnbound": 100,"PrimordialAscension": 100,"IronbornProtocol": 100,"SavageTerritory": 100,"FeatheredOmen": 100,
-};
-const avatarPrices = {
-      "CardImages/Avatars/Faelyra.png": 100,
-      "CardImages/Avatars/Kaelyn.png": 100,
-      "CardImages/Avatars/Zaryon.png": 100,
-      "CardImages/Avatars/Zyra.png": 100,
-      "CardImages/Avatars/Veniryss.png": 100,
-      "CardImages/Avatars/Gravok.png": 100,
-      "CardImages/Avatars/Nyzariel.png": 100,
-      "CardImages/Avatars/Elyndra.png": 100,
-      "CardImages/Avatars/Aureavian.png": 100,
-      "CardImages/Avatars/Maldryss.png": 100,
-      "CardImages/Avatars/Tydros.png": 100,
-      "CardImages/Avatars/Ephoros.png": 100,
-      "CardImages/Avatars/Mordrath.png": 100,
-      "CardImages/Avatars/Raukhar.png": 100,
-      "CardImages/Avatars/Velmira.png": 100,
-      "CardImages/Avatars/Verdarok.png": 100,
-      "CardImages/Avatars/Pyronyx.png": 100,
-      "CardImages/Avatars/Abyndra.png": 100,
-      "CardImages/Avatars/Voltrazek.png": 100,
-      "CardImages/Avatars/Toxigon.png": 100,
-      "CardImages/Avatars/Ferronyx.png": 100,
-      "CardImages/Avatars/Nochtyros.png": 100,
-      "CardImages/Avatars/Solaryth.png": 100
-};
-const bannerPrices = {
-    "CardImages/Banners/Verdara.png": 100,
-    "CardImages/Banners/Ashkar.png": 100,
-    "CardImages/Banners/Pearlhaven.png": 100,
-    "CardImages/Banners/Aetherion.png": 100,
-    "CardImages/Banners/Drakzul.png": 100,
-    "CardImages/Banners/GlimbarkFrontier.png": 100,
-    "CardImages/Banners/SkywardArchipelago.png": 100,
-    "CardImages/Banners/Duskhaven.png": 100,
-    "CardImages/Banners/Nochtyra.png": 100,
-    "CardImages/Banners/Solmara.png": 100 
-};
-const cardbackPrices = {
-  "OtherImages/Cardbacks/Cardback1.png": 10,
-  "OtherImages/Cardbacks/CBFairy.png": 100,
-  "OtherImages/Cardbacks/CBCindercore.png": 100,
-  "OtherImages/Cardbacks/CBConstructs.png": 100,
-  "OtherImages/Cardbacks/CBCoralbound.png": 100,
-  "OtherImages/Cardbacks/CBFirelands.png": 100,
-  "OtherImages/Cardbacks/CBGoblins.png": 100,
-  "OtherImages/Cardbacks/CBGolemheart.png": 100,
-  "OtherImages/Cardbacks/CBMerfolk.png": 100,
-  "OtherImages/Cardbacks/CBMoonfang.png": 100,
-  "OtherImages/Cardbacks/CBSatyr.png": 100,
-  "OtherImages/Cardbacks/CBShadowbound.png": 100,
-  "OtherImages/Cardbacks/CBStonebound.png": 100,
-  "OtherImages/Cardbacks/CBStormcore.png": 100,
-  "OtherImages/Cardbacks/CBVenomcore.png": 100,
-  "OtherImages/Cardbacks/CBWoodframe.png": 100
 };
 // --- Shop Key Bases for localStorage ---
 const INDIVIDUAL_CARDS_SHOP_KEY_BASE = "shopIndividualCards";
@@ -458,7 +413,6 @@ function setUnlockedCardbacks(arr) {
 function renderShopCosmetics({
   gridId,
   options,
-  prices,
   getUnlocked,
   setUnlocked,
   unlockMsg,
@@ -471,15 +425,19 @@ function renderShopCosmetics({
   if (!Array.isArray(unlocked)) unlocked = [];     
   grid.innerHTML = '';
 
-  options.forEach(src => {
+  options.forEach(opt => {
+    const src = opt.src;
+    const price = opt.price;
     if (unlocked.includes(src)) return;
-    const price = prices[src] !== undefined ? prices[src] : 100;
+	  
     const wrapper = document.createElement('div');
     wrapper.className = wrapperClass;
+	  
     const img = document.createElement('img');
     img.src = src;
     img.className = imgClass;
     img.style.cursor = 'pointer';
+	  
     const priceTag = document.createElement('span');
     priceTag.className = 'currency-display';
     priceTag.style.display = 'flex';
@@ -522,7 +480,6 @@ function renderShopAvatars() {
   renderShopCosmetics({
     gridId: 'shop-avatars-grid',
     options: allAvatarOptions,
-    prices: avatarPrices,
     getUnlocked: getUnlockedAvatars,
     setUnlocked: setUnlockedAvatars,
     unlockMsg: 'Avatar unlocked! Now available in your profile.',
@@ -534,7 +491,6 @@ function renderShopBanners() {
   renderShopCosmetics({
     gridId: 'shop-banners-grid',
     options: allBannerOptions,
-    prices: bannerPrices,
     getUnlocked: getUnlockedBanners,
     setUnlocked: setUnlockedBanners,
     unlockMsg: 'Banner unlocked! Now available in your profile.',
@@ -546,7 +502,6 @@ function renderShopCardbacks() {
   renderShopCosmetics({
     gridId: 'shop-cardbacks-grid',
     options: allCardbackOptions,
-    prices: cardbackPrices,
     getUnlocked: getUnlockedCardbacks,
     setUnlocked: setUnlockedCardbacks,
     unlockMsg: 'Cardback unlocked! Now available in your deck options.',
