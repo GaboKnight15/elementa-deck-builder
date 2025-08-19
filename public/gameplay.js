@@ -148,7 +148,16 @@ function renderGameplayProfilePanel(panelId, profileObj) {
   const panel = document.getElementById(panelId);
   if (!panel || !profileObj) return;
   panel.innerHTML = ""; // Clear previous
-  panel.appendChild(renderProfilePanel(profileObj));
+
+  // Transform keys for renderProfilePanel
+  const mappedProfile = {
+    profileBanner: profileObj.banner || profileObj.profileBanner,
+    profilePic: profileObj.avatar || profileObj.profilePic || profileObj.image,
+    username: profileObj.username,
+    power: profileObj.power
+  };
+
+  panel.appendChild(renderProfilePanel(mappedProfile));
 }
 
 // ===================================
@@ -1703,7 +1712,28 @@ function showGameStartAnimation(callback) {
   }, 1200); // show for 1.2 seconds
 }
 
-// END GAME ANIMATION
+// END GAME LOGIC
+function endGame({concede = false} = {}) {
+  // If multiplayer, notify server
+  if (window.socket && window.currentRoomId) {
+    if (concede) {
+      window.socket.emit('concede game', window.currentRoomId);
+    } else {
+      window.socket.emit('leave game', window.currentRoomId);
+    }
+  }
+
+  // Reset all game state and UI
+  resetGameState();
+
+  // Additional cleanup (close modals, overlays, etc)
+  closeAllModals && closeAllModals();
+  window.gameStartAnimationShown = false;
+  window.coinFlipShown = false;
+
+  // Optionally: Show a toast or redirect UI
+  showToast && showToast("Game ended.");
+}
 function showEndGameAnimation(message, color = '#ffe066', callback = null) {
   let overlay = document.createElement('div');
   overlay.id = 'game-end-overlay';
@@ -2805,10 +2835,7 @@ document.addEventListener('DOMContentLoaded', function() {
   if (backBtn) {
     backBtn.onclick = function() {
       if (confirm("Leave the game and return to menu?")) {
-        if (window.socket && window.currentRoomId) {
-          window.socket.emit('leave game', window.currentRoomId);
-        }
-        resetGameState();
+        endGame();
       }
     };
   }
@@ -2839,10 +2866,16 @@ if (window.socket) {
 
 // When joining a multiplayer match
 socket.on('casual-match-found', function(matchData) {
-  // join the room
   socket.emit('join room', matchData.roomId);
 
-  // emit your profile AFTER joining
+  // build playerProfile before emitting!
+  const playerDeckObj = window.selectedPlayerDeck?.deckObj || window.selectedPlayerDeck;
+  const playerProfile = {
+    username: playerDeckObj?.ownerName || playerDeckObj?.username || "You",
+    avatar: playerDeckObj?.avatar || playerDeckObj?.image,
+    banner: playerDeckObj?.bannerArt,
+    power: playerDeckObj?.power || 0
+  };
   socket.emit('profile', playerProfile);
 });
 
