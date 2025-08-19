@@ -547,22 +547,6 @@ document.getElementById('requests-search-trigger').onclick = function() {
   }
 };
 
-function renderProfileTile(user, context) {
-  const tile = document.createElement('div');
-  tile.className = 'friend-profile-tile';
-  tile.innerHTML = renderProfileInfoSection({
-    profileBanner: user.banner,
-    profilePic: user.avatar || 'CardImages/Avatars/Default.png',
-    username: user.username || user.uid,
-    power: user.power || 0
-  });
-  tile.onclick = function(e) {
-    e.stopPropagation();
-    showProfileMenu(tile, user, context);
-  };
-  return tile;
-}
-
 function showProfileMenu(tile, user, context) {
   // Remove any open menus
   let menu = document.getElementById('friends-profile-menu');
