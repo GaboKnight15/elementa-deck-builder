@@ -100,32 +100,7 @@ function displayPlayerSearchResults(players, page = 0, isLastPage = false) {
   }
   resultsDiv.innerHTML = '';
   players.forEach(player => {
-    const tile = document.createElement('div');
-    tile.className = 'friend-profile-tile';
-    tile.style.cursor = 'pointer';
-    tile.dataset.uid = player.uid;
-    tile.dataset.username = player.username || player.uid;
-
-tile.innerHTML = renderProfileInfoSection({
-  profileBanner: player.banner,
-  profilePic: player.avatar || 'CardImages/Avatars/Default.png',
-  username: player.username || player.uid,
-  power: player.power || 0
-});
-tile.style.borderRadius = "18px"; // Match your modal
-tile.style.overflow = "hidden";
-tile.style.boxShadow = "0 1px 10px #0005";
-tile.style.marginBottom = "18px";
-tile.style.cursor = "pointer";
-tile.style.background = "#212a3b";  // so it blends if banner is missing
-
-    // Attach click handler for menu
-    tile.onclick = function(e) {
-      e.stopPropagation();
-      showPlayerSearchMenu(tile, player);
-    };
-
-    resultsDiv.appendChild(tile);
+    appendFriendsProfilePanel(player, resultsDiv, 'search');
   });
 
   // --- Pagination controls ---
@@ -149,6 +124,7 @@ tile.style.background = "#212a3b";  // so it blends if banner is missing
   }
   resultsDiv.appendChild(nav);
 }
+
 function showPlayerSearchMenu(tile, player) {
   // Remove any existing menus
   let menu = document.getElementById('player-search-menu');
@@ -338,27 +314,15 @@ function renderFriendsList() {
       return;
     }
     ids.forEach(fid => {
-      const entry = document.createElement('div');
-      entry.className = 'friend-entry';
-firebase.firestore().collection('users').doc(fid).get().then(function(friendDoc) {
-  const friendData = friendDoc.data() || {};
-  entry.innerHTML = `
-    ${renderProfileInfoSection({
-      profileBanner: friendData.banner,
-      profilePic: friendData.avatar || 'CardImages/Avatars/Default.png',
-      username: friendData.username || fid,
-      power: friendData.power || 0
-    })}
-    <div style="margin-top:8px;">
-      <button onclick="viewFriendProfile('${fid}')">View</button>
-      <button onclick="removeFriend('${fid}')">Remove</button>
-    </div>
-  `;
-});
-      list.appendChild(entry);
+      firebase.firestore().collection('users').doc(fid).get().then(function(friendDoc) {
+        const friendData = friendDoc.data() || {};
+        appendFriendsProfilePanel(friendData, list, 'friends');
+        // Optionally add extra buttons below panel if needed
+      });
     });
   });
 }
+
 function viewFriendProfile(fid) {
   firebase.firestore().collection('users').doc(fid).get().then(function(doc) {
     const friendData = doc.data() || {};
@@ -375,6 +339,7 @@ function viewFriendProfile(fid) {
     showProfileModal(playerData); // This is imported from shared.js
   });
 }
+
 function renderDiscoverPanel() {
   // Don't overwrite the search input/button! Only update the user list div.
   const usersDiv = document.getElementById('discover-users-list');
@@ -650,12 +615,12 @@ function renderReceivedRequests() {
           banner: senderDoc.data()?.banner,
           power: senderDoc.data()?.power || 0
         };
-        const tile = renderProfileTile(user, 'pending-received');
-        receivedDiv.appendChild(tile);
+        appendFriendsProfilePanel(user, receivedDiv, 'pending-received');
       });
     });
   });
 }
+
 function renderSentRequests() {
   // Fetch and display all friend requests you have sent (pending)
   const currentUid = getCurrentUserId();
@@ -686,11 +651,11 @@ function renderSentRequests() {
     }
     sentDiv.innerHTML = '<b>Sent Requests:</b>';
     sent.forEach(user => {
-      const tile = renderProfileTile(user, 'pending-sent');
-      sentDiv.appendChild(tile);
+      appendFriendsProfilePanel(user, sentDiv, 'pending-sent');
     });
   });
 }
+
 function renderBlockedUsersList() {
   // Fetch and display all users you have blocked
   const currentUid = getCurrentUserId();
@@ -714,8 +679,7 @@ function renderBlockedUsersList() {
           banner: userDoc.data()?.banner,
           power: userDoc.data()?.power || 0
         };
-        const tile = renderProfileTile(user, 'blocked');
-        blockedDiv.appendChild(tile);
+        appendFriendsProfilePanel(user, blockedDiv, 'blocked');
       });
     });
   });
