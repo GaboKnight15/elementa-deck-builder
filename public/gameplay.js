@@ -69,120 +69,100 @@ function setBattlefieldBackgrounds(playerBannerUrl, opponentBannerUrl) {
     opponentBg.style.backgroundRepeat = "no-repeat";
   }
 }
-function setupBattlefieldUI({ isCpuGame = false, myDeckObj, opponentDeckObj, myProfile, opponentProfile }) {
-  // Section activation
-  document.querySelectorAll('section[id$="-section"]').forEach(section => section.classList.remove('active'));
-  document.getElementById('gameplay-section').classList.add('active');
-
-  // Battlefield backgrounds
-  const myBanner = myDeckObj?.bannerArt || "CardImages/Banners/DefaultBanner.png";
-  const oppBanner = opponentDeckObj?.bannerArt || "CardImages/Banners/DefaultBanner.png";
-  setBattlefieldBackgrounds(myBanner, oppBanner);
-
-  // Profiles
-  document.getElementById('my-profile').style.display = '';
-  renderProfile('my-profile', myProfile);
-  document.getElementById('opponent-profile').style.display = '';
-  renderProfile('opponent-profile', opponentProfile);
-
-  // Chat input
-  const chatUI = document.getElementById('chat-ui');
-  if (chatUI) chatUI.style.display = '';
-  const chatInputRow = document.getElementById('chat-input-row');
-  if (chatInputRow) {
-    chatInputRow.style.display = isCpuGame ? 'none' : '';
-  }
-  // Always show log
-  const chatLog = document.getElementById('chat-log');
-  if (chatLog) chatLog.style.display = '';
-
-  // Battlefield and zones
-  renderGameState();
-  setupDropZones();
-  updatePhase();
-}
-
-function startSoloGame() {
-  if (!window.selectedPlayerDeck) {
-    showToast("No deck has been chosen");
-    return;
-  }
-  // Make sure selectedPlayerDeck and selectedCpuDeck are set
-  const playerDeckObj = window.selectedPlayerDeck?.deckObj || window.selectedPlayerDeck;
-  const cpuDeckObj = window.selectedCpuDeck;
-
-  // Fallback for player deck: use currentDeckSlot if nothing is selected
-  let playerDeckArray;
-  if (playerDeckObj) {
-    playerDeckArray = window.buildDeck(playerDeckObj);
-  } else if (window.getCurrentDeck) {
-    playerDeckArray = window.buildDeck(window.getCurrentDeck());
-  } else {
-    playerDeckArray = [];
-  }
-
-  // Fallback for CPU deck
-  let cpuDeckArray = cpuDeckObj ? buildCpuDeck(cpuDeckObj) : [];
-
-  // Banners
-  const playerBanner = playerDeckObj?.bannerArt || "CardImages/Banners/DefaultBanner.png";
-  const cpuBanner = cpuDeckObj?.bannerArt || "CardImages/Banners/DefaultBanner.png";
-  setBattlefieldBackgrounds(playerBanner, cpuBanner);
-
-  // UI transition
-  document.querySelectorAll('section[id$="-section"]').forEach(section => section.classList.remove('active'));
-  document.getElementById('gameplay-section').classList.add('active');
-
-  // Set up gameState
-  gameState.playerDeck = shuffle(playerDeckArray);
+// Unified game start function for all modes (solo/cpu, casual, private, etc)
+function startGame({
+  mode = "solo",              // "solo", "casual", "private", etc
+  playerDeck,                 // deckObj for player
+  opponentDeck,               // deckObj for opponent/CPU
+  playerProfile,              // {username, avatar, banner}
+  opponentProfile,            // {username, avatar, banner}
+  isCpuGame = false,          // true for CPU
+  matchData = null            // full matchData for casual/private modes
+}) {
+  // --- Deck/State setup ---
+  gameState.playerDeck = shuffle(buildDeck(playerDeck));
+  gameState.opponentDeck = shuffle(buildDeck(opponentDeck));
   gameState.playerHand = [];
   gameState.playerCreatures = [];
   gameState.playerDomains = [];
   gameState.playerVoid = [];
-
-  gameState.opponentDeck = shuffle(cpuDeckArray);
   gameState.opponentHand = [];
   gameState.opponentCreatures = [];
   gameState.opponentDomains = [];
   gameState.opponentVoid = [];
-
   gameState.turn = "player";
   gameState.phase = "draw";
+  gameState.playerDominion = null;
+  gameState.opponentDominion = null;
 
-  // --- RENDER PROFILES ---
+  // --- Battlefield backgrounds ---
+  setBattlefieldBackgrounds(
+    playerDeck?.bannerArt || "CardImages/Banners/DefaultBanner.png",
+    opponentDeck?.bannerArt || "CardImages/Banners/DefaultBanner.png"
+  );
+
+  // --- UI activation ---
+  document.querySelectorAll('section[id$="-section"]').forEach(section => section.classList.remove('active'));
+  document.getElementById('gameplay-section').classList.add('active');
   document.getElementById('my-profile').style.display = '';
-  renderProfile('my-profile', getMyProfileInfo());
-
-  // CPU profile rendering (add these lines)
   document.getElementById('opponent-profile').style.display = '';
-  renderProfile('opponent-profile', getCpuProfile(selectedCpuDeck));
+  document.getElementById('chat-ui').style.display = '';
+  document.getElementById('chat-input-row').style.display = isCpuGame ? 'none' : '';
+  document.getElementById('chat-log').style.display = '';
 
-  // Render and set up the game as normal
+  // --- Profile objects ---
+  const playerProfile = {
+    username: playerDeck?.ownerName || playerDeck?.username || "You",
+    avatar: playerDeck?.avatar || playerDeck?.image,
+    banner: playerDeck?.bannerArt,
+    power: playerDeck?.power || 0
+  };
+  const opponentProfile = isCpuGame
+    ? { username: opponentDeck?.name, avatar: opponentDeck?.image, banner: opponentDeck?.bannerArt, power: opponentDeck?.power || 0 }
+    : matchData?.opponentProfile;
+  
+  // --- Profile panels ---
+  renderGameplayProfilePanel('my-profile', playerProfile);
+  renderGameplayProfilePanel('opponent-profile', opponentProfile);
+
+  // --- Battlefield zones ---
   renderGameState();
   setupDropZones();
   updatePhase();
-  setupBattlefieldUI({
-    isCpuGame: true,
-    myDeckObj: playerDeckObj,
-    opponentDeckObj: cpuDeckObj,
-    myProfile: getMyProfileInfo(),
-    opponentProfile: getCpuProfile(cpuDeckObj)
-  });
+
+  // --- Game Start Animation, Coin Flip, Champion/Domain selection ---
   showGameStartAnimation(() => {
     showCoinFlipModal(function(whoStarts) {
       gameState.turn = whoStarts;
       gameState.phase = "draw";
       initiateDominionAndChampionSelection(gameState.playerDeck, () => {
-        // After selection, draw opening hand
         drawOpeningHands();
-        document.getElementById('my-profile').style.display = '';
-        renderProfile('my-profile', getMyProfileInfo());
         renderGameState();
         setupDropZones();
       });
     });
   });
+
+  // --- Multiplayer mode hooks (add if needed) ---
+  if (mode === "casual" && matchData) {
+    // e.g. assign gameState.playerProfile/opponentProfile for sync
+    gameState.playerProfile = playerProfile;
+    gameState.opponentProfile = opponentProfile;
+    // Optionally setup/reset chat
+    if (typeof resetChatLog === "function") resetChatLog();
+  }
+
+  // Additional mode logic can go here (private, ranked, etc)
 }
+
+// Helper for rendering profile panels (replace old renderProfile usage)
+function renderGameplayProfilePanel(panelId, profileObj) {
+  const panel = document.getElementById(panelId);
+  if (!panel || !profileObj) return;
+  panel.innerHTML = ""; // Clear previous
+  panel.appendChild(renderProfilePanel(profileObj));
+}
+
 // ===================================
 // === GAME SETUP HELPER FUNCTIONS ===
 // ===================================
@@ -1580,29 +1560,6 @@ nextPhaseBtn.onclick = () => {
   setupDropZones();
 };
 
-// PROFILE RENDERING (already present)
-function renderProfile(panelId, profileObj) {
-  const panel = document.getElementById(panelId);
-  if (!panel || !profileObj) return;
-  // Banner
-  const bannerEl = panel.querySelector('.profile-banner');
-  if (bannerEl && profileObj.banner) bannerEl.src = profileObj.banner;
-  // Avatar
-  const avatarEl = panel.querySelector('.profile-avatar');
-  if (avatarEl && profileObj.avatar) avatarEl.src = profileObj.avatar;
-  // Username
-  const usernameEl = panel.querySelector('.profile-username');
-  if (usernameEl && profileObj.username) usernameEl.textContent = profileObj.username;
-}
-
-// Get profile info from DOM or gameState (already in your gameplay.js)
-function getMyProfileInfo() {
-  return {
-    username: document.getElementById('profile-username-display')?.textContent || '',
-    avatar: document.getElementById('profile-pic')?.src || '',
-    banner: document.getElementById('profile-banner')?.src || ''
-  };
-}
 // --- Log system: append to chat-log ---
 function appendChatLog(type, sender, text, isMe = false) {
   const logDiv = document.getElementById('chat-log');
@@ -2400,94 +2357,6 @@ function resetAttackFlags(turn) {
   arr.forEach(creature => { creature.hasAttacked = false; });
 }
 
-// After both decks selected, call this:
-function startPrivateGame() {
-  if (!window.selectedPlayerDeck) {
-    showToast("No deck has been chosen");
-    return;
-  }
-  // Set up gameState, profiles, etc.
-  document.querySelectorAll('section[id$="-section"]').forEach(section => section.classList.remove('active'));
-  document.getElementById('gameplay-section').classList.add('active');
-  // Render chat, profiles, battlefield as in solo
-  // Show Game Start animation, Main Domain & Champion selection
-  showGameStartAnimation(() => {
-    showCoinFlipModal(function(whoStarts) {
-    gameState.turn = whoStarts;
-    gameState.phase = "draw";
-      initiateDominionAndChampionSelection(gameState.playerDeck, () => {
-        // Draw hand, set up game, etc
-        // ...
-      });
-    });
-  });
-  document.getElementById('my-profile').style.display = '';
-  renderProfile('my-profile', getMyProfileInfo());
-
-  document.getElementById('opponent-profile').style.display = '';
-  renderProfile('opponent-profile', opponentProfileObj);
-}
-
-
-
-function startCasualGame(matchData) {
-
-  gameState = gameState || {};
-  
-  let myDeckObj = window.selectedPlayerDeck?.deckObj || window.selectedPlayerDeck;
-  let opponentDeckObj = matchData.opponentDeck?.deckObj || matchData.opponentDeck;
-  
-  gameState.playerDeck = shuffle(buildDeck(myDeckObj));
-  gameState.opponentDeck = shuffle(buildDeck(opponentDeckObj));
-  
-  const myBanner = myDeckObj?.bannerArt || "CardImages/Banners/DefaultBanner.png";
-  const opponentBanner = opponentDeckObj?.bannerArt || "CardImages/Banners/DefaultBanner.png";
-  setBattlefieldBackgrounds(myBanner, opponentBanner);
-  
-  gameState.playerProfile = getMyProfileInfo && getMyProfileInfo();
-  if (matchData.opponentProfile) {
-    gameState.opponentProfile = matchData.opponentProfile;
-    if (typeof renderProfile === "function") {
-      renderProfile('opponent-profile', matchData.opponentProfile);
-      document.getElementById('opponent-profile').style.display = '';
-    }
-  }
-
-  document.querySelectorAll('section[id$="-section"]').forEach(section => section.classList.remove('active'));
-  document.getElementById('gameplay-section').classList.add('active');
-  
-  document.getElementById('my-profile').style.display = '';
-  renderProfile('my-profile', getMyProfileInfo());
-
-  document.getElementById('opponent-profile').style.display = '';
-  renderProfile('opponent-profile', matchData.opponentProfile);
-  renderGameState();
-  setupDropZones();
-  updatePhase();
-  setupBattlefieldUI({
-    isCpuGame: false,
-    myDeckObj,
-    opponentDeckObj,
-    myProfile: getMyProfileInfo(),
-    opponentProfile: matchData.opponentProfile
-  });
-  showGameStartAnimation(() => {
-    showCoinFlipModal(function(whoStarts) {
-      gameState.turn = whoStarts;
-      gameState.phase = "draw"; 
-      initiateDominionAndChampionSelection(gameState.playerDeck, () => {
-        // Draw hand, set up initial turn, etc.
-        renderGameState();
-        setupDropZones();
-      });
-    });
-  });
-  if (typeof resetChatLog === "function") resetChatLog();
-}
-
-
-
-
 function showCoinFlipModal(onResult) {
   if (window.coinFlipShown) return; // prevent repeats
   window.coinFlipShown = true;
@@ -2986,13 +2855,13 @@ socket.on('casual-match-found', function(matchData) {
   socket.emit('join room', matchData.roomId);
 
   // emit your profile AFTER joining
-  socket.emit('profile', getMyProfileInfo());
+  socket.emit('profile', playerProfile);
 });
 
 // After local selection:
 showWaitingForOpponentModal();
 socket.on('opponent profile', function(profileObj) {
-  renderProfile('opponent-profile', profileObj);
+  renderGameplayProfilePanel('opponent-profile', profileObj);
   document.getElementById('opponent-profile').style.display = '';
 });
 
@@ -3000,11 +2869,35 @@ socket.on('opponent profile', function(profileObj) {
 if (window.socket) {
   window.socket.on('casual-match-found', function(matchData) {
     document.getElementById('casual-searching-modal').style.display = 'none';
-    if (typeof startCasualGame === "function") startCasualGame(matchData);
+
+    // Build playerProfile using selected deck
+    const playerDeckObj = window.selectedPlayerDeck?.deckObj || window.selectedPlayerDeck;
+    const playerProfile = {
+      username: playerDeckObj?.ownerName || playerDeckObj?.username || "You",
+      avatar: playerDeckObj?.avatar || playerDeckObj?.image,
+      banner: playerDeckObj?.bannerArt,
+      power: playerDeckObj?.power || 0
+    };
+
+    // Send player profile to server after joining room
+    window.socket.emit('join room', matchData.roomId);
+    window.socket.emit('profile', playerProfile);
+
+    // Start game with correct profile objects
+    startGame({
+      mode: "casual",
+      playerDeck: playerDeckObj,
+      opponentDeck: matchData.opponentDeck?.deckObj || matchData.opponentDeck,
+      playerProfile: playerProfile,
+      opponentProfile: matchData.opponentProfile,
+      isCpuGame: false,
+      matchData
+    });
   });
 } else {
   console.error("Socket.io not initialized!");
 }
+
 if (window.socket) {
   window.socket.on('coin-flip-result', function(result) {
     // result should be "player" or "opponent" (or "heads"/"tails")
