@@ -874,17 +874,9 @@ button {}
   gap: 28px;
   padding: 28px 16px;
 }
-.full-card-image-container {
-  min-width: 0;
-  max-width: 220px;
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-end;
-}
+.full-card-image-container {}
 .full-card-modal-img {
-  width: 170px;
-  max-width: 480px;
-  border-radius: 17px;
+  max-width: 100%;
   box-shadow: 0 3px 18px #0007;
   display: block;
 }
@@ -911,6 +903,7 @@ button {}
 .full-card-info-label {
   color: #ffe066;
   font-weight: 600;
+  align-self: center;
 }
 .full-card-info-section {
   color: #ffe066be;
