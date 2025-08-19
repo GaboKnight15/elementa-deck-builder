@@ -1006,11 +1006,18 @@ function showProfileModal(playerData) {
   }
   badgeSection += "</div></div>";
 
-   // --- OWNED COSMETICS SECTIONS ---
-  const ownedAvatars = typeof getUnlockedAvatars === "function" ? getUnlockedAvatars() : (window.playerUnlockedAvatars || []);
-  const ownedBanners = typeof getUnlockedBanners === "function" ? getUnlockedBanners() : (window.playerUnlockedBanners || []);
-  const ownedCardbacks = typeof getUnlockedCardbacks === "function" ? getUnlockedCardbacks() : (window.playerUnlockedCardbacks || []);
-
+  // --- OWNED COSMETICS SECTIONS ---
+  // Prefer playerData arrays if present (for other users), else fallback to current user's unlocked
+  const ownedAvatars = Array.isArray(playerData.avatars) && playerData.avatars.length
+    ? playerData.avatars
+    : (typeof getUnlockedAvatars === "function" ? getUnlockedAvatars() : (window.playerUnlockedAvatars || []));
+  const ownedBanners = Array.isArray(playerData.banners) && playerData.banners.length
+    ? playerData.banners
+    : (typeof getUnlockedBanners === "function" ? getUnlockedBanners() : (window.playerUnlockedBanners || []));
+  const ownedCardbacks = Array.isArray(playerData.cardbacks) && playerData.cardbacks.length
+    ? playerData.cardbacks
+    : (typeof getUnlockedCardbacks === "function" ? getUnlockedCardbacks() : (window.playerUnlockedCardbacks || []));
+ 
   let avatarSection = '';
   if (ownedAvatars.length) {
     avatarSection = `
