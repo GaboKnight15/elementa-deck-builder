@@ -183,88 +183,6 @@ function startSoloGame() {
     });
   });
 }
-// Only run this from client.js after both players are ready!
-// Called when entering gameplay for solo playtest (not from sync)
-function setupBattlefieldGame() {
-  const deckObj = getCurrentDeck();
-  if (!gameState.playerDeck || !gameState.playerDeck.length) {
-    const deckObj = getCurrentDeck();
-    gameState.playerDeck = shuffle(buildDeck(deckObj));
-  }
-  // Do NOT overwrite opponentDeck if already set (multiplayer)
-  if (!gameState.opponentDeck || !gameState.opponentDeck.length) {
-    // For solo, use your own deck or a dummy/cpu deck
-    gameState.opponentDeck = shuffle(buildDeck(deckObj)); // or a CPU deck
-  }
-
-  gameState.playerHand = [];
-  gameState.playerCreatures = [];
-  gameState.playerDomains = [];
-  gameState.playerVoid = [];
-
-  gameState.opponentHand = [];
-  gameState.opponentCreatures = [];
-  gameState.opponentDomains = [];
-  gameState.opponentVoid = [];
-  
-  gameState.turn = "player";
-  gameState.phase = "draw";
-  
-  // Show gameplay UI    
-  document.querySelectorAll('section[id$="-section"]').forEach(section => section.classList.remove('active'));
-  document.getElementById('gameplay-section').classList.add('active');
-  
-  renderGameState();
-  setupDropZones();
-  updatePhase();
-  
-  // Setup drag and drop handlers
-  ['player-creatures-zone', 'player-domains-zone'].forEach(zoneId => {
-    const zone = document.getElementById(zoneId);
-    if (!zone) return;
-    zone.ondragover = (e) => {
-      e.preventDefault();
-      zone.classList.add('drag-over');
-    };
-    zone.ondragleave = () => zone.classList.remove('drag-over');
-    zone.ondrop = (e) => {
-      e.preventDefault();
-      zone.classList.remove('drag-over');
-      const instanceId = e.dataTransfer.getData('text/plain');
-      let targetArr = zoneId === "player-creatures-zone" ? gameState.playerCreatures : gameState.playerDomains;
-      moveCard(instanceId, gameState.playerHand, targetArr, {orientation: "vertical"});
-      renderGameState();
-      setupDropZones();
-    };
-  });
-  
-  if (gameState.playerHand.length === 0) {
-    for (let i = 0; i < 5; i++) {
-      if (gameState.playerDeck.length > 0)
-        gameState.playerHand.push(gameState.playerDeck.shift());
-    }
-  }
-  if (gameState.opponentHand.length === 0) {
-    for (let i = 0; i < 5; i++) {
-      if (gameState.opponentDeck.length > 0)
-        gameState.opponentHand.push(gameState.opponentDeck.shift());
-    }
-  }
-  document.getElementById('my-profile').style.display = '';
-  renderProfile('my-profile', getMyProfileInfo());
-  // Show "Game Start" animation, then domain/champion selection, then draw hand
-  showGameStartAnimation(() => {
-    showCoinFlipModal(function(whoStarts) {
-      gameState.turn = whoStarts;
-      gameState.phase = "draw";
-      initiateDominionAndChampionSelection(gameState.playerDeck, () => {
-        drawOpeningHands();
-        renderGameState();
-        setupDropZones();
-      });
-    });
-  });
-}
 // ===================================
 // === GAME SETUP HELPER FUNCTIONS ===
 // ===================================
@@ -1662,14 +1580,6 @@ nextPhaseBtn.onclick = () => {
   setupDropZones();
 };
 
-// --- Render both profiles after game start ---
-function showGameUI(myProfile, opponentProfile) {
-  document.getElementById('chat-ui').style.display = '';
-  document.getElementById('opponent-profile').style.display = '';
-  document.getElementById('my-profile').style.display = '';
-  renderProfile('my-profile', myProfile);
-  renderProfile('opponent-profile', opponentProfile);
-}
 // PROFILE RENDERING (already present)
 function renderProfile(panelId, profileObj) {
   const panel = document.getElementById(panelId);
@@ -3087,7 +2997,6 @@ socket.on('opponent profile', function(profileObj) {
 });
 
 // Make available globally if called from client.js:
-window.setupBattlefieldGame = setupBattlefieldGame;
 if (window.socket) {
   window.socket.on('casual-match-found', function(matchData) {
     document.getElementById('casual-searching-modal').style.display = 'none';
