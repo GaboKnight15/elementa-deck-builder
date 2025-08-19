@@ -4,6 +4,20 @@ let lastVisibleUser = null;
 let userSearchPages = [];
 const USERS_PER_PAGE = 10;
 
+function appendFriendsProfilePanel({user, container, context}) {
+  const playerData = {
+    username: user.username || user.uid,
+    profilePic: user.avatar || 'CardImages/Avatars/Default.png',
+    profileBanner: user.banner || "CardImages/Banners/DefaultBanner.png",
+    power: user.power || 0
+  };
+  const tile = renderProfilePanel(playerData, {
+    onClick: () => showProfileMenu(tile, user, context),
+    className: 'friend-profile-tile'
+  });
+  container.appendChild(tile);
+}
+
 // SEARCH LOGIC
 function triggerPlayerSearch(page = 0) {
   const query = document.getElementById('player-search-input').value.trim();
@@ -412,12 +426,7 @@ function renderDiscoverPanel() {
           usersDiv.innerHTML = '<div style="color:#888;">No users to discover!</div>';
         }
         users.forEach(user => {
-          const tile = renderProfileTile(user, 'discover');
-          tile.style.flex = "0 0 30%";
-          tile.style.maxWidth = "32%";
-          tile.style.marginBottom = "24px";
-          tile.style.boxSizing = "border-box";
-          usersDiv.appendChild(tile);
+          appendFriendsProfilePanel(user, usersDiv, 'discover');
         });
       });
     });
@@ -455,12 +464,7 @@ function discoverSearch() {
       usersDiv.style.justifyContent = 'flex-start';
 
       users.forEach(user => {
-        const tile = renderProfileTile(user, 'discover');
-        tile.style.flex = "0 0 30%";
-        tile.style.maxWidth = "32%";
-        tile.style.marginBottom = "24px";
-        tile.style.boxSizing = "border-box";
-        usersDiv.appendChild(tile);
+        appendFriendsProfilePanel(user, usersDiv, 'discover');
       });
     });
 }
