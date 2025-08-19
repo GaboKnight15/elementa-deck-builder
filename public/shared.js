@@ -232,6 +232,29 @@ const addCoinsBtn = document.getElementById('add-coins-btn');
 const LEVEL_THRESHOLDS = [0, 100, 250, 500, 1000, 2000, 4000, 8000];
 let lastPlayerPower = null;
 
+const CARD_KEYWORD_EXPLANATIONS = {
+  protect: {
+    name: "Protect",
+    description: "Opponent can only target this unit for attacks."
+  },
+  burn: {
+    name: "Burn",
+    description: "Deals additional damage when attacking or blocking. (Provide your real description here)"
+  },
+  flying: {
+    name: "Flying",
+    description: "Can only be blocked by other units with Flying."
+  },
+  rush: {
+    name: "Rush",
+    description: "Can attack on the turn it is played."
+  },
+  lifelink: {
+    name: "Lifelink",
+    description: "When this unit deals damage, you gain that much life."
+  },
+  // Add more keywords as needed
+};
 // Use this to parse effect text with tokens into HTML with images/icons
 function parseEffectText(effect) {
   if (!effect) return "";
@@ -354,6 +377,61 @@ function hideLoadingOverlay() {
   const overlay = document.getElementById('loading-overlay');
   if (overlay) overlay.style.display = 'none';
 }
+// --- INFO MODAL LOGIC ---
+function showInfoModal(cardObj) {
+  const card = dummyCards.find(c => c.id === (cardObj.cardId || cardObj.id));
+  if (!card) return;
+  const infoModal = document.getElementById('card-info-modal');
+  const infoContent = document.getElementById('card-info-modal-content');
+  if (!infoModal || !infoContent) return;
+
+  // Gather keywords
+  let keywordSections = [];
+  function addKeywordSection(type, value) {
+    if (!value) return;
+    let values = Array.isArray(value) ? value : [value];
+    for (const v of values) {
+      const key = String(v).toLowerCase();
+      if (CARD_KEYWORD_EXPLANATIONS[key]) {
+        keywordSections.push({
+          type,
+          name: CARD_KEYWORD_EXPLANATIONS[key].name || v,
+          desc: CARD_KEYWORD_EXPLANATIONS[key].description
+        });
+      }
+    }
+  }
+  addKeywordSection("Ability", card.ability);
+  addKeywordSection("Trait", card.trait);
+  addKeywordSection("Type", card.type);
+  addKeywordSection("Archetype", card.archetype);
+
+  let html = `<div style="font-weight:bold;font-size:1.3em;color:#ffe066;margin-bottom:10px;">
+    Card Keywords & Abilities
+  </div>`;
+  if (keywordSections.length) {
+    keywordSections.forEach(sec => {
+      html += `
+        <div style="margin-bottom:14px;">
+          <div style="font-size:1.14em;color:#ffe066;font-weight:bold;">${sec.name}</div>
+          <div style="font-size:1em;color:#fff;">${sec.desc}</div>
+        </div>
+      `;
+    });
+  } else {
+    html += `<div style="color:#eee;">No special keywords or abilities found for this card.</div>`;
+  }
+  html += `<button id="close-card-info-modal" class="btn-negative-secondary" style="margin-top:18px;">Close</button>`;
+
+  infoContent.innerHTML = html;
+  infoModal.style.display = 'flex';
+  document.getElementById('close-card-info-modal').onclick = function() {
+    infoModal.style.display = 'none';
+  };
+  infoModal.onclick = function(e) {
+    if (e.target === infoModal) infoModal.style.display = 'none';
+  };
+}
 // VIEW CARDS
 function showFullCardModal(cardObj) {
   const card = dummyCards.find(c => c.id === (cardObj.cardId || cardObj.id));
@@ -382,25 +460,35 @@ function showFullCardModal(cardObj) {
 
   let statsRow = '';
   if (card.hp !== undefined || card.atk !== undefined || card.def !== undefined || card.cost !== undefined) {
-statsRow = '<div class="full-card-info-row">' +
-  (card.hp !== undefined ? `<span class="full-card-info-label">HP:</span> ${renderStatIcon('hp', card.hp)} ` : '') +
-  (card.atk !== undefined ? `<span class="full-card-info-label">ATK:</span> ${renderStatIcon('atk', card.atk)} ` : '') +
-  (card.def !== undefined ? `<span class="full-card-info-label">DEF:</span> ${renderStatIcon('def', card.def)} ` : '') +
-  `<span class="full-card-info-label">Cost:</span> ${renderCardCost(card.cost)}` +
-  '</div>';
+   statsRow = '<div class="full-card-info-row">' +
+   (card.hp !== undefined ? `<span class="full-card-info-label">HP:</span> ${renderStatIcon('hp', card.hp)} ` : '') +
+   (card.atk !== undefined ? `<span class="full-card-info-label">ATK:</span> ${renderStatIcon('atk', card.atk)} ` : '') +
+   (card.def !== undefined ? `<span class="full-card-info-label">DEF:</span> ${renderStatIcon('def', card.def)} ` : '') +
+   `<span class="full-card-info-label">Cost:</span> ${renderCardCost(card.cost)}` +
+   '</div>';
   }
 
   let textHtml = '';
   if (card.text) {
     textHtml = `<div class="full-card-info-section" style="font-size:1.08em;color:#ffe066;margin-top:10px;">${card.text}</div>`;
   }
- let effectHtml = '';
- if (card.effect) {
+  let effectHtml = '';
+  if (card.effect) {
    effectHtml = `<div class="full-card-info-section" style="font-size:1.08em;color:#ffe066;margin-top:10px;">${parseEffectText(card.effect)}</div>`;
- }
+  }
+
+   // --- INFO BUTTON ---
+  let infoButtonHtml = `
+    <img id="card-info-btn" 
+      src="OtherImages/Icons/Info.png" 
+      alt="Info" 
+      style="position:absolute;top:18px;right:18px;width:38px;height:38px;cursor:pointer;z-index:10;filter:drop-shadow(0 2px 6px #0009);" 
+      title="Keyword & Ability Info"
+    >
+  `;
   // Compose modal content (side-by-side)
   modalContent.innerHTML = `
-    <div class="full-card-modal-flex">
+    <div class="full-card-modal-flex" style="position:relative;">
       <div class="full-card-image-container">
         <img src="${card.image}" alt="${card.name}" class="full-card-modal-img ${owned === 0 ? 'card-image-locked' : ''}">
       </div>
@@ -413,6 +501,14 @@ statsRow = '<div class="full-card-info-row">' +
     </div>
   `;
 
+  // Attach Info Button Handler
+  const infoBtn = document.getElementById('card-info-btn');
+  if (infoBtn) {
+    infoBtn.onclick = function(e) {
+      e.stopPropagation();
+      showInfoModal(cardObj);
+    };
+  }
   modal.style.display = 'flex';
 }
 
@@ -422,6 +518,21 @@ document.getElementById('image-modal').onclick = (e) => {
     document.getElementById('image-modal').style.display = "none";
   }
 };
+
+// --- ADD INFO MODAL HTML TO PAGE IF NOT PRESENT ---
+(function ensureInfoModal() {
+  if (!document.getElementById('card-info-modal')) {
+    const infoModal = document.createElement('div');
+    infoModal.id = 'card-info-modal';
+    infoModal.className = 'modal';
+    infoModal.style.display = 'none';
+    infoModal.innerHTML = `
+      <div id="card-info-modal-content" class="modal-content" style="max-width:480px;min-width:320px;padding:32px 26px 18px 26px;background:#212a3b;border-radius:18px;margin:auto;box-shadow:0 4px 32px #000a;">
+      </div>
+    `;
+    document.body.appendChild(infoModal);
+  }
+})();
 
 function renderCardCost(costData) {
   // Accepts either {red:2, blue:1, ...} or [{color:'red',amount:2}, ...]
