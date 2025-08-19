@@ -4,7 +4,7 @@ let lastVisibleUser = null;
 let userSearchPages = [];
 const USERS_PER_PAGE = 10;
 
-function appendFriendsProfilePanel({user, container, context}) {
+function appendFriendsProfilePanel(user, container, context) {
   if (!user || typeof user !== 'object') return;
   const playerData = {
     username: user.username || user.uid,
