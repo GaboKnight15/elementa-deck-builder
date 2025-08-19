@@ -367,13 +367,6 @@ function renderDiscoverPanel() {
   usersDiv.innerHTML = '<div style="color:#ffe066;">Loading random users...</div>';
 
   const currentUid = getCurrentUserId();
-  users = users.filter(u =>
-    u.uid !== currentUid &&                     // not yourself
-    !friends.includes(u.uid) &&                 // not your friend
-    !blocked.includes(u.uid) &&                 // not blocked
-    !receivedReqs.includes(u.uid) &&            // haven't sent you a request
-    !sentRequests.includes(u.uid)               // you haven't sent them a request
-  );
   if (!currentUid) {
     usersDiv.innerHTML = '<div style="color:#e25555;">Please log in.</div>';
     return;
