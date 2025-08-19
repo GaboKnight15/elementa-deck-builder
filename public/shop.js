@@ -65,7 +65,7 @@ const allBannerOptions = [
 
 const allCardbackOptions = [
   { src: "OtherImages/Cardbacks/Cardback1.png", price: 10 },
-  { src: "OtherImages/Cardbacks/FairyCardback.png", price: 100 },
+  { src: "OtherImages/Cardbacks/CBFairy.png", price: 100 },
   { src: "OtherImages/Cardbacks/CBCindercore.png", price: 100 },
   { src: "OtherImages/Cardbacks/CBConstructs.png", price: 100 },
   { src: "OtherImages/Cardbacks/CBCoralbound.png", price: 100 },
