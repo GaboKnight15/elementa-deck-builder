@@ -10,11 +10,16 @@ function appendFriendsProfilePanel(user, container, context) {
     username: user.username || user.uid,
     profilePic: user.avatar || 'CardImages/Avatars/Default.png',
     profileBanner: user.banner || "CardImages/Banners/DefaultBanner.png",
-    power: user.power || 0
+    power: user.power || 0,
+    achievements: Array.isArray(user.achievements) ? user.achievements : [],
+    badges: Array.isArray(user.badges) ? user.badges : [],
+    avatars: Array.isArray(user.avatars) ? user.avatars : [],
+    banners: Array.isArray(user.banners) ? user.banners : [],
+    cardbacks: Array.isArray(user.cardbacks) ? user.cardbacks : []
   };
   const tile = renderProfilePanel(playerData, {
     onClick: () => showProfileMenu(tile, user, context),
-    className: 'friend-profile-tile'
+    className: 'profile-panel-tile'
   });
   container.appendChild(tile);
 }
@@ -327,17 +332,18 @@ function renderFriendsList() {
 function viewFriendProfile(fid) {
   firebase.firestore().collection('users').doc(fid).get().then(function(doc) {
     const friendData = doc.data() || {};
-    // Compose the modal data just like for the current user
     const playerData = {
       username: friendData.username || fid,
       profilePic: friendData.avatar || 'CardImages/Avatars/Default.png',
       profileBanner: friendData.banner || 'CardImages/Banners/DefaultBanner.png',
       power: friendData.power || 0,
-      // These arrays should be present in your Firestore user doc structure
       achievements: Array.isArray(friendData.achievements) ? friendData.achievements : [],
-      badges: Array.isArray(friendData.badges) ? friendData.badges : []
+      badges: Array.isArray(friendData.badges) ? friendData.badges : [],
+      avatars: Array.isArray(friendData.avatars) ? friendData.avatars : [],
+      banners: Array.isArray(friendData.banners) ? friendData.banners : [],
+      cardbacks: Array.isArray(friendData.cardbacks) ? friendData.cardbacks : []
     };
-    showProfileModal(playerData); // This is imported from shared.js
+    showProfileModal(playerData);
   });
 }
 
@@ -518,11 +524,9 @@ document.getElementById('requests-search-trigger').onclick = function() {
 };
 
 function showProfileMenu(tile, user, context) {
-  // Remove any open menus
-  let menu = document.getElementById('friends-profile-menu');
-  if (menu) menu.remove();
-
-  menu = document.createElement('div');
+  if (typeof closeAllMenus === "function") closeAllMenus();
+  
+  let menu = document.createElement('div');
   menu.id = 'friends-profile-menu';
   menu.className = 'menu';
   menu.style.position = 'absolute';
@@ -530,24 +534,24 @@ function showProfileMenu(tile, user, context) {
 
   // Add context-appropriate actions
   if (context === 'friends') {
-    menu.innerHTML += `<button class="settings-item" onclick="viewFriendProfile('${user.uid}')">View</button>`;
-    menu.innerHTML += `<button class="settings-item" onclick="removeFriend('${user.uid}')">Unfriend</button>`;
-    menu.innerHTML += `<button class="settings-item" onclick="blockUser('${user.uid}')">Block</button>`;
+    menu.innerHTML += `<button class="settings-item btn-secondary" onclick="viewFriendProfile('${user.uid}')">View</button>`;
+    menu.innerHTML += `<button class="settings-item btn-negative-secondary" onclick="removeFriend('${user.uid}')">Unfriend</button>`;
+    menu.innerHTML += `<button class="settings-item btn-negative-secondary" onclick="blockUser('${user.uid}')">Block</button>`;
   } else if (context === 'discover') {
-    menu.innerHTML += `<button class="settings-item" onclick="viewFriendProfile('${user.uid}')">View</button>`;
-    menu.innerHTML += `<button class="settings-item" onclick="sendFriendRequest('${user.username}')">Send Friend Request</button>`;
-    menu.innerHTML += `<button class="settings-item" onclick="blockUser('${user.uid}')">Block</button>`;
+    menu.innerHTML += `<button class="settings-item btn-secondary" onclick="viewFriendProfile('${user.uid}')">View</button>`;
+    menu.innerHTML += `<button class="settings-item btn-secondary" onclick="sendFriendRequest('${user.username}')">Send Friend Request</button>`;
+    menu.innerHTML += `<button class="settings-item btn-negative-secondary" onclick="blockUser('${user.uid}')">Block</button>`;
   } else if (context === 'pending-received') {
-    menu.innerHTML += `<button class="settings-item" onclick="viewFriendProfile('${user.uid}')">View</button>`;
-    menu.innerHTML += `<button class="settings-item" onclick="acceptFriendRequest('${user.uid}', '${user.username}')">Accept</button>`;
-    menu.innerHTML += `<button class="settings-item" onclick="declineFriendRequest('${user.uid}')">Decline</button>`;
-    menu.innerHTML += `<button class="settings-item" onclick="blockUser('${user.uid}')">Block</button>`;
+    menu.innerHTML += `<button class="settings-item btn-secondary" onclick="viewFriendProfile('${user.uid}')">View</button>`;
+    menu.innerHTML += `<button class="settings-item btn-secondary" onclick="acceptFriendRequest('${user.uid}', '${user.username}')">Accept</button>`;
+    menu.innerHTML += `<button class="settings-item btn-negative-secondary" onclick="declineFriendRequest('${user.uid}')">Decline</button>`;
+    menu.innerHTML += `<button class="settings-item btn-negative-secondary" onclick="blockUser('${user.uid}')">Block</button>`;
   } else if (context === 'pending-sent') {
-    menu.innerHTML += `<button class="settings-item" onclick="viewFriendProfile('${user.uid}')">View</button>`;
-    menu.innerHTML += `<button class="settings-item" onclick="cancelSentRequest('${user.uid}')">Cancel Request</button>`;
+    menu.innerHTML += `<button class="settings-item btn-secondary" onclick="viewFriendProfile('${user.uid}')">View</button>`;
+    menu.innerHTML += `<button class="settings-item btn-negative-secondary" onclick="cancelSentRequest('${user.uid}')">Cancel Request</button>`;
   } else if (context === 'blocked') {
-    menu.innerHTML += `<button class="settings-item" onclick="viewFriendProfile('${user.uid}')">View</button>`;
-    menu.innerHTML += `<button class="settings-item" onclick="unblockUser('${user.uid}')">Unblock</button>`;
+    menu.innerHTML += `<button class="settings-item btn-secondary" onclick="viewFriendProfile('${user.uid}')">View</button>`;
+    menu.innerHTML += `<button class="settings-item btn-secondary" onclick="unblockUser('${user.uid}')">Unblock</button>`;
   } else {
     // Fallback: just view
     menu.innerHTML += `<button class="settings-item" onclick="viewFriendProfile('${user.uid}')">View</button>`;
