@@ -147,21 +147,21 @@ const dummyCards = [
 {id: 'LifeGrowth', name: 'Life Growth', rarity: 'Common', image: 'CardImages/Spells/Life Growth.png', 
  category: 'Spell', color: 'Green', type: 'Spell', cost: {green: 1}, effect: 'Gain {G}{G}', set: 'StandardPack'},
 {id: 'EssenceSurge', name: 'Essence Surge', rarity: 'Common', image: 'CardImages/Spells/Essence Surge.png', 
- category: 'Spell', color: 'Green', type: 'Spell', cost: {colorless: 2}, ability: 'Gain 3 essence', set: 'StandardPack'},
+ category: 'Spell', color: 'Green', type: 'Spell', cost: {colorless: 2}, effect: 'Gain 3 essence', set: 'StandardPack'},
 {id: 'EssenceAssault', name: 'Essence Assault', rarity: 'Common', image: 'CardImages/Spells/Essence Assault.png', 
- category: 'Spell', color: 'Red', type: 'Spell', cost: {colorless: 1}, ability: 'burn', set: 'StandardPack'},
+ category: 'Spell', color: 'Red', type: 'Spell', cost: {colorless: 1}, effect: 'Give a unit +2/0', set: 'StandardPack'},
 {id: 'EssenceRift', name: 'Essence Rift', rarity: 'Common', image: 'CardImages/Spells/Essence Rift.png', 
- category: 'Spell', color: 'Blue', type: 'Spell', cost: {colorless: 2}, ability: 'Draw 2', set: 'StandardPack'},
+ category: 'Spell', color: 'Blue', type: 'Spell', cost: {colorless: 2}, effect: 'Draw 2', set: 'StandardPack'},
 {id: 'EssenceBolt', name: 'Essence Bolt', rarity: 'Common', image: 'CardImages/Spells/Essence Bolt.png', 
- category: 'Spell', color: 'Yellow', type: 'Spell', cost: {colorless: 1}, ability: 'Strike 3', set: 'StandardPack'},
+ category: 'Spell', color: 'Yellow', type: 'Spell', cost: {colorless: 1}, effect: 'Strike 3', set: 'StandardPack'},
 {id: 'EssenceBreak', name: 'Essence Break', rarity: 'Common', image: 'CardImages/Spells/Essence Break.png', 
- category: 'Spell', color: 'Purple', type: 'Spell', cost: {colorless: 1}, ability: 'Destroy 1 essence', set: 'StandardPack'},
+ category: 'Spell', color: 'Purple', type: 'Spell', cost: {colorless: 1}, effect: 'Destroy 1 essence', set: 'StandardPack'},
 {id: 'EssenceBarrier', name: 'Essence Barrier', rarity: 'Common', image: 'CardImages/Spells/Essence Barrier.png', 
- category: 'Spell', color: 'Gray', type: 'Aura', cost: {colorless: 1}, ability: 'Aegis', set: 'StandardPack'},
+ category: 'Spell', color: 'Gray', type: 'Aura', cost: {colorless: 1}, effect: 'Aegis', set: 'StandardPack'},
 {id: 'EssencePurge', name: 'Essence Purge', rarity: 'Common', image: 'CardImages/Spells/Essence Purge.png', 
- category: 'Spell', color: 'Black', type: 'Aura', cost: {colorless: 2}, ability: 'burn', set: 'StandardPack'},
+ category: 'Spell', color: 'Black', type: 'Aura', cost: {colorless: 2}, effect: 'Cannot generate essence', set: 'StandardPack'},
 {id: 'EssenceBlessing', name: 'Essence Blessing', rarity: 'Common', image: 'CardImages/Spells/Essence Blessing.png', 
- category: 'Spell', color: 'White', type: 'Spell', cost: {colorless: 1}, ability: 'Cleanse 5', set: 'StandardPack'},
+ category: 'Spell', color: 'White', type: 'Spell', cost: {colorless: 1}, effect: 'Cleanse 5', set: 'StandardPack'},
 
 {id: 'basicforest', name: 'Forest', rarity: 'Common', image: 'CardImages/Domains/Green Basic Location.png', 
  category: 'Domain', color: 'Green', type: 'Terrain', hp: 5, cost: { red: 2 }, essence: {green: 1}, set: 'StandardPack2'},
@@ -261,14 +261,14 @@ function parseEffectText(effect) {
 
   // Map color codes to image paths
   const ESSENCE_ICON = {
-    G:  "OtherImages/Icons/EssenceGreen.png",
-    R:  "OtherImages/Icons/EssenceRed.png",
-    U:  "OtherImages/Icons/EssenceBlue.png",
-    Y:  "OtherImages/Icons/EssenceYellow.png",
-    C:  "OtherImages/Icons/EssenceGray.png",
-    P:  "OtherImages/Icons/EssencePurple.png",
-    B:  "OtherImages/Icons/EssenceBlack.png",
-    W:  "OtherImages/Icons/EssenceWhite.png"
+    G:  "OtherImages/Essence/Green.png",
+    R:  "OtherImages/Essence/Red.png",
+    U:  "OtherImages/Essence/Blue.png",
+    Y:  "OtherImages/Essence/Yellow.png",
+    C:  "OtherImages/Essence/Gray.png",
+    P:  "OtherImages/Essence/Purple.png",
+    B:  "OtherImages/Essence/Black.png",
+    W:  "OtherImages/Essence/White.png"
   };
 
   // Replace color icons {G},{R}, etc.
@@ -457,6 +457,7 @@ function showFullCardModal(cardObj) {
   infoHtml += labeled("Archetype", Array.isArray(card.archetype) ? card.archetype.join(", ") : card.archetype);
   infoHtml += labeled("Type", Array.isArray(card.type) ? card.type.join(", ") : card.type);
   infoHtml += labeled("Ability", Array.isArray(card.ability) ? card.ability.join(", ") : card.ability);
+  infoHtml += labeled("Trait", Array.isArray(card.trait) ? card.trait.join(", ") : card.trait);
 
   let statsRow = '';
   if (card.hp !== undefined || card.atk !== undefined || card.def !== undefined || card.cost !== undefined) {
@@ -489,6 +490,7 @@ function showFullCardModal(cardObj) {
   // Compose modal content (side-by-side)
   modalContent.innerHTML = `
     <div class="full-card-modal-flex" style="position:relative;">
+      ${infoButtonHtml}
       <div class="full-card-image-container">
         <img src="${card.image}" alt="${card.name}" class="full-card-modal-img ${owned === 0 ? 'card-image-locked' : ''}">
       </div>
