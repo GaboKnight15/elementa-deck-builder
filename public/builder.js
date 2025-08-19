@@ -204,63 +204,7 @@ tile.appendChild(activeBtn);
     grid.appendChild(tile);
   }
 }
-
-function renderDeckPanel(deckCards) {
-  // Find Dominion (trait/category/type = 'Dominion')
-  const dominion = deckCards.find(card =>
-    card.trait === 'Dominion' ||
-    card.type === 'Dominion' ||
-    card.category === 'Dominion'
-  );
-
-  // Find all Champions (trait = 'Champion')
-  const champions = deckCards.filter(card => card.trait === 'Champion');
-  const mainChampion = champions.length > 0 ? champions[0] : null;
-
-  // Other creatures (excluding Dominion and main Champion)
-  const remainingCreatures = deckCards.filter(card =>
-    card.category === 'Creature' &&
-    card !== dominion &&
-    card !== mainChampion
-  ).concat(champions.slice(1)); // Add any additional Champions after the main one
-
-  // Render Dominion slot
-  document.getElementById('dominion-slot').innerHTML = dominion
-    ? renderCardTile(dominion)
-    : '<div class="empty-slot" style="color:#888;text-align:center;">No Dominion</div>';
-
-  // Render Champion slot
-  document.getElementById('champion-slot').innerHTML = mainChampion
-    ? renderCardTile(mainChampion)
-    : '<div class="empty-slot" style="color:#888;text-align:center;">No Champion</div>';
-
-  // Render remaining creatures (2 per row)
-  const deckList = document.getElementById('deck-list');
-  deckList.innerHTML = '';
-  for (let i = 0; i < remainingCreatures.length; i++) {
-    const card = remainingCreatures[i];
-    const li = document.createElement('li');
-    li.className = 'deck-creature-list-item';
-    li.style.display = 'inline-block';
-    li.style.width = '48%';
-    li.style.verticalAlign = 'top';
-    li.style.marginBottom = '12px';
-    li.innerHTML = renderCardTile(card);
-    deckList.appendChild(li);
-  }
-}
-
-// Utility to render a card tile (implement your version)
-function renderCardTile(card) {
-  return `
-    <div class="card-tile" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-      <img src="${card.image}" alt="${card.name}" style="width:72px; height:96px; border-radius:8px; box-shadow:0 2px 8px #0009; margin-bottom:7px;">
-      <div style="color:#ffe066;font-weight:bold;font-size:1.04em;text-align:center;">${card.name}</div>
-      <div style="color:#ccc;font-size:0.98em;">${card.trait || card.category || ""}</div>
-    </div>
-  `;
-}
-
+  
 function showDeckTileMenu(deckName, anchorElem) {
   // Set content as before
   deckMenuTitle.textContent = deckName;
@@ -777,48 +721,35 @@ function updateDeckDisplay() {
   let total = 0;
 
   // Group cards by category
-  const sections = {creature: [], artifact: [], spell: [], domain: []};
-  let dominion = null;
-  let champions = [];
+  const sections = {
+    dominion: [],
+    champion: [],
+    creature: [],
+    artifact: [],
+    spell: [],
+    domain: []
+  };
 
   for (const [id, count] of Object.entries(deck)) {
     const card = dummyCards.find(c => c.id === id);
     if (!card) continue;
-    const trait = card.trait ? card.trait.toLowerCase() : '';
-    if (trait === "dominion") {
-      dominion = { card, count };
-    } else if (trait === "champion") {
-      for (let i = 0; i < count; i++) champions.push(card);
-    } else {
-      const cat = getCardCategory(card);
-      if (cat === "creature") {
-        for (let i = 0; i < count; i++) sections.creatures.push(card);
-      } else if (cat === "artifact") {
-        for (let i = 0; i < count; i++) sections.artifacts.push(card);
-      } else if (cat === "spell") {
-        for (let i = 0; i < count; i++) sections.spells.push(card);
-      } else if (cat === "domain") {
-        for (let i = 0; i < count; i++) sections.domains.push(card);
-      }
+  const trait = card.trait ? card.trait.toLowerCase() : '';
+  if (trait === "dominion") {
+    sections.dominion.push({ card, count });
+  } else if (trait === "champion") {
+    sections.champion.push({ card, count });
+  } else {
+    const cat = getCardCategory(card);
+    if (sections.hasOwnProperty(cat)) {
+      sections[cat].push({ card, count });
     }
+  }
     total += count;
   }
-
-  // --- Render Dominion slot ---
-  document.getElementById('dominion-slot').innerHTML = dominion
-    ? renderCardTile(dominion.card)
-    : '<div class="empty-slot" style="color:#888;text-align:center;">No Dominion</div>';
-
-  // --- Render Champion slot (first champion) ---
-  const mainChampion = champions.length > 0 ? champions[0] : null;
-  document.getElementById('champion-slot').innerHTML = mainChampion
-    ? renderCardTile(mainChampion)
-    : '<div class="empty-slot" style="color:#888;text-align:center;">No Champion</div>';
-
-  // --- Remove main champion from extra champions ---
-  const extraChampions = champions.slice(1);
   // Section display order
   const sectionNames = [
+    { key: "dominion", label: "Dominion" },
+    { key: "champion", label: "Champion" },
     { key: "creature", label: "Creatures" },
     { key: "artifact", label: "Artifacts" },
     { key: "spell", label: "Spells" },
@@ -833,26 +764,17 @@ function updateDeckDisplay() {
   };
   
   for (const {key, label} of sectionNames) {
-    // Prepare cards for this section
-    let cardsArr = sections[key];
-
-    // For "Creatures", combine with extraChampions
-    if (key === "creatures") {
-      cardsArr = extraChampions.concat(cardsArr);
-    }
-
-    if (cardsArr.length === 0) continue;
-
-    // Sort by rarity, then name
-    cardsArr.sort((a, b) => {
-      const ra = (a.rarity || '').toLowerCase();
-      const rb = (b.rarity || '').toLowerCase();
+    if (sections[key].length === 0) continue;
+    // Sort by rarity first (legendary -> epic -> rare -> common), then by card name
+    sections[key].sort((a, b) => {
+      const ra = (a.card.rarity || '').toLowerCase();
+      const rb = (b.card.rarity || '').toLowerCase();
       const orderA = rarityOrder.hasOwnProperty(ra) ? rarityOrder[ra] : 99;
       const orderB = rarityOrder.hasOwnProperty(rb) ? rarityOrder[rb] : 99;
       if (orderA !== orderB) return orderA - orderB;
-      return a.name.localeCompare(b.name);
+      // Secondary: sort by name if same rarity
+      return a.card.name.localeCompare(b.card.name);
     });
-
     // Add section heading
     const heading = document.createElement('li');
     heading.textContent = label;
@@ -861,28 +783,15 @@ function updateDeckDisplay() {
     heading.style.marginBottom = "2px";
     deckList.appendChild(heading);
 
-    // Render cards
-    for (let i = 0; i < cardsArr.length; i++) {
-      const card = cardsArr[i];
+    for (const { card, count } of sections[key]) {
       const li = document.createElement('li');
-      li.className = `deck-${key}-list-item deck-draggable`;
+      li.style.display = 'flex';
+      li.style.alignItems = 'center';
+      li.style.gap = '8px';
+      li.classList.add('deck-draggable');
       li.setAttribute('data-card-id', card.id);
       li.setAttribute('draggable', 'true');
-
-      // For "Creatures", render 2 per row
-      if (key === "creatures") {
-        li.style.display = 'inline-block';
-        li.style.width = '48%';
-        li.style.verticalAlign = 'top';
-        li.style.marginBottom = '12px';
-      } else {
-        // For others, keep legacy style
-        li.style.display = 'flex';
-        li.style.alignItems = 'center';
-        li.style.gap = '8px';
-      }
-
-      // Hold/dnd logic as before
+      // --- Use hold helper for deck list ---
       const { startHold, clearHold, mouseUp } = makeHoldHandlers(
         () => showFullCardModal(card),
         () => {
@@ -897,6 +806,7 @@ function updateDeckDisplay() {
       li.addEventListener('touchend', mouseUp);
       li.addEventListener('mouseleave', clearHold);
       li.addEventListener('touchcancel', clearHold);
+      // Drag support for removing
       li.addEventListener('dragstart', function(e) {
         e.dataTransfer.setData('card-id', card.id);
         e.dataTransfer.setData('from', 'deck');
@@ -908,9 +818,10 @@ function updateDeckDisplay() {
       });
       li.addEventListener('dragend', function(e) {
         li.classList.remove('dragging');
+        // If not dropped on deckList, remove card
+        // (Handed by global drop listener)
       });
-
-      // Card image
+    
       const img = document.createElement('img');
       img.src = card.image;
       img.alt = card.name;
@@ -918,18 +829,16 @@ function updateDeckDisplay() {
       img.style.height = 'auto';
       img.style.display = 'block';
 
-      // Counter badge (show total in deck for this card)
+      // COUNTER BADGE
       const badge = document.createElement('span');
-      // Count for this card in deck
-      let cardCount = Object.values(deck).filter((_, k) => k === card.id).length || 1;
-      badge.textContent = `×${cardCount}`;
+      badge.textContent = `×${count}`;
       badge.className = 'deck-count-badge';
 
       li.appendChild(img);
       li.appendChild(badge);
       deckList.appendChild(li);
+      }
     }
-  }
   cardCount.textContent = total;
 }
 function getCardCategory(card) {
