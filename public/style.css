@@ -2628,11 +2628,14 @@ button {}
   position: fixed;
   left: 0; top: 0;
   width: 100vw; height: 100vh;
-  z-index: 99999;
+  z-index: 9999 !important;
   background: rgba(20,28,44, 0.88);
   align-items: center;
   justify-content: center;
   transition: background 0.2s;
+}
+#card-info-modal {
+  z-index: 10000 !important;
 }
 #modal-img-content {
   display: flex;
