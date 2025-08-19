@@ -927,6 +927,22 @@ function renderProfileInfoSection(playerData) {
   </div>
   `;
 }
+// PROFILE TILE
+function renderProfileTile(user, context) {
+  const tile = document.createElement('div');
+  tile.className = 'friend-profile-tile';
+  tile.innerHTML = renderProfileInfoSection({
+    profileBanner: user.banner,
+    profilePic: user.avatar || 'CardImages/Avatars/Default.png',
+    username: user.username || user.uid,
+    power: user.power || 0
+  });
+  tile.onclick = function(e) {
+    e.stopPropagation();
+    showProfileMenu(tile, user, context);
+  };
+  return tile;
+}
 // playerData: { username, profilePic, profileBanner, power, achievements: [badgeId,...], badges: [badgeId,...] }
 function showProfileModal(playerData) {
   const modal = document.getElementById('profile-modal');
