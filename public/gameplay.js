@@ -109,17 +109,6 @@ function startGame({
   document.getElementById('chat-ui').style.display = '';
   document.getElementById('chat-input-row').style.display = isCpuGame ? 'none' : '';
   document.getElementById('chat-log').style.display = '';
-
-  // --- Profile objects ---
-  const playerProfile = {
-    username: playerDeck?.ownerName || playerDeck?.username || "You",
-    avatar: playerDeck?.avatar || playerDeck?.image,
-    banner: playerDeck?.bannerArt,
-    power: playerDeck?.power || 0
-  };
-  const opponentProfile = isCpuGame
-    ? { username: opponentDeck?.name, avatar: opponentDeck?.image, banner: opponentDeck?.bannerArt, power: opponentDeck?.power || 0 }
-    : matchData?.opponentProfile;
   
   // --- Profile panels ---
   renderGameplayProfilePanel('my-profile', playerProfile);
@@ -154,7 +143,6 @@ function startGame({
 
   // Additional mode logic can go here (private, ranked, etc)
 }
-
 // Helper for rendering profile panels (replace old renderProfile usage)
 function renderGameplayProfilePanel(panelId, profileObj) {
   const panel = document.getElementById(panelId);
@@ -2911,6 +2899,7 @@ if (window.socket) {
     }, result);
   });
 }
+window.startGame = startGame;
 window.gameState = window.gameState || {};
 window.gameStartAnimationShown = false;
 window.coinFlipShown = false;
