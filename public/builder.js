@@ -777,7 +777,7 @@ function updateDeckDisplay() {
   let total = 0;
 
   // Group cards by category
-  const sections = {creature: [],artifact: [],spell: [],domain: []};
+  const sections = {creature: [], artifact: [], spell: [], domain: []};
   let dominion = null;
   let champions = [];
 
@@ -786,7 +786,7 @@ function updateDeckDisplay() {
     if (!card) continue;
     const trait = card.trait ? card.trait.toLowerCase() : '';
     if (trait === "dominion") {
-      sections.dominion.push({ card, count });
+      dominion = { card, count };
     } else if (trait === "champion") {
       for (let i = 0; i < count; i++) champions.push(card);
     } else {
