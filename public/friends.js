@@ -5,6 +5,7 @@ let userSearchPages = [];
 const USERS_PER_PAGE = 10;
 
 function appendFriendsProfilePanel({user, container, context}) {
+  if (!user || typeof user !== 'object') return;
   const playerData = {
     username: user.username || user.uid,
     profilePic: user.avatar || 'CardImages/Avatars/Default.png',
