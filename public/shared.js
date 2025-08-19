@@ -795,33 +795,36 @@ function getCurrentPlayerBadgeImage() {
   return "OtherImages/Levels/One.png";
 }
 
-// PLAYER BADGE MENU
-function showPlayerBadgeMenu(badgeImgEl) {
-  // Hide any existing menus
+// PROFILE PANEL POP-UP
+badgeImg.onclick = function(e) {
+  e.stopPropagation();
+
   const menu = document.getElementById('player-badge-menu');
-  if (!menu) return;
+  menu.innerHTML = "";
+  menu.style.display = "block";
 
-  // Update menu data
-  document.getElementById('player-badge-menu-img').src = getCurrentPlayerBadgeImage();
-  document.getElementById('player-badge-level-num').textContent = window.playerLevel || 1;
-  document.getElementById('player-badge-unique-cards').textContent = getUniqueCollectedCardsCount();
+  // Use your app's player data (already loaded elsewhere)
+  menu.appendChild(renderProfilePanel(window.currentPlayerData, {
+    onClick: () => {
+      showProfileModal(window.currentPlayerData);
+      menu.style.display = "none";
+    }
+  }));
 
-  // Position menu next to badge image
-  const rect = badgeImgEl.getBoundingClientRect();
+  // Positioning logic (unchanged)
+  const rect = badgeImg.getBoundingClientRect();
   menu.style.left = rect.right + 12 + 'px';
   menu.style.top = (rect.top - 6) + 'px';
-  menu.style.display = 'block';
 
-  // Hide on click elsewhere
   setTimeout(() => {
-    document.body.addEventListener('click', function handler(e) {
-      if (!menu.contains(e.target)) menu.style.display = 'none';
+    document.body.addEventListener('click', function handler(ev) {
+      if (!menu.contains(ev.target)) menu.style.display = 'none';
       document.body.removeEventListener('click', handler);
     }, { once: true });
   }, 20);
-  // Prevent clicks inside the menu from closing it
-  menu.onclick = (e) => e.stopPropagation();
-}
+
+  menu.onclick = (ev) => ev.stopPropagation();
+};
 
  // ACCOUNT POWER
 function calculatePlayerPower() {
@@ -927,22 +930,103 @@ function renderProfileInfoSection(playerData) {
   </div>
   `;
 }
-// PROFILE TILE
-function renderProfileTile(user, context) {
-  const tile = document.createElement('div');
-  tile.className = 'friend-profile-tile';
-  tile.innerHTML = renderProfileInfoSection({
-    profileBanner: user.banner,
-    profilePic: user.avatar || 'CardImages/Avatars/Default.png',
-    username: user.username || user.uid,
-    power: user.power || 0
-  });
-  tile.onclick = function(e) {
-    e.stopPropagation();
-    showProfileMenu(tile, user, context);
-  };
-  return tile;
+// PROFILE PANEL
+const tile = renderProfilePanel(playerData, { onClick: () => showProfileModal(playerData) });
+container.appendChild(tile);
+
+function renderProfilePanel(playerData, options = {}) {
+  playerData = playerData || {};
+  const profileBanner = playerData.profileBanner || "CardImages/Banners/DefaultBanner.png";
+  const profilePic = playerData.profilePic || "CardImages/Avatars/Default.png";
+  const username = playerData.username || "Unknown Player";
+  const power = playerData.power || 0;
+
+  // Create container
+  const container = document.createElement('div');
+  container.className = options.className || 'profile-panel-tile';
+  container.style.background = `url('${profileBanner}')`;
+  container.style.backgroundSize = 'cover';
+  container.style.backgroundPosition = 'center';
+  container.style.borderRadius = '18px';
+  container.style.display = 'flex';
+  container.style.alignItems = 'center';
+  container.style.gap = '24px';
+  container.style.minHeight = '120px';
+  container.style.padding = '24px 32px';
+  container.style.position = 'relative';
+  container.style.boxSizing = 'border-box';
+
+  // Avatar
+  const avatar = document.createElement('img');
+  avatar.src = profilePic;
+  avatar.alt = "Profile";
+  avatar.style.width = '88px';
+  avatar.style.height = '88px';
+  avatar.style.borderRadius = '50%';
+  avatar.style.border = '4px solid #ffe066';
+  avatar.style.boxShadow = '0 2px 16px #000c';
+  avatar.style.objectFit = 'cover';
+  avatar.style.background = '#1a1b23';
+  avatar.style.zIndex = '2';
+  avatar.style.flexShrink = '0';
+
+  // Info stack
+  const infoStack = document.createElement('div');
+  infoStack.style.display = 'flex';
+  infoStack.style.flexDirection = 'column';
+  infoStack.style.justifyContent = 'center';
+  infoStack.style.alignItems = 'flex-start';
+
+  // Username
+  const usernameDiv = document.createElement('div');
+  usernameDiv.textContent = username;
+  usernameDiv.style.fontSize = '1.38em';
+  usernameDiv.style.fontWeight = 'bold';
+  usernameDiv.style.color = '#ffe066';
+  usernameDiv.style.textShadow = '0 2px 8px #000';
+  usernameDiv.style.marginBottom = '6px';
+
+  // Power display
+  const powerDiv = document.createElement('div');
+  powerDiv.style.fontSize = '1.1em';
+  powerDiv.style.fontWeight = 'bold';
+  powerDiv.style.color = '#fff';
+  powerDiv.style.display = 'flex';
+  powerDiv.style.alignItems = 'center';
+  powerDiv.style.gap = '8px';
+
+  const powerIcon = document.createElement('img');
+  powerIcon.src = 'OtherImages/Icons/Power.png';
+  powerIcon.style.width = '24px';
+
+  const powerValue = document.createElement('span');
+  powerValue.textContent = power;
+  powerValue.style.color = '#ffe066';
+
+  powerDiv.appendChild(powerIcon);
+  powerDiv.appendChild(powerValue);
+
+  // Compose info stack
+  infoStack.appendChild(usernameDiv);
+  infoStack.appendChild(powerDiv);
+
+  // Compose container
+  container.appendChild(avatar);
+  container.appendChild(infoStack);
+
+  // Click handler (optional)
+  if (typeof options.onClick === 'function') {
+    container.style.cursor = 'pointer';
+    container.onclick = function(e) {
+      e.stopPropagation();
+      options.onClick(e, playerData);
+    };
+  }
+
+  return container;
 }
+window.renderProfilePanel = renderProfilePanel;
+
 // playerData: { username, profilePic, profileBanner, power, achievements: [badgeId,...], badges: [badgeId,...] }
 function showProfileModal(playerData) {
   const modal = document.getElementById('profile-modal');
