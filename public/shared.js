@@ -539,7 +539,7 @@ function renderCardCost(costData) {
   let html = '';
   if (!costData) {
    // Show the zero image if cost is 0
-   return `<img src="${COST_IMAGE_MAP.X0}" alt="Cost: 0" style="width:26px;height:26px;vertical-align:middle;">`;
+   return `<img src="${COST_IMAGE_MAP.X0}" alt="Cost: 0" style="width:22px;height:22px;vertical-align:middle;">`;
   }
 
   // Array style: [{color: 'red', amount: 2}, {colorless: 3}]
@@ -547,12 +547,12 @@ function renderCardCost(costData) {
     costData.forEach(c => {
       if (c.color && COST_IMAGE_MAP[c.color]) {
         for (let i = 0; i < (c.amount || 1); i++) {
-          html += `<img src="${COST_IMAGE_MAP[c.color]}" alt="${c.color}" style="width:26px;height:26px;vertical-align:middle;">`;
+          html += `<img src="${COST_IMAGE_MAP[c.color]}" alt="${c.color}" style="width:22px;height:22px;vertical-align:middle;">`;
         }
       } else if (c.colorless) {
         const key = 'X' + c.colorless;
         if (COST_IMAGE_MAP[key]) {
-          html += `<img src="${COST_IMAGE_MAP[key]}" alt="Colorless" style="width:26px;height:26px;vertical-align:middle;">`;
+          html += `<img src="${COST_IMAGE_MAP[key]}" alt="Colorless" style="width:22px;height:22px;vertical-align:middle;">`;
         }
       }
     });
@@ -565,15 +565,15 @@ function renderCardCost(costData) {
     if (key === 'colorless' || key === 'X') {
       const imgKey = 'X' + costData[key];
       if (COST_IMAGE_MAP[imgKey]) {
-        html += `<img src="${COST_IMAGE_MAP[imgKey]}" alt="Colorless" style="width:26px;height:26px;vertical-align:middle;margin-right:2px;">`;
+        html += `<img src="${COST_IMAGE_MAP[imgKey]}" alt="Colorless" style="width:22px;height:22px;vertical-align:middle;margin-right:2px;">`;
       }
     } else if (COST_IMAGE_MAP[key]) {
       for (let i = 0; i < costData[key]; i++) {
-        html += `<img src="${COST_IMAGE_MAP[key]}" alt="${key}" style="width:26px;height:26px;vertical-align:middle;margin-right:2px;">`;
+        html += `<img src="${COST_IMAGE_MAP[key]}" alt="${key}" style="width:22px;height:22px;vertical-align:middle;margin-right:2px;">`;
       }
     }
   }
-  return html || `<img src="${COST_IMAGE_MAP.X0}" alt="Cost: 0" style="width:26px;height:26px;vertical-align:middle;margin-right:2px;">`;
+  return html || `<img src="${COST_IMAGE_MAP.X0}" alt="Cost: 0" style="width:22px;height:22px;vertical-align:middle;margin-right:2px;">`;
 }
 const COLLECTION_KEY = "cardCollection";
 const NEW_CARD_KEY = "newlyUnlockedCards";
