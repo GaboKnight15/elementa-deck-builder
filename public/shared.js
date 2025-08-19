@@ -1006,6 +1006,46 @@ function showProfileModal(playerData) {
   }
   badgeSection += "</div></div>";
 
+   // --- OWNED COSMETICS SECTIONS ---
+  const ownedAvatars = typeof getUnlockedAvatars === "function" ? getUnlockedAvatars() : (window.playerUnlockedAvatars || []);
+  const ownedBanners = typeof getUnlockedBanners === "function" ? getUnlockedBanners() : (window.playerUnlockedBanners || []);
+  const ownedCardbacks = typeof getUnlockedCardbacks === "function" ? getUnlockedCardbacks() : (window.playerUnlockedCardbacks || []);
+
+  let avatarSection = '';
+  if (ownedAvatars.length) {
+    avatarSection = `
+      <div style="padding:16px 0 0 0;text-align:center;">
+        <div style="font-weight:bold;font-size:1.13em;color:#ffe066;margin-bottom:10px;">Owned Avatars</div>
+        <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:10px;">
+          ${ownedAvatars.map(src => `<img src="${src}" alt="Avatar" style="width:52px;height:52px;border-radius:50%;border:2px solid #ffe066;box-shadow:0 2px 8px #0007;">`).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  let bannerSection = '';
+  if (ownedBanners.length) {
+    bannerSection = `
+      <div style="padding:16px 0 0 0;text-align:center;">
+        <div style="font-weight:bold;font-size:1.13em;color:#ffe066;margin-bottom:10px;">Owned Banners</div>
+        <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:10px;">
+          ${ownedBanners.map(src => `<img src="${src}" alt="Banner" style="width:70px;height:36px;border-radius:8px;border:2px solid #ffe066;box-shadow:0 2px 8px #0007;">`).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  let cardbackSection = '';
+  if (ownedCardbacks.length) {
+    cardbackSection = `
+      <div style="padding:16px 0 0 0;text-align:center;">
+        <div style="font-weight:bold;font-size:1.13em;color:#ffe066;margin-bottom:10px;">Owned Cardbacks</div>
+        <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:10px;">
+          ${ownedCardbacks.map(src => `<img src="${src}" alt="Cardback" style="width:40px;height:56px;border-radius:6px;border:2px solid #ffe066;box-shadow:0 2px 8px #0007;">`).join('')}
+        </div>
+      </div>
+    `;
+  }
   // Clear previous content
   content.innerHTML = "";
 
@@ -1017,6 +1057,9 @@ function showProfileModal(playerData) {
   const badgesAndClose = document.createElement("div");
   badgesAndClose.innerHTML = `
     ${badgeSection}
+    ${avatarSection}
+    ${bannerSection}
+    ${cardbackSection}
     <button id="close-profile-modal" class="btn-negative-secondary">Close</button>
   `;
   content.appendChild(badgesAndClose);
@@ -1028,7 +1071,6 @@ function showProfileModal(playerData) {
   modal.onclick = function(e) {
     if (e.target === modal) modal.style.display = 'none';
   };
-
   // Show modal
   modal.style.display = 'flex';
 }
