@@ -532,29 +532,38 @@ function showProfileMenu(tile, user, context) {
   menu.style.position = 'absolute';
   menu.style.minWidth = '160px';
 
-  // Add context-appropriate actions
+    // Unique button IDs using Option 1
+  const viewBtnId = `menu-view-btn-${user.uid}`;
+  const reqBtnId = `menu-request-btn-${user.uid}`;
+  const blockBtnId = `menu-block-btn-${user.uid}`;
+  const unfBtnId = `menu-unfriend-btn-${user.uid}`;
+  const acceptBtnId = `menu-accept-btn-${user.uid}`;
+  const declineBtnId = `menu-decline-btn-${user.uid}`;
+  const unblockBtnId = `menu-unblock-btn-${user.uid}`;
+  const cancelBtnId = `menu-cancel-btn-${user.uid}`;
+
+   // Add context-appropriate actions
   if (context === 'friends') {
-    menu.innerHTML += `<button class="settings-item btn-secondary" onclick="viewFriendProfile('${user.uid}')">View</button>`;
-    menu.innerHTML += `<button class="settings-item btn-negative-secondary" onclick="removeFriend('${user.uid}')">Unfriend</button>`;
-    menu.innerHTML += `<button class="settings-item btn-negative-secondary" onclick="blockUser('${user.uid}')">Block</button>`;
+    menu.innerHTML += `<button id="${viewBtnId}" class="settings-item btn-secondary">View</button>`;
+    menu.innerHTML += `<button id="${unfBtnId}" class="settings-item btn-negative-secondary">Unfriend</button>`;
+    menu.innerHTML += `<button id="${blockBtnId}" class="settings-item btn-secondary">Block</button>`;
   } else if (context === 'discover') {
-    menu.innerHTML += `<button class="settings-item btn-secondary" onclick="viewFriendProfile('${user.uid}')">View</button>`;
-    menu.innerHTML += `<button class="settings-item btn-secondary" onclick="sendFriendRequest('${user.username}')">Send Friend Request</button>`;
-    menu.innerHTML += `<button class="settings-item btn-negative-secondary" onclick="blockUser('${user.uid}')">Block</button>`;
+    menu.innerHTML += `<button id="${viewBtnId}" class="settings-item btn-secondary">View</button>`;
+    menu.innerHTML += `<button id="${reqBtnId}" class="settings-item btn-secondary">Send Friend Request</button>`;
+    menu.innerHTML += `<button id="${blockBtnId}" class="settings-item btn-secondary">Block</button>`;
   } else if (context === 'pending-received') {
-    menu.innerHTML += `<button class="settings-item btn-secondary" onclick="viewFriendProfile('${user.uid}')">View</button>`;
-    menu.innerHTML += `<button class="settings-item btn-secondary" onclick="acceptFriendRequest('${user.uid}', '${user.username}')">Accept</button>`;
-    menu.innerHTML += `<button class="settings-item btn-negative-secondary" onclick="declineFriendRequest('${user.uid}')">Decline</button>`;
-    menu.innerHTML += `<button class="settings-item btn-negative-secondary" onclick="blockUser('${user.uid}')">Block</button>`;
+    menu.innerHTML += `<button id="${viewBtnId}" class="settings-item btn-secondary">View</button>`;
+    menu.innerHTML += `<button id="${acceptBtnId}" class="settings-item btn-secondary">Accept</button>`;
+    menu.innerHTML += `<button id="${declineBtnId}" class="settings-item btn-negative-secondary">Decline</button>`;
+    menu.innerHTML += `<button id="${blockBtnId}" class="settings-item btn-secondary">Block</button>`;
   } else if (context === 'pending-sent') {
-    menu.innerHTML += `<button class="settings-item btn-secondary" onclick="viewFriendProfile('${user.uid}')">View</button>`;
-    menu.innerHTML += `<button class="settings-item btn-negative-secondary" onclick="cancelSentRequest('${user.uid}')">Cancel Request</button>`;
+    menu.innerHTML += `<button id="${viewBtnId}" class="settings-item btn-secondary">View</button>`;
+    menu.innerHTML += `<button id="${cancelBtnId}" class="settings-item btn-negative-secondary">Cancel Request</button>`;
   } else if (context === 'blocked') {
-    menu.innerHTML += `<button class="settings-item btn-secondary" onclick="viewFriendProfile('${user.uid}')">View</button>`;
-    menu.innerHTML += `<button class="settings-item btn-secondary" onclick="unblockUser('${user.uid}')">Unblock</button>`;
+    menu.innerHTML += `<button id="${viewBtnId}" class="settings-item btn-secondary">View</button>`;
+    menu.innerHTML += `<button id="${unblockBtnId}" class="settings-item btn-secondary">Unblock</button>`;
   } else {
-    // Fallback: just view
-    menu.innerHTML += `<button class="settings-item" onclick="viewFriendProfile('${user.uid}')">View</button>`;
+    menu.innerHTML += `<button id="${viewBtnId}" class="settings-item btn-secondary">View</button>`;
   }
 
   // Place menu using shared.js util
@@ -563,15 +572,71 @@ function showProfileMenu(tile, user, context) {
 
   document.body.appendChild(menu);
 
-  // Remove on click outside
-  setTimeout(() => {
-    document.body.addEventListener('mousedown', function handler(e) {
-      if (!menu.contains(e.target)) menu.remove();
-      document.body.removeEventListener('mousedown', handler);
-    }, { once: true });
-  }, 20);
-
-  // Prevent menu from closing if clicked inside
+  // Attach event listeners to buttons (always close menu first)
+  const viewBtn = document.getElementById(viewBtnId);
+  if (viewBtn) {
+    viewBtn.onclick = function(e) {
+      e.stopPropagation();
+      closeAllMenus();
+      viewFriendProfile(user.uid);
+    };
+  }
+  const reqBtn = document.getElementById(reqBtnId);
+  if (reqBtn) {
+    reqBtn.onclick = function(e) {
+      e.stopPropagation();
+      closeAllMenus();
+      sendFriendRequest(user.username);
+    };
+  }
+  const blockBtn = document.getElementById(blockBtnId);
+  if (blockBtn) {
+    blockBtn.onclick = function(e) {
+      e.stopPropagation();
+      closeAllMenus();
+      blockUser(user.uid);
+    };
+  }
+  const unfBtn = document.getElementById(unfBtnId);
+  if (unfBtn) {
+    unfBtn.onclick = function(e) {
+      e.stopPropagation();
+      closeAllMenus();
+      removeFriend(user.uid);
+    };
+  }
+  const acceptBtn = document.getElementById(acceptBtnId);
+  if (acceptBtn) {
+    acceptBtn.onclick = function(e) {
+      e.stopPropagation();
+      closeAllMenus();
+      acceptFriendRequest(user.uid, user.username);
+    };
+  }
+  const declineBtn = document.getElementById(declineBtnId);
+  if (declineBtn) {
+    declineBtn.onclick = function(e) {
+      e.stopPropagation();
+      closeAllMenus();
+      declineFriendRequest(user.uid);
+    };
+  }
+  const unblockBtn = document.getElementById(unblockBtnId);
+  if (unblockBtn) {
+    unblockBtn.onclick = function(e) {
+      e.stopPropagation();
+      closeAllMenus();
+      unblockUser(user.uid);
+    };
+  }
+  const cancelBtn = document.getElementById(cancelBtnId);
+  if (cancelBtn) {
+    cancelBtn.onclick = function(e) {
+      e.stopPropagation();
+      closeAllMenus();
+      cancelSentRequest(user.uid);
+    };
+  }
   menu.onclick = (e) => e.stopPropagation();
 }
 function renderRequestsPanel() {
