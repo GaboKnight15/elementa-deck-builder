@@ -204,7 +204,63 @@ tile.appendChild(activeBtn);
     grid.appendChild(tile);
   }
 }
-  
+
+function renderDeckPanel(deckCards) {
+  // Find Dominion (trait/category/type = 'Dominion')
+  const dominion = deckCards.find(card =>
+    card.trait === 'Dominion' ||
+    card.type === 'Dominion' ||
+    card.category === 'Dominion'
+  );
+
+  // Find all Champions (trait = 'Champion')
+  const champions = deckCards.filter(card => card.trait === 'Champion');
+  const mainChampion = champions.length > 0 ? champions[0] : null;
+
+  // Other creatures (excluding Dominion and main Champion)
+  const remainingCreatures = deckCards.filter(card =>
+    card.category === 'Creature' &&
+    card !== dominion &&
+    card !== mainChampion
+  ).concat(champions.slice(1)); // Add any additional Champions after the main one
+
+  // Render Dominion slot
+  document.getElementById('dominion-slot').innerHTML = dominion
+    ? renderCardTile(dominion)
+    : '<div class="empty-slot" style="color:#888;text-align:center;">No Dominion</div>';
+
+  // Render Champion slot
+  document.getElementById('champion-slot').innerHTML = mainChampion
+    ? renderCardTile(mainChampion)
+    : '<div class="empty-slot" style="color:#888;text-align:center;">No Champion</div>';
+
+  // Render remaining creatures (2 per row)
+  const deckList = document.getElementById('deck-list');
+  deckList.innerHTML = '';
+  for (let i = 0; i < remainingCreatures.length; i++) {
+    const card = remainingCreatures[i];
+    const li = document.createElement('li');
+    li.className = 'deck-creature-list-item';
+    li.style.display = 'inline-block';
+    li.style.width = '48%';
+    li.style.verticalAlign = 'top';
+    li.style.marginBottom = '12px';
+    li.innerHTML = renderCardTile(card);
+    deckList.appendChild(li);
+  }
+}
+
+// Utility to render a card tile (implement your version)
+function renderCardTile(card) {
+  return `
+    <div class="card-tile" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+      <img src="${card.image}" alt="${card.name}" style="width:72px; height:96px; border-radius:8px; box-shadow:0 2px 8px #0009; margin-bottom:7px;">
+      <div style="color:#ffe066;font-weight:bold;font-size:1.04em;text-align:center;">${card.name}</div>
+      <div style="color:#ccc;font-size:0.98em;">${card.trait || card.category || ""}</div>
+    </div>
+  `;
+}
+
 function showDeckTileMenu(deckName, anchorElem) {
   // Set content as before
   deckMenuTitle.textContent = deckName;
