@@ -23,6 +23,14 @@ const defaultBanner = "CardImages/Banners/DefaultBanner.png";
 // --- Profile Icon Choices ---
 const iconOptions = [
     "CardImages/Avatars/Default.png",
+    "CardImages/Avatars/Fairy.png",
+    "CardImages/Avatars/Emberling.png",
+    "CardImages/Avatars/WaterElemental.png",
+    "CardImages/Avatars/Thunderspawn.png",
+    "CardImages/Avatars/Goblin.png",
+    "CardImages/Avatars/RockLizard.png",
+    "CardImages/Avatars/Wolf.png",
+    "CardImages/Avatars/AngelicWarrior.png",
     "CardImages/Avatars/Faelyra.png",
     "CardImages/Avatars/Kaelyn.png",
     "CardImages/Avatars/Zaryon.png",
