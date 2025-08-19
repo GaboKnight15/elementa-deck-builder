@@ -798,11 +798,9 @@ function getCurrentPlayerBadgeImage() {
 // PROFILE PANEL POP-UP
 document.addEventListener('DOMContentLoaded', function() {
   const badgeImg = document.getElementById('player-badge-img');
-  const menu = document.getElementById('player-badge-menu');
-  if (badgeImg && menu) {
-    badgeImg.onclick = function(e) {
-      e.stopPropagation();
-      // Gather current player data for the panel
+  if (badgeImg) {
+    badgeImg.onclick = function() {
+      // Build playerData for showProfileModal
       const playerData = {
         username: window.playerUsername || (window.auth && window.auth.currentUser && window.auth.currentUser.displayName) || "Player",
         profilePic: window.playerProfilePic || badgeImg.src,
@@ -811,29 +809,9 @@ document.addEventListener('DOMContentLoaded', function() {
         achievements: (typeof getAchievementData === "function" && typeof ACHIEVEMENTS !== "undefined")
           ? ACHIEVEMENTS.filter(a => getAchievementData()[a.id]?.claimed).map(a => a.id)
           : [],
-        badges: [] // add badge ids as needed
+        badges: [] // Add badge ids as needed
       };
-      menu.innerHTML = "";
-      menu.appendChild(renderProfilePanel(playerData, {
-        onClick: () => {
-          showProfileModal(playerData);
-          menu.style.display = "none";
-        }
-      }));
-      menu.style.display = "block";
-      // Optional: position menu near badge
-      const rect = badgeImg.getBoundingClientRect();
-      menu.style.position = "absolute";
-      menu.style.left = rect.right + 12 + 'px';
-      menu.style.top = (rect.top - 6) + 'px';
-      // Hide menu when clicking outside
-      setTimeout(() => {
-        document.body.addEventListener('click', function handler(ev) {
-          if (!menu.contains(ev.target)) menu.style.display = 'none';
-          document.body.removeEventListener('click', handler);
-        }, { once: true });
-      }, 20);
-      menu.onclick = (ev) => ev.stopPropagation();
+      showProfileModal(playerData);
     };
   }
 });
