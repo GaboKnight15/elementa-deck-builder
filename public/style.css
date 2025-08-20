@@ -3438,16 +3438,34 @@ button {}
 .profile-panel {
   max-width: 100%;
   width: 100%;      
-  background: #19223a;
-  color: #fff;
   border-radius: 10px;
   box-shadow: 0 2px 12px #0007;
-  padding: 12px;
   margin: 12px 0;
   display: flex;
   align-items: center;
   gap: 12px;
   min-height: 56px;
+}
+.profile-panel-tile {
+  max-width: 98vw;
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 24px;
+  border-radius: 18px;
+  box-sizing: border-box;
+  padding: 24px 2vw;
+  background-size: cover;
+  background-position: center;
+}
+.profile-panel-tile .username {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 70vw;
+  min-width: 0;
 }
 .profile-info-row {
   position: relative;
