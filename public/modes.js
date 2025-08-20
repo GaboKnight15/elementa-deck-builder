@@ -403,11 +403,11 @@ div.innerHTML = `
 div.onclick = () => {
 window.selectedPlayerDeck = {
   ...deck,
-  cardbackArt: decks[deckName].cardbackArt,
+  cardbackArt: deck.cardbackArt,
   highlightArt: deck.image,
   deckObj: {
     ...deck,
-    cardbackArt: decks[deckName].cardbackArt,
+    cardbackArt: deck.cardbackArt,
     highlightArt: deck.image
   },
   isDefaultDeck: true
