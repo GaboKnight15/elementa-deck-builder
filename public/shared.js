@@ -273,20 +273,20 @@ function parseEffectText(effect) {
 
   // Replace color icons {G},{R}, etc.
   effect = effect.replace(/\{([GRUYCPBW])\}/g, (match, code) =>
-    `<img src="${ESSENCE_ICON[code]}" style="height:1.3em;vertical-align:middle;">`
+    `<img src="${ESSENCE_ICON[code]}" style="height:1.3em;vertical-align:middle;margin-right:2px;">`
   );
 
   // Replace tapped/untapped icons
   effect = effect.replace(/\{CW\}/g,
-    '<img src="OtherImages/Icons/Tapped.png" style="height:1.3em;vertical-align:middle;" title="Tapped">'
+    '<img src="OtherImages/Icons/Tapped.png" style="height:1.3em;vertical-align:middle;margin-right: 2px;" title="Tapped">'
   );
   effect = effect.replace(/\{CCW\}/g,
-    '<img src="OtherImages/Icons/Untapped.png" style="height:1.3em;vertical-align:middle;" title="Untapped">'
+    '<img src="OtherImages/Icons/Untapped.png" style="height:1.3em;vertical-align:middle;margin-right: 2px;" title="Untapped">'
   );
 
   // Replace numbers {0}..{20} with bold numbers or custom spans
   effect = effect.replace(/\{([0-9]|1[0-9]|20)\}/g, (match, num) =>
-    `<span style="font-weight:bold;color:#ffe066;font-size:1.12em;vertical-align:middle;">${num}</span>`
+    `<span style="font-weight:bold;color:#ffe066;font-size:1.12em;vertical-align:middle;margin-right: 2px;">${num}</span>`
   );
 
   return effect;
