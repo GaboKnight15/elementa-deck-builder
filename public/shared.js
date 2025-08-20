@@ -882,6 +882,7 @@ function renderProfilePanel(playerData, options = {}) {
   const profileBanner = playerData.profileBanner || "CardImages/Banners/DefaultBanner.png";
   const profilePic = playerData.profilePic || "CardImages/Avatars/Default.png";
   const username = playerData.username || "Unknown Player";
+  const displayUsername = username.length > 12 ? username.slice(0, 12) + "…" : username;
   const power = playerData.power || 0;
 
   // Create container
@@ -922,12 +923,17 @@ function renderProfilePanel(playerData, options = {}) {
 
   // Username
   const usernameDiv = document.createElement('div');
-  usernameDiv.textContent = username;
+  usernameDiv.textContent = displayUsername;
   usernameDiv.style.fontSize = '1.38em';
   usernameDiv.style.fontWeight = 'bold';
   usernameDiv.style.color = '#ffe066';
   usernameDiv.style.textShadow = '0 2px 8px #000';
   usernameDiv.style.marginBottom = '6px';
+  usernameDiv.style.whiteSpace = "nowrap";
+  usernameDiv.style.overflow = "hidden";
+  usernameDiv.style.textOverflow = "ellipsis";
+  usernameDiv.style.maxWidth = "70vw"; // Responsive, not px
+  usernameDiv.style.minWidth = "0";
 
   // Power display
   const powerDiv = document.createElement('div');
