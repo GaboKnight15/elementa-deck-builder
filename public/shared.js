@@ -877,13 +877,13 @@ function renderPlayerPower() {
   lastPlayerPower = power;
 }
 
-function renderProfilePanel(playerData, options = {}) {
-  playerData = playerData || {};
-  const profileBanner = playerData.profileBanner || "CardImages/Banners/DefaultBanner.png";
-  const profilePic = playerData.profilePic || "CardImages/Avatars/Default.png";
-  const username = playerData.username || "Unknown Player";
+function renderProfilePanel(profile, options = {}) {
+  profile = profile || {};
+  const profileBanner = profile.profileBanner || profile.banner || "CardImages/Banners/DefaultBanner.png";
+  const profilePic = profile.profilePic || profile.avatar || "CardImages/Avatars/Default.png";
+  const username = profile.username || "Unknown";
+  const power = typeof profile.power === "number" ? profile.power : 0;
   const displayUsername = username.length > 12 ? username.slice(0, 12) + "…" : username;
-  const power = playerData.power || 0;
 
   // Create container
   const container = document.createElement('div');
@@ -977,7 +977,20 @@ function renderProfilePanel(playerData, options = {}) {
 window.renderProfilePanel = renderProfilePanel;
 
 // playerData: { username, profilePic, profileBanner, power, achievements: [badgeId,...], badges: [badgeId,...] }
-function showProfileModal(playerData) {
+function showProfileModal(profile) {
+  profile = profile || {};
+  // Use only what's passed in
+  // Example:
+  const username = profile.username || "Unknown";
+  const profilePic = profile.profilePic || profile.avatar || "CardImages/Avatars/Default.png";
+  const profileBanner = profile.profileBanner || profile.banner || "CardImages/Banners/DefaultBanner.png";
+  const power = typeof profile.power === "number" ? profile.power : 0;
+  const achievements = profile.achievements || [];
+  const badges = profile.badges || [];
+  const avatars = profile.avatars || profile.unlockedAvatars || [];
+  const banners = profile.banners || profile.unlockedBanners || [];
+  const cardbacks = profile.cardbacks || profile.unlockedCardbacks || [];
+ 
   const modal = document.getElementById('profile-modal');
   const content = document.getElementById('profile-modal-content');
   if (!modal || !content) return;
