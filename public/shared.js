@@ -961,16 +961,6 @@ function renderProfilePanel(profile, options = {}) {
   // Compose container
   container.appendChild(avatar);
   container.appendChild(infoStack);
-
-  // Click handler (optional)
-  if (typeof options.onClick === 'function') {
-    container.style.cursor = 'pointer';
-    container.onclick = function(e) {
-      e.stopPropagation();
-      options.onClick(e, playerData);
-    };
-  }
-
   return container;
 }
 window.renderProfilePanel = renderProfilePanel;
@@ -1075,7 +1065,7 @@ function showProfileModal(profile) {
   content.innerHTML = "";
 
   // Add the new profilePanel DOM node
-  const profilePanel = renderProfilePanel(playerData);
+  const profilePanel = renderProfilePanel(profile);
   content.appendChild(profilePanel);
 
   // Add badge section and close button as HTML
