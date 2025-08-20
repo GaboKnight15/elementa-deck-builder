@@ -894,9 +894,8 @@ function renderProfilePanel(profile, options = {}) {
   container.style.borderRadius = '18px';
   container.style.display = 'flex';
   container.style.alignItems = 'center';
-  container.style.gap = '24px';
+  container.style.gap = '5px';
   container.style.minHeight = '120px';
-  container.style.padding = '24px 32px';
   container.style.position = 'relative';
   container.style.boxSizing = 'border-box';
 
@@ -999,7 +998,7 @@ function showProfileModal(profile) {
   // You may already have ACHIEVEMENTS and BADGE_IMAGES in your code.
   // For this example, we'll use ACHIEVEMENTS as all badges.
   const allBadges = (typeof ACHIEVEMENTS !== "undefined") ? ACHIEVEMENTS : [];
-  const ownedBadges = (playerData.achievements || []).concat(playerData.badges || []);
+  const ownedBadges = (profile.achievements || []).concat(profile.badges || []);
   const badgeImageMap = {}; // {badgeId: imageUrl}
   if (allBadges.length) {
     for (const badge of allBadges) {
@@ -1027,14 +1026,14 @@ function showProfileModal(profile) {
 
   // --- OWNED COSMETICS SECTIONS ---
   // Prefer playerData arrays if present (for other users), else fallback to current user's unlocked
-  const ownedAvatars = Array.isArray(playerData.avatars) && playerData.avatars.length
-    ? playerData.avatars
+  const ownedAvatars = Array.isArray(profile.avatars) && profile.avatars.length
+    ? profile.avatars
     : (typeof getUnlockedAvatars === "function" ? getUnlockedAvatars() : (window.playerUnlockedAvatars || []));
-  const ownedBanners = Array.isArray(playerData.banners) && playerData.banners.length
-    ? playerData.banners
+  const ownedBanners = Array.isArray(profile.banners) && profile.banners.length
+    ? profile.banners
     : (typeof getUnlockedBanners === "function" ? getUnlockedBanners() : (window.playerUnlockedBanners || []));
-  const ownedCardbacks = Array.isArray(playerData.cardbacks) && playerData.cardbacks.length
-    ? playerData.cardbacks
+  const ownedCardbacks = Array.isArray(profile.cardbacks) && profile.cardbacks.length
+    ? profile.cardbacks
     : (typeof getUnlockedCardbacks === "function" ? getUnlockedCardbacks() : (window.playerUnlockedCardbacks || []));
  
   let avatarSection = '';
