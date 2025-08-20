@@ -3447,10 +3447,6 @@ button {}
   min-height: 56px;
 }
 .profile-panel-tile {
-  width: 460px;
-  max-width: 98vw;
-  min-width: 320px;
-  height: 140px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
