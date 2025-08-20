@@ -187,19 +187,28 @@ tile.appendChild(activeBtn);
     } else {
       tile.classList.add('empty');
       tile.textContent = '+ New Deck';
-      tile.onclick = () => {
-        let newName = prompt("Deck name?");
-        if (!newName) return;
-        if (deckSlots.includes(newName)) {
-          showToast("Deck name already exists!", {type:"error"});
-          return;
-        }
-        deckSlots[i] = newName;
-        decks[newName] = {};
-        currentDeckSlot = newName;
-        saveProgress();
-        showDeckBuilder();
-      };
+tile.onclick = () => {
+  showInputModal({
+    title: "Create New Deck",
+    label: "Deck name:",
+    defaultValue: "",
+    maxLength: 18,
+    placeholder: "Enter deck name",
+    confirmText: "Create",
+    validate: (val) => {
+      if (!val) return "Deck name required.";
+      if (deckSlots.includes(val)) return "Deck name already exists!";
+      return null;
+    },
+    onConfirm: function(newName) {
+      deckSlots[i] = newName;
+      decks[newName] = {};
+      currentDeckSlot = newName;
+      saveProgress();
+      showDeckBuilder();
+    }
+  });
+};
     }
     grid.appendChild(tile);
   }
@@ -264,22 +273,31 @@ deckMenuTitle.style.cursor = "pointer";
 deckMenuTitle.title = "Rename deck";
 deckMenuTitle.onclick = function() {
   const deckName = deckMenu.dataset.deckName;
-  let newName = prompt("Rename deck to:", deckName);
-  if (!newName || newName === deckName) return;
-  if (deckSlots.includes(newName)) {
-    showToast("Deck name already exists!", {type:"error"});
-    return;
-  }
-  let idx = deckSlots.indexOf(deckName);
-  let deckData = decks[deckName];
-  deckSlots[idx] = newName;
-  decks[newName] = deckData;
-  delete decks[deckName];
-  currentDeckSlot = newName;
-  saveProgress();
-  renderDeckSelection();
-  // Optionally, update the menu title in place if menu is still open
-  deckMenuTitle.textContent = newName;
+  showInputModal({
+    title: "Rename Deck",
+    label: "New deck name:",
+    defaultValue: deckName,
+    maxLength: 18,
+    placeholder: "Enter new deck name",
+    confirmText: "Rename",
+    validate: (val) => {
+      if (!val) return "Deck name required.";
+      if (deckSlots.includes(val) && val !== deckName) return "Deck name already exists!";
+      return null;
+    },
+    onConfirm: function(newName) {
+      if (newName === deckName) return;
+      let idx = deckSlots.indexOf(deckName);
+      let deckData = decks[deckName];
+      deckSlots[idx] = newName;
+      decks[newName] = deckData;
+      delete decks[deckName];
+      currentDeckSlot = newName;
+      saveProgress();
+      renderDeckSelection();
+      deckMenuTitle.textContent = newName;
+    }
+  });
 };
 
 // --- HIGHLIGHT CARD ---
