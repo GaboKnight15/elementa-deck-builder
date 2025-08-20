@@ -287,9 +287,13 @@ if (!profilePicMenuBtn) {
 
   usernameDisplay.onclick = function () {
     // Get current username
-    const current = usernameDisplay.textContent || "";
-    const newName = prompt("Change your username:", current);
-    if (!newName || newName === current) return;
+      const current = usernameDisplay.textContent || "";
+      const newName = prompt("Change your username (max 12 characters):", current);
+      if (!newName || newName === current) return;
+      if (newName.length > 12) {
+        if (typeof showToast === "function") showToast("Usernames must be 12 characters or less.", { type: "error" });
+        return;
+      }
 
     // Save to Firebase user and Firestore
     const user = auth.currentUser;
