@@ -2871,10 +2871,10 @@ socket.on('casual-match-found', function(matchData) {
   // build playerProfile before emitting!
   const playerDeckObj = window.selectedPlayerDeck?.deckObj || window.selectedPlayerDeck;
   const playerProfile = {
-    username: playerDeckObj?.ownerName || playerDeckObj?.username || "You",
-    avatar: playerDeckObj?.avatar || playerDeckObj?.image,
-    banner: playerDeckObj?.bannerArt,
-    power: playerDeckObj?.power || 0
+    username: window.playerUsername || "You",
+    avatar: window.playerProfilePic || "CardImages/Avatars/Default.png",
+    banner: window.playerProfileBanner || "CardImages/Banners/DefaultBanner.png",
+    power: typeof calculatePlayerPower === "function" ? calculatePlayerPower() : 0
   };
   socket.emit('profile', playerProfile);
 });
@@ -2894,10 +2894,10 @@ if (window.socket) {
     // Build playerProfile using selected deck
     const playerDeckObj = window.selectedPlayerDeck?.deckObj || window.selectedPlayerDeck;
     const playerProfile = {
-      username: playerDeckObj?.ownerName || playerDeckObj?.username || "You",
-      avatar: playerDeckObj?.avatar || playerDeckObj?.image,
-      banner: playerDeckObj?.bannerArt,
-      power: playerDeckObj?.power || 0
+      username: window.playerUsername || "You",
+      avatar: window.playerProfilePic || "CardImages/Avatars/Default.png",
+      banner: window.playerProfileBanner || "CardImages/Banners/DefaultBanner.png",
+      power: typeof calculatePlayerPower === "function" ? calculatePlayerPower() : 0
     };
 
     // Send player profile to server after joining room
