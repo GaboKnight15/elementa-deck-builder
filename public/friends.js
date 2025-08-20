@@ -583,6 +583,14 @@ function showProfileMenu(tile, user, context) {
 
   document.body.appendChild(menu);
 
+  setTimeout(() => {
+  document.addEventListener('mousedown', function handler(e) {
+      if (!menu.contains(e.target)) {
+        closeAllMenus();
+        document.removeEventListener('mousedown', handler);
+      }
+    });
+  }, 20);
   // Attach event listeners to buttons (always close menu first)
   const viewBtn = document.getElementById(viewBtnId);
   if (viewBtn) {
@@ -650,6 +658,7 @@ function showProfileMenu(tile, user, context) {
   }
   menu.onclick = (e) => e.stopPropagation();
 }
+
 function renderRequestsPanel() {
   // This should render both received and sent requests if you have both sections.
   // Example placeholder:
