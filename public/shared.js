@@ -961,6 +961,14 @@ function renderProfilePanel(profile, options = {}) {
   // Compose container
   container.appendChild(avatar);
   container.appendChild(infoStack);
+  // Click handler (optional)
+  if (typeof options.onClick === 'function') {
+    container.style.cursor = 'pointer';
+    container.onclick = function(e) {
+      e.stopPropagation();
+      options.onClick(e, profile);
+    };
+  }
   return container;
 }
 window.renderProfilePanel = renderProfilePanel;
