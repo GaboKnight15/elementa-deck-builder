@@ -1087,7 +1087,86 @@ function showProfileModal(playerData) {
   // Show modal
   modal.style.display = 'flex';
 }
+// INPUT HELPER
+function showInputModal({
+  title = "Enter value",
+  label = "",
+  defaultValue = "",
+  maxLength = null,
+  placeholder = "",
+  confirmText = "Confirm",
+  cancelText = "Cancel",
+  validate = null, // (val) => errorMsg or null
+  onConfirm,
+  onCancel
+} = {}) {
+  closeAllModals();
+  let modal = document.createElement('div');
+  modal.className = 'modal';
+  modal.style.display = 'flex';
+  modal.style.alignItems = 'center';
+  modal.style.justifyContent = 'center';
+  modal.onclick = function(e) { if (e.target === modal) modal.remove(); };
 
+  let content = document.createElement('div');
+  content.className = 'modal-content';
+  content.style.minWidth = "340px";
+  content.style.maxWidth = "90vw";
+  content.style.padding = "32px 26px 18px 26px";
+  content.style.background = "#212a3b";
+  content.style.borderRadius = "18px";
+  content.onclick = e => e.stopPropagation();
+
+  content.innerHTML = `
+    <h3 style="color:#ffe066;margin-bottom:12px;">${title}</h3>
+    ${label ? `<div style="margin-bottom:7px;color:#ffe066;">${label}</div>` : ""}
+    <input id="modal-input-field" type="text" value="${defaultValue}"
+      ${maxLength ? `maxlength="${maxLength}"` : ""}
+      placeholder="${placeholder}"
+      style="width:100%;padding:8px 11px;font-size:1.13em;border-radius:7px;margin-bottom:10px;" />
+    <div id="modal-input-error" style="color:#e25555;font-size:0.98em;margin-bottom:8px;display:none"></div>
+    <button id="modal-input-confirm" class="btn-secondary" style="margin-right:8px;">${confirmText}</button>
+    <button id="modal-input-cancel" class="btn-negative-secondary">${cancelText}</button>
+  `;
+  modal.appendChild(content);
+  document.body.appendChild(modal);
+
+  const input = content.querySelector("#modal-input-field");
+  const errorDiv = content.querySelector("#modal-input-error");
+  const confirmBtn = content.querySelector("#modal-input-confirm");
+  const cancelBtn = content.querySelector("#modal-input-cancel");
+
+  input.focus();
+
+  confirmBtn.onclick = function() {
+    const val = input.value.trim();
+    let error = null;
+    if (validate) error = validate(val);
+    if (error) {
+      errorDiv.textContent = error;
+      errorDiv.style.display = "";
+      input.style.border = "2px solid #e25555";
+      return;
+    }
+    modal.remove();
+    if (onConfirm) onConfirm(val);
+  };
+  cancelBtn.onclick = function() {
+    modal.remove();
+    if (onCancel) onCancel();
+  };
+
+  input.oninput = function() {
+    errorDiv.style.display = "none";
+    input.style.border = "";
+  };
+
+  input.onkeydown = function(e) {
+    if (e.key === "Enter") confirmBtn.click();
+    if (e.key === "Escape") cancelBtn.click();
+  };
+}
+window.showInputModal = showInputModal;
 // Example usage (for testing in console):
 // showProfileModal({username:"Gabo", profilePic:"CardImages/Avatars/Faelyra.png", profileBanner:"CardImages/Banners/Verdara.png", power:1234, achievements:["achv1","achv2"], badges:["badge1"]});
 // FILTERS FOR GALLERY AND DECK BUILDER
