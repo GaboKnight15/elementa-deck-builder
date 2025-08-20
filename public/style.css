@@ -3447,9 +3447,10 @@ button {}
   min-height: 56px;
 }
 .profile-panel-tile {
+  width: 460px;
   max-width: 98vw;
-  width: 100%;
-  min-width: 0;
+  min-width: 320px;
+  height: 140px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -3459,6 +3460,12 @@ button {}
   padding: 24px 2vw;
   background-size: cover;
   background-position: center;
+}
+#profile-modal {
+  z-index: 10010 !important;
+}
+#friends-modal {
+  z-index: 10005 !important;
 }
 .profile-panel-tile .username {
   white-space: nowrap;
