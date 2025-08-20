@@ -6,16 +6,17 @@ const USERS_PER_PAGE = 10;
 
 function appendFriendsProfilePanel(user, container, context) {
   if (!user || typeof user !== 'object') return;
+  // Use all available fields, fallback if missing
   const playerData = {
     username: user.username || user.uid,
-    profilePic: user.avatar || 'CardImages/Avatars/Default.png',
-    profileBanner: user.banner || "CardImages/Banners/DefaultBanner.png",
-    power: user.power || 0,
+    profilePic: user.profilePic || user.avatar || 'CardImages/Avatars/Default.png',
+    profileBanner: user.profileBanner || user.banner || "CardImages/Banners/DefaultBanner.png",
+    power: typeof user.power === "number" ? user.power : 0,
     achievements: Array.isArray(user.achievements) ? user.achievements : [],
     badges: Array.isArray(user.badges) ? user.badges : [],
-    avatars: Array.isArray(user.avatars) ? user.avatars : [],
-    banners: Array.isArray(user.banners) ? user.banners : [],
-    cardbacks: Array.isArray(user.cardbacks) ? user.cardbacks : []
+    avatars: Array.isArray(user.unlockedAvatars) ? user.unlockedAvatars : [],
+    banners: Array.isArray(user.unlockedBanners) ? user.unlockedBanners : [],
+    cardbacks: Array.isArray(user.unlockedCardbacks) ? user.unlockedCardbacks : []
   };
   const tile = renderProfilePanel(playerData, {
     onClick: () => showProfileMenu(tile, user, context),
@@ -321,9 +322,19 @@ function renderFriendsList() {
     }
     ids.forEach(fid => {
       firebase.firestore().collection('users').doc(fid).get().then(function(friendDoc) {
-        const friendData = friendDoc.data() || {};
-        appendFriendsProfilePanel(friendData, list, 'friends');
-        // Optionally add extra buttons below panel if needed
+        const userData = friendDoc.data() || {};
+        appendFriendsProfilePanel({
+          uid: fid,
+          username: userData.username || fid,
+          profilePic: userData.profilePic || userData.avatar || 'CardImages/Avatars/Default.png',
+          profileBanner: userData.profileBanner || userData.banner || 'CardImages/Banners/DefaultBanner.png',
+          power: typeof userData.power === "number" ? userData.power : 0,
+          achievements: Array.isArray(userData.achievements) ? userData.achievements : [],
+          badges: Array.isArray(userData.badges) ? userData.badges : [],
+          avatars: Array.isArray(userData.unlockedAvatars) ? userData.unlockedAvatars : [],
+          banners: Array.isArray(userData.unlockedBanners) ? userData.unlockedBanners : [],
+          cardbacks: Array.isArray(userData.unlockedCardbacks) ? userData.unlockedCardbacks : []
+        }, list, 'friends');
       });
     });
   });
@@ -331,17 +342,17 @@ function renderFriendsList() {
 
 function viewFriendProfile(fid) {
   firebase.firestore().collection('users').doc(fid).get().then(function(doc) {
-    const friendData = doc.data() || {};
+    const userData = doc.data() || {};
     const playerData = {
-      username: friendData.username || fid,
-      profilePic: friendData.avatar || 'CardImages/Avatars/Default.png',
-      profileBanner: friendData.banner || 'CardImages/Banners/DefaultBanner.png',
-      power: friendData.power || 0,
-      achievements: Array.isArray(friendData.achievements) ? friendData.achievements : [],
-      badges: Array.isArray(friendData.badges) ? friendData.badges : [],
-      avatars: Array.isArray(friendData.avatars) ? friendData.avatars : [],
-      banners: Array.isArray(friendData.banners) ? friendData.banners : [],
-      cardbacks: Array.isArray(friendData.cardbacks) ? friendData.cardbacks : []
+      username: userData.username || fid,
+      profilePic: userData.profilePic || userData.avatar || 'CardImages/Avatars/Default.png',
+      profileBanner: userData.profileBanner || userData.banner || 'CardImages/Banners/DefaultBanner.png',
+      power: typeof userData.power === "number" ? userData.power : 0,
+      achievements: Array.isArray(userData.achievements) ? userData.achievements : [],
+      badges: Array.isArray(userData.badges) ? userData.badges : [],
+      avatars: Array.isArray(userData.unlockedAvatars) ? userData.unlockedAvatars : [],
+      banners: Array.isArray(userData.unlockedBanners) ? userData.unlockedBanners : [],
+      cardbacks: Array.isArray(userData.unlockedCardbacks) ? userData.unlockedCardbacks : []
     };
     showProfileModal(playerData);
   });
