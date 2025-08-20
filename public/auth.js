@@ -285,35 +285,40 @@ if (!profilePicMenuBtn) {
   usernameDisplay.style.cursor = "pointer";
   usernameDisplay.title = "Click to change username";
 
-  usernameDisplay.onclick = function () {
-    // Get current username
-      const current = usernameDisplay.textContent || "";
-      const newName = prompt("Change your username (max 12 characters):", current);
+usernameDisplay.onclick = function () {
+  const current = usernameDisplay.textContent || "";
+  showInputModal({
+    title: "Change Username",
+    label: "Username (max 12 chars):",
+    defaultValue: current,
+    maxLength: 12,
+    placeholder: "Enter new username",
+    confirmText: "Update",
+    validate: (val) => {
+      if (!val) return "Username required.";
+      if (val.length > 12) return "Max 12 characters.";
+      // You could add more validation here (e.g. only alphanum)
+      return null;
+    },
+    onConfirm: function(newName) {
       if (!newName || newName === current) return;
-      if (newName.length > 12) {
-        if (typeof showToast === "function") showToast("Usernames must be 12 characters or less.", { type: "error" });
-        return;
-      }
-
-    // Save to Firebase user and Firestore
-    const user = auth.currentUser;
-    if (!user) return;
-    // Update auth profile
-    user.updateProfile({ displayName: newName })
-      .then(() => {
-        // Update Firestore
-        return firebase.firestore().collection('users').doc(user.uid).set({
-          username: newName
-        }, { merge: true });
-      })
-      .then(() => {
-        usernameDisplay.textContent = newName;
-        if (typeof showToast === "function") showToast("Username updated!", { type: "success" });
-      })
-      .catch(err => {
-        console.error("[auth] Failed to update username:", err);
-        if (typeof showToast === "function") showToast("Failed to update username.", { type: "error" });
-      });
-  };
+      const user = auth.currentUser;
+      if (!user) return;
+      user.updateProfile({ displayName: newName })
+        .then(() => {
+          return firebase.firestore().collection('users').doc(user.uid)
+            .set({ username: newName }, { merge: true });
+        })
+        .then(() => {
+          usernameDisplay.textContent = newName;
+          if (typeof showToast === "function") showToast("Username updated!", { type: "success" });
+        })
+        .catch(err => {
+          console.error("[auth] Failed to update username:", err);
+          if (typeof showToast === "function") showToast("Failed to update username.", { type: "error" });
+        });
+    }
+  });
+};
 });
 
