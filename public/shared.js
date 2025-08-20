@@ -479,14 +479,7 @@ function showFullCardModal(cardObj) {
   }
 
    // --- INFO BUTTON ---
-  let infoButtonHtml = `
-    <img id="card-info-btn" 
-      src="OtherImages/Icons/Info.png" 
-      alt="Info" 
-      style="position:absolute;top:18px;right:18px;width:38px;height:38px;cursor:pointer;z-index:10;filter:drop-shadow(0 2px 6px #0009);" 
-      title="Keyword & Ability Info"
-    >
-  `;
+  let infoButtonHtml = `<img id="card-info-btn" src="OtherImages/Icons/Info.png" alt="Info" title="Keyword & Ability Info">`;
   // Compose modal content (side-by-side)
   modalContent.innerHTML = `
     <div class="full-card-modal-flex" style="position:relative;">
