@@ -525,9 +525,10 @@ function showHandCardMenu(instanceId, cardDiv) {
     }
   ];
   if (cardData.skill && Array.isArray(cardData.skill) && cardData.skill.length > 0) {
-    cardData.skill.forEach(skillName => {
+    cardData.skill.forEach(skillText => {
       buttons.push({
-        text: skillName,
+        text: parseEffectText(skillText),
+        html: true, 
         onClick: function(e) {
           e.stopPropagation();
           // Future: run skill logic here for this card
@@ -1121,7 +1122,6 @@ function renderCardOnField(cardObj, zoneId) {
       img.alt = attachData.name;
       img.style.width = '100%';
       img.style.height = '100%';
-      img.style.borderRadius = '8px';
       attDiv.appendChild(img);
 
       stackDiv.appendChild(attDiv);
