@@ -449,7 +449,7 @@ function showHandCardMenu(instanceId, cardDiv) {
   // Define actions
   const buttons = [
     {
-      text: `<span>${playLabel}</span> <span style="float:right;">${costHtml}</span>`,
+      text: `<span>${playLabel}</span> <span >${costHtml}</span>`,
       html: true, // custom flag for HTML content
       onClick: function(e) {
         e.stopPropagation();
@@ -1156,7 +1156,7 @@ function getEssenceCostDisplay(cost) {
     if (amt && amt > 0) {
       if (color === 'colorless') {
         // Show the exact number as Xn image
-        html += `<img src="${ESSENCE_IMAGE_MAP['X'+amt]}" style="width:22px;height:22px;vertical-align:middle;margin:0 2px;" alt="Colorless: ${amt}">`;
+        html += `<img src="${ESSENCE_IMAGE_MAP['X'+amt]}" style="width:22px;height:22px;vertical-align:middle;" alt="Colorless: ${amt}">`;
       } else {
         html += `<img src="${ESSENCE_IMAGE_MAP[color]}" style="width:22px;height:22px;vertical-align:middle;margin:0 2px;" alt="${color} Essence">`.repeat(amt);
       }
