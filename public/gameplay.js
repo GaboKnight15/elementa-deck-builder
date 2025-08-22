@@ -832,7 +832,7 @@ gameState.playerDeck.forEach((cardObj, idx) => {
   img.style.cursor = "pointer";
   img.onclick = (e) => {
     e.stopPropagation();
-    modal.querySelectorAll('.card-menu').forEach(m => m.remove());
+    closeAllMenus();
     const buttons = [
       {
         text: "Add to Hand",
@@ -874,11 +874,11 @@ gameState.playerDeck.forEach((cardObj, idx) => {
 
     // Hide menu when clicking elsewhere
     setTimeout(() => {
-  document.body.addEventListener('click', function handler() {
-    menu.remove();
-    document.body.removeEventListener('click', handler);
-  }, { once: true });
-}, 10);
+      document.body.addEventListener('click', function handler() {
+        closeAllMenus();
+        document.body.removeEventListener('click', handler);
+      }, { once: true });
+    }, 10);
   };
   wrapper.appendChild(cardDiv);
   list.appendChild(wrapper);
@@ -1435,29 +1435,29 @@ function openVoidModal() {
   if (voidCards.length === 0) {
     list.innerHTML = '<div style="color:#999;">Void is empty.</div>';
   } else {
-  voidCards.forEach((cardObj, idx) => {
-  const card = dummyCards.find(c => c.id === cardObj.cardId);
-  if (!card) return;
+    voidCards.forEach((cardObj, idx) => {
+    const card = dummyCards.find(c => c.id === cardObj.cardId);
+    if (!card) return;
     
-  const wrapper = document.createElement('div');
-  wrapper.className = 'modal-card-wrapper';
+    const wrapper = document.createElement('div');
+    wrapper.className = 'modal-card-wrapper';
     
-  const cardDiv = document.createElement('div');
-  cardDiv.className = 'card-battlefield';
+    const cardDiv = document.createElement('div');
+    cardDiv.className = 'card-battlefield';
 
-  const img = document.createElement('img');
-  img.src = card.image;
-  img.alt = card.name;
-  img.className = "modal-card-img";
-  cardDiv.appendChild(img);
+    const img = document.createElement('img');
+    img.src = card.image;
+    img.alt = card.name;
+    img.className = "modal-card-img";
+    cardDiv.appendChild(img);
 
-  // Make image clickable for menu
-  img.style.cursor = "pointer";
-  img.onclick = (e) => {
-    e.stopPropagation();
-    // Remove all card menus in this modal
-    closeAllMenus();
-    const buttons = [
+    // Make image clickable for menu
+    img.style.cursor = "pointer";
+    img.onclick = (e) => {
+      e.stopPropagation();
+      // Remove all card menus in this modal
+      closeAllMenus();
+      const buttons = [
       {
         text: "Return to Hand",
         onClick: function(e) {
@@ -1497,12 +1497,12 @@ function openVoidModal() {
     menu.onclick = function(e) { e.stopPropagation(); };
 
     // Hide menu when clicking elsewhere
-    setTimeout(() => {
-      document.body.addEventListener('click', function handler() {
-        menu.remove();
-        document.body.removeEventListener('click', handler);
-      }, { once: true });
-    }, 10);
+        setTimeout(() => {
+          document.body.addEventListener('click', function handler() {
+            closeAllMenus();
+            document.body.removeEventListener('click', handler);
+          }, { once: true });
+        }, 10);
       };
       wrapper.appendChild(cardDiv);
       list.appendChild(wrapper);
