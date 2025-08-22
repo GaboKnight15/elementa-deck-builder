@@ -76,7 +76,7 @@ const dummyCards = [
  cost: {colorless: 2, red: 1}, archetype: 'Firelands', ability: ['Burn','Intimidate','Rush'], set: 'StandardPack'},
 {id: 'FirelandsHellmaw', name: 'Firelands Hellmaw', rarity: 'Epic', image: 'CardImages/Firelands/Firelands Hellmaw.png', 
  category: 'Creature', color: ['Red','Black'], type: ['Dragon','Demon'], hp: 8, atk: 6, def: 1,
- cost: {colorless: 2, red: 1, black: 1}, archetype: 'Firelands', ability: ['burn','Flying','rush']},
+ cost: {colorless: 2, red: 1, black: 1}, archetype: 'Firelands', ability: ['Burn','Flying','Rush'], set: 'StandardPack'},
 {id: 'EphorosFirelandsBehemoth', name: 'Ephoros, Firelands Behemoth', rarity: 'Legendary', image: 'CardImages/Firelands/Ephoros, Firelands Behemoth.png', 
  category: 'Creature', color: ['Red','Black'], type: ['Beast','Demon'], hp: 13, atk: 9, def: 3,
  cost: {colorless: 5, red: 1, black: 1}, archetype: 'Firelands', ability: ['Burn','Crush','Intimidate'], set: 'StandardPack'},
@@ -423,6 +423,11 @@ const CARD_KEYWORD_EXPLANATIONS = {
   skullframe: {
     name: "Skullframe",
     description: "Clad in bone and bound by forbidden sorcery, the Skullframe march as deathless engines of war. Their brittle shells hide a grim secret — they do not stay down. When shattered, dark magic stitches marrow and spirit back together, raising them anew. Masters of necrotic arts and relentless persistence, the Skullframe are an archetype of inevitability, overwhelming foes with grim magic and unending reanimation until nothing living remains to resist."
+  },
+
+  champion: {
+    name: "Champion",
+    description: "Main creatures that can be upgraded to Champion and provide essence support. Champion creatures receive +{1}/+{1} and upgraded skills"
   },
   // Add more keywords as needed
 };
