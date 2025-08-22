@@ -1110,7 +1110,7 @@ function renderProfilePanel(profile, options = {}) {
   infoStack.style.display = 'flex';
   infoStack.style.flexDirection = 'column';
   infoStack.style.justifyContent = 'center';
-  infoStack.style.alignItems = 'flex-start';
+  infoStack.style.alignItems = 'center';
 
   // Username
   const usernameDiv = document.createElement('div');
