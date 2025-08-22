@@ -29,20 +29,17 @@ const dummyCards = [
  cost: {colorless: 1}, archetype: 'Moonfang', ability: 'Ambush', set: 'StandardPack'},
 {id: 'Skeleton', name: 'Skeleton', rarity: 'Common', image: 'CardImages/BasicCreatures/Skeleton.png',
  category: 'Creature', color: 'Black', type: 'Undead', hp: 1, atk: 1, def: 0,
- cost: 0, archetype: 'Skullframe', ability: 'Immunity', set: 'StandardPack'},
+ cost: 0, archetype: 'Skullframe', ability: 'Immunity', skill: 'Reanimate {1}{B}', set: 'StandardPack'},
 {id: 'Bat', name: 'Bat', rarity: 'Common', image: 'CardImages/BasicCreatures/Bat.png', 
  category: 'Creature', color: 'Black', type: 'Vampire', hp: 3, atk: 2, def: 0,
  cost: {colorless: 1}, archetype: 'Vampiric', ability: ['Drain','Flying'], set: 'StandardPack'},
 {id: 'Imp', name: 'Imp', rarity: 'Common', image: 'CardImages/BasicCreatures/Imp.png', 
- category: 'Creature', color: 'Black', type: 'Demon', hp: 1, atk: 1, def: 0,
- cost: { colorless: 1 },  archetype: 'Skullframe', ability: ['Ambush','Flying'], set: 'StandardPack'},
+ category: 'Creature', color: 'Black', type: 'Demon', hp: 1, atk: 2, def: 0,
+ cost: { colorless: 1 },  archetype: '', ability: ['Ambush','Flying'], set: 'StandardPack'},
 {id: 'Vampire', name: 'Vampire', rarity: 'Rare', image: 'CardImages/BasicCreatures/Vampire.png', 
  category: 'Creature', color: 'Black', type: 'Demon', hp: 3, atk: 2, def: 0,
  cost: {colorless: 1, black: 1}, archetype: 'Vampiric', ability: ['Drain','Flying'], set: 'StandardPack'},
 
-{id: 'CindercoreGolem', name: 'Cindercore Golem', rarity: 'Rare', image: 'CardImages/Cindercore/Cindercore Golem.png', 
- category: 'Creature', color: ['Red', 'Gray'], type: 'elemental', hp: 15, atk: 6, def: 3,
- cost: {colorless: 3, red: 1}, archetype: ['Cindercore','Golemheart'], ability: 'Armor', set: 'StandardPack'},
 {id: 'CindercoreSentry', name: 'Cindercore Sentry', rarity: 'Common', image: 'CardImages/Cindercore/Cindercore Sentry.png', 
  category: 'Creature', color: 'Red', type: 'Construct', hp: 15, atk: 6, def: 3,
  cost: {colorless: 3, red: 1}, archetype: 'Cindercore', ability: 'Armor', set: 'StandardPack'},
@@ -52,6 +49,9 @@ const dummyCards = [
 {id: 'CindercoreVanguard', name: 'Cindercore Vanguard', rarity: 'Common', image: 'CardImages/Cindercore/Cindercore Vanguard.png', 
  category: 'Creature', color: 'Red', type: 'Construct', hp: 15, atk: 6, def: 3,
  cost: {colorless: 1, red: 1}, archetype: 'Cindercore', ability: 'Armor', set: 'StandardPack'},
+{id: 'CindercoreGolem', name: 'Cindercore Golem', rarity: 'Rare', image: 'CardImages/Cindercore/Cindercore Golem.png', 
+ category: 'Creature', color: ['Red', 'Gray'], type: 'Elemental', hp: 15, atk: 6, def: 3,
+ cost: {colorless: 3, red: 1}, archetype: ['Cindercore','Golemheart'], ability: 'Armor', set: 'StandardPack'},
 {id: 'IgnavarynCindercoreAutomaton', name: 'Ignavaryn, Cindercore Automaton', rarity: 'Legendary', image: 'CardImages/Cindercore/Ignavaryn, Cindercore Automaton.png', 
  category: 'Creature', color: 'Red', type: 'Construct', hp: 15, atk: 6, def: 3,
  cost: {colorless: 5, red: 2}, archetype: 'Cindercore', ability: 'Armor', set: 'StandardPack'},
@@ -142,12 +142,12 @@ const dummyCards = [
  cost: {colorless: 2, purple: 1, black: 1}, archetype: 'Skullframe', ability: ['Flying','Immunity','Armor'], skill: 'Reanimate {3}{B}{B}', set: 'StandardPack'},
 {id: 'SkullframeHexmistress', name: 'Skullframe Hexmistress', rarity: 'Epic', image: 'CardImages/Skullframe/Skullframe Hexmistress.png', 
  category: 'Creature', color: ['Black', 'Purple'], type: ['Undead','Mage'], hp: 6, atk: 4, def: 1,
- cost: 3, archetype: 'Skullframe', ability: ['Immunity','Ranged'], skill: ['Ebonhex Flare {B}{B}{P}','Ebonhex Crush {B}','Reanimate {2}{B}{B}'], set: 'StandardPack'},
+  cost: {colorless: 1, black: 1, purple: 1}, archetype: 'Skullframe', ability: ['Immunity','Ranged'], skill: ['Ebonhex Flare {B}{B}{P}','Ebonhex Crush {B}','Reanimate {2}{B}{B}'], set: 'StandardPack'},
 {id: 'MaldryssSkullframeArchmage', name: 'Maldryss, Skullframe Archmage', rarity: 'Legendary', image: 'CardImages/Skullframe/Maldryss, Skullframe Archmage.png', 
- category: 'Creature', color: ['Black', 'Purple'], type: ['Undead','Mage'], trait: 'Champion', hp: 8, atk: 4, def: 1,
+ category: 'Creature', color: ['Black', 'Purple'], type: ['Undead','Mage'], trait: 'Champion', hp: 8, atk: 1, def: 0,
  cost: {black: 2, purple: 1}, essence: {black: 1}, archetype: 'Skullframe', ability: ['Drain','Immunity','Ranged'], skill: ['Hexbind {B}{P}','Hexblast {B}{CW}','Reanimate {2}{B}{B}'], set: 'StandardPack'},
 {id: 'MaldryssSkullframeArchmageFA', name: 'Maldryss, Skullframe Archmage', rarity: 'Legendary', image: 'CardImages/Skullframe/Maldryss, Skullframe Archmage FA.png', 
- category: 'Creature', color: ['Black', 'Purple'], type: ['Undead','Mage'], trait: 'Champion', hp: 8, atk: 4, def: 1,
+ category: 'Creature', color: ['Black', 'Purple'], type: ['Undead','Mage'], trait: 'Champion', hp: 8, atk: 1, def: 0,
  cost: {black: 2, purple: 1}, essence: {black: 1}, archetype: 'Skullframe', ability: ['Drain','Immunity','Ranged'], skill: ['Hexbind {B}{P}','Hexblast {B}{CW}','Reanimate {2}{B}{B}'], set: 'StandardPack'},
 {id: 'Soulhexing', name: 'Soulhexing', rarity: 'Common', image: 'CardImages/Skullframe/Soulhexing.png', 
  category: 'Spell', color: 'Black', type: 'Spell', cost: {colorless: 2, black: 1}, archetype: 'Skullframe', effect: 'Destroy a creature afflicted by any status', set: 'StandardPack'},
@@ -414,15 +414,15 @@ const CARD_KEYWORD_EXPLANATIONS = {
   },
   firelands: {
     name: "Firelands",
-    description: "Born of volcanic wrath and infernal hunger, these fire-beasts hunt not for survival, but to spread the consuming blaze of their cursed homeland. Fueled by relentless ferocity, the Firelands are defined by their fiery rushing atributes — striking fast and leaving nothing but cinders in their wake. They are known by their aggression, overwhelming foes with sudden, searing attacks before the battle has even begun."
+    description: "Born of volcanic wrath and infernal hunger, these fire-beasts hunt not for survival, but to spread the consuming blaze of their cursed homeland. Fueled by relentless ferocity, the Firelands are defined by their fiery rushing strikes. They are known by their aggression, overwhelming foes with sudden, searing attacks before the battle has even begun."
   },
   cindercore: {
     name: "Cindercore",
-    description: "Forged in molten crucibles deep beneath the world, the Cindercore are living constructs of stone and flame. Their hearts burn with rivers of lava, each strike searing with lingering pain. Unlike other flames that flare and fade, the Cindercore endure — walls of smoldering fury that punish all who dare to withstand them. Defined by their burning mastery and their unyielding defenses, they are an archetype of attrition, grinding foes down with relentless heat until only ash and ruin remain."
+    description: "Forged in molten crucibles deep beneath the world, the Cindercore are living constructs of stone and flame. Their hearts burn with rivers of lava, each strike searing with lingering pain. Unlike other flames that flare and fade, the Cindercore are defined by their never-ending burning mastery and their unyielding defenses. They are an archetype of attrition, grinding foes down with relentless heat until only ash and ruin remain."
   },
   skullframe: {
     name: "Skullframe",
-    description: "Clad in bone and bound by forbidden sorcery, the Skullframe march as deathless engines of war. Their brittle shells hide a grim secret — they do not stay down. When shattered, dark magic stitches marrow and spirit back together, raising them anew. Masters of necrotic arts and relentless persistence, the Skullframe are an archetype of inevitability, overwhelming foes with grim magic and unending reanimation until nothing living remains to resist."
+    description: "Clad in bone and bound by forbidden sorcery, the Skullframe march as deathless engines of war. When shattered, dark magic stitches marrow and spirit back together, raising them anew. Masters of necrotic arts and relentless persistence, the Skullframe are an archetype of inevitability, overwhelming foes with grim magic and unending reanimation until nothing living remains to resist."
   },
 
   champion: {
@@ -596,15 +596,13 @@ function showInfoModal(cardObj) {
   addKeywordSection("Skill", card.skill);
   addKeywordSection("Archetype", card.archetype);
 
-  let html = `<div style="font-weight:bold;font-size:1.3em;color:#ffe066;margin-bottom:10px;">
-    Card Keywords & Abilities
-  </div>`;
+  let html = `<div style="font-weight:bold;font-size:1.3em;color:#ffe066;margin-bottom:10px;">Keywords & Abilities </div>`;
   if (keywordSections.length) {
     keywordSections.forEach((sec, i) => {
       html += `
         <div style="margin-bottom:14px;">
           <div style="font-size:1.14em;color:#ffe066;font-weight:bold;">${sec.name}</div>
-          <div style="font-size:1em;color:#fff;">${sec.desc}</div>
+          <div style="font-size:1em;color:#fff;">${parseEffectText(sec.desc)}</div>
         </div>
       `;
       // Add divider after each section except the last
@@ -654,9 +652,13 @@ function showFullCardModal(cardObj) {
   infoHtml += labeled("Ability", Array.isArray(card.ability) ? card.ability.join(", ") : card.ability);
   infoHtml += labeled("Trait", Array.isArray(card.trait) ? card.trait.join(", ") : card.trait);
   if (card.skill) {
-   const skillText = Array.isArray(card.skill) ? card.skill.join(", ") : card.skill;
-   infoHtml += `<div class="full-card-info-row"><span class="full-card-info-label">Skill:</span> <span>${parseEffectText(skillText)}</span></div>`;
-  } 
+  // Ensure skills is always an array
+   let skills = Array.isArray(card.skill) ? card.skill : [card.skill];
+   infoHtml += `<div class="full-card-info-row"><span class="full-card-info-label">Skills:</span></div>`;
+   skills.forEach(skill => {
+    infoHtml += `<div class="full-card-info-row" style="margin-left:18px;">${parseEffectText(skill)}</div>`;
+   });
+  }
   infoHtml += `<div class="card-modal-divider"></div>`;
   let statsRow = '';
   if (card.hp !== undefined || card.atk !== undefined || card.def !== undefined || card.cost !== undefined) {
@@ -759,15 +761,15 @@ function renderCardCost(costData) {
     if (key === 'colorless' || key === 'X') {
       const imgKey = 'X' + costData[key];
       if (COST_IMAGE_MAP[imgKey]) {
-        html += `<img src="${COST_IMAGE_MAP[imgKey]}" alt="Colorless" style="width:22px;height:22px;vertical-align:middle;margin-right:2px;">`;
+        html += `<img src="${COST_IMAGE_MAP[imgKey]}" alt="Colorless" style="width:22px;height:22px;vertical-align:middle;">`;
       }
     } else if (COST_IMAGE_MAP[key]) {
       for (let i = 0; i < costData[key]; i++) {
-        html += `<img src="${COST_IMAGE_MAP[key]}" alt="${key}" style="width:22px;height:22px;vertical-align:middle;margin-right:2px;">`;
+        html += `<img src="${COST_IMAGE_MAP[key]}" alt="${key}" style="width:22px;height:22px;vertical-align:middle;">`;
       }
     }
   }
-  return html || `<img src="${COST_IMAGE_MAP.X0}" alt="Cost: 0" style="width:22px;height:22px;vertical-align:middle;margin-right:2px;">`;
+  return html || `<img src="${COST_IMAGE_MAP.X0}" alt="Cost: 0" style="width:22px;height:22px;vertical-align:middle;">`;
 }
 const COLLECTION_KEY = "cardCollection";
 const NEW_CARD_KEY = "newlyUnlockedCards";
