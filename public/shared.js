@@ -1,4 +1,4 @@
-// CARD LIST //   
+// CARD LIST //    
 const dummyCards = [
 {id: 'ForestFairy', name: 'Forest Fairy', rarity: 'Common', image: 'CardImages/BasicCreatures/Fairy.png', 
  category: 'Creature', color: 'Green', type: 'fairy', hp: 1, atk: 1, def: 0,
