@@ -1149,25 +1149,16 @@ function getEssenceCostDisplay(cost) {
   // cost: {colorless: n, green: n, red: n, ...}
   if (!cost || typeof cost !== 'object') return '';
   const colorOrder = ['colorless', 'green', 'red', 'blue', 'white', 'black', 'yellow', 'purple', 'gray'];
-  const essenceMap = {
-    colorless: { img: 'OtherImages/Essence/EssenceOne.png', emoji: '2️⃣' }, // fallback emoji
-    green: { img: 'OtherImages/Essence/EssenceGreen.png', emoji: '🍃' },
-    red: { img: 'OtherImages/Essence/EssenceRed.png', emoji: '🔥' },
-    blue: { img: 'OtherImages/Essence/EssenceBlue.png', emoji: '💧' },
-    white: { img: 'OtherImages/Essence/EssenceWhite.png', emoji: '⚪' },
-    black: { img: 'OtherImages/Essence/EssenceBlack.png', emoji: '⚫' },
-    yellow: { img: 'OtherImages/Essence/EssenceYellow.png', emoji: '🟡' },
-    purple: { img: 'OtherImages/Essence/EssencePurple.png', emoji: '🟣' },
-    gray: { img: 'OtherImages/Essence/EssenceGray.png', emoji: '⬜' },
-  };
   let html = '';
+
   colorOrder.forEach(color => {
     const amt = cost[color];
     if (amt && amt > 0) {
       if (color === 'colorless') {
-        html += `<span style="font-size:1.25em;margin:0 2px;">${'2️⃣'.repeat(amt)}</span>`;
+        // Show the exact number as Xn image
+        html += `<img src="${ESSENCE_IMAGE_MAP['X'+amt]}" style="width:22px;height:22px;vertical-align:middle;margin:0 2px;" alt="Colorless: ${amt}">`;
       } else {
-        html += `<img src="${essenceMap[color].img}" style="width:18px;height:18px;vertical-align:middle;margin:0 2px;" alt="${color}">`.repeat(amt);
+        html += `<img src="${ESSENCE_IMAGE_MAP[color]}" style="width:22px;height:22px;vertical-align:middle;margin:0 2px;" alt="${color} Essence">`.repeat(amt);
       }
     }
   });
