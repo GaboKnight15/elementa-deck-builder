@@ -600,7 +600,7 @@ function showInfoModal(cardObj) {
     Card Keywords & Abilities
   </div>`;
   if (keywordSections.length) {
-    keywordSections.forEach(sec => {
+    keywordSections.forEach((sec, i) => {
       html += `
         <div style="margin-bottom:14px;">
           <div style="font-size:1.14em;color:#ffe066;font-weight:bold;">${sec.name}</div>
