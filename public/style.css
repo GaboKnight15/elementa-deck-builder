@@ -900,6 +900,7 @@ button {}
 .card-modal-divider {
   border: none;
   height: 4px;
+  width: 100%;
   background: #222;
   box-shadow: 0 2px 8px #0008;
   margin: 18px 0;
