@@ -892,7 +892,7 @@ button {}
   max-height: 74vh;
   width: auto;
   height: auto;
-  border-radius: 18px;
+  border-radius: 10px;
   box-shadow: 0 4px 24px #000a;
   background: #222;
   object-fit: contain;
@@ -939,7 +939,7 @@ button {}
 .full-card-info-row {
   color: #ffe066de;
   display: flex;
-  gap: 0.4em;
+  gap: 0.2em;
 }
 .full-card-info-label {
   color: #ffe066;
@@ -3464,16 +3464,10 @@ button {}
 #toast-container .toast-message.error { background: #e74c3c; }
 #toast-container .toast-message.info  { background: #222b3b; }
 
-.profile-panel {
-  max-width: 100%;
-  width: 100%;      
+.profile-panel {     
   border-radius: 10px;
   box-shadow: 0 2px 12px #0007;
   margin: 12px 0;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-height: 56px;
 }
 .profile-panel-tile {
   display: flex;
