@@ -461,9 +461,16 @@ function parseEffectText(effect) {
   );
 
   // Replace numbers {0}..{20} with bold numbers or custom spans
-  effect = effect.replace(/\{([0-9]|1[0-9]|20)\}/g, (match, num) =>
-    `<span style="font-weight:bold;color:#ffe066;font-size:1.12em;vertical-align:middle;margin-right: 2px;">${num}</span>`
-  );
+ // Replace numbers {0}..{20} with colorless essence images!
+ effect = effect.replace(/\{([0-9]|1[0-9]|20)\}/g, (match, num) => {
+  // Use COST_IMAGE_MAP['X'+num] to match renderCardCost logic
+   const imgSrc = typeof COST_IMAGE_MAP !== 'undefined' ? COST_IMAGE_MAP['X'+num] : null;
+   if (imgSrc) {
+     return `<img src="${imgSrc}" style="height:1.3em;vertical-align:middle;margin-right:2px;">`;
+   }
+   // fallback: number as before
+   return `<span style="font-weight:bold;color:#ffe066;font-size:1.12em;vertical-align:middle;margin-right: 2px;">${num}</span>`;
+ });
 
   return effect;
 }
