@@ -30,15 +30,35 @@ const PHASES = [{ turn: 'player', phase: 'draw' },{ turn: 'player', phase: 'esse
 let attackMode = {attackerId: null, attackerZone: null, cancelHandler: null};
 const INITIAL_HAND_SIZE = 5;
 const ESSENCE_IMAGE_MAP = {
-  red: "OtherImages/Essence/EssenceRed.png",
-  green: "OtherImages/Essence/EssenceGreen.png",
-  blue: "OtherImages/Essence/EssenceBlue.png",
-  white: "OtherImages/Essence/EssenceWhite.png",
-  black: "OtherImages/Essence/EssenceBlack.png",
-  yellow: "OtherImages/Essence/EssenceYellow.png",
-  purple: "OtherImages/Essence/EssencePurple.png",
-  gray: "OtherImages/Essence/EssenceGray.png",
-  colorless: "OtherImages/Essence/EssenceOne.png"
+  red: "OtherImages/Essence/Red.png",
+  blue: "OtherImages/Essence/Blue.png",
+  green: "OtherImages/Essence/Green.png",
+  yellow: "OtherImages/Essence/Yellow.png",
+  purple: "OtherImages/Essence/Purple.png",
+  gray: "OtherImages/Essence/Gray.png",
+  black: "OtherImages/Essence/Black.png",
+  white: "OtherImages/Essence/White.png",
+  X0: "OtherImages/Essence/Zero.png",
+  X1: "OtherImages/Essence/One.png",
+  X2: "OtherImages/Essence/Two.png",
+  X3: "OtherImages/Essence/Three.png",
+  X4: "OtherImages/Essence/Four.png",
+  X5: "OtherImages/Essence/Five.png",
+  X6: "OtherImages/Essence/Six.png",
+  X7: "OtherImages/Essence/Seven.png",
+  X8: "OtherImages/Essence/Eight.png",
+  X9: "OtherImages/Essence/Nine.png",
+  X10: "OtherImages/Essence/Ten.png",
+  X11: "OtherImages/Essence/Eleven.png",
+  X12: "OtherImages/Essence/Twelve.png",
+  X13: "OtherImages/Essence/Thirteen.png",
+  X14: "OtherImages/Essence/Fourteen.png",
+  X15: "OtherImages/Essence/Fifteen.png",
+  X16: "OtherImages/Essence/Sixteen.png",
+  X17: "OtherImages/Essence/Seventeen.png",
+  X18: "OtherImages/Essence/Eighteen.png",
+  X19: "OtherImages/Essence/Nineteen.png",
+  X20: "OtherImages/Essence/Twenty.png"
 };
 // ==========================
 // === DOM REFERENCES ===
