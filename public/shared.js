@@ -284,29 +284,105 @@ const LEVEL_THRESHOLDS = [0, 100, 250, 500, 1000, 2000, 4000, 8000];
 let lastPlayerPower = null;
 
 const CARD_KEYWORD_EXPLANATIONS = {
+  burn: {
+    name: "Burn",
+    description: "Burns opposing unit upon striking with an attack/skill."
+  },
+  burned: {
+    name: "Burned",
+    description: "Burned units lose 1 HP during each end step, and receive 1 more damage."
+  },
+  freeze: {
+    name: "Freeze",
+    description: "Freezes opposing unit upon striking with an attack/skill."
+  },
+  frozen: {
+    name: "Frozen",
+    description: "Frozen units cannot attack, activate skills or receive damage."
+  },
+  paralyze: {
+    name: "Paralyze",
+    description: "Paralyzes opposing unit upon striking with an attack/skill."
+  },
+  paralysis: {
+    name: "Paralysis",
+    description: "Paralyzed units cannot attack or return attack damage."
+  },
+  soaked: {
+    name: "Soaked",
+    description: "Soaked units deal -1 physical damage per stack."
+  },
+  soak: {
+    name: "Soak",
+    description: "Soaks opposing unit upon striking with an attack/skill."
+  },
+  toxic: {
+    name: "Toxic",
+    description: "Poisons opposing unit upon striking with an attack/skill."
+  },
+  venom: {
+    name: "Venom",
+    description: "Poisons opposing unit upon striking with an attack/skill."
+  },
   protect: {
     name: "Protect",
     description: "Opponent can only target this unit for attacks."
   },
-  burn: {
-    name: "Burn",
-    description: "Deals additional damage when attacking or blocking. (Provide your real description here)"
+  barrier: {
+    name: "Barrier",
+    description: "Prevents the next damage received to any unit."
+  },
+  aegis: {
+    name: "Aegis",
+    description: "Unaffected by skills and effects."
+  },
+  veil: {
+    name: "Veil",
+    description: "Cannot be targeted by opponent's Skills and effects."
+  },
+  ambush: {
+    name: "Ambush",
+    description: "Cannot be targeted by opponent's attacks, skills and effects. Unit is revealed after attacking or using a skill/effect"
   },
   flying: {
     name: "Flying",
-    description: "Can only be blocked by other units with Flying."
+    description: "Can only be blocked by other units with Flying. All Ranged units can damage it if declaring attack"
+  },
+  ranged: {
+    name: "Ranged",
+    description: "Can attack units with Flying, ignores Protect, does not receive attack damage upon attacking another unit without ranged."
   },
   rush: {
     name: "Rush",
     description: "Can attack on the turn it is played."
   },
-  lifelink: {
-    name: "Lifelink",
-    description: "When this unit deals damage, you gain that much life."
+  drain: {
+    name: "Drain",
+    description: "When this unit deals damage, gain that much life."
   },
   intimidate: {
     name: "Intimidate",
-    description: "When declaring attack target, {CW} that target"
+    description: "When declaring an attack, {CW} that unit"
+  },
+  provoke: {
+    name: "Provoke",
+    description: "When declaring an attack, {CCW} that unit"
+  },
+  firearmor: {
+    name: "Fire Armor",
+    description: "Burns opposing unit upon receive attack damage"
+  },
+  icearmor: {
+    name: "Ice Armor",
+    description: "Freezes opposing unit upon receive attack damage"
+  },
+  poisonarmor: {
+    name: "Poison Armor",
+    description: "Poisons opposing unit upon receive attack damage"
+  },
+  soakedarmor: {
+    name: "Soaked Armor",
+    description: "Soaks opposing unit upon receive attack damage"
   },
   // Add more keywords as needed
 };
@@ -346,6 +422,9 @@ function parseEffectText(effect) {
 
   return effect;
 }
+
+
+// POWER
 function getPlayerLevelFromPower(power) {
   for (let i = LEVEL_THRESHOLDS.length - 1; i >= 0; i--) {
     if (power >= LEVEL_THRESHOLDS[i]) return i + 1;
@@ -373,6 +452,7 @@ function updateCurrencyDisplay() {
   const shopEl = document.getElementById('shop-currency-amount');
   if (shopEl) shopEl.textContent = window.playerCurrency;
 }
+
 // ==========================
 // === SECTION NAVIGATION ===
 // ==========================
@@ -423,6 +503,7 @@ function getCardBgClass(card) {
   if (colors.length === 2) return `card-bg-${colors[0]}-${colors[1]}`;
   return `card-bg-gold`;
 }
+
 // LOADING SCREEN
 function showLoadingOverlay() {
   const overlay = document.getElementById('loading-overlay');
@@ -432,6 +513,7 @@ function hideLoadingOverlay() {
   const overlay = document.getElementById('loading-overlay');
   if (overlay) overlay.style.display = 'none';
 }
+
 // --- INFO MODAL LOGIC ---
 function showInfoModal(cardObj) {
   const card = dummyCards.find(c => c.id === (cardObj.cardId || cardObj.id));
@@ -456,10 +538,11 @@ function showInfoModal(cardObj) {
       }
     }
   }
-  addKeywordSection("Ability", card.ability);
   addKeywordSection("Trait", card.trait);
   addKeywordSection("Type", card.type);
   addKeywordSection("Archetype", card.archetype);
+  addKeywordSection("Ability", card.ability);
+  addKeywordSection("Skill", card.skill);
 
   let html = `<div style="font-weight:bold;font-size:1.3em;color:#ffe066;margin-bottom:10px;">
     Card Keywords & Abilities
@@ -513,6 +596,10 @@ function showFullCardModal(cardObj) {
   infoHtml += labeled("Type", Array.isArray(card.type) ? card.type.join(", ") : card.type);
   infoHtml += labeled("Ability", Array.isArray(card.ability) ? card.ability.join(", ") : card.ability);
   infoHtml += labeled("Trait", Array.isArray(card.trait) ? card.trait.join(", ") : card.trait);
+  if (card.skill) {
+   const skillText = Array.isArray(card.skill) ? card.skill.join(", ") : card.skill;
+   infoHtml += `<div class="full-card-info-row"><span class="full-card-info-label">Skill:</span> <span>${parseEffectText(skillText)}</span></div>`;
+  } 
 
   let statsRow = '';
   if (card.hp !== undefined || card.atk !== undefined || card.def !== undefined || card.cost !== undefined) {
