@@ -535,7 +535,7 @@ document.getElementById('requests-search-trigger').onclick = function() {
 };
 
 function showProfileMenu(tile, user, context) {
-  if (typeof closeAllMenus === "function") closeAllMenus();
+  closeAllMenus();
   
   let menu = document.createElement('div');
   menu.id = 'friends-profile-menu';
@@ -577,49 +577,20 @@ function showProfileMenu(tile, user, context) {
     menu.innerHTML += `<button id="${viewBtnId}" class="settings-item btn-secondary">View</button>`;
   }
 
-  // Place menu using shared.js util
+  // Place menu
+  document.body.appendChild(menu);
   const rect = tile.getBoundingClientRect();
   placeMenuWithinViewport(menu, rect);
 
-// After menu is appended to the body:
-document.body.appendChild(menu);
+  menu.style.zIndex = '99999';
+  menu.onclick = function(e) { e.stopPropagation(); };
 
-// Set a high z-index so it appears above modals
-menu.style.zIndex = '99999';
-
-// --- Outside click to close menu (builder.js style) ---
-setTimeout(() => {
-  document.addEventListener('mousedown', function handler(e) {
-    if (!menu.contains(e.target)) {
+  setTimeout(() => {
+    document.body.addEventListener('click', function handler() {
       closeAllMenus();
-      document.removeEventListener('mousedown', handler);
-    }
-  });
-}, 20);
-
-// --- Inside click: always close menu BEFORE any action
-[
-  { id: viewBtnId, handler: () => viewFriendProfile(user.uid) },
-  { id: reqBtnId, handler: () => sendFriendRequest(user.username) },
-  { id: blockBtnId, handler: () => blockUser(user.uid) },
-  { id: unfBtnId, handler: () => removeFriend(user.uid) },
-  { id: acceptBtnId, handler: () => acceptFriendRequest(user.uid, user.username) },
-  { id: declineBtnId, handler: () => declineFriendRequest(user.uid) },
-  { id: unblockBtnId, handler: () => unblockUser(user.uid) },
-  { id: cancelBtnId, handler: () => cancelSentRequest(user.uid) }
-].forEach(({ id, handler }) => {
-  const btn = document.getElementById(id);
-  if (btn) {
-    btn.onclick = function(e) {
-      e.stopPropagation();
-      closeAllMenus();
-      handler();
-    };
-  }
-});
-
-// Prevent closing the menu when clicking inside
-menu.onclick = (e) => e.stopPropagation();
+      document.body.removeEventListener('click', handler);
+    }, { once: true });
+  }, 10);
 }
 
 function renderRequestsPanel() {
