@@ -585,6 +585,80 @@ function showProfileMenu(tile, user, context) {
   menu.style.zIndex = '99999';
   menu.onclick = function(e) { e.stopPropagation(); };
 
+  // Attach handlers for all buttons
+  // View
+  const viewBtn = document.getElementById(viewBtnId);
+  if (viewBtn) {
+    viewBtn.onclick = function(e) {
+      e.stopPropagation();
+      viewFriendProfile(user.uid);
+      closeAllMenus();
+    };
+  }
+  // Unfriend
+  const unfBtn = document.getElementById(unfBtnId);
+  if (unfBtn) {
+    unfBtn.onclick = function(e) {
+      e.stopPropagation();
+      removeFriend(user.uid);
+      closeAllMenus();
+    };
+  }
+  // Block
+  const blockBtn = document.getElementById(blockBtnId);
+  if (blockBtn) {
+    blockBtn.onclick = function(e) {
+      e.stopPropagation();
+      blockUser(user.uid);
+      closeAllMenus();
+    };
+  }
+  // Send Friend Request
+  const reqBtn = document.getElementById(reqBtnId);
+  if (reqBtn) {
+    reqBtn.onclick = function(e) {
+      e.stopPropagation();
+      sendFriendRequest(user.uid);
+      closeAllMenus();
+    };
+  }
+  // Accept
+  const acceptBtn = document.getElementById(acceptBtnId);
+  if (acceptBtn) {
+    acceptBtn.onclick = function(e) {
+      e.stopPropagation();
+      acceptFriendRequest(user.uid);
+      closeAllMenus();
+    };
+  }
+  // Decline
+  const declineBtn = document.getElementById(declineBtnId);
+  if (declineBtn) {
+    declineBtn.onclick = function(e) {
+      e.stopPropagation();
+      declineFriendRequest(user.uid);
+      closeAllMenus();
+    };
+  }
+  // Unblock
+  const unblockBtn = document.getElementById(unblockBtnId);
+  if (unblockBtn) {
+    unblockBtn.onclick = function(e) {
+      e.stopPropagation();
+      unblockUser(user.uid);
+      closeAllMenus();
+    };
+  }
+  // Cancel Request
+  const cancelBtn = document.getElementById(cancelBtnId);
+  if (cancelBtn) {
+    cancelBtn.onclick = function(e) {
+      e.stopPropagation();
+      cancelSentRequest(user.uid);
+      closeAllMenus();
+    };
+  }
+  
   setTimeout(() => {
     document.body.addEventListener('click', function handler() {
       closeAllMenus();
