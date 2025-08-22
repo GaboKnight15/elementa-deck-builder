@@ -124,31 +124,31 @@ const dummyCards = [
 
 {id: 'SkullframeDefector', name: 'Skullframe Defector', rarity: 'Common', image: 'CardImages/Skullframe/Skullframe Defector.png', 
  category: 'Creature', color: 'Black', type: ['Undead','Warrior'], hp: 3, atk: 2, def: 1,
- cost: {colorless: 1}, archetype: 'Skullframe', ability: 'Immunity', set: 'StandardPack'},
+ cost: {colorless: 1}, archetype: 'Skullframe', ability: 'Immunity', skill: 'Reanimate {2}{B}', set: 'StandardPack'},
 {id: 'SkullframeUnyielding', name: 'Skullframe Unyielding', rarity: 'Common', image: 'CardImages/Skullframe/Skullframe Unyielding.png', 
  category: 'Creature', color: 'Black', type: 'Undead', hp: 4, atk: 1, def: 0,
- cost: {colorless: 1, black: 1}, archetype: 'Skullframe', ability: ['Immunity','Rush'], set: 'StandardPack'},
+ cost: {colorless: 1, black: 1}, archetype: 'Skullframe', ability: ['Immunity','Rush'], skill: 'Reanimate {2}{B}', set: 'StandardPack'},
 {id: 'SkullframeAcolyte', name: 'Skullframe Acolyte', rarity: 'Common', image: 'CardImages/Skullframe/Skullframe Acolyte.png', 
  category: 'Creature', color: ['Black', 'Purple'], type: 'Undead', hp: 5, atk: 3, def: 1,
- cost: {colorless: 1, purple: 1, black: 1}, archetype: 'Skullframe', ability: ['Immunity','Ranged'], skill: ['Revive','Reanimate'], set: 'StandardPack'},
+ cost: {colorless: 1, purple: 1, black: 1}, archetype: 'Skullframe', ability: ['Immunity','Ranged'], skill: ['Revive','Reanimate {2}{B}{P}'], set: 'StandardPack'},
 {id: 'SkullframeCryptwinds', name: 'Skullframe Cryptwinds', rarity: 'Rare', image: 'CardImages/Skullframe/Skullframe Cryptwinds.png', 
  category: 'Creature', color: ['Black', 'Purple'], type: ['Dragon','Undead'], hp: 12, atk: 6, def: 2,
- cost: {colorless: 1, black: 2}, archetype: 'Skullframe', ability: ['Flying', 'Immunity'], set: 'StandardPack'},
+ cost: {colorless: 1, black: 2}, archetype: 'Skullframe', ability: ['Flying', 'Immunity'], skill: 'Reanimate {1}{B}{B}', set: 'StandardPack'},
 {id: 'SkullframeSpectralDragon', name: 'Skullframe Spectral Dragon', rarity: 'Epic', image: 'CardImages/Skullframe/Skullframe Spectral Dragon.png', 
- category: 'Creature', color: ['Black', 'Purple'], type: ['Dragon','Undead'], hp: 12, atk: 6, def: 2,
- cost: {colorless: 3, purple: 1, black: 1}, archetype: 'Skullframe', ability: ['Flying', 'Immunity'], set: 'StandardPack'},
+ category: 'Creature', color: ['Black', 'Purple'], type: ['Dragon','Undead'], hp: 12, atk: 6, def: 2, cost: {colorless: 3, purple: 1, black: 1},
+ archetype: 'Skullframe', ability: ['Flying', 'Immunity'], skill: ['Curseflame Inferno {2}{P}{P}{B}','Reanimate {2}{B}{B}'], set: 'StandardPack'},
 {id: 'SkullframeArmoredDragon', name: 'Skullframe Armored Dragon', rarity: 'Rare', image: 'CardImages/Skullframe/Skullframe Armored Dragon.png', 
  category: 'Creature', color: ['Black', 'Purple'], type: ['Dragon','Undead'], hp: 12, atk: 6, def: 2,
- cost: {colorless: 2, purple: 1, black: 1}, archetype: 'Skullframe', ability: ['Flying','Immunity'], set: 'StandardPack'},
+ cost: {colorless: 2, purple: 1, black: 1}, archetype: 'Skullframe', ability: ['Flying','Immunity','Armor'], skill: 'Reanimate {3}{B}{B}', set: 'StandardPack'},
 {id: 'SkullframeHexmistress', name: 'Skullframe Hexmistress', rarity: 'Epic', image: 'CardImages/Skullframe/Skullframe Hexmistress.png', 
  category: 'Creature', color: ['Black', 'Purple'], type: ['Undead','Mage'], hp: 6, atk: 4, def: 1,
- cost: 3, archetype: 'Skullframe', ability: ['Immunity','Ranged'], skill: ['Ebonhex Flare {B}{B}{P}','Ebonhex Crush {B}','Reanimate'], set: 'StandardPack'},
+ cost: 3, archetype: 'Skullframe', ability: ['Immunity','Ranged'], skill: ['Ebonhex Flare {B}{B}{P}','Ebonhex Crush {B}','Reanimate {2}{B}{B}'], set: 'StandardPack'},
 {id: 'MaldryssSkullframeArchmage', name: 'Maldryss, Skullframe Archmage', rarity: 'Legendary', image: 'CardImages/Skullframe/Maldryss, Skullframe Archmage.png', 
  category: 'Creature', color: ['Black', 'Purple'], type: ['Undead','Mage'], trait: 'Champion', hp: 8, atk: 4, def: 1,
- cost: {black: 2, purple: 1}, essence: {black: 1}, archetype: 'Skullframe', ability: ['Drain','Immunity','Ranged'], skill: ['Hexbind','Hexblast'], set: 'StandardPack'},
+ cost: {black: 2, purple: 1}, essence: {black: 1}, archetype: 'Skullframe', ability: ['Drain','Immunity','Ranged'], skill: ['Hexbind {B}{P}','Hexblast {B}{CW}','Reanimate {2}{B}{B}'], set: 'StandardPack'},
 {id: 'MaldryssSkullframeArchmageFA', name: 'Maldryss, Skullframe Archmage', rarity: 'Legendary', image: 'CardImages/Skullframe/Maldryss, Skullframe Archmage FA.png', 
  category: 'Creature', color: ['Black', 'Purple'], type: ['Undead','Mage'], trait: 'Champion', hp: 8, atk: 4, def: 1,
- cost: {black: 2, purple: 1}, essence: {black: 1}, archetype: 'Skullframe', ability: ['Drain','Immunity','Ranged'], skill: ['Hexbind','Hexblast'], set: 'StandardPack'},
+ cost: {black: 2, purple: 1}, essence: {black: 1}, archetype: 'Skullframe', ability: ['Drain','Immunity','Ranged'], skill: ['Hexbind {B}{P}','Hexblast {B}{CW}','Reanimate {2}{B}{B}'], set: 'StandardPack'},
 {id: 'Soulhexing', name: 'Soulhexing', rarity: 'Common', image: 'CardImages/Skullframe/Soulhexing.png', 
  category: 'Spell', color: 'Black', type: 'Spell', cost: {colorless: 2, black: 1}, archetype: 'Skullframe', effect: 'Destroy a creature afflicted by any status', set: 'StandardPack'},
 {id: 'Witherwake', name: 'Witherwake', rarity: 'Common', image: 'CardImages/Skullframe/Witherwake.png', 
@@ -340,6 +340,10 @@ const CARD_KEYWORD_EXPLANATIONS = {
     name: "Veil",
     description: "Cannot be targeted by opponent's Skills and effects."
   },
+  immunity: {
+    name: "Immunity",
+    description: "Unaffected by status conditions."
+  },
   ambush: {
     name: "Ambush",
     description: "Cannot be targeted by opponent's attacks, skills and effects. Unit is revealed after attacking or using a skill/effect"
@@ -383,6 +387,42 @@ const CARD_KEYWORD_EXPLANATIONS = {
   soakedarmor: {
     name: "Soaked Armor",
     description: "Soaks opposing unit upon receive attack damage"
+  },
+  crush: {
+    name: "Crush",
+    description: "Destroys opposing creature upon attacking regardless of HP."
+  },
+  reanimate: {
+    name: "Reanimate",
+    description: "If this unit is in the Void, revive it."
+  },
+  dash: {
+    name: "Dash",
+    description: "Can also be summoned from the hand. Returns to hand during your opponent's end step."
+  },
+  echo: {
+    name: "Echo",
+    description: "Activates when the card is sent to the Void."
+  },
+  discard: {
+    name: "Discard",
+    description: "Activates by discarding it."
+  },
+  aura: {
+    name: "Aura",
+    description: "Must be equipped to units of the same color."
+  },
+  firelands: {
+    name: "Firelands",
+    description: "Born of volcanic wrath and infernal hunger, these fire-beasts hunt not for survival, but to spread the consuming blaze of their cursed homeland. Fueled by relentless ferocity, the Firelands are defined by their fiery rushing atributes — striking fast and leaving nothing but cinders in their wake. They are known by their aggression, overwhelming foes with sudden, searing attacks before the battle has even begun."
+  },
+  cindercore: {
+    name: "Cindercore",
+    description: "Forged in molten crucibles deep beneath the world, the Cindercore are living constructs of stone and flame. Their hearts burn with rivers of lava, each strike searing with lingering pain. Unlike other flames that flare and fade, the Cindercore endure — walls of smoldering fury that punish all who dare to withstand them. Defined by their burning mastery and their unyielding defenses, they are an archetype of attrition, grinding foes down with relentless heat until only ash and ruin remain."
+  },
+  skullframe: {
+    name: "Skullframe",
+    description: "Clad in bone and bound by forbidden sorcery, the Skullframe march as deathless engines of war. Their brittle shells hide a grim secret — they do not stay down. When shattered, dark magic stitches marrow and spirit back together, raising them anew. Masters of necrotic arts and relentless persistence, the Skullframe are an archetype of inevitability, overwhelming foes with grim magic and unending reanimation until nothing living remains to resist."
   },
   // Add more keywords as needed
 };
@@ -528,7 +568,7 @@ function showInfoModal(cardObj) {
     if (!value) return;
     let values = Array.isArray(value) ? value : [value];
     for (const v of values) {
-      const key = String(v).toLowerCase();
+    const key = String(v).toLowerCase().replace(/\s+/g, ''); // Lowercase and remove all spaces
       if (CARD_KEYWORD_EXPLANATIONS[key]) {
         keywordSections.push({
           type,
@@ -540,9 +580,9 @@ function showInfoModal(cardObj) {
   }
   addKeywordSection("Trait", card.trait);
   addKeywordSection("Type", card.type);
-  addKeywordSection("Archetype", card.archetype);
   addKeywordSection("Ability", card.ability);
   addKeywordSection("Skill", card.skill);
+  addKeywordSection("Archetype", card.archetype);
 
   let html = `<div style="font-weight:bold;font-size:1.3em;color:#ffe066;margin-bottom:10px;">
     Card Keywords & Abilities
@@ -555,6 +595,10 @@ function showInfoModal(cardObj) {
           <div style="font-size:1em;color:#fff;">${sec.desc}</div>
         </div>
       `;
+      // Add divider after each section except the last
+      if (i < keywordSections.length - 1) {
+        html += `<div class="card-modal-divider"></div>`;
+      }
     });
   } else {
     html += `<div style="color:#eee;">No special keywords or abilities found for this card.</div>`;
@@ -587,9 +631,10 @@ function showFullCardModal(cardObj) {
     return `<div class="full-card-info-row"><span class="full-card-info-label">${label}:</span> <span>${value}</span></div>`;
   }
 
-  // Compose info HTML
+  // INFO HTML
   let infoHtml = '';
   infoHtml += `<div class="full-card-info-title">${card.name}</div>`;
+  infoHtml += `<div class="card-modal-divider"></div>`;
   infoHtml += labeled("Category", card.category);
   infoHtml += labeled("Rarity", card.rarity);
   infoHtml += labeled("Archetype", Array.isArray(card.archetype) ? card.archetype.join(", ") : card.archetype);
@@ -600,7 +645,7 @@ function showFullCardModal(cardObj) {
    const skillText = Array.isArray(card.skill) ? card.skill.join(", ") : card.skill;
    infoHtml += `<div class="full-card-info-row"><span class="full-card-info-label">Skill:</span> <span>${parseEffectText(skillText)}</span></div>`;
   } 
-
+  infoHtml += `<div class="card-modal-divider"></div>`;
   let statsRow = '';
   if (card.hp !== undefined || card.atk !== undefined || card.def !== undefined || card.cost !== undefined) {
    statsRow = '<div class="full-card-info-row">' +
@@ -610,7 +655,7 @@ function showFullCardModal(cardObj) {
    `<span class="full-card-info-label">Cost:</span> ${renderCardCost(card.cost)}` +
    '</div>';
   }
-
+  infoHtml += `<div class="card-modal-divider"></div>`;
   let textHtml = '';
   if (card.text) {
     textHtml = `<div class="full-card-info-section" style="font-size:1.08em;color:#ffe066;margin-top:10px;">${card.text}</div>`;
