@@ -581,82 +581,45 @@ function showProfileMenu(tile, user, context) {
   const rect = tile.getBoundingClientRect();
   placeMenuWithinViewport(menu, rect);
 
-  document.body.appendChild(menu);
+// After menu is appended to the body:
+document.body.appendChild(menu);
 
-  setTimeout(() => {
+// Set a high z-index so it appears above modals
+menu.style.zIndex = '99999';
+
+// --- Outside click to close menu (builder.js style) ---
+setTimeout(() => {
   document.addEventListener('mousedown', function handler(e) {
-      if (!menu.contains(e.target)) {
-        closeAllMenus();
-        document.removeEventListener('mousedown', handler);
-      }
-    });
-  }, 20);
-  // Attach event listeners to buttons (always close menu first)
-  const viewBtn = document.getElementById(viewBtnId);
-  if (viewBtn) {
-    viewBtn.onclick = function(e) {
+    if (!menu.contains(e.target)) {
+      closeAllMenus();
+      document.removeEventListener('mousedown', handler);
+    }
+  });
+}, 20);
+
+// --- Inside click: always close menu BEFORE any action
+[
+  { id: viewBtnId, handler: () => viewFriendProfile(user.uid) },
+  { id: reqBtnId, handler: () => sendFriendRequest(user.username) },
+  { id: blockBtnId, handler: () => blockUser(user.uid) },
+  { id: unfBtnId, handler: () => removeFriend(user.uid) },
+  { id: acceptBtnId, handler: () => acceptFriendRequest(user.uid, user.username) },
+  { id: declineBtnId, handler: () => declineFriendRequest(user.uid) },
+  { id: unblockBtnId, handler: () => unblockUser(user.uid) },
+  { id: cancelBtnId, handler: () => cancelSentRequest(user.uid) }
+].forEach(({ id, handler }) => {
+  const btn = document.getElementById(id);
+  if (btn) {
+    btn.onclick = function(e) {
       e.stopPropagation();
       closeAllMenus();
-      viewFriendProfile(user.uid);
+      handler();
     };
   }
-  const reqBtn = document.getElementById(reqBtnId);
-  if (reqBtn) {
-    reqBtn.onclick = function(e) {
-      e.stopPropagation();
-      closeAllMenus();
-      sendFriendRequest(user.username);
-    };
-  }
-  const blockBtn = document.getElementById(blockBtnId);
-  if (blockBtn) {
-    blockBtn.onclick = function(e) {
-      e.stopPropagation();
-      closeAllMenus();
-      blockUser(user.uid);
-    };
-  }
-  const unfBtn = document.getElementById(unfBtnId);
-  if (unfBtn) {
-    unfBtn.onclick = function(e) {
-      e.stopPropagation();
-      closeAllMenus();
-      removeFriend(user.uid);
-    };
-  }
-  const acceptBtn = document.getElementById(acceptBtnId);
-  if (acceptBtn) {
-    acceptBtn.onclick = function(e) {
-      e.stopPropagation();
-      closeAllMenus();
-      acceptFriendRequest(user.uid, user.username);
-    };
-  }
-  const declineBtn = document.getElementById(declineBtnId);
-  if (declineBtn) {
-    declineBtn.onclick = function(e) {
-      e.stopPropagation();
-      closeAllMenus();
-      declineFriendRequest(user.uid);
-    };
-  }
-  const unblockBtn = document.getElementById(unblockBtnId);
-  if (unblockBtn) {
-    unblockBtn.onclick = function(e) {
-      e.stopPropagation();
-      closeAllMenus();
-      unblockUser(user.uid);
-    };
-  }
-  const cancelBtn = document.getElementById(cancelBtnId);
-  if (cancelBtn) {
-    cancelBtn.onclick = function(e) {
-      e.stopPropagation();
-      closeAllMenus();
-      cancelSentRequest(user.uid);
-    };
-  }
-  menu.onclick = (e) => e.stopPropagation();
+});
+
+// Prevent closing the menu when clicking inside
+menu.onclick = (e) => e.stopPropagation();
 }
 
 function renderRequestsPanel() {
