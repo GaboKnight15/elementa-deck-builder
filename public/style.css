@@ -1194,10 +1194,6 @@ button {}
   width: 100%;
   margin: 0 0 16px 0;
 }
-.card > div:last-child {
-  font-size: 0.9em;
-  color: #667;
-}
 /* RARITY BORDERS */ 
 .card[data-rarity="Legendary"] {
   border: 2px solid gold;
