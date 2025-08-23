@@ -171,12 +171,11 @@ function renderGameplayProfilePanel(panelId, profileObj) {
 
   // Transform keys for renderProfilePanel
   const mappedProfile = {
-    profileBanner: profileObj.banner || profileObj.profileBanner,
-    profilePic: profileObj.avatar || profileObj.profilePic || profileObj.image,
-    username: profileObj.username,
-    power: profileObj.power
+    profileBanner: profileObj.profileBanner || profileObj.banner || "CardImages/Banners/DefaultBanner.png",
+    profilePic: profileObj.profilePic || profileObj.avatar || "CardImages/Avatars/Default.png",
+    username: profileObj.username || "Player",
+    power: typeof profileObj.power === "number" ? profileObj.power : 0
   };
-
   panel.appendChild(renderProfilePanel(mappedProfile));
 }
 
@@ -1084,6 +1083,7 @@ function renderCardOnField(cardObj, zoneId) {
       // ATTACHMENT MENU
       attDiv.onclick = (e) => {
         e.stopPropagation();
+        closeAllMenus();
         attDiv.querySelectorAll('.card-menu').forEach(m => m.remove());
         const buttons = [
           {
@@ -1091,6 +1091,7 @@ function renderCardOnField(cardObj, zoneId) {
             onClick: function(ev) {
               ev.stopPropagation();
               showFullCardModal(attachObj);
+              closeAllMenus();
               this.closest('.card-menu').remove();
             }
           },
@@ -1101,6 +1102,7 @@ function renderCardOnField(cardObj, zoneId) {
               cardObj.attachedCards.splice(i, 1);
               gameState.playerVoid.push(attachObj);
               renderGameState();
+              closeAllMenus();
               setupDropZones();
               this.closest('.card-menu').remove();
             }
@@ -2650,14 +2652,7 @@ function appendAttackLog({ attacker, defender, defenderOrientation, who = "playe
   logHtml += `<img src="OtherImages/Icons/Attack.png" alt="Attack" style="width:32px;height:32px;vertical-align:middle;margin:0 9px;">`;
 
   // Defender image
-  logHtml += cardImgLog(defenderDef, { 
-    width: 38, 
-    borderRadius: "6px", 
-    marginRight: "8px", 
-    who, 
-    rotate: defenderOrientation === "horizontal" ? 90 : 0 
-  });
-
+  logHtml += cardImgLog(defenderDef, {width: 38, marginRight: "8px", who, rotate: defenderOrientation === "horizontal" ? 90 : 0 });
   logHtml += `</div>`;
   logDiv.insertAdjacentHTML('beforeend', logHtml);
   logDiv.scrollTop = logDiv.scrollHeight;
@@ -2700,14 +2695,14 @@ function appendPositionChangeLog(cardObj, newOrientation, prevOrientation, fromS
 
   if (prevOrientation === "vertical" && newOrientation === "horizontal") {
     // ATK to DEF
-    logHtml += cardImgLog(cardDef, { border: "2px solid #ffe066", width: 36, borderRadius: "6px", marginRight: "7px", rotate: 0 });
+    logHtml += cardImgLog(cardDef, { border: "2px solid #ffe066", width: 36, rotate: 0 });
     logHtml += `<img src="OtherImages/Icons/Tapped.png" alt="Tapped" style="width:28px;vertical-align:middle;margin:0 7px;">`;
-    logHtml += cardImgLog(cardDef, { border: "2px solid #ffe066", width: 36, borderRadius: "6px", marginRight: "7px", rotate: 90 });
+    logHtml += cardImgLog(cardDef, { border: "2px solid #ffe066", width: 36, marginLeft: "7px", rotate: 90 });
   } else if (prevOrientation === "horizontal" && newOrientation === "vertical") {
     // DEF to ATK
-    logHtml += cardImgLog(cardDef, { border: "2px solid #ffe066", width: 36, borderRadius: "6px", marginRight: "7px", rotate: 90 });
+    logHtml += cardImgLog(cardDef, { border: "2px solid #ffe066", width: 36, marginRight: "7px", rotate: 90 });
     logHtml += `<img src="OtherImages/Icons/Untapped.png" alt="Untapped" style="width:28px;vertical-align:middle;margin:0 7px;">`;
-    logHtml += cardImgLog(cardDef, { border: "2px solid #ffe066", width: 36, borderRadius: "6px", marginRight: "7px", rotate: 0 });
+    logHtml += cardImgLog(cardDef, { border: "2px solid #ffe066", width: 36, rotate: 0 });
   }
   logHtml += `</div>`;
   logDiv.insertAdjacentHTML('beforeend', logHtml);
