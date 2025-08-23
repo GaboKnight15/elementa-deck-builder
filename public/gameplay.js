@@ -1144,16 +1144,25 @@ function renderCardOnField(cardObj, zoneId) {
 
   return wrapper;
 }
-  // COST DISPLAY IN HAND
+
+// COST DISPLAY IN HAND
 function getEssenceCostDisplay(cost) {
   // cost: {colorless: n, green: n, red: n, ...}
-  if (!cost || typeof cost !== 'object') return '';
+  if (!cost || typeof cost !== 'object') {
+    // If cost is exactly zero (number)
+    if (cost === 0) {
+      return `<img src="${ESSENCE_IMAGE_MAP['X0']}" style="width:22px;height:22px;vertical-align:middle;" alt="Colorless: 0">`;
+    }
+    return '';
+  }
   const colorOrder = ['colorless', 'green', 'red', 'blue', 'white', 'black', 'yellow', 'purple', 'gray'];
   let html = '';
+  let total = 0;
 
   colorOrder.forEach(color => {
     const amt = cost[color];
     if (amt && amt > 0) {
+      total += amt;
       if (color === 'colorless') {
         // Show the exact number as Xn image
         html += `<img src="${ESSENCE_IMAGE_MAP['X'+amt]}" style="width:22px;height:22px;vertical-align:middle;" alt="Colorless: ${amt}">`;
@@ -1162,8 +1171,13 @@ function getEssenceCostDisplay(cost) {
       }
     }
   });
+  // If total cost is zero, show the zero image
+  if (total === 0) {
+    html = `<img src="${ESSENCE_IMAGE_MAP['X0']}" style="width:22px;height:22px;vertical-align:middle;" alt="Colorless: 0">`;
+  }
   return html;
 }
+// ESSENCE POOL
 function renderEssencePool(cardObj) {
   if (!cardObj.essence) return null;
   // Track previous essence for animation (per card)
@@ -1376,7 +1390,8 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
   if (cardData.skill && Array.isArray(cardData.skill)) {
     cardData.skill.forEach(skillName => {
       buttons.push({
-        text: skillName,
+        text: parseEffectText(skillName),
+        html: true,
         onClick: function(e) {
           e.stopPropagation();
           // Future: run skill logic here for this card
