@@ -1502,6 +1502,24 @@ function openVoidModal() {
         }
       }
     ];
+
+  // --- Add Skill Buttons if card has skills ---
+  const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+  if (cardData && Array.isArray(cardData.skill)) {
+    cardData.skill.forEach(skillText => {
+      buttons.push({
+        text: parseEffectText(skillText),
+        html: true,
+        onClick: function(e) {
+          e.stopPropagation();
+          // TODO: Implement actual skill logic for Void
+          alert(`Activated skill: ${skillText}`);
+          closeAllMenus();
+          openVoidModal(); // Optionally refresh modal
+        }
+      });
+    });
+  }
     const menu = createCardMenu(buttons);
     document.body.appendChild(menu); // Append to body, not wrapper
 
