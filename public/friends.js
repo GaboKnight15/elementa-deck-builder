@@ -571,7 +571,8 @@ function setTab(tab) {
   document.getElementById(`panel-${tab}`).style.display = '';
 }
 document.getElementById('close-friends-modal').onclick = function() {
-  document.getElementById('friends-modal').style.display = 'none';
+  const modal = document.getElementById('friends-modal');
+  if (modal) modal.style.display = 'none';
 };
 document.getElementById('requests-search-trigger').onclick = function() {
   const value = document.getElementById('search-friends').value;
