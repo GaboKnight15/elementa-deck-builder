@@ -103,7 +103,47 @@ const dummyCards = [
 {id: 'Vampire', name: 'Vampire', rarity: 'Rare', image: 'CardImages/BasicCreatures/Vampire.png', 
  category: 'Creature', color: 'Black', type: 'Demon', hp: 3, atk: 2, def: 0,
  cost: {colorless: 1, black: 1}, archetype: 'Vampiric', ability: ['Drain','Flying'], set: 'StandardPack'},
+/*
+{id: 'ForestWarrior', name: 'Forest Warrior', rarity: 'Rare', image: 'CardImages/BasicCreatures/Forest Warrior.png', 
+ category: 'Creature', color: 'Green', type: ['Construct','Warrior'], hp: 6, atk: 3, def: 1, cost: {colorless: 1, green: 1}, 
+ archetype: '', ability: ['Drain','Rush'], skill: 'Dash {G}', set: 'StandardPack'},
+{id: 'ForestMage', name: 'Forest Mage', rarity: 'Rare', image: 'CardImages/Treant/Forest Mage.png', 
+ category: 'Creature', color: 'Green', type: ['Elemental','Mage'], hp: 5, atk: 2, def: 0, cost: {colorless: 1, green: 1}, 
+ archetype: 'Treant', ability: 'Ranged', skill: 'Bloomchant {CW}', set: 'StandardPack'},
+{id: 'WoodlandCentaur', name: 'Woodland Centaur', rarity: 'Rare', image: 'CardImages/BasicCreatures/Woodland Centaur.png', 
+ category: 'Creature', color: 'Green', type: 'Beast', hp: 8, atk: 3, def: 1, cost: {colorless: 1, green: 1}, 
+ archetype: 'Hybrids', ability: ['Intimidate','Leap','Rush'], skill: '', set: 'StandardPack'},
+{id: 'TreantWitch', name: 'Treant Witch', rarity: 'Epic', image: 'CardImages/BasicCreatures/Treant Witch.png', 
+ category: 'Creature', color: ['Green','Black'], type: ['Elemental','Mage'], hp: 8, atk: 3, def: 1, cost: {colorless: 1, green: 1, black: 1}, 
+ archetype: 'Treant', ability: ['Ranged','Burn'], skill: 'Reanimate {G}{B}', set: 'StandardPack'},
+{id: 'AngelicWarrior', name: 'Angelic Warrior', rarity: 'Common', image: 'CardImages/BasicCreatures/Angelic Warrior.png', 
+ category: 'Creature', color: 'White', type: 'Warrior', hp: 6, atk: 3, def: 1,
+ cost: {colorless: 1, white: 1}, archetype: 'Seraph', ability: 'Flying', set: 'StandardPack'},
+{id: 'Valkyrie', name: 'Valkyrie', rarity: 'Common', image: 'CardImages/BasicCreatures/Valkyrie.png', 
+ category: 'Creature', color: 'White', type: 'Warrior', hp: 5, atk: 3, def: 1,
+ cost: {colorless: 2}, archetype: '', ability: '', set: 'StandardPack'},
+{id: 'HeraldofLight', name: 'Herald of Light', rarity: 'Rare', image: 'CardImages/BasicCreatures/Herald of Light.png', 
+ category: 'Creature', color: 'White', type: 'Construct', hp: 8, atk: 2, def: 1,
+ cost: {colorless: 1, white: 1}, archetype: 'Seraph', ability: ['Flying','Aegis'], set: 'StandardPack'},
+{id: 'SacredKirin', name: 'Sacred Kirin', rarity: 'Epic', image: 'CardImages/BasicCreatures/Sacred Kirin.png', 
+ category: 'Creature', color: 'White', type: 'Beast', hp: 13, atk: 4, def: 1, cost: {colorless: 3, white: 1}, 
+ archetype: 'Hybrids', ability: ['Intimidate','Rush'], skill: 'Heavenstep Radiance {W}{CW}', set: 'StandardPack'},
+{id: 'LightPossessedArmor', name: 'Light Possessed Armor', rarity: 'Rare', image: 'CardImages/BasicCreatures/Light Possessed Armor.png', 
+ category: 'Creature', color: 'White', type: 'Construct', hp: 4, atk: 3, def: 1, cost: {colorless: 1, white: 1}, 
+ archetype: '', ability: ['Armor','Rush'], skill: '', set: 'StandardPack'},
 
+*/
+
+// PIXIEBOUND //
+/*
+{id: 'FairyWarrior', name: 'Fairy Warrior', rarity: 'Rare', image: 'CardImages/BasicCreatures/Fairy Warrior.png', 
+ category: 'Creature', color: 'Green', type: ['Fairy','Warrior'], hp: 4, atk: 3, def: 1, cost: {colorless: 1, green: 1}, 
+ archetype: 'Pixiebound', ability: ['Flying','Rush'], skill: 'Dash {G}', set: 'StandardPack'},
+
+
+
+*/
+ 
 // CINDERCORE //
 {id: 'CindercoreSentry', name: 'Cindercore Sentry', rarity: 'Common', image: 'CardImages/Cindercore/Cindercore Sentry.png', 
  category: 'Creature', color: 'Red', type: 'Construct', hp: 15, atk: 6, def: 3,
@@ -186,11 +226,22 @@ const dummyCards = [
  category: 'Creature', color: 'Blue', type: 'Construct', hp: 20, atk: 8, def: 5, cost: {colorless: 6, blue: 2},
  archetype: 'Coralbound', ability: 'Protect', trait: 'Fusion', set: 'StandardPack'},
 
-// GLIMMERWINGS //
+// GLIMMERSCALE //
 {id: 'WyrmofThornsandSunfire', name: 'Wyrm of Thorns and Sunfire', rarity: 'Rare', image: 'CardImages/Glimmerscale/Wyrm of Thorns and Sunfire.png', 
  category: 'Creature', color: ['Green', 'Red', 'White'], type: ['Dragon','Fairy'], hp: 10, atk: 3, def: 1,
- cost: {green: 1, red: 1, white: 1}, ability: ['Flying','Intimidate'], set: 'StandardPack'},
+ cost: {green: 1, red: 1, white: 1}, archetype: 'Glimmerscale', ability: ['Flying','Intimidate'], set: 'StandardPack'},
+/*
+{id: 'FairyDragon', name: 'Fairy Dragon', rarity: 'Rare', image: 'CardImages/Glimmerscale/Fairy Dragon.png', 
+ category: 'Creature', color: ['Green', 'Red', 'White'], type: ['Dragon','Fairy'], hp: 6, atk: 2, def: 1, cost: {green: 1, red: 1, white: 1},
+ ability: ['Flying','Intimidate'], archetype: 'Glimmerscale', skill: ['Purify {W}{CW}','Floral Mirage {G}{CW}'], set: 'StandardPack'},
 
+{id: 'FairyAmphitere', name: 'Fairy Amphitere', rarity: 'Rare', image: 'CardImages/Glimmerscale/Fairy Amphitere.png', 
+ category: 'Creature', color: ['Green', 'Red', 'White'], type: ['Dragon','Fairy'], hp: 14, atk: 5, def: 2, cost: {green: 1, red: 1, white: 1},
+ ability: ['Flying','Intimidate'], archetype: 'Glimmerscale', skill: ['Purify {W}{CW}','Dewlight Spiral {1}{G}{W}'], set: 'StandardPack'},
+
+
+*/
+ 
 // SKULLFRAME //
 {id: 'SkullframeDefector', name: 'Skullframe Defector', rarity: 'Common', image: 'CardImages/Skullframe/Skullframe Defector.png', 
  category: 'Creature', color: 'Black', type: ['Undead','Warrior'], hp: 3, atk: 2, def: 1,
@@ -224,6 +275,15 @@ const dummyCards = [
 {id: 'Witherwake', name: 'Witherwake', rarity: 'Common', image: 'CardImages/Skullframe/Witherwake.png', 
  category: 'Spell', color: ['Black','Purple'], type: 'Spell', cost: {purple: 1, black: 1}, archetype: 'Skullframe', effect: 'Burst Poison', set: 'StandardPack'},
 
+// SERAPH
+/*
+{id: 'SeraphielSolmaraPrincess', name: 'Seraphiel, Solmara Princess', rarity: 'Legendary', image: 'CardImages/Seraph/Seraphiel, Solmara Princess.png', 
+ category: 'Creature', color: 'White', type: 'Angel', trait: 'Champion', hp: 10, atk: 2, def: 0,
+ cost: {white: 3}, essence: {white: 1}, archetype: 'Seraph', ability: 'Flying', set: 'StandardPack'},
+
+
+*/
+ 
 // FROSTLANDS //
 {id: 'FrostlandsDragon', name: 'Frostlands Dragon', rarity: 'Rare', image: 'CardImages/Frostlands/Frostlands Dragon.png', 
  category: 'Creature', color: ['Blue', 'Gray'], type: 'Dragon', hp: 9, atk: 5, def: 2,
