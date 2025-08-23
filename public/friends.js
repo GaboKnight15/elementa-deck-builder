@@ -198,38 +198,52 @@ function findUserByUsername(username, cb) {
     });
 }
 
-// --- SEND FRIEND REQUEST: outgoing tracking + UI state improvements ---
-function sendFriendRequest(uid) {
+// --- SEND FRIEND REQUEST: subcollection approach per Firestore rules ---
+function sendFriendRequest(targetUid) {
   const currentUid = getCurrentUserId();
-  if (!currentUid || !uid) return;
+  if (!currentUid || !targetUid) return;
 
-  // Add a friend request to the target user's friendRequests array
-  const targetRef = firebase.firestore().collection('users').doc(uid);
+  // Reference to outgoing requests for current user (optional for tracking sent requests)
   const currentRef = firebase.firestore().collection('users').doc(currentUid);
 
-  // First, update target's doc
-  targetRef.get().then(function(doc) {
-    let requests = doc.data()?.friendRequests || [];
-    if (requests.some(r => r.fromUid === currentUid)) {
-      showToast("Request already sent.");
-      return;
-    }
-    requests.push({
-      fromUid: currentUid,
-      fromUsername: window.playerUsername || currentUid
-    });
-    targetRef.set({ friendRequests: requests }, { merge: true }).then(function() {
-      // Now, update current user's sentRequests
-      currentRef.get().then(function(doc2) {
-        let sent = doc2.data()?.sentRequests || [];
-        if (!sent.includes(uid)) sent.push(uid);
-        currentRef.set({ sentRequests: sent }, { merge: true }).then(function() {
-          showToast("Friend request sent!");
-          renderDiscoverPanel && renderDiscoverPanel();
+  // Check if request already sent to avoid duplicates
+  firebase.firestore()
+    .collection('users')
+    .doc(targetUid)
+    .collection('requests')
+    .doc(currentUid)
+    .get()
+    .then(function(doc) {
+      if (doc.exists) {
+        showToast("Request already sent.");
+        return;
+      }
+      // Create request document in recipient's requests subcollection
+      firebase.firestore()
+        .collection('users')
+        .doc(targetUid)
+        .collection('requests')
+        .doc(currentUid)
+        .set({
+          fromUid: currentUid,
+          fromUsername: window.playerUsername || currentUid,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        })
+        .then(function() {
+          // Optionally, track outgoing requests in current user's doc
+          currentRef.get().then(function(doc2) {
+            let sent = doc2.data()?.sentRequests || [];
+            if (!sent.includes(targetUid)) sent.push(targetUid);
+            currentRef.set({ sentRequests: sent }, { merge: true }).then(function() {
+              showToast("Friend request sent!");
+              renderDiscoverPanel && renderDiscoverPanel();
+            });
+          });
+        })
+        .catch(function(err) {
+          showToast("Error sending request: " + err.message);
         });
-      });
     });
-  });
 }
 
 // --- ACCEPT/DECLINE should also remove from sentRequests on the sender ---
