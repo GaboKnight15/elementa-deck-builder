@@ -1,7 +1,71 @@
 // CARD LIST //    
 const dummyCards = [
+/*{id: 'KaelenBlazebornHuntress', name: 'Kaelen, Blazeborn Huntress', rarity: 'Legendary', image: 'CardImages/Skullframe/Kaelen, Blazeborn Huntress.png', 
+ category: 'Creature', color: 'Red', type: 'Warrior', trait: 'Champion', hp: 8, atk: 1, def: 0,
+ cost: {red: 3}, essence: {red: 1}, archetype: '', ability: ['Burn','Ranged'], skill: ['Hexblast {B}{CW}','Scorching Skyfall {R}{R}{CCW}'], set: 'StandardPack'},
+
+{id: 'ZaryonPearlhavenCommander', name: 'Zaryon, Pearlhaven Commander', rarity: 'Legendary', image: 'CardImages/Skullframe/Zaryon, Pearlhaven Commander.png', 
+ category: 'Creature', color: 'Blue', type: ['Merfolk', 'Warrior'], trait: 'Champion', hp: 12, atk: 2, def: 1,
+ cost: {blue: 3}, essence: {blue: 1}, archetype: '', ability: ['Dive','Pierce'], skill: ['Hexbind {Y}{Y}','Hexblast {B}{CW}','Tidepiercer Vortex {U}{CCW}'], set: 'StandardPack'},
+
+{id: 'ZyraThunderbladeDuelist', name: 'Zyra, Thunderblade Duelist', rarity: 'Legendary', image: 'CardImages/Skullframe/Zyra, Thunderblade Duelist.png', 
+ category: 'Creature', color: 'Yellow', type: 'Warrior', trait: 'Champion', hp: 7, atk: 1, def: 0,
+ cost: {yellow: 3}, essence: {yellow: 1}, archetype: '', ability: ['Ranged','Veil'], skill: ['Hexbind {Y}{Y}','Hexblast {B}{CW}','Blade Tempest {Y}{Y}'], set: 'StandardPack'},
+
+{id: 'MordrathPlagueKing', name: 'Mordrath, Plague King', rarity: 'Legendary', image: 'CardImages/Skullframe/Mordrath, Plague King.png', 
+ category: 'Creature', color: 'Purple', type: ['Undead', 'Warrior'], trait: 'Champion', hp: 6, atk: 1, def: 1,
+ cost: {purple: 3}, essence: {purple: 1}, archetype: '', ability: ['Immunity','Venom'], skill: ['Hexbind {B}{P}','Hexblast {B}{CW}','Reanimate {2}{B}{B}'], set: 'StandardPack'},
+
+{id: 'GravokDrakzulTyrant', name: 'Gravok, Drakzul Tyrant', rarity: 'Legendary', image: 'CardImages/Skullframe/Gravok, Drakzul Tyrant.png', 
+ category: 'Creature', color: 'Gray', type: 'Warrior', trait: 'Champion', hp: 10, atk: 2, def: 1,
+ cost: {gray: 3}, essence: {gray: 1}, archetype: '', ability: ['Armor','Crush'], skill: ['Hexblast {B}{CW}','Seismic Smite {C}{CCW}'], set: 'StandardPack'},
+
+{id: 'VelmiraMistressofSilence', name: 'Velmira, Mistress of Silence', rarity: 'Legendary', image: 'CardImages/Skullframe/Velmira, Mistress of Silence.png', 
+ category: 'Creature', color: 'Black', type: 'Mage', trait: 'Champion', hp: 9, atk: 2, def: 0,
+ cost: {black: 3}, essence: {black: 1}, archetype: '', ability: ['Ranged','Veil'], skill: ['Hexbind {B}{P}','Hexblast {B}{CW}','Reanimate {2}{B}{B}'], set: 'StandardPack'},
+
+{id: 'ElyndraDawnbladeofHeavens', name: 'Elyndra, Dawnblade of Heavens', rarity: 'Legendary', image: 'CardImages/Skullframe/Elyndra, Dawnblade of Heavens.png', 
+ category: 'Creature', color: 'White', type: 'Warrior', trait: 'Champion', hp: 10, atk: 2, def: 1,
+ cost: {white: 3}, essence: {white: 1}, archetype: '', ability: ['Aegis','Veil'], skill: ['Hexbind {B}{P}','Hexblast {B}{CW}','Radiant Severance {W}{CCW}'], set: 'StandardPack'},
+
+{id: 'Verdarok, Sylvan Warden', name: 'Verdarok, Sylvan Warden', rarity: 'Legendary', image: 'CardImages/Skullframe/Verdarok, Sylvan Warden.png', 
+ category: 'Creature', color: 'Green', type: 'Dragon', trait: 'Evolution', hp: 18, atk: 5, def: 3,
+ cost: {colorless: 4, green: 2}, archetype: '', ability: ['Flying','Protect'], skill: ['Hexbind {Y}{Y}','Hexblast {B}{CW}','Blade Tempest {Y}{Y}'], set: 'StandardPack'},
+
+{id: 'NoctyrosUmbralTyrant', name: 'Noctyros, Umbral Tyrant', rarity: 'Legendary', image: 'CardImages/Skullframe/Noctyros, Umbral Tyrant.png', 
+ category: 'Creature', color: 'Black', type: 'Dragon', trait: 'Evolution', hp: 12, atk: 6, def: 2,
+ cost: {colorless: 4, black: 2}, archetype: '', ability: ['Flying','Protect'], skill: ['Discard {B}','Nightfall Surge {B}{CW}'], set: 'StandardPack'},
+
+{id: 'FaeliraSatyrEmpress', name: 'Faelira, Satyr Empress', rarity: 'Legendary', image: 'CardImages/Firelands/Faelira, Satyr Empress.png', 
+ category: 'Creature', color: 'Green', type: ['Satyr', 'Mage'], trait: 'Champion', hp: 11, atk: 2, def: 0,
+ cost: {green: 3}, essence: {green: 1}, archetype: '', ability: ['Ranged',''], skill: ['Dash {Y}{W}','Hexblast {B}{CW}','Flametongue Invocation {R}{B}'], set: 'StandardPack'},
+
+{id: 'KaelyraFirelandsHeiress', name: 'Kaelyra, Firelands Heiress', rarity: 'Legendary', image: 'CardImages/Firelands/Kaelyra, Firelands Heiress.png', 
+ category: 'Creature', color: ['Red','Black'], type: ['Mage', 'Demon'], trait: 'Champion', hp: 8, atk: 2, def: 0,
+ cost: {red: 2, black: 1}, essence: {red: 1}, archetype: 'Firelands', ability: ['Burn','Ranged'], skill: ['Dash {Y}{W}','Hexblast {B}{CW}','Flametongue Invocation {R}{B}'], set: 'StandardPack'},
+
+{id: 'VorgannaCrimsonBlade', name: 'Vorganna, Crimson Blade', rarity: 'Legendary', image: 'CardImages/Firelands/Vorganna, Crimson Blade.png', 
+ category: 'Creature', color: ['Black','Red'], type: 'Warrior', trait: 'Champion', hp: 9, atk: 3, def: 0,
+ cost: {black: 2, red: 1}, essence: {black: 1}, archetype: '', ability: ['Burn','Ranged'], skill: ['Dash {Y}{W}','Hexblast {B}{CW}','Flametongue Invocation {R}{B}'], set: 'StandardPack'},
+
+{id: 'TydrosCoralboundTidebreaker', name: 'Tydros, Coralbound Tidebreaker', rarity: 'Legendary', image: 'CardImages/Firelands/Tydros, Coralbound Tidebreaker.png', 
+ category: 'Creature', color: ['Blue','Gray'], type: 'Warrior', trait: 'Champion', hp: 12, atk: 2, def: 0,
+ cost: {blue: 2, gray: 1}, essence: {blue: 1}, archetype: '', ability: ['Dive','Ranged'], skill: ['Dash {Y}{W}','Hexblast {B}{CW}','Flametongue Invocation {R}{B}'], set: 'StandardPack'},
+
+{id: 'VeniryssSpiderPrincess', name: 'Veniryss, Spider Princess', rarity: 'Legendary', image: 'CardImages/Silkbound/Veniryss, Spider Princess.png', 
+ category: 'Creature', color: ['Purple','Green'], type: 'Mage', trait: 'Champion', hp: 10, atk: 1, def: 0,
+ cost: {purple: 2, green: 1}, essence: {purple: 1}, archetype: 'Silkbound', ability: ['Venom','Veil'], skill: ['Dash {Y}{W}','Hexblast {B}{CW}','Silken Dominion {P}{G}{CCW}'], set: 'StandardPack'},
+
+{id: 'RaukharKnightofDuskwings', name: 'Raukhar, Knight of Duskwings', rarity: 'Legendary', image: 'CardImages/Duskwings/Raukhar, Knight of Duskwings.png', 
+ category: 'Creature', color: ['Black','Yellow'], type: 'Avian', trait: 'Champion', hp: 9, atk: 2, def: 1,
+ cost: {black: 2, yellow: 1}, essence: {black: 1}, archetype: 'Duskwings', ability: ['Flying','Scavenger'], skill: ['Dash {Y}{W}','Hexblast {B}{CW}','Shadowfeather Storm {B}{B}{Y}{CCW}'], set: 'StandardPack'},
+
+{id: 'GarudaWingsofZephyra', name: 'Garuda, Wings of Zephyra', rarity: 'Legendary', image: 'CardImages/Zephyra/Garuda, Wings of Zephyra.png', 
+ category: 'Creature', color: ['Yellow','White'], type: 'Avian', trait: 'Champion', hp: 9, atk: 2, def: 1,
+ cost: {yellow: 2, white: 1}, essence: {yellow: 1}, archetype: 'Zephyra', ability: ['Flying','Veil'], skill: ['Dash {Y}{W}','Hexblast {B}{CW}','Featherfall Tempest {Y}{W}{CW}'], set: 'StandardPack'},
+*/
 {id: 'ForestFairy', name: 'Forest Fairy', rarity: 'Common', image: 'CardImages/BasicCreatures/Fairy.png', 
- category: 'Creature', color: 'Green', type: 'fairy', hp: 1, atk: 1, def: 0,
+ category: 'Creature', color: 'Green', type: 'Fairy', hp: 1, atk: 1, def: 0,
  cost: 0, archetype: 'Fairy', ability: 'Flying', set: 'StandardPack'},
 {id: 'ForestGoblin', name: 'Forest Goblin', rarity: 'Common', image: 'CardImages/BasicCreatures/Goblin.png', 
  category: 'Creature', color: 'Green', type: 'Goblin', hp: 3, atk: 1, def: 0,
@@ -40,6 +104,7 @@ const dummyCards = [
  category: 'Creature', color: 'Black', type: 'Demon', hp: 3, atk: 2, def: 0,
  cost: {colorless: 1, black: 1}, archetype: 'Vampiric', ability: ['Drain','Flying'], set: 'StandardPack'},
 
+// CINDERCORE //
 {id: 'CindercoreSentry', name: 'Cindercore Sentry', rarity: 'Common', image: 'CardImages/Cindercore/Cindercore Sentry.png', 
  category: 'Creature', color: 'Red', type: 'Construct', hp: 15, atk: 6, def: 3,
  cost: {colorless: 3, red: 1}, archetype: 'Cindercore', ability: 'Armor', set: 'StandardPack'},
@@ -56,6 +121,7 @@ const dummyCards = [
  category: 'Creature', color: 'Red', type: 'Construct', hp: 15, atk: 6, def: 3,
  cost: {colorless: 5, red: 2}, archetype: 'Cindercore', ability: 'Armor', set: 'StandardPack'},
 
+// FIRELANDS //
 {id: 'FirelandsScamperling', name: 'Firelands Scamperling', rarity: 'Common', image: 'CardImages/Firelands/Firelands Scamperling.png', 
  category: 'Creature', color: 'Red', type: 'Beast', hp: 3, atk: 2, def: 1,
  cost: {colorless: 2}, archetype: 'Firelands', ability: ['Burn','Rush'], set: 'StandardPack'},
@@ -84,6 +150,7 @@ const dummyCards = [
  category: 'Creature', color: ['Red','Black'], type: ['Beast','Demon'], hp: 13, atk: 9, def: 3,
  cost: {colorless: 5, red: 1, black: 1}, archetype: 'Firelands', ability: ['Burn','Crush','Intimidate'], set: 'StandardPack'},
 
+// GOLEMHEART //
 {id: 'PyrokragGolemheartTitan', name: 'Pyrokrag, Golemheart Titan', rarity: 'Legendary', image: 'CardImages/Golems/Pyrokrag, Golemheart Titan.png', 
  category: 'Creature', color: ['Red', 'Gray'], type: 'Elemental', hp: 9, armor: 5, atk: 8, def: 3,
  cost: {colorless: 5, red: 1, gray: 1}, archetype: 'Golemheart', ability: 'Fire Armor', trait: 'Fusion', set: 'Primordial Ascension'},
@@ -105,6 +172,7 @@ const dummyCards = [
 {id: 'AcidicGolem', name: 'Acidic Golem', rarity: 'Rare', image: 'CardImages/Golems/Acidic Golem.png', 
  category: 'Creature', color: ['Purple', 'Gray'], type: ['Elemental','Golem'], hp: 8, armor: 4, atk: 4, def: 3, cost: {colorless: 2, purple: 1, gray: 1}, archetype: 'Golemheart', ability: 'toxic', set: 'PrimordialAscension'},
 
+// CORALBOUND //
 {id: 'CoralboundSentry', name: 'Coralbound Sentry', rarity: 'Common', image: 'CardImages/Coralbound/Coralbound Sentry.png', 
  category: 'Creature', color: 'Blue', type: 'Construct', hp: 4, atk: 2, def: 1,
  cost: {blue: 1}, archetype: 'Coralbound', ability: '', set: 'StandardPack'},
@@ -118,10 +186,12 @@ const dummyCards = [
  category: 'Creature', color: 'Blue', type: 'Construct', hp: 20, atk: 8, def: 5, cost: {colorless: 6, blue: 2},
  archetype: 'Coralbound', ability: 'Protect', trait: 'Fusion', set: 'StandardPack'},
 
+// GLIMMERWINGS //
 {id: 'WyrmofThornsandSunfire', name: 'Wyrm of Thorns and Sunfire', rarity: 'Rare', image: 'CardImages/Glimmerscale/Wyrm of Thorns and Sunfire.png', 
  category: 'Creature', color: ['Green', 'Red', 'White'], type: ['Dragon','Fairy'], hp: 10, atk: 3, def: 1,
  cost: {green: 1, red: 1, white: 1}, ability: ['Flying','Intimidate'], set: 'StandardPack'},
 
+// SKULLFRAME //
 {id: 'SkullframeDefector', name: 'Skullframe Defector', rarity: 'Common', image: 'CardImages/Skullframe/Skullframe Defector.png', 
  category: 'Creature', color: 'Black', type: ['Undead','Warrior'], hp: 3, atk: 2, def: 1,
  cost: {colorless: 1}, archetype: 'Skullframe', ability: 'Immunity', skill: 'Reanimate {2}{B}', set: 'StandardPack'},
@@ -154,6 +224,7 @@ const dummyCards = [
 {id: 'Witherwake', name: 'Witherwake', rarity: 'Common', image: 'CardImages/Skullframe/Witherwake.png', 
  category: 'Spell', color: ['Black','Purple'], type: 'Spell', cost: {purple: 1, black: 1}, archetype: 'Skullframe', effect: 'Burst Poison', set: 'StandardPack'},
 
+// FROSTLANDS //
 {id: 'FrostlandsDragon', name: 'Frostlands Dragon', rarity: 'Rare', image: 'CardImages/Frostlands/Frostlands Dragon.png', 
  category: 'Creature', color: ['Blue', 'Gray'], type: 'Dragon', hp: 9, atk: 5, def: 2,
  cost: {colorless: 3, blue: 1, gray: 1}, archetype: 'Frostlands', ability: ['Ice Armor','Flying'], set: 'StandardPack'},
@@ -176,6 +247,7 @@ const dummyCards = [
  category: 'Creature', color: ['Blue', 'Gray'], type: 'Mage', trait: 'Champion', hp: 11, atk: 1, def: 0,
  cost: {blue: 2, gray: 1}, archetype: 'Frostlands', ability: ['Ice Armor','Flying'], set: 'StandardPack'},
 
+// ARTIFACTS //
 {id: 'GolemheartInfusor', name: 'Golemheart Infusor', rarity: 'Common', image: 'CardImages/Artifacts/Golemheart Infusor.png', 
  category: 'Artifact', color: 'Gray', type: 'Relic', hp: 5, cost: {gray: 1}, archetype: 'Golemheart', ability: '', set: 'StandardPack'},
 {id: 'HeartwoodEmeralds', name: 'Heartwood Emeralds', rarity: 'Common', image: 'CardImages/Artifacts/Heartwood Emeralds.png', 
@@ -195,8 +267,7 @@ const dummyCards = [
 {id: 'LumenSpire', name: 'Lumen Spire', rarity: 'Common', image: 'CardImages/Artifacts/Lumen Spire.png', 
  category: 'Artifact', color: 'White', type: 'Relic', hp: 5, cost: {colorless: 2, white: 1}, archetype: '', ability: '', set: 'StandardPack'},
 
-{id: 'LifeGrowth', name: 'Life Growth', rarity: 'Common', image: 'CardImages/Spells/Life Growth.png', 
- category: 'Spell', color: 'Green', type: 'Spell', cost: {green: 1}, effect: 'Gain {G}{G}', set: 'StandardPack'},
+// SPELLS //
 {id: 'EssenceSurge', name: 'Essence Surge', rarity: 'Common', image: 'CardImages/Spells/Essence Surge.png', 
  category: 'Spell', color: 'Green', type: 'Spell', cost: {colorless: 2}, effect: 'Gain 3 essence', set: 'StandardPack'},
 {id: 'EssenceAssault', name: 'Essence Assault', rarity: 'Common', image: 'CardImages/Spells/Essence Assault.png', 
@@ -213,7 +284,18 @@ const dummyCards = [
  category: 'Spell', color: 'Black', type: 'Aura', cost: {colorless: 2}, effect: 'Cannot generate essence', set: 'StandardPack'},
 {id: 'EssenceBlessing', name: 'Essence Blessing', rarity: 'Common', image: 'CardImages/Spells/Essence Blessing.png', 
  category: 'Spell', color: 'White', type: 'Spell', cost: {colorless: 1}, effect: 'Cleanse 5', set: 'StandardPack'},
-
+{id: 'LifeGrowth', name: 'Life Growth', rarity: 'Common', image: 'CardImages/Spells/Life Growth.png', 
+ category: 'Spell', color: 'Green', type: 'Spell', cost: {green: 1}, effect: 'Gain {G}{G}', set: 'StandardPack'},
+/*
+{id: 'HardenedScales', name: 'Hardened Scales', rarity: 'Common', image: 'CardImages/Spells/Hardened Scales.png', 
+ category: 'Spell', color: ['Green','Red'], type: 'Aura', cost: {colorless: 1}, effect: 'Gain {G}{G}', set: 'StandardPack'},
+{id: 'VerdantRebirth', name: 'Verdant Rebirth', rarity: 'Common', image: 'CardImages/Spells/Verdant Rebirth.png', 
+ category: 'Spell', color: 'Green', type: 'Spell', cost: {colorless: 2, green: 1}, effect: 'Gain {G}{G}', set: 'StandardPack'},
+  
+ 
+ 
+ */
+// DOMAINS //
 {id: 'basicforest', name: 'Forest', rarity: 'Common', image: 'CardImages/Domains/Green Basic Location.png', 
  category: 'Domain', color: 'Green', type: 'Terrain', hp: 5, cost: { red: 2 }, essence: {green: 1}, set: 'StandardPack2'},
 {id: 'basicvolcano', name: 'Volcano', rarity: 'Common', image: 'CardImages/Domains/Red Basic Location.png', 
