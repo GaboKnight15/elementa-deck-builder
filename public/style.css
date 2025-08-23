@@ -2377,7 +2377,6 @@ button {}
   justify-content: flex-start;
   height: 90%;     
   padding: 0.5em 0.5em 0.5em 0.5em;
-  box-shadow: -2px 0 16px rgba(0,0,0,0.12);
   z-index: 1100;
   overflow: hidden;
 }
@@ -3461,7 +3460,7 @@ button {}
 #toast-container .toast-message.info  { background: #222b3b; }
 
 .profile-panel {     
-  border-radius: 10px;
+  border-radius: 20px;
   box-shadow: 0 2px 12px #0007;
   margin: 12px 0;
 }
