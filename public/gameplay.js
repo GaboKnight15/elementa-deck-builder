@@ -147,6 +147,78 @@ const STATUS_EFFECTS = {
   }
   // ... add more statuses
 };
+
+/*------------------------------
+// ATTACK TARGETING ABILITIES //
+------------------------------*/
+const TARGET_FILTER_ABILITIES = {
+  Ambush: {
+    icon: 'OtherImages/Icons/Ambush.png',
+    name: 'Ambush',
+    description: 'Cannot be targeted for attacks, skills, or effects. Removed if this creature attacks or uses a skill.',
+    filter: (attacker, targets) => {
+      // Remove all targets with Ambush ability
+      return targets.filter(target => !defenderHasAbility(target, 'Ambush'));
+    }
+  },
+  Flying: {
+    icon: 'OtherImages/Icons/Flying.png',
+    name: 'Flying',
+    description: 'Ignores color protection, but only Flying or Ranged can block/retaliate Flying.',
+    filter: (attacker, targets) => {
+      // Flying ignores color protection (handled outside), so here: allow all
+      return targets;
+    }
+  },
+  Ranged: {
+    icon: 'OtherImages/Icons/Ranged.png',
+    name: 'Ranged',
+    description: 'Can attack Flying; does not receive retaliation from non-Ranged defenders.',
+    filter: (attacker, targets) => {
+      // Ranged can attack Flying, and vice versa; don't restrict targets
+      return targets;
+    }
+  },
+  Protect: {
+    icon: 'OtherImages/Icons/Protect.png',
+    name: 'Protect',
+    description: 'If any opponent creature has Protect, only those can be attacked (unless attacker is Flying).',
+    filter: (attacker, targets) => {
+      const protectTargets = targets.filter(target => defenderHasAbility(target, 'Protect'));
+      if (protectTargets.length > 0 && !attackerHasAbility(attacker, 'Flying')) {
+        return protectTargets;
+      }
+      return targets;
+    }
+  }
+  // ...add more targeting abilities here!
+};
+// ATTACK RESOLUTION ABILITIES
+const ATTACK_DECLARATION_ABILITIES = {
+  Intimidate: {
+    icon: 'OtherImages/Icons/Intimidate.png',
+    name: 'Intimidate',
+    description: 'When attacking, changes defending creature to DEF position.',
+    effect: (attacker, defender) => {
+      if (defender.orientation !== "horizontal") {
+        defender.orientation = "horizontal";
+        defender.hasChangedPositionThisTurn = true;
+      }
+    }
+  },
+  Provoke: {
+    icon: 'OtherImages/Icons/Provoke.png',
+    name: 'Provoke',
+    description: 'When attacking, changes defending creature to ATK position.',
+    effect: (attacker, defender) => {
+      if (defender.orientation !== "vertical") {
+        defender.orientation = "vertical";
+        defender.hasChangedPositionThisTurn = true;
+      }
+    }
+  }
+  // ...add more declaration abilities here!
+};
 // ==========================
 // === DOM REFERENCES ===
 // ==========================
@@ -2367,20 +2439,7 @@ function getOpponentAttackableTargets(attackerObj = null) {
   if (!attackerObj) return targets;
 
   // Now apply ability-based restrictions to this filtered list
-
-  // If attacker has Flying, ignore Protect (but NOT color protection)
-  if (attackerHasAbility(attackerObj, 'Flying')) {
-    return targets;
-  }
-
-  // If opponent has Protect, and attacker is NOT Flying, only Protect cards are valid (creatures with Protect)
-  const protectCards = targets.filter(cardObj => defenderHasAbility(cardObj, "Protect"));
-  if (protectCards.length > 0) {
-    return protectCards;
-  }
-
-  // Otherwise, return color-protected targets
-  return targets;
+  return filterAttackableTargets(attackerObj, targets);
 }
 function endAttackTargeting() {
   // Remove highlights and listeners
@@ -2414,6 +2473,11 @@ function resolveAttack(attackerId, defenderId) {
     gameState.playerCreatures.find(c => c.instanceId === defenderId) ||
     gameState.playerDomains.find(c => c.instanceId === defenderId);
 
+  const attackerDef = dummyCards.find(c => c.id === attacker.cardId);
+  const defenderDef = dummyCards.find(c => c.id === defender.cardId);
+
+  handleAttackDeclarationAbilities(attacker, defender);
+
   if (gameState.playerCreatures.includes(attacker)) {
     attackerArr = gameState.playerCreatures;
     attackerVoid = gameState.playerVoid;
@@ -2438,9 +2502,6 @@ function resolveAttack(attackerId, defenderId) {
   if (!attacker || !defender) return;
 
   // --- ABILITY LOGIC ---
-  const attackerDef = dummyCards.find(c => c.id === attacker.cardId);
-  const defenderDef = dummyCards.find(c => c.id === defender.cardId);
-
   // Defender has Flying: can only be attacked by Flying or Ranged
   if (defenderHasAbility(defender, 'Flying')) {
     if (!(attackerHasAbility(attacker, 'Flying') || attackerHasAbility(attacker, 'Ranged'))) {
@@ -2981,6 +3042,32 @@ function runSkillEffect(sourceCardObj, effectObj) {
   }
   // Optionally animate, log, etc.
   renderGameState();
+}
+
+/*--------------------------------
+// ATTACK DECLARATION ABILITIES //
+--------------------------------*/
+function filterAttackableTargets(attacker, targets) {
+  const attackerDef = dummyCards.find(c => c.id === attacker.cardId);
+  if (!attackerDef || !attackerDef.ability) return targets;
+  let filtered = targets;
+  Object.keys(TARGET_FILTER_ABILITIES).forEach(abilityName => {
+    if (attackerDef.ability.includes(abilityName)) {
+      filtered = TARGET_FILTER_ABILITIES[abilityName].filter(attacker, filtered);
+    }
+  });
+  return filtered;
+}
+
+function handleAttackDeclarationAbilities(attacker, defender) {
+  const attackerDef = dummyCards.find(c => c.id === attacker.cardId);
+  if (!attackerDef || !attackerDef.ability) return;
+  attackerDef.ability.forEach(abilityName => {
+    const ability = ATTACK_DECLARATION_ABILITIES[abilityName];
+    if (ability && ability.effect) {
+      ability.effect(attacker, defender);
+    }
+  });
 }
 
 /*------------------
