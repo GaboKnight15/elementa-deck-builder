@@ -10,7 +10,7 @@ const dummyCards = [
 
 {id: 'KaelenBlazebornHuntress', name: 'Kaelen, Blazeborn Huntress', rarity: 'Legendary', image: 'CardImages/Skullframe/Kaelen, Blazeborn Huntress.png', 
  category: 'Creature', color: 'Red', type: 'Warrior', trait: 'Champion', hp: 8, atk: 1, def: 0,
- cost: {red: 3}, essence: {red: 1}, archetype: '', ability: ['Burn','Ranged'], skill: ['Hexblast {B}{CW}', { name: 'Scorching Skyfall', cost: '{R}{R}{CCW}', type: 'Burst', effect: damage: 2, burn: true }],
+ cost: {red: 3}, essence: {red: 1}, archetype: '', ability: ['Burn','Ranged'], skill: ['Hexblast {B}{CW}', { name: 'Scorching Skyfall', cost: '{R}{R}{CCW}', type: 'Burst', damage: 2, burn: true }],
  set: 'StandardPack'},
 
 {id: 'ZaryonPearlhavenCommander', name: 'Zaryon, Pearlhaven Commander', rarity: 'Legendary', image: 'CardImages/Skullframe/Zaryon, Pearlhaven Commander.png', 
@@ -131,7 +131,8 @@ const dummyCards = [
  cost: {colorless: 1}, archetype: 'Moonfang', ability: 'Ambush', set: 'StandardPack'},
 {id: 'Skeleton', name: 'Skeleton', rarity: 'Common', image: 'CardImages/BasicCreatures/Skeleton.png',
  category: 'Creature', color: 'Black', type: 'Undead', hp: 1, atk: 1, def: 0,
- cost: 0, archetype: 'Skullframe', ability: 'Immunity', skill: 'Reanimate {1}{B}', set: 'StandardPack'},
+ cost: 0, archetype: 'Skullframe', ability: 'Immunity',
+ skill: [{ name: 'Reanimate', cost: '{1}{B}', type: 'Reanimate'}], set: 'StandardPack'},
 {id: 'Bat', name: 'Bat', rarity: 'Common', image: 'CardImages/BasicCreatures/Bat.png', 
  category: 'Creature', color: 'Black', type: 'Vampire', hp: 3, atk: 2, def: 0,
  cost: {colorless: 1}, archetype: 'Vampiric', ability: ['Drain','Flying'], set: 'StandardPack'},
