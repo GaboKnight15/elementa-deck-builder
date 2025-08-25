@@ -60,6 +60,93 @@ const ESSENCE_IMAGE_MAP = {
   X19: "OtherImages/Essence/Nineteen.png",
   X20: "OtherImages/Essence/Twenty.png"
 };
+// STATUS EFFECTS
+const STATUS_EFFECTS = {
+  Burn: {
+    icon: 'OtherImages/Icons/Burn.png',
+    name: 'Burn',
+    description: 'Deals 1 damage at End Phase and lowers DEF by 1.',
+    apply: function(cardObj) {
+      // Lower DEF by 1 if not already applied
+      if (!cardObj._burnedDEF) {
+        cardObj.def = (cardObj.def || 0) - 1;
+        cardObj._burnedDEF = true;
+      }
+    },
+    remove: function(cardObj) {
+      // Restore DEF when Burn is removed
+      if (cardObj._burnedDEF) {
+        cardObj.def = (cardObj.def || 0) + 1;
+        cardObj._burnedDEF = false;
+      }
+    },
+    onEndPhase: function(cardObj) {
+      cardObj.currentHP = Math.max(0, (cardObj.currentHP || getBaseHp(cardObj.cardId)) - 1);
+    }
+  },
+  Freeze: {
+    icon: 'OtherImages/Icons/Freeze.png',
+    name: 'Freeze',
+    description: 'Cannot attack for 1 turn.',
+    duration: 1,
+    apply: (cardObj) => {
+      cardObj._frozen = true;
+      cardObj.canAttack = false;
+    },
+    remove: (cardObj) => {
+      cardObj._frozen = false;
+      cardObj.canAttack = true;
+    },
+    onTurnStart: (cardObj) => {
+      // If there’s logic for re-enabling attack after duration, handle here
+    }
+  },
+  Poison: {
+    icon: 'OtherImages/Icons/Poison.png',
+    name: 'Poison',
+    description: 'Deals 1 damage at the beginning of each turn. Reduces max HP by 1 while poisoned.',
+    duration: 3,
+    apply: function(cardObj) {
+      if (!cardObj._poisonedMaxHP) {
+        cardObj._originalMaxHP = cardObj._originalMaxHP || getBaseHp(cardObj.cardId);
+        cardObj._poisonedMaxHP = true;
+        cardObj.maxHP = (cardObj.maxHP || getBaseHp(cardObj.cardId)) - 1;
+        // If currentHP is above new max, lower it
+        if (cardObj.currentHP > cardObj.maxHP) {
+          cardObj.currentHP = cardObj.maxHP;
+        }
+      }
+    },
+    remove: function(cardObj) {
+      if (cardObj._poisonedMaxHP) {
+        cardObj.maxHP = cardObj._originalMaxHP || getBaseHp(cardObj.cardId);
+        cardObj._poisonedMaxHP = false;
+      }
+    },
+    onTurnStart: function(cardObj) {
+      cardObj.currentHP = Math.max(0, (cardObj.currentHP || getBaseHp(cardObj.cardId)) - 1);
+    }
+  },
+  Paralysis: {
+    icon: 'OtherImages/Icons/Paralysis.png',
+    name: 'Paralysis',
+    description: 'Cannot attack or activate skills for 2 turns.',
+    duration: 2,
+    apply: function(cardObj) {
+      cardObj._paralyzed = true;
+      cardObj.canAttack = false;
+      cardObj.canActivateSkills = false;
+    },
+    remove: function(cardObj) {
+      cardObj._paralyzed = false;
+      cardObj.canAttack = true;
+      cardObj.canActivateSkills = true;
+    },
+    // Optionally, you can add a visual tick at each turn start or end
+    // For now, logic is purely duration-based
+  }
+  // ... add more statuses
+};
 // ==========================
 // === DOM REFERENCES ===
 // ==========================
@@ -523,20 +610,19 @@ function showHandCardMenu(instanceId, cardDiv) {
       }
     }
   ];
-  if (cardData.skill && Array.isArray(cardData.skill) && cardData.skill.length > 0) {
-    cardData.skill.forEach(skillText => {
-      buttons.push({
-        text: parseEffectText(skillText),
-        html: true, 
-        onClick: function(e) {
-          e.stopPropagation();
-          // Future: run skill logic here for this card
-          alert(`Activated skill: ${skillName}`);
-          closeAllMenus();
-        }
-      });
+if (cardData.skill && Array.isArray(cardData.skill)) {
+  cardData.skill.forEach(skillObj => {
+    buttons.push({
+      text: `${skillObj.name} ${skillObj.cost}`, // Optionally formatted
+      html: true,
+      onClick: function(e) {
+        e.stopPropagation();
+        activateSkill(cardObj, skillObj);
+        closeAllMenus();
+      }
     });
-  }  
+  });
+}
   const menu = createCardMenu(buttons);
 
   // Position relative to cardDiv
@@ -1057,7 +1143,15 @@ function renderCardOnField(cardObj, zoneId) {
 
     cardDiv.appendChild(barWrap);
   }
-
+if (cardObj.statuses) {
+  cardObj.statuses.forEach(status => {
+    const statusIcon = document.createElement('img');
+    statusIcon.src = STATUS_EFFECTS[status.name].icon;
+    statusIcon.title = STATUS_EFFECTS[status.name].description;
+    statusIcon.className = "status-effect-icon";
+    cardDiv.appendChild(statusIcon);
+  });
+}
   // --- Attached Cards (right side, absolute) ---
   if (cardObj.attachedCards && cardObj.attachedCards.length > 0) {
     const stackDiv = document.createElement('div');
@@ -1389,20 +1483,19 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
       }
     }
   ];
-  if (cardData.skill && Array.isArray(cardData.skill)) {
-    cardData.skill.forEach(skillName => {
-      buttons.push({
-        text: parseEffectText(skillName),
-        html: true,
-        onClick: function(e) {
-          e.stopPropagation();
-          // Future: run skill logic here for this card
-          alert(`Activated skill: ${skillName}`);
-          closeAllMenus();
-        }
-      });
+if (cardData.skill && Array.isArray(cardData.skill)) {
+  cardData.skill.forEach(skillObj => {
+    buttons.push({
+      text: `${skillObj.name} ${skillObj.cost}`,
+      html: true,
+      onClick: function(e) {
+        e.stopPropagation();
+        activateSkill(cardObj, skillObj);
+        closeAllMenus();
+      }
     });
-  }
+  });
+}
   // Create and show the menu
   const menu = createCardMenu(buttons);
   // Position menu absolutely near cardDiv
@@ -1507,21 +1600,20 @@ function openVoidModal() {
 
   // --- Add Skill Buttons if card has skills ---
   const cardData = dummyCards.find(c => c.id === cardObj.cardId);
-  if (cardData && Array.isArray(cardData.skill)) {
-    cardData.skill.forEach(skillText => {
-      buttons.push({
-        text: parseEffectText(skillText),
-        html: true,
-        onClick: function(e) {
-          e.stopPropagation();
-          // TODO: Implement actual skill logic for Void
-          alert(`Activated skill: ${skillText}`);
-          closeAllMenus();
-          openVoidModal(); // Optionally refresh modal
-        }
-      });
+if (cardData && Array.isArray(cardData.skill)) {
+  cardData.skill.forEach(skillObj => {
+    buttons.push({
+      text: `${skillObj.name} ${skillObj.cost}`,
+      html: true,
+      onClick: function(e) {
+        e.stopPropagation();
+        activateSkill(cardObj, skillObj);
+        closeAllMenus();
+        openVoidModal(); // Optionally refresh modal
+      }
     });
-  }
+  });
+}
     const menu = createCardMenu(buttons);
     document.body.appendChild(menu); // Append to body, not wrapper
 
@@ -2390,6 +2482,16 @@ function resolveAttack(attackerId, defenderId) {
 
   attacker.hasAttacked = true;
 
+  // Apply status effects from attacker abilities to defender (if defender is a creature)
+  const attackerAbilities = attackerDef.ability || [];
+  if (defenderDef && defenderDef.category === "creature") {
+    attackerAbilities.forEach(abilityName => {
+      if (STATUS_EFFECTS[abilityName]) {
+        applyStatus(defender, abilityName);
+      }
+    });
+  }
+
   if (attacker.currentHP <= 0 && attackerArr && attackerVoid) moveCard(attacker.instanceId, attackerArr, attackerVoid);
   if (defender.currentHP <= 0 && defenderArr && defenderVoid) moveCard(defender.instanceId, defenderArr, defenderVoid);
 
@@ -2830,6 +2932,102 @@ function handleSearchEffect(criteria) {
   } else {
     showToast("No matching cards found in deck.");
   }
+}
+
+function activateSkill(cardObj, skillObj) {
+  // Pay cost, if needed
+  if (skillObj.cost) {
+    // Show payment modal, deduct essence, etc.
+    showEssencePaymentModal({
+      card: cardObj,
+      cost: parseCost(skillObj.cost),
+      eligibleCards: getAllEssenceSources(),
+      onPaid: () => runSkillEffect(cardObj, skillObj.effect)
+    });
+  } else {
+    runSkillEffect(cardObj, skillObj.effect);
+  }
+}
+
+function parseCost(costStr) {
+  // Simple implementation: count and map color symbols, e.g. {R}{R}{CCW}
+  const cost = {};
+  const matches = costStr.match(/\{([A-Z]+)\}/g);
+  if (matches) {
+    matches.forEach(token => {
+      let color = token.replace(/[{}]/g, '').toLowerCase();
+      cost[color] = (cost[color] || 0) + 1;
+    });
+  }
+  return cost;
+}
+
+function runSkillEffect(sourceCardObj, effectObj) {
+  switch (effectObj.targets) {
+    case 'all enemies':
+      // Find all opponent creatures/domains
+      const targets = [...gameState.opponentCreatures, ...gameState.opponentDomains];
+      targets.forEach(target => {
+        if (effectObj.damage) dealCombatDamage(sourceCardObj, target, effectObj.damage);
+        if (effectObj.burn) applyBurn(target);
+      });
+      break;
+    case 'single enemy':
+      // Show targeting UI, let player select one, then apply effect
+      break;
+    // more cases...
+    default:
+      console.warn("Unknown effect targets:", effectObj.targets);
+  }
+  // Optionally animate, log, etc.
+  renderGameState();
+}
+
+/*------------------
+// STATUS EFFECTS //
+------------------*/
+function applyStatus(cardObj, statusName, duration = STATUS_EFFECTS[statusName].duration) {
+  cardObj.statuses = cardObj.statuses || [];
+  if (!cardObj.statuses.some(s => s.name === statusName)) {
+    cardObj.statuses.push({ name: statusName, duration });
+    STATUS_EFFECTS[statusName].apply(cardObj);
+  }
+}
+
+function removeStatus(cardObj, statusName) {
+  if (!cardObj.statuses) return;
+  cardObj.statuses = cardObj.statuses.filter(s => s.name !== statusName);
+  if (STATUS_EFFECTS[statusName]) STATUS_EFFECTS[statusName].remove(cardObj);
+}
+
+function handleStatusEffects(cardObj) {
+  if (!cardObj.statuses) return;
+  cardObj.statuses.forEach(status => {
+    if (STATUS_EFFECTS[status.name].onTurnStart) {
+      STATUS_EFFECTS[status.name].onTurnStart(cardObj);
+    }
+    status.duration -= 1;
+  });
+  // Remove expired statuses
+  cardObj.statuses = cardObj.statuses.filter(s => s.duration > 0);
+}
+
+function handleEndPhaseStatuses() {
+  [...gameState.playerCreatures, ...gameState.opponentCreatures].forEach(cardObj => {
+    if (cardObj.statuses) {
+      cardObj.statuses.forEach(status => {
+        if (STATUS_EFFECTS[status.name]?.onEndPhase) {
+          STATUS_EFFECTS[status.name].onEndPhase(cardObj);
+        }
+        // Reduce duration for statuses that only tick on End Phase
+        status.duration -= 1;
+        if (status.duration <= 0) {
+          removeStatus(cardObj, status.name);
+        }
+      });
+    }
+  });
+  renderGameState();
 }
 
 document.getElementById('chat-log').addEventListener('click', function(e) {
