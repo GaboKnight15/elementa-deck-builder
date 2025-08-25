@@ -219,6 +219,113 @@ const ATTACK_DECLARATION_ABILITIES = {
   }
   // ...add more declaration abilities here!
 };
+
+/*------------------------------
+//---- SKILL TARGET TYPE ---- //
+------------------------------*/
+const SKILL_TYPE_MAP = {
+  Strike: {
+    icon: 'OtherImages/SkillTypes/Strike.png',
+    name: 'Strike',
+    description: 'Deals damage to a single enemy target.',
+    handler: function(sourceCardObj, skillObj) {
+      promptUserToSelectTarget(
+        [...gameState.opponentCreatures, ...gameState.opponentDomains],
+        selectedTarget => {
+          if (skillObj.damage) dealCombatDamage(sourceCardObj, selectedTarget, skillObj.damage);
+          if (skillObj.burn) applyBurn(selectedTarget);
+          // ...other effects
+          renderGameState();
+        }
+      );
+    }
+  },
+  Burst: {
+    icon: 'OtherImages/SkillTypes/Burst.png',
+    name: 'Burst',
+    description: 'Deals damage to all enemy targets.',
+    handler: function(sourceCardObj, skillObj) {
+      const targets = [...gameState.opponentCreatures, ...gameState.opponentDomains];
+      targets.forEach(target => {
+        if (skillObj.damage) dealCombatDamage(sourceCardObj, target, skillObj.damage);
+        if (skillObj.burn) applyBurn(target);
+        // ...other effects
+      });
+      renderGameState();
+    }
+  },
+  Heal: {
+    icon: 'OtherImages/SkillTypes/Heal.png',
+    name: 'Heal',
+    description: 'Heals an allied target.',
+    handler: function(sourceCardObj, skillObj) {
+      promptUserToSelectTarget(
+        [...gameState.allyCreatures, ...gameState.allyDomains],
+        selectedTarget => {
+          if (skillObj.heal) healTarget(selectedTarget, skillObj.heal);
+          renderGameState();
+        }
+      );
+    }
+  },
+  Cleanse: {
+    icon: 'OtherImages/SkillTypes/Cleanse.png',
+    name: 'Cleanse',
+    description: 'Removes debuffs/status effects from an allied target.',
+    handler: function(sourceCardObj, skillObj) {
+      promptUserToSelectTarget(
+        [...gameState.allyCreatures, ...gameState.allyDomains],
+        selectedTarget => {
+          cleanseTarget(selectedTarget);
+          renderGameState();
+        }
+      );
+    }
+  },
+  Armor: {
+    icon: 'OtherImages/SkillTypes/Armor.png',
+    name: 'Armor',
+    description: 'Grants armor to an allied target.',
+    handler: function(sourceCardObj, skillObj) {
+      promptUserToSelectTarget(
+        [...gameState.allyCreatures, ...gameState.allyDomains],
+        selectedTarget => {
+          if (skillObj.armor) grantArmor(selectedTarget, skillObj.armor);
+          renderGameState();
+        }
+      );
+    }
+  },
+  Aegis: {
+    icon: 'OtherImages/SkillTypes/Aegis.png',
+    name: 'Aegis',
+    description: 'Grants a shield that blocks the next incoming damage.',
+    handler: function(sourceCardObj, skillObj) {
+      promptUserToSelectTarget(
+        [...gameState.allyCreatures, ...gameState.allyDomains],
+        selectedTarget => {
+          grantAegis(selectedTarget);
+          renderGameState();
+        }
+      );
+    }
+  },
+  Veil: {
+    icon: 'OtherImages/SkillTypes/Veil.png',
+    name: 'Veil',
+    description: 'Grants protection from debuffs for a duration.',
+    handler: function(sourceCardObj, skillObj) {
+      promptUserToSelectTarget(
+        [...gameState.allyCreatures, ...gameState.allyDomains],
+        selectedTarget => {
+          grantVeil(selectedTarget, skillObj.duration);
+          renderGameState();
+        }
+      );
+    }
+  }
+  // ...add more skill types here as needed!
+};
 // ==========================
 // === DOM REFERENCES ===
 // ==========================
@@ -2929,6 +3036,28 @@ function startGameFieldAnimation(champions) {
     }, 1000); // 1 second animation
   });
 }
+function hasAvailableTargets(skillObj, sourceCardObj, gameState) {
+  switch (skillObj.type) {
+    case 'Strike':
+      return [...gameState.opponentCreatures, ...gameState.opponentDomains].length > 0;
+    case 'Burst':
+      return [...gameState.opponentCreatures, ...gameState.opponentDomains].length > 0;
+    case 'Heal':
+    case 'Cleanse':
+    case 'Armor':
+    case 'Aegis':
+    case 'Veil':
+      return [...gameState.allyCreatures, ...gameState.allyDomains].length > 0;
+    // Add more cases as needed
+    default:
+      return true; // Default: assume available
+  }
+}
+function canPayEssence(cost, playerEssence) {
+  // Parse cost string and compare with playerEssence object
+  // Return true if the player can pay, false otherwise
+  // Implement your own parsing logic here
+}
 // Helper functions for abilities and skills
 function attackerHasAbility(cardObj, abilityName) {
   const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
@@ -3023,25 +3152,13 @@ function parseCost(costStr) {
   return cost;
 }
 
-function runSkillEffect(sourceCardObj, effectObj) {
-  switch (effectObj.targets) {
-    case 'all enemies':
-      // Find all opponent creatures/domains
-      const targets = [...gameState.opponentCreatures, ...gameState.opponentDomains];
-      targets.forEach(target => {
-        if (effectObj.damage) dealCombatDamage(sourceCardObj, target, effectObj.damage);
-        if (effectObj.burn) applyBurn(target);
-      });
-      break;
-    case 'single enemy':
-      // Show targeting UI, let player select one, then apply effect
-      break;
-    // more cases...
-    default:
-      console.warn("Unknown effect targets:", effectObj.targets);
+function runSkillEffect(sourceCardObj, skillObj) {
+  const skillType = SKILL_TYPE_MAP[skillObj.type];
+  if (!skillType) {
+    showToast("Unknown skill type.");
+    return;
   }
-  // Optionally animate, log, etc.
-  renderGameState();
+  skillType.handler(sourceCardObj, skillObj);
 }
 
 /*--------------------------------
