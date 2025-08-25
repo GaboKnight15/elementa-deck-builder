@@ -10,7 +10,7 @@ const dummyCards = [
 
 {id: 'KaelenBlazebornHuntress', name: 'Kaelen, Blazeborn Huntress', rarity: 'Legendary', image: 'CardImages/Skullframe/Kaelen, Blazeborn Huntress.png', 
  category: 'Creature', color: 'Red', type: 'Warrior', trait: 'Champion', hp: 8, atk: 1, def: 0,
- cost: {red: 3}, essence: {red: 1}, archetype: '', ability: ['Burn','Ranged'], skill: ['Hexblast {B}{CW}',{ name: 'Scorching Skyfall', cost: '{R}{R}{CCW}', effect: { damage: 2, burn: true, targets: 'all enemies' }],
+ cost: {red: 3}, essence: {red: 1}, archetype: '', ability: ['Burn','Ranged'], skill: ['Hexblast {B}{CW}', { name: 'Scorching Skyfall', cost: '{R}{R}{CCW}', type: 'Burst', effect: damage: 2, burn: true }],
  set: 'StandardPack'},
 
 {id: 'ZaryonPearlhavenCommander', name: 'Zaryon, Pearlhaven Commander', rarity: 'Legendary', image: 'CardImages/Skullframe/Zaryon, Pearlhaven Commander.png', 
