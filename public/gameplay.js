@@ -323,7 +323,28 @@ const SKILL_TYPE_MAP = {
         }
       );
     }
+  },
+Reanimate: {
+  icon: 'OtherImages/SkillTypes/Reanimate.png',
+  name: 'Reanimate',
+  description: 'Return this card from the void to the field.',
+  handler: function(sourceCardObj, skillObj) {
+    const isPlayer = gameState.playerVoid.includes(sourceCardObj);
+    const targetArr = isPlayer ? gameState.playerCreatures : gameState.opponentCreatures;
+    const fromArr = isPlayer ? gameState.playerVoid : gameState.opponentVoid;
+
+    // Show modal for position selection!
+    showSummonPositionModal(sourceCardObj, function(chosenOrientation) {
+      moveCard(
+        sourceCardObj.instanceId,
+        fromArr,
+        targetArr,
+        { orientation: chosenOrientation, currentHP: getBaseHp(sourceCardObj.cardId) }
+      );
+      renderGameState();
+    });
   }
+}
   // ...add more skill types here as needed!
 };
 // ==========================
@@ -741,9 +762,11 @@ function showHandCardMenu(instanceId, cardDiv) {
           (typeof cardData.cost === "number" && cardData.cost === 0) ||
           (typeof cardData.cost === "object" && Object.values(cardData.cost).reduce((a, b) => a + b, 0) === 0)
         ) {
-          moveCard(instanceId, gameState.playerHand, targetArr, { orientation: "vertical" });
-          renderGameState();
-          setupDropZones();
+          showSummonPositionModal(cardObj, function(chosenOrientation) {
+            moveCard(instanceId, gameState.playerHand, targetArr, { orientation: chosenOrientation });
+            renderGameState();
+            setupDropZones();
+          });
           return;
         }
 
@@ -1058,6 +1081,65 @@ function cleanCard(cardObj) {
   return cleaned;
 }
 
+// CARD POSITION SELECTION MODAL
+function showSummonPositionModal(cardObj, onSelected) {
+  // Remove any existing modal
+  let modal = document.getElementById('summon-position-modal');
+  if (modal) modal.remove();
+
+  modal = document.createElement('div');
+  modal.id = 'summon-position-modal';
+  modal.className = 'modal';
+  modal.style.display = 'flex';
+  modal.style.alignItems = 'center';
+  modal.style.justifyContent = 'center';
+  modal.style.zIndex = 99999;
+  modal.onclick = function(e) { if (e.target === modal) modal.remove(); };
+
+  const content = document.createElement('div');
+  content.className = 'modal-content';
+  content.style.display = 'flex';
+  content.style.flexDirection = 'column';
+  content.style.alignItems = 'center';
+  content.style.gap = '18px';
+  content.onclick = e => e.stopPropagation();
+
+  content.innerHTML = `<h3>Select Summon Position</h3>
+    <div style="display:flex;gap:30px;justify-content:center;">
+      <div id="summon-atk-choice" style="cursor:pointer;text-align:center;">
+        <div style="margin-bottom:6px;font-weight:bold;">ATK</div>
+        <img src="${dummyCards.find(c => c.id === cardObj.cardId).image}" 
+             alt="ATK Position" 
+             style="width:90px;transform:rotate(0deg);border:3px solid #ffe066;border-radius:10px;box-shadow:0 0 12px #ffe06677;">
+      </div>
+      <div id="summon-def-choice" style="cursor:pointer;text-align:center;">
+        <div style="margin-bottom:6px;font-weight:bold;">DEF</div>
+        <img src="${dummyCards.find(c => c.id === cardObj.cardId).image}" 
+             alt="DEF Position" 
+             style="width:90px;transform:rotate(90deg);border:3px solid #66aaff;border-radius:10px;box-shadow:0 0 12px #66aaff77;">
+      </div>
+    </div>
+    <div style="margin-top:12px;">
+      <button class="btn-negative-secondary" id="summon-cancel-btn">Cancel</button>
+    </div>
+  `;
+
+  modal.appendChild(content);
+  document.body.appendChild(modal);
+
+  // Click handlers
+  content.querySelector('#summon-atk-choice').onclick = function() {
+    modal.remove();
+    onSelected("vertical"); // ATK
+  };
+  content.querySelector('#summon-def-choice').onclick = function() {
+    modal.remove();
+    onSelected("horizontal"); // DEF
+  };
+  content.querySelector('#summon-cancel-btn').onclick = function() {
+    modal.remove();
+  };
+}
 // OPEN DECK MODAL
 function openDeckModal() {
   const modal = document.getElementById('deck-modal');
