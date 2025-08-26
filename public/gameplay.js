@@ -3338,6 +3338,9 @@ function handleSearchEffect(criteria) {
   }
 }
 
+/*------------------------------------
+// SKILL AND CHAIN RESOLUTION LOGIC //
+------------------------------------*/
 function activateSkill(cardObj, skillObj, options = {}) {
   // Pay cost if needed
   if (skillObj.cost) {
@@ -3377,12 +3380,49 @@ function proceedSkillActivation(cardObj, skillObj, options = {}) {
   }
 }
 function proceedChainResolution() {
-  // LIFO: resolve chain backwards
   while (chainStack.length) {
     var entry = chainStack.pop();
-    runSkillEffect(entry.source, entry.skill);
+    // Check if targets are still valid before running
+    if (isSkillEffectValid(entry.source, entry.skill)) {
+      runSkillEffect(entry.source, entry.skill);
+    } else {
+      // Optionally log that this effect was skipped
+      // appendVisualLog({sourceCard: entry.source, action: "skipped", dest: entry.skill.name, who: getCardOwner(entry.source)});
+    }
   }
 }
+function isSkillEffectValid(sourceCardObj, skillObj) {
+  // For single-target skills:
+  if (skillObj.target) {
+    // If the target is no longer in the zone (e.g. not in field, not in domains array, etc)
+    if (!isTargetStillPresent(skillObj.target)) return false;
+  }
+  // For multi-target skills:
+  if (skillObj.targets && Array.isArray(skillObj.targets)) {
+    return skillObj.targets.some(isTargetStillPresent); // at least one valid
+  }
+  // For self-targeted skills:
+  // If the source itself is gone, skip
+  if (!isCardStillPresent(sourceCardObj)) return false;
+
+  // Default (no explicit target): assume valid
+  return true;
+}
+function isTargetStillPresent(targetObj) {
+  // Check all possible arrays/zones
+  return (
+    gameState.playerCreatures.includes(targetObj) ||
+    gameState.playerDomains.includes(targetObj) ||
+    gameState.opponentCreatures.includes(targetObj) ||
+    gameState.opponentDomains.includes(targetObj)
+    // ...add other zones as needed
+  );
+}
+
+function isCardStillPresent(cardObj) {
+  return isTargetStillPresent(cardObj);
+}
+
 function parseCost(costStr) {
   // Simple implementation: count and map color symbols, e.g. {R}{R}{CCW}
   const cost = {};
@@ -3462,21 +3502,32 @@ function resolveChain() {
 
 
 function runSkillEffect(sourceCardObj, skillObj) {
-  // --- REQUIREMENTS ---
-  let requirements = Array.isArray(skillObj.requirement) ? skillObj.requirement : (skillObj.requirement ? [skillObj.requirement] : []);
-  for (let req of requirements) {
-    if (REQUIREMENT_MAP[req] && REQUIREMENT_MAP[req].handler) {
-      REQUIREMENT_MAP[req].handler(sourceCardObj, skillObj);
-    }
-  }
   // --- TYPES ---
   let types = Array.isArray(skillObj.type) ? skillObj.type : (skillObj.type ? [skillObj.type] : []);
   for (let type of types) {
     const skillType = SKILL_TYPE_MAP[type];
     if (skillType && skillType.handler) {
+      // Optionally, validate card location or status if needed
+      // For example, skip effect if sourceCardObj was moved to deck/void by a requirement
+      if (type === "Strike" || type === "Search" || type === "Burst") {
+        // Example: do not strike if source card is no longer in hand/field (after Stash, etc)
+        if (!isValidForSkillType(sourceCardObj, skillObj, type)) continue;
+      }
       skillType.handler(sourceCardObj, skillObj);
     }
   }
+}
+// Helper to validate if sourceCardObj is still valid for the effect (customize as needed)
+function isValidForSkillType(sourceCardObj, skillObj, type) {
+  // Example logic: if Stash moved to deck, don't let Strike happen
+  if (type === "Strike") {
+    // Only allow if sourceCardObj is still in hand or field
+    return gameState.playerHand.includes(sourceCardObj) ||
+           gameState.playerCreatures.includes(sourceCardObj) ||
+           gameState.playerDomains.includes(sourceCardObj);
+  }
+  // For other types, add custom logic as needed
+  return true;
 }
 
 /*--------------------------------
