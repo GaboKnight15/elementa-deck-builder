@@ -144,6 +144,21 @@ const STATUS_EFFECTS = {
     },
     // Optionally, you can add a visual tick at each turn start or end
     // For now, logic is purely duration-based
+  },
+  Soak: {
+    icon: 'OtherImages/Icons/Soak.png',
+    name: 'Soak',
+    description: 'Takes 2 extra damage from all sources until end of next turn.',
+    duration: 1,
+    apply: function(cardObj) {
+      cardObj._soak = true;
+      cardObj.soakAmount = 2; // for example, if you want to track the value
+    },
+    remove: function(cardObj) {
+      cardObj._soak = false;
+      delete cardObj.soakAmount;
+    }
+    // Optionally add logic for duration ticks
   }
   // ... add more statuses
 };
@@ -190,7 +205,21 @@ const TARGET_FILTER_ABILITIES = {
       }
       return targets;
     }
-  }
+  },
+  Veil: {
+    icon: 'OtherImages/SkillTypes/Veil.png',
+    name: 'Veil',
+    description: 'Grants protection from debuffs for a duration.',
+    handler: function(sourceCardObj, skillObj) {
+      promptUserToSelectTarget(
+        [...gameState.allyCreatures, ...gameState.allyDomains],
+        selectedTarget => {
+          grantVeil(selectedTarget, skillObj.duration);
+          renderGameState();
+        }
+      );
+    }
+  },
   // ...add more targeting abilities here!
 };
 // ATTACK RESOLUTION ABILITIES
@@ -224,36 +253,58 @@ const ATTACK_DECLARATION_ABILITIES = {
 //---- SKILL TARGET TYPE ---- //
 ------------------------------*/
 const SKILL_TYPE_MAP = {
-  Strike: {
-    icon: 'OtherImages/SkillTypes/Strike.png',
-    name: 'Strike',
-    description: 'Deals damage to a single enemy target.',
-    handler: function(sourceCardObj, skillObj) {
-      promptUserToSelectTarget(
-        [...gameState.opponentCreatures, ...gameState.opponentDomains],
-        selectedTarget => {
-          if (skillObj.damage) dealCombatDamage(sourceCardObj, selectedTarget, skillObj.damage);
-          if (skillObj.burn) applyBurn(selectedTarget);
-          // ...other effects
-          renderGameState();
+Strike: {
+  icon: 'OtherImages/SkillTypes/Strike.png',
+  name: 'Strike',
+  description: 'Deals damage to a single enemy target.',
+  handler: function(sourceCardObj, skillObj) {
+    promptUserToSelectTarget(
+      [...gameState.opponentCreatures, ...gameState.opponentDomains],
+      selectedTarget => {
+        let damage = skillObj.damage || 0;
+
+        // Apply extra damage if target has Soak
+        if (selectedTarget._soak && typeof selectedTarget.soakAmount === "number") {
+          damage += selectedTarget.soakAmount;
         }
-      );
-    }
-  },
-  Burst: {
-    icon: 'OtherImages/SkillTypes/Burst.png',
-    name: 'Burst',
-    description: 'Deals damage to all enemy targets.',
-    handler: function(sourceCardObj, skillObj) {
-      const targets = [...gameState.opponentCreatures, ...gameState.opponentDomains];
-      targets.forEach(target => {
-        if (skillObj.damage) dealCombatDamage(sourceCardObj, target, skillObj.damage);
-        if (skillObj.burn) applyBurn(target);
-        // ...other effects
-      });
-      renderGameState();
-    }
-  },
+        if (damage > 0) dealCombatDamage(sourceCardObj, selectedTarget, damage);
+
+        // Apply status effects
+        for (let statusName of Object.keys(STATUS_EFFECTS)) {
+          if (skillObj[statusName.toLowerCase()]) {
+            applyStatus(selectedTarget, statusName);
+          }
+        }
+        renderGameState();
+      }
+    );
+  }
+},
+Burst: {
+  icon: 'OtherImages/SkillTypes/Burst.png',
+  name: 'Burst',
+  description: 'Deals damage to all enemy targets. May apply status effects.',
+  handler: function(sourceCardObj, skillObj) {
+    const targets = [...gameState.opponentCreatures, ...gameState.opponentDomains];
+    targets.forEach(target => {
+      let damage = skillObj.damage || 0;
+
+      // Apply extra damage if target has Soak
+      if (target._soak && typeof target.soakAmount === "number") {
+        damage += target.soakAmount;
+      }
+      if (damage > 0) dealCombatDamage(sourceCardObj, target, damage);
+
+      // General status effect logic: apply any status flagged in skillObj
+      for (let statusName of Object.keys(STATUS_EFFECTS)) {
+        if (skillObj[statusName.toLowerCase()]) {
+          applyStatus(target, statusName);
+        }
+      }
+    });
+    renderGameState();
+  }
+},
   Heal: {
     icon: 'OtherImages/SkillTypes/Heal.png',
     name: 'Heal',
@@ -310,30 +361,20 @@ const SKILL_TYPE_MAP = {
       );
     }
   },
-  Veil: {
-    icon: 'OtherImages/SkillTypes/Veil.png',
-    name: 'Veil',
-    description: 'Grants protection from debuffs for a duration.',
-    handler: function(sourceCardObj, skillObj) {
-      promptUserToSelectTarget(
-        [...gameState.allyCreatures, ...gameState.allyDomains],
-        selectedTarget => {
-          grantVeil(selectedTarget, skillObj.duration);
-          renderGameState();
-        }
-      );
-    }
-  },
 Reanimate: {
   icon: 'OtherImages/SkillTypes/Reanimate.png',
   name: 'Reanimate',
   description: 'Return this card from the void to the field.',
   handler: function(sourceCardObj, skillObj) {
-    const isPlayer = gameState.playerVoid.includes(sourceCardObj);
+    // You could check the zone here if needed
+    const correctZone = skillObj.zone || 'void';
+    const isPlayer = (correctZone === 'void') 
+      ? gameState.playerVoid.includes(sourceCardObj) 
+      : gameState.playerCreatures.includes(sourceCardObj);
+
     const targetArr = isPlayer ? gameState.playerCreatures : gameState.opponentCreatures;
     const fromArr = isPlayer ? gameState.playerVoid : gameState.opponentVoid;
 
-    // Show modal for position selection!
     showSummonPositionModal(sourceCardObj, function(chosenOrientation) {
       moveCard(
         sourceCardObj.instanceId,
@@ -343,6 +384,39 @@ Reanimate: {
       );
       renderGameState();
     });
+  }
+},
+Stash: {
+  icon: 'OtherImages/SkillTypes/Stash.png',
+  name: 'Stash',
+  description: 'Return this card to the deck, then add the selected card from your deck to hand.',
+  handler: function(sourceCardObj, skillObj) {
+    // Only activate in hand
+    const isHand = gameState.playerHand.includes(sourceCardObj);
+    if (!isHand) {
+      showToast("Stash can only be activated from your hand.");
+      return;
+    }
+
+    // Return self to deck
+    moveCard(sourceCardObj.instanceId, gameState.playerHand, gameState.playerDeck);
+
+    // Filter deck for matching cards
+    const criteria = skillObj.searchCriteria || {};
+    const deckCards = filterCardsByCriteria(gameState.playerDeck, criteria);
+
+    // Open modal to let player select from the filtered cards
+    if (deckCards.length === 0) {
+      showToast("No matching cards found in your deck.");
+      renderGameState();
+      return;
+    }
+    showDeckSearchModal(deckCards, function(selectedCardObj) {
+      moveCard(selectedCardObj.instanceId, gameState.playerDeck, gameState.playerHand);
+      renderGameState();
+      setupDropZones();
+    });
+    renderGameState();
   }
 }
   // ...add more skill types here as needed!
@@ -3072,6 +3146,24 @@ function appendPositionChangeLog(cardObj, newOrientation, prevOrientation, fromS
     window.socket.emit('game action log', window.currentRoomId, obj);
   }
 }
+
+// SEARCH CRITERIA FILTER
+function filterCardsByCriteria(cardArr, criteria) {
+  return cardArr.filter(cardObj => {
+    const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+    if (!cardData) return false;
+    for (let key in criteria) {
+      if (typeof cardData[key] === 'string') {
+        if (cardData[key].toLowerCase() !== criteria[key].toLowerCase()) return false;
+      } else if (Array.isArray(cardData[key])) {
+        if (!cardData[key].map(v => v.toLowerCase()).includes(criteria[key].toLowerCase())) return false;
+      } else {
+        if (cardData[key] !== criteria[key]) return false;
+      }
+    }
+    return true;
+  });
+}
 // CHANGE POSITION HELPER
 function changeCardPosition(cardObj, newOrientation) {
   if (!cardObj) return;
@@ -3117,6 +3209,32 @@ function startGameFieldAnimation(champions) {
       // Any other startup logic
     }, 1000); // 1 second animation
   });
+}
+function canActivateSkills(cardObj, skillObj, currentZone, gameState) {
+  // 1. Check Zone
+  if (Array.isArray(skillObj.zone)) {
+    if (!skillObj.zone.includes(currentZone)) return false;
+  } else {
+    if (skillObj.zone && skillObj.zone !== currentZone) return false;
+  }
+
+  // 2. Status Effects (Paralysis, Freeze, etc)
+  if (cardObj._paralyzed || cardObj._frozen) return false;
+  if (cardObj.canActivateSkills === false) return false;
+
+  // 3. Essence Cost (assume skillObj.cost is a string like '{1}{U}', pass to your cost-checker)
+  if (skillObj.cost && typeof canPayEssenceCost === "function") {
+    if (!canPayEssenceCost(skillObj.cost, gameState)) return false;
+  }
+
+  // 4. Any other custom requirements (add here if needed)
+
+  return true;
+}
+function canPayEssenceCost(costStr, gameState) {
+  // Implement logic based on your game's resource system
+  // Example: always return true (replace with your logic)
+  return true;
 }
 function hasAvailableTargets(skillObj, sourceCardObj, gameState) {
   switch (skillObj.type) {
