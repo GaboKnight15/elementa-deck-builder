@@ -132,7 +132,7 @@ const dummyCards = [
 {id: 'Skeleton', name: 'Skeleton', rarity: 'Common', image: 'CardImages/BasicCreatures/Skeleton.png',
  category: 'Creature', color: 'Black', type: 'Undead', hp: 1, atk: 1, def: 0,
  cost: 0, archetype: 'Skullframe', ability: 'Immunity',
- skill: [{ name: 'Reanimate', cost: '{1}{B}', type: 'Reanimate'}], set: 'StandardPack'},
+ skill: [{ name: 'Reanimate', cost: '{1}{B}', type: 'Reanimate', zone: 'void'}], set: 'StandardPack'},
 {id: 'Bat', name: 'Bat', rarity: 'Common', image: 'CardImages/BasicCreatures/Bat.png', 
  category: 'Creature', color: 'Black', type: 'Vampire', hp: 3, atk: 2, def: 0,
  cost: {colorless: 1}, archetype: 'Vampiric', ability: ['Drain','Flying'], set: 'StandardPack'},
@@ -289,6 +289,10 @@ const dummyCards = [
  cost: {colorless: 1, blue: 1}, archetype: 'Coralbound', ability: 'Rush', set: 'StandardPack'},
 {id: 'MaelvyrnCoralboundAutomatonFA', name: 'Maelvyrn, Coralbound Automaton', rarity: 'Legendary', image: 'CardImages/Coralbound/Maelvyrn, Coralbound Automaton.png', 
  category: 'Creature', color: 'Blue', type: 'Construct', hp: 20, atk: 8, def: 5, cost: {colorless: 6, blue: 2},
+ skill: [
+  {name: 'Stash', cost: '{U}', type: 'Stash', zone: 'hand', return: true, search: true, searchCriteria: { type: 'Construct' }}
+  {name: 'Hydroburst Cannon', cost: '{1}{U}', type: 'Strike', zone: 'field', return: true, damage: 8, soak: true}
+ ],
  archetype: 'Coralbound', ability: 'Protect', trait: 'Fusion', set: 'StandardPack'},
 
 // GLIMMERSCALE //
