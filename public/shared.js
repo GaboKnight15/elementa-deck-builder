@@ -226,8 +226,8 @@ const dummyCards = [
  category: 'Creature', color: 'Red', type: 'Construct', hp: 15, atk: 6, def: 3,
  cost: {colorless: 5, red: 2}, archetype: 'Cindercore', ability: ['Armor','Exploit','Protect'], set: 'StandardPack',
  skill: [
-  {name: 'Stash', cost: '{R}', type: 'Stash', zone: 'hand', return: true, strike: true, damage: 2, burn: true }
-  {name: 'Volcanic Vortex', cost: '{1}{R}', type: 'Strike', zone: 'field', strike: true, damage: 3, burn: true}
+  {name: 'Stash', cost: '{R}', requirement: ['Stash'], zone: 'hand', type: ['Strike'], damage: 2, status: ['Burn'] }
+  {name: 'Volcanic Vortex', cost: '{1}{R}', requirement: [''], zone: 'field', type: ['Strike'], damage: 3, status: ['Burn']}
  ],},
 
 // FIRELANDS //
