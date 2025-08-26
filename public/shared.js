@@ -215,13 +215,13 @@ const dummyCards = [
  cost: {colorless: 3, red: 1}, archetype: 'Cindercore', ability: ['Armor','Exploit'], set: 'StandardPack',
  skill: [
   {name: 'Scorch Protocol', cost: '{1}{R}', requirement: [''], zone: 'field', type: ['Search','Strike'], damage: 0, status: ['Burn','Bind']}
- ],},
+ ]},
 {id: 'CindercoreProtector', name: 'Cindercore Protector', rarity: 'Rare', image: 'CardImages/Cindercore/Cindercore Protector.png', 
  category: 'Creature', color: 'Red', type: 'Construct', hp: 15, atk: 6, def: 3,
- cost: {colorless: 3, red: 1}, archetype: 'Cindercore', ['Armor','Exploit','Protect'], set: 'StandardPack',
+ cost: {colorless: 3, red: 1}, archetype: 'Cindercore', ability: ['Armor','Exploit','Protect'], set: 'StandardPack',
  skill: [
   {name: 'Volcanic Vortex', cost: '{1}{R}', requirement: [''], zone: 'field', type: ['Strike'], damage: 3, status: ['Burn','Bind']}
- ],},
+ ]},
 {id: 'CindercoreVanguard', name: 'Cindercore Vanguard', rarity: 'Common', image: 'CardImages/Cindercore/Cindercore Vanguard.png', 
  category: 'Creature', color: 'Red', type: 'Construct', hp: 15, atk: 6, def: 3,
  cost: {colorless: 1, red: 1}, archetype: 'Cindercore', ability: ['Armor', 'Exploit', 'Rush'], set: 'StandardPack',
@@ -233,7 +233,7 @@ skill: [
  cost: {colorless: 3, red: 1}, archetype: ['Cindercore','Golemheart'], ability: 'Armor', set: 'StandardPack',
  skill: [
   {name: 'Volcanic Vortex', cost: '{1}{R}', requirement: [''], zone: 'field', type: ['Strike'], damage: 3, status: ['Burn','Bind']}
- ],},
+ ]},
 {id: 'IgnavarynCindercoreAutomaton', name: 'Ignavaryn, Cindercore Automaton', rarity: 'Legendary', image: 'CardImages/Cindercore/Ignavaryn, Cindercore Automaton.png', 
  category: 'Creature', color: 'Red', type: 'Construct', hp: 15, atk: 6, def: 3,
  cost: {colorless: 5, red: 2}, archetype: 'Cindercore', ability: ['Armor','Exploit','Protect'], set: 'StandardPack',
@@ -306,7 +306,7 @@ skill: [
 {id: 'MaelvyrnCoralboundAutomatonFA', name: 'Maelvyrn, Coralbound Automaton', rarity: 'Legendary', image: 'CardImages/Coralbound/Maelvyrn, Coralbound Automaton.png', 
  category: 'Creature', color: 'Blue', type: 'Construct', hp: 20, atk: 8, def: 5, cost: {colorless: 6, blue: 2},
  skill: [
-  {name: 'Stash', cost: '{U}', type: 'Stash', zone: 'hand', return: true, search: true, searchCriteria: { type: 'Construct' }}
+  {name: 'Stash', cost: '{U}', requirement: 'Stash', zone: 'hand', type: 'Search', searchCriteria: { type: 'Construct' }}
   {name: 'Hydroburst Cannon', cost: '{1}{U}', type: 'Strike', zone: 'field', return: true, damage: 8, soak: true}
  ],
  archetype: 'Coralbound', ability: 'Protect', trait: 'Fusion', set: 'StandardPack'},
