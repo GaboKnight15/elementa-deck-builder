@@ -269,8 +269,20 @@ const REQUIREMENT_MAP = {
       moveCard(sourceCardObj.instanceId, gameState.playerHand, gameState.playerDeck);
     }
   },
+  CW: {
+    handler: function(sourceCardObj, skillObj) {
+      // Rotate card clockwise (ATK <-> DEF)
+      changeCardPosition(sourceCardObj, "horizontal"); // or use logic to toggle
+    }
+  },
+  CCW: {
+    handler: function(sourceCardObj, skillObj) {
+      // Rotate card counterclockwise
+      changeCardPosition(sourceCardObj, "vertical"); // or use logic to toggle
+    }
+  },
   // Add more requirements as needed
-  "": { handler: function() {} } // empty requirement does nothing
+  "": { handler: function() {} }
 };
 
 const SKILL_TYPE_MAP = {
@@ -402,6 +414,30 @@ Reanimate: {
         targetArr,
         { orientation: chosenOrientation, currentHP: getBaseHp(sourceCardObj.cardId) }
       );
+      renderGameState();
+    });
+  }
+},
+Destroy: {
+  icon: 'OtherImages/SkillTypes/Destroy.png',
+  name: 'Destroy',
+  description: 'Destroy a valid target according to skill condition.',
+  handler: function(sourceCardObj, skillObj) {
+    // Collect all potential targets (creatures, domains, etc)
+    const allTargets = [
+      ...gameState.playerCreatures,
+      ...gameState.opponentCreatures,
+      ...gameState.playerDomains,
+      ...gameState.opponentDomains
+    ];
+    // Use skillObj.condition
+    const validTargets = getValidTargetsByCondition(allTargets, skillObj.condition || []);
+    if (validTargets.length === 0) {
+      showToast("No valid targets to destroy");
+      return;
+    }
+    promptUserToSelectTarget(validTargets, selectedTarget => {
+      moveCard(selectedTarget.instanceId, getZoneArrayForCard(selectedTarget), gameState.playerVoid);
       renderGameState();
     });
   }
@@ -3150,6 +3186,35 @@ function appendPositionChangeLog(cardObj, newOrientation, prevOrientation, fromS
   }
 }
 
+// CONDITIONAL TARGETS FOR SKILL ACTIVATION //
+function getValidTargetsByCondition(cardArr, conditionArr) {
+  return cardArr.filter(cardObj => {
+    return conditionArr.every(cond => {
+      // Status check
+      if (cond.status) {
+        if (!cardObj.statuses || !cardObj.statuses.some(s => s.name === cond.status)) return false;
+      }
+      // Owner check
+      if (cond.owner) {
+        if (cond.owner === "player" && !(gameState.playerCreatures.includes(cardObj) || gameState.playerDomains.includes(cardObj))) return false;
+        if (cond.owner === "opponent" && !(gameState.opponentCreatures.includes(cardObj) || gameState.opponentDomains.includes(cardObj))) return false;
+      }
+      // Category/type check (from dummyCards)
+      const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+      if (!cardData) return false;
+      if (cond.category) {
+        if (typeof cardData.category === "string" && cardData.category.toLowerCase() !== cond.category.toLowerCase()) return false;
+        if (Array.isArray(cardData.category) && !cardData.category.map(c => c.toLowerCase()).includes(cond.category.toLowerCase())) return false;
+      }
+      if (cond.type) {
+        if (typeof cardData.type === "string" && cardData.type.toLowerCase() !== cond.type.toLowerCase()) return false;
+        if (Array.isArray(cardData.type) && !cardData.type.map(t => t.toLowerCase()).includes(cond.type.toLowerCase())) return false;
+      }
+      // More checks can be added here
+      return true;
+    });
+  });
+}
 // SEARCH CRITERIA FILTER
 function filterCardsByCriteria(cardArr, criteria) {
   return cardArr.filter(cardObj => {
