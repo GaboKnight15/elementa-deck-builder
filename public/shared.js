@@ -224,7 +224,11 @@ const dummyCards = [
  cost: {colorless: 3, red: 1}, archetype: ['Cindercore','Golemheart'], ability: 'Armor', set: 'StandardPack'},
 {id: 'IgnavarynCindercoreAutomaton', name: 'Ignavaryn, Cindercore Automaton', rarity: 'Legendary', image: 'CardImages/Cindercore/Ignavaryn, Cindercore Automaton.png', 
  category: 'Creature', color: 'Red', type: 'Construct', hp: 15, atk: 6, def: 3,
- cost: {colorless: 5, red: 2}, archetype: 'Cindercore', ability: 'Armor', set: 'StandardPack'},
+ cost: {colorless: 5, red: 2}, archetype: 'Cindercore', ability: ['Armor','Exploit','Protect'], set: 'StandardPack',
+ skill: [
+  {name: 'Stash', cost: '{R}', type: 'Stash', zone: 'hand', return: true, strike: true, damage: 2, burn: true }
+  {name: 'Volcanic Vortex', cost: '{1}{R}', type: 'Strike', zone: 'field', strike: true, damage: 3, burn: true}
+ ],},
 
 // FIRELANDS //
 {id: 'FirelandsScamperling', name: 'Firelands Scamperling', rarity: 'Common', image: 'CardImages/Firelands/Firelands Scamperling.png', 
