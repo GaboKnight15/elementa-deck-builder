@@ -26,8 +26,11 @@ const PHASES = [{ turn: 'player', phase: 'draw' },{ turn: 'player', phase: 'esse
   turn: "player",
   phase: "draw"
 };
+let chainStack = [];
+let chainActive = false;
 
 let attackMode = {attackerId: null, attackerZone: null, cancelHandler: null};
+
 const INITIAL_HAND_SIZE = 5;
 const ESSENCE_IMAGE_MAP = {
   red: "OtherImages/Essence/Red.png",
@@ -135,12 +138,12 @@ const STATUS_EFFECTS = {
     apply: function(cardObj) {
       cardObj._paralyzed = true;
       cardObj.canAttack = false;
-      cardObj.canActivateSkills = false;
+      cardObj.canActivateSkill = false;
     },
     remove: function(cardObj) {
       cardObj._paralyzed = false;
       cardObj.canAttack = true;
-      cardObj.canActivateSkills = true;
+      cardObj.canActivateSkill = true;
     },
     // Optionally, you can add a visual tick at each turn start or end
     // For now, logic is purely duration-based
@@ -252,6 +255,24 @@ const ATTACK_DECLARATION_ABILITIES = {
 /*------------------------------
 //---- SKILL TARGET TYPE ---- //
 ------------------------------*/
+// Helper for requirements (add near SKILL_TYPE_MAP)
+const REQUIREMENT_MAP = {
+  Stash: {
+    handler: function(sourceCardObj, skillObj) {
+      // Only activate in hand
+      const isHand = gameState.playerHand.includes(sourceCardObj);
+      if (!isHand) {
+        showToast("Stash can only be activated from your hand.");
+        return;
+      }
+      // Return self to deck
+      moveCard(sourceCardObj.instanceId, gameState.playerHand, gameState.playerDeck);
+    }
+  },
+  // Add more requirements as needed
+  "": { handler: function() {} } // empty requirement does nothing
+};
+
 const SKILL_TYPE_MAP = {
 Strike: {
   icon: 'OtherImages/SkillTypes/Strike.png',
@@ -262,7 +283,6 @@ Strike: {
       [...gameState.opponentCreatures, ...gameState.opponentDomains],
       selectedTarget => {
         let damage = skillObj.damage || 0;
-
         // Apply extra damage if target has Soak
         if (selectedTarget._soak && typeof selectedTarget.soakAmount === "number") {
           damage += selectedTarget.soakAmount;
@@ -270,11 +290,12 @@ Strike: {
         if (damage > 0) dealCombatDamage(sourceCardObj, selectedTarget, damage);
 
         // Apply status effects
-        for (let statusName of Object.keys(STATUS_EFFECTS)) {
-          if (skillObj[statusName.toLowerCase()]) {
+        let statuses = Array.isArray(skillObj.status) ? skillObj.status : (skillObj.status ? [skillObj.status] : []);
+        statuses.forEach(statusName => {
+          if (STATUS_EFFECTS[statusName]) {
             applyStatus(selectedTarget, statusName);
           }
-        }
+        });
         renderGameState();
       }
     );
@@ -288,19 +309,18 @@ Burst: {
     const targets = [...gameState.opponentCreatures, ...gameState.opponentDomains];
     targets.forEach(target => {
       let damage = skillObj.damage || 0;
-
       // Apply extra damage if target has Soak
       if (target._soak && typeof target.soakAmount === "number") {
         damage += target.soakAmount;
       }
       if (damage > 0) dealCombatDamage(sourceCardObj, target, damage);
-
       // General status effect logic: apply any status flagged in skillObj
-      for (let statusName of Object.keys(STATUS_EFFECTS)) {
-        if (skillObj[statusName.toLowerCase()]) {
+      let statuses = Array.isArray(skillObj.status) ? skillObj.status : (skillObj.status ? [skillObj.status] : []);
+      statuses.forEach(statusName => {
+        if (STATUS_EFFECTS[statusName]) {
           applyStatus(target, statusName);
         }
-      }
+      });
     });
     renderGameState();
   }
@@ -386,39 +406,6 @@ Reanimate: {
     });
   }
 },
-Stash: {
-  icon: 'OtherImages/SkillTypes/Stash.png',
-  name: 'Stash',
-  description: 'Return this card to the deck, then add the selected card from your deck to hand.',
-  handler: function(sourceCardObj, skillObj) {
-    // Only activate in hand
-    const isHand = gameState.playerHand.includes(sourceCardObj);
-    if (!isHand) {
-      showToast("Stash can only be activated from your hand.");
-      return;
-    }
-
-    // Return self to deck
-    moveCard(sourceCardObj.instanceId, gameState.playerHand, gameState.playerDeck);
-
-    // Filter deck for matching cards
-    const criteria = skillObj.searchCriteria || {};
-    const deckCards = filterCardsByCriteria(gameState.playerDeck, criteria);
-
-    // Open modal to let player select from the filtered cards
-    if (deckCards.length === 0) {
-      showToast("No matching cards found in your deck.");
-      renderGameState();
-      return;
-    }
-    showDeckSearchModal(deckCards, function(selectedCardObj) {
-      moveCard(selectedCardObj.instanceId, gameState.playerDeck, gameState.playerHand);
-      renderGameState();
-      setupDropZones();
-    });
-    renderGameState();
-  }
-}
   // ...add more skill types here as needed!
 };
 // ==========================
@@ -895,14 +882,14 @@ function showHandCardMenu(instanceId, cardDiv) {
   ];
 if (cardData.skill && Array.isArray(cardData.skill)) {
   cardData.skill.forEach(skillObj => {
-    const isEnabled = canActivateSkills(cardObj, skillObj, 'hand', gameState);
+    const isEnabled = canActivateSkill(cardObj, skillObj, 'hand', gameState);
     buttons.push({
       text: `${skillObj.name} ${skillObj.cost}`,
       html: true,
       disabled: !isEnabled,
       onClick: function(e) {
         e.stopPropagation();
-        if (!canActivateSkills(cardObj, skillObj, 'hand', gameState)) return;
+        if (!canActivateSkill(cardObj, skillObj, 'hand', gameState)) return;
         activateSkill(cardObj, skillObj);
         closeAllMenus();
       }
@@ -1831,14 +1818,14 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
 if (cardData.skill && Array.isArray(cardData.skill)) {
   const currentZone = getZoneNameForArray(arr);
   cardData.skill.forEach(skillObj => {
-    const isEnabled = canActivateSkills(cardObj, skillObj, currentZone, gameState);
+    const isEnabled = canActivateSkill(cardObj, skillObj, currentZone, gameState);
     buttons.push({
       text: `${skillObj.name} ${skillObj.cost}`,
       html: true,
       disabled: !isEnabled,
       onClick: function(e) {
         e.stopPropagation();
-        if (!canActivateSkills(cardObj, skillObj, currentZone, gameState)) return;
+        if (!canActivateSkill(cardObj, skillObj, currentZone, gameState)) return;
         activateSkill(cardObj, skillObj);
         closeAllMenus();
       }
@@ -1954,10 +1941,10 @@ function openVoidModal() {
             buttons.push({
               text: `${skillObj.name} ${skillObj.cost}`,
               html: true,
-              disabled: !canActivateSkills(cardObj, skillObj, 'void', gameState),
+              disabled: !canActivateSkill(cardObj, skillObj, 'void', gameState),
               onClick: function(e) {
                 e.stopPropagation();
-                if (!canActivateSkills(cardObj, skillObj, 'void', gameState)) return;
+                if (!canActivateSkill(cardObj, skillObj, 'void', gameState)) return;
                 activateSkill(cardObj, skillObj);
                 closeAllMenus();
                 openVoidModal();
@@ -3226,7 +3213,7 @@ function startGameFieldAnimation(champions) {
     }, 1000); // 1 second animation
   });
 }
-function canActivateSkills(cardObj, skillObj, currentZone, gameState) {
+function canActivateSkill(cardObj, skillObj, currentZone, gameState) {
   // 1. Check Zone
   if (Array.isArray(skillObj.zone)) {
     if (!skillObj.zone.includes(currentZone)) return false;
@@ -3236,7 +3223,7 @@ function canActivateSkills(cardObj, skillObj, currentZone, gameState) {
 
   // 2. Status Effects (Paralysis, Freeze, etc)
   if (cardObj._paralyzed || cardObj._frozen) return false;
-  if (cardObj.canActivateSkills === false) return false;
+  if (cardObj.canActivateSkill === false) return false;
 
   // 3. Essence Cost (assume skillObj.cost is a string like '{1}{U}', pass to your cost-checker)
   if (skillObj.cost && typeof canPayEssenceCost === "function") {
@@ -3351,21 +3338,51 @@ function handleSearchEffect(criteria) {
   }
 }
 
-function activateSkill(cardObj, skillObj) {
-  // Pay cost, if needed
+function activateSkill(cardObj, skillObj, options = {}) {
+  // Pay cost if needed
   if (skillObj.cost) {
-    // Show payment modal, deduct essence, etc.
     showEssencePaymentModal({
       card: cardObj,
       cost: parseCost(skillObj.cost),
       eligibleCards: getAllEssenceSources(),
-      onPaid: () => runSkillEffect(cardObj, skillObj.effect)
+      onPaid: function() {
+        proceedSkillActivation(cardObj, skillObj, options);
+      }
     });
   } else {
-    runSkillEffect(cardObj, skillObj.effect);
+    proceedSkillActivation(cardObj, skillObj, options);
   }
 }
 
+function proceedSkillActivation(cardObj, skillObj, options = {}) {
+  // Handle requirements
+  let requirements = Array.isArray(skillObj.requirement) ? skillObj.requirement : (skillObj.requirement ? [skillObj.requirement] : []);
+  for (let req of requirements) {
+    if (REQUIREMENT_MAP[req] && REQUIREMENT_MAP[req].handler) {
+      REQUIREMENT_MAP[req].handler(cardObj, skillObj);
+    }
+  }
+
+  if (!options.isChainResponse) {
+    // First activation: start chain
+    chainStack = [];
+    chainStack.push({ source: cardObj, skill: skillObj });
+
+    // Prompt opponent for response (will call proceedChainResolution if no response)
+    promptOpponentForResponse();
+  } else {
+    // This is a response, just add to chainStack and resolve
+    chainStack.push({ source: cardObj, skill: skillObj });
+    proceedChainResolution();
+  }
+}
+function proceedChainResolution() {
+  // LIFO: resolve chain backwards
+  while (chainStack.length) {
+    var entry = chainStack.pop();
+    runSkillEffect(entry.source, entry.skill);
+  }
+}
 function parseCost(costStr) {
   // Simple implementation: count and map color symbols, e.g. {R}{R}{CCW}
   const cost = {};
@@ -3379,13 +3396,87 @@ function parseCost(costStr) {
   return cost;
 }
 
-function runSkillEffect(sourceCardObj, skillObj) {
-  const skillType = SKILL_TYPE_MAP[skillObj.type];
-  if (!skillType) {
-    showToast("Unknown skill type.");
+// For now, a simple modal; you can expand later!
+function promptOpponentForResponse() {
+  var availableResponses = findOpponentCounterSkills();
+  if (!availableResponses.length) {
+    proceedChainResolution();
     return;
   }
-  skillType.handler(sourceCardObj, skillObj);
+  // Simple modal prompt
+  var modal = document.createElement('div');
+  modal.className = 'modal';
+  modal.innerHTML = '<div>Opponent: Respond?</div>';
+  availableResponses.forEach(function(res) {
+    var btn = document.createElement('button');
+    btn.textContent = res.skillObj.name;
+    btn.onclick = function() {
+      document.body.removeChild(modal);
+      // Opponent responds: call activateSkill for their response, with isChainResponse true
+      activateSkill(res.cardObj, res.skillObj, { isChainResponse: true });
+    };
+    modal.appendChild(btn);
+  });
+  var passBtn = document.createElement('button');
+  passBtn.textContent = 'Pass';
+  passBtn.onclick = function() {
+    document.body.removeChild(modal);
+    proceedChainResolution();
+  };
+  modal.appendChild(passBtn);
+  document.body.appendChild(modal);
+}
+
+// --- Find opponent's counter skills (stub) ---
+function findOpponentCounterSkills() {
+  // Example: find all skills with type 'Counter' or similar in opponent's hand/field
+  let skills = [];
+  // You can filter further for only usable counter skills
+  gameState.opponentCreatures.concat(gameState.opponentDomains, gameState.opponentHand).forEach(cardObj => {
+    let cardData = dummyCards.find(c => c.id === cardObj.cardId);
+    if (!cardData || !Array.isArray(cardData.skill)) return;
+    cardData.skill.forEach(skillObj => {
+      // For now, only allow skills with type 'Counter' or 'Negate' as responses (expand this logic as needed)
+      let types = Array.isArray(skillObj.type) ? skillObj.type : [skillObj.type];
+      if (types.includes('Counter') || types.includes('Negate')) {
+        // You can add more checks: are they enabled? does opponent have enough essence?
+        if (canActivateSkill(cardObj, skillObj, getCardOwner(cardObj), gameState)) {
+          skills.push({ cardObj, skillObj });
+        }
+      }
+    });
+  });
+  return skills;
+}
+
+// --- Chain resolution (LIFO) ---
+function resolveChain() {
+  while (chainStack.length > 0) {
+    const { source, skill } = chainStack.pop();
+    runSkillEffect(source, skill);
+    // Log resolution if you want (optional)
+    // appendVisualLog({sourceCard: source, action: "effect", dest: skill.name, who: getCardOwner(source)});
+  }
+  chainActive = false;
+}
+
+
+function runSkillEffect(sourceCardObj, skillObj) {
+  // --- REQUIREMENTS ---
+  let requirements = Array.isArray(skillObj.requirement) ? skillObj.requirement : (skillObj.requirement ? [skillObj.requirement] : []);
+  for (let req of requirements) {
+    if (REQUIREMENT_MAP[req] && REQUIREMENT_MAP[req].handler) {
+      REQUIREMENT_MAP[req].handler(sourceCardObj, skillObj);
+    }
+  }
+  // --- TYPES ---
+  let types = Array.isArray(skillObj.type) ? skillObj.type : (skillObj.type ? [skillObj.type] : []);
+  for (let type of types) {
+    const skillType = SKILL_TYPE_MAP[type];
+    if (skillType && skillType.handler) {
+      skillType.handler(sourceCardObj, skillObj);
+    }
+  }
 }
 
 /*--------------------------------
