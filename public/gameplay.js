@@ -785,6 +785,9 @@ function showHandCardMenu(instanceId, cardDiv) {
   closeAllMenus();
   const cardObj = gameState.playerHand.find(c => c.instanceId === instanceId);
   const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+  const costObj = cardData.cost; // for hand cards
+  const canPay = canPayEssence(costObj, getAllEssenceSources());
+  button.disabled = !canPay;
   // --- Get category and cost display ---
   let playLabel = "Play";
   let costHtml = "";
@@ -810,9 +813,11 @@ function showHandCardMenu(instanceId, cardDiv) {
   const buttons = [
     {
       text: `<span>${playLabel}</span> <span >${costHtml}</span>`,
-      html: true, // custom flag for HTML content
+      html: true,
+      disabled: !canPay,
       onClick: function(e) {
         e.stopPropagation();
+        if (!canPay) return;
         closeAllMenus();
         const cardObj = gameState.playerHand.find(c => c.instanceId === instanceId);
         const cardData = dummyCards.find(c => c.id === cardObj.cardId);
@@ -850,9 +855,11 @@ function showHandCardMenu(instanceId, cardDiv) {
           cost: cardData.cost,
           eligibleCards: getAllEssenceSources(),
           onPaid: function() {
-            moveCard(instanceId, gameState.playerHand, targetArr, { orientation: "vertical" });
-            renderGameState();
-            setupDropZones();
+            showSummonPositionModal(cardObj, function(chosenOrientation) {
+              moveCard(instanceId, gameState.playerHand, targetArr, { orientation: chosenOrientation });
+              renderGameState();
+              setupDropZones();
+            });
           }
         });
       }
@@ -888,11 +895,14 @@ function showHandCardMenu(instanceId, cardDiv) {
   ];
 if (cardData.skill && Array.isArray(cardData.skill)) {
   cardData.skill.forEach(skillObj => {
+    const isEnabled = canActivateSkills(cardObj, skillObj, 'hand', gameState);
     buttons.push({
-      text: `${skillObj.name} ${skillObj.cost}`, // Optionally formatted
+      text: `${skillObj.name} ${skillObj.cost}`,
       html: true,
+      disabled: !isEnabled,
       onClick: function(e) {
         e.stopPropagation();
+        if (!canActivateSkills(cardObj, skillObj, 'hand', gameState)) return;
         activateSkill(cardObj, skillObj);
         closeAllMenus();
       }
@@ -1819,12 +1829,16 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
     }
   ];
 if (cardData.skill && Array.isArray(cardData.skill)) {
+  const currentZone = getZoneNameForArray(arr);
   cardData.skill.forEach(skillObj => {
+    const isEnabled = canActivateSkills(cardObj, skillObj, currentZone, gameState);
     buttons.push({
       text: `${skillObj.name} ${skillObj.cost}`,
       html: true,
+      disabled: !isEnabled,
       onClick: function(e) {
         e.stopPropagation();
+        if (!canActivateSkills(cardObj, skillObj, currentZone, gameState)) return;
         activateSkill(cardObj, skillObj);
         closeAllMenus();
       }
@@ -1935,20 +1949,22 @@ function openVoidModal() {
 
   // --- Add Skill Buttons if card has skills ---
   const cardData = dummyCards.find(c => c.id === cardObj.cardId);
-if (cardData && Array.isArray(cardData.skill)) {
-  cardData.skill.forEach(skillObj => {
-    buttons.push({
-      text: `${skillObj.name} ${skillObj.cost}`,
-      html: true,
-      onClick: function(e) {
-        e.stopPropagation();
-        activateSkill(cardObj, skillObj);
-        closeAllMenus();
-        openVoidModal(); // Optionally refresh modal
-      }
-    });
-  });
-}
+        if (cardData && Array.isArray(cardData.skill)) {
+          cardData.skill.forEach(skillObj => {
+            buttons.push({
+              text: `${skillObj.name} ${skillObj.cost}`,
+              html: true,
+              disabled: !canActivateSkills(cardObj, skillObj, 'void', gameState),
+              onClick: function(e) {
+                e.stopPropagation();
+                if (!canActivateSkills(cardObj, skillObj, 'void', gameState)) return;
+                activateSkill(cardObj, skillObj);
+                closeAllMenus();
+                openVoidModal();
+              }
+            });
+          });
+        }
     const menu = createCardMenu(buttons);
     document.body.appendChild(menu); // Append to body, not wrapper
 
@@ -3231,11 +3247,7 @@ function canActivateSkills(cardObj, skillObj, currentZone, gameState) {
 
   return true;
 }
-function canPayEssenceCost(costStr, gameState) {
-  // Implement logic based on your game's resource system
-  // Example: always return true (replace with your logic)
-  return true;
-}
+
 function hasAvailableTargets(skillObj, sourceCardObj, gameState) {
   switch (skillObj.type) {
     case 'Strike':
@@ -3253,10 +3265,25 @@ function hasAvailableTargets(skillObj, sourceCardObj, gameState) {
       return true; // Default: assume available
   }
 }
-function canPayEssence(cost, playerEssence) {
-  // Parse cost string and compare with playerEssence object
-  // Return true if the player can pay, false otherwise
-  // Implement your own parsing logic here
+function canPayEssence(costObj, essenceSources) {
+  // costObj: {green: 1, red: 2, ...}
+  // essenceSources: array of cards with .essence (e.g. playerCreatures + playerDomains)
+  const totalEssence = {};
+  for (const card of essenceSources) {
+    if (!card.essence) continue;
+    for (const color in card.essence) {
+      totalEssence[color] = (totalEssence[color] || 0) + card.essence[color];
+    }
+  }
+  for (const color in costObj) {
+    if ((totalEssence[color] || 0) < costObj[color]) return false;
+  }
+  return true;
+}
+function canPayEssenceCost(costStr, gameState) {
+  const costObj = parseCost(costStr); // converts string to object
+  const essenceSources = getAllEssenceSources(); // all field cards with essence
+  return canPayEssence(costObj, essenceSources);
 }
 // Helper functions for abilities and skills
 function attackerHasAbility(cardObj, abilityName) {
