@@ -224,7 +224,10 @@ const dummyCards = [
  ],},
 {id: 'CindercoreVanguard', name: 'Cindercore Vanguard', rarity: 'Common', image: 'CardImages/Cindercore/Cindercore Vanguard.png', 
  category: 'Creature', color: 'Red', type: 'Construct', hp: 15, atk: 6, def: 3,
- cost: {colorless: 1, red: 1}, archetype: 'Cindercore', ability: 'Armor', set: 'StandardPack'},
+ cost: {colorless: 1, red: 1}, archetype: 'Cindercore', ability: ['Armor', 'Exploit', 'Rush'], set: 'StandardPack',
+skill: [
+  {name: 'Fire Pulse', cost: '{R}', requirement: [''], zone: 'field', type: ['Strike'], damage: 2, status: ['Burn']}
+ ]},
 {id: 'CindercoreGolem', name: 'Cindercore Golem', rarity: 'Rare', image: 'CardImages/Cindercore/Cindercore Golem.png', 
  category: 'Creature', color: ['Red', 'Gray'], type: 'Elemental', hp: 15, atk: 6, def: 3,
  cost: {colorless: 3, red: 1}, archetype: ['Cindercore','Golemheart'], ability: 'Armor', set: 'StandardPack',
@@ -237,7 +240,7 @@ const dummyCards = [
  skill: [
   {name: 'Stash', cost: '{R}', requirement: ['Stash'], zone: 'hand', type: ['Strike'], damage: 2, status: ['Burn'] },
   {name: 'Volcanic Vortex', cost: '{1}{R}', requirement: [''], zone: 'field', type: ['Strike'], damage: 3, status: ['Burn','Bind']}
- ],},
+ ]},
 
 // FIRELANDS //
 {id: 'FirelandsScamperling', name: 'Firelands Scamperling', rarity: 'Common', image: 'CardImages/Firelands/Firelands Scamperling.png', 
@@ -345,10 +348,21 @@ const dummyCards = [
  cost: {colorless: 2, purple: 1, black: 1}, archetype: 'Skullframe', ability: ['Flying','Immunity','Armor'], skill: 'Reanimate {3}{B}{B}', set: 'StandardPack'},
 {id: 'SkullframeHexmistress', name: 'Skullframe Hexmistress', rarity: 'Epic', image: 'CardImages/Skullframe/Skullframe Hexmistress.png', 
  category: 'Creature', color: ['Black', 'Purple'], type: ['Undead','Mage'], hp: 6, atk: 4, def: 1,
-  cost: {colorless: 1, black: 1, purple: 1}, archetype: 'Skullframe', ability: ['Immunity','Ranged'], skill: ['Ebonhex Flare {B}{B}{P}','Ebonhex Crush {B}','Reanimate {2}{B}{B}'], set: 'StandardPack'},
+ cost: {colorless: 1, black: 1, purple: 1}, archetype: 'Skullframe', ability: ['Immunity','Ranged'], set: 'StandardPack',
+ skill: [
+  {name: 'Ebonhex Flare', cost: '{P}{P}{B}', requirement: [''], zone: 'field', type: ['Strike'], damage: 3, status: ['Burn'] },
+  {name: 'Ebonhex Crush', cost: '{B}', requirement: [''], zone: 'field', condition: [
+   { status: 'Burn', owner: 'opponent', category: 'Creature' }], type: ['Destroy']},
+  {name: 'Reanimate', cost: '{2}{B}{B}', requirement: [''], zone: 'void', type: ['Reanimate']}
+ ]},
 {id: 'MaldryssSkullframeArchmage', name: 'Maldryss, Skullframe Archmage', rarity: 'Legendary', image: 'CardImages/Skullframe/Maldryss, Skullframe Archmage.png', 
  category: 'Creature', color: ['Black', 'Purple'], type: ['Undead','Mage'], trait: 'Champion', hp: 8, atk: 1, def: 0,
- cost: {black: 2, purple: 1}, essence: {black: 1}, archetype: 'Skullframe', ability: ['Drain','Immunity','Ranged'], skill: ['Hexbind {B}{P}','Hexblast {B}{CW}','Reanimate {2}{B}{B}'], set: 'StandardPack'},
+ cost: {black: 2, purple: 1}, essence: {black: 1}, archetype: 'Skullframe', ability: ['Drain','Immunity','Ranged'], set: 'StandardPack',
+ skill: [
+  {name: 'Hexbind', cost: '{P}{B}', requirement: ['CW'], zone: 'field', type: ['Strike'], damage: 4, status: ['Poison'] },
+  {name: 'Hexblast', cost: '{B}{cw}', requirement: ['CCW'], zone: 'field', type: ['Destroy']},
+  {name: 'Reanimate', cost: '{2}{B}{B}', requirement: [''], zone: 'void', type: ['Reanimate']}
+ ]},
 {id: 'MaldryssSkullframeArchmageFA', name: 'Maldryss, Skullframe Archmage', rarity: 'Legendary', image: 'CardImages/Skullframe/Maldryss, Skullframe Archmage FA.png', 
  category: 'Creature', color: ['Black', 'Purple'], type: ['Undead','Mage'], trait: 'Champion', hp: 8, atk: 1, def: 0,
  cost: {black: 2, purple: 1}, essence: {black: 1}, archetype: 'Skullframe', ability: ['Drain','Immunity','Ranged'], skill: ['Hexbind {B}{P}','Hexblast {B}{CW}','Reanimate {2}{B}{B}'], set: 'StandardPack'},
