@@ -838,16 +838,20 @@ function showHandCardMenu(instanceId, cardDiv) {
 
         // Determine allowed target zone
         let targetArr, toZoneId;
-        if (cardData.category === "creature") {
-          targetArr = gameState.playerCreatures;
-          toZoneId = "player-creatures-zone";
-        } else if (cardData.category === "domain") {
-          targetArr = gameState.playerDomains;
-          toZoneId = "player-domains-zone";
-        } else {
-          alert("You can only play creature or domain cards here!");
-          return;
-        }
+const category = Array.isArray(cardData.category)
+  ? cardData.category.map(c => c.toLowerCase())
+  : [String(cardData.category).toLowerCase()];
+
+if (category.includes("creature")) {
+  targetArr = gameState.playerCreatures;
+  toZoneId = "player-creatures-zone";
+} else if (category.includes("domain")) {
+  targetArr = gameState.playerDomains;
+  toZoneId = "player-domains-zone";
+} else {
+  alert("You can only play creature or domain cards here!");
+  return;
+}
 
         // No cost, play immediately
         if (
