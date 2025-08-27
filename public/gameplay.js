@@ -3604,7 +3604,9 @@ function filterAttackableTargets(attacker, targets) {
 function handleAttackDeclarationAbilities(attacker, defender) {
   const attackerDef = dummyCards.find(c => c.id === attacker.cardId);
   if (!attackerDef || !attackerDef.ability) return;
-  attackerDef.ability.forEach(abilityName => {
+  // Ensure ability is always an array
+  const abilities = Array.isArray(attackerDef.ability) ? attackerDef.ability : [attackerDef.ability];
+  abilities.forEach(abilityName => {
     const ability = ATTACK_DECLARATION_ABILITIES[abilityName];
     if (ability && ability.effect) {
       ability.effect(attacker, defender);
