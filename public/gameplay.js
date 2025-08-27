@@ -3494,14 +3494,24 @@ function isCardStillPresent(cardObj) {
 }
 
 function parseCost(costStr) {
-  // Simple implementation: count and map color symbols, e.g. {R}{R}{CCW}
+  // Converts "{2}{B}{G}" → { colorless: 2, black: 1, green: 1 }
   const cost = {};
-  const matches = costStr.match(/\{([A-Z]+)\}/g);
-  if (matches) {
-    matches.forEach(token => {
-      let color = token.replace(/[{}]/g, '').toLowerCase();
-      cost[color] = (cost[color] || 0) + 1;
-    });
+  if (typeof costStr !== "string") return cost;
+  const regex = /\{([0-9]+|[GRUYCPBW])\}/g;
+  let match;
+  while ((match = regex.exec(costStr))) {
+    const val = match[1];
+    if (!isNaN(val)) {
+      cost.colorless = (cost.colorless || 0) + Number(val);
+    } else {
+      // Map letter to color name
+      const colorMap = {
+        G: "green", R: "red", U: "blue", Y: "yellow", C: "gray",
+        P: "purple", B: "black", W: "white",
+      };
+      const color = colorMap[val];
+      if (color) cost[color] = (cost[color] || 0) + 1;
+    }
   }
   return cost;
 }
