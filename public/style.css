@@ -2379,6 +2379,7 @@ button {}
   padding: 0.5em 0.5em 0.5em 0.5em;
   z-index: 1100;
   overflow: hidden;
+  min-width: 250px;
 }
 #battlefield-rightbar {
   display: flex;
