@@ -3318,8 +3318,18 @@ function canPayEssence(costObj, essenceSources) {
       totalEssence[color] = (totalEssence[color] || 0) + card.essence[color];
     }
   }
-  for (const color in costObj) {
-    if ((totalEssence[color] || 0) < costObj[color]) return false;
+  // First check colored cost
+  for (const color of Object.keys(costObj)) {
+    if (color !== 'colorless' && (totalEssence[color] || 0) < costObj[color]) return false;
+  }
+  // Then check colorless: sum of ALL essence types
+  if (costObj.colorless) {
+    let totalAvailable = Object.values(totalEssence).reduce((a, b) => a + b, 0);
+    // Subtract colored essence already required
+    for (const color of Object.keys(costObj)) {
+      if (color !== 'colorless') totalAvailable -= costObj[color];
+    }
+    if (totalAvailable < costObj.colorless) return false;
   }
   return true;
 }
