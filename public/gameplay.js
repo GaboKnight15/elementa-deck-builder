@@ -800,21 +800,21 @@ function showHandCardMenu(instanceId, cardDiv) {
   closeAllMenus();
   const cardObj = gameState.playerHand.find(c => c.instanceId === instanceId);
   const cardData = dummyCards.find(c => c.id === cardObj.cardId);
-  const costObj = cardData.cost; // for hand cards
-  const canPay = canPayEssence(costObj, getAllEssenceSources());
-  // --- Get category and cost display ---
+
+  let cost = cardData.cost || {};
+  if (typeof cost === "string") {
+    cost = parseCost(cost);
+  }
+  if (typeof cost === "number") {
+    cost = { colorless: cost };
+  }
+  
+  const canPay = canPayEssence(cost, getAllEssenceSources());
   let playLabel = "Play";
-  let costHtml = "";
+  let costHtml = getEssenceCostDisplay(cost);
 
   if (cardData) {
     const category = cardData.category ? cardData.category.toLowerCase() : '';
-    let cost = cardData.cost || {};
-    if (typeof cost === "number") {
-      // treat as colorless
-      cost = { colorless: cost };
-    }
-    costHtml = getEssenceCostDisplay(cost);
-
     switch (category) {
       case 'creature': playLabel = "Summon"; break;
       case 'spell': playLabel = "Cast"; break;
@@ -838,26 +838,32 @@ function showHandCardMenu(instanceId, cardDiv) {
 
         // Determine allowed target zone
         let targetArr, toZoneId;
-const category = Array.isArray(cardData.category)
-  ? cardData.category.map(c => c.toLowerCase())
-  : [String(cardData.category).toLowerCase()];
+        const category = Array.isArray(cardData.category)
+          ? cardData.category.map(c => c.toLowerCase())
+          : [String(cardData.category).toLowerCase()];
 
-if (category.includes("creature")) {
-  targetArr = gameState.playerCreatures;
-  toZoneId = "player-creatures-zone";
-} else if (category.includes("domain")) {
-  targetArr = gameState.playerDomains;
-  toZoneId = "player-domains-zone";
-} else {
-  alert("You can only play creature or domain cards here!");
-  return;
-}
-
+        if (category.includes("creature")) {
+          targetArr = gameState.playerCreatures;
+          toZoneId = "player-creatures-zone";
+        } else if (category.includes("domain")) {
+          targetArr = gameState.playerDomains;
+          toZoneId = "player-domains-zone";
+        } else {
+          alert("You can only play creature or domain cards here!");
+          return;
+        }
+        
+        // PATCH: Always parse cost before payment modal
+        let parsedCost = cardData.cost;
+        if (typeof parsedCost === "string") parsedCost = parseCost(parsedCost);
+        if (typeof parsedCost === "number") parsedCost = { colorless: parsedCost };
+        
         // No cost, play immediately
         if (
           !cardData.cost ||
           (typeof cardData.cost === "number" && cardData.cost === 0) ||
           (typeof cardData.cost === "object" && Object.values(cardData.cost).reduce((a, b) => a + b, 0) === 0)
+          (typeof cardData.cost === "string" && cardData.cost === "{0}")
         ) {
           showSummonPositionModal(cardObj, function(chosenOrientation) {
             moveCard(instanceId, gameState.playerHand, targetArr, { orientation: chosenOrientation });
@@ -870,7 +876,7 @@ if (category.includes("creature")) {
         // Otherwise, show payment modal and move after payment
         showEssencePaymentModal({
           card: cardData,
-          cost: cardData.cost,
+          cost: parsedCost,
           eligibleCards: getAllEssenceSources(),
           onPaid: function() {
             showSummonPositionModal(cardObj, function(chosenOrientation) {
@@ -1606,9 +1612,11 @@ if (cardObj.statuses) {
 
 // COST DISPLAY IN HAND
 function getEssenceCostDisplay(cost) {
-  // cost: {colorless: n, green: n, red: n, ...}
+  // PATCH: parse string cost if needed
+  if (typeof cost === "string") {
+    cost = parseCost(cost);
+  }
   if (!cost || typeof cost !== 'object') {
-    // If cost is exactly zero (number)
     if (cost === 0) {
       return `<img src="${ESSENCE_IMAGE_MAP['X0']}" style="width:22px;height:22px;vertical-align:middle;" alt="Colorless: 0">`;
     }
