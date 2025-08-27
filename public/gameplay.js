@@ -515,8 +515,15 @@ function startGame({
   document.getElementById('chat-log').style.display = '';
   
   // --- Profile panels ---
-  renderGameplayProfilePanel('my-profile', playerProfile);
-  renderGameplayProfilePanel('opponent-profile', opponentProfile);
+  // Player profile
+  const myProfileDiv = document.getElementById('my-profile');
+  myProfileDiv.innerHTML = "";
+  myProfileDiv.appendChild(renderProfilePanel(playerProfile));
+
+  // Opponent profile
+  const oppProfileDiv = document.getElementById('opponent-profile');
+  oppProfileDiv.innerHTML = "";
+  oppProfileDiv.appendChild(renderProfilePanel(opponentProfile));
 
   // --- Battlefield zones ---
   renderGameState();
@@ -546,21 +553,6 @@ function startGame({
   }
 
   // Additional mode logic can go here (private, ranked, etc)
-}
-// Helper for rendering profile panels (replace old renderProfile usage)
-function renderGameplayProfilePanel(panelId, profileObj) {
-  const panel = document.getElementById(panelId);
-  if (!panel || !profileObj) return;
-  panel.innerHTML = ""; // Clear previous
-
-  // Transform keys for renderProfilePanel
-  const mappedProfile = {
-    profileBanner: profileObj.profileBanner || profileObj.banner || "CardImages/Banners/DefaultBanner.png",
-    profilePic: profileObj.profilePic || profileObj.avatar || "CardImages/Avatars/Default.png",
-    username: profileObj.username || "Player",
-    power: typeof profileObj.power === "number" ? profileObj.power : 0
-  };
-  panel.appendChild(renderProfilePanel(mappedProfile));
 }
 
 // ===================================
@@ -810,7 +802,6 @@ function showHandCardMenu(instanceId, cardDiv) {
   const cardData = dummyCards.find(c => c.id === cardObj.cardId);
   const costObj = cardData.cost; // for hand cards
   const canPay = canPayEssence(costObj, getAllEssenceSources());
-  button.disabled = !canPay;
   // --- Get category and cost display ---
   let playLabel = "Play";
   let costHtml = "";
@@ -3757,8 +3748,10 @@ socket.on('casual-match-found', function(matchData) {
 // After local selection:
 showWaitingForOpponentModal();
 socket.on('opponent profile', function(profileObj) {
-  renderGameplayProfilePanel('opponent-profile', profileObj);
-  document.getElementById('opponent-profile').style.display = '';
+  const oppProfileDiv = document.getElementById('opponent-profile');
+  oppProfileDiv.innerHTML = "";
+  oppProfileDiv.appendChild(renderProfilePanel(profileObj));
+  oppProfileDiv.style.display = '';
 });
 
 // Make available globally if called from client.js:
