@@ -673,6 +673,15 @@ const CARD_KEYWORD_EXPLANATIONS = {
 // Use this to parse effect text with tokens into HTML with images/icons
 function parseEffectText(effect) {
   if (!effect) return "";
+  // If effect is not a string, attempt to serialize (for objects/arrays)
+  if (typeof effect !== "string") {
+    if (Array.isArray(effect)) {
+      // Join array elements as strings
+      effect = effect.map(e => typeof e === "string" ? e : JSON.stringify(e)).join(", ");
+    } else {
+      effect = JSON.stringify(effect);
+    }
+  }
 
   // Map color codes to image paths
   const ESSENCE_ICON = {
