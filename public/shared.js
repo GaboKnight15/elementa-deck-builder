@@ -985,46 +985,36 @@ document.getElementById('image-modal').onclick = (e) => {
 })();
 
 function renderCardCost(costData) {
-  // Accepts either {red:2, blue:1, ...} or [{color:'red',amount:2}, ...]
   let html = '';
   if (!costData) {
-   // Show the zero image if cost is 0
-   return `<img src="${COST_IMAGE_MAP.X0}" alt="Cost: 0" style="width:22px;height:22px;vertical-align:middle;">`;
+    return `<img src="${COST_IMAGE_MAP.X0}" alt="Cost: 0" style="width:22px;height:22px;vertical-align:middle;">`;
   }
 
-  // Array style: [{color: 'red', amount: 2}, {colorless: 3}]
-  if (Array.isArray(costData)) {
-    costData.forEach(c => {
-      if (c.color && COST_IMAGE_MAP[c.color]) {
-        for (let i = 0; i < (c.amount || 1); i++) {
-          html += `<img src="${COST_IMAGE_MAP[c.color]}" alt="${c.color}" style="width:22px;height:22px;vertical-align:middle;">`;
-        }
-      } else if (c.colorless) {
-        const key = 'X' + c.colorless;
-        if (COST_IMAGE_MAP[key]) {
-          html += `<img src="${COST_IMAGE_MAP[key]}" alt="Colorless" style="width:22px;height:22px;vertical-align:middle;">`;
-        }
+  // --- NEW: String style ("{2}{R}{B}") ---
+  if (typeof costData === "string") {
+    // Use parseEffectText for cost string, but limit to icons only
+    html = costData.replace(/\{([GRUYCPBW])\}/g, (match, code) =>
+      `<img src="${COST_IMAGE_MAP[code.toLowerCase()]}" style="width:22px;height:22px;vertical-align:middle;">`
+    );
+    html = html.replace(/\{([0-9]|1[0-9]|20)\}/g, (match, num) => {
+      const imgSrc = COST_IMAGE_MAP['X'+num];
+      if (imgSrc) {
+        return `<img src="${imgSrc}" style="width:22px;height:22px;vertical-align:middle;">`;
       }
+      return `<span style="font-weight:bold;color:#ffe066;font-size:1.12em;vertical-align:middle;margin-right: 2px;">${num}</span>`;
     });
-    return html || '0';
+    return html;
   }
+
+  // Array style: [{color: 'red', amount: 2}, ...]
+  if (Array.isArray(costData)) { ... }
 
   // Object style: {red: 2, blue: 1, colorless: 3}
-  for (const key in costData) {
-    if (!costData.hasOwnProperty(key)) continue;
-    if (key === 'colorless' || key === 'X') {
-      const imgKey = 'X' + costData[key];
-      if (COST_IMAGE_MAP[imgKey]) {
-        html += `<img src="${COST_IMAGE_MAP[imgKey]}" alt="Colorless" style="width:22px;height:22px;vertical-align:middle;">`;
-      }
-    } else if (COST_IMAGE_MAP[key]) {
-      for (let i = 0; i < costData[key]; i++) {
-        html += `<img src="${COST_IMAGE_MAP[key]}" alt="${key}" style="width:22px;height:22px;vertical-align:middle;">`;
-      }
-    }
-  }
+  for (const key in costData) { ... }
+
   return html || `<img src="${COST_IMAGE_MAP.X0}" alt="Cost: 0" style="width:22px;height:22px;vertical-align:middle;">`;
 }
+
 const COLLECTION_KEY = "cardCollection";
 const NEW_CARD_KEY = "newlyUnlockedCards";
 
