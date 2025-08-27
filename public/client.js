@@ -73,7 +73,15 @@ socket.on('opponent joined', (opponentId) => {
 
 function startMultiplayerGameIfReady() {
   if (opponentDeckReceived) {
-    setupBattlefieldGame();
+    startGame({
+      mode: "casual", // or "multiplayer", as appropriate
+      playerDeck,                 // your deck object
+      opponentDeck,               // received deck object
+      playerProfile,              // your profile object
+      opponentProfile,            // received opponent profile
+      isCpuGame: false,           // multiplayer, not CPU
+      matchData                   // if you have matchData for this match
+    });
   }
 }
 // --- Submit deck to server for multiplayer sync ---
