@@ -6,7 +6,8 @@ const dummyCards = [
 
 {id: 'SylvaniaThornEmpress', name: 'Sylvania, Thorn Empress', rarity: 'Legendary', image: 'CardImages/Sylvan/Sylvania, Thorn Empress.png', 
  category: 'Creature', color: 'Green', type: ['Elf', 'Mage'], trait: 'Champion', hp: 11, atk: 1, def: 0,
- cost: {green: 3}, essence: {green: 1}, archetype: 'Sylvan', ability: ['Ranged',''], skill: ['Dash {Y}{W}','Hexblast {B}{CW}','Briar Queen's Grasp {G}{CCW}'], set: 'StandardPack'},
+ cost: {green: 3}, essence: {green: 1}, archetype: 'Sylvan', ability: ['Ranged',''],
+ skill: ["Briar Queen's Grasp {G}{CCW}"], set: 'StandardPack'},
 
 {id: 'KaelenBlazebornHuntress', name: 'Kaelen, Blazeborn Huntress', rarity: 'Legendary', image: 'CardImages/Skullframe/Kaelen, Blazeborn Huntress.png', 
  category: 'Creature', color: 'Red', type: 'Warrior', trait: 'Champion', hp: 8, atk: 1, def: 0,
@@ -185,7 +186,7 @@ const dummyCards = [
 
 // OTHER MULTICOLORED //
 
-{id: 'DragonsApprentice', name: 'Dragon's Apprentice', rarity: 'Rare', image: 'CardImages/Cinderscales/Dragon's Apprentice.png', 
+{id: 'DragonsApprentice', name: "Dragon's Apprentice", rarity: 'Rare', image: 'CardImages/Cinderscales/Dragons Apprentice.png', 
  category: 'Creature', color: 'Red', type: 'Dragon', trait: 'Evolution', hp: 4, atk: 2, def: 0,
  cost: {colorless: 2}, archetype: '', ability: ['Burn','Flying','Ranged'], skill: ['Reveal {R}','Cataclysmic Blaze {R}{CW}'], set: 'StandardPack'},
 
@@ -288,7 +289,7 @@ skill: [
  category: 'Creature', color: ['Red', 'Gray'], type: ['Elemental','Golem'], hp: 3, atk: 2, def: 1,
  cost: {red: 1, gray: 1}, archetype: ['Firelands','Golemheart'], ability: 'Burn', set: 'PrimordialAscension'},
 {id: 'KaelgorranElementalPrimordial', name: 'Kaelgorran, Elemental Primordial', rarity: 'Legendary', image: 'CardImages/Golems/Kaelgorran, Elemental Primordial.png', 
- category: 'Creature', color: ['Green','Red', 'gray'], type: ['Elemental','Golem'], hp: 18, atk: 6, def: 3, cost: {colorless: 4, red: 1, gray: 1},
+ category: 'Creature', color: ['Green','Red', 'Gray'], type: ['Elemental','Golem'], hp: 18, atk: 6, def: 3, cost: {colorless: 4, red: 1, gray: 1},
  archetype: 'Golemheart', ability: 'Burn', trait: 'Fusion', set: 'Primordial Ascension'},
 {id: 'AcidicGolem', name: 'Acidic Golem', rarity: 'Rare', image: 'CardImages/Golems/Acidic Golem.png', 
  category: 'Creature', color: ['Purple', 'Gray'], type: ['Elemental','Golem'], hp: 8, armor: 4, atk: 4, def: 3, cost: {colorless: 2, purple: 1, gray: 1}, archetype: 'Golemheart', ability: 'toxic', set: 'PrimordialAscension'},
@@ -306,7 +307,7 @@ skill: [
 {id: 'MaelvyrnCoralboundAutomatonFA', name: 'Maelvyrn, Coralbound Automaton', rarity: 'Legendary', image: 'CardImages/Coralbound/Maelvyrn, Coralbound Automaton.png', 
  category: 'Creature', color: 'Blue', type: 'Construct', hp: 20, atk: 8, def: 5, cost: {colorless: 6, blue: 2},
  skill: [
-  {name: 'Stash', cost: '{U}', requirement: 'Stash', zone: 'hand', type: 'Search', searchCriteria: { type: 'Construct' }}
+  {name: 'Stash', cost: '{U}', requirement: 'Stash', zone: 'hand', type: 'Search', searchCriteria: { type: 'Construct' }},
   {name: 'Hydroburst Cannon', cost: '{1}{U}', type: 'Strike', zone: 'field', return: true, damage: 8, soak: true}
  ],
  archetype: 'Coralbound', ability: 'Protect', trait: 'Fusion', set: 'StandardPack'},
