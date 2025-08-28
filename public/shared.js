@@ -1005,14 +1005,8 @@ function renderCardCost(costData) {
     });
     return html;
   }
-
-  // Array style: [{color: 'red', amount: 2}, ...]
-  if (Array.isArray(costData)) { ... }
-
-  // Object style: {red: 2, blue: 1, colorless: 3}
-  for (const key in costData) { ... }
-
-  return html || `<img src="${COST_IMAGE_MAP.X0}" alt="Cost: 0" style="width:22px;height:22px;vertical-align:middle;">`;
+  // Fallback
+  return `<img src="${COST_IMAGE_MAP.X0}" alt="Cost: 0" style="width:22px;height:22px;vertical-align:middle;">`;
 }
 
 const COLLECTION_KEY = "cardCollection";
