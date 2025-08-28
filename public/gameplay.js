@@ -453,6 +453,11 @@ const nextPhaseBtn       = document.getElementById('next-phase-btn');
 const battlefield        = document.getElementById('battlefield');
 const phaseBadge = document.getElementById('phase-badge');
 
+const parseEssence = window.parseEssenceText;
+const essenceObjToString = window.essenceObjToString;
+const renderCardCost = window.renderCardCost;
+const parseEffectText = window.parseEffectText;
+
 // ==========================
 // === RENDERING / UI ===
 // ==========================
@@ -518,6 +523,16 @@ function startGame({
   // Player profile
   const myProfileDiv = document.getElementById('my-profile');
   myProfileDiv.innerHTML = "";
+  const realProfile = {
+    username: window.playerUsername || "You",
+    avatar: window.playerProfilePic || "CardImages/Avatars/Default.png",
+    banner: window.playerProfileBanner || "CardImages/Banners/DefaultBanner.png",
+    power: typeof calculatePlayerPower === "function" ? calculatePlayerPower() : 0
+  };
+  // Use real profile in solo/CPU mode, but not for casual/private modes (where playerProfile is correct)
+  if (isCpuGame || mode === "solo") {
+    playerProfile = realProfile;
+  }
   myProfileDiv.appendChild(renderProfilePanel(playerProfile));
 
   // Opponent profile
@@ -914,7 +929,7 @@ function showHandCardMenu(instanceId, cardDiv) {
     cardData.skill.forEach(skillObj => {
       const isEnabled = canActivateSkill(cardObj, skillObj, 'hand', gameState);
       buttons.push({
-        text: `${skillObj.name} ${skillObj.cost}`,
+        text: `${skillObj.name} ${parseEffectText(skillObj.cost)}`,
         html: true,
         disabled: !isEnabled,
         onClick: function(e) {
@@ -1360,7 +1375,6 @@ function renderCardOnField(cardObj, zoneId) {
     img.alt = cardData.name || "Card";
     img.style.width = "100%";
     img.style.height = "100%";
-    img.style.borderRadius = "8px";
     if (cardObj.orientation === "horizontal") img.style.transform = "rotate(90deg)";
     cardDiv.appendChild(img);
   }
@@ -1856,7 +1870,7 @@ if (cardData.skill && Array.isArray(cardData.skill)) {
   cardData.skill.forEach(skillObj => {
     const isEnabled = canActivateSkill(cardObj, skillObj, currentZone, gameState);
     buttons.push({
-      text: `${skillObj.name} ${skillObj.cost}`,
+      text: `${skillObj.name} ${parseEffectText(skillObj.cost)}`,
       html: true,
       disabled: !isEnabled,
       onClick: function(e) {
@@ -1975,7 +1989,7 @@ function openVoidModal() {
         if (cardData && Array.isArray(cardData.skill)) {
           cardData.skill.forEach(skillObj => {
             buttons.push({
-              text: `${skillObj.name} ${skillObj.cost}`,
+              text: `${skillObj.name} ${parseEffectText(skillObj.cost)}`,
               html: true,
               disabled: !canActivateSkill(cardObj, skillObj, 'void', gameState),
               onClick: function(e) {
