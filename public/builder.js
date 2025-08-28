@@ -71,9 +71,25 @@ const cardbackOptions = [
 document.getElementById('builder-settings-btn').onclick = function() {
   document.getElementById('settings-modal').style.display = 'flex';
 };
-document.getElementById('builder-back-btn').onclick = function() {
-  showDeckSelection();
+builderBackBtn.onclick = function() {
+  // Check for unsaved changes before returning to deck selection
+  if (typeof deckBuilderHasUnsavedChanges === "function" && deckBuilderHasUnsavedChanges()) {
+    showToast("Any unsaved changes will be lost");
+    if (confirm("Any unsaved changes will be lost. Are you sure you want to leave?")) {
+      // Clear unsaved draft from localStorage
+      const deckId = currentDeckSlot || selectedDeckId;
+      if (deckId) {
+        localStorage.removeItem(`deckbuilder_draft_${deckId}`);
+      }
+      // Optionally clear draft in memory
+      deckBuilderDraft = null;
+      showDeckSelection();
+    }
+  } else {
+    showDeckSelection();
+  }
 };
+
 // SAVING DECK
 const saveDeckBtn = document.getElementById('save-deck-btn');
 if (saveDeckBtn) {
@@ -884,8 +900,9 @@ function canAddCard(card, currentInDeck, ownedCount) {
   if (count >= ownedCount) return false;
   // Rarity limits
   if (card.rarity && card.rarity.toLowerCase() === 'legendary' && count >= 1) return false;
-  if (card.rarity && card.rarity.toLowerCase() === 'rare' && count >= 2) return false;
-  if (card.rarity && card.rarity.toLowerCase() === 'common' && count >= 3) return false;
+  if (card.rarity && card.rarity.toLowerCase() === 'epic' && count >= 2) return false;
+  if (card.rarity && card.rarity.toLowerCase() === 'rare' && count >= 3) return false;
+  if (card.rarity && card.rarity.toLowerCase() === 'common' && count >= 4) return false;
   if (card.trait && card.trait.toLowerCase() === 'dominion') {
     for (const cardId in deck) {
       const c = dummyCards.find(dc => dc.id === cardId);
@@ -1040,7 +1057,13 @@ function updateFavoriteFilterIconBuilder() {
     favIcon.title = 'Show only favorites';
   }
 }
-
+// Add this helper if not present, or ensure your change tracking function is correct:
+function deckBuilderHasUnsavedChanges() {
+  const deckId = currentDeckSlot || selectedDeckId;
+  if (!deckId) return false;
+  // There is a draft in localStorage, assume unsaved changes exist
+  return !!localStorage.getItem(`deckbuilder_draft_${deckId}`);
+}
 // Setup event listener for builder favorite icon (on DOMContentLoaded)
 document.addEventListener('DOMContentLoaded', function() {
   const favIcon = document.getElementById('filter-favorites-builder');
