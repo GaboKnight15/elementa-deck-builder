@@ -1719,8 +1719,13 @@ button {}
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 0.7em;
   box-sizing: border-box;
+}
+#builder-filter-summary {
+  margin: 10px 0;
+  font-size: 1.08em;
+  color: #ffe066;
+  text-align: center;
 }
 #deck-list.drag-over {
   box-shadow: 0 0 8px 2px #3b82f6;
