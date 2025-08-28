@@ -455,7 +455,6 @@ const phaseBadge = document.getElementById('phase-badge');
 
 const parseEssence = window.parseEssenceText;
 const essenceObjToString = window.essenceObjToString;
-const renderCardCost = window.renderCardCost;
 const parseEffectText = window.parseEffectText;
 
 // ==========================
