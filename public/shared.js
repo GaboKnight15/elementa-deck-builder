@@ -706,10 +706,10 @@ function parseEffectText(effect) {
   );
 
   // Replace tapped/untapped icons
-  effect = effect.replace(/\{CW\}/g,
+  effect = effect.replace(/\{CW\}/gi,
     '<img src="OtherImages/Icons/Tapped.png" style="height:1.3em;vertical-align:middle;margin-right: 2px;" title="Tapped">'
   );
-  effect = effect.replace(/\{CCW\}/g,
+  effect = effect.replace(/\{CCW\}/gi,
     '<img src="OtherImages/Icons/Untapped.png" style="height:1.3em;vertical-align:middle;margin-right: 2px;" title="Untapped">'
   );
 
