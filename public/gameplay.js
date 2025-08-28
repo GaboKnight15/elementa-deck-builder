@@ -453,10 +453,6 @@ const nextPhaseBtn       = document.getElementById('next-phase-btn');
 const battlefield        = document.getElementById('battlefield');
 const phaseBadge = document.getElementById('phase-badge');
 
-var parseEssence = window.parseEssenceText;
-var essenceObjToString = window.essenceObjToString;
-var parseEffectText = window.parseEffectText;
-
 // ==========================
 // === RENDERING / UI ===
 // ==========================
@@ -1660,7 +1656,7 @@ function renderEssencePool(cardObj) {
   const poolDiv = document.createElement('div');
   poolDiv.className = 'essence-pool';
 
-  const essenceObj = parseEssence(sourceCard.essence);
+  const essenceObj = parseEssenceText(sourceCard.essence);
   Object.keys(essenceObj).forEach(type => {
     const amount = essenceObj[type];
     const prevAmount = cardObj._prevEssence[type] || 0;
@@ -1679,17 +1675,17 @@ function renderEssencePool(cardObj) {
   return poolDiv;
 }
 function addEssence(cardObj, type, amount) {
-  let essenceObj = parseEssence(cardObj.essence);
+  let essenceObj = parseEssenceText(cardObj.essence);
   essenceObj[type] = (essenceObj[type] || 0) + amount;
-  cardObj.essence = essenceObjToString(essenceObj);
+  cardObj.essence = parseEssenceText(essenceObj);
   renderGameState();
 }
 
 function consumeEssence(cardObj, type, amount) {
-  let essenceObj = parseEssence(cardObj.essence);
+  let essenceObj = parseEssenceText(cardObj.essence);
   if ((essenceObj[type] || 0) >= amount) {
     essenceObj[type] -= amount;
-    cardObj.essence = essenceObjToString(essenceObj);
+    cardObj.essence = parseEssenceText(essenceObj);
     renderGameState();
     return true;
   }
@@ -2425,7 +2421,7 @@ function generateEssenceForCard(cardObj) {
   const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
   if (!cardDef) return;
   if (cardDef.essence) {
-    const essenceObj = parseEssence(cardDef.essence);
+    const essenceObj = parseEssenceText(cardDef.essence);
     Object.keys(essenceObj).forEach(type => {
       addEssence(cardObj, type, essenceObj[type]);
     });
