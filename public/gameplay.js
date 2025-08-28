@@ -453,9 +453,9 @@ const nextPhaseBtn       = document.getElementById('next-phase-btn');
 const battlefield        = document.getElementById('battlefield');
 const phaseBadge = document.getElementById('phase-badge');
 
-const parseEssence = window.parseEssenceText;
-const essenceObjToString = window.essenceObjToString;
-const parseEffectText = window.parseEffectText;
+var parseEssence = window.parseEssenceText;
+var essenceObjToString = window.essenceObjToString;
+var parseEffectText = window.parseEffectText;
 
 // ==========================
 // === RENDERING / UI ===
