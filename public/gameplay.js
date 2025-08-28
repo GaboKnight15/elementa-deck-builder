@@ -1656,7 +1656,7 @@ function renderEssencePool(cardObj) {
   const poolDiv = document.createElement('div');
   poolDiv.className = 'essence-pool';
 
-  const essenceObj = parseEssenceText(sourceCard.essence);
+  const essenceObj = parseEssenceText(cardObj.essence);
   Object.keys(essenceObj).forEach(type => {
     const amount = essenceObj[type];
     const prevAmount = cardObj._prevEssence[type] || 0;
@@ -2565,7 +2565,7 @@ function showEssencePaymentModal(opts) {
     essenceWrap.style.flexWrap = 'wrap';
     essenceWrap.style.gap = '5px';
     for (const type in ESSENCE_IMAGE_MAP) {
-      let amt = (sourceCard.essence && sourceCard.essence[type]) || 0;
+      let amt = (cardObj.essence && cardObj.essence[type]) || 0;
       for (let i = 0; i < amt; i++) {
         const icon = document.createElement('img');
         icon.src = ESSENCE_IMAGE_MAP[type];
