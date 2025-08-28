@@ -727,7 +727,19 @@ function parseEffectText(effect) {
 
   return effect;
 }
-
+function parseEssenceText(essenceStr) {
+  // Example: "{G}{G}{R}" => { green: 2, red: 1 }
+  const map = { G: "green", R: "red", U: "blue", Y: "yellow", C: "gray", P: "purple", B: "black", W: "white" };
+  const result = {};
+  if (typeof essenceStr !== "string") return result;
+  const regex = /\{([GRUYCPBW])\}/g;
+  let match;
+  while ((match = regex.exec(essenceStr))) {
+    const color = map[match[1]];
+    if (color) result[color] = (result[color] || 0) + 1;
+  }
+  return result;
+}
 
 // POWER
 function getPlayerLevelFromPower(power) {
