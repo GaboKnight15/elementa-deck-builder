@@ -360,15 +360,15 @@ skill: [
   {name: 'Ebonhex Flare', cost: '{P}{P}{B}', requirement: [''], zone: 'field', type: ['Strike'], damage: 3, status: ['Burn'] },
   {name: 'Ebonhex Crush', cost: '{B}', requirement: [''], zone: 'field', condition: [
    { status: 'Burn', owner: 'opponent', category: 'Creature' }], type: ['Destroy']},
-  {name: 'Reanimate', cost: '{2}{B}{B}', requirement: [''], zone: 'void', type: ['Reanimate']}
+  {name: 'Reanimate', cost: '{2}{B}{B}', zone: 'void', type: ['Reanimate']}
  ]},
 {id: 'MaldryssSkullframeArchmage', name: 'Maldryss, Skullframe Archmage', rarity: 'Legendary', image: 'CardImages/Skullframe/Maldryss, Skullframe Archmage.png', 
  category: 'Creature', color: ['Black', 'Purple'], type: ['Undead','Mage'], trait: 'Champion', hp: 8, atk: 1, def: 0,
  cost: '{B}{B}{P}', essence: '{B}', archetype: 'Skullframe', ability: ['Drain','Immunity','Ranged'], set: 'StandardPack',
  skill: [
   {name: 'Hexbind', cost: '{P}{B}', requirement: ['CW'], zone: 'field', type: ['Strike'], damage: 4, status: ['Poison'] },
-  {name: 'Hexblast', cost: '{B}{cw}', requirement: ['CCW'], zone: 'field', type: ['Destroy']},
-  {name: 'Reanimate', cost: '{2}{B}{B}', requirement: [''], zone: 'void', type: ['Reanimate']}
+  {name: 'Hexblast', cost: '{B}', requirement: ['CCW'], zone: 'field', type: ['Destroy']},
+  {name: 'Reanimate', cost: '{2}{B}{B}', zone: 'void', type: ['Reanimate']}
  ]},
 {id: 'MaldryssSkullframeArchmageFA', name: 'Maldryss, Skullframe Archmage', rarity: 'Legendary', image: 'CardImages/Skullframe/Maldryss, Skullframe Archmage FA.png', 
  category: 'Creature', color: ['Black', 'Purple'], type: ['Undead','Mage'], trait: 'Champion', hp: 8, atk: 1, def: 0,
