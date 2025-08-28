@@ -1140,10 +1140,7 @@ function getCurrency() {
 
 // CLOSE MODAL AND MENU HELPERS
 function closeAllModals() {document.querySelectorAll('.modal').forEach(modal => {modal.style.display = 'none';});}
-function closeAllMenus() {
-  document.querySelectorAll('.menu').forEach(menu => menu.remove());
-  document.querySelectorAll('.card-menu').forEach(menu => menu.remove());
-}
+function closeAllMenus() {document.querySelectorAll('.card-menu').forEach(menu => menu.remove());}
 
 // NOTIFICATIONS
 function showToast(message, options = {}) {
