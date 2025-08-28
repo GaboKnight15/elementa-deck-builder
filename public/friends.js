@@ -723,9 +723,11 @@ function showProfileMenu(tile, user, context) {
     };
   }
   
+  // Click outside closes the menu
   setTimeout(() => {
-    document.body.addEventListener('click', function handler() {
-      closeAllMenus();
+    document.body.addEventListener('click', function handler(e) {
+      // Only close if clicking outside the menu
+      if (!menu.contains(e.target)) closeAllMenus();
       document.body.removeEventListener('click', handler);
     }, { once: true });
   }, 10);
