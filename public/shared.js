@@ -905,12 +905,22 @@ function showFullCardModal(cardObj) {
   infoHtml += labeled("Ability", Array.isArray(card.ability) ? card.ability.join(", ") : card.ability);
   infoHtml += labeled("Trait", Array.isArray(card.trait) ? card.trait.join(", ") : card.trait);
   if (card.skill) {
-  // Ensure skills is always an array
-   let skills = Array.isArray(card.skill) ? card.skill : [card.skill];
-   infoHtml += `<div class="full-card-info-row"><span class="full-card-info-label">Skills:</span></div>`;
-   skills.forEach(skill => {
-    infoHtml += `<div class="full-card-info-row" style="margin-left:18px;">${parseEffectText(skill)}</div>`;
-   });
+    let skills = Array.isArray(card.skill) ? card.skill : [card.skill];
+    infoHtml += `<div class="full-card-info-row"><span class="full-card-info-label">Skills:</span></div>`;
+    skills.forEach(skill => {
+      if (typeof skill === "object" && skill !== null) {
+        infoHtml += `<div class="full-card-info-row" style="margin-left:18px;">`;
+        if (skill.name) {
+          infoHtml += `<span style="color:#ffe066;font-weight:bold;">${skill.name}</span> `;
+        }
+        if (skill.cost) {
+          infoHtml += renderCardCost(skill.cost) + " ";
+        }
+        infoHtml += `</div>`;
+      } else {
+        infoHtml += `<div class="full-card-info-row" style="margin-left:18px;">${parseEffectText(skill)}</div>`;
+      }
+    });
   }
   infoHtml += `<div class="card-modal-divider"></div>`;
   let statsRow = '';
