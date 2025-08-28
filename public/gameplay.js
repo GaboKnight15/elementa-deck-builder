@@ -801,17 +801,12 @@ function showHandCardMenu(instanceId, cardDiv) {
   const cardObj = gameState.playerHand.find(c => c.instanceId === instanceId);
   const cardData = dummyCards.find(c => c.id === cardObj.cardId);
 
-  let cost = cardData.cost || {};
-  if (typeof cost === "string") {
-    cost = parseCost(cost);
-  }
-  if (typeof cost === "number") {
-    cost = { colorless: cost };
-  }
+  // Always treat cost as string, parse it once for logic
+  const parsedCost = parseCost(cardData.cost);
+  const canPay = canPayEssence(parsedCost, getAllEssenceSources());
   
-  const canPay = canPayEssence(cost, getAllEssenceSources());
   let playLabel = "Play";
-  let costHtml = getEssenceCostDisplay(cost);
+  let costHtml = getEssenceCostDisplay(cardData.cost);
 
   if (cardData) {
     const category = cardData.category ? cardData.category.toLowerCase() : '';
@@ -853,16 +848,13 @@ function showHandCardMenu(instanceId, cardDiv) {
           return;
         }
         
-        // PATCH: Always parse cost before payment modal
-        let parsedCost = cardData.cost;
-        if (typeof parsedCost === "string") parsedCost = parseCost(parsedCost);
-        if (typeof parsedCost === "number") parsedCost = { colorless: parsedCost };
+        // Always parse cost once here
+        const parsedCost = parseCost(cardData.cost);
         
         // No cost, play immediately
         if (
           !cardData.cost ||
-          (typeof cardData.cost === "number" && cardData.cost === 0) ||
-          (typeof cardData.cost === "object" && Object.values(cardData.cost).reduce((a, b) => a + b, 0) === 0)
+          Object.values(parsedCost).reduce((a, b) => a + b, 0) === 0 ||
           (typeof cardData.cost === "string" && cardData.cost === "{0}")
         ) {
           showSummonPositionModal(cardObj, function(chosenOrientation) {
@@ -917,22 +909,23 @@ function showHandCardMenu(instanceId, cardDiv) {
       }
     }
   ];
-if (cardData.skill && Array.isArray(cardData.skill)) {
-  cardData.skill.forEach(skillObj => {
-    const isEnabled = canActivateSkill(cardObj, skillObj, 'hand', gameState);
-    buttons.push({
-      text: `${skillObj.name} ${skillObj.cost}`,
-      html: true,
-      disabled: !isEnabled,
-      onClick: function(e) {
-        e.stopPropagation();
-        if (!canActivateSkill(cardObj, skillObj, 'hand', gameState)) return;
-        activateSkill(cardObj, skillObj);
-        closeAllMenus();
-      }
+  // Skill buttons
+  if (cardData.skill && Array.isArray(cardData.skill)) {
+    cardData.skill.forEach(skillObj => {
+      const isEnabled = canActivateSkill(cardObj, skillObj, 'hand', gameState);
+      buttons.push({
+        text: `${skillObj.name} ${skillObj.cost}`,
+        html: true,
+        disabled: !isEnabled,
+        onClick: function(e) {
+          e.stopPropagation();
+          if (!canActivateSkill(cardObj, skillObj, 'hand', gameState)) return;
+          activateSkill(cardObj, skillObj);
+          closeAllMenus();
+        }
+      });
     });
-  });
-}
+  }
   const menu = createCardMenu(buttons);
 
   // Position relative to cardDiv
