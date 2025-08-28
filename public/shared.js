@@ -920,19 +920,25 @@ function showFullCardModal(cardObj) {
     let skills = Array.isArray(card.skill) ? card.skill : [card.skill];
     infoHtml += `<div class="full-card-info-row"><span class="full-card-info-label">Skills:</span></div>`;
     skills.forEach(skill => {
-      if (typeof skill === "object" && skill !== null) {
-        infoHtml += `<div class="full-card-info-row" style="margin-left:18px;">`;
-        if (skill.name) {
-          infoHtml += `<span style="color:#ffe066;font-weight:bold;">${skill.name}</span> `;
-        }
-        if (skill.cost) {
-          infoHtml += renderCardCost(skill.cost) + " ";
-        }
-        infoHtml += `</div>`;
-      } else {
-        infoHtml += `<div class="full-card-info-row" style="margin-left:18px;">${parseEffectText(skill)}</div>`;
+     if (typeof skill === "object" && skill !== null) {
+      infoHtml += `<div class="full-card-info-row" style="margin-left:18px;">`;
+      if (skill.name) {
+       infoHtml += `<span style="color:#ffe066;font-weight:bold;">${skill.name}</span> `;
       }
-    });
+      if (skill.cost) {
+       infoHtml += renderCardCost(skill.cost) + " ";
+      }
+      if (skill.requirement && skill.requirement.length) {
+      // Render each requirement (for tap/untap, etc.)
+       skill.requirement.forEach(req => {
+         infoHtml += renderCardCost(`{${req}}`);
+       });
+     }
+     infoHtml += `</div>`;
+   } else {
+      infoHtml += `<div class="full-card-info-row" style="margin-left:18px;">${parseEffectText(skill)}</div>`;
+     }
+   });
   }
   infoHtml += `<div class="card-modal-divider"></div>`;
   let statsRow = '';
@@ -1025,6 +1031,13 @@ function renderCardCost(costData) {
       }
       return `<span style="font-weight:bold;color:#ffe066;font-size:1.12em;vertical-align:middle;margin-right: 2px;">${num}</span>`;
     });
+     // Tap/untap (case-insensitive)
+    html = html.replace(/\{CW\}/gi,
+      `<img src="OtherImages/Icons/Tapped.png" style="width:22px;height:22px;vertical-align:middle;">`
+    );
+    html = html.replace(/\{CCW\}/gi,
+      `<img src="OtherImages/Icons/Untapped.png" style="width:22px;height:22px;vertical-align:middle;">`
+    );
     return html;
   }
   // Fallback
