@@ -3409,7 +3409,7 @@ function canPayEssence(cardObj, costStr) {
     }
   }
   // Now handle colorless
-  const colorlessMatches = costStr.match(/\{([1-9]|1[0-9]|20)\}/g);
+  const colorlessMatches = typeof costStr === "string" ? costStr.match(/\{([1-9]|1[0-9]|20)\}/g) : [];
   let colorlessNeeded = 0;
   if (colorlessMatches) {
     colorlessNeeded = colorlessMatches.map(m => Number(m.replace(/[{}]/g, ""))).reduce((a, b) => a + b, 0);
