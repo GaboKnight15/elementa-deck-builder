@@ -2479,6 +2479,7 @@ function animateEssencePop(icon) {
     icon.classList.remove('essence-pop');
   }, { once: true });
 }
+
 // ESSENCE CONSUPTION LOGIC
 function showEssencePaymentModal(opts) {
   closeAllModals();
@@ -2515,6 +2516,11 @@ function showEssencePaymentModal(opts) {
   header.style.alignItems = 'center';
   header.style.marginBottom = '10px';
   header.innerHTML = `<div style="font-size:1.2em;font-weight:bold;">Essence Cost</div>`;
+  const iconUnits = expandCostToIcons(opts.cost);
+  let costIconsHtml = iconUnits.map(unit =>
+    `<img src="${unit.img}" style="width:32px;margin-right:2px;" alt="${unit.color} Essence">`
+  ).join('');
+  header.innerHTML += `<div>${costIconsHtml}</div>`;
   if (cardData.image) header.prepend(img);
   content.appendChild(header);
 
@@ -2687,6 +2693,7 @@ function showEssencePaymentModal(opts) {
         pay.cardObj.essence = pay.cardObj.essence.replace(/\{([1-9]|1[0-9]|20)\}/, "");
       }
     }
+    renderGameState();
     modal.style.display = 'none';
     if (opts.onPaid) opts.onPaid(paymentPlan);
   };
@@ -2707,23 +2714,51 @@ function showEssencePaymentModal(opts) {
   };
   content.appendChild(cancelBtn);
 }
-  // Requirement "progress" update
+// Utility function: Expand cost object to list of unit icons
+function expandCostToIcons(costObj) {
+  const icons = [];
+  // Colorless first: push X1 for each required
+  for (let i = 0; i < (costObj.colorless || 0); i++) {
+    icons.push({ color: 'colorless', img: ESSENCE_IMAGE_MAP['X1'] });
+  }
+  // Then colored mana
+  const colorOrder = ['green','blue','red','white','black','yellow','purple','gray'];
+  colorOrder.forEach(color => {
+    for (let i = 0; i < (costObj[color] || 0); i++) {
+      icons.push({ color, img: ESSENCE_IMAGE_MAP[color] });
+    }
+  });
+  return icons;
+}
+// Requirement "progress" update
 function updateReqDiv(requirements, reqPaid, reqDiv) {
   // requirements: array of {color, needed, paid}
   // reqPaid: {color: number}
   reqDiv.innerHTML = `<b>Essence Required:</b> ${
     requirements.map(r => {
-      const imgSrc = ESSENCE_IMAGE_MAP[r.color] || ESSENCE_IMAGE_MAP.colorless;
-      // For each required essence, display one icon per required unit
       let icons = "";
-      for (let i = 0; i < r.needed; i++) {
-        // If this unit is paid, show full color, else gray
-        const isPaid = i < (reqPaid[r.color] || 0);
-        icons += `<img src="${imgSrc}" 
-          style="width:24px;height:24px;vertical-align:middle;margin-right:2px;
-          filter:${isPaid ? "none" : "grayscale(0.7) brightness(1.1)"};
-          opacity:${isPaid ? "1" : "0.7"};
-          transition:filter 0.2s,opacity 0.2s;">`;
+      // Colorless: use the X1 image for each unit
+      if (r.color === "colorless") {
+        for (let i = 0; i < r.needed; i++) {
+          const imgSrc = ESSENCE_IMAGE_MAP['X1'];
+          const isPaid = i < (reqPaid[r.color] || 0);
+          icons += `<img src="${imgSrc}" 
+            style="width:24px;height:24px;vertical-align:middle;margin-right:2px;
+            filter:${isPaid ? "none" : "grayscale(0.7) brightness(1.1)"};
+            opacity:${isPaid ? "1" : "0.7"};
+            transition:filter 0.2s,opacity 0.2s;">`;
+        }
+      } else {
+        // Colored essence: use its color image
+        const imgSrc = ESSENCE_IMAGE_MAP[r.color] || ESSENCE_IMAGE_MAP.gray;
+        for (let i = 0; i < r.needed; i++) {
+          const isPaid = i < (reqPaid[r.color] || 0);
+          icons += `<img src="${imgSrc}" 
+            style="width:24px;height:24px;vertical-align:middle;margin-right:2px;
+            filter:${isPaid ? "none" : "grayscale(0.7) brightness(1.1)"};
+            opacity:${isPaid ? "1" : "0.7"};
+            transition:filter 0.2s,opacity 0.2s;">`;
+        }
       }
       return `<span style="margin-right:12px;display:inline-flex;align-items:center;">${icons}</span>`;
     }).join('')
