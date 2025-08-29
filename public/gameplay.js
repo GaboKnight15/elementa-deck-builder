@@ -398,21 +398,26 @@ Reanimate: {
   name: 'Reanimate',
   description: 'Return this card from the void to the field.',
   handler: function(sourceCardObj, skillObj) {
-    // You could check the zone here if needed
-    const correctZone = skillObj.zone || 'void';
-    const isPlayer = (correctZone === 'void') 
-      ? gameState.playerVoid.includes(sourceCardObj) 
-      : gameState.playerCreatures.includes(sourceCardObj);
-
+    // Always resolve the real card from the void array
+    let cardInVoid = gameState.playerVoid.find(c => c.instanceId === sourceCardObj.instanceId);
+    let isPlayer = true;
+    // If not found, try opponent's void
+    if (!cardInVoid) {
+      cardInVoid = gameState.opponentVoid.find(c => c.instanceId === sourceCardObj.instanceId);
+      isPlayer = false;
+    }
+    if (!cardInVoid) {
+      showToast("Card not found in void!");
+      return;
+    }
     const targetArr = isPlayer ? gameState.playerCreatures : gameState.opponentCreatures;
     const fromArr = isPlayer ? gameState.playerVoid : gameState.opponentVoid;
-
-    showSummonPositionModal(sourceCardObj, function(chosenOrientation) {
+    showSummonPositionModal(cardInVoid, function(chosenOrientation) {
       moveCard(
-        sourceCardObj.instanceId,
+        cardInVoid.instanceId,
         fromArr,
         targetArr,
-        { orientation: chosenOrientation, currentHP: getBaseHp(sourceCardObj.cardId) }
+        { orientation: chosenOrientation, currentHP: getBaseHp(cardInVoid.cardId) }
       );
       renderGameState();
     });
@@ -423,13 +428,15 @@ Destroy: {
   name: 'Destroy',
   description: 'Destroy a valid target according to skill condition.',
   handler: function(sourceCardObj, skillObj) {
-    // Collect all potential targets (creatures, domains, etc)
-    const allTargets = [
-      ...gameState.playerCreatures,
-      ...gameState.opponentCreatures,
-      ...gameState.playerDomains,
-      ...gameState.opponentDomains
+    // Collect all field zones: creatures and domains (both sides)
+    const fieldArrays = [
+      gameState.playerCreatures,
+      gameState.opponentCreatures,
+      gameState.playerDomains,
+      gameState.opponentDomains
     ];
+    const allTargets = fieldArrays.flat();
+
     // Use skillObj.condition
     const validTargets = getValidTargetsByCondition(allTargets, skillObj.condition || []);
     if (validTargets.length === 0) {
@@ -437,7 +444,13 @@ Destroy: {
       return;
     }
     promptUserToSelectTarget(validTargets, selectedTarget => {
-      moveCard(selectedTarget.instanceId, getZoneArrayForCard(selectedTarget), gameState.playerVoid);
+      // Determine correct void array based on owner
+      const isPlayerCard =
+        gameState.playerCreatures.includes(selectedTarget) ||
+        gameState.playerDomains.includes(selectedTarget);
+      const voidArr = isPlayerCard ? gameState.playerVoid : gameState.opponentVoid;
+
+      moveCard(selectedTarget.instanceId, getZoneArrayForCard(selectedTarget), voidArr);
       renderGameState();
     });
   }
