@@ -812,9 +812,7 @@ function showHandCardMenu(instanceId, cardDiv) {
   const cardData = dummyCards.find(c => c.id === cardObj.cardId);
 
   // Always treat cost as string, parse it once for logic
-  const parsedCost = parseCost(cardData.cost);
-  const canPay = canPayEssence(parsedCost, getAllEssenceSources());
-  
+  const canPay = canPayEssence(cardData.cost, getAllEssenceSources());
   let playLabel = "Play";
   let costHtml = getEssenceCostDisplay(cardData.cost);
 
@@ -2594,11 +2592,15 @@ function showEssencePaymentModal(opts) {
     essenceWrap.style.display = 'flex';
     essenceWrap.style.flexWrap = 'wrap';
     essenceWrap.style.gap = '5px';
-    for (const type in ESSENCE_IMAGE_MAP) {
-      let amt = (cardObj.essence && cardObj.essence[type]) || 0;
+    // Colored essence
+    for (const code in ESSENCE_IMAGE_MAP) {
+      // code: green, red, etc.  Map to single letter
+      const codeLetterMap = {green: 'G', red: 'R', blue: 'U', yellow: 'Y', gray: 'C', purple: 'P', black: 'B', white: 'W'};
+      const codeLetter = codeLetterMap[code];
+      let amt = countEssenceType(sourceCard.essence, codeLetter);
       for (let i = 0; i < amt; i++) {
         const icon = document.createElement('img');
-        icon.src = ESSENCE_IMAGE_MAP[type];
+        icon.src = ESSENCE_IMAGE_MAP[code];
         icon.className = 'essence-img';
         icon.style.width = '22px';
         icon.style.borderRadius = '50%';
@@ -2606,22 +2608,21 @@ function showEssencePaymentModal(opts) {
         icon.style.border = '2px solid #aaa';
         icon.style.background = '#222';
         icon.style.margin = '1px';
-        icon.title = type.charAt(0).toUpperCase()+type.slice(1) + " Essence (click to select)";
+        icon.title = code.charAt(0).toUpperCase()+code.slice(1) + " Essence (click to select)";
 
         let assigned = false;
         icon.onclick = function() {
           // Only assign if there is a remaining unpaid requirement of this type or colorless
-          // Priority: assign to color-specific if needed, else colorless
           let assignColor = null;
-          if ((reqPaid[type] || 0) < (opts.cost[type] || 0)) {
-            assignColor = type;
-          } else if (type !== "colorless" && (opts.cost.colorless && (reqPaid.colorless || 0) < opts.cost.colorless)) {
+          if ((reqPaid[code] || 0) < (opts.cost[code] || 0)) {
+            assignColor = code;
+          } else if (code !== "colorless" && (opts.cost.colorless && (reqPaid.colorless || 0) < opts.cost.colorless)) {
             assignColor = "colorless";
           }
           if (!assignColor || assigned) return;
 
           reqPaid[assignColor]++;
-          paymentPlan.push({cardObj: sourceCard, color: type, essenceIdx: i});
+          paymentPlan.push({cardObj: sourceCard, color: code, essenceIdx: i, codeLetter: codeLetter});
           assigned = true;
           icon.style.opacity = '0.4';
           icon.style.border = '2.5px solid #ffe066';
@@ -2629,9 +2630,37 @@ function showEssencePaymentModal(opts) {
           updateReqDiv(requirements, reqPaid, reqDiv);
           updateConfirmBtn();
         };
-        selectableEssenceUnits.push({icon, cardObj: sourceCard, color: type, idx: i, assigned: ()=>assigned});
+        selectableEssenceUnits.push({icon, cardObj: sourceCard, color: code, idx: i, codeLetter, assigned: ()=>assigned});
         essenceWrap.appendChild(icon);
       }
+    }
+    // Colorless essence
+    let colorlessAmt = countColorlessEssence(sourceCard.essence);
+    for (let i = 0; i < colorlessAmt; i++) {
+      const icon = document.createElement('img');
+      icon.src = ESSENCE_IMAGE_MAP['gray'];
+      icon.className = 'essence-img';
+      icon.style.width = '22px';
+      icon.style.borderRadius = '50%';
+      icon.style.cursor = "pointer";
+      icon.style.border = '2px solid #aaa';
+      icon.style.background = '#222';
+      icon.style.margin = '1px';
+      icon.title = "Colorless Essence (click to select)";
+      let assigned = false;
+      icon.onclick = function() {
+        if ((reqPaid.colorless || 0) < (opts.cost.colorless || 0) && !assigned) {
+          reqPaid.colorless++;
+          paymentPlan.push({cardObj: sourceCard, color: 'colorless', essenceIdx: i});
+          assigned = true;
+          icon.style.opacity = '0.4';
+          icon.style.border = '2.5px solid #ffe066';
+          updateReqDiv(requirements, reqPaid, reqDiv);
+          updateConfirmBtn();
+        }
+      };
+      selectableEssenceUnits.push({icon, cardObj: sourceCard, color: 'colorless', idx: i, assigned: ()=>assigned});
+      essenceWrap.appendChild(icon);
     }
     cardDiv.appendChild(essenceWrap);
     sourcesDiv.appendChild(cardDiv);
@@ -2646,11 +2675,17 @@ function showEssencePaymentModal(opts) {
   confirmBtn.disabled = true;
   confirmBtn.style.marginTop = '12px';
   confirmBtn.onclick = function() {
-    // Actually deduct the paid Essence
+    // Actually deduct the paid Essence (from string)
     for (const pay of paymentPlan) {
       if (!pay.cardObj.essence) continue;
-      if (!pay.cardObj.essence[pay.color] || pay.cardObj.essence[pay.color] <= 0) continue;
-      pay.cardObj.essence[pay.color]--;
+      // Remove one colored essence
+      if (pay.color !== 'colorless') {
+        // Remove first occurrence of {codeLetter}
+        pay.cardObj.essence = pay.cardObj.essence.replace(new RegExp(`\\{${pay.codeLetter}\\}`), "");
+      } else {
+        // Remove first colorless {number}
+        pay.cardObj.essence = pay.cardObj.essence.replace(/\{([1-9]|1[0-9]|20)\}/, "");
+      }
     }
     modal.style.display = 'none';
     if (opts.onPaid) opts.onPaid(paymentPlan);
@@ -3330,12 +3365,16 @@ function canActivateSkill(cardObj, skillObj, currentZone, gameState) {
   if (cardObj.canActivateSkill === false) return false;
 
   // 3. Essence Cost (assume skillObj.cost is a string like '{1}{U}', pass to your cost-checker)
-  if (skillObj.cost && typeof canPayEssenceCost === "function") {
-    if (!canPayEssenceCost(skillObj.cost, gameState)) return false;
+  if (skillObj.cost) {
+    // Gather all available essence strings from player's domains & creatures
+    const sources = [...gameState.playerDomains, ...gameState.playerCreatures];
+    // Join all essence pools into one string
+    const availableEssence = sources.map(card => card.essence || '').join('');
+    // Use string-based canPayEssence
+    if (!canPayEssence({ essence: availableEssence }, skillObj.cost)) return false;
+    // ^ Pass as { essence: ... } to match canPayEssence signature
   }
-
   // 4. Any other custom requirements (add here if needed)
-
   return true;
 }
 
