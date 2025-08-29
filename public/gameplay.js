@@ -1681,15 +1681,15 @@ function addEssence(cardObj, type, amount) {
   renderGameState();
 }
 
-function consumeEssence(cardObj, type, amount) {
-  let essenceObj = parseEssenceText(cardObj.essence);
-  if ((essenceObj[type] || 0) >= amount) {
-    essenceObj[type] -= amount;
-    cardObj.essence = parseEssenceText(essenceObj);
-    renderGameState();
-    return true;
+function consumeEssence(cardObj, typeCode, amount) {
+  // Remove {typeCode} from the string amount times
+  let essenceStr = cardObj.essence || "";
+  for(let i=0; i<amount; i++) {
+    essenceStr = essenceStr.replace(new RegExp(`\\{${typeCode}\\}`), "");
   }
-  return false;
+  cardObj.essence = essenceStr;
+  renderGameState();
+  return true;
 }
 
 // Actions in zones
@@ -2419,13 +2419,10 @@ function initiateDominionAndChampionSelection(deckArr, afterSelection) {
 // ESSENCE GENERATION
 function generateEssenceForCard(cardObj) {
   const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
-  if (!cardDef) return;
-  if (cardDef.essence) {
-    const essenceObj = parseEssenceText(cardDef.essence);
-    Object.keys(essenceObj).forEach(type => {
-      addEssence(cardObj, type, essenceObj[type]);
-    });
-  }
+  if (!cardDef || !cardDef.essence) return;
+  // Just append the essence string for this card to cardObj.essence
+  cardObj.essence = (cardObj.essence || "") + cardDef.essence;
+  renderGameState();
 }
 function essencePhase(playerOrOpponent) {
   // Get the correct arrays
@@ -3326,37 +3323,40 @@ function hasAvailableTargets(skillObj, sourceCardObj, gameState) {
       return true; // Default: assume available
   }
 }
-function canPayEssence(costObj, essenceSources) {
-  // costObj: {green: 1, red: 2, ...}
-  // essenceSources: array of cards with .essence (e.g. playerCreatures + playerDomains)
-  const totalEssence = {};
-  for (const card of essenceSources) {
-    if (!card.essence) continue;
-    for (const color in card.essence) {
-      totalEssence[color] = (totalEssence[color] || 0) + card.essence[color];
+function canPayEssence(cardObj, costStr) {
+  const colorCodes = "GRUYCPBW";
+  let availableEssenceStr = cardObj.essence || "";
+  // First, check colored requirements and subtract them from available
+  for (let code of colorCodes) {
+    const need = countEssenceType(costStr, code);
+    const have = countEssenceType(availableEssenceStr, code);
+    if (have < need) return false;
+    // Remove what you need from the available string for colorless calculation
+    for (let i = 0; i < need; i++) {
+      availableEssenceStr = availableEssenceStr.replace(new RegExp(`\\{${code}\\}`), "");
     }
   }
-  // First check colored cost
-  for (const color of Object.keys(costObj)) {
-    if (color !== 'colorless' && (totalEssence[color] || 0) < costObj[color]) return false;
+  // Now handle colorless
+  const colorlessMatches = costStr.match(/\{([1-9]|1[0-9]|20)\}/g);
+  let colorlessNeeded = 0;
+  if (colorlessMatches) {
+    colorlessNeeded = colorlessMatches.map(m => Number(m.replace(/[{}]/g, ""))).reduce((a, b) => a + b, 0);
   }
-  // Then check colorless: sum of ALL essence types
-  if (costObj.colorless) {
-    let totalAvailable = Object.values(totalEssence).reduce((a, b) => a + b, 0);
-    // Subtract colored essence already required
-    for (const color of Object.keys(costObj)) {
-      if (color !== 'colorless') totalAvailable -= costObj[color];
-    }
-    if (totalAvailable < costObj.colorless) return false;
-  }
+  // Count all remaining essence units
+  const available = getTotalEssence(availableEssenceStr);
+  if (available < colorlessNeeded) return false;
   return true;
 }
-function canPayEssenceCost(costStr, gameState) {
-  const costObj = parseCost(costStr); // converts string to object
-  const essenceSources = getAllEssenceSources(); // all field cards with essence
-  return canPayEssence(costObj, essenceSources);
+function getTotalEssence(essenceStr) {
+  // Counts all essence units, colored and colorless
+  if (typeof essenceStr !== "string") return 0;
+  const matches = essenceStr.match(/\{([GRUYCPBW]|[1-9]|1[0-9]|20)\}/g);
+  return matches ? matches.length : 0;
 }
-// Helper functions for abilities and skills
+
+/*---------------------------------------------
+// Helper functions for abilities and skills //
+---------------------------------------------*/
 function attackerHasAbility(cardObj, abilityName) {
   const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
   return cardDef && Array.isArray(cardDef.ability) && cardDef.ability.includes(abilityName);
