@@ -1656,36 +1656,69 @@ function renderEssencePool(cardObj) {
   const poolDiv = document.createElement('div');
   poolDiv.className = 'essence-pool';
 
-  const essenceObj = parseEssenceText(cardObj.essence);
-  Object.keys(essenceObj).forEach(type => {
-    const amount = essenceObj[type];
-    const prevAmount = cardObj._prevEssence[type] || 0;
+  // Color codes and their image sources
+  const ESSENCE_IMAGE_MAP = {
+    green: "OtherImages/Essence/Green.png",
+    red: "OtherImages/Essence/Red.png",
+    blue: "OtherImages/Essence/Blue.png",
+    yellow: "OtherImages/Essence/Yellow.png",
+    gray: "OtherImages/Essence/Gray.png",
+    purple: "OtherImages/Essence/Purple.png",
+    black: "OtherImages/Essence/Black.png",
+    white: "OtherImages/Essence/White.png"
+  };
+  // Map from code to color name
+  const colorCodes = {
+    G: "green", R: "red", U: "blue", Y: "yellow", C: "gray",
+    P: "purple", B: "black", W: "white"
+  };
+
+  // Render colored essence
+  for (const code in colorCodes) {
+    const color = colorCodes[code];
+    const amount = countEssenceType(cardObj.essence, code);
+    const prevAmount = cardObj._prevEssence[color] || 0;
     if (amount > 0) {
       const icon = document.createElement('div');
-      icon.className = `essence-icon essence-${type}`;
-      icon.title = `${type} Essence: ${amount}`;
-      icon.innerHTML = `<img src="${ESSENCE_IMAGE_MAP[type]}" class="essence-img"><span class="essence-amount">${amount}</span>`;
+      icon.className = `essence-icon essence-${color}`;
+      icon.title = `${color.charAt(0).toUpperCase() + color.slice(1)} Essence: ${amount}`;
+      icon.innerHTML = `<img src="${ESSENCE_IMAGE_MAP[color]}" class="essence-img"><span class="essence-amount">${amount}</span>`;
       if (amount > prevAmount) {
         setTimeout(() => animateEssencePop(icon), 20);
       }
       poolDiv.appendChild(icon);
     }
-    cardObj._prevEssence[type] = amount;
-  });
+    cardObj._prevEssence[color] = amount;
+  }
+
+  // Render colorless essence (e.g. {1}, {2}, ...)
+  const colorlessAmount = countColorlessEssence(cardObj.essence);
+  const prevColorless = cardObj._prevEssence.colorless || 0;
+  if (colorlessAmount > 0) {
+    const icon = document.createElement('div');
+    icon.className = 'essence-icon essence-colorless';
+    icon.title = `Colorless Essence: ${colorlessAmount}`;
+    icon.innerHTML = `<img src="${COST_IMAGE_MAP.X0}" class="essence-img"><span class="essence-amount">${colorlessAmount}</span>`;
+    if (colorlessAmount > prevColorless) {
+      setTimeout(() => animateEssencePop(icon), 20);
+    }
+    poolDiv.appendChild(icon);
+  }
+  cardObj._prevEssence.colorless = colorlessAmount;
+
   return poolDiv;
 }
 function addEssence(cardObj, type, amount) {
-  let essenceObj = parseEssenceText(cardObj.essence);
-  essenceObj[type] = (essenceObj[type] || 0) + amount;
-  cardObj.essence = parseEssenceText(essenceObj);
+  let addStr = "";
+  for (let i = 0; i < amount; i++) addStr += `{${type}}`;
+  cardObj.essence = (cardObj.essence || "") + addStr;
   renderGameState();
 }
 
-function consumeEssence(cardObj, typeCode, amount) {
-  // Remove {typeCode} from the string amount times
+function consumeEssence(cardObj, type, amount) {
   let essenceStr = cardObj.essence || "";
-  for(let i=0; i<amount; i++) {
-    essenceStr = essenceStr.replace(new RegExp(`\\{${typeCode}\\}`), "");
+  for (let i = 0; i < amount; i++) {
+    essenceStr = essenceStr.replace(new RegExp(`\\{${type}\\}`), "");
   }
   cardObj.essence = essenceStr;
   renderGameState();
