@@ -455,6 +455,34 @@ Destroy: {
     });
   }
 },
+Search: {
+  icon: 'OtherImages/SkillTypes/Search.png',
+  name: 'Search',
+  description: 'Search your deck for a card matching the criteria and add it to your hand.',
+  handler: function(sourceCardObj, skillObj) {
+    // Get criteria from skillObj
+    const criteria = skillObj.criteria || {};
+    // Find matches in the player's deck
+    const matches = gameState.playerDeck.filter(cardObj => {
+      const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+      if (!cardData) return false;
+      // Match every key in criteria
+      return Object.keys(criteria).every(key => {
+        if (typeof cardData[key] === 'string')
+          return cardData[key].toLowerCase() === criteria[key].toLowerCase();
+        if (Array.isArray(cardData[key]))
+          return cardData[key].map(v => v.toLowerCase()).includes(criteria[key].toLowerCase());
+        return cardData[key] === criteria[key];
+      });
+    });
+    if (matches.length === 0) {
+      showToast("No matching cards found in deck.");
+      return;
+    }
+    // Show deck modal to select from matches
+    openDeckModal(matches);
+  }
+},
   // ...add more skill types here as needed!
 };
 // ==========================
@@ -1263,7 +1291,7 @@ function showSummonPositionModal(cardObj, onSelected) {
   };
 }
 // OPEN DECK MODAL
-function openDeckModal() {
+function openDeckModal(filteredCards) {
   const modal = document.getElementById('deck-modal');
   // Always attach the close-on-backdrop handler
   modal.onclick = function(e) {if (e.target === modal) modal.style.display = 'none';};
@@ -1280,7 +1308,9 @@ function openDeckModal() {
     modal.querySelector('.modal-content').appendChild(list);
   }
   list.innerHTML = "<h3>Deck</h3>";
-
+  
+  const deckCards = filteredCards || gameState.playerDeck;
+  
 gameState.playerDeck.forEach((cardObj, idx) => {
   const card = dummyCards.find(c => c.id === cardObj.cardId);
   if (!card) return;
@@ -3491,55 +3521,6 @@ function getCardColors(cardObj) {
   if (Array.isArray(cardDef.color)) return cardDef.color;
   if (typeof cardDef.color === "string") return [cardDef.color];
   return [];
-}
-// ACTIVATING EFFECTS AND ABILITIES
-function activateCardEffect(cardObj, targetObj) {
-  const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
-  if (!cardDef || !cardDef.effect) return;
-  switch (cardDef.effect.type) {
-    case 'strike':
-      dealCombatDamage(cardObj, targetObj, cardDef.effect.amount);
-      break;
-    case 'heal':
-      targetObj.currentHP = Math.min(getBaseHp(targetObj.cardId), (targetObj.currentHP || 0) + cardDef.effect.amount);
-      break;
-    case 'search':
-      handleSearchEffect(cardDef.effect.criteria);
-      break;
-    case 'draw':
-      drawCards('player', cardDef.effect.amount);
-      break;
-    // ...add more cases as needed
-    default:
-      console.warn("Unknown effect type:", cardDef.effect.type);
-  }
-}
-// Helper function for search
-function handleSearchEffect(criteria) {
-  // Find matching cards in deck
-  const matches = gameState.playerDeck.filter(cardObj => {
-    const cardData = dummyCards.find(c => c.id === cardObj.cardId);
-    if (!cardData) return false;
-    // Example: trait match
-    if (criteria.trait && cardData.trait && cardData.trait.toLowerCase() === criteria.trait.toLowerCase()) return true;
-    // Example: subtype match
-    if (criteria.type && cardData.type && cardData.subtype.toLowerCase() === criteria.subtype.toLowerCase()) return true;
-    // Example: category match
-    if (criteria.category && cardData.category && cardData.category.toLowerCase() === criteria.category.toLowerCase()) return true;
-    return false;
-  });
-
-  // Show a modal to let user select one of the matches
-  if (matches.length > 0) {
-    showDeckSearchModal(matches, selectedCardObj => {
-      // Move selected card to hand
-      moveCard(selectedCardObj.instanceId, gameState.playerDeck, gameState.playerHand);
-      renderGameState();
-      setupDropZones();
-    });
-  } else {
-    showToast("No matching cards found in deck.");
-  }
 }
 
 /*------------------------------------
