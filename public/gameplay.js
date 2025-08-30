@@ -539,7 +539,7 @@ function startGame({
   gameState.phase = "draw";
   gameState.playerDominion = null;
   gameState.opponentDominion = null;
-
+  putRandomChampionOnTop(gameState.playerDeck);
   // --- Battlefield backgrounds ---
   setBattlefieldBackgrounds(
     playerDeck?.bannerArt || "CardImages/Banners/DefaultBanner.png",
@@ -586,7 +586,7 @@ function startGame({
     showCoinFlipModal(function(whoStarts) {
       gameState.turn = whoStarts;
       gameState.phase = "draw";
-      initiateDominionAndChampionSelection(gameState.playerDeck, () => {
+      initiateDominionSelection(gameState.playerDeck, () => {
         drawOpeningHands();
         renderGameState();
         setupDropZones();
@@ -2397,77 +2397,7 @@ if (gameState.opponentDominion && gameState.opponentDominion.currentHP <= 0) {
   // Optionally: disable further actions, or trigger a reset
 }
 
-// CHAMPION SELECTION //
-function showChampionSelectionModal(deckArr, onSelected) {
-  closeAllModals();
-  let modal = document.getElementById('champion-select-modal');
-  if (!modal) {
-    modal = document.createElement('div');
-    modal.id = 'champion-select-modal';
-    modal.className = 'modal';
-    const content = document.createElement('div');
-    content.className = 'modal-content';
-    modal.appendChild(content);
-    document.body.appendChild(modal);
-  }
-  modal.style.background = "rgba(20,30,40,0.92)";
-  const content = modal.querySelector('.modal-content');
-  content.innerHTML = "<h3>Select Your Champion</h3>";
-  
-  const champions = getChampionsFromDeck(deckArr);
-  const row = document.createElement('div');
-  row.style.display = 'flex';
-  row.style.gap = '20px';
-
-  champions.forEach(cardObj => {
-    const cardData = dummyCards.find(c => c.id === cardObj.cardId);
-    const cardDiv = document.createElement('div');
-    cardDiv.style.cursor = 'pointer';
-    cardDiv.style.border = '3px solid #ffe066';
-    cardDiv.style.borderRadius = '10px';
-    cardDiv.style.background = '#232a3c';
-    cardDiv.style.padding = '10px';
-    cardDiv.style.textAlign = 'center';
-    cardDiv.innerHTML = `
-      <img src="${cardData.image}" alt="${cardData.name}" style="width:90px;display:block;margin-bottom:6px;">
-    `;
-    cardDiv.onclick = () => {
-      modal.style.display = 'none';
-      onSelected(cardObj);
-    };
-    row.appendChild(cardDiv);
-  });
-
-  content.appendChild(row);
-  modal.style.display = 'flex';
-}
-function selectChampionFromDeck(deckArr, onSelected) {
-  const champions = deckArr.filter(cardObj => {
-    const card = dummyCards.find(c => c.id === cardObj.cardId);
-    return card && card.trait === "champion";
-  });
-  if (champions.length === 1) {
-    onSelected(champions[0]);
-    return;
-  }
-  // Show modal: display champions, let player click one to select
-  // On click: onSelected(selectedChampion)
-}
-function getChampionsFromDeck(deckArr) {
-  return deckArr.filter(cardObj => {
-    const card = dummyCards.find(c => c.id === cardObj.cardId);
-    return card && typeof card.trait === "string" && card.trait.toLowerCase() === "champion";
-  });
-}
-
-function placeChampionOnField(championCardObj) {
-  // Remove from deck
-  const idx = gameState.playerDeck.findIndex(c => c.instanceId === championCardObj.instanceId);
-  if (idx !== -1) gameState.playerDeck.splice(idx, 1);
-  // Place on field (creatures array)
-  gameState.playerCreatures.unshift(championCardObj);
-}
-function initiateDominionAndChampionSelection(deckArr, afterSelection) {
+function initiateDominionSelection(deckArr, afterSelection) {
   // DOMINION SETUP
   const dominionObj = extractDominionFromDeck(deckArr);
   if (dominionObj) {
@@ -2478,18 +2408,27 @@ function initiateDominionAndChampionSelection(deckArr, afterSelection) {
     if (idx !== -1) deckArr.splice(idx, 1);
     renderGameState();
   }
-  // CHAMPION SELECTION
-  const champions = getChampionsFromDeck(deckArr);
-  showChampionSelectionModal(deckArr, chosenChampion => {
-    placeChampionOnField(chosenChampion);
-    renderGameState();
-    if (window.socket && window.currentRoomId) {
-      window.socket.emit('champion-selected', window.currentRoomId, chosenChampion);
-    }
-    if (afterSelection) afterSelection();
-  });
 }
+function putRandomChampionOnTop(deckArr) {
+  // Get all champions in deck
+  const champions = deckArr.filter(cardObj => {
+    const card = dummyCards.find(c => c.id === cardObj.cardId);
+    return card && card.trait && card.trait.toLowerCase() === "champion";
+  });
+  if (champions.length === 0) return; // no champion found
 
+  // Pick random champion
+  const idx = Math.floor(Math.random() * champions.length);
+  const championCard = champions[idx];
+
+  // Remove from current position
+  const deckIdx = deckArr.findIndex(c => c.instanceId === championCard.instanceId);
+  if (deckIdx === -1) return;
+  deckArr.splice(deckIdx, 1);
+
+  // Put on top of deck
+  deckArr.unshift(championCard);
+}
 // ESSENCE GENERATION
 function generateEssenceForCard(cardObj) {
   const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
@@ -3419,17 +3358,7 @@ function closeWaitingForOpponentModal() {
   let modal = document.getElementById('waiting-modal');
   if (modal) modal.remove();
 }
-function startGameFieldAnimation(champions) {
-  // Show "Both champions revealed!" animation
-  showChampionsRevealModal(champions, () => {
-    // After animation (e.g., with setTimeout), proceed to render field, draw hand, etc.
-    setTimeout(() => {
-      renderGameField(); // Your function to render battlefield
-      drawOpeningHands();
-      // Any other startup logic
-    }, 1000); // 1 second animation
-  });
-}
+
 function canActivateSkill(cardObj, skillObj, currentZone, gameState) {
   // 1. Check Zone
   if (Array.isArray(skillObj.zone)) {
@@ -3935,7 +3864,7 @@ if (window.socket) {
       gameState.turn = whoStarts;
       gameState.phase = "draw";
       // ...continue with setup...
-      initiateDominionAndChampionSelection(gameState.playerDeck, () => {
+      initiateDominionSelection(gameState.playerDeck, () => {
         // Draw opening hand, setup, etc.
       });
     }, result);
