@@ -313,7 +313,7 @@ skill: [
 {id: 'MaelvyrnCoralboundAutomatonFA', name: 'Maelvyrn, Coralbound Automaton', rarity: 'Legendary', image: 'CardImages/Coralbound/Maelvyrn, Coralbound Automaton.png', 
  category: 'Creature', color: 'Blue', type: 'Construct', hp: 20, atk: 8, def: 5, cost: '{6}{U}{U}',
  skill: [
-  {name: 'Stash', cost: '{U}', requirement: 'Stash', zone: 'hand', type: 'Search', criteria: { type: 'Construct' }},
+  {name: 'Stash', cost: '{U}', requirement: 'Stash', zone: 'hand', type: 'Search', criteria: { archetype: 'Coralbound', zone: 'deck' }},
   {name: 'Hydroburst Cannon', cost: '{1}{U}', type: 'Strike', zone: 'field', return: true, damage: 8, soak: true}
  ],
  archetype: 'Coralbound', ability: 'Protect', trait: 'Fusion', set: 'StandardPack'},
