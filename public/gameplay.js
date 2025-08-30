@@ -260,6 +260,7 @@ const REQUIREMENT_MAP = {
   Stash: {
     handler: function(sourceCardObj, skillObj) {
       // Only activate in hand
+      const activation = skillObj.activation || {};
       const isHand = gameState.playerHand.includes(sourceCardObj);
       if (!isHand) {
         showToast("Stash can only be activated from your hand.");
@@ -458,31 +459,46 @@ Destroy: {
 Search: {
   icon: 'OtherImages/SkillTypes/Search.png',
   name: 'Search',
-  description: 'Search your deck for a card matching the criteria and add it to your hand.',
+  description: 'Search your deck or void for a card matching resolution and add it to your hand.',
   handler: function(sourceCardObj, skillObj) {
-    // Get criteria from skillObj
-    const criteria = skillObj.criteria || {};
-    // Find matches in the player's deck
-    const matches = gameState.playerDeck.filter(cardObj => {
+    // Activation logic (if needed -- e.g. requirements, zone, etc.)
+    const activation = skillObj.activation || {};
+    if (activation.requirement && REQUIREMENT_MAP[activation.requirement]) {
+      REQUIREMENT_MAP[activation.requirement].handler(sourceCardObj, skillObj);
+    }
+
+    // Resolution logic
+    const resolution = skillObj.resolution || {};
+    const searchZone = resolution.zone || "deck";
+    const zoneArr = (searchZone === "void") ? gameState.playerVoid : gameState.playerDeck;
+
+    // Build filter for resolution (archetype/type/category/etc)
+    const filterKeys = Object.keys(resolution).filter(k => k !== "zone");
+    const matches = zoneArr.filter(cardObj => {
       const cardData = dummyCards.find(c => c.id === cardObj.cardId);
       if (!cardData) return false;
-      // Match every key in criteria
-      return Object.keys(criteria).every(key => {
+      return filterKeys.every(key => {
         if (typeof cardData[key] === 'string')
-          return cardData[key].toLowerCase() === criteria[key].toLowerCase();
+          return cardData[key].toLowerCase() === resolution[key].toLowerCase();
         if (Array.isArray(cardData[key]))
-          return cardData[key].map(v => v.toLowerCase()).includes(criteria[key].toLowerCase());
-        return cardData[key] === criteria[key];
+          return cardData[key].map(v => v.toLowerCase()).includes(resolution[key].toLowerCase());
+        return cardData[key] === resolution[key];
       });
     });
+
     if (matches.length === 0) {
-      showToast("No matching cards found in deck.");
+      showToast(`No matching cards found in ${searchZone}.`);
       return;
     }
-    // Show deck modal to select from matches
-    openDeckModal(matches);
+
+    showFilteredCardSelectionModal(matches, selectedCardObj => {
+      moveCard(selectedCardObj.instanceId, zoneArr, gameState.playerHand);
+      renderGameState();
+      setupDropZones && setupDropZones();
+      showToast(`${dummyCards.find(c=>c.id===selectedCardObj.cardId)?.name || "Card"} added to your hand!`);
+    }, { title: `Search ${searchZone === "void" ? "Void" : "Deck"} - Choose a card` });
   }
-},
+}
   // ...add more skill types here as needed!
 };
 // ==========================
@@ -3360,11 +3376,12 @@ function closeWaitingForOpponentModal() {
 }
 
 function canActivateSkill(cardObj, skillObj, currentZone, gameState) {
-  // 1. Check Zone
-  if (Array.isArray(skillObj.zone)) {
-    if (!skillObj.zone.includes(currentZone)) return false;
+  const activation = skillObj.activation || {};
+  // 1. Check Zone (from activation)
+  if (Array.isArray(activation.zone)) {
+    if (!activation.zone.includes(currentZone)) return false;
   } else {
-    if (skillObj.zone && skillObj.zone !== currentZone) return false;
+    if (activation.zone && activation.zone !== currentZone) return false;
   }
 
   // 2. Status Effects (Paralysis, Freeze, etc)
@@ -3373,15 +3390,11 @@ function canActivateSkill(cardObj, skillObj, currentZone, gameState) {
 
   // 3. Essence Cost (assume skillObj.cost is a string like '{1}{U}', pass to your cost-checker)
   if (skillObj.cost) {
-    // Gather all available essence strings from player's domains & creatures
     const sources = [...gameState.playerDomains, ...gameState.playerCreatures];
-    // Join all essence pools into one string
     const availableEssence = sources.map(card => card.essence || '').join('');
-    // Use string-based canPayEssence
     if (!canPayEssence({ essence: availableEssence }, skillObj.cost)) return false;
-    // ^ Pass as { essence: ... } to match canPayEssence signature
   }
-  // 4. Any other custom requirements (add here if needed)
+  // 4. Any other custom activation requirements
   return true;
 }
 
@@ -3472,13 +3485,17 @@ function activateSkill(cardObj, skillObj, options = {}) {
 }
 
 function proceedSkillActivation(cardObj, skillObj, options = {}) {
-  // Handle requirements
-  let requirements = Array.isArray(skillObj.requirement) ? skillObj.requirement : (skillObj.requirement ? [skillObj.requirement] : []);
+  // Handle requirements from activation
+  const activation = skillObj.activation || {};
+  let requirements = Array.isArray(activation.requirement)
+    ? activation.requirement
+    : (activation.requirement ? [activation.requirement] : []);
   for (let req of requirements) {
     if (REQUIREMENT_MAP[req] && REQUIREMENT_MAP[req].handler) {
       REQUIREMENT_MAP[req].handler(cardObj, skillObj);
     }
   }
+  renderGameState(); // Ensure UI/state is up-to-date after requirements
 
   if (!options.isChainResponse) {
     // First activation: start chain
@@ -3492,6 +3509,69 @@ function proceedSkillActivation(cardObj, skillObj, options = {}) {
     chainStack.push({ source: cardObj, skill: skillObj });
     proceedChainResolution();
   }
+}
+function showFilteredCardSelectionModal(cards, onSelect, opts = {}) {
+  // Remove any previous modal
+  let modal = document.getElementById('filtered-selection-modal');
+  if (modal) modal.remove();
+
+  modal = document.createElement('div');
+  modal.id = 'filtered-selection-modal';
+  modal.className = 'modal';
+  modal.style.display = 'flex';
+  modal.style.alignItems = 'center';
+  modal.style.justifyContent = 'center';
+  modal.style.zIndex = 99999;
+  modal.onclick = function(e) { if (e.target === modal) modal.remove(); };
+
+  const content = document.createElement('div');
+  content.className = 'modal-content';
+  content.style.display = 'flex';
+  content.style.flexDirection = 'column';
+  content.style.alignItems = 'center';
+  content.onclick = e => e.stopPropagation();
+
+  content.innerHTML = `<h3>${opts.title || "Select a card"}</h3>`;
+  const row = document.createElement('div');
+  row.className = 'modal-card-row';
+  row.style.display = 'flex';
+  row.style.gap = '22px';
+
+  cards.forEach(cardObj => {
+    const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+    if (!cardData) return;
+    const cardDiv = document.createElement('div');
+    cardDiv.className = 'card-battlefield';
+    cardDiv.style.cursor = 'pointer';
+    cardDiv.style.position = 'relative';
+
+    const img = document.createElement('img');
+    img.src = cardData.image;
+    img.alt = cardData.name;
+    img.style.width = '100px';
+    cardDiv.appendChild(img);
+
+    cardDiv.title = cardData.name;
+
+    cardDiv.onclick = () => {
+      modal.remove();
+      onSelect(cardObj);
+    };
+
+    row.appendChild(cardDiv);
+  });
+
+  content.appendChild(row);
+
+  // Cancel button
+  const cancelBtn = document.createElement('button');
+  cancelBtn.className = 'btn-negative-secondary';
+  cancelBtn.textContent = 'Cancel';
+  cancelBtn.onclick = () => modal.remove();
+  content.appendChild(cancelBtn);
+
+  modal.appendChild(content);
+  document.body.appendChild(modal);
 }
 function proceedChainResolution() {
   while (chainStack.length) {
