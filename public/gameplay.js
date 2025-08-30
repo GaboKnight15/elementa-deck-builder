@@ -292,18 +292,19 @@ Strike: {
   name: 'Strike',
   description: 'Deals damage to a single enemy target.',
   handler: function(sourceCardObj, skillObj) {
+    const resolution = skillObj.resolution || {};
     promptUserToSelectTarget(
       [...gameState.opponentCreatures, ...gameState.opponentDomains],
       selectedTarget => {
-        let damage = skillObj.damage || 0;
+        let damage = resolution.damage || 0;
         // Apply extra damage if target has Soak
         if (selectedTarget._soak && typeof selectedTarget.soakAmount === "number") {
           damage += selectedTarget.soakAmount;
         }
-        if (damage > 0) dealCombatDamage(sourceCardObj, selectedTarget, damage);
+        if (damage > 0) dealDamage(sourceCardObj, selectedTarget, damage);
 
         // Apply status effects
-        let statuses = Array.isArray(skillObj.status) ? skillObj.status : (skillObj.status ? [skillObj.status] : []);
+        let statuses = Array.isArray(resolution.status) ? resolution.status : (resolution.status ? [resolution.status] : []);
         statuses.forEach(statusName => {
           if (STATUS_EFFECTS[statusName]) {
             applyStatus(selectedTarget, statusName);
@@ -326,7 +327,7 @@ Burst: {
       if (target._soak && typeof target.soakAmount === "number") {
         damage += target.soakAmount;
       }
-      if (damage > 0) dealCombatDamage(sourceCardObj, target, damage);
+      if (damage > 0) dealDamage(sourceCardObj, target, damage);
       // General status effect logic: apply any status flagged in skillObj
       let statuses = Array.isArray(skillObj.status) ? skillObj.status : (skillObj.status ? [skillObj.status] : []);
       statuses.forEach(statusName => {
@@ -2937,17 +2938,17 @@ function resolveAttack(attackerId, defenderId) {
 
   if (defenderDef.category === "creature") {
     if (defender.orientation === "horizontal") {
-      dealCombatDamage(attacker, defender, attacker.atk);
+      dealDamage(attacker, defender, attacker.atk);
       if (attackerGetsRetaliation) {
-        dealCombatDamage(defender, attacker, defender.atk);
+        dealDamage(defender, attacker, defender.atk);
       }
     } else if (defender.orientation === "vertical") {
       let damage = Math.max(0, attacker.atk - defender.def);
-      dealCombatDamage(attacker, defender, damage);
+      dealDamage(attacker, defender, damage);
       // Defender does not deal damage back
     }
   } else {
-    dealCombatDamage(attacker, defender, attacker.atk);
+    dealDamage(attacker, defender, attacker.atk);
   }
 
   attacker.hasAttacked = true;
@@ -2969,7 +2970,7 @@ function resolveAttack(attackerId, defenderId) {
   setupDropZones();
 }
 // --- Damage Helper: Deals armor/HP damage ---
-function dealCombatDamage(source, target, amount) {
+function dealDamage(source, target, amount) {
   if (!target) return;
   if (target.armor && target.armor > 0) {
     let armorAbsorb = Math.min(target.armor, amount);
