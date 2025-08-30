@@ -459,21 +459,21 @@ skill: [
  */
 // DOMAINS //
 {id: 'basicforest', name: 'Forest', rarity: 'Common', image: 'CardImages/Domains/Green Basic Location.png', 
- category: 'Domain', color: 'Green', type: 'Terrain', hp: 5, cost: '{1}', essence: '{G}', set: 'StandardPack2'},
+ category: 'Domain', color: 'Green', type: 'Terrain', hp: 5, cost: '{0}', essence: '{G}', set: 'StandardPack2'},
 {id: 'basicvolcano', name: 'Volcano', rarity: 'Common', image: 'CardImages/Domains/Red Basic Location.png', 
- category: 'Domain', color: 'Red', type: 'Terrain', hp: 5, cost: '{1}', essence: '{R}', set: 'StandardPack2'},
+ category: 'Domain', color: 'Red', type: 'Terrain', hp: 5, cost: '{0}', essence: '{R}', set: 'StandardPack2'},
 {id: 'basicocean', name: 'Ocean', rarity: 'Common', image: 'CardImages/Domains/Blue Basic Location.png', 
- category: 'Domain', color: 'Blue', type: 'Terrain', hp: 5, cost: '{1}', essence: '{U}', set: 'StandardPack2'},
+ category: 'Domain', color: 'Blue', type: 'Terrain', hp: 5, cost: '{0}', essence: '{U}', set: 'StandardPack2'},
 {id: 'basicmountain', name: 'Mountain', rarity: 'Common', image: 'CardImages/Domains/Gray Basic Location.png', 
- category: 'Domain', color: 'Gray', type: 'Terrain', hp: 5, cost: '{1}', essence: '{C}', set: 'StandardPack2', artwork: "CardImages/Artworks/Mountain.png"},
+ category: 'Domain', color: 'Gray', type: 'Terrain', hp: 5, cost: '{0}', essence: '{C}', set: 'StandardPack2', artwork: "CardImages/Artworks/Mountain.png"},
 {id: 'basicswamp', name: 'Swamp', rarity: 'Common', image: 'CardImages/Domains/Purple Basic Location.png', 
- category: 'Domain', color: 'Purple', type: 'Terrain', hp: 5, cost: '{1}', essence: '{P}', set: 'StandardPack2'},
+ category: 'Domain', color: 'Purple', type: 'Terrain', hp: 5, cost: '{0}', essence: '{P}', set: 'StandardPack2'},
 {id: 'basicpeaks', name: 'Peaks', rarity: 'Common', image: 'CardImages/Domains/Yellow Basic Location.png', 
- category: 'Domain', color: 'Yellow', type: 'Terrain', hp: 5, cost: '{1}', essence: '{Y}', set: 'StandardPack2'},
+ category: 'Domain', color: 'Yellow', type: 'Terrain', hp: 5, cost: '{0}', essence: '{Y}', set: 'StandardPack2'},
 {id: 'basicplains', name: 'Plains', rarity: 'Common', image: 'CardImages/Domains/White Basic Location.png', 
- category: 'Domain', color: 'White', type: 'Terrain', hp: 5, cost: '{1}', essence: '{W}', set: 'StandardPack2'},
+ category: 'Domain', color: 'White', type: 'Terrain', hp: 5, cost: '{0}', essence: '{W}', set: 'StandardPack2'},
 {id: 'basicshadowforest', name: 'Shadow Forest', rarity: 'Common', image: 'CardImages/Domains/Black Basic Location.png', 
- category: 'Domain', color: 'Black', type: 'Terrain', hp: 5, cost: '{1}', essence: '{B}', set: 'StandardPack2'},
+ category: 'Domain', color: 'Black', type: 'Terrain', hp: 5, cost: '{0}', essence: '{B}', set: 'StandardPack2'},
 {id: 'Verdara', name: 'Verdara', rarity: 'Legendary', image: 'CardImages/Domains/Green Domain.png', 
  category: 'Domain', color: 'Green', type: 'Dominion', hp: 20, cost: '{0}', essence: '{G}', trait: 'Dominion', set: 'StandardPack2'},
 {id: 'Ashkar', name: 'Ashkar', rarity: 'Legendary', image: 'CardImages/Domains/Red Domain.png', 
@@ -528,151 +528,98 @@ const LEVEL_THRESHOLDS = [0, 100, 250, 500, 1000, 2000, 4000, 8000];
 let lastPlayerPower = null;
 
 const CARD_KEYWORD_EXPLANATIONS = {
-  burn: {
-    name: "Burn",
-    description: "Burns opposing unit upon striking with an attack/skill."
-  },
-  burned: {
-    name: "Burned",
-    description: "Burned units lose 1 HP during each end step, and receive 1 more damage."
-  },
-  freeze: {
-    name: "Freeze",
-    description: "Freezes opposing unit upon striking with an attack/skill."
-  },
-  frozen: {
-    name: "Frozen",
-    description: "Frozen units cannot attack, activate skills or receive damage."
-  },
-  paralyze: {
-    name: "Paralyze",
-    description: "Paralyzes opposing unit upon striking with an attack/skill."
-  },
-  paralysis: {
-    name: "Paralysis",
-    description: "Paralyzed units cannot attack or return attack damage."
-  },
-  soaked: {
-    name: "Soaked",
-    description: "Soaked units deal -1 physical damage per stack."
-  },
-  soak: {
-    name: "Soak",
-    description: "Soaks opposing unit upon striking with an attack/skill."
-  },
-  toxic: {
-    name: "Toxic",
-    description: "Poisons opposing unit upon striking with an attack/skill."
-  },
-  venom: {
-    name: "Venom",
-    description: "Poisons opposing unit upon striking with an attack/skill."
-  },
-  protect: {
-    name: "Protect",
-    description: "Opponent can only target this unit for attacks."
-  },
-  barrier: {
-    name: "Barrier",
-    description: "Prevents the next damage received to any unit."
-  },
-  aegis: {
-    name: "Aegis",
-    description: "Unaffected by skills and effects."
-  },
-  veil: {
-    name: "Veil",
-    description: "Cannot be targeted by opponent's Skills and effects."
-  },
-  immunity: {
-    name: "Immunity",
-    description: "Unaffected by status conditions."
-  },
-  ambush: {
-    name: "Ambush",
-    description: "Cannot be targeted by opponent's attacks, skills and effects. Unit is revealed after attacking or using a skill/effect"
-  },
-  flying: {
-    name: "Flying",
-    description: "Can only be blocked by other units with Flying. All Ranged units can damage it if declaring attack"
-  },
-  ranged: {
-    name: "Ranged",
-    description: "Can attack units with Flying, ignores Protect, does not receive attack damage upon attacking another unit without ranged."
-  },
-  rush: {
-    name: "Rush",
-    description: "Can attack on the turn it is played."
-  },
-  drain: {
-    name: "Drain",
-    description: "When this unit deals damage, gain that much life."
-  },
-  intimidate: {
-    name: "Intimidate",
-    description: "When declaring an attack, {CW} that unit"
-  },
-  provoke: {
-    name: "Provoke",
-    description: "When declaring an attack, {CCW} that unit"
-  },
-  firearmor: {
-    name: "Fire Armor",
-    description: "Burns opposing unit upon receive attack damage"
-  },
-  icearmor: {
-    name: "Ice Armor",
-    description: "Freezes opposing unit upon receive attack damage"
-  },
-  poisonarmor: {
-    name: "Poison Armor",
-    description: "Poisons opposing unit upon receive attack damage"
-  },
-  soakedarmor: {
-    name: "Soaked Armor",
-    description: "Soaks opposing unit upon receive attack damage"
-  },
-  crush: {
-    name: "Crush",
-    description: "Destroys opposing creature upon attacking regardless of HP."
-  },
-  reanimate: {
-    name: "Reanimate",
-    description: "If this unit is in the Void, revive it."
-  },
-  dash: {
-    name: "Dash",
-    description: "Can also be summoned from the hand. Returns to hand during your opponent's end step."
-  },
-  echo: {
-    name: "Echo",
-    description: "Activates when the card is sent to the Void."
-  },
-  discard: {
-    name: "Discard",
-    description: "Activates by discarding it."
-  },
-  aura: {
-    name: "Aura",
-    description: "Must be equipped to units of the same color."
-  },
-  firelands: {
-    name: "Firelands",
-    description: "Born of volcanic wrath and infernal hunger, these fire-beasts hunt not for survival, but to spread the consuming blaze of their cursed homeland. Fueled by relentless ferocity, the Firelands are defined by their fiery rushing strikes. They are known by their aggression, overwhelming foes with sudden, searing attacks before the battle has even begun."
-  },
-  cindercore: {
-    name: "Cindercore",
-    description: "Forged in molten crucibles deep beneath the world, the Cindercore are living constructs of stone and flame. Their hearts burn with rivers of lava, each strike searing with lingering pain. Unlike other flames that flare and fade, the Cindercore are defined by their never-ending burning mastery and their unyielding defenses. They are an archetype of attrition, grinding foes down with relentless heat until only ash and ruin remain."
-  },
-  skullframe: {
-    name: "Skullframe",
-    description: "Clad in bone and bound by forbidden sorcery, the Skullframe march as deathless engines of war. When shattered, dark magic stitches marrow and spirit back together, raising them anew. Masters of necrotic arts and relentless persistence, the Skullframe are an archetype of inevitability, overwhelming foes with grim magic and unending reanimation until nothing living remains to resist."
-  },
+/*-------------
+// ABILITIES //
+------------- */
+  burn: {name: "Burn",
+    description: "Burns opposing unit upon striking with an attack/skill."},
+  burned: {name: "Burned",
+    description: "Burned units lose 1 HP during each end step, and receive 1 more damage."},
+  freeze: {name: "Freeze",
+    description: "Freezes opposing unit upon striking with an attack/skill."},
+  frozen: {name: "Frozen",
+    description: "Frozen units cannot attack, activate skills or receive damage."},
+  paralyze: {name: "Paralyze",
+    description: "Paralyzes opposing unit upon striking with an attack/skill."},
+  paralysis: {name: "Paralysis",
+    description: "Paralyzed units cannot attack or return attack damage."},
+  soaked: {name: "Soaked",
+    description: "Soaked units deal -1 physical damage per stack."},
+  soak: {name: "Soak",
+    description: "Soaks opposing unit upon striking with an attack/skill."},
+  toxic: {name: "Toxic",
+    description: "Poisons opposing unit upon striking with an attack/skill."},
+  venom: {name: "Venom",
+    description: "Poisons opposing unit upon striking with an attack/skill."},
+  protect: {name: "Protect",
+    description: "Opponent can only target this unit for attacks."},
+  barrier: {name: "Barrier",
+    description: "Prevents the next damage received to any unit."},
+  aegis: {name: "Aegis",
+    description: "Unaffected by skills and effects."},
+  veil: {name: "Veil",
+    description: "Cannot be targeted by opponent's Skills and effects."},
+  immunity: {name: "Immunity",
+    description: "Unaffected by status conditions."},
+  ambush: {name: "Ambush",
+    description: "Cannot be targeted by opponent's attacks, skills and effects. Unit is revealed after attacking or using a skill/effect"},
+  flying: {name: "Flying",
+    description: "Can only be blocked by other units with Flying. All Ranged units can damage it if declaring attack"},
+  ranged: {name: "Ranged",
+    description: "Can attack units with Flying, ignores Protect, does not receive attack damage upon attacking another unit without ranged."},
+  rush: {name: "Rush",
+    description: "Can attack on the turn it is played."},
+  drain: {name: "Drain",
+    description: "When this unit deals damage, gain that much life."},
+  intimidate: {name: "Intimidate",
+    description: "When declaring an attack, {CW} that unit"},
+  provoke: {name: "Provoke",
+    description: "When declaring an attack, {CCW} that unit"},
+  firearmor: {name: "Fire Armor",
+    description: "Burns opposing unit upon receive attack damage"},
+  icearmor: {name: "Ice Armor",
+    description: "Freezes opposing unit upon receive attack damage"},
+  poisonarmor: {name: "Poison Armor",
+    description: "Poisons opposing unit upon receive attack damage"},
+  soakedarmor: {name: "Soaked Armor",
+    description: "Soaks opposing unit upon receive attack damage"},
+  crush: {name: "Crush",
+    description: "Destroys opposing creature upon attacking regardless of HP."},
+/*----------
+// SKILLS //
+--------- */
+  reanimate: {name: "Reanimate",
+    description: "If this unit is in the Void, revive it."},
+  dash: {name: "Dash",
+    description: "Can also be summoned from the hand. Returns to hand during your opponent's end step."},
+  echo: {name: "Echo",
+    description: "Activates when the card is sent to the Void."},
+  discard: {name: "Discard",
+    description: "Activates by discarding it."},
+  aura: {name: "Aura",
+    description: "Must be equipped to units of the same color."},
+/*--------------
+// ARCHETYPES //
+------------- */
+  firelands: {name: "Firelands",
+    description: "Born of volcanic wrath and infernal hunger, these fire-beasts hunt not for survival, but to spread the consuming blaze of their cursed homeland. Fueled by relentless ferocity, the Firelands are defined by their fiery rushing strikes. They are known by their aggression, overwhelming foes with sudden, searing attacks before the battle has even begun."},
+  cindercore: {name: "Cindercore",
+    description: "Forged in molten crucibles deep beneath the world, the Cindercore are living constructs of stone and flame. Their hearts burn with rivers of lava, each strike searing with lingering pain. Unlike other flames that flare and fade, the Cindercore are defined by their never-ending burning mastery and their unyielding defenses. They are an archetype of attrition, grinding foes down with relentless heat until only ash and ruin remain."},
+  coralbound: {name: "Coralbound",
+    description: "Forged in the abyssal depths where steel meets coral, these aquatic constructs channel the crushing force of the ocean. With cannons unleashing torrents of compressed, high-pressure water, the Coralbound strike with relentless precision. Their true lethality emerges against soaked opponents, turning vulnerability into devastation. Defined by their mechanical resilience and liquid ferocity, they drown foes beneath waves of unyielding power."},
+  frostlands: {name: "Frostlands",
+    description: "Born of glacial silence and eternal winter, the Frostlands embody the merciless stillness of the frozen wastes. Their strength lies not in speed, but in control, freezing foes in place and shattering them with ruthless precision. Defined by their mastery of ice, they lock enemies in chilling stasis before striking the final, frigid blow."},
+  glimmerscale: {name: "Glimmerscale",
+    description: "Born of starlight and shimmering wings, the Glimmerscale are fairy-dragons whose radiant power is as enchanting as it is devastating. They weave between grace and fury, purifying corruption with gleaming light before unleashing searing, luminous strikes. Defined by their dual nature of elegance and ferocity, they are an archetype that blinds foes with brilliance, striking down darkness in a cascade of radiant fire."},
+  
+  skullframe: {name: "Skullframe",
+    description: "Clad in bone and bound by forbidden sorcery, the Skullframe march as deathless engines of war. When shattered, dark magic stitches marrow and spirit back together, raising them anew. Masters of necrotic arts and relentless persistence, the Skullframe are an archetype of inevitability, overwhelming foes with grim magic and unending reanimation until nothing living remains to resist."},
 
-  champion: {
-    name: "Champion",
-    description: "Main creatures that can be upgraded to Champion and provide essence support. Champion creatures receive +{1}/+{1} and upgraded skills"
-  },
+/*----------
+// TRAITS //
+--------- */
+  champion: {name: "Champion",
+    description: "Main creatures that can be upgraded to Champion and provide essence support. Champion creatures receive +{1}/+{1} and upgraded skills"},
   // Add more keywords as needed
 };
 // Use this to parse effect text with tokens into HTML with images/icons
