@@ -244,8 +244,8 @@ skill: [
  category: 'Creature', color: 'Red', type: 'Construct', hp: 15, atk: 6, def: 3,
  cost: '{5}{R}{R}', archetype: 'Cindercore', ability: ['Armor','Exploit','Protect'], set: 'StandardPack',
  skill: [
-  {name: 'Stash', cost: '{R}', requirement: ['Stash'], zone: 'hand', type: ['Strike'], damage: 2, status: ['Burn'] },
-  {name: 'Volcanic Vortex', cost: '{1}{R}', requirement: [''], zone: 'field', type: ['Strike'], damage: 3, status: ['Burn','Bind']}
+  {name: 'Stash', cost: '{R}', type: ['Strike'], activation: {requirement: ['Stash'], zone: 'hand'}, resolution: {damage: 2, status: ['Burn']} },
+  {name: 'Volcanic Vortex', cost: '{1}{R}', type: ['Strike'], activation: {requirement: [''], zone: 'field'}, resolution: {damage: 3, status: ['Burn','Bind']}}
  ]},
 
 // FIRELANDS //
