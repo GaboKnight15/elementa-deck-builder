@@ -157,6 +157,10 @@ const dummyCards = [
  category: 'Creature', color: 'Green', type: 'Beast', hp: 8, atk: 3, def: 1, cost: '{1}{G}', 
  archetype: 'Hybrids', ability: ['Intimidate','Leap','Rush'], skill: '', set: 'StandardPack'},
 
+{id: 'DragonEgg', name: 'Dragon Egg', rarity: 'Common', image: 'CardImages/BasicCreatures/Dragon Egg.png', 
+ category: 'Creature', color: 'Red', type: 'Dragon', hp: 1, atk: 0, def: 0, cost: '{0}', 
+ archetype: '', ability: ['Armor','Rush'], skill: '', set: 'StandardPack'},
+
 {id: 'WaterWyrm', name: 'Water Wyrm', rarity: 'Legendary', image: 'CardImages/Abyssdrakes/Water Wyrm.png', 
  category: 'Creature', color: 'Blue', type: ['Dragon','Elemental'], trait: 'Evolution', hp: 6, atk: 2, def: 0,
  cost: '{1}{U}', archetype: 'Abyssdrake', ability: ['Dive','Elusive','Soak'], skill: ['Reveal {R}','Cataclysmic Blaze {R}{CW}'], set: 'StandardPack'},
@@ -313,8 +317,10 @@ skill: [
 {id: 'MaelvyrnCoralboundAutomatonFA', name: 'Maelvyrn, Coralbound Automaton', rarity: 'Legendary', image: 'CardImages/Coralbound/Maelvyrn, Coralbound Automaton.png', 
  category: 'Creature', color: 'Blue', type: 'Construct', hp: 20, atk: 8, def: 5, cost: '{6}{U}{U}',
  skill: [
-  {name: 'Stash', cost: '{U}', requirement: 'Stash', zone: 'hand', type: 'Search', criteria: { archetype: 'Coralbound', zone: 'deck' }},
-  {name: 'Hydroburst Cannon', cost: '{1}{U}', type: 'Strike', zone: 'field', return: true, damage: 8, soak: true}
+  {name: 'Stash', cost: '{U}', 
+    activation: {requirement: 'Stash', zone: 'hand'},
+    resolution: {type: 'Search', archetype: 'Coralbound', zone: 'deck' }},
+  {name: 'Hydroburst Cannon', cost: '{1}{U}', type: 'Strike', activation: {zone: 'field'}, resolution: {damage: 8, soak: true}}
  ],
  archetype: 'Coralbound', ability: 'Protect', trait: 'Fusion', set: 'StandardPack'},
 
@@ -331,6 +337,22 @@ skill: [
  category: 'Creature', color: ['Green', 'Red', 'White'], type: ['Dragon','Fairy'], hp: 14, atk: 5, def: 2, cost: '{G}{R}{W}',
  ability: ['Flying','Intimidate'], archetype: 'Glimmerscale', skill: ['Purify {W}{CW}','Dewlight Spiral {1}{G}{W}'], set: 'StandardPack'},
 
+// MOONFANG //
+
+{id: 'SinisterWolf', name: 'Sinister Wolf', rarity: 'Epic', image: 'CardImages/Moonfang/Sinister Wolf.png', 
+ category: 'Creature', color: ['Black'], type: ['Beast'], hp: 5, atk: 3, def: 0,
+ cost: '{1}{B}', archetype: 'Moonfang', ability: ['Ambush','Rush'], set: 'StandardPack',
+ skill: [
+  {name: 'Transform', cost: '{P}{P}{B}', requirement: [''], zone: 'field', type: ['Strike'], damage: 3, status: ['Burn'] }
+ ]},
+{id: 'Werewolf', name: 'Werewolf', rarity: 'Epic', image: 'CardImages/Moonfang/Werewolf.png', 
+ category: 'Creature', color: ['Black'], type: ['Beast'], hp: 10, atk: 4, def: 1,
+ cost: '{3}{B}', archetype: 'Moonfang', ability: ['Ambush'], set: 'StandardPack',
+ skill: [
+  {name: 'Discard', cost: '{B}', type: ['Search'], activation: {requirement: ['Discard'], zone: 'hand'}, resolution: {archetype: 'Wolf', zone: 'deck' }},
+  {name: 'Transform', cost: '{P}{P}{B}', requirement: [''], zone: 'field', type: ['Strike'], damage: 3, status: ['Burn'] }
+ ]},
+
 
 */
  
@@ -343,7 +365,11 @@ skill: [
  cost: '{1}{B}', archetype: 'Skullframe', ability: ['Immunity','Rush'], skill: 'Reanimate {2}{B}', set: 'StandardPack'},
 {id: 'SkullframeAcolyte', name: 'Skullframe Acolyte', rarity: 'Common', image: 'CardImages/Skullframe/Skullframe Acolyte.png', 
  category: 'Creature', color: ['Black', 'Purple'], type: 'Undead', hp: 5, atk: 3, def: 1,
- cost: '{1}{P}{B}', archetype: 'Skullframe', ability: ['Immunity','Ranged'], skill: ['Revive','Reanimate {2}{B}{P}'], set: 'StandardPack'},
+ cost: '{1}{P}{B}', archetype: 'Skullframe', ability: ['Immunity','Ranged'], set: 'StandardPack',
+ skill: [
+  {name: 'Revive', cost: '{2}{B}', type: ['Revive'], activation: {zone: 'field'}, resolution: { archetype: 'Skullframe', zone: 'void', toZone: 'field' }},
+  {name: 'Reanimate', cost: '{2}{B}{B}', type: ['Reanimate'], activation: {zone: 'void'}}
+ ]},
 {id: 'SkullframeCryptwinds', name: 'Skullframe Cryptwinds', rarity: 'Rare', image: 'CardImages/Skullframe/Skullframe Cryptwinds.png', 
  category: 'Creature', color: ['Black', 'Purple'], type: ['Dragon','Undead'], hp: 12, atk: 6, def: 2,
  cost: '{1}{B}{B}', archetype: 'Skullframe', ability: ['Flying', 'Immunity'], skill: 'Reanimate {1}{B}{B}', set: 'StandardPack'},
@@ -358,9 +384,9 @@ skill: [
  cost: '{1}{B}{P}', archetype: 'Skullframe', ability: ['Immunity','Ranged'], set: 'StandardPack',
  skill: [
   {name: 'Ebonhex Flare', cost: '{P}{P}{B}', requirement: [''], zone: 'field', type: ['Strike'], damage: 3, status: ['Burn'] },
-  {name: 'Ebonhex Crush', cost: '{B}', requirement: [''], zone: 'field', condition: [
-   { status: 'Burn', owner: 'opponent', category: 'Creature' }], type: ['Destroy']},
-  {name: 'Reanimate', cost: '{2}{B}{B}', zone: 'void', type: ['Reanimate']}
+  {name: 'Ebonhex Crush', cost: '{B}', activation: {requirement: [''], zone: 'field'}, condition: [
+   {status: 'Burn', owner: 'opponent', category: 'Creature' }], type: ['Destroy']},
+  {name: 'Reanimate', cost: '{2}{B}{B}', type: ['Reanimate'], activation: {zone: 'void'}}
  ]},
 {id: 'MaldryssSkullframeArchmage', name: 'Maldryss, Skullframe Archmage', rarity: 'Legendary', image: 'CardImages/Skullframe/Maldryss, Skullframe Archmage.png', 
  category: 'Creature', color: ['Black', 'Purple'], type: ['Undead','Mage'], trait: 'Champion', hp: 8, atk: 1, def: 0,
@@ -368,7 +394,7 @@ skill: [
  skill: [
   {name: 'Hexbind', cost: '{P}{B}', requirement: ['CW'], zone: 'field', type: ['Strike'], damage: 4, status: ['Poison'] },
   {name: 'Hexblast', cost: '{B}', requirement: ['CCW'], zone: 'field', type: ['Destroy']},
-  {name: 'Reanimate', cost: '{2}{B}{B}', zone: 'void', type: ['Reanimate']}
+  {name: 'Reanimate', cost: '{2}{B}{B}', type: ['Reanimate'], activation: {zone: 'void'}}
  ]},
 {id: 'MaldryssSkullframeArchmageFA', name: 'Maldryss, Skullframe Archmage', rarity: 'Legendary', image: 'CardImages/Skullframe/Maldryss, Skullframe Archmage FA.png', 
  category: 'Creature', color: ['Black', 'Purple'], type: ['Undead','Mage'], trait: 'Champion', hp: 8, atk: 1, def: 0,
