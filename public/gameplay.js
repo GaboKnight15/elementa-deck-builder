@@ -254,36 +254,141 @@ const ATTACK_DECLARATION_ABILITIES = {
 //---- SKILL TARGET TYPE ---- //
 ------------------------------*/
 // Helper for requirements (add near SKILL_EFFECT_MAP)
+// Helper for requirements (add near SKILL_EFFECT_MAP)
 const REQUIREMENT_MAP = {
+  CW: {
+    handler: function(sourceCardObj, skillObj) {
+      // Only allow if in ATK (vertical)
+      if (sourceCardObj.orientation !== "vertical") {
+        showToast("Can only rotate from ATK to DEF if currently in ATK.");
+        return;
+      }
+      changeCardPosition(sourceCardObj, "horizontal"); // ATK -> DEF
+    },
+    canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
+      // Can only activate if currently in ATK (vertical)
+      return sourceCardObj.orientation === "vertical";
+    }
+  },
+  CCW: {
+    handler: function(sourceCardObj, skillObj) {
+      // Only allow if in DEF (horizontal)
+      if (sourceCardObj.orientation !== "horizontal") {
+        showToast("Can only rotate from DEF to ATK if currently in DEF.");
+        return;
+      }
+      changeCardPosition(sourceCardObj, "vertical"); // DEF -> ATK
+    },
+    canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
+      // Can only activate if currently in DEF (horizontal)
+      return sourceCardObj.orientation === "horizontal";
+    }
+  },
   Stash: {
     handler: function(sourceCardObj, skillObj) {
       // Only activate in hand
-      const activation = skillObj.activation || {};
       const isHand = gameState.playerHand.includes(sourceCardObj);
       if (!isHand) {
         showToast("Stash can only be activated from your hand.");
         return;
       }
-      // Return self to deck
       moveCard(sourceCardObj.instanceId, gameState.playerHand, gameState.playerDeck);
     },
     canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
       return currentZone === "hand";
     }
   },
-  CW: {
+  Discard: {
     handler: function(sourceCardObj, skillObj) {
-      // Rotate card clockwise (ATK <-> DEF)
-      changeCardPosition(sourceCardObj, "horizontal"); // or use logic to toggle
+      // Only activate in hand
+      const isHand = gameState.playerHand.includes(sourceCardObj);
+      if (!isHand) {
+        showToast("Discard can only be activated from your hand.");
+        return;
+      }
+      moveCard(sourceCardObj.instanceId, gameState.playerHand, gameState.playerVoid);
+    },
+    canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
+      return currentZone === "hand";
     }
   },
-  CCW: {
+  Dash: {
     handler: function(sourceCardObj, skillObj) {
-      // Rotate card counterclockwise
-      changeCardPosition(sourceCardObj, "vertical"); // or use logic to toggle
+      // Only from hand to field (creatures or domains)
+      const isHand = gameState.playerHand.includes(sourceCardObj);
+      if (!isHand) {
+        showToast("Dash can only be activated from your hand.");
+        return;
+      }
+      const cardData = dummyCards.find(c => c.id === sourceCardObj.cardId);
+      let targetArr;
+      const category = Array.isArray(cardData.category)
+        ? cardData.category.map(c => c.toLowerCase())
+        : [String(cardData.category).toLowerCase()];
+      if (category.includes("creature")) {
+        targetArr = gameState.playerCreatures;
+      } else if (category.includes("domain")) {
+        targetArr = gameState.playerDomains;
+      } else {
+        showToast("Dash can only be used for creatures or domains.");
+        return;
+      }
+      // Default orientation: vertical (ATK)
+      moveCard(sourceCardObj.instanceId, gameState.playerHand, targetArr, { orientation: "vertical" });
+    },
+    canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
+      return currentZone === "hand";
     }
   },
-  // Add more requirements as needed
+  Sacrifice: {
+    handler: function(sourceCardObj, skillObj) {
+      // Only activate on field (creature/domain)
+      const isField = gameState.playerCreatures.includes(sourceCardObj) || gameState.playerDomains.includes(sourceCardObj);
+      if (!isField) {
+        showToast("Sacrifice can only be activated from the field.");
+        return;
+      }
+      const fromArr = gameState.playerCreatures.includes(sourceCardObj)
+        ? gameState.playerCreatures
+        : gameState.playerDomains;
+      moveCard(sourceCardObj.instanceId, fromArr, gameState.playerVoid);
+    },
+    canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
+      return (currentZone === "playerCreatures" || currentZone === "playerDomains");
+    }
+  },
+  Return: {
+    handler: function(sourceCardObj, skillObj) {
+      const isField = gameState.playerCreatures.includes(sourceCardObj) || gameState.playerDomains.includes(sourceCardObj);
+      if (!isField) {
+        showToast("Return can only be activated from the field.");
+        return;
+      }
+      const fromArr = gameState.playerCreatures.includes(sourceCardObj)
+        ? gameState.playerCreatures
+        : gameState.playerDomains;
+      moveCard(sourceCardObj.instanceId, fromArr, gameState.playerHand);
+    },
+    canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
+      return (currentZone === "playerCreatures" || currentZone === "playerDomains");
+    }
+  },
+  Retreat: {
+    handler: function(sourceCardObj, skillObj) {
+      const isField = gameState.playerCreatures.includes(sourceCardObj) || gameState.playerDomains.includes(sourceCardObj);
+      if (!isField) {
+        showToast("Retreat can only be activated from the field.");
+        return;
+      }
+      const fromArr = gameState.playerCreatures.includes(sourceCardObj)
+        ? gameState.playerCreatures
+        : gameState.playerDomains;
+      moveCard(sourceCardObj.instanceId, fromArr, gameState.playerDeck);
+    },
+    canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
+      return (currentZone === "playerCreatures" || currentZone === "playerDomains");
+    }
+  },
   "": { handler: function() {} }
 };
 
@@ -396,36 +501,71 @@ Burst: {
       );
     }
   },
-Reanimate: {
-  icon: 'OtherImages/skillEffect/Reanimate.png',
-  name: 'Reanimate',
-  description: 'Return this card from the void to the field.',
-  handler: function(sourceCardObj, skillObj) {
-    // Always resolve the real card from the void array
-    let cardInVoid = gameState.playerVoid.find(c => c.instanceId === sourceCardObj.instanceId);
-    let isPlayer = true;
-    // If not found, try opponent's void
-    if (!cardInVoid) {
-      cardInVoid = gameState.opponentVoid.find(c => c.instanceId === sourceCardObj.instanceId);
-      isPlayer = false;
+  Reanimate: {
+    icon: 'OtherImages/skillEffect/Reanimate.png',
+    name: 'Reanimate',
+    description: 'Return this card from the void to the field.',
+    handler: function(sourceCardObj, skillObj) {
+      // Only resolve if card is in void
+      const isVoid = gameState.playerVoid.includes(sourceCardObj);
+      if (!isVoid) {
+        showToast("Reanimate can only be activated from the void.");
+        return;
+      }
+      // Determine target zone: creatures/domains by card type
+      const cardData = dummyCards.find(c => c.id === sourceCardObj.cardId);
+      let targetArr;
+      const category = Array.isArray(cardData.category)
+        ? cardData.category.map(c => c.toLowerCase())
+        : [String(cardData.category).toLowerCase()];
+      if (category.includes("creature")) {
+        targetArr = gameState.playerCreatures;
+      } else if (category.includes("domain")) {
+        targetArr = gameState.playerDomains;
+      } else {
+        showToast("Reanimate can only be used for creatures or domains.");
+        return;
+      }
+      // Prompt orientation (if needed)
+      showSummonPositionModal(sourceCardObj, function(chosenOrientation) {
+        moveCard(
+          sourceCardObj.instanceId,
+          gameState.playerVoid,
+          targetArr,
+          { orientation: chosenOrientation, currentHP: getBaseHp(sourceCardObj.cardId) }
+        );
+        renderGameState();
+      });
     }
-    if (!cardInVoid) {
-      showToast("Card not found in void!");
-      return;
-    }
-    const targetArr = isPlayer ? gameState.playerCreatures : gameState.opponentCreatures;
-    const fromArr = isPlayer ? gameState.playerVoid : gameState.opponentVoid;
-    showSummonPositionModal(cardInVoid, function(chosenOrientation) {
-      moveCard(
-        cardInVoid.instanceId,
-        fromArr,
-        targetArr,
-        { orientation: chosenOrientation, currentHP: getBaseHp(cardInVoid.cardId) }
-      );
+  },
+  Recall: {
+    icon: 'OtherImages/skillEffect/Recall.png',
+    name: 'Recall',
+    description: 'Return this card from the void to your hand.',
+    handler: function(sourceCardObj, skillObj) {
+      const isVoid = gameState.playerVoid.includes(sourceCardObj);
+      if (!isVoid) {
+        showToast("Recall can only be activated from the void.");
+        return;
+      }
+      moveCard(sourceCardObj.instanceId, gameState.playerVoid, gameState.playerHand);
       renderGameState();
-    });
-  }
-},
+    }
+  },
+  Reforge: {
+    icon: 'OtherImages/skillEffect/Reforge.png',
+    name: 'Reforge',
+    description: 'Return this card from the void to your deck.',
+    handler: function(sourceCardObj, skillObj) {
+      const isVoid = gameState.playerVoid.includes(sourceCardObj);
+      if (!isVoid) {
+        showToast("Reforge can only be activated from the void.");
+        return;
+      }
+      moveCard(sourceCardObj.instanceId, gameState.playerVoid, gameState.playerDeck);
+      renderGameState();
+    }
+  },
 Destroy: {
   icon: 'OtherImages/skillEffect/Destroy.png',
   name: 'Destroy',
@@ -458,16 +598,16 @@ Destroy: {
     });
   }
 },
-Search: {
-  icon: 'OtherImages/skillEffect/Search.png',
-  name: 'Search',
-  description: 'Search your deck for a card matching resolution and add it to your hand.',
+  Search: {
+    icon: 'OtherImages/skillEffect/Search.png',
+    name: 'Search',
+    description: 'Search your deck for a card matching criteria and add it to your hand.',
     handler: function(sourceCardObj, skillObj) {
+      // Always use deck as source, hand as destination
+      const deckArr = gameState.playerDeck;
+      // Filtering logic (archetype, type, etc)
       const res = skillObj.resolution || {};
-      const searchZone = res.zone || "deck";
-      const zoneArr = (searchZone === "void") ? gameState.playerVoid : gameState.playerDeck;
-      // Build filter for resolution (archetype/type/category/etc)
-      const filterKeys = Object.keys(res).filter(k => !['zone', 'effect'].includes(k));
+      const filterKeys = Object.keys(res).filter(k => !['zone', 'type', 'effect'].includes(k));
       const matches = zoneArr.filter(cardObj => {
         const cardData = dummyCards.find(c => c.id === cardObj.cardId);
         if (!cardData) return false;
@@ -481,22 +621,130 @@ Search: {
       });
 
       if (matches.length === 0) {
-        showToast(`No matching cards found in ${searchZone}.`);
+        showToast("No matching cards found in your deck.");
         return;
       }
-
       showFilteredCardSelectionModal(matches, selectedCardObj => {
-        moveCard(selectedCardObj.instanceId, zoneArr, gameState.playerHand);
+        moveCard(selectedCardObj.instanceId, gameState.playerDeck, gameState.playerHand);
         renderGameState();
         setupDropZones && setupDropZones();
         showToast(`${dummyCards.find(c=>c.id===selectedCardObj.cardId)?.name || "Card"} added to your hand!`);
-      }, { title: `Search ${searchZone === "void" ? "Void" : "Deck"} - Choose a card` });
+      }, { title: "Search Deck - Choose a card" });
     }
-  }
+  },
+  // --- Moves another player card from void to field ---
+  Revive: {
+    icon: 'OtherImages/skillEffect/Revive.png',
+    name: 'Revive',
+    description: 'Revive a valid card from your void to the field.',
+    handler: function(sourceCardObj, skillObj) {
+      const res = skillObj.resolution || {};
+      const filterKeys = Object.keys(res).filter(k => !['zone', 'type', 'effect'].includes(k));
+      const matches = gameState.playerVoid.filter(cardObj => {
+        const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+        if (!cardData) return false;
+        return filterKeys.every(key => {
+          if (typeof cardData[key] === 'string')
+            return cardData[key].toLowerCase() === res[key].toLowerCase();
+          if (Array.isArray(cardData[key]))
+            return cardData[key].map(v => v.toLowerCase()).includes(res[key].toLowerCase());
+          return cardData[key] === res[key];
+        });
+      });
+      if (matches.length === 0) {
+        showToast("No matching cards found in your void.");
+        return;
+      }
+      showFilteredCardSelectionModal(matches, selectedCardObj => {
+        // Determine target zone (creature or domain)
+        const cardData = dummyCards.find(c => c.id === selectedCardObj.cardId);
+        let targetArr;
+        const category = Array.isArray(cardData.category)
+          ? cardData.category.map(c => c.toLowerCase())
+          : [String(cardData.category).toLowerCase()];
+        if (category.includes("creature")) {
+          targetArr = gameState.playerCreatures;
+        } else if (category.includes("domain")) {
+          targetArr = gameState.playerDomains;
+        } else {
+          showToast("Revive can only be used for creatures or domains.");
+          return;
+        }
+        showSummonPositionModal(selectedCardObj, function(chosenOrientation) {
+          moveCard(selectedCardObj.instanceId, gameState.playerVoid, targetArr, { orientation: chosenOrientation, currentHP: getBaseHp(selectedCardObj.cardId) });
+          renderGameState();
+        });
+      }, { title: "Revive from Void - Choose a card" });
+    }
+  },
+  // --- Moves another opponent card from field to hand ---
+  Bounce: {
+    icon: 'OtherImages/skillEffect/Bounce.png',
+    name: 'Bounce',
+    description: 'Return a valid opponent card from the field to their hand.',
+    handler: function(sourceCardObj, skillObj) {
+      const res = skillObj.resolution || {};
+      const fieldArrs = [gameState.opponentCreatures, gameState.opponentDomains];
+      const allField = fieldArrs.flat();
+      const filterKeys = Object.keys(res).filter(k => !['zone', 'type', 'effect'].includes(k));
+      const matches = allField.filter(cardObj => {
+        const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+        if (!cardData) return false;
+        return filterKeys.every(key => {
+          if (typeof cardData[key] === 'string')
+            return cardData[key].toLowerCase() === res[key].toLowerCase();
+          if (Array.isArray(cardData[key]))
+            return cardData[key].map(v => v.toLowerCase()).includes(res[key].toLowerCase());
+          return cardData[key] === res[key];
+        });
+      });
+      if (matches.length === 0) {
+        showToast("No matching opponent cards found on the field.");
+        return;
+      }
+      showFilteredCardSelectionModal(matches, selectedCardObj => {
+        const fromArr = fieldArrs.find(arr => arr.includes(selectedCardObj));
+        moveCard(selectedCardObj.instanceId, fromArr, gameState.opponentHand);
+        renderGameState();
+      }, { title: "Bounce - Choose a card" });
+    }
+  },
+
+  // --- Moves another opponent card from field to deck ---
+  Banish: {
+    icon: 'OtherImages/skillEffect/Banish.png',
+    name: 'Banish',
+    description: 'Return a valid opponent card from the field to their deck.',
+    handler: function(sourceCardObj, skillObj) {
+      const res = skillObj.resolution || {};
+      const fieldArrs = [gameState.opponentCreatures, gameState.opponentDomains];
+      const allField = fieldArrs.flat();
+      const filterKeys = Object.keys(res).filter(k => !['zone', 'type', 'effect'].includes(k));
+      const matches = allField.filter(cardObj => {
+        const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+        if (!cardData) return false;
+        return filterKeys.every(key => {
+          if (typeof cardData[key] === 'string')
+            return cardData[key].toLowerCase() === res[key].toLowerCase();
+          if (Array.isArray(cardData[key]))
+            return cardData[key].map(v => v.toLowerCase()).includes(res[key].toLowerCase());
+          return cardData[key] === res[key];
+        });
+      });
+      if (matches.length === 0) {
+        showToast("No matching opponent cards found on the field.");
+        return;
+      }
+      showFilteredCardSelectionModal(matches, selectedCardObj => {
+        const fromArr = fieldArrs.find(arr => arr.includes(selectedCardObj));
+        moveCard(selectedCardObj.instanceId, fromArr, gameState.opponentDeck);
+        renderGameState();
+      }, { title: "Banish - Choose a card" });
+    }
+  },
   // Add more effects as needed (Strike, Heal, Destroy, etc.)
 };
-  // ...add more skill types here as needed!
-};
+
 // ==========================
 // === DOM REFERENCES ===
 // ==========================
