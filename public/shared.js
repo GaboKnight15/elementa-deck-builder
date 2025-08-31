@@ -319,7 +319,7 @@ skill: [
  skill: [
   {name: 'Stash', cost: '{U}', 
     activation: {requirement: 'Stash', zone: 'hand'},
-    resolution: {type: 'Search', archetype: 'Coralbound', zone: 'deck' }},
+    resolution: {effect: 'Search', archetype: 'Coralbound', zone: 'deck' }},
   {name: 'Hydroburst Cannon', cost: '{1}{U}', type: 'Strike', activation: {zone: 'field'}, resolution: {damage: 8, soak: true}}
  ],
  archetype: 'Coralbound', ability: 'Protect', trait: 'Fusion', set: 'StandardPack'},
