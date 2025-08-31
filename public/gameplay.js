@@ -26,8 +26,6 @@ const PHASES = [{ turn: 'player', phase: 'draw' },{ turn: 'player', phase: 'esse
   turn: "player",
   phase: "draw"
 };
-let chainStack = [];
-let chainActive = false;
 
 let attackMode = {attackerId: null, attackerZone: null, cancelHandler: null};
 
@@ -3468,7 +3466,7 @@ function getCardColors(cardObj) {
 }
 
 /*------------------------------------
-// SKILL AND CHAIN RESOLUTION LOGIC //
+// SKILL RESOLUTION LOGIC //
 ------------------------------------*/
 function activateSkill(cardObj, skillObj, options = {}) {
   // Pay cost if needed
@@ -3498,18 +3496,14 @@ function proceedSkillActivation(cardObj, skillObj, options = {}) {
     }
   }
   renderGameState(); // Ensure UI/state is up-to-date after requirements
-
-  if (!options.isChainResponse) {
-    // First activation: start chain
-    chainStack = [];
-    chainStack.push({ source: cardObj, skill: skillObj });
-
-    // Prompt opponent for response (will call proceedChainResolution if no response)
-    promptOpponentForResponse();
-  } else {
-    // This is a response, just add to chainStack and resolve
-    chainStack.push({ source: cardObj, skill: skillObj });
-    proceedChainResolution();
+  resolveSkillEffect(cardObj, skillObj);
+}
+function resolveSkillEffect(cardObj, skillObj) {
+  const resolution = skillObj.resolution || {};
+  const effectName = resolution.effect;
+  const effectDef = SKILL_EFFECT_MAP[effectName];
+  if (effectDef && effectDef.handler) {
+    effectDef.handler(cardObj, skillObj);
   }
 }
 function showFilteredCardSelectionModal(cards, onSelect, opts = {}) {
@@ -3575,18 +3569,7 @@ function showFilteredCardSelectionModal(cards, onSelect, opts = {}) {
   modal.appendChild(content);
   document.body.appendChild(modal);
 }
-function proceedChainResolution() {
-  while (chainStack.length) {
-    var entry = chainStack.pop();
-    // Check if targets are still valid before running
-    if (isSkillEffectValid(entry.source, entry.skill)) {
-      runSkillEffect(entry.source, entry.skill);
-    } else {
-      // Optionally log that this effect was skipped
-      // appendVisualLog({sourceCard: entry.source, action: "skipped", dest: entry.skill.name, who: getCardOwner(entry.source)});
-    }
-  }
-}
+
 function isSkillEffectValid(sourceCardObj, skillObj) {
   // For single-target skills:
   if (skillObj.target) {
@@ -3641,71 +3624,6 @@ function parseCost(costStr) {
   }
   return cost;
 }
-
-// For now, a simple modal; you can expand later!
-function promptOpponentForResponse() {
-  var availableResponses = findOpponentCounterSkills();
-  if (!availableResponses.length) {
-    proceedChainResolution();
-    return;
-  }
-  // Simple modal prompt
-  var modal = document.createElement('div');
-  modal.className = 'modal';
-  modal.innerHTML = '<div>Opponent: Respond?</div>';
-  availableResponses.forEach(function(res) {
-    var btn = document.createElement('button');
-    btn.textContent = res.skillObj.name;
-    btn.onclick = function() {
-      document.body.removeChild(modal);
-      // Opponent responds: call activateSkill for their response, with isChainResponse true
-      activateSkill(res.cardObj, res.skillObj, { isChainResponse: true });
-    };
-    modal.appendChild(btn);
-  });
-  var passBtn = document.createElement('button');
-  passBtn.textContent = 'Pass';
-  passBtn.onclick = function() {
-    document.body.removeChild(modal);
-    proceedChainResolution();
-  };
-  modal.appendChild(passBtn);
-  document.body.appendChild(modal);
-}
-
-// --- Find opponent's counter skills (stub) ---
-function findOpponentCounterSkills() {
-  // Example: find all skills with type 'Counter' or similar in opponent's hand/field
-  let skills = [];
-  // You can filter further for only usable counter skills
-  gameState.opponentCreatures.concat(gameState.opponentDomains, gameState.opponentHand).forEach(cardObj => {
-    let cardData = dummyCards.find(c => c.id === cardObj.cardId);
-    if (!cardData || !Array.isArray(cardData.skill)) return;
-    cardData.skill.forEach(skillObj => {
-      // For now, only allow skills with type 'Counter' or 'Negate' as responses (expand this logic as needed)
-      let types = Array.isArray(skillObj.type) ? skillObj.type : [skillObj.type];
-      if (types.includes('Counter') || types.includes('Negate')) {
-        // You can add more checks: are they enabled? does opponent have enough essence?
-        if (canActivateSkill(cardObj, skillObj, getCardOwner(cardObj), gameState)) {
-          skills.push({ cardObj, skillObj });
-        }
-      }
-    });
-  });
-  return skills;
-}
-
-// --- Chain resolution (LIFO) ---
-function resolveChain() {
-  while (chainStack.length > 0) {
-    const { source, skill } = chainStack.pop();
-    runSkillEffect(source, skill);
-    // Log resolution if you want (optional)
-    // appendVisualLog({sourceCard: source, action: "effect", dest: skill.name, who: getCardOwner(source)});
-  }
-  chainActive = false;
-}
-
 
 function runSkillEffect(sourceCardObj, skillObj) {
   // --- TYPES ---
