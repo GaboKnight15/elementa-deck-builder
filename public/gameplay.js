@@ -210,7 +210,7 @@ const TARGET_FILTER_ABILITIES = {
     }
   },
   Veil: {
-    icon: 'OtherImages/SkillTypes/Veil.png',
+    icon: 'OtherImages/skillEffect/Veil.png',
     name: 'Veil',
     description: 'Grants protection from debuffs for a duration.',
     handler: function(sourceCardObj, skillObj) {
@@ -255,7 +255,7 @@ const ATTACK_DECLARATION_ABILITIES = {
 /*------------------------------
 //---- SKILL TARGET TYPE ---- //
 ------------------------------*/
-// Helper for requirements (add near SKILL_TYPE_MAP)
+// Helper for requirements (add near SKILL_EFFECT_MAP)
 const REQUIREMENT_MAP = {
   Stash: {
     handler: function(sourceCardObj, skillObj) {
@@ -268,6 +268,9 @@ const REQUIREMENT_MAP = {
       }
       // Return self to deck
       moveCard(sourceCardObj.instanceId, gameState.playerHand, gameState.playerDeck);
+    },
+    canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
+      return currentZone === "hand";
     }
   },
   CW: {
@@ -286,9 +289,9 @@ const REQUIREMENT_MAP = {
   "": { handler: function() {} }
 };
 
-const SKILL_TYPE_MAP = {
+const SKILL_EFFECT_MAP = {
 Strike: {
-  icon: 'OtherImages/SkillTypes/Strike.png',
+  icon: 'OtherImages/skillEffect/Strike.png',
   name: 'Strike',
   description: 'Deals damage to a single enemy target.',
   handler: function(sourceCardObj, skillObj) {
@@ -316,7 +319,7 @@ Strike: {
   }
 },
 Burst: {
-  icon: 'OtherImages/SkillTypes/Burst.png',
+  icon: 'OtherImages/skillEffect/Burst.png',
   name: 'Burst',
   description: 'Deals damage to all enemy targets. May apply status effects.',
   handler: function(sourceCardObj, skillObj) {
@@ -340,7 +343,7 @@ Burst: {
   }
 },
   Heal: {
-    icon: 'OtherImages/SkillTypes/Heal.png',
+    icon: 'OtherImages/skillEffect/Heal.png',
     name: 'Heal',
     description: 'Heals an allied target.',
     handler: function(sourceCardObj, skillObj) {
@@ -354,7 +357,7 @@ Burst: {
     }
   },
   Cleanse: {
-    icon: 'OtherImages/SkillTypes/Cleanse.png',
+    icon: 'OtherImages/skillEffect/Cleanse.png',
     name: 'Cleanse',
     description: 'Removes debuffs/status effects from an allied target.',
     handler: function(sourceCardObj, skillObj) {
@@ -368,7 +371,7 @@ Burst: {
     }
   },
   Armor: {
-    icon: 'OtherImages/SkillTypes/Armor.png',
+    icon: 'OtherImages/skillEffect/Armor.png',
     name: 'Armor',
     description: 'Grants armor to an allied target.',
     handler: function(sourceCardObj, skillObj) {
@@ -382,7 +385,7 @@ Burst: {
     }
   },
   Aegis: {
-    icon: 'OtherImages/SkillTypes/Aegis.png',
+    icon: 'OtherImages/skillEffect/Aegis.png',
     name: 'Aegis',
     description: 'Grants a shield that blocks the next incoming damage.',
     handler: function(sourceCardObj, skillObj) {
@@ -396,7 +399,7 @@ Burst: {
     }
   },
 Reanimate: {
-  icon: 'OtherImages/SkillTypes/Reanimate.png',
+  icon: 'OtherImages/skillEffect/Reanimate.png',
   name: 'Reanimate',
   description: 'Return this card from the void to the field.',
   handler: function(sourceCardObj, skillObj) {
@@ -426,7 +429,7 @@ Reanimate: {
   }
 },
 Destroy: {
-  icon: 'OtherImages/SkillTypes/Destroy.png',
+  icon: 'OtherImages/skillEffect/Destroy.png',
   name: 'Destroy',
   description: 'Destroy a valid target according to skill condition.',
   handler: function(sourceCardObj, skillObj) {
@@ -458,48 +461,42 @@ Destroy: {
   }
 },
 Search: {
-  icon: 'OtherImages/SkillTypes/Search.png',
+  icon: 'OtherImages/skillEffect/Search.png',
   name: 'Search',
-  description: 'Search your deck or void for a card matching resolution and add it to your hand.',
-  handler: function(sourceCardObj, skillObj) {
-    // Activation logic (if needed -- e.g. requirements, zone, etc.)
-    const activation = skillObj.activation || {};
-    if (activation.requirement && REQUIREMENT_MAP[activation.requirement]) {
-      REQUIREMENT_MAP[activation.requirement].handler(sourceCardObj, skillObj);
-    }
-
-    // Resolution logic
-    const resolution = skillObj.resolution || {};
-    const searchZone = resolution.zone || "deck";
-    const zoneArr = (searchZone === "void") ? gameState.playerVoid : gameState.playerDeck;
-
-    // Build filter for resolution (archetype/type/category/etc)
-    const filterKeys = Object.keys(resolution).filter(k => k !== "zone");
-    const matches = zoneArr.filter(cardObj => {
-      const cardData = dummyCards.find(c => c.id === cardObj.cardId);
-      if (!cardData) return false;
-      return filterKeys.every(key => {
-        if (typeof cardData[key] === 'string')
-          return cardData[key].toLowerCase() === resolution[key].toLowerCase();
-        if (Array.isArray(cardData[key]))
-          return cardData[key].map(v => v.toLowerCase()).includes(resolution[key].toLowerCase());
-        return cardData[key] === resolution[key];
+  description: 'Search your deck for a card matching resolution and add it to your hand.',
+    handler: function(sourceCardObj, skillObj) {
+      const res = skillObj.resolution || {};
+      const searchZone = res.zone || "deck";
+      const zoneArr = (searchZone === "void") ? gameState.playerVoid : gameState.playerDeck;
+      // Build filter for resolution (archetype/type/category/etc)
+      const filterKeys = Object.keys(res).filter(k => !['zone', 'effect'].includes(k));
+      const matches = zoneArr.filter(cardObj => {
+        const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+        if (!cardData) return false;
+        return filterKeys.every(key => {
+          if (typeof cardData[key] === 'string')
+            return cardData[key].toLowerCase() === res[key].toLowerCase();
+          if (Array.isArray(cardData[key]))
+            return cardData[key].map(v => v.toLowerCase()).includes(res[key].toLowerCase());
+          return cardData[key] === res[key];
+        });
       });
-    });
 
-    if (matches.length === 0) {
-      showToast(`No matching cards found in ${searchZone}.`);
-      return;
+      if (matches.length === 0) {
+        showToast(`No matching cards found in ${searchZone}.`);
+        return;
+      }
+
+      showFilteredCardSelectionModal(matches, selectedCardObj => {
+        moveCard(selectedCardObj.instanceId, zoneArr, gameState.playerHand);
+        renderGameState();
+        setupDropZones && setupDropZones();
+        showToast(`${dummyCards.find(c=>c.id===selectedCardObj.cardId)?.name || "Card"} added to your hand!`);
+      }, { title: `Search ${searchZone === "void" ? "Void" : "Deck"} - Choose a card` });
     }
-
-    showFilteredCardSelectionModal(matches, selectedCardObj => {
-      moveCard(selectedCardObj.instanceId, zoneArr, gameState.playerHand);
-      renderGameState();
-      setupDropZones && setupDropZones();
-      showToast(`${dummyCards.find(c=>c.id===selectedCardObj.cardId)?.name || "Card"} added to your hand!`);
-    }, { title: `Search ${searchZone === "void" ? "Void" : "Deck"} - Choose a card` });
   }
-}
+  // Add more effects as needed (Strike, Heal, Destroy, etc.)
+};
   // ...add more skill types here as needed!
 };
 // ==========================
@@ -3395,7 +3392,11 @@ function canActivateSkill(cardObj, skillObj, currentZone, gameState) {
     const availableEssence = sources.map(card => card.essence || '').join('');
     if (!canPayEssence({ essence: availableEssence }, skillObj.cost)) return false;
   }
-  // 4. Any other custom activation requirements
+  // 4. Activation requirement (optional: check if requirement can be performed)
+  if (activation.requirement && REQUIREMENT_MAP[activation.requirement] && REQUIREMENT_MAP[activation.requirement].canActivate) {
+    if (!REQUIREMENT_MAP[activation.requirement].canActivate(cardObj, skillObj, currentZone, gameState)) return false;
+  }
+  // 5. Any other custom activation requirements
   return true;
 }
 
@@ -3710,7 +3711,7 @@ function runSkillEffect(sourceCardObj, skillObj) {
   // --- TYPES ---
   let types = Array.isArray(skillObj.type) ? skillObj.type : (skillObj.type ? [skillObj.type] : []);
   for (let type of types) {
-    const skillType = SKILL_TYPE_MAP[type];
+    const skillType = SKILL_EFFECT_MAP[type];
     if (skillType && skillType.handler) {
       // Optionally, validate card location or status if needed
       // For example, skip effect if sourceCardObj was moved to deck/void by a requirement
