@@ -461,7 +461,7 @@ skill: [
    activation: {requirement: 'CCW'},
    resolution: {effect: 'Burst', damage: 2, status: 'Burn'}},
   {name: 'Reanimate', cost: '{3}{B}{B}',
-   resolution: {effect: 'Reanimate'}
+   resolution: {effect: 'Reanimate'}}
  ]},
 {id: 'SkullframeArmoredDragon', name: 'Skullframe Armored Dragon', rarity: 'Rare', image: 'CardImages/Skullframe/Skullframe Armored Dragon.png', 
  category: 'Creature', color: ['Black', 'Purple'], type: ['Dragon','Undead'], hp: 8, armor: 4, atk: 6, def: 1,
