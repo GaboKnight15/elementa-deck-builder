@@ -1676,12 +1676,13 @@ gameState.playerDeck.forEach((cardObj, idx) => {
     menu.onclick = function(e) { e.stopPropagation(); };
 
     // Hide menu when clicking elsewhere
-    setTimeout(() => {
-      document.body.addEventListener('click', function handler() {
+    // Robust: Hide menu when clicking anywhere except the menu itself
+    modal.onclick = function(e) {
+      if (!e.target.closest('.card-menu')) {
         closeAllMenus();
-        document.body.removeEventListener('click', handler);
-      }, { once: true });
-    }, 10);
+        if (e.target === modal) modal.style.display = 'none';
+      }
+    };
   };
   wrapper.appendChild(cardDiv);
   list.appendChild(wrapper);
@@ -2385,12 +2386,12 @@ function openVoidModal() {
     menu.onclick = function(e) { e.stopPropagation(); };
 
     // Hide menu when clicking elsewhere
-        setTimeout(() => {
-          document.body.addEventListener('click', function handler() {
+        modal.onclick = function(e) {
+          if (!e.target.closest('.card-menu')) {
             closeAllMenus();
-            document.body.removeEventListener('click', handler);
-          }, { once: true });
-        }, 10);
+            if (e.target === modal) modal.style.display = 'none';
+          }
+        };
       };
       wrapper.appendChild(cardDiv);
       list.appendChild(wrapper);
