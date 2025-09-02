@@ -301,6 +301,8 @@ const REQUIREMENT_MAP = {
         return;
       }
       moveCard(sourceCardObj.instanceId, gameState.playerHand, gameState.playerDeck);
+      gameState.playerDeck = shuffle(gameState.playerDeck);
+      renderGameState();
     },
     canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
       const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
@@ -382,6 +384,7 @@ const REQUIREMENT_MAP = {
         ? gameState.playerCreatures
         : gameState.playerDomains;
       moveCard(sourceCardObj.instanceId, fromArr, gameState.playerDeck);
+      gameState.playerDeck = shuffle(gameState.playerDeck);
     },
     canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
       const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
@@ -397,6 +400,7 @@ const REQUIREMENT_MAP = {
         return;
       }
       moveCard(sourceCardObj.instanceId, gameState.playerVoid, gameState.playerDeck);
+      gameState.playerDeck = shuffle(gameState.playerDeck);
       renderGameState();
     },
     canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
@@ -639,7 +643,7 @@ Destroy: {
       // Filtering logic (archetype, type, etc)
       const res = skillObj.resolution || {};
       const filterKeys = Object.keys(res).filter(k => !['zone', 'type', 'effect'].includes(k));
-      const matches = zoneArr.filter(cardObj => {
+      const matches = deckArr.filter(cardObj => { 
         const cardData = dummyCards.find(c => c.id === cardObj.cardId);
         if (!cardData) return false;
         return filterKeys.every(key => {
@@ -657,6 +661,7 @@ Destroy: {
       }
       showFilteredCardSelectionModal(matches, selectedCardObj => {
         moveCard(selectedCardObj.instanceId, gameState.playerDeck, gameState.playerHand);
+        gameState.playerDeck = shuffle(gameState.playerDeck);
         renderGameState();
         setupDropZones && setupDropZones();
         showToast(`${dummyCards.find(c=>c.id===selectedCardObj.cardId)?.name || "Card"} added to your hand!`);
@@ -769,6 +774,7 @@ Destroy: {
       showFilteredCardSelectionModal(matches, selectedCardObj => {
         const fromArr = fieldArrs.find(arr => arr.includes(selectedCardObj));
         moveCard(selectedCardObj.instanceId, fromArr, gameState.opponentDeck);
+        gameState.opponentDeck = shuffle(gameState.opponentDeck);
         renderGameState();
       }, { title: "Banish - Choose a card" });
     }
@@ -1122,6 +1128,7 @@ function shuffle(array) {
     [array[i], array[j]] = [array[j], array[i]];
   }
   return array;
+  
   emitPublicState();
 }
 
