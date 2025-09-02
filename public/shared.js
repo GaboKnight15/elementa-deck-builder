@@ -369,10 +369,18 @@ skill: [
 // SKULLFRAME //
 {id: 'SkullframeDefector', name: 'Skullframe Defector', rarity: 'Common', image: 'CardImages/Skullframe/Skullframe Defector.png', 
  category: 'Creature', color: 'Black', type: ['Undead','Warrior'], hp: 3, atk: 2, def: 1,
- cost: '{1}', archetype: 'Skullframe', ability: 'Immunity', skill: 'Reanimate {2}{B}', set: 'StandardPack'},
+ cost: '{1}', archetype: 'Skullframe', ability: 'Immunity', set: 'StandardPack',
+ skill: [
+  {name: 'Reanimate', cost: '{2}{B}',
+   resolution: {effect: 'Reanimate'}}
+  ]},
 {id: 'SkullframeUnyielding', name: 'Skullframe Unyielding', rarity: 'Common', image: 'CardImages/Skullframe/Skullframe Unyielding.png', 
  category: 'Creature', color: 'Black', type: 'Undead', hp: 4, atk: 1, def: 0,
- cost: '{1}{B}', archetype: 'Skullframe', ability: ['Immunity','Rush'], skill: 'Reanimate {2}{B}', set: 'StandardPack'},
+ cost: '{1}{B}', archetype: 'Skullframe', ability: ['Immunity','Rush'], set: 'StandardPack',
+ skill: [
+  {name: 'Reanimate', cost: '{2}{B}{B}',
+   resolution: {effect: 'Reanimate'}}
+ ]},
 {id: 'SkullframeAcolyte', name: 'Skullframe Acolyte', rarity: 'Common', image: 'CardImages/Skullframe/Skullframe Acolyte.png', 
  category: 'Creature', color: ['Black', 'Purple'], type: 'Undead', hp: 5, atk: 3, def: 1,
  cost: '{1}{P}{B}', archetype: 'Skullframe', ability: ['Immunity','Ranged'], set: 'StandardPack',
@@ -381,12 +389,15 @@ skill: [
    activation: {requirement: 'CW'},
    resolution: {effect: 'Revive', archetype: 'Skullframe'}},
   {name: 'Reanimate', cost: '{2}{B}{B}', 
-   activation: {requirement: []},
    resolution: {effect: 'Reanimate'}}
  ]},
 {id: 'SkullframeCryptwinds', name: 'Skullframe Cryptwinds', rarity: 'Rare', image: 'CardImages/Skullframe/Skullframe Cryptwinds.png', 
  category: 'Creature', color: ['Black', 'Purple'], type: ['Dragon','Undead'], hp: 12, atk: 6, def: 2,
- cost: '{1}{B}{B}', archetype: 'Skullframe', ability: ['Flying', 'Immunity'], skill: 'Reanimate {1}{B}{B}', set: 'StandardPack'},
+ cost: '{1}{B}{B}', archetype: 'Skullframe', ability: ['Flying', 'Immunity'], set: 'StandardPack',
+ skill: [
+  {name: 'Reanimate', cost: '{2}{B}{B}', 
+   resolution: {effect: 'Reanimate'}}
+  ]},
 {id: 'SkullframeSpectralDragon', name: 'Skullframe Spectral Dragon', rarity: 'Epic', image: 'CardImages/Skullframe/Skullframe Spectral Dragon.png', 
  category: 'Creature', color: ['Black', 'Purple'], type: ['Dragon','Undead'], hp: 12, atk: 6, def: 2, cost: '{3}{P}{B}',
  archetype: 'Skullframe', ability: ['Flying', 'Immunity'], skill: ['Curseflame Inferno {2}{P}{P}{B}','Reanimate {2}{B}{B}'], set: 'StandardPack'},
