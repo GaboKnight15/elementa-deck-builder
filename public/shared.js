@@ -825,7 +825,20 @@ function hideLoadingOverlay() {
   const overlay = document.getElementById('loading-overlay');
   if (overlay) overlay.style.display = 'none';
 }
-
+// REQUIREMENTS ICONS //
+function getRequirementIcons(requirementsArr) {
+  if (!requirementsArr || requirementsArr.length === 0) return "";
+  let icons = "";
+  requirementsArr.forEach(r => {
+    if (r === "CW") {
+      icons += `<img src="OtherImages/Icons/Tapped.png" title="Activate in ATK position" style="width:22px;vertical-align:middle;margin:0 2px;">`;
+    } else if (r === "CCW") {
+      icons += `<img src="OtherImages/Icons/Untapped.png" title="Activate in DEF position" style="width:22px;vertical-align:middle;margin:0 2px;">`;
+    }
+    // Add more requirement icons as needed
+  });
+  return icons;
+}
 // --- INFO MODAL LOGIC ---
 function showInfoModal(cardObj) {
   const card = dummyCards.find(c => c.id === (cardObj.cardId || cardObj.id));
