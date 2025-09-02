@@ -257,93 +257,79 @@ const ATTACK_DECLARATION_ABILITIES = {
 // Helper for requirements (add near SKILL_EFFECT_MAP)
 const REQUIREMENT_MAP = {
   CW: {
+    zones: ['playerCreatures', 'playerDomains'],
     handler: function(sourceCardObj, skillObj) {
-      // Only allow if in ATK (vertical)
+      if (Array.isArray(sourceCardObj.orientation)) {
+        // If multi-orientation (not expected), use first
+        sourceCardObj.orientation = sourceCardObj.orientation[0];
+      }
       if (sourceCardObj.orientation !== "vertical") {
         showToast("Can only rotate from ATK to DEF if currently in ATK.");
         return;
       }
-      changeCardPosition(sourceCardObj, "horizontal"); // ATK -> DEF
+      changeCardPosition(sourceCardObj, "horizontal");
     },
     canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
-      // Can only activate if currently in ATK (vertical)
-      return sourceCardObj.orientation === "vertical";
+      // Accept array of zones
+      const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
+      return validZones.includes(currentZone) && sourceCardObj.orientation === "vertical";
     }
   },
   CCW: {
+    zones: ['playerCreatures', 'playerDomains'],
     handler: function(sourceCardObj, skillObj) {
-      // Only allow if in DEF (horizontal)
+      if (Array.isArray(sourceCardObj.orientation)) {
+        sourceCardObj.orientation = sourceCardObj.orientation[0];
+      }
       if (sourceCardObj.orientation !== "horizontal") {
         showToast("Can only rotate from DEF to ATK if currently in DEF.");
         return;
       }
-      changeCardPosition(sourceCardObj, "vertical"); // DEF -> ATK
+      changeCardPosition(sourceCardObj, "vertical");
     },
     canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
-      // Can only activate if currently in DEF (horizontal)
-      return sourceCardObj.orientation === "horizontal";
+      const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
+      return validZones.includes(currentZone) && sourceCardObj.orientation === "horizontal";
     }
   },
   Stash: {
+    zones: ['hand'],
     handler: function(sourceCardObj, skillObj) {
-      // Only activate in hand
-      const isHand = gameState.playerHand.includes(sourceCardObj);
-      if (!isHand) {
+      const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
+      if (!validZones.some(zone => zone === 'hand')) {
         showToast("Stash can only be activated from your hand.");
         return;
       }
       moveCard(sourceCardObj.instanceId, gameState.playerHand, gameState.playerDeck);
     },
     canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
-      return currentZone === "hand";
+      const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
+      return validZones.includes(currentZone);
     }
   },
   Discard: {
+    zones: ['hand'],
     handler: function(sourceCardObj, skillObj) {
-      // Only activate in hand
-      const isHand = gameState.playerHand.includes(sourceCardObj);
-      if (!isHand) {
+      const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
+      if (!validZones.some(zone => zone === 'hand')) {
         showToast("Discard can only be activated from your hand.");
         return;
       }
       moveCard(sourceCardObj.instanceId, gameState.playerHand, gameState.playerVoid);
     },
     canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
-      return currentZone === "hand";
-    }
-  },
-  Dash: {
-    handler: function(sourceCardObj, skillObj) {
-      // Only from hand to field (creatures or domains)
-      const isHand = gameState.playerHand.includes(sourceCardObj);
-      if (!isHand) {
-        showToast("Dash can only be activated from your hand.");
-        return;
-      }
-      const cardData = dummyCards.find(c => c.id === sourceCardObj.cardId);
-      let targetArr;
-      const category = Array.isArray(cardData.category)
-        ? cardData.category.map(c => c.toLowerCase())
-        : [String(cardData.category).toLowerCase()];
-      if (category.includes("creature")) {
-        targetArr = gameState.playerCreatures;
-      } else if (category.includes("domain")) {
-        targetArr = gameState.playerDomains;
-      } else {
-        showToast("Dash can only be used for creatures or domains.");
-        return;
-      }
-      // Default orientation: vertical (ATK)
-      moveCard(sourceCardObj.instanceId, gameState.playerHand, targetArr, { orientation: "vertical" });
-    },
-    canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
-      return currentZone === "hand";
+      const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
+      return validZones.includes(currentZone);
     }
   },
   Sacrifice: {
+    zones: ['playerCreatures', 'playerDomains'],
     handler: function(sourceCardObj, skillObj) {
-      // Only activate on field (creature/domain)
-      const isField = gameState.playerCreatures.includes(sourceCardObj) || gameState.playerDomains.includes(sourceCardObj);
+      const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
+      const isField = validZones.some(zone =>
+        (zone === 'playerCreatures' && gameState.playerCreatures.includes(sourceCardObj)) ||
+        (zone === 'playerDomains' && gameState.playerDomains.includes(sourceCardObj))
+      );
       if (!isField) {
         showToast("Sacrifice can only be activated from the field.");
         return;
@@ -354,12 +340,18 @@ const REQUIREMENT_MAP = {
       moveCard(sourceCardObj.instanceId, fromArr, gameState.playerVoid);
     },
     canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
-      return (currentZone === "playerCreatures" || currentZone === "playerDomains");
+      const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
+      return validZones.includes(currentZone);
     }
   },
   Return: {
+    zones: ['playerCreatures', 'playerDomains'],
     handler: function(sourceCardObj, skillObj) {
-      const isField = gameState.playerCreatures.includes(sourceCardObj) || gameState.playerDomains.includes(sourceCardObj);
+      const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
+      const isField = validZones.some(zone =>
+        (zone === 'playerCreatures' && gameState.playerCreatures.includes(sourceCardObj)) ||
+        (zone === 'playerDomains' && gameState.playerDomains.includes(sourceCardObj))
+      );
       if (!isField) {
         showToast("Return can only be activated from the field.");
         return;
@@ -370,12 +362,18 @@ const REQUIREMENT_MAP = {
       moveCard(sourceCardObj.instanceId, fromArr, gameState.playerHand);
     },
     canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
-      return (currentZone === "playerCreatures" || currentZone === "playerDomains");
+      const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
+      return validZones.includes(currentZone);
     }
   },
   Retreat: {
+    zones: ['playerCreatures', 'playerDomains'],
     handler: function(sourceCardObj, skillObj) {
-      const isField = gameState.playerCreatures.includes(sourceCardObj) || gameState.playerDomains.includes(sourceCardObj);
+      const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
+      const isField = validZones.some(zone =>
+        (zone === 'playerCreatures' && gameState.playerCreatures.includes(sourceCardObj)) ||
+        (zone === 'playerDomains' && gameState.playerDomains.includes(sourceCardObj))
+      );
       if (!isField) {
         showToast("Retreat can only be activated from the field.");
         return;
@@ -386,7 +384,23 @@ const REQUIREMENT_MAP = {
       moveCard(sourceCardObj.instanceId, fromArr, gameState.playerDeck);
     },
     canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
-      return (currentZone === "playerCreatures" || currentZone === "playerDomains");
+      const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
+      return validZones.includes(currentZone);
+    }
+  },
+  Reforge: {
+    zones: ["playerVoid"],
+    handler: function(sourceCardObj, skillObj) {
+      const isVoid = gameState.playerVoid.includes(sourceCardObj);
+      if (!isVoid) {
+        showToast("Reforge can only be activated from the void.");
+        return;
+      }
+      moveCard(sourceCardObj.instanceId, gameState.playerVoid, gameState.playerDeck);
+      renderGameState();
+    },
+    canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
+      return currentZone === "playerVoid";
     }
   },
   "": { handler: function() {} }
@@ -445,10 +459,41 @@ Burst: {
     renderGameState();
   }
 },
+Dash: {
+  icon: 'OtherImages/skillEffect/Dash.png',
+  name: 'Dash',
+  description: 'Summon this card from your hand to the field.',
+  handler: function(sourceCardObj, skillObj) {
+    // Only activate if in hand
+    const isHand = gameState.playerHand.includes(sourceCardObj);
+    if (!isHand) {
+      showToast("Dash can only be activated from your hand.");
+      return;
+    }
+    const cardData = dummyCards.find(c => c.id === sourceCardObj.cardId);
+    let targetArr;
+    const category = Array.isArray(cardData.category)
+      ? cardData.category.map(c => c.toLowerCase())
+      : [String(cardData.category).toLowerCase()];
+    if (category.includes("creature")) {
+      targetArr = gameState.playerCreatures;
+    } else if (category.includes("domain")) {
+      targetArr = gameState.playerDomains;
+    } else {
+      showToast("Dash can only be used for creatures or domains.");
+      return;
+    }
+    showSummonPositionModal(sourceCardObj, function(chosenOrientation) {
+      moveCard(sourceCardObj.instanceId, gameState.playerHand, targetArr, { orientation: chosenOrientation });
+      renderGameState();
+      setupDropZones && setupDropZones();
+    });
+  }
+},
   Heal: {
     icon: 'OtherImages/skillEffect/Heal.png',
     name: 'Heal',
-    description: 'Heals an allied target.',
+    description: 'Heals an allied unit.',
     handler: function(sourceCardObj, skillObj) {
       promptUserToSelectTarget(
         [...gameState.allyCreatures, ...gameState.allyDomains],
@@ -476,7 +521,7 @@ Burst: {
   Armor: {
     icon: 'OtherImages/skillEffect/Armor.png',
     name: 'Armor',
-    description: 'Grants armor to an allied target.',
+    description: 'Grants armor to an allied unit.',
     handler: function(sourceCardObj, skillObj) {
       promptUserToSelectTarget(
         [...gameState.allyCreatures, ...gameState.allyDomains],
@@ -549,20 +594,6 @@ Burst: {
         return;
       }
       moveCard(sourceCardObj.instanceId, gameState.playerVoid, gameState.playerHand);
-      renderGameState();
-    }
-  },
-  Reforge: {
-    icon: 'OtherImages/skillEffect/Reforge.png',
-    name: 'Reforge',
-    description: 'Return this card from the void to your deck.',
-    handler: function(sourceCardObj, skillObj) {
-      const isVoid = gameState.playerVoid.includes(sourceCardObj);
-      if (!isVoid) {
-        showToast("Reforge can only be activated from the void.");
-        return;
-      }
-      moveCard(sourceCardObj.instanceId, gameState.playerVoid, gameState.playerDeck);
       renderGameState();
     }
   },
@@ -3746,13 +3777,17 @@ function proceedSkillActivation(cardObj, skillObj, options = {}) {
   renderGameState(); // Ensure UI/state is up-to-date after requirements
   resolveSkillEffect(cardObj, skillObj);
 }
+
+// SKILL RESOLUTION LOGIC //
 function resolveSkillEffect(cardObj, skillObj) {
   const resolution = skillObj.resolution || {};
-  const effectName = resolution.effect;
-  const effectDef = SKILL_EFFECT_MAP[effectName];
-  if (effectDef && effectDef.handler) {
-    effectDef.handler(cardObj, skillObj);
-  }
+  const effects = Array.isArray(resolution.effect) ? resolution.effect : [resolution.effect];
+  effects.forEach(effectName => {
+    const effectDef = SKILL_EFFECT_MAP[effectName];
+    if (effectDef && effectDef.handler) {
+      effectDef.handler(cardObj, skillObj);
+    }
+  });
 }
 function showFilteredCardSelectionModal(cards, onSelect, opts = {}) {
   // Remove any previous modal
