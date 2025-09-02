@@ -6,13 +6,21 @@ const dummyCards = [
 
 {id: 'SylvaniaThornEmpress', name: 'Sylvania, Thorn Empress', rarity: 'Legendary', image: 'CardImages/Sylvan/Sylvania, Thorn Empress.png', 
  category: 'Creature', color: 'Green', type: ['Elf', 'Mage'], trait: 'Champion', hp: 11, atk: 1, def: 0,
- cost: '{G}{G}{G}', essence: '{G}', archetype: 'Sylvan', ability: ['Ranged',''],
- skill: ["Briar Queen's Grasp {G}{CCW}"], set: 'StandardPack'},
+ cost: '{G}{G}{G}', essence: '{G}', archetype: 'Sylvan', ability: 'Ranged', set: 'StandardPack'
+ skill: [
+  {name: "Briar Queen's Grasp", cost: '{G}',
+  activation: {requirement: '{CCW}'},
+  resolution: {effect: 'Strike', damage: 3, status: 'Bind'}}
+  ]},
 
 {id: 'KaelenBlazebornHuntress', name: 'Kaelen, Blazeborn Huntress', rarity: 'Legendary', image: 'CardImages/Skullframe/Kaelen, Blazeborn Huntress.png', 
  category: 'Creature', color: 'Red', type: 'Warrior', trait: 'Champion', hp: 8, atk: 1, def: 0,
- cost: '{R}{R}{R}', essence: '{R}', archetype: '', ability: ['Burn','Ranged'], skill: ['Hexblast {B}{CW}', { name: 'Scorching Skyfall', cost: '{R}{R}{CCW}', type: 'Burst', damage: 2, burn: true }],
- set: 'StandardPack'},
+ cost: '{R}{R}{R}', essence: '{R}', archetype: '', ability: ['Burn','Ranged'], set: 'StandardPack',
+ skill: [
+  {name: 'Scorching Skyfall', cost: '{R}{R}',
+   activation: {requirement: '{CCW}'}, 
+   resolution: {effect: 'Burst', damage: 1, status: 'Burn'}}
+  ]},
 
 {id: 'ZaryonPearlhavenCommander', name: 'Zaryon, Pearlhaven Commander', rarity: 'Legendary', image: 'CardImages/Skullframe/Zaryon, Pearlhaven Commander.png', 
  category: 'Creature', color: 'Blue', type: ['Merfolk', 'Warrior'], trait: 'Champion', hp: 12, atk: 2, def: 1,
@@ -32,7 +40,12 @@ const dummyCards = [
 
 {id: 'VelmiraMistressofSilence', name: 'Velmira, Mistress of Silence', rarity: 'Legendary', image: 'CardImages/Skullframe/Velmira, Mistress of Silence.png', 
  category: 'Creature', color: 'Black', type: 'Mage', trait: 'Champion', hp: 9, atk: 2, def: 0,
- cost: '{B}{B}{B}', essence: '{B}', archetype: '', ability: ['Ranged','Veil'], skill: ['Hexbind {B}{P}','Hexblast {B}{CW}','Reanimate {2}{B}{B}'], set: 'StandardPack'},
+ cost: '{B}{B}{B}', essence: '{B}', archetype: '', ability: ['Ranged','Veil'], set: 'StandardPack',
+ skill: [
+  {name:'Seal', cost: '{B}',
+   activation: {requirement: '{CCW}'},
+   resolution: {effect: 'Seal'}}
+ ]},
 
 {id: 'ElyndraDawnbladeofHeavens', name: 'Elyndra, Dawnblade of Heavens', rarity: 'Legendary', image: 'CardImages/Skullframe/Elyndra, Dawnblade of Heavens.png', 
  category: 'Creature', color: 'White', type: 'Warrior', trait: 'Champion', hp: 10, atk: 2, def: 1,
@@ -373,7 +386,7 @@ skill: [
  skill: [
   {name: 'Reanimate', cost: '{2}{B}',
    resolution: {effect: 'Reanimate'}}
-  ]},
+ ]},
 {id: 'SkullframeUnyielding', name: 'Skullframe Unyielding', rarity: 'Common', image: 'CardImages/Skullframe/Skullframe Unyielding.png', 
  category: 'Creature', color: 'Black', type: 'Undead', hp: 4, atk: 1, def: 0,
  cost: '{1}{B}', archetype: 'Skullframe', ability: ['Immunity','Rush'], set: 'StandardPack',
@@ -403,7 +416,11 @@ skill: [
  archetype: 'Skullframe', ability: ['Flying', 'Immunity'], skill: ['Curseflame Inferno {2}{P}{P}{B}','Reanimate {2}{B}{B}'], set: 'StandardPack'},
 {id: 'SkullframeArmoredDragon', name: 'Skullframe Armored Dragon', rarity: 'Rare', image: 'CardImages/Skullframe/Skullframe Armored Dragon.png', 
  category: 'Creature', color: ['Black', 'Purple'], type: ['Dragon','Undead'], hp: 12, atk: 6, def: 2,
- cost: '{2}{P}{B}', archetype: 'Skullframe', ability: ['Flying','Immunity','Armor'], skill: 'Reanimate {3}{B}{B}', set: 'StandardPack'},
+ cost: '{2}{P}{B}', archetype: 'Skullframe', ability: ['Flying','Immunity','Armor'], set: 'StandardPack',
+ skill: [
+  {name: 'Reanimate', cost: '{3}{B}{B}', 
+   resolution: {effect: 'Reanimate'}}
+ ]},
 {id: 'SkullframeHexmistress', name: 'Skullframe Hexmistress', rarity: 'Epic', image: 'CardImages/Skullframe/Skullframe Hexmistress.png', 
  category: 'Creature', color: ['Black', 'Purple'], type: ['Undead','Mage'], hp: 6, atk: 4, def: 1,
  cost: '{1}{B}{P}', archetype: 'Skullframe', ability: ['Immunity','Ranged'], set: 'StandardPack',
