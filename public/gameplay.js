@@ -318,6 +318,7 @@ const REQUIREMENT_MAP = {
         return;
       }
       moveCard(sourceCardObj.instanceId, gameState.playerHand, gameState.playerVoid);
+      renderGameState();
     },
     canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
       const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
@@ -340,6 +341,7 @@ const REQUIREMENT_MAP = {
         ? gameState.playerCreatures
         : gameState.playerDomains;
       moveCard(sourceCardObj.instanceId, fromArr, gameState.playerVoid);
+      renderGameState();
     },
     canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
       const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
@@ -362,6 +364,7 @@ const REQUIREMENT_MAP = {
         ? gameState.playerCreatures
         : gameState.playerDomains;
       moveCard(sourceCardObj.instanceId, fromArr, gameState.playerHand);
+      renderGameState();
     },
     canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
       const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
@@ -385,6 +388,7 @@ const REQUIREMENT_MAP = {
         : gameState.playerDomains;
       moveCard(sourceCardObj.instanceId, fromArr, gameState.playerDeck);
       gameState.playerDeck = shuffle(gameState.playerDeck);
+      renderGameState();
     },
     canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
       const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
@@ -583,6 +587,7 @@ Dash: {
           targetArr,
           { orientation: chosenOrientation, currentHP: getBaseHp(sourceCardObj.cardId) }
         );
+        closeAllModals();
         renderGameState();
       });
     }
@@ -662,6 +667,7 @@ Destroy: {
       showFilteredCardSelectionModal(matches, selectedCardObj => {
         moveCard(selectedCardObj.instanceId, gameState.playerDeck, gameState.playerHand);
         gameState.playerDeck = shuffle(gameState.playerDeck);
+        closeAllModals();
         renderGameState();
         setupDropZones && setupDropZones();
         showToast(`${dummyCards.find(c=>c.id===selectedCardObj.cardId)?.name || "Card"} added to your hand!`);
@@ -2237,7 +2243,7 @@ if (cardData.skill && Array.isArray(cardData.skill)) {
   cardData.skill.forEach(skillObj => {
     const isEnabled = canActivateSkill(cardObj, skillObj, currentZone, gameState);
     buttons.push({
-      text: `${skillObj.name} ${parseEffectText(skillObj.cost)}`,
+      text: `${skillObj.name} ${parseEffectText(skillObj.cost, skillObj.activation?.requirement)}`,
       html: true,
       disabled: !isEnabled,
       onClick: function(e) {
