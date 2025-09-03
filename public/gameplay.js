@@ -259,38 +259,47 @@ const REQUIREMENT_MAP = {
   CW: {
     zones: ['playerCreatures', 'playerDomains'],
     handler: function(sourceCardObj, skillObj, afterAnimation) {
-      if (Array.isArray(sourceCardObj.orientation)) {
-        sourceCardObj.orientation = sourceCardObj.orientation[0];
-      }
-      if (sourceCardObj.orientation !== "vertical") {
-        showToast("Can only rotate from ATK to DEF if currently in ATK.");
+      // If already in DEF (horizontal), allow skill activation (no rotation)
+      if (sourceCardObj.orientation === "horizontal") {
         if (afterAnimation) afterAnimation();
         return;
       }
-      changeCardPosition(sourceCardObj, "horizontal", afterAnimation);
+      // If in ATK (vertical), must rotate to DEF first
+      if (sourceCardObj.orientation === "vertical") {
+        changeCardPosition(sourceCardObj, "horizontal", afterAnimation);
+        return;
+      }
+      showToast("Card must be in ATK or DEF position to activate this skill.");
+      if (afterAnimation) afterAnimation();
     },
     canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
-      // Accept array of zones
+      // Allow if already in DEF
       const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
-      return validZones.includes(currentZone) && sourceCardObj.orientation === "vertical";
+      return validZones.includes(currentZone) &&
+        (sourceCardObj.orientation === "vertical" || sourceCardObj.orientation === "horizontal");
     }
   },
   CCW: {
     zones: ['playerCreatures', 'playerDomains'],
     handler: function(sourceCardObj, skillObj, afterAnimation) {
-      if (Array.isArray(sourceCardObj.orientation)) {
-        sourceCardObj.orientation = sourceCardObj.orientation[0];
-      }
-      if (sourceCardObj.orientation !== "horizontal") {
-        showToast("Can only rotate from DEF to ATK if currently in DEF.");
+      // If already in ATK (vertical), allow skill activation (no rotation)
+      if (sourceCardObj.orientation === "vertical") {
         if (afterAnimation) afterAnimation();
         return;
       }
-      changeCardPosition(sourceCardObj, "vertical", afterAnimation);
+      // If in DEF (horizontal), must rotate to ATK first
+      if (sourceCardObj.orientation === "horizontal") {
+        changeCardPosition(sourceCardObj, "vertical", afterAnimation);
+        return;
+      }
+      showToast("Card must be in ATK or DEF position to activate this skill.");
+      if (afterAnimation) afterAnimation();
     },
     canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
+      // Allow if already in ATK
       const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
-      return validZones.includes(currentZone) && sourceCardObj.orientation === "horizontal";
+      return validZones.includes(currentZone) &&
+        (sourceCardObj.orientation === "vertical" || sourceCardObj.orientation === "horizontal");
     }
   },
   Stash: {
@@ -3163,6 +3172,7 @@ function endAttackTargeting() {
   attackMode.attackerZone = null;
 }
 
+// --- PATCHED resolveAttack FUNCTION WITH ANIMATION ---
 function resolveAttack(attackerId, defenderId) {
   // Find attacker and defender card objects and their arrays
   let attacker, defender, attackerArr, defenderArr, attackerVoid, defenderVoid;
@@ -3205,63 +3215,78 @@ function resolveAttack(attackerId, defenderId) {
 
   if (!attacker || !defender) return;
 
-  // --- ABILITY LOGIC ---
-  // Defender has Flying: can only be attacked by Flying or Ranged
-  if (defenderHasAbility(defender, 'Flying')) {
-    if (!(attackerHasAbility(attacker, 'Flying') || attackerHasAbility(attacker, 'Ranged'))) {
-      showToast("You can only attack Flying creatures with Flying or Ranged cards!");
-      return;
-    }
-  }
+  // Determine zoneId for attacker (needed for animation overlay)
+  let attackerZoneId = gameState.playerCreatures.includes(attacker) ? 'player-creatures-zone'
+                    : gameState.opponentCreatures.includes(attacker) ? 'opponent-creatures-zone'
+                    : null;
 
-  // Ranged: does not receive retaliation when attacking
-  let attackerGetsRetaliation = true;
-  if (attackerHasAbility(attacker, 'Ranged') && defenderDef.category === "creature") {
-    attackerGetsRetaliation = false;
-  }
-
-  // --- LOG THE ATTACK ---
-  appendAttackLog({
-    attacker: attacker,
-    defender: defender,
-    defenderOrientation: defender.orientation,
-    who: getCardOwner(attacker)
-  });  
-
-  // === Attack Logic ===
-
-  if (defenderDef.category === "creature") {
-    if (defender.orientation === "horizontal") {
-      dealDamage(attacker, defender, attacker.atk);
-      if (attackerGetsRetaliation) {
-        dealDamage(defender, attacker, defender.atk);
-      }
-    } else if (defender.orientation === "vertical") {
-      let damage = Math.max(0, attacker.atk - defender.def);
-      dealDamage(attacker, defender, damage);
-      // Defender does not deal damage back
-    }
+  // Insert animation function here
+  if (attackerZoneId) {
+    animateAttack(attacker, attackerZoneId, proceedAttackResolution);
   } else {
-    dealDamage(attacker, defender, attacker.atk);
+    proceedAttackResolution();
   }
 
-  attacker.hasAttacked = true;
-
-  // Apply status effects from attacker abilities to defender (if defender is a creature)
-  const attackerAbilities = attackerDef.ability || [];
-  if (defenderDef && defenderDef.category === "creature") {
-    attackerAbilities.forEach(abilityName => {
-      if (STATUS_EFFECTS[abilityName]) {
-        applyStatus(defender, abilityName);
+  // All attack logic is inside this helper, called after animation
+  function proceedAttackResolution() {
+    // --- ABILITY LOGIC ---
+    // Defender has Flying: can only be attacked by Flying or Ranged
+    if (defenderHasAbility(defender, 'Flying')) {
+      if (!(attackerHasAbility(attacker, 'Flying') || attackerHasAbility(attacker, 'Ranged'))) {
+        showToast("You can only attack Flying creatures with Flying or Ranged cards!");
+        return;
       }
-    });
+    }
+
+    // Ranged: does not receive retaliation when attacking
+    let attackerGetsRetaliation = true;
+    if (attackerHasAbility(attacker, 'Ranged') && defenderDef.category === "creature") {
+      attackerGetsRetaliation = false;
+    }
+
+    // --- LOG THE ATTACK ---
+    appendAttackLog({
+      attacker: attacker,
+      defender: defender,
+      defenderOrientation: defender.orientation,
+      who: getCardOwner(attacker)
+    });  
+
+    // === Attack Logic ===
+    if (defenderDef.category === "creature") {
+      if (defender.orientation === "horizontal") {
+        dealDamage(attacker, defender, attacker.atk);
+        if (attackerGetsRetaliation) {
+          dealDamage(defender, attacker, defender.atk);
+        }
+      } else if (defender.orientation === "vertical") {
+        let damage = Math.max(0, attacker.atk - defender.def);
+        dealDamage(attacker, defender, damage);
+        // Defender does not deal damage back
+      }
+    } else {
+      dealDamage(attacker, defender, attacker.atk);
+    }
+
+    attacker.hasAttacked = true;
+
+    // Apply status effects from attacker abilities to defender (if defender is a creature)
+    const attackerAbilities = attackerDef.ability || [];
+    if (defenderDef && defenderDef.category === "creature") {
+      attackerAbilities.forEach(abilityName => {
+        if (STATUS_EFFECTS[abilityName]) {
+          applyStatus(defender, abilityName);
+        }
+      });
+    }
+
+    // Move cards to void if HP <= 0
+    if (attacker.currentHP <= 0 && attackerArr && attackerVoid) moveCard(attacker.instanceId, attackerArr, attackerVoid);
+    if (defender.currentHP <= 0 && defenderArr && defenderVoid) moveCard(defender.instanceId, defenderArr, defenderVoid);
+
+    renderGameState();
+    setupDropZones();
   }
-
-  if (attacker.currentHP <= 0 && attackerArr && attackerVoid) moveCard(attacker.instanceId, attackerArr, attackerVoid);
-  if (defender.currentHP <= 0 && defenderArr && defenderVoid) moveCard(defender.instanceId, defenderArr, defenderVoid);
-
-  renderGameState();
-  setupDropZones();
 }
 // --- Damage Helper: Deals armor/HP damage ---
 function dealDamage(source, target, amount) {
@@ -3469,6 +3494,8 @@ function zoneImgLog(zone) {
     Void: "OtherImages/Icons/Void.png",
     Deck: "OtherImages/Icons/DefaultDeckBox.png",
     Hand: "OtherImages/Icons/Hand.png",
+    Domains: "OtherImages/Icons/Domains.png",
+    Creatures: "OtherImages/Icons/Domains.png",    
       // Add more as needed
   };  
   return `<img class="log-zone-img" src="${zoneIcons[zone] || ''}" title="${zone}" style="width:32px;vertical-align:middle;">`;
@@ -3481,10 +3508,10 @@ function renderLogAction({
   who = "player"     // "player" or "opponent"
 }, isMe = true) {
 const actionIcons = {
-  move: "→",
-  attack: "⚔️",
-  effect: "★",
-  draw: "⤵️",
+  move: "OtherImages/Icons/Move.png",
+  attack: "OtherImages/Icons/Attack.png",
+  effect: "OtherImages/Icons/Effect.png",
+  draw: "OtherImages/Icons/Draw.png",
     // Add more as needed
 };
 let showCardback = action === "draw" && !isMe;
@@ -3494,7 +3521,9 @@ let destHtml = typeof dest === "string"
 let entryHtml = `
   <div class="log-action ${who}" style="background:${who === 'player' ? '#232' : '#322'}11;border-radius:7px;display:inline-flex;align-items:center;">
     ${cardImgLog(sourceCard, { who, action, isDraw: sourceCard?.isDraw, showCardback })}
-    <span class="log-arrow" style="margin:0 7px 0 7px;">${actionIcons[action] || "→"}</span>
+    <span class="log-arrow" style="margin:0 7px 0 7px;">
+      <img src="${actionIcons[action] || actionIcons.move}" alt="${action}" style="width:32px;height:32px;vertical-align:middle;">
+    </span>
     ${destHtml}
   </div>
 `;
@@ -3563,7 +3592,8 @@ function appendPositionChangeLog(cardObj, newOrientation, prevOrientation, fromS
   if (prevOrientation === "vertical" && newOrientation === "horizontal") {
     // ATK to DEF
     logHtml += cardImgLog(cardDef, { border: "2px solid #ffe066", width: 36, rotate: 0 });
-    logHtml += `<img src="OtherImages/Icons/Tapped.png" alt="Tapped" style="width:28px;vertical-align:middle;margin:0 7px;">`;
+    logHtml += `<img src="OtherImages/Icons/Tapped.png"
+      alt="Tapped" style="width:28px;vertical-align:middle;margin-left:8px;margin-right:13px;">`;
     logHtml += cardImgLog(cardDef, { border: "2px solid #ffe066", width: 36, marginLeft: "7px", rotate: 90 });
   } else if (prevOrientation === "horizontal" && newOrientation === "vertical") {
     // DEF to ATK
@@ -3776,6 +3806,55 @@ function getCardColors(cardObj) {
 /*-------------------
 // ANIMATION LOGIC //
 -------------------*/
+// --- ATTACK ANIMATION LOGIC ---
+function animateAttack(cardObj, zoneId, callback, cardbackOverride) {
+  const cardDiv = findCardDivInZone(zoneId, cardObj.instanceId);
+  if (!cardDiv) { callback && callback(); return; }
+
+  // Get card front and back images
+  const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+  const cardbackUrl = cardbackOverride
+    || window.selectedPlayerDeck?.deckObj?.cardbackArt
+    || "OtherImages/Cardbacks/CBDefault.png";
+
+  // Position overlay
+  const rect = cardDiv.getBoundingClientRect();
+  const animDiv = document.createElement('div');
+  animDiv.className = 'attack-card-flip';
+  animDiv.style.left = rect.left + 'px';
+  animDiv.style.top = rect.top + 'px';
+  animDiv.style.width = rect.width + 'px';
+  animDiv.style.height = rect.height + 'px';
+  animDiv.style.position = 'fixed';
+  animDiv.style.zIndex = 99999;
+  animDiv.style.pointerEvents = 'none';
+
+  animDiv.innerHTML = `
+    <div class="attack-card-inner">
+      <div class="attack-card-front">
+        <img src="${cardData.image}" alt="Card Front">
+      </div>
+      <div class="attack-card-back">
+        <img src="${cardbackUrl}" alt="Card Back">
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(animDiv);
+
+  // Play attack sound here if desired (uncomment & add your sound element)
+  // const snd = document.getElementById('attack-sound');
+  // if (snd) { snd.currentTime = 0; snd.play(); }
+
+  // Start animation
+  setTimeout(() => {
+    animDiv.querySelector('.attack-card-inner').classList.add('flipped');
+    setTimeout(() => {
+      animDiv.remove();
+      callback && callback();
+    }, 1000); // 1 second duration
+  }, 20);
+}
 function animateCardPositionChange(cardObj, zoneId, prevOrientation, newOrientation, callback) {
   const cardDiv = findCardDivInZone(zoneId, cardObj.instanceId);
   if (!cardDiv) { callback && callback(); return; }
@@ -3966,6 +4045,47 @@ function resolveSkillEffect(cardObj, skillObj) {
       effectDef.handler(cardObj, skillObj);
     }
   });
+}
+function promptUserToSelectTarget(targets, onSelect, opts = {}) {
+  // Remove any previous highlights
+  document.querySelectorAll('.target-highlight').forEach(el => el.classList.remove('target-highlight'));
+
+  // For each card, find its div on the field and highlight it
+  targets.forEach(cardObj => {
+    // Try both player and opponent zones
+    const zoneIds = [
+      'player-creatures-zone', 'player-domains-zone',
+      'opponent-creatures-zone', 'opponent-domains-zone'
+    ];
+    let cardDiv = null;
+    for (const zoneId of zoneIds) {
+      cardDiv = findCardDivInZone(zoneId, cardObj.instanceId);
+      if (cardDiv) break;
+    }
+    if (cardDiv) {
+      cardDiv.classList.add('target-highlight');
+      cardDiv.onclick = function(e) {
+        e.stopPropagation();
+        // Remove highlights from all
+        document.querySelectorAll('.target-highlight').forEach(el => {
+          el.classList.remove('target-highlight');
+          el.onclick = null;
+        });
+        onSelect(cardObj);
+      };
+    }
+  });
+
+  // Optionally, add a cancel action (e.g. click battlefield background)
+  if (opts.cancelable) {
+    document.body.addEventListener('click', function cancelHandler(e) {
+      document.querySelectorAll('.target-highlight').forEach(el => {
+        el.classList.remove('target-highlight');
+        el.onclick = null;
+      });
+      document.body.removeEventListener('click', cancelHandler);
+    }, { once: true });
+  }
 }
 function showFilteredCardSelectionModal(cards, onSelect, opts = {}) {
   // Remove any previous modal
