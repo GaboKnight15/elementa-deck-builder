@@ -24,7 +24,12 @@ const dummyCards = [
 
 {id: 'ZaryonPearlhavenCommander', name: 'Zaryon, Pearlhaven Commander', rarity: 'Legendary', image: 'CardImages/Skullframe/Zaryon, Pearlhaven Commander.png', 
  category: 'Creature', color: 'Blue', type: ['Merfolk', 'Warrior'], trait: 'Champion', hp: 12, atk: 2, def: 1,
- cost: '{U}{U}{U}', essence: '{U}', archetype: '', ability: ['Dive','Pierce'], skill: ['Hexbind {Y}{Y}','Hexblast {B}{CW}','Tidepiercer Vortex {U}{CCW}'], set: 'StandardPack'},
+ cost: '{U}{U}{U}', essence: '{U}', archetype: '', ability: ['Dive','Pierce'], set: 'StandardPack'
+ skill: [
+  {name: 'Tidepiercer Vortex', cost: '{U}',
+   activation: {requirement: 'CCW'},
+   resolution: {effect: 'Strike', damage: 2, status: 'Soak'}}
+ ]},
 
 {id: 'ZyraThunderbladeDuelist', name: 'Zyra, Thunderblade Duelist', rarity: 'Legendary', image: 'CardImages/Skullframe/Zyra, Thunderblade Duelist.png', 
  category: 'Creature', color: 'Yellow', type: 'Warrior', trait: 'Champion', hp: 7, atk: 1, def: 0,
@@ -37,7 +42,11 @@ const dummyCards = [
 
 {id: 'MordrathPlagueKing', name: 'Mordrath, Plague King', rarity: 'Legendary', image: 'CardImages/Skullframe/Mordrath, Plague King.png', 
  category: 'Creature', color: 'Purple', type: ['Undead', 'Warrior'], trait: 'Champion', hp: 6, atk: 1, def: 1,
- cost: '{P}{P}{P}', essence: '{P}', archetype: '', ability: ['Immunity','Venom'], skill: ['Hexbind {B}{P}','Hexblast {B}{CW}','Reanimate {2}{B}{B}'], set: 'StandardPack'},
+ cost: '{P}{P}{P}', essence: '{P}', archetype: '', ability: ['Immunity','Venom'], set: 'StandardPack',
+ skill: [
+ {name: 'Reanimate', cost: '{1}{P}{P}',
+ resolution: {effect: 'Reanimate'}}
+ ]},
 
 {id: 'GravokDrakzulTyrant', name: 'Gravok, Drakzul Tyrant', rarity: 'Legendary', image: 'CardImages/Skullframe/Gravok, Drakzul Tyrant.png', 
  category: 'Creature', color: 'Gray', type: 'Warrior', trait: 'Champion', hp: 10, atk: 2, def: 1,
@@ -87,49 +96,128 @@ const dummyCards = [
 
 {id: 'AbyndraTidalWraith', name: 'Abyndra, Tidal Wraith', rarity: 'Legendary', image: 'CardImages/Abyssdrakes/Abyndra, Tidal Wraith.png', 
  category: 'Creature', color: 'Blue', type: 'Dragon', trait: 'Evolution', hp: 19, atk: 4, def: 2,
- cost: '{5}{U}{U}', archetype: 'Abyssdrake', ability: ['Flying','Aegis','Veil'], skill: ['Reveal {R}','Cataclysmic Blaze {R}{CW}'], set: 'StandardPack'},
+ cost: '{5}{U}{U}', archetype: 'Abyssdrake', ability: ['Flying','Aegis','Veil'], set: 'StandardPack',
+ skill: [
+  {name: 'Reveal {R}','Cataclysmic Blaze {R}{CW}'
+ ]},
 
 {id: 'VoltrazekTempestReaver', name: 'Voltrazek, Tempest Reaver', rarity: 'Legendary', image: 'CardImages/Stormrazors/Voltrazek, Tempest Reaver.png', 
  category: 'Creature', color: 'Yellow', type: 'Dragon', trait: 'Evolution', hp: 13, atk: 4, def: 1,
- cost: '{3}{Y}{Y}', archetype: 'Stormrazor', ability: ['Flying','Pierce'], skill: ['Reveal {R}','Cataclysmic Blaze {R}{CW}'], set: 'StandardPack'},
+ cost: '{3}{Y}{Y}', archetype: 'Stormrazor', ability: ['Flying','Pierce'], set: 'StandardPack',
+ skill: [
+  {name: 'Dash', cost: '{1}{Y}{Y}',
+   resolution: {effect: 'Dash'}}
+ ]},
 
 {id: 'ToxigonBlightedMaw', name: 'Toxigon, Blighted Maw', rarity: 'Legendary', image: 'CardImages/Venomspines/Toxigon, Blighted Maw.png', 
  category: 'Creature', color: 'Purple', type: 'Dragon', trait: 'Evolution', hp: 4, atk: 4, def: 1,
- cost: '{4}{P}{P}', archetype: 'Venomspine', ability: ['Flying','Venom'], skill: ['Reveal {R}','Cataclysmic Blaze {R}{CW}'], set: 'StandardPack'},
+ cost: '{4}{P}{P}', archetype: 'Venomspine', ability: ['Flying','Venom'], set: 'StandardPack',
+ skill: [
+  {name: 'Discard', cost: '{B}',
+   activation: {requirement: 'Discard},
+   resolution: {effect: 'XXX'}},
+  {name: 'Nightfall Surge', cost: '{B}',
+   activation: {requirement: 'CW'},
+   resolustion: {effect: 'Burst'}}
+ ]},
 
 {id: 'FerronyxTerraColossus', name: 'Ferronyx, Terra Colossus', rarity: 'Legendary', image: 'CardImages/Terraclaws/Ferronyx, Terra Colossus.png', 
  category: 'Creature', color: 'Gray', type: 'Dragon', trait: 'Evolution', hp: 9, armor: 5, atk: 5, def: 2,
- cost: '{4}{C}{C}', archetype: 'Terraclaw', ability: ['Armor','Flying','Protect'], skill: ['Reveal {R}','Cataclysmic Blaze {R}{CW}'], set: 'StandardPack'},
+ cost: '{4}{C}{C}', archetype: 'Terraclaw', ability: ['Armor','Flying','Protect'], set: 'StandardPack'
+ skill: [
+  {name: 'Discard', cost: '{B}',
+   activation: {requirement: 'Discard},
+   resolution: {effect: 'XXX'}},
+  {name: 'Nightfall Surge', cost: '{B}',
+   activation: {requirement: 'CW'},
+   resolustion: {effect: 'Burst'}}
+ ]},
 
 {id: 'NoctyrosUmbralTyrant', name: 'Noctyros, Umbral Tyrant', rarity: 'Legendary', image: 'CardImages/Nightshrouds/Noctyros, Umbral Tyrant.png', 
  category: 'Creature', color: 'Black', type: 'Dragon', trait: 'Evolution', hp: 12, atk: 6, def: 2,
- cost: '{4}{B}{B}', archetype: 'Nightshroud', ability: ['Flying','Protect'], skill: ['Discard {B}','Nightfall Surge {B}{CW}'], set: 'StandardPack'},
+ cost: '{4}{B}{B}', archetype: 'Nightshroud', ability: ['Flying','Protect'], set: 'StandardPack'
+ skill: [
+  {name: 'Discard', cost: '{B}',
+   activation: {requirement: 'Discard},
+   resolution: {effect: 'XXX'}},
+  {name: 'Nightfall Surge', cost: '{B}',
+   activation: {requirement: 'CW'},
+   resolustion: {effect: 'Burst'}}
+ ]},
 
 {id: 'SolarythRadianceDawnbreaker', name: 'Solaryth, Radiance Dawnbreaker', rarity: 'Legendary', image: 'CardImages/Solarwyrms/Solaryth, Radiance Dawnbreaker.png', 
  category: 'Creature', color: 'White', type: 'Dragon', trait: 'Evolution', hp: 17, atk: 4, def: 2,
- cost: '{4}{W}{W}', archetype: 'Solarwyrm', ability: ['Flying','Aegis'], skill: ['Seal {W}{W}','Celestial Scales {W}{CW}'], set: 'StandardPack'},
+ cost: '{4}{W}{W}', archetype: 'Solarwyrm', ability: ['Flying','Aegis'], set: 'StandardPack'
+ skill: [
+  {name: 'Seal', cost: '{W}{W}',
+   activation: {requirement: 'CCW'},
+   resolution: {effect: 'Seal'}},
+  {name: 'Celestial Scales', cost: '{W}',
+   activation: {requirement: 'CW'},
+   resolution: {effect: 'Bestow', bestow: {ability: 'Aegis', targets: 'self'}}}
+ ]},
 
 // CHAMPIONS ADVANCED //
 
 {id: 'FaeliraSatyrEmpress', name: 'Faelira, Satyr Empress', rarity: 'Legendary', image: 'CardImages/Firelands/Faelira, Satyr Empress.png', 
  category: 'Creature', color: 'Green', type: ['Satyr', 'Mage'], trait: 'Champion', hp: 11, atk: 2, def: 0,
- cost: '{G}{G}{G}', essence: '{G}', archetype: '', ability: ['Ranged',''], skill: ['Dash {Y}{W}','Hexblast {B}{CW}','Flametongue Invocation {R}{B}'], set: 'StandardPack'},
+ cost: '{G}{G}{G}', essence: '{G}', archetype: '', ability: ['Ranged',''], set: 'StandardPack',
+ skill: [
+  {name: 'Seal', cost: '{W}{W}',
+   activation: {requirement: 'CCW'},
+   resolution: {effect: 'Seal'}},
+  {name: 'Celestial Scales', cost: '{W}',
+   activation: {requirement: 'CW'},
+   resolution: {effect: 'Bestow', bestow: {ability: 'Aegis', targets: 'self'}}}
+ ]},
 
 {id: 'KaelyraFirelandsHeiress', name: 'Kaelyra, Firelands Heiress', rarity: 'Legendary', image: 'CardImages/Firelands/Kaelyra, Firelands Heiress.png', 
  category: 'Creature', color: ['Red','Black'], type: ['Mage', 'Demon'], trait: 'Champion', hp: 8, atk: 2, def: 0,
- cost: '{R}{R}{B}', essence: '{R}', archetype: 'Firelands', ability: ['Burn','Ranged'], skill: ['Dash {Y}{W}','Hexblast {B}{CW}','Flametongue Invocation {R}{B}'], set: 'StandardPack'},
+ cost: '{R}{R}{B}', essence: '{R}', archetype: 'Firelands', ability: ['Burn','Ranged'], set: 'StandardPack',
+ skill: [
+  {name: 'XXX', cost: '{W}{W}',
+   activation: {requirement: 'CCW'},
+   resolution: {effect: 'Seal'}},
+  {name: 'Flametongue Invocation', cost: '{R}{B}',
+   activation: {requirement: 'CW'},
+   resolution: {effect: 'Invoke', archetype: 'Firelands'}}
+ ]},
 
 {id: 'VorgannaCrimsonBlade', name: 'Vorganna, Crimson Blade', rarity: 'Legendary', image: 'CardImages/Firelands/Vorganna, Crimson Blade.png', 
  category: 'Creature', color: ['Black','Red'], type: 'Warrior', trait: 'Champion', hp: 9, atk: 3, def: 0,
- cost: '{B}{B}{R}', essence: '{B}', archetype: '', ability: ['Burn','Ranged'], skill: ['Dash {Y}{W}','Hexblast {B}{CW}','Flametongue Invocation {R}{B}'], set: 'StandardPack'},
+ cost: '{B}{B}{R}', essence: '{B}', archetype: '', ability: ['Burn','Ranged'], set: 'StandardPack',
+ skill: [
+  {name: 'XXX', cost: '{W}{W}',
+   activation: {requirement: 'CCW'},
+   resolution: {effect: 'Seal'}},
+  {name: 'Flametongue Invocation', cost: '{R}{B}',
+   activation: {requirement: 'CW'},
+   resolution: {effect: 'Invoke', archetype: 'Firelands'}}
+ ]},
 
 {id: 'TydrosCoralboundTidebreaker', name: 'Tydros, Coralbound Tidebreaker', rarity: 'Legendary', image: 'CardImages/Firelands/Tydros, Coralbound Tidebreaker.png', 
  category: 'Creature', color: ['Blue','Gray'], type: 'Warrior', trait: 'Champion', hp: 12, atk: 2, def: 0,
- cost: '{U}{U}{C}', essence: '{U}', archetype: '', ability: ['Dive','Ranged'], skill: ['Dash {Y}{W}','Hexblast {B}{CW}','Flametongue Invocation {R}{B}'], set: 'StandardPack'},
+ cost: '{U}{U}{C}', essence: '{U}', archetype: '', ability: ['Dive','Ranged'], set: 'StandardPack',
+ skill: [
+  {name: 'XXX', cost: '{W}{W}',
+   activation: {requirement: 'CCW'},
+   resolution: {effect: 'XXX'}},
+  {name: 'Flametongue Invocation', cost: '{R}{B}',
+   activation: {requirement: 'CW'},
+   resolution: {effect: 'Invoke', archetype: 'Firelands'}}
+ ]},
 
 {id: 'VeniryssSpiderPrincess', name: 'Veniryss, Spider Princess', rarity: 'Legendary', image: 'CardImages/Silkbound/Veniryss, Spider Princess.png', 
  category: 'Creature', color: ['Purple','Green'], type: 'Mage', trait: 'Champion', hp: 10, atk: 1, def: 0,
- cost: '{P}{P}{G}', essence: '{P}', archetype: 'Silkbound', ability: ['Venom','Veil'], skill: ['Dash {Y}{W}','Hexblast {B}{CW}','Silken Dominion {P}{G}{CCW}'], set: 'StandardPack'},
+ cost: '{P}{P}{G}', essence: '{P}', archetype: 'Silkbound', ability: ['Venom','Veil'], set: 'StandardPack',
+ skill: [
+  {name: 'XXX', cost: '{W}{W}',
+   activation: {requirement: 'CCW'},
+   resolution: {effect: 'XXX'}},
+  {name: 'Silken Dominion', cost: '{P}{G}',
+   activation: {requirement: 'CCW'},
+   resolution: {effect: 'Invoke', archetype: 'Spiders'}}
+ ]},
 
 {id: 'RaukharKnightofDuskwings', name: 'Raukhar, Knight of Duskwings', rarity: 'Legendary', image: 'CardImages/Duskwings/Raukhar, Knight of Duskwings.png', 
  category: 'Creature', color: ['Black','Yellow'], type: 'Avian', trait: 'Champion', hp: 9, atk: 2, def: 1,
@@ -200,10 +288,19 @@ const dummyCards = [
 
 {id: 'ForestWarrior', name: 'Forest Warrior', rarity: 'Rare', image: 'CardImages/BasicCreatures/Forest Warrior.png', 
  category: 'Creature', color: 'Green', type: ['Construct','Warrior'], hp: 6, atk: 3, def: 1, cost: '{1}{G}', 
- archetype: '', ability: ['Drain','Rush'], skill: 'Dash {G}', set: 'StandardPack'},
+ archetype: '', ability: ['Drain','Rush'], set: 'StandardPack',
+ skill: [
+  {name: 'Dash', cost: '{G}',
+   resolution: {effect: 'Dash'}}
+ ]},
 {id: 'ForestMage', name: 'Forest Mage', rarity: 'Rare', image: 'CardImages/Treant/Forest Mage.png', 
  category: 'Creature', color: 'Green', type: ['Elemental','Mage'], hp: 5, atk: 2, def: 0, cost: '{1}{G}', 
- archetype: 'Treant', ability: 'Ranged', skill: 'Bloomchant {CW}', set: 'StandardPack'},
+ archetype: 'Treant', ability: 'Ranged', set: 'StandardPack'
+ skill: [
+  {name: 'Bloomchant', cost: {0}',
+   activation: {requirement: 'CW'}
+   resolution: {effect: 'Essence', color: '{G}', amount: 1}}
+ ]},
 {id: 'WoodlandCentaur', name: 'Woodland Centaur', rarity: 'Rare', image: 'CardImages/BasicCreatures/Woodland Centaur.png', 
  category: 'Creature', color: 'Green', type: 'Beast', hp: 8, atk: 3, def: 1, cost: '{1}{G}', 
  archetype: 'Hybrids', ability: ['Intimidate','Leap','Rush'], skill: '', set: 'StandardPack'},
@@ -225,7 +322,12 @@ const dummyCards = [
  archetype: 'Satyr', ability: ['Ranged','Spellboost'], skill: 'Arrival', set: 'StandardPack'},
 {id: 'TreantWitch', name: 'Treant Witch', rarity: 'Epic', image: 'CardImages/BasicCreatures/Treant Witch.png', 
  category: 'Creature', color: ['Green','Black'], type: ['Elemental','Mage'], hp: 8, atk: 3, def: 1, cost: '{1}{G}{B}', 
- archetype: 'Treant', ability: ['Ranged','Burn'], skill: 'Reanimate {G}{B}', set: 'StandardPack'},
+ archetype: 'Treant', ability: ['Ranged','Burn'], set: 'StandardPack',
+ skill: [
+  {name: 'Reanimate', cost: '{W}',
+   activation: {requirement: 'CCW'},
+   resolution: {effect: 'Reanimate', damage: 3}}
+ ]},
 {id: 'AngelicWarrior', name: 'Angelic Warrior', rarity: 'Common', image: 'CardImages/BasicCreatures/Angelic Warrior.png', 
  category: 'Creature', color: 'White', type: 'Warrior', hp: 6, atk: 3, def: 1,
  cost: '{1}{W}', archetype: 'Seraph', ability: 'Flying', set: 'StandardPack'},
@@ -237,7 +339,12 @@ const dummyCards = [
  cost: '{1}{W}', archetype: 'Seraph', ability: ['Flying','Aegis'], set: 'StandardPack'},
 {id: 'SacredKirin', name: 'Sacred Kirin', rarity: 'Epic', image: 'CardImages/BasicCreatures/Sacred Kirin.png', 
  category: 'Creature', color: 'White', type: 'Beast', hp: 13, atk: 4, def: 1, cost: '{3}{W}', 
- archetype: 'Hybrids', ability: ['Intimidate','Rush'], skill: 'Heavenstep Radiance {W}{CW}', set: 'StandardPack'},
+ archetype: 'Hybrids', ability: ['Intimidate','Rush'], set: 'StandardPack',
+ skill: [
+  {name: 'Heavenstep Radiance', cost: '{W}',
+   activation: {requirement: 'CCW'},
+   resolution: {effect: 'Strike', damage: 3}}
+ ]},
 {id: 'LightPossessedArmor', name: 'Light Possessed Armor', rarity: 'Rare', image: 'CardImages/BasicCreatures/Light Possessed Armor.png', 
  category: 'Creature', color: 'White', type: 'Construct', hp: 4, atk: 3, def: 1, cost: '{1}{W}', 
  archetype: '', ability: ['Armor','Rush'], skill: '', set: 'StandardPack'},
@@ -246,15 +353,28 @@ const dummyCards = [
 
 {id: 'DragonsApprentice', name: "Dragon's Apprentice", rarity: 'Rare', image: 'CardImages/Cinderscales/Dragons Apprentice.png', 
  category: 'Creature', color: 'Red', type: 'Dragon', trait: 'Evolution', hp: 4, atk: 2, def: 0,
- cost: '{2}', archetype: '', ability: ['Burn','Flying','Ranged'], skill: ['Reveal {R}','Cataclysmic Blaze {R}{CW}'], set: 'StandardPack'},
+ cost: '{2}', archetype: '', ability: ['Burn','Flying','Ranged'], set: 'StandardPack',
+ skill: [
+  {name: 'XXX', cost: '{W}',
+   activation: {requirement: 'CCW'},
+   resolution: {effect: 'XXX', damage: X}}
+ ]},
 
 {id: 'Jackalope', name: 'Jackalope', rarity: 'Rare', image: 'CardImages/Hybrids/Jackalope.png', 
  category: 'Creature', color: ['Green','Black'], type: 'Beast', hp: 5, atk: 2, def: 0,
- cost: '{G}{B}', archetype: 'Hybrids', ability: ['Burn','Flying','Ranged'], skill: ['Echo {G}{B}','Cataclysmic Blaze {R}{CW}'], set: 'StandardPack'},
+ cost: '{G}{B}', archetype: 'Hybrids', ability: ['Burn','Flying','Ranged'], set: 'StandardPack',
+ skill: [
+  {name: 'Echo', cost: '{0}',
+   resolution: {effect: 'Echo', archetype: 'Hybrids'}}
+ ]},
 
 {id: 'DarkHarpy', name: 'Dark Harpy', rarity: 'Rare', image: 'CardImages/Harpies/Dark Harpy.png', 
  category: 'Creature', color: ['Yellow','Black'], type: 'Avian', hp: 6, atk: 4, def: 1,
- cost: '{2}{Y}{B}', archetype: 'Harpy', ability: ['Flying','Quickdraw'], skill: ['Echo {G}{B}','Cataclysmic Blaze {R}{CW}'], set: 'StandardPack'},
+ cost: '{2}{Y}{B}', archetype: 'Harpy', ability: ['Flying','Quickdraw'], set: 'StandardPack',
+ skill: [
+  {name: 'Dash', cost: '{Y}{B}',
+   resolution: {effect: 'Dash'}}
+ ]},
 
 */
 
