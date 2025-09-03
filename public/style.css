@@ -1019,6 +1019,10 @@ button {}
   will-change: transform, opacity;
   transition: transform 0.7s cubic-bezier(.22,1.14,.32,1), opacity 0.3s 0.7s;
 }
+.card-position-anim {
+  box-shadow: 0 0 16px #ffe06688;
+  transition: transform 0.5s cubic-bezier(.22,1.14,.32,1), opacity 0.45s 0.45s;
+}
 
 #gallery-builder-cards {
   display: grid;
