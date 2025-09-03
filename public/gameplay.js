@@ -258,22 +258,21 @@ const ATTACK_DECLARATION_ABILITIES = {
 const REQUIREMENT_MAP = {
   CW: {
     zones: ['playerCreatures', 'playerDomains'],
-    handler: function(sourceCardObj, skillObj, afterAnimation) {
-      // If already in DEF (horizontal), allow skill activation (no rotation)
+    handler: function(sourceCardObj, skillObj, next) {
+      // If already in DEF (horizontal), just proceed with skill activation
       if (sourceCardObj.orientation === "horizontal") {
-        if (afterAnimation) afterAnimation();
+        if (next) next();
         return;
       }
-      // If in ATK (vertical), must rotate to DEF first
+      // If in ATK (vertical), rotate to DEF before proceeding
       if (sourceCardObj.orientation === "vertical") {
-        changeCardPosition(sourceCardObj, "horizontal", afterAnimation);
+        changeCardPosition(sourceCardObj, "horizontal", next);
         return;
       }
       showToast("Card must be in ATK or DEF position to activate this skill.");
-      if (afterAnimation) afterAnimation();
+      if (next) next();
     },
     canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
-      // Allow if already in DEF
       const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
       return validZones.includes(currentZone) &&
         (sourceCardObj.orientation === "vertical" || sourceCardObj.orientation === "horizontal");
@@ -281,22 +280,21 @@ const REQUIREMENT_MAP = {
   },
   CCW: {
     zones: ['playerCreatures', 'playerDomains'],
-    handler: function(sourceCardObj, skillObj, afterAnimation) {
-      // If already in ATK (vertical), allow skill activation (no rotation)
+    handler: function(sourceCardObj, skillObj, next) {
+      // If already in ATK (vertical), just proceed with skill activation
       if (sourceCardObj.orientation === "vertical") {
-        if (afterAnimation) afterAnimation();
+        if (next) next();
         return;
       }
-      // If in DEF (horizontal), must rotate to ATK first
+      // If in DEF (horizontal), rotate to ATK before proceeding
       if (sourceCardObj.orientation === "horizontal") {
-        changeCardPosition(sourceCardObj, "vertical", afterAnimation);
+        changeCardPosition(sourceCardObj, "vertical", next);
         return;
       }
       showToast("Card must be in ATK or DEF position to activate this skill.");
-      if (afterAnimation) afterAnimation();
+      if (next) next();
     },
     canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
-      // Allow if already in ATK
       const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
       return validZones.includes(currentZone) &&
         (sourceCardObj.orientation === "vertical" || sourceCardObj.orientation === "horizontal");
@@ -3669,7 +3667,6 @@ function changeCardPosition(cardObj, newOrientation, callback) {
   if (!cardObj) return;
   const prevOrientation = cardObj.orientation;
   if (prevOrientation === newOrientation) { if (callback) callback(); return; }
-  // Find the zoneId for this card
   const zoneId = findZoneIdForCard(cardObj);
   
   // Animate before changing state
@@ -3976,20 +3973,22 @@ function animateEssencePop(icon) {
 function activateSkill(cardObj, skillObj, options = {}) {
   // Pay cost if needed
   const zoneId = findZoneIdForCard(cardObj);
-  function afterAnim() {
-    proceedSkillActivation(cardObj, skillObj, options);
-  }
+
   if (skillObj.cost) {
     showEssencePaymentModal({
       card: cardObj,
       cost: parseCost(skillObj.cost),
       eligibleCards: getAllEssenceSources(),
       onPaid: function() {
-        animateSkillActivation(cardObj, zoneId, afterAnim);
+        animateSkillActivation(cardObj, zoneId, () => {
+          proceedSkillActivation(cardObj, skillObj, options);
+        });
       }
     });
   } else {
-    animateSkillActivation(cardObj, zoneId, afterAnim);
+    animateSkillActivation(cardObj, zoneId, () => {
+      proceedSkillActivation(cardObj, skillObj, options);
+    });
   }
 }
 // Helper: find zoneId for a cardObj
