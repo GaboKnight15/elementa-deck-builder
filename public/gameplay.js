@@ -260,14 +260,14 @@ const REQUIREMENT_MAP = {
     zones: ['playerCreatures', 'playerDomains'],
     handler: function(sourceCardObj, skillObj) {
       if (Array.isArray(sourceCardObj.orientation)) {
-        // If multi-orientation (not expected), use first
         sourceCardObj.orientation = sourceCardObj.orientation[0];
       }
       if (sourceCardObj.orientation !== "vertical") {
         showToast("Can only rotate from ATK to DEF if currently in ATK.");
+        if (afterAnimation) afterAnimation();
         return;
       }
-      changeCardPosition(sourceCardObj, "horizontal");
+      changeCardPosition(sourceCardObj, "horizontal", afterAnimation);
     },
     canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
       // Accept array of zones
@@ -283,9 +283,10 @@ const REQUIREMENT_MAP = {
       }
       if (sourceCardObj.orientation !== "horizontal") {
         showToast("Can only rotate from DEF to ATK if currently in DEF.");
+        if (afterAnimation) afterAnimation();
         return;
       }
-      changeCardPosition(sourceCardObj, "vertical");
+      changeCardPosition(sourceCardObj, "vertical", afterAnimation);
     },
     canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
       const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
@@ -2576,35 +2577,7 @@ function runCpuTurn() {
 }
 
 // CARD ANIMATIONS
-function animateCardFade(instanceId, fromZoneId, toZoneId, callback) {
-  // Find the card div in the fromZone
-  const fromZone = document.getElementById(fromZoneId);
-  if (!fromZone) { callback && callback(); return; }
-  const cardDiv = Array.from(fromZone.querySelectorAll('.card-battlefield')).find(div => {
-    return div.dataset.instanceId === instanceId;
-  });
-  if (!cardDiv) { callback && callback(); return; }
 
-  // Fade out
-  cardDiv.classList.add('card-fade-out');
-  setTimeout(() => {
-    // After fade out, run the callback (move card in state), then fade in at destination
-    callback && callback();
-
-    // Allow fade-in at destination (after next render)
-    setTimeout(() => {
-      const toZone = document.getElementById(toZoneId);
-      if (!toZone) return;
-      const newCardDiv = Array.from(toZone.querySelectorAll('.card-battlefield')).find(div => {
-        return div.dataset.instanceId === instanceId;
-      });
-      if (newCardDiv) {
-        newCardDiv.classList.add('card-fade-in');
-        setTimeout(() => newCardDiv.classList.remove('card-fade-in'), 200);
-      }
-    }, 30);
-  }, 180);
-}
 
 // START GAME
 function showGameStartAnimation(callback) {
@@ -2798,12 +2771,7 @@ function essencePhase(playerOrOpponent) {
   // Optionally: show animation/notification
   renderGameState();
 }
-function animateEssencePop(icon) {
-  icon.classList.add('essence-pop');
-  icon.addEventListener('animationend', () => {
-    icon.classList.remove('essence-pop');
-  }, { once: true });
-}
+
 
 // ESSENCE CONSUPTION LOGIC
 function showEssencePaymentModal(opts) {
@@ -3670,13 +3638,20 @@ function filterCardsByCriteria(cardArr, criteria) {
 function changeCardPosition(cardObj, newOrientation) {
   if (!cardObj) return;
   const prevOrientation = cardObj.orientation;
-  if (prevOrientation === newOrientation) return; // No change
-  cardObj.orientation = newOrientation;
-  cardObj.hasChangedPositionThisTurn = true;
-  appendPositionChangeLog(cardObj, newOrientation, prevOrientation);
-  renderGameState();
-  setupDropZones();
-  emitPublicState();
+  if (prevOrientation === newOrientation) { if (callback) callback(); return; }
+  // Find the zoneId for this card
+  const zoneId = findZoneIdForCard(cardObj);
+  
+  // Animate before changing state
+  animateCardPositionChange(cardObj, zoneId, prevOrientation, newOrientation, function() {
+    cardObj.orientation = newOrientation;
+    cardObj.hasChangedPositionThisTurn = true;
+    appendPositionChangeLog(cardObj, newOrientation, prevOrientation);
+    renderGameState();
+    setupDropZones();
+    emitPublicState();
+    if (callback) callback();
+  });
 }
 // APPEND TO LOG
 function appendVisualLog(obj, fromSocket = false, isMe = true) {
@@ -3796,36 +3771,48 @@ function getCardColors(cardObj) {
   return [];
 }
 
-/*------------------------------------
-// SKILL RESOLUTION LOGIC //
-------------------------------------*/
-// Update activateSkill to use the animation before requirements/effects
-function activateSkill(cardObj, skillObj, options = {}) {
-  // Pay cost if needed
-  const zoneId = findZoneIdForCard(cardObj);
-  function afterAnim() {
-    proceedSkillActivation(cardObj, skillObj, options);
-  }
-  if (skillObj.cost) {
-    showEssencePaymentModal({
-      card: cardObj,
-      cost: parseCost(skillObj.cost),
-      eligibleCards: getAllEssenceSources(),
-      onPaid: function() {
-        animateSkillActivation(cardObj, zoneId, afterAnim);
-      }
-    });
-  } else {
-    animateSkillActivation(cardObj, zoneId, afterAnim);
-  }
-}
-// Helper: find zoneId for a cardObj
-function findZoneIdForCard(cardObj) {
-  if (gameState.playerCreatures.includes(cardObj)) return 'player-creatures-zone';
-  if (gameState.playerDomains.includes(cardObj)) return 'player-domains-zone';
-  if (gameState.opponentCreatures.includes(cardObj)) return 'opponent-creatures-zone';
-  if (gameState.opponentDomains.includes(cardObj)) return 'opponent-domains-zone';
-  return '';
+
+
+/*-------------------
+// ANIMATION LOGIC //
+-------------------*/
+function animateCardPositionChange(cardObj, zoneId, prevOrientation, newOrientation, callback) {
+  const cardDiv = findCardDivInZone(zoneId, cardObj.instanceId);
+  if (!cardDiv) { callback && callback(); return; }
+
+  // Compute rotation angles
+  const prevAngle = prevOrientation === "vertical" ? 0 : 90;
+  const newAngle  = newOrientation === "vertical" ? 0 : 90;
+
+  // Create a clone for animation
+  const rect = cardDiv.getBoundingClientRect();
+  const animDiv = cardDiv.cloneNode(true);
+  animDiv.classList.add('card-position-anim');
+  animDiv.style.position = 'fixed';
+  animDiv.style.left = rect.left + 'px';
+  animDiv.style.top = rect.top + 'px';
+  animDiv.style.width = rect.width + 'px';
+  animDiv.style.height = rect.height + 'px';
+  animDiv.style.zIndex = 99999;
+  animDiv.style.pointerEvents = 'none';
+  animDiv.style.transition = 'none';
+  animDiv.style.transform = `rotate(${prevAngle}deg) scale(1)`;
+
+  document.body.appendChild(animDiv);
+
+  // Animate: zoom in and rotate
+  setTimeout(() => {
+    animDiv.style.transition = 'transform 0.5s cubic-bezier(.22,1.14,.32,1), opacity 0.45s 0.45s';
+    animDiv.style.transform = `rotate(${newAngle}deg) scale(1.12)`;
+    // After zoom/rotate, fade out and call callback
+    setTimeout(() => {
+      animDiv.style.opacity = '0';
+      setTimeout(() => {
+        animDiv.remove();
+        callback && callback();
+      }, 250);
+    }, 500);
+  }, 20);
 }
 function animateSkillActivation(cardObj, zoneId, callback) {
   // Find the card DOM element in its zone
@@ -3865,19 +3852,106 @@ function animateSkillActivation(cardObj, zoneId, callback) {
     }, 700);
   }, 20);
 }
+function animateCardFade(instanceId, fromZoneId, toZoneId, callback) {
+  // Find the card div in the fromZone
+  const fromZone = document.getElementById(fromZoneId);
+  if (!fromZone) { callback && callback(); return; }
+  const cardDiv = Array.from(fromZone.querySelectorAll('.card-battlefield')).find(div => {
+    return div.dataset.instanceId === instanceId;
+  });
+  if (!cardDiv) { callback && callback(); return; }
+
+  // Fade out
+  cardDiv.classList.add('card-fade-out');
+  setTimeout(() => {
+    // After fade out, run the callback (move card in state), then fade in at destination
+    callback && callback();
+
+    // Allow fade-in at destination (after next render)
+    setTimeout(() => {
+      const toZone = document.getElementById(toZoneId);
+      if (!toZone) return;
+      const newCardDiv = Array.from(toZone.querySelectorAll('.card-battlefield')).find(div => {
+        return div.dataset.instanceId === instanceId;
+      });
+      if (newCardDiv) {
+        newCardDiv.classList.add('card-fade-in');
+        setTimeout(() => newCardDiv.classList.remove('card-fade-in'), 200);
+      }
+    }, 30);
+  }, 180);
+}
+function animateEssencePop(icon) {
+  icon.classList.add('essence-pop');
+  icon.addEventListener('animationend', () => {
+    icon.classList.remove('essence-pop');
+  }, { once: true });
+}
+
+/*------------------------------------
+// SKILL RESOLUTION LOGIC //
+------------------------------------*/
+// Update activateSkill to use the animation before requirements/effects
+function activateSkill(cardObj, skillObj, options = {}) {
+  // Pay cost if needed
+  const zoneId = findZoneIdForCard(cardObj);
+  function afterAnim() {
+    proceedSkillActivation(cardObj, skillObj, options);
+  }
+  if (skillObj.cost) {
+    showEssencePaymentModal({
+      card: cardObj,
+      cost: parseCost(skillObj.cost),
+      eligibleCards: getAllEssenceSources(),
+      onPaid: function() {
+        animateSkillActivation(cardObj, zoneId, afterAnim);
+      }
+    });
+  } else {
+    animateSkillActivation(cardObj, zoneId, afterAnim);
+  }
+}
+// Helper: find zoneId for a cardObj
+function findZoneIdForCard(cardObj) {
+  if (gameState.playerCreatures.includes(cardObj)) return 'player-creatures-zone';
+  if (gameState.playerDomains.includes(cardObj)) return 'player-domains-zone';
+  if (gameState.opponentCreatures.includes(cardObj)) return 'opponent-creatures-zone';
+  if (gameState.opponentDomains.includes(cardObj)) return 'opponent-domains-zone';
+  return '';
+}
+function runNextRequirement(requirements, cardObj, skillObj, finalCallback) {
+  let i = 0;
+  function step() {
+    if (i < requirements.length) {
+      const req = requirements[i];
+      i++;
+      if (REQUIREMENT_MAP[req] && REQUIREMENT_MAP[req].handler) {
+        REQUIREMENT_MAP[req].handler(cardObj, skillObj, step);
+      } else {
+        step();
+      }
+    } else {
+      if (typeof finalCallback === "function") finalCallback();
+    }
+  }
+  step();
+}
 function proceedSkillActivation(cardObj, skillObj, options = {}) {
-  // Handle requirements from activation
   const activation = skillObj.activation || {};
   let requirements = Array.isArray(activation.requirement)
     ? activation.requirement
     : (activation.requirement ? [activation.requirement] : []);
-  for (let req of requirements) {
-    if (REQUIREMENT_MAP[req] && REQUIREMENT_MAP[req].handler) {
-      REQUIREMENT_MAP[req].handler(cardObj, skillObj);
-    }
+  if (requirements.length) {
+    runNextRequirement(requirements, cardObj, skillObj, function() {
+      animateSkillActivation(cardObj, findZoneIdForCard(cardObj), function() {
+        resolveSkillEffect(cardObj, skillObj);
+      });
+    });
+  } else {
+    animateSkillActivation(cardObj, findZoneIdForCard(cardObj), function() {
+      resolveSkillEffect(cardObj, skillObj);
+    });
   }
-  renderGameState(); // Ensure UI/state is up-to-date after requirements
-  resolveSkillEffect(cardObj, skillObj);
 }
 
 // SKILL RESOLUTION LOGIC //
