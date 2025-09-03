@@ -3509,7 +3509,7 @@ const actionIcons = {
   move: "OtherImages/Icons/Move.png",
   attack: "OtherImages/Icons/Attack.png",
   effect: "OtherImages/Icons/Effect.png",
-  draw: "OtherImages/Icons/Draw.png",
+  draw: "OtherImages/Icons/Move.png",
     // Add more as needed
 };
 let showCardback = action === "draw" && !isMe;
