@@ -3815,21 +3815,32 @@ function showFilteredCardSelectionModal(cards, onSelect, opts = {}) {
   modal.style.alignItems = 'center';
   modal.style.justifyContent = 'center';
   modal.style.zIndex = 99999;
-  modal.onclick = function(e) { if (e.target === modal) modal.remove(); };
+  modal.onclick = e => e.stopPropagation();
 
   const content = document.createElement('div');
   content.className = 'modal-content';
   content.style.display = 'flex';
   content.style.flexDirection = 'column';
-  content.style.alignItems = 'center';
+  content.style.alignItems = 'flex-start'; // Start content at left
+  content.style.padding = '24px 36px';
+  content.style.margin = '0';
+  content.style.maxWidth = 'calc(100vw - 64px)';
+  content.style.maxHeight = 'calc(100vh - 64px)';
+  content.style.overflow = 'auto';
   content.onclick = e => e.stopPropagation();
 
-  content.innerHTML = `<h3>${opts.title || "Select a card"}</h3>`;
+  content.innerHTML = `<h3 style="margin-bottom: 20px;">${opts.title || "Select a card"}</h3>`;
   const row = document.createElement('div');
   row.className = 'modal-card-row';
   row.style.display = 'flex';
+  row.style.flexWrap = 'wrap';
   row.style.gap = '22px';
+  row.style.justifyContent = 'flex-start';
+  row.style.alignItems = 'flex-start';
+  row.style.width = '100%';
+  row.style.margin = '0';
 
+  let selectedCardObj = null;
   cards.forEach(cardObj => {
     const cardData = dummyCards.find(c => c.id === cardObj.cardId);
     if (!cardData) return;
@@ -3837,18 +3848,26 @@ function showFilteredCardSelectionModal(cards, onSelect, opts = {}) {
     cardDiv.className = 'card-battlefield';
     cardDiv.style.cursor = 'pointer';
     cardDiv.style.position = 'relative';
+    cardDiv.style.marginBottom = '12px';
 
     const img = document.createElement('img');
     img.src = cardData.image;
     img.alt = cardData.name;
     img.style.width = '100px';
+    img.style.boxShadow = '0 2px 8px rgba(0,0,0,0.12)';
+    img.style.borderRadius = '8px';
+    img.style.background = '#222';
+    img.style.padding = '2px';
     cardDiv.appendChild(img);
 
     cardDiv.title = cardData.name;
 
     cardDiv.onclick = () => {
-      modal.remove();
-      onSelect(cardObj);
+      // Deselect previous
+      row.querySelectorAll('.selected-card-choice').forEach(el => el.classList.remove('selected-card-choice'));
+      cardDiv.classList.add('selected-card-choice');
+      selectedCardObj = cardObj;
+      confirmBtn.disabled = false;
     };
 
     row.appendChild(cardDiv);
@@ -3856,12 +3875,18 @@ function showFilteredCardSelectionModal(cards, onSelect, opts = {}) {
 
   content.appendChild(row);
 
-  // Cancel button
-  const cancelBtn = document.createElement('button');
-  cancelBtn.className = 'btn-negative-secondary';
-  cancelBtn.textContent = 'Cancel';
-  cancelBtn.onclick = () => modal.remove();
-  content.appendChild(cancelBtn);
+  // Confirm button
+  const confirmBtn = document.createElement('button');
+  confirmBtn.className = 'btn-positive-primary';
+  confirmBtn.textContent = 'Confirm';
+  confirmBtn.style.marginTop = '24px';
+  confirmBtn.disabled = true; // Only enabled after a card is selected
+  confirmBtn.onclick = () => {
+    if (!selectedCardObj) return;
+    modal.remove();
+    onSelect(selectedCardObj);
+  };
+  content.appendChild(confirmBtn);
 
   modal.appendChild(content);
   document.body.appendChild(modal);
