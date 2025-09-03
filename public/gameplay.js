@@ -1298,7 +1298,12 @@ function showHandCardMenu(instanceId, cardDiv) {
 }
 // DROP ZONES
 function setupDropZones() {
-  ['player-creatures-zone', 'player-domains-zone'].forEach(zoneId => {
+  [
+    'player-creatures-zone', 
+    'player-domains-zone', 
+    'opponent-creatures-zone', 
+    'opponent-domains-zone'
+  ].forEach(zoneId => {
     const zone = document.getElementById(zoneId);
     if (!zone) return;
     zone.ondragover = (e) => {
@@ -1312,9 +1317,24 @@ function setupDropZones() {
       const instanceId = e.dataTransfer.getData('text/plain');
       const cardIdx = gameState.playerHand.findIndex(c => c.instanceId === instanceId);
       if (cardIdx === -1) return;
-      // Choose the correct target array based on zoneId
-      let targetArr = zoneId === "player-creatures-zone" ? gameState.playerCreatures : gameState.playerDomains;
-      moveCard(instanceId, gameState.playerHand, targetArr, {orientation: "vertical"});
+
+      let targetArr;
+      let orientation = "vertical"; // Default orientation
+
+      // Decide target array based on zoneId
+      if (zoneId === "player-creatures-zone") {
+        targetArr = gameState.playerCreatures;
+      } else if (zoneId === "player-domains-zone") {
+        targetArr = gameState.playerDomains;
+      } else if (zoneId === "opponent-creatures-zone") {
+        targetArr = gameState.opponentCreatures;
+      } else if (zoneId === "opponent-domains-zone") {
+        targetArr = gameState.opponentDomains;
+      } else {
+        return;
+      }
+
+      moveCard(instanceId, gameState.playerHand, targetArr, {orientation});
       renderGameState();
       setupDropZones();
     };
@@ -2256,6 +2276,24 @@ if (cardData.skill && Array.isArray(cardData.skill)) {
     });
   });
 }
+
+/*
+  // Only allow "View" if clicking a card in an opponent's zone
+  if (zoneId === "opponent-creatures-zone" || zoneId === "opponent-domains-zone") {
+    buttons.push({
+      text: "View",
+      onClick: function(e) {
+        e.stopPropagation();
+        showFullCardModal(cardObj);
+        closeAllMenus();
+      }
+    });
+  } else {
+    // existing menu logic for player's zones...
+    // (copy your normal menu here)
+  }
+  */
+  
   // Create and show the menu
   const menu = createCardMenu(buttons);
   // Position menu absolutely near cardDiv
