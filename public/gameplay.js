@@ -3799,22 +3799,72 @@ function getCardColors(cardObj) {
 /*------------------------------------
 // SKILL RESOLUTION LOGIC //
 ------------------------------------*/
+// Update activateSkill to use the animation before requirements/effects
 function activateSkill(cardObj, skillObj, options = {}) {
   // Pay cost if needed
+  const zoneId = findZoneIdForCard(cardObj);
+  function afterAnim() {
+    proceedSkillActivation(cardObj, skillObj, options);
+  }
   if (skillObj.cost) {
     showEssencePaymentModal({
       card: cardObj,
       cost: parseCost(skillObj.cost),
       eligibleCards: getAllEssenceSources(),
       onPaid: function() {
-        proceedSkillActivation(cardObj, skillObj, options);
+        animateSkillActivation(cardObj, zoneId, afterAnim);
       }
     });
   } else {
-    proceedSkillActivation(cardObj, skillObj, options);
+    animateSkillActivation(cardObj, zoneId, afterAnim);
   }
 }
+// Helper: find zoneId for a cardObj
+function findZoneIdForCard(cardObj) {
+  if (gameState.playerCreatures.includes(cardObj)) return 'player-creatures-zone';
+  if (gameState.playerDomains.includes(cardObj)) return 'player-domains-zone';
+  if (gameState.opponentCreatures.includes(cardObj)) return 'opponent-creatures-zone';
+  if (gameState.opponentDomains.includes(cardObj)) return 'opponent-domains-zone';
+  return '';
+}
+function animateSkillActivation(cardObj, zoneId, callback) {
+  // Find the card DOM element in its zone
+  const cardDiv = findCardDivInZone(zoneId, cardObj.instanceId);
+  if (!cardDiv) { callback && callback(); return; }
 
+  // Create a clone for animation (so the card on field remains unchanged)
+  const rect = cardDiv.getBoundingClientRect();
+  const animDiv = cardDiv.cloneNode(true);
+  animDiv.classList.add('skill-activation-anim');
+  animDiv.style.position = 'fixed';
+  animDiv.style.left = rect.left + 'px';
+  animDiv.style.top = rect.top + 'px';
+  animDiv.style.width = rect.width + 'px';
+  animDiv.style.height = rect.height + 'px';
+  animDiv.style.zIndex = 99999;
+  animDiv.style.pointerEvents = 'none';
+  animDiv.style.transition = 'none';
+
+  document.body.appendChild(animDiv);
+
+  // Initial: show edge (rotateY 90deg), place above original
+  animDiv.style.transform = 'rotateY(90deg)';
+  animDiv.style.opacity = '1';
+
+  // Animate to front view
+  setTimeout(() => {
+    animDiv.style.transition = 'transform 0.7s cubic-bezier(.22,1.14,.32,1), opacity 0.3s 0.7s';
+    animDiv.style.transform = 'rotateY(0deg)';
+    // After rotate, fade out
+    setTimeout(() => {
+      animDiv.style.opacity = '0';
+      setTimeout(() => {
+        animDiv.remove();
+        callback && callback();
+      }, 300);
+    }, 700);
+  }, 20);
+}
 function proceedSkillActivation(cardObj, skillObj, options = {}) {
   // Handle requirements from activation
   const activation = skillObj.activation || {};
