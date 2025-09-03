@@ -3909,7 +3909,7 @@ function showFilteredCardSelectionModal(cards, onSelect, opts = {}) {
   content.className = 'modal-content';
   content.style.display = 'flex';
   content.style.flexDirection = 'column';
-  content.style.alignItems = 'flex-start'; // Start content at left
+  content.style.alignItems = 'flex-start';
   content.style.padding = '24px 36px';
   content.style.margin = '0';
   content.style.maxWidth = 'calc(100vw - 64px)';
@@ -3928,7 +3928,6 @@ function showFilteredCardSelectionModal(cards, onSelect, opts = {}) {
   row.style.width = '100%';
   row.style.margin = '0';
 
-  let selectedCardObj = null;
   cards.forEach(cardObj => {
     const cardData = dummyCards.find(c => c.id === cardObj.cardId);
     if (!cardData) return;
@@ -3947,35 +3946,15 @@ function showFilteredCardSelectionModal(cards, onSelect, opts = {}) {
     img.style.background = '#222';
     img.style.padding = '2px';
     cardDiv.appendChild(img);
-
     cardDiv.title = cardData.name;
-
+    // Immediate selection logic: no confirm button
     cardDiv.onclick = () => {
-      // Deselect previous
-      row.querySelectorAll('.selected-card-choice').forEach(el => el.classList.remove('selected-card-choice'));
-      cardDiv.classList.add('selected-card-choice');
-      selectedCardObj = cardObj;
-      confirmBtn.disabled = false;
+      modal.remove();
+      onSelect(cardObj);
     };
-
     row.appendChild(cardDiv);
   });
-
   content.appendChild(row);
-
-  // Confirm button
-  const confirmBtn = document.createElement('button');
-  confirmBtn.className = 'btn-positive-primary';
-  confirmBtn.textContent = 'Confirm';
-  confirmBtn.style.marginTop = '24px';
-  confirmBtn.disabled = true; // Only enabled after a card is selected
-  confirmBtn.onclick = () => {
-    if (!selectedCardObj) return;
-    modal.remove();
-    onSelect(selectedCardObj);
-  };
-  content.appendChild(confirmBtn);
-
   modal.appendChild(content);
   document.body.appendChild(modal);
 }
