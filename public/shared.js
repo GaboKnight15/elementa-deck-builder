@@ -210,7 +210,7 @@ const dummyCards = [
 
 {id: 'DragonEgg', name: 'Dragon Egg', rarity: 'Common', image: 'CardImages/BasicCreatures/Dragon Egg.png', 
  category: 'Creature', color: 'Red', type: 'Dragon', hp: 1, atk: 0, def: 0, cost: '{0}', 
- archetype: '', ability: ['Armor','Rush'], skill: '', set: 'StandardPack'},
+ archetype: '', ability: 'Fire Armor','Rush', skill: 'Awaken', set: 'StandardPack'},
 
 {id: 'WaterWyrm', name: 'Water Wyrm', rarity: 'Legendary', image: 'CardImages/Abyssdrakes/Water Wyrm.png', 
  category: 'Creature', color: 'Blue', type: ['Dragon','Elemental'], trait: 'Evolution', hp: 6, atk: 2, def: 0,
@@ -287,7 +287,9 @@ const dummyCards = [
  category: 'Creature', color: 'Red', type: 'Construct', hp: 15, atk: 6, def: 3,
  cost: '{3}{R}', archetype: 'Cindercore', ability: ['Armor','Exploit','Protect'], set: 'StandardPack',
  skill: [
-  {name: 'Volcanic Vortex', cost: '{1}{R}', requirement: [''], zone: 'field', type: ['Strike'], damage: 3, status: ['Burn','Bind']}
+  {name: 'Volcanic Vortex', cost: '{1}{R}',
+   activation: {requirement: 'CCW'},
+   resolution: {effect: 'Strike', damage: 3, status: ['Burn','Bind']}}
  ]},
 {id: 'CindercoreVanguard', name: 'Cindercore Vanguard', rarity: 'Common', image: 'CardImages/Cindercore/Cindercore Vanguard.png', 
  category: 'Creature', color: 'Red', type: 'Construct', hp: 15, atk: 6, def: 3,
@@ -301,7 +303,9 @@ skill: [
  category: 'Creature', color: ['Red', 'Gray'], type: 'Elemental', hp: 15, atk: 6, def: 3,
  cost: '{3}{R}', archetype: ['Cindercore','Golemheart'], ability: 'Armor', set: 'StandardPack',
  skill: [
-  {name: 'Volcanic Vortex', cost: '{1}{R}', requirement: [''], zone: 'field', type: ['Strike'], damage: 3, status: ['Burn','Bind']}
+  {name: 'Volcanic Vortex', cost: '{1}{R}',
+   activation: {requirement: 'CCW'},
+   resolution: {effect: 'Strike', damage: 3, status: ['Burn','Bind']}}
  ]},
 {id: 'IgnavarynCindercoreAutomaton', name: 'Ignavaryn, Cindercore Automaton', rarity: 'Legendary', image: 'CardImages/Cindercore/Ignavaryn, Cindercore Automaton.png', 
  category: 'Creature', color: 'Red', type: 'Construct', hp: 15, atk: 6, def: 3,
@@ -386,7 +390,7 @@ skill: [
     resolution: {effect: 'Search', archetype: 'Coralbound'}},
   {name: 'Hydroburst Cannon', cost: '{1}{U}',
    activation: {requirement: 'CCW'},
-   resolution: {type: 'Strike', damage: 8, status: 'soak'}}
+   resolution: {effect: 'Strike', damage: 8, status: 'Soak'}}
  ]},
 
 // GLIMMERSCALE //
@@ -396,11 +400,27 @@ skill: [
 /*
 {id: 'FairyDragon', name: 'Fairy Dragon', rarity: 'Rare', image: 'CardImages/Glimmerscale/Fairy Dragon.png', 
  category: 'Creature', color: ['Green', 'Red', 'White'], type: ['Dragon','Fairy'], hp: 6, atk: 2, def: 1, cost: '{G}{R}{W}',
- ability: ['Flying','Intimidate'], archetype: 'Glimmerscale', skill: ['Purify {W}{CW}','Floral Mirage {G}{CW}'], set: 'StandardPack'},
+ ability: ['Flying','Intimidate'], archetype: 'Glimmerscale', set: 'StandardPack',
+ skill: [
+  {name: 'Purify', cost: '{W}',
+   activation: {requirement: 'CW'},
+   resolution: {effect: 'Purify'}},
+  {name:'Floral Mirage', cost: '{G}',
+   activation: {requirement: 'CW'},
+   resolution: {effect: 'Ambush'}}
+ ]},
 
 {id: 'FairyAmphitere', name: 'Fairy Amphitere', rarity: 'Rare', image: 'CardImages/Glimmerscale/Fairy Amphitere.png', 
  category: 'Creature', color: ['Green', 'Red', 'White'], type: ['Dragon','Fairy'], hp: 14, atk: 5, def: 2, cost: '{G}{R}{W}',
- ability: ['Flying','Intimidate'], archetype: 'Glimmerscale', skill: ['Purify {W}{CW}','Dewlight Spiral {1}{G}{W}'], set: 'StandardPack'},
+ ability: ['Flying','Intimidate'], archetype: 'Glimmerscale', set: 'StandardPack',
+ skill: [
+  {name: 'Purify', cost: '{W}',
+   activation: {requirement: 'CCW'},
+   resolution: {effect: 'Purify'}},
+  {name: 'Dewlight Spiral', cost: '{G}{W}',
+  activation: {requirement: 'CCW'},
+  resolution: {effect: 'Strike', damage: 3}}
+ ]},
 
 // MOONFANG //
 
@@ -414,7 +434,9 @@ skill: [
  category: 'Creature', color: ['Black'], type: ['Beast'], hp: 10, atk: 4, def: 1,
  cost: '{3}{B}', archetype: 'Moonfang', ability: ['Ambush'], set: 'StandardPack',
  skill: [
-  {name: 'Discard', cost: '{B}', type: ['Search'], activation: {requirement: ['Discard'], zone: 'hand'}, resolution: {archetype: 'Wolf', zone: 'deck' }},
+  {name: 'Discard', cost: '{B}',
+  activation: {requirement: 'Discard'},
+  resolution: {effect: 'Search', archetype: 'Wolf'}},
   {name: 'Transform', cost: '{P}{P}{B}', requirement: [''], zone: 'field', type: ['Strike'], damage: 3, status: ['Burn'] }
  ]},
 
