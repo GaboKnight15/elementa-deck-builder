@@ -2652,6 +2652,13 @@ button {}
   border-radius: 7px;
   font-size: 0.85em;
 }
+.target-highlight {
+  box-shadow: 0 0 12px 4px #ffe066, 0 0 0 4px #ffe066 inset;
+  border: 2.5px solid #ffe066;
+  cursor: pointer;
+  z-index: 30;
+}
+/* ---- ATTACK TARGET LOGIC CSS ---- */
 .attack-target-highlight {
   outline: 4px solid #ffe066 !important;
   z-index: 40 !important;
@@ -2671,6 +2678,41 @@ button {}
   z-index: 30;
   background: rgba(14,19,26,0.76);
   pointer-events: auto;
+}
+/* ---- ATTACK ANIMATION CSS ---- */
+.attack-card-flip {
+  perspective: 900px;
+  width: 100px;
+  height: 140px;
+  position: fixed;
+  z-index: 9999;
+  pointer-events: none;
+}
+.attack-card-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transition: transform 1s cubic-bezier(.22,1.14,.32,1);
+  transform-style: preserve-3d;
+}
+.attack-card-front, .attack-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  top: 0; left: 0;
+}
+.attack-card-front img, .attack-card-back img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+}
+.attack-card-back {
+  transform: rotateY(180deg);
+}
+.attack-card-inner.flipped {
+  transform: rotateY(360deg);
 }
 /* VIEW STYLE */
 #image-modal {
