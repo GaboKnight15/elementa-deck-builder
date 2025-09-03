@@ -258,7 +258,7 @@ const ATTACK_DECLARATION_ABILITIES = {
 const REQUIREMENT_MAP = {
   CW: {
     zones: ['playerCreatures', 'playerDomains'],
-    handler: function(sourceCardObj, skillObj) {
+    handler: function(sourceCardObj, skillObj, afterAnimation) {
       if (Array.isArray(sourceCardObj.orientation)) {
         sourceCardObj.orientation = sourceCardObj.orientation[0];
       }
@@ -277,7 +277,7 @@ const REQUIREMENT_MAP = {
   },
   CCW: {
     zones: ['playerCreatures', 'playerDomains'],
-    handler: function(sourceCardObj, skillObj) {
+    handler: function(sourceCardObj, skillObj, afterAnimation) {
       if (Array.isArray(sourceCardObj.orientation)) {
         sourceCardObj.orientation = sourceCardObj.orientation[0];
       }
@@ -3635,7 +3635,7 @@ function filterCardsByCriteria(cardArr, criteria) {
   });
 }
 // CHANGE POSITION HELPER
-function changeCardPosition(cardObj, newOrientation) {
+function changeCardPosition(cardObj, newOrientation, callback) {
   if (!cardObj) return;
   const prevOrientation = cardObj.orientation;
   if (prevOrientation === newOrientation) { if (callback) callback(); return; }
@@ -3779,6 +3779,8 @@ function getCardColors(cardObj) {
 function animateCardPositionChange(cardObj, zoneId, prevOrientation, newOrientation, callback) {
   const cardDiv = findCardDivInZone(zoneId, cardObj.instanceId);
   if (!cardDiv) { callback && callback(); return; }
+  // Hide the original card during animation
+  cardDiv.style.visibility = 'hidden';
 
   // Compute rotation angles
   const prevAngle = prevOrientation === "vertical" ? 0 : 90;
