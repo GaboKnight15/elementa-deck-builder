@@ -2774,6 +2774,20 @@ button {}
   background: rgba(14,19,26,0.76);
   pointer-events: auto;
 }
+.skill-mode-backdrop {
+  position: relative;
+  background: rgba(0,0,0,0.55);
+  transition: background 0.2s;
+  cursor: crosshair;
+}
+.skill-mode-backdrop::after {
+  content: "";
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 30;
+  background: rgba(14,19,26,0.76);
+  pointer-events: auto;
+}
 /* VIEW STYLE */
 #image-modal {
   display: none;
