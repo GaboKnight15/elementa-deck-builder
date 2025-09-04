@@ -229,10 +229,11 @@ const ATTACK_DECLARATION_ABILITIES = {
     icon: 'OtherImages/Icons/Intimidate.png',
     name: 'Intimidate',
     description: 'When attacking, changes defending creature to DEF position.',
-    effect: (attacker, defender) => {
+    effect: (attacker, defender, next) => {
       if (defender.orientation !== "horizontal") {
-        defender.orientation = "horizontal";
-        defender.hasChangedPositionThisTurn = true;
+        changeCardPosition(defender, "horizontal", next);
+      } else if (next) {
+        next();
       }
     }
   },
@@ -240,10 +241,11 @@ const ATTACK_DECLARATION_ABILITIES = {
     icon: 'OtherImages/Icons/Provoke.png',
     name: 'Provoke',
     description: 'When attacking, changes defending creature to ATK position.',
-    effect: (attacker, defender) => {
+    effect: (attacker, defender, next) => {
       if (defender.orientation !== "vertical") {
-        defender.orientation = "vertical";
-        defender.hasChangedPositionThisTurn = true;
+        changeCardPosition(defender, "vertical", next);
+      } else if (next) {
+        next();
       }
     }
   }
@@ -3214,77 +3216,105 @@ function resolveAttack(attackerId, defenderId) {
   if (!attacker || !defender) return;
 
   // Determine zoneId for attacker (needed for animation overlay)
-  let attackerZoneId = gameState.playerCreatures.includes(attacker) ? 'player-creatures-zone'
-                    : gameState.opponentCreatures.includes(attacker) ? 'opponent-creatures-zone'
-                    : null;
+  let attackerZoneId = gameState.playerCreatures.includes(attacker)
+    ? 'player-creatures-zone'
+    : gameState.opponentCreatures.includes(attacker)
+    ? 'opponent-creatures-zone'
+    : null;
+
+  // Block actions while animating (using a global flag)
+  window.isAnimating = true;
 
   // Insert animation function here
   if (attackerZoneId) {
-    animateAttack(attacker, attackerZoneId, proceedAttackResolution);
+    animateAttack(attacker, attackerZoneId, () => {
+      window.isAnimating = false;
+      proceedAttackResolution(
+        attacker, defender,
+        attackerArr, defenderArr,
+        attackerVoid, defenderVoid,
+        attackerDef, defenderDef
+      );
+    });
   } else {
-    proceedAttackResolution();
+    window.isAnimating = false;
+    proceedAttackResolution(
+      attacker, defender,
+      attackerArr, defenderArr,
+      attackerVoid, defenderVoid,
+      attackerDef, defenderDef
+    );
+  }
+}
+
+// All attack logic is now in this helper
+function proceedAttackResolution(
+  attacker,
+  defender,
+  attackerArr,
+  defenderArr,
+  attackerVoid,
+  defenderVoid,
+  attackerDef,
+  defenderDef
+) {
+  // --- ABILITY LOGIC ---
+  // Defender has Flying: can only be attacked by Flying or Ranged
+  if (defenderHasAbility(defender, 'Flying')) {
+    if (!(attackerHasAbility(attacker, 'Flying') || attackerHasAbility(attacker, 'Ranged'))) {
+      showToast("You can only attack Flying creatures with Flying or Ranged cards!");
+      return;
+    }
   }
 
-  // All attack logic is inside this helper, called after animation
-  function proceedAttackResolution() {
-    // --- ABILITY LOGIC ---
-    // Defender has Flying: can only be attacked by Flying or Ranged
-    if (defenderHasAbility(defender, 'Flying')) {
-      if (!(attackerHasAbility(attacker, 'Flying') || attackerHasAbility(attacker, 'Ranged'))) {
-        showToast("You can only attack Flying creatures with Flying or Ranged cards!");
-        return;
-      }
-    }
+  // Ranged: does not receive retaliation when attacking
+  let attackerGetsRetaliation = true;
+  if (attackerHasAbility(attacker, 'Ranged') && defenderDef.category === "creature") {
+    attackerGetsRetaliation = false;
+  }
 
-    // Ranged: does not receive retaliation when attacking
-    let attackerGetsRetaliation = true;
-    if (attackerHasAbility(attacker, 'Ranged') && defenderDef.category === "creature") {
-      attackerGetsRetaliation = false;
-    }
+  // --- LOG THE ATTACK ---
+  appendAttackLog({
+    attacker: attacker,
+    defender: defender,
+    defenderOrientation: defender.orientation,
+    who: getCardOwner(attacker)
+  });  
 
-    // --- LOG THE ATTACK ---
-    appendAttackLog({
-      attacker: attacker,
-      defender: defender,
-      defenderOrientation: defender.orientation,
-      who: getCardOwner(attacker)
-    });  
-
-    // === Attack Logic ===
-    if (defenderDef.category === "creature") {
-      if (defender.orientation === "horizontal") {
-        dealDamage(attacker, defender, attacker.atk);
-        if (attackerGetsRetaliation) {
-          dealDamage(defender, attacker, defender.atk);
-        }
-      } else if (defender.orientation === "vertical") {
-        let damage = Math.max(0, attacker.atk - defender.def);
-        dealDamage(attacker, defender, damage);
-        // Defender does not deal damage back
-      }
-    } else {
+  // === Attack Logic ===
+  if (defenderDef.category === "creature") {
+    if (defender.orientation === "horizontal") {
       dealDamage(attacker, defender, attacker.atk);
+      if (attackerGetsRetaliation) {
+        dealDamage(defender, attacker, defender.atk);
+      }
+    } else if (defender.orientation === "vertical") {
+      let damage = Math.max(0, attacker.atk - defender.def);
+      dealDamage(attacker, defender, damage);
+      // Defender does not deal damage back
     }
-
-    attacker.hasAttacked = true;
-
-    // Apply status effects from attacker abilities to defender (if defender is a creature)
-    const attackerAbilities = attackerDef.ability || [];
-    if (defenderDef && defenderDef.category === "creature") {
-      attackerAbilities.forEach(abilityName => {
-        if (STATUS_EFFECTS[abilityName]) {
-          applyStatus(defender, abilityName);
-        }
-      });
-    }
-
-    // Move cards to void if HP <= 0
-    if (attacker.currentHP <= 0 && attackerArr && attackerVoid) moveCard(attacker.instanceId, attackerArr, attackerVoid);
-    if (defender.currentHP <= 0 && defenderArr && defenderVoid) moveCard(defender.instanceId, defenderArr, defenderVoid);
-
-    renderGameState();
-    setupDropZones();
+  } else {
+    dealDamage(attacker, defender, attacker.atk);
   }
+
+  attacker.hasAttacked = true;
+
+  // Apply status effects from attacker abilities to defender (if defender is a creature)
+  const attackerAbilities = attackerDef.ability || [];
+  if (defenderDef && defenderDef.category === "creature") {
+    attackerAbilities.forEach(abilityName => {
+      if (STATUS_EFFECTS[abilityName]) {
+        applyStatus(defender, abilityName);
+      }
+    });
+  }
+
+  // Move cards to void if HP <= 0
+  if (attacker.currentHP <= 0 && attackerArr && attackerVoid) moveCard(attacker.instanceId, attackerArr, attackerVoid);
+  if (defender.currentHP <= 0 && defenderArr && defenderVoid) moveCard(defender.instanceId, defenderArr, defenderVoid);
+
+  renderGameState();
+  setupDropZones();
 }
 // --- Damage Helper: Deals armor/HP damage ---
 function dealDamage(source, target, amount) {
@@ -3668,9 +3698,8 @@ function changeCardPosition(cardObj, newOrientation, callback) {
   const prevOrientation = cardObj.orientation;
   if (prevOrientation === newOrientation) { if (callback) callback(); return; }
   const zoneId = findZoneIdForCard(cardObj);
-  
-  // Animate before changing state
-  animateCardPositionChange(cardObj, zoneId, prevOrientation, newOrientation, function() {
+
+  animateCardPositionChange(cardObj, zoneId, prevOrientation, newOrientation, () => {
     cardObj.orientation = newOrientation;
     cardObj.hasChangedPositionThisTurn = true;
     appendPositionChangeLog(cardObj, newOrientation, prevOrientation);
@@ -3808,89 +3837,69 @@ function animateAttack(cardObj, zoneId, callback, cardbackOverride) {
   const cardDiv = findCardDivInZone(zoneId, cardObj.instanceId);
   if (!cardDiv) { callback && callback(); return; }
 
-  // Get card front and back images
+  // Get card data and cardback
   const cardData = dummyCards.find(c => c.id === cardObj.cardId);
   const cardbackUrl = cardbackOverride
     || window.selectedPlayerDeck?.deckObj?.cardbackArt
     || "OtherImages/Cardbacks/CBDefault.png";
 
-  // Position overlay
-  const rect = cardDiv.getBoundingClientRect();
-  const animDiv = document.createElement('div');
-  animDiv.className = 'attack-card-flip';
-  animDiv.style.left = rect.left + 'px';
-  animDiv.style.top = rect.top + 'px';
-  animDiv.style.width = rect.width + 'px';
-  animDiv.style.height = rect.height + 'px';
-  animDiv.style.position = 'fixed';
-  animDiv.style.zIndex = 99999;
-  animDiv.style.pointerEvents = 'none';
+  // Prepare card faces if not already present
+  if (!cardDiv.querySelector('.card-front')) {
+    const front = document.createElement('div');
+    front.className = 'card-front';
+    front.innerHTML = `<img src="${cardData.image}" alt="Card Front">`;
+    cardDiv.appendChild(front);
+  }
+  if (!cardDiv.querySelector('.card-back')) {
+    const back = document.createElement('div');
+    back.className = 'card-back';
+    back.innerHTML = `<img src="${cardbackUrl}" alt="Card Back">`;
+    cardDiv.appendChild(back);
+  }
 
-  animDiv.innerHTML = `
-    <div class="attack-card-inner">
-      <div class="attack-card-front">
-        <img src="${cardData.image}" alt="Card Front">
-      </div>
-      <div class="attack-card-back">
-        <img src="${cardbackUrl}" alt="Card Back">
-      </div>
-    </div>
-  `;
+  // Ensure both faces are visible and reset transform
+  cardDiv.classList.remove('flipping');
+  void cardDiv.offsetWidth; // force reflow
 
-  document.body.appendChild(animDiv);
-
-  // Play attack sound here if desired (uncomment & add your sound element)
+  // Play attack sound if needed
   // const snd = document.getElementById('attack-sound');
   // if (snd) { snd.currentTime = 0; snd.play(); }
 
-  // Start animation
+  // Start flip animation
+  cardDiv.classList.add('flipping');
+
+  // After half the duration (show cardback), then after full duration (restore)
   setTimeout(() => {
-    animDiv.querySelector('.attack-card-inner').classList.add('flipped');
-    setTimeout(() => {
-      animDiv.remove();
-      callback && callback();
-    }, 1000); // 1 second duration
-  }, 20);
+    // Optionally: do something when cardback is visible (mid-flip)
+    // After animation ends, reset state
+    cardDiv.classList.remove('flipping');
+    if (callback) callback();
+  }, 700); // match CSS transition duration
 }
 function animateCardPositionChange(cardObj, zoneId, prevOrientation, newOrientation, callback) {
   const cardDiv = findCardDivInZone(zoneId, cardObj.instanceId);
-  if (!cardDiv) { callback && callback(); return; }
-  // Hide the original card during animation
-  cardDiv.style.visibility = 'hidden';
+  if (!cardDiv) { if (callback) callback(); return; }
 
-  // Compute rotation angles
-  const prevAngle = prevOrientation === "vertical" ? 0 : 90;
-  const newAngle  = newOrientation === "vertical" ? 0 : 90;
+  // Remove both orientation classes just in case
+  cardDiv.classList.remove("vertical", "horizontal");
+  // Add previous orientation
+  cardDiv.classList.add(prevOrientation);
 
-  // Create a clone for animation
-  const rect = cardDiv.getBoundingClientRect();
-  const animDiv = cardDiv.cloneNode(true);
-  animDiv.classList.add('card-position-anim');
-  animDiv.style.position = 'fixed';
-  animDiv.style.left = rect.left + 'px';
-  animDiv.style.top = rect.top + 'px';
-  animDiv.style.width = rect.width + 'px';
-  animDiv.style.height = rect.height + 'px';
-  animDiv.style.zIndex = 99999;
-  animDiv.style.pointerEvents = 'none';
-  animDiv.style.transition = 'none';
-  animDiv.style.transform = `rotate(${prevAngle}deg) scale(1)`;
+  // Force reflow for reliable transition start
+  void cardDiv.offsetWidth;
 
-  document.body.appendChild(animDiv);
+  // Switch to new orientation (triggers CSS transition)
+  cardDiv.classList.remove(prevOrientation);
+  cardDiv.classList.add(newOrientation);
 
-  // Animate: zoom in and rotate
-  setTimeout(() => {
-    animDiv.style.transition = 'transform 0.5s cubic-bezier(.22,1.14,.32,1), opacity 0.45s 0.45s';
-    animDiv.style.transform = `rotate(${newAngle}deg) scale(1.12)`;
-    // After zoom/rotate, fade out and call callback
-    setTimeout(() => {
-      animDiv.style.opacity = '0';
-      setTimeout(() => {
-        animDiv.remove();
-        callback && callback();
-      }, 250);
-    }, 500);
-  }, 20);
+  // Listen for transition end (one time)
+  cardDiv.addEventListener("transitionend", function handler(e) {
+    // Only care about the transform transition
+    if (e.propertyName === "transform") {
+      cardDiv.removeEventListener("transitionend", handler);
+      if (callback) callback();
+    }
+  });
 }
 function animateSkillActivation(cardObj, zoneId, callback) {
   // Find the card DOM element in its zone
