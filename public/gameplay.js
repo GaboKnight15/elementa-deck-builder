@@ -212,7 +212,7 @@ const TARGET_FILTER_ABILITIES = {
     name: 'Veil',
     description: 'Grants protection from debuffs for a duration.',
     handler: function(sourceCardObj, skillObj) {
-      promptUserToSelectTarget(
+      startSkillTarget(
         [...gameState.allyCreatures, ...gameState.allyDomains],
         selectedTarget => {
           grantVeil(selectedTarget, skillObj.duration);
@@ -263,7 +263,6 @@ const REQUIREMENT_MAP = {
     handler: function(sourceCardObj, skillObj, next) {
       // If already in DEF (horizontal), just proceed with skill activation
       if (sourceCardObj.orientation === "horizontal") {
-        if (next) next();
         return;
       }
       // If in ATK (vertical), rotate to DEF before proceeding
@@ -272,7 +271,6 @@ const REQUIREMENT_MAP = {
         return;
       }
       showToast("Card must be in ATK or DEF position to activate this skill.");
-      if (next) next();
     },
     canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
       const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
@@ -285,7 +283,6 @@ const REQUIREMENT_MAP = {
     handler: function(sourceCardObj, skillObj, next) {
       // If already in ATK (vertical), just proceed with skill activation
       if (sourceCardObj.orientation === "vertical") {
-        if (next) next();
         return;
       }
       // If in DEF (horizontal), rotate to ATK before proceeding
@@ -294,7 +291,6 @@ const REQUIREMENT_MAP = {
         return;
       }
       showToast("Card must be in ATK or DEF position to activate this skill.");
-      if (next) next();
     },
     canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
       const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
@@ -313,7 +309,6 @@ const REQUIREMENT_MAP = {
       moveCard(sourceCardObj.instanceId, gameState.playerHand, gameState.playerDeck);
       gameState.playerDeck = shuffle(gameState.playerDeck);
       renderGameState();
-      if (next) next();
     },
     canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
       const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
@@ -330,7 +325,6 @@ const REQUIREMENT_MAP = {
       }
       moveCard(sourceCardObj.instanceId, gameState.playerHand, gameState.playerVoid);
       renderGameState();
-      if (next) next();
     },
     canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
       const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
@@ -354,7 +348,6 @@ const REQUIREMENT_MAP = {
         : gameState.playerDomains;
       moveCard(sourceCardObj.instanceId, fromArr, gameState.playerVoid);
       renderGameState();
-      if (next) next();
     },
     canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
       const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
@@ -378,7 +371,6 @@ const REQUIREMENT_MAP = {
         : gameState.playerDomains;
       moveCard(sourceCardObj.instanceId, fromArr, gameState.playerHand);
       renderGameState();
-      if (next) next();
     },
     canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
       const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
@@ -403,7 +395,6 @@ const REQUIREMENT_MAP = {
       moveCard(sourceCardObj.instanceId, fromArr, gameState.playerDeck);
       gameState.playerDeck = shuffle(gameState.playerDeck);
       renderGameState();
-      if (next) next();
     },
     canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
       const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
@@ -421,7 +412,6 @@ const REQUIREMENT_MAP = {
       moveCard(sourceCardObj.instanceId, gameState.playerVoid, gameState.playerDeck);
       gameState.playerDeck = shuffle(gameState.playerDeck);
       renderGameState();
-      if (next) next();
     },
     canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
       return currentZone === "playerVoid";
@@ -437,7 +427,7 @@ Strike: {
   description: 'Deals damage to a single enemy target.',
   handler: function(sourceCardObj, skillObj) {
     const resolution = skillObj.resolution || {};
-    promptUserToSelectTarget(
+    startSkillTarget(
       [...gameState.opponentCreatures, ...gameState.opponentDomains],
       selectedTarget => {
         let damage = resolution.damage || 0;
@@ -519,7 +509,7 @@ Dash: {
     name: 'Heal',
     description: 'Heals an allied unit.',
     handler: function(sourceCardObj, skillObj) {
-      promptUserToSelectTarget(
+      startSkillTarget(
         [...gameState.allyCreatures, ...gameState.allyDomains],
         selectedTarget => {
           if (skillObj.heal) healTarget(selectedTarget, skillObj.heal);
@@ -533,7 +523,7 @@ Dash: {
     name: 'Cleanse',
     description: 'Removes debuffs/status effects from an allied target.',
     handler: function(sourceCardObj, skillObj) {
-      promptUserToSelectTarget(
+      startSkillTarget(
         [...gameState.allyCreatures, ...gameState.allyDomains],
         selectedTarget => {
           cleanseTarget(selectedTarget);
@@ -547,7 +537,7 @@ Dash: {
     name: 'Armor',
     description: 'Grants armor to an allied unit.',
     handler: function(sourceCardObj, skillObj) {
-      promptUserToSelectTarget(
+      startSkillTarget(
         [...gameState.allyCreatures, ...gameState.allyDomains],
         selectedTarget => {
           if (skillObj.armor) grantArmor(selectedTarget, skillObj.armor);
@@ -561,7 +551,7 @@ Dash: {
     name: 'Aegis',
     description: 'Grants a shield that blocks the next incoming damage.',
     handler: function(sourceCardObj, skillObj) {
-      promptUserToSelectTarget(
+      startSkillTarget(
         [...gameState.allyCreatures, ...gameState.allyDomains],
         selectedTarget => {
           grantAegis(selectedTarget);
@@ -646,7 +636,7 @@ Destroy: {
       showToast("No valid targets to destroy");
       return;
     }
-    promptUserToSelectTarget(validTargets, selectedTarget => {
+    startSkillTarget(validTargets, selectedTarget => {
       // Determine correct void array based on owner
       const isPlayerCard =
         gameState.playerCreatures.includes(selectedTarget) ||
@@ -4092,33 +4082,20 @@ function findCardFieldArray(cardObj) {
   if (gameState.opponentDomains.includes(cardObj)) return gameState.opponentDomains;
   return null;
 }
-function runNextRequirement(requirements, cardObj, skillObj, finalCallback) {
-  let i = 0;
-  function step() {
-    if (i < requirements.length) {
-      const req = requirements[i];
-      i++;
-      if (REQUIREMENT_MAP[req] && REQUIREMENT_MAP[req].handler) {
-        REQUIREMENT_MAP[req].handler(cardObj, skillObj, step);
-      } else {
-        step();
-      }
-    } else {
-      if (typeof finalCallback === "function") finalCallback();
-    }
-  }
-  step();
-}
+
 function proceedSkillActivation(cardObj, skillObj, options = {}) {
   const activation = skillObj.activation || {};
   let requirements = Array.isArray(activation.requirement)
     ? activation.requirement
     : (activation.requirement ? [activation.requirement] : []);
   if (requirements.length) {
-    runNextRequirement(requirements, cardObj, skillObj, function() {
-      animateSkillActivation(cardObj, findZoneIdForCard(cardObj), function() {
-        resolveSkillEffect(cardObj, skillObj);
-      });
+    requirements.forEach(req => {
+      if (REQUIREMENT_MAP[req] && REQUIREMENT_MAP[req].handler) {
+        REQUIREMENT_MAP[req].handler(cardObj, skillObj);
+      }
+    });
+    animateSkillActivation(cardObj, findZoneIdForCard(cardObj), function() {
+      resolveSkillEffect(cardObj, skillObj);
     });
   } else {
     animateSkillActivation(cardObj, findZoneIdForCard(cardObj), function() {
@@ -4138,7 +4115,9 @@ function resolveSkillEffect(cardObj, skillObj) {
     }
   });
 }
-function promptUserToSelectTarget(targets, onSelect, opts = {}) {
+function startSkillTarget(targets, onSelect, opts = {}) {
+  // Add backdrop to battlefield
+  battlefield.classList.add('skill-mode-backdrop');
   // Remove any previous highlights
   document.querySelectorAll('.target-highlight').forEach(el => el.classList.remove('target-highlight'));
 
@@ -4163,6 +4142,7 @@ function promptUserToSelectTarget(targets, onSelect, opts = {}) {
           el.classList.remove('target-highlight');
           el.onclick = null;
         });
+        battlefield.classList.remove('skill-mode-backdrop');
         onSelect(cardObj);
       };
     }
@@ -4175,6 +4155,7 @@ function promptUserToSelectTarget(targets, onSelect, opts = {}) {
         el.classList.remove('target-highlight');
         el.onclick = null;
       });
+      battlefield.classList.remove('skill-mode-backdrop');
       document.body.removeEventListener('click', cancelHandler);
     }, { once: true });
   }
