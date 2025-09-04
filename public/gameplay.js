@@ -600,6 +600,10 @@ Dash: {
         closeAllModals();
         renderGameState();
       });
+    },
+    canActivate: function(cardObj, skillObj, currentZone, gameState) {
+    // Only allow activation if the card is in the void zone
+      return currentZone === "void" && gameState.playerVoid.includes(cardObj);
     }
   },
   Recall: {
@@ -3757,29 +3761,37 @@ function closeWaitingForOpponentModal() {
 }
 
 function canActivateSkill(cardObj, skillObj, currentZone, gameState) {
+  // 1. Custom effect-level canActivate (SKILL_EFFECT_MAP)
+  const effectNames = skillObj.resolution?.effect;
+  if (effectNames) {
+    const effectList = Array.isArray(effectNames) ? effectNames : [effectNames];
+    for (const effectName of effectList) {
+      const effectDef = SKILL_EFFECT_MAP[effectName];
+      if (effectDef && typeof effectDef.canActivate === 'function') {
+        if (!effectDef.canActivate(cardObj, skillObj, currentZone, gameState)) return false;
+      }
+    }
+  }
+  // 2. Custom requirement-level canActivate (REQUIREMENT_MAP)
   const activation = skillObj.activation || {};
+  if (activation.requirement && REQUIREMENT_MAP[activation.requirement] && REQUIREMENT_MAP[activation.requirement].canActivate) {
+    if (!REQUIREMENT_MAP[activation.requirement].canActivate(cardObj, skillObj, currentZone, gameState)) return false;
+  }
   // 1. Check Zone (from activation)
   if (Array.isArray(activation.zone)) {
     if (!activation.zone.includes(currentZone)) return false;
   } else {
     if (activation.zone && activation.zone !== currentZone) return false;
   }
-
   // 2. Status Effects (Paralysis, Freeze, etc)
   if (cardObj._paralyzed || cardObj._frozen) return false;
   if (cardObj.canActivateSkill === false) return false;
-
   // 3. Essence Cost (assume skillObj.cost is a string like '{1}{U}', pass to your cost-checker)
   if (skillObj.cost) {
     const sources = [...gameState.playerDomains, ...gameState.playerCreatures];
     const availableEssence = sources.map(card => card.essence || '').join('');
     if (!canPayEssence({ essence: availableEssence }, skillObj.cost)) return false;
   }
-  // 4. Activation requirement (optional: check if requirement can be performed)
-  if (activation.requirement && REQUIREMENT_MAP[activation.requirement] && REQUIREMENT_MAP[activation.requirement].canActivate) {
-    if (!REQUIREMENT_MAP[activation.requirement].canActivate(cardObj, skillObj, currentZone, gameState)) return false;
-  }
-  // 5. Any other custom activation requirements
   return true;
 }
 
