@@ -2419,6 +2419,43 @@ button {}
   transition: box-shadow 0.18s, transform 0.18s;
   box-shadow: 0 3px 12px rgba(0,0,0,0.12);
 }
+
+/* CARD ANIMATIONS */
+.card-battlefield.attacking {
+  /* Example: scale up, move forward, and rotate for effect */
+  transform: scale(1.15) translateY(-30px) rotate(-10deg);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+}
+.card-battlefield.attack-flip {
+  /* Example for a "flip" effect (optional) */
+  transform: scale(1.05) rotateY(180deg);
+}
+.card-battlefield.flipping {
+  /* triggers the flip animation */
+  transform: rotateY(180deg) scale(1.1);
+  z-index: 9999;
+}
+
+.card-battlefield .card-front,
+.card-battlefield .card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  top: 0; left: 0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.card-battlefield .card-front {
+  z-index: 2;
+}
+
+.card-battlefield .card-back {
+  transform: rotateY(180deg);
+  z-index: 1;
+  background: #222;
+}
 .card-battlefield.vertical {
   transform: rotate(0deg);
 }
@@ -2684,41 +2721,6 @@ button {}
   z-index: 30;
   background: rgba(14,19,26,0.76);
   pointer-events: auto;
-}
-/* ---- ATTACK ANIMATION CSS ---- */
-.attack-card-flip {
-  perspective: 900px;
-  width: 100px;
-  height: 140px;
-  position: fixed;
-  z-index: 9999;
-  pointer-events: none;
-}
-.attack-card-inner {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  transition: transform 1s cubic-bezier(.22,1.14,.32,1);
-  transform-style: preserve-3d;
-}
-.attack-card-front, .attack-card-back {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  backface-visibility: hidden;
-  top: 0; left: 0;
-}
-.attack-card-front img, .attack-card-back img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  border-radius: 8px;
-}
-.attack-card-back {
-  transform: rotateY(180deg);
-}
-.attack-card-inner.flipped {
-  transform: rotateY(360deg);
 }
 /* VIEW STYLE */
 #image-modal {
