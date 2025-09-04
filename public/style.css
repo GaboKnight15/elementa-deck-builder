@@ -2502,6 +2502,7 @@ button {}
   transform: rotate(90deg);
 }
 
+/* Shared hover/focus effects for child elements (ATK and DEF) */
 .card-battlefield:hover img,
 .card-battlefield:focus img,
 .card-battlefield:hover .stat-badge,
@@ -2519,12 +2520,24 @@ button {}
   transition: filter 0.18s, box-shadow 0.18s, transform 0.18s;
 }
 
+/* Special hover for DEF cards (scale and highlight parent) */
+.card-battlefield.horizontal:hover,
+.card-battlefield.horizontal:focus {
+  transform: rotate(90deg) scale(1.12) translateY(-8px);
+  z-index: 15;
+  box-shadow: 0 8px 28px #ffe06655;
+  filter: brightness(1.15) drop-shadow(0 0 7px #ffe066bb);
+  transition: filter 0.18s, box-shadow 0.18s, transform 0.18s;
+}
+
+/* Stat badge highlight */
 .card-battlefield:hover .stat-badge span,
 .card-battlefield:focus .stat-badge span {
   color: #ffe066 !important;
   text-shadow: 0 0 8px #232, 0 0 4px #ffe066;
 }
 
+/* HP bar highlight */
 .card-battlefield:hover .hp-bar,
 .card-battlefield:focus .hp-bar {
   box-shadow: 0 0 10px #ffe06688;
