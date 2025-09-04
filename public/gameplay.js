@@ -1727,6 +1727,7 @@ function getBaseHp(cardId) {
   const card = dummyCards.find(c => c.id === cardId);
   return card ? card.hp : 1; // fallback to 1 if not found
 }
+
 function renderCardOnField(cardObj, zoneId) {
   const cardData = dummyCards.find(c => c.id === cardObj.cardId);
   const category = cardData?.category?.toLowerCase();
@@ -1890,14 +1891,36 @@ function renderCardOnField(cardObj, zoneId) {
 
     cardDiv.appendChild(barWrap);
   }
-if (cardObj.statuses) {
+// Create a status icon area if any statuses exist
+if (cardObj.statuses && cardObj.statuses.length > 0) {
+  const statusArea = document.createElement('div');
+  statusArea.className = 'card-status-area';
   cardObj.statuses.forEach(status => {
-    const statusIcon = document.createElement('img');
-    statusIcon.src = STATUS_EFFECTS[status.name].icon;
-    statusIcon.title = STATUS_EFFECTS[status.name].description;
-    statusIcon.className = "status-effect-icon";
-    cardDiv.appendChild(statusIcon);
+    const statusDef = STATUS_EFFECTS[status.name];
+    if (!statusDef) return;
+    const icon = document.createElement('img');
+    icon.src = statusDef.icon;
+    icon.alt = statusDef.name;
+    icon.title = statusDef.description;
+    icon.className = 'card-icon status';
+    statusArea.appendChild(icon);
   });
+  cardDiv.appendChild(statusArea);
+}
+  if (cardObj.abilities && cardObj.abilities.length > 0) {
+  const abilityArea = document.createElement('div');
+  abilityArea.className = 'card-ability-area';
+  cardObj.abilities.forEach(abilityName => {
+    const abilityDef = TARGET_FILTER_ABILITIES[abilityName];
+    if (!abilityDef) return;
+    const icon = document.createElement('img');
+    icon.src = abilityDef.icon;
+    icon.alt = abilityDef.name;
+    icon.title = abilityDef.description;
+    icon.className = 'card-icon ability';
+    abilityArea.appendChild(icon);
+  });
+  cardDiv.appendChild(abilityArea);
 }
   // --- Attached Cards (right side, absolute) ---
   if (cardObj.attachedCards && cardObj.attachedCards.length > 0) {
@@ -3859,6 +3882,7 @@ function animateAttack(cardObj, zoneId, callback, cardbackOverride) {
 
   // Ensure both faces are visible and reset transform
   cardDiv.classList.remove('flipping');
+  cardDiv.style.transform = 'rotateY(0deg) scale(1)';
   void cardDiv.offsetWidth; // force reflow
 
   // Play attack sound if needed
@@ -3870,9 +3894,8 @@ function animateAttack(cardObj, zoneId, callback, cardbackOverride) {
 
   // After half the duration (show cardback), then after full duration (restore)
   setTimeout(() => {
-    // Optionally: do something when cardback is visible (mid-flip)
-    // After animation ends, reset state
     cardDiv.classList.remove('flipping');
+    cardDiv.style.transform = 'rotateY(0deg) scale(1)';
     if (callback) callback();
   }, 700); // match CSS transition duration
 }
