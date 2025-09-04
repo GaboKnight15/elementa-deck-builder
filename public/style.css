@@ -2420,22 +2420,61 @@ button {}
   box-shadow: 0 3px 12px rgba(0,0,0,0.12);
 }
 
-/* CARD ANIMATIONS */
-.card-battlefield.attacking {
-  /* Example: scale up, move forward, and rotate for effect */
-  transform: scale(1.15) translateY(-30px) rotate(-10deg);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
-}
-.card-battlefield.attack-flip {
-  /* Example for a "flip" effect (optional) */
-  transform: scale(1.05) rotateY(180deg);
-}
-.card-battlefield.flipping {
-  /* triggers the flip animation */
-  transform: rotateY(180deg) scale(1.1);
-  z-index: 9999;
+/* STATUS ICONS */
+.card-status-area,
+.card-ability-area {
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
 }
 
+/* Use for all icons: status, abilities, etc. */
+.card-icon {
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+  vertical-align: middle;
+  object-fit: contain;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  background: rgba(0,0,0,0.07);
+  padding: 2px;
+  transition: transform 0.15s;
+}
+.card-icon.status {
+  /* Optional: add green/purple border for status */
+  border: 2px solid #7c3aed88;
+}
+
+.card-icon.ability {
+  /* Optional: add border or effect for ability */
+  border: 2px solid #2296f388;
+}
+
+/* Responsive: shrink icons if card is small */
+.card-battlefield.small .card-icon {
+  width: 16px;
+  height: 16px;
+  padding: 1px;
+  border-radius: 4px;
+}
+
+/* Optional: status area positioning */
+.card-status-area {
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+}
+/* CARD ATTACK ANIMATIONS */
+.card-battlefield.flipping {
+  transform: rotateY(360deg) scale(1.1);
+  z-index: 9999;
+}
 .card-battlefield .card-front,
 .card-battlefield .card-back {
   position: absolute;
@@ -2446,16 +2485,15 @@ button {}
   border-radius: 8px;
   overflow: hidden;
 }
-
 .card-battlefield .card-front {
   z-index: 2;
+  /* No transform */
 }
-
 .card-battlefield .card-back {
   transform: rotateY(180deg);
   z-index: 1;
-  background: #222;
 }
+/* CARD CHANGE POSITION ANIMATIONS */
 .card-battlefield.vertical {
   transform: rotate(0deg);
 }
