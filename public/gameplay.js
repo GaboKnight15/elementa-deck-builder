@@ -313,6 +313,7 @@ const REQUIREMENT_MAP = {
       moveCard(sourceCardObj.instanceId, gameState.playerHand, gameState.playerDeck);
       gameState.playerDeck = shuffle(gameState.playerDeck);
       renderGameState();
+      if (next) next();
     },
     canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
       const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
@@ -329,6 +330,7 @@ const REQUIREMENT_MAP = {
       }
       moveCard(sourceCardObj.instanceId, gameState.playerHand, gameState.playerVoid);
       renderGameState();
+      if (next) next();
     },
     canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
       const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
@@ -352,6 +354,7 @@ const REQUIREMENT_MAP = {
         : gameState.playerDomains;
       moveCard(sourceCardObj.instanceId, fromArr, gameState.playerVoid);
       renderGameState();
+      if (next) next();
     },
     canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
       const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
@@ -375,6 +378,7 @@ const REQUIREMENT_MAP = {
         : gameState.playerDomains;
       moveCard(sourceCardObj.instanceId, fromArr, gameState.playerHand);
       renderGameState();
+      if (next) next();
     },
     canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
       const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
@@ -399,6 +403,7 @@ const REQUIREMENT_MAP = {
       moveCard(sourceCardObj.instanceId, fromArr, gameState.playerDeck);
       gameState.playerDeck = shuffle(gameState.playerDeck);
       renderGameState();
+      if (next) next();
     },
     canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
       const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
@@ -416,6 +421,7 @@ const REQUIREMENT_MAP = {
       moveCard(sourceCardObj.instanceId, gameState.playerVoid, gameState.playerDeck);
       gameState.playerDeck = shuffle(gameState.playerDeck);
       renderGameState();
+      if (next) next();
     },
     canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
       return currentZone === "playerVoid";
@@ -1758,8 +1764,8 @@ function renderCardOnField(cardObj, zoneId) {
   // --- Stat Overlays ---
   const baseHP = typeof cardData.hp === "number" ? cardData.hp : undefined;
   const currentHP = typeof cardObj.currentHP === "number" ? cardObj.currentHP : baseHP;
-  const baseATK = typeof cardObj.atk === "number" ? cardObj.atk : cardData.atk;
-  const baseDEF = typeof cardObj.def === "number" ? cardObj.def : cardData.def;
+  const baseATK = typeof cardObj.atk === "number" ? Math.max(0, cardObj.atk) : Math.max(0, cardData.atk);
+  const baseDEF = typeof cardObj.def === "number" ? Math.max(0, cardObj.def) : Math.max(0, cardData.def);
   const currentArmor = typeof cardObj.armor === "number" ? cardObj.armor : cardData.armor;
   const showStats = category !== "spell";
 
@@ -3343,17 +3349,29 @@ function proceedAttackResolution(
   renderGameState();
   setupDropZones();
 }
-// --- Damage Helper: Deals armor/HP damage ---
-function dealDamage(source, target, amount) {
-  if (!target) return;
-  if (target.armor && target.armor > 0) {
-    let armorAbsorb = Math.min(target.armor, amount);
-    target.armor -= armorAbsorb;
-    amount -= armorAbsorb;
+function clampStat(val) {
+  return Math.max(0, val);
+}
+
+function dealDamage(cardObj, targetObj, damage) {
+  // Clamp ATK and DEF
+  targetObj.atk = clampStat(targetObj.atk);
+  targetObj.def = clampStat(targetObj.def);
+
+  // Apply damage to HP
+  targetObj.currentHP = (targetObj.currentHP || getBaseHp(targetObj.cardId)) - damage;
+
+  // If HP is now <= 0, move to Void
+  if (targetObj.currentHP <= 0) {
+    const fromArr = findCardFieldArray(targetObj);
+    // Only move if fromArr is a field zone (not hand, deck, void, etc)
+    if (fromArr) {
+      moveCard(targetObj.instanceId, fromArr, gameState.playerVoid);
+      renderGameState();
+      return;
+    }
   }
-  if (amount > 0) {
-    target.currentHP = (typeof target.currentHP === "number" ? target.currentHP : getBaseHp(target.cardId)) - amount;
-  }
+  renderGameState();
 }
 // --- Utility: Determine card owner as "player" or "opponent" ---
 function getCardOwner(cardObj) {
@@ -3953,26 +3971,50 @@ function animateSkillActivation(cardObj, zoneId, callback) {
   animDiv.style.zIndex = 99999;
   animDiv.style.pointerEvents = 'none';
   animDiv.style.transition = 'none';
-
-  document.body.appendChild(animDiv);
-
-  // Initial: show edge (rotateY 90deg), place above original
-  animDiv.style.transform = 'rotateY(90deg)';
+  animDiv.style.transform = 'scale(1)';
   animDiv.style.opacity = '1';
 
-  // Animate to front view
+  // Create overlay effect
+  const overlay = document.createElement('div');
+  overlay.className = 'skill-activation-overlay';
+  overlay.style.position = 'fixed';
+  overlay.style.left = rect.left + 'px';
+  overlay.style.top = rect.top + 'px';
+  overlay.style.width = rect.width + 'px';
+  overlay.style.height = rect.height + 'px';
+  overlay.style.zIndex = 99998;
+  overlay.style.pointerEvents = 'none';
+  overlay.style.background = 'radial-gradient(circle at 50% 45%, #ffe066cc 60%, #fffbe6aa 95%, transparent 100%)';
+  overlay.style.boxShadow = '0 8px 24px rgba(0,0,0,0.22)';
+  overlay.style.transition = 'opacity 0.22s';
+  overlay.style.opacity = '0.85';
+
+  document.body.appendChild(overlay);
+  document.body.appendChild(animDiv);
+
+  // Animate: scale up and add highlight, then scale back down and remove
   setTimeout(() => {
-    animDiv.style.transition = 'transform 0.7s cubic-bezier(.22,1.14,.32,1), opacity 0.3s 0.7s';
-    animDiv.style.transform = 'rotateY(0deg)';
-    // After rotate, fade out
+    animDiv.style.transition = 'transform 0.18s cubic-bezier(.22,1.14,.32,1), filter 0.18s, box-shadow 0.18s';
+    animDiv.style.transform = 'scale(1.18) translateY(-5px)';
+    animDiv.style.filter = 'brightness(1.15) drop-shadow(0 0 6px #ffe066aa)';
+    animDiv.style.boxShadow = '0 8px 24px rgba(0,0,0,0.22)';
+    overlay.style.opacity = '1';
+
+    // Scale back down after a short delay
     setTimeout(() => {
-      animDiv.style.opacity = '0';
+      animDiv.style.transform = 'scale(1) translateY(0)';
+      animDiv.style.filter = '';
+      animDiv.style.boxShadow = '';
+      overlay.style.opacity = '0.7';
+
+      // Remove after transition
       setTimeout(() => {
         animDiv.remove();
+        overlay.remove();
         callback && callback();
-      }, 300);
-    }, 700);
-  }, 20);
+      }, 220); // Match transition duration
+    }, 320); // Time the card stays zoomed
+  }, 16); // Start transition after DOM paint
 }
 function animateCardFade(instanceId, fromZoneId, toZoneId, callback) {
   // Find the card div in the fromZone
@@ -4042,6 +4084,13 @@ function findZoneIdForCard(cardObj) {
   if (gameState.opponentCreatures.includes(cardObj)) return 'opponent-creatures-zone';
   if (gameState.opponentDomains.includes(cardObj)) return 'opponent-domains-zone';
   return '';
+}
+function findCardFieldArray(cardObj) {
+  if (gameState.playerCreatures.includes(cardObj)) return gameState.playerCreatures;
+  if (gameState.playerDomains.includes(cardObj)) return gameState.playerDomains;
+  if (gameState.opponentCreatures.includes(cardObj)) return gameState.opponentCreatures;
+  if (gameState.opponentDomains.includes(cardObj)) return gameState.opponentDomains;
+  return null;
 }
 function runNextRequirement(requirements, cardObj, skillObj, finalCallback) {
   let i = 0;
