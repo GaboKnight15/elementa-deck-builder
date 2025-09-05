@@ -3118,7 +3118,7 @@ function startAttackTargeting(attackerId, attackerZone, cardDiv) {
     gameState.playerCreatures.find(c => c.instanceId === attackerId) ||
     gameState.opponentCreatures.find(c => c.instanceId === attackerId);
 
-  const targets = getOpponentAttackableTargets(attacker);
+  const targets = getAttackTargets(attacker);
 
   targets.forEach(cardObj => {
     // Try both rows for finding the DOM element
@@ -3128,22 +3128,20 @@ function startAttackTargeting(attackerId, attackerZone, cardDiv) {
       targetDiv.classList.add('attack-target-highlight');
       targetDiv.onclick = function(e) {
         e.stopPropagation();
+        endAttackTarget();
         resolveAttack(attackerId, cardObj.instanceId);
-        endAttackTargeting();
-        battlefield.classList.remove('attack-mode-backdrop');
       };
     }
   });
 
   // Cancel handler
   attackMode.cancelHandler = function(e) {
-    endAttackTargeting();
-    battlefield.classList.remove('attack-mode-backdrop');
+    endAttackTarget();
   };
   setTimeout(() => document.body.addEventListener('click', attackMode.cancelHandler, { once: true }), 10);
 }
 
-function getOpponentAttackableTargets(attackerObj = null) {
+function getAttackTargets(attackerObj = null) {
   // Gather all opponent cards
   const creatures = gameState.opponentCreatures;
   const domains = gameState.opponentDomains;
@@ -3181,10 +3179,18 @@ function getOpponentAttackableTargets(attackerObj = null) {
   // If no attackerObj provided, just return targets after color protection
   if (!attackerObj) return targets;
 
-  // Now apply ability-based restrictions to this filtered list
-  return filterAttackableTargets(attackerObj, targets);
+  // --- INLINE ABILITY FILTERS ---
+  const attackerDef = dummyCards.find(c => c.id === attackerObj.cardId);
+  if (!attackerDef || !attackerDef.ability) return targets;
+  let filtered = targets;
+  Object.keys(TARGET_FILTER_ABILITIES).forEach(abilityName => {
+    if (attackerDef.ability.includes(abilityName)) {
+      filtered = TARGET_FILTER_ABILITIES[abilityName].filter(attackerObj, filtered);
+    }
+  });
+  return filtered;
 }
-function endAttackTargeting() {
+function endAttackTarget() {
   // Remove highlights and listeners
   gameState.opponentCreatures.forEach(cardObj => {
     const targetDiv = findCardDivInZone('opponent-creatures-zone', cardObj.instanceId);
@@ -3202,7 +3208,7 @@ function endAttackTargeting() {
   attackMode.attackerZone = null;
 }
 
-// --- PATCHED resolveAttack FUNCTION WITH ANIMATION ---
+// --- ATTACK RESOLUTION ANIMATION ---
 function resolveAttack(attackerId, defenderId) {
   // Find attacker and defender card objects and their arrays
   let attacker, defender, attackerArr, defenderArr, attackerVoid, defenderVoid;
@@ -3220,7 +3226,15 @@ function resolveAttack(attackerId, defenderId) {
   const attackerDef = dummyCards.find(c => c.id === attacker.cardId);
   const defenderDef = dummyCards.find(c => c.id === defender.cardId);
 
-  handleAttackDeclarationAbilities(attacker, defender);
+  if (attackerDef && attackerDef.ability) {
+    const abilities = Array.isArray(attackerDef.ability) ? attackerDef.ability : [attackerDef.ability];
+    abilities.forEach(abilityName => {
+      const ability = ATTACK_DECLARATION_ABILITIES[abilityName];
+      if (ability && ability.effect) {
+        ability.effect(attacker, defender);
+      }
+    });
+  }
 
   if (gameState.playerCreatures.includes(attacker)) {
     attackerArr = gameState.playerCreatures;
@@ -3288,20 +3302,6 @@ function proceedAttackResolution(
   attackerDef,
   defenderDef
 ) {
-  // --- ABILITY LOGIC ---
-  // Defender has Flying: can only be attacked by Flying or Ranged
-  if (defenderHasAbility(defender, 'Flying')) {
-    if (!(attackerHasAbility(attacker, 'Flying') || attackerHasAbility(attacker, 'Ranged'))) {
-      showToast("You can only attack Flying creatures with Flying or Ranged cards!");
-      return;
-    }
-  }
-
-  // Ranged: does not receive retaliation when attacking
-  let attackerGetsRetaliation = true;
-  if (attackerHasAbility(attacker, 'Ranged') && defenderDef.category === "creature") {
-    attackerGetsRetaliation = false;
-  }
 
   // --- LOG THE ATTACK ---
   appendAttackLog({
@@ -3810,23 +3810,6 @@ function canActivateSkill(cardObj, skillObj, currentZone, gameState) {
   return true;
 }
 
-function hasAvailableTargets(skillObj, sourceCardObj, gameState) {
-  switch (skillObj.type) {
-    case 'Strike':
-      return [...gameState.opponentCreatures, ...gameState.opponentDomains].length > 0;
-    case 'Burst':
-      return [...gameState.opponentCreatures, ...gameState.opponentDomains].length > 0;
-    case 'Heal':
-    case 'Cleanse':
-    case 'Armor':
-    case 'Aegis':
-    case 'Veil':
-      return [...gameState.allyCreatures, ...gameState.allyDomains].length > 0;
-    // Add more cases as needed
-    default:
-      return true; // Default: assume available
-  }
-}
 function canPayEssence(cardObj, costStr) {
   const colorCodes = "GRUYCPBW";
   let availableEssenceStr = cardObj.essence || "";
@@ -4317,34 +4300,6 @@ function isValidForSkillType(sourceCardObj, skillObj, type) {
   }
   // For other types, add custom logic as needed
   return true;
-}
-
-/*--------------------------------
-// ATTACK DECLARATION ABILITIES //
---------------------------------*/
-function filterAttackableTargets(attacker, targets) {
-  const attackerDef = dummyCards.find(c => c.id === attacker.cardId);
-  if (!attackerDef || !attackerDef.ability) return targets;
-  let filtered = targets;
-  Object.keys(TARGET_FILTER_ABILITIES).forEach(abilityName => {
-    if (attackerDef.ability.includes(abilityName)) {
-      filtered = TARGET_FILTER_ABILITIES[abilityName].filter(attacker, filtered);
-    }
-  });
-  return filtered;
-}
-
-function handleAttackDeclarationAbilities(attacker, defender) {
-  const attackerDef = dummyCards.find(c => c.id === attacker.cardId);
-  if (!attackerDef || !attackerDef.ability) return;
-  // Ensure ability is always an array
-  const abilities = Array.isArray(attackerDef.ability) ? attackerDef.ability : [attackerDef.ability];
-  abilities.forEach(abilityName => {
-    const ability = ATTACK_DECLARATION_ABILITIES[abilityName];
-    if (ability && ability.effect) {
-      ability.effect(attacker, defender);
-    }
-  });
 }
 
 /*------------------
