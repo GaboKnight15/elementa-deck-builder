@@ -1792,13 +1792,13 @@ function renderCardOnField(cardObj, zoneId) {
     atkBadge.style.left = '30%';
     atkBadge.style.bottom = '0';
     atkBadge.style.width = 'auto';
-    atkBadge.style.height = '25%';
+    atkBadge.style.height = '20%';
     atkBadge.style.zIndex = 20;
     atkBadge.innerHTML = `
       <img src="OtherImages/FieldIcons/ATK.png" style="width:100%;height:100%;">
       <span style="
         position:absolute;
-        left:0;top:0;width:100%;height:100%;
+        left:40%;top:0;width:100%;height:100%;
         display:flex;align-items:center;justify-content:center;
         font-weight:bold;color:#fff;
         text-shadow:0 1px 4px #232;z-index:22;
@@ -1816,7 +1816,7 @@ function renderCardOnField(cardObj, zoneId) {
     defBadge.style.right = '0';
     defBadge.style.bottom = '0';
     defBadge.style.width = 'auto';
-    defBadge.style.height = '25%';
+    defBadge.style.height = '20%';
     defBadge.style.zIndex = 20;
     defBadge.innerHTML = `
       <img src="OtherImages/FieldIcons/DEF.png" style="width:100%;height:100%;">
