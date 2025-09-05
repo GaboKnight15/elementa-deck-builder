@@ -1049,9 +1049,9 @@ function getRequirementIcons(requirementsArr) {
   let icons = "";
   requirementsArr.forEach(r => {
     if (r === "CW") {
-      icons += `<img src="OtherImages/Icons/Tapped.png" title="Activate in ATK position" style="width:22px;vertical-align:middle;margin:0 2px;">`;
+      icons += `<img src="OtherImages/Icons/Tapped.png" title="Activate in ATK position" style="width:21px;vertical-align:middle;">`;
     } else if (r === "CCW") {
-      icons += `<img src="OtherImages/Icons/Untapped.png" title="Activate in DEF position" style="width:22px;vertical-align:middle;margin:0 2px;">`;
+      icons += `<img src="OtherImages/Icons/Untapped.png" title="Activate in DEF position" style="width:21px;vertical-align:middle;">`;
     }
     // Add more requirement icons as needed
   });
