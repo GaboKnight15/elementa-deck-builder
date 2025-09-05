@@ -1276,8 +1276,15 @@ function showHandCardMenu(instanceId, cardDiv) {
   if (cardData.skill && Array.isArray(cardData.skill)) {
     cardData.skill.forEach(skillObj => {
       const isEnabled = canActivateSkill(cardObj, skillObj, 'hand', gameState);
+      // PATCH: show CW/CCW icons
+      const activation = skillObj.activation || {};
+      let requirements = Array.isArray(activation.requirement)
+        ? activation.requirement
+        : (activation.requirement ? [activation.requirement] : []);
+      const reqIcons = getRequirementIcons(requirements);
+
       buttons.push({
-        text: `${skillObj.name} ${parseEffectText(skillObj.cost)}`,
+        text: `${skillObj.name} ${parseEffectText(skillObj.cost)}${reqIcons}`,
         html: true,
         disabled: !isEnabled,
         onClick: function(e) {
@@ -2292,23 +2299,30 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
       }
     }
   ];
-if (cardData.skill && Array.isArray(cardData.skill)) {
-  const currentZone = getZoneNameForArray(arr);
-  cardData.skill.forEach(skillObj => {
-    const isEnabled = canActivateSkill(cardObj, skillObj, currentZone, gameState);
-    buttons.push({
-      text: `${skillObj.name} ${parseEffectText(skillObj.cost, skillObj.activation?.requirement)}`,
-      html: true,
-      disabled: !isEnabled,
-      onClick: function(e) {
-        e.stopPropagation();
-        if (!canActivateSkill(cardObj, skillObj, currentZone, gameState)) return;
-        activateSkill(cardObj, skillObj);
-        closeAllMenus();
-      }
+  if (cardData.skill && Array.isArray(cardData.skill)) {
+    const currentZone = getZoneNameForArray(arr);
+    cardData.skill.forEach(skillObj => {
+      const isEnabled = canActivateSkill(cardObj, skillObj, currentZone, gameState);
+      // PATCH: show CW/CCW icons
+      const activation = skillObj.activation || {};
+      let requirements = Array.isArray(activation.requirement)
+        ? activation.requirement
+        : (activation.requirement ? [activation.requirement] : []);
+      const reqIcons = getRequirementIcons(requirements);
+
+      buttons.push({
+        text: `${skillObj.name} ${parseEffectText(skillObj.cost)}${reqIcons}`,
+        html: true,
+        disabled: !isEnabled,
+        onClick: function(e) {
+          e.stopPropagation();
+          if (!canActivateSkill(cardObj, skillObj, currentZone, gameState)) return;
+          activateSkill(cardObj, skillObj);
+          closeAllMenus();
+        }
+      });
     });
-  });
-}
+  }
 
 /*
   // Only allow "View" if clicking a card in an opponent's zone
@@ -2430,23 +2444,30 @@ function openVoidModal() {
     ];
 
   // --- Add Skill Buttons if card has skills ---
-  const cardData = dummyCards.find(c => c.id === cardObj.cardId);
-        if (cardData && Array.isArray(cardData.skill)) {
-          cardData.skill.forEach(skillObj => {
-            buttons.push({
-              text: `${skillObj.name} ${parseEffectText(skillObj.cost)}`,
-              html: true,
-              disabled: !canActivateSkill(cardObj, skillObj, 'void', gameState),
-              onClick: function(e) {
-                e.stopPropagation();
-                if (!canActivateSkill(cardObj, skillObj, 'void', gameState)) return;
-                activateSkill(cardObj, skillObj);
-                closeAllMenus();
-                openVoidModal();
-              }
-            });
-          });
-        }
+    const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+    if (cardData && Array.isArray(cardData.skill)) {
+      cardData.skill.forEach(skillObj => {
+        // PATCH: show CW/CCW icons
+        const activation = skillObj.activation || {};
+        let requirements = Array.isArray(activation.requirement)
+          ? activation.requirement
+          : (activation.requirement ? [activation.requirement] : []);
+        const reqIcons = getRequirementIcons(requirements);
+
+        buttons.push({
+          text: `${skillObj.name} ${parseEffectText(skillObj.cost)}${reqIcons}`,
+          html: true,
+          disabled: !canActivateSkill(cardObj, skillObj, 'void', gameState),
+          onClick: function(e) {
+            e.stopPropagation();
+            if (!canActivateSkill(cardObj, skillObj, 'void', gameState)) return;
+            activateSkill(cardObj, skillObj);
+            closeAllMenus();
+            openVoidModal();
+          }
+        });
+      });
+    }
     const menu = createCardMenu(buttons);
     document.body.appendChild(menu); // Append to body, not wrapper
 
