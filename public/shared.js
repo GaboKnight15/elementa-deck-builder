@@ -6,7 +6,7 @@ const dummyCards = [
 
 {id: 'SylvaniaThornEmpress', name: 'Sylvania, Thorn Empress', rarity: 'Legendary', image: 'CardImages/Sylvan/Sylvania, Thorn Empress.png', 
  category: 'Creature', color: 'Green', type: ['Elf', 'Mage'], trait: 'Champion', hp: 11, atk: 1, def: 0,
- cost: '{G}{G}{G}', essence: '{G}', archetype: 'Sylvan', ability: 'Ranged', set: 'StandardPack'
+ cost: '{G}{G}{G}', archetype: 'Sylvan', ability: 'Ranged', set: 'StandardPack'
  skill: [
   {name: "Briar Queen's Grasp", cost: '{G}',
   activation: {requirement: 'CCW'},
@@ -15,7 +15,7 @@ const dummyCards = [
 
 {id: 'KaelenBlazebornHuntress', name: 'Kaelen, Blazeborn Huntress', rarity: 'Legendary', image: 'CardImages/Skullframe/Kaelen, Blazeborn Huntress.png', 
  category: 'Creature', color: 'Red', type: 'Warrior', trait: 'Champion', hp: 8, atk: 1, def: 0,
- cost: '{R}{R}{R}', essence: '{R}', archetype: '', ability: ['Burn','Ranged'], set: 'StandardPack',
+ cost: '{R}{R}{R}', archetype: '', ability: ['Burn','Ranged'], set: 'StandardPack',
  skill: [
   {name: 'Scorching Skyfall', cost: '{R}{R}',
    activation: {requirement: 'CCW'}, 
@@ -24,7 +24,7 @@ const dummyCards = [
 
 {id: 'ZaryonPearlhavenCommander', name: 'Zaryon, Pearlhaven Commander', rarity: 'Legendary', image: 'CardImages/Skullframe/Zaryon, Pearlhaven Commander.png', 
  category: 'Creature', color: 'Blue', type: ['Merfolk', 'Warrior'], trait: 'Champion', hp: 12, atk: 2, def: 1,
- cost: '{U}{U}{U}', essence: '{U}', archetype: '', ability: ['Dive','Pierce'], set: 'StandardPack'
+ cost: '{U}{U}{U}', archetype: '', ability: ['Dive','Pierce'], set: 'StandardPack'
  skill: [
   {name: 'Tidepiercer Vortex', cost: '{U}',
    activation: {requirement: 'CCW'},
@@ -33,7 +33,7 @@ const dummyCards = [
 
 {id: 'ZyraThunderbladeDuelist', name: 'Zyra, Thunderblade Duelist', rarity: 'Legendary', image: 'CardImages/Skullframe/Zyra, Thunderblade Duelist.png', 
  category: 'Creature', color: 'Yellow', type: 'Warrior', trait: 'Champion', hp: 7, atk: 1, def: 0,
- cost: '{Y}{Y}{Y}', essence: '{Y}', archetype: '', ability: ['Ranged','Veil'], set: 'StandardPack',
+ cost: '{Y}{Y}{Y}', archetype: '', ability: ['Ranged','Veil'], set: 'StandardPack',
  skill: [
  {name:'Blade Tempest, cost: {Y}{Y}',
   activation: {requirement: 'CCW'},
@@ -42,7 +42,7 @@ const dummyCards = [
 
 {id: 'MordrathPlagueKing', name: 'Mordrath, Plague King', rarity: 'Legendary', image: 'CardImages/Skullframe/Mordrath, Plague King.png', 
  category: 'Creature', color: 'Purple', type: ['Undead', 'Warrior'], trait: 'Champion', hp: 6, atk: 1, def: 1,
- cost: '{P}{P}{P}', essence: '{P}', archetype: '', ability: ['Immunity','Venom'], set: 'StandardPack',
+ cost: '{P}{P}{P}', archetype: '', ability: ['Immunity','Venom'], set: 'StandardPack',
  skill: [
  {name: 'Reanimate', cost: '{1}{P}{P}',
  resolution: {effect: 'Reanimate'}}
@@ -50,7 +50,7 @@ const dummyCards = [
 
 {id: 'GravokDrakzulTyrant', name: 'Gravok, Drakzul Tyrant', rarity: 'Legendary', image: 'CardImages/Skullframe/Gravok, Drakzul Tyrant.png', 
  category: 'Creature', color: 'Gray', type: 'Warrior', trait: 'Champion', hp: 10, atk: 2, def: 1,
- cost: '{C}{C}{C}', essence: '{C}', archetype: '', ability: ['Armor','Crush'], set: 'StandardPack',
+ cost: '{C}{C}{C}', archetype: '', ability: ['Armor','Crush'], set: 'StandardPack',
  skill: [
   {name: 'Seismic Smite', cost: {C}',
   activation: {requirement: 'CCW'},
@@ -59,7 +59,7 @@ const dummyCards = [
 
 {id: 'VelmiraMistressofSilence', name: 'Velmira, Mistress of Silence', rarity: 'Legendary', image: 'CardImages/Skullframe/Velmira, Mistress of Silence.png', 
  category: 'Creature', color: 'Black', type: 'Mage', trait: 'Champion', hp: 9, atk: 2, def: 0,
- cost: '{B}{B}{B}', essence: '{B}', archetype: '', ability: ['Ranged','Veil'], set: 'StandardPack',
+ cost: '{B}{B}{B}', archetype: '', ability: ['Ranged','Veil'], set: 'StandardPack',
  skill: [
   {name:'Seal', cost: '{B}',
    activation: {requirement: 'CCW'},
@@ -68,7 +68,7 @@ const dummyCards = [
 
 {id: 'ElyndraDawnbladeofHeavens', name: 'Elyndra, Dawnblade of Heavens', rarity: 'Legendary', image: 'CardImages/Skullframe/Elyndra, Dawnblade of Heavens.png', 
  category: 'Creature', color: 'White', type: 'Warrior', trait: 'Champion', hp: 10, atk: 2, def: 1,
- cost: '{W}{W}{W}', essence: '{W}', archetype: '', ability: ['Aegis','Veil'], set: 'StandardPack',
+ cost: '{W}{W}{W}', archetype: '', ability: ['Aegis','Veil'], set: 'StandardPack',
  skill: [
   {name: 'Radiant Severance', cost: '{W}',
   activation: {requirement: 'CCW'},
@@ -161,7 +161,7 @@ const dummyCards = [
 
 {id: 'FaeliraSatyrEmpress', name: 'Faelira, Satyr Empress', rarity: 'Legendary', image: 'CardImages/Firelands/Faelira, Satyr Empress.png', 
  category: 'Creature', color: 'Green', type: ['Satyr', 'Mage'], trait: 'Champion', hp: 11, atk: 2, def: 0,
- cost: '{G}{G}{G}', essence: '{G}', archetype: '', ability: ['Ranged',''], set: 'StandardPack',
+ cost: '{G}{G}{G}', archetype: '', ability: ['Ranged',''], set: 'StandardPack',
  skill: [
   {name: 'Seal', cost: '{W}{W}',
    activation: {requirement: 'CCW'},
@@ -173,7 +173,7 @@ const dummyCards = [
 
 {id: 'KaelyraFirelandsHeiress', name: 'Kaelyra, Firelands Heiress', rarity: 'Legendary', image: 'CardImages/Firelands/Kaelyra, Firelands Heiress.png', 
  category: 'Creature', color: ['Red','Black'], type: ['Mage', 'Demon'], trait: 'Champion', hp: 8, atk: 2, def: 0,
- cost: '{R}{R}{B}', essence: '{R}', archetype: 'Firelands', ability: ['Burn','Ranged'], set: 'StandardPack',
+ cost: '{R}{R}{B}', archetype: 'Firelands', ability: ['Burn','Ranged'], set: 'StandardPack',
  skill: [
   {name: 'XXX', cost: '{W}{W}',
    activation: {requirement: 'CCW'},
@@ -185,7 +185,7 @@ const dummyCards = [
 
 {id: 'VorgannaCrimsonBlade', name: 'Vorganna, Crimson Blade', rarity: 'Legendary', image: 'CardImages/Firelands/Vorganna, Crimson Blade.png', 
  category: 'Creature', color: ['Black','Red'], type: 'Warrior', trait: 'Champion', hp: 9, atk: 3, def: 0,
- cost: '{B}{B}{R}', essence: '{B}', archetype: '', ability: ['Burn','Ranged'], set: 'StandardPack',
+ cost: '{B}{B}{R}', archetype: '', ability: ['Burn','Ranged'], set: 'StandardPack',
  skill: [
   {name: 'XXX', cost: '{W}{W}',
    activation: {requirement: 'CCW'},
@@ -197,7 +197,7 @@ const dummyCards = [
 
 {id: 'TydrosCoralboundTidebreaker', name: 'Tydros, Coralbound Tidebreaker', rarity: 'Legendary', image: 'CardImages/Firelands/Tydros, Coralbound Tidebreaker.png', 
  category: 'Creature', color: ['Blue','Gray'], type: 'Warrior', trait: 'Champion', hp: 12, atk: 2, def: 0,
- cost: '{U}{U}{C}', essence: '{U}', archetype: '', ability: ['Dive','Ranged'], set: 'StandardPack',
+ cost: '{U}{U}{C}', archetype: '', ability: ['Dive','Ranged'], set: 'StandardPack',
  skill: [
   {name: 'XXX', cost: '{W}{W}',
    activation: {requirement: 'CCW'},
@@ -209,7 +209,7 @@ const dummyCards = [
 
 {id: 'VeniryssSpiderPrincess', name: 'Veniryss, Spider Princess', rarity: 'Legendary', image: 'CardImages/Silkbound/Veniryss, Spider Princess.png', 
  category: 'Creature', color: ['Purple','Green'], type: 'Mage', trait: 'Champion', hp: 10, atk: 1, def: 0,
- cost: '{P}{P}{G}', essence: '{P}', archetype: 'Silkbound', ability: ['Venom','Veil'], set: 'StandardPack',
+ cost: '{P}{P}{G}', archetype: 'Silkbound', ability: ['Venom','Veil'], set: 'StandardPack',
  skill: [
   {name: 'XXX', cost: '{W}{W}',
    activation: {requirement: 'CCW'},
@@ -221,7 +221,7 @@ const dummyCards = [
 
 {id: 'RaukharKnightofDuskwings', name: 'Raukhar, Knight of Duskwings', rarity: 'Legendary', image: 'CardImages/Duskwings/Raukhar, Knight of Duskwings.png', 
  category: 'Creature', color: ['Black','Yellow'], type: 'Avian', trait: 'Champion', hp: 9, atk: 2, def: 1,
- cost: '{B}{B}{Y}', essence: '{B}', archetype: 'Duskwings', ability: ['Flying','Scavenger'], set: 'StandardPack',
+ cost: '{B}{B}{Y}', archetype: 'Duskwings', ability: ['Flying','Scavenger'], set: 'StandardPack',
  skill: [
   {name: 'Dash', cost: '{Y}{B}',
    resolution: {effect: 'Dash'}},
@@ -232,7 +232,7 @@ const dummyCards = [
 
 {id: 'GarudaWingsofZephyra', name: 'Garuda, Wings of Zephyra', rarity: 'Legendary', image: 'CardImages/Zephyra/Garuda, Wings of Zephyra.png', 
  category: 'Creature', color: ['Yellow','White'], type: 'Avian', trait: 'Champion', hp: 9, atk: 2, def: 1,
- cost: '{Y}{Y}{W}', essence: '{Y}', archetype: 'Zephyra', ability: ['Flying'], set: 'StandardPack',
+ cost: '{Y}{Y}{W}', archetype: 'Zephyra', ability: ['Flying'], set: 'StandardPack',
  skill: [
   {name:'Dash', cost: '{Y}{W}',
    resolution: {effect: 'Dash'}},
@@ -627,7 +627,7 @@ skill: [
  ]},
 {id: 'MaldryssSkullframeArchmage', name: 'Maldryss, Skullframe Archmage', rarity: 'Legendary', image: 'CardImages/Skullframe/Maldryss, Skullframe Archmage.png', 
  category: 'Creature', color: ['Black', 'Purple'], type: ['Undead','Mage'], trait: 'Champion', hp: 8, atk: 1, def: 0,
- cost: '{B}{B}{P}', essence: '{B}', archetype: 'Skullframe', ability: ['Drain','Immunity','Ranged'], set: 'StandardPack',
+ cost: '{B}{B}{P}', archetype: 'Skullframe', ability: ['Drain','Immunity','Ranged'], set: 'StandardPack',
  skill: [
   {name: 'Hexbind', cost: '{P}{B}', 
    activation: {requirement: 'CW'},
@@ -641,7 +641,7 @@ skill: [
  ]},
 {id: 'MaldryssSkullframeArchmageFA', name: 'Maldryss, Skullframe Archmage', rarity: 'Legendary', image: 'CardImages/Skullframe/Maldryss, Skullframe Archmage FA.png', 
  category: 'Creature', color: ['Black', 'Purple'], type: ['Undead','Mage'], trait: 'Champion', hp: 8, atk: 1, def: 0,
- cost: '{B}{B}{P}', essence: '{B}', archetype: 'Skullframe', ability: ['Drain','Immunity','Ranged'], skill: ['Hexbind {B}{P}','Hexblast {B}{CW}','Reanimate {2}{B}{B}'], set: 'StandardPack'},
+ cost: '{B}{B}{P}', archetype: 'Skullframe', ability: ['Drain','Immunity','Ranged'], skill: ['Hexbind {B}{P}','Hexblast {B}{CW}','Reanimate {2}{B}{B}'], set: 'StandardPack'},
 {id: 'Soulhexing', name: 'Soulhexing', rarity: 'Common', image: 'CardImages/Skullframe/Soulhexing.png', 
  category: 'Spell', color: 'Black', type: 'Spell', cost: '{2}{B}', archetype: 'Skullframe', effect: 'Destroy a creature afflicted by any status', set: 'StandardPack'},
 {id: 'Witherwake', name: 'Witherwake', rarity: 'Common', image: 'CardImages/Skullframe/Witherwake.png', 
@@ -651,7 +651,7 @@ skill: [
 /*
 {id: 'SeraphielSolmaraPrincess', name: 'Seraphiel, Solmara Princess', rarity: 'Legendary', image: 'CardImages/Seraph/Seraphiel, Solmara Princess.png', 
  category: 'Creature', color: 'White', type: 'Angel', trait: 'Champion', hp: 10, atk: 2, def: 0,
- cost: '{W}{W}{W}', essence: '{W}', archetype: 'Seraph', ability: 'Flying', set: 'StandardPack'},
+ cost: '{W}{W}{W}', archetype: 'Seraph', ability: 'Flying', set: 'StandardPack'},
 
 */
  
@@ -676,7 +676,7 @@ skill: [
  cost: '{4}{U}{C}', archetype: 'Frostlands', ability: ['Ice Armor','Crush'], set: 'StandardPack'},
 {id: 'EirawenFrostlandsQueenFA', name: 'Eirawen, Frostlands Queen', rarity: 'Legendary', image: 'CardImages/Frostlands/Eirawen, Frostlands Queen.png', 
  category: 'Creature', color: ['Blue', 'Gray'], type: 'Mage', trait: 'Champion', hp: 11, atk: 1, def: 0,
- cost: '{U}{U}{C}', essence: '{U}', archetype: 'Frostlands', ability: ['Ice Armor','Flying'], set: 'StandardPack'},
+ cost: '{U}{U}{C}', archetype: 'Frostlands', ability: ['Ice Armor','Flying'], set: 'StandardPack'},
 
 // ARTIFACTS //
 {id: 'GolemheartInfusor', name: 'Golemheart Infusor', rarity: 'Common', image: 'CardImages/Artifacts/Golemheart Infusor.png', 
