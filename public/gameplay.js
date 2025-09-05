@@ -1752,12 +1752,12 @@ function renderCardOnField(cardObj, zoneId) {
   }
 
   // --- Stat Overlays ---
-  const baseHP = typeof cardData.hp === "number" ? cardData.hp : undefined;
+  const baseHP = typeof cardData.hp === "number" ? cardData.hp : 0;
   const currentHP = typeof cardObj.currentHP === "number" ? cardObj.currentHP : baseHP;
   const baseATK = typeof cardObj.atk === "number" ? Math.max(0, cardObj.atk) : Math.max(0, cardData.atk);
   const baseDEF = typeof cardObj.def === "number" ? Math.max(0, cardObj.def) : Math.max(0, cardData.def);
   const currentArmor = typeof cardObj.armor === "number" ? cardObj.armor : cardData.armor;
-  const showStats = category !== "spell";
+  const showHP = ["creature", "domain", "artifact"].includes(category);
 
   // HP Badge (bottom left)
   if (showStats && typeof currentHP === "number") {
@@ -1783,7 +1783,7 @@ function renderCardOnField(cardObj, zoneId) {
   }
 
   // ATK Badge (center bottom)
-  if (showStats && typeof baseATK === "number") {
+  if (showStats && typeof cardData.atk === "number") {
     const atkBadge = document.createElement('div');
     atkBadge.className = 'stat-badge stat-atk';
     atkBadge.style.position = 'absolute';
@@ -1806,7 +1806,7 @@ function renderCardOnField(cardObj, zoneId) {
   }
 
   // DEF Badge (right bottom)
-  if (showStats && typeof baseDEF === "number") {
+  if (showStats && typeof cardData.def === "number") {
     const defBadge = document.createElement('div');
     defBadge.className = 'stat-badge stat-def';
     defBadge.style.position = 'absolute';
@@ -2608,9 +2608,6 @@ function runCpuTurn() {
   }
 }
 
-// CARD ANIMATIONS
-
-
 // START GAME
 function showGameStartAnimation(callback) {
   if (window.gameStartAnimationShown) return; // prevent repeats
@@ -2788,18 +2785,7 @@ function generateEssenceForCard(cardObj) {
 function essencePhase(playerOrOpponent) {
   // Get the correct arrays
   const domains = playerOrOpponent === "player" ? gameState.playerDomains : gameState.opponentDomains;
-  const creatures = playerOrOpponent === "player" ? gameState.playerCreatures : gameState.opponentCreatures;
-  // Optionally filter for Champions only
-  const champions = creatures.filter(cardObj => {
-    const card = dummyCards.find(c => c.id === cardObj.cardId);
-    return card && card.trait === "champion";
-  });
-
-  // Domains
   domains.forEach(generateEssenceForCard);
-  // Champions
-  champions.forEach(generateEssenceForCard);
-
   // Optionally: show animation/notification
   renderGameState();
 }
