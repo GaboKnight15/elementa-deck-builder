@@ -1759,15 +1759,9 @@ function renderCardOnField(cardObj, zoneId) {
   }
 
   // --- Stat Overlays ---
-  const baseHP = typeof cardData.hp === "number" ? cardData.hp : 0;
-  const currentHP = typeof cardObj.currentHP === "number" ? cardObj.currentHP : baseHP;
-  const baseATK = typeof cardObj.atk === "number" ? Math.max(0, cardObj.atk) : Math.max(0, cardData.atk);
-  const baseDEF = typeof cardObj.def === "number" ? Math.max(0, cardObj.def) : Math.max(0, cardData.def);
-  const currentArmor = typeof cardObj.armor === "number" ? cardObj.armor : cardData.armor;
-  const showHP = ["creature", "domain", "artifact"].includes(category);
-
-  // HP Badge (bottom left)
-  if (showStats && typeof currentHP === "number") {
+  // HP
+  if (typeof cardData.hp === "number") {
+    const currentHP = typeof cardObj.currentHP === "number" ? cardObj.currentHP : cardData.hp;
     const hpBadge = document.createElement('div');
     hpBadge.className = 'stat-badge stat-hp';
     hpBadge.style.position = 'absolute';
@@ -1789,8 +1783,9 @@ function renderCardOnField(cardObj, zoneId) {
     cardDiv.appendChild(hpBadge);
   }
 
-  // ATK Badge (center bottom)
-  if (showStats && typeof cardData.atk === "number") {
+  // ATK
+  if (typeof cardData.atk === "number") {
+    const baseATK = typeof cardObj.atk === "number" ? cardObj.atk : cardData.atk;
     const atkBadge = document.createElement('div');
     atkBadge.className = 'stat-badge stat-atk';
     atkBadge.style.position = 'absolute';
@@ -1812,8 +1807,9 @@ function renderCardOnField(cardObj, zoneId) {
     cardDiv.appendChild(atkBadge);
   }
 
-  // DEF Badge (right bottom)
-  if (showStats && typeof cardData.def === "number") {
+  // DEF
+  if (typeof cardData.def === "number") {
+    const baseDEF = typeof cardObj.def === "number" ? cardObj.def : cardData.def;
     const defBadge = document.createElement('div');
     defBadge.className = 'stat-badge stat-def';
     defBadge.style.position = 'absolute';
@@ -1835,8 +1831,9 @@ function renderCardOnField(cardObj, zoneId) {
     cardDiv.appendChild(defBadge);
   }
 
-  // ARMOR Badge (center-left, vertical middle)
-  if (showStats && typeof currentArmor === "number" && currentArmor > 0) {
+  // ARMOR
+  if (typeof cardData.armor === "number" && cardData.armor > 0) {
+    const currentArmor = typeof cardObj.armor === "number" ? cardObj.armor : cardData.armor;
     const armorBadge = document.createElement('div');
     armorBadge.className = 'stat-badge stat-armor';
     armorBadge.style.position = 'absolute';
@@ -1860,7 +1857,7 @@ function renderCardOnField(cardObj, zoneId) {
   }
 
   // --- HP Bar (move to bottom) ---
-  if (showStats && typeof currentHP === "number" && typeof baseHP === "number" && baseHP > 0) {
+  if (typeof cardData.hp === "number" && typeof currentHP === "number" && cardData.hp > 0) {
     const hpPercent = Math.max(0, Math.min(1, currentHP / baseHP));
     let barColor = "#4caf50"; // green
     if (hpPercent <= 0.25) barColor = "#e53935";
