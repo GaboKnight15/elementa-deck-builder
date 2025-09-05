@@ -1002,6 +1002,12 @@ function moveCard(instanceId, fromArr, toArr, extra = {}) {
       delete cardObj.currentHP;
       delete cardObj.orientation;
     }
+    const destZone = getZoneNameForArray(toArr);
+    if (destZone === 'playerVoid' || destZone === 'opponentVoid') {
+      // Use cardObj.owner if set, fallback to getCardOwner
+      const owner = cardObj.owner || getCardOwner(cardObj);
+      toArr = owner === "player" ? gameState.playerVoid : gameState.opponentVoid;
+    }
     const isDrawToHand =
       (fromArr === gameState.playerDeck && toArr === gameState.playerHand) ||
       (fromArr === gameState.opponentDeck && toArr === gameState.opponentHand);
@@ -1761,7 +1767,7 @@ function renderCardOnField(cardObj, zoneId) {
   // --- Stat Overlays ---
   // HP
   if (typeof cardData.hp === "number") {
-    const currentHP = typeof cardObj.currentHP === "number" ? cardObj.currentHP : cardData.hp;
+    const currentHP = typeof cardObj.currentHP === "number" ? cardObj.currentHP : cardData?.hp ?? 0;
     const hpBadge = document.createElement('div');
     hpBadge.className = 'stat-badge stat-hp';
     hpBadge.style.position = 'absolute';
@@ -1785,7 +1791,7 @@ function renderCardOnField(cardObj, zoneId) {
 
   // ATK
   if (typeof cardData.atk === "number") {
-    const baseATK = typeof cardObj.atk === "number" ? cardObj.atk : cardData.atk;
+    const baseATK = typeof cardObj.atk === "number" ? cardObj.atk : cardData?.atk ?? 0;
     const atkBadge = document.createElement('div');
     atkBadge.className = 'stat-badge stat-atk';
     atkBadge.style.position = 'absolute';
@@ -1809,7 +1815,7 @@ function renderCardOnField(cardObj, zoneId) {
 
   // DEF
   if (typeof cardData.def === "number") {
-    const baseDEF = typeof cardObj.def === "number" ? cardObj.def : cardData.def;
+    const baseDEF = typeof cardObj.def === "number" ? cardObj.def : cardData?.def ?? 0;
     const defBadge = document.createElement('div');
     defBadge.className = 'stat-badge stat-def';
     defBadge.style.position = 'absolute';
@@ -2830,7 +2836,7 @@ function showEssencePaymentModal(opts) {
   content.onclick = e => e.stopPropagation();
   modal.appendChild(content);
 
-  // Header: Show card/ability being played/activated
+  // Header: Show card/ability being played/activated (card image + cost icons)
   const card = opts.card;
   const cardData = card || {};
   const img = document.createElement('img');
@@ -2839,18 +2845,41 @@ function showEssencePaymentModal(opts) {
   img.style.width = '100px';
   img.style.borderRadius = '8px';
   img.style.marginRight = '12px';
+  img.style.cursor = 'pointer';
+  img.onclick = (e) => {
+    e.stopPropagation();
+    showFullCardModal(card);
+  };
 
   const header = document.createElement('div');
   header.style.display = 'flex';
   header.style.alignItems = 'center';
   header.style.marginBottom = '10px';
-  header.innerHTML = `<div style="font-size:1.2em;font-weight:bold;">Essence Cost</div>`;
+
+  // Card image on left
+  header.appendChild(img);
+
+  // Cost icons and label
+  const costArea = document.createElement('div');
+  costArea.style.display = 'flex';
+  costArea.style.flexDirection = 'column';
+  costArea.style.justifyContent = 'center';
+
+  const label = document.createElement('div');
+  label.style.fontSize = '1.2em';
+  label.style.fontWeight = 'bold';
+  label.textContent = 'Essence Cost';
+  costArea.appendChild(label);
+
   const iconUnits = expandCostToIcons(opts.cost);
   let costIconsHtml = iconUnits.map(unit =>
-    `<img src="${unit.img}" style="width:32px;margin-right:2px;" alt="${unit.color} Essence">`
+    `<img src="${unit.img}" style="width:32px;margin-right:2px;vertical-align:middle;" alt="${unit.color} Essence">`
   ).join('');
-  header.innerHTML += `<div>${costIconsHtml}</div>`;
-  if (cardData.image) header.prepend(img);
+  const costIconsDiv = document.createElement('div');
+  costIconsDiv.innerHTML = costIconsHtml;
+  costArea.appendChild(costIconsDiv);
+
+  header.appendChild(costArea);
   content.appendChild(header);
 
   // Requirement display
@@ -2861,7 +2890,6 @@ function showEssencePaymentModal(opts) {
   // Convert opts.cost to array of {color, needed, paid}
   let requirements = [];
   if (typeof opts.cost === "number" && opts.cost === 0) {
-    // No requirement
     requirements = [];
   } else if (typeof opts.cost === "object" && opts.cost !== null) {
     for (const color in opts.cost) {
@@ -2880,7 +2908,6 @@ function showEssencePaymentModal(opts) {
   // Payment assignment state (array of {cardObj, color, essenceIdx})
   let paymentPlan = [];
 
-  // Helper to check if requirement is full
   function isPaidFull() {
     for (const r of requirements) {
       if ((reqPaid[r.color] || 0) < r.needed) return false;
@@ -2888,7 +2915,7 @@ function showEssencePaymentModal(opts) {
     return true;
   }
 
-  // Show eligible sources and their Essence
+  // Eligible sources and their Essence
   const sourcesDiv = document.createElement('div');
   sourcesDiv.className = 'essence-source-list';
   sourcesDiv.style.display = 'flex';
@@ -2896,8 +2923,6 @@ function showEssencePaymentModal(opts) {
   sourcesDiv.style.gap = '18px';
   sourcesDiv.style.margin = '10px 0 18px 0';
 
-  // List of {cardObj, color, idx (the nth essence of that color on this card)}
-  let selectableEssenceUnits = [];
   opts.eligibleCards.forEach(sourceCard => {
     const cardDiv = document.createElement('div');
     cardDiv.className = 'essence-source-card';
@@ -2908,28 +2933,35 @@ function showEssencePaymentModal(opts) {
     cardDiv.style.borderRadius = '9px';
     cardDiv.style.position = 'relative';
 
-    // Card name/img
+    // Card image (clickable)
     const smallImg = document.createElement('img');
     smallImg.src = (dummyCards.find(c=>c.id===sourceCard.cardId)||{}).image || '';
-    smallImg.style.width = '34px';
-    smallImg.style.borderRadius = '4px';
-    smallImg.style.marginBottom = '6px';
+    smallImg.style.width = '100px';
+    smallImg.style.borderRadius = '6px';
+    smallImg.style.cursor = 'pointer';
+    smallImg.onclick = (e) => {
+      e.stopPropagation();
+      showFullCardModal(sourceCard);
+    };
     cardDiv.appendChild(smallImg);
 
-    const nameDiv = document.createElement('div');
-    nameDiv.textContent = (dummyCards.find(c=>c.id===sourceCard.cardId)||{}).name || '';
-    nameDiv.style.fontSize = '0.95em';
-    nameDiv.style.marginBottom = '4px';
-    cardDiv.appendChild(nameDiv);
+    // Card name (optional)
+    if (dummyCards.find(c=>c.id===sourceCard.cardId)?.name) {
+      const nameDiv = document.createElement('div');
+      nameDiv.textContent = dummyCards.find(c=>c.id===sourceCard.cardId).name;
+      nameDiv.style.fontSize = '0.95em';
+      nameDiv.style.marginBottom = '4px';
+      cardDiv.appendChild(nameDiv);
+    }
 
     // Essence icons
     const essenceWrap = document.createElement('div');
     essenceWrap.style.display = 'flex';
     essenceWrap.style.flexWrap = 'wrap';
     essenceWrap.style.gap = '5px';
+
     // Colored essence
     for (const code in ESSENCE_IMAGE_MAP) {
-      // code: green, red, etc.  Map to single letter
       const codeLetterMap = {green: 'G', red: 'R', blue: 'U', yellow: 'Y', gray: 'C', purple: 'P', black: 'B', white: 'W'};
       const codeLetter = codeLetterMap[code];
       let amt = countEssenceType(sourceCard.essence, codeLetter);
@@ -2947,7 +2979,6 @@ function showEssencePaymentModal(opts) {
 
         let assigned = false;
         icon.onclick = function() {
-          // Only assign if there is a remaining unpaid requirement of this type or colorless
           let assignColor = null;
           if ((reqPaid[code] || 0) < (opts.cost[code] || 0)) {
             assignColor = code;
@@ -2965,7 +2996,6 @@ function showEssencePaymentModal(opts) {
           updateReqDiv(requirements, reqPaid, reqDiv);
           updateConfirmBtn();
         };
-        selectableEssenceUnits.push({icon, cardObj: sourceCard, color: code, idx: i, codeLetter, assigned: ()=>assigned});
         essenceWrap.appendChild(icon);
       }
     }
@@ -2994,7 +3024,6 @@ function showEssencePaymentModal(opts) {
           updateConfirmBtn();
         }
       };
-      selectableEssenceUnits.push({icon, cardObj: sourceCard, color: 'colorless', idx: i, assigned: ()=>assigned});
       essenceWrap.appendChild(icon);
     }
     cardDiv.appendChild(essenceWrap);
@@ -3008,17 +3037,15 @@ function showEssencePaymentModal(opts) {
   confirmBtn.className = 'btn-primary';
   confirmBtn.textContent = 'Confirm';
   confirmBtn.disabled = true;
-  confirmBtn.style.marginTop = '12px';
+  confirmBtn.style.marginBottom = '10px';
   confirmBtn.onclick = function() {
     // Actually deduct the paid Essence (from string)
     for (const pay of paymentPlan) {
       if (!pay.cardObj.essence) continue;
       // Remove one colored essence
       if (pay.color !== 'colorless') {
-        // Remove first occurrence of {codeLetter}
         pay.cardObj.essence = pay.cardObj.essence.replace(new RegExp(`\\{${pay.codeLetter}\\}`), "");
       } else {
-        // Remove first colorless {number}
         pay.cardObj.essence = pay.cardObj.essence.replace(/\{([1-9]|1[0-9]|20)\}/, "");
       }
     }
@@ -3037,7 +3064,6 @@ function showEssencePaymentModal(opts) {
   cancelBtn.type = 'button';
   cancelBtn.textContent = 'Cancel';
   cancelBtn.className = 'btn-negative-secondary';
-  cancelBtn.style.marginLeft = '8px';
   cancelBtn.onclick = function() {
     modal.style.display = 'none';
   };
@@ -3343,24 +3369,23 @@ function proceedAttackResolution(
   renderGameState();
   setupDropZones();
 }
-function clampStat(val) {
-  return Math.max(0, val);
-}
 
 function dealDamage(cardObj, targetObj, damage) {
-  // Clamp ATK and DEF
-  targetObj.atk = clampStat(targetObj.atk);
-  targetObj.def = clampStat(targetObj.def);
+  const cardDef = dummyCards.find(c => c.id === targetObj.cardId);
+  // Use base stats if missing
+  targetObj.atk = typeof targetObj.atk === "number" ? targetObj.atk : cardDef?.atk ?? 0;
+  targetObj.def = typeof targetObj.def === "number" ? targetObj.def : cardDef?.def ?? 0;
+  targetObj.currentHP = typeof targetObj.currentHP === "number"
+    ? targetObj.currentHP - damage
+    : (typeof cardDef?.hp === "number" ? cardDef.hp - damage : 0);
 
-  // Apply damage to HP
-  targetObj.currentHP = (targetObj.currentHP || getBaseHp(targetObj.cardId)) - damage;
-
-  // If HP is now <= 0, move to Void
+  // Move to owner's Void if HP <= 0
   if (targetObj.currentHP <= 0) {
     const fromArr = findCardFieldArray(targetObj);
-    // Only move if fromArr is a field zone (not hand, deck, void, etc)
-    if (fromArr) {
-      moveCard(targetObj.instanceId, fromArr, gameState.playerVoid);
+    const owner = getCardOriginalOwner(targetObj);
+    const ownerVoid = owner === "player" ? gameState.playerVoid : gameState.opponentVoid;
+    if (fromArr && ownerVoid) {
+      moveCard(targetObj.instanceId, fromArr, ownerVoid);
       renderGameState();
       return;
     }
