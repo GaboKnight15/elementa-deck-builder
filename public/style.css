@@ -2649,6 +2649,13 @@ button {}
   width: 20px; height: 20px;
   border-radius: 50%;
   border: 1.5px solid #fff;
+  transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
+}
+.essence-img:hover {
+  box-shadow: 0 0 6px 2px #ffe066, 0 0 2px 1px #222 inset;
+  border-color: #ffe066;
+  transform: scale(1.18);
+  cursor: pointer;
 }
 .essence-amount {
   position: absolute;
@@ -2659,6 +2666,15 @@ button {}
   font-size: 0.8em;
   min-width: 14px;
   text-align: center;
+}
+.modal-main-card-img {
+  transition: box-shadow 0.2s, transform 0.22s;
+}
+
+.modal-main-card-img:hover {
+  box-shadow: 0 0 14px 3px #66bfff, 0 0 3px 1px #222 inset;
+  transform: scale(1.08) rotate(-1.5deg);
+  cursor: pointer;
 }
 /* ATTACHED CARDS */
 .attached-cards-stack {
