@@ -1976,7 +1976,7 @@ if (cardData.ability) {
   abilityArea.style.zIndex = '25';
 
   abilityArr.forEach(abilityName => {
-    const abilityDef = TARGET_FILTER_ABILITIES[abilityName];
+    const abilityDef = TARGET_FILTER_ABILITY[abilityName];
     if (!abilityDef) return;
     const icon = document.createElement('img');
     icon.src = abilityDef.icon;
