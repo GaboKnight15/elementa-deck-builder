@@ -2466,7 +2466,8 @@ button {}
 /* Optional: status area positioning */
 .card-status-area {
   position: absolute;
-  bottom: 4px;
+  width: 20%;
+  top: 0;
   left: 50%;
   transform: translateX(-50%);
   z-index: 3;
