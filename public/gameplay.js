@@ -3396,18 +3396,15 @@ function resolveAttack(attackerId, defenderId) {
   window.isAnimating = true;
 
   // === Attack Logic with Animation Sequence ===
-  if (defenderDef.category === "creature" && defender.orientation === "horizontal") {
-    // Animate attacker attack
+  // === Attack Logic with Animation Sequence ===
+  if (defenderDef.category === "creature" && defender.orientation === "vertical") {
+    // Defender is in ATK position: both deal damage to each other
     animateAttack(attacker, attackerZoneId, () => {
-      // Deal damage to defender
       dealDamage(attacker, defender, attacker.atk);
 
-      // Animate defender retaliation
       animateAttack(defender, defenderZoneId, () => {
-        // Deal damage to attacker (retaliation)
         dealDamage(defender, attacker, defender.atk);
 
-        // Finish resolution
         window.isAnimating = false;
         finishAttackResolution(
           attacker, defender,
@@ -3417,8 +3414,8 @@ function resolveAttack(attackerId, defenderId) {
         );
       });
     });
-  } else if (defenderDef.category === "creature" && defender.orientation === "vertical") {
-    // Only attacker animates
+  } else if (defenderDef.category === "creature" && defender.orientation === "horizontal") {
+    // Defender is in DEF position: attacker deals (ATK - DEF), defender does NOT retaliate
     animateAttack(attacker, attackerZoneId, () => {
       let damage = Math.max(0, attacker.atk - defender.def);
       dealDamage(attacker, defender, damage);
@@ -3486,24 +3483,18 @@ function dealDamage(cardObj, targetObj, damage) {
   if (typeof targetObj.currentHP !== "number") {
     targetObj.currentHP = typeof cardDef?.hp === "number" ? cardDef.hp : 1;
   }
-
-  // Now safely apply damage
+  // Safely apply damage (only ONCE!)
   targetObj.currentHP = Math.max(0, targetObj.currentHP - damage);
-  
-  // Use base stats if missing
+  // Initialize base stats if missing
   targetObj.atk = typeof targetObj.atk === "number" ? targetObj.atk : cardDef?.atk ?? 0;
   targetObj.def = typeof targetObj.def === "number" ? targetObj.def : cardDef?.def ?? 0;
-  targetObj.currentHP = typeof targetObj.currentHP === "number"
-    ? targetObj.currentHP - damage
-    : (typeof cardDef?.hp === "number" ? cardDef.hp - damage : 0);
 
-  // Move to owner's Void if HP <= 0
+  // Move to void if HP <= 0
   if (targetObj.currentHP <= 0) {
     const fromArr = findCardFieldArray(targetObj);
-    const owner = getCardOriginalOwner(targetObj);
-    const ownerVoid = owner === "player" ? gameState.playerVoid : gameState.opponentVoid;
-    if (fromArr && ownerVoid) {
-      moveCard(targetObj.instanceId, fromArr, ownerVoid);
+    // Just call moveCard; it will choose correct void internally
+    if (fromArr) {
+      moveCard(targetObj.instanceId, fromArr, gameState.playerVoid);
       renderGameState();
       return;
     }
