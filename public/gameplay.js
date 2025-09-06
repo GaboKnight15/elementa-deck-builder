@@ -1969,8 +1969,8 @@ if (cardData.ability) {
   const abilityArea = document.createElement('div');
   abilityArea.className = 'card-ability-area';
   abilityArea.style.position = 'absolute';
-  abilityArea.style.top = '4px';
-  abilityArea.style.right = '4px';
+  abilityArea.style.top = '0';
+  abilityArea.style.right = '0';
   abilityArea.style.display = 'flex';
   abilityArea.style.gap = '4px';
   abilityArea.style.zIndex = '25';
