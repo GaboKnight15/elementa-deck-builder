@@ -167,7 +167,7 @@ const STATUS_EFFECTS = {
 /*------------------------------
 // ATTACK TARGETING ABILITIES //
 ------------------------------*/
-const TARGET_FILTER_ABILITIES = {
+const TARGET_FILTER_ABILITY = {
   Ambush: {
     icon: 'OtherImages/Icons/Ambush.png',
     name: 'Ambush',
@@ -224,7 +224,7 @@ const TARGET_FILTER_ABILITIES = {
   // ...add more targeting abilities here!
 };
 // ATTACK RESOLUTION ABILITIES
-const ATTACK_DECLARATION_ABILITIES = {
+const ATTACK_DECLARATION_ABILITY = {
   Intimidate: {
     icon: 'OtherImages/Icons/Intimidate.png',
     name: 'Intimidate',
@@ -1964,10 +1964,18 @@ if (cardObj.statuses && cardObj.statuses.length > 0) {
   });
   cardDiv.appendChild(statusArea);
 }
-  if (cardObj.abilities && cardObj.abilities.length > 0) {
+if (cardData.ability) {
+  const abilityArr = Array.isArray(cardData.ability) ? cardData.ability : [cardData.ability];
   const abilityArea = document.createElement('div');
   abilityArea.className = 'card-ability-area';
-  cardObj.abilities.forEach(abilityName => {
+  abilityArea.style.position = 'absolute';
+  abilityArea.style.top = '4px';
+  abilityArea.style.right = '4px';
+  abilityArea.style.display = 'flex';
+  abilityArea.style.gap = '4px';
+  abilityArea.style.zIndex = '25';
+
+  abilityArr.forEach(abilityName => {
     const abilityDef = TARGET_FILTER_ABILITIES[abilityName];
     if (!abilityDef) return;
     const icon = document.createElement('img');
@@ -1975,8 +1983,13 @@ if (cardObj.statuses && cardObj.statuses.length > 0) {
     icon.alt = abilityDef.name;
     icon.title = abilityDef.description;
     icon.className = 'card-icon ability';
+    icon.style.width = '22px';
+    icon.style.height = '22px';
+    icon.style.borderRadius = '4px';
+    icon.style.boxShadow = '0 1px 4px #0007';
     abilityArea.appendChild(icon);
   });
+
   cardDiv.appendChild(abilityArea);
 }
   // --- Attached Cards (right side, absolute) ---
@@ -3268,9 +3281,9 @@ function getAttackTargets(attackerObj = null) {
   const attackerDef = dummyCards.find(c => c.id === attackerObj.cardId);
   if (!attackerDef || !attackerDef.ability) return targets;
   let filtered = targets;
-  Object.keys(TARGET_FILTER_ABILITIES).forEach(abilityName => {
+  Object.keys(TARGET_FILTER_ABILITY).forEach(abilityName => {
     if (attackerDef.ability.includes(abilityName)) {
-      filtered = TARGET_FILTER_ABILITIES[abilityName].filter(attackerObj, filtered);
+      filtered = TARGET_FILTER_ABILITY[abilityName].filter(attackerObj, filtered);
     }
   });
   return filtered;
@@ -3300,7 +3313,7 @@ function runAttackDeclarationAbilities(attacker, defender, next) {
   ["Intimidate", "Provoke"].forEach(abilityName => {
     if (attackerDef.ability.includes(abilityName)) {
       handled = true;
-      const ability = ATTACK_DECLARATION_ABILITIES[abilityName];
+      const ability = ATTACK_DECLARATION_ABILITY[abilityName];
       if (ability && ability.handler) {
         ability.handler(attacker, defender, next); // Triggers skill logic!
       }
@@ -3329,7 +3342,7 @@ function resolveAttack(attackerId, defenderId) {
   if (attackerDef && attackerDef.ability) {
     const abilities = Array.isArray(attackerDef.ability) ? attackerDef.ability : [attackerDef.ability];
     abilities.forEach(abilityName => {
-      const ability = ATTACK_DECLARATION_ABILITIES[abilityName];
+      const ability = ATTACK_DECLARATION_ABILITY[abilityName];
       if (ability && ability.effect) {
         ability.effect(attacker, defender);
       }
@@ -4136,7 +4149,7 @@ function canActivateSkill(cardObj, skillObj, currentZone, gameState, targetObj =
   if (targetObj) {
     const attackerDef = dummyCards.find(c => c.id === cardObj.cardId);
     if (attackerDef && attackerDef.ability) {
-      for (const abilityName in ATTACK_DECLARATION_ABILITIES) {
+      for (const abilityName in ATTACK_DECLARATION_ABILITY) {
         if (attackerDef.ability.includes(abilityName)) {
           // Only activate if effect would change targetObj orientation
           if (
