@@ -3372,21 +3372,59 @@ function resolveAttack(attackerId, defenderId) {
 
   if (!attacker || !defender) return;
 
-  // Determine zoneId for attacker (needed for animation overlay)
-  let attackerZoneId = gameState.playerCreatures.includes(attacker)
+  // --- LOG THE ATTACK ---
+  appendAttackLog({
+    attacker: attacker,
+    defender: defender,
+    defenderOrientation: defender.orientation,
+    who: getCardOwner(attacker)
+  });
+
+  // Determine zoneIds for animation
+  const attackerZoneId = gameState.playerCreatures.includes(attacker)
     ? 'player-creatures-zone'
     : gameState.opponentCreatures.includes(attacker)
     ? 'opponent-creatures-zone'
     : null;
 
-  // Block actions while animating (using a global flag)
+  const defenderZoneId = gameState.playerCreatures.includes(defender)
+    ? 'player-creatures-zone'
+    : gameState.opponentCreatures.includes(defender)
+    ? 'opponent-creatures-zone'
+    : null;
+
   window.isAnimating = true;
 
-  // Insert animation function here
-  if (attackerZoneId) {
+  // === Attack Logic with Animation Sequence ===
+  if (defenderDef.category === "creature" && defender.orientation === "horizontal") {
+    // Animate attacker attack
     animateAttack(attacker, attackerZoneId, () => {
+      // Deal damage to defender
+      dealDamage(attacker, defender, attacker.atk);
+
+      // Animate defender retaliation
+      animateAttack(defender, defenderZoneId, () => {
+        // Deal damage to attacker (retaliation)
+        dealDamage(defender, attacker, defender.atk);
+
+        // Finish resolution
+        window.isAnimating = false;
+        finishAttackResolution(
+          attacker, defender,
+          attackerArr, defenderArr,
+          attackerVoid, defenderVoid,
+          attackerDef, defenderDef
+        );
+      });
+    });
+  } else if (defenderDef.category === "creature" && defender.orientation === "vertical") {
+    // Only attacker animates
+    animateAttack(attacker, attackerZoneId, () => {
+      let damage = Math.max(0, attacker.atk - defender.def);
+      dealDamage(attacker, defender, damage);
+
       window.isAnimating = false;
-      proceedAttackResolution(
+      finishAttackResolution(
         attacker, defender,
         attackerArr, defenderArr,
         attackerVoid, defenderVoid,
@@ -3394,18 +3432,22 @@ function resolveAttack(attackerId, defenderId) {
       );
     });
   } else {
-    window.isAnimating = false;
-    proceedAttackResolution(
-      attacker, defender,
-      attackerArr, defenderArr,
-      attackerVoid, defenderVoid,
-      attackerDef, defenderDef
-    );
+    // Defender is a domain, animate attacker only
+    animateAttack(attacker, attackerZoneId, () => {
+      dealDamage(attacker, defender, attacker.atk);
+
+      window.isAnimating = false;
+      finishAttackResolution(
+        attacker, defender,
+        attackerArr, defenderArr,
+        attackerVoid, defenderVoid,
+        attackerDef, defenderDef
+      );
+    });
   }
 }
 
-// All attack logic is now in this helper
-function proceedAttackResolution(
+function finishAttackResolution(
   attacker,
   defender,
   attackerArr,
@@ -3415,53 +3457,39 @@ function proceedAttackResolution(
   attackerDef,
   defenderDef
 ) {
-
-  // --- LOG THE ATTACK ---
-  appendAttackLog({
-    attacker: attacker,
-    defender: defender,
-    defenderOrientation: defender.orientation,
-    who: getCardOwner(attacker)
-  });  
-
-  // === Attack Logic ===
-  if (defenderDef.category === "creature") {
-    if (defender.orientation === "horizontal") {
-      dealDamage(attacker, defender, attacker.atk);
-      if (attackerGetsRetaliation) {
-        dealDamage(defender, attacker, defender.atk);
-      }
-    } else if (defender.orientation === "vertical") {
-      let damage = Math.max(0, attacker.atk - defender.def);
-      dealDamage(attacker, defender, damage);
-      // Defender does not deal damage back
-    }
-  } else {
-    dealDamage(attacker, defender, attacker.atk);
-  }
-
   attacker.hasAttacked = true;
 
-  // Apply status effects from attacker abilities to defender (if defender is a creature)
-  const attackerAbilities = attackerDef.ability || [];
-  if (defenderDef && defenderDef.category === "creature") {
+  // Move cards to void if HP <= 0
+  if (attacker.currentHP <= 0 && attackerArr && attackerVoid) moveCard(attacker.instanceId, attackerArr, attackerVoid);
+  if (defender.currentHP <= 0 && defenderArr && defenderVoid) moveCard(defender.instanceId, defenderArr, defenderVoid);
+
+  // Only apply status if defender is still alive (not removed from battlefield)
+  if (
+    defenderDef &&
+    defenderDef.category === "creature" &&
+    defenderArr && defenderArr.includes(defender) // still in battlefield
+  ) {
+    const attackerAbilities = attackerDef.ability || [];
     attackerAbilities.forEach(abilityName => {
       if (STATUS_EFFECTS[abilityName]) {
         applyStatus(defender, abilityName);
       }
     });
   }
-
-  // Move cards to void if HP <= 0
-  if (attacker.currentHP <= 0 && attackerArr && attackerVoid) moveCard(attacker.instanceId, attackerArr, attackerVoid);
-  if (defender.currentHP <= 0 && defenderArr && defenderVoid) moveCard(defender.instanceId, defenderArr, defenderVoid);
-
   renderGameState();
   setupDropZones();
 }
 
 function dealDamage(cardObj, targetObj, damage) {
   const cardDef = dummyCards.find(c => c.id === targetObj.cardId);
+  // Initialize currentHP if undefined
+  if (typeof targetObj.currentHP !== "number") {
+    targetObj.currentHP = typeof cardDef?.hp === "number" ? cardDef.hp : 1;
+  }
+
+  // Now safely apply damage
+  targetObj.currentHP = Math.max(0, targetObj.currentHP - damage);
+  
   // Use base stats if missing
   targetObj.atk = typeof targetObj.atk === "number" ? targetObj.atk : cardDef?.atk ?? 0;
   targetObj.def = typeof targetObj.def === "number" ? targetObj.def : cardDef?.def ?? 0;
@@ -4218,8 +4246,6 @@ function resolveSkillEffect(cardObj, skillObj) {
   });
 }
 function startSkillTarget(targets, onSelect, opts = {}) {
-  renderGameState();
-
   battlefield.classList.add('skill-mode-backdrop');
   document.querySelectorAll('.target-highlight').forEach(el => {
     el.classList.remove('target-highlight');
