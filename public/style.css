@@ -2748,10 +2748,11 @@ button {}
   font-size: 0.85em;
 }
 .target-highlight {
+  outline: 3px solid #ffe066;
   box-shadow: 0 0 12px 4px #ffe066, 0 0 0 4px #ffe066 inset;
   border: 2.5px solid #ffe066;
   cursor: pointer;
-  z-index: 30;
+  z-index: 10001 !important;
 }
 /* ---- ATTACK TARGET LOGIC CSS ---- */
 .attack-target-highlight {
