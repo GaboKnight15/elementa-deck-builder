@@ -2474,20 +2474,14 @@ function openVoidModal(isOpponent = false) {
       img.style.cursor = "pointer";
       img.onclick = (e) => {
         e.stopPropagation();
-        // Remove all card menus in this modal
         closeAllMenus();
-
+        
+        if (isOpponent) {
+          showFullCardModal(cardObj);
+          return;
+        }
         // If opponent's void, only allow "View"
-        const buttons = isOpponent ? [
-          {
-            text: "View",
-            onClick: function(e) {
-              e.stopPropagation();
-              showFullCardModal(cardObj);
-              closeAllMenus();
-            }
-          }
-        ] : [
+        const buttons = [
           {
             text: "Return to Hand",
             onClick: function(e) {
@@ -2918,14 +2912,15 @@ function showEssencePaymentModal(opts) {
   img.src = cardData.image || '';
   img.alt = cardData.name || '';
   img.style.width = '100px';
-  img.style.borderRadius = '8px';
   img.style.marginRight = '12px';
   img.style.cursor = 'pointer';
   img.onclick = (e) => {
     e.stopPropagation();
     showFullCardModal(card);
   };
-
+  
+  img.className = 'modal-main-card-img';
+  
   const header = document.createElement('div');
   header.style.display = 'flex';
   header.style.alignItems = 'center';
@@ -2933,34 +2928,13 @@ function showEssencePaymentModal(opts) {
 
   // Card image on left
   header.appendChild(img);
-
-  // Cost icons and label
-  const costArea = document.createElement('div');
-  costArea.style.display = 'flex';
-  costArea.style.flexDirection = 'column';
-  costArea.style.justifyContent = 'center';
-
-  const label = document.createElement('div');
-  label.style.fontSize = '1.2em';
-  label.style.fontWeight = 'bold';
-  label.textContent = 'Essence Cost';
-  costArea.appendChild(label);
-
-  const iconUnits = expandCostToIcons(opts.cost);
-  let costIconsHtml = iconUnits.map(unit =>
-    `<img src="${unit.img}" style="width:32px;margin-right:2px;vertical-align:middle;" alt="${unit.color} Essence">`
-  ).join('');
-  const costIconsDiv = document.createElement('div');
-  costIconsDiv.innerHTML = costIconsHtml;
-  costArea.appendChild(costIconsDiv);
-
-  header.appendChild(costArea);
   content.appendChild(header);
 
   // Requirement display
   const reqDiv = document.createElement('div');
   reqDiv.className = 'essence-requirements';
-  reqDiv.style.marginBottom = '8px';
+  reqDiv.style.display = 'flex';
+  reqDiv.style.alignItems = 'center';
 
   // Convert opts.cost to array of {color, needed, paid}
   let requirements = [];
@@ -2994,6 +2968,7 @@ function showEssencePaymentModal(opts) {
   const sourcesDiv = document.createElement('div');
   sourcesDiv.className = 'essence-source-list';
   sourcesDiv.style.display = 'flex';
+  sourcesDiv.style.justifyContent = 'center';
   sourcesDiv.style.flexWrap = 'wrap';
   sourcesDiv.style.gap = '18px';
   sourcesDiv.style.margin = '10px 0 18px 0';
@@ -3001,6 +2976,9 @@ function showEssencePaymentModal(opts) {
   opts.eligibleCards.forEach(sourceCard => {
     const cardDiv = document.createElement('div');
     cardDiv.className = 'essence-source-card';
+    cardDiv.style.display = 'flex';
+    cardDiv.style.flexDirection = 'column';
+    cardDiv.style.alignItems = 'center';
     cardDiv.style.minWidth = '90px';
     cardDiv.style.background = '#20283e';
     cardDiv.style.border = '2px solid #333';
@@ -3011,29 +2989,22 @@ function showEssencePaymentModal(opts) {
     // Card image (clickable)
     const smallImg = document.createElement('img');
     smallImg.src = (dummyCards.find(c=>c.id===sourceCard.cardId)||{}).image || '';
+    smallImg.className = 'card-img';
     smallImg.style.width = '100px';
-    smallImg.style.borderRadius = '6px';
     smallImg.style.cursor = 'pointer';
+    smallImg.style.marginBottom = '4px';
     smallImg.onclick = (e) => {
       e.stopPropagation();
       showFullCardModal(sourceCard);
     };
     cardDiv.appendChild(smallImg);
 
-    // Card name (optional)
-    if (dummyCards.find(c=>c.id===sourceCard.cardId)?.name) {
-      const nameDiv = document.createElement('div');
-      nameDiv.textContent = dummyCards.find(c=>c.id===sourceCard.cardId).name;
-      nameDiv.style.fontSize = '0.95em';
-      nameDiv.style.marginBottom = '4px';
-      cardDiv.appendChild(nameDiv);
-    }
-
     // Essence icons
     const essenceWrap = document.createElement('div');
     essenceWrap.style.display = 'flex';
     essenceWrap.style.flexWrap = 'wrap';
     essenceWrap.style.gap = '5px';
+    essenceWrap.style.justifyContent = 'center';
 
     // Colored essence
     for (const code in ESSENCE_IMAGE_MAP) {
@@ -3144,27 +3115,12 @@ function showEssencePaymentModal(opts) {
   };
   content.appendChild(cancelBtn);
 }
-// Utility function: Expand cost object to list of unit icons
-function expandCostToIcons(costObj) {
-  const icons = [];
-  // Colorless first: push X1 for each required
-  for (let i = 0; i < (costObj.colorless || 0); i++) {
-    icons.push({ color: 'colorless', img: ESSENCE_IMAGE_MAP['X1'] });
-  }
-  // Then colored mana
-  const colorOrder = ['green','blue','red','white','black','yellow','purple','gray'];
-  colorOrder.forEach(color => {
-    for (let i = 0; i < (costObj[color] || 0); i++) {
-      icons.push({ color, img: ESSENCE_IMAGE_MAP[color] });
-    }
-  });
-  return icons;
-}
+
 // Requirement "progress" update
 function updateReqDiv(requirements, reqPaid, reqDiv) {
   // requirements: array of {color, needed, paid}
   // reqPaid: {color: number}
-  reqDiv.innerHTML = `<b>Essence Required:</b> ${
+  reqDiv.innerHTML = `<b>Essence Required</b> ${
     requirements.map(r => {
       let icons = "";
       // Colorless: use the X1 image for each unit
@@ -3173,8 +3129,8 @@ function updateReqDiv(requirements, reqPaid, reqDiv) {
           const imgSrc = ESSENCE_IMAGE_MAP['X1'];
           const isPaid = i < (reqPaid[r.color] || 0);
           icons += `<img src="${imgSrc}" 
-            style="width:24px;height:24px;vertical-align:middle;margin-right:2px;
-            filter:${isPaid ? "none" : "grayscale(0.7) brightness(1.1)"};
+            style="width:24px;height:24px;vertical-align:middle;margin: 0 3px;
+            filter:${isPaid ? "none" : "grayscale(0.5) brightness(0.5)"};
             opacity:${isPaid ? "1" : "0.7"};
             transition:filter 0.2s,opacity 0.2s;">`;
         }
@@ -3184,7 +3140,7 @@ function updateReqDiv(requirements, reqPaid, reqDiv) {
         for (let i = 0; i < r.needed; i++) {
           const isPaid = i < (reqPaid[r.color] || 0);
           icons += `<img src="${imgSrc}" 
-            style="width:24px;height:24px;vertical-align:middle;margin-right:2px;
+            style="width:24px;height:24px;vertical-align:middle;margin: 0 3px;
             filter:${isPaid ? "none" : "grayscale(0.7) brightness(1.1)"};
             opacity:${isPaid ? "1" : "0.7"};
             transition:filter 0.2s,opacity 0.2s;">`;
@@ -3457,8 +3413,14 @@ function finishAttackResolution(
   attacker.hasAttacked = true;
 
   // Move cards to void if HP <= 0
-  if (attacker.currentHP <= 0 && attackerArr && attackerVoid) moveCard(attacker.instanceId, attackerArr, attackerVoid);
-  if (defender.currentHP <= 0 && defenderArr && defenderVoid) moveCard(defender.instanceId, defenderArr, defenderVoid);
+  if (attacker.currentHP <= 0 && attackerArr) {
+    const attackerVoidArr = (attacker.owner === "player") ? gameState.playerVoid : gameState.opponentVoid;
+    moveCard(attacker.instanceId, attackerArr, attackerVoidArr);
+  }
+  if (defender.currentHP <= 0 && defenderArr) {
+    const defenderVoidArr = (defender.owner === "player") ? gameState.playerVoid : gameState.opponentVoid;
+    moveCard(defender.instanceId, defenderArr, defenderVoidArr);
+  }
 
   // Only apply status if defender is still alive (not removed from battlefield)
   if (
@@ -3480,9 +3442,12 @@ function finishAttackResolution(
 function dealDamage(cardObj, targetObj, damage) {
   const cardDef = dummyCards.find(c => c.id === targetObj.cardId);
   // Initialize currentHP if undefined
-  if (typeof targetObj.currentHP !== "number") {
+  if (typeof targetObj.currentHP !== "number" || isNaN(targetObj.currentHP)) {
     targetObj.currentHP = typeof cardDef?.hp === "number" ? cardDef.hp : 1;
   }
+
+  // Clamp damage to a minimum of 0
+  damage = Math.max(0, damage);
   // Safely apply damage (only ONCE!)
   targetObj.currentHP = Math.max(0, targetObj.currentHP - damage);
   // Initialize base stats if missing
@@ -3492,9 +3457,9 @@ function dealDamage(cardObj, targetObj, damage) {
   // Move to void if HP <= 0
   if (targetObj.currentHP <= 0) {
     const fromArr = findCardFieldArray(targetObj);
-    // Just call moveCard; it will choose correct void internally
-    if (fromArr) {
-      moveCard(targetObj.instanceId, fromArr, gameState.playerVoid);
+    const voidArr = (targetObj.owner === "player") ? gameState.playerVoid : gameState.opponentVoid;
+    if (fromArr && voidArr) {
+      moveCard(targetObj.instanceId, fromArr, voidArr);
       renderGameState();
       return;
     }
@@ -4018,8 +3983,10 @@ function animateCardPositionChange(cardObj, zoneId, prevOrientation, newOrientat
   void cardDiv.offsetWidth;
 
   // Switch to new orientation (triggers CSS transition)
-  cardDiv.classList.remove(prevOrientation);
-  cardDiv.classList.add(newOrientation);
+  setTimeout(() => {
+    cardDiv.classList.remove(prevOrientation);
+    cardDiv.classList.add(newOrientation);
+  }, 10);
 
   // Listen for transition end (one time)
   cardDiv.addEventListener("transitionend", function handler(e) {
