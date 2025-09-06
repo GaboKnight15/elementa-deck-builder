@@ -958,6 +958,21 @@ function getZoneNameForArray(arr) {
   if (arr === gameState.opponentVoid) return 'opponentVoid';
   return '';
 }
+// Helper: find zoneId for a cardObj
+function findZoneIdForCard(cardObj) {
+  if (gameState.playerCreatures.includes(cardObj)) return 'player-creatures-zone';
+  if (gameState.playerDomains.includes(cardObj)) return 'player-domains-zone';
+  if (gameState.opponentCreatures.includes(cardObj)) return 'opponent-creatures-zone';
+  if (gameState.opponentDomains.includes(cardObj)) return 'opponent-domains-zone';
+  return '';
+}
+function findCardFieldArray(cardObj) {
+  if (gameState.playerCreatures.includes(cardObj)) return gameState.playerCreatures;
+  if (gameState.playerDomains.includes(cardObj)) return gameState.playerDomains;
+  if (gameState.opponentCreatures.includes(cardObj)) return gameState.opponentCreatures;
+  if (gameState.opponentDomains.includes(cardObj)) return gameState.opponentDomains;
+  return null;
+}
 // ===================================
 // ========== ACTIONS LOGIC ==========
 // ===================================
@@ -3230,7 +3245,22 @@ function endAttackTarget() {
   attackMode.attackerId = null;
   attackMode.attackerZone = null;
 }
+function runAttackDeclarationAbilities(attacker, defender, next) {
+  const attackerDef = dummyCards.find(c => c.id === attacker.cardId);
+  if (!attackerDef || !attackerDef.ability) { next && next(); return; }
 
+  let handled = false;
+  ["Intimidate", "Provoke"].forEach(abilityName => {
+    if (attackerDef.ability.includes(abilityName)) {
+      handled = true;
+      const ability = ATTACK_DECLARATION_ABILITIES[abilityName];
+      if (ability && ability.handler) {
+        ability.handler(attacker, defender, next); // Triggers skill logic!
+      }
+    }
+  });
+  if (!handled && next) next();
+}
 // --- ATTACK RESOLUTION ANIMATION ---
 function resolveAttack(attackerId, defenderId) {
   // Find attacker and defender card objects and their arrays
@@ -3797,41 +3827,6 @@ function closeWaitingForOpponentModal() {
   if (modal) modal.remove();
 }
 
-function canActivateSkill(cardObj, skillObj, currentZone, gameState) {
-  // 1. Custom effect-level canActivate (SKILL_EFFECT_MAP)
-  const effectNames = skillObj.resolution?.effect;
-  if (effectNames) {
-    const effectList = Array.isArray(effectNames) ? effectNames : [effectNames];
-    for (const effectName of effectList) {
-      const effectDef = SKILL_EFFECT_MAP[effectName];
-      if (effectDef && typeof effectDef.canActivate === 'function') {
-        if (!effectDef.canActivate(cardObj, skillObj, currentZone, gameState)) return false;
-      }
-    }
-  }
-  // 2. Custom requirement-level canActivate (REQUIREMENT_MAP)
-  const activation = skillObj.activation || {};
-  if (activation.requirement && REQUIREMENT_MAP[activation.requirement] && REQUIREMENT_MAP[activation.requirement].canActivate) {
-    if (!REQUIREMENT_MAP[activation.requirement].canActivate(cardObj, skillObj, currentZone, gameState)) return false;
-  }
-  // 1. Check Zone (from activation)
-  if (Array.isArray(activation.zone)) {
-    if (!activation.zone.includes(currentZone)) return false;
-  } else {
-    if (activation.zone && activation.zone !== currentZone) return false;
-  }
-  // 2. Status Effects (Paralysis, Freeze, etc)
-  if (cardObj._paralyzed || cardObj._frozen) return false;
-  if (cardObj.canActivateSkill === false) return false;
-  // 3. Essence Cost (assume skillObj.cost is a string like '{1}{U}', pass to your cost-checker)
-  if (skillObj.cost) {
-    const sources = [...gameState.playerDomains, ...gameState.playerCreatures];
-    const availableEssence = sources.map(card => card.essence || '').join('');
-    if (!canPayEssence({ essence: availableEssence }, skillObj.cost)) return false;
-  }
-  return true;
-}
-
 function canPayEssence(cardObj, costStr) {
   const colorCodes = "GRUYCPBW";
   let availableEssenceStr = cardObj.essence || "";
@@ -4057,6 +4052,59 @@ function animateEssencePop(icon) {
 /*------------------------------------
 // SKILL RESOLUTION LOGIC //
 ------------------------------------*/
+function canActivateSkill(cardObj, skillObj, currentZone, gameState, targetObj = null) {
+  // 1. Custom effect-level canActivate (SKILL_EFFECT_MAP)
+  const effectNames = skillObj.resolution?.effect;
+  if (effectNames) {
+    const effectList = Array.isArray(effectNames) ? effectNames : [effectNames];
+    for (const effectName of effectList) {
+      const effectDef = SKILL_EFFECT_MAP[effectName];
+      if (effectDef && typeof effectDef.canActivate === 'function') {
+        if (!effectDef.canActivate(cardObj, skillObj, currentZone, gameState)) return false;
+      }
+    }
+  }
+  // 2. Custom requirement-level canActivate (REQUIREMENT_MAP)
+  const activation = skillObj.activation || {};
+  if (activation.requirement && REQUIREMENT_MAP[activation.requirement] && REQUIREMENT_MAP[activation.requirement].canActivate) {
+    if (!REQUIREMENT_MAP[activation.requirement].canActivate(cardObj, skillObj, currentZone, gameState)) return false;
+  }
+  // 3. Zone check
+  if (Array.isArray(activation.zone)) {
+    if (!activation.zone.includes(currentZone)) return false;
+  } else {
+    if (activation.zone && activation.zone !== currentZone) return false;
+  }
+  // 4. Status Effects
+  if (cardObj._paralyzed || cardObj._frozen) return false;
+  if (cardObj.canActivateSkill === false) return false;
+  // 5. Essence Cost
+  if (skillObj.cost) {
+    const sources = [...gameState.playerDomains, ...gameState.playerCreatures];
+    const availableEssence = sources.map(card => card.essence || '').join('');
+    if (!canPayEssence({ essence: availableEssence }, skillObj.cost)) return false;
+  }
+
+  // 6. Attack Declaration Ability/Skill Check (only if targetObj provided)
+  if (targetObj) {
+    const attackerDef = dummyCards.find(c => c.id === cardObj.cardId);
+    if (attackerDef && attackerDef.ability) {
+      for (const abilityName in ATTACK_DECLARATION_ABILITIES) {
+        if (attackerDef.ability.includes(abilityName)) {
+          // Only activate if effect would change targetObj orientation
+          if (
+            (abilityName === "Intimidate" && targetObj.orientation === "horizontal") ||
+            (abilityName === "Provoke" && targetObj.orientation === "vertical")
+            // Add more checks for other abilities here
+          ) {
+            return false; // Already in the required orientation, so don't activate
+          }
+        }
+      }
+    }
+  }
+  return true;
+}
 // Update activateSkill to use the animation before requirements/effects
 function activateSkill(cardObj, skillObj, options = {}) {
   // Pay cost if needed
@@ -4078,21 +4126,6 @@ function activateSkill(cardObj, skillObj, options = {}) {
       proceedSkillActivation(cardObj, skillObj, options);
     });
   }
-}
-// Helper: find zoneId for a cardObj
-function findZoneIdForCard(cardObj) {
-  if (gameState.playerCreatures.includes(cardObj)) return 'player-creatures-zone';
-  if (gameState.playerDomains.includes(cardObj)) return 'player-domains-zone';
-  if (gameState.opponentCreatures.includes(cardObj)) return 'opponent-creatures-zone';
-  if (gameState.opponentDomains.includes(cardObj)) return 'opponent-domains-zone';
-  return '';
-}
-function findCardFieldArray(cardObj) {
-  if (gameState.playerCreatures.includes(cardObj)) return gameState.playerCreatures;
-  if (gameState.playerDomains.includes(cardObj)) return gameState.playerDomains;
-  if (gameState.opponentCreatures.includes(cardObj)) return gameState.opponentCreatures;
-  if (gameState.opponentDomains.includes(cardObj)) return gameState.opponentDomains;
-  return null;
 }
 
 function proceedSkillActivation(cardObj, skillObj, options = {}) {
@@ -4240,6 +4273,34 @@ function showFilteredCardSelectionModal(cards, onSelect, opts = {}) {
   document.body.appendChild(modal);
 }
 
+function runSkillEffect(sourceCardObj, skillObj) {
+  // --- TYPES ---
+  let types = Array.isArray(skillObj.type) ? skillObj.type : (skillObj.type ? [skillObj.type] : []);
+  for (let type of types) {
+    const skillType = SKILL_EFFECT_MAP[type];
+    if (skillType && skillType.handler) {
+      // Optionally, validate card location or status if needed
+      // For example, skip effect if sourceCardObj was moved to deck/void by a requirement
+      if (type === "Strike" || type === "Search" || type === "Burst") {
+        // Example: do not strike if source card is no longer in hand/field (after Stash, etc)
+        if (!isValidForSkillType(sourceCardObj, skillObj, type)) continue;
+      }
+      skillType.handler(sourceCardObj, skillObj);
+    }
+  }
+}
+// Helper to validate if sourceCardObj is still valid for the effect (customize as needed)
+function isValidForSkillType(sourceCardObj, skillObj, type) {
+  // Example logic: if Stash moved to deck, don't let Strike happen
+  if (type === "Strike") {
+    // Only allow if sourceCardObj is still in hand or field
+    return gameState.playerHand.includes(sourceCardObj) ||
+           gameState.playerCreatures.includes(sourceCardObj) ||
+           gameState.playerDomains.includes(sourceCardObj);
+  }
+  // For other types, add custom logic as needed
+  return true;
+}
 function isSkillEffectValid(sourceCardObj, skillObj) {
   // For single-target skills:
   if (skillObj.target) {
@@ -4293,35 +4354,6 @@ function parseCost(costStr) {
     }
   }
   return cost;
-}
-
-function runSkillEffect(sourceCardObj, skillObj) {
-  // --- TYPES ---
-  let types = Array.isArray(skillObj.type) ? skillObj.type : (skillObj.type ? [skillObj.type] : []);
-  for (let type of types) {
-    const skillType = SKILL_EFFECT_MAP[type];
-    if (skillType && skillType.handler) {
-      // Optionally, validate card location or status if needed
-      // For example, skip effect if sourceCardObj was moved to deck/void by a requirement
-      if (type === "Strike" || type === "Search" || type === "Burst") {
-        // Example: do not strike if source card is no longer in hand/field (after Stash, etc)
-        if (!isValidForSkillType(sourceCardObj, skillObj, type)) continue;
-      }
-      skillType.handler(sourceCardObj, skillObj);
-    }
-  }
-}
-// Helper to validate if sourceCardObj is still valid for the effect (customize as needed)
-function isValidForSkillType(sourceCardObj, skillObj, type) {
-  // Example logic: if Stash moved to deck, don't let Strike happen
-  if (type === "Strike") {
-    // Only allow if sourceCardObj is still in hand or field
-    return gameState.playerHand.includes(sourceCardObj) ||
-           gameState.playerCreatures.includes(sourceCardObj) ||
-           gameState.playerDomains.includes(sourceCardObj);
-  }
-  // For other types, add custom logic as needed
-  return true;
 }
 
 /*------------------
