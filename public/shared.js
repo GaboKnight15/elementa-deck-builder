@@ -765,14 +765,14 @@ skill: [
 ];
 // Cost mapping and renderer (returns HTML string)
 const COST_IMAGE_MAP = {
-  red: "OtherImages/Essence/Red.png",
-  blue: "OtherImages/Essence/Blue.png",
-  green: "OtherImages/Essence/Green.png",
-  yellow: "OtherImages/Essence/Yellow.png",
-  purple: "OtherImages/Essence/Purple.png",
-  gray: "OtherImages/Essence/Gray.png",
-  black: "OtherImages/Essence/Black.png",
-  white: "OtherImages/Essence/White.png",
+  G: "OtherImages/Essence/Green.png",
+  R: "OtherImages/Essence/Red.png",
+  U: "OtherImages/Essence/Blue.png",
+  Y: "OtherImages/Essence/Yellow.png",
+  C: "OtherImages/Essence/Gray.png",
+  P: "OtherImages/Essence/Purple.png",
+  B: "OtherImages/Essence/Black.png",
+  W: "OtherImages/Essence/White.png",
   X0: "OtherImages/Essence/Zero.png",
   X1: "OtherImages/Essence/One.png",
   X2: "OtherImages/Essence/Two.png",
@@ -907,22 +907,10 @@ function parseEffectText(effect) {
     }
   }
 
-  // Map color codes to image paths
-  const ESSENCE_ICON = {
-    G:  "OtherImages/Essence/Green.png",
-    R:  "OtherImages/Essence/Red.png",
-    U:  "OtherImages/Essence/Blue.png",
-    Y:  "OtherImages/Essence/Yellow.png",
-    C:  "OtherImages/Essence/Gray.png",
-    P:  "OtherImages/Essence/Purple.png",
-    B:  "OtherImages/Essence/Black.png",
-    W:  "OtherImages/Essence/White.png"
-  };
-
-  // Replace color icons {G},{R}, etc.
-  effect = effect.replace(/\{([GRUYCPBW])\}/g, (match, code) =>
-    `<img src="${ESSENCE_ICON[code]}" style="height:1.3em;vertical-align:middle;margin-right:2px;">`
-  );
+ // Replace color icons {G},{R}, etc.
+ effect = effect.replace(/\{([GRUYCPBW])\}/g, (match, code) =>
+   `<img src="${COST_IMAGE_MAP[code]}" style="height:1.3em;vertical-align:middle;margin-right:2px;">`
+ );
 
   // Replace tapped/untapped icons
   effect = effect.replace(/\{CW\}/gi,
@@ -1250,9 +1238,12 @@ function renderCardCost(costData) {
   // --- NEW: String style ("{2}{R}{B}") ---
   if (typeof costData === "string") {
     // Use parseEffectText for cost string, but limit to icons only
-    html = costData.replace(/\{([GRUYCPBW])\}/g, (match, code) =>
-      `<img src="${COST_IMAGE_MAP[code.toLowerCase()]}" style="width:22px;height:22px;vertical-align:middle;">`
-    );
+   const codeToColor = {
+    G: 'green', R: 'red', U: 'blue', Y: 'yellow', C: 'gray', P: 'purple', B: 'black', W: 'white'
+   };
+   html = costData.replace(/\{([GRUYCPBW])\}/g, (match, code) =>
+     `<img src="${COST_IMAGE_MAP[codeToColor[code]]}" style="width:22px;height:22px;vertical-align:middle;">`
+   );
     html = html.replace(/\{([0-9]|1[0-9]|20)\}/g, (match, num) => {
       const imgSrc = COST_IMAGE_MAP['X'+num];
       if (imgSrc) {
