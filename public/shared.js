@@ -271,8 +271,11 @@ const dummyCards = [
  cost: '{1}', archetype: 'Moonfang', ability: 'Ambush', set: 'StandardPack'},
 {id: 'Skeleton', name: 'Skeleton', rarity: 'Common', image: 'CardImages/BasicCreatures/Skeleton.png',
  category: 'Creature', color: 'Black', type: 'Undead', hp: 1, atk: 1, def: 0,
- cost: '{0}', archetype: 'Skullframe', ability: 'Immunity',
- skill: [{ name: 'Reanimate', cost: '{1}{B}', type: 'Reanimate', zone: 'void'}], set: 'StandardPack'},
+ cost: '{0}', archetype: 'Skullframe', ability: 'Immunity', set: 'StandardPack',
+ skill: [
+  {name: 'Reanimate', cost: '{1}{B}',
+   resolution: {effect: 'Reanimate'}}
+ ]},
 {id: 'Bat', name: 'Bat', rarity: 'Common', image: 'CardImages/BasicCreatures/Bat.png', 
  category: 'Creature', color: 'Black', type: 'Vampire', hp: 3, atk: 2, def: 0,
  cost: '{1}', archetype: 'Vampiric', ability: ['Drain','Flying'], set: 'StandardPack'},
