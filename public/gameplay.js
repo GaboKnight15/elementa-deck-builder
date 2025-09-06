@@ -1044,8 +1044,15 @@ function moveCard(instanceId, fromArr, toArr, extra = {}) {
     }
     const destZone = getZoneNameForArray(toArr);
     if (destZone === 'playerVoid' || destZone === 'opponentVoid') {
-      // Use cardObj.owner if set, fallback to getCardOwner
-      const owner = cardObj.owner || getCardOwner(cardObj);
+      let owner;
+      // If sending from player's hand or deck, always player
+      if (fromArr === gameState.playerHand || fromArr === gameState.playerDeck) {
+        owner = "player";
+      } else if (fromArr === gameState.opponentHand || fromArr === gameState.opponentDeck) {
+        owner = "opponent";
+      } else {
+        owner = cardObj.owner || getCardOwner(cardObj);
+      }
       toArr = owner === "player" ? gameState.playerVoid : gameState.opponentVoid;
     }
     const isDrawToHand =
@@ -1593,7 +1600,7 @@ function appendVoidZone(parentDiv, voidArray, who) {
   voidCard.onclick = (e) => {
     e.stopPropagation();
     closeAllMenus();
-    openVoidModal();
+    openVoidModal(who === 'opponent');
   };
 
   parentDiv.appendChild(voidZone);
@@ -2401,7 +2408,7 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
 }
 
 // ==== VOID MODAL ====
-function openVoidModal() {
+function openVoidModal(isOpponent = false) {
   let modal = document.getElementById('void-modal');
   if (!modal) {
     modal = document.createElement('div');
@@ -2429,98 +2436,113 @@ function openVoidModal() {
     modal.querySelector('.modal-content').appendChild(list);
   }
   list.innerHTML = '';
-  const voidCards = gameState.playerVoid;
+  // === FIX: Show correct void cards ===
+  const voidCards = isOpponent ? gameState.opponentVoid : gameState.playerVoid;
   if (voidCards.length === 0) {
     list.innerHTML = '<div style="color:#999;">Void is empty.</div>';
   } else {
     voidCards.forEach((cardObj, idx) => {
-    const card = dummyCards.find(c => c.id === cardObj.cardId);
-    if (!card) return;
-    
-    const wrapper = document.createElement('div');
-    wrapper.className = 'modal-card-wrapper';
-    
-    const cardDiv = document.createElement('div');
-    cardDiv.className = 'card-battlefield';
+      const card = dummyCards.find(c => c.id === cardObj.cardId);
+      if (!card) return;
 
-    const img = document.createElement('img');
-    img.src = card.image;
-    img.alt = card.name;
-    img.className = "modal-card-img";
-    cardDiv.appendChild(img);
+      const wrapper = document.createElement('div');
+      wrapper.className = 'modal-card-wrapper';
 
-    // Make image clickable for menu
-    img.style.cursor = "pointer";
-    img.onclick = (e) => {
-      e.stopPropagation();
-      // Remove all card menus in this modal
-      closeAllMenus();
-      const buttons = [
-      {
-        text: "Return to Hand",
-        onClick: function(e) {
-          e.stopPropagation();
-          moveCard(cardObj.instanceId, gameState.playerVoid, gameState.playerHand);
-          renderGameState();
-          closeAllMenus();
-          openVoidModal();
-        }
-      },
-      {
-        text: "Return to Deck",
-        onClick: function(e) {
-          e.stopPropagation();
-          moveCard(cardObj.instanceId, gameState.playerVoid, gameState.playerDeck);
-          renderGameState();
-          closeAllMenus();
-          openVoidModal();
-        }
-      },
-      {
-        text: "View",
-        onClick: function(e) {
-          e.stopPropagation();
-          showFullCardModal(cardObj);
-          closeAllMenus();
-        }
-      }
-    ];
+      const cardDiv = document.createElement('div');
+      cardDiv.className = 'card-battlefield';
 
-  // --- Add Skill Buttons if card has skills ---
-    const cardData = dummyCards.find(c => c.id === cardObj.cardId);
-    if (cardData && Array.isArray(cardData.skill)) {
-      cardData.skill.forEach(skillObj => {
-        // PATCH: show CW/CCW icons
-        const activation = skillObj.activation || {};
-        let requirements = Array.isArray(activation.requirement)
-          ? activation.requirement
-          : (activation.requirement ? [activation.requirement] : []);
-        const reqIcons = getRequirementIcons(requirements);
+      const img = document.createElement('img');
+      img.src = card.image;
+      img.alt = card.name;
+      img.className = "modal-card-img";
+      cardDiv.appendChild(img);
 
-        buttons.push({
-          text: `${skillObj.name} ${parseEffectText(skillObj.cost)}${reqIcons}`,
-          html: true,
-          disabled: !canActivateSkill(cardObj, skillObj, 'void', gameState),
-          onClick: function(e) {
-            e.stopPropagation();
-            if (!canActivateSkill(cardObj, skillObj, 'void', gameState)) return;
-            activateSkill(cardObj, skillObj);
-            closeAllMenus();
-            openVoidModal();
+      // Make image clickable for menu
+      img.style.cursor = "pointer";
+      img.onclick = (e) => {
+        e.stopPropagation();
+        // Remove all card menus in this modal
+        closeAllMenus();
+
+        // If opponent's void, only allow "View"
+        const buttons = isOpponent ? [
+          {
+            text: "View",
+            onClick: function(e) {
+              e.stopPropagation();
+              showFullCardModal(cardObj);
+              closeAllMenus();
+            }
           }
-        });
-      });
-    }
-    const menu = createCardMenu(buttons);
-    document.body.appendChild(menu); // Append to body, not wrapper
+        ] : [
+          {
+            text: "Return to Hand",
+            onClick: function(e) {
+              e.stopPropagation();
+              moveCard(cardObj.instanceId, gameState.playerVoid, gameState.playerHand);
+              renderGameState();
+              closeAllMenus();
+              openVoidModal();
+            }
+          },
+          {
+            text: "Return to Deck",
+            onClick: function(e) {
+              e.stopPropagation();
+              moveCard(cardObj.instanceId, gameState.playerVoid, gameState.playerDeck);
+              renderGameState();
+              closeAllMenus();
+              openVoidModal();
+            }
+          },
+          {
+            text: "View",
+            onClick: function(e) {
+              e.stopPropagation();
+              showFullCardModal(cardObj);
+              closeAllMenus();
+            }
+          }
+        ];
 
-    // Position menu absolutely using the image rect
-    const rect = img.getBoundingClientRect();
-    placeMenuWithinViewport(menu, rect);
+        // --- Add Skill Buttons if card has skills ---
+        if (!isOpponent) {
+          const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+          if (cardData && Array.isArray(cardData.skill)) {
+            cardData.skill.forEach(skillObj => {
+              // PATCH: show CW/CCW icons
+              const activation = skillObj.activation || {};
+              let requirements = Array.isArray(activation.requirement)
+                ? activation.requirement
+                : (activation.requirement ? [activation.requirement] : []);
+              const reqIcons = getRequirementIcons(requirements);
 
-    menu.onclick = function(e) { e.stopPropagation(); };
+              buttons.push({
+                text: `${skillObj.name} ${parseEffectText(skillObj.cost)}${reqIcons}`,
+                html: true,
+                disabled: !canActivateSkill(cardObj, skillObj, 'void', gameState),
+                onClick: function(e) {
+                  e.stopPropagation();
+                  if (!canActivateSkill(cardObj, skillObj, 'void', gameState)) return;
+                  activateSkill(cardObj, skillObj);
+                  closeAllMenus();
+                  openVoidModal();
+                }
+              });
+            });
+          }
+        }
 
-    // Hide menu when clicking elsewhere
+        const menu = createCardMenu(buttons);
+        document.body.appendChild(menu); // Append to body, not wrapper
+
+        // Position menu absolutely using the image rect
+        const rect = img.getBoundingClientRect();
+        placeMenuWithinViewport(menu, rect);
+
+        menu.onclick = function(e) { e.stopPropagation(); };
+
+        // Hide menu when clicking elsewhere
         modal.onclick = function(e) {
           if (!e.target.closest('.card-menu')) {
             closeAllMenus();
@@ -4183,14 +4205,15 @@ function resolveSkillEffect(cardObj, skillObj) {
   });
 }
 function startSkillTarget(targets, onSelect, opts = {}) {
-  // Add backdrop to battlefield
-  battlefield.classList.add('skill-mode-backdrop');
-  // Remove any previous highlights
-  document.querySelectorAll('.target-highlight').forEach(el => el.classList.remove('target-highlight'));
+  renderGameState();
 
-  // For each card, find its div on the field and highlight it
+  battlefield.classList.add('skill-mode-backdrop');
+  document.querySelectorAll('.target-highlight').forEach(el => {
+    el.classList.remove('target-highlight');
+    el.onclick = null;
+  });
+
   targets.forEach(cardObj => {
-    // Try both player and opponent zones
     const zoneIds = [
       'player-creatures-zone', 'player-domains-zone',
       'opponent-creatures-zone', 'opponent-domains-zone'
@@ -4204,28 +4227,28 @@ function startSkillTarget(targets, onSelect, opts = {}) {
       cardDiv.classList.add('target-highlight');
       cardDiv.onclick = function(e) {
         e.stopPropagation();
-        // Remove highlights from all
+        // Remove highlights and handlers after selection
         document.querySelectorAll('.target-highlight').forEach(el => {
           el.classList.remove('target-highlight');
           el.onclick = null;
         });
         battlefield.classList.remove('skill-mode-backdrop');
+        document.body.removeEventListener('click', cancelHandler); // Remove cancel handler!
         onSelect(cardObj);
       };
     }
   });
 
-  // Optionally, add a cancel action (e.g. click battlefield background)
-  if (opts.cancelable) {
-    document.body.addEventListener('click', function cancelHandler(e) {
-      document.querySelectorAll('.target-highlight').forEach(el => {
-        el.classList.remove('target-highlight');
-        el.onclick = null;
-      });
-      battlefield.classList.remove('skill-mode-backdrop');
-      document.body.removeEventListener('click', cancelHandler);
-    }, { once: true });
+  // Cancel logic, same as attack targeting
+  function cancelHandler(e) {
+    document.querySelectorAll('.target-highlight').forEach(el => {
+      el.classList.remove('target-highlight');
+      el.onclick = null;
+    });
+    battlefield.classList.remove('skill-mode-backdrop');
+    document.body.removeEventListener('click', cancelHandler);
   }
+  setTimeout(() => document.body.addEventListener('click', cancelHandler, { once: true }), 10);
 }
 function showFilteredCardSelectionModal(cards, onSelect, opts = {}) {
   // Remove any previous modal
