@@ -229,11 +229,24 @@ const ATTACK_DECLARATION_ABILITIES = {
     icon: 'OtherImages/Icons/Intimidate.png',
     name: 'Intimidate',
     description: 'When attacking, changes defending creature to DEF position.',
-    effect: (attacker, defender, next) => {
-      if (defender.orientation !== "horizontal") {
-        changeCardPosition(defender, "horizontal", next);
-      } else if (next) {
-        next();
+    handler: function(attacker, defender, next) {
+      // Only trigger Intimidate if defender is in ATK (vertical)
+      if (defender.orientation === "vertical") {
+        // Optionally, use activateSkill for animation and effect logic:
+        const skillObj = {
+          name: "Intimidate",
+          activation: {},
+          resolution: {
+            effect: "Intimidate"
+          }
+        };
+        activateSkill(attacker, skillObj, {
+          target: defender,
+          onComplete: () => changeCardPosition(defender, "horizontal", next)
+        });
+      } else {
+        // Already in DEF, skip effect
+        next && next();
       }
     }
   },
@@ -241,11 +254,23 @@ const ATTACK_DECLARATION_ABILITIES = {
     icon: 'OtherImages/Icons/Provoke.png',
     name: 'Provoke',
     description: 'When attacking, changes defending creature to ATK position.',
-    effect: (attacker, defender, next) => {
-      if (defender.orientation !== "vertical") {
-        changeCardPosition(defender, "vertical", next);
-      } else if (next) {
-        next();
+    handler: function(attacker, defender, next) {
+      // Only trigger Provoke if defender is in DEF (horizontal)
+      if (defender.orientation === "horizontal") {
+        const skillObj = {
+          name: "Provoke",
+          activation: {},
+          resolution: {
+            effect: "Provoke"
+          }
+        };
+        activateSkill(attacker, skillObj, {
+          target: defender,
+          onComplete: () => changeCardPosition(defender, "vertical", next)
+        });
+      } else {
+        // Already in ATK, skip effect
+        next && next();
       }
     }
   }
@@ -4107,24 +4132,26 @@ function canActivateSkill(cardObj, skillObj, currentZone, gameState, targetObj =
 }
 // Update activateSkill to use the animation before requirements/effects
 function activateSkill(cardObj, skillObj, options = {}) {
-  // Pay cost if needed
   const zoneId = findZoneIdForCard(cardObj);
 
+  function afterPayment() {
+    // Animate skill activation ONCE, then proceed with full resolution
+    animateSkillActivation(cardObj, zoneId, () => {
+      proceedSkillActivation(cardObj, skillObj, options);
+    });
+  }
+
+  // If skill has cost, pay first, then animate+resolve
   if (skillObj.cost) {
     showEssencePaymentModal({
       card: cardObj,
       cost: parseCost(skillObj.cost),
       eligibleCards: getAllEssenceSources(),
-      onPaid: function() {
-        animateSkillActivation(cardObj, zoneId, () => {
-          proceedSkillActivation(cardObj, skillObj, options);
-        });
-      }
+      onPaid: afterPayment
     });
   } else {
-    animateSkillActivation(cardObj, zoneId, () => {
-      proceedSkillActivation(cardObj, skillObj, options);
-    });
+    // No cost: animate+resolve immediately
+    afterPayment();
   }
 }
 
@@ -4139,14 +4166,9 @@ function proceedSkillActivation(cardObj, skillObj, options = {}) {
         REQUIREMENT_MAP[req].handler(cardObj, skillObj);
       }
     });
-    animateSkillActivation(cardObj, findZoneIdForCard(cardObj), function() {
-      resolveSkillEffect(cardObj, skillObj);
-    });
-  } else {
-    animateSkillActivation(cardObj, findZoneIdForCard(cardObj), function() {
-      resolveSkillEffect(cardObj, skillObj);
-    });
   }
+  // Now run the actual effect logic (no animation here)
+  resolveSkillEffect(cardObj, skillObj);
 }
 
 // SKILL RESOLUTION LOGIC //
