@@ -469,7 +469,6 @@ Strike: {
             applyStatus(selectedTarget, statusName);
           }
         });
-        renderGameState();
       }
     );
   }
@@ -495,7 +494,6 @@ Burst: {
         }
       });
     });
-    renderGameState();
   }
 },
 Dash: {
@@ -1838,6 +1836,27 @@ function renderCardOnField(cardObj, zoneId) {
   const cardDiv = document.createElement('div');
   cardDiv.className = 'card-battlefield';
   cardDiv.dataset.instanceId = cardObj.instanceId;
+
+  // --- Always render card-front and card-back ---
+  const frontDiv = document.createElement('div');
+  frontDiv.className = 'card-front';
+  frontDiv.innerHTML = `<img src="${cardData.image}" alt="${cardData.name || "Card"}" style="width:100%;height:100%;">`;
+
+  // Choose the right cardback (player or opponent)
+  let cardbackUrl = window.selectedPlayerDeck?.deckObj?.cardbackArt || "OtherImages/Cardbacks/CBDefault.png";
+  if (zoneId && zoneId.startsWith("opponent")) {
+    cardbackUrl =
+      window.selectedOpponentDeck?.cardbackArt ||
+      gameState.opponentProfile?.cardbackArt ||
+      "OtherImages/Cardbacks/CBDefault.png";
+  }
+
+  const backDiv = document.createElement('div');
+  backDiv.className = 'card-back';
+  backDiv.innerHTML = `<img src="${cardbackUrl}" alt="Card Back" style="width:100%;height:100%;">`;
+
+  cardDiv.appendChild(frontDiv);
+  cardDiv.appendChild(backDiv);
 
   // Card image
   if (cardData && cardData.image) {
@@ -3392,9 +3411,8 @@ function resolveAttack(attackerId, defenderId) {
   window.isAnimating = true;
 
   // === Attack Logic with Animation Sequence ===
-  // === Attack Logic with Animation Sequence ===
   if (defenderDef.category === "creature" && defender.orientation === "vertical") {
-    // Defender is in ATK position: both deal damage to each other
+// ATK VS ATK //
     animateAttack(attacker, attackerZoneId, () => {
       dealDamage(attacker, defender, computeCardStat(attacker, "atk"));
 
@@ -3408,10 +3426,12 @@ function resolveAttack(attackerId, defenderId) {
           attackerVoid, defenderVoid,
           attackerDef, defenderDef
         );
+        renderGameState();
+        setupDropZones();
       });
     });
   } else if (defenderDef.category === "creature" && defender.orientation === "horizontal") {
-    // Defender is in DEF position: attacker deals (ATK - DEF), defender does NOT retaliate
+// ATK VS DEF //
     animateAttack(attacker, attackerZoneId, () => {
       let damage = Math.max(0, computeCardStat(attacker, "atk") - computeCardStat(defender, "def"));
       dealDamage(attacker, defender, damage);
@@ -3423,9 +3443,11 @@ function resolveAttack(attackerId, defenderId) {
         attackerVoid, defenderVoid,
         attackerDef, defenderDef
       );
+      renderGameState();
+      setupDropZones();
     });
   } else {
-    // Defender is a domain, animate attacker only
+// ATK VS DOMAIN OR ARTIFACT //
     animateAttack(attacker, attackerZoneId, () => {
       dealDamage(attacker, defender, computeCardStat(attacker, "atk"));
 
@@ -3436,6 +3458,8 @@ function resolveAttack(attackerId, defenderId) {
         attackerVoid, defenderVoid,
         attackerDef, defenderDef
       );
+      renderGameState();
+      setupDropZones();
     });
   }
 }
@@ -3505,12 +3529,9 @@ function dealDamage(cardObj, targetObj, damage) {
     const voidArr = (actualOwner === "player") ? gameState.playerVoid : gameState.opponentVoid;
     if (fromArr && voidArr) {
       moveCard(targetObj.instanceId, fromArr, voidArr);
-      renderGameState();
       return;
     }
   }
-
-  renderGameState();
 }
 // --- Utility: Determine card owner as "player" or "opponent" ---
 function getCardOwner(cardObj) {
@@ -3973,55 +3994,23 @@ function getCardColors(cardObj) {
 // ANIMATION LOGIC //
 -------------------*/
 // --- ATTACK ANIMATION LOGIC ---
-function animateAttack(cardObj, zoneId, callback, cardbackOverride) {
+function animateAttack(cardObj, zoneId, callback) {
   const cardDiv = findCardDivInZone(zoneId, cardObj.instanceId);
   if (!cardDiv) { callback && callback(); return; }
 
-  // Get card data and cardback
-  const cardData = dummyCards.find(c => c.id === cardObj.cardId);
-  const cardbackUrl = cardbackOverride
-    || window.selectedPlayerDeck?.deckObj?.cardbackArt
-    || "OtherImages/Cardbacks/CBDefault.png";
-
-  // Prepare card faces if not already present
-  if (!cardDiv.querySelector('.card-front')) {
-    const front = document.createElement('div');
-    front.className = 'card-front';
-    front.innerHTML = `<img src="${cardData.image}" alt="Card Front">`;
-    cardDiv.appendChild(front);
-  }
-  if (!cardDiv.querySelector('.card-back')) {
-    const back = document.createElement('div');
-    back.className = 'card-back';
-    back.innerHTML = `<img src="${cardbackUrl}" alt="Card Back">`;
-    cardDiv.appendChild(back);
-  }
-
-  // Ensure both faces are visible and reset transform
-  cardDiv.classList.remove('flipping');
-  cardDiv.style.transform = 'rotateY(0deg) scale(1)';
+  cardDiv.classList.remove('flipping', 'show-back');
   void cardDiv.offsetWidth; // force reflow
 
-  // Play attack sound if needed
-  // const snd = document.getElementById('attack-sound');
-  // if (snd) { snd.currentTime = 0; snd.play(); }
-
-  // Start flip animation
   cardDiv.classList.add('flipping');
-  
   const halfway = 350;
   const duration = 700;
 
-  // After half the duration (show cardback), then after full duration (restore)
   setTimeout(() => {
-    // Toggle to show-back class for the second half
     cardDiv.classList.add('show-back');
   }, halfway);
 
-  // At end, reset and call callback
   setTimeout(() => {
     cardDiv.classList.remove('flipping', 'show-back');
-    cardDiv.style.transform = 'rotateY(0deg) scale(1)';
     if (callback) callback();
   }, duration);
 }
@@ -4200,6 +4189,7 @@ function proceedSkillActivation(cardObj, skillObj, options = {}) {
   }
   // Now run the actual effect logic (no animation here)
   resolveSkillEffect(cardObj, skillObj);
+  renderGameState();
 }
 
 // SKILL RESOLUTION LOGIC //
