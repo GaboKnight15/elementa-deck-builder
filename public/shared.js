@@ -876,7 +876,7 @@ const CARD_KEYWORD_EXPLANATIONS = {
   firelands: {name: "Firelands",
     description: "Born of volcanic wrath and infernal hunger, these fire-beasts hunt not for survival, but to spread the consuming blaze of their cursed homeland. Fueled by relentless ferocity, the Firelands are defined by their fiery rushing strikes. They are known by their aggression, overwhelming foes with sudden, searing attacks before the battle has even begun."},
   cindercore: {name: "Cindercore",
-    description: "Forged in molten crucibles deep beneath the world, the Cindercore are living constructs of stone and flame. Their hearts burn with rivers of lava, each strike searing with lingering pain. Unlike other flames that flare and fade, the Cindercore are defined by their never-ending burning mastery and their unyielding defenses. They are an archetype of attrition, grinding foes down with relentless heat until only ash and ruin remain."},
+    description: "Forged in molten crucibles deep beneath the world, the Cindercore are living constructs of stone and flame. Their hearts burn with rivers of lava, each strike searing with lingering pain. Unlike other flames that flare and fade, Cindercore are defined by their never-ending burning mastery and unyielding defenses. They are an archetype of attrition, grinding foes down with relentless heat until only ash and ruin remain."},
   coralbound: {name: "Coralbound",
     description: "Forged in the abyssal depths where steel meets coral, these aquatic constructs channel the crushing force of the ocean. With cannons unleashing torrents of compressed, high-pressure water, the Coralbound strike with relentless precision. Their true lethality emerges against soaked opponents, turning vulnerability into devastation. Defined by their mechanical resilience and liquid ferocity, they drown foes beneath waves of unyielding power."},
   frostlands: {name: "Frostlands",
@@ -1583,6 +1583,7 @@ function renderProfilePanel(profile, options = {}) {
   container.style.alignItems = 'center';
   container.style.gap = '5px';
   container.style.minHeight = '120px';
+  container.style.minWidth = '227px';
   container.style.position = 'relative';
   container.style.boxSizing = 'border-box';
 
@@ -1610,7 +1611,7 @@ function renderProfilePanel(profile, options = {}) {
   // Username
   const usernameDiv = document.createElement('div');
   usernameDiv.textContent = displayUsername;
-  usernameDiv.style.fontSize = '1.38em';
+  usernameDiv.style.fontSize = '1.2em';
   usernameDiv.style.fontWeight = 'bold';
   usernameDiv.style.color = '#ffe066';
   usernameDiv.style.textShadow = '0 2px 8px #000';
@@ -1623,7 +1624,6 @@ function renderProfilePanel(profile, options = {}) {
 
   // Power display
   const powerDiv = document.createElement('div');
-  powerDiv.style.fontSize = '1.1em';
   powerDiv.style.fontWeight = 'bold';
   powerDiv.style.color = '#fff';
   powerDiv.style.display = 'flex';
