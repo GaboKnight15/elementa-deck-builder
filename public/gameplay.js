@@ -3146,7 +3146,7 @@ function updateReqDiv(requirements, reqPaid, reqDiv) {
             transition:filter 0.2s,opacity 0.2s;">`;
         }
       }
-      return `<span style="margin-right:12px;display:inline-flex;align-items:center;">${icons}</span>`;
+      return `<span style="display:inline-flex;align-items:center;">${icons}</span>`;
     }).join('')
   }`;
 }
