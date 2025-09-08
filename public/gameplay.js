@@ -1788,10 +1788,49 @@ function getBaseHp(cardId) {
   return card ? card.hp : 1; // fallback to 1 if not found
 }
 
+function computeCardStat(cardObj, statName) {
+  // Get base stat from dummyCards
+  const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
+  const base = cardDef?.[statName] ?? 0;
+
+  let mods = 0;
+
+  // Modifiers array (for skills, effects, etc)
+  if (Array.isArray(cardObj.modifiers)) {
+    mods += cardObj.modifiers
+      .filter(mod => mod.stat === statName)
+      .reduce((sum, mod) => sum + mod.value, 0);
+  }
+
+  // Statuses (e.g. Poison, Burn), if you want to support stat impacts here
+  if (Array.isArray(cardObj.statuses)) {
+    for (const status of cardObj.statuses) {
+      // If status has a stat impact, e.g. {def: -1}
+      if (typeof status[statName] === "number") mods += status[statName];
+    }
+  }
+
+  // Attachments (if attachments affect stats)
+  if (Array.isArray(cardObj.attachedCards)) {
+    for (const attachObj of cardObj.attachedCards) {
+      // If attachment directly gives stat
+      if (typeof attachObj[statName] === "number") mods += attachObj[statName];
+      // Or via modifiers array
+      if (Array.isArray(attachObj.modifiers)) {
+        mods += attachObj.modifiers
+          .filter(mod => mod.stat === statName)
+          .reduce((sum, mod) => sum + mod.value, 0);
+      }
+    }
+  }
+
+  // Clamp to minimum 0
+  return Math.max(0, base + mods);
+}
+
 function renderCardOnField(cardObj, zoneId) {
   const cardData = dummyCards.find(c => c.id === cardObj.cardId);
   const category = cardData?.category?.toLowerCase();
-  // Create wrapper FIRST!
   const wrapper = document.createElement('div');
   wrapper.className = 'card-battlefield-wrapper';
 
@@ -1838,7 +1877,7 @@ function renderCardOnField(cardObj, zoneId) {
 
   // ATK
   if (typeof cardData.atk === "number") {
-    const baseATK = typeof cardObj.atk === "number" ? cardObj.atk : cardData?.atk ?? 0;
+    const currentATK = computeCardStat(cardObj, "atk");
     const atkBadge = document.createElement('div');
     atkBadge.className = 'stat-badge stat-atk';
     atkBadge.style.position = 'absolute';
@@ -1855,14 +1894,14 @@ function renderCardOnField(cardObj, zoneId) {
         display:flex;align-items:center;justify-content:center;
         font-weight:bold;color:#fff;
         text-shadow:0 1px 4px #232;z-index:22;
-      ">${baseATK}</span>
+      ">${currentATK}</span>
     `;
     cardDiv.appendChild(atkBadge);
   }
 
   // DEF
   if (typeof cardData.def === "number") {
-    const baseDEF = typeof cardObj.def === "number" ? cardObj.def : cardData?.def ?? 0;
+    const currentDEF = computeCardStat(cardObj, "def");
     const defBadge = document.createElement('div');
     defBadge.className = 'stat-badge stat-def';
     defBadge.style.position = 'absolute';
@@ -1879,7 +1918,7 @@ function renderCardOnField(cardObj, zoneId) {
         display:flex;align-items:center;justify-content:center;
         font-weight:bold;color:#fff;
         text-shadow:0 1px 4px #232;z-index:22;
-      ">${baseDEF}</span>
+      ">${currentDEF}</span>
     `;
     cardDiv.appendChild(defBadge);
   }
@@ -1911,6 +1950,7 @@ function renderCardOnField(cardObj, zoneId) {
 
   // --- HP Bar (move to bottom) ---
   if (typeof cardData.hp === "number" && typeof currentHP === "number" && cardData.hp > 0) {
+    const baseHP = cardData.hp;
     const hpPercent = Math.max(0, Math.min(1, currentHP / baseHP));
     let barColor = "#4caf50"; // green
     if (hpPercent <= 0.25) barColor = "#e53935";
@@ -3356,10 +3396,10 @@ function resolveAttack(attackerId, defenderId) {
   if (defenderDef.category === "creature" && defender.orientation === "vertical") {
     // Defender is in ATK position: both deal damage to each other
     animateAttack(attacker, attackerZoneId, () => {
-      dealDamage(attacker, defender, attacker.atk);
+      dealDamage(attacker, defender, computeCardStat(attacker, "atk"));
 
       animateAttack(defender, defenderZoneId, () => {
-        dealDamage(defender, attacker, defender.atk);
+        dealDamage(defender, attacker, computeCardStat(defender, "atk"));
 
         window.isAnimating = false;
         finishAttackResolution(
@@ -3373,7 +3413,7 @@ function resolveAttack(attackerId, defenderId) {
   } else if (defenderDef.category === "creature" && defender.orientation === "horizontal") {
     // Defender is in DEF position: attacker deals (ATK - DEF), defender does NOT retaliate
     animateAttack(attacker, attackerZoneId, () => {
-      let damage = Math.max(0, attacker.atk - defender.def);
+      let damage = Math.max(0, computeCardStat(attacker, "atk") - computeCardStat(defender, "def"));
       dealDamage(attacker, defender, damage);
 
       window.isAnimating = false;
@@ -3387,7 +3427,7 @@ function resolveAttack(attackerId, defenderId) {
   } else {
     // Defender is a domain, animate attacker only
     animateAttack(attacker, attackerZoneId, () => {
-      dealDamage(attacker, defender, attacker.atk);
+      dealDamage(attacker, defender, computeCardStat(attacker, "atk"));
 
       window.isAnimating = false;
       finishAttackResolution(
@@ -3412,16 +3452,6 @@ function finishAttackResolution(
 ) {
   attacker.hasAttacked = true;
 
-  // Move cards to void if HP <= 0
-  if (attacker.currentHP <= 0 && attackerArr) {
-    const attackerVoidArr = (attacker.owner === "player") ? gameState.playerVoid : gameState.opponentVoid;
-    moveCard(attacker.instanceId, attackerArr, attackerVoidArr);
-  }
-  if (defender.currentHP <= 0 && defenderArr) {
-    const defenderVoidArr = (defender.owner === "player") ? gameState.playerVoid : gameState.opponentVoid;
-    moveCard(defender.instanceId, defenderArr, defenderVoidArr);
-  }
-
   // Only apply status if defender is still alive (not removed from battlefield)
   if (
     defenderDef &&
@@ -3441,29 +3471,45 @@ function finishAttackResolution(
 
 function dealDamage(cardObj, targetObj, damage) {
   const cardDef = dummyCards.find(c => c.id === targetObj.cardId);
-  // Initialize currentHP if undefined
+
+  // Initialize currentHP if undefined or NaN
   if (typeof targetObj.currentHP !== "number" || isNaN(targetObj.currentHP)) {
     targetObj.currentHP = typeof cardDef?.hp === "number" ? cardDef.hp : 1;
   }
 
-  // Clamp damage to a minimum of 0
-  damage = Math.max(0, damage);
-  // Safely apply damage (only ONCE!)
+  // Clamp damage to a minimum of 0 and ensure damage is a number
+  damage = Number(damage);
+  if (isNaN(damage) || damage < 0) damage = 0;
+
+  // Safely apply damage
   targetObj.currentHP = Math.max(0, targetObj.currentHP - damage);
-  // Initialize base stats if missing
+
+  // Initialize base stats if missing (fallbacks)
   targetObj.atk = typeof targetObj.atk === "number" ? targetObj.atk : cardDef?.atk ?? 0;
   targetObj.def = typeof targetObj.def === "number" ? targetObj.def : cardDef?.def ?? 0;
 
   // Move to void if HP <= 0
   if (targetObj.currentHP <= 0) {
     const fromArr = findCardFieldArray(targetObj);
-    const voidArr = (targetObj.owner === "player") ? gameState.playerVoid : gameState.opponentVoid;
+
+    // Use real owner, not just zone!
+    let actualOwner = targetObj.owner;
+    if (!actualOwner) {
+      actualOwner = getCardOwner(targetObj);
+    }
+    if (!actualOwner && targetObj.cardId) {
+      // Fallback: get owner from original card definition/instance
+      const origCard = dummyCards.find(c => c.id === targetObj.cardId);
+      actualOwner = origCard?.owner || "player"; // Fallback to player if unknown
+    }
+    const voidArr = (actualOwner === "player") ? gameState.playerVoid : gameState.opponentVoid;
     if (fromArr && voidArr) {
       moveCard(targetObj.instanceId, fromArr, voidArr);
       renderGameState();
       return;
     }
   }
+
   renderGameState();
 }
 // --- Utility: Determine card owner as "player" or "opponent" ---
@@ -3962,13 +4008,22 @@ function animateAttack(cardObj, zoneId, callback, cardbackOverride) {
 
   // Start flip animation
   cardDiv.classList.add('flipping');
+  
+  const halfway = 350;
+  const duration = 700;
 
   // After half the duration (show cardback), then after full duration (restore)
   setTimeout(() => {
-    cardDiv.classList.remove('flipping');
+    // Toggle to show-back class for the second half
+    cardDiv.classList.add('show-back');
+  }, halfway);
+
+  // At end, reset and call callback
+  setTimeout(() => {
+    cardDiv.classList.remove('flipping', 'show-back');
     cardDiv.style.transform = 'rotateY(0deg) scale(1)';
     if (callback) callback();
-  }, 700); // match CSS transition duration
+  }, duration);
 }
 function animateCardPositionChange(cardObj, zoneId, prevOrientation, newOrientation, callback) {
   const cardDiv = findCardDivInZone(zoneId, cardObj.instanceId);
