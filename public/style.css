@@ -2473,8 +2473,8 @@ button {}
 }
 /* CARD ATTACK ANIMATIONS */
 .card-battlefield.flipping {
-  transform: rotateY(360deg) scale(1.1);
-  z-index: 9999;
+  transition: transform 0.7s cubic-bezier(.6,-0.28,.74,.05);
+  transform: rotateY(180deg) scale(1.05);
 }
 .card-battlefield .card-front,
 .card-battlefield .card-back {
@@ -2483,7 +2483,6 @@ button {}
   height: 100%;
   backface-visibility: hidden;
   top: 0; left: 0;
-  border-radius: 8px;
   overflow: hidden;
 }
 .card-battlefield .card-front {
@@ -2494,6 +2493,10 @@ button {}
   transform: rotateY(180deg);
   z-index: 1;
 }
+.card-battlefield.show-back .card-front { opacity: 0; }
+.card-battlefield.show-back .card-back { opacity: 1; }
+.card-battlefield:not(.show-back) .card-front { opacity: 1; }
+.card-battlefield:not(.show-back) .card-back { opacity: 0; }
 /* CARD CHANGE POSITION ANIMATIONS */
 .card-battlefield.vertical {
   transform: rotate(0deg);
@@ -2502,6 +2505,13 @@ button {}
   transform: rotate(90deg);
 }
 
+/* CARD SKILL ACTIVATION ANIMATIONS */
+.card-battlefield.skill-activation-anim {
+  transition: transform 0.25s cubic-bezier(.22,1.14,.32,1), box-shadow 0.25s, border 0.25s;
+  transform: scale(1.13);
+  box-shadow: 0 0 24px #ffe066bb, 0 2px 16px #2228;
+  border: 3px solid #ffe066;
+}
 /* Shared hover/focus effects for child elements (ATK and DEF) */
 .card-battlefield:hover img,
 .card-battlefield:focus img,
