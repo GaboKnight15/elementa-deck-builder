@@ -2594,11 +2594,11 @@ button {}
 .zone-row {
   display: flex;
   flex-direction: row;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
   min-height: 120px;
   width: 100%;
-  gap: 18px;
+  gap: 36px;
   background: rgba(24, 32, 48, 0.70); /* deep blue, 70% opacity */
   border-radius: 14px;
   box-shadow: 0 4px 24px #0a183b38, 0 1.5px 0 #253350 inset;
