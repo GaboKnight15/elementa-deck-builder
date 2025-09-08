@@ -3754,13 +3754,13 @@ function appendAttackLog({ attacker, defender, defenderOrientation, who = "playe
   let logHtml = `<div class="log-action attack ${who}" style="background:${who === 'player' ? '#232' : '#322'}11;border-radius:7px;display:inline-flex;align-items:center;">`;
 
   // Attacker image
-  logHtml += cardImgLog(attackerDef, { width: 38, borderRadius: "6px", marginRight: "8px", who });
+  logHtml += cardImgLog(attackerDef, { width: 38, who });
 
   // Attack icon
   logHtml += `<img src="OtherImages/Icons/Attack.png" alt="Attack" style="width:32px;height:32px;vertical-align:middle;margin:0 9px;">`;
 
   // Defender image
-  logHtml += cardImgLog(defenderDef, {width: 38, marginRight: "8px", who, rotate: defenderOrientation === "horizontal" ? 90 : 0 });
+  logHtml += cardImgLog(defenderDef, {width: 38, marginLeft: "8px", who, rotate: defenderOrientation === "horizontal" ? 90 : 0 });
   logHtml += `</div>`;
   logDiv.insertAdjacentHTML('beforeend', logHtml);
   logDiv.scrollTop = logDiv.scrollHeight;
