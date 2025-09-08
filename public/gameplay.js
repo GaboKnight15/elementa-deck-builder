@@ -4053,66 +4053,21 @@ function animateCardPositionChange(cardObj, zoneId, prevOrientation, newOrientat
   });
 }
 function animateSkillActivation(cardObj, zoneId, callback) {
-  // Find the card DOM element in its zone
   const cardDiv = findCardDivInZone(zoneId, cardObj.instanceId);
   if (!cardDiv) { callback && callback(); return; }
 
-  // Create a clone for animation (so the card on field remains unchanged)
-  const rect = cardDiv.getBoundingClientRect();
-  const animDiv = cardDiv.cloneNode(true);
-  animDiv.classList.add('skill-activation-anim');
-  animDiv.style.position = 'fixed';
-  animDiv.style.left = rect.left + 'px';
-  animDiv.style.top = rect.top + 'px';
-  animDiv.style.width = rect.width + 'px';
-  animDiv.style.height = rect.height + 'px';
-  animDiv.style.zIndex = 99999;
-  animDiv.style.pointerEvents = 'none';
-  animDiv.style.transition = 'none';
-  animDiv.style.transform = 'scale(1)';
-  animDiv.style.opacity = '1';
+  // Remove previous effect if present
+  cardDiv.classList.remove('skill-activation-anim');
+  void cardDiv.offsetWidth; // force reflow
 
-  // Create overlay effect
-  const overlay = document.createElement('div');
-  overlay.className = 'skill-activation-overlay';
-  overlay.style.position = 'fixed';
-  overlay.style.left = rect.left + 'px';
-  overlay.style.top = rect.top + 'px';
-  overlay.style.width = rect.width + 'px';
-  overlay.style.height = rect.height + 'px';
-  overlay.style.zIndex = 99998;
-  overlay.style.pointerEvents = 'none';
-  overlay.style.background = 'radial-gradient(circle at 50% 45%, #ffe066cc 60%, #fffbe6aa 95%, transparent 100%)';
-  overlay.style.boxShadow = '0 8px 24px rgba(0,0,0,0.22)';
-  overlay.style.transition = 'opacity 0.22s';
-  overlay.style.opacity = '0.85';
+  // Add animation effect
+  cardDiv.classList.add('skill-activation-anim');
 
-  document.body.appendChild(overlay);
-  document.body.appendChild(animDiv);
-
-  // Animate: scale up and add highlight, then scale back down and remove
+  // Remove effect after animation (match CSS duration)
   setTimeout(() => {
-    animDiv.style.transition = 'transform 0.18s cubic-bezier(.22,1.14,.32,1), filter 0.18s, box-shadow 0.18s';
-    animDiv.style.transform = 'scale(1.18) translateY(-5px)';
-    animDiv.style.filter = 'brightness(1.15) drop-shadow(0 0 6px #ffe066aa)';
-    animDiv.style.boxShadow = '0 8px 24px rgba(0,0,0,0.22)';
-    overlay.style.opacity = '1';
-
-    // Scale back down after a short delay
-    setTimeout(() => {
-      animDiv.style.transform = 'scale(1) translateY(0)';
-      animDiv.style.filter = '';
-      animDiv.style.boxShadow = '';
-      overlay.style.opacity = '0.7';
-
-      // Remove after transition
-      setTimeout(() => {
-        animDiv.remove();
-        overlay.remove();
-        callback && callback();
-      }, 220); // Match transition duration
-    }, 320); // Time the card stays zoomed
-  }, 16); // Start transition after DOM paint
+    cardDiv.classList.remove('skill-activation-anim');
+    if (callback) callback();
+  }, 400); // 0.4s duration, adjust if needed
 }
 function animateCardFade(instanceId, fromZoneId, toZoneId, callback) {
   // Find the card div in the fromZone
