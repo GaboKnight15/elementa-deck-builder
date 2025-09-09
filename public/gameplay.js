@@ -326,7 +326,6 @@ const REQUIREMENT_MAP = {
   Stash: {
     zones: ['hand'],
     handler: function(sourceCardObj, skillObj) {
-      runHandSkillWithAnimation(sourceCardObj, skillObj, gameState.playerDeck);
       const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
       if (!validZones.some(zone => zone === 'hand')) {
         showToast("Stash can only be activated from your hand.");
@@ -1845,7 +1844,13 @@ function renderCardOnField(cardObj, zoneId) {
   // --- Always render card-front and card-back ---
   const frontDiv = document.createElement('div');
   frontDiv.className = 'card-front';
-  frontDiv.innerHTML = `<img src="${cardData.image}" alt="${cardData.name || "Card"}" style="width:100%;height:100%;">`;
+  const img = document.createElement('img');
+  img.src = cardData.image;
+  img.alt = cardData.name || "Card";
+  img.style.width = "100%";
+  img.style.height = "100%";
+  if (cardObj.orientation === "horizontal") img.style.transform = "rotate(90deg)";
+  frontDiv.appendChild(img);
 
   // Choose the right cardback (player or opponent)
   let cardbackUrl = window.selectedPlayerDeck?.deckObj?.cardbackArt || "OtherImages/Cardbacks/CBDefault.png";
