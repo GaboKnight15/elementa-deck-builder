@@ -3416,7 +3416,7 @@ function resolveAttack(attackerId, defenderId) {
     animateAttack(attacker, attackerZoneId, () => {
       dealDamage(attacker, defender, computeCardStat(attacker, "atk"));
 
-      animateAttack(defender, defenderZoneId, () => {
+      animateDefenderHit(defender, defenderZoneId, () => {
         dealDamage(defender, attacker, computeCardStat(defender, "atk"));
 
         window.isAnimating = false;
@@ -3998,21 +3998,29 @@ function animateAttack(cardObj, zoneId, callback) {
   const cardDiv = findCardDivInZone(zoneId, cardObj.instanceId);
   if (!cardDiv) { callback && callback(); return; }
 
-  cardDiv.classList.remove('flipping', 'show-back');
+  // Remove previous animation classes
+  cardDiv.classList.remove('attack-lunge', 'flipping', 'show-back', 'shake-hit');
   void cardDiv.offsetWidth; // force reflow
 
-  cardDiv.classList.add('flipping');
-  const halfway = 350;
-  const duration = 700;
-
+  // Attacker lunges forward
+  cardDiv.classList.add('attack-lunge');
   setTimeout(() => {
-    cardDiv.classList.add('show-back');
-  }, halfway);
-
-  setTimeout(() => {
-    cardDiv.classList.remove('flipping', 'show-back');
+    cardDiv.classList.remove('attack-lunge');
+    // Optional: add a slight flash or color change (can add a class here)
     if (callback) callback();
-  }, duration);
+  }, 300); // match attack-lunge animation duration
+}
+function animateDefenderHit(cardObj, zoneId, callback) {
+  const cardDiv = findCardDivInZone(zoneId, cardObj.instanceId);
+  if (!cardDiv) { callback && callback(); return; }
+
+  cardDiv.classList.remove('shake-hit');
+  void cardDiv.offsetWidth; // force reflow
+  cardDiv.classList.add('shake-hit');
+  setTimeout(() => {
+    cardDiv.classList.remove('shake-hit');
+    if (callback) callback();
+  }, 220); // match shake-hit animation duration
 }
 function animateCardPositionChange(cardObj, zoneId, prevOrientation, newOrientation, callback) {
   const cardDiv = findCardDivInZone(zoneId, cardObj.instanceId);
