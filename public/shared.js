@@ -1234,13 +1234,8 @@ function renderCardCost(costData) {
   if (!costData) {
     return `<img src="${COST_IMAGE_MAP.X0}" alt="Cost: 0" style="width:22px;height:22px;vertical-align:middle;">`;
   }
-
-  // --- NEW: String style ("{2}{R}{B}") ---
   if (typeof costData === "string") {
     // Use parseEffectText for cost string, but limit to icons only
-   const codeToColor = {
-    G: 'green', R: 'red', U: 'blue', Y: 'yellow', C: 'gray', P: 'purple', B: 'black', W: 'white'
-   };
    html = costData.replace(/\{([GRUYCPBW])\}/g, (match, code) =>
      `<img src="${COST_IMAGE_MAP[codeToColor[code]]}" style="width:22px;height:22px;vertical-align:middle;">`
    );
