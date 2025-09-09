@@ -70,6 +70,27 @@ resetBtn.onclick = function() {
 };
   }
 });
+document.addEventListener('DOMContentLoaded', function() {
+  // Extend gallery essence display to include Bulk Void button
+  const galleryEl = document.getElementById('gallery-essence-amount');
+  if (galleryEl) {
+    let bulkVoidBtn = document.getElementById('bulk-void-btn');
+    if (!bulkVoidBtn) {
+      bulkVoidBtn = document.createElement('img');
+      bulkVoidBtn.id = 'bulk-void-btn';
+      bulkVoidBtn.src = 'OtherImages/Icons/Void.png';
+      bulkVoidBtn.alt = 'Bulk Void';
+      bulkVoidBtn.title = 'Bulk Void duplicates for essence';
+      bulkVoidBtn.style.width = '28px';
+      bulkVoidBtn.style.height = '28px';
+      bulkVoidBtn.style.cursor = 'pointer';
+      bulkVoidBtn.style.verticalAlign = 'middle';
+      bulkVoidBtn.style.marginLeft = '8px';
+      bulkVoidBtn.onclick = showBulkVoidModal;
+      galleryEl.parentNode.insertBefore(bulkVoidBtn, galleryEl.nextSibling);
+    }
+  }
+});
 // Update the icon appearance
 function updateFavoriteFilterIcon() {
   const favIcon = document.getElementById('filter-favorites-gallery');
@@ -576,12 +597,7 @@ function createVoidCardButton(card, onActionDone) {
   return btn;
 }
 // CREATE/VOID CONFIRM MODAL
-function showEssenceConfirmModal({
-  action, // "create" or "void"
-  card, 
-  amount, 
-  onConfirm 
-}) {
+function showEssenceConfirmModal({action, card, amount, onConfirm }) {
   const modal = document.getElementById('essence-confirm-modal');
   const msgDiv = document.getElementById('essence-confirm-msg');
   const cardImg = document.getElementById('essence-confirm-card-img');
@@ -681,7 +697,86 @@ function updateGalleryCollectionProgress(filteredCards) {
   const progDiv = document.getElementById('gallery-collection-progress');
   if (progDiv) progDiv.innerHTML = str;
 }
+// Bulk Void modal logic
+function showBulkVoidModal() {
+  const collection = getCollection();
+  const cardsToVoid = [];
+  let totalEssence = 0;
 
+  dummyCards.forEach(card => {
+    const owned = collection[card.id] || 0;
+    const minKept = getMinimumKeptForRarity(card);
+    const voidable = owned - minKept;
+    if (voidable > 0) {
+      const refund = VOID_ESSENCE_REFUND[getRarityKey(card)] || 1;
+      cardsToVoid.push({
+        card,
+        count: voidable,
+        refund,
+        subtotal: voidable * refund
+      });
+      totalEssence += voidable * refund;
+    }
+  });
+
+  const modal = document.getElementById('bulk-void-modal');
+  const content = document.getElementById('bulk-void-modal-content');
+
+  if (cardsToVoid.length === 0) {
+    content.innerHTML = `
+      <h3 style="color:#ffe066;margin-bottom:12px;">Bulk Void</h3>
+      <div style="margin-bottom:20px;color:#fff;">
+        You have no voidable duplicates at this time.<br>
+        You must keep at least the minimum for each card's rarity.
+      </div>
+      <div style="display:flex;justify-content:center;gap:12px;">
+        <button class="btn-negative-secondary" id="bulk-void-cancel-btn">Close</button>
+      </div>
+    `;
+    modal.style.display = 'flex';
+    document.getElementById('bulk-void-cancel-btn').onclick = () => { modal.style.display = 'none'; };
+    return;
+  }
+
+  let cardRows = cardsToVoid.map(({card, count, refund, subtotal}) => `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:7px;">
+      <img src="${card.image}" alt="${card.name}" style="width:38px;height:54px;border-radius:5px;border:2px solid #444;">
+      <span style="font-weight:bold;color:#ffe066;">${card.name}</span>
+      <span style="color:#fff;">×${count}</span>
+      <span style="color:#eee;">(${refund} Essence each)</span>
+      <span style="color:#6f6;">+${subtotal}</span>
+    </div>
+  `).join('');
+
+  content.innerHTML = `
+    <h3 style="color:#ffe066;margin-bottom:12px;">Bulk Void</h3>
+    <div style="margin-bottom:18px;color:#fff;">
+      Are you sure you want to void the following cards for <span style="color:#6f6;font-weight:bold;">${totalEssence} Essence</span>?
+    </div>
+    <div style="max-height:270px;overflow-y:auto;margin-bottom:18px;">
+      ${cardRows}
+    </div>
+    <div style="display:flex;justify-content:center;gap:12px;">
+      <button class="btn-secondary" id="bulk-void-confirm-btn">Void All</button>
+      <button class="btn-negative-secondary" id="bulk-void-cancel-btn">Cancel</button>
+    </div>
+  `;
+
+  modal.style.display = 'flex';
+
+  document.getElementById('bulk-void-cancel-btn').onclick = () => { modal.style.display = 'none'; };
+  document.getElementById('bulk-void-confirm-btn').onclick = function() {
+    cardsToVoid.forEach(({card, count}) => {
+      collection[card.id] -= count;
+    });
+    playerEssence += totalEssence;
+    saveProgress();
+    updateEssenceDisplay();
+    renderGallery();
+    modal.style.display = 'none';
+    showToast(`Bulk voided ${cardsToVoid.length} cards for ${totalEssence} Essence!`, {type: "success"});
+  };
+}
 // FOIL LOGIC
 function upgradeCardToFoil(cardId) {
   const userId = firebase.auth().currentUser.uid;
