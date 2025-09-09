@@ -28,7 +28,18 @@ const PHASES = [{ turn: 'player', phase: 'draw' },{ turn: 'player', phase: 'esse
 };
 
 let attackMode = {attackerId: null, attackerZone: null, cancelHandler: null};
-
+const ZONE_MAP = {
+  playerCreatures: { id: "player-creatures-zone", arr: () => gameState.playerCreatures },
+  playerDomains:   { id: "player-domains-zone",   arr: () => gameState.playerDomains },
+  playerVoid:      { id: "player-void-zone",      arr: () => gameState.playerVoid },
+  playerDeck:      { id: "player-deck-zone",      arr: () => gameState.playerDeck },
+  playerHand:      { id: "player-hand",           arr: () => gameState.playerHand },
+  opponentCreatures: { id: "opponent-creatures-zone", arr: () => gameState.opponentCreatures },
+  opponentDomains:   { id: "opponent-domains-zone",   arr: () => gameState.opponentDomains },
+  opponentVoid:      { id: "opponent-void-zone",      arr: () => gameState.opponentVoid },
+  opponentDeck:      { id: "opponent-deck-zone",      arr: () => gameState.opponentDeck },
+  opponentHand:      { id: "opponent-hand",           arr: () => gameState.opponentHand }
+};
 const INITIAL_HAND_SIZE = 5;
 const ESSENCE_IMAGE_MAP = {
   red: "OtherImages/Essence/Red.png",
@@ -960,156 +971,121 @@ function drawOpeningHands() {
   }
 }
 function getZoneArray(zoneId) {
-  switch (zoneId) {
-    case "player-creatures-zone": return gameState.playerCreatures;
-    case "player-domains-zone": return gameState.playerDomains;
-    case "player-void-zone": return gameState.playerVoid;
-    case "opponent-creatures-zone": return gameState.opponentCreatures;
-    case "opponent-domains-zone": return gameState.opponentDomains;
-    case "opponent-void-zone": return gameState.opponentVoid;
-    // Add more if you have more zones
-    default: return null;
+  for (const zoneName in ZONE_MAP) {
+    if (ZONE_MAP[zoneName].id === zoneId) return ZONE_MAP[zoneName].arr();
   }
+  return null;
 }
 // Helper to get zone name for an array reference
 function getZoneNameForArray(arr) {
-  if (arr === gameState.playerCreatures) return 'playerCreatures';
-  if (arr === gameState.playerDomains) return 'playerDomains';
-  if (arr === gameState.opponentCreatures) return 'opponentCreatures';
-  if (arr === gameState.opponentDomains) return 'opponentDomains';
-  if (arr === gameState.playerHand) return 'playerHand';
-  if (arr === gameState.opponentHand) return 'opponentHand';
-  if (arr === gameState.playerDeck) return 'playerDeck';
-  if (arr === gameState.opponentDeck) return 'opponentDeck';
-  if (arr === gameState.playerVoid) return 'playerVoid';
-  if (arr === gameState.opponentVoid) return 'opponentVoid';
+  for (const zoneName in ZONE_MAP) {
+    if (ZONE_MAP[zoneName].arr() === arr) return zoneName;
+  }
   return '';
 }
 // Helper: find zoneId for a cardObj
 function findZoneIdForCard(cardObj) {
-  if (gameState.playerCreatures.includes(cardObj)) return 'player-creatures-zone';
-  if (gameState.playerDomains.includes(cardObj)) return 'player-domains-zone';
-  if (gameState.opponentCreatures.includes(cardObj)) return 'opponent-creatures-zone';
-  if (gameState.opponentDomains.includes(cardObj)) return 'opponent-domains-zone';
+  for (const zoneName in ZONE_MAP) {
+    if (ZONE_MAP[zoneName].arr().includes(cardObj)) return ZONE_MAP[zoneName].id;
+  }
   return '';
 }
 function findCardFieldArray(cardObj) {
-  if (gameState.playerCreatures.includes(cardObj)) return gameState.playerCreatures;
-  if (gameState.playerDomains.includes(cardObj)) return gameState.playerDomains;
-  if (gameState.opponentCreatures.includes(cardObj)) return gameState.opponentCreatures;
-  if (gameState.opponentDomains.includes(cardObj)) return gameState.opponentDomains;
+  for (const zoneName in ZONE_MAP) {
+    if (
+      zoneName.endsWith("Creatures") ||
+      zoneName.endsWith("Domains")
+    ) {
+      if (ZONE_MAP[zoneName].arr().includes(cardObj)) return ZONE_MAP[zoneName].arr();
+    }
+  }
   return null;
 }
 // ===================================
 // ========== ACTIONS LOGIC ==========
 // ===================================
 // MOVE OBJECT
-function moveCard(instanceId, fromArr, toArr, extra = {}) {
-  const idx = fromArr.findIndex(card => card.instanceId === instanceId);
-  if (idx !== -1) {
-    let cardObj = { ...fromArr[idx], ...extra };
-    let cardDef = dummyCards.find(c => c.id === cardObj.cardId);
+function moveCard(instanceId, fromArr, toArr, extra = {}, callback) {
+  const fromZoneName = getZoneNameForArray(fromArr);
+  const toZoneName = getZoneNameForArray(toArr);
+  const fromZoneId = ZONE_MAP[fromZoneName]?.id;
+  const toZoneId = ZONE_MAP[toZoneName]?.id;
 
-    // If card has attachments and is leaving the field, detach them
-    if (cardObj.attachedCards && cardObj.attachedCards.length > 0) {
-      // Decide where to put them: to hand, toArr, or to void?
-      let zoneName = getZoneNameForArray(toArr);
-      let destinationArr = null;
-      if (zoneName === 'playerHand') {
-        destinationArr = gameState.playerHand;
-      } else if (zoneName === 'playerVoid') {
-        destinationArr = gameState.playerVoid;
-      } else {
-        // Default: send to void
-        destinationArr = gameState.playerVoid;
+  // Animate move (fade out/in)
+  animateCardMove(instanceId, fromZoneId, toZoneId, () => {
+    const idx = fromArr.findIndex(card => card.instanceId === instanceId);
+    if (idx !== -1) {
+      let cardObj = { ...fromArr[idx], ...extra };
+      let cardDef = dummyCards.find(c => c.id === cardObj.cardId);
+
+      // Handle attachments (detach if leaving battlefield)
+      if (cardObj.attachedCards && cardObj.attachedCards.length > 0) {
+        let destinationArr = ZONE_MAP[toZoneName]?.arr();
+        if (!destinationArr || toZoneName === "playerVoid" || toZoneName === "opponentVoid") {
+          destinationArr = cardObj.owner === "player" ? gameState.playerVoid : gameState.opponentVoid;
+        }
+        cardObj.attachedCards.forEach(att => destinationArr.push(att));
+        cardObj.attachedCards = [];
       }
-      cardObj.attachedCards.forEach(att => {
-        destinationArr.push(att);
-      });
-      cardObj.attachedCards = []; // clear attachments
-    }
 
-    // Define which arrays are the field zones (battlefield)
-    const fieldArrays = [
-      gameState.playerCreatures,
-      gameState.playerDomains,
-      gameState.opponentCreatures,
-      gameState.opponentDomains
-    ];
-    const fromField = fieldArrays.includes(fromArr);
-    const toField = fieldArrays.includes(toArr);
-
-    // If moving OUT of field, remove currentHP & orientation so it resets next time
-    if (!toField) {
-      delete cardObj.currentHP;
-      delete cardObj.orientation;
-    }
-    const destZone = getZoneNameForArray(toArr);
-    if (destZone === 'playerVoid' || destZone === 'opponentVoid') {
-      let owner;
-      // If sending from player's hand or deck, always player
-      if (fromArr === gameState.playerHand || fromArr === gameState.playerDeck) {
-        owner = "player";
-      } else if (fromArr === gameState.opponentHand || fromArr === gameState.opponentDeck) {
-        owner = "opponent";
-      } else {
-        owner = cardObj.owner || getCardOwner(cardObj);
+      // If moving OUT of field, remove combat props
+      const fieldZones = ["playerCreatures", "playerDomains", "opponentCreatures", "opponentDomains"];
+      const fromField = fieldZones.includes(fromZoneName);
+      const toField = fieldZones.includes(toZoneName);
+      if (fromField && !toField) {
+        delete cardObj.currentHP;
+        delete cardObj.orientation;
       }
-      toArr = owner === "player" ? gameState.playerVoid : gameState.opponentVoid;
-    }
-    const isDrawToHand =
-      (fromArr === gameState.playerDeck && toArr === gameState.playerHand) ||
-      (fromArr === gameState.opponentDeck && toArr === gameState.opponentHand);
-    let logObj;
-    if (isDrawToHand) {
-      logObj = {
-        sourceCard: {
-          image: cardDef?.image,
-          name: cardDef?.name,
-          cardId: cardDef?.id,
-          isDraw: true // flag for rendering cardback for opponent
-        },
-        action: "draw",
-        dest: "Hand",
-        who: (fromArr === gameState.playerDeck) ? "player" : "opponent",
-        sender: gameState.playerProfile?.username || "me"
-      };
-    } else {
-      // Standard move log
-      const destZone = getZoneNameForArray(toArr);
-      const sourceZone = getZoneNameForArray(fromArr);
-      logObj = {
-        sourceCard: { image: cardDef?.image, name: cardDef?.name, cardId: cardDef?.id },
-        action: "move",
-        dest: destZone === 'playerVoid' ? "Void"
-          : destZone === 'playerHand' ? "Hand"
-          : destZone === 'playerDeck' ? "Deck"
-          : destZone === 'playerDomains' ? "Domains"
-          : destZone === 'playerCreatures' ? "Creatures"
-          : destZone === 'opponentVoid' ? "Void"
-          : destZone === 'opponentHand' ? "Hand"
-          : destZone === 'opponentDeck' ? "Deck"
-          : destZone === 'opponentDomains' ? "Domains"
-          : destZone === 'opponentCreatures' ? "Creatures"
-          : destZone,
-        from: sourceZone,
-        who: (fromArr === gameState.playerHand || fromArr === gameState.playerDeck ||
-              fromArr === gameState.playerDomains || fromArr === gameState.playerCreatures) ? "player" : "opponent",
-        sender: gameState.playerProfile?.username || "me"
-      };
-    }
 
-    // Always append log locally (solo or multiplayer!)
-    appendVisualLog(logObj, false, logObj.who === "player");
-    // Only emit to socket if in multiplayer mode
-    if (window.socket && window.currentRoomId) {
-      window.socket.emit('game action log', window.currentRoomId, logObj);
+      // If moving into Void, ensure correct owner
+      if (toZoneName === 'playerVoid' || toZoneName === 'opponentVoid') {
+        let owner = cardObj.owner || getCardOwner(cardObj);
+        toArr = owner === "player" ? gameState.playerVoid : gameState.opponentVoid;
+      }
+
+      // Logging
+      let logObj;
+      const isDrawToHand = (
+        fromZoneName === "playerDeck" && toZoneName === "playerHand"
+      ) || (
+        fromZoneName === "opponentDeck" && toZoneName === "opponentHand"
+      );
+      if (isDrawToHand) {
+        logObj = {
+          sourceCard: {
+            image: cardDef?.image,
+            name: cardDef?.name,
+            cardId: cardDef?.id,
+            isDraw: true
+          },
+          action: "draw",
+          dest: "Hand",
+          who: fromZoneName === "playerDeck" ? "player" : "opponent",
+          sender: gameState.playerProfile?.username || "me"
+        };
+      } else {
+        logObj = {
+          sourceCard: { image: cardDef?.image, name: cardDef?.name, cardId: cardDef?.id },
+          action: "move",
+          dest: toZoneName.replace(/([A-Z])/g, ' $1').trim(),
+          from: fromZoneName,
+          who: ["playerHand","playerDeck","playerDomains","playerCreatures"].includes(fromZoneName) ? "player" : "opponent",
+          sender: gameState.playerProfile?.username || "me"
+        };
+      }
+      appendVisualLog(logObj, false, logObj.who === "player");
+      if (window.socket && window.currentRoomId) {
+        window.socket.emit('game action log', window.currentRoomId, logObj);
+      }
+
+      // Final move
+      fromArr.splice(idx, 1);
+      toArr.push(cardObj);
     }
-    fromArr.splice(idx, 1);
-    toArr.push(cardObj);
-  }
-  setupDropZones();
-  emitPublicState();
+    setupDropZones();
+    emitPublicState();
+    if (callback) callback();
+  });
 }
 
 // CREATE CARD MENUS
@@ -3977,6 +3953,36 @@ function getCardColors(cardObj) {
 /*-------------------
 // ANIMATION LOGIC //
 -------------------*/
+
+// --- MOVING ANIMATION --- //
+function animateCardMove(instanceId, fromZoneId, toZoneId, afterAnim) {
+  if (!fromZoneId || !toZoneId) { afterAnim && afterAnim(); return; }
+  const fromZone = document.getElementById(fromZoneId);
+  if (!fromZone) { afterAnim && afterAnim(); return; }
+  const cardDiv = Array.from(fromZone.querySelectorAll('.card-battlefield')).find(div =>
+    div.dataset.instanceId === instanceId
+  );
+  if (!cardDiv) { afterAnim && afterAnim(); return; }
+
+  // Fade out
+  cardDiv.classList.add('card-fade-out');
+  setTimeout(() => {
+    cardDiv.classList.remove('card-fade-out');
+    afterAnim && afterAnim();
+
+    // Fade in at destination after render
+    setTimeout(() => {
+      const toZone = document.getElementById(toZoneId);
+      if (!toZone) return;
+      const newCardDiv = Array.from(toZone.querySelectorAll('.card-battlefield')).find(div =>
+        div.dataset.instanceId === instanceId);
+      if (newCardDiv) {
+        newCardDiv.classList.add('card-fade-in');
+        setTimeout(() => newCardDiv.classList.remove('card-fade-in'), 250);
+      }
+    }, 35);
+  }, 220);
+}
 // --- ATTACK ANIMATION LOGIC ---
 function animateAttack(cardObj, zoneId, callback) {
   const cardDiv = findCardDivInZone(zoneId, cardObj.instanceId);
