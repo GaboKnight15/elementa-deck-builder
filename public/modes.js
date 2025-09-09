@@ -285,7 +285,7 @@ function renderDeckOptions() {
       window.startGame({
         mode: "solo",
         playerDeck: playerDeckObj,
-        opponentDeck: deck,
+        opponentDeck: buildCpuDeck(deck),
         playerProfile: playerProfile,
         opponentProfile: opponentProfile,
         isCpuGame: true
