@@ -2516,7 +2516,31 @@ button {}
 .card-battlefield.horizontal {
   transform: rotate(90deg);
 }
+.card-battlefield .card-front {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  opacity: 1;
+  transition: opacity 0.2s;
+}
 
+.card-battlefield .card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  opacity: 0; /* <--- Default hidden */
+  transition: opacity 0.2s;
+}
+
+/* Only show card-back during animation (e.g., flipping) */
+.card-battlefield.show-back .card-front {
+  opacity: 0;
+}
+.card-battlefield.show-back .card-back {
+  opacity: 1;
+}
 /* CARD SKILL ACTIVATION ANIMATIONS */
 .card-battlefield.skill-activation-anim {
   transition: transform 0.25s cubic-bezier(.22,1.14,.32,1), box-shadow 0.25s, border 0.25s;
