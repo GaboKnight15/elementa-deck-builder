@@ -3490,8 +3490,8 @@ function resolveAttack(attackerId, defenderId) {
       animateDefenderHit(defender, defenderInfo.zoneId, () => {
         defender.currentHP = Math.max(0, (defender.currentHP || getBaseHp(defender.cardId)) - attackerDmg);
         attacker.currentHP = Math.max(0, (attacker.currentHP || getBaseHp(attacker.cardId)) - defenderDmg);
-        if (defender.currentHP <= 0) moveCard(defender.instanceId, defenderInfo.arr, defenderInfo.voidArr);
-        if (attacker.currentHP <= 0) moveCard(attacker.instanceId, attackerInfo.arr, attackerInfo.voidArr);
+        if (defender.currentHP <= 0) moveCard(defender.instanceId, defenderInfo.arr, gameState.playerVoid);
+        if (attacker.currentHP <= 0) moveCard(attacker.instanceId, attackerInfo.arr, gameState.playerVoid);
         finishResolution();
       });
     });
@@ -4275,14 +4275,17 @@ function resolveSkillEffect(cardObj, skillObj) {
     }
   });
 }
-function startSkillTarget(targets, onSelect, opts = {}) {
-  battlefield.classList.add('skill-mode-backdrop');
+function startSkillTarget(validTargets, onSelect) {
+  // Remove any previous highlights and handlers
   document.querySelectorAll('.target-highlight').forEach(el => {
     el.classList.remove('target-highlight');
     el.onclick = null;
   });
 
-  targets.forEach(cardObj => {
+  battlefield.classList.add('skill-mode-backdrop');
+
+  validTargets.forEach(cardObj => {
+    // Find card DOM in all field zones
     const zoneIds = [
       'player-creatures-zone', 'player-domains-zone',
       'opponent-creatures-zone', 'opponent-domains-zone'
@@ -4296,19 +4299,18 @@ function startSkillTarget(targets, onSelect, opts = {}) {
       cardDiv.classList.add('target-highlight');
       cardDiv.onclick = function(e) {
         e.stopPropagation();
-        // Remove highlights and handlers after selection
+        // Remove highlights and handlers
         document.querySelectorAll('.target-highlight').forEach(el => {
           el.classList.remove('target-highlight');
           el.onclick = null;
         });
         battlefield.classList.remove('skill-mode-backdrop');
-        document.body.removeEventListener('click', cancelHandler); // Remove cancel handler!
         onSelect(cardObj);
       };
     }
   });
 
-  // Cancel logic, same as attack targeting
+  // Cancel logic: clicking elsewhere
   function cancelHandler(e) {
     document.querySelectorAll('.target-highlight').forEach(el => {
       el.classList.remove('target-highlight');
