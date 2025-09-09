@@ -1106,9 +1106,11 @@ function moveCard(instanceId, fromArr, toArr, extra = {}, callback) {
       }
 
       // If moving into Void, ensure correct owner
-      if (toZoneName === 'playerVoid' || toZoneName === 'opponentVoid') {
-        let owner = cardObj.owner || getCardOwner(cardObj);
-        toArr = owner === "player" ? gameState.playerVoid : gameState.opponentVoid;
+      if (toZoneName === 'playerVoid') {
+        toArr = gameState.playerVoid;
+      }
+      else if (toZoneName === 'opponentVoid') {
+        toArr = gameState.opponentVoid;
       }
 
       // Logging
@@ -1881,7 +1883,9 @@ function computeCardStat(cardObj, statName) {
   allFieldCards.forEach(sourceCard => {
     const sourceDef = dummyCards.find(c => c.id === sourceCard.cardId);
     if (!sourceDef?.ability) return;
-    sourceDef.ability.forEach(ab => {
+
+    const abilityArr = Array.isArray(sourceDef.ability) ? sourceDef.ability : (sourceDef.ability ? [sourceDef.ability] : []);
+    abilityArr.forEach(ab => {
       if (typeof ab === "object" && ab.effect === "Inspire") {
         if (matchesFilter(cardObj, ab)) {
           if (statName === "atk" && ab.atk) mods += ab.atk;
