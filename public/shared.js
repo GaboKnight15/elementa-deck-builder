@@ -1809,17 +1809,19 @@ function showInputModal({
   content.style.borderRadius = "18px";
   content.onclick = e => e.stopPropagation();
 
-  content.innerHTML = `
-    <h3 style="color:#ffe066;margin-bottom:12px;">${title}</h3>
-    ${label ? `<div style="margin-bottom:7px;color:#ffe066;">${label}</div>` : ""}
-    <input id="modal-input-field" type="text" value="${defaultValue}"
-      ${maxLength ? `maxlength="${maxLength}"` : ""}
-      placeholder="${placeholder}"
-      style="width:100%;padding:8px 11px;font-size:1.13em;border-radius:7px;margin-bottom:10px;" />
-    <div id="modal-input-error" style="color:#e25555;font-size:0.98em;margin-bottom:8px;display:none"></div>
-    <button id="modal-input-confirm" class="btn-secondary" style="margin-right:8px;">${confirmText}</button>
-    <button id="modal-input-cancel" class="btn-negative-secondary">${cancelText}</button>
-  `;
+ content.innerHTML = `
+   <h3 style="color:#ffe066;margin-bottom:12px;">${title}</h3>
+   ${label ? `<div style="margin-bottom:7px;color:#ffe066;">${label}</div>` : ""}
+   <input id="modal-input-field" type="text" value="${defaultValue}"
+     ${maxLength ? `maxlength="${maxLength}"` : ""}
+     placeholder="${placeholder}"
+     style="padding:8px 11px;font-size:1.13em;border-radius:7px;margin-bottom:10px;" />
+   <div id="modal-input-error" style="color:#e25555;font-size:0.98em;margin-bottom:8px;display:none"></div>
+   <div style="display:flex;justify-content:center;gap:10px;margin-top:2px;">
+     <button id="modal-input-confirm" class="btn-secondary">${confirmText}</button>
+     <button id="modal-input-cancel" class="btn-negative-secondary">${cancelText}</button>
+   </div>
+ `;
   modal.appendChild(content);
   document.body.appendChild(modal);
 
