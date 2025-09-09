@@ -1001,6 +1001,18 @@ function findCardFieldArray(cardObj) {
   }
   return null;
 }
+// --- Utility: Determine card owner as "player" or "opponent" ---
+function getCardOwner(cardObj) {
+  if (gameState.playerCreatures.includes(cardObj) || gameState.playerDomains.includes(cardObj)) return "player";
+  if (gameState.opponentCreatures.includes(cardObj) || gameState.opponentDomains.includes(cardObj)) return "opponent";
+  return null;
+}
+
+// --- Reset hasAttacked for all creatures at start of player's/opponent's action phase ---
+function resetAttackFlags(turn) {
+  const arr = turn === "player" ? gameState.playerCreatures : gameState.opponentCreatures;
+  arr.forEach(creature => { creature.hasAttacked = false; });
+}
 // ===================================
 // ========== ACTIONS LOGIC ==========
 // ===================================
@@ -3313,159 +3325,87 @@ function runAttackDeclarationAbilities(attacker, defender, next) {
 }
 // --- ATTACK RESOLUTION ANIMATION ---
 function resolveAttack(attackerId, defenderId) {
-  // Find attacker and defender card objects and their arrays
-  let attacker, defender, attackerArr, defenderArr, attackerVoid, defenderVoid;
-
-  attacker =
+  // Find attacker/defender objects
+  const attacker =
     gameState.playerCreatures.find(c => c.instanceId === attackerId) ||
     gameState.opponentCreatures.find(c => c.instanceId === attackerId);
-
-  defender =
+  const defender =
     gameState.opponentCreatures.find(c => c.instanceId === defenderId) ||
     gameState.opponentDomains.find(c => c.instanceId === defenderId) ||
     gameState.playerCreatures.find(c => c.instanceId === defenderId) ||
     gameState.playerDomains.find(c => c.instanceId === defenderId);
 
+  if (!attacker || !defender) return;
+
   const attackerDef = dummyCards.find(c => c.id === attacker.cardId);
   const defenderDef = dummyCards.find(c => c.id === defender.cardId);
 
-  if (attackerDef && attackerDef.ability) {
-    const abilities = Array.isArray(attackerDef.ability) ? attackerDef.ability : [attackerDef.ability];
-    abilities.forEach(abilityName => {
-      const ability = ATTACK_DECLARATION_ABILITY[abilityName];
-      if (ability && ability.effect) {
-        ability.effect(attacker, defender);
-      }
-    });
+  // Use ZONE_MAP to get arrays, voids, and zoneIds
+  const attackerInfo = getZoneInfoForCard(attacker);
+  const defenderInfo = getZoneInfoForCard(defender);
+
+  // Attack-declaration abilities
+  if (attackerDef?.ability) {
+    (Array.isArray(attackerDef.ability) ? attackerDef.ability : [attackerDef.ability])
+      .forEach(abilityName => {
+        const ability = ATTACK_DECLARATION_ABILITY[abilityName];
+        if (ability && ability.effect) ability.effect(attacker, defender);
+      });
   }
 
-  if (gameState.playerCreatures.includes(attacker)) {
-    attackerArr = gameState.playerCreatures;
-    attackerVoid = gameState.playerVoid;
-  } else if (gameState.opponentCreatures.includes(attacker)) {
-    attackerArr = gameState.opponentCreatures;
-    attackerVoid = gameState.opponentVoid;
-  }
-  if (gameState.playerCreatures.includes(defender)) {
-    defenderArr = gameState.playerCreatures;
-    defenderVoid = gameState.playerVoid;
-  } else if (gameState.opponentCreatures.includes(defender)) {
-    defenderArr = gameState.opponentCreatures;
-    defenderVoid = gameState.opponentVoid;
-  } else if (gameState.playerDomains.includes(defender)) {
-    defenderArr = gameState.playerDomains;
-    defenderVoid = gameState.playerVoid;
-  } else if (gameState.opponentDomains.includes(defender)) {
-    defenderArr = gameState.opponentDomains;
-    defenderVoid = gameState.opponentVoid;
-  }
-
-  if (!attacker || !defender) return;
-
-  // --- LOG THE ATTACK ---
+  // Log the attack
   appendAttackLog({
-    attacker: attacker,
-    defender: defender,
+    attacker,
+    defender,
     defenderOrientation: defender.orientation,
     who: getCardOwner(attacker)
   });
 
-  // Determine zoneIds for animation
-  const attackerZoneId = gameState.playerCreatures.includes(attacker)
-    ? 'player-creatures-zone'
-    : gameState.opponentCreatures.includes(attacker)
-    ? 'opponent-creatures-zone'
-    : null;
+  function finishResolution() {
+    attacker.hasAttacked = true;
+    // Only apply status if defender is still alive on field
+    if (
+      defenderDef?.category === "creature" &&
+      defenderInfo.arr?.includes(defender)
+    ) {
+      const attackerAbilities = attackerDef.ability || [];
+      attackerAbilities.forEach(abilityName => {
+        if (STATUS_EFFECTS[abilityName]) {
+          applyStatus(defender, abilityName);
+        }
+      });
+    }
+    renderGameState();
+    setupDropZones();
+  }
 
-  const defenderZoneId = gameState.playerCreatures.includes(defender)
-    ? 'player-creatures-zone'
-    : gameState.opponentCreatures.includes(defender)
-    ? 'opponent-creatures-zone'
-    : null;
-
-  window.isAnimating = true;
-
-  // === Attack Logic with Animation Sequence ===
   if (defenderDef.category === "creature" && defender.orientation === "vertical") {
-// ATK VS ATK //
-    animateAttack(attacker, attackerZoneId, () => {
-      dealDamage(attacker, defender, computeCardStat(attacker, "atk"));
-
-      animateDefenderHit(defender, defenderZoneId, () => {
-        dealDamage(defender, attacker, computeCardStat(defender, "atk"));
-
-        window.isAnimating = false;
-        finishAttackResolution(
-          attacker, defender,
-          attackerArr, defenderArr,
-          attackerVoid, defenderVoid,
-          attackerDef, defenderDef
-        );
-        renderGameState();
-        setupDropZones();
+    // ATK VS ATK -- Simultaneous Damage
+    animateAttack(attacker, attackerInfo.zoneId, () => {
+      const attackerDmg = computeCardStat(attacker, "atk");
+      const defenderDmg = computeCardStat(defender, "atk");
+      animateDefenderHit(defender, defenderInfo.zoneId, () => {
+        defender.currentHP = Math.max(0, (defender.currentHP || getBaseHp(defender.cardId)) - attackerDmg);
+        attacker.currentHP = Math.max(0, (attacker.currentHP || getBaseHp(attacker.cardId)) - defenderDmg);
+        if (defender.currentHP <= 0) moveCard(defender.instanceId, defenderInfo.arr, defenderInfo.voidArr);
+        if (attacker.currentHP <= 0) moveCard(attacker.instanceId, attackerInfo.arr, attackerInfo.voidArr);
+        finishResolution();
       });
     });
   } else if (defenderDef.category === "creature" && defender.orientation === "horizontal") {
-// ATK VS DEF //
-    animateAttack(attacker, attackerZoneId, () => {
-      let damage = Math.max(0, computeCardStat(attacker, "atk") - computeCardStat(defender, "def"));
+    // ATK VS DEF
+    animateAttack(attacker, attackerInfo.zoneId, () => {
+      const damage = Math.max(0, computeCardStat(attacker, "atk") - computeCardStat(defender, "def"));
       dealDamage(attacker, defender, damage);
-
-      window.isAnimating = false;
-      finishAttackResolution(
-        attacker, defender,
-        attackerArr, defenderArr,
-        attackerVoid, defenderVoid,
-        attackerDef, defenderDef
-      );
-      renderGameState();
-      setupDropZones();
+      finishResolution();
     });
   } else {
-// ATK VS DOMAIN OR ARTIFACT //
-    animateAttack(attacker, attackerZoneId, () => {
+    // ATK VS DOMAIN OR ARTIFACT
+    animateAttack(attacker, attackerInfo.zoneId, () => {
       dealDamage(attacker, defender, computeCardStat(attacker, "atk"));
-
-      window.isAnimating = false;
-      finishAttackResolution(
-        attacker, defender,
-        attackerArr, defenderArr,
-        attackerVoid, defenderVoid,
-        attackerDef, defenderDef
-      );
-      renderGameState();
-      setupDropZones();
+      finishResolution();
     });
   }
-}
-
-function finishAttackResolution(
-  attacker,
-  defender,
-  attackerArr,
-  defenderArr,
-  attackerVoid,
-  defenderVoid,
-  attackerDef,
-  defenderDef
-) {
-  attacker.hasAttacked = true;
-
-  // Only apply status if defender is still alive (not removed from battlefield)
-  if (
-    defenderDef &&
-    defenderDef.category === "creature" &&
-    defenderArr && defenderArr.includes(defender) // still in battlefield
-  ) {
-    const attackerAbilities = attackerDef.ability || [];
-    attackerAbilities.forEach(abilityName => {
-      if (STATUS_EFFECTS[abilityName]) {
-        applyStatus(defender, abilityName);
-      }
-    });
-  }
-  renderGameState();
-  setupDropZones();
 }
 
 function dealDamage(cardObj, targetObj, damage) {
@@ -3476,34 +3416,37 @@ function dealDamage(cardObj, targetObj, damage) {
     targetObj.currentHP = typeof cardDef?.hp === "number" ? cardDef.hp : 1;
   }
 
-  // Clamp damage to a minimum of 0 and ensure damage is a number
   damage = Number(damage);
   if (isNaN(damage) || damage < 0) damage = 0;
-
-  // Safely apply damage
   targetObj.currentHP = Math.max(0, targetObj.currentHP - damage);
 
-  // Initialize base stats if missing (fallbacks)
   targetObj.atk = typeof targetObj.atk === "number" ? targetObj.atk : cardDef?.atk ?? 0;
   targetObj.def = typeof targetObj.def === "number" ? targetObj.def : cardDef?.def ?? 0;
 
-  // Fade out and move to void if HP <= 0
+  // KO logic: move to void if HP <= 0
   if (targetObj.currentHP <= 0) {
-    animateDefeat(targetObj);
+    const fromArr = findCardFieldArray(targetObj);
+    if (fromArr) {
+      moveCard(targetObj.instanceId, fromArr, gameState.playerVoid);
+    }
     return;
   }
-}
-// --- Utility: Determine card owner as "player" or "opponent" ---
-function getCardOwner(cardObj) {
-  if (gameState.playerCreatures.includes(cardObj) || gameState.playerDomains.includes(cardObj)) return "player";
-  if (gameState.opponentCreatures.includes(cardObj) || gameState.opponentDomains.includes(cardObj)) return "opponent";
-  return null;
-}
 
-// --- Reset hasAttacked for all creatures at start of player's/opponent's action phase ---
-function resetAttackFlags(turn) {
-  const arr = turn === "player" ? gameState.playerCreatures : gameState.opponentCreatures;
-  arr.forEach(creature => { creature.hasAttacked = false; });
+  // === Apply status effects from cardObj abilities (if any, and only if survived) ===
+  if (
+    cardObj &&
+    cardObj !== targetObj // Don't apply status to self
+  ) {
+    const sourceDef = dummyCards.find(c => c.id === cardObj.cardId);
+    if (sourceDef && sourceDef.ability) {
+      const abilities = Array.isArray(sourceDef.ability) ? sourceDef.ability : [sourceDef.ability];
+      abilities.forEach(abilityName => {
+        if (STATUS_EFFECTS[abilityName]) {
+          applyStatus(targetObj, abilityName);
+        }
+      });
+    }
+  }
 }
 
 function showCoinFlipModal(onResult) {
@@ -4056,27 +3999,7 @@ function animateSkillActivation(cardObj, zoneId, callback) {
     if (callback) callback();
   }, 400); // 0.4s duration, adjust if needed
 }
-function animateDefeat(cardObj, callback) {
-  const zoneId = findZoneIdForCard(cardObj);
-  const cardDiv = findCardDivInZone(zoneId, cardObj.instanceId);
-  if (!cardDiv) { if (callback) callback(); return; }
 
-  // Add fade out class
-  cardDiv.classList.add('card-fade-out');
-  setTimeout(() => {
-    cardDiv.classList.remove('card-fade-out');
-    // Actually move the card to Void after fade
-    const fromArr = findCardFieldArray(cardObj);
-    const owner = getCardOwner(cardObj);
-    const voidArr = owner === "player" ? gameState.playerVoid : gameState.opponentVoid;
-    if (fromArr && voidArr) {
-      moveCard(cardObj.instanceId, fromArr, voidArr);
-    }
-    if (callback) callback();
-    renderGameState();
-    setupDropZones();
-  }, 300); // match fade-out animation duration
-}
 // Add this helper if not already present
 function animateHandCardAction(cardObj, callback) {
   const handDiv = document.getElementById('player-hand');
