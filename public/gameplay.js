@@ -326,6 +326,7 @@ const REQUIREMENT_MAP = {
   Stash: {
     zones: ['hand'],
     handler: function(sourceCardObj, skillObj) {
+      runHandSkillWithAnimation(sourceCardObj, skillObj, gameState.playerDeck);
       const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
       if (!validZones.some(zone => zone === 'hand')) {
         showToast("Stash can only be activated from your hand.");
@@ -343,6 +344,7 @@ const REQUIREMENT_MAP = {
   Discard: {
     zones: ['hand'],
     handler: function(sourceCardObj, skillObj) {
+      runHandSkillWithAnimation(sourceCardObj, skillObj, gameState.playerVoid);
       const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
       if (!validZones.some(zone => zone === 'hand')) {
         showToast("Discard can only be activated from your hand.");
@@ -501,6 +503,9 @@ Dash: {
   name: 'Dash',
   description: 'Summon this card from your hand to the field.',
   handler: function(sourceCardObj, skillObj) {
+    runHandSkillWithAnimation(sourceCardObj, skillObj, targetArr, () => {
+    // Optionally, show summon orientation modal or fade-in animation on field
+    });
     // Only activate if in hand
     const isHand = gameState.playerHand.includes(sourceCardObj);
     if (!isHand) {
@@ -1857,17 +1862,6 @@ function renderCardOnField(cardObj, zoneId) {
 
   cardDiv.appendChild(frontDiv);
   cardDiv.appendChild(backDiv);
-
-  // Card image
-  if (cardData && cardData.image) {
-    const img = document.createElement('img');
-    img.src = cardData.image;
-    img.alt = cardData.name || "Card";
-    img.style.width = "100%";
-    img.style.height = "100%";
-    if (cardObj.orientation === "horizontal") img.style.transform = "rotate(90deg)";
-    cardDiv.appendChild(img);
-  }
 
   // --- Stat Overlays ---
   // HP
@@ -3512,25 +3506,10 @@ function dealDamage(cardObj, targetObj, damage) {
   targetObj.atk = typeof targetObj.atk === "number" ? targetObj.atk : cardDef?.atk ?? 0;
   targetObj.def = typeof targetObj.def === "number" ? targetObj.def : cardDef?.def ?? 0;
 
-  // Move to void if HP <= 0
+  // Fade out and move to void if HP <= 0
   if (targetObj.currentHP <= 0) {
-    const fromArr = findCardFieldArray(targetObj);
-
-    // Use real owner, not just zone!
-    let actualOwner = targetObj.owner;
-    if (!actualOwner) {
-      actualOwner = getCardOwner(targetObj);
-    }
-    if (!actualOwner && targetObj.cardId) {
-      // Fallback: get owner from original card definition/instance
-      const origCard = dummyCards.find(c => c.id === targetObj.cardId);
-      actualOwner = origCard?.owner || "player"; // Fallback to player if unknown
-    }
-    const voidArr = (actualOwner === "player") ? gameState.playerVoid : gameState.opponentVoid;
-    if (fromArr && voidArr) {
-      moveCard(targetObj.instanceId, fromArr, voidArr);
-      return;
-    }
+    animateDefeat(targetObj);
+    return;
   }
 }
 // --- Utility: Determine card owner as "player" or "opponent" ---
@@ -4065,6 +4044,54 @@ function animateSkillActivation(cardObj, zoneId, callback) {
     cardDiv.classList.remove('skill-activation-anim');
     if (callback) callback();
   }, 400); // 0.4s duration, adjust if needed
+}
+function animateDefeat(cardObj, callback) {
+  const zoneId = findZoneIdForCard(cardObj);
+  const cardDiv = findCardDivInZone(zoneId, cardObj.instanceId);
+  if (!cardDiv) { if (callback) callback(); return; }
+
+  // Add fade out class
+  cardDiv.classList.add('card-fade-out');
+  setTimeout(() => {
+    cardDiv.classList.remove('card-fade-out');
+    // Actually move the card to Void after fade
+    const fromArr = findCardFieldArray(cardObj);
+    const owner = getCardOwner(cardObj);
+    const voidArr = owner === "player" ? gameState.playerVoid : gameState.opponentVoid;
+    if (fromArr && voidArr) {
+      moveCard(cardObj.instanceId, fromArr, voidArr);
+    }
+    if (callback) callback();
+    renderGameState();
+    setupDropZones();
+  }, 300); // match fade-out animation duration
+}
+// Add this helper if not already present
+function animateHandCardAction(cardObj, callback) {
+  const handDiv = document.getElementById('player-hand');
+  const cardDiv = Array.from(handDiv.querySelectorAll('.card-battlefield')).find(div =>
+    div.dataset.instanceId === cardObj.instanceId
+  );
+  if (!cardDiv) { if (callback) callback(); return; }
+  cardDiv.classList.add('card-fade-out');
+  setTimeout(() => {
+    cardDiv.classList.remove('card-fade-out');
+    if (callback) callback();
+  }, 300);
+}
+
+// HAND SKILLS //
+function runHandSkillWithAnimation(cardObj, skillObj, destinationArray, callback) {
+  // 1. Activation animation (use your existing logic)
+  animateSkillActivation(cardObj, 'player-hand', () => {
+    // 2. Resolution animation (fade out)
+    animateHandCardAction(cardObj, () => {
+      moveCard(cardObj.instanceId, gameState.playerHand, destinationArray);
+      renderGameState();
+      setupDropZones();
+      if (callback) callback();
+    });
+  });
 }
 function animateCardFade(instanceId, fromZoneId, toZoneId, callback) {
   // Find the card div in the fromZone
