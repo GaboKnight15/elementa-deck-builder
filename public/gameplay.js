@@ -236,36 +236,36 @@ const TARGET_FILTER_ABILITY = {
 };
 const ABILITY_EFFECTS = {
   Inspire: {
-    // Example usage: { type: "Inspire", filter: { archetype: "Rush" }, atk: 1, def: 1 }
-    apply: function(inspirerCard, gameState) {
-      const filter = inspirerCard.inspireFilter || {}; // e.g. {archetype: "Rush"}
-      const atkBoost = inspirerCard.inspireAtk ?? 0;
-      const defBoost = inspirerCard.inspireDef ?? 0;
-      // Target all valid field zones (creatures/domains/artifacts)
+    apply: function(cardObj, gameState, abilityObj) {
+      // Use fields from abilityObj
+      const filter = { archetype: abilityObj.archetype }; // or use all fields you want
+      const atkBoost = abilityObj.atk ?? 0;
+      const defBoost = abilityObj.def ?? 0;
+
+      // Apply boosts to matching cards
       const allCreatures = [...gameState.playerCreatures, ...gameState.opponentCreatures];
-      allCreatures.forEach(card => {
-        if (matchesFilter(card, filter)) {
-          // Add a modifier for Inspire, referencing the inspirerCard instanceId for easy removal
-          card.modifiers = card.modifiers || [];
-          // Remove previous Inspire modifier from this inspirer if present
-          card.modifiers = card.modifiers.filter(mod => !(mod.source === inspirerCard.instanceId && mod.type === "Inspire"));
-          // Add new
-          if (atkBoost) card.modifiers.push({type: "Inspire", source: inspirerCard.instanceId, stat: "atk", value: atkBoost});
-          if (defBoost) card.modifiers.push({type: "Inspire", source: inspirerCard.instanceId, stat: "def", value: defBoost});
+      allCreatures.forEach(target => {
+        if (matchesFilter(target, filter)) {
+          target.modifiers = target.modifiers || [];
+          target.modifiers = target.modifiers.filter(
+            mod => !(mod.source === cardObj.instanceId && mod.effect === "Inspire")
+          );
+          if (atkBoost) target.modifiers.push({effect: "Inspire", source: cardObj.instanceId, stat: "atk", value: atkBoost});
+          if (defBoost) target.modifiers.push({effect: "Inspire", source: cardObj.instanceId, stat: "def", value: defBoost});
         }
       });
     },
-    remove: function(inspirerCard, gameState) {
-      // Remove all modifiers with source = inspirerCard.instanceId
+    remove: function(cardObj, gameState) {
       const allCreatures = [...gameState.playerCreatures, ...gameState.opponentCreatures];
-      allCreatures.forEach(card => {
-        if (card.modifiers) {
-          card.modifiers = card.modifiers.filter(mod => !(mod.source === inspirerCard.instanceId && mod.type === "Inspire"));
+      allCreatures.forEach(target => {
+        if (target.modifiers) {
+          target.modifiers = target.modifiers.filter(
+            mod => !(mod.source === cardObj.instanceId && mod.effect === "Inspire")
+          );
         }
       });
     }
   }
-  // ...other ability effects...
 };
 // ATTACK RESOLUTION ABILITIES
 const ATTACK_DECLARATION_ABILITY = {
@@ -1030,6 +1030,19 @@ function findCardFieldArray(cardObj) {
       zoneName.endsWith("Domains")
     ) {
       if (ZONE_MAP[zoneName].arr().includes(cardObj)) return ZONE_MAP[zoneName].arr();
+    }
+  }
+  return null;
+}
+function getZoneInfoForCard(cardObj) {
+  for (const zoneName in ZONE_MAP) {
+    const arr = ZONE_MAP[zoneName].arr();
+    if (arr.includes(cardObj)) {
+      return {
+        zoneName,
+        zoneArr: arr,
+        zoneId: ZONE_MAP[zoneName].id
+      };
     }
   }
   return null;
@@ -1830,7 +1843,7 @@ function getBaseHp(cardId) {
 function computeCardStat(cardObj, statName) {
   // Get base stat from dummyCards
   const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
-  const base = cardDef?.[statName] ?? 0;
+  let base = cardDef?.[statName] ?? 0;
 
   let mods = 0;
 
@@ -1862,7 +1875,27 @@ function computeCardStat(cardObj, statName) {
       }
     }
   }
+  // Get all field cards using ZONE_MAP
+  const fieldZoneNames = Object.keys(ZONE_MAP).filter(name =>
+    name.endsWith("Creatures") || name.endsWith("Domains") || name.endsWith("Artifacts")
+  );
+  const allFieldCards = fieldZoneNames
+    .map(name => ZONE_MAP[name].arr())
+    .flat();
 
+  // Apply Inspire and similar abilities dynamically
+  allFieldCards.forEach(sourceCard => {
+    const sourceDef = dummyCards.find(c => c.id === sourceCard.cardId);
+    if (!sourceDef?.ability) return;
+    sourceDef.ability.forEach(ab => {
+      if (typeof ab === "object" && ab.effect === "Inspire") {
+        if (matchesFilter(cardObj, ab)) {
+          if (statName === "atk" && ab.atk) mods += ab.atk;
+          if (statName === "def" && ab.def) mods += ab.def;
+        }
+      }
+    });
+  });
   // Clamp to minimum 0
   return Math.max(0, base + mods);
 }
@@ -1932,7 +1965,12 @@ function renderCardOnField(cardObj, zoneId) {
 
   // ATK
   if (typeof cardData.atk === "number") {
+    const baseATK = cardData.atk;
     const currentATK = computeCardStat(cardObj, "atk");
+    let atkColor = "#fff"; // default white
+    if (currentATK > baseATK) atkColor = "#44e055"; // green for buff
+    else if (currentATK < baseATK) atkColor = "#e53935"; // red for debuff
+    
     const atkBadge = document.createElement('div');
     atkBadge.className = 'stat-badge stat-atk';
     atkBadge.style.position = 'absolute';
@@ -1947,7 +1985,7 @@ function renderCardOnField(cardObj, zoneId) {
         position:absolute;
         left:40%;top:0;width:100%;height:100%;
         display:flex;align-items:center;justify-content:center;
-        font-weight:bold;color:#fff;
+        font-weight:bold;color:${atkColor};
         text-shadow:0 1px 4px #232;z-index:22;
       ">${currentATK}</span>
     `;
@@ -1956,7 +1994,12 @@ function renderCardOnField(cardObj, zoneId) {
 
   // DEF
   if (typeof cardData.def === "number") {
+    const baseDEF = cardData.def;
     const currentDEF = computeCardStat(cardObj, "def");
+    let defColor = "#fff"; // default white
+    if (currentDEF > baseDEF) defColor = "#44e055"; // green for buff
+    else if (currentDEF < baseDEF) defColor = "#e53935"; // red for debuff
+    
     const defBadge = document.createElement('div');
     defBadge.className = 'stat-badge stat-def';
     defBadge.style.position = 'absolute';
@@ -1971,7 +2014,7 @@ function renderCardOnField(cardObj, zoneId) {
         position:absolute;
         left:0;top:0;width:100%;height:100%;
         display:flex;align-items:center;justify-content:center;
-        font-weight:bold;color:#fff;
+        font-weight:bold;color:${defColor};
         text-shadow:0 1px 4px #232;z-index:22;
       ">${currentDEF}</span>
     `;
