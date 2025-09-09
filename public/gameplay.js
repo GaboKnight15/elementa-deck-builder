@@ -4450,11 +4450,25 @@ document.getElementById('chat-log').addEventListener('click', function(e) {
     const instanceId = e.target.getAttribute('data-instanceid');
     const cardId = e.target.getAttribute('data-cardid');
     let cardObj = null;
-    // Try to find by instanceId first
+    const allArrays = [
+      gameState.playerHand,
+      gameState.playerCreatures,
+      gameState.playerDomains,
+      gameState.playerVoid,
+      gameState.opponentHand,
+      gameState.opponentCreatures,
+      gameState.opponentDomains,
+      gameState.opponentVoid,
+      gameState.playerDeck,
+      gameState.opponentDeck,
+    ];
     if (instanceId) {
-      cardObj = dummyCards.find(c => c.instanceId === instanceId);
+      for (const arr of allArrays) {
+        cardObj = arr.find(c => c.instanceId === instanceId);
+        if (cardObj) break;
+      }
     }
-    // If not found, fallback to cardId
+    // If not found, fallback to dummyCards for static info
     if (!cardObj && cardId) {
       cardObj = dummyCards.find(c => c.id === cardId);
     }
