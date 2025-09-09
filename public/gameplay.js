@@ -994,14 +994,8 @@ function startGame({
 // === GAME SETUP HELPER FUNCTIONS ===
 // ===================================
 function drawOpeningHands() {
-  for (let i = 0; i < INITIAL_HAND_SIZE; i++) {
-    if (gameState.playerDeck.length > 0) {
-      gameState.playerHand.push(gameState.playerDeck.shift());
-    }
-    if (gameState.opponentDeck.length > 0) {
-      gameState.opponentHand.push(gameState.opponentDeck.shift());
-    }
-  }
+  drawCards("player", INITIAL_HAND_SIZE);
+  drawCards("opponent", INITIAL_HAND_SIZE);
 }
 function getZoneArray(zoneId) {
   for (const zoneName in ZONE_MAP) {
@@ -2730,6 +2724,19 @@ function updatePhase() {
     phaseNameSpan.className = PHASE_CLASS[gameState.phase];
     phaseNameSpan.textContent = PHASE_DISPLAY_NAMES[gameState.phase] || gameState.phase;
   }
+
+  // --- PATCH: Automatic draw for Draw Phase ---
+  if (gameState.phase === "draw") {
+    drawCards(gameState.turn, 1);
+    // Optionally: log the draw action
+    appendVisualLog({
+      sourceCard: {/* info about drawn card or just {name:"Draw"} */},
+      action: "draw",
+      dest: "Hand",
+      who: gameState.turn
+    }, false, gameState.turn === "player");
+  }
+
   if (gameState.phase === "essence") {
     essencePhase(gameState.turn);
   }
