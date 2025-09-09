@@ -2480,8 +2480,33 @@ button {}
 .card-front { transform: rotateY(0deg); z-index: 2; }
 .card-back { transform: rotateY(180deg); z-index: 1; }
 
-.card-battlefield.flipping .card-front { transform: rotateY(180deg); }
-.card-battlefield.flipping .card-back { transform: rotateY(360deg); }
+.card-battlefield.flipping {
+  transition: transform 0.7s cubic-bezier(.55,0,.55,1);
+  transform: rotateY(90deg);
+}
+.card-battlefield.flipping.show-back {
+  transform: rotateY(180deg);
+}
+/* Attack lunge animation */
+.card-battlefield.attack-lunge {
+  animation: attackLunge 0.3s cubic-bezier(.55,0,.55,1);
+}
+@keyframes attackLunge {
+  0%   { transform: scale(1) translateX(0) }
+  30%  { transform: scale(1.08) translateX(30px) }
+  60%  { transform: scale(0.97) translateX(-12px) }
+  100% { transform: scale(1) translateX(0) }
+}
+.card-battlefield.shake-hit {
+  animation: shakeHit 0.22s cubic-bezier(.55,0,.55,1);
+}
+@keyframes shakeHit {
+  0% { transform: translateX(0) }
+  25% { transform: translateX(-8px) }
+  40% { transform: translateX(8px) }
+  60% { transform: translateX(-5px) }
+  100% { transform: translateX(0) }
+}
 .card-battlefield.show-back .card-front { visibility: hidden; }
 .card-battlefield.show-back .card-back { visibility: visible; }
 /* CARD CHANGE POSITION ANIMATIONS */
