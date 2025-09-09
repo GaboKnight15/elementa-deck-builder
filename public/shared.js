@@ -466,10 +466,10 @@ skill: [
  cost: '{2}{R}{B}', archetype: 'Firelands', ability: ['Burn','Flying','Rush'], set: 'StandardPack'},
 {id: 'EphorosFirelandsBehemoth', name: 'Ephoros, Firelands Behemoth', rarity: 'Legendary', image: 'CardImages/Firelands/Ephoros, Firelands Behemoth.png', 
  category: 'Creature', color: ['Red','Black'], type: ['Beast','Demon'], hp: 13, atk: 9, def: 3,
- cost: '{5}{R}{B}', archetype: 'Firelands', ability: ['Burn','Crush','Intimidate'], set: 'StandardPack'},
+ cost: '{5}{R}{B}', archetype: 'Firelands', ability: [{effect: "Inspire", archetype: "Rush", atk: 1, def: 1}, 'Burn','Crush','Intimidate'], set: 'StandardPack'},
 {id: 'EphorosFirelandsBehemothFA', name: 'Ephoros, Firelands Behemoth', rarity: 'Legendary', image: 'CardImages/Firelands/Ephoros, Firelands Behemoth FA.png', 
  category: 'Creature', color: ['Red','Black'], type: ['Beast','Demon'], hp: 13, atk: 9, def: 3,
- cost: '{5}{R}{B}', archetype: 'Firelands', ability: ['Burn','Crush','Intimidate'], set: 'StandardPack'},
+ cost: '{5}{R}{B}', archetype: 'Firelands', ability: [{effect: "Inspire", archetype: "Rush", atk: 1, def: 1},'Burn','Crush','Intimidate'], set: 'StandardPack'},
 
 // GOLEMHEART //
 {id: 'PyrokragGolemheartTitan', name: 'Pyrokrag, Golemheart Titan', rarity: 'Legendary', image: 'CardImages/Golems/Pyrokrag, Golemheart Titan.png', 
