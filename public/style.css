@@ -2740,9 +2740,10 @@ button {}
   100% { opacity:0; }
 }
 .card-fade-out {
-  opacity: 0;
-  transition: opacity 0.18s;
-  pointer-events: none;
+  animation: fadeOutCard 0.3s forwards;
+}
+@keyframes fadeOutCard {
+  to { opacity: 0; transform: scale(0.8); }
 }
 .card-fade-in {
   opacity: 0 !important;
