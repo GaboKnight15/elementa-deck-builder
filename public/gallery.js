@@ -698,6 +698,7 @@ function updateGalleryCollectionProgress(filteredCards) {
   if (progDiv) progDiv.innerHTML = str;
 }
 // Bulk Void modal logic
+// Bulk Void modal logic
 function showBulkVoidModal() {
   const collection = getCollection();
   const cardsToVoid = [];
@@ -738,20 +739,29 @@ function showBulkVoidModal() {
     return;
   }
 
-  let cardRows = cardsToVoid.map(({card, count, refund, subtotal}) => `
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:7px;">
-      <img src="${card.image}" alt="${card.name}" style="width:38px;height:54px;border-radius:5px;border:2px solid #444;">
-      <span style="font-weight:bold;color:#ffe066;">${card.name}</span>
-      <span style="color:#fff;">×${count}</span>
-      <span style="color:#eee;">(${refund} Essence each)</span>
-      <span style="color:#6f6;">+${subtotal}</span>
-    </div>
-  `).join('');
+  // Essence image HTML
+  const essenceImg = `<img src="OtherImages/Icons/Essence.png" alt="Essence" style="width:18px;height:18px;vertical-align:middle;">`;
+
+  // Improved cardRows: clickable image, essence image, and showFullCardModal
+  let cardRows = cardsToVoid.map(({card, count, refund, subtotal}) => {
+    // Color for name (orange if > 0 refund, else default)
+    const nameColor = subtotal > 0 ? "#ffe066" : "#fff";
+    return `
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:7px;">
+        <img src="${card.image}" alt="${card.name}" style="width:38px;height:54px;border-radius:5px;border:2px solid #444;cursor:pointer;"
+          onclick="showFullCardModal(dummyCards.find(c => c.id === '${card.id}'));">
+        <span style="font-weight:bold;color:${nameColor};">${card.name}</span>
+        <span style="color:#fff;">×${count}</span>
+        <span style="color:#eee;">(${refund} ${essenceImg})</span>
+        <span style="color:#6f6;">+${subtotal}</span>
+      </div>
+    `;
+  }).join('');
 
   content.innerHTML = `
     <h3 style="color:#ffe066;margin-bottom:12px;">Bulk Void</h3>
     <div style="margin-bottom:18px;color:#fff;">
-      Are you sure you want to void the following cards for <span style="color:#6f6;font-weight:bold;">${totalEssence} Essence</span>?
+      Are you sure you want to void the following cards for <span style="color:#6f6;font-weight:bold;">${totalEssence} ${essenceImg}</span>?
     </div>
     <div style="max-height:270px;overflow-y:auto;margin-bottom:18px;">
       ${cardRows}
