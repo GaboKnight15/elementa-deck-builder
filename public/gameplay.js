@@ -234,6 +234,39 @@ const TARGET_FILTER_ABILITY = {
   },
   // ...add more targeting abilities here!
 };
+const ABILITY_EFFECTS = {
+  Inspire: {
+    // Example usage: { type: "Inspire", filter: { archetype: "Rush" }, atk: 1, def: 1 }
+    apply: function(inspirerCard, gameState) {
+      const filter = inspirerCard.inspireFilter || {}; // e.g. {archetype: "Rush"}
+      const atkBoost = inspirerCard.inspireAtk ?? 0;
+      const defBoost = inspirerCard.inspireDef ?? 0;
+      // Target all valid field zones (creatures/domains/artifacts)
+      const allCreatures = [...gameState.playerCreatures, ...gameState.opponentCreatures];
+      allCreatures.forEach(card => {
+        if (matchesFilter(card, filter)) {
+          // Add a modifier for Inspire, referencing the inspirerCard instanceId for easy removal
+          card.modifiers = card.modifiers || [];
+          // Remove previous Inspire modifier from this inspirer if present
+          card.modifiers = card.modifiers.filter(mod => !(mod.source === inspirerCard.instanceId && mod.type === "Inspire"));
+          // Add new
+          if (atkBoost) card.modifiers.push({type: "Inspire", source: inspirerCard.instanceId, stat: "atk", value: atkBoost});
+          if (defBoost) card.modifiers.push({type: "Inspire", source: inspirerCard.instanceId, stat: "def", value: defBoost});
+        }
+      });
+    },
+    remove: function(inspirerCard, gameState) {
+      // Remove all modifiers with source = inspirerCard.instanceId
+      const allCreatures = [...gameState.playerCreatures, ...gameState.opponentCreatures];
+      allCreatures.forEach(card => {
+        if (card.modifiers) {
+          card.modifiers = card.modifiers.filter(mod => !(mod.source === inspirerCard.instanceId && mod.type === "Inspire"));
+        }
+      });
+    }
+  }
+  // ...other ability effects...
+};
 // ATTACK RESOLUTION ABILITIES
 const ATTACK_DECLARATION_ABILITY = {
   Intimidate: {
@@ -1012,6 +1045,22 @@ function getCardOwner(cardObj) {
 function resetAttackFlags(turn) {
   const arr = turn === "player" ? gameState.playerCreatures : gameState.opponentCreatures;
   arr.forEach(creature => { creature.hasAttacked = false; });
+}
+function matchesFilter(cardObj, filter) {
+  const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+  if (!cardData) return false;
+  for (let key in filter) {
+    let val = filter[key];
+    let data = cardData[key];
+    if (Array.isArray(data)) {
+      if (!data.map(v => v.toLowerCase()).includes(val.toLowerCase())) return false;
+    } else if (typeof data === "string") {
+      if (data.toLowerCase() !== val.toLowerCase()) return false;
+    } else {
+      if (data !== val) return false;
+    }
+  }
+  return true;
 }
 // ===================================
 // ========== ACTIONS LOGIC ==========
