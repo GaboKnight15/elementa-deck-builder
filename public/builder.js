@@ -170,6 +170,10 @@ if (deck.highlightArt) {
   tile.innerHTML = `
     <img class="deck-slot-highlight-img" src="${deck.highlightArt}" alt="highlight" />
     <div class="deck-slot-title-overlay">${slotName}</div>
+    <img class="deck-slot-cardback-img"
+         src="${deck.cardbackArt || "OtherImages/Cardbacks/CBDefault.png"}"
+         alt="Cardback"
+         style="position:absolute;right:8px;bottom:8px;width:32px;height:44px;z-index:10;">
   `;
 } else {
   tile.textContent = slotName;
