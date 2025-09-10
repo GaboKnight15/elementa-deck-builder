@@ -4519,6 +4519,137 @@ function handleEndPhaseStatuses() {
   renderGameState();
 }
 
+// ----------------------------------- //
+// --- Card Field Helper Functions --- //
+// These functions work for both array and string fields (case-insensitive) //
+
+function getCardDef(cardObj) {
+  // Handles both dummyCards and direct card objects with full info
+  const cid = cardObj.cardId || cardObj.id || cardObj;
+  return typeof cardObj === "object" ? cardObj : dummyCards.find(c => c.id === cid);
+}
+
+function fieldIncludes(cardObj, field, value) {
+  const card = getCardDef(cardObj);
+  if (!card || !card[field]) return false;
+  if (Array.isArray(card[field])) {
+    return card[field].map(x => String(x).toLowerCase()).includes(String(value).toLowerCase());
+  }
+  return String(card[field]).toLowerCase() === String(value).toLowerCase();
+}
+
+// COLOR
+function isColor(cardObj, color) {
+  return fieldIncludes(cardObj, "color", color);
+}
+function isWhite(cardObj) { return isColor(cardObj, "White"); }
+function isBlack(cardObj) { return isColor(cardObj, "Black"); }
+function isRed(cardObj)   { return isColor(cardObj, "Red"); }
+function isGreen(cardObj) { return isColor(cardObj, "Green"); }
+function isBlue(cardObj)  { return isColor(cardObj, "Blue"); }
+function isYellow(cardObj){ return isColor(cardObj, "Yellow"); }
+function isGray(cardObj)  { return isColor(cardObj, "Gray"); }
+function isPurple(cardObj){ return isColor(cardObj, "Purple"); }
+
+// CATEGORY
+function isCategory(cardObj, category) {
+  return fieldIncludes(cardObj, "category", category);
+}
+function isCreature(cardObj) { return isCategory(cardObj, "Creature"); }
+function isDomain(cardObj)   { return isCategory(cardObj, "Domain"); }
+function isArtifact(cardObj) { return isCategory(cardObj, "Artifact"); }
+function isSpell(cardObj)    { return isCategory(cardObj, "Spell"); }
+
+// TYPE
+function isType(cardObj, type) {
+  return fieldIncludes(cardObj, "type", type);
+}
+function isDragon(cardObj)   { return isType(cardObj, "Dragon"); }
+function isFairy(cardObj)    { return isType(cardObj, "Fairy"); }
+function isWarrior(cardObj)  { return isType(cardObj, "Warrior"); }
+function isMage(cardObj)     { return isType(cardObj, "Mage"); }
+function isBeast(cardObj)    { return isType(cardObj, "Beast"); }
+function isElemental(cardObj){ return isType(cardObj, "Elemental"); }
+function isAvian(cardObj)    { return isType(cardObj, "Avian"); }
+function isDemon(cardObj)    { return isType(cardObj, "Demon"); }
+function isUndead(cardObj)   { return isType(cardObj, "Undead"); }
+function isConstruct(cardObj){ return isType(cardObj, "Construct"); }
+
+// ARCHETYPE
+function isArchetype(cardObj, archetype) {
+  return fieldIncludes(cardObj, "archetype", archetype);
+}
+function isFirelands(cardObj)   { return isArchetype(cardObj, "Firelands"); }
+function isCindercore(cardObj)  { return isArchetype(cardObj, "Cindercore"); }
+function isCoralbound(cardObj)  { return isArchetype(cardObj, "Coralbound"); }
+function isFrostlands(cardObj)  { return isArchetype(cardObj, "Frostlands"); }
+function isGlimmerscale(cardObj){ return isArchetype(cardObj, "Glimmerscale"); }
+function isSkullframe(cardObj)  { return isArchetype(cardObj, "Skullframe"); }
+function isPixiebound(cardObj)  { return isArchetype(cardObj, "Pixiebound"); }
+function isSeraph(cardObj)      { return isArchetype(cardObj, "Seraph"); }
+// Add more as needed...
+
+// TRAIT
+function isTrait(cardObj, trait) {
+  return fieldIncludes(cardObj, "trait", trait);
+}
+function isChampion(cardObj)    { return isTrait(cardObj, "Champion"); }
+function isEvolution(cardObj)   { return isTrait(cardObj, "Evolution"); }
+function isFusion(cardObj)      { return isTrait(cardObj, "Fusion"); }
+// Add more as needed...
+
+// ABILITY
+function hasAbility(cardObj, ability) {
+  return fieldIncludes(cardObj, "ability", ability);
+}
+function hasBurn(cardObj)       { return hasAbility(cardObj, "Burn"); }
+function hasFlying(cardObj)     { return hasAbility(cardObj, "Flying"); }
+function hasRush(cardObj)       { return hasAbility(cardObj, "Rush"); }
+function hasProtect(cardObj)    { return hasAbility(cardObj, "Protect"); }
+function hasAegis(cardObj)      { return hasAbility(cardObj, "Aegis"); }
+function hasVeil(cardObj)       { return hasAbility(cardObj, "Veil"); }
+function hasImmunity(cardObj)   { return hasAbility(cardObj, "Immunity"); }
+function hasRanged(cardObj)     { return hasAbility(cardObj, "Ranged"); }
+function hasIntimidate(cardObj) { return hasAbility(cardObj, "Intimidate"); }
+function hasAmbush(cardObj)     { return hasAbility(cardObj, "Ambush"); }
+// Add more as needed...
+
+// --- Utility: get all colors/types/archetypes/traits/abilities (for filters, etc.) ---
+function getCardColors(cardObj) {
+  const card = getCardDef(cardObj);
+  if (!card) return [];
+  if (Array.isArray(card.color)) return card.color;
+  if (typeof card.color === "string") return [card.color];
+  return [];
+}
+function getCardTypes(cardObj) {
+  const card = getCardDef(cardObj);
+  if (!card) return [];
+  if (Array.isArray(card.type)) return card.type;
+  if (typeof card.type === "string") return [card.type];
+  return [];
+}
+function getCardArchetypes(cardObj) {
+  const card = getCardDef(cardObj);
+  if (!card) return [];
+  if (Array.isArray(card.archetype)) return card.archetype;
+  if (typeof card.archetype === "string") return [card.archetype];
+  return [];
+}
+function getCardTraits(cardObj) {
+  const card = getCardDef(cardObj);
+  if (!card) return [];
+  if (Array.isArray(card.trait)) return card.trait;
+  if (typeof card.trait === "string") return [card.trait];
+  return [];
+}
+function getCardAbilities(cardObj) {
+  const card = getCardDef(cardObj);
+  if (!card) return [];
+  if (Array.isArray(card.ability)) return card.ability;
+  if (typeof card.ability === "string") return [card.ability];
+  return [];
+}
 document.getElementById('chat-log').addEventListener('click', function(e) {
   if (e.target.classList.contains('log-card-img')) {
     const instanceId = e.target.getAttribute('data-instanceid');
