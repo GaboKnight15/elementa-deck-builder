@@ -24,7 +24,10 @@ const PHASES = [{ turn: 'player', phase: 'draw' },{ turn: 'player', phase: 'esse
   opponentDominion: null,
 
   turn: "player",
-  phase: "draw"
+  phase: "draw",
+  timeOfDay: "day", // Initial state
+  dayNightCycleCounter: 0, // Counts end phases
+  weatherEffects: []
 };
 
 let attackMode = {attackerId: null, attackerZone: null, cancelHandler: null};
@@ -868,7 +871,55 @@ Destroy: {
   },
   // Add more effects as needed (Strike, Heal, Destroy, etc.)
 };
-
+const WEATHER_EFFECTS = {
+  Drought: {
+    color: "Red",
+    description: "Red creatures gain +1 ATK.",
+    passive: (cardObj) => isRed(cardObj) ? { atk: 1 } : null
+  },
+  Rain: {
+    color: "Blue",
+    description: "Blue creatures gain +1 DEF.",
+    passive: (cardObj) => isBlue(cardObj) ? { def: 1 } : null
+  },
+  Thunderstorm: {
+    colors: ["Blue", "Yellow"], archetype: "Stormcore",
+    description: "Blue/Yellow and Stormcore creatures gain +2 ATK.",
+    passive: (cardObj) =>
+      (isBlue(cardObj) || isYellow(cardObj) || isArchetype(cardObj, "Stormcore")) ? { atk: 2 } : null
+  },
+  Snowfall: {
+    archetype: "Frostlands",
+    description: "Frostlands creatures gain +2 DEF.",
+    passive: (cardObj) => isArchetype(cardObj, "Frostlands") ? { def: 2 } : null
+  },
+  GaleWinds: {
+    archetype: "Zephyra", ability: "Flying",
+    description: "Zephyra and Flying creatures gain +1 DEF.",
+    passive: (cardObj) => (isArchetype(cardObj, "Zephyra") || hasFlying(cardObj)) ? { def: 1 } : null
+  },
+  BloodMoon: {
+    archetype: "Moonfang", type: "Beast",
+    description: "Moonfang and Beast creatures gain +1 ATK.",
+    passive: (cardObj) => (isArchetype(cardObj, "Moonfang") || isBeast(cardObj)) ? { atk: 1 } : null
+  },
+  Ashfall: {
+    colors: ["Red", "Gray"], archetype: "Golemheart",
+    description: "Red/Gray and Golemheart creatures gain +1 DEF.",
+    passive: (cardObj) =>
+      (isRed(cardObj) || isGray(cardObj) || isArchetype(cardObj, "Golemheart")) ? { def: 1 } : null
+  },
+  ToxicMiasma: {
+    color: "Purple",
+    description: "Purple creatures gain +1 ATK.",
+    passive: (cardObj) => isPurple(cardObj) ? { atk: 1 } : null
+  },
+  Mystveil: {
+    color: "Green", type: "Fairy",
+    description: "Green and Fairy creatures gain +1 DEF.",
+    passive: (cardObj) => (isGreen(cardObj) || isFairy(cardObj)) ? { def: 1 } : null
+  }
+};
 // ==========================
 // === DOM REFERENCES ===
 // ==========================
@@ -1054,25 +1105,66 @@ function resetAttackFlags(turn) {
   arr.forEach(creature => { creature.hasAttacked = false; });
 }
 function matchesFilter(cardObj, filter) {
-  const cardData = dummyCards.find(c => c.id === cardObj.cardId);
-  if (!cardData) return false;
   for (let key in filter) {
-    let val = filter[key];
-    let data = cardData[key];
-    if (Array.isArray(data)) {
-      if (!data.map(v => v.toLowerCase()).includes(val.toLowerCase())) return false;
-    } else if (typeof data === "string") {
-      if (data.toLowerCase() !== val.toLowerCase()) return false;
-    } else {
-      if (data !== val) return false;
-    }
+    if (!fieldIncludes(cardObj, key, filter[key])) return false;
   }
   return true;
+}
+function handleDayNightCycle() {
+  gameState.dayNightCycleCounter = (gameState.dayNightCycleCounter || 0) + 1;
+  if (gameState.dayNightCycleCounter >= 4) {
+    // Switch Day <-> Night
+    gameState.timeOfDay = gameState.timeOfDay === "day" ? "night" : "day";
+    gameState.dayNightCycleCounter = 0;
+    showToast(gameState.timeOfDay === "day" ? "Day breaks!" : "Night falls!", { type: "info" });
+    renderGameState(); // Update field visuals if needed
+  }
+}
+
+// --- WEATHER --- //
+function handleWeatherEffectsEndPhase() {
+  if (!Array.isArray(gameState.weatherEffects)) return;
+  gameState.weatherEffects.forEach(e => e.duration--);
+  gameState.weatherEffects = gameState.weatherEffects.filter(e => e.duration > 0);
+  renderGameState(); // show update if needed
+}
+function triggerWeatherEffect(effectName) {
+  if (!WEATHER_EFFECTS[effectName]) return;
+  // Prevent stacking same effect unless you want to allow duplicates
+  const alreadyActive = gameState.weatherEffects.some(e => e.name === effectName);
+  if (alreadyActive) {
+    showToast(`${effectName} is already active!`, { type: "info" });
+    return;
+  }
+  /* example in dummyCards
+{ 
+  name: "Summon Drought",
+  cost: '{R}{R}',
+  resolution: {
+    effect: "TriggerWeather",
+    weather: "Drought"
+  }
+} */
+  gameState.weatherEffects.push({ name: effectName, duration: 6 });
+  showToast(`Weather effect activated: ${effectName}!`, { type: "success" });
+  renderGameState();
+}
+function renderWeatherEffects() {
+  const div = document.getElementById('weather-effects-row');
+  if (!div) return;
+  div.innerHTML = gameState.weatherEffects.map(e => {
+    const w = WEATHER_EFFECTS[e.name];
+    return `<span style="margin-right:10px;">
+      <img src="OtherImages/Icons/${e.name.replace(/\s+/g, '')}.png" style="height:26px;vertical-align:middle;">
+      <span style="color:#ffe066;font-weight:bold">${e.name}</span>
+      <span style="color:#fff">(${e.duration})</span>
+    </span>`;
+  }).join('');
 }
 // ===================================
 // ========== ACTIONS LOGIC ==========
 // ===================================
-// MOVE OBJECT
+// --- MOVE OBJECT --- //
 function moveCard(instanceId, fromArr, toArr, extra = {}, callback) {
   const fromZoneName = getZoneNameForArray(fromArr);
   const toZoneName = getZoneNameForArray(toArr);
@@ -1840,7 +1932,6 @@ function computeCardStat(cardObj, statName) {
   // Get base stat from dummyCards
   const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
   let base = cardDef?.[statName] ?? 0;
-
   let mods = 0;
 
   // Modifiers array (for skills, effects, etc)
@@ -1894,6 +1985,25 @@ function computeCardStat(cardObj, statName) {
       }
     });
   });
+  // === Passive Day/Night Buffs ===
+  if (gameState.timeOfDay === "day" && statName === "def" && isWhite(cardObj)) {
+    mods += 1;
+  }
+  if (gameState.timeOfDay === "night" && statName === "atk" && isBlack(cardObj)) {
+    mods += 1;
+  }
+  // Apply all active weather effects
+  if (Array.isArray(gameState.weatherEffects)) {
+    gameState.weatherEffects.forEach(effectObj => {
+      const effect = WEATHER_EFFECTS[effectObj.name];
+      if (effect && effect.passive) {
+        const buff = effect.passive(cardObj);
+        if (buff && typeof buff[statName] === "number") {
+          mods += buff[statName];
+        }
+      }
+    });
+  }  
   // Clamp to minimum 0
   return Math.max(0, base + mods);
 }
@@ -2405,6 +2515,7 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
     },
     {
       text: "Attack",
+      disabled: cardObj.hasAttacked,
       onClick: function(e) {
         e.stopPropagation();
         startAttackTargeting(instanceId, zoneId, cardDiv);
@@ -2522,24 +2633,6 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
       });
     });
   }
-
-/*
-  // Only allow "View" if clicking a card in an opponent's zone
-  if (zoneId === "opponent-creatures-zone" || zoneId === "opponent-domains-zone") {
-    buttons.push({
-      text: "View",
-      onClick: function(e) {
-        e.stopPropagation();
-        showFullCardModal(cardObj);
-        closeAllMenus();
-      }
-    });
-  } else {
-    // existing menu logic for player's zones...
-    // (copy your normal menu here)
-  }
-  */
-  
   // Create and show the menu
   const menu = createCardMenu(buttons);
   // Position menu absolutely near cardDiv
@@ -3975,26 +4068,6 @@ function getTotalEssence(essenceStr) {
   return matches ? matches.length : 0;
 }
 
-/*---------------------------------------------
-// Helper functions for abilities and skills //
----------------------------------------------*/
-function attackerHasAbility(cardObj, abilityName) {
-  const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
-  return cardDef && Array.isArray(cardDef.ability) && cardDef.ability.includes(abilityName);
-}
-function defenderHasAbility(cardObj, abilityName) {
-  const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
-  return cardDef && Array.isArray(cardDef.ability) && cardDef.ability.includes(abilityName);
-}
-function getCardColors(cardObj) {
-  const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
-  if (!cardDef) return [];
-  if (Array.isArray(cardDef.color)) return cardDef.color;
-  if (typeof cardDef.color === "string") return [cardDef.color];
-  return [];
-}
-
-
 
 /*-------------------
 // ANIMATION LOGIC //
@@ -4269,6 +4342,16 @@ function resolveSkillEffect(cardObj, skillObj) {
   const resolution = skillObj.resolution || {};
   const effects = Array.isArray(resolution.effect) ? resolution.effect : [resolution.effect];
   effects.forEach(effectName => {
+    // === Weather effect support ===
+    if (
+      effectName === "TriggerWeather" &&
+      resolution.weather
+    ) {
+      triggerWeatherEffect(resolution.weather);
+      renderWeatherEffects();
+      return;
+    }
+    // === Normal skill effect resolution ===
     const effectDef = SKILL_EFFECT_MAP[effectName];
     if (effectDef && effectDef.handler) {
       effectDef.handler(cardObj, skillObj);
@@ -4538,7 +4621,15 @@ function fieldIncludes(cardObj, field, value) {
   return String(card[field]).toLowerCase() === String(value).toLowerCase();
 }
 
-// COLOR
+// --- ATTACK LOGIC HELPERS --- //
+function attackerHasAbility(cardObj, abilityName) {
+  return hasAbility(cardObj, abilityName);
+}
+
+function defenderHasAbility(cardObj, abilityName) {
+  return hasAbility(cardObj, abilityName);
+}
+// --- COLOR --- //
 function isColor(cardObj, color) {
   return fieldIncludes(cardObj, "color", color);
 }
