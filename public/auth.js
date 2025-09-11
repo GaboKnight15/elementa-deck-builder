@@ -71,6 +71,18 @@ const bannerOptions = [
   "CardImages/Banners/DefaultBanner.png"
 ];
 
+function checkAndShowDailyLogin() {
+  const today = getUtcDateString();
+  let { lastClaimedDay, lastLoginDate } = getDailyLoginInfo();
+  let dayIdx = lastClaimedDay % DAILY_LOGIN_REWARDS.length;
+
+  // Only show modal if not claimed today
+  if (lastLoginDate !== today) {
+    showDailyLoginModal(dayIdx);
+  }
+}
+// After successful login:
+checkAndShowDailyLogin();
 
 // --- Load Profile From Firestore ---
 function loadProfile(user) {
