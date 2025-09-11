@@ -17,75 +17,85 @@ const packOpeningModalContent = document.getElementById('pack-opening-modal-cont
 const openedPackRowModal = document.getElementById('opened-pack-row-modal');
 const closePackOpeningModalBtn = document.getElementById('close-pack-opening-modal');
 const allAvatarOptions = [
-      { src: "CardImages/Avatars/Fairy.png", price: 10 },
-      { src: "CardImages/Avatars/Emberling.png", price: 10 },
-      { src: "CardImages/Avatars/WaterElemental.png", price: 10 },
-      { src: "CardImages/Avatars/Thunderspawn.png", price: 10 },
-      { src: "CardImages/Avatars/Goblin.png", price: 10 },
-      { src: "CardImages/Avatars/RockLizard.png", price: 10 },
-      { src: "CardImages/Avatars/Wolf.png", price: 10 },
-      { src: "CardImages/Avatars/AngelicWarrior.png", price: 10 },
-  { src: "CardImages/Avatars/Faelyra.png", price: 100 },
-  { src: "CardImages/Avatars/Kaelyn.png", price: 100 },
-  { src: "CardImages/Avatars/Zaryon.png", price: 100 },
-  { src: "CardImages/Avatars/Zyra.png", price: 100 },
-  { src: "CardImages/Avatars/Veniryss.png", price: 100 },
-  { src: "CardImages/Avatars/Gravok.png", price: 100 },
-  { src: "CardImages/Avatars/Nyzariel.png", price: 100 },
-  { src: "CardImages/Avatars/Elyndra.png", price: 100 },
-  { src: "CardImages/Avatars/Aureavian.png", price: 100 },
-  { src: "CardImages/Avatars/Maldryss.png", price: 100 },
-  { src: "CardImages/Avatars/Tydros.png", price: 100 },
-  { src: "CardImages/Avatars/Ephoros.png", price: 100 },
-  { src: "CardImages/Avatars/Mordrath.png", price: 100 },
-  { src: "CardImages/Avatars/Raukhar.png", price: 100 },
-  { src: "CardImages/Avatars/Velmira.png", price: 100 },
-  { src: "CardImages/Avatars/Verdarok.png", price: 100 },
-  { src: "CardImages/Avatars/Pyronyx.png", price: 100 },
-  { src: "CardImages/Avatars/Abyndra.png", price: 100 },
-  { src: "CardImages/Avatars/Voltrazek.png", price: 100 },
-  { src: "CardImages/Avatars/Toxigon.png", price: 100 },
-  { src: "CardImages/Avatars/Ferronyx.png", price: 100 },
-  { src: "CardImages/Avatars/Nochtyros.png", price: 100 },
-  { src: "CardImages/Avatars/Solaryth.png", price: 100 }
+  { name: 'Fairy', src: "CardImages/Avatars/Fairy.png", rarity: 'Common', price: 10 },
+  { name: 'Emberling', src: "CardImages/Avatars/Emberling.png", rarity: 'Common', price: 10 },
+  { name: 'Water Elemental', src: "CardImages/Avatars/WaterElemental.png", rarity: 'Common', price: 10 },
+  { name: 'Thunderspawn', src: "CardImages/Avatars/Thunderspawn.png", rarity: 'Common', price: 10 },
+  { name: 'Goblin', src: "CardImages/Avatars/Goblin.png", rarity: 'Common', price: 10 },
+  { name: 'Rock Lizard', src: "CardImages/Avatars/RockLizard.png", rarity: 'Common', price: 10 },
+  { name: 'Wolf', src: "CardImages/Avatars/Wolf.png", rarity: 'Common', price: 10 },
+  { name: 'Angelic Warrior', src: "CardImages/Avatars/AngelicWarrior.png", rarity: 'Common', price: 10 },
+  { name: 'Faelyra, Satyr Empress', src: "CardImages/Avatars/Faelyra.png", rarity: 'Legendary', price: 100 },
+  { name: 'Kaelyra, Firelands Heiress', src: "CardImages/Avatars/Kaelyn.png", rarity: 'Legendary', price: 100 },
+  { name: 'Zaryon, Pearlhaven Commander', src: "CardImages/Avatars/Zaryon.png", rarity: 'Legendary', price: 100 },
+  { name: 'Zyra, Thunderblade Duelist', src: "CardImages/Avatars/Zyra.png", rarity: 'Legendary', price: 100 },
+  { name: 'Veniryss, Spider Princess', src: "CardImages/Avatars/Veniryss.png", price: 100 },
+  { name: 'Gravok, Drakzul Tyrant', src: "CardImages/Avatars/Gravok.png", rarity: 'Legendary', price: 100 },
+  { name: 'Nyzariel, Archdemon Duchess', src: "CardImages/Avatars/Nyzariel.png", rarity: 'Legendary', price: 100 },
+  { name: 'Elyndra, Dawnblade of Heavens', src: "CardImages/Avatars/Elyndra.png", rarity: 'Legendary', price: 100 },
+  { name: 'Aureavian, Wings of Zephyra', src: "CardImages/Avatars/Aureavian.png", rarity: 'Legendary', price: 100 },
+  { name: 'Maldryss, Skullframe Archmage', src: "CardImages/Avatars/Maldryss.png", rarity: 'Legendary', price: 100 },
+  { name: 'Tydros, Coralbound Tidebreaker', src: "CardImages/Avatars/Tydros.png", rarity: 'Legendary', price: 100 },
+  { name: 'Ephoros, Firelands Behemoth', src: "CardImages/Avatars/Ephoros.png", rarity: 'Legendary', price: 100 },
+  { name: 'Mordrath, Plague King', src: "CardImages/Avatars/Mordrath.png", rarity: 'Legendary', price: 100 },
+  { name: 'Raukhar, Knight of Duskwings', src: "CardImages/Avatars/Raukhar.png", rarity: 'Legendary', price: 100 },
+  { name: 'Velmira, Mistress of Silence', src: "CardImages/Avatars/Velmira.png", rarity: 'Legendary', price: 100 },
+  { name: 'Verdarok, Sylvan Warden', src: "CardImages/Avatars/Verdarok.png", rarity: 'Legendary', price: 100 },
+  { name: 'Pyronyx, Inferno Gale', src: "CardImages/Avatars/Pyronyx.png", rarity: 'Legendary', price: 100 },
+  { name: 'Abyndra, Tidal Wraith', src: "CardImages/Avatars/Abyndra.png", rarity: 'Legendary', price: 100 },
+  { name: 'Voltrazek, Tempest Reaver', src: "CardImages/Avatars/Voltrazek.png", rarity: 'Legendary', price: 100 },
+  { name: 'Toxigon, Blighted Maw', src: "CardImages/Avatars/Toxigon.png", rarity: 'Legendary', price: 100 },
+  { name: 'Ferronyx, Terra Colossus', src: "CardImages/Avatars/Ferronyx.png", rarity: 'Legendary', price: 100 },
+  { name: 'Nochtyros, Umbral Tyrant', src: "CardImages/Avatars/Nochtyros.png", rarity: 'Legendary', price: 100 },
+  { name: 'Solaryth, RadianceDawnbreaker', src: "CardImages/Avatars/Solaryth.png", rarity: 'Legendary', price: 100 }
 ];
 
 const allBannerOptions = [
-  { src: "CardImages/Banners/Verdara.png", price: 100 },
-  { src: "CardImages/Banners/Ashkar.png", price: 100 },
-  { src: "CardImages/Banners/Pearlhaven.png", price: 100 },
-  { src: "CardImages/Banners/Aetherion.png", price: 100 },
-  { src: "CardImages/Banners/Drakzul.png", price: 100 },
-  { src: "CardImages/Banners/GlimbarkFrontier.png", price: 100 },
-  { src: "CardImages/Banners/SkywardArchipelago.png", price: 100 },
-  { src: "CardImages/Banners/Duskhaven.png", price: 100 },
-  { src: "CardImages/Banners/Nochtyra.png", price: 100 },
-  { src: "CardImages/Banners/Solmara.png", price: 100 }
+  { name: 'Verdara', src: "CardImages/Banners/Verdara.png", price: 100 },
+  { name: 'Ashkar', src: "CardImages/Banners/Ashkar.png", price: 100 },
+  { name: 'Pearlhaven', src: "CardImages/Banners/Pearlhaven.png", price: 100 },
+  { name: 'Aetherion', src: "CardImages/Banners/Aetherion.png", price: 100 },
+  { name: 'Drakzul', src: "CardImages/Banners/Drakzul.png", price: 100 },
+  { name: 'Glimbark Frontier', src: "CardImages/Banners/GlimbarkFrontier.png", price: 100 },
+  { name: 'Skyward Archipelago', src: "CardImages/Banners/SkywardArchipelago.png", price: 100 },
+  { name: 'Duskhaven', src: "CardImages/Banners/Duskhaven.png", price: 100 },
+  { name: 'Nochtyra', src: "CardImages/Banners/Nochtyra.png", price: 100 },
+  { name: 'Solmara', src: "CardImages/Banners/Solmara.png", price: 100 }
 ];
 
 const allCardbackOptions = [
-  { src: "OtherImages/Cardbacks/Cardback1.png", price: 10 },
-  { src: "OtherImages/Cardbacks/CBFairy.png", price: 100 },
-  { src: "OtherImages/Cardbacks/CBCindercore.png", price: 100 },
-  { src: "OtherImages/Cardbacks/CBConstructs.png", price: 100 },
-  { src: "OtherImages/Cardbacks/CBCoralbound.png", price: 100 },
-  { src: "OtherImages/Cardbacks/CBFirelands.png", price: 100 },
-  { src: "OtherImages/Cardbacks/CBGoblins.png", price: 100 },
-  { src: "OtherImages/Cardbacks/CBGolemheart.png", price: 100 },
-  { src: "OtherImages/Cardbacks/CBMerfolk.png", price: 100 },
-  { src: "OtherImages/Cardbacks/CBMoonfang.png", price: 100 },
-  { src: "OtherImages/Cardbacks/CBSatyr.png", price: 100 },
-  { src: "OtherImages/Cardbacks/CBShadowbound.png", price: 100 },
-  { src: "OtherImages/Cardbacks/CBStonebound.png", price: 100 },
-  { src: "OtherImages/Cardbacks/CBStormcore.png", price: 100 },
-  { src: "OtherImages/Cardbacks/CBVenomcore.png", price: 100 },
-  { src: "OtherImages/Cardbacks/CBWoodframe.png", price: 100 }
+  { name: 'Cardback 1', src: "OtherImages/Cardbacks/Cardback1.png", rarity: 'Common', price: 10 },
+  { name: 'Fairy', src: "OtherImages/Cardbacks/CBFairy.png", rarity: 'Common', price: 100 },
+  { name: 'Cindercore', src: "OtherImages/Cardbacks/CBCindercore.png", rarity: 'Legendary', price: 100 },
+  { name: 'Constructs', src: "OtherImages/Cardbacks/CBConstructs.png", rarity: 'Legendary', price: 100 },
+  { name: 'Coralbound', src: "OtherImages/Cardbacks/CBCoralbound.png", rarity: 'Legendary', price: 100 },
+  { name: 'Firelands', src: "OtherImages/Cardbacks/CBFirelands.png", rarity: 'Legendary', price: 100 },
+  { name: 'Goblins', src: "OtherImages/Cardbacks/CBGoblins.png", rarity: 'Common', price: 100 },
+  { name: 'Golemheart', src: "OtherImages/Cardbacks/CBGolemheart.png", rarity: 'Legendary', price: 100 },
+  { name: 'Merfolk', src: "OtherImages/Cardbacks/CBMerfolk.png", rarity: 'Common', price: 100 },
+  { name: 'Moonfang', src: "OtherImages/Cardbacks/CBMoonfang.png", rarity: 'Legendary', price: 100 },
+  { name: 'Satyr', src: "OtherImages/Cardbacks/CBSatyr.png", rarity: 'Common', price: 100 },
+  { name: 'Shadowbound', src: "OtherImages/Cardbacks/CBShadowbound.png", rarity: 'Legendary', price: 100 },
+  { name: 'Stonebound', src: "OtherImages/Cardbacks/CBStonebound.png", rarity: 'Legendary', price: 100 },
+  { name: 'Stormcore', src: "OtherImages/Cardbacks/CBStormcore.png", rarity: 'Legendary', price: 100 },
+  { name: 'Venomcore', src: "OtherImages/Cardbacks/CBVenomcore.png", rarity: 'Legendary', price: 100 },
+  { name: 'Woodframe', src: "OtherImages/Cardbacks/CBWoodframe.png", rarity: 'Legendary', price: 100 }
 ];
-const packPrices = {
-  "StandardPack": 100,
-  "StandardPack2": 100,
+const packPrices = [
+  {
+    id: "StandardPack",
+    name: "Elementa Boost Pack",
+    price: 100,
+    image: "CardImages/Packs/StandardPack.png"
+  },
+  {
+    id: "StandardPack2",
+    name: "Elementa Rise of Dragons",
+    price: 100,
+    image: "CardImages/Packs/StandardPack2.png"
+  },
   // "ScalesofRuin": 100,"WyrmheartAwakening": 100,"MischiefUnbound": 100,"PrimordialAscension": 100,"IronbornProtocol": 100,"SavageTerritory": 100,"FeatheredOmen": 100,
-};
+];
 // --- Shop Key Bases for localStorage ---
 const INDIVIDUAL_CARDS_SHOP_KEY_BASE = "shopIndividualCards";
 const INDIVIDUAL_CARDS_RESET_KEY_BASE = "shopIndividualCardsReset";
@@ -130,7 +140,7 @@ function showCosmeticConfirmModal({imgSrc, type, price, onConfirm}) {
   cosmeticConfirmModal.style.justifyContent = 'center';
   cosmeticConfirmModal.innerHTML = `
     <div class="modal-content">
-      <img src="${imgSrc}" alt="Cosmetic Preview" style="max-width:120px;max-height:120px;border-radius:12px;box-shadow:0 2px 10px #0005;">
+      <img src="${imgSrc}" alt="Cosmetic Preview" title="${name || ''}" style="max-width:120px;max-height:120px;border-radius:12px;box-shadow:0 2px 10px #0005;">
       <div class="currency-display" style="margin:10px 0;">
         <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins">
         <span>${price}</span>
@@ -340,20 +350,45 @@ shopContainer.addEventListener('click', (e) => {
   ) {
   }
 });
+
+// --- PACK RENDERING --- //
 function renderShopPacks() {
   const packOptionsDiv = document.getElementById('pack-options');
   if (!packOptionsDiv) return;
-  packOptionsDiv.innerHTML = ''; // Clear all
-  for (const [packName, price] of Object.entries(packPrices)) {
+  packOptionsDiv.innerHTML = '';
+  allPackOptions.forEach(pack => {
     const wrapper = document.createElement('div');
     wrapper.className = 'shop-pack-option';
 
     const img = document.createElement('img');
     img.className = 'pack-image';
-    img.src = `CardImages/Packs/${packName}.png`;
-    img.alt = packName;
-    img.dataset.pack = packName;
+    img.src = pack.image;
+    img.alt = pack.name;
+    img.dataset.pack = pack.id;
     img.style.cursor = 'pointer';
+	img.title = pack.name;
+	  
+    // --- Pack Name Element --- //
+    const nameTag = document.createElement('div');
+    nameTag.className = 'pack-name';
+    nameTag.style.textAlign = 'center';
+    nameTag.style.marginTop = '8px';
+    nameTag.style.fontWeight = 'bold';
+    nameTag.style.fontSize = '16px';
+    nameTag.textContent = pack.name;
+	  
+    // --- Price Tag --- //	  
+    const priceTag = document.createElement('span');
+    priceTag.className = 'currency-display';
+    priceTag.style.display = 'flex';
+    priceTag.style.alignItems = 'center';
+    priceTag.style.justifyContent = 'center';
+    priceTag.style.marginTop = '8px';
+    priceTag.innerHTML = `
+      <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins">
+      <span>${price}</span>
+    `;
+	  
     img.onclick = function(e) {
       e.stopPropagation();
       showCosmeticConfirmModal({
@@ -373,17 +408,8 @@ function renderShopPacks() {
         }
       });
     };
-    const priceTag = document.createElement('span');
-    priceTag.className = 'currency-display';
-    priceTag.style.display = 'flex';
-    priceTag.style.alignItems = 'center';
-    priceTag.style.justifyContent = 'center';
-    priceTag.style.marginTop = '8px';
-    priceTag.innerHTML = `
-      <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins">
-      <span>${price}</span>
-    `;
     wrapper.appendChild(img);
+	wrapper.appendChild(nameTag);  
     wrapper.appendChild(priceTag);
     packOptionsDiv.appendChild(wrapper);
   }
@@ -437,6 +463,7 @@ function renderShopCosmetics({
     img.src = src;
     img.className = imgClass;
     img.style.cursor = 'pointer';
+	img.title = opt.name;
 	  
     const priceTag = document.createElement('span');
     priceTag.className = 'currency-display';
@@ -451,6 +478,7 @@ function renderShopCosmetics({
     img.onclick = function() {
       showCosmeticConfirmModal({
         imgSrc: src,
+		name: opt.name,
         type: wrapperClass.replace('shop-','').replace('-option',''), // e.g. 'avatar'
         price,
         onConfirm: function(cb) {
