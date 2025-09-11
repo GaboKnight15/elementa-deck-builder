@@ -955,35 +955,42 @@ function showDailyLoginModal(dayIdx) {
   modal.style.alignItems = 'center';
   modal.style.justifyContent = 'center';
 
-  let rewardsHtml = '';
-  DAILY_LOGIN_REWARDS.forEach((reward, i) => {
-    const isToday = i === dayIdx;
-    rewardsHtml += `
-      <div class="daily-login-reward${isToday ? ' today' : ''}" style="
-        border-radius:8px;
-        padding:9px;
-        margin:4px;
-        background:${isToday ? '#ffe06622' : '#222'};
-        border:${isToday ? '2px solid #ffe066' : '1px solid #333'};
-        box-shadow:${isToday ? '0 2px 8px #ffe06655' : '0 1px 4px #0002'};
-        display:flex;
-        flex-direction:column;
-        align-items:center;
-        width:88px;
-      ">
-        <div style="font-weight:bold;color:#ffe066;">${reward.title}</div>
-        <div style="margin:4px 0;">
-          <img src="OtherImages/Currency/Coins.png" style="width:22px;vertical-align:middle;"> 
-          <span style="color:#fff;">${reward.coins}</span>
-        </div>
-        <div>
-          <img src="OtherImages/Icons/Essence.png" style="width:22px;vertical-align:middle;">
-          <span style="color:#fff;">${reward.essence}</span>
-        </div>
-        ${isToday ? `<div style="margin-top:6px;font-size:1.1em;color:#6f6;">Today's Reward</div>` : ''}
+let rewardsHtml = '';
+DAILY_LOGIN_REWARDS.forEach((reward, i) => {
+  // Check if this day is claimable (today or previous days)
+  const isClaimable = i >= lastClaimedDay && i <= dayIdx;
+  rewardsHtml += `
+    <div class="daily-login-reward${i === dayIdx ? ' today' : ''}" 
+         data-day="${i}"
+         style="
+          border-radius:8px;
+          padding:9px;
+          margin:4px;
+          background:${i === dayIdx ? '#ffe06622' : '#222'};
+          border:${i === dayIdx ? '2px solid #ffe066' : '1px solid #333'};
+          box-shadow:${i === dayIdx ? '0 2px 8px #ffe06655' : '0 1px 4px #0002'};
+          display:flex;
+          flex-direction:column;
+          align-items:center;
+          width:88px;
+          cursor:pointer;
+          opacity:${isClaimable ? 1 : 0.5};
+        "
+        title="Click to claim this day's reward"
+      >
+      <div style="font-weight:bold;color:#ffe066;">${reward.title}</div>
+      <div style="margin:4px 0;">
+        <img src="OtherImages/Currency/Coins.png" style="width:22px;vertical-align:middle;">
+        <span style="color:#fff;">${reward.coins}</span>
       </div>
-    `;
-  });
+      <div>
+        <img src="OtherImages/Icons/Essence.png" style="width:22px;vertical-align:middle;">
+        <span style="color:#fff;">${reward.essence}</span>
+      </div>
+      ${i === dayIdx ? `<div style="margin-top:6px;font-size:1.1em;color:#6f6;">Today's Reward</div>` : ''}
+    </div>
+  `;
+});
 
   modal.innerHTML = `
     <div class="modal-content" style="max-width:750px;padding:22px 18px;background:#232a3a;border-radius:16px;">
@@ -996,16 +1003,24 @@ function showDailyLoginModal(dayIdx) {
     </div>
   `;
   document.body.appendChild(modal);
-
-  // Claim logic
-  document.getElementById('daily-login-claim-btn').onclick = function() {
-    const reward = DAILY_LOGIN_REWARDS[dayIdx];
-    addCoins(reward.coins);
-    setEssence(getEssence() + reward.essence);
-    setDailyLoginInfo(dayIdx + 1, getUtcDateString());
-    showToast(`Claimed: ${reward.coins} Coins & ${reward.essence} Essence!`, { type: "success" });
-    modal.remove();
-  };
+ // Add click logic for each reward slot
+ modal.querySelectorAll('.daily-login-reward').forEach((el, i) => {
+   el.onclick = function(e) {
+     // Only allow claiming if not already claimed
+     const { lastClaimedDay } = getDailyLoginInfo();
+     if (i < lastClaimedDay) {
+       showToast("Already claimed!", { type: "info" });
+       return;
+     }
+     // Claim reward
+     const reward = DAILY_LOGIN_REWARDS[i];
+     addCoins(reward.coins);
+     setEssence(getEssence() + reward.essence);
+     setDailyLoginInfo(i + 1, getUtcDateString());
+     showToast(`Claimed: ${reward.coins} Coins & ${reward.essence} Essence for ${reward.title}!`, { type: "success" });
+     modal.remove();
+   };
+ });
   document.getElementById('daily-login-close-btn').onclick = function() {
     modal.remove();
   };
@@ -1013,7 +1028,13 @@ function showDailyLoginModal(dayIdx) {
     if (e.target === modal) modal.remove();
   };
 }
-
+document.getElementById('daily-login-icon').onclick = function() {
+  // Calculate current login day index and show modal
+  const { lastClaimedDay, lastLoginDate } = getDailyLoginInfo();
+  const today = getUtcDateString();
+  let dayIdx = lastClaimedDay % DAILY_LOGIN_REWARDS.length;
+  showDailyLoginModal(dayIdx);
+};
 
 
 // Use this to parse effect text with tokens into HTML with images/icons
