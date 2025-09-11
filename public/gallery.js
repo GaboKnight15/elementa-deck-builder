@@ -167,6 +167,7 @@ function createCardGallery(card) {
     };
     img.alt = card.name;
     img.classList.add('card-art-image');
+    img.title = card.name;
 
     // GRAY OUT if not owned
     if (owned === 0) {
