@@ -412,7 +412,7 @@ function renderShopPacks() {
 	wrapper.appendChild(nameTag);  
     wrapper.appendChild(priceTag);
     packOptionsDiv.appendChild(wrapper);
-  }
+  });
 }
 
 function getUnlockedAvatars() {
