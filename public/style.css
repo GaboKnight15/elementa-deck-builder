@@ -3303,6 +3303,7 @@ button {}
 #pack-options {
   display: flex;
   flex-direction: row;
+  justify-content: center;
   overflow-x: auto;
   overflow-y: hidden;
   padding: 16px 0 10px 0;
