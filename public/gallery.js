@@ -698,8 +698,8 @@ function updateGalleryCollectionProgress(filteredCards) {
   const progDiv = document.getElementById('gallery-collection-progress');
   if (progDiv) progDiv.innerHTML = str;
 }
-// Bulk Void modal logic
-// Bulk Void modal logic
+
+// --- BULK VOID MODAL --- //
 function showBulkVoidModal() {
   const collection = getCollection();
   const cardsToVoid = [];
@@ -737,6 +737,9 @@ function showBulkVoidModal() {
     `;
     modal.style.display = 'flex';
     document.getElementById('bulk-void-cancel-btn').onclick = () => { modal.style.display = 'none'; };
+    modal.onclick = function(e) {
+      if (e.target === modal) modal.style.display = "none";
+    };
     return;
   }
 
@@ -764,7 +767,7 @@ function showBulkVoidModal() {
   content.innerHTML = `
     <h3 style="color:#ffe066;margin-bottom:12px;">Bulk Void</h3>
     <div style="margin-bottom:18px;color:#fff;">
-      Are you sure you want to void the following cards for <span style="color:#6f6;font-weight:bold;">${totalEssence} ${essenceImg}</span>?
+      Are you sure you want to void these cards for <span style="color:#6f6;font-weight:bold;">${totalEssence} ${essenceImg}</span>?
     </div>
     <div style="max-height:270px;overflow-y:auto;margin-bottom:18px;">
       ${cardRows}
@@ -788,6 +791,9 @@ function showBulkVoidModal() {
     renderGallery();
     modal.style.display = 'none';
     showToast(`Bulk voided ${cardsToVoid.length} cards for ${totalEssence} Essence!`, {type: "success"});
+  };
+  modal.onclick = function(e) {
+    if (e.target === modal) modal.style.display = "none";
   };
 }
 // FOIL LOGIC
