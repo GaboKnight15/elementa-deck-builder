@@ -81,6 +81,7 @@ const allCardbackOptions = [
   { name: 'Venomcore', src: "OtherImages/Cardbacks/CBVenomcore.png", rarity: 'Legendary', price: 100 },
   { name: 'Woodframe', src: "OtherImages/Cardbacks/CBWoodframe.png", rarity: 'Legendary', price: 100 }
 ];
+const allPackOptions = packPrices;
 const packPrices = [
   {
     id: "StandardPack",
