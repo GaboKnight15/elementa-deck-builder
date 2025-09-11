@@ -81,7 +81,7 @@ const allCardbackOptions = [
   { name: 'Venomcore', src: "OtherImages/Cardbacks/CBVenomcore.png", rarity: 'Legendary', price: 100 },
   { name: 'Woodframe', src: "OtherImages/Cardbacks/CBWoodframe.png", rarity: 'Legendary', price: 100 }
 ];
-const allPackOptions = packPrices;
+
 const packPrices = [
   {
     id: "StandardPack",
@@ -97,6 +97,7 @@ const packPrices = [
   },
   // "ScalesofRuin": 100,"WyrmheartAwakening": 100,"MischiefUnbound": 100,"PrimordialAscension": 100,"IronbornProtocol": 100,"SavageTerritory": 100,"FeatheredOmen": 100,
 ];
+const allPackOptions = packPrices;
 // --- Shop Key Bases for localStorage ---
 const INDIVIDUAL_CARDS_SHOP_KEY_BASE = "shopIndividualCards";
 const INDIVIDUAL_CARDS_RESET_KEY_BASE = "shopIndividualCardsReset";
