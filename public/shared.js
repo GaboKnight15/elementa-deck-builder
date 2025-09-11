@@ -894,6 +894,128 @@ const CARD_KEYWORD_EXPLANATIONS = {
     description: "Main creatures that can be upgraded to Champion and provide essence support. Champion creatures receive +{1}/+{1} and upgraded skills"},
   // Add more keywords as needed
 };
+const DAILY_LOGIN_REWARDS = [
+  // Week 1
+  { title: "Day 1", coins: 50, essence: 10 },
+  { title: "Day 2", coins: 60, essence: 12 },
+  { title: "Day 3", coins: 70, essence: 14 },
+  { title: "Day 4", coins: 80, essence: 16 },
+  { title: "Day 5", coins: 90, essence: 18 },
+  { title: "Day 6", coins: 100, essence: 20 },
+  { title: "Day 7", coins: 150, essence: 30 },
+  // Week 2
+  { title: "Day 8", coins: 50, essence: 10 },
+  { title: "Day 9", coins: 60, essence: 12 },
+  { title: "Day 10", coins: 70, essence: 14 },
+  { title: "Day 11", coins: 80, essence: 16 },
+  { title: "Day 12", coins: 90, essence: 18 },
+  { title: "Day 13", coins: 100, essence: 20 },
+  { title: "Day 14", coins: 200, essence: 40 },
+  // Week 3
+  { title: "Day 15", coins: 60, essence: 12 },
+  { title: "Day 16", coins: 70, essence: 14 },
+  { title: "Day 17", coins: 80, essence: 16 },
+  { title: "Day 18", coins: 90, essence: 18 },
+  { title: "Day 19", coins: 100, essence: 20 },
+  { title: "Day 20", coins: 120, essence: 24 },
+  { title: "Day 21", coins: 250, essence: 50 },
+  // Week 4
+  { title: "Day 22", coins: 70, essence: 14 },
+  { title: "Day 23", coins: 80, essence: 16 },
+  { title: "Day 24", coins: 90, essence: 18 },
+  { title: "Day 25", coins: 100, essence: 20 },
+  { title: "Day 26", coins: 120, essence: 24 },
+  { title: "Day 27", coins: 150, essence: 30 },
+  { title: "Day 28", coins: 500, essence: 100 }
+];
+function getUtcDateString() {
+  const now = new Date();
+  return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()))
+    .toISOString().split("T")[0];
+}
+function getDailyLoginInfo() {
+  // localStorage keys (optionally, use Firestore for real accounts)
+  const lastClaimedDay = Number(localStorage.getItem("dailyLoginDay") || "0");
+  const lastLoginDate = localStorage.getItem("dailyLoginDate") || "";
+  return { lastClaimedDay, lastLoginDate };
+}
+function setDailyLoginInfo(day, date) {
+  localStorage.setItem("dailyLoginDay", String(day));
+  localStorage.setItem("dailyLoginDate", date);
+}
+function showDailyLoginModal(dayIdx) {
+  // Remove existing modal
+  let modal = document.getElementById('daily-login-modal');
+  if (modal) modal.remove();
+
+  modal = document.createElement('div');
+  modal.id = 'daily-login-modal';
+  modal.className = 'modal';
+  modal.style.display = 'flex';
+  modal.style.alignItems = 'center';
+  modal.style.justifyContent = 'center';
+
+  let rewardsHtml = '';
+  DAILY_LOGIN_REWARDS.forEach((reward, i) => {
+    const isToday = i === dayIdx;
+    rewardsHtml += `
+      <div class="daily-login-reward${isToday ? ' today' : ''}" style="
+        border-radius:8px;
+        padding:9px;
+        margin:4px;
+        background:${isToday ? '#ffe06622' : '#222'};
+        border:${isToday ? '2px solid #ffe066' : '1px solid #333'};
+        box-shadow:${isToday ? '0 2px 8px #ffe06655' : '0 1px 4px #0002'};
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        width:88px;
+      ">
+        <div style="font-weight:bold;color:#ffe066;">${reward.title}</div>
+        <div style="margin:4px 0;">
+          <img src="OtherImages/Currency/Coins.png" style="width:22px;vertical-align:middle;"> 
+          <span style="color:#fff;">${reward.coins}</span>
+        </div>
+        <div>
+          <img src="OtherImages/Icons/Essence.png" style="width:22px;vertical-align:middle;">
+          <span style="color:#fff;">${reward.essence}</span>
+        </div>
+        ${isToday ? `<div style="margin-top:6px;font-size:1.1em;color:#6f6;">Today's Reward</div>` : ''}
+      </div>
+    `;
+  });
+
+  modal.innerHTML = `
+    <div class="modal-content" style="max-width:750px;padding:22px 18px;background:#232a3a;border-radius:16px;">
+      <h2 style="text-align:center;color:#ffe066;margin-bottom:12px;">Daily Login Rewards</h2>
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;align-items:center;">${rewardsHtml}</div>
+      <div style="text-align:center;margin-top:18px;">
+        <button id="daily-login-claim-btn" class="btn-secondary" style="font-size:1.13em;">Claim Today's Reward</button>
+        <button id="daily-login-close-btn" class="btn-negative-secondary" style="margin-left:12px;">Close</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+
+  // Claim logic
+  document.getElementById('daily-login-claim-btn').onclick = function() {
+    const reward = DAILY_LOGIN_REWARDS[dayIdx];
+    addCoins(reward.coins);
+    setEssence(getEssence() + reward.essence);
+    setDailyLoginInfo(dayIdx + 1, getUtcDateString());
+    showToast(`Claimed: ${reward.coins} Coins & ${reward.essence} Essence!`, { type: "success" });
+    modal.remove();
+  };
+  document.getElementById('daily-login-close-btn').onclick = function() {
+    modal.remove();
+  };
+  modal.onclick = function(e) {
+    if (e.target === modal) modal.remove();
+  };
+}
+
+
+
 // Use this to parse effect text with tokens into HTML with images/icons
 function parseEffectText(effect) {
   if (!effect) return "";
