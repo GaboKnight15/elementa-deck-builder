@@ -131,7 +131,7 @@ document.getElementById('shop-back-btn').onclick = function() {
   document.getElementById('home-section').classList.add('active');
 };
 
-function showCosmeticConfirmModal({imgSrc, type, price, onConfirm}) {
+function showCosmeticConfirmModal({imgSrc, name, type, price, onConfirm}) {
   if (cosmeticConfirmModal) 
   cosmeticConfirmModal.remove();
   cosmeticConfirmModal = null;
@@ -388,18 +388,19 @@ function renderShopPacks() {
     priceTag.style.marginTop = '8px';
     priceTag.innerHTML = `
       <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins">
-      <span>${price}</span>
+      <span>${pack.price}</span>
     `;
 	  
     img.onclick = function(e) {
       e.stopPropagation();
       showCosmeticConfirmModal({
         imgSrc: img.src,
+	 	name: opt.name,
         type: 'pack',
-        price,
+        price: pack.price,
         onConfirm: function(cb) {
-          purchaseCosmetic(price, function(done) {
-            openPack(packName, function() {
+          purchaseCosmetic(pack.price, function(done) {
+            openPack(pack.id, function() {
               if (typeof incrementQuestProgress === 'function') {
                 incrementQuestProgress('purchase_pack_daily');
                 incrementQuestProgress('purchase_pack_weekly');
