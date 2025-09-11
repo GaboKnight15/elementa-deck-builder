@@ -81,8 +81,6 @@ function checkAndShowDailyLogin() {
     showDailyLoginModal(dayIdx);
   }
 }
-// After successful login:
-checkAndShowDailyLogin();
 
 // --- Load Profile From Firestore ---
 function loadProfile(user) {
@@ -102,6 +100,7 @@ function loadProfile(user) {
       if (profilePicMenu) profilePicMenu.src = icon;
       profileUsernameDisplay.textContent = name;
       profileBanner.src = banner;
+      checkAndShowDailyLogin();
     })
     .catch(err => {
       profilePic.src = defaultIcon;
