@@ -2844,9 +2844,6 @@ function updatePhase() {
   if (gameState.phase === "essence") {
     essencePhase(gameState.turn);
   }
-  if (gameState.turn === "opponent") {
-    setTimeout(runCpuTurn, 500);
-  }  
   if (gameState.phase === "action") {
     resetAttackFlags(gameState.turn);
     if (gameState.turn === "player") {
@@ -2927,13 +2924,6 @@ function runCpuTurn() {
   if (gameState.turn !== "opponent") return;
   switch (gameState.phase) {
     case "draw":
-      drawCards("opponent", 1);
-      appendVisualLog({
-        sourceCard: {/* info about drawn card or just {name:"Draw"} */},
-        action: "draw",
-        dest: "Hand",
-        who: "opponent"
-      }, false, false);
       setTimeout(nextPhaseBtn.click, 800);
       break;
     case "essence":
