@@ -961,7 +961,14 @@ function startGame({
 }) {
   // --- Deck/State setup ---
   gameState.playerDeck = shuffle(buildDeck(playerDeck));
-  gameState.opponentDeck = shuffle(buildDeck(opponentDeck));
+  // For opponent: if it's an array of cards, use directly; otherwise, build it
+  if (Array.isArray(opponentDeck) && opponentDeck.length && opponentDeck[0].cardId) {
+    // Solo/CPU - deck is already built
+    gameState.opponentDeck = shuffle([...opponentDeck]);
+  } else {
+    // Multiplayer - build deck from definition
+    gameState.opponentDeck = shuffle(buildDeck(opponentDeck));
+  }
   gameState.playerHand = [];
   gameState.playerCreatures = [];
   gameState.playerDomains = [];
