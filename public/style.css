@@ -771,6 +771,28 @@ button {}
 #gallery-card-menu button.settings-item:hover {
   background: #27344a;
 }
+/* Bulk Void modal card image hover effect */
+.bulk-void-card-img {
+  transition: transform 0.18s cubic-bezier(.22,1.14,.32,1), box-shadow 0.18s;
+  box-shadow: 0 1px 8px #0006;
+}
+.bulk-void-card-img:hover {
+  transform: scale(1.08);
+  box-shadow: 0 4px 14px #ffe06688;
+  z-index: 2;
+}
+
+/* Bulk Void button/icon hover effect */
+#bulk-void-btn {
+  transition: transform 0.18s cubic-bezier(.22,1.14,.32,1), box-shadow 0.18s;
+  cursor: pointer;
+}
+#bulk-void-btn:hover {
+  transform: scale(1.13);
+  box-shadow: 0 3px 12px #ffe06699;
+  filter: drop-shadow(0 0 10px #ffe066);
+  z-index: 10;
+}
 .new-card-badge {
   position: absolute;
   top: 8px;
