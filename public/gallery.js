@@ -748,11 +748,13 @@ function showBulkVoidModal() {
     const nameColor = subtotal > 0 ? "#ffe066" : "#fff";
     return `
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:7px;">
-        <img src="${card.image}" alt="${card.name}" style="width:38px;height:54px;border-radius:5px;border:2px solid #444;cursor:pointer;"
+        <img src="${card.image}" alt="${card.name}" class="bulk-void-card-img" style="width:38px;height:54px;border-radius:5px;border:2px solid #444;cursor:pointer;"
           onclick="showFullCardModal(dummyCards.find(c => c.id === '${card.id}'));">
         <span style="font-weight:bold;color:${nameColor};">${card.name}</span>
-        <span style="color:#fff;">×${count}</span>
-        <span style="color:#eee;">(${refund} ${essenceImg})</span>
+        <span style="color:#eee;">
+          (${refund} ${essenceImg}) 
+          <span style="color:#fff;">×${count}</span>
+        </span>
         <span style="color:#6f6;">+${subtotal}</span>
       </div>
     `;
