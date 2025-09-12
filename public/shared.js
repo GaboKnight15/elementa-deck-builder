@@ -934,19 +934,34 @@ function getUtcDateString() {
     .toISOString().split("T")[0];
 }
 function getDailyLoginInfo() {
-  // localStorage keys (optionally, use Firestore for real accounts)
-  const lastClaimedDay = Number(localStorage.getItem("dailyLoginDay") || "0");
-  const lastLoginDate = localStorage.getItem("dailyLoginDate") || "";
-  return { lastClaimedDay, lastLoginDate };
+  if (window.auth && window.auth.currentUser) {
+    return {
+      lastClaimedDay: window.dailyLoginDay || 0,
+      lastLoginDate: window.dailyLoginDate || "",
+    };
+  } else {
+    // fallback for guests
+    return {
+      lastClaimedDay: Number(localStorage.getItem("dailyLoginDay") || "0"),
+      lastLoginDate: localStorage.getItem("dailyLoginDate") || "",
+    };
+  }
 }
 function setDailyLoginInfo(day, date) {
-  localStorage.setItem("dailyLoginDay", String(day));
-  localStorage.setItem("dailyLoginDate", date);
+  if (window.auth && window.auth.currentUser) {
+    window.dailyLoginDay = day;
+    window.dailyLoginDate = date;
+    saveProgress();
+  } else {
+    localStorage.setItem("dailyLoginDay", String(day));
+    localStorage.setItem("dailyLoginDate", date);
+  }
 }
 function showDailyLoginModal(dayIdx) {
   // Remove existing modal
   let modal = document.getElementById('daily-login-modal');
   if (modal) modal.remove();
+  const { lastClaimedDay, lastLoginDate } = getDailyLoginInfo();
 
   modal = document.createElement('div');
   modal.id = 'daily-login-modal';
