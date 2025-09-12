@@ -3681,9 +3681,9 @@ button {}
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 24px;
   border-radius: 18px;
   box-sizing: border-box;
+  box-shadow: 0 2px 12px #0007;
   padding: 24px 2vw;
   background-size: cover;
   background-position: center;
