@@ -36,6 +36,8 @@ function saveProgress() {
     currentDeckSlot: window.currentDeckSlot || "Deck 1",
     currency: typeof window.playerCurrency === 'number' ? window.playerCurrency : 0,
     essence: typeof window.playerEssence === 'number' ? window.playerEssence : 0,
+    dailyLoginDay: window.dailyLoginDay || 0,
+    dailyLoginDate: window.dailyLoginDate || "",
     quests: window.playerQuests || {},
     achievements: window.playerAchievements || {},
     username: (window.profileUsernameDisplay && window.profileUsernameDisplay.textContent) || (auth.currentUser && auth.currentUser.displayName) || "",
@@ -86,6 +88,8 @@ window.decks                 = typeof data.decks !== "undefined" ? data.decks : 
 window.currentDeckSlot       = typeof data.currentDeckSlot !== "undefined" ? data.currentDeckSlot : "Deck 1";
 window.playerCollection      = typeof data.collection !== "undefined" ? data.collection : {};
 window.favoriteCards         = Array.isArray(data.favoriteCards) ? data.favoriteCards : [];
+window.dailyLoginDay         = typeof data.dailyLoginDay === "number" ? data.dailyLoginDay : 0;
+window.dailyLoginDate        = typeof data.dailyLoginDate === "string" ? data.dailyLoginDate : "";
 window.playerQuests          = typeof data.quests !== "undefined" ? data.quests : {};
 window.playerAchievements    = typeof data.achievements !== "undefined" ? data.achievements : {};
       
