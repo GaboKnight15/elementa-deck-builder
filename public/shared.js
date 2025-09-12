@@ -1731,14 +1731,11 @@ function renderProfilePanel(profile, options = {}) {
   container.style.background = `url('${profileBanner}')`;
   container.style.backgroundSize = 'cover';
   container.style.backgroundPosition = 'center';
-  container.style.borderRadius = '18px';
   container.style.display = 'flex';
-  container.style.alignItems = 'center';
   container.style.gap = '5px';
   container.style.minHeight = '120px';
-  container.style.minWidth = '227px';
+  container.style.minWidth = 'auto';
   container.style.position = 'relative';
-  container.style.boxSizing = 'border-box';
 
   // Avatar
   const avatar = document.createElement('img');
@@ -1764,7 +1761,6 @@ function renderProfilePanel(profile, options = {}) {
   // Username
   const usernameDiv = document.createElement('div');
   usernameDiv.textContent = displayUsername;
-  usernameDiv.style.fontSize = '1.2em';
   usernameDiv.style.fontWeight = 'bold';
   usernameDiv.style.color = '#ffe066';
   usernameDiv.style.textShadow = '0 2px 8px #000';
@@ -1772,8 +1768,6 @@ function renderProfilePanel(profile, options = {}) {
   usernameDiv.style.whiteSpace = "nowrap";
   usernameDiv.style.overflow = "hidden";
   usernameDiv.style.textOverflow = "ellipsis";
-  usernameDiv.style.maxWidth = "70vw"; // Responsive, not px
-  usernameDiv.style.minWidth = "0";
 
   // Power display
   const powerDiv = document.createElement('div');
