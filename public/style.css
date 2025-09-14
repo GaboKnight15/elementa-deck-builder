@@ -1781,7 +1781,7 @@ button {}
   border: 2px dashed #3b82f6;
 }
 #deck-selection-grid {
-  display: grid;
+  display: flex;
   flex-wrap: wrap;
   width: auto;
   height: auto;
