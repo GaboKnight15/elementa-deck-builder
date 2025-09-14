@@ -2053,89 +2053,63 @@ function renderCardOnField(cardObj, zoneId) {
   cardDiv.appendChild(frontDiv);
   cardDiv.appendChild(backDiv);
 
-  // --- Stat Overlays ---
-  // HP
-  if (typeof cardData.hp === "number") {
-    const currentHP = typeof cardObj.currentHP === "number" ? cardObj.currentHP : cardData?.hp ?? 0;
-    const hpBadge = document.createElement('div');
-    hpBadge.className = 'stat-badge stat-hp';
-    hpBadge.style.position = 'absolute';
-    hpBadge.style.left = '0';
-    hpBadge.style.bottom = '0';
-    hpBadge.style.width = 'auto';
-    hpBadge.style.height = '25px';
-    hpBadge.style.zIndex = 20;
-    hpBadge.innerHTML = `
-      <img src="OtherImages/FieldIcons/HP.png" style="width:100%;height:100%;">
-      <span style="
-        position:absolute;
-        left:0;top:0;width:100%;height:100%;
-        display:flex;align-items:center;justify-content:center;
-        font-weight:bold;color:#fff;
-        text-shadow:0 1px 4px #232;z-index:22;
-      ">${currentHP}</span>
-    `;
-    cardDiv.appendChild(hpBadge);
-  }
+  // --- Stat Overlays --- //
+// --- Stat Badges Container --- //
+const statsBadgeContainer = document.createElement('div');
+statsBadgeContainer.className = 'card-stats-badge-container';
+statsBadgeContainer.style.position = 'absolute';
+statsBadgeContainer.style.left = '0';
+statsBadgeContainer.style.bottom = '0';
+statsBadgeContainer.style.width = '100%';
+statsBadgeContainer.style.height = '28px'; // Adjust as needed
+statsBadgeContainer.style.display = 'flex';
+statsBadgeContainer.style.justifyContent = 'space-between';
+statsBadgeContainer.style.alignItems = 'flex-end';
+statsBadgeContainer.style.zIndex = 25;
+// HP
+if (typeof cardData.hp === "number") {
+  const currentHP = typeof cardObj.currentHP === "number" ? cardObj.currentHP : cardData?.hp ?? 0;
+  const hpBadge = document.createElement('div');
+  hpBadge.className = 'stat-badge stat-hp';
+  hpBadge.innerHTML = `
+    <img src="OtherImages/FieldIcons/HP.png" style="width:23px;height:23px;">
+    <span style="font-weight:bold;color:#fff;text-shadow:0 1px 4px #232;z-index:22;margin-left:2px;">${currentHP}</span>
+  `;
+  statsBadgeContainer.appendChild(hpBadge);
+}
 
-  // ATK
-  if (typeof cardData.atk === "number") {
-    const baseATK = cardData.atk;
-    const currentATK = computeCardStat(cardObj, "atk");
-    let atkColor = "#fff"; // default white
-    if (currentATK > baseATK) atkColor = "#44e055"; // green for buff
-    else if (currentATK < baseATK) atkColor = "#e53935"; // red for debuff
-    
-    const atkBadge = document.createElement('div');
-    atkBadge.className = 'stat-badge stat-atk';
-    atkBadge.style.position = 'absolute';
-    atkBadge.style.left = '30%';
-    atkBadge.style.bottom = '0';
-    atkBadge.style.width = 'auto';
-    atkBadge.style.height = '20%';
-    atkBadge.style.zIndex = 20;
-    atkBadge.innerHTML = `
-      <img src="OtherImages/FieldIcons/ATK.png" style="width:100%;height:100%;">
-      <span style="
-        position:absolute;
-        left:40%;top:0;width:100%;height:100%;
-        display:flex;align-items:center;justify-content:center;
-        font-weight:bold;color:${atkColor};
-        text-shadow:0 1px 4px #232;z-index:22;
-      ">${currentATK}</span>
-    `;
-    cardDiv.appendChild(atkBadge);
-  }
+// ATK
+if (typeof cardData.atk === "number") {
+  const baseATK = cardData.atk;
+  const currentATK = computeCardStat(cardObj, "atk");
+  let atkColor = "#fff";
+  if (currentATK > baseATK) atkColor = "#44e055";
+  else if (currentATK < baseATK) atkColor = "#e53935";
+  const atkBadge = document.createElement('div');
+  atkBadge.className = 'stat-badge stat-atk';
+  atkBadge.innerHTML = `
+    <img src="OtherImages/FieldIcons/ATK.png" style="width:23px;height:23px;">
+    <span style="font-weight:bold;color:${atkColor};text-shadow:0 1px 4px #232;z-index:22;margin-left:2px;">${currentATK}</span>
+  `;
+  statsBadgeContainer.appendChild(atkBadge);
+}
 
-  // DEF
-  if (typeof cardData.def === "number") {
-    const baseDEF = cardData.def;
-    const currentDEF = computeCardStat(cardObj, "def");
-    let defColor = "#fff"; // default white
-    if (currentDEF > baseDEF) defColor = "#44e055"; // green for buff
-    else if (currentDEF < baseDEF) defColor = "#e53935"; // red for debuff
-    
-    const defBadge = document.createElement('div');
-    defBadge.className = 'stat-badge stat-def';
-    defBadge.style.position = 'absolute';
-    defBadge.style.right = '0';
-    defBadge.style.bottom = '0';
-    defBadge.style.width = 'auto';
-    defBadge.style.height = '20%';
-    defBadge.style.zIndex = 20;
-    defBadge.innerHTML = `
-      <img src="OtherImages/FieldIcons/DEF.png" style="width:100%;height:100%;">
-      <span style="
-        position:absolute;
-        left:0;top:0;width:100%;height:100%;
-        display:flex;align-items:center;justify-content:center;
-        font-weight:bold;color:${defColor};
-        text-shadow:0 1px 4px #232;z-index:22;
-      ">${currentDEF}</span>
-    `;
-    cardDiv.appendChild(defBadge);
-  }
-
+// DEF
+if (typeof cardData.def === "number") {
+  const baseDEF = cardData.def;
+  const currentDEF = computeCardStat(cardObj, "def");
+  let defColor = "#fff";
+  if (currentDEF > baseDEF) defColor = "#44e055";
+  else if (currentDEF < baseDEF) defColor = "#e53935";
+  const defBadge = document.createElement('div');
+  defBadge.className = 'stat-badge stat-def';
+  defBadge.innerHTML = `
+    <img src="OtherImages/FieldIcons/DEF.png" style="width:23px;height:23px;">
+    <span style="font-weight:bold;color:${defColor};text-shadow:0 1px 4px #232;z-index:22;margin-left:2px;">${currentDEF}</span>
+  `;
+  statsBadgeContainer.appendChild(defBadge);
+}
+cardDiv.appendChild(statsBadgeContainer);
   // ARMOR
   if (typeof cardData.armor === "number" && cardData.armor > 0) {
     const currentArmor = typeof cardObj.armor === "number" ? cardObj.armor : cardData.armor;
