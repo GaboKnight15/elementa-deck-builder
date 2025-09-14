@@ -1962,7 +1962,7 @@ function showInputModal({
   placeholder = "",
   confirmText = "Confirm",
   cancelText = "Cancel",
-  validate = null, // (val) => errorMsg or null
+  validate = null,
   onConfirm,
   onCancel
 } = {}) {
@@ -1976,11 +1976,6 @@ function showInputModal({
 
   let content = document.createElement('div');
   content.className = 'modal-content';
-  content.style.minWidth = "340px";
-  content.style.maxWidth = "90vw";
-  content.style.padding = "32px 26px 18px 26px";
-  content.style.background = "#212a3b";
-  content.style.borderRadius = "18px";
   content.onclick = e => e.stopPropagation();
 
  content.innerHTML = `
