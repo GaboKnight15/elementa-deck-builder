@@ -142,7 +142,7 @@ function showCosmeticConfirmModal({imgSrc, name, type, price, onConfirm}) {
   cosmeticConfirmModal.style.justifyContent = 'center';
   cosmeticConfirmModal.innerHTML = `
     <div class="modal-content">
-      <img src="${imgSrc}" alt="Cosmetic Preview" title="${name || ''}" style="max-width:120px;max-height:120px;border-radius:12px;box-shadow:0 2px 10px #0005;">
+      <img src="${imgSrc}" alt="Cosmetic Preview" title="${name || ''}" style="max-width:120px;max-height:120px;box-shadow:0 2px 10px #0005;">
       <div class="currency-display" style="margin:10px 0;">
         <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins">
         <span>${price}</span>
@@ -736,11 +736,6 @@ INDIVIDUAL_CARD_SLOTS.forEach(slot => {
     priceDiv.innerHTML = `<img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins"><span>${individualCardPrices[card.rarity]}</span>`;
     cardOuterDiv.appendChild(priceDiv);
 
-    const rarityBadge = document.createElement('div');
-    rarityBadge.className = 'shop-individual-card-rarity';
-    rarityBadge.textContent = card.rarity;
-    cardOuterDiv.appendChild(rarityBadge);
-
     if (isPurchased) cardOuterDiv.classList.add('card-locked');
 
     container.appendChild(cardOuterDiv);
@@ -830,7 +825,7 @@ if (shopImg) {
       }
     }
     showToast(`${card.name} added to your collection!`, { type: "success" });
-    renderIndividualCardsShop();
+    renderIndividualCardsShop(false);
     if (window.renderGallery) window.renderGallery();
     modal.remove();
   };
