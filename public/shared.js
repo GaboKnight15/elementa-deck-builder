@@ -1012,30 +1012,35 @@ DAILY_LOGIN_REWARDS.forEach((reward, i) => {
       <h2 style="text-align:center;color:#ffe066;margin-bottom:12px;">Daily Login Rewards</h2>
       <div style="display:flex;flex-wrap:wrap;justify-content:center;align-items:center;">${rewardsHtml}</div>
       <div style="text-align:center;margin-top:18px;">
-        <button id="daily-login-claim-btn" class="btn-secondary" style="font-size:1.13em;">Claim Today's Reward</button>
         <button id="daily-login-close-btn" class="btn-negative-secondary" style="margin-left:12px;">Close</button>
       </div>
     </div>
   `;
   document.body.appendChild(modal);
  // Add click logic for each reward slot
- modal.querySelectorAll('.daily-login-reward').forEach((el, i) => {
-   el.onclick = function(e) {
-     // Only allow claiming if not already claimed
-     const { lastClaimedDay } = getDailyLoginInfo();
-     if (i < lastClaimedDay) {
-       showToast("Already claimed!", { type: "info" });
-       return;
-     }
-     // Claim reward
-     const reward = DAILY_LOGIN_REWARDS[i];
-     addCoins(reward.coins);
-     setEssence(getEssence() + reward.essence);
-     setDailyLoginInfo(i + 1, getUtcDateString());
-     showToast(`Claimed: ${reward.coins} Coins & ${reward.essence} Essence for ${reward.title}!`, { type: "success" });
-     modal.remove();
-   };
- });
+modal.querySelectorAll('.daily-login-reward').forEach((el, i) => {
+  el.onclick = function(e) {
+    const { lastClaimedDay, lastLoginDate } = getDailyLoginInfo();
+    const today = getUtcDateString();
+    // Only today's reward is claimable
+    if (i !== dayIdx) {
+      showToast("You can only claim today's reward.", { type: "info" });
+      return;
+    }
+    // Check if already claimed today
+    if (lastLoginDate === today) {
+      showToast("Already claimed today's reward!", { type: "info" });
+      return;
+    }
+    // Claim today's reward
+    const reward = DAILY_LOGIN_REWARDS[i];
+    addCoins(reward.coins);
+    setEssence(getEssence() + reward.essence);
+    setDailyLoginInfo(i + 1, today);
+    showToast(`Claimed: ${reward.coins} Coins & ${reward.essence} Essence for ${reward.title}!`, { type: "success" });
+    modal.remove();
+  };
+});
   document.getElementById('daily-login-close-btn').onclick = function() {
     modal.remove();
   };
