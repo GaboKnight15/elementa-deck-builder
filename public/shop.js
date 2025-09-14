@@ -395,7 +395,7 @@ function renderShopPacks() {
       e.stopPropagation();
       showCosmeticConfirmModal({
         imgSrc: img.src,
-	 	name: opt.name,
+	 	name: pack.name,
         type: 'pack',
         price: pack.price,
         onConfirm: function(cb) {
