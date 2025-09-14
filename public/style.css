@@ -1010,6 +1010,14 @@ button {}
   font-size: 0.93em;
   margin-left: 0.2em;
 }
+
+/* DAILY LOGIN */
+.daily-login-reward.claimed {
+  filter: grayscale(0.7) brightness(0.9);
+}
+.daily-login-reward.future {
+  pointer-events: none;
+}
 .gallery-action-btn:hover {
   transform: scale(1.15);
   box-shadow: 0 0 10px 2px #ffd70080;
