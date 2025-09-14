@@ -775,11 +775,11 @@ function showIndividualCardModal(card, isPurchased) {
   modal.style.display = 'flex';
   modal.innerHTML = `
     <div class="modal-content" style="max-width:380px;align-items:center;">
-      <h3>${card.name}</h3>
       <div style="margin-top:2px;font-size:1.05em;color:#ffe066;margin-bottom:4px;">
         Owned: <b>${ownedCount}</b>
       </div>
-      <img src="${card.image}" alt="${card.name}" style="width:180px;margin:12px auto;display:block;">
+      <img src="${card.image}" alt="${card.name}" title="${card.name}" class="shop-modal-card-img"
+	  	style="width:200px;margin:12px auto;display:block;cursor:pointer;transition:box-shadow 0.2s, transform 0.2s;">
       <div style="margin:10px 0;">
         <span class="shop-individual-card-rarity">${card.rarity}</span>
         <span class="currency-display" style="text-align:center;margin-top:10px;">
@@ -794,7 +794,14 @@ function showIndividualCardModal(card, isPurchased) {
     </div>
   `;
   document.body.appendChild(modal);
-
+	
+// After setting modal.innerHTML
+const shopImg = modal.querySelector('.shop-modal-card-img');
+if (shopImg) {
+  shopImg.onclick = function() {
+    showFullCardModal(card);
+  };
+}
   // "Get" button logic
  modal.querySelector('#individual-card-get-btn').onclick = function() {
     if (isPurchased) return;
