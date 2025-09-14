@@ -533,6 +533,25 @@ button {}
   flex-direction: column;
   min-width: 0;
 }
+.news-tab.selected {
+  background: #ffe066;
+  color: #232a3a;
+  font-weight: bold;
+  border-radius: 6px;
+}
+.news-tab {
+  background: #232a3a;
+  color: #ffe066;
+  border: none;
+  padding: 7px 18px;
+  font-size: 1.14em;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+.news-tab:not(.selected):hover {
+  background: #ffe06622;
+}
 /* ACHIEVEMENTS */
 .fullpage-modal {
   position: fixed;
