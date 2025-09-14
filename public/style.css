@@ -2171,6 +2171,18 @@ button {}
 .card-bg-gold {
   background: linear-gradient(135deg, #3a371b 0%, #232326 50%, #39381b 100%);
 }
+.card-stats-badge-container {
+  gap: 2px; /* spacing between badges */
+  padding: 0 4px;
+}
+.stat-badge {
+  position: relative !important; /* overrides individual badge positions */
+  min-width: 30px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 /* ============================= BATTLEFIELD DESIGN =========================== */
 /* CPU Deck Selection Hover */
