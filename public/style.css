@@ -3516,7 +3516,13 @@ button {}
   transform: translateX(-50%);
   z-index: 3;
 }
-
+/* This should be in your CSS file (e.g. shop.css or global styles) */
+.opened-card-front img:hover {
+  box-shadow: 0 0 18px #ffe066, 0 0 6px #222;
+  transform: scale(1.08);
+  z-index: 2;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
 /* For a “flip” effect, you can use: */
 @keyframes cardFlipIn {
   0%   { transform: rotateY(90deg) scale(0.8); opacity: 0;}
