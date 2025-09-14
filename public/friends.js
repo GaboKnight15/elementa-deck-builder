@@ -623,7 +623,6 @@ function closeMenuOnClick(menu) {
 window.closeMenuOnClick = closeMenuOnClick;
 
 function showProfileMenu(tile, user, context) {
-  closeMenuAndCleanup();
   
   let menu = document.createElement('div');
   menu.id = 'friends-profile-menu';
