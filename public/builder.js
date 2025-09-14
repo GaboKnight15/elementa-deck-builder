@@ -210,7 +210,7 @@ tile.appendChild(activeBtn);
 tile.onclick = () => {
   showInputModal({
     title: "Create New Deck",
-    label: "Deck name:",
+    label: "Deck name",
     defaultValue: "",
     maxLength: 18,
     placeholder: "Enter deck name",
@@ -295,10 +295,10 @@ deckMenuTitle.onclick = function() {
   const deckName = deckMenu.dataset.deckName;
   showInputModal({
     title: "Rename Deck",
-    label: "New deck name:",
+    label: "Deck name",
     defaultValue: deckName,
     maxLength: 18,
-    placeholder: "Enter new deck name",
+    placeholder: "Enter deck name",
     confirmText: "Rename",
     validate: (val) => {
       if (!val) return "Deck name required.";
