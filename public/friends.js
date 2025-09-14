@@ -598,8 +598,32 @@ document.getElementById('requests-search-trigger').onclick = function() {
   }
 };
 
+function closeMenuOnClick(menu) {
+  // Click on outside
+  function outsideClickHandler(e) {
+    if (!menu.contains(e.target)) {
+      menu.remove();
+      document.body.removeEventListener('click', outsideClickHandler);
+    }
+  }
+
+  setTimeout(() => {
+    document.body.addEventListener('click', outsideClickHandler, { once: true });
+  }, 10);
+
+  // Click on any option inside menu (assumes your options are <button> elements)
+  const buttons = menu.querySelectorAll('button');
+  buttons.forEach(btn => {
+    btn.addEventListener('click', function() {
+      menu.remove();
+      document.body.removeEventListener('click', outsideClickHandler);
+    });
+  });
+}
+window.closeMenuOnClick = closeMenuOnClick;
+
 function showProfileMenu(tile, user, context) {
-  closeAllMenus();
+  closeMenuAndCleanup();
   
   let menu = document.createElement('div');
   menu.id = 'friends-profile-menu';
@@ -656,7 +680,6 @@ function showProfileMenu(tile, user, context) {
     viewBtn.onclick = function(e) {
       e.stopPropagation();
       viewFriendProfile(user.uid);
-      closeAllMenus();
     };
   }
   // Unfriend
@@ -665,7 +688,6 @@ function showProfileMenu(tile, user, context) {
     unfBtn.onclick = function(e) {
       e.stopPropagation();
       removeFriend(user.uid);
-      closeAllMenus();
     };
   }
   // Block
@@ -674,7 +696,6 @@ function showProfileMenu(tile, user, context) {
     blockBtn.onclick = function(e) {
       e.stopPropagation();
       blockUser(user.uid);
-      closeAllMenus();
     };
   }
   // Send Friend Request
@@ -683,7 +704,6 @@ function showProfileMenu(tile, user, context) {
     reqBtn.onclick = function(e) {
       e.stopPropagation();
       sendFriendRequest(user.uid);
-      closeAllMenus();
     };
   }
   // Accept
@@ -692,7 +712,6 @@ function showProfileMenu(tile, user, context) {
     acceptBtn.onclick = function(e) {
       e.stopPropagation();
       acceptFriendRequest(user.uid);
-      closeAllMenus();
     };
   }
   // Decline
@@ -701,7 +720,6 @@ function showProfileMenu(tile, user, context) {
     declineBtn.onclick = function(e) {
       e.stopPropagation();
       declineFriendRequest(user.uid);
-      closeAllMenus();
     };
   }
   // Unblock
@@ -710,7 +728,6 @@ function showProfileMenu(tile, user, context) {
     unblockBtn.onclick = function(e) {
       e.stopPropagation();
       unblockUser(user.uid);
-      closeAllMenus();
     };
   }
   // Cancel Request
@@ -719,18 +736,9 @@ function showProfileMenu(tile, user, context) {
     cancelBtn.onclick = function(e) {
       e.stopPropagation();
       cancelSentRequest(user.uid);
-      closeAllMenus();
     };
   }
-  
-  // Click outside closes the menu
-  setTimeout(() => {
-    document.body.addEventListener('click', function handler(e) {
-      // Only close if clicking outside the menu
-      if (!menu.contains(e.target)) closeAllMenus();
-      document.body.removeEventListener('click', handler);
-    }, { once: true });
-  }, 10);
+  closeMenuOnClick(menu);
 }
 
 function renderRequestsPanel() {
