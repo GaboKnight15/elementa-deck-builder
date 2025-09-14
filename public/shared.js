@@ -1303,7 +1303,7 @@ function showFullCardModal(cardObj) {
      if (typeof skill === "object" && skill !== null) {
       infoHtml += `<div class="full-card-info-row" style="margin-left:18px;">`;
       if (skill.name) {
-       infoHtml += `<span style="color:#ffe066;font-weight:bold;">${skill.name}</span> `;
+       infoHtml += `<span style="color:#ffe066;font-weight:bold;align-self:center;">${skill.name}</span> `;
       }
       if (skill.cost) {
        infoHtml += renderCardCost(skill.cost) + " ";
