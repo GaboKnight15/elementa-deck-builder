@@ -376,7 +376,7 @@ function renderShopPacks() {
     nameTag.style.textAlign = 'center';
     nameTag.style.marginTop = '8px';
     nameTag.style.fontWeight = 'bold';
-    nameTag.style.fontSize = '16px';
+	nameTag.style.color = '#ffe066';
     nameTag.textContent = pack.name;
 	  
     // --- Price Tag --- //	  
