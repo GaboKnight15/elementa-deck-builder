@@ -977,22 +977,13 @@ DAILY_LOGIN_REWARDS.forEach((reward, i) => {
   rewardsHtml += `
     <div class="daily-login-reward${i === dayIdx ? ' today' : ''}" 
          data-day="${i}"
-         style="
-          border-radius:8px;
-          padding:9px;
-          margin:4px;
+         style="border-radius:8px;padding:9px;
           background:${i === dayIdx ? '#ffe06622' : '#222'};
           border:${i === dayIdx ? '2px solid #ffe066' : '1px solid #333'};
           box-shadow:${i === dayIdx ? '0 2px 8px #ffe06655' : '0 1px 4px #0002'};
-          display:flex;
-          flex-direction:column;
-          align-items:center;
-          width:88px;
-          cursor:pointer;
+          display:flex;flex-direction:column;align-items:center;width:88px;cursor:pointer;
           opacity:${isClaimable ? 1 : 0.5};
-        "
-        title="Click to claim this day's reward"
-      >
+          "title="Claim today's reward">
       <div style="font-weight:bold;color:#ffe066;">${reward.title}</div>
       <div style="margin:4px 0;">
         <img src="OtherImages/Currency/Coins.png" style="width:22px;vertical-align:middle;">
@@ -1736,11 +1727,6 @@ function renderProfilePanel(profile, options = {}) {
   container.style.background = `url('${profileBanner}')`;
   container.style.backgroundSize = 'cover';
   container.style.backgroundPosition = 'center';
-  container.style.display = 'flex';
-  container.style.gap = '5px';
-  container.style.minHeight = '120px';
-  container.style.minWidth = 'auto';
-  container.style.position = 'relative';
 
   // Avatar
   const avatar = document.createElement('img');
