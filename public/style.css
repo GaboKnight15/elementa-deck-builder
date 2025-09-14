@@ -3651,7 +3651,6 @@ button {}
   margin-top: 14px;
 }
 .shop-individual-card {
-  border-radius: 12px;
   box-shadow: 0 1px 8px #0002;
   padding: 12px;
   text-align: center;
@@ -3670,7 +3669,6 @@ button {}
   width: 90px;
   height: 128px;
   object-fit: contain;
-  border-radius: 6px;
   margin-bottom: 6px;
   background: #161a22;
   transition: box-shadow .18s, filter .18s;
@@ -3679,12 +3677,7 @@ button {}
   box-shadow: 0 8px 24px #50eaff55;
   filter: brightness(1.08) saturate(1.08);
 }
-.shop-individual-card-rarity {
-  font-size: .92em;
-  margin-bottom: 3px;
-  color: #b5d7f7;
-  font-weight: bold;
-}
+
 #toast-container .toast-message {
   cursor: pointer;
 }
