@@ -2087,7 +2087,47 @@ if (selectedAbilities && selectedAbilities.length) {
   });
 }
 window.filterCards = filterCards;
+// Show News Modal
+document.getElementById('news-icon').onclick = function() {
+  document.getElementById('news-modal').style.display = 'flex';
+  selectNewsTab('news');
+};
 
+document.getElementById('close-news-modal').onclick = function() {
+  document.getElementById('news-modal').style.display = 'none';
+};
+
+// Tab selection logic
+document.getElementById('tab-news').onclick = function() { selectNewsTab('news'); };
+document.getElementById('tab-balance').onclick = function() { selectNewsTab('balance'); };
+document.getElementById('tab-issues').onclick = function() { selectNewsTab('issues'); };
+
+function selectNewsTab(tab) {
+  ['news', 'balance', 'issues'].forEach(t => {
+    document.getElementById(`tab-${t}`).classList.remove('selected');
+    document.getElementById(`panel-${t}`).style.display = 'none';
+  });
+  document.getElementById(`tab-${tab}`).classList.add('selected');
+  document.getElementById(`panel-${tab}`).style.display = '';
+  // Render panel content
+  if (tab === 'news') renderNewsPanel();
+  if (tab === 'balance') renderBalancePanel();
+  if (tab === 'issues') renderIssuesPanel();
+}
+
+// Initial News Panel content
+function renderNewsPanel() {
+  const panel = document.getElementById('panel-news');
+  if (panel) panel.innerHTML = `<div style="font-size:1.25em;color:#ffe066;text-align:center;">Welcome to the World of Elementa</div>`;
+}
+function renderBalancePanel() {
+  const panel = document.getElementById('panel-balance');
+  if (panel) panel.innerHTML = `<div style="font-size:1.15em;color:#ffe066;text-align:center;">No balance updates yet.</div>`;
+}
+function renderIssuesPanel() {
+  const panel = document.getElementById('panel-issues');
+  if (panel) panel.innerHTML = `<div style="font-size:1.15em;color:#ffe066;text-align:center;">No issues reported yet.</div>`;
+}
 // Hook up modals and icon
 document.getElementById('friends-icon').onclick = function() {
   renderFriendsList();
