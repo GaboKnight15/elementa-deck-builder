@@ -368,8 +368,7 @@ button {}
 #currency-display {
   display: flex;
   align-items: center;
-  gap: 15px;
-  margin-bottom: 2px;
+  gap: 10px;
   order: 1;
 }
 .currency-display {
@@ -393,8 +392,7 @@ button {}
 #player-power-widget {
   display: flex;
   align-items: center;
-  margin-top: 6px;
-  font-size: 1.1em;
+
   color: #ffe066;
   gap: 10px;
 }
@@ -742,9 +740,9 @@ button {}
 /* ============================= GALLERY =========================== */
 
 #gallery-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, 130px);
-  justify-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   align-items: start;
   width: 100%;
   box-sizing: border-box;
@@ -868,12 +866,10 @@ button {}
   left: 7px;
   background: #222;
   color: #ffdb64;
-  font-size: 1em;
   font-weight: bold;
   padding: 2px 9px;
   border-radius: 8px;
   z-index: 2;
-  margin: 0;
   box-shadow: 0 1px 4px rgba(0,0,0,0.12);
 }
 .card-foil {
@@ -1066,11 +1062,11 @@ button {}
 }
 
 #gallery-builder-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, 130px);
+  display: flex;
+  flex-wrap: wrap;
   gap: 0.2em;
-  justify-items: center;
-  align-items: start;
+  justify-content: center;
+  align-items: center;
   width: 100%;
   box-sizing: border-box;
   overflow-x: auto;
@@ -1241,7 +1237,6 @@ button {}
 /* In style.css */
 #deck-view-modal-title {
   text-align: center;
-  width: 100%;
   margin: 0 0 16px 0;
 }
 /* RARITY BORDERS */ 
@@ -1314,10 +1309,9 @@ button {}
 #deck-title-features {
   display: flex;
   flex-direction: row;
-  gap: 18px;
-  margin-top: 10px;
+  gap: 10px;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
 }
 
 #deck-title-features img {
@@ -1424,7 +1418,6 @@ button {}
   width: 44px;
   height: 62px;
   object-fit: cover;
-  border-radius: 7px;
   box-shadow: 0 2px 8px #0005;
   cursor: pointer;
   transition: box-shadow 0.18s, filter 0.18s;
@@ -1492,13 +1485,11 @@ button {}
 }
 .deck-card-count-badge {
   position: absolute;
-  left: 8px;
-  top: 8px;
+  top: 0;
   background: #222a33;
   color: #ffe066;
   font-weight: bold;
-  font-size: 1.12em;
-  padding: 3px 12px 3px 8px;
+  padding: 3px 8px;
   border-radius: 8px;
   z-index: 2;
   pointer-events: none;
@@ -1784,10 +1775,8 @@ button {}
 #deck-selection-grid {
   display: grid;
   flex-wrap: wrap;
-  margin: 0 auto;
   width: auto;
   height: auto;
-  grid-template-columns: repeat(4, max-content);
   gap: 18px 18px; 
   justify-content: center;
   align-items: center;
@@ -1815,8 +1804,6 @@ button {}
   width: 100%;
   height: auto;
   object-fit: cover;
-  opacity: 0.85;
-  border-radius: 24px 24px 0 0;
   /* Fade out effect: */
   mask-image: 
     linear-gradient(to right,  transparent 0%,  black 10%, black 90%, transparent 100%),
@@ -2000,10 +1987,6 @@ button {}
   will-change: opacity, transform;
 }
 .modal-card-list {
-  min-height: 0;
-  margin: 0;
-  padding: 0;
-  width: 100%;
   box-sizing: border-box;
   display: flex;
   flex-wrap: wrap;
@@ -2146,11 +2129,6 @@ button {}
 
 #battlefield-player-bg {
   bottom: 0;
-}
-#battlefield,
-#battlefield-rightbar {
-  position: relative;
-  z-index: 1;
 }
 
 
@@ -2450,11 +2428,13 @@ button {}
 }
 #battlefield-rightbar {
   display: flex;
+  position: relative;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
   gap: 26px;
   box-sizing: border-box;
+  z-index: 1;
 }
 
 .card-battlefield {
@@ -3544,11 +3524,11 @@ button {}
 #shop-avatars-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 22px 18px;  /* adjust as needed for spacing */
-  justify-items: center;
+  gap: 22px 18px;
+  justify-content: center;
   align-items: start;
   width: 100%;
-  max-width: 900px; /* or larger if needed */
+  max-width: 900px;
   margin: 0 auto;
   box-sizing: border-box;
 }
@@ -3577,7 +3557,7 @@ button {}
   display: flex;
   flex-wrap: wrap;
   gap: 24px 24px;
-  justify-content: flex-start;
+  justify-content: center;
 }
 .shop-banner-option {
   display: flex;
@@ -3631,6 +3611,7 @@ button {}
   display: flex;
   flex-wrap: wrap;
   gap: 18px;
+  justify-content: center;
 }
 .shop-cardback-option {
   display: flex;
@@ -3667,6 +3648,7 @@ button {}
   flex-wrap: wrap;
   gap: 18px;
   margin-top: 14px;
+  justify-content: center;
 }
 .shop-individual-card {
   box-shadow: 0 1px 8px #0002;
@@ -3711,8 +3693,11 @@ button {}
 .profile-panel-tile {
   display: flex;
   flex-wrap: wrap;
+  min-height: 120px;
+  min-width: auto;
   align-items: center;
   border-radius: 18px;
+  gap: 5px;
   box-sizing: border-box;
   box-shadow: 0 2px 12px #0007;
   padding: 24px 2vw;
