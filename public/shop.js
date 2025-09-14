@@ -131,9 +131,68 @@ document.getElementById('shop-back-btn').onclick = function() {
   document.getElementById('home-section').classList.add('active');
 };
 
-function showCosmeticConfirmModal({imgSrc, name, type, price, onConfirm}) {
-  if (cosmeticConfirmModal) 
-  cosmeticConfirmModal.remove();
+function showPackContentsModal(packId, packName) {
+  // Remove existing modal if any
+  let modal = document.getElementById('pack-contents-modal');
+  if (modal) modal.remove();
+
+  modal = document.createElement('div');
+  modal.id = 'pack-contents-modal';
+  modal.className = 'modal';
+  modal.style.display = 'flex';
+  modal.style.alignItems = 'center';
+  modal.style.justifyContent = 'center';
+  modal.onclick = function(e) { if (e.target === modal) modal.remove(); };
+
+  // Find cards in this pack
+  // Use window.dummyCards if imported, or from shared.js context
+  const cardsInPack = (window.dummyCards || dummyCards || []).filter(card => {
+    // Support both set: 'StandardPack' and set: ['StandardPack', ...]
+    if (Array.isArray(card.set)) {
+      return card.set.includes(packId);
+    }
+    return card.set === packId;
+  });
+
+  let cardsHtml = '';
+  if (cardsInPack.length) {
+    cardsHtml = `<div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;max-height:340px;overflow-y:auto;">` +
+      cardsInPack.map(card => `
+        <div style="display:flex;flex-direction:column;align-items:center;width:70px;">
+          <img src="${card.image}" title="${card.name}" alt="${card.name}" style="width:66px;height:88px;border-radius:6px;box-shadow:0 2px 8px #0006;">
+          <span style="font-size:0.9em;color:#ffe066;margin-top:4px;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;max-width:64px;">${card.name}</span>
+        </div>
+      `).join('') +
+      `</div>`;
+  } else {
+    cardsHtml = `<div style="color:#ffe066;text-align:center;">No cards listed for this pack.</div>`;
+  }
+
+  modal.innerHTML = `
+    <div class="modal-content" style="min-width:340px;max-width:600px;padding:24px 24px 12px 24px;background:#232a3a;border-radius:16px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <h2 style="margin:0;font-size:1.25em;color:#ffe066;">${packName} Contents</h2>
+        <button id="close-pack-contents-modal" style="background:none;border:none;cursor:pointer;padding:0;">
+          <img src="OtherImages/Icons/Info.png" style="width:24px;opacity:0.35;pointer-events:none;" alt="Info" />
+        </button>
+      </div>
+      <div style="margin-top:12px">${cardsHtml}</div>
+      <div style="text-align:center;margin-top:18px;">
+        <button id="pack-contents-close-btn" class="btn-negative-secondary" style="margin-left:12px;">Close</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+
+  document.getElementById('pack-contents-close-btn').onclick = function() {
+    modal.remove();
+  };
+  document.getElementById('close-pack-contents-modal').onclick = function() {
+    modal.remove();
+  };
+}
+function showCosmeticConfirmModal({imgSrc, name, type, price, onConfirm, packId}) {
+  if (cosmeticConfirmModal) cosmeticConfirmModal.remove();
   cosmeticConfirmModal = null;
   cosmeticConfirmModal = document.createElement('div');
   cosmeticConfirmModal.className = 'modal';
@@ -141,7 +200,10 @@ function showCosmeticConfirmModal({imgSrc, name, type, price, onConfirm}) {
   cosmeticConfirmModal.style.alignItems = 'center';
   cosmeticConfirmModal.style.justifyContent = 'center';
   cosmeticConfirmModal.innerHTML = `
-    <div class="modal-content">
+    <div class="modal-content" style="position:relative;">
+      <button id="pack-info-btn" style="position:absolute;top:12px;right:14px;background:none;border:none;cursor:pointer;">
+        <img src="OtherImages/Icons/Info.png" alt="Pack Info" style="width:28px;">
+      </button>
       <img src="${imgSrc}" alt="Cosmetic Preview" title="${name || ''}" style="max-width:120px;max-height:120px;box-shadow:0 2px 10px #0005;">
       <div class="currency-display" style="margin:10px 0;">
         <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins">
@@ -155,12 +217,23 @@ function showCosmeticConfirmModal({imgSrc, name, type, price, onConfirm}) {
   `;
   document.body.appendChild(cosmeticConfirmModal);
 
+  // Info button logic: only for packs
+  if (type === 'pack' && packId) {
+    cosmeticConfirmModal.querySelector('#pack-info-btn').onclick = function(e) {
+      e.stopPropagation();
+      showPackContentsModal(packId, name);
+    };
+  } else {
+    // Hide info button for non-pack purchases
+    cosmeticConfirmModal.querySelector('#pack-info-btn').style.display = 'none';
+  }
+
   // Confirm
   cosmeticConfirmModal.querySelector('#cosmetic-get-btn').onclick = function() {
     this.disabled = true;
     onConfirm(function(purchaseSucceeded) {
       if (purchaseSucceeded === false) {
-        cosmeticConfirmModal.querySelector('#cosmetic-get-btn').disabled = false; // re-enable so user can try again
+        cosmeticConfirmModal.querySelector('#cosmetic-get-btn').disabled = false;
         return;
       }
       cosmeticConfirmModal.remove();
@@ -172,7 +245,6 @@ function showCosmeticConfirmModal({imgSrc, name, type, price, onConfirm}) {
     cosmeticConfirmModal.remove();
     cosmeticConfirmModal = null;
   };
-  // Clicking outside closes
   cosmeticConfirmModal.onclick = function(e) {
     if (e.target === cosmeticConfirmModal) {
       cosmeticConfirmModal.remove();
@@ -398,6 +470,7 @@ function renderShopPacks() {
 	 	name: pack.name,
         type: 'pack',
         price: pack.price,
+		packId: pack.id,
         onConfirm: function(cb) {
           purchaseCosmetic(pack.price, function(done) {
             openPack(pack.id, function() {
