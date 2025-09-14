@@ -17,69 +17,69 @@ const packOpeningModalContent = document.getElementById('pack-opening-modal-cont
 const openedPackRowModal = document.getElementById('opened-pack-row-modal');
 const closePackOpeningModalBtn = document.getElementById('close-pack-opening-modal');
 const allAvatarOptions = [
-  { name: 'Fairy', src: "CardImages/Avatars/Fairy.png", rarity: 'Common', price: 10 },
-  { name: 'Emberling', src: "CardImages/Avatars/Emberling.png", rarity: 'Common', price: 10 },
-  { name: 'Water Elemental', src: "CardImages/Avatars/WaterElemental.png", rarity: 'Common', price: 10 },
-  { name: 'Thunderspawn', src: "CardImages/Avatars/Thunderspawn.png", rarity: 'Common', price: 10 },
-  { name: 'Goblin', src: "CardImages/Avatars/Goblin.png", rarity: 'Common', price: 10 },
-  { name: 'Rock Lizard', src: "CardImages/Avatars/RockLizard.png", rarity: 'Common', price: 10 },
-  { name: 'Wolf', src: "CardImages/Avatars/Wolf.png", rarity: 'Common', price: 10 },
-  { name: 'Angelic Warrior', src: "CardImages/Avatars/AngelicWarrior.png", rarity: 'Common', price: 10 },
-  { name: 'Faelyra, Satyr Empress', src: "CardImages/Avatars/Faelyra.png", rarity: 'Legendary', price: 100 },
-  { name: 'Kaelyra, Firelands Heiress', src: "CardImages/Avatars/Kaelyn.png", rarity: 'Legendary', price: 100 },
-  { name: 'Zaryon, Pearlhaven Commander', src: "CardImages/Avatars/Zaryon.png", rarity: 'Legendary', price: 100 },
-  { name: 'Zyra, Thunderblade Duelist', src: "CardImages/Avatars/Zyra.png", rarity: 'Legendary', price: 100 },
-  { name: 'Veniryss, Spider Princess', src: "CardImages/Avatars/Veniryss.png", price: 100 },
-  { name: 'Gravok, Drakzul Tyrant', src: "CardImages/Avatars/Gravok.png", rarity: 'Legendary', price: 100 },
-  { name: 'Nyzariel, Archdemon Duchess', src: "CardImages/Avatars/Nyzariel.png", rarity: 'Legendary', price: 100 },
-  { name: 'Elyndra, Dawnblade of Heavens', src: "CardImages/Avatars/Elyndra.png", rarity: 'Legendary', price: 100 },
-  { name: 'Aureavian, Wings of Zephyra', src: "CardImages/Avatars/Aureavian.png", rarity: 'Legendary', price: 100 },
-  { name: 'Maldryss, Skullframe Archmage', src: "CardImages/Avatars/Maldryss.png", rarity: 'Legendary', price: 100 },
-  { name: 'Tydros, Coralbound Tidebreaker', src: "CardImages/Avatars/Tydros.png", rarity: 'Legendary', price: 100 },
-  { name: 'Ephoros, Firelands Behemoth', src: "CardImages/Avatars/Ephoros.png", rarity: 'Legendary', price: 100 },
-  { name: 'Mordrath, Plague King', src: "CardImages/Avatars/Mordrath.png", rarity: 'Legendary', price: 100 },
-  { name: 'Raukhar, Knight of Duskwings', src: "CardImages/Avatars/Raukhar.png", rarity: 'Legendary', price: 100 },
-  { name: 'Velmira, Mistress of Silence', src: "CardImages/Avatars/Velmira.png", rarity: 'Legendary', price: 100 },
-  { name: 'Verdarok, Sylvan Warden', src: "CardImages/Avatars/Verdarok.png", rarity: 'Legendary', price: 100 },
-  { name: 'Pyronyx, Inferno Gale', src: "CardImages/Avatars/Pyronyx.png", rarity: 'Legendary', price: 100 },
-  { name: 'Abyndra, Tidal Wraith', src: "CardImages/Avatars/Abyndra.png", rarity: 'Legendary', price: 100 },
-  { name: 'Voltrazek, Tempest Reaver', src: "CardImages/Avatars/Voltrazek.png", rarity: 'Legendary', price: 100 },
-  { name: 'Toxigon, Blighted Maw', src: "CardImages/Avatars/Toxigon.png", rarity: 'Legendary', price: 100 },
-  { name: 'Ferronyx, Terra Colossus', src: "CardImages/Avatars/Ferronyx.png", rarity: 'Legendary', price: 100 },
-  { name: 'Nochtyros, Umbral Tyrant', src: "CardImages/Avatars/Nochtyros.png", rarity: 'Legendary', price: 100 },
-  { name: 'Solaryth, RadianceDawnbreaker', src: "CardImages/Avatars/Solaryth.png", rarity: 'Legendary', price: 100 }
+  { name: 'Fairy', src: "CardImages/Avatars/Fairy.png", rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Emberling', src: "CardImages/Avatars/Emberling.png", rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Water Elemental', src: "CardImages/Avatars/WaterElemental.png", rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Thunderspawn', src: "CardImages/Avatars/Thunderspawn.png", rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Goblin', src: "CardImages/Avatars/Goblin.png", rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Rock Lizard', src: "CardImages/Avatars/RockLizard.png", rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Wolf', src: "CardImages/Avatars/Wolf.png", rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Angelic Warrior', src: "CardImages/Avatars/AngelicWarrior.png", rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Faelyra, Satyr Empress', src: "CardImages/Avatars/Faelyra.png", rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Kaelyra, Firelands Heiress', src: "CardImages/Avatars/Kaelyn.png", rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Zaryon, Pearlhaven Commander', src: "CardImages/Avatars/Zaryon.png", rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Zyra, Thunderblade Duelist', src: "CardImages/Avatars/Zyra.png", rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Veniryss, Spider Princess', src: "CardImages/Avatars/Veniryss.png", price: 100, obtain: 'shop' },
+  { name: 'Gravok, Drakzul Tyrant', src: "CardImages/Avatars/Gravok.png", rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Nyzariel, Archdemon Duchess', src: "CardImages/Avatars/Nyzariel.png", rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Elyndra, Dawnblade of Heavens', src: "CardImages/Avatars/Elyndra.png", rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Aureavian, Wings of Zephyra', src: "CardImages/Avatars/Aureavian.png", rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Maldryss, Skullframe Archmage', src: "CardImages/Avatars/Maldryss.png", rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Tydros, Coralbound Tidebreaker', src: "CardImages/Avatars/Tydros.png", rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Ephoros, Firelands Behemoth', src: "CardImages/Avatars/Ephoros.png", rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Mordrath, Plague King', src: "CardImages/Avatars/Mordrath.png", rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Raukhar, Knight of Duskwings', src: "CardImages/Avatars/Raukhar.png", rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Velmira, Mistress of Silence', src: "CardImages/Avatars/Velmira.png", rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Verdarok, Sylvan Warden', src: "CardImages/Avatars/Verdarok.png", rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Pyronyx, Inferno Gale', src: "CardImages/Avatars/Pyronyx.png", rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Abyndra, Tidal Wraith', src: "CardImages/Avatars/Abyndra.png", rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Voltrazek, Tempest Reaver', src: "CardImages/Avatars/Voltrazek.png", rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Toxigon, Blighted Maw', src: "CardImages/Avatars/Toxigon.png", rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Ferronyx, Terra Colossus', src: "CardImages/Avatars/Ferronyx.png", rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Nochtyros, Umbral Tyrant', src: "CardImages/Avatars/Nochtyros.png", rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Solaryth, RadianceDawnbreaker', src: "CardImages/Avatars/Solaryth.png", rarity: 'Legendary', price: 100, obtain: 'shop' }
 ];
 
 const allBannerOptions = [
-  { name: 'Verdara', src: "CardImages/Banners/Verdara.png", price: 100 },
-  { name: 'Ashkar', src: "CardImages/Banners/Ashkar.png", price: 100 },
-  { name: 'Pearlhaven', src: "CardImages/Banners/Pearlhaven.png", price: 100 },
-  { name: 'Aetherion', src: "CardImages/Banners/Aetherion.png", price: 100 },
-  { name: 'Drakzul', src: "CardImages/Banners/Drakzul.png", price: 100 },
-  { name: 'Glimbark Frontier', src: "CardImages/Banners/GlimbarkFrontier.png", price: 100 },
-  { name: 'Skyward Archipelago', src: "CardImages/Banners/SkywardArchipelago.png", price: 100 },
-  { name: 'Duskhaven', src: "CardImages/Banners/Duskhaven.png", price: 100 },
-  { name: 'Nochtyra', src: "CardImages/Banners/Nochtyra.png", price: 100 },
-  { name: 'Solmara', src: "CardImages/Banners/Solmara.png", price: 100 }
+  { name: 'Verdara', src: "CardImages/Banners/Verdara.png", price: 100, obtain: 'shop' },
+  { name: 'Ashkar', src: "CardImages/Banners/Ashkar.png", price: 100, obtain: 'shop' },
+  { name: 'Pearlhaven', src: "CardImages/Banners/Pearlhaven.png", price: 100, obtain: 'shop' },
+  { name: 'Aetherion', src: "CardImages/Banners/Aetherion.png", price: 100, obtain: 'shop' },
+  { name: 'Drakzul', src: "CardImages/Banners/Drakzul.png", price: 100, obtain: 'shop' },
+  { name: 'Glimbark Frontier', src: "CardImages/Banners/GlimbarkFrontier.png", price: 100, obtain: 'shop' },
+  { name: 'Skyward Archipelago', src: "CardImages/Banners/SkywardArchipelago.png", price: 100, obtain: 'shop' },
+  { name: 'Duskhaven', src: "CardImages/Banners/Duskhaven.png", price: 100, obtain: 'shop' },
+  { name: 'Nochtyra', src: "CardImages/Banners/Nochtyra.png", price: 100, obtain: 'shop' },
+  { name: 'Solmara', src: "CardImages/Banners/Solmara.png", price: 100, obtain: 'shop' }
 ];
 
 const allCardbackOptions = [
-  { name: 'Cardback 1', src: "OtherImages/Cardbacks/Cardback1.png", rarity: 'Common', price: 10 },
-  { name: 'Fairy', src: "OtherImages/Cardbacks/CBFairy.png", rarity: 'Common', price: 100 },
-  { name: 'Cindercore', src: "OtherImages/Cardbacks/CBCindercore.png", rarity: 'Legendary', price: 100 },
-  { name: 'Constructs', src: "OtherImages/Cardbacks/CBConstructs.png", rarity: 'Legendary', price: 100 },
-  { name: 'Coralbound', src: "OtherImages/Cardbacks/CBCoralbound.png", rarity: 'Legendary', price: 100 },
-  { name: 'Firelands', src: "OtherImages/Cardbacks/CBFirelands.png", rarity: 'Legendary', price: 100 },
-  { name: 'Goblins', src: "OtherImages/Cardbacks/CBGoblins.png", rarity: 'Common', price: 100 },
-  { name: 'Golemheart', src: "OtherImages/Cardbacks/CBGolemheart.png", rarity: 'Legendary', price: 100 },
-  { name: 'Merfolk', src: "OtherImages/Cardbacks/CBMerfolk.png", rarity: 'Common', price: 100 },
-  { name: 'Moonfang', src: "OtherImages/Cardbacks/CBMoonfang.png", rarity: 'Legendary', price: 100 },
-  { name: 'Satyr', src: "OtherImages/Cardbacks/CBSatyr.png", rarity: 'Common', price: 100 },
-  { name: 'Shadowbound', src: "OtherImages/Cardbacks/CBShadowbound.png", rarity: 'Legendary', price: 100 },
-  { name: 'Stonebound', src: "OtherImages/Cardbacks/CBStonebound.png", rarity: 'Legendary', price: 100 },
-  { name: 'Stormcore', src: "OtherImages/Cardbacks/CBStormcore.png", rarity: 'Legendary', price: 100 },
-  { name: 'Venomcore', src: "OtherImages/Cardbacks/CBVenomcore.png", rarity: 'Legendary', price: 100 },
-  { name: 'Woodframe', src: "OtherImages/Cardbacks/CBWoodframe.png", rarity: 'Legendary', price: 100 }
+  { name: 'Cardback 1', src: "OtherImages/Cardbacks/Cardback1.png", rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Fairy', src: "OtherImages/Cardbacks/CBFairy.png", rarity: 'Common', price: 100, obtain: 'shop' },
+  { name: 'Cindercore', src: "OtherImages/Cardbacks/CBCindercore.png", rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Constructs', src: "OtherImages/Cardbacks/CBConstructs.png", rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Coralbound', src: "OtherImages/Cardbacks/CBCoralbound.png", rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Firelands', src: "OtherImages/Cardbacks/CBFirelands.png", rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Goblins', src: "OtherImages/Cardbacks/CBGoblins.png", rarity: 'Common', price: 100, obtain: 'shop' },
+  { name: 'Golemheart', src: "OtherImages/Cardbacks/CBGolemheart.png", rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Merfolk', src: "OtherImages/Cardbacks/CBMerfolk.png", rarity: 'Common', price: 100, obtain: 'shop' },
+  { name: 'Moonfang', src: "OtherImages/Cardbacks/CBMoonfang.png", rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Satyr', src: "OtherImages/Cardbacks/CBSatyr.png", rarity: 'Common', price: 100, obtain: 'shop' },
+  { name: 'Shadowbound', src: "OtherImages/Cardbacks/CBShadowbound.png", rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Stonebound', src: "OtherImages/Cardbacks/CBStonebound.png", rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Stormcore', src: "OtherImages/Cardbacks/CBStormcore.png", rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Venomcore', src: "OtherImages/Cardbacks/CBVenomcore.png", rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Woodframe', src: "OtherImages/Cardbacks/CBWoodframe.png", rarity: 'Legendary', price: 100, obtain: 'shop' }
 ];
 
 const packPrices = [
@@ -510,7 +510,8 @@ function renderShopCosmetics({
 function renderShopAvatars() {
   renderShopCosmetics({
     gridId: 'shop-avatars-grid',
-    options: allAvatarOptions,
+    options: allAvatarOptions.filter(opt => !opt.obtain || opt.obtain === "shop" 
+      || (Array.isArray(opt.obtain) && opt.obtain.includes("shop"))),
     getUnlocked: getUnlockedAvatars,
     setUnlocked: setUnlockedAvatars,
     unlockMsg: 'Avatar unlocked! Now available in your profile.',
@@ -521,7 +522,8 @@ function renderShopAvatars() {
 function renderShopBanners() {
   renderShopCosmetics({
     gridId: 'shop-banners-grid',
-    options: allBannerOptions,
+    options: allBannerOptions.filter(opt => !opt.obtain || opt.obtain === "shop" 
+		|| (Array.isArray(opt.obtain) && opt.obtain.includes("shop"))),
     getUnlocked: getUnlockedBanners,
     setUnlocked: setUnlockedBanners,
     unlockMsg: 'Banner unlocked! Now available in your profile.',
@@ -532,7 +534,8 @@ function renderShopBanners() {
 function renderShopCardbacks() {
   renderShopCosmetics({
     gridId: 'shop-cardbacks-grid',
-    options: allCardbackOptions,
+    options: allCardbackOptions.filter(opt => !opt.obtain || opt.obtain === "shop" 
+		|| (Array.isArray(opt.obtain) && opt.obtain.includes("shop"))),
     getUnlocked: getUnlockedCardbacks,
     setUnlocked: setUnlockedCardbacks,
     unlockMsg: 'Cardback unlocked! Now available in your deck options.',
