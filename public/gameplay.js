@@ -270,6 +270,32 @@ const ABILITY_EFFECTS = {
     }
   }
 };
+
+// --- TRIGGER EFFECTS --- //
+const TRIGGER_EVENT_MAP = {
+  onDealDamage: {
+    name: "onDealDamage",
+    handler: function(cardObj, skillObj, context = {}) {
+      // Called when this card deals damage
+      resolveSkillEffect(cardObj, skillObj, context);
+    }
+  },
+  onSummon: {
+    name: "onSummon",
+    handler: function(cardObj, skillObj, context = {}) {
+      // Called when this card enters the field
+      resolveSkillEffect(cardObj, skillObj, context);
+    }
+  },
+  onVoid: {
+    name: "onVoid",
+    handler: function(cardObj, skillObj, context = {}) {
+      // Called when this card enters the void
+      resolveSkillEffect(cardObj, skillObj, context);
+    }
+  }
+  // Add more trigger event types as needed
+};
 // ATTACK RESOLUTION ABILITIES
 const ATTACK_DECLARATION_ABILITY = {
   Intimidate: {
@@ -869,6 +895,30 @@ Destroy: {
       }, { title: "Banish - Choose a card" });
     }
   },
+  Status: {
+    handler: function(sourceCardObj, skillObj) {
+      // If effect is an array, handle each one
+      let effects = Array.isArray(skillObj.effect) ? skillObj.effect : [skillObj.effect];
+      effects.forEach(eff => {
+        const statusName = eff.status;
+        const count = eff.count;
+        if (!STATUS_EFFECTS[statusName]) {
+          showToast(`Status effect ${statusName} does not exist!`);
+          return;
+        }
+        let arr = getTargets(eff.target, sourceCardObj);
+        if (count && count > 0) {
+          startSkillTarget(arr, selectedArr => {
+            selectedArr.forEach(targetObj => applyStatus(targetObj, statusName));
+            renderGameState();
+          }, { count });
+        } else {
+          arr.forEach(targetObj => applyStatus(targetObj, statusName));
+          renderGameState();
+        }
+      });
+    }
+  }
   // Add more effects as needed (Strike, Heal, Destroy, etc.)
 };
 const WEATHER_EFFECTS = {
@@ -884,14 +934,14 @@ const WEATHER_EFFECTS = {
   },
   Thunderstorm: {
     colors: ["Blue", "Yellow"], archetype: "Stormcore",
-    description: "Blue/Yellow and Stormcore creatures gain +2 ATK.",
+    description: "Blue/Yellow and Stormcore creatures gain +1 ATK.",
     passive: (cardObj) =>
-      (isBlue(cardObj) || isYellow(cardObj) || isArchetype(cardObj, "Stormcore")) ? { atk: 2 } : null
+      (isBlue(cardObj) || isYellow(cardObj) || isArchetype(cardObj, "Stormcore")) ? { atk: 1 } : null
   },
   Snowfall: {
     archetype: "Frostlands",
-    description: "Frostlands creatures gain +2 DEF.",
-    passive: (cardObj) => isArchetype(cardObj, "Frostlands") ? { def: 2 } : null
+    description: "Frostlands creatures gain +1 DEF.",
+    passive: (cardObj) => isArchetype(cardObj, "Frostlands") ? { def: 1 } : null
   },
   GaleWinds: {
     archetype: "Zephyra", ability: "Flying",
@@ -1105,7 +1155,19 @@ function getCardOwner(cardObj) {
   if (gameState.opponentCreatures.includes(cardObj) || gameState.opponentDomains.includes(cardObj)) return "opponent";
   return null;
 }
-
+function handleTriggerEvent(cardObj, eventType, context = {}) {
+  // Iterate skills, trigger those with matching activation.trigger
+  if (!cardObj || !cardObj.skill) return;
+  const skills = Array.isArray(cardObj.skill) ? cardObj.skill : [cardObj.skill];
+  skills.forEach(skillObj => {
+    if (skillObj.activation && skillObj.activation.trigger === eventType) {
+      const handlerDef = TRIGGER_EVENT_MAP[eventType];
+      if (handlerDef && typeof handlerDef.handler === "function") {
+        handlerDef.handler(cardObj, skillObj, context);
+      }
+    }
+  });
+}
 // --- Reset hasAttacked for all creatures at start of player's/opponent's action phase ---
 function resetAttackFlags(turn) {
   const arr = turn === "player" ? gameState.playerCreatures : gameState.opponentCreatures;
@@ -1172,6 +1234,54 @@ function renderWeatherEffects() {
 // ========== ACTIONS LOGIC ==========
 // ===================================
 // --- MOVE OBJECT --- //
+function getTargets(target, sourceCardObj, context = {}) {
+  // Accepts string, array, or object for advanced targeting/filtering
+  let arr = [];
+  if (Array.isArray(target)) {
+    // Array of instanceIds or card objects
+    arr = target.map(t =>
+      typeof t === "object" ? t :
+      Object.values(gameState).flat().find(card => card.instanceId === t)
+    ).filter(Boolean);
+  } else if (typeof target === "object" && target.zone) {
+    // Advanced: zone + filter
+    arr = gameState[target.zone] || [];
+    if (target.filter) {
+      // filter by card property from dummyCards
+      arr = arr.filter(cardObj => {
+        const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+        if (!cardData) return false;
+        return Object.entries(target.filter).every(([key, val]) => {
+          if (typeof cardData[key] === "string")
+            return cardData[key].toLowerCase() === String(val).toLowerCase();
+          if (Array.isArray(cardData[key]))
+            return cardData[key].map(v => v.toLowerCase()).includes(String(val).toLowerCase());
+          return cardData[key] === val;
+        });
+      });
+    }
+  } else if (typeof target === "string") {
+    switch (target) {
+      case "self": arr = [sourceCardObj]; break;
+      case "player": arr = [gameState.player]; break;
+      case "playerCreatures": arr = gameState.playerCreatures; break;
+      case "playerDomains": arr = gameState.playerDomains; break;
+      case "playerHand": arr = gameState.playerHand; break;
+      case "playerVoid": arr = gameState.playerVoid; break;
+      case "opponentCreatures": arr = gameState.opponentCreatures; break;
+      case "opponentDomains": arr = gameState.opponentDomains; break;
+      case "opponentHand": arr = gameState.opponentHand; break;
+      case "opponentVoid": arr = gameState.opponentVoid; break;
+      case "playerDominion": arr = gameState.playerDominion ? [gameState.playerDominion] : []; break;
+      case "opponentDominion": arr = gameState.opponentDominion ? [gameState.opponentDominion] : []; break;
+      case "allCreatures": arr = [...gameState.playerCreatures, ...gameState.opponentCreatures]; break;
+      case "allDomains": arr = [...gameState.playerDomains, ...gameState.opponentDomains]; break;
+      case "any": arr = Object.values(gameState).flat().filter(card => card && card.cardId); break;
+      default: arr = [];
+    }
+  }
+  return arr.filter(Boolean);
+}
 function moveCard(instanceId, fromArr, toArr, extra = {}, callback) {
   const fromZoneName = getZoneNameForArray(fromArr);
   const toZoneName = getZoneNameForArray(toArr);
@@ -4329,14 +4439,15 @@ function resolveSkillEffect(cardObj, skillObj) {
     }
   });
 }
-function startSkillTarget(validTargets, onSelect) {
+function startSkillTarget(validTargets, onSelect, opts = {}) {
   // Remove any previous highlights and handlers
-  document.querySelectorAll('.target-highlight').forEach(el => {
-    el.classList.remove('target-highlight');
+  document.querySelectorAll('.target-highlight, .selected').forEach(el => {
+    el.classList.remove('target-highlight', 'selected');
     el.onclick = null;
   });
 
   battlefield.classList.add('skill-mode-backdrop');
+  let selected = [];
 
   validTargets.forEach(cardObj => {
     // Find card DOM in all field zones
@@ -4353,25 +4464,59 @@ function startSkillTarget(validTargets, onSelect) {
       cardDiv.classList.add('target-highlight');
       cardDiv.onclick = function(e) {
         e.stopPropagation();
-        // Remove highlights and handlers
-        document.querySelectorAll('.target-highlight').forEach(el => {
-          el.classList.remove('target-highlight');
-          el.onclick = null;
-        });
-        battlefield.classList.remove('skill-mode-backdrop');
-        onSelect(cardObj);
+        if (selected.includes(cardObj)) {
+          // Deselect
+          selected = selected.filter(c => c !== cardObj);
+          cardDiv.classList.remove('selected');
+        } else {
+          // Enforce count limit if set
+          if (opts.count && selected.length >= opts.count) return;
+          selected.push(cardObj);
+          cardDiv.classList.add('selected');
+        }
+        // Confirm if count is met
+        if (opts.count && selected.length === opts.count) {
+          cleanup();
+          onSelect([...selected]);
+        }
       };
     }
   });
 
-  // Cancel logic: clicking elsewhere
-  function cancelHandler(e) {
-    document.querySelectorAll('.target-highlight').forEach(el => {
-      el.classList.remove('target-highlight');
+  // Confirm button for any selection if no count set (optional)
+  if (!opts.count) {
+    showConfirmBtn();
+  }
+
+  function showConfirmBtn() {
+    if (document.getElementById('skill-confirm-btn')) return;
+    const btn = document.createElement('button');
+    btn.textContent = opts.title || `Confirm Selection (${selected.length})`;
+    btn.id = 'skill-confirm-btn';
+    btn.style.position = 'fixed';
+    btn.style.bottom = '40px';
+    btn.style.right = '50vw';
+    btn.style.zIndex = 1000;
+    btn.onclick = () => {
+      cleanup();
+      onSelect([...selected]);
+    };
+    document.body.appendChild(btn);
+  }
+
+  function cleanup() {
+    document.querySelectorAll('.target-highlight, .selected').forEach(el => {
+      el.classList.remove('target-highlight', 'selected');
       el.onclick = null;
     });
     battlefield.classList.remove('skill-mode-backdrop');
+    document.getElementById('skill-confirm-btn')?.remove();
     document.body.removeEventListener('click', cancelHandler);
+  }
+
+  // Cancel logic: clicking elsewhere
+  function cancelHandler(e) {
+    cleanup();
   }
   setTimeout(() => document.body.addEventListener('click', cancelHandler, { once: true }), 10);
 }
