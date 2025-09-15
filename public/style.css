@@ -3552,19 +3552,6 @@ button {}
   justify-content: flex-start;
 }
 
-.shop-avatar-img {
-  width: 68px;
-  height: 68px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-bottom: 0.4em;
-  border: 3px solid #c9c9c9;
-  background: #232a3c;
-  box-shadow: 0 1px 6px #0004;
-}
-.shop-avatar-img.unlocked {
-  border-color: #ffe066;
-}
 #shop-banners-grid {
   display: flex;
   flex-wrap: wrap;
@@ -3603,7 +3590,6 @@ button {}
   height: 68px;
   border-radius: 50%;
   object-fit: cover;
-  margin-bottom: 0.4em;
   border: 3px solid #c9c9c9;
   background: #232a3c;
   box-shadow: 0 1px 6px #0004;
@@ -3618,6 +3604,9 @@ button {}
   box-shadow: 0 4px 18px #50eaffcc, 0 0 0 2.5px #ffe066;
   border-color: #ffe066;
   outline: none;
+}
+.shop-avatar-img.unlocked {
+  border-color: #ffe066;
 }
 #shop-cardbacks-grid {
   display: flex;
