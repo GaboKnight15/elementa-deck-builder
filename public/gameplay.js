@@ -29,20 +29,42 @@ const PHASES = [{ turn: 'player', phase: 'draw' },{ turn: 'player', phase: 'esse
   dayNightCycleCounter: 0, // Counts end phases
   weatherEffects: []
 };
-
-let attackMode = {attackerId: null, attackerZone: null, cancelHandler: null};
 const ZONE_MAP = {
-  playerCreatures: { id: "player-creatures-zone", arr: () => gameState.playerCreatures },
-  playerDomains:   { id: "player-domains-zone",   arr: () => gameState.playerDomains },
-  playerVoid:      { id: "player-void-zone",      arr: () => gameState.playerVoid },
-  playerDeck:      { id: "player-deck-zone",      arr: () => gameState.playerDeck },
-  playerHand:      { id: "player-hand",           arr: () => gameState.playerHand },
+  // Player zones
+  playerCreatures:   { id: "player-creatures-zone",   arr: () => gameState.playerCreatures },
+  playerDomains:     { id: "player-domains-zone",     arr: () => gameState.playerDomains },
+  playerVoid:        { id: "player-void-zone",        arr: () => gameState.playerVoid },
+  playerDeck:        { id: "player-deck-zone",        arr: () => gameState.playerDeck },
+  playerHand:        { id: "player-hand",             arr: () => gameState.playerHand },
+
+  // Opponent zones
   opponentCreatures: { id: "opponent-creatures-zone", arr: () => gameState.opponentCreatures },
   opponentDomains:   { id: "opponent-domains-zone",   arr: () => gameState.opponentDomains },
   opponentVoid:      { id: "opponent-void-zone",      arr: () => gameState.opponentVoid },
   opponentDeck:      { id: "opponent-deck-zone",      arr: () => gameState.opponentDeck },
-  opponentHand:      { id: "opponent-hand",           arr: () => gameState.opponentHand }
+  opponentHand:      { id: "opponent-hand",           arr: () => gameState.opponentHand },
+
+  // Combined/mass zones for flexible targeting
+  allCreatures:      { id: null, arr: () => [...gameState.playerCreatures, ...gameState.opponentCreatures] },
+  allDomains:        { id: null, arr: () => [...gameState.playerDomains, ...gameState.opponentDomains] },
+  allVoids:          { id: null, arr: () => [...gameState.playerVoid, ...gameState.opponentVoid] },
+  allDecks:          { id: null, arr: () => [...gameState.playerDeck, ...gameState.opponentDeck] },
+  allHands:          { id: null, arr: () => [...gameState.playerHand, ...gameState.opponentHand] },
+
+  // Whole field (creatures + domains both sides)
+  allField:          { id: null, arr: () => [
+    ...gameState.playerCreatures, ...gameState.playerDomains,
+    ...gameState.opponentCreatures, ...gameState.opponentDomains
+  ] },
+
+  // All cards everywhere (for global effects, etc.)
+  allCards:          { id: null, arr: () => [
+    ...gameState.playerCreatures, ...gameState.playerDomains, ...gameState.playerVoid, ...gameState.playerDeck, ...gameState.playerHand,
+    ...gameState.opponentCreatures, ...gameState.opponentDomains, ...gameState.opponentVoid, ...gameState.opponentDeck, ...gameState.opponentHand
+  ] }
 };
+let attackMode = {attackerId: null, attackerZone: null, cancelHandler: null};
+
 const INITIAL_HAND_SIZE = 5;
 const ESSENCE_IMAGE_MAP = {
   red: "OtherImages/Essence/Red.png",
@@ -287,8 +309,8 @@ const TRIGGER_EVENT_MAP = {
       resolveSkillEffect(cardObj, skillObj, context);
     }
   },
-  onVoid: {
-    name: "onVoid",
+  echo: {
+    name: "Echo",
     handler: function(cardObj, skillObj, context = {}) {
       // Called when this card enters the void
       resolveSkillEffect(cardObj, skillObj, context);
