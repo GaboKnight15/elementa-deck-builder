@@ -496,15 +496,12 @@ skill: [
  
 // CORALBOUND //
 {id: 'CoralboundSentry', name: 'Coralbound Sentry', rarity: 'Common', image: 'CardImages/Coralbound/Coralbound Sentry.png', 
- category: 'Creature', color: 'Blue', type: 'Construct', hp: 4, atk: 2, def: 1,
- cost: '{U}', archetype: 'Coralbound', ability: 'Water Exploit', set: 'StandardPack',
+ category: 'Creature', color: 'Blue', type: 'Construct', hp: 4, armor: 1, atk: 2, def: 1,
+ cost: '{U}', archetype: 'Coralbound', ability: ['Water Exploit', 'Armor'], set: 'StandardPack',
  skill: [
-  {name: 'Armor',
-    activation: 'onSummon',
-    effect: 'Armor', amount: 1},
   {name: 'Hydrosurge Protocol', cost: '{U}',
-    effect: [
-       {'Search', archetype: 'Coralbound'},
+    resolution: [
+       {effect: 'Search', archetype: 'Coralbound'},
        {status: 'Soak', target: 'opponentCreatures', count: 1}
     ]}
  ]},
