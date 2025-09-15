@@ -145,9 +145,7 @@ function showPackContentsModal(packId, packName) {
   modal.onclick = function(e) { if (e.target === modal) modal.remove(); };
 
   // Find cards in this pack
-  // Use window.dummyCards if imported, or from shared.js context
   const cardsInPack = (window.dummyCards || dummyCards || []).filter(card => {
-    // Support both set: 'StandardPack' and set: ['StandardPack', ...]
     if (Array.isArray(card.set)) {
       return card.set.includes(packId);
     }
@@ -156,12 +154,12 @@ function showPackContentsModal(packId, packName) {
 
   let cardsHtml = '';
   if (cardsInPack.length) {
-    cardsHtml = `<div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;max-height:340px;overflow-y:auto;">` +
-      cardsInPack.map(card => `
-        <div style="display:flex;flex-direction:column;align-items:center;width:70px;">
-          <img src="${card.image}" title="${card.name}" alt="${card.name}" style="width:66px;height:88px;border-radius:6px;box-shadow:0 2px 8px #0006;">
-          <span style="font-size:0.9em;color:#ffe066;margin-top:4px;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;max-width:64px;">${card.name}</span>
-        </div>
+    cardsHtml = `<div id="pack-cards-grid" style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;max-height:340px;overflow-y:auto;">` +
+      cardsInPack.map((card, idx) => `
+        <div class="pack-card-entry" data-card-idx="${idx}" 
+          style="display:flex;flex-direction:column;align-items:center;width:70px;cursor:pointer;transition:transform 0.17s, box-shadow 0.17s;">
+          <img src="${card.image}" title="${card.name}" alt="${card.name}" 
+            style="width:66px;height:88px;box-shadow:0 2px 8px #0006;transition:box-shadow 0.17s, transform 0.17s;">        </div>
       `).join('') +
       `</div>`;
   } else {
@@ -171,18 +169,40 @@ function showPackContentsModal(packId, packName) {
   modal.innerHTML = `
     <div class="modal-content" style="min-width:340px;max-width:600px;padding:24px 24px 12px 24px;background:#232a3a;border-radius:16px;">
       <div style="display:flex;align-items:center;justify-content:space-between;">
-        <h2 style="margin:0;font-size:1.25em;color:#ffe066;">${packName} Contents</h2>
-        <button id="close-pack-contents-modal" style="background:none;border:none;cursor:pointer;padding:0;">
-          <img src="OtherImages/Icons/Info.png" style="width:24px;opacity:0.35;pointer-events:none;" alt="Info" />
-        </button>
+        <h2 style="margin:0;font-size:1.25em;color:#ffe066;">${packName}</h2>
       </div>
       <div style="margin-top:12px">${cardsHtml}</div>
       <div style="text-align:center;margin-top:18px;">
         <button id="pack-contents-close-btn" class="btn-negative-secondary" style="margin-left:12px;">Close</button>
       </div>
+      <style>
+        #pack-cards-grid .pack-card-entry:hover img {
+          box-shadow: 0 4px 16px #ffe06688, 0 2px 12px #000b;
+          transform: scale(1.08);
+        }
+        #pack-cards-grid .pack-card-entry:hover {
+          z-index: 2;
+        }
+      </style>
     </div>
   `;
   document.body.appendChild(modal);
+
+  // Add click handlers for each card to open showFullCardModal
+  if (cardsInPack.length) {
+    const grid = modal.querySelector('#pack-cards-grid');
+    if (grid) {
+      grid.querySelectorAll('.pack-card-entry').forEach((el, idx) => {
+        el.onclick = function(e) {
+          e.stopPropagation();
+          const card = cardsInPack[idx];
+          if (typeof window.showFullCardModal === "function") {
+            window.showFullCardModal(card);
+          }
+        };
+      });
+    }
+  }
 
   document.getElementById('pack-contents-close-btn').onclick = function() {
     modal.remove();
@@ -201,10 +221,10 @@ function showCosmeticConfirmModal({imgSrc, name, type, price, onConfirm, packId}
   cosmeticConfirmModal.style.justifyContent = 'center';
   cosmeticConfirmModal.innerHTML = `
     <div class="modal-content" style="position:relative;">
-      <button id="pack-info-btn" style="position:absolute;top:12px;right:14px;background:none;border:none;cursor:pointer;">
+      <button id="pack-info-btn" style="position:absolute;top:5px;right:0;background:none;border:none;cursor:pointer;">
         <img src="OtherImages/Icons/Info.png" alt="Pack Info" style="width:28px;">
       </button>
-      <img src="${imgSrc}" alt="Cosmetic Preview" title="${name || ''}" style="max-width:120px;max-height:120px;box-shadow:0 2px 10px #0005;">
+      <img src="${imgSrc}" alt="Cosmetic Preview" title="${name || ''}" style="max-width:120px;box-shadow:0 2px 10px #0005;">
       <div class="currency-display" style="margin:10px 0;">
         <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins">
         <span>${price}</span>
