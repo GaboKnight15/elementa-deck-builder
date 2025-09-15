@@ -4396,6 +4396,13 @@ function canActivateSkill(cardObj, skillObj, currentZone, gameState, targetObj =
       }
     }
   }
+    // 7. Target validation (new!)
+  if (skillObj.target) {
+    const targets = getTargets(skillObj.target, cardObj);
+    // If a count/minimum is required, ensure enough targets are present
+    if (skillObj.count && targets.length < skillObj.count) return false;
+    if (targets.length === 0) return false;
+  }
   return true;
 }
 // Update activateSkill to use the animation before requirements/effects
