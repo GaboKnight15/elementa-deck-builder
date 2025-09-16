@@ -303,7 +303,8 @@ function renderGallery() {
     selectedRarities,
     selectedTraits,
     selectedArchetypes,
-    selectedAbilities
+    selectedAbilities,
+    selectedPacks: filterState.gallery.pack || [] 
   });
   updateGalleryCollectionProgress(filteredCards);
   if (filteredCards.length === 0) return;
