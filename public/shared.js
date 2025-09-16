@@ -814,8 +814,9 @@ const FILTERS_CONFIG = [
   { key: 'rarity', label: 'Rarity', options: ['All','Common','Rare','Epic','Legendary'] },
   { key: 'trait', label: 'Trait', options: ['All','Champion','Dominion','Evolution','Fusion'] },
   { key: 'archetype', label: 'Archetype', options: ['All','Blazefeather','Cindercore','Coralbound','Firelands','Frostlands','Golemheart','Moonfang','Skullframe','Voltwing','Zephyra'] },
-  { key: 'ability', label: 'Ability', options: ['All','Ambush','Dive','Burn','Drain','Elusive','Flying','Ice Armor','Immunity','Intimidate','Leap','Lifelink','Protect','Provoke','Ranged','Rush','Toxic'] }
-  // Add more as needed
+  { key: 'ability', label: 'Ability', options: ['All','Ambush','Dive','Burn','Drain','Elusive','Flying','Ice Armor','Immunity','Intimidate','Leap','Lifelink','Protect','Provoke','Ranged','Rush','Toxic'] },
+  { key: 'pack', label: 'Pack', options: ['All', 'Standard Pack', 'Standard Pack 2'] }
+ // Add more as needed
 ];
 
 const filterState = {
@@ -2070,7 +2071,8 @@ function filterCards({
   selectedRarities,
   selectedTraits,
   selectedArchetypes,
-  selectedAbilities
+  selectedAbilities,
+  selectedPacks
 }) {
   return dummyCards.filter(card => {
     // Ownership filter (custom multi-select logic)
@@ -2120,6 +2122,16 @@ if (selectedAbilities && selectedAbilities.length) {
   const cardAbilities = Array.isArray(card.ability) ? card.ability.map(a => a.toLowerCase()) : [String(card.ability).toLowerCase()];
   if (!cardAbilities.some(a => selectedAbilities.includes(a))) return false;
 }
+    // --- PACK FILTER LOGIC: ---
+    if (selectedPacks && selectedPacks.length && !selectedPacks.includes("All")) {
+      // Map display names to dummyCards.set values
+      const setMap = {
+        "Standard Pack": "StandardPack",
+        "Standard Pack 2": "StandardPack2"
+      };
+      // If card.set is not in any selected pack, filter out
+      if (!selectedPacks.some(pack => setMap[pack] === card.set)) return false;
+    }
     return true;
   });
 }
