@@ -71,6 +71,10 @@ const cardbackOptions = [
 document.getElementById('builder-settings-btn').onclick = function() {
   document.getElementById('settings-modal').style.display = 'flex';
 };
+document.getElementById('open-filters-menu-gallery').onclick = function(e) {
+  openFiltersMasterMenu('gallery', e.target);
+  // For builder, use 'builder'
+};
 builderBackBtn.onclick = function() {
   // Check for unsaved changes before returning to deck selection
   if (typeof deckBuilderHasUnsavedChanges === "function" && deckBuilderHasUnsavedChanges()) {
