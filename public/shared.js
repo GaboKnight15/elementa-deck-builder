@@ -806,6 +806,24 @@ const addCoinsBtn = document.getElementById('add-coins-btn');
 const LEVEL_THRESHOLDS = [0, 100, 250, 500, 1000, 2000, 4000, 8000];
 let lastPlayerPower = null;
 
+const FILTERS_CONFIG = [
+  { key: 'ownership', label: 'Ownership', options: ['All','Owned','Undiscovered','Locked'], hideIn: ['builder'] },
+  { key: 'color', label: 'Color', options: ['All','Green','Red','Blue','Gray','Purple','Yellow','Black','White'] },
+  { key: 'category', label: 'Category', options: ['All','Creature','Artifact','Spell','Domain'] },
+  { key: 'type', label: 'Type', options: ['All','Elemental','Dragon','Construct','Beast','Undead','Demon','Mage','Equipment','Relic'] },
+  { key: 'rarity', label: 'Rarity', options: ['All','Common','Rare','Epic','Legendary'] },
+  { key: 'trait', label: 'Trait', options: ['All','Champion','Dominion','Evolution','Fusion'] },
+  { key: 'archetype', label: 'Archetype', options: ['All','Blazefeather','Cindercore','Coralbound','Firelands','Frostlands','Golemheart','Moonfang','Skullframe','Voltwing','Zephyra'] },
+  { key: 'ability', label: 'Ability', options: ['All','Ambush','Dive','Burn','Drain','Elusive','Flying','Ice Armor','Immunity','Intimidate','Leap','Lifelink','Protect','Provoke','Ranged','Rush','Toxic'] }
+  // Add more as needed
+];
+
+const filterState = {
+  gallery: {},
+  builder: {}
+  // Each key: filterKey -> array of selected options
+};
+
 const CARD_KEYWORD_EXPLANATIONS = {
 /*-------------
 // ABILITIES //
@@ -2106,6 +2124,119 @@ if (selectedAbilities && selectedAbilities.length) {
   });
 }
 window.filterCards = filterCards;
+
+function openFiltersMasterMenu(context, anchorElem) {
+  const menu = document.getElementById('filters-master-menu');
+  menu.innerHTML = ''; // Clear previous
+
+  FILTERS_CONFIG.forEach(f => {
+    if (f.hideIn && f.hideIn.includes(context)) return;
+    const selected = (filterState[context][f.key] && filterState[context][f.key].length)
+      ? filterState[context][f.key].join(', ')
+      : 'All';
+    const row = document.createElement('div');
+    row.className = 'filter-master-menu-row';
+    row.style = 'padding:10px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;';
+    row.innerHTML = `<span>${f.label}</span><span style="color:#ffe066;">${selected}</span>`;
+    row.onclick = function(ev) {
+      ev.stopPropagation();
+      openFilterDropdownMenu(context, f, row);
+    };
+    menu.appendChild(row);
+  });
+  // --- ADD RESET BUTTON AT THE END ---
+  const resetRow = document.createElement('div');
+  resetRow.className = 'filter-master-menu-row filter-reset-row';
+  resetRow.style = 'padding:10px 18px;cursor:pointer;color:#ffe066;font-weight:bold;border-top:1px solid #334;';
+  resetRow.textContent = 'Reset Filters';
+  resetRow.onclick = function(ev) {
+    ev.stopPropagation();
+    filterState[context] = {}; // Clear all filters for this context
+    menu.style.display = 'none';
+    closeAllFilterDropdowns();
+    // Re-render (choose the appropriate function for your context)
+    if (context === 'gallery') renderGallery();
+    else if (context === 'builder') renderBuilder();
+  };
+  menu.appendChild(resetRow);
+  // Place menu below the button
+  const rect = anchorElem.getBoundingClientRect();
+  menu.style.left = (rect.left + window.scrollX) + "px";
+  menu.style.top = (rect.bottom + window.scrollY + 6) + "px";
+  menu.style.display = 'block';
+
+  // Close on outside click
+  function closeMenu(e) {
+    if (!menu.contains(e.target) && e.target !== anchorElem) {
+      menu.style.display = 'none';
+      document.removeEventListener('mousedown', closeMenu, true);
+      // Also close any open dropdown
+      closeAllFilterDropdowns();
+    }
+  }
+  setTimeout(() => document.addEventListener('mousedown', closeMenu, true), 10);
+}
+function openFilterDropdownMenu(context, filterConfig, anchorElem) {
+  closeAllFilterDropdowns();
+
+  // Build dropdown
+  const dropdown = document.createElement('div');
+  dropdown.className = 'filter-dropdown-menu';
+  dropdown.style = 'position:absolute;z-index:1001;background:#232a3c;border-radius:10px;box-shadow:0 2px 16px #000b;padding:14px 18px;min-width:160px;';
+  // Position right of anchorElem
+  const rect = anchorElem.getBoundingClientRect();
+  dropdown.style.left = (rect.right + window.scrollX + 6) + "px";
+  dropdown.style.top = (rect.top + window.scrollY) + "px";
+
+  // Build options
+  filterConfig.options.forEach(opt => {
+    const checked = (filterState[context][filterConfig.key]||[]).includes(opt) ||
+      (opt === 'All' && (!(filterState[context][filterConfig.key]) || filterState[context][filterConfig.key].length === 0));
+    const label = document.createElement('label');
+    label.style = 'display:block;margin-bottom:7px;cursor:pointer;';
+    label.innerHTML = `<input type="checkbox" value="${opt}" ${checked ? 'checked' : ''} style="margin-right:8px;">${opt}`;
+    label.querySelector('input').onchange = function() {
+      let arr = [...(filterState[context][filterConfig.key] || [])];
+      if (opt === 'All') {
+        // Clear all on All
+        if (this.checked) arr = [];
+      } else {
+        // Uncheck All if any specific is checked
+        const allBox = dropdown.querySelector('input[value="All"]');
+        if (allBox) allBox.checked = false;
+        if (this.checked) arr.push(opt);
+        else arr = arr.filter(v => v !== opt);
+      }
+      // Remove dupes
+      arr = [...new Set(arr)];
+      // If All checked or nothing, clear array
+      if (arr.includes('All') || arr.length === 0) arr = [];
+      filterState[context][filterConfig.key] = arr;
+      // Optionally update visual immediately
+      renderGallery(); // or renderBuilder()
+      // Also update master menu selection text
+      openFiltersMasterMenu(context, document.getElementById('open-filters-menu-gallery'));
+    };
+    dropdown.appendChild(label);
+  });
+
+  // Remove any previous dropdown
+  closeAllFilterDropdowns();
+  document.body.appendChild(dropdown);
+
+  // Close on outside click
+  function closeDropdown(e) {
+    if (!dropdown.contains(e.target)) {
+      dropdown.remove();
+      document.removeEventListener('mousedown', closeDropdown, true);
+    }
+  }
+  setTimeout(() => document.addEventListener('mousedown', closeDropdown, true), 10);
+}
+
+function closeAllFilterDropdowns() {
+  document.querySelectorAll('.filter-dropdown-menu').forEach(el => el.remove());
+}
 // Show News Modal
 document.getElementById('news-icon').onclick = function() {
   document.getElementById('news-modal').style.display = 'flex';
