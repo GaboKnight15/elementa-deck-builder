@@ -1021,7 +1021,8 @@ let filteredCards = filterCards({
   selectedTraits,
   selectedArchetypes,
   selectedAbilities,
-  ownershipFilter: "Owned"
+  selectedPacks: filterState.builder.pack || [], 
+  selectedOwnerships: ['Owned'] 
 });
   updateBuilderFilterSummary();
   filteredCards
