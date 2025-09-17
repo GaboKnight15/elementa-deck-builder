@@ -51,6 +51,18 @@ const ZONE_MAP = {
   allDecks:          { id: null, arr: () => [...gameState.playerDeck, ...gameState.opponentDeck] },
   allHands:          { id: null, arr: () => [...gameState.playerHand, ...gameState.opponentHand] },
 
+  // NEW: All player-side field (creatures + domains)
+  allPlayerField:    { id: null, arr: () => [
+    ...gameState.playerCreatures,
+    ...gameState.playerDomains
+  ] },
+
+  // NEW: All opponent-side field (creatures + domains)
+  allOpponentField:  { id: null, arr: () => [
+    ...gameState.opponentCreatures,
+    ...gameState.opponentDomains
+  ] },
+  
   // Whole field (creatures + domains both sides)
   allField:          { id: null, arr: () => [
     ...gameState.playerCreatures, ...gameState.playerDomains,
