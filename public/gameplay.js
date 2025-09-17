@@ -4460,23 +4460,55 @@ function proceedSkillActivation(cardObj, skillObj, options = {}) {
 }
 
 // SKILL RESOLUTION LOGIC //
-function resolveSkillEffect(cardObj, skillObj) {
+function resolveSkill(cardObj, skillObj) {
   const resolution = skillObj.resolution || {};
   const effects = Array.isArray(resolution.effect) ? resolution.effect : [resolution.effect];
+
   effects.forEach(effectName => {
-    // === Weather effect support ===
-    if (
-      effectName === "TriggerWeather" &&
-      resolution.weather
-    ) {
+    // Weather effect support (special case)
+    if (effectName === "TriggerWeather" && resolution.weather) {
       triggerWeatherEffect(resolution.weather);
       renderWeatherEffects();
       return;
     }
-    // === Normal skill effect resolution ===
+
+    // --- Generalized targeting ---
     const effectDef = SKILL_EFFECT_MAP[effectName];
-    if (effectDef && effectDef.handler) {
-      effectDef.handler(cardObj, skillObj);
+    if (!effectDef || !effectDef.handler) return;
+
+    // Get target pool from config or default to self
+    const targetKey = resolution.target || "self";
+    let possibleTargets = getTargets(targetKey, cardObj);
+
+    // Filtering (e.g. Dragons only)
+    if (resolution.filter) {
+      possibleTargets = possibleTargets.filter(target =>
+        Object.entries(resolution.filter).every(([key, val]) =>
+          fieldIncludes(target, key, val)
+        )
+      );
+    }
+
+    // Target amount logic
+    const amount = resolution.amount ?? 1;
+
+    // Handler expects (sourceCard, targetCard, skillObj)
+    if (amount === "all" || amount === -1) {
+      possibleTargets.forEach(target => effectDef.handler(cardObj, target, skillObj));
+    } else if (typeof amount === "number" && amount > 1) {
+      startSkillTarget(possibleTargets, selectedArr => {
+        selectedArr.forEach(target => effectDef.handler(cardObj, target, skillObj));
+      }, { count: amount });
+    } else if (typeof amount === "object" && amount.max) {
+      // Flexible: up to max (min optional)
+      startSkillTarget(possibleTargets, selectedArr => {
+        selectedArr.forEach(target => effectDef.handler(cardObj, target, skillObj));
+      }, { min: amount.min || 1, max: amount.max });
+    } else {
+      // Single target (default)
+      startSkillTarget(possibleTargets, selectedArr => {
+        if (selectedArr[0]) effectDef.handler(cardObj, selectedArr[0], skillObj);
+      }, { count: 1 });
     }
   });
 }
