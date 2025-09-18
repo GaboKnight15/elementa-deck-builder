@@ -75,6 +75,8 @@ const ZONE_MAP = {
     ...gameState.opponentCreatures, ...gameState.opponentDomains, ...gameState.opponentVoid, ...gameState.opponentDeck, ...gameState.opponentHand
   ] }
 };
+let eventQueue = [];
+let isProcessingEvents = false;
 let attackMode = {attackerId: null, attackerZone: null, cancelHandler: null};
 
 const INITIAL_HAND_SIZE = 5;
