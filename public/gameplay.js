@@ -75,8 +75,11 @@ const ZONE_MAP = {
     ...gameState.opponentCreatures, ...gameState.opponentDomains, ...gameState.opponentVoid, ...gameState.opponentDeck, ...gameState.opponentHand
   ] }
 };
+
+// --- EVENT QUEUE --- //
 let eventQueue = [];
 let isProcessingEvents = false;
+
 let attackMode = {attackerId: null, attackerZone: null, cancelHandler: null};
 
 const INITIAL_HAND_SIZE = 5;
@@ -311,25 +314,16 @@ const ABILITY_EFFECTS = {
 const TRIGGER_EVENT_MAP = {
   onDealDamage: {
     name: "onDealDamage",
-    handler: function(cardObj, skillObj, context = {}) {
-      // Called when this card deals damage
-      resolveSkillEffect(cardObj, skillObj, context);
+    handler: function(cardObj, skillObj, context = {}, onComplete) {
+      resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
   },
   onSummon: {
     name: "onSummon",
-    handler: function(cardObj, skillObj, context = {}) {
-      // Called when this card enters the field
-      resolveSkillEffect(cardObj, skillObj, context);
+    handler: function(cardObj, skillObj, context = {}, onComplete) {
+      resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
   },
-  echo: {
-    name: "Echo",
-    handler: function(cardObj, skillObj, context = {}) {
-      // Called when this card enters the void
-      resolveSkillEffect(cardObj, skillObj, context);
-    }
-  }
   // Add more trigger event types as needed
 };
 // ATTACK RESOLUTION ABILITIES
@@ -1397,6 +1391,11 @@ function moveCard(instanceId, fromArr, toArr, extra = {}, callback) {
       fromArr.splice(idx, 1);
       toArr.push(cardObj);
     }
+    // === Trigger onSummon event if moving to a field zone ===
+    if (["playerCreatures", "playerDomains", "opponentCreatures", "opponentDomains"].includes(getZoneNameForArray(toArr))) {
+      const cardObj = toArr[toArr.length - 1];
+      queueEvent("onSummon", { summonedCard: cardObj });
+    }    
     setupDropZones();
     emitPublicState();
     if (callback) callback();
@@ -4185,6 +4184,124 @@ function getTotalEssence(essenceStr) {
   return matches ? matches.length : 0;
 }
 
+/**
+ * PRIORITY ORDER for trigger collection:
+ * 1. Player's cards: field (creatures+domains), hand, void, deck (by instanceId)
+ * 2. Opponent's cards: field, hand, void, deck (by instanceId)
+ */
+function collectTriggersForEvent(eventType, context) {
+  const turnPlayer = gameState.turn; // "player" or "opponent"
+  // Helper to flatten and sort arrays by instanceId (string compare for determinism)
+  const sortById = arr => arr.slice().sort((a, b) => String(a.instanceId).localeCompare(String(b.instanceId)));
+
+  // Get in priority order
+  const playerZones = [
+    sortById(gameState.playerCreatures),
+    sortById(gameState.playerDomains),
+    sortById(gameState.playerHand),
+    sortById(gameState.playerVoid),
+    sortById(gameState.playerDeck)
+  ];
+  const oppZones = [
+    sortById(gameState.opponentCreatures),
+    sortById(gameState.opponentDomains),
+    sortById(gameState.opponentHand),
+    sortById(gameState.opponentVoid),
+    sortById(gameState.opponentDeck)
+  ];
+  // Respect player or opponent first
+  const allZones = turnPlayer === "player"
+    ? [...playerZones, ...oppZones]
+    : [...oppZones, ...playerZones];
+
+  const triggers = [];
+  for (const zone of allZones) {
+    for (const cardObj of zone) {
+      if (!cardObj || !cardObj.skill) continue;
+      const skills = Array.isArray(cardObj.skill) ? cardObj.skill : [cardObj.skill];
+      for (const skillObj of skills) {
+        if (skillObj.activation && skillObj.activation.trigger === eventType) {
+          // Check condition
+          const cond = skillObj.activation.triggerCondition;
+          if (cond) {
+            // e.g. {type: "Dragon"} (matches summonedCard/type/etc)
+            let match = true;
+            for (const [key, val] of Object.entries(cond)) {
+              if (!fieldIncludes(context.summonedCard, key, val)) match = false;
+            }
+            if (!match) continue;
+          } else if (context.summonedCard && context.summonedCard !== cardObj) {
+            // If no condition: only trigger if self was summoned
+            continue;
+          }
+          triggers.push({ cardObj, skillObj, context });
+        }
+      }
+    }
+  }
+  return triggers;
+}
+
+// Enqueue an event (such as "onSummon", "onDealDamage") with context (e.g. {summonedCard: cardObj})
+function queueEvent(eventType, context) {
+  const triggers = collectTriggersForEvent(eventType, context);
+  if (triggers.length) eventQueue.push({ eventType, context, triggers });
+  processEventQueue();
+}
+
+function processEventQueue() {
+  if (isProcessingEvents) return;
+  isProcessingEvents = true;
+
+  function nextBatch() {
+    if (eventQueue.length === 0) {
+      isProcessingEvents = false;
+      return;
+    }
+    const { eventType, context, triggers } = eventQueue.shift();
+    // Process each trigger in order, supporting async/manual targeting
+    let i = 0;
+    function processNextTrigger() {
+      if (i >= triggers.length) {
+        // Done with this batch, move to next event
+        nextBatch();
+        return;
+      }
+      const { cardObj, skillObj, context: trigContext } = triggers[i++];
+      // Use your effect resolution logic—handleTriggerEvent, etc
+      // If effect is async/manual, processNextTrigger must be called in its completion callback
+      resolveTriggerEffect(cardObj, skillObj, trigContext || context, processNextTrigger);
+    }
+    processNextTrigger();
+  }
+  nextBatch();
+}
+
+/**
+ * Unified effect/trigger resolver.
+ * Ensures that if skill requires manual target (startSkillTarget), we pause until the user completes selection.
+ * Otherwise, resolves immediately and continues the batch.
+ */
+function resolveTriggerEffect(cardObj, skillObj, context, onComplete) {
+  // You may want to merge this logic with your `handleTriggerEvent` and `resolveSkillEffect`
+  const handlerDef = TRIGGER_EVENT_MAP[skillObj.activation.trigger];
+  if (handlerDef && typeof handlerDef.handler === "function") {
+    // Patch: handler must accept onComplete for async/manual effects
+    const maybeAsync = handlerDef.handler.length >= 4; // function(cardObj, skillObj, context, onComplete)
+    if (maybeAsync) {
+      handlerDef.handler(cardObj, skillObj, context, onComplete);
+    } else {
+      handlerDef.handler(cardObj, skillObj, context);
+      if (onComplete) onComplete();
+    }
+  } else {
+    // Fallback: resolve effect as in your normal skill resolution
+    resolveSkill(cardObj, skillObj, context);
+    if (onComplete) onComplete();
+  }
+}
+
+
 
 /*-------------------
 // ANIMATION LOGIC //
@@ -4456,12 +4573,12 @@ function proceedSkillActivation(cardObj, skillObj, options = {}) {
     });
   }
   // Now run the actual effect logic (no animation here)
-  resolveSkillEffect(cardObj, skillObj);
+  resolveSkill(cardObj, skillObj);
   renderGameState();
 }
 
 // SKILL RESOLUTION LOGIC //
-function resolveSkill(cardObj, skillObj) {
+function resolveSkill(cardObj, skillObj, context = {}, onComplete) {
   const resolution = skillObj.resolution || {};
   const effects = Array.isArray(resolution.effect) ? resolution.effect : [resolution.effect];
 
