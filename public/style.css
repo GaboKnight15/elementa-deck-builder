@@ -3542,6 +3542,41 @@ button {}
   50%  { transform: rotateY(-10deg) scale(1.05); opacity: 1;}
   100% { transform: rotateY(0deg) scale(1); opacity: 1;}
 }
+/* Common: no zoom needed */
+
+@keyframes zoomRare {
+  0% { transform: scale(1); }
+  20% { transform: scale(1.08); }
+  60% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+@keyframes zoomEpic {
+  0% { transform: scale(1); }
+  20% { transform: scale(1.16); }
+  60% { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+@keyframes zoomLegendary {
+  0% { transform: scale(1); }
+  20% { transform: scale(1.26); }
+  60% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+.zoom-rare {
+  animation: zoomRare 0.6s cubic-bezier(.36,1.6,.7,1) forwards;
+  z-index: 2;
+}
+.zoom-epic {
+  animation: zoomEpic 0.7s cubic-bezier(.36,1.6,.7,1) forwards;
+  z-index: 3;
+}
+.zoom-legendary {
+  animation: zoomLegendary 0.8s cubic-bezier(.36,1.6,.7,1) forwards;
+  z-index: 4;
+}
+
+/* SHOP LAYOUTS */
 #shop-avatars-grid {
   display: flex;
   flex-wrap: wrap;
