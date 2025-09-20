@@ -1484,7 +1484,6 @@ function setNewlyUnlockedCards(arr) {
 // FIREBASE GALLERY
 function setCollection(collection) {
   playerCollection = collection;
-  saveProgress();
 }
 function getCollection() {
   return playerCollection || {};
@@ -1499,7 +1498,6 @@ function addToCollection(cardId, amount = 1) {
   const collection = getCollection();
   const wasOwned = collection[cardId] > 0;
   collection[cardId] = (collection[cardId] || 0) + amount;
-  saveProgress();
 
   // If just unlocked, mark as new
   if (!wasOwned && collection[cardId] > 0) {
