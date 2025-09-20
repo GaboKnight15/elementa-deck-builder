@@ -438,6 +438,7 @@ openedPackRowModal.innerHTML = cards.map((card, i) => `
         setNewlyUnlockedCards(newCards);
       }
       if (window.renderGallery) window.renderGallery();
+	  saveProgress();
       if (typeof done === "function") done();
     }
   }
