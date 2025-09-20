@@ -354,7 +354,7 @@ function setAchievementProgress(achievementId, value) {
   data[achievementId] = data[achievementId] || { progress: 0, completed: false, claimed: false };
   data[achievementId].progress = Math.min(ach.goal, value);
   data[achievementId].completed = data[achievementId].progress >= ach.goal;
-  setAchievementData(data);
+  setAchievementData(data, false);
   renderAchievements();
 }
 
