@@ -385,12 +385,14 @@ function openPack(type, count = 1, done) {
     });
   }, 0); // after DOM insert
 
-  // Animate cards in sequence: flip from back to front with rarity-based sound
+  // Animate cards in sequence: flip from back to front, with sound and zoom
   const cardDivs = openedPackRowModal.querySelectorAll('.opened-card');
   cardDivs.forEach((div, i) => {
     setTimeout(() => {
       const idx = parseInt(div.getAttribute('data-card-idx'), 10);
       const card = lastPackCards[idx];
+      const front = div.querySelector('.opened-card-front');
+
       // Play the flip sound based on rarity
       let flipSnd;
       switch ((card.rarity || '').toLowerCase()) {
@@ -404,16 +406,31 @@ function openPack(type, count = 1, done) {
           flipSnd = document.getElementById('card-flip-legendary-sound');
           break;
         default:
-          flipSnd = document.getElementById('card-flip-common-sound'); // Common
+          flipSnd = document.getElementById('card-flip-common-sound');
       }
       if (flipSnd) {
         flipSnd.currentTime = 0;
         flipSnd.play();
       }
+
+      // Special zoom-in animation for rare/epic/legendary
+      let zoomClass = '';
+      switch ((card.rarity || '').toLowerCase()) {
+        case 'rare':
+          zoomClass = 'zoom-rare'; break;
+        case 'epic':
+          zoomClass = 'zoom-epic'; break;
+        case 'legendary':
+          zoomClass = 'zoom-legendary'; break;
+      }
+      if (zoomClass && front) {
+        front.classList.add(zoomClass);
+        setTimeout(() => front.classList.remove(zoomClass), 700);
+      }
+
       div.classList.add('flipped');
       setTimeout(() => {
         // After flip animation, attach onclick to card front
-        const front = div.querySelector('.opened-card-front');
         if (lastPackNewIds.includes(card.id)) {
           if (!front.querySelector('.new-card-badge')) {
             const badge = document.createElement('div');
