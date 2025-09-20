@@ -38,8 +38,8 @@ function saveProgress() {
     essence: typeof window.playerEssence === 'number' ? window.playerEssence : 0,
     dailyLoginDay: window.dailyLoginDay || 0,
     dailyLoginDate: window.dailyLoginDate || "",
-    quests: window.playerQuests || {},
-    achievements: window.playerAchievements || {},
+    playerQuests: window.playerQuests || {},
+    playerAchievements: window.playerAchievements || {},
     username: (window.profileUsernameDisplay && window.profileUsernameDisplay.textContent) || (auth.currentUser && auth.currentUser.displayName) || "",
     profilePic: window.playerProfilePic || defaultIcon,
     profileBanner: window.playerProfileBanner || defaultBanner,
@@ -90,8 +90,8 @@ window.playerCollection      = typeof data.collection !== "undefined" ? data.col
 window.favoriteCards         = Array.isArray(data.favoriteCards) ? data.favoriteCards : [];
 window.dailyLoginDay         = typeof data.dailyLoginDay === "number" ? data.dailyLoginDay : 0;
 window.dailyLoginDate        = typeof data.dailyLoginDate === "string" ? data.dailyLoginDate : "";
-window.playerQuests          = typeof data.quests !== "undefined" ? data.quests : {};
-window.playerAchievements    = typeof data.achievements !== "undefined" ? data.achievements : {};
+window.playerQuests          = typeof data.playerQuests  !== "undefined" ? data.playerQuests  : {};
+window.playerAchievements    = typeof data.playerAchievements  !== "undefined" ? data.playerAchievements  : {};
       
 window.playerUnlockedAvatars = Array.isArray(data.unlockedAvatars) ? data.unlockedAvatars : [];
 window.unlockedAvatars = window.playerUnlockedAvatars;
