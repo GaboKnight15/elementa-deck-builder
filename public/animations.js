@@ -102,7 +102,46 @@ const PARTICLE_PRESETS = {
     },
     interactivity: { detect_on: 'canvas', events: { onhover: { enable: false }, onclick: { enable: false }, resize: true } },
     retina_detect: true
-  }
+  },
+  bronze: {
+    particles: {
+      number: { value: 25, density: { enable: true, value_area: 120 } },
+      color: { value: ['#b08d57', '#cd7f32', '#ad8a56', '#ffb46a'] }, // bronze/copper
+      shape: { type: 'circle' },
+      opacity: { value: 0.8, random: true, anim: { enable: true, speed: 1, opacity_min: 0.4, sync: false } },
+      size: { value: 5, random: true, anim: { enable: true, speed: 2, size_min: 2.5, sync: false } },
+      line_linked: { enable: false },
+      move: { enable: true, speed: 2, direction: 'top', random: true, straight: false, out_mode: 'out', bounce: false }
+    },
+    interactivity: { detect_on: 'canvas', events: { onhover: { enable: false }, onclick: { enable: false }, resize: true } },
+    retina_detect: true
+  },
+  silver: {
+    particles: {
+      number: { value: 28, density: { enable: true, value_area: 120 } },
+      color: { value: ['#d7d7d7', '#c0c0c0', '#bfc1c2', '#f0f0f0', '#b0b0b0'] }, // silver
+      shape: { type: 'circle' },
+      opacity: { value: 0.85, random: true, anim: { enable: true, speed: 1, opacity_min: 0.4, sync: false } },
+      size: { value: 5.5, random: true, anim: { enable: true, speed: 2, size_min: 2.7, sync: false } },
+      line_linked: { enable: false },
+      move: { enable: true, speed: 2.5, direction: 'top', random: true, straight: false, out_mode: 'out', bounce: false }
+    },
+    interactivity: { detect_on: 'canvas', events: { onhover: { enable: false }, onclick: { enable: false }, resize: true } },
+    retina_detect: true
+  },
+  gold: {
+    particles: {
+      number: { value: 32, density: { enable: true, value_area: 120 } },
+      color: { value: ['#ffe066', '#ffd700', '#fff700', '#fffbe2', '#fffde4'] }, // gold/yellow
+      shape: { type: 'star' },
+      opacity: { value: 0.9, random: true, anim: { enable: true, speed: 1.5, opacity_min: 0.5, sync: false } },
+      size: { value: 7, random: true, anim: { enable: true, speed: 2.2, size_min: 3.5, sync: false } },
+      line_linked: { enable: false },
+      move: { enable: true, speed: 3, direction: 'top', random: true, straight: false, out_mode: 'out', bounce: false }
+    },
+    interactivity: { detect_on: 'canvas', events: { onhover: { enable: false }, onclick: { enable: false }, resize: true } },
+    retina_detect: true
+  },
 };
 const STAR_PARTICLE_PRESET = {
   particles: {
@@ -252,3 +291,39 @@ function getParticlePresetForCard(cardData) {
   });
   return mergedConfig;
 }
+// Attach particle overlay to a card DOM node, using effectKey for uniqueness
+function applyRarityParticlesToCard(cardDiv, rarity) {
+  // Remove any previous rarity effect overlay
+  const existing = cardDiv.querySelector('.rarity-particle-overlay');
+  if (existing) existing.remove();
+
+  let preset = null;
+  if (rarity === 'Rare')     preset = PARTICLE_PRESETS.bronze;
+  if (rarity === 'Epic')     preset = PARTICLE_PRESETS.silver;
+  if (rarity === 'Legendary')preset = PARTICLE_PRESETS.gold;
+
+  if (!preset) return; // Only apply to rare/epic/legendary
+
+  const overlay = document.createElement('div');
+  overlay.className = 'rarity-particle-overlay';
+  overlay.style.position = 'absolute';
+  overlay.style.left = '0';
+  overlay.style.top = '0';
+  overlay.style.width = '100%';
+  overlay.style.height = '100%';
+  overlay.style.pointerEvents = 'none';
+  overlay.style.zIndex = 2; // above front card image, below badges
+
+  // Unique id for this overlay instance
+  const uniqueId = 'rarity-effect-' + Math.random().toString(36).slice(2, 9);
+  overlay.id = uniqueId;
+  cardDiv.style.position = 'relative';
+  cardDiv.appendChild(overlay);
+
+  setTimeout(() => {
+    if (window.particlesJS && document.getElementById(uniqueId)) {
+      particlesJS(uniqueId, preset);
+    }
+  }, 0);
+}
+window.applyRarityParticlesToCard = applyRarityParticlesToCard;
