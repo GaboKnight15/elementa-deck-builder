@@ -43,16 +43,17 @@ const ACHIEVEMENTS = [
 function getPlayerLevel() {
   return playerLevel;
 }
-function setQuestData(data) {
+function setQuestData(data, shouldSave = false) {
   playerQuests = data;
-  saveProgress();
+  if (shouldSave) saveProgress();
 }
+
 function getQuestData() {
   return playerQuests;
 }
-function setAchievementData(data) { 
+function setAchievementData(data, shouldSave = false) {
   playerAchievements = data;
-  saveProgress(); 
+  if (shouldSave) saveProgress();
 }
 function getAchievementData() {
   return playerAchievements;
@@ -131,7 +132,7 @@ function incrementQuestProgress(questId) {
 
     data[questId].progress = Math.min(quest.goal, (data[questId].progress || 0) + 1);
     if (data[questId].progress >= quest.goal) data[questId].completed = true;
-    setQuestData(data);
+    setQuestData(data, false);
     renderQuests();
     updateQuestsNotificationDot();
   });
@@ -340,7 +341,7 @@ function incrementAchievementProgress(achievementId, amount = 1) {
 
   data[achievementId].progress = Math.min(ach.goal, (data[achievementId].progress || 0) + amount);
   if (data[achievementId].progress >= ach.goal) data[achievementId].completed = true;
-  setAchievementData(data);
+  setAchievementData(data, false);
   renderAchievements();
   updateAchievementsNotificationDot();
 }
