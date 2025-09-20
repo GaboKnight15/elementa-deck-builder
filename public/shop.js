@@ -207,9 +207,6 @@ function showPackContentsModal(packId, packName) {
   document.getElementById('pack-contents-close-btn').onclick = function() {
     modal.remove();
   };
-  document.getElementById('close-pack-contents-modal').onclick = function() {
-    modal.remove();
-  };
 }
 function showCosmeticConfirmModal({imgSrc, name, type, price, onConfirm, packId}) {
   if (cosmeticConfirmModal) cosmeticConfirmModal.remove();
