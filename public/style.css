@@ -3430,6 +3430,15 @@ button {}
   justify-content: center;
   gap: 18px;
 }
+.opened-card-front[data-rarity="Legendary"] {
+  box-shadow: 0 0 24px 8px #ffd700aa, 0 0 48px 12px #ffe06688;
+}
+.opened-card-front[data-rarity="Epic"] {
+  box-shadow: 0 0 18px 6px #c0c0c0bb, 0 0 36px 8px #f0f0f088;
+}
+.opened-card-front[data-rarity="Rare"] {
+  box-shadow: 0 0 14px 5px #b08d57bb, 0 0 24px 6px #cd7f3288;
+}
 /* Card flip styles (similar to your current opened-card styles) */
 .opened-card {
   background: none;
