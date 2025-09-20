@@ -355,18 +355,22 @@ function openPack(type, count = 1, done) {
   lastPackNewIds = allNewIds;
 
   // OPENED PACK MODAL
-  openedPackRowModal.innerHTML = cards.map((card, i) => `
-    <div class="opened-card opened-card-flip" data-card-idx="${i}">
-      <div class="opened-card-inner">
-        <div class="opened-card-back">
-          <img src="CardImages/Domains/placeholder.png" alt="Card Back" style="width:100px;height:auto;display:block;margin:auto;">
-        </div>
-        <div class="opened-card-front" data-rarity="${card.rarity || ''}">
-          <img src="${card.image}" alt="${card.name}" style="width:100px;height:auto;display:block;margin:auto;">
+openedPackRowModal.innerHTML = `
+  <div class="opened-pack-cards-grid">
+    ${cards.map((card, i) => `
+      <div class="opened-card opened-card-flip" data-card-idx="${i}">
+        <div class="opened-card-inner">
+          <div class="opened-card-back">
+            <img src="CardImages/Domains/placeholder.png" alt="Card Back" style="width:100px;height:auto;display:block;margin:auto;">
+          </div>
+          <div class="opened-card-front" data-rarity="${card.rarity || ''}">
+            <img src="${card.image}" alt="${card.name}" style="width:100px;height:auto;display:block;margin:auto;">
+          </div>
         </div>
       </div>
-    </div>
-  `).join('');
+    `).join('')}
+  </div>
+`;
   packOpeningModal.style.display = "flex";
 
   setTimeout(() => {
