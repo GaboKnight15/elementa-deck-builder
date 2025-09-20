@@ -219,6 +219,18 @@ function showCosmeticConfirmModal({imgSrc, name, type, price, onConfirm, packId}
   cosmeticConfirmModal.style.display = 'flex';
   cosmeticConfirmModal.style.alignItems = 'center';
   cosmeticConfirmModal.style.justifyContent = 'center';
+  // Bulk selector (default 1)
+  let bulkSelectorHtml = '';
+  if (type === 'pack') {
+    bulkSelectorHtml = `
+      <div style="margin:10px 0 0 0;text-align:center;">
+        <label for="pack-bulk-count" style="color:#ffe066;font-weight:bold;margin-right:6px;">Number of Packs:</label>
+        <select id="pack-bulk-count" style="font-size:1.1em;padding:3px 12px;border-radius:7px;">
+          ${[...Array(10)].map((_,i)=>`<option value="${i+1}">${i+1}</option>`).join('')}
+        </select>
+      </div>
+    `;
+  }
   cosmeticConfirmModal.innerHTML = `
     <div class="modal-content" style="position:relative;">
       <button id="pack-info-btn" style="position:absolute;top:5px;right:0;background:none;border:none;cursor:pointer;">
@@ -227,8 +239,9 @@ function showCosmeticConfirmModal({imgSrc, name, type, price, onConfirm, packId}
       <img src="${imgSrc}" alt="Cosmetic Preview" title="${name || ''}" style="max-width:120px;box-shadow:0 2px 10px #0005;">
       <div class="currency-display" style="margin:10px 0;">
         <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins">
-        <span>${price}</span>
+        <span id="modal-total-price">${price}</span>
       </div>
+      ${bulkSelectorHtml}
       <div style="display:flex;gap:18px;justify-content:center;margin-top:8px;">
         <button id="cosmetic-get-btn" class="btn-secondary">Get</button>
         <button id="cosmetic-cancel-btn" class="btn-negative-secondary">Cancel</button>
@@ -237,6 +250,14 @@ function showCosmeticConfirmModal({imgSrc, name, type, price, onConfirm, packId}
   `;
   document.body.appendChild(cosmeticConfirmModal);
 
+  // Bulk price update logic
+  if (type === 'pack') {
+    const countSelect = cosmeticConfirmModal.querySelector('#pack-bulk-count');
+    const priceSpan = cosmeticConfirmModal.querySelector('#modal-total-price');
+    countSelect.onchange = function() {
+      priceSpan.textContent = price * parseInt(this.value, 10);
+    };
+  }
   // Info button logic: only for packs
   if (type === 'pack' && packId) {
     cosmeticConfirmModal.querySelector('#pack-info-btn').onclick = function(e) {
@@ -319,16 +340,22 @@ function setNewlyUnlockedCards(arr) {
 let lastPackCards = [];
 let lastPackNewIds = [];
 // Open pack logic
-function openPack(type) {
-  const collection = getCollection(); 
-  const cards = getRandomCards(10, type);
+function openPack(type, count = 1, done) {
+  const collection = getCollection();
+  let cards = [];
+  let allNewIds = [];
+  for (let i = 0; i < count; i++) {
+    const packCards = getRandomCards(10, type);
+    cards = cards.concat(packCards);
+    packCards.forEach(card => {
+      if (!collection[card.id]) allNewIds.push(card.id);
+    });
+  }
+  // Remove duplicates from allNewIds (for the "New!" badge)
+  allNewIds = [...new Set(allNewIds)];
 
-  lastPackNewIds = [];
-  cards.forEach(card => {
-    if (!collection[card.id]) lastPackNewIds.push(card.id);
-  }); 
- 
   lastPackCards = cards;
+  lastPackNewIds = allNewIds;
 
   // OPENED PACK MODAL
   openedPackRowModal.innerHTML = cards.map((card, i) => `
@@ -491,9 +518,10 @@ function renderShopPacks() {
         type: 'pack',
         price: pack.price,
 		packId: pack.id,
-        onConfirm: function(cb) {
-          purchaseCosmetic(pack.price, function(done) {
-            openPack(pack.id, function() {
+        onConfirm: function(cb, count = 1) {
+			const totalCost = pack.price * count;
+         	purchaseCosmetic(totalCost, function(done) {
+            openPack(pack.id, count, function() {
               if (typeof incrementQuestProgress === 'function') {
                 incrementQuestProgress('purchase_pack_daily');
                 incrementQuestProgress('purchase_pack_weekly');
