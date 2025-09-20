@@ -358,20 +358,33 @@ function openPack(type, count = 1, done) {
   lastPackNewIds = allNewIds;
 
   // OPENED PACK MODAL
-  openedPackRowModal.innerHTML = cards.map((card, i) => `
-    <div class="opened-card opened-card-flip" data-card-idx="${i}">
-      <div class="opened-card-inner">
-        <div class="opened-card-back">
-          <img src="CardImages/Domains/placeholder.png" alt="Card Back" style="width:100px;height:auto;display:block;margin:auto;">
-        </div>
-        <div class="opened-card-front">
-          <img src="${card.image}" alt="${card.name}" style="width:100px;height:auto;display:block;margin:auto;">
-        </div>
+openedPackRowModal.innerHTML = cards.map((card, i) => `
+  <div class="opened-card opened-card-flip" data-card-idx="${i}">
+    <div class="opened-card-inner">
+      <div class="opened-card-back">
+        <img src="CardImages/Domains/placeholder.png" alt="Card Back" style="width:100px;height:auto;display:block;margin:auto;">
+      </div>
+      <div class="opened-card-front" data-rarity="${card.rarity || ''}">
+        <img src="${card.image}" alt="${card.name}" style="width:100px;height:auto;display:block;margin:auto;">
       </div>
     </div>
-  `).join('');
+  </div>
+`).join('');
   packOpeningModal.style.display = "flex";
-
+  setTimeout(() => {
+  	const cardDivs = openedPackRowModal.querySelectorAll('.opened-card');
+ 	 cardDivs.forEach((div, i) => {
+     const idx = parseInt(div.getAttribute('data-card-idx'), 10);
+   	 const card = lastPackCards[idx];
+   	 if (!card) return;
+     // Find rarity: should be in card.rarity ("Rare", "Epic", "Legendary")
+   	 // Find the .opened-card-front div inside this cardDiv
+     const frontDiv = div.querySelector('.opened-card-front');
+   	 if (frontDiv && window.applyRarityParticlesToCard) {
+      applyRarityParticlesToCard(frontDiv, card.rarity);
+     }
+   });
+  }, 0); // after DOM insert, allow images to render
   // Animate cards in sequence: flip from back to front
   const cardDivs = openedPackRowModal.querySelectorAll('.opened-card');
   cardDivs.forEach((div, i) => {
