@@ -358,39 +358,54 @@ function openPack(type, count = 1, done) {
   lastPackNewIds = allNewIds;
 
   // OPENED PACK MODAL
-openedPackRowModal.innerHTML = cards.map((card, i) => `
-  <div class="opened-card opened-card-flip" data-card-idx="${i}">
-    <div class="opened-card-inner">
-      <div class="opened-card-back">
-        <img src="CardImages/Domains/placeholder.png" alt="Card Back" style="width:100px;height:auto;display:block;margin:auto;">
-      </div>
-      <div class="opened-card-front" data-rarity="${card.rarity || ''}">
-        <img src="${card.image}" alt="${card.name}" style="width:100px;height:auto;display:block;margin:auto;">
+  openedPackRowModal.innerHTML = cards.map((card, i) => `
+    <div class="opened-card opened-card-flip" data-card-idx="${i}">
+      <div class="opened-card-inner">
+        <div class="opened-card-back">
+          <img src="CardImages/Domains/placeholder.png" alt="Card Back" style="width:100px;height:auto;display:block;margin:auto;">
+        </div>
+        <div class="opened-card-front" data-rarity="${card.rarity || ''}">
+          <img src="${card.image}" alt="${card.name}" style="width:100px;height:auto;display:block;margin:auto;">
+        </div>
       </div>
     </div>
-  </div>
-`).join('');
+  `).join('');
   packOpeningModal.style.display = "flex";
+
   setTimeout(() => {
-  	const cardDivs = openedPackRowModal.querySelectorAll('.opened-card');
- 	 cardDivs.forEach((div, i) => {
-     const idx = parseInt(div.getAttribute('data-card-idx'), 10);
-   	 const card = lastPackCards[idx];
-   	 if (!card) return;
-     // Find rarity: should be in card.rarity ("Rare", "Epic", "Legendary")
-   	 // Find the .opened-card-front div inside this cardDiv
-     const frontDiv = div.querySelector('.opened-card-front');
-   	 if (frontDiv && window.applyRarityParticlesToCard) {
-      applyRarityParticlesToCard(frontDiv, card.rarity);
-     }
-   });
-  }, 0); // after DOM insert, allow images to render
-  // Animate cards in sequence: flip from back to front
+    const cardDivs = openedPackRowModal.querySelectorAll('.opened-card');
+    cardDivs.forEach((div) => {
+      const idx = parseInt(div.getAttribute('data-card-idx'), 10);
+      const card = lastPackCards[idx];
+      if (!card) return;
+      const frontDiv = div.querySelector('.opened-card-front');
+      if (frontDiv && window.applyRarityParticlesToCard) {
+        applyRarityParticlesToCard(frontDiv, card.rarity);
+      }
+    });
+  }, 0); // after DOM insert
+
+  // Animate cards in sequence: flip from back to front with rarity-based sound
   const cardDivs = openedPackRowModal.querySelectorAll('.opened-card');
   cardDivs.forEach((div, i) => {
     setTimeout(() => {
-          // Play the flip sound
-      const flipSnd = document.getElementById('card-flip-sound');
+      const idx = parseInt(div.getAttribute('data-card-idx'), 10);
+      const card = lastPackCards[idx];
+      // Play the flip sound based on rarity
+      let flipSnd;
+      switch ((card.rarity || '').toLowerCase()) {
+        case 'rare':
+          flipSnd = document.getElementById('card-flip-rare-sound');
+          break;
+        case 'epic':
+          flipSnd = document.getElementById('card-flip-epic-sound');
+          break;
+        case 'legendary':
+          flipSnd = document.getElementById('card-flip-legendary-sound');
+          break;
+        default:
+          flipSnd = document.getElementById('card-flip-common-sound'); // Common
+      }
       if (flipSnd) {
         flipSnd.currentTime = 0;
         flipSnd.play();
@@ -398,13 +413,8 @@ openedPackRowModal.innerHTML = cards.map((card, i) => `
       div.classList.add('flipped');
       setTimeout(() => {
         // After flip animation, attach onclick to card front
-        const idx = parseInt(div.getAttribute('data-card-idx'), 10);
         const front = div.querySelector('.opened-card-front');
-
-        // Add "New!" badge if the card is new in this pack
-        const card = lastPackCards[idx];
         if (lastPackNewIds.includes(card.id)) {
-          // Add badge if not already present
           if (!front.querySelector('.new-card-badge')) {
             const badge = document.createElement('div');
             badge.className = 'new-card-badge';
@@ -414,7 +424,6 @@ openedPackRowModal.innerHTML = cards.map((card, i) => `
         }
         if (front && typeof window.showFullCardModal === 'function') {
           front.onclick = () => {
-            const card = lastPackCards[idx];
             window.showFullCardModal(card);
           };
         }
@@ -422,6 +431,7 @@ openedPackRowModal.innerHTML = cards.map((card, i) => `
     }, 250 * i);
   });
 
+  // Add cards to collection one by one, then save once at the end
   let addCardsCount = 0;
   function addNextCard() {
     if (addCardsCount < cards.length) {
@@ -438,7 +448,7 @@ openedPackRowModal.innerHTML = cards.map((card, i) => `
         setNewlyUnlockedCards(newCards);
       }
       if (window.renderGallery) window.renderGallery();
-	  saveProgress();
+      saveProgress();
       if (typeof done === "function") done();
     }
   }
