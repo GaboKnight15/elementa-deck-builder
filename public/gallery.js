@@ -790,7 +790,7 @@ function showBulkVoidModal() {
       collection[card.id] -= count;
     });
     playerEssence += totalEssence;
-    saveProgress();
+    saveProgress();    
     updateEssenceDisplay();
     renderGallery();
     modal.style.display = 'none';
