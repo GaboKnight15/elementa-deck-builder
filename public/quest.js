@@ -1,3 +1,6 @@
+window.playerQuests = window.playerQuests || {};
+window.playerAchievements = window.playerAchievements || {};
+
 const COLOR_QUESTS = ['green', 'red', 'blue', 'yellow', 'purple', 'gray', 'black', 'white'];
 // Quest LIST
 const QUEST_SLOTS = 5;
