@@ -733,7 +733,152 @@ skill: [
 {id: 'VerdantRebirth', name: 'Verdant Rebirth', rarity: 'Common', image: 'CardImages/Spells/Verdant Rebirth.png', 
  category: 'Spell', color: 'Green', type: 'Spell', cost: '{2}{G}', effect: 'Gain {G}{G}', set: 'StandardPack'},
   
- 
+ Green Domains
+
+ {id: 'GoblinVillage', name: 'Goblin Village', rarity: 'Common', image: 'CardImages/Domains/Goblin Village.png', 
+ category: 'Domain', color: 'Green', type: 'Terrain', hp: 5, cost: '{0}', essence: '{G}', set: 'StandardPack2'},
+ {id: 'Thornreach', name: 'Thornreach', rarity: 'Common', image: 'CardImages/Domains/Thornreach.png', 
+ category: 'Domain', color: 'Green', type: 'Terrain', hp: 5, cost: '{0}', essence: '{G}', set: 'StandardPack2'},
+ {id: 'FairyFountain', name: 'Fairy Fountain', rarity: 'Common', image: 'CardImages/Domains/Fairy Fountain.png', 
+ category: 'Domain', color: 'Green', type: 'Terrain', hp: 5, cost: '{0}', essence: '{G}', set: 'StandardPack2'},
+ {id: 'ElvesVillage', name: 'Elves Village', rarity: 'Common', image: 'CardImages/Domains/Elves Village.png', 
+ category: 'Domain', color: 'Green', type: 'Terrain', hp: 5, cost: '{0}', essence: '{G}', set: 'StandardPack2'},
+ {id: 'SylvanCanopy', name: 'Sylvan Canopy', rarity: 'Common', image: 'CardImages/Domains/Sylvan Canopy.png', 
+ category: 'Domain', color: 'Green', type: 'Terrain', hp: 5, cost: '{0}', essence: '{G}', set: 'StandardPack2'},
+
+ Red Domains
+
+ {id: 'OrcVillage', name: 'Orc Village', rarity: 'Common', image: 'CardImages/Domains/Orc Village.png', 
+  category: 'Domain', color: 'Red', type: 'Terrain', hp: 5, cost: '{0}', essence: '{R}', set: 'StandardPack2'},
+ {id: 'CindercoreForgehold', name: 'Cindercore Forgehold', rarity: 'Common', image: 'CardImages/Domains/Cindercore Forgehold.png', 
+  category: 'Domain', color: 'Red', type: 'Terrain', hp: 5, cost: '{0}', essence: '{R}', set: 'StandardPack2'},
+ {id: 'DragonsSpire', name: 'Dragon's Spire', rarity: 'Common', image: 'CardImages/Domains/Dragon's Spire.png', 
+  category: 'Domain', color: 'Red', type: 'Terrain', hp: 5, cost: '{0}', essence: '{R}', set: 'StandardPack2'},
+ {id: 'MoltenExpanse', name: 'Molten Expanse', rarity: 'Common', image: 'CardImages/Domains/Molten Expanse.png', 
+  category: 'Domain', color: 'Red', type: 'Terrain', hp: 5, cost: '{0}', essence: '{R}', set: 'StandardPack2'},
+ {id: 'Smokeblight Frontier', name: 'Smokeblight Frontier', rarity: 'Common', image: 'CardImages/Domains/Smokeblight Frontier.png', 
+  category: 'Domain', color: 'Red', type: 'Terrain', hp: 5, cost: '{0}', essence: '{R}', set: 'StandardPack2'},
+
+ Blue Domains
+
+{id: 'Pearlhaven', name: 'Pearlhaven', rarity: 'Common', image: 'CardImages/Domains/Pearlhaven.png', 
+ category: 'Domain', color: 'Blue', type: 'Terrain', hp: 5, cost: '{0}', essence: '{U}', set: 'StandardPack2'},
+{id: 'MermaidsSanctuary', name: 'Mermaid's Sanctuary', rarity: 'Common', image: 'CardImages/Domains/Mermaids Sanctuary.png', 
+ category: 'Domain', color: 'Blue', type: 'Terrain', hp: 5, cost: '{0}', essence: '{U}', set: 'StandardPack2'},
+{id: 'DragonsAtoll', name: 'Dragon's Atoll', rarity: 'Common', image: 'CardImages/Domains/Dragons Atoll.png', 
+ category: 'Domain', color: 'Blue', type: 'Terrain', hp: 5, cost: '{0}', essence: '{U}', set: 'StandardPack2'},
+{id: 'TheAbyssalCrown', name: 'The Abyssal Crown', rarity: 'Common', image: 'CardImages/Domains/The Abyssal Crown.png', 
+ category: 'Domain', color: 'Blue', type: 'Terrain', hp: 5, cost: '{0}', essence: '{U}', set: 'StandardPack2'},
+{id: 'LagoonoftheVerdantTide', name: 'Lagoon of the Verdant Tide', rarity: 'Common', image: 'CardImages/Domains/Lagoon of the Verdant Tide.png', 
+ category: 'Domain', color: 'Blue', type: 'Terrain', hp: 5, cost: '{0}', essence: '{U}', set: 'StandardPack2'},
+{id: 'CoralboundReef', name: 'Coralbound Reef', rarity: 'Common', image: 'CardImages/Domains/Coralbound Reef.png', 
+ category: 'Domain', color: 'Blue', type: 'Terrain', hp: 5, cost: '{0}', essence: '{U}', set: 'StandardPack2'},
+{id: 'GlasswaveReefs', name: 'Glasswave Reefs', rarity: 'Common', image: 'CardImages/Domains/Glasswave Reefs.png', 
+ category: 'Domain', color: 'Blue', type: 'Terrain', hp: 5, cost: '{0}', essence: '{U}', set: 'StandardPack2'},
+{id: 'GlacierRift', name: 'Glacier Rift', rarity: 'Common', image: 'CardImages/Domains/Glacier Rift.png', 
+ category: 'Domain', color: 'Blue', type: 'Terrain', hp: 5, cost: '{0}', essence: '{U}', set: 'StandardPack2'},
+{id: 'FrostlandsCitadel', name: 'Frostlands Citadel', rarity: 'Common', image: 'CardImages/Domains/Frostlands Citadel.png', 
+ category: 'Domain', color: 'Blue', type: 'Terrain', hp: 5, cost: '{0}', essence: '{U}', set: 'StandardPack2'},
+
+Yellow Domains
+
+{id: 'TempestCradle', name: 'Tempest Cradle', rarity: 'Common', image: 'CardImages/Domains/Tempest Cradle.png', 
+ category: 'Domain', color: 'Yellow', type: 'Terrain', hp: 5, cost: '{0}', essence: '{Y}', set: 'StandardPack2'},
+{id: 'ElementalsPlateau', name: 'Elemental's Plateau', rarity: 'Common', image: 'CardImages/Domains/Elemental's Plateau.png', 
+ category: 'Domain', color: 'Yellow', type: 'Terrain', hp: 5, cost: '{0}', essence: '{Y}', set: 'StandardPack2'},
+{id: 'ZephyrasStormpeaks', name: 'Zephyra's Stormpeaks', rarity: 'Common', image: 'CardImages/Domains/Zephyra's Stormpeaks.png', 
+ category: 'Domain', color: 'Yellow', type: 'Terrain', hp: 5, cost: '{0}', essence: '{Y}', set: 'StandardPack2'},
+{id: 'DragonsSkyreach', name: 'Dragon's Skyreach', rarity: 'Common', image: 'CardImages/Domains/Dragon's Skyreach.png', 
+ category: 'Domain', color: 'Yellow', type: 'Terrain', hp: 5, cost: '{0}', essence: '{Y}', set: 'StandardPack2'},
+{id: 'CloudveilSanctum', name: 'Cloudveil Sanctum', rarity: 'Common', image: 'CardImages/Domains/Cloudveil Sanctum.png', 
+ category: 'Domain', color: 'Yellow', type: 'Terrain', hp: 5, cost: '{0}', essence: '{Y}', set: 'StandardPack2'},
+{id: 'The CitadelofArclight', name: 'The Citadel of Arclight', rarity: 'Common', image: 'CardImages/Domains/The Citadel of Arclight.png', 
+ category: 'Domain', color: 'Yellow', type: 'Terrain', hp: 5, cost: '{0}', essence: '{Y}', set: 'StandardPack2'},
+{id: 'BoltspireIsles', name: 'Boltspire Isles', rarity: 'Common', image: 'CardImages/Domains/Boltspire Isles.png', 
+ category: 'Domain', color: 'Yellow', type: 'Terrain', hp: 5, cost: '{0}', essence: '{Y}', set: 'StandardPack2'},
+{id: 'SkybreakerRings', name: 'Skybreaker Rings', rarity: 'Common', image: 'CardImages/Domains/Skybreaker Rings.png', 
+ category: 'Domain', color: 'Yellow', type: 'Terrain', hp: 5, cost: '{0}', essence: '{Y}', set: 'StandardPack2'},
+{id: 'SkywardArchipelago', name: 'Skyward Archipelago', rarity: 'Common', image: 'CardImages/Domains/Skyward Archipelago.png', 
+ category: 'Domain', color: 'Yellow', type: 'Terrain', hp: 5, cost: '{0}', essence: '{Y}', set: 'StandardPack2'},
+
+ Purple Domains
+
+ {id: 'OrcVillage', name: 'Orc Village', rarity: 'Common', image: 'CardImages/Domains/Orc Village.png', 
+ category: 'Domain', color: 'Purple', type: 'Terrain', hp: 5, cost: '{0}', essence: '{P}', set: 'StandardPack2'},
+ {id: 'TheMireworks', name: 'The Mireworks', rarity: 'Common', image: 'CardImages/Domains/The Mireworks.png', 
+ category: 'Domain', color: 'Purple', type: 'Terrain', hp: 5, cost: '{0}', essence: '{P}', set: 'StandardPack2'},
+ {id: 'DragonsHollow', name: 'Dragon's Hollow', rarity: 'Common', image: 'CardImages/Domains/Dragons Hollow.png', 
+ category: 'Domain', color: 'Purple', type: 'Terrain', hp: 5, cost: '{0}', essence: '{P}', set: 'StandardPack2'},
+ {id: 'GoblinCamp', name: 'Goblin Camp', rarity: 'Common', image: 'CardImages/Domains/Goblin Camps.png', 
+ category: 'Domain', color: 'Purple', type: 'Terrain', hp: 5, cost: '{0}', essence: '{P}', set: 'StandardPack2'},
+ {id: 'BlackrotTunnels', name: 'Blackrot Tunnels', rarity: 'Common', image: 'CardImages/Domains/Blackrot Tunnels.png', 
+ category: 'Domain', color: 'Purple', type: 'Terrain', hp: 5, cost: '{0}', essence: '{P}', set: 'StandardPack2'},
+ {id: 'Festerglow Fen', name: 'Festerglow Fen', rarity: 'Common', image: 'CardImages/Domains/Festerglow Fen.png', 
+ category: 'Domain', color: 'Purple', type: 'Terrain', hp: 5, cost: '{0}', essence: '{P}', set: 'StandardPack2'},
+ {id: 'SwampLake', name: 'Swamp Lake', rarity: 'Common', image: 'CardImages/Domains/Swamp Lake.png', 
+ category: 'Domain', color: 'Purple', type: 'Terrain', hp: 5, cost: '{0}', essence: '{P}', set: 'StandardPack2'},
+ {id: 'MiregateBasin', name: 'Miregate Basin', rarity: 'Common', image: 'CardImages/Domains/Miregate Basin.png', 
+ category: 'Domain', color: 'Purple', type: 'Terrain', hp: 5, cost: '{0}', essence: '{P}', set: 'StandardPack2'},
+
+Gray Domains
+
+{id: 'IrondeepBastion', name: 'Irondeep Bastion', rarity: 'Common', image: 'CardImages/Domains/Irondeep Bastion.png', 
+ category: 'Domain', color: 'Gray', type: 'Terrain', hp: 5, cost: '{0}', essence: '{C}', set: 'StandardPack2'},
+{id: 'GoblinOutpost', name: 'Goblin Outpost', rarity: 'Common', image: 'CardImages/Domains/Goblin Outpost.png', 
+ category: 'Domain', color: 'Gray', type: 'Terrain', hp: 5, cost: '{0}', essence: '{C}', set: 'StandardPack2'},
+{id: 'OrcVillage', name: 'Orc Village', rarity: 'Common', image: 'CardImages/Domains/Orc Village.png', 
+ category: 'Domain', color: 'Gray', type: 'Terrain', hp: 5, cost: '{0}', essence: '{C}', set: 'StandardPack2'},
+{id: 'DwarfenStronghold', name: 'Dwarfen Stronghold', rarity: 'Common', image: 'CardImages/Domains/Dwarfen Stronghold.png', 
+ category: 'Domain', color: 'Gray', type: 'Terrain', hp: 5, cost: '{0}', essence: '{C}', set: 'StandardPack2'},
+{id: 'DragonsBastion', name: 'Dragon's Bastion', rarity: 'Common', image: 'CardImages/Domains/Dragon's Bastion.png', 
+ category: 'Domain', color: 'Gray', type: 'Terrain', hp: 5, cost: '{0}', essence: '{C}', set: 'StandardPack2'},
+{id: 'TheEmberjawRange', name: 'The Emberjaw Range', rarity: 'Common', image: 'CardImages/Domains/The Emberjaw Range.png', 
+ category: 'Domain', color: 'Gray', type: 'Terrain', hp: 5, cost: '{0}', essence: '{C}', set: 'StandardPack2'},
+{id: 'AnvilgatePlateau', name: 'Anvilgate Plateau', rarity: 'Common', image: 'CardImages/Domains/Anvilgate Plateau.png', 
+ category: 'Domain', color: 'Gray', type: 'Terrain', hp: 5, cost: '{0}', essence: '{C}', set: 'StandardPack2'},
+{id: 'StonewoundBarrens', name: 'Stonewound Barrens', rarity: 'Common', image: 'CardImages/Domains/Stonewound Barrens.png', 
+ category: 'Domain', color: 'Gray', type: 'Terrain', hp: 5, cost: '{0}', essence: '{C}', set: 'StandardPack2'},
+
+ Black Domains
+
+ {id: 'Fellchasm', name: 'Fellchasm', rarity: 'Common', image: 'CardImages/Domains/Fellchasm.png', 
+ category: 'Domain', color: 'Black', type: 'Terrain', hp: 5, cost: '{0}', essence: '{B}', set: 'StandardPack2'},
+ {id: 'VampiricCitadel', name: 'Vampiric Citadel', rarity: 'Common', image: 'CardImages/Domains/Vampiric Citadel.png', 
+ category: 'Domain', color: 'Black', type: 'Terrain', hp: 5, cost: '{0}', essence: '{B}', set: 'StandardPack2'},
+ {id: 'DragonsMoonhold', name: 'Dragon's Moonhold', rarity: 'Common', image: 'CardImages/Domains/Dragons Moonhold.png', 
+ category: 'Domain', color: 'Black', type: 'Terrain', hp: 5, cost: '{0}', essence: '{B}', set: 'StandardPack2'},
+ {id: 'UmbrawindHollow', name: 'Umbrawind Hollow', rarity: 'Common', image: 'CardImages/Domains/Umbrawind Hollow.png', 
+ category: 'Domain', color: 'Black', type: 'Terrain', hp: 5, cost: '{0}', essence: '{B}', set: 'StandardPack2'},
+ {id: 'ShadeglassCrag', name: 'Shadeglass Crag', rarity: 'Common', image: 'CardImages/Domains/Shadeglass Crag.png', 
+ category: 'Domain', color: 'Black', type: 'Terrain', hp: 5, cost: '{0}', essence: '{B}', set: 'StandardPack2'},
+ {id: 'GraveveilFields', name: 'Graveveil Fields', rarity: 'Common', image: 'CardImages/Domains/Graveveil Fields.png', 
+ category: 'Domain', color: 'Black', type: 'Terrain', hp: 5, cost: '{0}', essence: '{B}', set: 'StandardPack2'},
+ {id: 'DarkSea', name: 'Dark Sea', rarity: 'Common', image: 'CardImages/Domains/Dark Sea.png', 
+ category: 'Domain', color: 'Black', type: 'Terrain', hp: 5, cost: '{0}', essence: '{B}', set: 'StandardPack2'},
+ {id: 'Boneyard', name: 'Boneyard', rarity: 'Common', image: 'CardImages/Domains/Boneyard.png', 
+ category: 'Domain', color: 'Black', type: 'Terrain', hp: 5, cost: '{0}', essence: '{B}', set: 'StandardPack2'},
+ {id: 'TheShadelornSanctum', name: 'The Shadelorn Sanctum', rarity: 'Common', image: 'CardImages/Domains/The Shadelorn Sanctum.png', 
+ category: 'Domain', color: 'Black', type: 'Terrain', hp: 5, cost: '{0}', essence: '{B}', set: 'StandardPack2'},
+
+White Domains
+
+{id: 'ZephyrasPlateau', name: 'Zephyra's Plateau', rarity: 'Common', image: 'CardImages/Domains/Zephyras Plateau.png', 
+ category: 'Domain', color: 'White', type: 'Terrain', hp: 5, cost: '{0}', essence: '{W}', set: 'StandardPack2'},
+{id: 'AngelsReach', name: 'Angel's Reach', rarity: 'Common', image: 'CardImages/Domains/Angels Reach.png', 
+ category: 'Domain', color: 'White', type: 'Terrain', hp: 5, cost: '{0}', essence: '{W}', set: 'StandardPack2'},
+{id: 'DragonsHaven', name: 'Dragon's Haven', rarity: 'Common', image: 'CardImages/Domains/Dragons Haven.png', 
+ category: 'Domain', color: 'White', type: 'Terrain', hp: 5, cost: '{0}', essence: '{W}', set: 'StandardPack2'},
+{id: 'HalosCrown', name: 'Halo's Crown', rarity: 'Common', image: 'CardImages/Domains/Halos Crown.png', 
+ category: 'Domain', color: 'White', type: 'Terrain', hp: 5, cost: '{0}', essence: '{W}', set: 'StandardPack2'},
+{id: 'SunspireSanctum', name: 'Sunspire Sanctum', rarity: 'Common', image: 'CardImages/Domains/Sunspire Sanctum.png', 
+ category: 'Domain', color: 'White', type: 'Terrain', hp: 5, cost: '{0}', essence: '{W}', set: 'StandardPack2'},
+{id: 'DawnbreakRidge', name: 'Dawnbreak Ridge', rarity: 'Common', image: 'CardImages/Domains/Dawnbreak Ridge.png', 
+ category: 'Domain', color: 'White', type: 'Terrain', hp: 5, cost: '{0}', essence: '{W}', set: 'StandardPack2'},
+{id: 'LumenlowFields', name: 'Lumenlow Fields', rarity: 'Common', image: 'CardImages/Domains/Lumenlow Fields.png', 
+ category: 'Domain', color: 'White', type: 'Terrain', hp: 5, cost: '{0}', essence: '{W}', set: 'StandardPack2'},
+{id: 'RadianteEnclave', name: 'Radiante Enclave', rarity: 'Common', image: 'CardImages/Domains/Radiante Enclave.png', 
+ category: 'Domain', color: 'White', type: 'Terrain', hp: 5, cost: '{0}', essence: '{W}', set: 'StandardPack2'},
+
  
  */
 // DOMAINS //
