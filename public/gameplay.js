@@ -1078,7 +1078,7 @@ Token: {
     renderGameState();
     setupDropZones && setupDropZones();
   }
-}
+},
   Drought:      { handler: weatherSetter("Drought") },
   Rain:         { handler: weatherSetter("Rain") },
   Thunderstorm: { handler: weatherSetter("Thunderstorm") },
