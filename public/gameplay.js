@@ -640,7 +640,7 @@ Burst: {
 Dash: {
   icon: 'OtherImages/skillEffect/Dash.png',
   name: 'Dash',
-  description: 'Summon this card from your hand to the field.',
+  description: 'Summon this card from your hand to the field. It enters with half its base HP (rounded up).',
   handler: function(sourceCardObj, skillObj) {
     // Only activate if in hand
     const isHand = gameState.playerHand.includes(sourceCardObj);
@@ -649,6 +649,7 @@ Dash: {
       return;
     }
     const cardData = dummyCards.find(c => c.id === sourceCardObj.cardId);
+    // Determine correct field zone
     const category = Array.isArray(cardData.category)
       ? cardData.category.map(c => c.toLowerCase())
       : [String(cardData.category).toLowerCase()];
@@ -663,7 +664,15 @@ Dash: {
     }
     runHandSkillWithAnimation(sourceCardObj, skillObj, targetArr, () => {
       showSummonPositionModal(sourceCardObj, function(chosenOrientation) {
-        moveCard(sourceCardObj.instanceId, gameState.playerHand, targetArr, { orientation: chosenOrientation });
+        // Calculate half base HP (rounded up), fallback to 1 if not defined
+        const baseHp = getBaseHp(sourceCardObj.cardId) || 1;
+        const halfHp = Math.ceil(baseHp / 2);
+        moveCard(
+          sourceCardObj.instanceId,
+          gameState.playerHand,
+          targetArr,
+          { orientation: chosenOrientation, currentHP: halfHp }
+        );
         renderGameState();
         setupDropZones && setupDropZones();
       });
@@ -4630,24 +4639,65 @@ function canActivateSkill(cardObj, skillObj, currentZone, gameState, targetObj =
 function activateSkill(cardObj, skillObj, options = {}) {
   const zoneId = findZoneIdForCard(cardObj);
 
-  function afterPayment() {
-    // Animate skill activation ONCE, then proceed with full resolution
+  // 1. Activation animation or handler (if present)
+  if (skillObj.activation && skillObj.activation.handler) {
+    skillObj.activation.handler(cardObj, skillObj, () => {
+      showEssencePayment();
+    });
+  } else {
+    // Default: animate only
     animateSkillActivation(cardObj, zoneId, () => {
-      proceedSkillActivation(cardObj, skillObj, options);
+      showEssencePayment();
     });
   }
 
-  // If skill has cost, pay first, then animate+resolve
-  if (skillObj.cost) {
-    showEssencePaymentModal({
-      card: cardObj,
-      cost: parseCost(skillObj.cost),
-      eligibleCards: getAllEssenceSources(),
-      onPaid: afterPayment
-    });
-  } else {
-    // No cost: animate+resolve immediately
-    afterPayment();
+  function showEssencePayment() {
+    // 2. Show essence payment modal (if cost)
+    if (skillObj.cost) {
+      showEssencePaymentModal({
+        card: cardObj,
+        cost: parseCost(skillObj.cost),
+        eligibleCards: getAllEssenceSources(),
+        onPaid: () => {
+          runRequirements();
+        }
+      });
+    } else {
+      runRequirements();
+    }
+  }
+
+  function runRequirements() {
+    // 3. Requirements
+    const activation = skillObj.activation || {};
+    let requirements = Array.isArray(activation.requirement)
+      ? activation.requirement
+      : (activation.requirement ? [activation.requirement] : []);
+    function nextReq(i) {
+      if (i >= requirements.length) {
+        runResolution();
+        return;
+      }
+      const req = requirements[i];
+      if (REQUIREMENT_MAP[req] && REQUIREMENT_MAP[req].handler) {
+        if (REQUIREMENT_MAP[req].handler.length >= 3) {
+          REQUIREMENT_MAP[req].handler(cardObj, skillObj, () => nextReq(i + 1));
+        } else {
+          REQUIREMENT_MAP[req].handler(cardObj, skillObj);
+          nextReq(i + 1);
+        }
+      } else {
+        nextReq(i + 1);
+      }
+    }
+    nextReq(0);
+  }
+
+  function runResolution() {
+    // 4. Resolution
+    resolveSkill(cardObj, skillObj);
+    renderGameState();
+    // 5. Event queue (already auto-processed after resolution)
   }
 }
 
@@ -4656,16 +4706,27 @@ function proceedSkillActivation(cardObj, skillObj, options = {}) {
   let requirements = Array.isArray(activation.requirement)
     ? activation.requirement
     : (activation.requirement ? [activation.requirement] : []);
-  if (requirements.length) {
-    requirements.forEach(req => {
-      if (REQUIREMENT_MAP[req] && REQUIREMENT_MAP[req].handler) {
+  function runRequirements(i) {
+    if (i >= requirements.length) {
+      // All requirements done, now run effect
+      resolveSkill(cardObj, skillObj);
+      renderGameState();
+      return;
+    }
+    const req = requirements[i];
+    if (REQUIREMENT_MAP[req] && REQUIREMENT_MAP[req].handler) {
+      // Support async requirements
+      if (REQUIREMENT_MAP[req].handler.length >= 3) {
+        REQUIREMENT_MAP[req].handler(cardObj, skillObj, () => runRequirements(i + 1));
+      } else {
         REQUIREMENT_MAP[req].handler(cardObj, skillObj);
+        runRequirements(i + 1);
       }
-    });
+    } else {
+      runRequirements(i + 1);
+    }
   }
-  // Now run the actual effect logic (no animation here)
-  resolveSkill(cardObj, skillObj);
-  renderGameState();
+  runRequirements(0);
 }
 
 // SKILL RESOLUTION LOGIC //
