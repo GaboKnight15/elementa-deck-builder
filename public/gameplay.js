@@ -1318,6 +1318,13 @@ function getZoneInfoForCard(cardObj) {
   }
   return null;
 }
+// Helper to get zone name for cardObj
+function getZoneNameForCard(cardObj) {
+  for (const zoneName in ZONE_MAP) {
+    if (ZONE_MAP[zoneName].arr().includes(cardObj)) return zoneName;
+  }
+  return '';
+}
 // --- Utility: Determine card owner as "player" or "opponent" ---
 function getCardOwner(cardObj) {
   if (gameState.playerCreatures.includes(cardObj) || gameState.playerDomains.includes(cardObj)) return "player";
@@ -1774,7 +1781,7 @@ function showHandCardMenu(instanceId, cardDiv) {
         onClick: function(e) {
           e.stopPropagation();
           if (!canActivateSkill(cardObj, skillObj, 'hand', gameState)) return;
-          activateSkill(cardObj, skillObj);
+          activateSkill(cardObj, skillObj, { currentZone: 'hand' });
           closeAllMenus();
         }
       });
@@ -2892,7 +2899,7 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
         onClick: function(e) {
           e.stopPropagation();
           if (!canActivateSkill(cardObj, skillObj, currentZone, gameState)) return;
-          activateSkill(cardObj, skillObj);
+          activateSkill(cardObj, skillObj, { currentZone });
           closeAllMenus();
         }
       });
@@ -4677,6 +4684,7 @@ function canActivateSkill(cardObj, skillObj, currentZone, gameState, targetObj =
 // Update activateSkill to use the animation before requirements/effects
 function activateSkill(cardObj, skillObj, options = {}) {
   const zoneId = findZoneIdForCard(cardObj);
+  const currentZone = options.currentZone || getZoneNameForCard(cardObj);
 
   // 1. Activation animation or handler (if present)
   if (skillObj.activation && skillObj.activation.handler) {
