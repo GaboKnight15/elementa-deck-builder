@@ -4793,58 +4793,34 @@ function proceedSkillActivation(cardObj, skillObj, options = {}) {
   runRequirements(0);
 }
 
-// SKILL RESOLUTION LOGIC //
+// EFFECT RESOLUTION LOGIC //
 function resolveSkill(cardObj, skillObj, context = {}, onComplete) {
   const resolution = skillObj.resolution || {};
   const effects = Array.isArray(resolution.effect) ? resolution.effect : [resolution.effect];
 
-  effects.forEach(effectName => {
-    // Weather effect support (special case)
-    if (effectName === "TriggerWeather" && resolution.weather) {
-      triggerWeatherEffect(resolution.weather);
-      renderWeatherEffects();
+  let i = 0;
+  function nextEffect() {
+    if (i >= effects.length) {
+      if (onComplete) onComplete();
       return;
     }
-
-    // --- Generalized targeting ---
+    const effectName = effects[i++];
     const effectDef = SKILL_EFFECT_MAP[effectName];
-    if (!effectDef || !effectDef.handler) return;
-
-    // Get target pool from config or default to self
-    const targetKey = resolution.target || "self";
-    let possibleTargets = getTargets(targetKey, cardObj);
-
-    // Filtering (e.g. Dragons only)
-    if (resolution.filter) {
-      possibleTargets = possibleTargets.filter(target =>
-        Object.entries(resolution.filter).every(([key, val]) =>
-          fieldIncludes(target, key, val)
-        )
-      );
+    if (!effectDef || !effectDef.handler) {
+      nextEffect();
+      return;
     }
-
-    // Target amount logic
-    const amount = resolution.amount ?? 1;
-
-    // Handler expects (sourceCard, targetCard, skillObj)
-    if (amount === "all" || amount === -1) {
-      possibleTargets.forEach(target => effectDef.handler(cardObj, target, skillObj));
-    } else if (typeof amount === "number" && amount > 1) {
-      startSkillTarget(possibleTargets, selectedArr => {
-        selectedArr.forEach(target => effectDef.handler(cardObj, target, skillObj));
-      }, { count: amount });
-    } else if (typeof amount === "object" && amount.max) {
-      // Flexible: up to max (min optional)
-      startSkillTarget(possibleTargets, selectedArr => {
-        selectedArr.forEach(target => effectDef.handler(cardObj, target, skillObj));
-      }, { min: amount.min || 1, max: amount.max });
+    // Assume effect handlers accept (sourceCardObj, skillObj, nextEffect)
+    // If handler is async (opens modal, etc), it should call nextEffect when done
+    // For sync effects, just call nextEffect immediately after
+    if (effectDef.handler.length >= 3) {
+      effectDef.handler(cardObj, skillObj, nextEffect);
     } else {
-      // Single target (default)
-      startSkillTarget(possibleTargets, selectedArr => {
-        if (selectedArr[0]) effectDef.handler(cardObj, selectedArr[0], skillObj);
-      }, { count: 1 });
+      effectDef.handler(cardObj, skillObj);
+      nextEffect();
     }
-  });
+  }
+  nextEffect();
 }
 function startSkillTarget(validTargets, onSelect, opts = {}) {
   // Remove any previous highlights and handlers
