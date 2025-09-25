@@ -4706,31 +4706,48 @@ function activateSkill(cardObj, skillObj, options = {}) {
     }
   }
 
-  function runRequirements() {
-    // 3. Requirements
-    const activation = skillObj.activation || {};
-    let requirements = Array.isArray(activation.requirement)
-      ? activation.requirement
-      : (activation.requirement ? [activation.requirement] : []);
-    function nextReq(i) {
-      if (i >= requirements.length) {
-        runResolution();
-        return;
-      }
-      const req = requirements[i];
-      if (REQUIREMENT_MAP[req] && REQUIREMENT_MAP[req].handler) {
-        if (REQUIREMENT_MAP[req].handler.length >= 3) {
-          REQUIREMENT_MAP[req].handler(cardObj, skillObj, () => nextReq(i + 1));
-        } else {
-          REQUIREMENT_MAP[req].handler(cardObj, skillObj);
-          nextReq(i + 1);
-        }
+// Helper to get requirement(s) for a skill
+function getSkillRequirements(skillObj) {
+  if (skillObj.requirement) {
+    return Array.isArray(skillObj.requirement) ? skillObj.requirement : [skillObj.requirement];
+  }
+  const activation = skillObj.activation || {};
+  if (activation.requirement) {
+    return Array.isArray(activation.requirement) ? activation.requirement : [activation.requirement];
+  }
+  return [];
+}
+
+// In canActivateSkill:
+const requirements = getSkillRequirements(skillObj);
+for (const req of requirements) {
+  if (REQUIREMENT_MAP[req] && REQUIREMENT_MAP[req].canActivate) {
+    if (!REQUIREMENT_MAP[req].canActivate(cardObj, skillObj, currentZone, gameState)) return false;
+  }
+}
+
+// In activateSkill's runRequirements step:
+function runRequirements() {
+  const requirements = getSkillRequirements(skillObj);
+  function nextReq(i) {
+    if (i >= requirements.length) {
+      runResolution();
+      return;
+    }
+    const req = requirements[i];
+    if (REQUIREMENT_MAP[req] && REQUIREMENT_MAP[req].handler) {
+      if (REQUIREMENT_MAP[req].handler.length >= 3) {
+        REQUIREMENT_MAP[req].handler(cardObj, skillObj, () => nextReq(i + 1));
       } else {
+        REQUIREMENT_MAP[req].handler(cardObj, skillObj);
         nextReq(i + 1);
       }
+    } else {
+      nextReq(i + 1);
     }
-    nextReq(0);
   }
+  nextReq(0);
+}
 
   function runResolution() {
     // 4. Resolution
