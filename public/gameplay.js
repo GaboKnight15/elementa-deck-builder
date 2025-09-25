@@ -310,28 +310,66 @@ const ABILITY_EFFECTS = {
   }
 };
 
-// --- TRIGGER EFFECTS --- //
-const TRIGGER_EVENT_MAP = {
-  onDealDamage: {
-    name: "onDealDamage",
-    handler: function(cardObj, skillObj, context = {}, onComplete) {
-      resolveSkillEffect(cardObj, skillObj, context, onComplete);
-    }
-  },
+// --- SKILL TRIGGER MAP ---
+// Maps skill activation triggers to their event handlers
+const SKILL_TRIGGER_MAP = {
+  // When this card enters the field (a.k.a. onSummon, "Arrival" in card text)
   onSummon: {
-    name: "onSummon",
+    name: "onSummon", // (Arrival)
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
   },
-  // Add more trigger event types as needed
+  // When this card is drawn (a.k.a. onDraw, "Insight" in card text)
+  onDraw: {
+    name: "onDraw", // (Insight)
+    handler: function(cardObj, skillObj, context = {}, onComplete) {
+      resolveSkillEffect(cardObj, skillObj, context, onComplete);
+    }
+  },
+  // When this card enters the void (a.k.a. onVoid, "Echo" in card text)
+  onVoid: {
+    name: "onVoid", // (Echo)
+    handler: function(cardObj, skillObj, context = {}, onComplete) {
+      resolveSkillEffect(cardObj, skillObj, context, onComplete);
+    }
+  },
+  // When this card deals damage (a.k.a. onDealDamage, "Frenzy" in card text)
+  onDealDamage: {
+    name: "onDealDamage", // (Frenzy)
+    handler: function(cardObj, skillObj, context = {}, onComplete) {
+      resolveSkillEffect(cardObj, skillObj, context, onComplete);
+    }
+  },
+  // When this card receives damage (a.k.a. onReceiveDamage, "Brace" in card text)
+  onReceiveDamage: {
+    name: "onReceiveDamage", // (Brace)
+    handler: function(cardObj, skillObj, context = {}, onComplete) {
+      resolveSkillEffect(cardObj, skillObj, context, onComplete);
+    }
+  },
+  // When this card declares an attack (a.k.a. onAttack, "Assault" in card text)
+  onAttack: {
+    name: "onAttack", // (Assault)
+    handler: function(cardObj, skillObj, context = {}, onComplete) {
+      resolveSkillEffect(cardObj, skillObj, context, onComplete);
+    }
+  },
+  // When this card is attacked in DEF position (a.k.a. onDefense, "Defender" in card text)
+  onDefense: {
+    name: "onDefense", // (Defender)
+    handler: function(cardObj, skillObj, context = {}, onComplete) {
+      resolveSkillEffect(cardObj, skillObj, context, onComplete);
+    }
+  }
+  // Add more triggers as needed!
 };
 // ATTACK RESOLUTION ABILITIES
 const ATTACK_DECLARATION_ABILITY = {
   Intimidate: {
     icon: 'OtherImages/Icons/Intimidate.png',
     name: 'Intimidate',
-    description: 'When attacking, changes defending creature to DEF position.',
+    description: 'When attacking, changes defending creature to DEF.',
     handler: function(attacker, defender, next) {
       // Only trigger Intimidate if defender is in ATK (vertical)
       if (defender.orientation === "vertical") {
@@ -356,7 +394,7 @@ const ATTACK_DECLARATION_ABILITY = {
   Provoke: {
     icon: 'OtherImages/Icons/Provoke.png',
     name: 'Provoke',
-    description: 'When attacking, changes defending creature to ATK position.',
+    description: 'When attacking, changes defending creature to ATK.',
     handler: function(attacker, defender, next) {
       // Only trigger Provoke if defender is in DEF (horizontal)
       if (defender.orientation === "horizontal") {
