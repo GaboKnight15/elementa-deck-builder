@@ -9,7 +9,7 @@ const dummyCards = [
  cost: '{G}{G}{G}', archetype: 'Sylvan', ability: 'Ranged', set: 'StandardPack'
  skill: [
   {name: "Briar Queen's Grasp", cost: '{G}',
-  activation: {requirement: 'CCW'},
+  requirement: {type:'CCW'}, 
   resolution: {effect: 'Strike', damage: 3, status: 'Bind'}}
   ]},
 
@@ -18,7 +18,7 @@ const dummyCards = [
  cost: '{R}{R}{R}', archetype: '', ability: ['Burn','Ranged'], set: 'StandardPack',
  skill: [
   {name: 'Scorching Skyfall', cost: '{R}{R}',
-   activation: {requirement: 'CCW'}, 
+   requirement: {type:'CCW'}, 
    resolution: {effect: 'Burst', damage: 1, status: 'Burn'}}
   ]},
 
@@ -27,7 +27,7 @@ const dummyCards = [
  cost: '{U}{U}{U}', archetype: '', ability: ['Dive','Pierce'], set: 'StandardPack'
  skill: [
   {name: 'Tidepiercer Vortex', cost: '{U}',
-   activation: {requirement: 'CCW'},
+   requirement: {type: 'CCW'},
    resolution: {effect: 'Strike', damage: 2, status: 'Soak'}}
  ]},
 
@@ -36,7 +36,7 @@ const dummyCards = [
  cost: '{Y}{Y}{Y}', archetype: '', ability: ['Ranged','Veil'], set: 'StandardPack',
  skill: [
  {name:'Blade Tempest, cost: {Y}{Y}',
-  activation: {requirement: 'CCW'},
+  requirement: {type:'CCW'}, 
   resolution: {effect: 'Strike', damage: 1}}
  ]},
 
@@ -53,7 +53,7 @@ const dummyCards = [
  cost: '{C}{C}{C}', archetype: '', ability: ['Armor','Crush'], set: 'StandardPack',
  skill: [
   {name: 'Seismic Smite', cost: {C}',
-  activation: {requirement: 'CCW'},
+  requirement: {type:'CCW'}, 
   resolution: {effect: 'Strike', damage: 1}}
  ]},
 
@@ -62,7 +62,7 @@ const dummyCards = [
  cost: '{B}{B}{B}', archetype: '', ability: ['Ranged','Veil'], set: 'StandardPack',
  skill: [
   {name:'Seal', cost: '{B}',
-   activation: {requirement: 'CCW'},
+   requirement: {type:'CCW'}, 
    resolution: {effect: 'Seal'}}
  ]},
 
@@ -71,7 +71,7 @@ const dummyCards = [
  cost: '{W}{W}{W}', archetype: '', ability: ['Aegis','Veil'], set: 'StandardPack',
  skill: [
   {name: 'Radiant Severance', cost: '{W}',
-  activation: {requirement: 'CCW'},
+  requirement: {type:'CCW'}, 
   resolution: {effect: ['Strike', 'Aegis']}}
  ]},
 
@@ -90,7 +90,7 @@ const dummyCards = [
   {name: 'Reveal', cost: '{R}',
    resolution: {effect: 'Strike', damage: 1, status: 'Burn'}},
   {name: 'Cataclysmic Blaze', cost: '{R}',
-   activation: {requirement: 'CCW'},
+   requirement: {type:'CCW'}, 
    resolution: {effect: 'Burst', damage: 3, status: 'Burn'}}
   ]},
 
@@ -114,7 +114,7 @@ const dummyCards = [
  cost: '{4}{P}{P}', archetype: 'Venomspine', ability: ['Flying','Venom'], set: 'StandardPack',
  skill: [
   {name: 'Discard', cost: '{B}',
-   activation: {requirement: 'Discard},
+   requirement: {type:'Discard'},
    resolution: {effect: 'XXX'}},
   {name: 'Nightfall Surge', cost: '{B}',
    activation: {requirement: 'CW'},
@@ -129,7 +129,7 @@ const dummyCards = [
    activation: {requirement: 'Discard},
    resolution: {effect: 'XXX'}},
   {name: 'Nightfall Surge', cost: '{B}',
-   activation: {requirement: 'CW'},
+   requirement: {type:'CCW'}, 
    resolustion: {effect: 'Burst'}}
  ]},
 
@@ -138,7 +138,7 @@ const dummyCards = [
  cost: '{4}{B}{B}', archetype: 'Nightshroud', ability: ['Flying','Protect'], set: 'StandardPack'
  skill: [
   {name: 'Discard', cost: '{B}',
-   activation: {requirement: 'Discard},
+   requirement: {type:'Discard'}, 
    resolution: {effect: 'XXX'}},
   {name: 'Nightfall Surge', cost: '{B}',
    activation: {requirement: 'CW'},
@@ -215,7 +215,7 @@ const dummyCards = [
    activation: {requirement: 'CCW'},
    resolution: {effect: 'XXX'}},
   {name: 'Silken Dominion', cost: '{P}{G}',
-   activation: {requirement: 'CCW'},
+   requirement: {type: 'CCW'}, 
    resolution: {effect: 'Invoke', archetype: 'Spiders'}}
  ]},
 
