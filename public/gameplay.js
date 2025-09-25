@@ -383,8 +383,7 @@ const ATTACK_DECLARATION_ABILITY = {
 /*------------------------------
 //---- SKILL TARGET TYPE ---- //
 ------------------------------*/
-// Helper for requirements (add near SKILL_EFFECT_MAP)
-// Helper for requirements (add near SKILL_EFFECT_MAP)
+// Helper for requirements //
 const REQUIREMENT_MAP = {
   CW: {
     zones: ['playerCreatures', 'playerDomains'],
@@ -605,9 +604,6 @@ Dash: {
   name: 'Dash',
   description: 'Summon this card from your hand to the field.',
   handler: function(sourceCardObj, skillObj) {
-    runHandSkillWithAnimation(sourceCardObj, skillObj, targetArr, () => {
-    // Optionally, show summon orientation modal or fade-in animation on field
-    });
     // Only activate if in hand
     const isHand = gameState.playerHand.includes(sourceCardObj);
     if (!isHand) {
@@ -615,10 +611,10 @@ Dash: {
       return;
     }
     const cardData = dummyCards.find(c => c.id === sourceCardObj.cardId);
-    let targetArr;
     const category = Array.isArray(cardData.category)
       ? cardData.category.map(c => c.toLowerCase())
       : [String(cardData.category).toLowerCase()];
+    let targetArr;
     if (category.includes("creature")) {
       targetArr = gameState.playerCreatures;
     } else if (category.includes("domain")) {
@@ -627,11 +623,101 @@ Dash: {
       showToast("Dash can only be used for creatures or domains.");
       return;
     }
-    showSummonPositionModal(sourceCardObj, function(chosenOrientation) {
-      moveCard(sourceCardObj.instanceId, gameState.playerHand, targetArr, { orientation: chosenOrientation });
-      renderGameState();
-      setupDropZones && setupDropZones();
+    runHandSkillWithAnimation(sourceCardObj, skillObj, targetArr, () => {
+      showSummonPositionModal(sourceCardObj, function(chosenOrientation) {
+        moveCard(sourceCardObj.instanceId, gameState.playerHand, targetArr, { orientation: chosenOrientation });
+        renderGameState();
+        setupDropZones && setupDropZones();
+      });
     });
+  },
+  canActivate: function(cardObj, skillObj, currentZone, gameState) {
+    // Only allow activation if the card is in the hand zone
+    return currentZone === "hand" && gameState.playerHand.includes(cardObj);
+  }
+},
+  Reanimate: {
+    icon: 'OtherImages/skillEffect/Reanimate.png',
+    name: 'Reanimate',
+    description: 'Return this card from the void to the field.',
+    handler: function(sourceCardObj, skillObj) {
+      // Only resolve if card is in void
+      const isVoid = gameState.playerVoid.includes(sourceCardObj);
+      if (!isVoid) {
+        showToast("Reanimate can only be activated from the void.");
+        return;
+      }
+      // Determine target zone: creatures/domains by card type
+      const cardData = dummyCards.find(c => c.id === sourceCardObj.cardId);
+      let targetArr;
+      const category = Array.isArray(cardData.category)
+        ? cardData.category.map(c => c.toLowerCase())
+        : [String(cardData.category).toLowerCase()];
+      if (category.includes("creature")) {
+        targetArr = gameState.playerCreatures;
+      } else if (category.includes("domain")) {
+        targetArr = gameState.playerDomains;
+      } else {
+        showToast("Reanimate can only be used for creatures or domains.");
+        return;
+      }
+      // Prompt orientation (if needed)
+      showSummonPositionModal(sourceCardObj, function(chosenOrientation) {
+        moveCard(
+          sourceCardObj.instanceId,
+          gameState.playerVoid,
+          targetArr,
+          { orientation: chosenOrientation, currentHP: getBaseHp(sourceCardObj.cardId) }
+        );
+        closeAllModals();
+        renderGameState();
+      });
+    },
+    canActivate: function(cardObj, skillObj, currentZone, gameState) {
+    // Only allow activation if the card is in the void zone
+      return currentZone === "void" && gameState.playerVoid.includes(cardObj);
+    }
+  },
+Awaken: {
+  icon: 'OtherImages/skillEffect/Awaken.png',
+  name: 'Awaken',
+  description: 'Summon this card from your deck to the field.',
+  handler: function(sourceCardObj, skillObj) {
+    // Only activate if in deck
+    const isDeck = gameState.playerDeck.includes(sourceCardObj);
+    if (!isDeck) {
+      showToast("Awaken can only be activated from your deck.");
+      return;
+    }
+    const cardData = dummyCards.find(c => c.id === sourceCardObj.cardId);
+    const category = Array.isArray(cardData.category)
+      ? cardData.category.map(c => c.toLowerCase())
+      : [String(cardData.category).toLowerCase()];
+    let targetArr;
+    if (category.includes("creature")) {
+      targetArr = gameState.playerCreatures;
+    } else if (category.includes("domain")) {
+      targetArr = gameState.playerDomains;
+    } else {
+      showToast("Awaken can only be used for creatures or domains.");
+      return;
+    }
+    // Animation (optional)
+    runDeckSkillWithAnimation && runDeckSkillWithAnimation(sourceCardObj, skillObj, targetArr, () => {
+      showSummonPositionModal(sourceCardObj, function(chosenOrientation) {
+        moveCard(
+          sourceCardObj.instanceId,
+          gameState.playerDeck,
+          targetArr,
+          { orientation: chosenOrientation, currentHP: getBaseHp(sourceCardObj.cardId) }
+        );
+        closeAllModals();
+        renderGameState();
+      });
+    });
+  },
+  canActivate: function(cardObj, skillObj, currentZone, gameState) {
+    return currentZone === "deck" && gameState.playerDeck.includes(cardObj);
   }
 },
   Heal: {
@@ -688,48 +774,6 @@ Dash: {
           renderGameState();
         }
       );
-    }
-  },
-  Reanimate: {
-    icon: 'OtherImages/skillEffect/Reanimate.png',
-    name: 'Reanimate',
-    description: 'Return this card from the void to the field.',
-    handler: function(sourceCardObj, skillObj) {
-      // Only resolve if card is in void
-      const isVoid = gameState.playerVoid.includes(sourceCardObj);
-      if (!isVoid) {
-        showToast("Reanimate can only be activated from the void.");
-        return;
-      }
-      // Determine target zone: creatures/domains by card type
-      const cardData = dummyCards.find(c => c.id === sourceCardObj.cardId);
-      let targetArr;
-      const category = Array.isArray(cardData.category)
-        ? cardData.category.map(c => c.toLowerCase())
-        : [String(cardData.category).toLowerCase()];
-      if (category.includes("creature")) {
-        targetArr = gameState.playerCreatures;
-      } else if (category.includes("domain")) {
-        targetArr = gameState.playerDomains;
-      } else {
-        showToast("Reanimate can only be used for creatures or domains.");
-        return;
-      }
-      // Prompt orientation (if needed)
-      showSummonPositionModal(sourceCardObj, function(chosenOrientation) {
-        moveCard(
-          sourceCardObj.instanceId,
-          gameState.playerVoid,
-          targetArr,
-          { orientation: chosenOrientation, currentHP: getBaseHp(sourceCardObj.cardId) }
-        );
-        closeAllModals();
-        renderGameState();
-      });
-    },
-    canActivate: function(cardObj, skillObj, currentZone, gameState) {
-    // Only allow activation if the card is in the void zone
-      return currentZone === "void" && gameState.playerVoid.includes(cardObj);
     }
   },
   Recall: {
@@ -948,7 +992,16 @@ Destroy: {
         }
       });
     }
-  }
+  },
+  Drought:      { handler: weatherSetter("Drought") },
+  Rain:         { handler: weatherSetter("Rain") },
+  Thunderstorm: { handler: weatherSetter("Thunderstorm") },
+  Snowfall:     { handler: weatherSetter("Snowfall") },
+  GaleWinds:    { handler: weatherSetter("GaleWinds") },
+  BloodMoon:    { handler: weatherSetter("BloodMoon") },
+  Ashfall:      { handler: weatherSetter("Ashfall") },
+  ToxicMiasma:  { handler: weatherSetter("ToxicMiasma") },
+  Mystveil:     { handler: weatherSetter("Mystveil") },
   // Add more effects as needed (Strike, Heal, Destroy, etc.)
 };
 const WEATHER_EFFECTS = {
@@ -5011,7 +5064,11 @@ function hasRanged(cardObj)     { return hasAbility(cardObj, "Ranged"); }
 function hasIntimidate(cardObj) { return hasAbility(cardObj, "Intimidate"); }
 function hasAmbush(cardObj)     { return hasAbility(cardObj, "Ambush"); }
 // Add more as needed...
-
+function weatherSetter(weatherName) {
+  return (cardObj, skillObj, context) => {
+    if (context.setWeather) context.setWeather(weatherName, cardObj);
+  };
+}
 // --- Utility: get all colors/types/archetypes/traits/abilities (for filters, etc.) ---
 function getCardColors(cardObj) {
   const card = getCardDef(cardObj);
