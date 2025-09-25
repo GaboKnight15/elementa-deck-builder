@@ -1040,6 +1040,45 @@ Destroy: {
       });
     }
   },
+Token: {
+  icon: 'OtherImages/skillEffect/Token.png',
+  name: 'Token',
+  description: 'Summon a token to the battlefield.',
+  handler: function(sourceCardObj, skillObj) {
+    // Get the token type/name from resolution
+    const resolution = skillObj.resolution || {};
+    const tokenId = resolution.token;
+    if (!tokenId) {
+      showToast("No token specified for Token effect.");
+      return;
+    }
+    // Find token card data in your dummyCards or tokens data
+    const tokenData = dummyCards.find(c => c.name === tokenId || c.id === tokenId);
+    if (!tokenData) {
+      showToast(`Token "${tokenId}" not found.`);
+      return;
+    }
+    // Create instance of the token
+    const tokenInstance = {
+      ...tokenData,
+      instanceId: `token_${tokenData.id}_${Math.random().toString(36).slice(2,10)}`,
+      isToken: true,
+      owner: "player",        // Or "opponent" if you want to support that
+      currentHP: tokenData.hp
+    };
+    // Place in the correct field; typically creatures (could add logic for other categories)
+    if (isCreature(tokenData)) {
+      gameState.playerCreatures.push(tokenInstance);
+    } else if (isDomain(tokenData)) {
+      gameState.playerDomains.push(tokenInstance);
+    } else {
+      showToast("Token is not a valid field card.");
+      return;
+    }
+    renderGameState();
+    setupDropZones && setupDropZones();
+  }
+}
   Drought:      { handler: weatherSetter("Drought") },
   Rain:         { handler: weatherSetter("Rain") },
   Thunderstorm: { handler: weatherSetter("Thunderstorm") },
