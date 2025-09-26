@@ -497,29 +497,61 @@ const REQUIREMENT_MAP = {
       return validZones.includes(currentZone);
     }
   },
-  Sacrifice: {
-    zones: ['playerCreatures', 'playerDomains'],
-    handler: function(sourceCardObj, skillObj) {
-      const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
-      const isField = validZones.some(zone =>
-        (zone === 'playerCreatures' && gameState.playerCreatures.includes(sourceCardObj)) ||
-        (zone === 'playerDomains' && gameState.playerDomains.includes(sourceCardObj))
-      );
-      if (!isField) {
-        showToast("Sacrifice can only be activated from the field.");
-        return;
-      }
+Sacrifice: {
+  zones: ['playerCreatures', 'playerDomains'],
+
+  handler: function(sourceCardObj, skillObj, next, requirement) {
+    const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
+    const isField = validZones.some(zone =>
+      (zone === 'playerCreatures' && gameState.playerCreatures.includes(sourceCardObj)) ||
+      (zone === 'playerDomains' && gameState.playerDomains.includes(sourceCardObj))
+    );
+    if (!isField) {
+      showToast("Sacrifice can only be activated from the field.");
+      if (next) next();
+      return;
+    }
+
+    const amount = requirement?.amount || 1;
+    const filter = getRequirementFilter(requirement);
+
+    // Exclude self from pool
+    let pool = [...gameState.playerCreatures, ...gameState.playerDomains].filter(card => card !== sourceCardObj);
+    if (Object.keys(filter).length) pool = pool.filter(card => matchesFilter(card, filter));
+
+    if (pool.length < amount) {
+      showToast(`You need ${amount} other matching card(s) to sacrifice.`);
+      if (next) next();
+      return;
+    }
+
+    startSkillTarget(pool, selectedCards => {
+      selectedCards.forEach(card => {
+        const arr = gameState.playerCreatures.includes(card) ? gameState.playerCreatures : gameState.playerDomains;
+        moveCard(card.instanceId, arr, gameState.playerVoid);
+      });
+      // Sacrifice self, too
       const fromArr = gameState.playerCreatures.includes(sourceCardObj)
         ? gameState.playerCreatures
         : gameState.playerDomains;
       moveCard(sourceCardObj.instanceId, fromArr, gameState.playerVoid);
       renderGameState();
-    },
-    canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
-      const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
-      return validZones.includes(currentZone);
-    }
+      if (next) next();
+    }, { title: `Choose ${amount} card(s) to sacrifice`, count: amount });
   },
+
+  canActivate: function(sourceCardObj, skillObj, currentZone, gameState, requirement) {
+    const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
+    if (!validZones.includes(currentZone)) return false;
+
+    const amount = requirement?.amount || 1;
+    const filter = getRequirementFilter(requirement);
+
+    let pool = [...gameState.playerCreatures, ...gameState.playerDomains].filter(card => card !== sourceCardObj);
+    if (Object.keys(filter).length) pool = pool.filter(card => matchesFilter(card, filter));
+    return pool.length >= amount;
+  }
+}
   Return: {
     zones: ['playerCreatures', 'playerDomains'],
     handler: function(sourceCardObj, skillObj) {
@@ -1371,6 +1403,15 @@ function getZoneNameForCard(cardObj) {
     if (ZONE_MAP[zoneName].arr().includes(cardObj)) return zoneName;
   }
   return '';
+}
+// Helper to extract filter object from requirement
+function getRequirementFilter(requirement) {
+  const filter = {};
+  if (!requirement) return filter;
+  for (const key of ['type', 'archetype', 'color', 'trait', 'category']) {
+    if (requirement[key]) filter[key] = requirement[key];
+  }
+  return filter;
 }
 // --- Utility: Determine card owner as "player" or "opponent" ---
 function getCardOwner(cardObj) {
@@ -4755,10 +4796,11 @@ function getSkillRequirements(skillObj) {
 
 // In canActivateSkill:
 const requirements = getSkillRequirements(skillObj);
-for (const req of requirements) {
-  let reqKey = typeof req === 'object' && req.class ? req.class : req;
+for (const requirement of requirements) {
+  let reqKey = (typeof requirement === 'object' && requirement.class) ? requirement.class : requirement;
   if (REQUIREMENT_MAP[reqKey] && REQUIREMENT_MAP[reqKey].canActivate) {
-    if (!REQUIREMENT_MAP[reqKey].canActivate(cardObj, skillObj, currentZone, gameState)) return false;
+    // Always pass the requirement object as the last argument
+    if (!REQUIREMENT_MAP[reqKey].canActivate(cardObj, skillObj, currentZone, gameState, requirement)) return false;
   }
 }
 
@@ -4770,12 +4812,16 @@ function runRequirements() {
       runResolution();
       return;
     }
-    const req = requirements[i];
-    if (REQUIREMENT_MAP[req] && REQUIREMENT_MAP[req].handler) {
-      if (REQUIREMENT_MAP[req].handler.length >= 3) {
-        REQUIREMENT_MAP[req].handler(cardObj, skillObj, () => nextReq(i + 1));
+    const requirement = requirements[i];
+    let reqKey = (typeof requirement === 'object' && requirement.class) ? requirement.class : requirement;
+    if (REQUIREMENT_MAP[reqKey] && REQUIREMENT_MAP[reqKey].handler) {
+      // Always pass requirement object as last argument
+      if (REQUIREMENT_MAP[reqKey].handler.length >= 4) {
+        REQUIREMENT_MAP[reqKey].handler(cardObj, skillObj, () => nextReq(i + 1), requirement);
+      } else if (REQUIREMENT_MAP[reqKey].handler.length === 3) {
+        REQUIREMENT_MAP[reqKey].handler(cardObj, skillObj, () => nextReq(i + 1));
       } else {
-        REQUIREMENT_MAP[req].handler(cardObj, skillObj);
+        REQUIREMENT_MAP[reqKey].handler(cardObj, skillObj);
         nextReq(i + 1);
       }
     } else {
