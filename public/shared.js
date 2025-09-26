@@ -399,12 +399,12 @@ const dummyCards = [
  
 // CINDERCORE //
 {id: 'CindercoreSentry', name: 'Cindercore Sentry', rarity: 'Common', image: 'CardImages/Cindercore/Cindercore Sentry.png', 
- category: 'Creature', color: 'Red', type: 'Construct', hp: 15, atk: 6, def: 3,
+ category: 'Creature', color: 'Red', type: 'Construct', hp: 15, armor: 3, atk: 6, def: 3,
  cost: '{3}{R}', archetype: 'Cindercore', ability: ['Armor','Exploit'], set: 'StandardPack',
  skill: [
   {name: 'Scorch Protocol', cost: '{1}{R}', 
-   activation: {requirement: 'CCW'},
-   resolution: {effect: ['Search','Strike'], archetype: 'Cindercore', damage: 0, status: 'Burn'}}
+   resolution: [{effect: 'Search', archetype: 'Cindercore'},
+                {effect: 'Strike', damage: 0, status: 'Burn'}]}
  ]},
 {id: 'CindercoreProtector', name: 'Cindercore Protector', rarity: 'Rare', image: 'CardImages/Cindercore/Cindercore Protector.png', 
  category: 'Creature', color: 'Red', type: 'Construct', hp: 15, atk: 6, def: 3,
