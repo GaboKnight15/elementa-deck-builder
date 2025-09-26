@@ -512,14 +512,17 @@ skill: [
  category: 'Creature', color: 'Blue', type: 'Construct', hp: 6, atk: 3, def: 1,
  cost: '{1}{U}', archetype: 'Coralbound', ability: 'Rush', set: 'StandardPack'},
 {id: 'MaelvyrnCoralboundAutomatonFA', name: 'Maelvyrn, Coralbound Automaton', rarity: 'Legendary', image: 'CardImages/Coralbound/Maelvyrn, Coralbound Automaton.png', 
- category: 'Creature', color: 'Blue', type: 'Construct', hp: 20, atk: 8, def: 5, cost: '{6}{U}{U}', archetype: 'Coralbound',
- ability: 'Protect', trait: 'Fusion', set: 'StandardPack',
+ category: 'Creature', color: 'Blue', type: 'Construct', hp: 14, atk: 8, armor: 5, def: 4, cost: '{6}{U}{U}', archetype: 'Coralbound',
+ ability: ['Protect', 'Water Exploit'], trait: 'Fusion', set: 'StandardPack',
  skill: [
   {name: 'Stash', cost: '{U}', 
-    activation: {requirement: 'Stash'},
+    requirement: {class: 'Stash'},
     resolution: {effect: 'Search', archetype: 'Coralbound'}},
-  {name: 'Hydroburst Cannon', cost: '{1}{U}',
-   activation: {requirement: 'CCW'},
+  {name: 'Hydroburst Cannon', cost: '{U}{U}',
+   requirement: {'CCW'},
+   resolution: {effect: 'Strike', damage: 8, status: 'Soak'}},
+  {name: 'Fusion', cost: '{3}{U}{U}',
+   requirement: {type: 'Sacrifice', 'CCW'},
    resolution: {effect: 'Strike', damage: 8, status: 'Soak'}}
  ]},
 
