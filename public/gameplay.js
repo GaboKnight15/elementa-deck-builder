@@ -551,7 +551,7 @@ Sacrifice: {
     if (Object.keys(filter).length) pool = pool.filter(card => matchesFilter(card, filter));
     return pool.length >= amount;
   }
-}
+},
   Return: {
     zones: ['playerCreatures', 'playerDomains'],
     handler: function(sourceCardObj, skillObj) {
