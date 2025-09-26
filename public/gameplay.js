@@ -4756,8 +4756,9 @@ function getSkillRequirements(skillObj) {
 // In canActivateSkill:
 const requirements = getSkillRequirements(skillObj);
 for (const req of requirements) {
-  if (REQUIREMENT_MAP[req] && REQUIREMENT_MAP[req].canActivate) {
-    if (!REQUIREMENT_MAP[req].canActivate(cardObj, skillObj, currentZone, gameState)) return false;
+  let reqKey = typeof req === 'object' && req.class ? req.class : req;
+  if (REQUIREMENT_MAP[reqKey] && REQUIREMENT_MAP[reqKey].canActivate) {
+    if (!REQUIREMENT_MAP[reqKey].canActivate(cardObj, skillObj, currentZone, gameState)) return false;
   }
 }
 
