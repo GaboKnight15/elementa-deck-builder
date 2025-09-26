@@ -519,10 +519,10 @@ skill: [
     requirement: {class: 'Stash'},
     resolution: {effect: 'Search', archetype: 'Coralbound'}},
   {name: 'Hydroburst Cannon', cost: '{U}{U}',
-   requirement: {'CCW'},
+   requirement: {class: 'CCW'},
    resolution: {effect: 'Strike', damage: 8, status: 'Soak'}},
   {name: 'Fusion', cost: '{3}{U}{U}',
-   requirement: {type: 'Sacrifice', 'CCW'},
+   requirement: {class: 'Sacrifice', type: 'Coralbound', amount: 2},
    resolution: {effect: 'Strike', damage: 8, status: 'Soak'}}
  ]},
 
