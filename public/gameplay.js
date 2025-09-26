@@ -587,65 +587,67 @@ const REQUIREMENT_MAP = {
 };
 
 const SKILL_EFFECT_MAP = {
-Strike: {
-  icon: 'OtherImages/skillEffect/Strike.png',
-  name: 'Strike',
-  description: 'Deals damage to a single enemy target.',
-  handler: function(sourceCardObj, skillObj) {
-    const resolution = skillObj.resolution || {};
-    startSkillTarget(
-      [...gameState.opponentCreatures, ...gameState.opponentDomains],
-      selectedTarget => {
-        let damage = resolution.damage || 0;
-        // Apply extra damage if target has Soak
-        if (selectedTarget._soak && typeof selectedTarget.soakAmount === "number") {
-          damage += selectedTarget.soakAmount;
-        }
-        if (damage > 0) dealDamage(sourceCardObj, selectedTarget, damage);
+  Strike: {
+    icon: 'OtherImages/skillEffect/Strike.png',
+    name: 'Strike',
+    description: 'Deals damage to a single target.',
+    // Now using (sourceCardObj, skillObj, step, nextEffect)
+    handler: function(sourceCardObj, skillObj, step, nextEffect) {
+      // For your rule: any card on the field can be a target (player+opponent, creatures+domains)
+      const allFieldCards = [
+        ...gameState.playerCreatures, ...gameState.opponentCreatures,
+        ...gameState.playerDomains, ...gameState.opponentDomains
+      ];
+      startSkillTarget(
+        allFieldCards,
+        selectedTarget => {
+          let damage = step.damage || 0;
+          if (damage > 0) dealDamage(sourceCardObj, selectedTarget, damage);
 
-        // Apply status effects
-        let statuses = Array.isArray(resolution.status) ? resolution.status : (resolution.status ? [resolution.status] : []);
-        statuses.forEach(statusName => {
-          if (STATUS_EFFECTS[statusName]) {
-            applyStatus(selectedTarget, statusName);
-          }
-        });
-      }
-    );
-  }
-},
+          // Apply status effects (single or array)
+          let statuses = Array.isArray(step.status) ? step.status : (step.status ? [step.status] : []);
+          statuses.forEach(statusName => {
+            if (STATUS_EFFECTS[statusName]) {
+              applyStatus(selectedTarget, statusName);
+            }
+          });
+          if (nextEffect) nextEffect();
+        }
+      );
+    }
+  },
 Burst: {
   icon: 'OtherImages/skillEffect/Burst.png',
   name: 'Burst',
-  description: 'Deals damage to all enemy targets. May apply status effects.',
-  handler: function(sourceCardObj, skillObj) {
+  description: 'Deals damage to all enemy targets.',
+  // Updated signature for effect chaining
+  handler: function(sourceCardObj, skillObj, step, nextEffect) {
     const targets = [...gameState.opponentCreatures, ...gameState.opponentDomains];
     targets.forEach(target => {
-      let damage = skillObj.damage || 0;
-      // Apply extra damage if target has Soak
-      if (target._soak && typeof target.soakAmount === "number") {
-        damage += target.soakAmount;
-      }
+      let damage = step.damage || 0;
       if (damage > 0) dealDamage(sourceCardObj, target, damage);
-      // General status effect logic: apply any status flagged in skillObj
-      let statuses = Array.isArray(skillObj.status) ? skillObj.status : (skillObj.status ? [skillObj.status] : []);
+      // General status effect logic: apply any status flagged in step
+      let statuses = Array.isArray(step.status) ? step.status : (step.status ? [step.status] : []);
       statuses.forEach(statusName => {
         if (STATUS_EFFECTS[statusName]) {
           applyStatus(target, statusName);
         }
       });
     });
+    if (nextEffect) nextEffect();
   }
 },
 Dash: {
   icon: 'OtherImages/skillEffect/Dash.png',
   name: 'Dash',
   description: 'Summon this card from your hand to the field. It enters with half its base HP (rounded up).',
-  handler: function(sourceCardObj, skillObj) {
+  // Updated signature: accepts (sourceCardObj, skillObj, step, nextEffect)
+  handler: function(sourceCardObj, skillObj, step, nextEffect) {
     // Only activate if in hand
     const isHand = gameState.playerHand.includes(sourceCardObj);
     if (!isHand) {
       showToast("Dash can only be activated from your hand.");
+      if (nextEffect) nextEffect();
       return;
     }
     const cardData = dummyCards.find(c => c.id === sourceCardObj.cardId);
@@ -660,6 +662,7 @@ Dash: {
       targetArr = gameState.playerDomains;
     } else {
       showToast("Dash can only be used for creatures or domains.");
+      if (nextEffect) nextEffect();
       return;
     }
     runHandSkillWithAnimation(sourceCardObj, skillObj, targetArr, () => {
@@ -667,14 +670,19 @@ Dash: {
         // Calculate half base HP (rounded up), fallback to 1 if not defined
         const baseHp = getBaseHp(sourceCardObj.cardId) || 1;
         const halfHp = Math.ceil(baseHp / 2);
+
+        // If step overrides HP, use that (future-proofing)
+        const summonHp = typeof step.hp === "number" ? step.hp : halfHp;
+
         moveCard(
           sourceCardObj.instanceId,
           gameState.playerHand,
           targetArr,
-          { orientation: chosenOrientation, currentHP: halfHp }
+          { orientation: chosenOrientation, currentHP: summonHp }
         );
         renderGameState();
         setupDropZones && setupDropZones();
+        if (nextEffect) nextEffect();
       });
     });
   },
@@ -683,48 +691,51 @@ Dash: {
     return currentZone === "hand" && gameState.playerHand.includes(cardObj);
   }
 },
-  Reanimate: {
-    icon: 'OtherImages/skillEffect/Reanimate.png',
-    name: 'Reanimate',
-    description: 'Return this card from the void to the field.',
-    handler: function(sourceCardObj, skillObj) {
-      // Only resolve if card is in void
-      const isVoid = gameState.playerVoid.includes(sourceCardObj);
-      if (!isVoid) {
-        showToast("Reanimate can only be activated from the void.");
-        return;
-      }
-      // Determine target zone: creatures/domains by card type
-      const cardData = dummyCards.find(c => c.id === sourceCardObj.cardId);
-      let targetArr;
-      const category = Array.isArray(cardData.category)
-        ? cardData.category.map(c => c.toLowerCase())
-        : [String(cardData.category).toLowerCase()];
-      if (category.includes("creature")) {
-        targetArr = gameState.playerCreatures;
-      } else if (category.includes("domain")) {
-        targetArr = gameState.playerDomains;
-      } else {
-        showToast("Reanimate can only be used for creatures or domains.");
-        return;
-      }
-      // Prompt orientation (if needed)
-      showSummonPositionModal(sourceCardObj, function(chosenOrientation) {
-        moveCard(
-          sourceCardObj.instanceId,
-          gameState.playerVoid,
-          targetArr,
-          { orientation: chosenOrientation, currentHP: getBaseHp(sourceCardObj.cardId) }
-        );
-        closeAllModals();
-        renderGameState();
-      });
-    },
-    canActivate: function(cardObj, skillObj, currentZone, gameState) {
-    // Only allow activation if the card is in the void zone
-      return currentZone === "void" && gameState.playerVoid.includes(cardObj);
+Reanimate: {
+  icon: 'OtherImages/skillEffect/Reanimate.png',
+  name: 'Reanimate',
+  description: 'Return this card from the void to the field.',
+  handler: function(sourceCardObj, skillObj, step, nextEffect) {
+    // Only resolve if card is in void
+    const isVoid = gameState.playerVoid.includes(sourceCardObj);
+    if (!isVoid) {
+      showToast("Reanimate can only be activated from the void.");
+      if (nextEffect) nextEffect();
+      return;
     }
+    // Determine target zone: creatures/domains by card type
+    const cardData = dummyCards.find(c => c.id === sourceCardObj.cardId);
+    let targetArr;
+    const category = Array.isArray(cardData.category)
+      ? cardData.category.map(c => c.toLowerCase())
+      : [String(cardData.category).toLowerCase()];
+    if (category.includes("creature")) {
+      targetArr = gameState.playerCreatures;
+    } else if (category.includes("domain")) {
+      targetArr = gameState.playerDomains;
+    } else {
+      showToast("Reanimate can only be used for creatures or domains.");
+      if (nextEffect) nextEffect();
+      return;
+    }
+    // Prompt orientation (if needed)
+    showSummonPositionModal(sourceCardObj, function(chosenOrientation) {
+      moveCard(
+        sourceCardObj.instanceId,
+        gameState.playerVoid,
+        targetArr,
+        { orientation: chosenOrientation, currentHP: getBaseHp(sourceCardObj.cardId) }
+      );
+      closeAllModals();
+      renderGameState();
+      if (nextEffect) nextEffect();
+    });
   },
+  canActivate: function(cardObj, skillObj, currentZone, gameState) {
+    // Only allow activation if the card is in the void zone
+    return currentZone === "void" && gameState.playerVoid.includes(cardObj);
+  }
+},
 Awaken: {
   icon: 'OtherImages/skillEffect/Awaken.png',
   name: 'Awaken',
@@ -873,26 +884,27 @@ Destroy: {
     icon: 'OtherImages/skillEffect/Search.png',
     name: 'Search',
     description: 'Search your deck for a card matching criteria and add it to your hand.',
-    handler: function(sourceCardObj, skillObj) {
+    // Now using (sourceCardObj, skillObj, step, nextEffect)
+    handler: function(sourceCardObj, skillObj, step, nextEffect) {
       // Always use deck as source, hand as destination
       const deckArr = gameState.playerDeck;
-      // Filtering logic (archetype, type, etc)
-      const res = skillObj.resolution || {};
-      const filterKeys = Object.keys(res).filter(k => !['zone', 'type', 'effect'].includes(k));
+      // Filtering logic (archetype, type, color, etc) from this step only
+      const filterKeys = Object.keys(step).filter(k => !['zone', 'type', 'effect'].includes(k));
       const matches = deckArr.filter(cardObj => { 
         const cardData = dummyCards.find(c => c.id === cardObj.cardId);
         if (!cardData) return false;
         return filterKeys.every(key => {
           if (typeof cardData[key] === 'string')
-            return cardData[key].toLowerCase() === res[key].toLowerCase();
+            return cardData[key].toLowerCase() === String(step[key]).toLowerCase();
           if (Array.isArray(cardData[key]))
-            return cardData[key].map(v => v.toLowerCase()).includes(res[key].toLowerCase());
-          return cardData[key] === res[key];
+            return cardData[key].map(v => v.toLowerCase()).includes(String(step[key]).toLowerCase());
+          return cardData[key] === step[key];
         });
       });
 
       if (matches.length === 0) {
         showToast("No matching cards found in your deck.");
+        if (nextEffect) nextEffect();
         return;
       }
       showFilteredCardSelectionModal(matches, selectedCardObj => {
@@ -901,6 +913,7 @@ Destroy: {
         closeAllModals();
         renderGameState();
         showToast(`${dummyCards.find(c=>c.id===selectedCardObj.cardId)?.name || "Card"} added to your hand!`);
+        if (nextEffect) nextEffect();
       }, { title: "Search Deck - Choose a card" });
     }
   },
@@ -908,7 +921,7 @@ Destroy: {
   Revive: {
     icon: 'OtherImages/skillEffect/Revive.png',
     name: 'Revive',
-    description: 'Revive a valid card from your void to the field.',
+    description: 'Revive a card from your void to the field.',
     handler: function(sourceCardObj, skillObj) {
       const res = skillObj.resolution || {};
       const filterKeys = Object.keys(res).filter(k => !['zone', 'type', 'effect'].includes(k));
@@ -950,71 +963,106 @@ Destroy: {
     }
   },
   // --- Moves another opponent card from field to hand ---
-  Bounce: {
-    icon: 'OtherImages/skillEffect/Bounce.png',
-    name: 'Bounce',
-    description: 'Return a valid opponent card from the field to their hand.',
-    handler: function(sourceCardObj, skillObj) {
-      const res = skillObj.resolution || {};
-      const fieldArrs = [gameState.opponentCreatures, gameState.opponentDomains];
-      const allField = fieldArrs.flat();
-      const filterKeys = Object.keys(res).filter(k => !['zone', 'type', 'effect'].includes(k));
-      const matches = allField.filter(cardObj => {
-        const cardData = dummyCards.find(c => c.id === cardObj.cardId);
-        if (!cardData) return false;
-        return filterKeys.every(key => {
-          if (typeof cardData[key] === 'string')
-            return cardData[key].toLowerCase() === res[key].toLowerCase();
-          if (Array.isArray(cardData[key]))
-            return cardData[key].map(v => v.toLowerCase()).includes(res[key].toLowerCase());
-          return cardData[key] === res[key];
-        });
+Bounce: {
+  icon: 'OtherImages/skillEffect/Bounce.png',
+  name: 'Bounce',
+  description: 'Return any card from the field to the hand.',
+  handler: function(sourceCardObj, skillObj, step, nextEffect) {
+    // All creatures/domains on both sides
+    const fieldArrs = [
+      gameState.playerCreatures, gameState.playerDomains,
+      gameState.opponentCreatures, gameState.opponentDomains
+    ];
+    const allField = fieldArrs.flat();
+
+    // Filtering logic (optional, supports extra step fields like archetype/type/color)
+    const filterKeys = Object.keys(step).filter(k => !['zone', 'type', 'effect'].includes(k));
+    const matches = allField.filter(cardObj => {
+      const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+      if (!cardData) return false;
+      return filterKeys.every(key => {
+        if (typeof cardData[key] === 'string')
+          return cardData[key].toLowerCase() === String(step[key]).toLowerCase();
+        if (Array.isArray(cardData[key]))
+          return cardData[key].map(v => v.toLowerCase()).includes(String(step[key]).toLowerCase());
+        return cardData[key] === step[key];
       });
-      if (matches.length === 0) {
-        showToast("No matching opponent cards found on the field.");
-        return;
-      }
-      showFilteredCardSelectionModal(matches, selectedCardObj => {
-        const fromArr = fieldArrs.find(arr => arr.includes(selectedCardObj));
-        moveCard(selectedCardObj.instanceId, fromArr, gameState.opponentHand);
-        renderGameState();
-      }, { title: "Bounce - Choose a card" });
+    });
+
+    if (matches.length === 0) {
+      showToast("No matching cards found on the field.");
+      if (nextEffect) nextEffect();
+      return;
     }
-  },
+
+    // Let the player pick a card directly on the field (no modal)
+    startSkillTarget(matches, selectedCards => {
+      const selectedCardObj = selectedCards[0];
+      // Find the array this card is currently in
+      const fromArr = fieldArrs.find(arr => arr.includes(selectedCardObj));
+      // Determine owner for correct hand
+      const owner = selectedCardObj.owner || getCardOwner(selectedCardObj);
+      const handArr = owner === "opponent" ? gameState.opponentHand : gameState.playerHand;
+      moveCard(selectedCardObj.instanceId, fromArr, handArr);
+      renderGameState();
+      if (nextEffect) nextEffect();
+    }, { title: "Bounce - Choose a card", count: 1 });
+  }
+},
 
   // --- Moves another opponent card from field to deck ---
-  Banish: {
-    icon: 'OtherImages/skillEffect/Banish.png',
-    name: 'Banish',
-    description: 'Return a valid opponent card from the field to their deck.',
-    handler: function(sourceCardObj, skillObj) {
-      const res = skillObj.resolution || {};
-      const fieldArrs = [gameState.opponentCreatures, gameState.opponentDomains];
-      const allField = fieldArrs.flat();
-      const filterKeys = Object.keys(res).filter(k => !['zone', 'type', 'effect'].includes(k));
-      const matches = allField.filter(cardObj => {
-        const cardData = dummyCards.find(c => c.id === cardObj.cardId);
-        if (!cardData) return false;
-        return filterKeys.every(key => {
-          if (typeof cardData[key] === 'string')
-            return cardData[key].toLowerCase() === res[key].toLowerCase();
-          if (Array.isArray(cardData[key]))
-            return cardData[key].map(v => v.toLowerCase()).includes(res[key].toLowerCase());
-          return cardData[key] === res[key];
-        });
+Banish: {
+  icon: 'OtherImages/skillEffect/Banish.png',
+  name: 'Banish',
+  description: 'Return any card from the field to the deck.',
+  handler: function(sourceCardObj, skillObj, step, nextEffect) {
+    // All creatures/domains on both sides
+    const fieldArrs = [
+      gameState.playerCreatures, gameState.playerDomains,
+      gameState.opponentCreatures, gameState.opponentDomains
+    ];
+    const allField = fieldArrs.flat();
+
+    // Filtering logic (supports extra step fields)
+    const filterKeys = Object.keys(step).filter(k => !['zone', 'type', 'effect'].includes(k));
+    const matches = allField.filter(cardObj => {
+      const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+      if (!cardData) return false;
+      return filterKeys.every(key => {
+        if (typeof cardData[key] === 'string')
+          return cardData[key].toLowerCase() === String(step[key]).toLowerCase();
+        if (Array.isArray(cardData[key]))
+          return cardData[key].map(v => v.toLowerCase()).includes(String(step[key]).toLowerCase());
+        return cardData[key] === step[key];
       });
-      if (matches.length === 0) {
-        showToast("No matching opponent cards found on the field.");
-        return;
-      }
-      showFilteredCardSelectionModal(matches, selectedCardObj => {
-        const fromArr = fieldArrs.find(arr => arr.includes(selectedCardObj));
-        moveCard(selectedCardObj.instanceId, fromArr, gameState.opponentDeck);
-        gameState.opponentDeck = shuffle(gameState.opponentDeck);
-        renderGameState();
-      }, { title: "Banish - Choose a card" });
+    });
+
+    if (matches.length === 0) {
+      showToast("No matching cards found on the field.");
+      if (nextEffect) nextEffect();
+      return;
     }
-  },
+
+    // Let the player pick a card directly on the field
+    startSkillTarget(matches, selectedCards => {
+      const selectedCardObj = selectedCards[0];
+      // Find which array this card is in
+      const fromArr = fieldArrs.find(arr => arr.includes(selectedCardObj));
+      // Determine owner for correct deck
+      const owner = selectedCardObj.owner || getCardOwner(selectedCardObj);
+      const deckArr = owner === "opponent" ? gameState.opponentDeck : gameState.playerDeck;
+      moveCard(selectedCardObj.instanceId, fromArr, deckArr);
+      // Shuffle that owner's deck
+      if (owner === "opponent") {
+        gameState.opponentDeck = shuffle(gameState.opponentDeck);
+      } else {
+        gameState.playerDeck = shuffle(gameState.playerDeck);
+      }
+      renderGameState();
+      if (nextEffect) nextEffect();
+    }, { title: "Banish - Choose a card", count: 1 });
+  }
+},
   Status: {
     handler: function(sourceCardObj, skillObj) {
       // If effect is an array, handle each one
@@ -1372,27 +1420,7 @@ function handleWeatherEffectsEndPhase() {
   gameState.weatherEffects = gameState.weatherEffects.filter(e => e.duration > 0);
   renderGameState(); // show update if needed
 }
-function triggerWeatherEffect(effectName) {
-  if (!WEATHER_EFFECTS[effectName]) return;
-  // Prevent stacking same effect unless you want to allow duplicates
-  const alreadyActive = gameState.weatherEffects.some(e => e.name === effectName);
-  if (alreadyActive) {
-    showToast(`${effectName} is already active!`, { type: "info" });
-    return;
-  }
-  /* example in dummyCards
-{ 
-  name: "Summon Drought",
-  cost: '{R}{R}',
-  resolution: {
-    effect: "TriggerWeather",
-    weather: "Drought"
-  }
-} */
-  gameState.weatherEffects.push({ name: effectName, duration: 6 });
-  showToast(`Weather effect activated: ${effectName}!`, { type: "success" });
-  renderGameState();
-}
+
 function renderWeatherEffects() {
   const div = document.getElementById('weather-effects-row');
   if (!div) return;
