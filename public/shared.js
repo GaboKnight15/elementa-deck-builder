@@ -159,7 +159,7 @@ const dummyCards = [
 
 // CHAMPIONS ADVANCED //
 
-{id: 'FaeliraSatyrEmpress', name: 'Faelira, Satyr Empress', rarity: 'Legendary', image: 'CardImages/Firelands/Faelira, Satyr Empress.png', 
+{id: 'FaeliraSatyrEmpress', name: 'Faelira, Satyr Empress', rarity: 'Legendary', image: 'CardImages/Satyrs/Faelira, Satyr Empress.png', 
  category: 'Creature', color: 'Green', type: ['Satyr', 'Mage'], trait: 'Champion', hp: 11, atk: 2, def: 0,
  cost: '{G}{G}{G}', archetype: '', ability: ['Ranged',''], set: 'StandardPack',
  skill: [
@@ -179,7 +179,7 @@ const dummyCards = [
    activation: {requirement: 'CCW'},
    resolution: {effect: 'Seal'}},
   {name: 'Flametongue Invocation', cost: '{R}{B}',
-   activation: {requirement: 'CW'},
+   requirement: {class: 'CW'},
    resolution: {effect: 'Invoke', archetype: 'Firelands'}}
  ]},
 
@@ -195,7 +195,7 @@ const dummyCards = [
    resolution: {effect: 'Invoke', archetype: 'Firelands'}}
  ]},
 
-{id: 'TydrosCoralboundTidebreaker', name: 'Tydros, Coralbound Tidebreaker', rarity: 'Legendary', image: 'CardImages/Firelands/Tydros, Coralbound Tidebreaker.png', 
+{id: 'TydrosCoralboundTidebreaker', name: 'Tydros, Coralbound Tidebreaker', rarity: 'Legendary', image: 'CardImages/Coralbound/Tydros, Coralbound Tidebreaker.png', 
  category: 'Creature', color: ['Blue','Gray'], type: 'Warrior', trait: 'Champion', hp: 12, atk: 2, def: 0,
  cost: '{U}{U}{C}', archetype: '', ability: ['Dive','Ranged'], set: 'StandardPack',
  skill: [
@@ -399,12 +399,14 @@ const dummyCards = [
  
 // CINDERCORE //
 {id: 'CindercoreSentry', name: 'Cindercore Sentry', rarity: 'Common', image: 'CardImages/Cindercore/Cindercore Sentry.png', 
- category: 'Creature', color: 'Red', type: 'Construct', hp: 15, armor: 3, atk: 6, def: 3,
- cost: '{3}{R}', archetype: 'Cindercore', ability: ['Armor','Exploit'], set: 'StandardPack',
+ category: 'Creature', color: 'Red', type: 'Construct', hp: 2, armor: 3, atk: 2, def: 1,
+ cost: '{1}{R}', archetype: 'Cindercore', ability: ['Armor','Fire Exploit'], set: 'StandardPack',
  skill: [
   {name: 'Scorch Protocol', cost: '{1}{R}', 
    resolution: [{effect: 'Search', archetype: 'Cindercore'},
-                {effect: 'Strike', damage: 0, status: 'Burn'}]}
+                {effect: 'Strike', damage: 0, status: 'Burn'}]},
+  {name: 'Fuse', cost: '{R}{R}', 
+   resolution: {effect: 'Fuse'}}
  ]},
 {id: 'CindercoreProtector', name: 'Cindercore Protector', rarity: 'Rare', image: 'CardImages/Cindercore/Cindercore Protector.png', 
  category: 'Creature', color: 'Red', type: 'Construct', hp: 15, atk: 6, def: 3,
@@ -412,7 +414,9 @@ const dummyCards = [
  skill: [
   {name: 'Volcanic Vortex', cost: '{1}{R}',
    activation: {requirement: 'CCW'},
-   resolution: {effect: 'Strike', damage: 3, status: ['Burn','Bind']}}
+   resolution: {effect: 'Strike', damage: 3, status: ['Burn','Bind']}},
+  {name: 'Fuse', cost: '{R}',
+   resolution: {effect: 'Fuse'}}
  ]},
 {id: 'CindercoreVanguard', name: 'Cindercore Vanguard', rarity: 'Common', image: 'CardImages/Cindercore/Cindercore Vanguard.png', 
  category: 'Creature', color: 'Red', type: 'Construct', hp: 15, atk: 6, def: 3,
@@ -420,7 +424,9 @@ const dummyCards = [
 skill: [
   {name: 'Fire Pulse', cost: '{R}',
    activation: {requirement: 'CCW'}, 
-   resolution: {effect: 'Burst', damage: 1, status: 'Burn'}}
+   resolution: {effect: 'Burst', damage: 1, status: 'Burn'}},
+ {name: 'Fuse', cost: '{R}',
+   resolution: {effect: 'Fuse'}}
  ]},
 {id: 'CindercoreGolem', name: 'Cindercore Golem', rarity: 'Rare', image: 'CardImages/Cindercore/Cindercore Golem.png', 
  category: 'Creature', color: ['Red', 'Gray'], type: 'Elemental', hp: 15, atk: 6, def: 3,
@@ -431,15 +437,20 @@ skill: [
    resolution: {effect: 'Strike', damage: 3, status: ['Burn','Bind']}}
  ]},
 {id: 'IgnavarynCindercoreAutomaton', name: 'Ignavaryn, Cindercore Automaton', rarity: 'Legendary', image: 'CardImages/Cindercore/Ignavaryn, Cindercore Automaton.png', 
- category: 'Creature', color: 'Red', type: 'Construct', hp: 15, atk: 6, def: 3,
+ category: 'Creature', color: 'Red', type: 'Construct', hp: 5, armor: 10, atk: 6, def: 3,
  cost: '{5}{R}{R}', archetype: 'Cindercore', ability: ['Armor','Exploit','Protect'], set: 'StandardPack',
  skill: [
   {name: 'Stash', cost: '{R}',
    activation: {requirement: 'Stash'},
    resolution: {effect: 'Strike', damage: 2, status: 'Burn'}},
-  {name: 'Volcanic Vortex', cost: '{1}{R}',
+  {name: 'Thermal Overdrive', cost: '{r}{r}{R}',
    activation: {requirement: 'CCW'},
-   resolution: {effect: 'Strike', damage: 3, status: ['Burn','Bind']}}
+   resolution: {effect: 'Burst', damage: 3, status: 'Burn'}}
+  {name: 'Recycle', cost: '{R}',
+   requirement: {class: 'Recycle'}
+   resolution: {effect: 'Strike', damage: 2, status: 'Burn'}}
+  {name: 'Fusion', cost: '{r}{r}{R}',
+   resolution: {effect: 'Fusion'}}
  ]},
 
 // FIRELANDS //
@@ -448,25 +459,57 @@ skill: [
  cost: '{2}', archetype: 'Firelands', ability: ['Burn','Rush'], set: 'StandardPack'},
 {id: 'FirelandsCindercub', name: 'Firelands Cindercub', rarity: 'Common', image: 'CardImages/Firelands/Firelands Cindercub.png', 
  category: 'Creature', color: 'Red', type: 'Beast', hp: 3, atk: 2, def: 1,
- cost: '{1}', archetype: 'Firelands', ability: ['Burn','Rush'], set: 'StandardPack'},
+ cost: '{1}', archetype: 'Firelands', ability: ['Burn','Rush'], set: 'StandardPack',
+ skill: [
+  {name: 'Evolve', cost: '{r}{r}',
+   resolution: {effect: 'Evolve'}}
+ ]},
 {id: 'FirelandsLynx', name: 'Firelands Lynx', rarity: 'Common', image: 'CardImages/Firelands/Firelands Lynx.png', 
  category: 'Creature', color: 'Red', type: 'Beast', hp: 3, atk: 2, def: 1,
- cost: '{3}{R}', archetype: 'Firelands', ability: ['Burn','Leap','Rush'], set: 'StandardPack'},
+ cost: '{3}{R}', archetype: 'Firelands', ability: ['Burn','Leap','Rush'], set: 'StandardPack',
+ skill: [
+  {name: 'Evolve', cost: '{r}',
+   resolution: {effect: 'Evolve'}}
+ ]},
 {id: 'FirelandsKitsune', name: 'Firelands Kitsune', rarity: 'Common', image: 'CardImages/Firelands/Firelands Kitsune.png', 
  category: 'Creature', color: 'Red', type: 'Beast', hp: 4, atk: 3, def: 0,
- cost: '{1}{R}', archetype: 'Firelands', ability: ['Burn','Leap','Rush'], set: 'StandardPack'},
+ cost: '{1}{R}', archetype: 'Firelands', ability: ['Burn','Leap','Rush'], set: 'StandardPack',
+ skill: [
+  {name: 'Beast Arrival', cost: '{r}{r}',
+   activation: {class: 'Arrival', type: 'Beast'},
+   resolution: {effect: 'Search', archetype: 'Firelands'}}
+ ]},
 {id: 'FirelandsDirebeast', name: 'Firelands Direbeast', rarity: 'Rare', image: 'CardImages/Firelands/Firelands Direbeast.png', 
  category: 'Creature', color: 'Red', type: 'Beast', hp: 9, atk: 5, def: 2,
- cost: '{4}{R}', archetype: 'Firelands', ability: ['Burn','Rush'], set: 'StandardPack'},
+ cost: '{4}{R}', archetype: 'Firelands', ability: ['Burn','Rush'], set: 'StandardPack',
+ skill: [
+  {name: 'Evolution', cost: '{r}{r}',
+   resolution: {effect: 'Evolution'}}
+ ]},
 {id: 'FirelandsHellhound', name: 'Firelands Hellhound', rarity: 'Rare', image: 'CardImages/Firelands/Firelands Hellhound.png', 
  category: 'Creature', color: ['Red','Black'], type: ['Beast','Demon'], hp: 7, atk: 5, def: 1,
- cost: '{2}{R}', archetype: 'Firelands', ability: ['Burn','Intimidate','Rush'], set: 'StandardPack'},
+ cost: '{2}{R}', archetype: 'Firelands', ability: ['Burn','Intimidate','Rush'], set: 'StandardPack',
+ skill: [
+  {name: 'Evolve', cost: '{r}',
+   resolution: {effect: 'Evolve'}}
+ ]},
 {id: 'FirelandsHellmaw', name: 'Firelands Hellmaw', rarity: 'Epic', image: 'CardImages/Firelands/Firelands Hellmaw.png', 
  category: 'Creature', color: ['Red','Black'], type: ['Dragon','Demon'], hp: 8, atk: 6, def: 1,
- cost: '{2}{R}{B}', archetype: 'Firelands', ability: ['Burn','Flying','Rush'], set: 'StandardPack'},
+ cost: '{2}{R}{B}', archetype: 'Firelands', ability: ['Burn','Flying','Rush'], set: 'StandardPack',
+ skill: [
+  {name: 'Evolve', cost: '{r}',
+   resolution: {effect: 'Evolve'}}
+ ]},
 {id: 'EphorosFirelandsBehemoth', name: 'Ephoros, Firelands Behemoth', rarity: 'Legendary', image: 'CardImages/Firelands/Ephoros, Firelands Behemoth.png', 
  category: 'Creature', color: ['Red','Black'], type: ['Beast','Demon'], hp: 13, atk: 9, def: 3,
- cost: '{5}{R}{B}', archetype: 'Firelands', ability: [{effect: "Inspire", archetype: "Rush", atk: 1, def: 1}, 'Burn','Crush','Intimidate'], set: 'StandardPack'},
+ cost: '{5}{R}{B}', archetype: 'Firelands', ability: [{effect: "Inspire", archetype: "Rush", atk: 1, def: 1}, 'Burn','Crush','Intimidate'], set: 'StandardPack',
+ skill: [
+  {name: 'Discard', cost: '{r}',
+   requirement: {class: 'Discard'},
+   resolution: {effect: 'Strike', damage: 3, status: 'Burn'}},
+  {name: 'Void Evolution', cost: '{r}{r}',
+   resolution: {effect: 'VoidEvolution'}}
+ ]},
 {id: 'EphorosFirelandsBehemothFA', name: 'Ephoros, Firelands Behemoth', rarity: 'Legendary', image: 'CardImages/Firelands/Ephoros, Firelands Behemoth FA.png', 
  category: 'Creature', color: ['Red','Black'], type: ['Beast','Demon'], hp: 13, atk: 9, def: 3,
  cost: '{5}{R}{B}', archetype: 'Firelands', ability: [{effect: "Inspire", archetype: "Rush", atk: 1, def: 1},'Burn','Crush','Intimidate'], set: 'StandardPack'},
