@@ -628,7 +628,7 @@ skill: [
  cost: '{U}', archetype: 'Coralbound', ability: ['Water Exploit', 'Armor'], set: 'StandardPack',
  skill: [
   {name: 'Hydrosurge Protocol', cost: '{U}',
-   effect: [{class: 'Search', archetype: 'Coralbound'}, {status: 'Soak', target: 'opponentCreatures', count: 1}],
+   effect: [{class: 'Search', archetype: 'Coralbound'}, {status: 'Soak', target: 'opponentCreatures', count: 1}]},
   {name: 'Fuse', cost: '{u}',
    effect: {class: 'Fuse'}},
  ]},
