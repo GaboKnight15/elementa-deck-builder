@@ -2465,10 +2465,6 @@ function renderCardOnField(cardObj, zoneId) {
 
   // Choose the right cardback (player or opponent)
   let cardbackUrl = window.selectedPlayerDeck?.deckObj?.cardbackArt || "OtherImages/Cardbacks/CBDefault.png";
-  backDiv.className = 'card-back';
-  backDiv.innerHTML = `<img src="${cardbackUrl}" alt="Card Back" style="width:100%;height:100%;">`;
-  backDiv.style.display = "none"; // or use a .hidden class
-  cardDiv.appendChild(backDiv); 
   
   if (zoneId && zoneId.startsWith("opponent")) {
     cardbackUrl =
