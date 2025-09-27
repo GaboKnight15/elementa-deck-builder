@@ -2376,7 +2376,6 @@ function computeCardStat(cardObj, statName) {
 
 function renderCardOnField(cardObj, zoneId) {
   const cardData = dummyCards.find(c => c.id === cardObj.cardId);
-  const category = cardData?.category?.toLowerCase();
   const wrapper = document.createElement('div');
   wrapper.className = 'card-battlefield-wrapper';
 
@@ -2385,9 +2384,6 @@ function renderCardOnField(cardObj, zoneId) {
   cardDiv.className = 'card-battlefield';
   cardDiv.dataset.instanceId = cardObj.instanceId;
 
-  // --- Always render card-front and card-back ---
-  const frontDiv = document.createElement('div');
-  frontDiv.className = 'card-front';
   const img = document.createElement('img');
   img.src = cardData.image;
   img.alt = cardData.name || "Card";
@@ -2398,6 +2394,11 @@ function renderCardOnField(cardObj, zoneId) {
 
   // Choose the right cardback (player or opponent)
   let cardbackUrl = window.selectedPlayerDeck?.deckObj?.cardbackArt || "OtherImages/Cardbacks/CBDefault.png";
+  backDiv.className = 'card-back';
+  backDiv.innerHTML = `<img src="${cardbackUrl}" alt="Card Back" style="width:100%;height:100%;">`;
+  backDiv.style.display = "none"; // or use a .hidden class
+  cardDiv.appendChild(backDiv); 
+  
   if (zoneId && zoneId.startsWith("opponent")) {
     cardbackUrl =
       window.selectedOpponentDeck?.cardbackArt ||
@@ -2409,7 +2410,6 @@ function renderCardOnField(cardObj, zoneId) {
   backDiv.className = 'card-back';
   backDiv.innerHTML = `<img src="${cardbackUrl}" alt="Card Back" style="width:100%;height:100%;">`;
 
-  cardDiv.appendChild(frontDiv);
   cardDiv.appendChild(backDiv);
 
   // --- Stat/Icons Overlay Layout --- //
@@ -2705,7 +2705,6 @@ function renderCardOnField(cardObj, zoneId) {
     e.stopPropagation();
     showCardActionMenu(cardObj.instanceId, zoneId, cardObj.orientation || "vertical", cardDiv);
   };
-
   return wrapper;
 }
 
