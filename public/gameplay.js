@@ -312,51 +312,51 @@ const ABILITY_EFFECTS = {
 
 // --- SKILL TRIGGER MAP ---
 // Maps skill activation triggers to their event handlers
-const SKILL_TRIGGER_MAP = {
+const SKILL_ACTIVATION_MAP = {
   // When this card enters the field (a.k.a. onSummon, "Arrival" in card text)
-  onSummon: {
+  Arrival: {
     name: "onSummon", // (Arrival)
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
   },
   // When this card is drawn (a.k.a. onDraw, "Insight" in card text)
-  onDraw: {
+  Draw: {
     name: "onDraw", // (Insight)
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
   },
   // When this card enters the void (a.k.a. onVoid, "Echo" in card text)
-  onVoid: {
+  Echo: {
     name: "onVoid", // (Echo)
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
   },
   // When this card deals damage (a.k.a. onDealDamage, "Frenzy" in card text)
-  onDealDamage: {
+  Frenzy: {
     name: "onDealDamage", // (Frenzy)
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
   },
   // When this card receives damage (a.k.a. onReceiveDamage, "Brace" in card text)
-  onReceiveDamage: {
+  Brace: {
     name: "onReceiveDamage", // (Brace)
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
   },
   // When this card declares an attack (a.k.a. onAttack, "Assault" in card text)
-  onAttack: {
+  Assault: {
     name: "onAttack", // (Assault)
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
   },
   // When this card is attacked in DEF position (a.k.a. onDefense, "Defender" in card text)
-  onDefense: {
+  Defender: {
     name: "onDefense", // (Defender)
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
