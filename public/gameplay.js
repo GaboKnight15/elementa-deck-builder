@@ -4909,75 +4909,42 @@ function proceedSkillActivation(cardObj, skillObj, options = {}) {
 }
 
 // EFFECT RESOLUTION LOGIC //
-// EFFECT RESOLUTION LOGIC //
 function resolveSkill(cardObj, skillObj, context = {}, onComplete) {
-  let resolution = skillObj.resolution;
+  let effect = skillObj.effect;
 
-  // Normalize resolution into an array of effect objects
-  let resolutionSteps = [];
-  if (Array.isArray(resolution)) {
-    // New format: [{effect: 'Search', ...}, {effect: 'Strike', ...}]
-    resolutionSteps = resolution;
-  } else if (resolution && typeof resolution === "object" && (resolution.effect || resolution.status)) {
-    // Old format: {effect: 'Strike', ...} or {effect: ['Strike', 'Aegis']}
-    // If effect is array, expand to objects
-    if (Array.isArray(resolution.effect)) {
-      resolutionSteps = resolution.effect.map(eff =>
-        typeof eff === "string"
-          ? { effect: eff, ...resolution }
-          : { ...eff }
-      );
-      // Remove 'effect' field from each, since it's already present
-      resolutionSteps.forEach(step => { if (Array.isArray(step.effect)) delete step.effect; });
-    } else if (typeof resolution.effect === "string") {
-      resolutionSteps = [{ ...resolution }];
-    } else {
-      // e.g. {status: ...} only
-      resolutionSteps = [{ ...resolution }];
-    }
-  } else if (typeof resolution === "string") {
-    // Fallback: effect is just a string
-    resolutionSteps = [{ effect: resolution }];
+  // Normalize effect into an array of effect objects
+  let effectSteps = [];
+  if (Array.isArray(effect)) {
+    effectSteps = effect;
+  } else if (effect && typeof effect === "object" && effect.class) {
+    effectSteps = [effect];
+  } else if (typeof effect === "string") {
+    effectSteps = [{ class: effect }];
   } else {
-    // No resolution, nothing to do
     if (onComplete) onComplete();
     return;
   }
 
   let i = 0;
   function nextEffect() {
-    if (i >= resolutionSteps.length) {
+    if (i >= effectSteps.length) {
       if (onComplete) onComplete();
       return;
     }
-    const step = resolutionSteps[i++];
-
-    // If there's an effect, use SKILL_EFFECT_MAP
-    if (step.effect) {
-      const effectName = step.effect;
-      const effectDef = SKILL_EFFECT_MAP[effectName];
-      if (!effectDef || !effectDef.handler) {
-        nextEffect();
-        return;
-      }
-      // Pass the whole step so handlers can access extra fields (damage, archetype, status, etc.)
-      // Prefer handler(cardObj, skillObj, step, nextEffect)
-      if (effectDef.handler.length >= 4) {
-        effectDef.handler(cardObj, skillObj, step, nextEffect);
-      } else if (effectDef.handler.length === 3) {
-        effectDef.handler(cardObj, skillObj, nextEffect);
-      } else {
-        effectDef.handler(cardObj, skillObj);
-        nextEffect();
-      }
-    } else if (step.status) {
-      // Add support for status-only steps if needed
-      if (typeof applyStatus === "function") {
-        applyStatus(cardObj, skillObj, step, nextEffect);
-      } else {
-        nextEffect();
-      }
+    const step = effectSteps[i++];
+    const className = step.class;
+    const handler = SKILL_EFFECT_MAP[className];
+    if (!handler || !handler.handler) {
+      nextEffect();
+      return;
+    }
+    // Pass the effect step and nextEffect for chaining
+    if (handler.handler.length >= 4) {
+      handler.handler(cardObj, skillObj, step, nextEffect);
+    } else if (handler.handler.length === 3) {
+      handler.handler(cardObj, skillObj, nextEffect);
     } else {
+      handler.handler(cardObj, skillObj);
       nextEffect();
     }
   }
