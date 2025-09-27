@@ -1420,8 +1420,8 @@ function parseEffectText(effect) {
   }
 
  // Replace color icons {G},{R}, etc.
- effect = effect.replace(/\{([GRUYCPBW])\}/g, (match, code) =>
-   `<img src="${COST_IMAGE_MAP[code]}" style="height:1.3em;vertical-align:middle;margin-right:2px;">`
+ effect = effect.replace(/\{([GRUYCPBW])\}/gi, (match, code) =>
+   `<img src="${COST_IMAGE_MAP[code.toUpperCase()]}" style="height:1.3em;vertical-align:middle;margin-right:2px;">`
  );
 
   // Replace tapped/untapped icons
