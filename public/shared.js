@@ -494,7 +494,7 @@ skill: [
    effect: {class: 'Burst', damage: 3, status: 'Burn'}},
   {name: 'Recycle', cost: '{R}',
    effect: {class: 'Recycle'},
-   resolution: {class: 'Strike', damage: 2, status: 'Burn'}}
+   resolution: {class: 'Strike', damage: 2, status: 'Burn'}},
   {name: 'Fusion', cost: '{r}{r}{R}',
    effect: {class: 'Fusion'}}
  ]},
@@ -798,7 +798,6 @@ skill: [
    requirement: {class: 'CCW'},
    effect: {class: 'Exploit'}},
   {name: 'Reanimate', cost: '{2}{B}{B}', 
-   requirement: {class: []}, 
    effect: {class: 'Reanimate'}}
  ]},
 {id: 'MaldryssSkullframeArchmageFA', name: 'Maldryss, Skullframe Archmage', rarity: 'Legendary', image: 'CardImages/Skullframe/Maldryss, Skullframe Archmage FA.png', 
