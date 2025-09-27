@@ -423,6 +423,19 @@ const ATTACK_DECLARATION_ABILITY = {
 ------------------------------*/
 // Helper for requirements //
 const REQUIREMENT_MAP = {
+  Special: {
+    zones: ['playerCreatures', 'playerDomains'], // field
+    canActivate: (cardObj, skillObj, currentZone) =>
+      ['playerCreatures', 'playerDomains'].includes(currentZone),
+    handler: (cardObj, skillObj, next) => next && next()
+  },
+  Ultimate: {
+    zones: ['playerCreatures', 'playerDomains'], // field
+    canActivate: (cardObj, skillObj, currentZone) =>
+      ['playerCreatures', 'playerDomains'].includes(currentZone),
+    handler: (cardObj, skillObj, next) => next && next()
+    // Later you could add more restrictions for "Ultimate" here
+  },
   CW: {
     zones: ['playerCreatures', 'playerDomains'],
     handler: function(sourceCardObj, skillObj, next) {
@@ -499,7 +512,6 @@ const REQUIREMENT_MAP = {
   },
 Sacrifice: {
   zones: ['playerCreatures', 'playerDomains'],
-
   handler: function(sourceCardObj, skillObj, next, requirement) {
     const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
     const isField = validZones.some(zone =>
@@ -1119,6 +1131,179 @@ Banish: {
       });
     }
   },
+  Fuse: {
+    icon: 'OtherImages/skillEffect/Fuse.png',
+    name: 'Fuse',
+    description: 'This card becomes Fused, enabling fusion combos.',
+    zones: ['playerCreatures', 'playerDomains'], // Only from field
+    canActivate(cardObj, skillObj, currentZone, gameState) {
+      // Only on the field, and not already fused.
+      return ['playerCreatures', 'playerDomains'].includes(currentZone) && !cardObj._fused;
+    },
+    handler(cardObj, skillObj, effectStep, nextEffect) {
+      cardObj._fused = true;
+      cardObj.statuses = cardObj.statuses || [];
+      if (!cardObj.statuses.some(s => s.name === 'Fused')) {
+        cardObj.statuses.push({ name: 'Fused', duration: null });
+      }
+      renderGameState && renderGameState();
+      nextEffect && nextEffect();
+    }
+  },
+
+  Fusion: {
+    icon: 'OtherImages/skillEffect/Fusion.png',
+    name: 'Fusion',
+    description: 'Sacrifice two Fused cards of the same type/archetype from your field, then summon this card from your hand to the field.',
+    zones: ['hand'],
+    canActivate(cardObj, skillObj, currentZone, gameState) {
+      if (currentZone !== 'hand') return false;
+      const fieldCards = [...gameState.playerCreatures, ...gameState.playerDomains];
+      const fusedCards = fieldCards.filter(c => c._fused);
+      for (let i = 0; i < fusedCards.length; i++) {
+        for (let j = i + 1; j < fusedCards.length; j++) {
+          if (haveSharedTypeOrArchetype(fusedCards[i], fusedCards[j])) {
+            return true;
+          }
+        }
+      }
+      return false;
+    },
+    handler(cardObj, skillObj, effectStep, nextEffect) {
+      const fieldCards = [...gameState.playerCreatures, ...gameState.playerDomains];
+      const fusedCards = fieldCards.filter(c => c._fused);
+
+      // Find valid pairs
+      let validPairs = [];
+      for (let i = 0; i < fusedCards.length; i++) {
+        for (let j = i + 1; j < fusedCards.length; j++) {
+          if (haveSharedTypeOrArchetype(fusedCards[i], fusedCards[j])) {
+            validPairs.push([fusedCards[i], fusedCards[j]]);
+          }
+        }
+      }
+      if (validPairs.length === 0) {
+        showToast && showToast("No valid Fusion pair found.");
+        nextEffect && nextEffect();
+        return;
+      }
+
+      // If more than one valid pair, let player pick. For now, auto-pick first.
+      let pairToUse = validPairs[0];
+
+      // Sacrifice (void) both fused cards
+      for (const fusedCard of pairToUse) {
+        const arr = gameState.playerCreatures.includes(fusedCard)
+          ? gameState.playerCreatures
+          : gameState.playerDomains;
+        moveCard(fusedCard.instanceId, arr, gameState.playerVoid);
+        // Remove Fused status (optional, they're in void now)
+        fusedCard._fused = false;
+        if (fusedCard.statuses) fusedCard.statuses = fusedCard.statuses.filter(s => s.name !== 'Fused');
+      }
+
+      // Summon this card from hand to field (choose zone based on card type)
+      const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+      let targetArr;
+      const category = Array.isArray(cardData.category)
+        ? cardData.category.map(c => c.toLowerCase())
+        : [String(cardData.category).toLowerCase()];
+      if (category.includes("creature")) {
+        targetArr = gameState.playerCreatures;
+      } else if (category.includes("domain")) {
+        targetArr = gameState.playerDomains;
+      } else {
+        showToast && showToast("Fusion can only be used for creatures or domains.");
+        nextEffect && nextEffect();
+        return;
+      }
+      moveCard(cardObj.instanceId, gameState.playerHand, targetArr);
+      renderGameState && renderGameState();
+      setupDropZones && setupDropZones();
+      nextEffect && nextEffect();
+    }
+  },
+  Evolve: {
+    icon: 'OtherImages/skillEffect/Evolve.png',
+    name: 'Evolve',
+    description: 'This card becomes Evolved, enabling Evolution combos.',
+    zones: ['playerCreatures', 'playerDomains'], // Only from field
+    canActivate(cardObj, skillObj, currentZone, gameState) {
+      return (
+        ['playerCreatures', 'playerDomains'].includes(currentZone) &&
+        !cardObj._evolved
+      );
+    },
+    handler(cardObj, skillObj, effectStep, nextEffect) {
+      cardObj._evolved = true;
+      cardObj.statuses = cardObj.statuses || [];
+      if (!cardObj.statuses.some(s => s.name === 'Evolved')) {
+        cardObj.statuses.push({ name: 'Evolved', duration: null });
+      }
+      if (typeof renderGameState === "function") renderGameState();
+      if (typeof nextEffect === "function") nextEffect();
+    }
+  },
+
+  Evolution: {
+    icon: 'OtherImages/skillEffect/Evolution.png',
+    name: 'Evolution',
+    description: 'Sacrifice (void) one Evolved card from your field, then summon this card from your hand to the field.',
+    zones: ['hand'], // Only from hand
+    canActivate(cardObj, skillObj, currentZone, gameState) {
+      if (currentZone !== 'hand') return false;
+      // At least one evolved card on field (creature or domain)
+      return (
+        [...gameState.playerCreatures, ...gameState.playerDomains].some(c => c._evolved)
+      );
+    },
+    handler(cardObj, skillObj, effectStep, nextEffect) {
+      // All evolved cards on field (creature/domain)
+      const evolvedCards = [
+        ...gameState.playerCreatures,
+        ...gameState.playerDomains
+      ].filter(c => c._evolved);
+
+      if (evolvedCards.length === 0) {
+        typeof showToast === "function" && showToast("No evolved card available for Evolution.");
+        if (typeof nextEffect === "function") nextEffect();
+        return;
+      }
+
+      // If more than one, you can let player pick. For now, pick the first.
+      const target = evolvedCards[0];
+
+      // Figure out which array it's in
+      let fromArr = null;
+      if (gameState.playerCreatures.includes(target)) fromArr = gameState.playerCreatures;
+      else if (gameState.playerDomains.includes(target)) fromArr = gameState.playerDomains;
+      if (fromArr) moveCard(target.instanceId, fromArr, gameState.playerVoid);
+
+      // Remove Evolved status (optional, it's in void now)
+      target._evolved = false;
+      if (target.statuses) target.statuses = target.statuses.filter(s => s.name !== 'Evolved');
+
+      // Summon this card from hand to field (pick creatures/domains based on cardData)
+      const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+      let targetArr;
+      const category = Array.isArray(cardData.category)
+        ? cardData.category.map(c => c.toLowerCase())
+        : [String(cardData.category).toLowerCase()];
+      if (category.includes("creature")) {
+        targetArr = gameState.playerCreatures;
+      } else if (category.includes("domain")) {
+        targetArr = gameState.playerDomains;
+      } else {
+        typeof showToast === "function" && showToast("Evolution can only be used for creatures or domains.");
+        if (typeof nextEffect === "function") nextEffect();
+        return;
+      }
+      moveCard(cardObj.instanceId, gameState.playerHand, targetArr);
+      if (typeof renderGameState === "function") renderGameState();
+      if (typeof setupDropZones === "function") setupDropZones();
+      if (typeof nextEffect === "function") nextEffect();
+    }
+  }
 Token: {
   icon: 'OtherImages/skillEffect/Token.png',
   name: 'Token',
@@ -4802,62 +4987,76 @@ function animateEssencePop(icon) {
 // SKILL RESOLUTION LOGIC //
 ------------------------------------*/
 function canActivateSkill(cardObj, skillObj, currentZone, gameState, targetObj = null) {
-  // 1. Custom effect-level canActivate (SKILL_EFFECT_MAP)
-  const effectNames = skillObj.resolution?.effect;
-  if (effectNames) {
-    const effectList = Array.isArray(effectNames) ? effectNames : [effectNames];
-    for (const effectName of effectList) {
-      const effectDef = SKILL_EFFECT_MAP[effectName];
-      if (effectDef && typeof effectDef.canActivate === 'function') {
-        if (!effectDef.canActivate(cardObj, skillObj, currentZone, gameState)) return false;
-      }
+  // 1. REQUIREMENTS: All must pass their handler's canActivate
+  let requirements = [];
+  if (skillObj.requirement) {
+    requirements = Array.isArray(skillObj.requirement)
+      ? skillObj.requirement
+      : [skillObj.requirement];
+  } else if (skillObj.activation && skillObj.activation.requirement) {
+    requirements = Array.isArray(skillObj.activation.requirement)
+      ? skillObj.activation.requirement
+      : [skillObj.activation.requirement];
+  }
+  for (const req of requirements) {
+    const reqKey = typeof req === 'object' && req.class ? req.class : req;
+    const reqDef = REQUIREMENT_MAP[reqKey];
+    if (reqDef && typeof reqDef.canActivate === 'function') {
+      if (!reqDef.canActivate(cardObj, skillObj, currentZone, gameState, req)) return false;
     }
   }
-  // 2. Custom requirement-level canActivate (REQUIREMENT_MAP)
-  const activation = skillObj.activation || {};
-  if (activation.requirement && REQUIREMENT_MAP[activation.requirement] && REQUIREMENT_MAP[activation.requirement].canActivate) {
-    if (!REQUIREMENT_MAP[activation.requirement].canActivate(cardObj, skillObj, currentZone, gameState)) return false;
+
+  // 2. EFFECTS: All effect handlers' canActivate must pass (if defined)
+  let effectObjs = [];
+  if (skillObj.effect) {
+    effectObjs = Array.isArray(skillObj.effect) ? skillObj.effect : [skillObj.effect];
+  } else if (skillObj.resolution && skillObj.resolution.effect) {
+    effectObjs = Array.isArray(skillObj.resolution.effect)
+      ? skillObj.resolution.effect
+      : [skillObj.resolution.effect];
   }
-  // 3. Zone check
-  if (Array.isArray(activation.zone)) {
-    if (!activation.zone.includes(currentZone)) return false;
-  } else {
-    if (activation.zone && activation.zone !== currentZone) return false;
+  for (const effect of effectObjs) {
+    const effectKey = typeof effect === 'object' && effect.class ? effect.class : effect;
+    const effectDef = SKILL_EFFECT_MAP[effectKey];
+    if (effectDef && typeof effectDef.canActivate === 'function') {
+      if (!effectDef.canActivate(cardObj, skillObj, currentZone, gameState, effect)) return false;
+    }
   }
-  // 4. Status Effects
+
+  // 3. Status Effects
   if (cardObj._paralyzed || cardObj._frozen) return false;
   if (cardObj.canActivateSkill === false) return false;
-  // 5. Essence Cost
+
+  // 4. Cost (OPTIONAL: handled by requirement/effect handler or here for fallback)
   if (skillObj.cost) {
     const sources = [...gameState.playerDomains, ...gameState.playerCreatures];
     const availableEssence = sources.map(card => card.essence || '').join('');
     if (!canPayEssence({ essence: availableEssence }, skillObj.cost)) return false;
   }
 
-  // 6. Attack Declaration Ability/Skill Check (only if targetObj provided)
+  // 5. Target validation (OPTIONAL: handled in effect handler or here)
+  if (skillObj.target) {
+    const targets = getTargets(skillObj.target, cardObj);
+    if (!targets || targets.length === 0) return false;
+  }
+
+  // 6. Attack Declaration Ability/Skill Check (if needed)
   if (targetObj) {
     const attackerDef = dummyCards.find(c => c.id === cardObj.cardId);
     if (attackerDef && attackerDef.ability) {
       for (const abilityName in ATTACK_DECLARATION_ABILITY) {
         if (attackerDef.ability.includes(abilityName)) {
-          // Only activate if effect would change targetObj orientation
           if (
             (abilityName === "Intimidate" && targetObj.orientation === "horizontal") ||
             (abilityName === "Provoke" && targetObj.orientation === "vertical")
-            // Add more checks for other abilities here
           ) {
-            return false; // Already in the required orientation, so don't activate
+            return false;
           }
         }
       }
     }
   }
-  // 7. Target validation
-  if (skillObj.target) {
-    const targets = getTargets(skillObj.target, cardObj);
-    // Only block if there are zero targets
-    if (!targets || targets.length === 0) return false;
-  }
+
   return true;
 }
 // Update activateSkill to use the animation before requirements/effects
@@ -5442,6 +5641,13 @@ function getCardAbilities(cardObj) {
   if (typeof card.ability === "string") return [card.ability];
   return [];
 }
+function haveSharedTypeOrArchetype(cardA, cardB) {
+  const aTypes = getCardTypes(cardA), bTypes = getCardTypes(cardB);
+  const aArchs = getCardArchetypes(cardA), bArchs = getCardArchetypes(cardB);
+  return aTypes.some(t => bTypes.includes(t)) || aArchs.some(a => bArchs.includes(a));
+}
+
+
 document.getElementById('chat-log').addEventListener('click', function(e) {
   if (e.target.classList.contains('log-card-img')) {
     const instanceId = e.target.getAttribute('data-instanceid');
