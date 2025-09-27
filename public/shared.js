@@ -637,7 +637,7 @@ skill: [
  cost: '{3}{U}', archetype: 'Coralbound', ability: ['Protect','Lifelink'], set: 'StandardPack',
  skill: [
   {name: 'Echo', cost: '{U}',
-   effect: [{class: 'Token', name: 'Coralbound Sentry'}],
+   effect: {class: 'Token', name: 'Coralbound Sentry'}},
   {name: 'Fuse', cost: '{u}',
    effect: {class: 'Fuse'}},
  ]},
@@ -647,7 +647,7 @@ skill: [
  skill: [
   {name: 'Arrival',
    activation: {class: 'Arrival'},
-   effect: [{class: 'Token', name: 'Coralbound Sentry'}],
+   effect: {class: 'Token', name: 'Coralbound Sentry'}},
   {name: 'Fuse', cost: '{u}',
    effect: {class: 'Fuse'}},
  ]},
