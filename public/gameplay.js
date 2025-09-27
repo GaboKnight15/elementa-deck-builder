@@ -1419,18 +1419,88 @@ function getCardOwner(cardObj) {
   if (gameState.opponentCreatures.includes(cardObj) || gameState.opponentDomains.includes(cardObj)) return "opponent";
   return null;
 }
-function handleTriggerEvent(cardObj, eventType, context = {}) {
-  // Iterate skills, trigger those with matching activation.trigger
-  if (!cardObj || !cardObj.skill) return;
-  const skills = Array.isArray(cardObj.skill) ? cardObj.skill : [cardObj.skill];
-  skills.forEach(skillObj => {
-    if (skillObj.activation && skillObj.activation.trigger === eventType) {
-      const handlerDef = TRIGGER_EVENT_MAP[eventType];
-      if (handlerDef && typeof handlerDef.handler === "function") {
-        handlerDef.handler(cardObj, skillObj, context);
+// --- Robust Activation Trigger Handler ---
+function handleActivationTriggers(eventType, contextCard, extraContext = {}) {
+  // eventType: e.g. "Echo", "Draw", "Arrival"
+  // contextCard: the card that triggered the event (e.g. the card that entered the void)
+  // extraContext: any other info to pass to the effect
+
+  // Get all cards in all relevant zones
+  const allCards = [
+    ...gameState.playerCreatures, ...gameState.playerDomains,
+    ...gameState.playerVoid, ...gameState.playerHand, ...gameState.playerDeck,
+    ...gameState.opponentCreatures, ...gameState.opponentDomains,
+    ...gameState.opponentVoid, ...gameState.opponentHand, ...gameState.opponentDeck
+  ];
+
+  allCards.forEach(cardObj => {
+    if (!cardObj.skill) return;
+    const skills = Array.isArray(cardObj.skill) ? cardObj.skill : [cardObj.skill];
+    skills.forEach(skill => {
+      if (skill.activation && skill.activation.class === eventType) {
+        // Build filterFields from skill.activation
+        const filterFields = {};
+        for (const key of ["type", "archetype", "color", "category", "trait"]) {
+          if (skill.activation[key]) filterFields[key] = skill.activation[key];
+        }
+        // If no filters, apply to self (e.g. Echo), only if cardObj === contextCard
+        // If filters, match contextCard against them (e.g. Red Echo, Fairy Echo, etc)
+        const appliesToSelf = Object.keys(filterFields).length === 0 && cardObj === contextCard;
+        const appliesByFilter = Object.keys(filterFields).length > 0 && matchesFilter(contextCard, filterFields);
+
+        if (appliesToSelf || appliesByFilter) {
+          showActivationConfirmModal(cardObj, skill, () => {
+            resolveSkill(cardObj, skill, { triggerCard: contextCard, ...extraContext });
+          });
+        }
       }
-    }
+    });
   });
+}
+// --- Helper: Show modal to confirm skill activation ---
+function showActivationConfirmModal(cardObj, skillObj, onConfirm) {
+  // Remove any existing modal
+  let modal = document.getElementById('activation-confirm-modal');
+  if (modal) modal.remove();
+
+  modal = document.createElement('div');
+  modal.id = 'activation-confirm-modal';
+  modal.className = 'modal';
+  modal.style.display = 'flex';
+  modal.style.alignItems = 'center';
+  modal.style.justifyContent = 'center';
+  modal.style.zIndex = 99999;
+  modal.onclick = function(e) {
+    if (e.target === modal) modal.remove();
+  };
+
+  const content = document.createElement('div');
+  content.className = 'modal-content';
+  content.onclick = e => e.stopPropagation();
+
+  // You can customize this as needed for better skill info
+  content.innerHTML = `
+    <h3>Activate Skill?</h3>
+    <div style="margin-bottom:12px;">
+      <b>${skillObj.name || "Skill"}</b>
+      <div style="font-size:0.95em;color:#aaa;margin:8px 0;">
+        Are you sure you want to activate this skill${cardObj.name ? ` on <b>${cardObj.name}</b>` : ""}?
+      </div>
+    </div>
+    <button id="activation-confirm-btn" class="btn-primary" style="margin-right:14px;">Activate</button>
+    <button id="activation-cancel-btn" class="btn-negative-secondary">Cancel</button>
+  `;
+
+  modal.appendChild(content);
+  document.body.appendChild(modal);
+
+  document.getElementById('activation-confirm-btn').onclick = function() {
+    modal.remove();
+    if (typeof onConfirm === "function") onConfirm();
+  };
+  document.getElementById('activation-cancel-btn').onclick = function() {
+    modal.remove();
+  };
 }
 // --- Reset hasAttacked for all creatures at start of player's/opponent's action phase ---
 function resetAttackFlags(turn) {
