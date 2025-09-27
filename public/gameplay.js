@@ -2462,7 +2462,6 @@ function renderCardOnField(cardObj, zoneId) {
   img.style.width = "100%";
   img.style.height = "100%";
   if (cardObj.orientation === "horizontal") img.style.transform = "rotate(90deg)";
-  frontDiv.appendChild(img);
 
   // Choose the right cardback (player or opponent)
   let cardbackUrl = window.selectedPlayerDeck?.deckObj?.cardbackArt || "OtherImages/Cardbacks/CBDefault.png";
@@ -2481,7 +2480,6 @@ function renderCardOnField(cardObj, zoneId) {
   const backDiv = document.createElement('div');
   backDiv.className = 'card-back';
   backDiv.innerHTML = `<img src="${cardbackUrl}" alt="Card Back" style="width:100%;height:100%;">`;
-
   cardDiv.appendChild(backDiv);
 
   // --- Stat/Icons Overlay Layout --- //
