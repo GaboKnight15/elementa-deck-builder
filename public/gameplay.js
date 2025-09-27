@@ -1833,7 +1833,9 @@ function showHandCardMenu(instanceId, cardDiv) {
   ];
   // Skill buttons
   if (cardData.skill && Array.isArray(cardData.skill)) {
-    cardData.skill.forEach(skillObj => {
+    cardData.skill
+    .filter(skillObj => !skillObj.activation) // Only show skills without activation
+    .forEach(skillObj => {
       const isEnabled = canActivateSkill(cardObj, skillObj, 'hand', gameState);
       // PATCH: show CW/CCW icons
       const activation = skillObj.activation || {};
@@ -2992,7 +2994,9 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
   ];
   if (cardData.skill && Array.isArray(cardData.skill)) {
     const currentZone = getZoneNameForArray(arr);
-    cardData.skill.forEach(skillObj => {
+    cardData.skill
+    .filter(skillObj => !skillObj.activation) // Only show skills without activation
+    .forEach(skillObj => {
       const isEnabled = canActivateSkill(cardObj, skillObj, currentZone, gameState);
       // PATCH: show CW/CCW icons
       const activation = skillObj.activation || {};
@@ -3126,7 +3130,9 @@ function openVoidModal(isOpponent = false) {
         if (!isOpponent) {
           const cardData = dummyCards.find(c => c.id === cardObj.cardId);
           if (cardData && Array.isArray(cardData.skill)) {
-            cardData.skill.forEach(skillObj => {
+            cardData.skill
+            .filter(skillObj => !skillObj.activation) // Only show skills without activation
+            .forEach(skillObj => {
               // PATCH: show CW/CCW icons
               const activation = skillObj.activation || {};
               let requirements = Array.isArray(activation.requirement)
