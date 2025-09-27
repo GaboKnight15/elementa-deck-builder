@@ -2412,96 +2412,178 @@ function renderCardOnField(cardObj, zoneId) {
   cardDiv.appendChild(frontDiv);
   cardDiv.appendChild(backDiv);
 
-  // --- Stat Overlays --- //
-// --- Stat Badges Container --- //
-const statsBadgeContainer = document.createElement('div');
-statsBadgeContainer.className = 'card-stats-badge-container';
-statsBadgeContainer.style.position = 'absolute';
-statsBadgeContainer.style.left = '0';
-statsBadgeContainer.style.bottom = '0';
-statsBadgeContainer.style.width = '100%';
-statsBadgeContainer.style.height = '28px'; // Adjust as needed
-statsBadgeContainer.style.display = 'flex';
-statsBadgeContainer.style.justifyContent = 'space-between';
-statsBadgeContainer.style.alignItems = 'flex-end';
-statsBadgeContainer.style.zIndex = 25;
-// HP
-if (typeof cardData.hp === "number") {
-  const currentHP = typeof cardObj.currentHP === "number" ? cardObj.currentHP : cardData?.hp ?? 0;
-  const hpBadge = document.createElement('div');
-  hpBadge.className = 'stat-badge stat-hp';
-  hpBadge.innerHTML = `
-    <img src="OtherImages/FieldIcons/HP.png" style="width:23px;height:23px;">
-    <span style="font-weight:bold;color:#fff;text-shadow:0 1px 4px #232;z-index:22;margin-left:2px;">${currentHP}</span>
-  `;
-  statsBadgeContainer.appendChild(hpBadge);
-}
+  // --- Stat/Icons Overlay Layout --- //
+  const statsAndIconsOverlay = document.createElement('div');
+  statsAndIconsOverlay.className = 'card-stats-icons-overlay';
+  statsAndIconsOverlay.style.position = 'absolute';
+  statsAndIconsOverlay.style.left = '0';
+  statsAndIconsOverlay.style.top = '0';
+  statsAndIconsOverlay.style.width = '100%';
+  statsAndIconsOverlay.style.height = '100%';
+  statsAndIconsOverlay.style.pointerEvents = 'none';
 
-// ATK
-if (typeof cardData.atk === "number") {
-  const baseATK = cardData.atk;
-  const currentATK = computeCardStat(cardObj, "atk");
-  let atkColor = "#fff";
-  if (currentATK > baseATK) atkColor = "#44e055";
-  else if (currentATK < baseATK) atkColor = "#e53935";
-  const atkBadge = document.createElement('div');
-  atkBadge.className = 'stat-badge stat-atk';
-  atkBadge.innerHTML = `
-    <img src="OtherImages/FieldIcons/ATK.png" style="width:23px;height:23px;">
-    <span style="font-weight:bold;color:${atkColor};text-shadow:0 1px 4px #232;z-index:22;margin-left:2px;">${currentATK}</span>
-  `;
-  statsBadgeContainer.appendChild(atkBadge);
-}
+  // ===== Top-right: Armor, Abilities, Status Icons =====
+  const iconRow = document.createElement('div');
+  iconRow.className = 'card-icon-row';
+  iconRow.style.position = 'absolute';
+  iconRow.style.top = '4px';
+  iconRow.style.right = '4px';
+  iconRow.style.display = 'flex';
+  iconRow.style.gap = '4px';
+  iconRow.style.justifyContent = 'flex-end';
+  iconRow.style.zIndex = '30';
 
-// DEF
-if (typeof cardData.def === "number") {
-  const baseDEF = cardData.def;
-  const currentDEF = computeCardStat(cardObj, "def");
-  let defColor = "#fff";
-  if (currentDEF > baseDEF) defColor = "#44e055";
-  else if (currentDEF < baseDEF) defColor = "#e53935";
-  const defBadge = document.createElement('div');
-  defBadge.className = 'stat-badge stat-def';
-  defBadge.innerHTML = `
-    <img src="OtherImages/FieldIcons/DEF.png" style="width:23px;height:23px;">
-    <span style="font-weight:bold;color:${defColor};text-shadow:0 1px 4px #232;z-index:22;margin-left:2px;">${currentDEF}</span>
-  `;
-  statsBadgeContainer.appendChild(defBadge);
-}
-cardDiv.appendChild(statsBadgeContainer);
-  // ARMOR
+  // Armor badge (if present)
   if (typeof cardData.armor === "number" && cardData.armor > 0) {
     const currentArmor = typeof cardObj.armor === "number" ? cardObj.armor : cardData.armor;
     const armorBadge = document.createElement('div');
     armorBadge.className = 'stat-badge stat-armor';
-    armorBadge.style.position = 'absolute';
-    armorBadge.style.left = '1px';
-    armorBadge.style.top = '50%';
-    armorBadge.style.transform = 'translateY(-50%)';
-    armorBadge.style.width = 'auto';
-    armorBadge.style.height = '25%';
-    armorBadge.style.zIndex = 20;
+    armorBadge.style.position = 'relative';
+    armorBadge.style.width = '28px';
+    armorBadge.style.height = '28px';
     armorBadge.innerHTML = `
       <img src="OtherImages/FieldIcons/Armor.png" style="width:100%;height:100%;">
       <span style="
-        position:absolute;
-        left:0;top:0;width:100%;height:100%;
+        position:absolute;left:0;top:0;width:100%;height:100%;
         display:flex;align-items:center;justify-content:center;
-        font-weight:bold;;color:#ffe066;
+        font-weight:bold;color:#ffe066;font-size:1em;
         text-shadow:0 1px 4px #232;z-index:22;
-      ">${currentArmor}</span>
+        pointer-events:none;">${currentArmor}</span>
     `;
-    cardDiv.appendChild(armorBadge);
+    iconRow.appendChild(armorBadge);
   }
 
-  // --- HP Bar (move to bottom) ---
+  // Ability icons (if any)
+  if (cardData.ability) {
+    const abilityArr = Array.isArray(cardData.ability) ? cardData.ability : [cardData.ability];
+    abilityArr.forEach(abilityName => {
+      const abilityDef = TARGET_FILTER_ABILITY[abilityName];
+      if (!abilityDef) return;
+      const icon = document.createElement('img');
+      icon.src = abilityDef.icon;
+      icon.alt = abilityDef.name;
+      icon.title = abilityDef.description;
+      icon.className = 'card-icon ability';
+      icon.style.width = '24px';
+      icon.style.height = '24px';
+      icon.style.borderRadius = '4px';
+      icon.style.boxShadow = '0 1px 4px #0007';
+      icon.style.background = "#253760cc";
+      icon.style.pointerEvents = 'auto';
+      iconRow.appendChild(icon);
+    });
+  }
+
+  // Status icons (if any)
+  if (cardObj.statuses && cardObj.statuses.length > 0) {
+    cardObj.statuses.forEach(status => {
+      const statusDef = STATUS_EFFECTS[status.name];
+      if (!statusDef) return;
+      const icon = document.createElement('img');
+      icon.src = statusDef.icon;
+      icon.alt = statusDef.name;
+      icon.title = statusDef.description;
+      icon.className = 'card-icon status';
+      icon.style.width = '22px';
+      icon.style.height = '22px';
+      icon.style.borderRadius = '4px';
+      icon.style.background = "#2e2e2ecc";
+      icon.style.pointerEvents = 'auto';
+      iconRow.appendChild(icon);
+    });
+  }
+  statsAndIconsOverlay.appendChild(iconRow);
+
+  // ===== Bottom: Stat Badges (HP, ATK, DEF) =====
+  const statRow = document.createElement('div');
+  statRow.className = 'card-stat-row';
+  statRow.style.position = 'absolute';
+  statRow.style.left = '0';
+  statRow.style.bottom = '0';
+  statRow.style.width = '100%';
+  statRow.style.height = '32px';
+  statRow.style.display = 'flex';
+  statRow.style.flexDirection = 'row';
+  statRow.style.justifyContent = 'space-between';
+  statRow.style.alignItems = 'flex-end';
+  statRow.style.zIndex = '25';
+
+  // Helper to make a stat badge (icon with number on top)
+  function makeStatBadge(iconSrc, value, color, alt = "") {
+    const badge = document.createElement('div');
+    badge.className = 'stat-badge';
+    badge.style.position = 'relative';
+    badge.style.width = '32px';
+    badge.style.height = '32px';
+    badge.innerHTML = `
+      <img src="${iconSrc}" alt="${alt}" style="width:100%;height:100%;">
+      <span style="
+        position:absolute;left:0;top:0;width:100%;height:100%;
+        display:flex;align-items:center;justify-content:center;
+        font-weight:bold;font-size:1.08em;color:${color};
+        text-shadow:0 1px 4px #232;z-index:22;
+        pointer-events:none;">${value}</span>
+    `;
+    return badge;
+  }
+
+  // HP (left)
+  let currentHP = undefined;
+  if (typeof cardData.hp === "number") {
+    currentHP = typeof cardObj.currentHP === "number" ? cardObj.currentHP : cardData?.hp ?? 0;
+    statRow.appendChild(
+      makeStatBadge(
+        "OtherImages/FieldIcons/HP.png",
+        currentHP,
+        "#fff",
+        "HP"
+      )
+    );
+  }
+
+  // ATK (center)
+  if (typeof cardData.atk === "number") {
+    const baseATK = cardData.atk;
+    const currentATK = computeCardStat(cardObj, "atk");
+    let atkColor = "#fff";
+    if (currentATK > baseATK) atkColor = "#44e055";
+    else if (currentATK < baseATK) atkColor = "#e53935";
+    statRow.appendChild(
+      makeStatBadge(
+        "OtherImages/FieldIcons/ATK.png",
+        currentATK,
+        atkColor,
+        "ATK"
+      )
+    );
+  }
+
+  // DEF (right)
+  if (typeof cardData.def === "number") {
+    const baseDEF = cardData.def;
+    const currentDEF = computeCardStat(cardObj, "def");
+    let defColor = "#fff";
+    if (currentDEF > baseDEF) defColor = "#44e055";
+    else if (currentDEF < baseDEF) defColor = "#e53935";
+    statRow.appendChild(
+      makeStatBadge(
+        "OtherImages/FieldIcons/DEF.png",
+        currentDEF,
+        defColor,
+        "DEF"
+      )
+    );
+  }
+  statsAndIconsOverlay.appendChild(statRow);
+
+  // --- HP Bar (move to bottom, behind statRow) ---
   if (typeof cardData.hp === "number" && typeof currentHP === "number" && cardData.hp > 0) {
     const baseHP = cardData.hp;
     const hpPercent = Math.max(0, Math.min(1, currentHP / baseHP));
     let barColor = "#4caf50"; // green
     if (hpPercent <= 0.25) barColor = "#e53935";
     else if (hpPercent <= 0.5) barColor = "#ff9800";
-    
+
     const barWrap = document.createElement('div');
     barWrap.className = 'hp-bar-wrap';
     barWrap.style.position = 'absolute';
@@ -2511,7 +2593,7 @@ cardDiv.appendChild(statsBadgeContainer);
     barWrap.style.height = '8%';
     barWrap.style.background = '#222c';
     barWrap.style.zIndex = 19;
-    
+
     const bar = document.createElement('div');
     bar.className = 'hp-bar';
     bar.style.height = '100%';
@@ -2534,50 +2616,10 @@ cardDiv.appendChild(statsBadgeContainer);
 
     cardDiv.appendChild(barWrap);
   }
-// Create a status icon area if any statuses exist
-if (cardObj.statuses && cardObj.statuses.length > 0) {
-  const statusArea = document.createElement('div');
-  statusArea.className = 'card-status-area';
-  cardObj.statuses.forEach(status => {
-    const statusDef = STATUS_EFFECTS[status.name];
-    if (!statusDef) return;
-    const icon = document.createElement('img');
-    icon.src = statusDef.icon;
-    icon.alt = statusDef.name;
-    icon.title = statusDef.description;
-    icon.className = 'card-icon status';
-    statusArea.appendChild(icon);
-  });
-  cardDiv.appendChild(statusArea);
-}
-if (cardData.ability) {
-  const abilityArr = Array.isArray(cardData.ability) ? cardData.ability : [cardData.ability];
-  const abilityArea = document.createElement('div');
-  abilityArea.className = 'card-ability-area';
-  abilityArea.style.position = 'absolute';
-  abilityArea.style.top = '0';
-  abilityArea.style.right = '0';
-  abilityArea.style.display = 'flex';
-  abilityArea.style.gap = '4px';
-  abilityArea.style.zIndex = '25';
 
-  abilityArr.forEach(abilityName => {
-    const abilityDef = TARGET_FILTER_ABILITY[abilityName];
-    if (!abilityDef) return;
-    const icon = document.createElement('img');
-    icon.src = abilityDef.icon;
-    icon.alt = abilityDef.name;
-    icon.title = abilityDef.description;
-    icon.className = 'card-icon ability';
-    icon.style.width = '22px';
-    icon.style.height = '22px';
-    icon.style.borderRadius = '4px';
-    icon.style.boxShadow = '0 1px 4px #0007';
-    abilityArea.appendChild(icon);
-  });
+  // Attach overlay to cardDiv
+  cardDiv.appendChild(statsAndIconsOverlay);
 
-  cardDiv.appendChild(abilityArea);
-}
   // --- Attached Cards (right side, absolute) ---
   if (cardObj.attachedCards && cardObj.attachedCards.length > 0) {
     const stackDiv = document.createElement('div');
