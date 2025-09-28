@@ -1154,7 +1154,7 @@ Banish: {
   Fusion: {
     icon: 'OtherImages/skillEffect/Fusion.png',
     name: 'Fusion',
-    description: 'Sacrifice two Fused cards of the same type/archetype from your field, then summon this card from your hand to the field.',
+    description: 'Attach two Fused cards of the same type/archetype from your field to this card when summoning it from your hand.',
     zones: ['hand'],
     canActivate(cardObj, skillObj, currentZone, gameState) {
       if (currentZone !== 'hand') return false;
@@ -1188,21 +1188,10 @@ Banish: {
         return;
       }
 
-      // If more than one valid pair, let player pick. For now, auto-pick first.
-      let pairToUse = validPairs[0];
+      // Pick first valid pair for simplicity (expand to UI selection if needed)
+      const pairToUse = validPairs[0];
 
-      // Sacrifice (void) both fused cards
-      for (const fusedCard of pairToUse) {
-        const arr = gameState.playerCreatures.includes(fusedCard)
-          ? gameState.playerCreatures
-          : gameState.playerDomains;
-        moveCard(fusedCard.instanceId, arr, gameState.playerVoid);
-        // Remove Fused status (optional, they're in void now)
-        fusedCard._fused = false;
-        if (fusedCard.statuses) fusedCard.statuses = fusedCard.statuses.filter(s => s.name !== 'Fused');
-      }
-
-      // Summon this card from hand to field (choose zone based on card type)
+      // Summon this card to the field
       const cardData = dummyCards.find(c => c.id === cardObj.cardId);
       let targetArr;
       const category = Array.isArray(cardData.category)
@@ -1217,7 +1206,26 @@ Banish: {
         nextEffect && nextEffect();
         return;
       }
+
+      // Remove from hand, add to field
       moveCard(cardObj.instanceId, gameState.playerHand, targetArr);
+
+      // Attach the fused cards to the new card
+      for (const fusedCard of pairToUse) {
+        // Remove from their zone
+        let fromArr = gameState.playerCreatures.includes(fusedCard)
+          ? gameState.playerCreatures
+          : gameState.playerDomains;
+        const idx = fromArr.indexOf(fusedCard);
+        if (idx !== -1) fromArr.splice(idx, 1);
+
+        // Remove "Fused" status and flag (optional, or keep as history)
+        fusedCard._fused = false;
+        if (fusedCard.statuses) fusedCard.statuses = fusedCard.statuses.filter(s => s.name !== 'Fused');
+
+        // Attach to the newly summoned card
+        attachCard(cardObj, fusedCard);
+      }
       renderGameState && renderGameState();
       setupDropZones && setupDropZones();
       nextEffect && nextEffect();
@@ -1245,65 +1253,56 @@ Banish: {
     }
   },
 
-  Evolution: {
-    icon: 'OtherImages/skillEffect/Evolution.png',
-    name: 'Evolution',
-    description: 'Sacrifice (void) one Evolved card from your field, then summon this card from your hand to the field.',
-    zones: ['hand'], // Only from hand
-    canActivate(cardObj, skillObj, currentZone, gameState) {
-      if (currentZone !== 'hand') return false;
-      // At least one evolved card on field (creature or domain)
-      return (
-        [...gameState.playerCreatures, ...gameState.playerDomains].some(c => c._evolved)
-      );
-    },
-    handler(cardObj, skillObj, effectStep, nextEffect) {
-      // All evolved cards on field (creature/domain)
-      const evolvedCards = [
-        ...gameState.playerCreatures,
-        ...gameState.playerDomains
-      ].filter(c => c._evolved);
+Evolution: {
+  // ...same canActivate as before...
+  handler(cardObj, skillObj, effectStep, nextEffect) {
+    // Find all evolved cards on field
+    const evolvedCards = [
+      ...gameState.playerCreatures,
+      ...gameState.playerDomains
+    ].filter(c => c._evolved);
 
-      if (evolvedCards.length === 0) {
-        typeof showToast === "function" && showToast("No evolved card available for Evolution.");
-        if (typeof nextEffect === "function") nextEffect();
-        return;
-      }
-
-      // If more than one, you can let player pick. For now, pick the first.
-      const target = evolvedCards[0];
-
-      // Figure out which array it's in
-      let fromArr = null;
-      if (gameState.playerCreatures.includes(target)) fromArr = gameState.playerCreatures;
-      else if (gameState.playerDomains.includes(target)) fromArr = gameState.playerDomains;
-      if (fromArr) moveCard(target.instanceId, fromArr, gameState.playerVoid);
-
-      // Remove Evolved status (optional, it's in void now)
-      target._evolved = false;
-      if (target.statuses) target.statuses = target.statuses.filter(s => s.name !== 'Evolved');
-
-      // Summon this card from hand to field (pick creatures/domains based on cardData)
-      const cardData = dummyCards.find(c => c.id === cardObj.cardId);
-      let targetArr;
-      const category = Array.isArray(cardData.category)
-        ? cardData.category.map(c => c.toLowerCase())
-        : [String(cardData.category).toLowerCase()];
-      if (category.includes("creature")) {
-        targetArr = gameState.playerCreatures;
-      } else if (category.includes("domain")) {
-        targetArr = gameState.playerDomains;
-      } else {
-        typeof showToast === "function" && showToast("Evolution can only be used for creatures or domains.");
-        if (typeof nextEffect === "function") nextEffect();
-        return;
-      }
-      moveCard(cardObj.instanceId, gameState.playerHand, targetArr);
-      if (typeof renderGameState === "function") renderGameState();
-      if (typeof setupDropZones === "function") setupDropZones();
-      if (typeof nextEffect === "function") nextEffect();
+    if (evolvedCards.length === 0) {
+      showToast && showToast("No evolved card available for Evolution.");
+      nextEffect && nextEffect();
+      return;
     }
+
+    const target = evolvedCards[0]; // Or let player pick
+
+    // Summon this card from hand to field
+    const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+    let targetArr;
+    const category = Array.isArray(cardData.category)
+      ? cardData.category.map(c => c.toLowerCase())
+      : [String(cardData.category).toLowerCase()];
+    if (category.includes("creature")) targetArr = gameState.playerCreatures;
+    else if (category.includes("domain")) targetArr = gameState.playerDomains;
+    else {
+      showToast && showToast("Evolution can only be used for creatures or domains.");
+      nextEffect && nextEffect();
+      return;
+    }
+
+    moveCard(cardObj.instanceId, gameState.playerHand, targetArr);
+
+    // Remove from field and attach to the new card
+    let fromArr = gameState.playerCreatures.includes(target)
+      ? gameState.playerCreatures
+      : gameState.playerDomains;
+    const idx = fromArr.indexOf(target);
+    if (idx !== -1) fromArr.splice(idx, 1);
+
+    target._evolved = false;
+    if (target.statuses) target.statuses = target.statuses.filter(s => s.name !== 'Evolved');
+
+    attachCard(cardObj, target);
+
+    renderGameState && renderGameState();
+    setupDropZones && setupDropZones();
+    nextEffect && nextEffect();
   }
+},
 Token: {
   icon: 'OtherImages/skillEffect/Token.png',
   name: 'Token',
