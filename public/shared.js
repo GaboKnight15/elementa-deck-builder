@@ -9,7 +9,7 @@ const dummyCards = [
  cost: '{G}{G}{G}', archetype: 'Sylvan', ability: 'Ranged', set: 'StandardPack'
  skill: [
   {name: "Briar Queen's Grasp", cost: '{G}',
-  requirement: {class:'CCW'}, 
+  requirement: {class:'Ultimate'}, 
   effect: {class: 'Strike', damage: 3, status: 'Bind'}}
   ]},
 
@@ -18,7 +18,7 @@ const dummyCards = [
  cost: '{R}{R}{R}', archetype: '', ability: ['Burn','Ranged'], set: 'StandardPack',
  skill: [
   {name: 'Scorching Skyfall', cost: '{R}{R}',
-   requirement: {class:'CCW'}, 
+   requirement: {class:'Ultimate'}, 
    effect: {class: 'Burst', damage: 1, status: 'Burn'}}
   ]},
 
@@ -27,7 +27,7 @@ const dummyCards = [
  cost: '{U}{U}{U}', archetype: '', ability: ['Dive','Pierce'], set: 'StandardPack'
  skill: [
   {name: 'Tidepiercer Vortex', cost: '{U}',
-   requirement: {class: 'CCW'},
+   requirement: {class: 'Ultimate'},
    effect: {class: 'Strike', damage: 2, status: 'Soak'}}
  ]},
 
@@ -35,8 +35,8 @@ const dummyCards = [
  category: 'Creature', color: 'Yellow', type: 'Warrior', trait: 'Champion', hp: 7, atk: 1, def: 0,
  cost: '{Y}{Y}{Y}', archetype: '', ability: 'Quickdraw', set: 'StandardPack',
  skill: [
- {name:'Blade Tempest, cost: {Y}{Y}',
-  requirement: {class:'CCW'}, 
+ {name:'Blade Tempest, cost: '{Y}{Y}',
+  requirement: {class:'Ultimate'}, 
   effect: {class: 'Strike', damage: 1}}
  ]},
 
@@ -45,15 +45,18 @@ const dummyCards = [
  cost: '{P}{P}{P}', archetype: '', ability: ['Immunity','Venom'], set: 'StandardPack',
  skill: [
  {name: 'Reanimate', cost: '{1}{P}{P}',
- effect: {class: 'Reanimate'}}
+  effect: {class: 'Reanimate'}},
+ {name: 'Blightfall Slash', cost: '{P}{P}', 
+ requirement: [{class: 'Ultimate'}, {class: 'CCW'}]},
+ effect: {class: 'Strike', damage: 1}}
  ]},
 
 {id: 'GravokDrakzulTyrant', name: 'Gravok, Drakzul Tyrant', rarity: 'Legendary', image: 'CardImages/Skullframe/Gravok, Drakzul Tyrant.png', 
  category: 'Creature', color: 'Gray', type: 'Warrior', trait: 'Champion', hp: 10, atk: 2, def: 1,
  cost: '{C}{C}{C}', archetype: '', ability: ['Armor','Crush'], set: 'StandardPack',
  skill: [
-  {name: 'Seismic Smite', cost: {C}',
-  requirement: {class:'CCW'}, 
+  {name: 'Seismic Smite', cost: '{C}',
+  requirement: [{class:'Ultimate'}, {class: 'CCW'}], 
   effect: {class: 'Strike', damage: 1}}
  ]},
 
@@ -63,16 +66,19 @@ const dummyCards = [
  skill: [
   {name:'Seal', cost: '{B}',
    requirement: {class:'CCW'}, 
-   effect: {class: 'Seal'}}
+   effect: {class: 'Seal'}},
+  {name: 'Eternal Silence', cost: '{b}{b}',
+   requirement: [{class:'Ultimate'}, {class: 'CCW'}], 
+   effect: {class: 'Burst', damage: 0}, status: 'Seal'}
  ]},
 
 {id: 'ElyndraDawnbladeofHeavens', name: 'Elyndra, Dawnblade of Heavens', rarity: 'Legendary', image: 'CardImages/Skullframe/Elyndra, Dawnblade of Heavens.png', 
  category: 'Creature', color: 'White', type: 'Warrior', trait: 'Champion', hp: 10, atk: 2, def: 1,
  cost: '{W}{W}{W}', archetype: '', ability: ['Aegis','Veil'], set: 'StandardPack',
  skill: [
-  {name: 'Radiant Severance', cost: '{W}',
-  requirement: {class:'CCW'}, 
-  effect: {class: ['Strike', 'Aegis']}}
+  {name: 'Radiant Severance', cost: '{w}{W}',
+  requirement: [{class: 'Ultimate'}, {class:'CCW'}], 
+  effect: {class: 'Strike', status: 'Aegis'}
  ]},
 
 // DRAGONS //
@@ -81,93 +87,113 @@ const dummyCards = [
  category: 'Creature', color: 'Green', type: 'Dragon', trait: 'Evolution', hp: 18, atk: 5, def: 3,
  cost: '{4}{G}{G}', archetype: 'Thornwing', ability: ['Flying','Protect'], set: 'StandardPack',
  skill: [
-  {name: 'Reveal', cost: '{R}',
-   resolution: {effect: 'Strike', damage: 1, status: 'Burn'}},
-  {name: 'Wooden Bastion', cost: '{g}',
-   requirement: {class:'CCW'},
-   effect: {class: 'Armor', amount: 5}},
+  {name: 'Reveal', cost: '{g}',
+   requirement: {class: 'Reveal'},
+   resolution: {effect: 'Inspire', ability: 'Protect'}},
+  {name: 'Defender', 
+   activation: {class: 'Defender'},
+   resolution: {effect: 'Search', archetype: 'Thornwing'}},
+  {name: 'Wooden Bastion', cost: '{g}{g}',
+   requirement: [{class: 'Ultimate'}, {class:'CW'}],
+   effect: {class: 'Armor', amount: 5},
   {name: 'Fusion', cost: '{g}{g}',
    effect: {class: 'Fusion'}}
  ]},
 
 {id: 'PyronyxInfernoGale', name: 'Pyronyx, Inferno Gale', rarity: 'Legendary', image: 'CardImages/Cinderscales/Noctyros, Umbral Tyrant.png', 
  category: 'Creature', color: 'Red', type: 'Dragon', trait: 'Evolution', hp: 11, atk: 5, def: 2,
- cost: '{3}{R}{R}', archetype: 'Cinderscale', ability: ['Burn','Flying','Ranged'], set: 'StandardPack',
+ cost: '{3}{R}{R}', archetype: 'Blazingscale', ability: ['Burn','Flying','Ranged'], set: 'StandardPack',
  skill: [
   {name: 'Reveal', cost: '{R}',
+   requirement: {class: 'Reveal'}
    resolution: {effect: 'Strike', damage: 1, status: 'Burn'}},
-  {name: 'Cataclysmic Blaze', cost: '{R}',
-   requirement: {class:'CCW'}, 
-   effect: {class: 'Burst', damage: 3, status: 'Burn'}}
+  {name: 'Cataclysmic Blaze', cost: '{r}{r}{R}',
+   requirement: [{class: 'Ultimate'}, {class: 'CCW'}], 
+   effect: {class: 'Burst', damage: 3, status: 'Burn'}},
+  {name: 'Evolution', cost: '{r}{r}',
+   effect: {class: 'Evolution'}}
   ]},
 
 {id: 'AbyndraTidalWraith', name: 'Abyndra, Tidal Wraith', rarity: 'Legendary', image: 'CardImages/Abyssdrakes/Abyndra, Tidal Wraith.png', 
  category: 'Creature', color: 'Blue', type: 'Dragon', trait: 'Evolution', hp: 19, atk: 4, def: 2,
  cost: '{5}{U}{U}', archetype: 'Abyssdrake', ability: ['Flying','Aegis','Veil'], set: 'StandardPack',
  skill: [
-  {name: 'Reveal {R}','Cataclysmic Blaze {R}{CW}'
+  {name: 'Reveal', cost: '{u}',
+   requirement: {class: 'Reveal'}
+   resolution: {effect: 'Search', category: 'Domain', color: 'Blue'}},
+  {name: 'Ocean's Requiem', cost: '{u}{u}',
+   requirement: [{class: 'Ultimate'}, {class:'CCW'}], 
+   effect: {class: 'Burst', damage: 3, status: 'Burn'}},
+  {name: 'Evolution', cost: '{u}{u}',
+   effect: {class: 'Evolution'}}
  ]},
 
 {id: 'VoltrazekTempestReaver', name: 'Voltrazek, Tempest Reaver', rarity: 'Legendary', image: 'CardImages/Stormrazors/Voltrazek, Tempest Reaver.png', 
  category: 'Creature', color: 'Yellow', type: 'Dragon', trait: 'Evolution', hp: 13, atk: 4, def: 1,
  cost: '{3}{Y}{Y}', archetype: 'Stormrazor', ability: ['Flying','Pierce'], set: 'StandardPack',
  skill: [
-  {name: 'Dash', cost: '{1}{Y}{Y}',
-   effect: {class: 'Dash'}}
+  {name: 'Reveal', cost: '{y}',
+   requirement: {class: 'Reveal'}
+   resolution: {effect: 'Search', category: 'Spell', color: 'Yellow'}},
+  {name: 'Electro Burst', cost: '{y}',
+   requirement: [{class: 'Ultimate'}, {class:'CCW'}], 
+   effect: {class: 'Burst', damage: 1}},
+  {name: 'Evolution', cost: '{y}{y}',
+   effect: {class: 'Evolution'}}
  ]},
 
 {id: 'MyxarothBlightedMaw', name: 'Myxaroth, Blighted Maw', rarity: 'Legendary', image: 'CardImages/Venomspines/Toxigon, Blighted Maw.png', 
  category: 'Creature', color: 'Purple', type: 'Dragon', trait: 'Evolution', hp: 13, atk: 4, def: 2,
  cost: '{4}{P}{P}', archetype: 'Venomspine', ability: ['Flying','Venom'], set: 'StandardPack',
  skill: [
-  {name: 'Discard', cost: '{B}',
+  {name: 'Discard', cost: '{p}',
    requirement: {class:'Discard'},
-   effect: {class: 'XXX'}},
+   effect: {class: 'Strike', status: 'Poison'}},
   {name: 'Toxic Miasma', cost: '{p}',
-   requirement: {class: 'CW'},
+   requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
    effect: {class: 'Toxic Miasma'}},
-  {name: 'Evolution', cost: '{p}{p}',
-   effect: {class: 'Evolution'}}
+  {name: 'Void Evolution', cost: '{p}{p}',
+   effect: {class: 'Void Evolution'}}
  ]},
 
 {id: 'FerronyxTerraColossus', name: 'Ferronyx, Terra Colossus', rarity: 'Legendary', image: 'CardImages/Terraclaws/Ferronyx, Terra Colossus.png', 
  category: 'Creature', color: 'Gray', type: 'Dragon', trait: 'Evolution', hp: 9, armor: 7, atk: 5, def: 3,
- cost: '{4}{C}{C}', archetype: 'Terraclaw', ability: ['Armor','Flying','Protect'], set: 'StandardPack'
+ cost: '{4}{C}{C}', archetype: 'Ironclaw', ability: ['Armor','Flying','Protect'], set: 'StandardPack',
  skill: [
-  {name: 'Discard', cost: '{B}',
-   requirement: {class: 'Discard},
-   effect: {class: 'XXX'}},
-  {name: 'Nightfall Surge', cost: '{B}',
-   requirement: {class:'CCW'}, 
-   effect: {class: 'Burst'}},
+  {name: 'Reveal', cost: '{c}',
+   requirement: {class: 'Reveal},
+   effect: {class: 'Armor'}},
+  {name: 'Unbreakable Adamant', cost: '{B}',
+   requirement: [{class: 'Ultimate'}, {class:'CW'}], 
+   effect: {class: 'Armor', target: playersCreatures}},
   {name: 'Evolution', cost: '{c}{c}',
    effect: {class: 'Evolution'}}
  ]},
 
 {id: 'NoctyrosUmbralTyrant', name: 'Noctyros, Umbral Tyrant', rarity: 'Legendary', image: 'CardImages/Nightshrouds/Noctyros, Umbral Tyrant.png', 
  category: 'Creature', color: 'Black', type: 'Dragon', trait: 'Evolution', hp: 12, atk: 6, def: 2,
- cost: '{4}{B}{B}', archetype: 'Nightshroud', ability: ['Flying','Night'], set: 'StandardPack'
+ cost: '{4}{B}{B}', archetype: 'Nightshroud', ability: ['Flying','Night'], set: 'StandardPack',
  skill: [
   {name: 'Discard', cost: '{B}',
    requirement: {class:'Discard'}, 
    effect: {class: 'Mill', type: 'Dragon'}},
   {name: 'Nightfall Surge', cost: '{B}',
-   requirement: {class: 'CW'},
+   requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
    effect: {class: 'Burst'}},
-  {name: 'Evolution', cost: '{b}{b}',
-   effect: {class: 'Evolution'}}
+  {name: 'Void Evolution', cost: '{b}{b}',
+   effect: {class: 'Void Evolution'}}
  ]},
 
 {id: 'SolarythRadianceDawnbreaker', name: 'Solaryth, Radiance Dawnbreaker', rarity: 'Legendary', image: 'CardImages/Solarwyrms/Solaryth, Radiance Dawnbreaker.png', 
  category: 'Creature', color: 'White', type: 'Dragon', trait: 'Evolution', hp: 17, atk: 4, def: 2,
- cost: '{4}{W}{W}', archetype: 'Solarwyrm', ability: ['Flying','Aegis'], set: 'StandardPack'
+ cost: '{4}{W}{W}', archetype: 'Solarwyrm', ability: ['Flying','Aegis'], set: 'StandardPack',
  skill: [
   {name: 'Seal', cost: '{W}{W}',
    requirement: {class: 'CCW'},
    resolution: {class: 'Seal'}},
   {name: 'Celestial Scales', cost: '{W}',
-   requirement: {class: 'CW'},
-   effect: {class: 'Bestow', bestow: {ability: 'Aegis', targets: 'self'}}},
+   requirement: [{class: 'Ultimate'}, {class: 'CW'}],
+   effect: {class: 'Inspire', ability: 'Aegis'}},
   {name: 'Evolution', cost: '{w}{w}',
    effect: {class: 'Evolution'}}
  ]},
@@ -187,7 +213,7 @@ const dummyCards = [
    activation: {class: 'Echo', type: 'Satyr'},
    effect: {class: 'Heal', amount: 3}},
   {name: 'Chorus of the Wild', cost: '{g}{g}',
-   requirement: {class: 'CW'},
+   requirement: [{class: 'Ultimate'}, {class: 'CW'}],
    effect: {class: 'Heal', target: 'allPlayerField', amount: 2}}
  ]},
 
@@ -198,7 +224,7 @@ const dummyCards = [
   {name: 'Manifest', cost: '{r}',
    effect: {class: 'Token', name: 'Emberling'}},
   {name: 'Flametongue Invocation', cost: '{R}{B}',
-   requirement: {class: 'CW'},
+   requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
    effect: {class: 'Invoke', archetype: 'Firelands'}}
  ]},
 
@@ -234,8 +260,8 @@ const dummyCards = [
    requirement: {class: 'CCW'},
    effect: {class: 'XXX'}},
   {name: 'Silken Dominion', cost: '{P}{G}',
-   requirement: {class: 'CCW'}, 
-   effect: {class: 'Invoke', archetype: 'Spiders'}}
+   requirement: [{class: 'Ultimate'}, {class: 'CCW'}], 
+   effect: {class: 'Token', name: 'Spider'}}
  ]},
 
 {id: 'RaukharKnightofDuskwings', name: 'Raukhar, Knight of Duskwings', rarity: 'Legendary', image: 'CardImages/Duskwings/Raukhar, Knight of Duskwings.png', 
@@ -245,7 +271,7 @@ const dummyCards = [
   {name: 'Dash', cost: '{Y}{B}',
    effect: {class: 'Dash'}},
   {name: 'Shadowfeather Storm', cost: '{B}{Y}',
-   requirement: {class: 'CCW'},
+   requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
    effect: {class: 'Burst', damage: 1}}
  ]},
 
@@ -256,7 +282,7 @@ const dummyCards = [
   {name:'Dash', cost: '{Y}{W}',
    effect: {class: 'Dash'}},
   {name: 'Featherfall Tempest', cost: '{Y}{W}',
-   requirement: {class: 'CCW'},
+   requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
    effect: {class: 'Burst', damage: 1}}
  ]},
 */
@@ -336,7 +362,7 @@ const dummyCards = [
  ]},
 {id: 'WoodlandCentaur', name: 'Woodland Centaur', rarity: 'Rare', image: 'CardImages/BasicCreatures/Woodland Centaur.png', 
  category: 'Creature', color: 'Green', type: 'Beast', hp: 8, atk: 3, def: 1, cost: '{1}{G}', 
- archetype: 'Hybrids', ability: ['Intimidate','Leap','Rush'], skill: '', set: 'StandardPack'},
+ archetype: 'Hybrids', ability: ['Intimidate','Leap','Rush'], set: 'StandardPack'},
 
 {id: 'DragonEgg', name: 'Dragon Egg', rarity: 'Common', image: 'CardImages/BasicCreatures/Dragon Egg.png', 
  category: 'Creature', color: 'Red', type: 'Dragon', hp: 1, atk: 0, def: 0, cost: '{0}', 
@@ -385,7 +411,12 @@ const dummyCards = [
  cost: '{2}', archetype: '', ability: '', set: 'StandardPack'},
 {id: 'HeraldofLight', name: 'Herald of Light', rarity: 'Rare', image: 'CardImages/BasicCreatures/Herald of Light.png', 
  category: 'Creature', color: 'White', type: 'Construct', hp: 8, atk: 2, def: 1,
- cost: '{1}{W}', archetype: 'Seraph', ability: ['Flying','Aegis'], set: 'StandardPack'},
+ cost: '{1}{W}', archetype: 'Seraph', ability: ['Flying','Aegis'], set: 'StandardPack',
+  skill: [
+  {name: 'XXX', 
+   requirement: {class: 'CW'},
+   effect: {class: 'Essence', color: 'White'}}
+ ]},
 {id: 'SacredKirin', name: 'Sacred Kirin', rarity: 'Epic', image: 'CardImages/BasicCreatures/Sacred Kirin.png', 
  category: 'Creature', color: 'White', type: 'Beast', hp: 13, atk: 4, def: 1, cost: '{3}{W}', 
  archetype: 'Hybrids', ability: ['Intimidate','Rush'], set: 'StandardPack',
@@ -432,7 +463,7 @@ const dummyCards = [
 /*
 
 {id: 'FairyWarrior', name: 'Fairy Warrior', rarity: 'Rare', image: 'CardImages/BasicCreatures/Fairy Warrior.png', 
- category: 'Creature', color: 'Green', type: ['Fairy','Warrior'], hp: 4, atk: 3, def: 1, cost: '{1}{G}', 
+ category: 'Creature', color: 'Green', type: ['Fairy','Warrior'], hp: 5, atk: 3, def: 1, cost: '{1}{G}', 
  archetype: 'Pixiebound', ability: ['Flying','Rush'], set: 'StandardPack',
  skill: [
   {name: 'Dash', cost: '{G}',
@@ -449,8 +480,8 @@ const dummyCards = [
  cost: '{1}{R}', archetype: 'Cindercore', ability: ['Armor','Fire Exploit'], set: 'StandardPack',
  skill: [
   {name: 'Scorch Protocol', cost: '{1}{R}', 
-   effect: [{class: 'Search', archetype: 'Cindercore'},
-            {class: 'Strike', damage: 0, status: 'Burn'}]},
+   requirement: {class: 'Special'},
+   effect: [{class: 'Search', archetype: 'Cindercore'}, {class: 'Strike', damage: 0, status: 'Burn'}]},
   {name: 'Fuse', cost: '{R}{R}', 
    effect: {class: 'Fuse'}}
  ]},
@@ -459,7 +490,7 @@ const dummyCards = [
  cost: '{3}{R}', archetype: 'Cindercore', ability: ['Armor','Exploit','Protect'], set: 'StandardPack',
  skill: [
   {name: 'Volcanic Vortex', cost: '{1}{R}', 
-   requirement: {class: 'CCW'},
+   requirement: [{class: 'Special'}, {class: 'CCW'}],
    effect: {class: 'Strike', damage: 3, status: ['Burn','Bind']}},
   {name: 'Fuse', cost: '{R}', 
    effect: {class: 'Fuse'}}
@@ -469,7 +500,7 @@ const dummyCards = [
  cost: '{1}{R}', archetype: 'Cindercore', ability: ['Armor', 'Exploit', 'Rush'], set: 'StandardPack',
 skill: [
   {name: 'Fire Pulse', cost: '{R}', 
-   requirement: {class: 'CCW'}, 
+   requirement: [{class: 'Special'}, {class: 'CCW'}], 
    effect: {class: 'Burst', damage: 1, status: 'Burn'}},
  {name: 'Fuse', cost: '{R}', 
    effect: {class: 'Fuse'}}
@@ -479,7 +510,7 @@ skill: [
  cost: '{3}{R}', archetype: ['Cindercore','Golemheart'], ability: 'Armor', set: 'StandardPack',
  skill: [
   {name: 'Volcanic Vortex', cost: '{1}{R}',
-   requirement: {class: 'CCW'},
+   requirement: [{class: 'Special'}, {class: 'CCW'}],
    effect: {class: 'Strike', damage: 3, status: ['Burn','Bind']}}
  ]},
 {id: 'IgnavarynCindercoreAutomaton', name: 'Ignavaryn, Cindercore Automaton', rarity: 'Legendary', image: 'CardImages/Cindercore/Ignavaryn, Cindercore Automaton.png', 
@@ -495,7 +526,7 @@ skill: [
   {name: 'Recycle', cost: '{R}', 
    effect: {class: 'Recycle'},
    resolution: {class: 'Strike', damage: 2, status: 'Burn'}},
-  {name: 'Fusion', cost: '{r}{r}{R}', 
+  {name: 'Fusion', cost: '{r}{r}{r}', 
    effect: {class: 'Fusion'}}
  ]},
 
@@ -572,10 +603,9 @@ skill: [
    requirement: {class: 'Mill', type: 'Golem'},
    effect: {class: 'Armor', amount: 4}},
   {name: 'Moltern Aegis Nova', cost: '{r}{r}{c}',
-   requirement: {class: 'Ultimate'},
+   requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
    effect: {class: 'Burst', damage: 3, status: 'Burn'}},
   {name: 'Void Fusion', cost: '{r}{c}', 
-   requirement: {class: 'Recycle'},
    effect: {class: 'Void Fusion'}}
  ]},
 {id: 'GolemheartGiant', name: 'Golemheart Giant', rarity: 'Rare', image: 'CardImages/Golems/Golemheart Giant.png', 
@@ -617,7 +647,17 @@ skill: [
  ]},
 {id: 'KaelgorranElementalPrimordial', name: 'Kaelgorran, Elemental Primordial', rarity: 'Legendary', image: 'CardImages/Golems/Kaelgorran, Elemental Primordial.png', 
  category: 'Creature', color: ['Green','Red', 'Gray'], type: ['Elemental','Golem'], hp: 18, atk: 6, def: 3, cost: '{4}{R}{C}',
- archetype: 'Golemheart', ability: 'Burn', trait: 'Fusion', set: 'Primordial Ascension'},
+ archetype: 'Golemheart', ability: 'Burn', trait: 'Fusion', set: 'Primordial Ascension',
+ skill: [
+  {name: 'Discard', cost: '{c}', 
+   requirement: {class: 'Discard'},
+   effect: {class: 'Search', type: 'Golem'}},
+  {name: 'Echo', cost: '{r}',
+   activation: {class: 'Echo'},
+   effect: {class: 'Strike', status: 'Burn', amount: 3}},
+  {name: 'Fusion', cost: '{g}{r}{c}', 
+   effect: {class: 'Fusion'}},  
+ ]},
 {id: 'AcidicGolem', name: 'Acidic Golem', rarity: 'Rare', image: 'CardImages/Golems/Acidic Golem.png', 
  category: 'Creature', color: ['Purple', 'Gray'], type: ['Elemental','Golem'], hp: 8, armor: 4, atk: 4, def: 3,
  cost: '{2}{P}{C}', archetype: 'Golemheart', ability: 'toxic', set: 'PrimordialAscension'},
@@ -660,7 +700,7 @@ skill: [
     requirement: {class: 'Stash'},
     effect: {class: 'Search', archetype: 'Coralbound'}},
   {name: 'Hydroburst Cannon', cost: '{U}{U}', 
-   requirement: {class: 'Special'},
+   requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
    effect: {class: 'Strike', damage: 8, status: 'Soak'}},
   {name: 'Fusion', cost: '{3}{U}{U}', 
    effect: {class: 'Fusion'}}
@@ -672,10 +712,10 @@ skill: [
  cost: '{G}{R}{W}', archetype: 'Glimmerscale', ability: ['Flying','Intimidate'], set: 'StandardPack',
  skill: [
   {name: 'Thornbloom', cost: '{g}{r}', 
-    requirement: {class: 'Special'},
+    requirement: [{class: 'Special'}, {class: 'CW'}],
     effect: {class: 'Essence'}},
   {name: 'Sunfire Blast', cost: '{r}{r}{w}', 
-   requirement: {class: 'Ultimate'},
+   requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
    effect: {class: 'Burst', damage: 2, status: 'Burn'}},
   {name: 'Evolve', cost: '{g}{w}', 
    effect: {class: 'Evolve'}}
@@ -689,7 +729,7 @@ skill: [
    requirement: {class: 'CW'},
    effect: {class: 'Purify'}},
   {name:'Floral Mirage', cost: '{G}',
-   requirement: {class: 'CW'},
+   requirement: [{class: 'Special'}, {class: 'CW'}],
    effect: {class: 'Ambush'}}
  ]},
 
@@ -698,11 +738,11 @@ skill: [
  ability: ['Flying','Intimidate'], archetype: 'Glimmerscale', set: 'StandardPack',
  skill: [
   {name: 'Purify', cost: '{W}',
-   requirement: {class: 'CCW'},
+   requirement: [{class: 'Special'}, {class: 'CW'}],
    effect: {class: 'Purify'}},
   {name: 'Dewlight Spiral', cost: '{G}{W}',
-   requirement: {class: 'CCW'},
-   effect: {class: 'Strike', damage: 3}}
+   requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
+   effect: [{class: 'Sunlight'}, {class: 'Strike', damage: 3}]}
  ]},
 
 // MOONFANG //
@@ -711,16 +751,16 @@ skill: [
  category: 'Creature', color: ['Black'], type: ['Beast'], hp: 5, atk: 3, def: 0,
  cost: '{1}{B}', archetype: 'Moonfang', ability: ['Ambush','Rush'], set: 'StandardPack',
  skill: [
-  {name: 'Transform', cost: '{P}{P}{B}', requirement: [''],  type: ['Strike'], damage: 3, status: ['Burn'] }
+  {name: 'Transform', cost: '{P}{P}{B}', 
+   effect: {class: 'Transform'}}
  ]},
 {id: 'Werewolf', name: 'Werewolf', rarity: 'Epic', image: 'CardImages/Moonfang/Werewolf.png', 
  category: 'Creature', color: ['Black'], type: ['Beast'], hp: 10, atk: 4, def: 1,
  cost: '{3}{B}', archetype: 'Moonfang', ability: ['Ambush'], set: 'StandardPack',
  skill: [
   {name: 'Discard', cost: '{B}',
-  activation: {requirement: 'Discard'},
-  resolution: {effect: 'Search', archetype: 'Wolf'}},
-  {name: 'Transform', cost: '{P}{P}{B}', requirement: [''],  type: ['Strike'], damage: 3, status: ['Burn'] }
+  requirement: {class: 'Discard'},
+  effect: {class: 'Search', archetype: 'Moon'}},
  ]},
 
 
@@ -763,7 +803,7 @@ skill: [
  archetype: 'Skullframe', ability: ['Flying', 'Immunity'], set: 'StandardPack',
  skill: [
   {name: 'Curseflame Inferno', cost: '{2}{P}{P}{B}', 
-   requirement: {class: 'CCW'},
+   requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
    effect: {class: 'Burst', damage: 2, status: 'Burn'}},
   {name: 'Reanimate', cost: '{3}{B}{B}', 
    effect: {class: 'Reanimate'}}
@@ -779,12 +819,12 @@ skill: [
  category: 'Creature', color: ['Black', 'Purple'], type: ['Undead','Mage'], hp: 6, atk: 4, def: 1,
  cost: '{1}{B}{P}', archetype: 'Skullframe', ability: ['Immunity','Ranged'], set: 'StandardPack',
  skill: [
-  {name: 'Ebonhex Flare', cost: '{P}{P}{B}', 
-   requirement: {class: 'CCW'}, 
+  {name: 'Ebonhex Flare', cost: '{P}{B}', 
+   requirement: [{class: 'Special'}, {class: 'CCW'}], 
    effect: {class: 'Strike', damage: 3, status:'Burn'}},
   {name: 'Ebonhex Crush', cost: '{B}', 
-   requirement: {class: 'CCW'}, 
-   resolution: {class: 'Exploit'}},
+   requirement: [{class: ' Ultimate'}, {class: 'CCW'}], 
+   effect: {class: 'Exploit'}},
   {name: 'Reanimate', cost: '{2}{B}{B}', 
    effect: {class:'Reanimate'}}
  ]},
@@ -793,10 +833,10 @@ skill: [
  cost: '{B}{B}{P}', archetype: 'Skullframe', ability: ['Drain','Immunity','Ranged'], set: 'StandardPack',
  skill: [
   {name: 'Hexbind', cost: '{P}{B}', 
-   requirement: {class: 'CW'},
+   requirement: [{class: 'Special'}, {class: 'CCW'}],
    effect: {class: 'Strike', damage: 4, status: ['Bind','Poison']}},
   {name: 'Hexblast', cost: '{B}',  
-   requirement: {class: 'CCW'},
+   requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
    effect: {class: 'Exploit'}},
   {name: 'Reanimate', cost: '{2}{B}{B}', 
    effect: {class: 'Reanimate'}}
@@ -867,13 +907,25 @@ skill: [
 
 // SPELLS //
 {id: 'EssenceSurge', name: 'Essence Surge', rarity: 'Common', image: 'CardImages/Spells/Essence Surge.png', 
- category: 'Spell', color: 'Green', type: 'Spell', cost: '{2}', effect: 'Gain 3 essence', set: 'StandardPack'},
+ category: 'Spell', color: 'Green', type: 'Spell', cost: '{2}', set: 'StandardPack',
+ skill: [
+  {name: 'Essence', cost: '{2}', 
+   effect: {class: 'Essence', color: 'Green', amount: 3}},
+ ]},
 {id: 'EssenceAssault', name: 'Essence Assault', rarity: 'Common', image: 'CardImages/Spells/Essence Assault.png', 
  category: 'Spell', color: 'Red', type: 'Spell', cost: '{1}', effect: 'Give a unit +2/0', set: 'StandardPack'},
 {id: 'EssenceRift', name: 'Essence Rift', rarity: 'Common', image: 'CardImages/Spells/Essence Rift.png', 
- category: 'Spell', color: 'Blue', type: 'Spell', cost: '{2}', effect: 'Draw 2', set: 'StandardPack'},
+ category: 'Spell', color: 'Blue', type: 'Spell', cost: '{2}', set: 'StandardPack',
+ skill: [
+  {name: 'Draw', cost: '{2}', 
+   effect: {class: 'Draw', amount: 2}},
+ ]},
 {id: 'EssenceBolt', name: 'Essence Bolt', rarity: 'Common', image: 'CardImages/Spells/Essence Bolt.png', 
- category: 'Spell', color: 'Yellow', type: 'Spell', cost: '{1}', effect: 'Strike 3', set: 'StandardPack'},
+ category: 'Spell', color: 'Yellow', type: 'Spell', cost: '{1}', set: 'StandardPack',
+ skill: [
+  {name: 'Spell', cost: '{1}', 
+   effect: {class: 'Strike', amount: 3}},
+ ]},
 {id: 'EssenceBreak', name: 'Essence Break', rarity: 'Common', image: 'CardImages/Spells/Essence Break.png', 
  category: 'Spell', color: 'Purple', type: 'Spell', cost: '{1}', effect: 'Destroy 1 essence', set: 'StandardPack'},
 {id: 'EssenceBarrier', name: 'Essence Barrier', rarity: 'Common', image: 'CardImages/Spells/Essence Barrier.png', 
