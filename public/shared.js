@@ -1519,7 +1519,7 @@ function parseEffectText(effect) {
 }
 function countEssenceType(essenceStr, typeCode) {
   if (typeof essenceStr !== "string") return 0;
-  const matches = essenceStr.match(new RegExp(`\\{${typeCode}\\}`, "g"));
+  const matches = essenceStr.match(new RegExp(`\\{${typeCode}\\}`, "gi"));
   return matches ? matches.length : 0;
 }
 function countColorlessEssence(essenceStr) {
