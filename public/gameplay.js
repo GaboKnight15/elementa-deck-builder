@@ -2648,7 +2648,7 @@ function renderCardOnField(cardObj, zoneId) {
   if (cardObj.orientation === "horizontal") img.style.transform = "rotate(90deg)";
   cardDiv.appendChild(img);
 
-  // Choose the right cardback (player or opponent)
+  // Cardback (player or opponent)
   let cardbackUrl = window.selectedPlayerDeck?.deckObj?.cardbackArt || "OtherImages/Cardbacks/CBDefault.png";
   if (zoneId && zoneId.startsWith("opponent")) {
     cardbackUrl =
@@ -2656,63 +2656,38 @@ function renderCardOnField(cardObj, zoneId) {
       gameState.opponentProfile?.cardbackArt ||
       "OtherImages/Cardbacks/CBDefault.png";
   }
-
   const backDiv = document.createElement('div');
   backDiv.className = 'card-back';
   backDiv.innerHTML = `<img src="${cardbackUrl}" alt="Card Back" style="width:100%;height:100%;">`;
   cardDiv.appendChild(backDiv);
 
-// ===== Bottom: Stat Badges (HP, ATK, DEF) =====
-const statRow = document.createElement('div');
-statRow.className = 'card-stat-row-centered';
+  // --- Overlay for icons and stats ---
+  const statsAndIconsOverlay = document.createElement('div');
+  statsAndIconsOverlay.className = 'card-stats-icons-overlay';
+  statsAndIconsOverlay.style.position = 'absolute';
+  statsAndIconsOverlay.style.left = '0';
+  statsAndIconsOverlay.style.top = '0';
+  statsAndIconsOverlay.style.width = '100%';
+  statsAndIconsOverlay.style.height = '100%';
+  statsAndIconsOverlay.style.pointerEvents = 'none';
 
-// HP (left)
-let currentHP = undefined;
-if (typeof cardData.hp === "number") {
-  currentHP = typeof cardObj.currentHP === "number" ? cardObj.currentHP : cardData?.hp ?? 0;
-  statRow.appendChild(makeStatBadge("OtherImages/FieldIcons/HP.png", currentHP, "#fff", "HP"));
-}
+  // --- Icons Row: Centered at Top ---
+  const iconRow = document.createElement('div');
+  iconRow.className = 'card-icon-row-centered';
 
-// ATK (center)
-if (typeof cardData.atk === "number") {
-  const baseATK = cardData.atk;
-  const currentATK = computeCardStat(cardObj, "atk");
-  let atkColor = "#fff";
-  if (currentATK > baseATK) atkColor = "#44e055";
-  else if (currentATK < baseATK) atkColor = "#e53935";
-  statRow.appendChild(makeStatBadge("OtherImages/FieldIcons/ATK.png", currentATK, atkColor, "ATK"));
-}
+  // Status Icons
+  (cardObj.statuses || []).forEach(status => {
+    const statusDef = STATUS_EFFECTS[status.name];
+    if (!statusDef) return;
+    const icon = document.createElement('img');
+    icon.src = statusDef.icon;
+    icon.alt = statusDef.name;
+    icon.title = statusDef.description;
+    icon.className = 'card-status-icon';
+    iconRow.appendChild(icon);
+  });
 
-// DEF (right)
-if (typeof cardData.def === "number") {
-  const baseDEF = cardData.def;
-  const currentDEF = computeCardStat(cardObj, "def");
-  let defColor = "#fff";
-  if (currentDEF > baseDEF) defColor = "#44e055";
-  else if (currentDEF < baseDEF) defColor = "#e53935";
-  statRow.appendChild(makeStatBadge("OtherImages/FieldIcons/DEF.png", currentDEF, defColor, "DEF"));
-}
-statsAndIconsOverlay.appendChild(statRow);
-
-// --- Icons Row: Centered at Top ---
-const iconRow = document.createElement('div');
-iconRow.className = 'card-icon-row-centered';
-
-// Status Icons
-(cardObj.statuses || []).forEach(status => {
-  const statusDef = STATUS_EFFECTS[status.name];
-  if (!statusDef) return;
-  const icon = document.createElement('img');
-  icon.src = statusDef.icon;
-  icon.alt = statusDef.name;
-  icon.title = statusDef.description;
-  icon.className = 'card-status-icon';
-  iconRow.appendChild(icon);
-});
-
-// Ability Icons
-const cardData = dummyCards.find(c => c.id === cardObj.cardId);
-if (cardData.ability) {
+  // Ability Icons
   const abilityArr = Array.isArray(cardData.ability) ? cardData.ability : [cardData.ability];
   abilityArr.forEach(abilityName => {
     const abilityDef = TARGET_FILTER_ABILITY[abilityName];
@@ -2724,58 +2699,71 @@ if (cardData.ability) {
     icon.className = 'card-ability-icon';
     iconRow.appendChild(icon);
   });
-}
 
-// Skill Icons (if you want to show them)
-if (Array.isArray(cardData.skills)) {
-  cardData.skills.forEach(skill => {
-    if (!skill.icon) return;
-    const icon = document.createElement('img');
-    icon.src = skill.icon;
-    icon.alt = skill.name || "Skill";
-    icon.title = skill.name || "Skill";
-    icon.className = 'card-skill-icon';
-    iconRow.appendChild(icon);
-  });
-}
+  // Skill Icons
+  if (Array.isArray(cardData.skills)) {
+    cardData.skills.forEach(skill => {
+      if (!skill.icon) return;
+      const icon = document.createElement('img');
+      icon.src = skill.icon;
+      icon.alt = skill.name || "Skill";
+      icon.title = skill.name || "Skill";
+      icon.className = 'card-skill-icon';
+      iconRow.appendChild(icon);
+    });
+  }
 
-// Armor Icon
-if (typeof cardData.armor === "number" && cardData.armor > 0) {
-  const currentArmor = typeof cardObj.armor === "number" ? cardObj.armor : cardData.armor;
-  const armorDiv = document.createElement('div');
-  armorDiv.className = 'card-armor-icon-badge';
-  armorDiv.innerHTML = `
-    <img src="OtherImages/FieldIcons/Armor.png" alt="Armor" class="card-armor-icon">
-    <span class="card-armor-value">${currentArmor}</span>
-  `;
-  iconRow.appendChild(armorDiv);
-}
-cardDiv.appendChild(iconRow);
+  // Armor Icon
+  if (typeof cardData.armor === "number" && cardData.armor > 0) {
+    const currentArmor = typeof cardObj.armor === "number" ? cardObj.armor : cardData.armor;
+    const armorDiv = document.createElement('div');
+    armorDiv.className = 'card-armor-icon-badge';
+    armorDiv.innerHTML = `
+      <img src="OtherImages/FieldIcons/Armor.png" alt="Armor" class="card-armor-icon">
+      <span class="card-armor-value">${currentArmor}</span>
+    `;
+    iconRow.appendChild(armorDiv);
+  }
 
-  // ===== Bottom: Stat Badges (HP, ATK, DEF) =====
+  // Attach icon row to overlay
+  statsAndIconsOverlay.appendChild(iconRow);
+
+  // --- Stat Row: Bottom, centered ---
   const statRow = document.createElement('div');
-  statRow.className = 'card-stat-row';
-  statRow.style.position = 'absolute';
-  statRow.style.left = '0';
-  statRow.style.bottom = '0';
-  statRow.style.width = '100%';
-  statRow.style.height = '32px';
-  statRow.style.display = 'flex';
-  statRow.style.flexDirection = 'row';
-  statRow.style.justifyContent = 'space-between';
-  statRow.style.alignItems = 'flex-end';
-  statRow.style.zIndex = '25';
+  statRow.className = 'card-stat-row-centered';
 
-  // Helper to make a stat badge (icon with number on top)
-function makeStatBadge(iconSrc, value, color, alt = "") {
-  const badge = document.createElement('div');
-  badge.className = 'stat-badge-centered';
-  badge.innerHTML = `
-    <img src="${iconSrc}" alt="${alt}" class="stat-badge-img">
-    <span class="stat-badge-value" style="color:${color};">${value}</span>
-  `;
-  return badge;
-}
+  // HP (left)
+  let currentHP = undefined;
+  if (typeof cardData.hp === "number") {
+    currentHP = typeof cardObj.currentHP === "number" ? cardObj.currentHP : cardData?.hp ?? 0;
+    statRow.appendChild(makeStatBadge("OtherImages/FieldIcons/HP.png", currentHP, "#fff", "HP"));
+  }
+
+  // ATK (center)
+  if (typeof cardData.atk === "number") {
+    const baseATK = cardData.atk;
+    const currentATK = computeCardStat(cardObj, "atk");
+    let atkColor = "#fff";
+    if (currentATK > baseATK) atkColor = "#44e055";
+    else if (currentATK < baseATK) atkColor = "#e53935";
+    statRow.appendChild(makeStatBadge("OtherImages/FieldIcons/ATK.png", currentATK, atkColor, "ATK"));
+  }
+
+  // DEF (right)
+  if (typeof cardData.def === "number") {
+    const baseDEF = cardData.def;
+    const currentDEF = computeCardStat(cardObj, "def");
+    let defColor = "#fff";
+    if (currentDEF > baseDEF) defColor = "#44e055";
+    else if (currentDEF < baseDEF) defColor = "#e53935";
+    statRow.appendChild(makeStatBadge("OtherImages/FieldIcons/DEF.png", currentDEF, defColor, "DEF"));
+  }
+
+  // Attach stat row to overlay
+  statsAndIconsOverlay.appendChild(statRow);
+
+  // Attach overlay to cardDiv
+  cardDiv.appendChild(statsAndIconsOverlay);
 
   // --- HP Bar (move to bottom, behind statRow) ---
   if (typeof cardData.hp === "number" && typeof currentHP === "number" && cardData.hp > 0) {
@@ -2818,9 +2806,6 @@ function makeStatBadge(iconSrc, value, color, alt = "") {
     cardDiv.appendChild(barWrap);
   }
 
-  // Attach overlay to cardDiv
-  cardDiv.appendChild(statsAndIconsOverlay);
-
   // --- Attached Cards (right side, absolute) ---
   if (cardObj.attachedCards && cardObj.attachedCards.length > 0) {
     const stackDiv = document.createElement('div');
@@ -2839,7 +2824,6 @@ function makeStatBadge(iconSrc, value, color, alt = "") {
       attDiv.style.position = 'absolute';
       attDiv.style.right = '0px';
       attDiv.style.top = `${i * 18}px`;
-      attDiv.style.right = '0px';
       attDiv.style.pointerEvents = 'auto';
       attDiv.title = attachData.name;
 
@@ -2907,6 +2891,17 @@ function makeStatBadge(iconSrc, value, color, alt = "") {
     showCardActionMenu(cardObj.instanceId, zoneId, cardObj.orientation || "vertical", cardDiv);
   };
   return wrapper;
+
+  // --- Helper to make a stat badge (icon with number on top) ---
+  function makeStatBadge(iconSrc, value, color, alt = "") {
+    const badge = document.createElement('div');
+    badge.className = 'stat-badge-centered';
+    badge.innerHTML = `
+      <img src="${iconSrc}" alt="${alt}" class="stat-badge-img">
+      <span class="stat-badge-value" style="color:${color};">${value}</span>
+    `;
+    return badge;
+  }
 }
 
 // COST DISPLAY IN HAND
