@@ -2002,7 +2002,10 @@ function showHandCardMenu(instanceId, cardDiv) {
       disabled: !canPay,
       onClick: function(e) {
         e.stopPropagation();
-        if (!canPay) return;
+        if (!canPay) {
+          btn.disabled = true;
+          btn.classList.add("btn-disabled");
+        }
         closeAllMenus();
         const cardObj = gameState.playerHand.find(c => c.instanceId === instanceId);
         const cardData = dummyCards.find(c => c.id === cardObj.cardId);
@@ -2020,7 +2023,7 @@ function showHandCardMenu(instanceId, cardDiv) {
           targetArr = gameState.playerDomains;
           toZoneId = "player-domains-zone";
         } else {
-          alert("You can only play creature or domain cards here!");
+          alert("Card cannot be played.");
           return;
         }
         
