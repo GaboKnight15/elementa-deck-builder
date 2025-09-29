@@ -2662,15 +2662,37 @@ function renderCardOnField(cardObj, zoneId) {
   backDiv.innerHTML = `<img src="${cardbackUrl}" alt="Card Back" style="width:100%;height:100%;">`;
   cardDiv.appendChild(backDiv);
 
-  // --- Stat/Icons Overlay Layout --- //
-  const statsAndIconsOverlay = document.createElement('div');
-  statsAndIconsOverlay.className = 'card-stats-icons-overlay';
-  statsAndIconsOverlay.style.position = 'absolute';
-  statsAndIconsOverlay.style.left = '0';
-  statsAndIconsOverlay.style.top = '0';
-  statsAndIconsOverlay.style.width = '100%';
-  statsAndIconsOverlay.style.height = '100%';
-  statsAndIconsOverlay.style.pointerEvents = 'none';
+// ===== Bottom: Stat Badges (HP, ATK, DEF) =====
+const statRow = document.createElement('div');
+statRow.className = 'card-stat-row-centered';
+
+// HP (left)
+let currentHP = undefined;
+if (typeof cardData.hp === "number") {
+  currentHP = typeof cardObj.currentHP === "number" ? cardObj.currentHP : cardData?.hp ?? 0;
+  statRow.appendChild(makeStatBadge("OtherImages/FieldIcons/HP.png", currentHP, "#fff", "HP"));
+}
+
+// ATK (center)
+if (typeof cardData.atk === "number") {
+  const baseATK = cardData.atk;
+  const currentATK = computeCardStat(cardObj, "atk");
+  let atkColor = "#fff";
+  if (currentATK > baseATK) atkColor = "#44e055";
+  else if (currentATK < baseATK) atkColor = "#e53935";
+  statRow.appendChild(makeStatBadge("OtherImages/FieldIcons/ATK.png", currentATK, atkColor, "ATK"));
+}
+
+// DEF (right)
+if (typeof cardData.def === "number") {
+  const baseDEF = cardData.def;
+  const currentDEF = computeCardStat(cardObj, "def");
+  let defColor = "#fff";
+  if (currentDEF > baseDEF) defColor = "#44e055";
+  else if (currentDEF < baseDEF) defColor = "#e53935";
+  statRow.appendChild(makeStatBadge("OtherImages/FieldIcons/DEF.png", currentDEF, defColor, "DEF"));
+}
+statsAndIconsOverlay.appendChild(statRow);
 
 // --- Icons Row: Centered at Top ---
 const iconRow = document.createElement('div');
@@ -2728,7 +2750,6 @@ if (typeof cardData.armor === "number" && cardData.armor > 0) {
   `;
   iconRow.appendChild(armorDiv);
 }
-
 cardDiv.appendChild(iconRow);
 
   // ===== Bottom: Stat Badges (HP, ATK, DEF) =====
@@ -2746,72 +2767,15 @@ cardDiv.appendChild(iconRow);
   statRow.style.zIndex = '25';
 
   // Helper to make a stat badge (icon with number on top)
-  function makeStatBadge(iconSrc, value, color, alt = "") {
-    const badge = document.createElement('div');
-    badge.className = 'stat-badge';
-    badge.style.position = 'relative';
-    badge.style.width = '32px';
-    badge.style.height = '32px';
-    badge.innerHTML = `
-      <img src="${iconSrc}" alt="${alt}" style="width:100%;height:100%;">
-      <span style="
-        position:absolute;left:0;top:0;width:100%;height:100%;
-        display:flex;align-items:center;justify-content:center;
-        font-weight:bold;font-size:1.08em;color:${color};
-        text-shadow:0 1px 4px #232;z-index:22;
-        pointer-events:none;">${value}</span>
-    `;
-    return badge;
-  }
-
-  // HP (left)
-  let currentHP = undefined;
-  if (typeof cardData.hp === "number") {
-    currentHP = typeof cardObj.currentHP === "number" ? cardObj.currentHP : cardData?.hp ?? 0;
-    statRow.appendChild(
-      makeStatBadge(
-        "OtherImages/FieldIcons/HP.png",
-        currentHP,
-        "#fff",
-        "HP"
-      )
-    );
-  }
-
-  // ATK (center)
-  if (typeof cardData.atk === "number") {
-    const baseATK = cardData.atk;
-    const currentATK = computeCardStat(cardObj, "atk");
-    let atkColor = "#fff";
-    if (currentATK > baseATK) atkColor = "#44e055";
-    else if (currentATK < baseATK) atkColor = "#e53935";
-    statRow.appendChild(
-      makeStatBadge(
-        "OtherImages/FieldIcons/ATK.png",
-        currentATK,
-        atkColor,
-        "ATK"
-      )
-    );
-  }
-
-  // DEF (right)
-  if (typeof cardData.def === "number") {
-    const baseDEF = cardData.def;
-    const currentDEF = computeCardStat(cardObj, "def");
-    let defColor = "#fff";
-    if (currentDEF > baseDEF) defColor = "#44e055";
-    else if (currentDEF < baseDEF) defColor = "#e53935";
-    statRow.appendChild(
-      makeStatBadge(
-        "OtherImages/FieldIcons/DEF.png",
-        currentDEF,
-        defColor,
-        "DEF"
-      )
-    );
-  }
-  statsAndIconsOverlay.appendChild(statRow);
+function makeStatBadge(iconSrc, value, color, alt = "") {
+  const badge = document.createElement('div');
+  badge.className = 'stat-badge-centered';
+  badge.innerHTML = `
+    <img src="${iconSrc}" alt="${alt}" class="stat-badge-img">
+    <span class="stat-badge-value" style="color:${color};">${value}</span>
+  `;
+  return badge;
+}
 
   // --- HP Bar (move to bottom, behind statRow) ---
   if (typeof cardData.hp === "number" && typeof currentHP === "number" && cardData.hp > 0) {
