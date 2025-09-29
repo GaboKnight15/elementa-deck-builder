@@ -2646,10 +2646,10 @@ function renderCardOnField(cardObj, zoneId) {
   img.style.width = "100%";
   img.style.height = "100%";
   if (cardObj.orientation === "horizontal") img.style.transform = "rotate(90deg)";
+  cardDiv.appendChild(img);
 
   // Choose the right cardback (player or opponent)
   let cardbackUrl = window.selectedPlayerDeck?.deckObj?.cardbackArt || "OtherImages/Cardbacks/CBDefault.png";
-  
   if (zoneId && zoneId.startsWith("opponent")) {
     cardbackUrl =
       window.selectedOpponentDeck?.cardbackArt ||
@@ -2672,77 +2672,64 @@ function renderCardOnField(cardObj, zoneId) {
   statsAndIconsOverlay.style.height = '100%';
   statsAndIconsOverlay.style.pointerEvents = 'none';
 
-  // ===== Top-right: Armor, Abilities, Status Icons =====
-  const iconRow = document.createElement('div');
-  iconRow.className = 'card-icon-row';
-  iconRow.style.position = 'absolute';
-  iconRow.style.top = '4px';
-  iconRow.style.right = '4px';
-  iconRow.style.display = 'flex';
-  iconRow.style.gap = '4px';
-  iconRow.style.justifyContent = 'flex-end';
-  iconRow.style.zIndex = '30';
+// --- Icons Row: Centered at Top ---
+const iconRow = document.createElement('div');
+iconRow.className = 'card-icon-row-centered';
 
-  // Armor badge (if present)
-  if (typeof cardData.armor === "number" && cardData.armor > 0) {
-    const currentArmor = typeof cardObj.armor === "number" ? cardObj.armor : cardData.armor;
-    const armorBadge = document.createElement('div');
-    armorBadge.className = 'stat-badge stat-armor';
-    armorBadge.style.position = 'relative';
-    armorBadge.style.width = '28px';
-    armorBadge.style.height = '28px';
-    armorBadge.innerHTML = `
-      <img src="OtherImages/FieldIcons/Armor.png" style="width:100%;height:100%;">
-      <span style="
-        position:absolute;left:0;top:0;width:100%;height:100%;
-        display:flex;align-items:center;justify-content:center;
-        font-weight:bold;color:#ffe066;font-size:1em;
-        text-shadow:0 1px 4px #232;z-index:22;
-        pointer-events:none;">${currentArmor}</span>
-    `;
-    iconRow.appendChild(armorBadge);
-  }
+// Status Icons
+(cardObj.statuses || []).forEach(status => {
+  const statusDef = STATUS_EFFECTS[status.name];
+  if (!statusDef) return;
+  const icon = document.createElement('img');
+  icon.src = statusDef.icon;
+  icon.alt = statusDef.name;
+  icon.title = statusDef.description;
+  icon.className = 'card-status-icon';
+  iconRow.appendChild(icon);
+});
 
-  // Ability icons (if any)
-  if (cardData.ability) {
-    const abilityArr = Array.isArray(cardData.ability) ? cardData.ability : [cardData.ability];
-    abilityArr.forEach(abilityName => {
-      const abilityDef = TARGET_FILTER_ABILITY[abilityName];
-      if (!abilityDef) return;
-      const icon = document.createElement('img');
-      icon.src = abilityDef.icon;
-      icon.alt = abilityDef.name;
-      icon.title = abilityDef.description;
-      icon.className = 'card-icon ability';
-      icon.style.width = '24px';
-      icon.style.height = '24px';
-      icon.style.borderRadius = '4px';
-      icon.style.boxShadow = '0 1px 4px #0007';
-      icon.style.background = "#253760cc";
-      icon.style.pointerEvents = 'auto';
-      iconRow.appendChild(icon);
-    });
-  }
+// Ability Icons
+const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+if (cardData.ability) {
+  const abilityArr = Array.isArray(cardData.ability) ? cardData.ability : [cardData.ability];
+  abilityArr.forEach(abilityName => {
+    const abilityDef = TARGET_FILTER_ABILITY[abilityName];
+    if (!abilityDef) return;
+    const icon = document.createElement('img');
+    icon.src = abilityDef.icon;
+    icon.alt = abilityDef.name;
+    icon.title = abilityDef.name;
+    icon.className = 'card-ability-icon';
+    iconRow.appendChild(icon);
+  });
+}
 
-  // Status icons (if any)
-  if (cardObj.statuses && cardObj.statuses.length > 0) {
-    cardObj.statuses.forEach(status => {
-      const statusDef = STATUS_EFFECTS[status.name];
-      if (!statusDef) return;
-      const icon = document.createElement('img');
-      icon.src = statusDef.icon;
-      icon.alt = statusDef.name;
-      icon.title = statusDef.description;
-      icon.className = 'card-icon status';
-      icon.style.width = '22px';
-      icon.style.height = '22px';
-      icon.style.borderRadius = '4px';
-      icon.style.background = "#2e2e2ecc";
-      icon.style.pointerEvents = 'auto';
-      iconRow.appendChild(icon);
-    });
-  }
-  statsAndIconsOverlay.appendChild(iconRow);
+// Skill Icons (if you want to show them)
+if (Array.isArray(cardData.skills)) {
+  cardData.skills.forEach(skill => {
+    if (!skill.icon) return;
+    const icon = document.createElement('img');
+    icon.src = skill.icon;
+    icon.alt = skill.name || "Skill";
+    icon.title = skill.name || "Skill";
+    icon.className = 'card-skill-icon';
+    iconRow.appendChild(icon);
+  });
+}
+
+// Armor Icon
+if (typeof cardData.armor === "number" && cardData.armor > 0) {
+  const currentArmor = typeof cardObj.armor === "number" ? cardObj.armor : cardData.armor;
+  const armorDiv = document.createElement('div');
+  armorDiv.className = 'card-armor-icon-badge';
+  armorDiv.innerHTML = `
+    <img src="OtherImages/FieldIcons/Armor.png" alt="Armor" class="card-armor-icon">
+    <span class="card-armor-value">${currentArmor}</span>
+  `;
+  iconRow.appendChild(armorDiv);
+}
+
+cardDiv.appendChild(iconRow);
 
   // ===== Bottom: Stat Badges (HP, ATK, DEF) =====
   const statRow = document.createElement('div');
