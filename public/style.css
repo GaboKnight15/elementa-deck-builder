@@ -2198,8 +2198,6 @@ button[disabled], .btn-disabled {
   height: 34px;
   display: block;
   border-radius: 7px;
-  background: #1a2533;
-  box-shadow: 0 1px 4px #000b;
 }
 
 .stat-badge-value {
@@ -2212,7 +2210,6 @@ button[disabled], .btn-disabled {
   align-items: center;
   justify-content: center;
   font-weight: bold;
-  font-size: 1.18em;
   text-shadow: 0 1px 6px #232, 0 1px 1px #ffe06633;
   z-index: 3;
   pointer-events: none;
