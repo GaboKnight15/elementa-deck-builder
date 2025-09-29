@@ -8,15 +8,21 @@ const dummyCards = [
  category: 'Creature', color: 'Green', type: ['Elf', 'Mage'], trait: 'Champion', hp: 11, atk: 1, def: 0,
  cost: '{G}{G}{G}', archetype: 'Sylvan', ability: 'Ranged', set: 'StandardPack'
  skill: [
+  {name: 'Bloomchant', cost: '{g}',
+   requirement: [{class:'Special'}, {class: 'CW'}], 
+   effect: {class: 'essenceGreen', amount: 2}},
   {name: "Briar Queen's Grasp", cost: '{G}',
-  requirement: {class:'Ultimate'}, 
-  effect: {class: 'Strike', damage: 3, status: 'Bind'}}
+   requirement: [{class:'Ultimate'}, {class: 'CCW'}], 
+   effect: {class: 'Strike', damage: 3, status: 'Bind'}},
   ]},
 
 {id: 'KaelenBlazebornHuntress', name: 'Kaelen, Blazeborn Huntress', rarity: 'Legendary', image: 'CardImages/Skullframe/Kaelen, Blazeborn Huntress.png', 
  category: 'Creature', color: 'Red', type: 'Warrior', trait: 'Champion', hp: 8, atk: 1, def: 0,
  cost: '{R}{R}{R}', archetype: '', ability: ['Burn','Ranged'], set: 'StandardPack',
  skill: [
+  {name: 'Bloomchant', cost: '{g}',
+   requirement: [{class:'Special'}, {class: 'CCW'}], 
+   effect: {class: 'essenceGreen', amount: 2}},
   {name: 'Scorching Skyfall', cost: '{R}{R}',
    requirement: {class:'Ultimate'}, 
    effect: {class: 'Burst', damage: 1, status: 'Burn'}}
@@ -26,6 +32,9 @@ const dummyCards = [
  category: 'Creature', color: 'Blue', type: ['Merfolk', 'Warrior'], trait: 'Champion', hp: 12, atk: 2, def: 1,
  cost: '{U}{U}{U}', archetype: '', ability: ['Dive','Pierce'], set: 'StandardPack'
  skill: [
+  {name: 'Bloomchant', cost: '{g}',
+   requirement: [{class:'Special'}, {class: 'CCW'}], 
+   effect: {class: 'essenceGreen', amount: 2}},
   {name: 'Tidepiercer Vortex', cost: '{U}',
    requirement: {class: 'Ultimate'},
    effect: {class: 'Strike', damage: 2, status: 'Soak'}}
@@ -35,29 +44,35 @@ const dummyCards = [
  category: 'Creature', color: 'Yellow', type: 'Warrior', trait: 'Champion', hp: 7, atk: 1, def: 0,
  cost: '{Y}{Y}{Y}', archetype: '', ability: 'Quickdraw', set: 'StandardPack',
  skill: [
- {name:'Blade Tempest, cost: '{Y}{Y}',
-  requirement: {class:'Ultimate'}, 
-  effect: {class: 'Strike', damage: 1}}
+  {name: 'Bloomchant', cost: '{g}',
+   requirement: [{class:'Special'}, {class: 'CCW'}], 
+   effect: {class: 'essenceGreen', amount: 2}},
+  {name:'Blade Tempest, cost: '{Y}{Y}',
+   requirement: {class:'Ultimate'}, 
+   effect: {class: 'Strike', damage: 1}}
  ]},
 
 {id: 'MordrathPlagueKing', name: 'Mordrath, Plague King', rarity: 'Legendary', image: 'CardImages/Skullframe/Mordrath, Plague King.png', 
  category: 'Creature', color: 'Purple', type: ['Undead', 'Warrior'], trait: 'Champion', hp: 6, atk: 1, def: 1,
  cost: '{P}{P}{P}', archetype: '', ability: ['Immunity','Venom'], set: 'StandardPack',
  skill: [
- {name: 'Reanimate', cost: '{1}{P}{P}',
-  effect: {class: 'Reanimate'}},
- {name: 'Blightfall Slash', cost: '{P}{P}', 
- requirement: [{class: 'Ultimate'}, {class: 'CCW'}]},
- effect: {class: 'Strike', damage: 1}}
+  {name: 'Reanimate', cost: '{1}{P}{P}',
+   effect: {class: 'Reanimate'}},
+  {name: 'Blightfall Slash', cost: '{P}{P}', 
+   requirement: [{class: 'Ultimate'}, {class: 'CCW'}]},
+   effect: {class: 'Strike', damage: 1}}
  ]},
 
 {id: 'GravokDrakzulTyrant', name: 'Gravok, Drakzul Tyrant', rarity: 'Legendary', image: 'CardImages/Skullframe/Gravok, Drakzul Tyrant.png', 
  category: 'Creature', color: 'Gray', type: 'Warrior', trait: 'Champion', hp: 10, atk: 2, def: 1,
  cost: '{C}{C}{C}', archetype: '', ability: ['Armor','Crush'], set: 'StandardPack',
  skill: [
-  {name: 'Seismic Smite', cost: '{C}',
-  requirement: [{class:'Ultimate'}, {class: 'CCW'}], 
-  effect: {class: 'Strike', damage: 1}}
+  {name: 'Bloomchant', cost: '{c}',
+   requirement: [{class:'Special'}, {class: 'CW'}], 
+   effect: {class: 'Armor', amount: 2}},
+  {name: 'Seismic Smite', cost: '{c}{C}',
+   requirement: [{class:'Ultimate'}, {class: 'CCW'}], 
+   effect: {class: 'Strike', damage: 1}}
  ]},
 
 {id: 'VelmiraMistressofSilence', name: 'Velmira, Mistress of Silence', rarity: 'Legendary', image: 'CardImages/Skullframe/Velmira, Mistress of Silence.png', 
@@ -73,12 +88,15 @@ const dummyCards = [
  ]},
 
 {id: 'ElyndraDawnbladeofHeavens', name: 'Elyndra, Dawnblade of Heavens', rarity: 'Legendary', image: 'CardImages/Skullframe/Elyndra, Dawnblade of Heavens.png', 
- category: 'Creature', color: 'White', type: 'Warrior', trait: 'Champion', hp: 10, atk: 2, def: 1,
+ category: 'Creature', color: 'White', type: 'Warrior', trait: 'Champion', hp: 11, atk: 1, def: 1,
  cost: '{W}{W}{W}', archetype: '', ability: ['Aegis','Veil'], set: 'StandardPack',
  skill: [
+  {name: 'Bloomchant', cost: '{w}',
+   requirement: [{class:'Special'}, {class: 'CW'}], 
+   effect: {class: 'Inspire', amount: 2}},
   {name: 'Radiant Severance', cost: '{w}{W}',
-  requirement: [{class: 'Ultimate'}, {class:'CCW'}], 
-  effect: {class: 'Strike', status: 'Aegis'}
+   requirement: [{class: 'Ultimate'}, {class:'CCW'}], 
+   effect: {class: 'Strike', status: 'Aegis'}
  ]},
 
 // DRAGONS //
