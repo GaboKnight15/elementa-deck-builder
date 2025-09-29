@@ -107,7 +107,7 @@ const dummyCards = [
  skill: [
   {name: 'Reveal', cost: '{g}',
    requirement: {class: 'Reveal'},
-   resolution: {effect: 'Inspire', ability: 'Protect'}},
+   resolution: {effect: 'Inspire', ability: 'Protect', def: 1}},
   {name: 'Defender', 
    activation: {class: 'Defender'},
    resolution: {effect: 'Search', archetype: 'Thornwing'}},
