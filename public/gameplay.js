@@ -3010,7 +3010,7 @@ function addEssence(cardObj, type, amount) {
 function consumeEssence(cardObj, type, amount) {
   let essenceStr = cardObj.essence || "";
   for (let i = 0; i < amount; i++) {
-    essenceStr = essenceStr.replace(new RegExp(`\\{${type}\\}`), "");
+    essenceStr = essenceStr.replace(new RegExp(`\\{${type}\\}`, "i"), "");
   }
   cardObj.essence = essenceStr;
   renderGameState();
