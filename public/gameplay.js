@@ -1349,7 +1349,7 @@ Token: {
       .filter(Boolean);
 
     // Auto-summon if only one choice and amount > 1
-    if (tokenDefs.length === 1 && amount > 1) {
+    if (tokenDefs.length === 1) {
       for (let i = 0; i < amount; i++) {
         summonTokenInstance(tokenDefs[0], sourceCardObj);
       }
