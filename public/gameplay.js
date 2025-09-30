@@ -645,7 +645,7 @@ const SKILL_EFFECT_MAP = {
       startSkillTarget(
         allFieldCards,
         selectedTarget => {
-          let damage = step.damage || 0;
+          const damage = step.amount != null ? step.amount : ...;
           if (damage > 0) dealDamage(sourceCardObj, selectedTarget, damage);
 
           // Apply status effects (single or array)
@@ -668,7 +668,7 @@ Burst: {
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
     const targets = [...gameState.opponentCreatures, ...gameState.opponentDomains];
     targets.forEach(target => {
-      let damage = step.damage || 0;
+      const damage = step.amount != null ? step.amount : ...;
       if (damage > 0) dealDamage(sourceCardObj, target, damage);
       // General status effect logic: apply any status flagged in step
       let statuses = Array.isArray(step.status) ? step.status : (step.status ? [step.status] : []);
