@@ -1131,6 +1131,38 @@ Banish: {
       });
     }
   },
+Essence: {
+  icon: 'OtherImages/skillEffect/Essence.png',
+  name: 'Essence',
+  description: 'Gain Essence based on colors and amount.',
+  // step should have: { color: "{g}{g}{r}" } or similar
+  handler: function(cardObj, skillObj, effectStep, nextEffect) {
+    let colorStr = effectStep.color || effectStep.colors || effectStep.essence || "";
+    if (!colorStr) {
+      showToast && showToast("No Essence string provided.");
+      nextEffect && nextEffect();
+      return;
+    }
+    // Match all {x} or {X}
+    const matches = colorStr.match(/\{([gruypbwc0-9]+)\}/gi);
+    if (!matches) {
+      showToast && showToast("No valid Essence found in string.");
+      nextEffect && nextEffect();
+      return;
+    }
+    // Add each essence symbol to the cardObj
+    matches.forEach(m => {
+      const type = m.replace(/[{}]/g, '').toUpperCase();
+      if ("GRUYCPBW".includes(type)) {
+        addEssence(cardObj, type, 1);
+      } else if (!isNaN(type)) {
+        addEssence(cardObj, "colorless", Number(type));
+      }
+    });
+    renderGameState && renderGameState();
+    nextEffect && nextEffect();
+  }
+},
   Fuse: {
     icon: 'OtherImages/skillEffect/Fuse.png',
     name: 'Fuse',
@@ -1304,42 +1336,32 @@ Evolution: {
   }
 },
 Token: {
-  icon: 'OtherImages/skillEffect/Token.png',
-  name: 'Token',
-  description: 'Summon a token to the battlefield.',
-  handler: function(sourceCardObj, skillObj) {
-    // Get the token type/name from resolution
-    const resolution = skillObj.resolution || {};
-    const tokenId = resolution.token;
-    if (!tokenId) {
-      showToast("No token specified for Token effect.");
+  icon: "OtherImages/skillEffect/Token.png",
+  name: "Token",
+  description: "Summon one or more tokens to the battlefield.",
+  handler: function(sourceCardObj, skillObj, effectStep, nextEffect) {
+    let choices = effectStep.tokenChoices || effectStep.tokens || effectStep.choices;
+    let amount = Number(effectStep.amount) || 1;
+    if (!choices) choices = [effectStep.tokenId || effectStep.token];
+    if (!Array.isArray(choices)) choices = [choices];
+    const tokenDefs = choices
+      .map(tokenId => dummyCards.find(c => c.id === tokenId && c.isToken))
+      .filter(Boolean);
+
+    // Auto-summon if only one choice and amount > 1
+    if (tokenDefs.length === 1 && amount > 1) {
+      for (let i = 0; i < amount; i++) {
+        summonTokenInstance(tokenDefs[0], sourceCardObj);
+      }
+      nextEffect && nextEffect();
       return;
     }
-    // Find token card data in your dummyCards or tokens data
-    const tokenData = dummyCards.find(c => c.name === tokenId || c.id === tokenId);
-    if (!tokenData) {
-      showToast(`Token "${tokenId}" not found.`);
-      return;
-    }
-    // Create instance of the token
-    const tokenInstance = {
-      ...tokenData,
-      instanceId: `token_${tokenData.id}_${Math.random().toString(36).slice(2,10)}`,
-      isToken: true,
-      owner: "player",        // Or "opponent" if you want to support that
-      currentHP: tokenData.hp
-    };
-    // Place in the correct field; typically creatures (could add logic for other categories)
-    if (isCreature(tokenData)) {
-      gameState.playerCreatures.push(tokenInstance);
-    } else if (isDomain(tokenData)) {
-      gameState.playerDomains.push(tokenInstance);
-    } else {
-      showToast("Token is not a valid field card.");
-      return;
-    }
-    renderGameState();
-    setupDropZones && setupDropZones();
+
+    // Modal for multiple token choices or for amount > 1 with multiple options
+    showTokenSelectionModal(tokenDefs, amount, selectedDefs => {
+      selectedDefs.forEach(tokenDef => summonTokenInstance(tokenDef, sourceCardObj));
+      nextEffect && nextEffect();
+    });
   }
 },
   Drought:      { handler: weatherSetter("Drought") },
@@ -5444,6 +5466,104 @@ function handleEndPhaseStatuses() {
     }
   });
   renderGameState();
+}
+
+// ----------------------------------- //
+// --- Card Field Helper Functions --- //
+// ----------------------------------- //
+function summonTokenInstance(tokenDef, ownerCardObj) {
+  const tokenInstance = {
+    ...tokenDef,
+    instanceId: "token_" + tokenDef.id + "_" + Math.random().toString(36).slice(2, 10),
+    isToken: true,
+    owner: getCardOwner(ownerCardObj),
+    currentHP: tokenDef.hp
+  };
+  // Place in correct battlefield array
+  if (tokenDef.category && tokenDef.category.toLowerCase() === "creature") {
+    if (tokenInstance.owner === "player") gameState.playerCreatures.push(tokenInstance);
+    else gameState.opponentCreatures.push(tokenInstance);
+  } else if (tokenDef.category && tokenDef.category.toLowerCase() === "domain") {
+    if (tokenInstance.owner === "player") gameState.playerDomains.push(tokenInstance);
+    else gameState.opponentDomains.push(tokenInstance);
+  }
+  renderGameState();
+  setupDropZones && setupDropZones();
+},
+function showTokenSelectionModal(tokenDefs, amount, onComplete) {
+  // Remove any existing modal
+  let modal = document.getElementById('token-selection-modal');
+  if (modal) modal.remove();
+
+  modal = document.createElement('div');
+  modal.id = 'token-selection-modal';
+  modal.className = 'modal';
+  modal.style.display = 'flex';
+  modal.style.alignItems = 'center';
+  modal.style.justifyContent = 'center';
+  modal.style.zIndex = 99999;
+  modal.onclick = function(e) { if (e.target === modal) modal.remove(); };
+
+  const content = document.createElement('div');
+  content.className = 'modal-content';
+  content.style.display = 'flex';
+  content.style.flexDirection = 'column';
+  content.style.alignItems = 'center';
+  content.style.gap = '18px';
+  content.onclick = e => e.stopPropagation();
+
+  content.innerHTML = `<h3>Choose ${amount} Token${amount > 1 ? "s" : ""} to Summon</h3>
+    <div style="display:flex;gap:24px;justify-content:center;" id="token-choice-row"></div>
+    <button class="btn-negative-secondary" id="token-cancel-btn" style="margin-top:16px;">Cancel</button>`;
+  modal.appendChild(content);
+  document.body.appendChild(modal);
+
+  // Add token options
+  const row = content.querySelector('#token-choice-row');
+  tokenDefs.forEach((tokenDef, idx) => {
+    const div = document.createElement('div');
+    div.className = 'token-choice';
+    div.style.cursor = "pointer";
+    div.style.display = "flex";
+    div.style.flexDirection = "column";
+    div.style.alignItems = "center";
+    div.style.transition = "box-shadow 0.13s, border 0.13s";
+    div.innerHTML = `
+      <img src="${tokenDef.image}" alt="${tokenDef.name}" style="width:80px;height:auto;border-radius:8px;box-shadow:0 2px 8px #000b;">
+      <div style="margin-top:6px;font-weight:bold;color:#ffe066;">${tokenDef.name}</div>
+    `;
+    row.appendChild(div);
+  });
+
+  // Multi-select logic
+  let selected = [];
+  Array.from(row.children).forEach((div, idx) => {
+    div.onclick = function() {
+      // If already selected, deselect
+      const selIdx = selected.indexOf(idx);
+      if (selIdx !== -1) {
+        selected.splice(selIdx, 1);
+        div.style.boxShadow = "";
+        div.style.border = "";
+      } else if (selected.length < amount) {
+        selected.push(idx);
+        div.style.boxShadow = "0 0 0 4px #ffe066aa";
+        div.style.border = "2px solid #ffe066";
+      }
+      // If selection is full, auto-complete
+      if (selected.length === amount) {
+        setTimeout(() => {
+          modal.remove();
+          onComplete(selected.map(i => tokenDefs[i]));
+        }, 250);
+      }
+    };
+  });
+
+  // Deselect on cancel
+  content.querySelector('#token-cancel-btn').onclick = function() {
+    modal.remove();
+  };
 }
 
 // ----------------------------------- //
