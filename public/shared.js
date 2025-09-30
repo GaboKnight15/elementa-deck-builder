@@ -13,7 +13,7 @@ const dummyCards = [
    effect: {class: 'essenceGreen', amount: 2}},
   {name: "Briar Queen's Grasp", cost: '{G}',
    requirement: [{class:'Ultimate'}, {class: 'CCW'}], 
-   effect: {class: 'Strike', damage: 3, status: 'Bind'}},
+   effect: {class: 'Strike', amount: 3, status: 'Bind'}},
   ]},
 
 {id: 'KaelenBlazebornHuntress', name: 'Kaelen, Blazeborn Huntress', rarity: 'Legendary', image: 'CardImages/Skullframe/Kaelen, Blazeborn Huntress.png', 
@@ -25,7 +25,7 @@ const dummyCards = [
    effect: {class: 'essenceGreen', amount: 2}},
   {name: 'Scorching Skyfall', cost: '{R}{R}',
    requirement: {class:'Ultimate'}, 
-   effect: {class: 'Burst', damage: 1, status: 'Burn'}}
+   effect: {class: 'Burst', amount: 1, status: 'Burn'}}
   ]},
 
 {id: 'ZaryonPearlhavenCommander', name: 'Zaryon, Pearlhaven Commander', rarity: 'Legendary', image: 'CardImages/Skullframe/Zaryon, Pearlhaven Commander.png', 
@@ -37,7 +37,7 @@ const dummyCards = [
    effect: {class: 'essenceGreen', amount: 2}},
   {name: 'Tidepiercer Vortex', cost: '{U}',
    requirement: {class: 'Ultimate'},
-   effect: {class: 'Strike', damage: 2, status: 'Soak'}}
+   effect: {class: 'Strike', amount: 2, status: 'Soak'}}
  ]},
 
 {id: 'ZyraThunderbladeDuelist', name: 'Zyra, Thunderblade Duelist', rarity: 'Legendary', image: 'CardImages/Skullframe/Zyra, Thunderblade Duelist.png', 
@@ -49,7 +49,7 @@ const dummyCards = [
    effect: {class: 'essenceGreen', amount: 2}},
   {name:'Blade Tempest, cost: '{Y}{Y}',
    requirement: {class:'Ultimate'}, 
-   effect: {class: 'Strike', damage: 1}}
+   effect: {class: 'Strike', amount: 1}}
  ]},
 
 {id: 'MordrathPlagueKing', name: 'Mordrath, Plague King', rarity: 'Legendary', image: 'CardImages/Skullframe/Mordrath, Plague King.png', 
@@ -60,7 +60,7 @@ const dummyCards = [
    effect: {class: 'Reanimate'}},
   {name: 'Blightfall Slash', cost: '{P}{P}', 
    requirement: [{class: 'Ultimate'}, {class: 'CCW'}]},
-   effect: {class: 'Strike', damage: 1}}
+   effect: {class: 'Strike', amount: 1}}
  ]},
 
 {id: 'GravokDrakzulTyrant', name: 'Gravok, Drakzul Tyrant', rarity: 'Legendary', image: 'CardImages/Skullframe/Gravok, Drakzul Tyrant.png', 
@@ -72,7 +72,7 @@ const dummyCards = [
    effect: {class: 'Armor', amount: 2}},
   {name: 'Seismic Smite', cost: '{c}{C}',
    requirement: [{class:'Ultimate'}, {class: 'CCW'}], 
-   effect: {class: 'Strike', damage: 1}}
+   effect: {class: 'Strike', amount: 1}}
  ]},
 
 {id: 'VelmiraMistressofSilence', name: 'Velmira, Mistress of Silence', rarity: 'Legendary', image: 'CardImages/Skullframe/Velmira, Mistress of Silence.png', 
@@ -84,7 +84,7 @@ const dummyCards = [
    effect: {class: 'Seal'}},
   {name: 'Eternal Silence', cost: '{b}{b}',
    requirement: [{class:'Ultimate'}, {class: 'CCW'}], 
-   effect: {class: 'Burst', damage: 0}, status: 'Seal'}
+   effect: {class: 'Burst', amount: 0, status: 'Seal'}
  ]},
 
 {id: 'ElyndraDawnbladeofHeavens', name: 'Elyndra, Dawnblade of Heavens', rarity: 'Legendary', image: 'CardImages/Skullframe/Elyndra, Dawnblade of Heavens.png', 
@@ -93,7 +93,7 @@ const dummyCards = [
  skill: [
   {name: 'Bloomchant', cost: '{w}',
    requirement: [{class:'Special'}, {class: 'CW'}], 
-   effect: {class: 'Inspire', amount: 2}},
+   effect: {class: 'Inspire', def: 1}},
   {name: 'Radiant Severance', cost: '{w}{W}',
    requirement: [{class: 'Ultimate'}, {class:'CCW'}], 
    effect: {class: 'Strike', status: 'Aegis'}
@@ -124,10 +124,10 @@ const dummyCards = [
  skill: [
   {name: 'Reveal', cost: '{R}',
    requirement: {class: 'Reveal'}
-   resolution: {effect: 'Strike', damage: 1, status: 'Burn'}},
+   resolution: {effect: 'Strike', amount: 1, status: 'Burn'}},
   {name: 'Cataclysmic Blaze', cost: '{r}{r}{R}',
    requirement: [{class: 'Ultimate'}, {class: 'CCW'}], 
-   effect: {class: 'Burst', damage: 3, status: 'Burn'}},
+   effect: {class: 'Burst', amount: 3, status: 'Burn'}},
   {name: 'Evolution', cost: '{r}{r}',
    effect: {class: 'Evolution'}}
   ]},
@@ -141,7 +141,7 @@ const dummyCards = [
    resolution: {effect: 'Search', category: 'Domain', color: 'Blue'}},
   {name: 'Ocean's Requiem', cost: '{u}{u}',
    requirement: [{class: 'Ultimate'}, {class:'CCW'}], 
-   effect: {class: 'Burst', damage: 3, status: 'Burn'}},
+   effect: {class: 'Burst', amount: 3, status: 'Burn'}},
   {name: 'Evolution', cost: '{u}{u}',
    effect: {class: 'Evolution'}}
  ]},
@@ -155,7 +155,7 @@ const dummyCards = [
    resolution: {effect: 'Search', category: 'Spell', color: 'Yellow'}},
   {name: 'Electro Burst', cost: '{y}',
    requirement: [{class: 'Ultimate'}, {class:'CCW'}], 
-   effect: {class: 'Burst', damage: 1}},
+   effect: {class: 'Burst', amount: 1}},
   {name: 'Evolution', cost: '{y}{y}',
    effect: {class: 'Evolution'}}
  ]},
@@ -290,7 +290,7 @@ const dummyCards = [
    effect: {class: 'Dash'}},
   {name: 'Shadowfeather Storm', cost: '{B}{Y}',
    requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
-   effect: {class: 'Burst', damage: 1}}
+   effect: {class: 'Burst', amount: 1}}
  ]},
 
 {id: 'GarudaWingsofZephyra', name: 'Garuda, Wings of Zephyra', rarity: 'Legendary', image: 'CardImages/Zephyra/Garuda, Wings of Zephyra.png', 
@@ -301,7 +301,7 @@ const dummyCards = [
    effect: {class: 'Dash'}},
   {name: 'Featherfall Tempest', cost: '{Y}{W}',
    requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
-   effect: {class: 'Burst', damage: 1}}
+   effect: {class: 'Burst', amount: 1}}
  ]},
 */
  
@@ -317,7 +317,7 @@ const dummyCards = [
  skill: [
   {name:'Discard', cost: '{r}',
    requirement: {class: 'Discard'},
-   effect: {class: 'Strike', damage: 0, status: 'Burn'}},
+   effect: {class: 'Strike', amount: 0, status: 'Burn'}},
  ]},
 {id: 'Fire Pixie', name: 'Fire Pixie', rarity: 'Common', image: 'CardImages/BasicCreatures/FirePixie.png', 
  category: 'Creature', color: 'Red', type: 'Fairy', hp: 3, atk: 2, def: 0,
@@ -450,7 +450,7 @@ const dummyCards = [
  skill: [
   {name: 'Heavenstep Radiance', cost: '{W}',
    requirement: {class: 'CCW'},
-   effect: {class: 'Strike', damage: 3}}
+   effect: {class: 'Strike', amount: 3}}
  ]},
 {id: 'LightPossessedArmor', name: 'Light Possessed Armor', rarity: 'Rare', image: 'CardImages/BasicCreatures/Light Possessed Armor.png', 
  category: 'Creature', color: 'White', type: 'Construct', hp: 4, atk: 3, def: 1, cost: '{1}{W}', 
@@ -464,7 +464,7 @@ const dummyCards = [
  skill: [
   {name: 'XXX', cost: '{W}',
    requirement: {class: 'CCW'},
-   effect: {class: 'XXX', damage: X}}
+   effect: {class: 'XXX', amount: X}}
  ]},
 
 {id: 'Jackalope', name: 'Jackalope', rarity: 'Rare', image: 'CardImages/Hybrids/Jackalope.png', 
@@ -508,7 +508,7 @@ const dummyCards = [
  skill: [
   {name: 'Scorch Protocol', cost: '{1}{R}', 
    requirement: {class: 'Special'},
-   effect: [{class: 'Search', archetype: 'Cindercore'}, {class: 'Strike', damage: 0, status: 'Burn'}]},
+   effect: [{class: 'Search', archetype: 'Cindercore'}, {class: 'Strike', amount: 0, status: 'Burn'}]},
   {name: 'Fuse', cost: '{R}{R}', 
    effect: {class: 'Fuse'}}
  ]},
@@ -518,7 +518,7 @@ const dummyCards = [
  skill: [
   {name: 'Volcanic Vortex', cost: '{1}{R}', 
    requirement: [{class: 'Special'}, {class: 'CCW'}],
-   effect: {class: 'Strike', damage: 3, status: ['Burn','Bind']}},
+   effect: {class: 'Strike', amount: 3, status: ['Burn','Bind']}},
   {name: 'Fuse', cost: '{R}', 
    effect: {class: 'Fuse'}}
  ]},
@@ -528,7 +528,7 @@ const dummyCards = [
 skill: [
   {name: 'Fire Pulse', cost: '{R}', 
    requirement: [{class: 'Special'}, {class: 'CCW'}], 
-   effect: {class: 'Burst', damage: 1, status: 'Burn'}},
+   effect: {class: 'Burst', amount: 1, status: 'Burn'}},
  {name: 'Fuse', cost: '{R}', 
    effect: {class: 'Fuse'}}
  ]},
@@ -538,7 +538,7 @@ skill: [
  skill: [
   {name: 'Volcanic Vortex', cost: '{1}{R}',
    requirement: [{class: 'Special'}, {class: 'CCW'}],
-   effect: {class: 'Strike', damage: 3, status: ['Burn','Bind']}}
+   effect: {class: 'Strike', amount: 3, status: ['Burn','Bind']}}
  ]},
 {id: 'IgnavarynCindercoreAutomaton', name: 'Ignavaryn, Cindercore Automaton', rarity: 'Legendary', image: 'CardImages/Cindercore/Ignavaryn, Cindercore Automaton.png', 
  category: 'Creature', color: 'Red', type: 'Construct', hp: 5, armor: 10, atk: 6, def: 3,
@@ -546,13 +546,13 @@ skill: [
  skill: [
   {name: 'Stash', cost: '{R}', 
    requirement: {class: 'Stash'},
-   effect: {class: 'Strike', damage: 2, status: 'Burn'}},
+   effect: {class: 'Strike', amount: 2, status: 'Burn'}},
   {name: 'Thermal Overdrive', cost: '{r}{r}{R}', 
    requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
-   effect: {class: 'Burst', damage: 3, status: 'Burn'}},
+   effect: {class: 'Burst', amount: 3, status: 'Burn'}},
   {name: 'Recycle', cost: '{R}', 
    effect: {class: 'Recycle'},
-   resolution: {class: 'Strike', damage: 2, status: 'Burn'}},
+   resolution: {class: 'Strike', amount: 2, status: 'Burn'}},
   {name: 'Fusion', cost: '{r}{r}{r}', 
    effect: {class: 'Fusion'}}
  ]},
@@ -610,7 +610,7 @@ skill: [
  skill: [
   {name: 'Discard', cost: '{r}', 
    requirement: {class: 'Discard'},
-   effect: {class: 'Strike', damage: 3, status: 'Burn'}},
+   effect: {class: 'Strike', amount: 3, status: 'Burn'}},
   {name: 'Void Evolution', cost: '{r}{r}', 
    effect: {class: 'VoidEvolution'}}
  ]},
@@ -631,7 +631,7 @@ skill: [
    effect: {class: 'Armor', amount: 4}},
   {name: 'Moltern Aegis Nova', cost: '{r}{r}{c}',
    requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
-   effect: {class: 'Burst', damage: 3, status: 'Burn'}},
+   effect: {class: 'Burst', amount: 3, status: 'Burn'}},
   {name: 'Void Fusion', cost: '{r}{c}', 
    effect: {class: 'Void Fusion'}}
  ]},
@@ -728,7 +728,7 @@ skill: [
     effect: {class: 'Search', archetype: 'Coralbound'}},
   {name: 'Hydroburst Cannon', cost: '{U}{U}', 
    requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
-   effect: {class: 'Strike', damage: 8, status: 'Soak'}},
+   effect: {class: 'Strike', amount: 8, status: 'Soak'}},
   {name: 'Fusion', cost: '{3}{U}{U}', 
    effect: {class: 'Fusion'}}
  ]},
@@ -743,7 +743,7 @@ skill: [
     effect: {class: 'Essence'}},
   {name: 'Sunfire Blast', cost: '{r}{r}{w}', 
    requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
-   effect: {class: 'Burst', damage: 2, status: 'Burn'}},
+   effect: {class: 'Burst', amount: 2, status: 'Burn'}},
   {name: 'Evolve', cost: '{g}{w}', 
    effect: {class: 'Evolve'}}
  ]},
@@ -769,7 +769,7 @@ skill: [
    effect: {class: 'Purify'}},
   {name: 'Dewlight Spiral', cost: '{G}{W}',
    requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
-   effect: [{class: 'Sunlight'}, {class: 'Strike', damage: 3}]}
+   effect: [{class: 'Sunlight'}, {class: 'Strike', amount: 3}]}
  ]},
 // Goblins //
 
@@ -848,7 +848,7 @@ skill: [
  skill: [
   {name: 'Curseflame Inferno', cost: '{2}{P}{P}{B}', 
    requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
-   effect: {class: 'Burst', damage: 2, status: 'Burn'}},
+   effect: {class: 'Burst', amount: 2, status: 'Burn'}},
   {name: 'Reanimate', cost: '{3}{B}{B}', 
    effect: {class: 'Reanimate'}}
  ]},
@@ -865,7 +865,7 @@ skill: [
  skill: [
   {name: 'Ebonhex Flare', cost: '{P}{B}', 
    requirement: [{class: 'Special'}, {class: 'CCW'}], 
-   effect: {class: 'Strike', damage: 3, status:'Burn'}},
+   effect: {class: 'Strike', amount: 3, status:'Burn'}},
   {name: 'Ebonhex Crush', cost: '{B}', 
    requirement: [{class: ' Ultimate'}, {class: 'CCW'}], 
    effect: {class: 'Exploit'}},
@@ -878,7 +878,7 @@ skill: [
  skill: [
   {name: 'Hexbind', cost: '{P}{B}', 
    requirement: [{class: 'Special'}, {class: 'CCW'}],
-   effect: {class: 'Strike', damage: 4, status: ['Bind','Poison']}},
+   effect: {class: 'Strike', amount: 4, status: ['Bind','Poison']}},
   {name: 'Hexblast', cost: '{B}',  
    requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
    effect: {class: 'Exploit'}},
