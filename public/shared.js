@@ -225,8 +225,9 @@ const dummyCards = [
   {name: 'Mystveil',
    activation: {class: 'Arrival'},
    effect: {class: 'Mystveil'}},
-  {name: 'Manifest',
-   effect: {class: 'Token', name: 'Satyr'}},
+  {name: 'Manifest', cost: '{g}'
+   requirement: [{class: 'Special}, {class: 'CW'}],
+   effect: {class: 'Token', tokenChoices: ['SatyrTokenGreen', 'SatyrTokenRed', 'SatyrTokenPurple'], amount: 1}},
   {name: 'Satyr Echo',
    activation: {class: 'Echo', type: 'Satyr'},
    effect: {class: 'Heal', amount: 3}},
@@ -423,9 +424,9 @@ const dummyCards = [
   {name: 'Arrival',
    activation: {class: 'Arrival'}
    effect: {class: 'Token', name: 'Treant'}},
-  {name: 'Manifest', cost: '{g}{b}',
-   requirement: {class: 'CCW'},
-   effect: {class: 'Token', name: 'Treant'}},
+  {name: 'Manifest', cost: '{g}{b}'
+   requirement: [{class: 'Special}, {class: 'CW'}],
+   effect: {class: 'Token', tokenChoices: 'TreantToken', amount: 1}},
   {name: 'Recycle', cost: '{g}{b}',
    requirement: {class: 'Recycle'},
    effect: {class: 'Token', name: 'Treant'}}
@@ -1184,6 +1185,12 @@ White Domains
  category: 'Creature', color: 'Black', type: 'Goblin', hp: 3, atk: 1, def: 0},
 {id: 'FairyTokenGreen', name: 'Forest Fairy', rarity: 'Common', image: 'CardImages/Tokens/FairyTokenGreen.png', 
  category: 'Creature', color: 'Green', type: 'Fairy', hp: 1, atk: 1, def: 0, archetype: 'Fairy', ability: 'Flying'},
+{id: 'SatyrTokenGreen', name: 'Sylvan Satyr', rarity: 'Common', image: 'CardImages/Tokens/SatyrTokenGreen.png', 
+ category: 'Creature', color: 'Green', type: 'Satyr', hp: 4, atk: 1, def: 1, ability: 'Protect'},
+{id: 'SatyrTokenRed', name: 'Inferno Satyr', rarity: 'Common', image: 'CardImages/Tokens/SatyrTokenRed.png', 
+ category: 'Creature', color: 'Red', type: 'Satyr', hp: 2, atk: 1, def: 0, ability: 'Rush'},
+{id: 'SatyrTokenPurple', name: 'Corrupted Satyr', rarity: 'Common', image: 'CardImages/Tokens/SatyrTokenPurple.png', 
+ category: 'Creature', color: 'Purple', type: 'Satyr', hp: 2, atk: 1, def: 0, ability: ['Ranged','Venom']},
 {id: 'TreantToken', name: 'Treant', rarity: 'Rare', image: 'CardImages/Tokens/TreantToken.png', 
  category: 'Creature', color: ['Green', 'Black'], type: 'Arbor', hp: 5, atk: 2, def: 1},
 {id: 'PhoenixAshes', name: 'Phoenix Ashes', rarity: 'Rare', image: 'CardImages/Tokens/PhoenixAshes.png', 
