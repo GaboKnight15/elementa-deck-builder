@@ -310,10 +310,15 @@ const dummyCards = [
  cost: '{0}', archetype: 'Fairy', ability: 'Flying', set: 'StandardPack'},
 {id: 'ForestGoblin', name: 'Forest Goblin', rarity: 'Common', image: 'CardImages/BasicCreatures/Goblin.png', 
  category: 'Creature', color: 'Green', type: 'Goblin', hp: 3, atk: 1, def: 0,
- cost: '{0}', archetype: 'Goblin', set: 'StandardPack'},
+ cost: '{0}', set: 'StandardPack'},
 {id: 'Emberling', name: 'Emberling', rarity: 'Common', image: 'CardImages/BasicCreatures/Emberling.png', 
  category: 'Creature', color: 'Red', type: 'Beast', hp: 3, atk: 2, def: 0,
- cost: '{0}', archetype: 'Firelands', ability: 'Burn', set: 'StandardPack'},
+ cost: '{0}', archetype: 'Firelands', ability: 'Burn', set: 'StandardPack',
+ skill: [
+  {name:'Discard', cost: '{r}',
+   requirement: {class: 'Discard'},
+   effect: {class: 'Strike', damage: 0, status: 'Burn'}},
+ ]},
 {id: 'Fire Pixie', name: 'Fire Pixie', rarity: 'Common', image: 'CardImages/BasicCreatures/FirePixie.png', 
  category: 'Creature', color: 'Red', type: 'Fairy', hp: 3, atk: 2, def: 0,
  cost: '{0}', archetype: 'Pixiebound', ability: ['Burn','Flying'], set: 'StandardPack'},
@@ -339,7 +344,11 @@ const dummyCards = [
  ]},
 {id: 'Wolf', name: 'Wolf', rarity: 'Common', image: 'CardImages/BasicCreatures/Wolf.png', 
  category: 'Creature', color: 'Black', type: 'Beast', hp: 3, atk: 2, def: 0,
- cost: '{1}', archetype: 'Moonfang', ability: 'Ambush', set: 'StandardPack'},
+ cost: '{1}', archetype: 'Moonfang', ability: 'Ambush', set: 'StandardPack',
+ skill: [
+  {name: 'Transform', cost: '{b}{b}',
+   effect: {class: 'Transform', name: 'Werewolf'}},
+ ]},
 {id: 'Skeleton', name: 'Skeleton', rarity: 'Common', image: 'CardImages/BasicCreatures/Skeleton.png',
  category: 'Creature', color: 'Black', type: 'Undead', hp: 1, atk: 1, def: 0,
  cost: '{0}', archetype: 'Skullframe', ability: 'Immunity', set: 'StandardPack',
@@ -664,15 +673,15 @@ skill: [
    effect: {class: 'Fuse'}},  
  ]},
 {id: 'KaelgorranElementalPrimordial', name: 'Kaelgorran, Elemental Primordial', rarity: 'Legendary', image: 'CardImages/Golems/Kaelgorran, Elemental Primordial.png', 
- category: 'Creature', color: ['Green','Red', 'Gray'], type: ['Elemental','Golem'], hp: 18, atk: 6, def: 3, cost: '{4}{R}{C}',
+ category: 'Creature', color: ['Green','Red', 'Gray'], type: ['Elemental','Golem'], hp: 20, armor: 8, atk: 6, def: 4, cost: '{4}{R}{C}',
  archetype: 'Golemheart', ability: 'Burn', trait: 'Fusion', set: 'Primordial Ascension',
  skill: [
   {name: 'Discard', cost: '{c}', 
    requirement: {class: 'Discard'},
    effect: {class: 'Search', type: 'Golem'}},
-  {name: 'Echo', cost: '{r}',
+  {name: 'Echo', 
    activation: {class: 'Echo'},
-   effect: {class: 'Strike', status: 'Burn', amount: 3}},
+   effect: {class: 'Token', tokenChoices: ['ElementalTokenGray', 'ElementalTokenGreen', 'ElementalTokenRed'], amount: 2}},
   {name: 'Fusion', cost: '{g}{r}{c}', 
    effect: {class: 'Fusion'}},  
  ]},
@@ -762,7 +771,24 @@ skill: [
    requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
    effect: [{class: 'Sunlight'}, {class: 'Strike', damage: 3}]}
  ]},
+// Goblins //
 
+{id: 'GoblinWarlod', name: 'Goblin Warlod', rarity: 'Legendary', image: 'CardImages/Goblins/GoblinWarlod.png', 
+ category: 'Creature', color: ['Green', 'Purple', 'Black'], type: ['Goblin', 'Mage'], hp: 13, atk: 4, def: 1,
+ cost: '{g}{p}{b}', archetype: 'Goblin', ability: 'Ranged', set: 'StandardPack'
+ skill: [
+  {name: 'Inspire Goblins', cost: '{g}',
+   requirement: {class:'Special'}, 
+   effect: {class: 'Inspire', type: 'Goblin', atk: 1}},
+  {name: "Discard", cost: '{b}',
+   requirement: {class:'Discard'},
+   effect: {class: 'Token', tokenChoices: ["GoblinTokenGreen", "GoblinTokenRed", "GoblinTokenPurple", "GoblinTokenGray", "GoblinTokenBlack"]}
+  },
+  {name: "Arrival", 
+   activation: {class:'Arrival'},
+   effect: {class: 'Token', tokenChoices: ["GoblinTokenGreen", "GoblinTokenRed", "GoblinTokenPurple", "GoblinTokenGray", "GoblinTokenBlack"]}},
+ ]},
+  
 // MOONFANG //
 
 {id: 'SinisterWolf', name: 'Sinister Wolf', rarity: 'Epic', image: 'CardImages/Moonfang/Sinister Wolf.png', 
@@ -1141,6 +1167,63 @@ White Domains
  category: 'Domain', color: 'White', type: 'Dominion', hp: 20, cost: '{0}', essence: '{W}', trait: 'Dominion', set: 'StandardPack2'},
 {id: 'Nocthyra', name: 'Nocthyra', rarity: 'Legendary', image: 'CardImages/Domains/Black Domain.png', 
  category: 'Domain', color: 'Black', type: 'Dominion', hp: 20, cost: '{0}', essence: '{B}', trait: 'Dominion', set: 'StandardPack2'},
+
+ 
+ // ---- TOKENS ---- //
+/*
+// --- Goblin Tokens --- //
+{id: 'GoblinTokenGreen', name: 'Forest Goblin', rarity: 'Common', image: 'CardImages/Tokens/GoblinTokenGreen.png', 
+ category: 'Creature', color: 'Green', type: 'Goblin', hp: 3, atk: 1, def: 0},
+{id: 'GoblinTokenRed', name: 'Smoke Goblin', rarity: 'Common', image: 'CardImages/Tokens/GoblinTokenRed.png', 
+ category: 'Creature', color: 'Red', type: 'Goblin', hp: 3, atk: 1, def: 0},
+{id: 'GoblinTokenPurple', name: 'Mire Goblin', rarity: 'Common', image: 'CardImages/Tokens/GoblinTokenPurple.png', 
+ category: 'Creature', color: 'Purple', type: 'Goblin', hp: 3, atk: 1, def: 0},
+{id: 'GoblinTokenGray', name: 'Craft Goblin', rarity: 'Common', image: 'CardImages/Tokens/GoblinTokenGray.png', 
+ category: 'Creature', color: 'Gray', type: 'Goblin', hp: 3, atk: 1, def: 0},
+{id: 'GoblinTokenBlack', name: 'Evil Goblin', rarity: 'Common', image: 'CardImages/Tokens/GoblinTokenBlack.png', 
+ category: 'Creature', color: 'Black', type: 'Goblin', hp: 3, atk: 1, def: 0},
+{id: 'FairyTokenGreen', name: 'Forest Fairy', rarity: 'Common', image: 'CardImages/Tokens/FairyTokenGreen.png', 
+ category: 'Creature', color: 'Green', type: 'Fairy', hp: 1, atk: 1, def: 0, archetype: 'Fairy', ability: 'Flying'},
+{id: 'TreantToken', name: 'Treant', rarity: 'Rare', image: 'CardImages/Tokens/TreantToken.png', 
+ category: 'Creature', color: ['Green', 'Black'], type: 'Arbor', hp: 5, atk: 2, def: 1},
+{id: 'PhoenixAshes', name: 'Phoenix Ashes', rarity: 'Rare', image: 'CardImages/Tokens/PhoenixAshes.png', 
+ category: 'Creature', color: ['Red', 'Yellow'], type: 'Avian', archetype: 'Phoenix', hp: 1, atk: 0, def: 0},
+{id: 'DragonEgg', name: 'Dragon Egg', rarity: 'Rare', image: 'CardImages/Tokens/DragonEgg.png', 
+ category: 'Creature', color: 'Red', type: 'Dragon', hp: 1, atk: 0, def: 0},
+{id: 'BirdfolkTokenYellow', name: 'Forest Fairy', rarity: 'Common', image: 'CardImages/Tokens/BirdfolkTokenYellow.png', 
+ category: 'Creature', color: 'Yellow', type: 'Avian', hp: 3, atk: 1, def: 0, archetype: 'Zephyra', ability: 'Flying'},
+{id: 'SkeletonToken', name: 'Skeleton', rarity: 'Common', image: 'CardImages/Tokens/SkeletonToken.png', 
+ category: 'Creature', color: 'Black', type: 'Undead', hp: 1, atk: 1, def: 0, ability: 'Immunity'},
+{id: 'WolfToken', name: 'Wolf', rarity: 'Common', image: 'CardImages/Tokens/WolfToken.png', 
+ category: 'Creature', color: 'Black', type: 'Beast', hp: 2, atk: 1, def: 0, ability: 'Ambush'},
+ 
+// --- Elemental Tokens --- //
+{id: 'ElementalTokenGreen', name: 'Elemental of Leaves', rarity: 'Common', image: 'CardImages/Tokens/ElementalTokenGreen.png', 
+ category: 'Creature', color: 'Green', type: 'Elemental', hp: 3, atk: 1, def: 0, skill: [
+ {name: 'Fuse', cost: '{g}{g}', effect: {class: 'Fuse'}}]},
+{id: 'ElementalTokenRed', name: 'Elemental of Embers', rarity: 'Common', image: 'CardImages/Tokens/ElementalTokenRed.png', 
+ category: 'Creature', color: 'Red', type: 'Elemental', hp: 2, atk: 2, def: 0, skill: [
+ {name: 'Fuse', cost: '{r}{r}', effect: {class: 'Fuse'}}]},
+{id: 'ElementalTokenBlue', name: 'Elemental of Droplets', rarity: 'Common', image: 'CardImages/Tokens/ElementalTokenBlue.png', 
+ category: 'Creature', color: 'Blue', type: 'Elemental', hp: 3, atk: 1, def: 0, skill: [
+ {name: 'Fuse', cost: '{u}{u}', effect: {class: 'Fuse'}}]},
+{id: 'ElementalTokenYellow', name: 'Elemental of Sparks', rarity: 'Common', image: 'CardImages/Tokens/ElementalTokenYellow.png', 
+ category: 'Creature', color: 'Yellow', type: 'Elemental', hp: 3, atk: 1, def: 0, skill: [
+ {name: 'Fuse', cost: '{y}{y}', effect: {class: 'Fuse'}}]},
+{id: 'ElementalTokenPurple', name: 'Elemental of Toxins', rarity: 'Common', image: 'CardImages/Tokens/ElementalTokenPurple.png', 
+ category: 'Creature', color: 'Purple', type: 'Elemental', hp: 3, atk: 1, def: 0, skill: [
+ {name: 'Fuse', cost: '{p}{p}', effect: {class: 'Fuse'}}]},
+{id: 'ElementalTokenGray', name: 'Elemental of Pebbles', rarity: 'Common', image: 'CardImages/Tokens/ElementalTokenGray.png', 
+ category: 'Creature', color: 'Gray', type: 'Elemental', hp: 2, armor: 2, atk: 1, def: 1, skill: [
+ {name: 'Fuse', cost: '{c}{c}', effect: {class: 'Fuse'}}]},
+{id: 'ElementalTokenBlack', name: 'Elemental of Shades', rarity: 'Common', image: 'CardImages/Tokens/ElementalTokenBlack.png', 
+ category: 'Creature', color: 'Black', type: 'Elemental', hp: 3, atk: 1, def: 0, skill: [
+ {name: 'Fuse', cost: '{b}{b}', effect: {class: 'Fuse'}}]},
+{id: 'ElementalTokenWhite', name: 'Elemental of Gleams', rarity: 'Common', image: 'CardImages/Tokens/ElementalTokenWhite.png', 
+ category: 'Creature', color: 'White', type: 'Elemental', hp: 4, atk: 1, def: 0, skill: [
+ {name: 'Fuse', cost: '{w}{w}', effect: {class: 'Fuse'}}]},
+ 
+*/
 ];
 // Cost mapping and renderer (returns HTML string)
 const COST_IMAGE_MAP = {
