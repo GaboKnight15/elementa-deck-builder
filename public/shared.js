@@ -8,6 +8,8 @@ const dummyCards = [
  category: 'Creature', color: 'Green', type: ['Elf', 'Mage'], trait: 'Champion', hp: 11, atk: 1, def: 0,
  cost: '{G}{G}{G}', archetype: 'Sylvan', ability: 'Ranged', set: 'StandardPack'
  skill: [
+  {name: 'Champion Ascent', cost: '{g}', 
+   effect: {class: 'Unseal'}, championAscend: true}
   {name: 'Bloomchant', cost: '{g}',
    requirement: [{class:'Special'}, {class: 'CW'}], 
    effect: {class: 'essenceGreen', amount: 2}},
@@ -20,11 +22,11 @@ const dummyCards = [
  category: 'Creature', color: 'Red', type: 'Warrior', trait: 'Champion', hp: 8, atk: 1, def: 0,
  cost: '{R}{R}{R}', archetype: '', ability: ['Burn','Ranged'], set: 'StandardPack',
  skill: [
-  {name: 'Bloomchant', cost: '{g}',
+  {name: 'Flameshot', cost: '{r}',
    requirement: [{class:'Special'}, {class: 'CCW'}], 
-   effect: {class: 'essenceGreen', amount: 2}},
+   effect: {class: 'Strike', status: 'Burn', amount: 3}},
   {name: 'Scorching Skyfall', cost: '{R}{R}',
-   requirement: {class:'Ultimate'}, 
+   requirement: [{class:'Ultimate'}, {class: 'CCW'}], 
    effect: {class: 'Burst', amount: 1, status: 'Burn'}}
   ]},
 
@@ -32,12 +34,12 @@ const dummyCards = [
  category: 'Creature', color: 'Blue', type: ['Merfolk', 'Warrior'], trait: 'Champion', hp: 12, atk: 2, def: 1,
  cost: '{U}{U}{U}', archetype: '', ability: ['Dive','Pierce'], set: 'StandardPack'
  skill: [
-  {name: 'Bloomchant', cost: '{g}',
-   requirement: [{class:'Special'}, {class: 'CCW'}], 
-   effect: {class: 'essenceGreen', amount: 2}},
-  {name: 'Tidepiercer Vortex', cost: '{U}',
-   requirement: {class: 'Ultimate'},
-   effect: {class: 'Strike', amount: 2, status: 'Soak'}}
+  {name: 'Deepkin Rally', cost: '{u}',
+   requirement: [{class:'Special'}, {class: 'CW'}], 
+   effect: {class: 'Token', tokenChoices: ['MerfolkWarrior', 'MerfolkMermaid'], amount: }},
+  {name: 'Tidepiercer Vortex', cost: '{u}{u}',
+   requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
+   effect: {class: 'Strike', amount: 3, status: 'Soak'}}
  ]},
 
 {id: 'ZyraThunderbladeDuelist', name: 'Zyra, Thunderblade Duelist', rarity: 'Legendary', image: 'CardImages/Skullframe/Zyra, Thunderblade Duelist.png', 
