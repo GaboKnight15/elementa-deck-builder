@@ -213,7 +213,12 @@ const STATUS_EFFECTS = {
       delete cardObj.soakAmount;
     }
     // Optionally add logic for duration ticks
-  }
+  },
+  Seal: {
+    name: "Seal",
+    icon: "OtherImages/status/seal.png",
+    description: "This card's skills cannot be activated."
+  },
   // ... add more statuses
 };
 
@@ -1131,6 +1136,35 @@ Banish: {
       });
     }
   },
+Seal: {
+  icon: "OtherImages/skillEffect/Seal.png",
+  name: "Seal",
+  description: "Disables all skills on the target card until Seal is removed.",
+  handler: function(sourceCardObj, skillObj, effectStep, nextEffect) {
+    // Assume effectStep.target is the target cardObj or its instanceId
+    let target = effectStep.target;
+    if (typeof target === "string") {
+      target = findCardByInstanceId(target);
+    }
+    if (!target) {
+      showToast && showToast("No valid target for Seal effect.");
+      nextEffect && nextEffect();
+      return;
+    }
+    applyStatus(target, "Seal");
+    renderGameState();
+    nextEffect && nextEffect();
+  }
+},
+Unseal: {
+  name: "Unseal",
+  description: "Remove Seal from this card.",
+  handler: function(cardObj, skillObj, effectStep, nextEffect) {
+    removeStatus(cardObj, "Seal");
+    renderGameState();
+    nextEffect && nextEffect();
+  }
+},
 Essence: {
   icon: 'OtherImages/skillEffect/Essence.png',
   name: 'Essence',
@@ -3216,8 +3250,10 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
     cardData.skill
     .filter(skillObj => !skillObj.activation) // Only show skills without activation
     .forEach(skillObj => {
-      const isEnabled = canActivateSkill(cardObj, skillObj, currentZone, gameState);
-      // PATCH: show CW/CCW icons
+      const isChampionAscend = !!skillObj.championAscend;
+      const isSealed = isSkillSealed(cardObj);
+      const isEnabled = (!isSealed || isChampionAscend) && canActivateSkill(cardObj, skillObj, currentZone, gameState);
+
       const activation = skillObj.activation || {};
       let requirements = Array.isArray(activation.requirement)
         ? activation.requirement
@@ -3228,9 +3264,10 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
         text: `${skillObj.name} ${parseEffectText(skillObj.cost)}${reqIcons}`,
         html: true,
         disabled: !isEnabled,
+        title: isSealed && !isChampionAscend ? "Sealed: Cannot activate skills." : "",
         onClick: function(e) {
           e.stopPropagation();
-          if (!canActivateSkill(cardObj, skillObj, currentZone, gameState)) return;
+          if ((!isChampionAscend && !canActivateSkill(cardObj, skillObj, currentZone, gameState)) || (isSealed && !isChampionAscend)) return;
           activateSkill(cardObj, skillObj, { currentZone });
           closeAllMenus();
         }
@@ -5615,6 +5652,11 @@ function isDomain(cardObj)   { return isCategory(cardObj, "Domain"); }
 function isArtifact(cardObj) { return isCategory(cardObj, "Artifact"); }
 function isSpell(cardObj)    { return isCategory(cardObj, "Spell"); }
 
+// TRAIT
+function isChampion(cardObj) {
+  return cardObj.trait === 'Champion';
+}
+
 // TYPE
 function isType(cardObj, type) {
   return fieldIncludes(cardObj, "type", type);
@@ -5667,6 +5709,10 @@ function hasImmunity(cardObj)   { return hasAbility(cardObj, "Immunity"); }
 function hasRanged(cardObj)     { return hasAbility(cardObj, "Ranged"); }
 function hasIntimidate(cardObj) { return hasAbility(cardObj, "Intimidate"); }
 function hasAmbush(cardObj)     { return hasAbility(cardObj, "Ambush"); }
+
+function isSkillSealed(cardObj) {
+  return (cardObj.status && cardObj.status.includes("Seal"));
+}
 // Add more as needed...
 function weatherSetter(weatherName) {
   return (cardObj, skillObj, context) => {
