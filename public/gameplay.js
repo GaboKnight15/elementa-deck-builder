@@ -2404,6 +2404,17 @@ function appendDeckZone(parentDiv, deckArray, who) {
 function appendVoidZone(parentDiv, voidArray, who) {
   const voidZone = document.createElement('div');
   voidZone.className = 'void-zone';
+
+  // === Add pulse if at least one card in void is actionable ===
+  const actionable = voidArray.some(cardObj => {
+    const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+    // Use your generic actionable helper with "void" as the zone
+    return isCardActionable(cardObj, cardData, gameState, 'void');
+  });
+  if (actionable) {
+    voidZone.classList.add('zone-animatable');
+  }
+  
   const voidCard = document.createElement('div');
   voidCard.className = 'card-void';
   // LAST CARD VOID
@@ -3344,6 +3355,11 @@ function openVoidModal(isOpponent = false) {
       const cardDiv = document.createElement('div');
       cardDiv.className = 'card-battlefield';
 
+      // === PULSE EFFECT: Add animation if this card is actionable in the void ===
+      if (isCardActionable(cardObj, card, gameState, 'void')) {
+        cardDiv.classList.add('card-animatable');
+      }
+      
       const img = document.createElement('img');
       img.src = card.image;
       img.alt = card.name;
@@ -3405,6 +3421,8 @@ function openVoidModal(isOpponent = false) {
                 ? activation.requirement
                 : (activation.requirement ? [activation.requirement] : []);
               const reqIcons = getRequirementIcons(requirements);
+
+              const isEnabled = canActivateSkill(cardObj, skillObj, 'void', gameState);
 
               buttons.push({
                 text: `${skillObj.name} ${parseEffectText(skillObj.cost)}${reqIcons}`,
@@ -5771,7 +5789,9 @@ function haveSharedTypeOrArchetype(cardA, cardB) {
   return aTypes.some(t => bTypes.includes(t)) || aArchs.some(a => bArchs.includes(a));
 }
 
+// ------------------------------------- //
 // --- HELPERS FOR SPRITE ANIMATIONS --- //
+// ------------------------------------- //
 function isCardActionable(cardObj, cardData, gameState, zone) {
   // 1. Playable from hand
   if (zone === 'hand') {
@@ -5802,6 +5822,13 @@ function isCardActionable(cardObj, cardData, gameState, zone) {
   // Extend with more checks as needed (e.g. equip, cast, etc.)
   return false;
 }
+function isAnyVoidCardActionable(gameState, dummyCards) {
+  return gameState.playerVoid.some(cardObj => {
+    const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+    return isCardActionable(cardObj, cardData, gameState, "void");
+  });
+}
+
 
 document.getElementById('chat-log').addEventListener('click', function(e) {
   if (e.target.classList.contains('log-card-img')) {
