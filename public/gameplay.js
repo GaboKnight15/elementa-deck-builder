@@ -2050,6 +2050,11 @@ function showHandCardMenu(instanceId, cardDiv) {
       default: playLabel = "Play";
     }
   }
+if (isCardActionable(cardObj, cardData, gameState, zone)) {
+  cardDiv.classList.add('card-animatable');
+} else {
+  cardDiv.classList.remove('card-animatable');
+}
   // Define actions
   const buttons = [
     {
@@ -2082,8 +2087,6 @@ function showHandCardMenu(instanceId, cardDiv) {
           alert("Card cannot be played.");
           return;
         }
-        
-        // Always parse cost once here
         const parsedCost = parseCost(cardData.cost);
         
         // No cost, play immediately
@@ -3128,6 +3131,13 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
   const arr = getZoneArray(zoneId);
   const cardObj = arr ? arr.find(card => card.instanceId === instanceId) : null;
   const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+  // Determine zone for actionable logic
+  const zone = getZoneNameForArray(arr);
+  cardDiv.classList.remove('card-animatable');
+  // Add animation if actionable
+  if (isCardActionable(cardObj, cardData, gameState, zone)) {
+    cardDiv.classList.add('card-animatable');
+  }
   // Define menu options
   const buttons = [
     {
@@ -5761,6 +5771,37 @@ function haveSharedTypeOrArchetype(cardA, cardB) {
   return aTypes.some(t => bTypes.includes(t)) || aArchs.some(a => bArchs.includes(a));
 }
 
+// --- HELPERS FOR SPRITE ANIMATIONS --- //
+function isCardActionable(cardObj, cardData, gameState, zone) {
+  // 1. Playable from hand
+  if (zone === 'hand') {
+    if (canPayEssence(cardData.cost, getAllEssenceSources())) return true;
+  }
+
+  // 2. Can attack (for creatures on field)
+  if (zone === 'player-creatures-zone' && typeof canAttack === "function") {
+    if (canAttack(cardObj, gameState)) return true;
+  }
+
+  // 3. Can change position (for creatures/domains on field)
+  if ((zone === 'player-creatures-zone' || zone === 'player-domains-zone') && typeof canChangePosition === "function") {
+    if (canChangePosition(cardObj, zone, gameState)) return true;
+  }
+
+  // 4. Can activate any skill in this zone
+  if (cardData.skill && Array.isArray(cardData.skill)) {
+    if (cardData.skill.some(skillObj =>
+      !skillObj.activation && (
+        // Champion Ascend bypasses Seal
+        (!!skillObj.championAscend && canActivateSkill(cardObj, skillObj, zone, gameState)) ||
+        (!isSkillSealed(cardObj) && canActivateSkill(cardObj, skillObj, zone, gameState))
+      )
+    )) return true;
+  }
+
+  // Extend with more checks as needed (e.g. equip, cast, etc.)
+  return false;
+}
 
 document.getElementById('chat-log').addEventListener('click', function(e) {
   if (e.target.classList.contains('log-card-img')) {
