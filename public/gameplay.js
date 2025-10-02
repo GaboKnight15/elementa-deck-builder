@@ -1743,9 +1743,20 @@ function showActivationConfirmModal(cardObj, skillObj, onConfirm) {
   };
 }
 // --- Reset hasAttacked for all creatures at start of player's/opponent's action phase ---
-function resetAttackFlags(turn) {
-  const arr = turn === "player" ? gameState.playerCreatures : gameState.opponentCreatures;
-  arr.forEach(creature => { creature.hasAttacked = false; });
+function resetTurnFlags(turn) {
+  if (turn === "player") {
+    [...gameState.playerCreatures, ...gameState.playerDomains].forEach(card => {
+      card.hasAttacked = false;
+      card.hasChangedPositionThisTurn = false;
+      card.hasSummonedThisTurn = false;
+    });
+  } else if (turn === "opponent") {
+    [...gameState.opponentCreatures, ...gameState.opponentDomains].forEach(card => {
+      card.hasAttacked = false;
+      card.hasChangedPositionThisTurn = false;
+      card.hasSummonedThisTurn = false;
+    });
+  }
 }
 function matchesFilter(cardObj, filter) {
   for (let key in filter) {
@@ -2050,7 +2061,7 @@ function showHandCardMenu(instanceId, cardDiv) {
       default: playLabel = "Play";
     }
   }
-if (isCardActionable(cardObj, cardData, gameState, zone)) {
+if (isCardActionable(cardObj, cardData, gameState, 'hand')) {
   cardDiv.classList.add('card-animatable');
 } else {
   cardDiv.classList.remove('card-animatable');
@@ -2473,7 +2484,6 @@ function showSummonPositionModal(cardObj, onSelected) {
   modal.style.alignItems = 'center';
   modal.style.justifyContent = 'center';
   modal.style.zIndex = 99999;
-  modal.onclick = function(e) { if (e.target === modal) modal.remove(); };
 
   const content = document.createElement('div');
   content.className = 'modal-content';
@@ -2498,9 +2508,6 @@ function showSummonPositionModal(cardObj, onSelected) {
              style="width:90px;transform:rotate(90deg);border:3px solid #66aaff;border-radius:10px;box-shadow:0 0 12px #66aaff77;">
       </div>
     </div>
-    <div style="margin-top:12px;">
-      <button class="btn-negative-secondary" id="summon-cancel-btn">Cancel</button>
-    </div>
   `;
 
   modal.appendChild(content);
@@ -2514,9 +2521,6 @@ function showSummonPositionModal(cardObj, onSelected) {
   content.querySelector('#summon-def-choice').onclick = function() {
     modal.remove();
     onSelected("horizontal"); // DEF
-  };
-  content.querySelector('#summon-cancel-btn').onclick = function() {
-    modal.remove();
   };
 }
 // OPEN DECK MODAL
@@ -3509,16 +3513,8 @@ function updatePhase() {
     essencePhase(gameState.turn);
   }
   if (gameState.phase === "action") {
-    resetAttackFlags(gameState.turn);
-    if (gameState.turn === "player") {
-      gameState.playerCreatures.forEach(card => card.hasChangedPositionThisTurn = false);
-      gameState.playerDomains.forEach(card => card.hasChangedPositionThisTurn = false);
-    }
-    if (gameState.turn === "opponent") {
-      gameState.opponentCreatures.forEach(card => card.hasChangedPositionThisTurn = false);
-      gameState.opponentDomains.forEach(card => card.hasChangedPositionThisTurn = false);
-    }
-  }    
+    resetTurnFlags(gameState.turn);
+  } 
 }
 // Phase control events
 nextPhaseBtn.onclick = () => {
@@ -5353,7 +5349,7 @@ function showFilteredCardSelectionModal(cards, onSelect, opts = {}) {
   content.className = 'modal-content';
   content.style.display = 'flex';
   content.style.flexDirection = 'column';
-  content.style.alignItems = 'flex-start';
+  content.style.alignItems = 'center';
   content.style.padding = '24px 36px';
   content.style.margin = '0';
   content.style.maxWidth = 'calc(100vw - 64px)';
@@ -5367,8 +5363,8 @@ function showFilteredCardSelectionModal(cards, onSelect, opts = {}) {
   row.style.display = 'flex';
   row.style.flexWrap = 'wrap';
   row.style.gap = '22px';
-  row.style.justifyContent = 'flex-start';
-  row.style.alignItems = 'flex-start';
+  row.style.justifyContent = 'center';
+  row.style.alignItems = 'center';
   row.style.width = '100%';
   row.style.margin = '0';
 
@@ -5386,18 +5382,49 @@ function showFilteredCardSelectionModal(cards, onSelect, opts = {}) {
     img.alt = cardData.name;
     img.style.width = '100px';
     img.style.boxShadow = '0 2px 8px rgba(0,0,0,0.12)';
-    img.style.borderRadius = '8px';
     img.style.background = '#222';
-    img.style.padding = '2px';
     cardDiv.appendChild(img);
     cardDiv.title = cardData.name;
-    // Immediate selection logic: no confirm button
-    cardDiv.onclick = () => {
-      modal.remove();
-      onSelect(cardObj);
+    // Hold to preview logic
+    let holdTimer = null;
+    let held = false;
+
+    // For mouse
+    cardDiv.onmousedown = (e) => {
+      e.stopPropagation();
+      held = false;
+      holdTimer = setTimeout(() => {
+        held = true;
+        showFullCardModal(cardObj);
+      }, 500);
     };
+    cardDiv.onmouseup = cardDiv.onmouseleave = (e) => {
+      clearTimeout(holdTimer);
+      if (!held) {
+        modal.remove();
+        onSelect(cardObj);
+      }
+    };
+
+    // For touch
+    cardDiv.ontouchstart = (e) => {
+      held = false;
+      holdTimer = setTimeout(() => {
+        held = true;
+        showFullCardModal(cardObj);
+      }, 500);
+    };
+    cardDiv.ontouchend = cardDiv.ontouchcancel = (e) => {
+      clearTimeout(holdTimer);
+      if (!held) {
+        modal.remove();
+        onSelect(cardObj);
+      }
+    };
+
     row.appendChild(cardDiv);
   });
+
   content.appendChild(row);
   modal.appendChild(content);
   document.body.appendChild(modal);
