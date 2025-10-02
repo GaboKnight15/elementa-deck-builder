@@ -5554,7 +5554,8 @@ function summonTokenInstance(tokenDef, ownerCardObj) {
   }
   renderGameState();
   setupDropZones && setupDropZones();
-},
+}
+
 function showTokenSelectionModal(tokenDefs, amount, onComplete) {
   // Remove any existing modal
   let modal = document.getElementById('token-selection-modal');
