@@ -332,37 +332,37 @@ const SKILL_ACTIVATION_MAP = {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
   },
-  // When this card enters the void (a.k.a. onVoid, "Echo" in card text)
+  // When this card enters the void //
   Echo: {
-    name: "onVoid", // (Echo)
+    name: "onVoid",
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
   },
-  // When this card deals damage (a.k.a. onDealDamage, "Frenzy" in card text)
+  // When this card deals damage //
   Frenzy: {
-    name: "onDealDamage", // (Frenzy)
+    name: "onDealDamage",
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
   },
-  // When this card receives damage (a.k.a. onReceiveDamage, "Brace" in card text)
+  // When this card receives damage //
   Brace: {
-    name: "onReceiveDamage", // (Brace)
+    name: "onReceiveDamage",
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
   },
-  // When this card declares an attack (a.k.a. onAttack, "Assault" in card text)
+  // When this card attacks //
   Assault: {
-    name: "onAttack", // (Assault)
+    name: "onAttack",
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
   },
-  // When this card is attacked in DEF position (a.k.a. onDefense, "Defender" in card text)
+  // When this card is attacked //
   Defender: {
-    name: "onDefense", // (Defender)
+    name: "onDefense",
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
@@ -1742,7 +1742,8 @@ function showActivationConfirmModal(cardObj, skillObj, onConfirm) {
     modal.remove();
   };
 }
-// --- Reset hasAttacked for all creatures at start of player's/opponent's action phase ---
+
+// --- TURN FLAGS --- //
 function resetTurnFlags(turn) {
   if (turn === "player") {
     [...gameState.playerCreatures, ...gameState.playerDomains].forEach(card => {
@@ -2717,6 +2718,16 @@ function renderCardOnField(cardObj, zoneId) {
   cardDiv.className = 'card-battlefield';
   cardDiv.dataset.instanceId = cardObj.instanceId;
 
+  const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+  const isActionable = isCardActionable(cardObj, cardData, gameState, getZoneNameForCard(cardObj));
+  if (isActionable) {
+    if (cardObj.orientation === "horizontal") {
+      cardDiv.classList.add('card-animatable-horizontal');
+    } else {
+      cardDiv.classList.add('card-animatable');
+    }
+  }
+
   const img = document.createElement('img');
   img.src = cardData.image;
   img.alt = cardData.name || "Card";
@@ -3148,11 +3159,7 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
   const cardData = dummyCards.find(c => c.id === cardObj.cardId);
   // Determine zone for actionable logic
   const zone = getZoneNameForArray(arr);
-  cardDiv.classList.remove('card-animatable');
-  // Add animation if actionable
-  if (isCardActionable(cardObj, cardData, gameState, zone)) {
-    cardDiv.classList.add('card-animatable');
-  }
+
   // Define menu options
   const buttons = [
     {
@@ -3176,7 +3183,7 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
     },
     {
       text: "Attack",
-      disabled: cardObj.hasAttacked,
+      disabled: !canAttack(cardObj, gameState),
       onClick: function(e) {
         e.stopPropagation();
         startAttackTargeting(instanceId, zoneId, cardDiv);
@@ -4070,7 +4077,11 @@ function startAttackTargeting(attackerId, attackerZone, cardDiv) {
   let attacker =
     gameState.playerCreatures.find(c => c.instanceId === attackerId) ||
     gameState.opponentCreatures.find(c => c.instanceId === attackerId);
-
+  
+  if (!canAttack(attacker, gameState)) {
+    showToast("Cannot attack the turn it's summoned.");
+    return;
+  }
   const targets = getAttackTargets(attacker);
 
   targets.forEach(cardObj => {
@@ -4094,6 +4105,14 @@ function startAttackTargeting(attackerId, attackerZone, cardDiv) {
   setTimeout(() => document.body.addEventListener('click', attackMode.cancelHandler, { once: true }), 10);
 }
 
+function canAttack(cardObj, gameState) {
+  // Must exist, be a creature, and be on the field
+  if (!cardObj) return false;
+  if (cardObj.hasAttacked) return false;
+  if (cardObj.hasSummonedThisTurn && !hasRush(cardObj)) return false;
+  // Add any other restrictions you want (e.g. tapped, stunned)
+  return true;
+}
 function getAttackTargets(attackerObj = null) {
   // Gather all opponent cards
   const creatures = gameState.opponentCreatures;
@@ -4160,22 +4179,7 @@ function endAttackTarget() {
   attackMode.attackerId = null;
   attackMode.attackerZone = null;
 }
-function runAttackDeclarationAbilities(attacker, defender, next) {
-  const attackerDef = dummyCards.find(c => c.id === attacker.cardId);
-  if (!attackerDef || !attackerDef.ability) { next && next(); return; }
 
-  let handled = false;
-  ["Intimidate", "Provoke"].forEach(abilityName => {
-    if (attackerDef.ability.includes(abilityName)) {
-      handled = true;
-      const ability = ATTACK_DECLARATION_ABILITY[abilityName];
-      if (ability && ability.handler) {
-        ability.handler(attacker, defender, next); // Triggers skill logic!
-      }
-    }
-  });
-  if (!handled && next) next();
-}
 // --- ATTACK RESOLUTION ANIMATION ---
 function resolveAttack(attackerId, defenderId) {
   // Find attacker/defender objects
@@ -4190,77 +4194,62 @@ function resolveAttack(attackerId, defenderId) {
 
   if (!attacker || !defender) return;
 
-  const attackerDef = dummyCards.find(c => c.id === attacker.cardId);
-  const defenderDef = dummyCards.find(c => c.id === defender.cardId);
+  // Trigger onAttack/onDefense skills BEFORE damage calculation
+  triggerOnAttackSkills(attacker, defender);
+  triggerOnDefenseSkills(defender, attacker);
 
-  // Use ZONE_MAP to get arrays, voids, and zoneIds
-  const attackerInfo = getZoneInfoForCard(attacker);
-  const defenderInfo = getZoneInfoForCard(defender);
+  // Damage calculation and KO logic
+  damageCalculation(attacker, defender);
 
-  // Attack-declaration abilities
-  if (attackerDef?.ability) {
-    (Array.isArray(attackerDef.ability) ? attackerDef.ability : [attackerDef.ability])
-      .forEach(abilityName => {
-        const ability = ATTACK_DECLARATION_ABILITY[abilityName];
-        if (ability && ability.effect) ability.effect(attacker, defender);
-      });
-  }
-
-  // Log the attack
+  // Log the attack, etc. (existing log code here)
   appendAttackLog({
     attacker,
     defender,
     defenderOrientation: defender.orientation,
     who: getCardOwner(attacker)
   });
-
-  function finishResolution() {
-    attacker.hasAttacked = true;
-    // Only apply status if defender is still alive on field
-    if (
-      defenderDef?.category === "creature" &&
-      defenderInfo.arr?.includes(defender)
-    ) {
-      const attackerAbilities = attackerDef.ability || [];
-      attackerAbilities.forEach(abilityName => {
-        if (STATUS_EFFECTS[abilityName]) {
-          applyStatus(defender, abilityName);
-        }
-      });
-    }
-    renderGameState();
-    setupDropZones();
-  }
-
-  if (defenderDef.category === "creature" && defender.orientation === "vertical") {
-    // ATK VS ATK -- Simultaneous Damage
-    animateAttack(attacker, attackerInfo.zoneId, () => {
-      const attackerDmg = computeCardStat(attacker, "atk");
-      const defenderDmg = computeCardStat(defender, "atk");
-      animateDefenderHit(defender, defenderInfo.zoneId, () => {
-        defender.currentHP = Math.max(0, (defender.currentHP || getBaseHp(defender.cardId)) - attackerDmg);
-        attacker.currentHP = Math.max(0, (attacker.currentHP || getBaseHp(attacker.cardId)) - defenderDmg);
-        if (defender.currentHP <= 0) moveCard(defender.instanceId, defenderInfo.arr, gameState.playerVoid);
-        if (attacker.currentHP <= 0) moveCard(attacker.instanceId, attackerInfo.arr, gameState.playerVoid);
-        finishResolution();
-      });
-    });
-  } else if (defenderDef.category === "creature" && defender.orientation === "horizontal") {
-    // ATK VS DEF
-    animateAttack(attacker, attackerInfo.zoneId, () => {
-      const damage = Math.max(0, computeCardStat(attacker, "atk") - computeCardStat(defender, "def"));
-      dealDamage(attacker, defender, damage);
-      finishResolution();
-    });
-  } else {
-    // ATK VS DOMAIN OR ARTIFACT
-    animateAttack(attacker, attackerInfo.zoneId, () => {
-      dealDamage(attacker, defender, computeCardStat(attacker, "atk"));
-      finishResolution();
-    });
-  }
 }
+function damageCalculation(attacker, defender) {
+  const attackerDef = dummyCards.find(c => c.id === attacker.cardId);
+  const defenderDef = dummyCards.find(c => c.id === defender.cardId);
+  const attackerInfo = getZoneInfoForCard(attacker);
+  const defenderInfo = getZoneInfoForCard(defender);
 
+  // ATK VS ATK -- Simultaneous Damage
+  if (defenderDef.category === "creature" && defender.orientation === "vertical") {
+    const attackerDmg = computeCardStat(attacker, "atk");
+    const defenderDmg = computeCardStat(defender, "atk");
+    defender.currentHP = Math.max(0, (defender.currentHP || getBaseHp(defender.cardId)) - attackerDmg);
+    attacker.currentHP = Math.max(0, (attacker.currentHP || getBaseHp(attacker.cardId)) - defenderDmg);
+    if (defender.currentHP <= 0) moveCard(defender.instanceId, defenderInfo.arr, gameState.playerVoid);
+    if (attacker.currentHP <= 0) moveCard(attacker.instanceId, attackerInfo.arr, gameState.playerVoid);
+  } 
+  // ATK VS DEF
+  else if (defenderDef.category === "creature" && defender.orientation === "horizontal") {
+    const damage = Math.max(0, computeCardStat(attacker, "atk") - computeCardStat(defender, "def"));
+    dealDamage(attacker, defender, damage);
+  }
+  // ATK VS DOMAIN OR ARTIFACT
+  else {
+    dealDamage(attacker, defender, computeCardStat(attacker, "atk"));
+  }
+
+  // Only apply status if defender is still alive on field
+  if (
+    defenderDef?.category === "creature" &&
+    defenderInfo.arr?.includes(defender)
+  ) {
+    const attackerAbilities = attackerDef.ability || [];
+    attackerAbilities.forEach(abilityName => {
+      if (STATUS_EFFECTS[abilityName]) {
+        applyStatus(defender, abilityName);
+      }
+    });
+  }
+
+  renderGameState();
+  setupDropZones();
+}
 function dealDamage(cardObj, targetObj, damage) {
   const cardDef = dummyCards.find(c => c.id === targetObj.cardId);
 
@@ -4301,6 +4290,37 @@ function dealDamage(cardObj, targetObj, damage) {
     }
   }
 }
+function triggerOnAttackSkills(attacker, defender) {
+  const attackerDef = dummyCards.find(c => c.id === attacker.cardId);
+  if (!attackerDef || !attackerDef.skill) return;
+  const skills = Array.isArray(attackerDef.skill) ? attackerDef.skill : [attackerDef.skill];
+  skills.forEach(skill => {
+    if (skill.activation && skill.activation.class === "onAttack") {
+      // Only trigger if any requirement passes (or none exist)
+      if (!skill.activation.requirement || canActivateSkill(attacker, skill, getZoneNameForCard(attacker), gameState)) {
+        resolveSkill(attacker, skill, { trigger: "onAttack", defender });
+      }
+    }
+  });
+}
+
+function triggerOnDefenseSkills(defender, attacker) {
+  const defenderDef = dummyCards.find(c => c.id === defender.cardId);
+  if (!defenderDef || !defenderDef.skill) return;
+  const skills = Array.isArray(defenderDef.skill) ? defenderDef.skill : [defenderDef.skill];
+  skills.forEach(skill => {
+    if (skill.activation && skill.activation.class === "onDefense") {
+      // Only trigger if any requirement passes (or none exist)
+      if (!skill.activation.requirement || canActivateSkill(defender, skill, getZoneNameForCard(defender), gameState)) {
+        resolveSkill(defender, skill, { trigger: "onDefense", attacker });
+      }
+    }
+  });
+}
+
+// ------------------------ //
+// --- GAME START LOGIC --- //
+// ------------------------ //
 
 function showCoinFlipModal(onResult) {
   if (window.coinFlipShown) return; // prevent repeats
@@ -4783,7 +4803,9 @@ function collectTriggersForEvent(eventType, context) {
   return triggers;
 }
 
-// Enqueue an event (such as "onSummon", "onDealDamage") with context (e.g. {summonedCard: cardObj})
+// -------------------- //
+// --- QUEUE SKILLS --- //
+// -------------------- //
 function queueEvent(eventType, context) {
   const triggers = collectTriggersForEvent(eventType, context);
   if (triggers.length) eventQueue.push({ eventType, context, triggers });
