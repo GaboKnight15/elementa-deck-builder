@@ -1337,14 +1337,16 @@ const CARD_KEYWORD_EXPLANATIONS = {
     description: "When declaring an attack, {CW} that unit"},
   provoke: {name: "Provoke",
     description: "When declaring an attack, {CCW} that unit"},
-  firearmor: {name: "Fire Armor",
-    description: "Burns opposing unit upon receive attack damage"},
-  icearmor: {name: "Ice Armor",
-    description: "Freezes opposing unit upon receive attack damage"},
-  poisonarmor: {name: "Poison Armor",
-    description: "Poisons opposing unit upon receive attack damage"},
-  soakedarmor: {name: "Soaked Armor",
-    description: "Soaks opposing unit upon receive attack damage"},
+  scorch: {name: "Scorch",
+    description: "Burns opponent after receiving an attack"},
+  frostbite: {name: "Frostbite",
+    description: "Freezes opponent after receiving an attack"},
+  poisonous: {name: "Poisonous",
+    description: "Poisons opponent after receiving an attack"},
+  drenched: {name: "Drenched",
+    description: "Soaks opponent after receiving an attack"},
+  static: {name: "Static",
+    description: "Paralyzes opponent after receiving an attack"},
   crush: {name: "Crush",
     description: "Destroys opposing creature upon attacking regardless of HP."},
 /*----------
@@ -1353,11 +1355,19 @@ const CARD_KEYWORD_EXPLANATIONS = {
   reanimate: {name: "Reanimate",
     description: "If this unit is in the Void, revive it."},
   dash: {name: "Dash",
-    description: "Can also be summoned from the hand. Returns to hand during your opponent's end step."},
+    description: "Summon from the hand with a reduced cost but half HP"},
   echo: {name: "Echo",
     description: "Activates when the card is sent to the Void."},
   discard: {name: "Discard",
     description: "Activates by discarding it."},
+  assault: {name: "Assault",
+    description: "Activates after declaring an attack."},
+  frenzy: {name: "Frenzy",
+    description: "Activates after dealing damage with an attack."},
+  defender: {name: "Defender",
+    description: "Activates after the opponent declares an attack."},
+  brace: {name: "Brace",
+    description: "Activates after receiving damage from an attack."},
   aura: {name: "Aura",
     description: "Must be equipped to units of the same color."},
 /*--------------
@@ -1808,30 +1818,55 @@ function showFullCardModal(cardObj) {
   infoHtml += labeled("Type", Array.isArray(card.type) ? card.type.join(", ") : card.type);
   infoHtml += labeled("Ability", Array.isArray(card.ability) ? card.ability.join(", ") : card.ability);
   infoHtml += labeled("Trait", Array.isArray(card.trait) ? card.trait.join(", ") : card.trait);
-  if (card.skill) {
-    let skills = Array.isArray(card.skill) ? card.skill : [card.skill];
-    infoHtml += `<div class="full-card-info-row"><span class="full-card-info-label">Skills:</span></div>`;
-    skills.forEach(skill => {
-     if (typeof skill === "object" && skill !== null) {
+if (card.skill) {
+  let skills = Array.isArray(card.skill) ? card.skill : [card.skill];
+  infoHtml += `<div class="full-card-info-row"><span class="full-card-info-label">Skills:</span></div>`;
+  skills.forEach(skill => {
+    if (typeof skill === "object" && skill !== null) {
+      // Gather requirements in array
+      let requirements = [];
+      if (Array.isArray(skill.requirement)) {
+        requirements = skill.requirement;
+      } else if (skill.requirement) {
+        requirements = [skill.requirement];
+      }
+
+      // Check for special/ultimate for CSS class
+      const hasSpecial = requirements.some(req => req.class === "Special");
+      const hasUltimate = requirements.some(req => req.class === "Ultimate");
+
+      let skillNameClass = "";
+      if (hasUltimate) {
+        skillNameClass = "skill-ultimate-rainbow";
+      } else if (hasSpecial) {
+        skillNameClass = "skill-special-gradient";
+      }
+
       infoHtml += `<div class="full-card-info-row" style="margin-left:18px;">`;
+
+      // Name with style
       if (skill.name) {
-       infoHtml += `<span style="color:#ffe066;font-weight:bold;align-self:center;">${skill.name}</span> `;
+        infoHtml += `<span class="${skillNameClass}" style="${(!hasUltimate && !hasSpecial) ? 'color:#ffe066;font-weight:bold;align-self:center;' : ''}">${skill.name}</span> `;
       }
+
+      // Cost
       if (skill.cost) {
-       infoHtml += renderCardCost(skill.cost) + " ";
+        infoHtml += renderCardCost(skill.cost) + " ";
       }
-      if (skill.requirement && skill.requirement.length) {
-      // Render each requirement (for tap/untap, etc.)
-       skill.requirement.forEach(req => {
-         infoHtml += renderCardCost(`{${req}}`);
-       });
-     }
-     infoHtml += `</div>`;
-   } else {
+
+      // Only show requirement.class CW or CCW
+      requirements.forEach(req => {
+        if (req.class === "CW" || req.class === "CCW") {
+          infoHtml += `<span class="requirement-chip">${req.class}</span>`;
+        }
+      });
+
+      infoHtml += `</div>`;
+    } else {
       infoHtml += `<div class="full-card-info-row" style="margin-left:18px;">${parseEffectText(skill)}</div>`;
-     }
-   });
-  }
+    }
+  });
+}
   infoHtml += `<div class="card-modal-divider"></div>`;
   let statsRow = '';
   if (card.hp !== undefined || card.atk !== undefined || card.def !== undefined || card.cost !== undefined) {
