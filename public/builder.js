@@ -94,10 +94,15 @@ document.getElementById('builder-filter-btn').onclick = function(e) {
 document.getElementById('builder-settings-btn').onclick = function() {
   document.getElementById('settings-modal').style.display = 'flex';
 };
-document.getElementById('open-filters-menu-gallery').onclick = function(e) {
-  openFiltersMasterMenu('gallery', e.target);
-  // For builder, use 'builder'
-};
+// Add this at the top or with your other DOMContentLoaded inits
+document.addEventListener('DOMContentLoaded', function() {
+  const builderFilterBtn = document.getElementById('open-filters-menu-builder');
+  if (builderFilterBtn) {
+    builderFilterBtn.onclick = function(e) {
+      openFiltersMasterMenu('builder', e.target);
+    };
+  }
+});
 builderBackBtn.onclick = function() {
   // Check for unsaved changes before returning to deck selection
   if (typeof deckBuilderHasUnsavedChanges === "function" && deckBuilderHasUnsavedChanges()) {
