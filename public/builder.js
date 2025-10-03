@@ -88,6 +88,9 @@ const AUTOFILL_ARCHETYPES = [
 document.getElementById('builder-autofill-btn').onclick = function() {
   showAutofillModal();
 };
+document.getElementById('builder-filter-btn').onclick = function(e) {
+  openFiltersMasterMenu('builder', e.target);
+};
 document.getElementById('builder-settings-btn').onclick = function() {
   document.getElementById('settings-modal').style.display = 'flex';
 };
