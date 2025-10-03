@@ -1,15 +1,14 @@
-// SETTINGS MENU LOGIC (Popover version, works across all sections) 
+// Popover Settings Menu Logic (applies sitewide)
 document.addEventListener("DOMContentLoaded", function() {
-  // Support all settings icons in all sections
-  const burgerIds = [
-    'settings-burger',
+  // Support all settings icons in all sections (add more if needed)
+  const settingIds = [
+    'home-settings-btn',
     'gallery-settings-btn',
     'builder-settings-btn',
     'gameplay-settings-btn',
     'shop-settings-btn'
   ];
-
-  const burgers = burgerIds
+  const settings = settingIds
     .map(id => document.getElementById(id))
     .filter(Boolean);
 
@@ -18,12 +17,11 @@ document.addEventListener("DOMContentLoaded", function() {
   const toggleMusic = document.getElementById('toggle-music');
 
   // Open menu for any settings icon
-  burgers.forEach(burger => {
-    burger.onclick = function(e) {
+  settings.forEach(setting => {
+    setting.onclick = function(e) {
       e.stopPropagation();
-
       // Position menu below/right of the icon
-      const rect = burger.getBoundingClientRect();
+      const rect = setting.getBoundingClientRect();
       placeMenuWithinViewport(menu, rect, "bottom");
       menu.classList.add('active');
       menu.style.display = 'block';
@@ -42,7 +40,7 @@ document.addEventListener("DOMContentLoaded", function() {
   function hideSettingsMenu(e) {
     menu.classList.remove('active');
     menu.style.display = 'none';
-  } 
+  }
 
   // Prevent menu click from closing it
   menu.onclick = function(e) { e.stopPropagation(); };
@@ -56,6 +54,7 @@ document.addEventListener("DOMContentLoaded", function() {
     localStorage.setItem('settings-music', this.checked ? 'on' : 'off');
     // Add logic for enabling/disabling music if needed
   };
+
   // Logout button logic
   const settingsLogoutBtn = document.getElementById('settings-logout-btn');
   if (settingsLogoutBtn) {
