@@ -45,6 +45,16 @@ document.addEventListener('DOMContentLoaded', function() {
     updateFavoriteFilterIcon();
   }
 });
+
+// --- SETTINGS GALLERY --- //
+document.addEventListener('DOMContentLoaded', function() {
+  const galleryFilterBtn = document.getElementById('open-filters-menu-gallery');
+  if (galleryFilterBtn) {
+    galleryFilterBtn.onclick = function(e) {
+      openFiltersMasterMenu('gallery', e.target);
+    };
+  }
+});
 // Add to DOMContentLoaded or after filter setup
 document.addEventListener('DOMContentLoaded', function() {
   const resetBtn = document.getElementById('reset-gallery-filters-btn');
