@@ -67,7 +67,27 @@ const cardbackOptions = [
   "OtherImages/Cardbacks/CBVenomcore.png",
   "OtherImages/Cardbacks/CBWoodframe.png"
 ];
+const AUTOFILL_COLORS = [
+  { name: "Green", icon: "OtherImages/Essence/Green.png" },
+  { name: "Red", icon: "OtherImages/Essence/Red.png" },
+  { name: "Blue", icon: "OtherImages/Essence/Blue.png" },
+  { name: "White", icon: "OtherImages/Essence/White.png" },
+  { name: "Black", icon: "OtherImages/Essence/Black.png" },
+  { name: "Yellow", icon: "OtherImages/Essence/Yellow.png" },
+  { name: "Gray", icon: "OtherImages/Essence/Gray.png" },
+  { name: "Purple", icon: "OtherImages/Essence/Purple.png" },
+];
+const AUTOFILL_TYPES = [
+  "Elemental","Dragon","Construct","Beast","Undead","Demon","Mage","Equipment","Relic"
+];
+const AUTOFILL_ARCHETYPES = [
+  "Blazefeather","Cindercore","Coralbound","Firelands","Frostlands","Golemheart","Moonfang","Skullframe","Voltwing","Zephyra"
+];
 
+// Show modal when autofill icon clicked
+document.getElementById('builder-autofill-btn').onclick = function() {
+  showAutofillModal();
+};
 document.getElementById('builder-settings-btn').onclick = function() {
   document.getElementById('settings-modal').style.display = 'flex';
 };
@@ -759,6 +779,7 @@ function removeCardFromDeck(cardId) {
 // DECK CREATION LOGIC
 function updateDeckDisplay() {
   const deck = getCurrentDeck();
+  const deckPanel = document.getElementById('deck-panel');
   deckList.innerHTML = '';
   let total = 0;
 
@@ -775,28 +796,28 @@ function updateDeckDisplay() {
   for (const [id, count] of Object.entries(deck)) {
     const card = dummyCards.find(c => c.id === id);
     if (!card) continue;
-  const trait = card.trait ? card.trait.toLowerCase() : '';
-  if (trait === "dominion") {
-    sections.dominion.push({ card, count });
-  } else if (trait === "champion") {
-    sections.champion.push({ card, count });
-  } else {
-    const cat = getCardCategory(card);
-    if (sections.hasOwnProperty(cat)) {
-      sections[cat].push({ card, count });
+    const trait = card.trait ? card.trait.toLowerCase() : '';
+    if (trait === "dominion") {
+      sections.dominion.push({ card, count });
+    } else if (trait === "champion") {
+        sections.champion.push({ card, count });
+      } else {
+        const cat = getCardCategory(card);
+        if (sections.hasOwnProperty(cat)) {
+          sections[cat].push({ card, count });
+        }
+      }
+      total += count;
     }
-  }
-    total += count;
-  }
   // Section display order
-  const sectionNames = [
-    { key: "dominion", label: "Dominion" },
-    { key: "champion", label: "Champion" },
-    { key: "creature", label: "Creatures" },
-    { key: "artifact", label: "Artifacts" },
-    { key: "spell", label: "Spells" },
-    { key: "domain", label: "Domains" }
-  ];
+    const sectionNames = [
+      { key: "dominion", label: "Dominion" },
+      { key: "champion", label: "Champion" },
+      { key: "creature", label: "Creatures" },
+      { key: "artifact", label: "Artifacts" },
+      { key: "spell", label: "Spells" },
+      { key: "domain", label: "Domains" }
+    ];
   // Define rarity order
   const rarityOrder = {
     legendary: 0,
@@ -807,23 +828,14 @@ function updateDeckDisplay() {
   
   for (const {key, label} of sectionNames) {
     if (sections[key].length === 0) continue;
-    // Sort by rarity first (legendary -> epic -> rare -> common), then by card name
     sections[key].sort((a, b) => {
       const ra = (a.card.rarity || '').toLowerCase();
       const rb = (b.card.rarity || '').toLowerCase();
       const orderA = rarityOrder.hasOwnProperty(ra) ? rarityOrder[ra] : 99;
       const orderB = rarityOrder.hasOwnProperty(rb) ? rarityOrder[rb] : 99;
       if (orderA !== orderB) return orderA - orderB;
-      // Secondary: sort by name if same rarity
       return a.card.name.localeCompare(b.card.name);
     });
-    // Add section heading
-    const heading = document.createElement('li');
-    heading.textContent = label;
-    heading.style.fontWeight = "bold";
-    heading.style.marginTop = "12px";
-    heading.style.marginBottom = "2px";
-    deckList.appendChild(heading);
 
     for (const { card, count } of sections[key]) {
       const li = document.createElement('li');
@@ -842,26 +854,24 @@ function updateDeckDisplay() {
           renderBuilder();
         }
       );
-      li.addEventListener('mousedown', startHold);
-      li.addEventListener('touchstart', startHold);
-      li.addEventListener('mouseup', mouseUp);
-      li.addEventListener('touchend', mouseUp);
-      li.addEventListener('mouseleave', clearHold);
-      li.addEventListener('touchcancel', clearHold);
-      // Drag support for removing
-      li.addEventListener('dragstart', function(e) {
+      cardDiv.addEventListener('mousedown', startHold);
+      cardDiv.addEventListener('touchstart', startHold);
+      cardDiv.addEventListener('mouseup', mouseUp);
+      cardDiv.addEventListener('touchend', mouseUp);
+      cardDiv.addEventListener('mouseleave', clearHold);
+      cardDiv.addEventListener('touchcancel', clearHold);
+
+      cardDiv.addEventListener('dragstart', function(e) {
         e.dataTransfer.setData('card-id', card.id);
         e.dataTransfer.setData('from', 'deck');
-        if (li.querySelector('img')) {
-          const img = li.querySelector('img');
+        if (cardDiv.querySelector('img')) {
+          const img = cardDiv.querySelector('img');
           e.dataTransfer.setDragImage(img, img.width / 2, img.height / 2);
         }
-        li.classList.add('dragging');
+        cardDiv.classList.add('dragging');
       });
-      li.addEventListener('dragend', function(e) {
-        li.classList.remove('dragging');
-        // If not dropped on deckList, remove card
-        // (Handed by global drop listener)
+      cardDiv.addEventListener('dragend', function(e) {
+        cardDiv.classList.remove('dragging');
       });
     
       const img = document.createElement('img');
@@ -875,13 +885,18 @@ function updateDeckDisplay() {
       const badge = document.createElement('span');
       badge.textContent = `×${count}`;
       badge.className = 'deck-count-badge';
+      badge.style.position = 'absolute';
+      badge.style.right = '0';
+      badge.style.top = '0';
 
-      li.appendChild(img);
-      li.appendChild(badge);
-      deckList.appendChild(li);
-      }
+      cardDiv.appendChild(img);
+      cardDiv.appendChild(badge);
+      deckPanel.appendChild(cardDiv);
     }
-  cardCount.textContent = total;
+  }
+  // Update total somewhere in the UI as needed
+  const cardCount = document.getElementById('deck-card-count');
+  if (cardCount) cardCount.textContent = total;
 }
 function getCardCategory(card) {
   return card.category ? card.category.toLowerCase() : '';
@@ -1085,6 +1100,249 @@ document.addEventListener('DOMContentLoaded', function() {
     updateFavoriteFilterIconBuilder();
   }
 });
+// --- AUTOFILL FUNCTION ---
+function showAutofillModal() {
+  const modal = document.getElementById('autofill-modal');
+  // Clear old
+  modal.querySelector('.autofill-color-row').innerHTML = '';
+  modal.querySelector('.autofill-type-row').innerHTML = '';
+  modal.querySelector('.autofill-archetype-row').innerHTML = '';
+
+  // Color icons
+  AUTOFILL_COLORS.forEach(color => {
+    const icon = document.createElement('img');
+    icon.src = color.icon;
+    icon.alt = color.name;
+    icon.title = color.name;
+    icon.className = 'autofill-color-icon';
+    icon.dataset.color = color.name;
+    icon.onclick = function() {
+      icon.classList.toggle('selected');
+    };
+    modal.querySelector('.autofill-color-row').appendChild(icon);
+  });
+
+  // Type buttons
+  AUTOFILL_TYPES.forEach(type => {
+    const btn = document.createElement('button');
+    btn.textContent = type;
+    btn.className = 'autofill-type-btn';
+    btn.dataset.type = type;
+    btn.onclick = function() {
+      btn.classList.toggle('selected');
+    };
+    modal.querySelector('.autofill-type-row').appendChild(btn);
+  });
+
+  // Archetype buttons
+  AUTOFILL_ARCHETYPES.forEach(arch => {
+    const btn = document.createElement('button');
+    btn.textContent = arch;
+    btn.className = 'autofill-archetype-btn';
+    btn.dataset.archetype = arch;
+    btn.onclick = function() {
+      btn.classList.toggle('selected');
+    };
+    modal.querySelector('.autofill-archetype-row').appendChild(btn);
+  });
+
+  // Confirm
+  document.getElementById('autofill-confirm-btn').onclick = function() {
+    // Gather selected
+    const selectedColors = Array.from(modal.querySelectorAll('.autofill-color-icon.selected')).map(img => img.dataset.color);
+    const selectedTypes = Array.from(modal.querySelectorAll('.autofill-type-btn.selected')).map(btn => btn.dataset.type);
+    const selectedArchetypes = Array.from(modal.querySelectorAll('.autofill-archetype-btn.selected')).map(btn => btn.dataset.archetype);
+
+    modal.style.display = 'none';
+    autofillDeckWithTheme({colors: selectedColors, types: selectedTypes, archetypes: selectedArchetypes});
+    updateDeckDisplay();
+    renderBuilder();
+  };
+  document.getElementById('autofill-cancel-btn').onclick = function() {
+    modal.style.display = 'none';
+  };
+
+  modal.style.display = 'flex';
+}
+
+// Themed autofill logic
+function autofillDeckWithTheme({colors, types, archetypes}) {
+  const MAX_DECK_SIZE = 50;
+  const MAX_COPIES = 3;
+  let deck = {};
+  let total = 0;
+
+  // Filtering helpers
+  function cardMatchesTheme(card) {
+    // Color match (if any selected)
+    if (colors.length) {
+      const cardColors = getCardColors(card).map(c => c.toLowerCase());
+      if (!colors.some(sel => cardColors.includes(sel.toLowerCase()))) return false;
+    }
+    // Type match (if any selected)
+    if (types.length) {
+      const cardTypes = getCardTypes(card).map(c => c.toLowerCase());
+      if (!types.some(sel => cardTypes.includes(sel.toLowerCase()))) return false;
+    }
+    // Archetype match (if any selected)
+    if (archetypes.length) {
+      const cardArchetypes = getCardArchetypes(card).map(c => c.toLowerCase());
+      if (!archetypes.some(sel => cardArchetypes.includes(sel.toLowerCase()))) return false;
+    }
+    return true;
+  }
+
+  // Get all cards from collection (or dummyCards for demo)
+  const dominions = dummyCards.filter(
+    c => c.trait && c.trait.toLowerCase() === 'dominion' && cardMatchesTheme(c)
+  );
+  const champions = dummyCards.filter(
+    c => c.trait && c.trait.toLowerCase() === 'champion' && cardMatchesTheme(c)
+  );
+  const creatures = dummyCards.filter(
+    c => getCardCategory(c) === 'creature' && cardMatchesTheme(c)
+  );
+  const spells = dummyCards.filter(
+    c => getCardCategory(c) === 'spell' && cardMatchesTheme(c)
+  );
+  const artifacts = dummyCards.filter(
+    c => getCardCategory(c) === 'artifact' && cardMatchesTheme(c)
+  );
+  const domains = dummyCards.filter(
+    c => getCardCategory(c) === 'domain' && !(c.trait && c.trait.toLowerCase() === 'dominion') && cardMatchesTheme(c)
+  );
+
+  // Shuffle helper
+  function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  // 1 Dominion
+  if (dominions.length > 0) {
+    const dom = shuffle([...dominions])[0];
+    deck[dom.id] = 1;
+    total++;
+  }
+
+  // Up to 2 Champions
+  shuffle(champions).slice(0, 2).forEach(champ => {
+    const count = Math.min(MAX_COPIES, MAX_DECK_SIZE - total, 2);
+    deck[champ.id] = count;
+    total += count;
+  });
+
+  // Fill order and counts
+  const fillOrder = [
+    { arr: creatures, max: 27 },
+    { arr: spells, max: 10 },
+    { arr: artifacts, max: 5 },
+    { arr: domains, max: 5 }
+  ];
+
+  for (const { arr, max } of fillOrder) {
+    shuffle(arr).forEach(card => {
+      if (total >= MAX_DECK_SIZE) return;
+      if (deck[card.id] && deck[card.id] >= MAX_COPIES) return;
+      let count = Math.min(MAX_COPIES, max, MAX_DECK_SIZE - total);
+      if (deck[card.id]) count = Math.min(count, MAX_COPIES - deck[card.id]);
+      if (count > 0) {
+        deck[card.id] = (deck[card.id] || 0) + count;
+        total += count;
+      }
+    });
+  }
+
+  // If not full, fill with more creatures
+  let i = 0;
+  while (total < MAX_DECK_SIZE && i < creatures.length) {
+    const card = creatures[i++];
+    const already = deck[card.id] || 0;
+    if (already < MAX_COPIES) {
+      deck[card.id] = already + 1;
+      total++;
+    }
+  }
+
+  setCurrentDeck(deck);
+}
+function autofillDeck() {
+  const MAX_DECK_SIZE = 50;
+  const MAX_COPIES = 3;
+  let deck = {};
+  let total = 0;
+
+  // Get all cards from collection (or dummyCards for demo)
+  const dominions = dummyCards.filter(c => c.trait && c.trait.toLowerCase() === 'dominion');
+  const champions = dummyCards.filter(c => c.trait && c.trait.toLowerCase() === 'champion');
+  const creatures = dummyCards.filter(c => getCardCategory(c) === 'creature');
+  const spells = dummyCards.filter(c => getCardCategory(c) === 'spell');
+  const artifacts = dummyCards.filter(c => getCardCategory(c) === 'artifact');
+  const domains = dummyCards.filter(c => getCardCategory(c) === 'domain' && !(c.trait && c.trait.toLowerCase() === 'dominion'));
+
+  // Shuffle helper
+  function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  // 1 Dominion (mandatory)
+  if (dominions.length > 0) {
+    const dom = shuffle([...dominions])[0];
+    deck[dom.id] = 1;
+    total++;
+  }
+
+  // Up to 2 Champions
+  shuffle(champions).slice(0, 2).forEach(champ => {
+    const count = Math.min(MAX_COPIES, MAX_DECK_SIZE - total, 2);
+    deck[champ.id] = count;
+    total += count;
+  });
+
+  // Suggested fill order and counts for a 50-card deck
+  const fillOrder = [
+    { arr: creatures, max: 27 },
+    { arr: spells, max: 10 },
+    { arr: artifacts, max: 5 },
+    { arr: domains, max: 5 }
+  ];
+
+  for (const { arr, max } of fillOrder) {
+    shuffle(arr).forEach(card => {
+      if (total >= MAX_DECK_SIZE) return;
+      if (deck[card.id] && deck[card.id] >= MAX_COPIES) return;
+      let count = Math.min(MAX_COPIES, max, MAX_DECK_SIZE - total);
+      // If already added, only add up to MAX_COPIES
+      if (deck[card.id]) count = Math.min(count, MAX_COPIES - deck[card.id]);
+      if (count > 0) {
+        deck[card.id] = (deck[card.id] || 0) + count;
+        total += count;
+      }
+    });
+  }
+
+  // If not full, fill with more creatures (randomly)
+  let i = 0;
+  while (total < MAX_DECK_SIZE && i < creatures.length) {
+    const card = creatures[i++];
+    const already = deck[card.id] || 0;
+    if (already < MAX_COPIES) {
+      deck[card.id] = already + 1;
+      total++;
+    }
+  }
+
+  // Assign the deck!
+  setCurrentDeck(deck);
+}
+
 // ==========================
 // === EVENT LISTENERS ===
 // ==========================
@@ -1120,7 +1378,12 @@ highlightArtModal.addEventListener('mousedown', function(e) {
 });
 // GALLERY EVENT FILTERS
 document.getElementById('filter-name-builder').addEventListener('input', renderBuilder);
-  
+document.getElementById('builder-autofill-btn').onclick = function() {
+  if (!confirm("Autofill will overwrite your current deck. Continue?")) return;
+  autofillDeck();
+  updateDeckDisplay();
+  renderBuilder();
+};
 const resetBtn = document.getElementById('reset-builder-filters-btn');
 if (resetBtn) {
   resetBtn.onclick = function() {
