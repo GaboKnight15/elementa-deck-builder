@@ -30,7 +30,7 @@ let showFavoritesOnly = false;
 // ==========================
 // === RENDERING CARDS ===
 // ==========================
-document.getElementById('open-filters-menu-gallery').onclick = function(e) {
+document.getElementById('gallery-filter-btn').onclick = function(e) {
   openFiltersMasterMenu('gallery', e.target);
 };
 // Favorite filter icon logic
