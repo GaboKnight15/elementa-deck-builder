@@ -1182,6 +1182,7 @@ function showAutofillModal() {
 function autofillDeckWithTheme({colors, types, archetypes}) {
   const MAX_DECK_SIZE = 50;
   const MAX_COPIES = 3;
+  setCurrentDeck({});
   let deck = {};
   let total = 0;
 
@@ -1280,79 +1281,6 @@ function autofillDeckWithTheme({colors, types, archetypes}) {
     }
   }
 
-  setCurrentDeck(deck);
-}
-function autofillDeck() {
-  const MAX_DECK_SIZE = 50;
-  const MAX_COPIES = 3;
-  let deck = {};
-  let total = 0;
-
-  // Get all cards from collection (or dummyCards for demo)
-  const dominions = dummyCards.filter(c => c.trait && c.trait.toLowerCase() === 'dominion');
-  const champions = dummyCards.filter(c => c.trait && c.trait.toLowerCase() === 'champion');
-  const creatures = dummyCards.filter(c => getCardCategory(c) === 'creature');
-  const spells = dummyCards.filter(c => getCardCategory(c) === 'spell');
-  const artifacts = dummyCards.filter(c => getCardCategory(c) === 'artifact');
-  const domains = dummyCards.filter(c => getCardCategory(c) === 'domain' && !(c.trait && c.trait.toLowerCase() === 'dominion'));
-
-  // Shuffle helper
-  function shuffle(arr) {
-    for (let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    return arr;
-  }
-
-  // 1 Dominion (mandatory)
-  if (dominions.length > 0) {
-    const dom = shuffle([...dominions])[0];
-    deck[dom.id] = 1;
-    total++;
-  }
-
-  // Up to 2 Champions
-  shuffle(champions).slice(0, 2).forEach(champ => {
-    const count = Math.min(MAX_COPIES, MAX_DECK_SIZE - total, 2);
-    deck[champ.id] = count;
-    total += count;
-  });
-
-  // Suggested fill order and counts for a 50-card deck
-  const fillOrder = [
-    { arr: creatures, max: 27 },
-    { arr: spells, max: 10 },
-    { arr: artifacts, max: 5 },
-    { arr: domains, max: 5 }
-  ];
-
-  for (const { arr, max } of fillOrder) {
-    shuffle(arr).forEach(card => {
-      if (total >= MAX_DECK_SIZE) return;
-      if (deck[card.id] && deck[card.id] >= MAX_COPIES) return;
-      let count = Math.min(MAX_COPIES, max, MAX_DECK_SIZE - total);
-      // If already added, only add up to MAX_COPIES
-      if (deck[card.id]) count = Math.min(count, MAX_COPIES - deck[card.id]);
-      if (count > 0) {
-        deck[card.id] = (deck[card.id] || 0) + count;
-        total += count;
-      }
-    });
-  }
-
-  // If not full, fill with more creatures (randomly)
-  let i = 0;
-  while (total < MAX_DECK_SIZE && i < creatures.length) {
-    const card = creatures[i++];
-    const already = deck[card.id] || 0;
-    if (already < MAX_COPIES) {
-      deck[card.id] = already + 1;
-      total++;
-    }
-  }
-
-  // Assign the deck!
   setCurrentDeck(deck);
 }
 
