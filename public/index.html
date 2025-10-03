@@ -482,6 +482,34 @@
     <button id="close-deck-view-modal-btn" class="btn-secondary">Close</button>
   </div>
 </div>
+<!-- AUTOFILL MODAL -->
+<div id="autofill-modal" class="modal" style="display:none;">
+  <div class="modal-content autofill-modal-content">
+    <h2 style="text-align:center;">Autofill Deck: Choose Theme</h2>
+    <div>
+      <div class="autofill-section-label">Colors</div>
+      <div class="autofill-color-row">
+        <!-- Color icons will be inserted by JS -->
+      </div>
+    </div>
+    <div>
+      <div class="autofill-section-label">Types</div>
+      <div class="autofill-type-row">
+        <!-- Type buttons will be inserted by JS -->
+      </div>
+    </div>
+    <div>
+      <div class="autofill-section-label">Archetypes</div>
+      <div class="autofill-archetype-row">
+        <!-- Archetype buttons will be inserted by JS -->
+      </div>
+    </div>
+    <div style="margin-top:20px;display:flex;justify-content:center;gap:18px;">
+      <button id="autofill-confirm-btn" class="btn-primary">Autofill Deck</button>
+      <button id="autofill-cancel-btn" class="btn-negative-secondary">Cancel</button>
+    </div>
+  </div>
+</div>
 <!-- BANNER MODAL DECK -->
 <div id="deck-banner-modal" class="modal">
   <div class="modal-content">
@@ -713,6 +741,7 @@
  
 </body> 
 </html>
+
 
 
 
