@@ -2721,6 +2721,86 @@ if (selectedAbilities && selectedAbilities.length) {
 }
 window.filterCards = filterCards;
 
+function openFiltersMasterMenu(context, anchorElem) {
+  // Get or create the menu element
+  let menu = document.getElementById('filters-master-menu');
+  if (!menu) {
+    menu = document.createElement('div');
+    menu.id = 'filters-master-menu';
+    menu.className = 'menu';
+    document.body.appendChild(menu);
+  }
+  menu.innerHTML = ''; // Clear previous
+
+  // Filter config: (you may want to use your FILTERS_CONFIG if present)
+  const FILTERS = [
+    { key: 'rarity', label: 'Rarity' },
+    { key: 'color', label: 'Color' },
+    { key: 'category', label: 'Category' },
+    { key: 'trait', label: 'Trait' },
+    { key: 'type', label: 'Type' },
+    { key: 'archetype', label: 'Archetype' },
+    { key: 'ability', label: 'Ability' },
+
+    // Add/remove as needed
+  ];
+
+  FILTERS.forEach(f => {
+    const row = document.createElement('div');
+    row.className = 'filter-master-menu-row';
+    row.style = 'padding:10px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;';
+    row.innerHTML = `<span>${f.label}</span>`;
+    row.onclick = function(ev) {
+      ev.stopPropagation();
+      // You will need to pass the right filter config object
+      openFilterDropdownMenu(context, { key: f.key, options: getFilterOptions(f.key, context) }, row);
+    };
+    menu.appendChild(row);
+  });
+
+  // Reset Filters button
+  const resetRow = document.createElement('div');
+  resetRow.className = 'filter-master-menu-row filter-reset-row';
+  resetRow.style = 'padding:10px 18px;cursor:pointer;color:#ffe066;font-weight:bold;border-top:1px solid #334;';
+  resetRow.textContent = 'Reset Filters';
+  resetRow.onclick = function(ev) {
+    ev.stopPropagation();
+    if (window.resetFiltersForContext) window.resetFiltersForContext(context);
+    menu.style.display = 'none';
+    // Optionally, re-render gallery/builders
+    if (context === 'gallery' && typeof renderGallery === 'function') renderGallery();
+    if (context === 'builder' && typeof renderBuilder === 'function') renderBuilder();
+  };
+  menu.appendChild(resetRow);
+
+  // Position menu below the button
+  const rect = anchorElem.getBoundingClientRect();
+  menu.style.left = (rect.left + window.scrollX) + "px";
+  menu.style.top = (rect.bottom + window.scrollY + 6) + "px";
+  menu.style.display = 'block';
+  menu.style.position = 'absolute';
+  menu.style.zIndex = 1000;
+
+  // Close on outside click
+  function closeMenu(e) {
+    if (!menu.contains(e.target) && e.target !== anchorElem) {
+      menu.style.display = 'none';
+      document.removeEventListener('mousedown', closeMenu, true);
+    }
+  }
+  setTimeout(() => document.addEventListener('mousedown', closeMenu, true), 10);
+}
+
+// Helper: get filter options for a key (implement as needed)
+function getFilterOptions(key, context) {
+  // Return options for each filter; can be static or dynamic
+  switch (key) {
+    case 'color': return ['All', 'Green', 'Red', 'Blue', 'White', 'Black', 'Yellow', 'Gray', 'Purple'];
+    case 'rarity': return ['All', 'Common', 'Rare', 'Epic', 'Legendary'];
+    // ... and so on for others ...
+    default: return ['All'];
+  }
+}
 function openFilterDropdownMenu(context, filterConfig, anchorElem) {
   closeAllFilterDropdowns();
 
@@ -2780,63 +2860,6 @@ function openFilterDropdownMenu(context, filterConfig, anchorElem) {
   // Remove any previous dropdown
   closeAllFilterDropdowns();
   document.body.appendChild(dropdown);
-}
-function openFilterDropdownMenu(context, filterConfig, anchorElem) {
-  closeAllFilterDropdowns();
-
-  // Build dropdown
-  const dropdown = document.createElement('div');
-  dropdown.className = 'filter-dropdown-menu';
-  dropdown.style = 'position:absolute;z-index:1001;background:#232a3c;border-radius:10px;box-shadow:0 2px 16px #000b;padding:14px 18px;min-width:160px;';
-  // Position right of anchorElem
-  const rect = anchorElem.getBoundingClientRect();
-  dropdown.style.left = (rect.right + window.scrollX + 6) + "px";
-  dropdown.style.top = (rect.top + window.scrollY) + "px";
-
-  // Build options
-  filterConfig.options.forEach(opt => {
-    const checked = (filterState[context][filterConfig.key]||[]).includes(opt) ||
-      (opt === 'All' && (!(filterState[context][filterConfig.key]) || filterState[context][filterConfig.key].length === 0));
-    const label = document.createElement('label');
-    label.style = 'display:block;margin-bottom:7px;cursor:pointer;';
-    label.innerHTML = `<input type="checkbox" value="${opt}" ${checked ? 'checked' : ''} style="margin-right:8px;">${opt}`;
-    label.querySelector('input').onchange = function() {
-      let arr = [...(filterState[context][filterConfig.key] || [])];
-      if (opt === 'All') {
-        // Clear all on All
-        if (this.checked) arr = [];
-      } else {
-        // Uncheck All if any specific is checked
-        const allBox = dropdown.querySelector('input[value="All"]');
-        if (allBox) allBox.checked = false;
-        if (this.checked) arr.push(opt);
-        else arr = arr.filter(v => v !== opt);
-      }
-      // Remove dupes
-      arr = [...new Set(arr)];
-      // If All checked or nothing, clear array
-      if (arr.includes('All') || arr.length === 0) arr = [];
-      filterState[context][filterConfig.key] = arr;
-      // Optionally update visual immediately
-      renderGallery(); // or renderBuilder()
-      // Also update master menu selection text
-      openFiltersMasterMenu(context, document.getElementById('open-filters-menu-gallery'));
-    };
-    dropdown.appendChild(label);
-  });
-
-  // Remove any previous dropdown
-  closeAllFilterDropdowns();
-  document.body.appendChild(dropdown);
-
-  // Close on outside click
-  function closeDropdown(e) {
-    if (!dropdown.contains(e.target)) {
-      dropdown.remove();
-      document.removeEventListener('mousedown', closeDropdown, true);
-    }
-  }
-  setTimeout(() => document.addEventListener('mousedown', closeDropdown, true), 10);
 }
 
 function closeAllFilterDropdowns() {
