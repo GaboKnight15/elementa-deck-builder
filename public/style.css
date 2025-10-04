@@ -1355,12 +1355,11 @@ button {}
 #deck-panel {
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
+  align-items: center;
   overflow-x: auto;
   width: 100%;
-  min-height: 110px;
   background: #232a3c;
-  margin: 8px 0 16px 0;
+  margin: 8px 0;
   border-radius: 16px;
   box-shadow: 0 2px 12px #0003;
   padding: 8px 12px;
