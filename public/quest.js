@@ -16,12 +16,18 @@ const QUEST_POOL = [
   { id: 'collect_white_card', type: 'quest', description: 'Collect a White Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'CardImages/Blank/WhiteCard.png', progress: 0, claimed: false, completed: false, refillAt: null},
   { questId: null, refillAt: 1720000000000 },
 ];
-const ACHIEVEMENT_COLOR_TIERS = [
-  { tier: 1, goal: 10,  description: "Collect 10 {color} cards", reward: 100 },
-  { tier: 2, goal: 100, description: "Collect 100 {color} cards", reward: 300 },
-  { tier: 3, goal: 500, description: "Collect 500 {color} cards", reward: 1000 }
+
+// -------------------------- //
+// --- COLOR ACHIEVEMENTS --- //
+// -------------------------- //
+const COLOR_ACHIEVEMENT_TIERS = [
+  { tier: 1, goal: 100,  description: "Collect 100 {color} cards", reward: 100 },
+  { tier: 2, goal: 300, description: "Collect 300 {color} cards", reward: 200 },
+  { tier: 3, goal: 800, description: "Collect 800 {color} cards", reward: 300 },
+  { tier: 4, goal: 1500,  description: "Collect 1500 {color} cards", reward: 400 },
+  { tier: 5, goal: 5000, description: "Collect 5000 {color} cards", reward: 500 },
 ];
-const ACHIEVEMENT_COLORS = [
+const COLOR_ACHIEVEMENTS = [
   { color: 'green',  image: 'CardImages/Blank/GreenCard.png' },
   { color: 'red',    image: 'CardImages/Blank/RedCard.png' },
   { color: 'blue',   image: 'CardImages/Blank/BlueCard.png' },
@@ -31,6 +37,104 @@ const ACHIEVEMENT_COLORS = [
   { color: 'black',  image: 'CardImages/Blank/BlackCard.png' },
   { color: 'white',  image: 'CardImages/Blank/WhiteCard.png' },
 ];
+const colorAchievements = generateAchievements(CARD_COLORS, COLOR_TIERS, 'color');
+
+// ------------------------- //
+// --- TYPE ACHIEVEMENTS --- //
+// ------------------------- //
+const TYPE_ACHIEVEMENT_TIERS = [
+  { tier: 1, goal: 30,   reward: { type: 'currency', amount: 50 }, description: "Collect 30 {type} cards" },
+  { tier: 2, goal: 100,  reward: { type: 'currency', amount: 120 }, description: "Collect 100 {type} cards" },
+  { tier: 3, goal: 250,  reward: { type: 'currency', amount: 350 }, description: "Collect 250 {type} cards" },
+  { tier: 4, goal: 800,  reward: { type: 'currency', amount: 1200 }, description: "Collect 800 {type} cards" },
+  { tier: 5, goal: 2000, reward: { type: 'currency', amount: 3500 }, description: "Collect 2000 {type} cards" }
+];
+const TYPE_ACHIEVEMENTS = [
+  { type: 'Avian', label: 'Avian', icon: 'CardImages/Avian/Avian.png', colorHex: '#a47c3b' },
+  { type: 'Beast', label: 'Beast', icon: 'CardImages/Blank/BeastCard.png', colorHex: '#a47c3b' },
+  { type: 'Construct', label: 'Construct', icon: 'CardImages/Construct/Construct.png', colorHex: '#a47c3b' },
+  { type: 'Demon', label: 'Demon', icon: 'CardImages/Demon/Demon.png', colorHex: '#e0801c' },
+  { type: 'Dragon', label: 'Dragon', icon: 'CardImages/Blank/DragonCard.png', colorHex: '#e0801c' },
+  { type: 'Elemental', label: 'Elemental', icon: 'CardImages/Elemental/Elemental.png', colorHex: '#e0801c' },
+  { type: 'Faefolk', label: 'Faefolk', icon: 'CardImages/Faefolk/Faefolk.png', colorHex: '#e0801c' },
+  { type: 'Mage', label: 'Mage', icon: 'CardImages/Mage/Mage.png', colorHex: '#a47c3b' },
+  { type: 'Undead', label: 'Undead', icon: 'CardImages/Undead/Undead.png', colorHex: '#a47c3b' },
+  { type: 'Warrior', label: 'Warrior', icon: 'CardImages/Warrior/Warrior.png', colorHex: '#e0801c' },
+  // ... add more types as needed ...
+];
+const typeAchievements = generateAchievements(CARD_TYPES, TYPE_TIERS, 'type');
+
+// ------------------------------ //
+// --- ARCHETYPE ACHIEVEMENTS --- //
+// ------------------------------ //
+const ARCHETYPE_ACHIEVEMENT_TIERS = [
+  { tier: 1, goal: 15,   reward: { type: 'currency', amount: 40 } },
+  { tier: 2, goal: 50,   reward: { type: 'currency', amount: 100 } },
+  { tier: 3, goal: 150,  reward: { type: 'currency', amount: 300 } },
+  { tier: 4, goal: 400,  reward: { type: 'currency', amount: 900 } },
+  { tier: 5, goal: 1000, reward: { type: 'currency', amount: 2500 } }
+];
+const ARCHETYPE_ACHIEVEMENTS = [
+  { value: 'Satyr', label: 'Satyr', icon: 'CardImages/Satyr/FaeliraSatyrEmpress.png', colorHex: '#888888' },
+  { value: 'Goblin', label: 'Goblin', icon: 'CardImages/Goblin/GoblinWarlord.png', colorHex: '#888888' },
+  { value: 'Duskwing', label: 'Duskwing', icon: 'CardImages/Duskwing/RaukharDuskwingKnight.png', colorHex: '#888888' },
+  { value: 'Fireland', label: 'Fireland', icon: 'CardImages/Fireland/EphorosFirelandBehemoth.png', colorHex: '#888888' },
+  { value: 'Frostland', label: 'Frostland', icon: 'CardImages/Frostland/EirawenFrostlandQueen.png', colorHex: '#888888' },
+  { value: 'Golemheart', label: 'Golemheart', icon: 'CardImages/Golem/PyrokragGolemheartTitan.png', colorHex: '#888888' },
+
+  // --- Dragons --- //
+  { value: 'Thornwing', label: 'Thornwing', icon: 'CardImages/Thornwing/VerdarokSylvanThornwing.png', colorHex: '#888888' },
+  { value: 'Blazingscale', label: 'Blazingscale', icon: 'CardImages/Blazingscale/PyranixInfernoBlazingscale.png', colorHex: '#888888' },
+  { value: 'Abyssdrake', label: 'Abyssdrake', icon: 'CardImages/Abyssdrake/AbyndraTidalAbyssdrake.png', colorHex: '#888888' },
+  { value: 'Stormrazor', label: 'Stormrazor', icon: 'CardImages/Stormrazor/VoltrazekTempestStormrazor.png', colorHex: '#888888' },
+  { value: 'Ironclaw', label: 'Ironclaw', icon: 'CardImages/Ironclaw/FerronyxTerraIronclaw.png', colorHex: '#888888' },
+  { value: 'Venomspine', label: 'Venomspine', icon: 'CardImages/Venomspine/MyxarothCorruptedVenomspine.png', colorHex: '#888888' },
+  { value: 'Solarwyrm', label: 'Solarwyrm', icon: 'CardImages/Solarwyrm/SolarythRadianceSolarwyrm.png', colorHex: '#888888' },
+  { value: 'Nightshroud', label: 'Nightshroud', icon: 'CardImages/Nightshroud/NochtyrosUmbralNightshroud.png', colorHex: '#888888' },
+
+  // --- Constructs --- //
+  { value: 'Grovehusk', label: 'Grovehusk', icon: 'CardImages/Grovehusk/Grovehusk.png', colorHex: '#888888' },
+  { value: 'Cindercore', label: 'Cindercore', icon: 'CardImages/Cindercore/IgnavarynCindercoreAutomaton.png', colorHex: '#888888' },
+  { value: 'Coralbound', label: 'Coralbound', icon: 'CardImages/Coralbound/MaelvyrnCoralboundAutomaton.png', colorHex: '#888888' },
+  { value: 'Stormdrive', label: 'Stormdrive', icon: 'CardImages/Stormdrive/Stormdrive.png', colorHex: '#888888' },
+  { value: 'Ironwrought', label: 'Ironwrought', icon: 'CardImages/Ironwrought/Ironwrought.png', colorHex: '#888888' },
+  { value: 'Plagueaxis', label: 'Plagueaxis', icon: 'CardImages/Plagueaxis/Plagueaxis.png', colorHex: '#888888' },
+  { value: 'Solarforge', label: 'Solarforge', icon: 'CardImages/Solarforge/Solarforge.png', colorHex: '#888888' },
+  { value: 'Shadowgear', label: 'Shadowgear', icon: 'CardImages/Shadowgear/Shadowgear.png', colorHex: '#888888' },
+
+  { value: 'Hybrid', label: 'Hybrid', icon: 'CardImages/Hybrid/Hybrid.png', colorHex: '#888888' },
+  { value: 'Webcursed', label: 'Webcursed', icon: 'CardImages/Webcursed/Webcursed.png', colorHex: '#888888' },
+  { value: 'Seraph', label: 'Seraph', icon: 'CardImages/Seraph/Seraph.png', colorHex: '#888888' },
+  { value: 'Zephyra', label: 'Zephyra', icon: 'CardImages/Zephyra/GarudaWingsofZephyra.png', colorHex: '#888888' },
+  // ...add more archetypes as needed
+];
+const archetypeAchievements = generateAchievements(ARCHETYPES, ACHIEVEMENT_ARCHETYPE_TIERS, 'archetype');
+
+// ------------------------------ //
+// --- COSMETICS ACHIEVEMENTS --- //
+// ------------------------------ //
+const AVATAR_ACHIEVEMENT_TIERS = [
+  { tier: 1, goal: 5,   reward: { type: 'currency', amount: 100 } },
+  { tier: 2, goal: 12,  reward: { type: 'currency', amount: 200 } },
+  { tier: 3, goal: 25,  reward: { type: 'currency', amount: 300 } },
+  { tier: 4, goal: 50,  reward: { type: 'currency', amount: 400 } }
+];
+
+const BANNER_ACHIEVEMENT_TIERS = [
+  { tier: 1, goal: 3,   reward: { type: 'currency', amount: 100 } },
+  { tier: 2, goal: 8,   reward: { type: 'currency', amount: 200 } },
+  { tier: 3, goal: 15,  reward: { type: 'currency', amount: 300 } }
+];
+
+const CARDBACK_ACHIEVEMENT_TIERS = [
+  { tier: 1, goal: 2,   reward: { type: 'currency', amount: 100 } },
+  { tier: 2, goal: 5,   reward: { type: 'currency', amount: 200 } },
+  { tier: 3, goal: 10,  reward: { type: 'currency', amount: 300 } }
+];
+
+// -------------------- //
+// --- ACHIEVEMENTS --- //
+// -------------------- //
 const ACHIEVEMENTS = [
   ...generateColorAchievements(),
   // ...add more colors as needed
@@ -40,9 +144,55 @@ const ACHIEVEMENTS = [
   goal: 20,
   reward: { type: 'currency', amount: 500 },
   image: 'OtherImages/Icons/Rewards.png'
-  }
+  },
+  {
+    id: 'collect_avatars',
+    label: 'Unlock Avatars',
+    category: 'cosmetic',
+    target: { property: 'cosmetic', value: 'avatar' }, // for logic use
+    icon: 'OtherImages/Icons/Avatar.png', // use your own icon
+    color: '#70b0fd',
+    tiers: AVATAR_ACHIEVEMENT_TIERS.map(tier => ({
+      ...tier,
+      description: `Unlock ${tier.goal} Avatars`
+    })),
+    hidden: false,
+    sortOrder: 201,
+  },
+  {
+    id: 'collect_banners',
+    label: 'Unlock Banners',
+    category: 'cosmetic',
+    target: { property: 'cosmetic', value: 'banner' },
+    icon: 'OtherImages/Icons/Banner.png',
+    color: '#ffe066',
+    tiers: BANNER_ACHIEVEMENT_TIERS.map(tier => ({
+      ...tier,
+      description: `Unlock ${tier.goal} Banners`
+    })),
+    hidden: false,
+    sortOrder: 202,
+  },
+  {
+    id: 'collect_cardbacks',
+    label: 'Unlock Cardbacks',
+    category: 'cosmetic',
+    target: { property: 'cosmetic', value: 'cardback' },
+    icon: 'OtherImages/Icons/Cardback.png',
+    color: '#bdbdbd',
+    tiers: CARDBACK_ACHIEVEMENT_TIERS.map(tier => ({
+      ...tier,
+      description: `Unlock ${tier.goal} Cardbacks`
+    })),
+    hidden: false,
+    sortOrder: 203,
+  },
 ];
 
+
+// ----------------- //
+// --- FUNCTIONS --- //
+// ----------------- //
 function getPlayerLevel() {
   return playerLevel;
 }
@@ -325,23 +475,42 @@ function getNextUtcMidnightMs() {
   const next = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1, 0, 0, 0));
   return next - now;
 }
+/**
+ * Generic achievement generator for any property (color, type, archetype, etc)
+ * @param {Object[]} items - Array of { value, label, icon, colorHex }
+ * @param {Object[]} tiers - Array of { tier, goal, reward }
+ * @param {string} property - The property to match on a card (e.g. 'color', 'type', 'archetype')
+ * @param {string} [category='collection'] - Achievement category
+ * @returns {Object[]} Array of achievement objects (one per item)
+ */
 // ACHIVEMENTS LOGIC
-function generateColorAchievements() {
-  const achievements = [];
-  for (const colorObj of ACHIEVEMENT_COLORS) {
-    for (const tier of ACHIEVEMENT_COLOR_TIERS) {
-      achievements.push({
-        id: `collect_${tier.goal}_${colorObj.color}_cards`,
-        description: tier.description.replace('{color}', colorObj.color.charAt(0).toUpperCase() + colorObj.color.slice(1)),
-        goal: tier.goal,
-        color: colorObj.color,
-        reward: { type: 'currency', amount: tier.reward },
-        image: colorObj.image,
-        tier: tier.tier
-      });
-    }
+function generateAchievements(items, tiers, property, category = 'collection') {
+  return items.map(item => ({
+    id: `collect_${item.value}_cards`,
+    label: `Collect ${item.label} Cards`,
+    category,
+    target: { property, value: item.value },
+    icon: item.icon,
+    color: item.colorHex,
+    tiers: tiers.map(tierObj => ({
+      ...tierObj,
+      description: `Collect ${tierObj.goal} ${item.label} cards`
+    })),
+    hidden: false,
+    sortOrder: 10, // or dynamic if you want
+  }));
+}
+function getCosmeticAchievementProgress(achievement) {
+  if (achievement.target.value === "avatar") {
+    return (window.playerUnlockedAvatars || []).length;
   }
-  return achievements;
+  if (achievement.target.value === "banner") {
+    return (window.playerUnlockedBanners || []).length;
+  }
+  if (achievement.target.value === "cardback") {
+    return (window.playerUnlockedCardbacks || []).length;
+  }
+  return 0;
 }
 function getAchievementProgress(ach) {
   let data = getAchievementData();
@@ -600,6 +769,39 @@ function renderPlayerLevel() {
   }
   if (expNum) expNum.textContent = exp + " / " + needed;
 }
+
+function getVisibleColorAchievements() {
+  // Group all color achievements by color, sorted by tier
+  const achievementsByColor = {};
+  ACHIEVEMENTS.filter(a => a.color).forEach(a => {
+    if (!achievementsByColor[a.color]) achievementsByColor[a.color] = [];
+    achievementsByColor[a.color].push(a);
+  });
+  // Sort by tier for each color
+  Object.values(achievementsByColor).forEach(arr => arr.sort((a, b) => a.tier - b.tier));
+
+  const achievementData = getAchievementData();
+  const visible = [];
+  for (const color in achievementsByColor) {
+    const tiers = achievementsByColor[color];
+    // Find first incomplete or unclaimed tier
+    let found = false;
+    for (let i = 0; i < tiers.length; i++) {
+      const ach = tiers[i];
+      const prog = achievementData[ach.id] || { progress: 0, completed: false, claimed: false };
+      if (!prog.claimed) {
+        visible.push(ach);
+        found = true;
+        break;
+      }
+    }
+    // If all tiers claimed, show the highest (completed)
+    if (!found && tiers.length > 0) {
+      visible.push(tiers[tiers.length - 1]);
+    }
+  }
+  return visible;
+}
 // Render achievements for category
 function renderAchievementsCategory(category) {
   const list = document.getElementById('achievements-list');
@@ -610,10 +812,9 @@ function renderAchievementsCategory(category) {
   if (category === 'general') {
     achievementsToShow = ACHIEVEMENTS.filter(a => !a.color && a.id.indexOf('progress') === -1);
   } else if (category === 'color') {
-    achievementsToShow = ACHIEVEMENTS.filter(a => !!a.color);
+    achievementsToShow = getVisibleColorAchievements();
   } else if (category === 'progression') {
     achievementsToShow = ACHIEVEMENTS.filter(a => a.id && a.id.indexOf('progress') !== -1 );
-    // Or however you define progression achievements
   }
 
   // Sort: unclaimed first, claimed at bottom
