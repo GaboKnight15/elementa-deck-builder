@@ -164,6 +164,17 @@ function renderQuests() {
   const list = document.getElementById('quests-list');
   if (!list) return;
   list.innerHTML = '';
+  let timerDiv = document.getElementById('quest-reset-timer');
+  if (!timerDiv) {
+    timerDiv = document.createElement('div');
+    timerDiv.id = 'quest-reset-timer';
+    timerDiv.style.fontWeight = 'bold';
+    timerDiv.style.fontSize = '1.1em';
+    timerDiv.style.color = '#ffe066';
+    timerDiv.style.margin = '8px 0 8px 0';
+    list.parentElement.insertBefore(timerDiv, list);
+  }
+  updateQuestResetTimer();
   getActiveQuests(function(quests) {
     // Always slice to maximum QUEST_SLOTS
     const displayedQuests = (quests || []).filter(q => !!q && !!q.id).slice(0, QUEST_SLOTS);
@@ -309,6 +320,11 @@ function getTodayUtcDateString() {
   return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()))
     .toISOString().split("T")[0];
 }
+function getNextUtcMidnightMs() {
+  const now = new Date();
+  const next = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1, 0, 0, 0));
+  return next - now;
+}
 // ACHIVEMENTS LOGIC
 function generateColorAchievements() {
   const achievements = [];
@@ -425,6 +441,26 @@ function formatTimer(ms) {
   const s = total % 60;
   return `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
 }
+
+// --- QUEST RESET TIMER ---
+let questResetTimerInterval = null;
+function updateQuestResetTimer() {
+  const timerDiv = document.getElementById('quest-reset-timer');
+  if (!timerDiv) return;
+  const ms = getNextUtcMidnightMs();
+  timerDiv.textContent = `Next quests reset in ${formatTimerMs(ms)}`;
+  // When timer reaches zero, reset quests and update UI
+  if (ms <= 0) {
+    resetQuestsIfNeeded();
+    renderQuests();
+  }
+}
+function startQuestResetTimer() {
+  clearInterval(questResetTimerInterval);
+  updateQuestResetTimer();
+  questResetTimerInterval = setInterval(updateQuestResetTimer, 1000);
+}
+
 let TimerInterval = null;
 
 function startQuestTimers() {
@@ -652,15 +688,24 @@ function openAchievementsModalDefault() {
   renderAchievementsCategory('general');
 }
 
+// --- ENSURE QUESTS RESET AT 00:00 UTC ON PAGE LOAD ---
+document.addEventListener('DOMContentLoaded', function() {
+  resetQuestsIfNeeded(); // Ensure daily reset logic runs
+});
 // OPEN/CLOSE LOGIC
 document.getElementById('quests-icon').onclick = function() {
   document.getElementById('quests-modal').style.display = 'flex';
+  startQuestResetTimer();
 };
 document.getElementById('close-quests-modal').onclick = function() {
   document.getElementById('quests-modal').style.display = 'none';
+  clearInterval(questResetTimerInterval);
 };
 document.getElementById('quests-modal').onclick = function(e) {
-  if (e.target === this) this.style.display = 'none';
+  if (e.target === this) {
+    this.style.display = 'none';
+    clearInterval(questResetTimerInterval);
+  }
 };
 
 document.getElementById('achievements-icon').onclick = openAchievementsModalDefault;
