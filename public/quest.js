@@ -810,9 +810,17 @@ function renderAchievementsCategory(category) {
 
   let achievementsToShow = [];
   if (category === 'general') {
-    achievementsToShow = ACHIEVEMENTS.filter(a => !a.color && a.id.indexOf('progress') === -1);
+    achievementsToShow = ACHIEVEMENTS.filter(a =>
+      (!a.color && a.category !== 'color' && a.category !== 'type' && a.category !== 'archetype' && a.category !== 'cosmetic')
+    );
   } else if (category === 'color') {
     achievementsToShow = getVisibleColorAchievements();
+  } else if (category === 'type') {
+    achievementsToShow = ACHIEVEMENTS.filter(a => a.category === 'type');
+  } else if (category === 'archetype') {
+    achievementsToShow = ACHIEVEMENTS.filter(a => a.category === 'archetype');
+  } else if (category === 'cosmetic') {
+    achievementsToShow = ACHIEVEMENTS.filter(a => a.category === 'cosmetic');
   } else if (category === 'progression') {
     achievementsToShow = ACHIEVEMENTS.filter(a => a.id && a.id.indexOf('progress') !== -1 );
   }
