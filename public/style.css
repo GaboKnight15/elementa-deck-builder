@@ -4185,13 +4185,13 @@ button[disabled], .btn-disabled {
 }
 
 @keyframes card-pulse-glow {
-  0% { box-shadow: 0 0 0 0 rgba(80, 240, 100, 0.7);}
-  70% { box-shadow: 0 0 18px 12px rgba(80, 240, 100, 0.12);}
+  0%   { box-shadow: 0 0 0 0 rgba(80, 240, 100, 0.7);}
+  60%  { box-shadow: 0 0 32px 24px rgba(80, 240, 100, 0.0);}
   100% { box-shadow: 0 0 0 0 rgba(80, 240, 100, 0.7);}
 }
 @keyframes card-pulse-glow-horizontal {
   0%   { box-shadow: 0 0 0 0 rgba(80, 240, 100, 0.7);}
-  70%  { box-shadow: 0 0 30px 25px rgba(80, 240, 100, 0.10);}
+  60%  { box-shadow: 0 0 40px 30px rgba(80, 240, 100, 0.0);}
   100% { box-shadow: 0 0 0 0 rgba(80, 240, 100, 0.7);}
 }
 .zone-animatable {
