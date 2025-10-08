@@ -85,13 +85,13 @@ const allCardbackOptions = [
 const packPrices = [
   {
     id: "StandardPack",
-    name: "Elementa Boost Pack",
+    name: "Elementa Genesis",
     price: 100,
     image: "CardImages/Packs/StandardPack.png"
   },
   {
     id: "StandardPack2",
-    name: "Elementa Rise of Dragons",
+    name: "Scales of Ruins",
     price: 100,
     image: "CardImages/Packs/StandardPack2.png"
   },
