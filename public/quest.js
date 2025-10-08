@@ -136,7 +136,7 @@ const CARDBACK_ACHIEVEMENT_TIERS = [
 // --- ACHIEVEMENTS --- //
 // -------------------- //
 const ACHIEVEMENTS = [
-  ...generateColorAchievements(),
+...generateAchievements(COLOR_ACHIEVEMENTS, COLOR_ACHIEVEMENT_TIERS, 'color'),
   // ...add more colors as needed
   {
   id: 'collect_20_unique_cards',
