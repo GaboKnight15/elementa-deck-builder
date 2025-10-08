@@ -1658,10 +1658,13 @@ function showDailyLoginModal(dayIdx) {
   };
 }
 document.getElementById('daily-login-icon').onclick = function() {
-  // Calculate current login day index and show modal
   const { lastClaimedDay, lastLoginDate } = getDailyLoginInfo();
   const today = getUtcDateString();
   let dayIdx = lastClaimedDay % DAILY_LOGIN_REWARDS.length;
+  if (lastLoginDate === today) {
+    showToast("You have already claimed today's reward!", { type: "info" });
+    return;
+  }
   showDailyLoginModal(dayIdx);
 };
 
