@@ -85,11 +85,13 @@ const AUTOFILL_ARCHETYPES = [
 ];
 
 // Show modal when autofill icon clicked
-document.getElementById('builder-autofill-btn').onclick = function() {
-  showAutofillModal();
-};
+
+document.getElementById('filter-name-builder').addEventListener('input', renderBuilder);
 document.getElementById('builder-filter-btn').onclick = function(e) {
   openFiltersMasterMenu('builder', e.target);
+};
+document.getElementById('builder-autofill-btn').onclick = function() {
+  showAutofillModal();
 };
 document.getElementById('builder-settings-btn').onclick = function() {
   document.getElementById('settings-modal').style.display = 'flex';
@@ -172,7 +174,7 @@ function showDeckSelection() {
   deckBuilderUI.style.display = 'none';
   builderContainer.style.display = '';
   builderContainer.classList.add('flex-layout');
-  deckPanel.style.display = 'none';
+  deckPanel.innerHTML = '';
   renderDeckSelection();
 }
 function showDeckBuilder() {
@@ -1167,7 +1169,7 @@ function showAutofillModal() {
     const selectedArchetypes = Array.from(modal.querySelectorAll('.autofill-archetype-btn.selected')).map(btn => btn.dataset.archetype);
 
     modal.style.display = 'none';
-    autofillDeckWithTheme({colors: selectedColors, types: selectedTypes, archetypes: selectedArchetypes});
+    autofillDeck({colors: selectedColors, types: selectedTypes, archetypes: selectedArchetypes});
     updateDeckDisplay();
     renderBuilder();
   };
@@ -1179,7 +1181,7 @@ function showAutofillModal() {
 }
 
 // Themed autofill logic
-function autofillDeckWithTheme({colors, types, archetypes}) {
+function autofillDeck({colors, types, archetypes}) {
   const MAX_DECK_SIZE = 50;
   const MAX_COPIES = 3;
   setCurrentDeck({});
@@ -1317,14 +1319,7 @@ highlightArtModal.addEventListener('mousedown', function(e) {
     highlightArtModal.style.display = "none";
   }
 });
-// GALLERY EVENT FILTERS
-document.getElementById('filter-name-builder').addEventListener('input', renderBuilder);
-document.getElementById('builder-autofill-btn').onclick = function() {
-  if (!confirm("Autofill will overwrite your current deck. Continue?")) return;
-  autofillDeck();
-  updateDeckDisplay();
-  renderBuilder();
-};
+
 const resetBtn = document.getElementById('reset-builder-filters-btn');
 if (resetBtn) {
   resetBtn.onclick = function() {
