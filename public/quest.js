@@ -37,7 +37,7 @@ const COLOR_ACHIEVEMENTS = [
   { color: 'black',  image: 'CardImages/Blank/BlackCard.png' },
   { color: 'white',  image: 'CardImages/Blank/WhiteCard.png' },
 ];
-const colorAchievements = generateAchievements(CARD_COLORS, COLOR_TIERS, 'color');
+const colorAchievements = generateAchievements(COLOR_ACHIEVEMENTS, COLOR_ACHIEVEMENT_TIERS, 'color');
 
 // ------------------------- //
 // --- TYPE ACHIEVEMENTS --- //
@@ -62,7 +62,7 @@ const TYPE_ACHIEVEMENTS = [
   { type: 'Warrior', label: 'Warrior', icon: 'CardImages/Warrior/Warrior.png', colorHex: '#e0801c' },
   // ... add more types as needed ...
 ];
-const typeAchievements = generateAchievements(CARD_TYPES, TYPE_TIERS, 'type');
+const typeAchievements = generateAchievements(TYPE_ACHIEVEMENTS, TYPE_ACHIEVEMENT_TIERS, 'type');
 
 // ------------------------------ //
 // --- ARCHETYPE ACHIEVEMENTS --- //
@@ -108,7 +108,7 @@ const ARCHETYPE_ACHIEVEMENTS = [
   { value: 'Zephyra', label: 'Zephyra', icon: 'CardImages/Zephyra/GarudaWingsofZephyra.png', colorHex: '#888888' },
   // ...add more archetypes as needed
 ];
-const archetypeAchievements = generateAchievements(ARCHETYPES, ACHIEVEMENT_ARCHETYPE_TIERS, 'archetype');
+const archetypeAchievements = generateAchievements(ARCHETYPE_ACHIEVEMENTS, ARCHETYPE_ACHIEVEMENT_TIERS, 'archetype');
 
 // ------------------------------ //
 // --- COSMETICS ACHIEVEMENTS --- //
