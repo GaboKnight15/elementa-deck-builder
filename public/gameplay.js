@@ -2718,7 +2718,6 @@ function renderCardOnField(cardObj, zoneId) {
   cardDiv.className = 'card-battlefield';
   cardDiv.dataset.instanceId = cardObj.instanceId;
 
-  cardData = dummyCards.find(c => c.id === cardObj.cardId);
   const isActionable = isCardActionable(cardObj, cardData, gameState, getZoneNameForCard(cardObj));
   if (isActionable) {
     if (cardObj.orientation === "horizontal") {
