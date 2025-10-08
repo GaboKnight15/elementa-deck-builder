@@ -2012,6 +2012,12 @@ for (let i = 0; i < gameState.opponentHand.length; i++) {
   div.appendChild(img);
   opponentHandDiv.appendChild(div);
 }
+const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+if (isCardActionable(cardObj, cardData, gameState, 'hand')) {
+  div.classList.add('card-animatable');
+} else {
+  div.classList.remove('card-animatable');
+}
   renderRowZone('opponent-creatures-zone', gameState.opponentCreatures, "creature");
   renderRowZone('opponent-domains-zone', gameState.opponentDomains, "domain");
   renderRowZone('player-creatures-zone', gameState.playerCreatures, "creature");
@@ -2250,7 +2256,12 @@ function setupDropZones() {
 function renderRowZone(zoneId, cardArray, category) {
   const zoneDiv = document.getElementById(zoneId);
   zoneDiv.innerHTML = '';
-
+  const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+  if (isCardActionable(cardObj, cardData, gameState, zoneId)) {
+    cardDiv.classList.add('card-animatable');
+  } else {
+    cardDiv.classList.remove('card-animatable');
+  }
   // RENDER CARDS IN ZONES
   for (const cardObj of cardArray) {
     const cardEl = renderCardOnField(cardObj, zoneId);
