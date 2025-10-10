@@ -214,11 +214,29 @@ const STATUS_EFFECTS = {
     }
     // Optionally add logic for duration ticks
   },
-  Seal: {
-    name: "Seal",
-    icon: "OtherImages/status/seal.png",
-    description: "This card's skills cannot be activated."
+Bind: {
+  icon: 'OtherImages/Icons/Bind.png',
+  name: 'Bind',
+  description: 'Cannot attack or activate skills while bound (removed at next opponent End Phase).',
+  // Don't set duration here, handle it in your end phase check!
+  apply: function(cardObj) {
+    cardObj._bound = true;
+    cardObj.canAttack = false;
+    cardObj.canActivateSkill = false;
+    cardObj._bindPendingRemoval = true; // Flag that Bind is active and waiting for Opponent End Phase
   },
+  remove: function(cardObj) {
+    cardObj._bound = false;
+    cardObj.canAttack = true;
+    cardObj.canActivateSkill = true;
+    delete cardObj._bindPendingRemoval;
+  }
+},
+Seal: {
+  name: "Seal",
+  icon: "OtherImages/status/seal.png",
+  description: "This card's skills cannot be activated."
+},
   // ... add more statuses
 };
 
