@@ -145,6 +145,8 @@ const STATUS_EFFECTS = {
     icon: 'OtherImages/Icons/Burn.png',
     name: 'Burn',
     description: 'Deals 1 damage at End Phase and lowers DEF by 1.',
+    duration: 2,
+    tick: "opponentEnd", // Only decrement at opponent's End Phase!
     apply: function(cardObj) {
       // Lower DEF by 1 if not already applied
       if (!cardObj._burnedDEF) {
@@ -168,6 +170,7 @@ const STATUS_EFFECTS = {
     name: 'Freeze',
     description: 'Cannot attack for 1 turn.',
     duration: 1,
+    tick: "allEnd", // Decrement on every End Phase
     apply: (cardObj) => {
       cardObj._frozen = true;
       cardObj.canAttack = false;
@@ -176,9 +179,6 @@ const STATUS_EFFECTS = {
       cardObj._frozen = false;
       cardObj.canAttack = true;
     },
-    onTurnStart: (cardObj) => {
-      // If there’s logic for re-enabling attack after duration, handle here
-    }
   },
   Poison: {
     icon: 'OtherImages/Icons/Poison.png',
@@ -1814,6 +1814,10 @@ function resetTurnFlags(turn) {
       card.hasSummonedThisTurn = false;
     });
   }
+}
+function resetTurnResources(turn) {
+  const domains = turn === "player" ? gameState.playerDomains : gameState.opponentDomains;
+  domains.forEach(domain => generateEssenceForCard(domain));
 }
 function matchesFilter(cardObj, filter) {
   for (let key in filter) {
@@ -3592,7 +3596,7 @@ function handleStartPhase(turn) {
   // Reset mana/essence or resource for this turn
   resetTurnResources(turn);
   // Trigger start-of-turn effects (statuses, abilities, etc.)
-  triggerStartOfTurnEffects(turn);
+  triggerStartPhaseEffects(turn);
   // Log action
   appendVisualLog({
     action: "startPhase",
@@ -3615,16 +3619,11 @@ function handleActionPhase(turn) {
 
 function handleEndPhase(turn) {
   // Trigger end-of-turn effects (statuses, abilities, etc.)
-  triggerEndOfTurnEffects(turn);
+  triggerEndPhaseEffects(turn);
+  // Tick all statuses generically based on phase
+  tickStatusDurations({ turn, phase: "end" });
   // Remove statuses that expire at end of turn
   removeExpiringStatuses(turn);
-  // Special: Bind removal at opponent's End Phase
-  if (turn === "opponent") {
-    // Remove Bind from all player's cards with Bind
-    [...gameState.playerCreatures, ...gameState.playerDomains].forEach(card => {
-      if (card._bindPendingRemoval) removeStatus(card, 'Bind');
-    });
-  }
   // Optionally log phase end
   appendVisualLog({
     action: "endPhase",
@@ -5733,6 +5732,33 @@ function handleEndPhaseStatuses() {
     }
   });
   renderGameState();
+}
+function tickStatusDurations(phaseObj) {
+  // Get all relevant cards (creatures, domains, etc)
+  const allCards = [
+    ...gameState.playerCreatures, ...gameState.playerDomains,
+    ...gameState.opponentCreatures, ...gameState.opponentDomains
+  ];
+  allCards.forEach(cardObj => {
+    if (!cardObj.statuses) return;
+    cardObj.statuses.forEach(status => {
+      const statusDef = STATUS_EFFECTS[status.name];
+      if (!statusDef) return;
+      // Determine if this status should tick in this phase
+      if (
+        (statusDef.tick === "allEnd" && isEndPhase(phaseObj)) ||
+        (statusDef.tick === "playerEnd" && isPlayerEndPhase(phaseObj)) ||
+        (statusDef.tick === "opponentEnd" && isOpponentEndPhase(phaseObj))
+      ) {
+        // Call onEndPhase if present
+        if (statusDef.onEndPhase) statusDef.onEndPhase(cardObj);
+        status.duration -= 1;
+        if (status.duration <= 0) {
+          removeStatus(cardObj, status.name);
+        }
+      }
+    });
+  });
 }
 
 // ----------------------------------- //
