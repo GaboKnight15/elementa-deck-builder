@@ -14,7 +14,7 @@ const DEFAULT_CPU_DECKS = [
       { id: 'HeartwoodEmeralds', amount: 4 },
       { id: 'LifeGrowth', amount: 4 },
       { id: 'EssenceSurge', amount: 4 },
-      { id: 'basicforest', amount: 4 },
+      { id: 'Forest', amount: 4 },
       // ... etc
     ]
   },
@@ -33,7 +33,7 @@ const DEFAULT_CPU_DECKS = [
       { id: 'Hellcharger', amount: 2 },
       { id: 'CindercoreEmber', amount: 4 },
       { id: 'EssenceAssault', amount: 4 },
-      { id: 'basicvolcano', amount: 4 },
+      { id: 'Volcano', amount: 4 },
       // ... etc
     ]
   },
@@ -50,7 +50,7 @@ const DEFAULT_CPU_DECKS = [
       { id: 'WaterElemental', amount: 4 },
       { id: 'TidecallersPearl', amount: 4 },
       { id: 'EssenceRift', amount: 4 },
-      { id: 'basicocean', amount: 4 },
+      { id: 'Ocean', amount: 4 },
       // ... etc
     ]
   },
@@ -66,7 +66,7 @@ const DEFAULT_CPU_DECKS = [
       { id: 'Aetherion', amount: 1 },
       { id: 'StormcoreDynamo', amount: 4 },
       { id: 'EssenceBolt', amount: 4 },
-      { id: 'basicpeaks', amount: 4 },
+      { id: 'Peaks', amount: 4 },
       // ... etc
     ]
   },
@@ -83,7 +83,7 @@ const DEFAULT_CPU_DECKS = [
       { id: 'Goblin', amount: 4 },
       { id: 'PlagueThornTalisman', amount: 4 },
       { id: 'EssenceBreak', amount: 4 },
-      { id: 'basicswamp', amount: 4 },
+      { id: 'Swamp', amount: 4 },
       // ... etc
     ]
   },
@@ -101,7 +101,7 @@ const DEFAULT_CPU_DECKS = [
       { id: 'DesertWolf', amount: 4 },
       { id: 'TitansAnvil', amount: 4 },
       { id: 'EssenceBarrier', amount: 4 },
-      { id: 'basicmountain', amount: 4 },
+      { id: 'Mountain', amount: 4 },
       // ... etc
     ]
   },
@@ -122,7 +122,7 @@ const DEFAULT_CPU_DECKS = [
       { id: 'basicvampire', amount: 4 },
       { id: 'VeiloftheForgotten', amount: 4 },
       { id: 'EssencePurge', amount: 4 },
-      { id: 'basicshadowforest', amount: 4 },
+      { id: 'ShadowForest', amount: 4 },
       // ... etc
     ]
   },
@@ -140,7 +140,7 @@ const DEFAULT_CPU_DECKS = [
       { id: 'basicfirepixie', amount: 4 },
       { id: 'LumenSpire', amount: 4 },
       { id: 'EssenceBlessing', amount: 4 },
-      { id: 'basicplains', amount: 4 },
+      { id: 'Plains', amount: 4 },
       // ... etc
     ]
   },
@@ -163,8 +163,8 @@ const DEFAULT_CPU_DECKS = [
       { id: 'LifeGrowth', amount: 4 },
       { id: 'EssenceAssault', amount: 4 },
       { id: 'EssenceBarrier', amount: 4 },
-      { id: 'basicvolcano', amount: 4 },
-      { id: 'basicmountain', amount: 4 },
+      { id: 'Volcano', amount: 4 },
+      { id: 'Mountain', amount: 4 },
       
       // ... etc
     ]
