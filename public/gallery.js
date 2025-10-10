@@ -511,9 +511,93 @@ function showGalleryCardMenu(card, anchorDiv) {
   } else {
     modalContent.appendChild(favoriteBtn);
   }
+  
+  let styleBtn = modalContent.querySelector('#gallery-card-style-btn');
+  if (styleBtn) styleBtn.remove();
+
+  styleBtn = document.createElement('button');
+  styleBtn.id = "gallery-card-style-btn";
+  styleBtn.className = "settings-item";
+  styleBtn.style.width = "100%";
+  styleBtn.style.textAlign = "left";
+  styleBtn.innerHTML = `<img src="OtherImages/Icons/Style.png" alt="Style" style="width:20px;vertical-align:middle;margin-right:10px;"> Style`;
+
+  // Determine all possible style images for this card
+  const allStyles = [];
+  if (card.image) allStyles.push({key: "default", src: card.image, label: "Default"});
+  if (card.imageFullArt) allStyles.push({key: "fullArt", src: card.imageFullArt, label: "Full Art"});
+  if (card.imageFoil) allStyles.push({key: "foil", src: card.imageFoil, label: "Foil"});
+  // Add more as you implement more styles
+
+  // Determine which styles are unlocked for this player
+  const unlockedStyles = [];
+  if (card.image) unlockedStyles.push({key: "default", src: card.image, label: "Default"});
+  if (card.imageFullArt && window.playerUnlockedFullArt && window.playerUnlockedFullArt[card.id]) {
+    unlockedStyles.push({key: "fullArt", src: card.imageFullArt, label: "Full Art"});
+  }
+  if (card.imageFoil && window.playerFoilCards && window.playerFoilCards[card.id]) {
+    unlockedStyles.push({key: "foil", src: card.imageFoil, label: "Foil"});
+  }
+  // Add more unlocks as you implement them
+
+  // If only 1 style OR all styles unlocked, disable the button
+  if (unlockedStyles.length <= 1 || unlockedStyles.length === allStyles.length) {
+    styleBtn.disabled = true;
+    styleBtn.style.opacity = "0.4";
+    styleBtn.title = "No alternate styles available to unlock for this card";
+  } else {
+    styleBtn.onclick = function(e) {
+      e.stopPropagation();
+      menu.style.display = "none";
+      showCardStyleModal(card, unlockedStyles);
+    };
+  }
 }
 
+function showCardStyleModal(card, styleImages) {
+  // Remove existing modal if present
+  let modal = document.getElementById('card-style-modal');
+  if (modal) modal.remove();
 
+  modal = document.createElement('div');
+  modal.id = 'card-style-modal';
+  modal.className = 'modal';
+  modal.style.display = 'flex';
+  modal.style.alignItems = 'center';
+  modal.style.justifyContent = 'center';
+  modal.onclick = function(e) { if (e.target === modal) modal.remove(); };
+
+  // Get current style selection (optional: store in playerCardStyles)
+  const currentStyle = (window.playerCardStyles && window.playerCardStyles[card.id]) || "default";
+
+  // Modal content
+  let content = document.createElement('div');
+  content.className = 'modal-content';
+  content.style.maxWidth = '540px';
+  content.style.background = '#232a3a';
+  content.style.borderRadius = '16px';
+  content.style.padding = '28px 22px';
+
+  content.innerHTML = `<h3 style="color:#ffe066;text-align:center;margin-bottom:18px;">Choose Card Style</h3>
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:16px 14px;margin-bottom:20px;">
+      ${styleImages.map(style => `
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <img src="${style.src}" 
+            alt="${style.label}" 
+            style="width:110px;height:154px;object-fit:cover;cursor:pointer;${currentStyle===style.key?"outline:3px solid #ffe066;":""}border-radius:7px;box-shadow:0 2px 12px #0007;"
+            onclick="selectCardStyle('${card.id}', '${style.key}')" />
+          <div style="font-size:1em;color:#ffe066;">${style.label}</div>
+        </div>
+      `).join('')}
+    </div>
+    <button id="close-card-style-modal" class="btn-negative-secondary">Close</button>
+  `;
+  modal.appendChild(content);
+  document.body.appendChild(modal);
+
+  // Close logic
+  document.getElementById('close-card-style-modal').onclick = function() { modal.remove(); };
+}
 
 function createCreateCardButton(card, onActionDone) {
   const owned = getCollection()[card.id] || 0;
@@ -717,7 +801,6 @@ function updateGalleryCollectionProgress(filteredCards) {
 function showBulkVoidModal() {
   const collection = getCollection();
   const cardsToVoid = [];
-  let totalEssence = 0;
 
   dummyCards.forEach(card => {
     const owned = collection[card.id] || 0;
@@ -729,9 +812,9 @@ function showBulkVoidModal() {
         card,
         count: voidable,
         refund,
-        subtotal: voidable * refund
+        subtotal: voidable * refund,
+        checked: true
       });
-      totalEssence += voidable * refund;
     }
   });
 
@@ -757,59 +840,81 @@ function showBulkVoidModal() {
     return;
   }
 
-  // Essence image HTML
-  const essenceImg = `<img src="OtherImages/Icons/Essence.png" alt="Essence" style="width:18px;height:18px;vertical-align:middle;">`;
+  // Helper to render the list and recalculate
+  function renderCardRows() {
+    // Recalculate totals
+    let totalEssence = 0;
+    let checkedCount = 0;
+    const essenceImg = `<img src="OtherImages/Icons/Essence.png" alt="Essence" style="width:18px;height:18px;vertical-align:middle;">`;
 
-  // Improved cardRows: clickable image, essence image, and showFullCardModal
-  let cardRows = cardsToVoid.map(({card, count, refund, subtotal}) => {
-    // Color for name (orange if > 0 refund, else default)
-    const nameColor = subtotal > 0 ? "#ffe066" : "#fff";
-    return `
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:7px;">
-        <img src="${card.image}" alt="${card.name}" class="bulk-void-card-img" style="width:38px;height:54px;border-radius:5px;border:2px solid #444;cursor:pointer;"
-          onclick="showFullCardModal(dummyCards.find(c => c.id === '${card.id}'));">
-        <span style="font-weight:bold;color:${nameColor};">${card.name}</span>
-        <span style="color:#eee;">
-          (${refund} ${essenceImg}) 
-          <span style="color:#fff;">×${count}</span>
-        </span>
-        <span style="color:#6f6;">+${subtotal}</span>
+    let cardRows = cardsToVoid.map((cdata, idx) => {
+      if (cdata.checked) {
+        totalEssence += cdata.subtotal;
+        checkedCount++;
+      }
+      const nameColor = cdata.subtotal > 0 ? "#ffe066" : "#fff";
+      return `
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:7px;">
+          <input type="checkbox" id="bulk-void-checkbox-${idx}" ${cdata.checked ? "checked" : ""} style="width:20px;height:20px;">
+          <img src="${cdata.card.image}" alt="${cdata.card.name}" class="bulk-void-card-img" style="width:38px;height:54px;border-radius:5px;border:2px solid #444;cursor:pointer;"
+            onclick="showFullCardModal(dummyCards.find(c => c.id === '${cdata.card.id}'));">
+          <span style="font-weight:bold;color:${nameColor};">${cdata.card.name}</span>
+          <span style="color:#eee;">
+            (${cdata.refund} ${essenceImg}) 
+            <span style="color:#fff;">×${cdata.count}</span>
+          </span>
+          <span style="color:#6f6;">+${cdata.subtotal}</span>
+        </div>
+      `;
+    }).join('');
+
+    content.innerHTML = `
+      <h3 style="color:#ffe066;margin-bottom:12px;">Bulk Void</h3>
+      <div style="margin-bottom:18px;color:#fff;">
+        Are you sure you want to void these cards for <span style="color:#6f6;font-weight:bold;">${totalEssence} ${essenceImg}</span>?
+      </div>
+      <div style="max-height:270px;overflow-y:auto;margin-bottom:18px;">
+        ${cardRows}
+      </div>
+      <div style="display:flex;justify-content:center;gap:12px;">
+        <button class="btn-secondary" id="bulk-void-confirm-btn" ${checkedCount === 0 ? "disabled style='opacity:0.6;'" : ""}>Void Selected</button>
+        <button class="btn-negative-secondary" id="bulk-void-cancel-btn">Cancel</button>
       </div>
     `;
-  }).join('');
 
-  content.innerHTML = `
-    <h3 style="color:#ffe066;margin-bottom:12px;">Bulk Void</h3>
-    <div style="margin-bottom:18px;color:#fff;">
-      Are you sure you want to void these cards for <span style="color:#6f6;font-weight:bold;">${totalEssence} ${essenceImg}</span>?
-    </div>
-    <div style="max-height:270px;overflow-y:auto;margin-bottom:18px;">
-      ${cardRows}
-    </div>
-    <div style="display:flex;justify-content:center;gap:12px;">
-      <button class="btn-secondary" id="bulk-void-confirm-btn">Void All</button>
-      <button class="btn-negative-secondary" id="bulk-void-cancel-btn">Cancel</button>
-    </div>
-  `;
-
-  modal.style.display = 'flex';
-
-  document.getElementById('bulk-void-cancel-btn').onclick = () => { modal.style.display = 'none'; };
-  document.getElementById('bulk-void-confirm-btn').onclick = function() {
-    cardsToVoid.forEach(({card, count}) => {
-      collection[card.id] -= count;
+    // Wire up all checkboxes
+    cardsToVoid.forEach((ctv, i) => {
+      const cb = document.getElementById(`bulk-void-checkbox-${i}`);
+      if (cb) {
+        cb.onchange = function() {
+          ctv.checked = cb.checked;
+          renderCardRows();
+        };
+      }
     });
-    playerEssence += totalEssence;
-    saveProgress();    
-    updateEssenceDisplay();
-    renderGallery();
-    modal.style.display = 'none';
-    showToast(`Bulk voided ${cardsToVoid.length} cards for ${totalEssence} Essence!`, {type: "success"});
-  };
-  modal.onclick = function(e) {
-    if (e.target === modal) modal.style.display = "none";
-  };
+
+    // Confirm and cancel handlers
+    document.getElementById('bulk-void-cancel-btn').onclick = () => { modal.style.display = 'none'; };
+    document.getElementById('bulk-void-confirm-btn').onclick = function() {
+      cardsToVoid.forEach(({card, count, checked}) => {
+        if (checked) collection[card.id] -= count;
+      });
+      playerEssence += totalEssence;
+      saveProgress();    
+      updateEssenceDisplay();
+      renderGallery();
+      modal.style.display = 'none';
+      showToast(`Bulk voided ${checkedCount} cards for ${totalEssence} Essence!`, {type: "success"});
+    };
+    modal.onclick = function(e) {
+      if (e.target === modal) modal.style.display = "none";
+    };
+  }
+
+  renderCardRows();
+  modal.style.display = 'flex';
 }
+
 // FOIL LOGIC
 function upgradeCardToFoil(cardId) {
   const userId = firebase.auth().currentUser.uid;
@@ -859,6 +964,18 @@ function consumeCardsForFoil(card, onDone) {
     }
   });
 }
+// --- Helper to handle selection & persist choice (add to global scope)
+window.playerCardStyles = window.playerCardStyles || {}; // { cardId: styleKey }
+window.selectCardStyle = function(cardId, styleKey) {
+  window.playerCardStyles[cardId] = styleKey;
+  // Optionally, save to localStorage or backend here
+  showToast("Style selected!", {type: "success"});
+  // Refresh gallery to apply new style
+  if (typeof renderGallery === "function") renderGallery();
+  // Close modal
+  let modal = document.getElementById('card-style-modal');
+  if (modal) modal.remove();
+};
 // On DOM ready
 document.addEventListener('DOMContentLoaded', setupFilterSelectPlaceholders);
 // ==========================
