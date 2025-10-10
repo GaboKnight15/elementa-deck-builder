@@ -4,12 +4,37 @@
 // ==========================
 // === CONSTANTS & STATE ===
 // ==========================
-// Map phase keys to your custom names
-const PHASE_DISPLAY_NAMES = {draw: "Draw Phase", essence: "Essence Phase", action: "Action Phase", end: "End Phase"};
-const PHASE_CLASS = {draw: 'phase-draw', essence: 'phase-essence', action: 'phase-action', end: 'phase-end'};
-const PHASES = [{ turn: 'player', phase: 'draw' },{ turn: 'player', phase: 'essence' },{ turn: 'player', phase: 'action' },{ turn: 'player', phase: 'end' },
-  { turn: 'opponent', phase: 'draw' },{ turn: 'opponent', phase: 'essence' },{ turn: 'opponent', phase: 'action' },{ turn: 'opponent', phase: 'end' }];
- let gameState = {
+
+// -------------- //
+// --- PHASES --- //
+// -------------- //
+const PHASE_META = [
+  { key: "start",  display: "Start Phase",  class: "phase-start"  },
+  { key: "action", display: "Action Phase", class: "phase-action" },
+  { key: "end",    display: "End Phase",    class: "phase-end"    }
+];
+const PHASE_HANDLERS = {
+  start: handleStartPhase,
+  action: handleActionPhase,
+  end: handleEndPhase
+};
+// Generate phase display and class maps from PHASE_META
+const PHASE_DISPLAY_NAMES = Object.fromEntries(PHASE_META.map(p => [p.key, p.display]));
+const PHASE_CLASS = Object.fromEntries(PHASE_META.map(p => [p.key, p.class]));
+
+// Generate all phase steps in order
+const PHASES = [];
+const TURNS = ["player", "opponent"];
+TURNS.forEach(turn =>
+  PHASE_META.forEach(phase =>
+    PHASES.push({ turn, phase: phase.key })
+  )
+);
+
+// ------------- //
+// --- ZONES --- //
+// ------------- //
+let gameState = {
   playerDeck: [],
   playerHand: [],
   playerCreatures: [],
@@ -3517,65 +3542,140 @@ function openVoidModal(isOpponent = false) {
   modal.style.display = 'block';
 }
 
-// CURRENT PHASE
-function getCurrentPhaseIndex() {
+// -------------------- //
+// --- PHASES LOGIC --- //
+// -------------------- //
+function getCurrentPhaseObj() {
+  return { turn: gameState.turn, phase: gameState.phase };
+}
+function getPhaseIndex(phaseObj) {
   return PHASES.findIndex(
-    p => p.turn === gameState.turn && p.phase === gameState.phase
+    p => p.turn === phaseObj.turn && p.phase === phaseObj.phase
   );
 }
-function getCurrentViewTurn() {
-  // If multiplayer, compare gameState.turn and your player identity
-  // For this example, assume you are always "player" and opponent is "opponent"
-  // If it's "player", show "Your turn". If "opponent", show "Opponent's turn"
-  return gameState.turn === "player" ? "Your turn" : "Opponent's turn";
+
+// Navigation
+function getCurrentPhaseIndex() {
+  return getPhaseIndex(getCurrentPhaseObj());
 }
+function getNextPhase(phaseObj) {
+  const idx = getPhaseIndex(phaseObj);
+  return PHASES[(idx + 1) % PHASES.length];
+}
+function getPrevPhase(phaseObj) {
+  const idx = getPhaseIndex(phaseObj);
+  return PHASES[(idx - 1 + PHASES.length) % PHASES.length];
+}
+
+// Turn/Phase checks
+function isPlayerTurn(phaseObj)    { return phaseObj.turn === 'player'; }
+function isOpponentTurn(phaseObj)  { return phaseObj.turn === 'opponent'; }
+function isPhase(phaseObj, phase)  { return phaseObj.phase === phase; }
+function isPlayerPhase(phaseObj, phase)   { return isPlayerTurn(phaseObj) && isPhase(phaseObj, phase); }
+function isOpponentPhase(phaseObj, phase) { return isOpponentTurn(phaseObj) && isPhase(phaseObj, phase); }
+function isStartPhase(phaseObj)    { return isPhase(phaseObj, 'start'); }
+function isActionPhase(phaseObj)   { return isPhase(phaseObj, 'action'); }
+function isEndPhase(phaseObj)      { return isPhase(phaseObj, 'end'); }
+function isPlayerEndPhase(phaseObj)   { return isPlayerTurn(phaseObj) && isEndPhase(phaseObj); }
+function isOpponentEndPhase(phaseObj) { return isOpponentTurn(phaseObj) && isEndPhase(phaseObj); }
+function isPlayerActionPhase(phaseObj)   { return isPlayerTurn(phaseObj) && isActionPhase(phaseObj); }
+function isOpponentActionPhase(phaseObj) { return isOpponentTurn(phaseObj) && isActionPhase(phaseObj); }
+function isStartOfTurn(phaseObj) { return isStartPhase(phaseObj); } // both player and opponent
+
+// Display/class helpers
+function getPhaseDisplayName(phaseKey) { return PHASE_DISPLAY_NAMES[phaseKey] || phaseKey; }
+function getPhaseClass(phaseKey)       { return PHASE_CLASS[phaseKey] || ""; }
+
+function handleStartPhase(turn) {
+  // Example: Draw a card at the start of each turn
+  drawCards(turn, 1);
+  // Reset mana/essence or resource for this turn
+  resetTurnResources(turn);
+  // Trigger start-of-turn effects (statuses, abilities, etc.)
+  triggerStartOfTurnEffects(turn);
+  // Log action
+  appendVisualLog({
+    action: "startPhase",
+    who: turn
+  }, false, turn === "player");
+}
+
+function handleActionPhase(turn) {
+  // Reset action/attack flags for all cards/entities of this turn
+  resetTurnFlags(turn);
+  // Enable UI for player if it's their action phase
+  if (turn === "player") enablePlayerActions();
+  else disablePlayerActions();
+  // Optionally log phase start
+  appendVisualLog({
+    action: "actionPhase",
+    who: turn
+  }, false, turn === "player");
+}
+
+function handleEndPhase(turn) {
+  // Trigger end-of-turn effects (statuses, abilities, etc.)
+  triggerEndOfTurnEffects(turn);
+  // Remove statuses that expire at end of turn
+  removeExpiringStatuses(turn);
+  // Special: Bind removal at opponent's End Phase
+  if (turn === "opponent") {
+    // Remove Bind from all player's cards with Bind
+    [...gameState.playerCreatures, ...gameState.playerDomains].forEach(card => {
+      if (card._bindPendingRemoval) removeStatus(card, 'Bind');
+    });
+  }
+  // Optionally log phase end
+  appendVisualLog({
+    action: "endPhase",
+    who: turn
+  }, false, turn === "player");
+}
+
 function updatePhase() {
+  // UI Elements
   const phaseBadge = document.getElementById('phase-badge');
   const phaseNameSpan = document.getElementById('phase-name');
+  const phasePlayerSpan = document.getElementById('phase-player');
   const nextPhaseBtn = document.getElementById('next-phase-btn');
-  phaseBadge.classList.remove('opponent-turn', 'player-turn');
-  phaseBadge.classList.add(gameState.turn === 'opponent' ? 'opponent-turn' : 'player-turn');
-  if (phasePlayerSpan) phasePlayerSpan.textContent = getCurrentViewTurn();
-  // Display the current phase on the button
-  if (nextPhaseBtn) {
-    nextPhaseBtn.textContent = PHASE_DISPLAY_NAMES[gameState.phase] || gameState.phase;
-  }  
+
+  // Update badge for turn
+  if (phaseBadge) {
+    phaseBadge.classList.remove('opponent-turn', 'player-turn');
+    phaseBadge.classList.add(gameState.turn === 'opponent' ? 'opponent-turn' : 'player-turn');
+  }
+  // Update player/turn label
+  if (phasePlayerSpan) phasePlayerSpan.textContent = (gameState.turn === "player" ? "Your turn" : "Opponent's turn");
+  // Update phase button and label
+  if (nextPhaseBtn) nextPhaseBtn.textContent = getPhaseDisplayName(gameState.phase);
   if (phaseNameSpan) {
-    phaseNameSpan.className = PHASE_CLASS[gameState.phase];
-    phaseNameSpan.textContent = PHASE_DISPLAY_NAMES[gameState.phase] || gameState.phase;
+    phaseNameSpan.className = getPhaseClass(gameState.phase);
+    phaseNameSpan.textContent = getPhaseDisplayName(gameState.phase);
   }
 
-  // --- PATCH: Automatic draw for Draw Phase ---
-  if (gameState.phase === "draw") {
-    drawCards(gameState.turn, 1);
-    // Optionally: log the draw action
-    appendVisualLog({
-      sourceCard: {/* info about drawn card or just {name:"Draw"} */},
-      action: "draw",
-      dest: "Hand",
-      who: gameState.turn
-    }, false, gameState.turn === "player");
-  }
-
-  if (gameState.phase === "essence") {
-    essencePhase(gameState.turn);
-  }
-  if (gameState.phase === "action") {
-    resetTurnFlags(gameState.turn);
-  } 
+  // --- Call appropriate handler for the phase ---
+  if (gameState.phase === "start")     handleStartPhase(gameState.turn);
+  else if (gameState.phase === "action") handleActionPhase(gameState.turn);
+  else if (gameState.phase === "end")    handleEndPhase(gameState.turn);
 }
 // Phase control events
-nextPhaseBtn.onclick = () => {
+function goToNextPhase() {
   let idx = getCurrentPhaseIndex();
   idx = (idx + 1) % PHASES.length;
   gameState.turn = PHASES[idx].turn;
   gameState.phase = PHASES[idx].phase;
   updatePhase();
   renderGameState && renderGameState();
-  setupDropZones();
-};
+  setupDropZones && setupDropZones();
+}
 
-// --- Log system: append to chat-log ---
+// Attach to button if not already attached
+const nextPhaseBtn = document.getElementById('next-phase-btn');
+if(nextPhaseBtn) nextPhaseBtn.onclick = goToNextPhase;
+
+// ----------- //
+// --- LOG --- //
+// ----------- //
 function appendChatLog(type, sender, text, isMe = false) {
   const logDiv = document.getElementById('chat-log');
   const entry = document.createElement('div');
@@ -3820,13 +3920,6 @@ function generateEssenceForCard(cardObj) {
   if (!cardDef || !cardDef.essence) return;
   // Just append the essence string for this card to cardObj.essence
   cardObj.essence = (cardObj.essence || "") + cardDef.essence;
-  renderGameState();
-}
-function essencePhase(playerOrOpponent) {
-  // Get the correct arrays
-  const domains = playerOrOpponent === "player" ? gameState.playerDomains : gameState.opponentDomains;
-  domains.forEach(generateEssenceForCard);
-  // Optionally: show animation/notification
   renderGameState();
 }
 
@@ -6099,3 +6192,30 @@ window.startGame = startGame;
 window.gameState = window.gameState || {};
 window.gameStartAnimationShown = false;
 window.coinFlipShown = false;
+
+// --- PHASES GLOBAL USE --- //
+window.PHASE_META = PHASE_META;
+window.PHASE_DISPLAY_NAMES = PHASE_DISPLAY_NAMES;
+window.PHASE_CLASS = PHASE_CLASS;
+window.PHASES = PHASES;
+
+window.getPhaseIndex = getPhaseIndex;
+window.getNextPhase = getNextPhase;
+window.getPrevPhase = getPrevPhase;
+
+window.isPlayerTurn = isPlayerTurn;
+window.isOpponentTurn = isOpponentTurn;
+window.isPhase = isPhase;
+window.isPlayerPhase = isPlayerPhase;
+window.isOpponentPhase = isOpponentPhase;
+window.isStartPhase = isStartPhase;
+window.isActionPhase = isActionPhase;
+window.isEndPhase = isEndPhase;
+window.isPlayerEndPhase = isPlayerEndPhase;
+window.isOpponentEndPhase = isOpponentEndPhase;
+window.isPlayerActionPhase = isPlayerActionPhase;
+window.isOpponentActionPhase = isOpponentActionPhase;
+window.isStartOfTurn = isStartOfTurn;
+
+window.getPhaseDisplayName = getPhaseDisplayName;
+window.getPhaseClass = getPhaseClass;
