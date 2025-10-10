@@ -636,35 +636,55 @@ Sacrifice: {
 };
 
 const SKILL_EFFECT_MAP = {
-  Strike: {
-    icon: 'OtherImages/skillEffect/Strike.png',
-    name: 'Strike',
-    description: 'Deals damage to a single target.',
-    // Now using (sourceCardObj, skillObj, step, nextEffect)
-    handler: function(sourceCardObj, skillObj, step, nextEffect) {
-      // For your rule: any card on the field can be a target (player+opponent, creatures+domains)
-      const allFieldCards = [
-        ...gameState.playerCreatures, ...gameState.opponentCreatures,
-        ...gameState.playerDomains, ...gameState.opponentDomains
-      ];
-      startSkillTarget(
-        allFieldCards,
-        selectedTarget => {
-          const damage = step.amount != null ? step.amount : 0;
-          if (damage > 0) dealDamage(sourceCardObj, selectedTarget, damage);
-
-          // Apply status effects (single or array)
-          let statuses = Array.isArray(step.status) ? step.status : (step.status ? [step.status] : []);
-          statuses.forEach(statusName => {
-            if (STATUS_EFFECTS[statusName]) {
-              applyStatus(selectedTarget, statusName);
-            }
-          });
-          if (nextEffect) nextEffect();
-        }
-      );
-    }
-  },
+Strike: {
+  icon: 'OtherImages/skillEffect/Strike.png',
+  name: 'Strike',
+  description: 'Deals damage to a single target.',
+  // Now using (sourceCardObj, skillObj, step, nextEffect)
+  handler: function(sourceCardObj, skillObj, step, nextEffect) {
+    // For your rule: any card on the field can be a target (player+opponent, creatures+domains)
+    const allOpponentField = [...gameState.opponentCreatures, ...gameState.opponentDomains];
+    startSkillTarget(
+      allOpponentField,
+      selectedTarget => {
+        const damage = (typeof step.amount === "number") ? step.amount : 0;
+        if (damage > 0) dealDamage(sourceCardObj, selectedTarget, damage);
+        if (typeof nextEffect === "function") nextEffect();
+      }
+    );
+  }
+},
+Burn: {
+  icon: 'OtherImages/skillEffect/Burn.png',
+  name: 'Burn',
+  description: 'Deals damage and applies Burn status.',
+  handler: effectStatusHandler('Burn')
+},
+Poison: {
+  icon: 'OtherImages/skillEffect/Poison.png',
+  name: 'Poison',
+  description: 'Deals damage and applies Poison status.',
+  handler: effectStatusHandler('Poison')
+},
+Freeze: {
+  icon: 'OtherImages/skillEffect/Freeze.png',
+  name: 'Freeze',
+  description: 'Deals damage and applies Freeze status.',
+  handler: effectStatusHandler('Freeze')
+},
+Paralysis: {
+  icon: 'OtherImages/skillEffect/Paralysis.png',
+  name: 'Paralysis',
+  description: 'Deals damage and applies Paralysis status.',
+  handler: effectStatusHandler('Paralysis')
+},
+Bind: {
+  icon: 'OtherImages/skillEffect/Bind.png',
+  name: 'Bind',
+  description: 'Deals damage and applies Bind status.',
+  handler: effectStatusHandler('Bind')
+},
+  /*
 Burst: {
   icon: 'OtherImages/skillEffect/Burst.png',
   name: 'Burst',
@@ -685,7 +705,9 @@ Burst: {
     });
     if (nextEffect) nextEffect();
   }
-},
+}, */
+
+// --- SELF SUMMONING SKILLS --- //
 Dash: {
   icon: 'OtherImages/skillEffect/Dash.png',
   name: 'Dash',
@@ -827,20 +849,27 @@ Awaken: {
     return currentZone === "deck" && gameState.playerDeck.includes(cardObj);
   }
 },
-  Heal: {
-    icon: 'OtherImages/skillEffect/Heal.png',
-    name: 'Heal',
-    description: 'Heals an allied unit.',
-    handler: function(sourceCardObj, skillObj) {
-      startSkillTarget(
-        [...gameState.allyCreatures, ...gameState.allyDomains],
-        selectedTarget => {
-          if (skillObj.heal) healTarget(selectedTarget, skillObj.heal);
-          renderGameState();
-        }
-      );
-    }
-  },
+Heal: {
+  icon: 'OtherImages/skillEffect/Heal.png',
+  name: 'Heal',
+  description: 'Heals an ally.',
+  handler: function(sourceCardObj, skillObj, step, nextEffect) {
+    const allPlayerField = [...gameState.playerCreatures, ...gameState.playerDomains];
+    startSkillTarget(
+      allPlayerField,
+      selectedTargets => {
+        const targets = Array.isArray(selectedTargets) ? selectedTargets : [selectedTargets];
+        const healAmount = (typeof step.amount === "number") ? step.amount : 0;
+        targets.forEach(target => {
+          if (healAmount > 0) healTarget(target, healAmount);
+        });
+        if (typeof nextEffect === "function") nextEffect();
+        renderGameState();
+      },
+      step.target // how many targets to select
+    );
+  }
+},
   Cleanse: {
     icon: 'OtherImages/skillEffect/Cleanse.png',
     name: 'Cleanse',
@@ -855,20 +884,27 @@ Awaken: {
       );
     }
   },
-  Armor: {
-    icon: 'OtherImages/skillEffect/Armor.png',
-    name: 'Armor',
-    description: 'Grants armor to an allied unit.',
-    handler: function(sourceCardObj, skillObj) {
-      startSkillTarget(
-        [...gameState.allyCreatures, ...gameState.allyDomains],
-        selectedTarget => {
-          if (skillObj.armor) grantArmor(selectedTarget, skillObj.armor);
-          renderGameState();
-        }
-      );
-    }
-  },
+Armor: {
+  icon: 'OtherImages/skillEffect/Armor.png',
+  name: 'Armor',
+  description: 'Grants armor to an ally.',
+  handler: function(sourceCardObj, skillObj, step, nextEffect) {
+    const allPlayerField = [...gameState.playerCreatures, ...gameState.playerDomains];
+    startSkillTarget(
+      allPlayerField,
+      selectedTargets => {
+        const targets = Array.isArray(selectedTargets) ? selectedTargets : [selectedTargets];
+        const armorAmount = (typeof step.amount === "number") ? step.amount : 0;
+        targets.forEach(target => {
+          if (armorAmount > 0) grantArmor(target, armorAmount);
+        });
+        if (typeof nextEffect === "function") nextEffect();
+        renderGameState();
+      },
+      step.target // how many targets to select
+    );
+  }
+},
   Aegis: {
     icon: 'OtherImages/skillEffect/Aegis.png',
     name: 'Aegis',
@@ -1112,30 +1148,6 @@ Banish: {
     }, { title: "Banish - Choose a card", count: 1 });
   }
 },
-  Status: {
-    handler: function(sourceCardObj, skillObj) {
-      // If effect is an array, handle each one
-      let effects = Array.isArray(skillObj.effect) ? skillObj.effect : [skillObj.effect];
-      effects.forEach(eff => {
-        const statusName = eff.status;
-        const count = eff.count;
-        if (!STATUS_EFFECTS[statusName]) {
-          showToast(`Status effect ${statusName} does not exist!`);
-          return;
-        }
-        let arr = getTargets(eff.target, sourceCardObj);
-        if (count && count > 0) {
-          startSkillTarget(arr, selectedArr => {
-            selectedArr.forEach(targetObj => applyStatus(targetObj, statusName));
-            renderGameState();
-          }, { count });
-        } else {
-          arr.forEach(targetObj => applyStatus(targetObj, statusName));
-          renderGameState();
-        }
-      });
-    }
-  },
 Seal: {
   icon: "OtherImages/skillEffect/Seal.png",
   name: "Seal",
@@ -1168,7 +1180,7 @@ Unseal: {
 Essence: {
   icon: 'OtherImages/skillEffect/Essence.png',
   name: 'Essence',
-  description: 'Gain Essence based on colors and amount.',
+  description: 'Gain Essence.',
   // step should have: { color: "{g}{g}{r}" } or similar
   handler: function(cardObj, skillObj, effectStep, nextEffect) {
     let colorStr = effectStep.color || effectStep.colors || effectStep.essence || "";
@@ -1197,6 +1209,7 @@ Essence: {
     nextEffect && nextEffect();
   }
 },
+// --- FUSION --- //
   Fuse: {
     icon: 'OtherImages/skillEffect/Fuse.png',
     name: 'Fuse',
@@ -1216,7 +1229,6 @@ Essence: {
       nextEffect && nextEffect();
     }
   },
-
   Fusion: {
     icon: 'OtherImages/skillEffect/Fusion.png',
     name: 'Fusion',
@@ -1297,10 +1309,11 @@ Essence: {
       nextEffect && nextEffect();
     }
   },
+// --- EVOLUTION --- //
   Evolve: {
     icon: 'OtherImages/skillEffect/Evolve.png',
     name: 'Evolve',
-    description: 'This card becomes Evolved, enabling Evolution combos.',
+    description: 'Gains an Evolution Sigil.',
     zones: ['playerCreatures', 'playerDomains'], // Only from field
     canActivate(cardObj, skillObj, currentZone, gameState) {
       return (
@@ -1372,7 +1385,7 @@ Evolution: {
 Token: {
   icon: "OtherImages/skillEffect/Token.png",
   name: "Token",
-  description: "Summon one or more tokens to the battlefield.",
+  description: "Summon tokens to the battlefield.",
   handler: function(sourceCardObj, skillObj, effectStep, nextEffect) {
     let choices = effectStep.tokenChoices || effectStep.tokens || effectStep.choices;
     let amount = Number(effectStep.amount) || 1;
@@ -5476,6 +5489,25 @@ function runSkillEffect(sourceCardObj, skillObj) {
       }
       skillType.handler(sourceCardObj, skillObj);
     }
+  }
+}
+
+function effectStatusHandler(statusName) {
+  return function(sourceCardObj, skillObj, step, nextEffect) {
+    const allOpponentField = [...gameState.opponentCreatures, ...gameState.opponentDomains];
+    startSkillTarget(
+      allOpponentField,
+      selectedTargets => {
+        const targets = Array.isArray(selectedTargets) ? selectedTargets : [selectedTargets];
+        const damage = (typeof step.amount === "number") ? step.amount : 0;
+        targets.forEach(target => {
+          if (damage > 0) dealDamage(sourceCardObj, target, damage);
+          applyStatus(target, statusName);
+        });
+        if (typeof nextEffect === "function") nextEffect();
+      },
+      step.target
+    );
   }
 }
 // Helper to validate if sourceCardObj is still valid for the effect (customize as needed)
