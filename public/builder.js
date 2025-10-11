@@ -439,6 +439,7 @@ deckBannerImg.onclick = function() {
       updateDeckBanner(deckName);
       deckBannerModal.style.display = "none";
       closeDeckTileMenu();
+      renderDeckSelection();
     };
     deckBannerArtList.appendChild(img);
   });
@@ -471,6 +472,7 @@ deckCardbackImg.onclick = function() {
       updateDeckCardback(deckName);
       deckCardbackModal.style.display = "none";
       closeDeckTileMenu();
+      renderDeckSelection();
     };
     deckCardbackArtList.appendChild(img);
   });
@@ -795,6 +797,7 @@ function removeCardFromDeck(cardId) {
 function updateDeckDisplay() {
   const deck = getCurrentDeck();
   const deckPanel = document.getElementById('deck-panel');
+  const deckList = document.getElementById('deck-list');
   deckList.innerHTML = '';
   let total = 0;
 
@@ -908,7 +911,7 @@ for (const { card, count } of sections[key]) {
   li.appendChild(badge);
   deckPanel.appendChild(li);
 }
-  }
+}
   // Update total somewhere in the UI as needed
   const cardCount = document.getElementById('deck-card-count');
   if (cardCount) cardCount.textContent = total;
