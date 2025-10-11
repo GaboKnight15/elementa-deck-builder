@@ -318,10 +318,6 @@ function renderQuests() {
   if (!timerDiv) {
     timerDiv = document.createElement('div');
     timerDiv.id = 'quest-reset-timer';
-    timerDiv.style.fontWeight = 'bold';
-    timerDiv.style.fontSize = '1.1em';
-    timerDiv.style.color = '#ffe066';
-    timerDiv.style.margin = '8px 0 8px 0';
     list.parentElement.insertBefore(timerDiv, list);
   }
   updateQuestResetTimer();
