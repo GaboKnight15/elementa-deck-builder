@@ -2030,59 +2030,73 @@ function createCardMenu(buttons = []) {
 function renderGameState() {
   // RENDER PLAYER HAND
   const playerHandDiv = document.getElementById('player-hand');
-    playerHandDiv.innerHTML = '';
-    for (let cardObj of gameState.playerHand) {
-      const card = dummyCards.find(c => c.id === cardObj.cardId);
-      if (!card) continue;
-      const div = document.createElement('div');
-      div.className = 'card-battlefield';
-      div.draggable = true;
-      div.ondragstart = (e) => {
-        e.dataTransfer.setData("text/plain", cardObj.instanceId);
-        e.dataTransfer.setData("source", "hand");
-        div.classList.add('dragging');
-        e.dataTransfer.setDragImage(div, div.offsetWidth / 2, div.offsetHeight / 2);
-      };
-      div.ondragend = () => div.classList.remove('dragging');
-      const img = document.createElement('img');
-      img.src = card.image;
-      img.alt = card.name;
-      img.style.width = "80px";
-      div.appendChild(img);
-      div.onclick = (e) => {
-        e.stopPropagation();
-        showHandCardMenu(cardObj.instanceId, div);
+  playerHandDiv.innerHTML = '';
+  for (let cardObj of gameState.playerHand) {
+    const card = dummyCards.find(c => c.id === cardObj.cardId);
+    if (!card) continue;
+    const div = document.createElement('div');
+    div.className = 'card-battlefield';
+    div.draggable = true;
+    div.ondragstart = (e) => {
+      e.dataTransfer.setData("text/plain", cardObj.instanceId);
+      e.dataTransfer.setData("source", "hand");
+      div.classList.add('dragging');
+      e.dataTransfer.setDragImage(div, div.offsetWidth / 2, div.offsetHeight / 2);
     };
+    div.ondragend = () => div.classList.remove('dragging');
+    const img = document.createElement('img');
+    img.src = card.image;
+    img.alt = card.name;
+    img.style.width = "80px";
+    div.appendChild(img);
+    div.onclick = (e) => {
+      e.stopPropagation();
+      showHandCardMenu(cardObj.instanceId, div);
+    };
+    setCardAnimatableClass(div, cardObj, card, gameState, 'hand');
     playerHandDiv.appendChild(div);
   }
-// RENDER OPPONENT HAND FACEDOWN
-const opponentHandDiv = document.getElementById('opponent-hand');
-opponentHandDiv.innerHTML = '';
-let opponentCardback = (window.selectedCpuDeck && window.selectedCpuDeck.cardbackArt)
-  ? window.selectedCpuDeck.cardbackArt
-  : "OtherImages/Cardbacks/CBDefault.png"; // fallback
 
-for (let i = 0; i < gameState.opponentHand.length; i++) {
-  const div = document.createElement('div');
-  div.className = 'card-battlefield';
-  const img = document.createElement('img');
-  img.src = opponentCardback;
-  img.alt = "Opponent's card";
-  img.style.width = "80px";
-  div.appendChild(img);
-  opponentHandDiv.appendChild(div);
-}
-const cardData = dummyCards.find(c => c.id === cardObj.cardId);
-if (isCardActionable(cardObj, cardData, gameState, 'hand')) {
-  div.classList.add('card-animatable');
-} else {
-  div.classList.remove('card-animatable');
-}
+  // RENDER OPPONENT HAND FACEDOWN
+  const opponentHandDiv = document.getElementById('opponent-hand');
+  opponentHandDiv.innerHTML = '';
+  let opponentCardback = (window.selectedCpuDeck && window.selectedCpuDeck.cardbackArt)
+    ? window.selectedCpuDeck.cardbackArt
+    : "OtherImages/Cardbacks/CBDefault.png"; // fallback
+
+  for (let i = 0; i < gameState.opponentHand.length; i++) {
+    const div = document.createElement('div');
+    div.className = 'card-battlefield';
+    const img = document.createElement('img');
+    img.src = opponentCardback;
+    img.alt = "Opponent's card";
+    img.style.width = "80px";
+    div.appendChild(img);
+    opponentHandDiv.appendChild(div);
+  }
+
+  // The following block is invalid and should be removed:
+  // const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+  // if (isCardActionable(cardObj, cardData, gameState, 'hand')) {
+  //   div.classList.add('card-animatable');
+  // } else {
+  //   div.classList.remove('card-animatable');
+  // }
+
+  // RENDER FIELD ZONES
   renderRowZone('opponent-creatures-zone', gameState.opponentCreatures, "creature");
   renderRowZone('opponent-domains-zone', gameState.opponentDomains, "domain");
   renderRowZone('player-creatures-zone', gameState.playerCreatures, "creature");
   renderRowZone('player-domains-zone', gameState.playerDomains, "domain");
   renderRightbarZones();
+}
+
+function setCardAnimatableClass(div, cardObj, cardData, gameState, zone) {
+  if (isCardActionable(cardObj, cardData, gameState, zone)) {
+    div.classList.add('card-animatable');
+  } else {
+    div.classList.remove('card-animatable');
+  }
 }
 
 function shuffle(array) {
@@ -2091,7 +2105,6 @@ function shuffle(array) {
     [array[i], array[j]] = [array[j], array[i]];
   }
   return array;
-  
   emitPublicState();
 }
 
@@ -2325,12 +2338,7 @@ function renderRowZone(zoneId, cardArray, category) {
     const cardDiv = cardEl.querySelector('.card-battlefield');
     if (cardDiv) {
       // Example: add animatable class if actionable
-      if (isCardActionable(cardObj, cardData, gameState, zoneId)) {
-        cardDiv.classList.add('card-animatable');
-      } else {
-        cardDiv.classList.remove('card-animatable');
-      }
-
+      setCardAnimatableClass(cardDiv, cardObj, cardData, gameState, zoneId);
       cardDiv.ondragover = (e) => {
         e.preventDefault();
         cardDiv.classList.add('drag-over-attach');
@@ -3437,9 +3445,7 @@ function openVoidModal(isOpponent = false) {
       cardDiv.className = 'card-battlefield';
 
       // === PULSE EFFECT: Add animation if this card is actionable in the void ===
-      if (isCardActionable(cardObj, card, gameState, 'void')) {
-        cardDiv.classList.add('card-animatable');
-      }
+      setCardAnimatableClass(cardDiv, cardObj, card, gameState, 'void');
       
       const img = document.createElement('img');
       img.src = card.image;
