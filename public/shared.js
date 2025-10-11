@@ -2597,7 +2597,7 @@ function showProfileModal(profile) {
 
   // Render all badges, grayed-out if not owned
   let badgeSection = `
-    <div style="padding:22px 0 10px 0;text-align:center;">
+    <div style="padding:16px 0 10px 0;text-align:center;">
       <div style="font-weight:bold;font-size:1.18em;color:#ffe066;margin-bottom:12px;">Badges</div>
       <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:12px;">
   `;
@@ -2643,7 +2643,7 @@ function showProfileModal(profile) {
       <div style="padding:16px 0 0 0;text-align:center;">
         <div style="font-weight:bold;font-size:1.13em;color:#ffe066;margin-bottom:10px;">Banners</div>
         <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:10px;">
-          ${ownedBanners.map(src => `<img src="${src}" alt="Banner" class="cosmetic-img" style="width:70px;height:36px;border-radius:8px;border:2px solid #ffe066;box-shadow:0 2px 8px #0007;">`).join('')}
+          ${ownedBanners.map(src => `<img src="${src}" alt="Banner" class="cosmetic-img" style="width:70px;height:auto;border-radius:8px;border:2px solid #ffe066;box-shadow:0 2px 8px #0007;">`).join('')}
         </div>
       </div>
     `;
