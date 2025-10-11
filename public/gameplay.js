@@ -22,6 +22,11 @@ const PHASE_HANDLERS = {
 const PHASE_DISPLAY_NAMES = Object.fromEntries(PHASE_META.map(p => [p.key, p.display]));
 const PHASE_CLASS = Object.fromEntries(PHASE_META.map(p => [p.key, p.class]));
 
+const phaseBadge = document.getElementById('phase-badge');
+const phaseNameSpan = document.getElementById('phase-name');
+const phasePlayerSpan = document.getElementById('phase-player');
+const nextPhaseBtn = document.getElementById('next-phase-btn');
+
 // Generate all phase steps in order
 const PHASES = [];
 const TURNS = ["player", "opponent"];
@@ -3632,12 +3637,6 @@ function handleEndPhase(turn) {
 }
 
 function updatePhase() {
-  // UI Elements
-  const phaseBadge = document.getElementById('phase-badge');
-  const phaseNameSpan = document.getElementById('phase-name');
-  const phasePlayerSpan = document.getElementById('phase-player');
-  const nextPhaseBtn = document.getElementById('next-phase-btn');
-
   // Update badge for turn
   if (phaseBadge) {
     phaseBadge.classList.remove('opponent-turn', 'player-turn');
@@ -3669,7 +3668,6 @@ function goToNextPhase() {
 }
 
 // Attach to button if not already attached
-const nextPhaseBtn = document.getElementById('next-phase-btn');
 if(nextPhaseBtn) nextPhaseBtn.onclick = goToNextPhase;
 
 // ----------- //
