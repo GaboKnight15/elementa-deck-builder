@@ -490,8 +490,7 @@ button {}
   color: #232a3c;
 }
 .friends-tab-panel {
-  min-height: 340px;
-  padding: 18px 6px 0 6px;
+  padding: 12px 0 0;
 }
 /* Container for user tiles in all tabs */
 #discover-users-list,
@@ -643,6 +642,13 @@ button {}
   opacity: 0.5;
   filter: grayscale(1);
 }
+.quest-reset-timer {
+  font-weight: bold;
+  font-size: 1.1em;
+  color: rgb(255, 224, 102);
+  margin: 8px 0px;
+  text-align: center;
+}
 .quest-entry {
   display: flex;
   align-items: flex-start;
@@ -656,7 +662,7 @@ button {}
   font-size: 1.11em;
   color: #ffe066;
   font-weight: 600;
-  margin-bottom: 6px;
+  margin: 5px;
 }
 .quest-progress-row {
   display: flex;
@@ -720,7 +726,7 @@ button {}
   object-fit: contain;
   margin-right: 0;
   flex-shrink: 0;
-  align-self: flex-start;
+  align-self: center;
 }
 @keyframes achievement-fade-out {
   0% {
