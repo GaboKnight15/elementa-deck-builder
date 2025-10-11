@@ -1008,6 +1008,8 @@ button {}
   color: #ffe066de;
   display: flex;
   gap: 0.2em;
+  justify-content: center;
+  align-items: center;
 }
 .full-card-info-label {
   color: #ffe066;
@@ -1028,8 +1030,8 @@ button {}
   text-fill-color: transparent;
   animation: rainbowText 3s linear infinite;
   font-weight: bold;
-  padding: 2px 6px;
-  border-radius: 6px;
+  padding: 2px;
+  text-align: center;
 }
 @keyframes rainbowText {
   0% {background-position: 0% 50%;}
@@ -1045,8 +1047,8 @@ button {}
   text-fill-color: transparent;
   animation: specialGradient 2.5s linear infinite;
   font-weight: bold;
-  padding: 2px 6px;
-  border-radius: 6px;
+  padding: 2px;
+  text-align: center;
 }
 @keyframes specialGradient {
   0% {background-position: 0% 50%;}
