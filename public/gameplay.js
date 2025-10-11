@@ -2154,10 +2154,7 @@ if (isCardActionable(cardObj, cardData, gameState, 'hand')) {
       disabled: !canPay,
       onClick: function(e) {
         e.stopPropagation();
-        if (!canPay) {
-          btn.disabled = true;
-          btn.classList.add("btn-disabled");
-        }
+        if (!canPay) return;
         closeAllMenus();
         const cardObj = gameState.playerHand.find(c => c.instanceId === instanceId);
         const cardData = dummyCards.find(c => c.id === cardObj.cardId);
@@ -3262,6 +3259,10 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
     {
       text: "Attack",
       disabled: !canAttack(cardObj, gameState),
+      title: !canAttack(cardObj, gameState) ? 
+        (cardObj.orientation !== "vertical"
+          ? "Card is not in ATK position."
+          : "No valid targets to attack.") : "",
       onClick: function(e) {
         e.stopPropagation();
         startAttackTargeting(instanceId, zoneId, cardDiv);
@@ -4239,7 +4240,11 @@ function canAttack(cardObj, gameState) {
   if (!cardObj) return false;
   if (cardObj.hasAttacked) return false;
   if (cardObj.hasSummonedThisTurn && !hasRush(cardObj)) return false;
+  if (cardObj.orientation !== "vertical") return false;
   // Add any other restrictions you want (e.g. tapped, stunned)
+  // Check if there are any valid targets
+  const targets = getAttackTargets(cardObj);
+  if (!targets || targets.length === 0) return false;
   return true;
 }
 function getAttackTargets(attackerObj = null) {
