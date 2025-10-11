@@ -3596,7 +3596,7 @@ function handleStartPhase(turn) {
   // Reset mana/essence or resource for this turn
   resetTurnResources(turn);
   // Trigger start-of-turn effects (statuses, abilities, etc.)
-  triggerStartPhaseEffects(turn);
+  // triggerStartPhaseEffects(turn);
   // Log action
   appendVisualLog({
     action: "startPhase",
@@ -3607,9 +3607,6 @@ function handleStartPhase(turn) {
 function handleActionPhase(turn) {
   // Reset action/attack flags for all cards/entities of this turn
   resetTurnFlags(turn);
-  // Enable UI for player if it's their action phase
-  if (turn === "player") enablePlayerActions();
-  else disablePlayerActions();
   // Optionally log phase start
   appendVisualLog({
     action: "actionPhase",
@@ -3619,11 +3616,11 @@ function handleActionPhase(turn) {
 
 function handleEndPhase(turn) {
   // Trigger end-of-turn effects (statuses, abilities, etc.)
-  triggerEndPhaseEffects(turn);
+ // triggerEndPhaseEffects(turn);
   // Tick all statuses generically based on phase
   tickStatusDurations({ turn, phase: "end" });
   // Remove statuses that expire at end of turn
-  removeExpiringStatuses(turn);
+//  removeExpiringStatuses(turn);
   // Optionally log phase end
   appendVisualLog({
     action: "endPhase",
