@@ -1981,10 +1981,8 @@ function showInfoModal(cardObj) {
   if (keywordSections.length) {
     keywordSections.forEach((sec, i) => {
       html += `
-        <div style="margin-bottom:14px;">
-          <div style="font-size:1.14em;color:#ffe066;font-weight:bold;">${sec.name}</div>
-          <div style="font-size:1em;color:#fff;">${parseEffectText(sec.desc)}</div>
-        </div>
+        <div style="font-size:1.14em;color:#ffe066;font-weight:bold;">${sec.name}</div>
+        <div style="font-size:1em;color:#fff;">${parseEffectText(sec.desc)}</div>
       `;
       // Add divider after each section except the last
       if (i < keywordSections.length - 1) {
@@ -1994,7 +1992,7 @@ function showInfoModal(cardObj) {
   } else {
     html += `<div style="color:#eee;">No special keywords or abilities found for this card.</div>`;
   }
-  html += `<button id="close-card-info-modal" class="btn-negative-secondary" style="margin-top:18px;">Close</button>`;
+  html += `<button id="close-card-info-modal" class="btn-negative-secondary" style="margin-top:16px;">Close</button>`;
 
   infoContent.innerHTML = html;
   infoModal.style.display = 'flex';
@@ -2056,7 +2054,7 @@ if (card.skill) {
         skillNameClass = "skill-special-gradient";
       }
 
-      infoHtml += `<div class="full-card-info-row" style="margin-left:18px;">`;
+      infoHtml += `<div class="full-card-info-row">`;
 
       // Name with style
       if (skill.name) {
@@ -2160,9 +2158,9 @@ function renderCardCost(costData) {
   }
   if (typeof costData === "string") {
     // Use parseEffectText for cost string, but limit to icons only
-  html = costData.replace(/\{([GRUYCPBW])\}/g, (match, code) =>
-    `<img src="${COST_IMAGE_MAP[code]}" style="width:22px;height:22px;vertical-align:middle;">`
-  );
+    html = costData.replace(/\{([GRUYCPBW])\}/gi, (match, code) =>
+     `<img src="${COST_IMAGE_MAP[code.toUpperCase()]}" style="width:22px;height:22px;vertical-align:middle;">`
+    );
     html = html.replace(/\{([0-9]|1[0-9]|20)\}/g, (match, num) => {
       const imgSrc = COST_IMAGE_MAP['X'+num];
       if (imgSrc) {
