@@ -22,11 +22,6 @@ const PHASE_HANDLERS = {
 const PHASE_DISPLAY_NAMES = Object.fromEntries(PHASE_META.map(p => [p.key, p.display]));
 const PHASE_CLASS = Object.fromEntries(PHASE_META.map(p => [p.key, p.class]));
 
-const phaseBadge = document.getElementById('phase-badge');
-const phaseNameSpan = document.getElementById('phase-name');
-const phasePlayerSpan = document.getElementById('phase-player');
-const nextPhaseBtn = document.getElementById('next-phase-btn');
-
 // Generate all phase steps in order
 const PHASES = [];
 const TURNS = ["player", "opponent"];
@@ -2365,7 +2360,6 @@ function renderRightbarZones() {
   // Get all zone containers
   const oppDeckDiv = document.getElementById('opponent-deck-zone');
   const oppVoidDiv = document.getElementById('opponent-void-zone');
-  const phaseBadge = document.getElementById('phase-badge');
   const playerVoidDiv = document.getElementById('player-void-zone');
   const playerDeckDiv = document.getElementById('player-deck-zone');
 
