@@ -348,7 +348,7 @@ function renderFriendsList() {
     }
     // Friends section
     if (!ids.length) {
-      list.innerHTML += '<div>No friends yet. Add someone by username!</div>';
+      list.innerHTML += '<div>No friends yet.</div>';
       return;
     }
     ids.forEach(fid => {
@@ -420,13 +420,7 @@ function renderDiscoverPanel() {
           !receivedReqs.includes(u.uid) &&            // haven't sent you a request
           !sentRequests.includes(u.uid)               // you haven't sent them a request
         );
-
         usersDiv.innerHTML = '';
-        usersDiv.style.display = 'flex';
-        usersDiv.style.flexWrap = 'wrap';
-        usersDiv.style.gap = '24px'; // spacing between tiles
-        usersDiv.style.justifyContent = 'flex-start';
-
         if (!users.length) {
           usersDiv.innerHTML = '<div style="color:#888;">No users to discover!</div>';
         }
@@ -458,13 +452,7 @@ function renderDiscoverPanel() {
             !receivedReqs.includes(u.uid) &&
             !sentRequestsLegacy.includes(u.uid)
           );
-
           usersDiv.innerHTML = '';
-          usersDiv.style.display = 'flex';
-          usersDiv.style.flexWrap = 'wrap';
-          usersDiv.style.gap = '24px';
-          usersDiv.style.justifyContent = 'flex-start';
-
           if (!users.length) {
             usersDiv.innerHTML = '<div style="color:#888;">No users to discover!</div>';
           }
@@ -499,14 +487,8 @@ function discoverSearch() {
       let users = snap.docs.map(doc => ({ uid: doc.id, ...doc.data() }));
       const currentUid = getCurrentUserId();
       users = users.filter(u => u.uid !== currentUid);
-
       // --- Layout: 3 per row, flex ---
       usersDiv.innerHTML = '';
-      usersDiv.style.display = 'flex';
-      usersDiv.style.flexWrap = 'wrap';
-      usersDiv.style.gap = '24px';
-      usersDiv.style.justifyContent = 'flex-start';
-
       users.forEach(user => {
         appendFriendsProfilePanel(user, usersDiv, 'discover');
       });
