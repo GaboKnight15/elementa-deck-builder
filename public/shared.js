@@ -955,7 +955,7 @@ skill: [
    requirement: {class: 'Discard'},
    effect: {class: 'Search', amount: 1, type: ['Dragon','Undead']}},
   {name: 'Reanimate', cost: '{b}{B}{B}',
-   requirement: {class: 'Sacrifice', amount 1},
+   requirement: {class: 'Sacrifice', amount: 1},
    effect: {class: 'Reanimate'}}
   ]},
 {id: 'SkullframeSpectralDragon', name: 'Skullframe Spectral Dragon', rarity: 'Epic', image: 'CardImages/Skullframe/Skullframe Spectral Dragon.png', 
