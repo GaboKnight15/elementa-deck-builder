@@ -3882,7 +3882,7 @@ button[disabled], .btn-disabled {
 #shop-banners-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 24px 24px;
+  gap: 16px 24px;
   justify-content: center;
 }
 .shop-banner-option {
@@ -3890,17 +3890,14 @@ button[disabled], .btn-disabled {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  width: 160px;
-  margin-bottom: 10px;
+  width: 90px;
 }
 .shop-banner-img {
-  width: 160px;
-  height: 80px;
+  width: 100px;
+  height: auto;
   object-fit: cover;
   border-radius: 9px;
   box-shadow: 0 2px 8px #0005;
-  background: #232a3c;
-  margin-bottom: 0.3em;
   transition: box-shadow 0.15s, transform 0.13s;
 }
 .shop-banner-img:hover,
@@ -3979,16 +3976,9 @@ button[disabled], .btn-disabled {
   justify-content: center;
 }
 .shop-individual-card {
-  box-shadow: 0 1px 8px #0002;
-  padding: 12px;
   text-align: center;
   position: relative;
   transition: box-shadow .18s, transform .18s;
-}
-.shop-individual-card:hover {
-  box-shadow: 0 6px 24px #50eaffcc, 0 1px 8px #0002;
-  transform: translateY(-6px) scale(1.045);
-  z-index: 2;
 }
 .shop-individual-card.card-locked img {
   filter: grayscale(1) brightness(0.7);
