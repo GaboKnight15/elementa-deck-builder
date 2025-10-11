@@ -769,14 +769,11 @@ function renderIndividualCardsShop(shouldAnimateFlip = false) {
     header.className = 'individual-cards-shop-header';
     header.style.display = 'flex';
     header.style.alignItems = 'center';
-    header.style.justifyContent = 'space-between';
-    header.style.marginBottom = '7px';
 
     // TIMER
     const timerDiv = document.createElement('div');
     timerDiv.className = 'individual-cards-timer';
     timerDiv.style.fontWeight = 'bold';
-    timerDiv.style.fontSize = '1.1em';
     timerDiv.style.color = '#ffe066';
     header.appendChild(timerDiv);
 
@@ -809,7 +806,7 @@ const timerDiv = header.querySelector('.individual-cards-timer');
       
 function updateIndividualCardsTimer() {
   const ms = getNextUtcMidnightMs();
-  timerDiv.textContent = `New cards available in ${formatTimerMs(ms)}`;
+  timerDiv.textContent = `New cards in ${formatTimerMs(ms)}`;
   // Disable refresh if not enough coins
   const refreshBtn = header.querySelector('.individual-cards-refresh-btn');
   if (refreshBtn) {
