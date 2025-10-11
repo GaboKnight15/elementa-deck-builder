@@ -2316,19 +2316,21 @@ function setupDropZones() {
 function renderRowZone(zoneId, cardArray, category) {
   const zoneDiv = document.getElementById(zoneId);
   zoneDiv.innerHTML = '';
-  const cardData = dummyCards.find(c => c.id === cardObj.cardId);
-  if (isCardActionable(cardObj, cardData, gameState, zoneId)) {
-    cardDiv.classList.add('card-animatable');
-  } else {
-    cardDiv.classList.remove('card-animatable');
-  }
   // RENDER CARDS IN ZONES
   for (const cardObj of cardArray) {
+    const cardData = dummyCards.find(c => c.id === cardObj.cardId);
     const cardEl = renderCardOnField(cardObj, zoneId);
 
-    // Enable dragging onto a battlefield card for attachments
+    // Optionally set animatable class here if needed
     const cardDiv = cardEl.querySelector('.card-battlefield');
     if (cardDiv) {
+      // Example: add animatable class if actionable
+      if (isCardActionable(cardObj, cardData, gameState, zoneId)) {
+        cardDiv.classList.add('card-animatable');
+      } else {
+        cardDiv.classList.remove('card-animatable');
+      }
+
       cardDiv.ondragover = (e) => {
         e.preventDefault();
         cardDiv.classList.add('drag-over-attach');
@@ -2351,7 +2353,6 @@ function renderRowZone(zoneId, cardArray, category) {
         }
       };
     }
-
     zoneDiv.appendChild(cardEl);
   }
 }
