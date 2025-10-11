@@ -174,7 +174,6 @@ function showDeckSelection() {
   deckBuilderUI.style.display = 'none';
   builderContainer.style.display = '';
   builderContainer.classList.add('flex-layout');
-  deckPanel.innerHTML = '';
   renderDeckSelection();
 }
 function showDeckBuilder() {
@@ -796,7 +795,6 @@ function removeCardFromDeck(cardId) {
 // DECK CREATION LOGIC
 function updateDeckDisplay() {
   const deck = getCurrentDeck();
-  const deckPanel = document.getElementById('deck-panel');
   const deckList = document.getElementById('deck-list');
   deckList.innerHTML = '';
   let total = 0;
@@ -855,63 +853,64 @@ function updateDeckDisplay() {
       return a.card.name.localeCompare(b.card.name);
     });
 
-for (const { card, count } of sections[key]) {
-  const li = document.createElement('li');
-  li.style.display = 'flex';
-  li.style.alignItems = 'center';
-  li.style.gap = '8px';
-  li.classList.add('deck-draggable');
-  li.setAttribute('data-card-id', card.id);
-  li.setAttribute('draggable', 'true');
-  // --- Use hold helper for deck list ---
-  const { startHold, clearHold, mouseUp } = makeHoldHandlers(
-    () => showFullCardModal(card),
-    () => {
-      removeCardFromDeck(card.id);
-      updateDeckDisplay();
-      renderBuilder();
+    for (const { card, count } of sections[key]) {
+      const li = document.createElement('li');
+      li.style.display = 'flex';
+      li.style.alignItems = 'center';
+      li.style.gap = '8px';
+      li.classList.add('deck-draggable');
+      li.setAttribute('data-card-id', card.id);
+      li.setAttribute('draggable', 'true');
+      // --- Use hold helper for deck list ---
+      const { startHold, clearHold, mouseUp } = makeHoldHandlers(
+        () => showFullCardModal(card),
+        () => {
+          removeCardFromDeck(card.id);
+          updateDeckDisplay();
+          renderBuilder();
+        }
+      );
+      li.addEventListener('mousedown', startHold);
+      li.addEventListener('touchstart', startHold);
+      li.addEventListener('mouseup', mouseUp);
+      li.addEventListener('touchend', mouseUp);
+      li.addEventListener('mouseleave', clearHold);
+      li.addEventListener('touchcancel', clearHold);
+
+      li.addEventListener('dragstart', function(e) {
+        e.dataTransfer.setData('card-id', card.id);
+        e.dataTransfer.setData('from', 'deck');
+        if (li.querySelector('img')) {
+          const img = li.querySelector('img');
+          e.dataTransfer.setDragImage(img, img.width / 2, img.height / 2);
+        }
+        li.classList.add('dragging');
+      });
+      li.addEventListener('dragend', function(e) {
+        li.classList.remove('dragging');
+      });
+
+      const img = document.createElement('img');
+      img.src = card.image;
+      img.alt = card.name;
+      img.style.width = '56px';
+      img.style.height = 'auto';
+      img.style.display = 'block';
+
+      // COUNTER BADGE
+      const badge = document.createElement('span');
+      badge.textContent = `×${count}`;
+      badge.className = 'deck-count-badge';
+      badge.style.position = 'absolute';
+      badge.style.right = '0';
+      badge.style.top = '0';
+
+      li.appendChild(img);
+      li.appendChild(badge);
+      // FIX: Append to deckList, not deckPanel
+      deckList.appendChild(li);
     }
-  );
-  li.addEventListener('mousedown', startHold);
-  li.addEventListener('touchstart', startHold);
-  li.addEventListener('mouseup', mouseUp);
-  li.addEventListener('touchend', mouseUp);
-  li.addEventListener('mouseleave', clearHold);
-  li.addEventListener('touchcancel', clearHold);
-
-  li.addEventListener('dragstart', function(e) {
-    e.dataTransfer.setData('card-id', card.id);
-    e.dataTransfer.setData('from', 'deck');
-    if (li.querySelector('img')) {
-      const img = li.querySelector('img');
-      e.dataTransfer.setDragImage(img, img.width / 2, img.height / 2);
-    }
-    li.classList.add('dragging');
-  });
-  li.addEventListener('dragend', function(e) {
-    li.classList.remove('dragging');
-  });
-
-  const img = document.createElement('img');
-  img.src = card.image;
-  img.alt = card.name;
-  img.style.width = '56px';
-  img.style.height = 'auto';
-  img.style.display = 'block';
-
-  // COUNTER BADGE
-  const badge = document.createElement('span');
-  badge.textContent = `×${count}`;
-  badge.className = 'deck-count-badge';
-  badge.style.position = 'absolute';
-  badge.style.right = '0';
-  badge.style.top = '0';
-
-  li.appendChild(img);
-  li.appendChild(badge);
-  deckPanel.appendChild(li);
-}
-}
+  }
   // Update total somewhere in the UI as needed
   const cardCount = document.getElementById('deck-card-count');
   if (cardCount) cardCount.textContent = total;
