@@ -966,7 +966,7 @@ skill: [
    requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
    effect: {class: 'Burst', amount: 2, status: 'Burn'}},
   {name: 'Reanimate', cost: '{2}{B}{B}', 
-   requirement: {class: 'Sacrifice', amount 1},
+   requirement: {class: 'Sacrifice', amount: 1},
    effect: {class: 'Reanimate'}}
  ]},
 {id: 'SkullframeArmoredDragon', name: 'Skullframe Armored Dragon', rarity: 'Rare', image: 'CardImages/Skullframe/Skullframe Armored Dragon.png', 
