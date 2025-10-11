@@ -256,6 +256,81 @@ const DEFAULT_CPU_DECKS = [
       // ... etc
     ]
   },
+  {
+    id: 'Firelands',
+    name: 'Forgebound Titans',
+    color: ['red','gray'],
+    difficulty: '⭐⭐⭐⭐',
+    image: 'CardImages/Avatars/Emberling.png',
+    bannerArt: 'CardImages/Banners/RedBanner.png',
+    cardbackArt: 'OtherImages/Cardbacks/RedCardback.png',
+    cards: [
+      { id: 'Ashkar', amount: 1 },
+      { id: 'SmolderingGolemheart', amount: 2 },
+      { id: 'GolemheartSentinel', amount: 3 },
+      { id: 'GolemheartGiant', amount: 3 },
+      { id: 'Golemites', amount: 4 },
+      { id: 'FireGolem', amount: 4 },
+      { id: 'GolemheartInfusor', amount: 4 },
+      { id: 'LifeGrowth', amount: 4 },
+      { id: 'EssenceAssault', amount: 4 },
+      { id: 'EssenceBarrier', amount: 4 },
+      { id: 'Volcano', amount: 4 },
+      { id: 'Mountain', amount: 4 },
+      
+      // ... etc
+    ]
+  },
+  {
+    id: 'Firelands',
+    name: 'Forgebound Titans',
+    color: ['red','gray'],
+    difficulty: '⭐⭐⭐⭐⭐',
+    image: 'CardImages/Avatars/Emberling.png',
+    bannerArt: 'CardImages/Banners/RedBanner.png',
+    cardbackArt: 'OtherImages/Cardbacks/RedCardback.png',
+    cards: [
+      { id: 'Ashkar', amount: 1 },
+      { id: 'SmolderingGolemheart', amount: 2 },
+      { id: 'GolemheartSentinel', amount: 3 },
+      { id: 'GolemheartGiant', amount: 3 },
+      { id: 'Golemites', amount: 4 },
+      { id: 'FireGolem', amount: 4 },
+      { id: 'GolemheartInfusor', amount: 4 },
+      { id: 'LifeGrowth', amount: 4 },
+      { id: 'EssenceAssault', amount: 4 },
+      { id: 'EssenceBarrier', amount: 4 },
+      { id: 'Volcano', amount: 4 },
+      { id: 'Mountain', amount: 4 },
+      
+      // ... etc
+    ]
+  },
+  {
+    id: 'Firelands',
+    name: 'Forgebound Titans',
+    color: ['red','gray'],
+    difficulty: '⭐⭐⭐⭐⭐⭐',
+    image: 'CardImages/Avatars/Emberling.png',
+    bannerArt: 'CardImages/Banners/RedBanner.png',
+    cardbackArt: 'OtherImages/Cardbacks/RedCardback.png',
+    cards: [
+      { id: 'Ashkar', amount: 1 },
+      { id: 'SmolderingGolemheart', amount: 2 },
+      { id: 'GolemheartSentinel', amount: 3 },
+      { id: 'GolemheartGiant', amount: 3 },
+      { id: 'Golemites', amount: 4 },
+      { id: 'FireGolem', amount: 4 },
+      { id: 'GolemheartInfusor', amount: 4 },
+      { id: 'LifeGrowth', amount: 4 },
+      { id: 'EssenceAssault', amount: 4 },
+      { id: 'EssenceBarrier', amount: 4 },
+      { id: 'Volcano', amount: 4 },
+      { id: 'Mountain', amount: 4 },
+      
+      // ... etc
+    ]
+  },
   // ...repeat for other colors
 ];
 
@@ -269,7 +344,10 @@ function showCpuDeckModal() {
   const difficultyOptions = [
     { label: "Easy", value: "⭐" },
     { label: "Medium", value: "⭐⭐" },
-    { label: "Hard", value: "⭐⭐⭐" }
+    { label: "Hard", value: "⭐⭐⭐" },
+    { label: "Veteran", value: "⭐⭐⭐⭐" },
+    { label: "Master", value: "⭐⭐⭐⭐⭐" },
+    { label: "Legendary", value: "⭐⭐⭐⭐⭐⭐" },
   ];
   let selectedDifficulty = difficultyOptions[0].value;
 
