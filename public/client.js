@@ -4,14 +4,10 @@ const socket = io();
 window.socket = socket;
 // UI elements
 const lobbyUI = document.getElementById('lobby-ui');
-const chatUI = document.getElementById('chat-ui');
 const createBtn = document.getElementById('create-btn');
 const joinBtn = document.getElementById('join-btn');
 const roomInput = document.getElementById('room-code-input');
 const status = document.getElementById('status');
-const chatInput = document.getElementById('chat-input');
-const sendChatBtn = document.getElementById('send-chat-btn');
-const chatLog = document.getElementById('chat-log');
 // Modal lobby elements
 const createLobbyBtn = document.getElementById('create-lobby-btn');
 const joinLobbyBtn = document.getElementById('join-lobby-btn');
@@ -24,6 +20,7 @@ const spectateRoomInput = document.getElementById('spectate-room-input');
 let isSpectator = false;
 let myDeckObj = null;
 let opponentDeckReceived = false;
+let currentRoomId = null;
 
 // --- Utility to generate random room code ---
 function generateRoomId() {
@@ -107,25 +104,6 @@ socket.on('opponent deck', (deckObj) => {
   }
 });
 
-// --- Chat Logic ---
-if (chatInput) {
-  chatInput.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') {
-      sendChatBtn?.click();
-      e.preventDefault();
-    }
-  });
-}
-if (sendChatBtn) {
-  sendChatBtn.onclick = () => {
-    const msg = (chatInput?.value || "").trim();
-    if (msg && currentRoomId) {
-      socket.emit('game message', currentRoomId, msg);
-      chatInput.value = '';
-    }
-  };
-}
-
 if (spectateBtn) {
   spectateBtn.onclick = () => {
     const roomId = (spectateRoomInput?.value || "").trim().toUpperCase();
@@ -151,12 +129,6 @@ socket.on('sync deck', (deckObj) => {
   if (typeof startGameWithSyncedDeck === "function") {
     startGameWithSyncedDeck(deckObj);
   }
-});
-socket.on('both-champions-selected', (champions) => {
-  closeWaitingForOpponentModal();
-  // Now both clients have both champions and can proceed
-  // Run the next animation, rendering, draw hand, etc.
-  startGameFieldAnimation(champions); // use a timeout for animation if desired
 });
 // --- Game Actions Sync ---
 socket.on('game action', (action) => {
