@@ -884,15 +884,6 @@ button {}
   animation: foil-shine 1.6s cubic-bezier(.7,.2,.4,1) 0.1s infinite;
 }
 
-@keyframes foil-shine {
-  from {
-    left: -120%;
-  }
-  to {
-    left: 120%;
-  }
-}
-
 .card-image-locked {
   filter: grayscale(1) brightness(0.6) contrast(1.1);
   opacity: 0.75;
