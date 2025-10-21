@@ -3835,8 +3835,6 @@ button[disabled], .btn-disabled {
   background: none;
   border: none;
   box-shadow: 0 1px 8px #0003;
-  width: 110px;
-  height: 152px;
   transition: box-shadow 0.19s;
   cursor: pointer;
   perspective: 1200px;
@@ -3924,7 +3922,7 @@ button[disabled], .btn-disabled {
 .opened-card-front img:hover {
   box-shadow: 0 0 18px #ffe066, 0 0 6px #222;
   transform: scale(1.08);
-  z-index: 2;
+  z-index: 4;
   transition: box-shadow 0.2s, transform 0.2s;
 }
 /* For a “flip” effect, you can use: */
