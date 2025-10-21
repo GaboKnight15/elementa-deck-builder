@@ -2052,6 +2052,23 @@ button[disabled], .btn-disabled {
   box-shadow: 0 6px 24px #50eaffcc;
   transform: scale(1.07);
 }
+/* Speed & Evasion badges */
+.card-badges-row { pointer-events: none; }
+.card-speed-badge, .card-evasion-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0,0,0,0.45);
+  padding: 4px 8px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+  font-weight: 700;
+  font-size: 0.86em;
+  color: #fff;
+  pointer-events: none;
+}
+.card-evasion-badge img, .card-speed-badge img { filter: drop-shadow(0 1px 4px #0008); }
 .badge-top-left {
   position: absolute;
   top: 8px;
