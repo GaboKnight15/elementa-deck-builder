@@ -4087,6 +4087,99 @@ button[disabled], .btn-disabled {
   filter: brightness(1.1);
 }
 
+/* ---------------- /
+/* --- GAME LOG --- /
+/* --------------- */
+/* Game Log modal and icon styles */
+.game-log-icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 8px;
+  cursor: pointer;
+}
+.game-log-icon {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.45));
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+.game-log-icon:hover { transform: scale(1.06); opacity: 0.95; }
+
+/* Modal backdrop */
+.game-log-modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100000; /* high above other UI */
+  background: rgba(0,0,0,0.55);
+}
+
+/* Modal content box */
+.game-log-modal-content {
+  width: min(820px, 92vw);
+  max-height: calc(100vh - 80px);
+  background: linear-gradient(180deg, #0e1318 0%, #0b0f13 100%);
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  color: #eee;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.04);
+}
+
+/* Header: title + close */
+.game-log-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.game-log-modal-title {
+  font-weight: 700;
+  color: #ffe066;
+  font-size: 1.05rem;
+}
+.game-log-modal-close {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+.game-log-modal-close:hover { background: rgba(255,255,255,0.02); }
+
+/* Body: host the existing log element inside modal */
+.game-log-modal-body {
+  padding: 10px;
+  overflow: auto;
+  flex: 1 1 auto;
+}
+
+/* Ensure any .game-log container displays nicely in modal */
+.game-log {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 6px;
+  overflow-y: auto;
+  width: 100%;
+}
+
+/* Small responsive tweak */
+@media (max-width: 640px) {
+  .game-log-modal-content { width: calc(100vw - 32px); max-height: calc(100vh - 48px); border-radius: 8px; }
+  .game-log-icon { width: 30px; height: 30px; }
+}
 .log-message { color: #fff; margin: 2px 0; }        /* Was #111, now white for readability */
 .log-action  { color: #7fd3ff; font-weight: bold; } /* Optional: nice blue for actions */
 .log-system  { color: #cfcfcf; font-style: italic; } /* Optional: lighter gray for system */
