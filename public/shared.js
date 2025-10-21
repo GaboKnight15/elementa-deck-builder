@@ -43,8 +43,8 @@ const dummyCards = [
  ]},
 
 {id: 'ZyraThunderbladeDuelist', name: 'Zyra, Thunderblade Duelist', rarity: 'Legendary', image: 'CardImages/Tempest/ZyraThunderbladeDuelist.png', 
- category: 'Creature', color: 'Yellow', type: 'Warrior', trait: 'Champion', hp: 7, atk: 1, def: 0,
- cost: '{Y}{Y}{Y}', archetype: '', ability: 'Quickdraw', set: 'ElementaGenesis',
+ category: 'Creature', color: 'Yellow', type: 'Warrior', trait: 'Champion', hp: 7, atk: 1, def: 1,
+ cost: '{Y}{Y}{Y}', archetype: '', ability: ['Dash'] set: 'ElementaGenesis',
  skill: [
   {name: 'Bloomchant', cost: '{g}',
    requirement: [{class:'Special'}, {class: 'CCW'}], 
