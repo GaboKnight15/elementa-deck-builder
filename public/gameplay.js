@@ -6513,7 +6513,7 @@ function isAnyVoidCardActionable(gameState, dummyCards) {
     btnWrap.className = 'game-log-icon-wrap';
     const img = document.createElement('img');
     img.id = 'game-log-icon';
-    img.src = 'OtherImages/Icons/GameLog.png';
+    img.src = 'OtherImages/FieldIcons/GameLog.png';
     img.alt = 'Open Game Log';
     img.title = 'Open Game Log';
     img.className = 'game-log-icon';
