@@ -4086,93 +4086,14 @@ button[disabled], .btn-disabled {
   z-index: 2;
   filter: brightness(1.1);
 }
-#chat-ui {
-  flex: 1 1 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  background: rgba(24, 32, 48, 0.70);
-  border-radius: 12px;
-  box-shadow: 0 2px 10px #0006;
-  padding: 12px 8px 10px 8px;
-  min-height: 0;
-  height: 50%;
-}
-#chat-ui input:focus {border-color: #7aa6ff;}
-#chat-ui button {
-  width: 100%;
-}
-#chat-log {
-  flex: 1 1 auto;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding: 8px;
-  background: #20283e;
-  border-radius: 8px;
-  margin-bottom: 8px;
-  color: #ffe066;
-  box-shadow:
-    0 1px 6px #0002,
-    inset 0 10px 18px -10px #141e2f99,    /* top inner shadow */
-    inset 0 -10px 18px -10px #141e2f99;
-  word-break: break-all;      /* Break words anywhere */
-  overflow-wrap: anywhere;    /* Break at any point if needed */
-  hyphens: auto;              /* Add hyphens where dictionary allows */
-  white-space: pre-line;      /* Preserve line breaks, wrap text */
-  scroll-behavior: smooth;
-  /* Optional: match your scrollbars */
-  scrollbar-color: #ffe066 #232a3c;
-  scrollbar-width: thin;
-}
-#chat-log .log-message,
-#chat-log .log-action,
-#chat-log .log-system {
-  word-break: break-all;
-  overflow-wrap: anywhere;
-  hyphens: auto;
-  white-space: pre-line;
-}
-/* Sender styles are good as is */
-.chat-sender {
-  font-weight: bold;
-  color: #ffe066;
-}
-.chat-sender-me {
-  color: #ffe066;
-  text-shadow: 0 0 4px #181f2b;
-}
-.log-message, .log-action, .log-system {
-  word-break: break-word;
-  white-space: pre-line;
-}
+
 .log-message { color: #fff; margin: 2px 0; }        /* Was #111, now white for readability */
 .log-action  { color: #7fd3ff; font-weight: bold; } /* Optional: nice blue for actions */
 .log-system  { color: #cfcfcf; font-style: italic; } /* Optional: lighter gray for system */
 .log-action.player { background: #265c2622 !important; }
 .log-action.opponent { background: #7a292922 !important; }
 .log-card-img:hover, .log-zone-img:hover { box-shadow:0 0 8px #ffe066; }
-#chat-input-row { display: flex; gap: 6px; }
-#chat-input { 
-  flex: 1 1 auto;
-  padding: 7px 12px;
-  border-radius: 8px;
-  border: 1.5px solid #4761e6;
-  background: #232a3c;
-  color: #fff;
-}
-#send-chat-btn {
-  background: #ffe066;
-  color: #232a3c;
-  border-radius: 8px;
-  padding: 7px 16px;
-  font-weight: bold;
-  cursor: pointer;
-  box-shadow: 0 1px 4px #0003;
-  transition: background 0.13s;
-}
-#send-chat-btn:hover {
-  background: #fff59d;
-}
+
 /* ===== ELEMENT GLOW KEYFRAMES ===== */
 /* ===== CARD PULSE EFFECTS FOR GAMEPLAY ===== */
 .card-animatable {
