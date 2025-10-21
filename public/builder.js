@@ -855,13 +855,14 @@ function updateDeckDisplay() {
 
     for (const { card, count } of sections[key]) {
       const li = document.createElement('li');
-      li.style.display = 'flex';
-      li.style.alignItems = 'center';
-      li.style.gap = '8px';
       li.classList.add('deck-draggable');
       li.setAttribute('data-card-id', card.id);
       li.setAttribute('draggable', 'true');
-      // --- Use hold helper for deck list ---
+
+      // Ensure positioning for absolute badge
+      li.style.position = li.style.position || 'relative';
+
+      // Hold handlers (preview/remove on hold/click)
       const { startHold, clearHold, mouseUp } = makeHoldHandlers(
         () => showFullCardModal(card),
         () => {
@@ -877,37 +878,52 @@ function updateDeckDisplay() {
       li.addEventListener('mouseleave', clearHold);
       li.addEventListener('touchcancel', clearHold);
 
+      // Drag handlers
       li.addEventListener('dragstart', function(e) {
         e.dataTransfer.setData('card-id', card.id);
         e.dataTransfer.setData('from', 'deck');
-        if (li.querySelector('img')) {
-          const img = li.querySelector('img');
-          e.dataTransfer.setDragImage(img, img.width / 2, img.height / 2);
-        }
+        const img = li.querySelector('img');
+        if (img) e.dataTransfer.setDragImage(img, img.width / 2, img.height / 2);
         li.classList.add('dragging');
       });
       li.addEventListener('dragend', function(e) {
         li.classList.remove('dragging');
       });
 
+      // Thumbnail
       const img = document.createElement('img');
       img.src = card.image;
       img.alt = card.name;
-      img.style.width = '56px';
+      img.className = 'deck-list-thumb';
+      img.style.width = '64px';
       img.style.height = 'auto';
       img.style.display = 'block';
-
-      // COUNTER BADGE
-      const badge = document.createElement('span');
-      badge.textContent = `×${count}`;
-      badge.className = 'deck-count-badge';
-      badge.style.position = 'absolute';
-      badge.style.right = '0';
-      badge.style.top = '0';
-
       li.appendChild(img);
+
+      // Optional meta (name / rarity)
+      const meta = document.createElement('div');
+      meta.className = 'card-meta';
+      const nameDiv = document.createElement('div');
+      nameDiv.className = 'card-name';
+      nameDiv.textContent = card.name;
+      const subDiv = document.createElement('div');
+      subDiv.className = 'card-sub';
+      subDiv.textContent = `${(card.rarity || '').toUpperCase()} • ${card.type || ''}`;
+      subDiv.style.fontSize = '12px';
+      subDiv.style.opacity = '0.8';
+      meta.appendChild(nameDiv);
+      meta.appendChild(subDiv);
+      li.appendChild(meta);
+
+      // COUNTER BADGE (accessible)
+      const badge = document.createElement('span');
+      badge.className = 'deck-count-badge';
+      badge.textContent = `×${count}`;
+      badge.setAttribute('role', 'status');
+      badge.setAttribute('aria-label', `${count} copies in deck`);
+      badge.title = `${count} in deck`;
       li.appendChild(badge);
-      // FIX: Append to deckList, not deckPanel
+
       deckList.appendChild(li);
     }
   }
