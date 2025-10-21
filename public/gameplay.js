@@ -5910,11 +5910,6 @@ function isDomain(cardObj)   { return isCategory(cardObj, "Domain"); }
 function isArtifact(cardObj) { return isCategory(cardObj, "Artifact"); }
 function isSpell(cardObj)    { return isCategory(cardObj, "Spell"); }
 
-// TRAIT
-function isChampion(cardObj) {
-  return cardObj.trait === 'Champion';
-}
-
 // TYPE
 function isType(cardObj, type) {
   return fieldIncludes(cardObj, "type", type);
