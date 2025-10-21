@@ -108,6 +108,7 @@ let isProcessingEvents = false;
 let attackMode = {attackerId: null, attackerZone: null, cancelHandler: null};
 
 const INITIAL_HAND_SIZE = 5;
+const SPEED_MAX_TIER = 5;
 const ESSENCE_IMAGE_MAP = {
   red: "OtherImages/Essence/Red.png",
   blue: "OtherImages/Essence/Blue.png",
@@ -261,6 +262,29 @@ Seal: {
   name: "Seal",
   icon: "OtherImages/status/seal.png",
   description: "This card's skills cannot be activated."
+},
+Quickstrike: {
+  icon: 'OtherImages/Icons/Quickstrike.png',
+  name: 'Quickstrike',
+  description: 'This creature deals damage before an enemy it attacks.',
+  // short duration used only for a single attack resolution; apply/remove toggle the flag
+  apply: function(cardObj) {
+    cardObj._quickstrike = true;
+  },
+  remove: function(cardObj) {
+    cardObj._quickstrike = false;
+  }
+},
+InvulnerableAtk: {
+  icon: 'OtherImages/Icons/Invulnerable.png',
+  name: 'Invulnerable (attacking)',
+  description: "This creature takes no retaliation damage when it attacks.",
+  apply: function(cardObj) {
+    cardObj._invulnerableWhileAttacking = true;
+  },
+  remove: function(cardObj) {
+    cardObj._invulnerableWhileAttacking = false;
+  }
 },
   // ... add more statuses
 };
@@ -1802,16 +1826,46 @@ function showActivationConfirmModal(cardObj, skillObj, onConfirm) {
 // --- TURN FLAGS --- //
 function resetTurnFlags(turn) {
   if (turn === "player") {
-    [...gameState.playerCreatures, ...gameState.playerDomains].forEach(card => {
-      card.hasAttacked = false;
+    const arrs = [...gameState.playerCreatures, ...gameState.playerDomains];
+    arrs.forEach(card => {
+      // Clear previous per-turn flags
       card.hasChangedPositionThisTurn = false;
       card.hasSummonedThisTurn = false;
+
+      // Compute allowed attacks based on Speed tier:
+      const tier = getSpeedTier(card);
+      // default allowed attacks = 1
+      let allowed = 1;
+      if (tier >= 4) allowed = 2;
+      if (tier >= 5) allowed = 3;
+      // Save remaining attacks for the new turn
+      card.attacksRemaining = allowed;
+      // Keep legacy flag for compatibility
+      card.hasAttacked = card.attacksRemaining <= 0;
+
+      // Grant tier-based evasion counters at start of turn:
+      // Speed 3,4,5 grant +1 Evasion (passive)
+      if (tier >= 3) {
+        // Use addEvasion so render/state updates and any other logic are consistent
+        addEvasion(card, 1);
+      }
     });
   } else if (turn === "opponent") {
-    [...gameState.opponentCreatures, ...gameState.opponentDomains].forEach(card => {
-      card.hasAttacked = false;
+    const arrs = [...gameState.opponentCreatures, ...gameState.opponentDomains];
+    arrs.forEach(card => {
       card.hasChangedPositionThisTurn = false;
       card.hasSummonedThisTurn = false;
+
+      const tier = getSpeedTier(card);
+      let allowed = 1;
+      if (tier >= 4) allowed = 2;
+      if (tier >= 5) allowed = 3;
+      card.attacksRemaining = allowed;
+      card.hasAttacked = card.attacksRemaining <= 0;
+
+      if (tier >= 3) {
+        addEvasion(card, 1);
+      }
     });
   }
 }
@@ -2548,6 +2602,8 @@ function cleanCard(cardObj) {
   return cleaned;
 }
 
+function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
+
 // CARD POSITION SELECTION MODAL
 function showSummonPositionModal(cardObj, onSelected) {
   // Remove any existing modal
@@ -2707,7 +2763,22 @@ function getBaseHp(cardId) {
 function computeCardStat(cardObj, statName) {
   // Get base stat from dummyCards
   const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
-  let base = cardDef?.[statName] ?? 0;
+  
+  let base;
+  if (statName === "speed") {
+    if (cardDef && typeof cardDef.speed === "number") {
+      base = cardDef.speed;
+    } else {
+      // If card has category creature (or category includes "creature"), default to 1
+      const category = cardDef?.category;
+      const isCreature = (typeof category === "string" && category.toLowerCase() === "creature")
+        || (Array.isArray(category) && category.map(c => String(c).toLowerCase()).includes("creature"));
+      base = isCreature ? 1 : 0;
+    }
+  } else {
+    base = cardDef?.[statName] ?? 0;
+  }
+  
   let mods = 0;
 
   // Modifiers array (for skills, effects, etc)
@@ -2757,10 +2828,70 @@ function computeCardStat(cardObj, statName) {
         if (matchesFilter(cardObj, ab)) {
           if (statName === "atk" && ab.atk) mods += ab.atk;
           if (statName === "def" && ab.def) mods += ab.def;
+          if (statName === "speed" && ab.speed) mods += ab.speed; // allow Inspire to modify speed if defined
         }
       }
     });
   });
+
+  // === NEW: Ability-based passive Speed bonuses ===
+  // Abilities that grant +1 Speed: Dash, Dive, Flying, Leap, Ranged/Range, Rush
+  if (statName === "speed") {
+    // getCardAbilities helper exists elsewhere in file; use it to read ability list
+    const abilityList = getCardAbilities(cardObj) || [];
+    const speedGranting = new Set(["Dash", "Dive", "Flying", "Leap", "Ranged", "Range", "Rush"]);
+    abilityList.forEach(a => {
+      if (typeof a === "string" && speedGranting.has(a)) {
+        mods += 1;
+      }
+    });
+
+    // === Armor penalty: any Armor on the instance lowers Speed by 1 ===
+    // Determine current armor (consider instance value, definition, attachments, and modifiers)
+    let currentArmor = 0;
+    if (typeof cardObj.armor === "number") currentArmor += cardObj.armor;
+    else if (typeof cardDef?.armor === "number") currentArmor += cardDef.armor;
+
+    // Add attachment-provided armor
+    if (Array.isArray(cardObj.attachedCards)) {
+      for (const att of cardObj.attachedCards) {
+        if (typeof att.armor === "number") currentArmor += att.armor;
+        if (Array.isArray(att.modifiers)) {
+          currentArmor += att.modifiers
+            .filter(m => m.stat === "armor")
+            .reduce((s,m) => s + (m.value || 0), 0);
+        }
+      }
+    }
+    // Count armor modifiers on the cardObj
+    if (Array.isArray(cardObj.modifiers)) {
+      currentArmor += cardObj.modifiers
+        .filter(m => m.stat === "armor")
+        .reduce((s, m) => s + (m.value || 0), 0);
+    }
+
+    // If any armor is present, apply -1 speed penalty (single step, not per-armor point)
+    if (currentArmor > 0) mods -= 1;
+  }
+  // === Per-tier passive effects (Speed tiers 0..5) ===
+  // Compute effective speed now so we can apply tier-dependent stat buffs.
+  // Note: we only apply these passive stat bonuses here (so other code reading atk/def uses them).
+  if (statName === "atk" || statName === "def") {
+    // We need an approximate speedTier: compute current provisional speed = base + modsBeforeTier
+    // To avoid recursive computeCardStat calls, compute provisional speed: base + mods_so_far (only statName 'speed' affects final speed via other modifiers)
+    // But here we can call computeCardStat(cardObj, "speed") safely because computeCardStat for 'speed' will not look at atk/def.
+    const tier = clamp(Math.round(computeCardStat(cardObj, "speed")), 0, SPEED_MAX_TIER);
+
+    // Speed 0 => DEF +1
+    if (tier === 0 && statName === "def") {
+      mods += 1;
+    }
+    // Speed >= 2 => ATK +1 (applies for tiers 2,3,4,5)
+    if (tier >= 2 && statName === "atk") {
+      mods += 1;
+    }
+  }
+  
   // === Passive Day/Night Buffs ===
   if (gameState.timeOfDay === "day" && statName === "def" && isWhite(cardObj)) {
     mods += 1;
@@ -2780,8 +2911,86 @@ function computeCardStat(cardObj, statName) {
       }
     });
   }  
+  // Final rounding/clamping
+  if (statName === "speed") {
+    // speed should be integer and at least 0
+    return Math.max(0, Math.round(base + mods));
+  }
   // Clamp to minimum 0
   return Math.max(0, base + mods);
+}
+// Speed specific helpers
+function getSpeedValue(cardObj) {
+  // return current effective speed (computed)
+  return computeCardStat(cardObj, "speed");
+}
+function getSpeedTier(cardObj) {
+  const val = getSpeedValue(cardObj) || 0;
+  // Decide mapping of speed value to tiers. Here we clamp directly to 0..SPEED_MAX_TIER.
+  // If you want custom thresholds, change this function accordingly.
+  return clamp(val, 0, SPEED_MAX_TIER);
+}
+function getSpeedDifference(a, b) {
+  // positive means a is faster than b
+  const aSpeed = getSpeedValue(a) || 0;
+  const bSpeed = getSpeedValue(b) || 0;
+  return aSpeed - bSpeed;
+}
+function addSpeed(cardObj, amount) {
+  amount = Number(amount) || 0;
+  cardObj.modifiers = cardObj.modifiers || [];
+  // push a speed modifier entry (sourceless)
+  cardObj.modifiers.push({ effect: "TempSpeed", stat: "speed", value: amount, source: "effect" });
+  renderGameState && renderGameState();
+}
+function setSpeed(cardObj, value) {
+  // Sets a persistent speed value on the instance overriding computed base
+  cardObj._overrideSpeed = Number(value) || 0;
+  // We cheat by pushing a permanent modifier (or you can add custom property handling)
+  cardObj.modifiers = cardObj.modifiers || [];
+  // remove existing override modifier
+  cardObj.modifiers = cardObj.modifiers.filter(m => !(m.source === "speed-override"));
+  cardObj.modifiers.push({ effect: "SpeedOverride", stat: "speed", value: cardObj._overrideSpeed, source: "speed-override" });
+  renderGameState && renderGameState();
+}
+
+// EVASION helpers
+function getEvasionCount(cardObj) {
+  // store counters on cardObj.evasion or cardObj.evasionCounters
+  if (typeof cardObj.evasion === "number") return cardObj.evasion;
+  if (typeof cardObj.evasionCounters === "number") return cardObj.evasionCounters;
+  return 0;
+}
+function addEvasion(cardObj, amount = 1) {
+  cardObj.evasion = (cardObj.evasion || 0) + Number(amount || 1);
+  renderGameState && renderGameState();
+}
+function consumeEvasion(cardObj, amount = 1) {
+  const before = getEvasionCount(cardObj);
+  const toConsume = Math.min(before, Number(amount || 1));
+  if (toConsume <= 0) return 0;
+  // Prefer cardObj.evasion if present
+  if (typeof cardObj.evasion === "number") cardObj.evasion = Math.max(0, cardObj.evasion - toConsume);
+  else cardObj.evasionCounters = Math.max(0, (cardObj.evasionCounters || 0) - toConsume);
+  renderGameState && renderGameState();
+  return toConsume;
+}
+function handleEvasionOnTarget(targetCardObj, sourceCardObj) {
+  // Only consume if the source and target are opposing owners
+  const sourceOwner = getCardOwner(sourceCardObj);
+  const targetOwner = getCardOwner(targetCardObj);
+  if (!sourceOwner || !targetOwner) {
+    // If owner unknown, still consume as fallback
+    const consumed = consumeEvasion(targetCardObj, 1);
+    if (consumed > 0) showToast(`${targetCardObj.name || "Target"}'s Evasion -1`, { type: "info" });
+    return consumed;
+  }
+  if (sourceOwner !== targetOwner) {
+    const consumed = consumeEvasion(targetCardObj, 1);
+    if (consumed > 0) showToast(`${targetCardObj.name || "Target"}'s Evasion -1`, { type: "info" });
+    return consumed;
+  }
+  return 0;
 }
 
 function renderCardOnField(cardObj, zoneId) {
@@ -2902,31 +3111,55 @@ function renderCardOnField(cardObj, zoneId) {
     statRow.appendChild(makeStatBadge("OtherImages/FieldIcons/HP.png", currentHP, "#fff", "HP"));
   }
 
-  // ATK (center)
-  if (typeof cardData.atk === "number") {
-    const baseATK = cardData.atk;
-    const currentATK = computeCardStat(cardObj, "atk");
-    let atkColor = "#fff";
-    if (currentATK > baseATK) atkColor = "#44e055";
-    else if (currentATK < baseATK) atkColor = "#e53935";
-    statRow.appendChild(makeStatBadge("OtherImages/FieldIcons/ATK.png", currentATK, atkColor, "ATK"));
-  }
+// ATK (center)
+if (typeof cardData.atk === "number") {
+  const currentATK = computeCardStat(cardObj, "atk");
+  const atkColor = getStatColor(cardObj, "atk");
+  statRow.appendChild(makeStatBadge("OtherImages/FieldIcons/ATK.png", currentATK, atkColor, "ATK"));
+}
 
-  // DEF (right)
-  if (typeof cardData.def === "number") {
-    const baseDEF = cardData.def;
-    const currentDEF = computeCardStat(cardObj, "def");
-    let defColor = "#fff";
-    if (currentDEF > baseDEF) defColor = "#44e055";
-    else if (currentDEF < baseDEF) defColor = "#e53935";
-    statRow.appendChild(makeStatBadge("OtherImages/FieldIcons/DEF.png", currentDEF, defColor, "DEF"));
-  }
+// DEF (right)
+if (typeof cardData.def === "number") {
+  const currentDEF = computeCardStat(cardObj, "def");
+  const defColor = getStatColor(cardObj, "def");
+  statRow.appendChild(makeStatBadge("OtherImages/FieldIcons/DEF.png", currentDEF, defColor, "DEF"));
+}
 
   // Attach stat row to overlay
   statsAndIconsOverlay.appendChild(statRow);
 
   // Attach overlay to cardDiv
   cardDiv.appendChild(statsAndIconsOverlay);
+
+const badgesRow = document.createElement('div');
+badgesRow.className = 'card-badges-row';
+badgesRow.style.position = 'absolute';
+badgesRow.style.right = '6px';
+badgesRow.style.top = '6px';
+badgesRow.style.zIndex = 40;
+badgesRow.style.display = 'flex';
+badgesRow.style.flexDirection = 'column';
+badgesRow.style.gap = '6px';
+
+// Speed badge
+const speedVal = getSpeedValue(cardObj);
+const speedBadge = document.createElement('div');
+speedBadge.className = 'card-speed-badge';
+speedBadge.title = `Speed: ${speedVal} (Tier ${getSpeedTier(cardObj)})`;
+speedBadge.innerHTML = `<img src="OtherImages/FieldIcons/Speed.png" style="width:18px;height:18px;vertical-align:middle;margin-right:6px;"><span style="font-weight:bold;color:#fff;">${speedVal}</span>`;
+badgesRow.appendChild(speedBadge);
+
+// Evasion badge (only if > 0)
+const evCount = getEvasionCount(cardObj);
+if (evCount > 0) {
+  const evBadge = document.createElement('div');
+  evBadge.className = 'card-evasion-badge';
+  evBadge.title = `Evasion: ${evCount} (consumed when targeted by opponent)`;
+  evBadge.innerHTML = `<img src="OtherImages/FieldIcons/Evasion.png" style="width:18px;height:18px;vertical-align:middle;margin-right:6px;"><span style="font-weight:bold;color:#ffd700;">${evCount}</span>`;
+  badgesRow.appendChild(evBadge);
+}
+
+statsAndIconsOverlay.appendChild(badgesRow);
 
   // --- HP Bar (move to bottom, behind statRow) ---
   if (typeof cardData.hp === "number" && typeof currentHP === "number" && cardData.hp > 0) {
@@ -3626,8 +3859,17 @@ function handleEndPhase(turn) {
  // triggerEndPhaseEffects(turn);
   // Tick all statuses generically based on phase
   tickStatusDurations({ turn, phase: "end" });
-  // Remove statuses that expire at end of turn
-//  removeExpiringStatuses(turn);
+  // Grant Evasion to all qualifying creatures at end of each player's End Phase
+  try {
+    grantEvasionAtEndPhase();
+  } catch (e) {
+    console.error("Error granting end-phase Evasion:", e);
+  }
+  // Handle weather effects durations etc.
+  handleWeatherEffectsEndPhase();
+  // Optionally do day/night cycle counting if you track end-phase counters
+  // (unchanged) - if you have a day/night counter elsewhere, that logic remains
+  // Example incrementing dayNightCycleCounter was in earlier code; keep it if required.
   // Optionally log phase end
   appendVisualLog({
     action: "endPhase",
@@ -4238,10 +4480,17 @@ function startAttackTargeting(attackerId, attackerZone, cardDiv) {
 function canAttack(cardObj, gameState) {
   // Must exist, be a creature, and be on the field
   if (!cardObj) return false;
-  if (cardObj.hasAttacked) return false;
+  // Check attacksRemaining (if undefined, default to 1)
+  const remaining = (typeof cardObj.attacksRemaining === "number") ? cardObj.attacksRemaining : 1;
+  if (remaining <= 0) return false;
+
+  // Summoning sickness: if it was summoned this turn and doesn't have Rush, cannot attack
   if (cardObj.hasSummonedThisTurn && !hasRush(cardObj)) return false;
+
+  // Must be in ATK (vertical) orientation
   if (cardObj.orientation !== "vertical") return false;
-  // Add any other restrictions you want (e.g. tapped, stunned)
+
+  // Add any other restrictions (e.g. tapped, stunned)
   // Check if there are any valid targets
   const targets = getAttackTargets(cardObj);
   if (!targets || targets.length === 0) return false;
@@ -4328,12 +4577,31 @@ function resolveAttack(attackerId, defenderId) {
 
   if (!attacker || !defender) return;
 
+  // BEFORE DAMAGE: decide First Strike / Invulnerability based on speed difference
+  const speedDiff = getSpeedDifference(attacker, defender); // positive means attacker faster
+  if (speedDiff >= 2) applyStatus(attacker, 'Quickstrike', 1);
+  if (speedDiff >= 3) applyStatus(attacker, 'InvulnerableAtk', 1);
+  if (-speedDiff >= 2) applyStatus(defender, 'Quickstrike', 1);
+  if (-speedDiff >= 3) applyStatus(defender, 'InvulnerableAtk', 1);
+
   // Trigger onAttack/onDefense skills BEFORE damage calculation
   triggerOnAttackSkills(attacker, defender);
   triggerOnDefenseSkills(defender, attacker);
 
   // Damage calculation and KO logic
   damageCalculation(attacker, defender);
+
+  // After the attack resolves, consume one attack from the attacker
+  if (attacker) {
+    attacker.attacksRemaining = Math.max(0, (typeof attacker.attacksRemaining === "number" ? attacker.attacksRemaining : 1) - 1);
+    attacker.hasAttacked = attacker.attacksRemaining <= 0;
+  }
+
+  // AFTER DAMAGE: remove the temporary statuses applied for this attack
+  removeStatus(attacker, 'Quickstrike');
+  removeStatus(attacker, 'InvulnerableAtk');
+  removeStatus(defender, 'Quickstrike');
+  removeStatus(defender, 'InvulnerableAtk');
 
   // Log the attack, etc. (existing log code here)
   appendAttackLog({
@@ -4343,6 +4611,13 @@ function resolveAttack(attackerId, defenderId) {
     who: getCardOwner(attacker)
   });
 }
+// At top of the ATK vs ATK branch in damageCalculation (before calculating who hits first)
+const attackerQuickstrike = hasStatus(attacker, 'Quickstrike');
+const attackerInvulnerable = hasStatus(attacker, 'InvulnerableAtk');
+
+const defenderQuickstrike = hasStatus(defender, 'Quickstrike');
+const defenderInvulnerable = hasStatus(defender, 'InvulnerableAtk');
+
 function damageCalculation(attacker, defender) {
   const attackerDef = dummyCards.find(c => c.id === attacker.cardId);
   const defenderDef = dummyCards.find(c => c.id === defender.cardId);
@@ -4452,6 +4727,30 @@ function triggerOnDefenseSkills(defender, attacker) {
   });
 }
 
+// Grant Evasion counters at each End Phase for creatures with Speed tier >= 3
+function grantEvasionAtEndPhase() {
+  // All on-field creatures: player + opponent
+  const allCreatures = [...gameState.playerCreatures, ...gameState.opponentCreatures];
+  let grantedCount = 0;
+  allCreatures.forEach(card => {
+    try {
+      if (getSpeedTier(card) >= 3) {
+        addEvasion(card, 1);
+        grantedCount++;
+      }
+    } catch (e) {
+      // safe fallback: if something goes wrong for a card, skip it
+      console.error("grantEvasionAtEndPhase error for", card, e);
+    }
+  });
+
+  if (grantedCount > 0) {
+    // Inform the player(s) and refresh UI
+    showToast(`${grantedCount} creature${grantedCount === 1 ? "" : "s"} gained +1 Evasion`, { type: "info" });
+    renderGameState && renderGameState();
+    setupDropZones && setupDropZones();
+  }
+}
 // ------------------------ //
 // --- GAME START LOGIC --- //
 // ------------------------ //
@@ -5716,7 +6015,9 @@ function handleStatusEffects(cardObj) {
   // Remove expired statuses
   cardObj.statuses = cardObj.statuses.filter(s => s.duration > 0);
 }
-
+function hasStatus(cardObj, statusName) {
+  return Array.isArray(cardObj.statuses) && cardObj.statuses.some(s => s.name === statusName);
+}
 function handleEndPhaseStatuses() {
   [...gameState.playerCreatures, ...gameState.opponentCreatures].forEach(cardObj => {
     if (cardObj.statuses) {
@@ -5860,7 +6161,20 @@ function showTokenSelectionModal(tokenDefs, amount, onComplete) {
     modal.remove();
   };
 }
+// Insert this right after the end of computeCardStat(...) and before functions that render stats/icons
+function getStatColor(cardObj, statName) {
+  // Prefer instance-original base if present (keeps comparisons accurate if base was permanently changed)
+  const cardDef = dummyCards.find(c => c.id === cardObj.cardId) || {};
+  // If the instance stored an original base (e.g. _originalAtk/_originalDef), prefer it:
+  const instanceOriginalKey = statName === 'atk' ? '_originalAtk' : (statName === 'def' ? '_originalDef' : null);
+  const baseFromInstance = instanceOriginalKey && typeof cardObj[instanceOriginalKey] === 'number' ? cardObj[instanceOriginalKey] : undefined;
+  const base = (typeof baseFromInstance === 'number') ? baseFromInstance : (cardDef[statName] ?? 0);
 
+  const current = computeCardStat(cardObj, statName);
+  if (current > base) return "#44e055";   // green
+  if (current < base) return "#e53935";   // red
+  return "#fff";                          // default/neutral
+}
 // ----------------------------------- //
 // --- Card Field Helper Functions --- //
 // These functions work for both array and string fields (case-insensitive) //
