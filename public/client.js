@@ -8,6 +8,7 @@ const createBtn = document.getElementById('create-btn');
 const joinBtn = document.getElementById('join-btn');
 const roomInput = document.getElementById('room-code-input');
 const status = document.getElementById('status');
+const gameLog = document.getElementById('game-log');
 // Modal lobby elements
 const createLobbyBtn = document.getElementById('create-lobby-btn');
 const joinLobbyBtn = document.getElementById('join-lobby-btn');
