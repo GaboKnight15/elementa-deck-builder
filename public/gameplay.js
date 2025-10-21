@@ -1611,9 +1611,6 @@ function startGame({
   document.getElementById('gameplay-section').classList.add('active');
   document.getElementById('my-profile').style.display = '';
   document.getElementById('opponent-profile').style.display = '';
-  document.getElementById('chat-ui').style.display = '';
-  document.getElementById('chat-input-row').style.display = isCpuGame ? 'none' : '';
-  document.getElementById('chat-log').style.display = '';
   
   // --- Profile panels ---
   // Player profile
@@ -1659,8 +1656,6 @@ function startGame({
     // e.g. assign gameState.playerProfile/opponentProfile for sync
     gameState.playerProfile = playerProfile;
     gameState.opponentProfile = opponentProfile;
-    // Optionally setup/reset chat
-    if (typeof resetChatLog === "function") resetChatLog();
   }
 
   // Additional mode logic can go here (private, ranked, etc)
@@ -3914,30 +3909,6 @@ if(nextPhaseBtn) nextPhaseBtn.onclick = goToNextPhase;
 // ----------- //
 // --- LOG --- //
 // ----------- //
-function appendChatLog(type, sender, text, isMe = false) {
-  const logDiv = document.getElementById('chat-log');
-  const entry = document.createElement('div');
-  entry.className = `log-${type}`;
-  entry.innerHTML = `<span class="chat-sender${isMe ? ' chat-sender-me' : ''}">${sender}:</span> <span>${text}</span>`;
-  logDiv.appendChild(entry);
-  logDiv.scrollTop = logDiv.scrollHeight;
-}
-
-// --- Chat send logic ---
-document.getElementById('send-chat-btn').onclick = function() {
-  const input = document.getElementById('chat-input');
-  const msg = input.value.trim();
-  if (msg.length && window.socket && window.currentRoomId) {
-    window.socket.emit('game message', window.currentRoomId, msg);
-    input.value = '';
-  }
-};
-
-window.socket.on('game message', (data) => {
-  // Highlight your own message
-  const isMe = (data.sender === gameState.playerProfile?.username);
-  appendChatLog('message', data.sender, data.msg, isMe);
-});
 
 // --- Example: Append action log ---
 function logAction(text) {
@@ -4935,9 +4906,6 @@ function resetGameState() {
   // Hide profiles
   document.getElementById('my-profile').style.display = 'none';
   document.getElementById('opponent-profile').style.display = 'none';
-  // Clear chat
-  const logDiv = document.getElementById('chat-log');
-  if (logDiv) logDiv.innerHTML = '';
 }
 // Re-render when needed (after deck changes)
 if (window.renderDeckSelection) {
@@ -5027,7 +4995,7 @@ let entryHtml = `
 
 // ATTACK LOG
 function appendAttackLog({ attacker, defender, defenderOrientation, who = "player" }, fromSocket = false, isMe = true) {
-  const logDiv = document.getElementById('chat-log');
+  const logDiv = document.getElementById('game-log');
   if (!logDiv) return;
   // Get card data
   const attackerDef = dummyCards.find(c => c.id === attacker.cardId);
@@ -5081,7 +5049,7 @@ window.socket.on('game action log', (obj) => {
 function appendPositionChangeLog(cardObj, newOrientation, prevOrientation, fromSocket = false) {
   const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
   if (!cardDef) return;
-  const logDiv = document.getElementById('chat-log');
+  const logDiv = document.getElementById('game-log');
   let logHtml = `<div class="log-action" style="padding:5px 0;display:flex;align-items:center;">`;
 
   if (prevOrientation === "vertical" && newOrientation === "horizontal") {
@@ -5178,7 +5146,7 @@ function changeCardPosition(cardObj, newOrientation, callback) {
 }
 // APPEND TO LOG
 function appendVisualLog(obj, fromSocket = false, isMe = true) {
-  const logDiv = document.getElementById('chat-log');
+  const logDiv = document.getElementById('game-log');
   logDiv.insertAdjacentHTML('beforeend', renderLogAction(obj));
   logDiv.scrollTop = logDiv.scrollHeight;
   // Only emit if not from socket
@@ -6422,7 +6390,7 @@ function isAnyVoidCardActionable(gameState, dummyCards) {
 }
 
 
-document.getElementById('chat-log').addEventListener('click', function(e) {
+document.getElementById('game-log').addEventListener('click', function(e) {
   if (e.target.classList.contains('log-card-img')) {
     const instanceId = e.target.getAttribute('data-instanceid');
     const cardId = e.target.getAttribute('data-cardid');
