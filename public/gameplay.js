@@ -6389,7 +6389,197 @@ function isAnyVoidCardActionable(gameState, dummyCards) {
   });
 }
 
+// --- Game Log modal + clickable icon (inserted between profiles) ---
+// Moves existing #game-log or #chat-log into a modal for a focused view.
+// When modal closes, the log element is re-attached to its original location.
 
+(function() {
+  // State for moving the log node back when the modal closes
+  let __gameLog_state = {
+    originalParent: null,
+    nextSibling: null
+  };
+
+  function openGameLogModal() {
+    // If modal exists, just show it (it may have been hidden)
+    let existing = document.getElementById('game-log-modal');
+    if (existing) {
+      existing.style.display = 'flex';
+      return;
+    }
+
+    // Create modal wrapper
+    const modal = document.createElement('div');
+    modal.id = 'game-log-modal';
+    modal.className = 'game-log-modal';
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.onclick = (e) => { if (e.target === modal) closeGameLogModal(); }; // backdrop click closes
+
+    // Modal content
+    const content = document.createElement('div');
+    content.className = 'game-log-modal-content';
+
+    // Header row (title + close)
+    const header = document.createElement('div');
+    header.className = 'game-log-modal-header';
+    const title = document.createElement('div');
+    title.className = 'game-log-modal-title';
+    title.textContent = 'Game Log';
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'game-log-modal-close';
+    closeBtn.setAttribute('aria-label', 'Close Game Log');
+    closeBtn.innerHTML = '&times;';
+    closeBtn.onclick = closeGameLogModal;
+
+    header.appendChild(title);
+    header.appendChild(closeBtn);
+    content.appendChild(header);
+
+    // Body container where we will place the existing log element
+    const body = document.createElement('div');
+    body.className = 'game-log-modal-body';
+    body.id = 'game-log-modal-body';
+    content.appendChild(body);
+
+    // Footer optional: you could add filter/search controls here later
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+
+    // Move the existing log element (#game-log preferred, fallback to #chat-log) into the modal body
+    const logDiv = document.getElementById('game-log') || document.getElementById('chat-log');
+    if (logDiv) {
+      // store original place for restoration
+      __gameLog_state.originalParent = logDiv.parentNode;
+      __gameLog_state.nextSibling = logDiv.nextSibling;
+      body.appendChild(logDiv);
+      // ensure the moved node is scrollable and fits modal
+      logDiv.style.maxHeight = 'calc(100vh - 160px)';
+      logDiv.style.overflow = 'auto';
+      logDiv.style.width = '100%';
+    } else {
+      // No existing log found — create an empty placeholder inside the modal
+      const placeholder = document.createElement('div');
+      placeholder.id = 'game-log';
+      placeholder.className = 'game-log';
+      placeholder.textContent = 'No logs yet.';
+      placeholder.style.padding = '12px';
+      body.appendChild(placeholder);
+    }
+  }
+
+  function closeGameLogModal() {
+    const modal = document.getElementById('game-log-modal');
+    if (!modal) return;
+    // Try to restore the moved log element back to its original parent
+    const logDiv = document.getElementById('game-log') || document.getElementById('chat-log');
+    if (logDiv && __gameLog_state.originalParent) {
+      try {
+        // Restore style cleanup
+        logDiv.style.maxHeight = '';
+        logDiv.style.overflow = '';
+        // Reinsert to original location
+        if (__gameLog_state.nextSibling) {
+          __gameLog_state.originalParent.insertBefore(logDiv, __gameLog_state.nextSibling);
+        } else {
+          __gameLog_state.originalParent.appendChild(logDiv);
+        }
+      } catch (e) {
+        // If restoring fails, append to body to avoid losing it
+        document.body.appendChild(logDiv);
+      }
+    }
+    // Remove modal from DOM
+    modal.remove();
+    // Clear stored state
+    __gameLog_state.originalParent = null;
+    __gameLog_state.nextSibling = null;
+  }
+
+  function toggleGameLogModal() {
+    const modal = document.getElementById('game-log-modal');
+    if (modal && modal.style.display !== 'none') closeGameLogModal();
+    else openGameLogModal();
+  }
+
+  // Insert the clickable icon between profiles on DOMContentLoaded
+  function insertGameLogIcon() {
+    // Avoid duplicate icon
+    if (document.getElementById('game-log-icon')) return;
+
+    // Create icon element
+    const btnWrap = document.createElement('div');
+    btnWrap.id = 'game-log-icon-wrap';
+    btnWrap.className = 'game-log-icon-wrap';
+    const img = document.createElement('img');
+    img.id = 'game-log-icon';
+    img.src = 'OtherImages/Icons/GameLog.png';
+    img.alt = 'Open Game Log';
+    img.title = 'Open Game Log';
+    img.className = 'game-log-icon';
+    img.onclick = (e) => {
+      e.stopPropagation();
+      toggleGameLogModal();
+    };
+    btnWrap.appendChild(img);
+
+    // Preferred target: battlefield-leftbar
+    let leftbar = document.getElementById('battlefield-leftbar') || document.getElementById('battlefield-left');
+
+    // Fallback: insert between #my-profile and #opponent-profile if they share a parent
+    if (!leftbar) {
+      const my = document.getElementById('my-profile');
+      const opp = document.getElementById('opponent-profile');
+      if (my && opp && my.parentNode === opp.parentNode) {
+        leftbar = my.parentNode;
+        // insert between my and opp (before opp)
+        leftbar.insertBefore(btnWrap, opp);
+        return;
+      }
+    }
+
+    if (leftbar) {
+      // Try to place between the two known profile elements if present
+      const my = document.getElementById('my-profile');
+      const opp = document.getElementById('opponent-profile');
+
+      if (my && opp && my.parentNode === leftbar && opp.parentNode === leftbar) {
+        // insert between them: after my
+        if (my.nextSibling) leftbar.insertBefore(btnWrap, my.nextSibling);
+        else leftbar.appendChild(btnWrap);
+      } else {
+        // Append to leftbar as a fallback
+        leftbar.appendChild(btnWrap);
+      }
+    } else {
+      // As a last resort, append to top of battlefield area
+      const battlefield = document.getElementById('battlefield');
+      if (battlefield) battlefield.insertBefore(btnWrap, battlefield.firstChild);
+      else document.body.appendChild(btnWrap);
+    }
+  }
+
+  // Attach insertion on DOM ready
+  document.addEventListener('DOMContentLoaded', () => {
+    // Insert the icon (if UI present)
+    insertGameLogIcon();
+
+    // Also ensure if the user interacts with profile toggles later, icon remains present
+    // Simple resilience: observe for insertion of profiles and (re)insert if needed.
+    const leftbar = document.getElementById('battlefield-leftbar') || document.getElementById('my-profile')?.parentNode;
+    if (leftbar) {
+      const observer = new MutationObserver(() => {
+        if (!document.getElementById('game-log-icon')) insertGameLogIcon();
+      });
+      observer.observe(leftbar, { childList: true, subtree: false });
+    }
+  });
+
+  // Expose open/close for manual calls (optional)
+  window.openGameLogModal = openGameLogModal;
+  window.closeGameLogModal = closeGameLogModal;
+  window.toggleGameLogModal = toggleGameLogModal;
+})();
 document.getElementById('game-log').addEventListener('click', function(e) {
   if (e.target.classList.contains('log-card-img')) {
     const instanceId = e.target.getAttribute('data-instanceid');
