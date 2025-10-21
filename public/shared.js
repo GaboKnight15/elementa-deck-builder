@@ -1426,16 +1426,18 @@ venom: {name: "Venom", description: "Poisons opposing unit upon striking with an
 
 protect: {name: "Protect", description: "Opponent can only target this unit for attacks."},
 barrier: {name: "Barrier", description: "Prevents the next damage received to any unit."},
+evasion: {name: "Evasion", description: "Prevents the next skill target."},
 aegis: {name: "Aegis", description: "Unaffected by skills and effects."},
+armor: {name: "Armor", description: "Secondary sustain stat. Units loss armor first before HP. When the armor breaks, nullifies remaining damage. Losses {1} Speed"},
 
 // --- Target Related Abilities --- //
-veil: {name: "Veil", description: "Cannot be targeted by opponent's Skills and effects."},
-immunity: {name: "Immunity", description: "Unaffected by status conditions."},
-ambush: {name: "Ambush", description: "Cannot be targeted by opponent's attacks, skills and effects. Unit is revealed after attacking or using a skill/effect"},
-flying: {name: "Flying", description: "Can only be blocked by other units with Flying. All Ranged units can damage it if declaring attack"},
-ranged: {name: "Ranged", description: "Can attack units with Flying, ignores Protect, does not receive attack damage upon attacking another unit without ranged."},
+veil: {name: "Veil", description: "Cannot be targeted by skills."},
+immunity: {name: "Immunity", description: "Unaffected by status ailments."},
+ambush: {name: "Ambush", description: "Cannot be targeted by opponent's attacks or skills. Unit is revealed after attacking or using a skill"},
+flying: {name: "Flying", description: "Can only be blocked by other units with Flying or Ranged. Gain {1} Speed."},
+ranged: {name: "Ranged", description: "Can attack units with Flying and Dive. Gain {1} Speed."},
 
-rush: {name: "Rush", description: "Can attack on the turn it is played."},
+rush: {name: "Rush", description: "Can attack on the turn it is played. Gain {1} Speed."},
 drain: {name: "Drain", description: "When this unit deals damage, gain that much life."},
 pierce: {name: "Pierce", description: "Ignores armor."},
 
@@ -1482,7 +1484,7 @@ repel: {name: "Repel", description: "Return one unit from the field to the hand.
 mill: {name: "Mill", description: "Sends one card from the deck to the void."},
 crush: {name: "Crush", description: "Remove all armor from target unit."},
 reanimate: {name: "Reanimate", description: "Summons this unit from the void."},
-dash: {name: "Dash", description: "Summons this unit from the hand with half HP (rounded up)"},
+dash: {name: "Dash", description: "Summons this unit from the hand with half HP (rounded up). Gain {1} Speed."},
 
 // --- PHASE SKILLS --- //
 awaken: {name: "Awaken", description: "Activates during the draw step."},
@@ -1603,7 +1605,9 @@ glimmerscale: {name: "Glimmerscale", description: "Born of starlight and shimmer
 // TRAITS //
 // ------- */
 champion: {name: "Champion", description: "Main creatures that can be upgraded to Champion and provide essence support. Champion creatures receive +{1}/+{1} and upgraded skills"},
-fusion: {name: "Fusion", description: "Main creatures that can be upgraded to Champion and provide essence support. Champion creatures receive +{1}/+{1} and upgraded skills"},
+fusion: {name: "Fusion", description: "Evolved creatures with better stats and skills."},
+evolution: {name: "Evolution", description: "Evolved creatures with better stats and skills."},
+
 };
 const DAILY_LOGIN_REWARDS = [
  /* Example
