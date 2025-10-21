@@ -1844,8 +1844,8 @@ function resetTurnFlags(turn) {
       card.hasAttacked = card.attacksRemaining <= 0;
 
       // Grant tier-based evasion counters at start of turn:
-      // Speed 3,4,5 grant +1 Evasion (passive)
-      if (tier >= 3) {
+      // Speed 2, 3,4,5 grant +1 Evasion (passive)
+      if (tier >= 2) {
         // Use addEvasion so render/state updates and any other logic are consistent
         addEvasion(card, 1);
       }
@@ -1863,7 +1863,7 @@ function resetTurnFlags(turn) {
       card.attacksRemaining = allowed;
       card.hasAttacked = card.attacksRemaining <= 0;
 
-      if (tier >= 3) {
+      if (tier >= 2) {
         addEvasion(card, 1);
       }
     });
@@ -2886,8 +2886,8 @@ function computeCardStat(cardObj, statName) {
     if (tier === 0 && statName === "def") {
       mods += 1;
     }
-    // Speed >= 2 => ATK +1 (applies for tiers 2,3,4,5)
-    if (tier >= 2 && statName === "atk") {
+    // Speed >= 3 => ATK +1 (applies for tiers 3,4,5)
+    if (tier >= 3 && statName === "atk") {
       mods += 1;
     }
   }
@@ -4611,38 +4611,91 @@ function resolveAttack(attackerId, defenderId) {
     who: getCardOwner(attacker)
   });
 }
-// At top of the ATK vs ATK branch in damageCalculation (before calculating who hits first)
-const attackerQuickstrike = hasStatus(attacker, 'Quickstrike');
-const attackerInvulnerable = hasStatus(attacker, 'InvulnerableAtk');
 
-const defenderQuickstrike = hasStatus(defender, 'Quickstrike');
-const defenderInvulnerable = hasStatus(defender, 'InvulnerableAtk');
 
 function damageCalculation(attacker, defender) {
   const attackerDef = dummyCards.find(c => c.id === attacker.cardId);
   const defenderDef = dummyCards.find(c => c.id === defender.cardId);
   const attackerInfo = getZoneInfoForCard(attacker);
   const defenderInfo = getZoneInfoForCard(defender);
+  // Read temporary status flags here, where attacker/defender are defined
+  const attackerQuickstrike = hasStatus(attacker, 'Quickstrike');
+  const attackerInvulnerable = hasStatus(attacker, 'InvulnerableAtk');
 
-  // ATK VS ATK -- Simultaneous Damage
+  const defenderQuickstrike = hasStatus(defender, 'Quickstrike');
+  const defenderInvulnerable = hasStatus(defender, 'InvulnerableAtk');
+
+  // ATK VS ATK -- Creature vs Creature in ATK (vertical)
   if (defenderDef.category === "creature" && defender.orientation === "vertical") {
     const attackerDmg = computeCardStat(attacker, "atk");
     const defenderDmg = computeCardStat(defender, "atk");
-    defender.currentHP = Math.max(0, (defender.currentHP || getBaseHp(defender.cardId)) - attackerDmg);
-    attacker.currentHP = Math.max(0, (attacker.currentHP || getBaseHp(attacker.cardId)) - defenderDmg);
+
+    // If either side has Quickstrike (first strike), resolve in order
+    if ((attackerQuickstrike && !defenderQuickstrike) || (!attackerQuickstrike && defenderQuickstrike)) {
+      if (attackerQuickstrike && !defenderQuickstrike) {
+        // Attacker hits first
+        defender.currentHP = Math.max(0, (defender.currentHP || getBaseHp(defender.cardId)) - attackerDmg);
+        if (defender.currentHP > 0) {
+          // Defender retaliates only if still alive and attacker not invulnerable while attacking
+          const retaliate = attackerInvulnerable ? 0 : defenderDmg;
+          attacker.currentHP = Math.max(0, (attacker.currentHP || getBaseHp(attacker.cardId)) - retaliate);
+        }
+      } else {
+        // Defender has Quickstrike
+        attacker.currentHP = Math.max(0, (attacker.currentHP || getBaseHp(attacker.cardId)) - defenderDmg);
+        if (attacker.currentHP > 0) {
+          const retaliate = defenderInvulnerable ? 0 : attackerDmg;
+          defender.currentHP = Math.max(0, (defender.currentHP || getBaseHp(defender.cardId)) - retaliate);
+        }
+      }
+    } else {
+      // Neither or both have Quickstrike: simultaneous damage (but respect invulnerability flags)
+      let defenderIncoming = attackerDmg;
+      let attackerIncoming = defenderDmg;
+
+      if (attackerInvulnerable) attackerIncoming = 0;
+      if (defenderInvulnerable) defenderIncoming = 0;
+
+      defender.currentHP = Math.max(0, (defender.currentHP || getBaseHp(defender.cardId)) - defenderIncoming);
+      attacker.currentHP = Math.max(0, (attacker.currentHP || getBaseHp(attacker.cardId)) - attackerIncoming);
+    }
+
+    // KO handling: move to void if dead
     if (defender.currentHP <= 0) moveCard(defender.instanceId, defenderInfo.arr, gameState.playerVoid);
     if (attacker.currentHP <= 0) moveCard(attacker.instanceId, attackerInfo.arr, gameState.playerVoid);
-  } 
-  // ATK VS DEF
-  else if (defenderDef.category === "creature" && defender.orientation === "horizontal") {
-    const damage = Math.max(0, computeCardStat(attacker, "atk") - computeCardStat(defender, "def"));
-    dealDamage(attacker, defender, damage);
-  }
-  // ATK VS DOMAIN OR ARTIFACT
-  else {
-    dealDamage(attacker, defender, computeCardStat(attacker, "atk"));
+
+    // Apply abilities' status effects if defender is still on field after resolution
+    if (
+      defenderDef?.category === "creature" &&
+      defenderInfo.arr?.includes(defender)
+    ) {
+      const attackerAbilities = attackerDef.ability || [];
+      attackerAbilities.forEach(abilityName => {
+        if (STATUS_EFFECTS[abilityName]) {
+          applyStatus(defender, abilityName);
+        }
+      });
+    }
+
+    renderGameState();
+    setupDropZones();
+    return;
   }
 
+  // ATK VS DEF (defender horizontal)
+  if (defenderDef.category === "creature" && defender.orientation === "horizontal") {
+    const damage = Math.max(0, computeCardStat(attacker, "atk") - computeCardStat(defender, "def"));
+    dealDamage(attacker, defender, damage);
+    renderGameState();
+    setupDropZones();
+    return;
+  }
+
+  // ATK VS DOMAIN OR ARTIFACT
+  dealDamage(attacker, defender, computeCardStat(attacker, "atk"));
+  renderGameState();
+  setupDropZones();
+  
   // Only apply status if defender is still alive on field
   if (
     defenderDef?.category === "creature" &&
@@ -4734,7 +4787,7 @@ function grantEvasionAtEndPhase() {
   let grantedCount = 0;
   allCreatures.forEach(card => {
     try {
-      if (getSpeedTier(card) >= 3) {
+      if (getSpeedTier(card) >= 2) {
         addEvasion(card, 1);
         grantedCount++;
       }
