@@ -1018,6 +1018,12 @@ button {}
   margin-bottom: 2px;
   font-size: 1.05em;
 }
+/* Keyword chip styling (used in showFullCardModal and info panels) */
+.kw-chip-row { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-left:8px; }
+.kw-chip { display:inline-flex; align-items:center; gap:8px; padding:4px 8px; border-radius:999px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.03); }
+.kw-chip-icon { width:18px; height:18px; object-fit:contain; }
+.kw-chip-text { color: #fff; font-weight:600; font-size:0.95em; }
+
 .skill-ultimate-rainbow {
   background: linear-gradient(270deg, #ff4f4f, #ffe066, #60ffb1, #5ec3ff, #a66bff, #ff4f4f);
   background-size: 1200% 1200%;
