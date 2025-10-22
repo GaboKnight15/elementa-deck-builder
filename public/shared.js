@@ -1892,12 +1892,10 @@ function normalizeKey(s) {
 function getKeywordIcon(name) {
   if (!name) return null;
   const key = normalizeKey(name);
-  // Prefer keywords explanations map
-  if (CARD_KEYWORD[key] && CARD_KEYWORD[key].icon) {
+  if (!key) return null;
+  if (CARD_KEYWORD && CARD_KEYWORD[key] && CARD_KEYWORD[key].icon) {
     return CARD_KEYWORD[key].icon;
   }
-  // Try fallback icon map
-  if (ICON_MAP[key]) return ICON_MAP[key];
   return null;
 }
 
