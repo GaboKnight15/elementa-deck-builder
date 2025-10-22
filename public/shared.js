@@ -2237,7 +2237,6 @@ function showInfoModal(cardObj) {
 
         // Render stat graph HTML (helper: renderStatGraphHtml)
         html += `<div style="margin-top:8px;margin-bottom:12px;">`;
-        html += `<div style="font-weight:700;color:#fff;margin-bottom:8px;">Archetype / Type Stats</div>`;
         html += renderStatGraphHtml(combinedStats, { containerClass: 'stat-graph' });
         html += `</div>`;
       }
