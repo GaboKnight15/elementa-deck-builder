@@ -2074,6 +2074,117 @@ function getRequirementIcons(requirementsArr) {
   });
   return icons;
 }
+
+// --- STATS CHART --- //
+// Add more requirement icons as needed
+const DEFAULT_STAT_PROFILE = { hp: 5, atk: 5, def: 5, spd: 5, hc: 5, ep: 5 };
+
+// stat keys and display order
+const STAT_KEYS = [
+  { key: 'hp', label: 'HP' },
+  { key: 'atk', label: 'ATK' },
+  { key: 'def', label: 'DEF' },
+  { key: 'spd', label: 'SPD' },
+  { key: 'hc',  label: 'HC'  }, // Hindrance Control
+  { key: 'ep',  label: 'EP'  }  // Essence Points
+];
+// Map an entry's old profile -> new stat names if needed (backwards compatibility)
+function normalizeKeywordStats(entry) {
+  if (!entry) return Object.assign({}, DEFAULT_STAT_PROFILE);
+
+  // If precise stats are provided under `stats`, use them
+  if (entry.stats && typeof entry.stats === 'object') {
+    const out = Object.assign({}, DEFAULT_STAT_PROFILE);
+    STAT_KEYS.forEach(s => {
+      if (typeof entry.stats[s.key] === 'number') out[s.key] = Math.max(1, Math.min(10, entry.stats[s.key]));
+    });
+    return out;
+  }
+
+  // Back-compat: if `profile` exists with offense/defense/tempo/utility, map them heuristically:
+  if (entry.profile && typeof entry.profile === 'object') {
+    const p = entry.profile;
+    const out = Object.assign({}, DEFAULT_STAT_PROFILE);
+    // offense -> ATK
+    if (typeof p.offense === 'number') out.atk = Math.max(1, Math.min(10, Math.round(p.offense)));
+    // defense -> DEF or HP bias
+    if (typeof p.defense === 'number') {
+      out.def = Math.max(1, Math.min(10, Math.round(p.defense)));
+      out.hp  = Math.max(1, Math.min(10, Math.round(Math.max(out.hp, p.defense * 0.9))));
+    }
+    // tempo -> SPD
+    if (typeof p.tempo === 'number') out.spd = Math.max(1, Math.min(10, Math.round(p.tempo)));
+    // utility -> HC/EP (split)
+    if (typeof p.utility === 'number') {
+      out.hc = Math.max(1, Math.min(10, Math.round(Math.min(10, p.utility))));
+      out.ep = Math.max(1, Math.min(10, Math.round(Math.min(10, p.utility))));
+    }
+    return out;
+  }
+
+  return Object.assign({}, DEFAULT_STAT_PROFILE);
+}
+
+// Get combined stats for an array or single keyword (averages multiple keywords)
+function getCombinedKeywordStats(values) {
+  if (!values) return Object.assign({}, DEFAULT_STAT_PROFILE);
+  const arr = Array.isArray(values) ? values : [values];
+  const sums = STAT_KEYS.reduce((acc, s) => { acc[s.key] = 0; return acc; }, {});
+  let count = 0;
+  for (const v of arr) {
+    if (v === null || v === undefined) continue;
+    const key = normalizeKey(v);
+    const entry = (typeof CARD_KEYWORD === 'object' && CARD_KEYWORD[key]) ? CARD_KEYWORD[key] : null;
+    const stats = normalizeKeywordStats(entry);
+    STAT_KEYS.forEach(s => { sums[s.key] += (typeof stats[s.key] === 'number' ? stats[s.key] : DEFAULT_STAT_PROFILE[s.key]); });
+    count++;
+  }
+  if (count === 0) return Object.assign({}, DEFAULT_STAT_PROFILE);
+  const avg = {};
+  STAT_KEYS.forEach(s => { avg[s.key] = Math.round((sums[s.key] / count) * 10) / 10; }); // keep one decimal
+  return avg;
+}
+
+// color mapping: values 1..9 -> gradient red -> green, value 10 -> blue
+function getStatColor(value) {
+  const v = Math.max(1, Math.min(10, Number(value) || 1));
+  if (v === 10) return '#4aa3ff'; // blue for top value
+  // gradient red -> green for 1..9
+  const t = (v - 1) / (9 - 1); // 0..1 across 1..9
+  // red: #ff4d4d -> rgb(255,77,77)
+  // green: #4dff88 -> rgb(77,255,136)
+  const r1 = 255, g1 = 77, b1 = 77;
+  const r2 = 77,  g2 = 255, b2 = 136;
+  const r = Math.round(r1 + (r2 - r1) * t);
+  const g = Math.round(g1 + (g2 - g1) * t);
+  const b = Math.round(b1 + (b2 - b1) * t);
+  return `rgb(${r},${g},${b})`;
+}
+
+// render the stat graph (horizontal bars). Accepts object of stat keys (hp, atk, def, spd, hc, ep)
+function renderStatGraphHtml(statsObj, opts = {}) {
+  const scaleMax = 10;
+  const containerClass = opts.containerClass || 'stat-graph';
+  const labelWidth = opts.labelWidth || 48;
+  let html = `<div class="${containerClass}">`;
+  STAT_KEYS.forEach(s => {
+    const raw = typeof statsObj[s.key] === 'number' ? statsObj[s.key] : DEFAULT_STAT_PROFILE[s.key];
+    const val = Math.max(1, Math.min(scaleMax, Number(raw)));
+    const pct = Math.round((val / scaleMax) * 100);
+    const color = getStatColor(val);
+    html += `
+      <div class="sg-row">
+        <div class="sg-label" style="width:${labelWidth}px">${s.label}</div>
+        <div class="sg-bar" role="img" aria-label="${s.label}: ${val}/${scaleMax}">
+          <div class="sg-bar-fill" style="width:${pct}%; background:${color};"></div>
+        </div>
+        <div class="sg-value">${val}</div>
+      </div>
+    `;
+  });
+  html += `</div>`;
+  return html;
+}
 // --- INFO MODAL LOGIC ---
 function showInfoModal(cardObj) {
   const card = dummyCards.find(c => c.id === (cardObj.cardId || cardObj.id));
@@ -2088,7 +2199,7 @@ function showInfoModal(cardObj) {
     if (!value) return;
     let values = Array.isArray(value) ? value : [value];
     for (const v of values) {
-    const key = String(v).toLowerCase().replace(/\s+/g, ''); // Lowercase and remove all spaces
+      const key = String(v).toLowerCase().replace(/\s+/g, ''); // Lowercase and remove all spaces
       if (CARD_KEYWORD[key]) {
         keywordSections.push({
           type,
@@ -2111,6 +2222,28 @@ function showInfoModal(cardObj) {
         <div style="font-size:1.14em;color:#ffe066;font-weight:bold;">${sec.name}</div>
         <div style="font-size:1em;color:#fff;">${parseEffectText(sec.desc)}</div>
       `;
+
+      // If this section is the Archetype block, insert the stat graph below it
+      if (sec.type && String(sec.type).toLowerCase() === 'archetype') {
+        // Prefer archetype stats, fall back to type, then trait
+        let combinedStats = null;
+        if (card.archetype) {
+          combinedStats = getCombinedKeywordStats(card.archetype);
+        } else if (card.type) {
+          combinedStats = getCombinedKeywordStats(card.type);
+        } else if (card.trait) {
+          combinedStats = getCombinedKeywordStats(card.trait);
+        } else {
+          combinedStats = Object.assign({}, DEFAULT_STAT_PROFILE);
+        }
+
+        // Render stat graph HTML (helper: renderStatGraphHtml)
+        html += `<div style="margin-top:8px;margin-bottom:12px;">`;
+        html += `<div style="font-weight:700;color:#fff;margin-bottom:8px;">Archetype / Type Stats</div>`;
+        html += renderStatGraphHtml(combinedStats, { containerClass: 'stat-graph' });
+        html += `</div>`;
+      }
+
       // Add divider after each section except the last
       if (i < keywordSections.length - 1) {
         html += `<div class="card-modal-divider"></div>`;
