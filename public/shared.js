@@ -327,8 +327,8 @@ const dummyCards = [
 // CHAMPIONS ADVANCED //
 
 {id: 'FaelyraSatyrEmpress', name: 'Faelyra, Satyr Empress', rarity: 'Legendary', image: 'CardImages/Satyrs/FaelyraSatyrEmpress.png', imageFullArt: 'CardImages/Satyrs/FaelyraSatyrEmpressFA.png',
- category: 'Creature', color: 'Green', type: ['Satyr', 'Mage'], trait: 'Champion', hp: 11, atk: 1, def: 0,
- cost: '{G}{G}{G}', archetype: '', ability: ['Ranged',''], set: 'SavageTerritory',
+ category: 'Creature', color: 'Green', type: ['Faefolk', 'Mage'], trait: 'Champion', hp: 11, atk: 1, def: 0,
+ cost: '{G}{G}{G}', archetype: 'Satyr', ability: ['Ranged',''], set: 'SavageTerritory',
  skill: [
   {name: 'Mystveil',
    activation: {class: 'Arrival'},
@@ -369,7 +369,7 @@ const dummyCards = [
 
 {id: 'TydrosCoralboundTidebreaker', name: 'Tydros, Coralbound Tidebreaker', rarity: 'Legendary', image: 'CardImages/Coralbound/TydrosCoralboundTidebreaker.png', 
  category: 'Creature', color: ['Blue','Gray'], type: 'Warrior', trait: 'Champion', hp: 12, atk: 2, def: 0,
- cost: '{U}{U}{C}', archetype: '', ability: ['Dive','Ranged'], set: 'StandardPack',
+ cost: '{U}{U}{C}', archetype: 'Coralbound', ability: ['Dive','Ranged'], set: 'StandardPack',
  skill: [
   {name: 'XXX', cost: '{W}{W}',
    requirement: {class: 'CCW'},
@@ -393,7 +393,7 @@ const dummyCards = [
 
 {id: 'RaukharKnightofDuskwings', name: 'Raukhar, Knight of Duskwings', rarity: 'Legendary', image: 'CardImages/Duskwing/RaukharKnightofDuskwings.png', 
  category: 'Creature', color: ['Black','Yellow'], type: 'Avian', trait: 'Champion', hp: 9, atk: 2, def: 1,
- cost: '{B}{B}{Y}', archetype: 'Duskwings', ability: ['Flying','Scavenger'], set: 'FeatheredOmen',
+ cost: '{B}{B}{Y}', archetype: 'Duskwing', ability: ['Flying','Scavenger'], set: 'FeatheredOmen',
  skill: [
   {name: 'Dash', cost: '{Y}{B}',
    effect: {class: 'Dash'}},
@@ -415,7 +415,7 @@ const dummyCards = [
 */
  
 {id: 'ForestFairy', name: 'Forest Fairy', rarity: 'Common', image: 'CardImages/BasicCreatures/Fairy.png', 
- category: 'Creature', color: 'Green', type: 'Fairy', hp: 1, atk: 1, def: 0,
+ category: 'Creature', color: 'Green', type: 'Faefolk', hp: 1, atk: 1, def: 0,
  cost: '{0}', archetype: 'Fairy', ability: 'Flying', set: 'ElementaGenesis'},
 {id: 'ForestGoblin', name: 'Forest Goblin', rarity: 'Common', image: 'CardImages/BasicCreatures/Goblin.png', 
  category: 'Creature', color: 'Green', type: 'Goblin', hp: 3, atk: 1, def: 0,
@@ -429,7 +429,7 @@ const dummyCards = [
    effect: {class: 'Strike', amount: 0, status: 'Burn'}},
  ]},
 {id: 'Fire Pixie', name: 'Fire Pixie', rarity: 'Common', image: 'CardImages/BasicCreatures/FirePixie.png', 
- category: 'Creature', color: 'Red', type: 'Fairy', hp: 3, atk: 2, def: 0,
+ category: 'Creature', color: 'Red', type: 'Faefolk', hp: 3, atk: 2, def: 0,
  cost: '{0}', archetype: 'Pixiebound', ability: ['Burn','Flying'], set: 'ElementaGenesis'},
 {id: 'Hellcharger', name: 'Hellcharger', rarity: 'Common', image: 'CardImages/BasicCreatures/Hellcharger.png', 
  category: 'Creature', color: 'Red', type: 'Warrior', hp: 3, atk: 2, def: 0,
@@ -466,13 +466,13 @@ const dummyCards = [
    effect: {class: 'Reanimate'}}
  ]},
 {id: 'Bat', name: 'Bat', rarity: 'Common', image: 'CardImages/BasicCreatures/Bat.png', 
- category: 'Creature', color: 'Black', type: 'Vampire', hp: 3, atk: 2, def: 0,
+ category: 'Creature', color: 'Black', type: ['Beast', 'Avian'], hp: 3, atk: 2, def: 0,
  cost: '{1}', archetype: 'Vampiric', ability: ['Drain','Flying'], set: 'ElementaGenesis'},
 {id: 'Imp', name: 'Imp', rarity: 'Common', image: 'CardImages/BasicCreatures/Imp.png', 
  category: 'Creature', color: 'Black', type: 'Demon', hp: 1, atk: 2, def: 0,
  cost: '{1}',  archetype: '', ability: ['Ambush','Flying'], set: 'ElementaGenesis'},
 {id: 'Vampire', name: 'Vampire', rarity: 'Rare', image: 'CardImages/BasicCreatures/Vampire.png', 
- category: 'Creature', color: 'Black', type: 'Demon', hp: 3, atk: 2, def: 0,
+ category: 'Creature', color: 'Black', type: 'Undead', hp: 3, atk: 2, def: 0,
  cost: '{1}{B}', archetype: 'Vampiric', ability: ['Drain','Flying'], set: 'ElementaGenesis'},
  
 /*
@@ -498,7 +498,7 @@ const dummyCards = [
  ]},
 {id: 'WoodlandCentaur', name: 'Woodland Centaur', rarity: 'Rare', image: 'CardImages/Hybrid/WoodlandCentaur.png', 
  category: 'Creature', color: 'Green', type: 'Beast', hp: 8, atk: 3, def: 1, cost: '{1}{G}', 
- archetype: 'Hybrids', ability: ['Intimidate','Leap','Rush'], set: 'StandardPack'},
+ archetype: 'Hybrid', ability: ['Intimidate','Leap','Rush'], set: 'StandardPack'},
 
 {id: 'DragonEgg', name: 'Dragon Egg', rarity: 'Common', image: 'CardImages/BasicCreatures/DragonEgg.png', 
  category: 'Creature', color: 'Red', type: 'Dragon', hp: 1, atk: 0, def: 0, cost: '{0}', 
@@ -506,7 +506,7 @@ const dummyCards = [
 
 {id: 'WaterWyrm', name: 'Water Wyrm', rarity: 'Legendary', image: 'CardImages/Abyssdrake/WaterWyrm.png', 
  category: 'Creature', color: 'Blue', type: ['Dragon','Elemental'], trait: 'Evolution', hp: 6, atk: 2, def: 0,
- cost: '{1}{U}', archetype: 'Abyssdrake', ability: ['Dive','Elusive','Soak'], set: 'StandardPack'},
+ cost: '{1}{U}', archetype: ['Abyssdrake', 'Hydral'], ability: ['Dive','Elusive','Soak'], set: 'StandardPack'},
 
 {id: 'ZephyraHarpy', name: 'Zephyra Harpy', rarity: 'Rare', image: 'CardImages/Zephyra/ZephyraHarpy.png', 
  category: 'Creature', color: 'Yellow', type: 'Avian', hp: 7, atk: 3, def: 1,
@@ -518,7 +518,7 @@ const dummyCards = [
  ]},
 
 {id: 'SatyrRitualist', name: 'Satyr Ritualist', rarity: 'Rare', image: 'CardImages/Satyr/SatyrRitualist.png', 
- category: 'Creature', color: 'Purple', type: 'Satyr', hp: 4, atk: 2, def: 0, cost: '{P}', 
+ category: 'Creature', color: 'Purple', type: 'Faefolk', hp: 4, atk: 2, def: 0, cost: '{P}', 
  archetype: 'Satyr', ability: ['Ranged','Spellboost'], skill: 'Arrival', set: 'StandardPack',
  skill: [
   {name: 'Arrival',
@@ -527,7 +527,7 @@ const dummyCards = [
  ]},
 {id: 'TreantWitch', name: 'Treant Witch', rarity: 'Epic', image: 'CardImages/Arbor/TreantWitch.png', 
  category: 'Creature', color: ['Green','Black'], type: ['Elemental','Mage'], hp: 8, atk: 3, def: 1, cost: '{1}{G}{B}', 
- archetype: 'Treant', ability: 'Ranged', set: 'StandardPack',
+ archetype: 'Arbor', ability: 'Ranged', set: 'StandardPack',
  skill: [
   {name: 'Arrival',
    activation: {class: 'Arrival'}
@@ -555,7 +555,7 @@ const dummyCards = [
  ]},
 {id: 'SacredKirin', name: 'Sacred Kirin', rarity: 'Epic', image: 'CardImages/Hybrid/SacredKirin.png', 
  category: 'Creature', color: 'White', type: 'Beast', hp: 13, atk: 4, def: 1, cost: '{3}{W}', 
- archetype: 'Hybrids', ability: ['Intimidate','Rush'], set: 'StandardPack',
+ archetype: 'Hybrid', ability: ['Intimidate','Rush'], set: 'StandardPack',
  skill: [
   {name: 'Heavenstep Radiance', cost: '{W}',
    requirement: {class: 'CCW'},
@@ -577,11 +577,11 @@ const dummyCards = [
 
 {id: 'Jackalope', name: 'Jackalope', rarity: 'Rare', image: 'CardImages/Hybrid/Jackalope.png', 
  category: 'Creature', color: ['Green','Black'], type: 'Beast', hp: 5, atk: 2, def: 0,
- cost: '{G}{B}', archetype: 'Hybrids', ability: ['Burn','Flying','Ranged'], set: 'StandardPack',
+ cost: '{G}{B}', archetype: 'Hybrid', ability: ['Burn','Flying','Ranged'], set: 'StandardPack',
  skill: [
   {name: 'Echo', cost: '{0}',
-   requirement: {class: 'Echo', archetype: 'Hybrids'}
-   effect: {class: 'Search', archetype: 'Hybrids'}}
+   requirement: {class: 'Echo', archetype: 'Hybrid'}
+   effect: {class: 'Search', archetype: 'Hybrid'}}
  ]},
 
 {id: 'DarkHarpy', name: 'Dark Harpy', rarity: 'Rare', image: 'CardImages/Zephyra/DarkHarpy.png', 
@@ -599,8 +599,8 @@ const dummyCards = [
 /*
 
 {id: 'FairyWarrior', name: 'Fairy Warrior', rarity: 'Rare', image: 'CardImages/Fairy/FairyWarrior.png', 
- category: 'Creature', color: 'Green', type: ['Fairy','Warrior'], hp: 5, atk: 3, def: 1, cost: '{1}{G}', 
- archetype: 'Pixiebound', ability: ['Flying','Rush'], set: 'StandardPack',
+ category: 'Creature', color: 'Green', type: ['Faefolk','Warrior'], hp: 5, atk: 3, def: 1, cost: '{1}{G}', 
+ archetype: 'Fairy', ability: ['Flying','Rush'], set: 'StandardPack',
  skill: [
   {name: 'Dash', cost: '{G}',
   effect: {class: 'Dash'}}
@@ -669,7 +669,7 @@ skill: [
 // FIRELANDS //
 {id: 'FirelandsScamperling', name: 'Firelands Scamperling', rarity: 'Common', image: 'CardImages/Firelands/Firelands Scamperling.png', 
  category: 'Creature', color: 'Red', type: 'Beast', hp: 3, atk: 2, def: 1,
- cost: '{2}', archetype: 'Firelands', ability: ['Burn','Rush'], set: 'StandardPack'},
+ cost: '{2}', archetype: 'Fireland', ability: ['Burn','Rush'], set: 'StandardPack'},
 {id: 'FirelandsCindercub', name: 'Firelands Cindercub', rarity: 'Common', image: 'CardImages/Firelands/Firelands Cindercub.png', 
  category: 'Creature', color: 'Red', type: 'Beast', hp: 3, atk: 2, def: 1,
  cost: '{1}', archetype: 'Firelands', ability: ['Burn','Rush'], set: 'StandardPack',
@@ -679,36 +679,36 @@ skill: [
  ]},
 {id: 'FirelandsLynx', name: 'Firelands Lynx', rarity: 'Common', image: 'CardImages/Firelands/Firelands Lynx.png', 
  category: 'Creature', color: 'Red', type: 'Beast', hp: 3, atk: 2, def: 1,
- cost: '{3}{R}', archetype: 'Firelands', ability: ['Burn','Leap','Rush'], set: 'StandardPack',
+ cost: '{3}{R}', archetype: 'Fireland', ability: ['Burn','Leap','Rush'], set: 'StandardPack',
  skill: [
   {name: 'Evolve', cost: '{r}', 
    effect: {class: 'Evolve'}}
  ]},
 {id: 'FirelandsKitsune', name: 'Firelands Kitsune', rarity: 'Common', image: 'CardImages/Firelands/Firelands Kitsune.png', 
  category: 'Creature', color: 'Red', type: 'Beast', hp: 4, atk: 3, def: 0,
- cost: '{1}{R}', archetype: 'Firelands', ability: ['Burn','Leap','Rush'], set: 'StandardPack',
+ cost: '{1}{R}', archetype: 'Fireland', ability: ['Burn','Leap','Rush'], set: 'StandardPack',
  skill: [
   {name: 'Beast Arrival', cost: '{r}{r}',
    activation: {class: 'Arrival', type: 'Beast'},
-   effect: {class: 'Search', archetype: 'Firelands'}}
+   effect: {class: 'Search', archetype: 'Fireland'}}
  ]},
 {id: 'FirelandsDirebeast', name: 'Firelands Direbeast', rarity: 'Rare', image: 'CardImages/Firelands/Firelands Direbeast.png', 
  category: 'Creature', color: 'Red', type: 'Beast', hp: 9, atk: 5, def: 2,
- cost: '{4}{R}', archetype: 'Firelands', ability: ['Burn','Rush'], set: 'StandardPack',
+ cost: '{4}{R}', archetype: 'Fireland', ability: ['Burn','Rush'], set: 'StandardPack',
  skill: [
   {name: 'Evolution', cost: '{r}{r}', 
    effect: {class: 'Evolution'}}
  ]},
 {id: 'FirelandsHellhound', name: 'Firelands Hellhound', rarity: 'Rare', image: 'CardImages/Firelands/Firelands Hellhound.png', 
  category: 'Creature', color: ['Red','Black'], type: ['Beast','Demon'], hp: 7, atk: 5, def: 1,
- cost: '{2}{R}', archetype: 'Firelands', ability: ['Burn','Intimidate','Rush'], set: 'StandardPack',
+ cost: '{2}{R}', archetype: 'Fireland', ability: ['Burn','Intimidate','Rush'], set: 'StandardPack',
  skill: [
   {name: 'Evolve', cost: '{r}', 
    effect: {class: 'Evolve'}}
  ]},
 {id: 'FirelandsHellmaw', name: 'Firelands Hellmaw', rarity: 'Epic', image: 'CardImages/Firelands/Firelands Hellmaw.png', 
  category: 'Creature', color: ['Red','Black'], type: ['Dragon','Demon'], hp: 8, atk: 6, def: 1,
- cost: '{2}{R}{B}', archetype: 'Firelands', ability: ['Burn','Flying','Rush'], set: 'StandardPack',
+ cost: '{2}{R}{B}', archetype: 'Fireland', ability: ['Burn','Flying','Rush'], set: 'StandardPack',
  skill: [
   {name: 'Evolve', cost: '{r}', 
    effect: {class: 'Evolve'}}
@@ -847,8 +847,8 @@ skill: [
 
 // GLIMMERSCALE //
 {id: 'WyrmofThornsandSunfire', name: 'Wyrm of Thorns and Sunfire', rarity: 'Rare', image: 'CardImages/Glimmerscale/Wyrm of Thorns and Sunfire.png', 
- category: 'Creature', color: ['Green', 'Red', 'White'], type: ['Dragon','Fairy'], hp: 10, atk: 3, def: 1,
- cost: '{G}{R}{W}', archetype: 'Glimmerscale', ability: ['Flying','Intimidate'], set: 'StandardPack',
+ category: 'Creature', color: ['Green', 'Red', 'White'], type: 'Dragon', hp: 10, atk: 3, def: 1,
+ cost: '{G}{R}{W}', archetype: ['Fairy', 'Glimmerscale'], ability: ['Flying','Intimidate'], set: 'StandardPack',
  skill: [
   {name: 'Thornbloom', cost: '{g}{w}', 
     requirement: [{class: 'Special'}, {class: 'CW'}],
@@ -861,8 +861,8 @@ skill: [
  ]},
 /*
 {id: 'FairyDragon', name: 'Fairy Dragon', rarity: 'Rare', image: 'CardImages/Glimmerscale/FairyDragon.png', 
- category: 'Creature', color: ['Green', 'Red', 'White'], type: ['Dragon','Fairy'], hp: 6, atk: 2, def: 1, cost: '{G}{R}{W}',
- ability: ['Flying','Intimidate'], archetype: 'Glimmerscale', set: 'MischiefUnbound',
+ category: 'Creature', color: ['Green', 'Red', 'White'], type: 'Dragon', hp: 6, atk: 2, def: 1, cost: '{G}{R}{W}',
+ ability: ['Flying','Intimidate'], archetype: ['Fairy', 'Glimmerscale'], set: 'MischiefUnbound',
  skill: [
   {name: 'Purify', cost: '{W}',
    requirement: {class: 'CW'},
@@ -873,8 +873,8 @@ skill: [
  ]},
 
 {id: 'FairyAmphitere', name: 'Fairy Amphitere', rarity: 'Rare', image: 'CardImages/Glimmerscale/FairyAmphitere.png', 
- category: 'Creature', color: ['Green', 'Red', 'White'], type: ['Dragon','Fairy'], hp: 14, atk: 5, def: 2, cost: '{G}{R}{W}',
- ability: ['Flying','Intimidate'], archetype: 'Glimmerscale', set: 'MischiefUnbound',
+ category: 'Creature', color: ['Green', 'Red', 'White'], type: 'Dragon', hp: 14, atk: 5, def: 2, cost: '{G}{R}{W}',
+ ability: ['Flying','Intimidate'], archetype: ['Fairy', 'Glimmerscale'], set: 'MischiefUnbound',
  skill: [
   {name: 'Purify', cost: '{W}',
    requirement: [{class: 'Special'}, {class: 'CW'}],
@@ -886,7 +886,7 @@ skill: [
 // Goblins //
 
 {id: 'GoblinWarlod', name: 'Goblin Warlod', rarity: 'Legendary', image: 'CardImages/Goblin/GoblinWarlod.png', 
- category: 'Creature', color: ['Green', 'Purple', 'Black'], type: ['Goblin', 'Mage'], hp: 13, atk: 4, def: 1,
+ category: 'Creature', color: ['Green', 'Purple', 'Black'], type: ['Faefolk', 'Mage'], hp: 13, atk: 4, def: 1,
  cost: '{g}{p}{b}', archetype: 'Goblin', ability: 'Ranged', set: 'MischiefUnbound'
  skill: [
   {name: 'Inspire Goblins', cost: '{g}',
@@ -904,14 +904,14 @@ skill: [
 // MOONFANG //
 
 {id: 'SinisterWolf', name: 'Sinister Wolf', rarity: 'Epic', image: 'CardImages/Moonfang/SinisterWolf.png', 
- category: 'Creature', color: ['Black'], type: ['Beast'], hp: 5, atk: 3, def: 0,
+ category: 'Creature', color: ['Black'], type: 'Beast', hp: 5, atk: 3, def: 0,
  cost: '{1}{B}', archetype: 'Moonfang', ability: ['Ambush','Rush'], set: 'StandardPack',
  skill: [
   {name: 'Transform', cost: '{P}{P}{B}', 
    effect: {class: 'Transform'}}
  ]},
 {id: 'Werewolf', name: 'Werewolf', rarity: 'Epic', image: 'CardImages/Moonfang/Werewolf.png', 
- category: 'Creature', color: ['Black'], type: ['Beast'], hp: 10, atk: 4, def: 1,
+ category: 'Creature', color: ['Black'], type: 'Beast', hp: 10, atk: 4, def: 1,
  cost: '{3}{B}', archetype: 'Moonfang', ability: ['Ambush'], set: 'StandardPack',
  skill: [
   {name: 'Discard', cost: '{B}',
@@ -2087,7 +2087,7 @@ const STAT_KEYS = [
   { key: 'hc',  label: 'HC'  }, // Hindrance Control
   { key: 'ep',  label: 'EP'  }  // Essence Points
 ];
-// Map an entry's old profile -> new stat names if needed (backwards compatibility)
+// Map an entry's stats -> normalize to { hp, atk, def, spd, hc, ep }
 function normalizeKeywordStats(entry) {
   if (!entry) return Object.assign({}, DEFAULT_STAT_PROFILE);
 
@@ -2100,9 +2100,21 @@ function normalizeKeywordStats(entry) {
     return out;
   }
 
-  // Back-compat: if `profile` exists with offense/defense/tempo/utility, map them heuristically:
+  // If profile contains direct stat keys (hp, atk, def, spd, hc, ep), map those
   if (entry.profile && typeof entry.profile === 'object') {
     const p = entry.profile;
+    const hasDirectStats = STAT_KEYS.some(s => typeof p[s.key] === 'number');
+    if (hasDirectStats) {
+      const out = Object.assign({}, DEFAULT_STAT_PROFILE);
+      STAT_KEYS.forEach(s => {
+        if (typeof p[s.key] === 'number') {
+          out[s.key] = Math.max(1, Math.min(10, Math.round(p[s.key])));
+        }
+      });
+      return out;
+    }
+
+    // Back-compat: legacy profile with offense/defense/tempo/utility mapping
     const out = Object.assign({}, DEFAULT_STAT_PROFILE);
     // offense -> ATK
     if (typeof p.offense === 'number') out.atk = Math.max(1, Math.min(10, Math.round(p.offense)));
@@ -2121,6 +2133,7 @@ function normalizeKeywordStats(entry) {
     return out;
   }
 
+  // fallback default
   return Object.assign({}, DEFAULT_STAT_PROFILE);
 }
 
