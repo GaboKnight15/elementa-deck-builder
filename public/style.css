@@ -1076,47 +1076,63 @@ button {}
   vertical-align: middle;
   letter-spacing: 1px;
 }
-.stat-img {
-  width: 22px;
-  height: 22px;
-  vertical-align: middle;
-  margin-right: 2px;
+/* Stat graph styles used by renderStatGraphHtml (hp/atk/def/spd/hc/ep) */
+.stat-graph {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 6px;
+  max-width: 100%;
+  box-sizing: border-box;
 }
-.cost-color {
-  font-weight: 600;
+.sg-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 18px; /* ensures row has some height */
+}
+.sg-label {
   color: #ffe066;
-  background: #232a3c;
-  border-radius: 4px;
-  padding: 0 5px;
-  margin-left: 3px;
-  margin-right: 3px;
-  font-size: 0.99em;
-  display: inline-block;
+  font-weight: 700;
+  font-size: 0.95em;
+  text-align: left;
+  width: 48px;
+  flex: 0 0 auto;
+  white-space: nowrap;
 }
-.cost-color span {
-  color: #ffe06699;
-  font-size: 0.93em;
-  margin-left: 0.2em;
+.sg-bar {
+  flex: 1 1 auto;
+  height: 14px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 999px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.03);
+  min-width: 60px;
+  box-sizing: border-box;
 }
-/* Stat graph styles (used in card info modal) */
-.stat-graph { display:flex; flex-direction:column; gap:8px; margin-top:6px; }
-.sg-row { display:flex; align-items:center; gap:8px; }
-.sg-label { color:#ffe066; font-weight:700; font-size:0.95em; text-align:left; }
-.sg-bar { flex:1 1 auto; height:14px; background: rgba(255,255,255,0.04); border-radius: 999px; position:relative; overflow:hidden; border:1px solid rgba(255,255,255,0.03); }
 .sg-bar-fill {
-  height:100%;
-  border-radius:999px;
+  height: 100%;
+  border-radius: 999px;
   transition: width 300ms cubic-bezier(.2,.9,.2,1), background-color 220ms;
   box-shadow: inset 0 -2px 6px rgba(0,0,0,0.25);
-  /* Ensure no background-image from other rules */
+  /* Prevent external background-images / gradients from hiding color */
   background-image: none !important;
   background-repeat: no-repeat !important;
+  width: 0; /* default; JS will set width inline */
+  display: block;
 }
-.sg-value { width:34px; text-align:right; font-weight:700; color:#fff; font-size:0.95em; }
+.sg-value {
+  width: 36px;
+  text-align: right;
+  font-weight: 700;
+  color: #fff;
+  font-size: 0.95em;
+  flex: 0 0 auto;
+}
 @media (max-width: 480px) {
-  .sg-row { gap:6px; }
-  .sg-label { width:40px; font-size:0.88em; }
-  .sg-value { width:28px; font-size:0.9em; }
+  .sg-label { width: 40px; font-size: 0.9em; }
+  .sg-value { width: 30px; font-size: 0.9em; }
 }
 /* DAILY LOGIN */
 .daily-login-reward.claimed {
