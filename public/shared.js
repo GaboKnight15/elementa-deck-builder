@@ -1413,44 +1413,44 @@ const filterState = {
   // Each key: filterKey -> array of selected options
 };
 
-const CARD_KEYWORD_EXPLANATIONS = {
+const CARD_KEYWORD = {
 /*-------------
 // ABILITIES //
 ------------- */
 // --- Frenzy Abilities --- //
-burn: {name: "Burn", description: "Burns opposing unit upon dealing damage with an attack or skill."},
-freeze: {name: "Freeze", description: "Freezes opposing unit upon dealing damage with an attack or skill."},
-paralyze: {name: "Paralyze", description: "Paralyzes opposing unit upon striking with an attack or skill."},
-soak: {name: "Soak", description: "Soaks opposing unit upon striking with an attack or skill."},
-venom: {name: "Venom", description: "Poisons opposing unit upon striking with an attack or skill."},
+burn: {name: "Burn", description: "Burns opposing unit upon dealing damage with an attack or skill.", icon: "OtherImages/StatIcons/Burn.png" },
+freeze: {name: "Freeze", description: "Freezes opposing unit upon dealing damage with an attack or skill.", icon: "OtherImages/StatIcons/Freeze.png" },
+paralyze: {name: "Paralyze", description: "Paralyzes opposing unit upon striking with an attack or skill.", icon: "OtherImages/StatIcons/Paralyze.png" },
+soak: {name: "Soak", description: "Soaks opposing unit upon striking with an attack or skill.", icon: "OtherImages/StatIcons/Soak.png" },
+venom: {name: "Venom", description: "Poisons opposing unit upon striking with an attack or skill.", icon: "OtherImages/StatIcons/Venom.png" },
 
-protect: {name: "Protect", description: "Opponent can only target this unit for attacks."},
-barrier: {name: "Barrier", description: "Prevents the next damage received to any unit."},
-evasion: {name: "Evasion", description: "Prevents the next skill target."},
-aegis: {name: "Aegis", description: "Unaffected by skills and effects."},
-armor: {name: "Armor", description: "Secondary sustain stat. Units loss armor first before HP. When the armor breaks, nullifies remaining damage. Losses {1} Speed"},
+protect: {name: "Protect", description: "Opponent can only target this unit for attacks.", icon: "OtherImages/StatIcons/Protect.png" },
+barrier: {name: "Barrier", description: "Prevents the next damage received to any unit.", icon: "OtherImages/StatIcons/Barrier.png" },
+evasion: {name: "Evasion", description: "Prevents the next skill target.", icon: "OtherImages/StatIcons/Evasion.png" },
+aegis: {name: "Aegis", description: "Unaffected by skills and effects.", icon: "OtherImages/StatIcons/Venom.png" },
+armor: {name: "Armor", description: "Secondary sustain stat. Units loss armor first before HP. When the armor breaks, nullifies remaining damage. Losses {1} Speed", icon: "OtherImages/StatIcons/Aegis.png" },
 
 // --- Target Related Abilities --- //
-veil: {name: "Veil", description: "Cannot be targeted by skills."},
-immunity: {name: "Immunity", description: "Unaffected by status ailments."},
-ambush: {name: "Ambush", description: "Cannot be targeted by opponent's attacks or skills. Unit is revealed after attacking or using a skill"},
-flying: {name: "Flying", description: "Can only be blocked by other units with Flying or Ranged. Gain {1} Speed."},
-ranged: {name: "Ranged", description: "Can attack units with Flying and Dive. Gain {1} Speed."},
+veil: {name: "Veil", description: "Cannot be targeted by skills.", icon: "OtherImages/StatIcons/Veil.png" },
+immunity: {name: "Immunity", description: "Unaffected by status ailments.", icon: "OtherImages/StatIcons/Immunity.png" },
+ambush: {name: "Ambush", description: "Cannot be targeted by opponent's attacks or skills. Unit is revealed after attacking or using a skill", icon: "OtherImages/StatIcons/Ambush.png" },
+flying: {name: "Flying", description: "Can only be blocked by other units with Flying or Ranged. Gain {1} Speed.", icon: "OtherImages/StatIcons/Flying.png" },
+ranged: {name: "Ranged", description: "Can attack units with Flying and Dive. Gain {1} Speed.", icon: "OtherImages/StatIcons/Ranged.png" },
 
-rush: {name: "Rush", description: "Can attack on the turn it is played. Gain {1} Speed."},
-drain: {name: "Drain", description: "When this unit deals damage, gain that much life."},
+rush: {name: "Rush", description: "Can attack on the turn it is played. Gain {1} Speed.", icon: "OtherImages/StatIcons/Rush.png" },
+drain: {name: "Drain", description: "When this unit deals damage, gain that much life.", icon: "OtherImages/StatIcons/Drain.png" },
 pierce: {name: "Pierce", description: "Ignores armor."},
 
 // --- Assault Abilities --- //
-intimidate: {name: "Intimidate", description: "When declaring an attack, {CW} that unit"},
-provoke: {name: "Provoke", description: "When declaring an attack, {CCW} that unit"},
+intimidate: {name: "Intimidate", description: "When declaring an attack, {CW} that unit", icon: "OtherImages/StatIcons/Intimidate.png" },
+provoke: {name: "Provoke", description: "When declaring an attack, {CCW} that unit", icon: "OtherImages/StatIcons/Provoke.png" },
 
  // --- Brace Abilities --- //
-scorch: {name: "Scorch", description: "Burns opponent after receiving an attack"},
-frostbite: {name: "Frostbite", description: "Freezes opponent after receiving an attack"},
-poisonous: {name: "Poisonous", description: "Poisons opponent after receiving an attack"},
-drenched: {name: "Drenched", description: "Soaks opponent after receiving an attack"},
-static: {name: "Static", description: "Paralyzes opponent after receiving an attack"},
+scorch: {name: "Scorch", description: "Burns opponent after receiving an attack", icon: "OtherImages/StatIcons/Scorch.png" },
+frostbite: {name: "Frostbite", description: "Freezes opponent after receiving an attack", icon: "OtherImages/StatIcons/Frostbite.png" },
+poisonous: {name: "Poisonous", description: "Poisons opponent after receiving an attack", icon: "OtherImages/StatIcons/Poisonous.png" },
+drenched: {name: "Drenched", description: "Soaks opponent after receiving an attack", icon: "OtherImages/StatIcons/Drenched.png" },
+static: {name: "Static", description: "Paralyzes opponent after receiving an attack", icon: "OtherImages/StatIcons/Static.png" },
 
 // -------------------- //
 // --- REQUIREMENTS --- //
@@ -1491,14 +1491,14 @@ awaken: {name: "Awaken", description: "Activates during the draw step."},
 aftermath: {name: "Aftermath", description: "Activates during the end step."},
 
 // --- WEATHER SKILLS --- //
-drought: {name: "Drought", description: "Summons Sunlight and Sunburst."},
-drizzle: {name: "Drizzle", description: "Summons Rain and Downpour."},
-stormcall: {name: "Stormcall", description: "Summons Storm and Thunderstorm."},
-frostcall: {name: "Frostcall", description: "Summons Snowfall and Blizzard."},
-strongwinds: {name: "Strongwinds", description: "Summons Gale and Hurricane."},
-eruption: {name: "Eruption", description: "Summons Ashfall."},
-decay: {name: "Decay", description: "Summons Miasma."},
-mystveil: {name: "Mystveil", description: "Summons Mist"},
+drought: {name: "Drought", description: "Summons Sunlight and Sunburst.", icon: "OtherImages/StatIcons/Drought.png" },
+drizzle: {name: "Drizzle", description: "Summons Rain and Downpour.", icon: "OtherImages/StatIcons/Drizzle.png" },
+stormcall: {name: "Stormcall", description: "Summons Storm and Thunderstorm.", icon: "OtherImages/StatIcons/Stormcall.png" },
+frostcall: {name: "Frostcall", description: "Summons Snowfall and Blizzard.", icon: "OtherImages/StatIcons/Frostcall.png" },
+strongwinds: {name: "Strongwinds", description: "Summons Gale and Hurricane.", icon: "OtherImages/StatIcons/Strongwinds.png" },
+eruption: {name: "Eruption", description: "Summons Ashfall.", icon: "OtherImages/StatIcons/Eruption.png" },
+decay: {name: "Decay", description: "Summons Miasma.", icon: "OtherImages/StatIcons/Decay.png" },
+mystveil: {name: "Mystveil", description: "Summons Mist", icon: "OtherImages/StatIcons/Mist.png" },
 
 // ---------------------------------- //
 // --- STATUS AND WEATHER EFFECTS --- //
@@ -1512,19 +1512,19 @@ paralysis: {name: "Paralysis", description: "Cannot attack. Lasts 2 turns per st
 soaked: {name: "Soaked", description: "Lose -1 ATK per stack."},
 
 // --- WEATHER EFFECTS --- //
-sunlight: {name: "Sunlight", description: "Inferno +{1}/{0}. Radiance {0}/+{1}."},
-sunburst: {name: "Sunburst", description: "Inferno +{2}/{0}. Radiance +{1}/+{1}."},
-rain: {name: "Rain", description: "Tidal +{1}/{0}. Sylvan {0}/+{1}."},
-downpour: {name: "Downpour", description: "Tidal +{1}/+{1}. Sylvan {0}/+{1}."},
-storm: {name: "Storm", description: "Tempest +{1}/{0}. Tidal {0}/+{1}."},
-thunderstorm: {name: "Thunderstorm", description: "Tempest +{2}/{0}. Tidal {0}/+{1}."},
-snowfall: {name: "Snowfall", description: "Frozen units lose 1 HP during the end step. Inspire Tidal → Freeze."},
-blizzard: {name: "Blizzard", description: "Non-Tidal units lose 1 HP during the end step. Inspire Tidal → Freeze."},
-gale: {name: "Gale", description: "Tempest +{1}/{0}."},
-hurricane: {name: "Hurricane", description: "Tempest +{2}/{0}."},
-eruption: {name: "Eruption", description: "Interno +{1}/{0}. Terra {0}/+{1}."},
-decay: {name: "decay", description: "Corrupted +{1}/+{1}."},
-mystveil: {name: "Mystveil", description: "Sylvan +{1}/+{1}."},
+sunlight: {name: "Sunlight", description: "Inferno +{1}/{0}. Radiance {0}/+{1}.", icon: "OtherImages/StatIcons/Sunlight.png" },
+sunburst: {name: "Sunburst", description: "Inferno +{2}/{0}. Radiance +{1}/+{1}.", icon: "OtherImages/StatIcons/Sunburst.png" },
+rain: {name: "Rain", description: "Tidal +{1}/{0}. Sylvan {0}/+{1}.", icon: "OtherImages/StatIcons/Rain.png" },
+downpour: {name: "Downpour", description: "Tidal +{1}/+{1}. Sylvan {0}/+{1}.", icon: "OtherImages/StatIcons/Downpour.png" },
+storm: {name: "Storm", description: "Tempest +{1}/{0}. Tidal {0}/+{1}.", icon: "OtherImages/StatIcons/Storm.png" },
+thunderstorm: {name: "Thunderstorm", description: "Tempest +{2}/{0}. Tidal {0}/+{1}.", icon: "OtherImages/StatIcons/Thunderstorm.png" },
+snowfall: {name: "Snowfall", description: "Frozen units lose 1 HP during the end step. Inspire Tidal → Freeze.", icon: "OtherImages/StatIcons/Snowfall.png" },
+blizzard: {name: "Blizzard", description: "Non-Tidal units lose 1 HP during the end step. Inspire Tidal → Freeze.", icon: "OtherImages/StatIcons/Blizzard.png" },
+gale: {name: "Gale", description: "Tempest +{1}/{0}.", icon: "OtherImages/StatIcons/Gale.png" },
+hurricane: {name: "Hurricane", description: "Tempest +{2}/{0}.", icon: "OtherImages/StatIcons/Hurricane.png" },
+eruption: {name: "Eruption", description: "Interno +{1}/{0}. Terra {0}/+{1}.", icon: "OtherImages/StatIcons/Eruption.png" },
+decay: {name: "decay", description: "Corrupted +{1}/+{1}.", icon: "OtherImages/StatIcons/Decay.png" },
+mystveil: {name: "Mystveil", description: "Sylvan +{1}/+{1}.", icon: "OtherImages/StatIcons/Mystveil.png" },
 
 // -------------------- //
 // --- TRAIT SKILLS --- //
@@ -1534,81 +1534,168 @@ mystveil: {name: "Mystveil", description: "Sylvan +{1}/+{1}."},
 championSummon: {name: "Champion Summon", description: "Summon Champion without skills."},
 championAscent: {name: "Champion Ascent", description: "Enable the Champion's skills and inspire +{1}/+{1}."},
 // --- EVOLUTION SKILLS --- //
-evolve: {name: "Evolve", description: "Get an 'Evolve' counter."},
-evolution: {name: "Evolution", description: "Summon from the hand | Attach 1 unit of the same type/archetype that have an 'Evolve' counter on it."},
-voidEvolution: {name: "Void Evolution", description: "Summon from the hand/void | Attach 1 unit of the same type/archetype that have an 'Evolve' counter on it."},
+evolve: {name: "Evolve", description: "Get an 'Evolve' counter.", icon: "OtherImages/StatIcons/Evolve.png" },
+evolution: {name: "Evolution", description: "Summon from the hand | Attach 1 unit of the same type/archetype that have an 'Evolve' counter on it.", icon: "OtherImages/StatIcons/Evolution.png" },
+voidEvolution: {name: "Void Evolution", description: "Summon from the hand/void | Attach 1 unit of the same type/archetype that have an 'Evolve' counter on it.", icon: "OtherImages/StatIcons/VoidEvolution.png" },
 // --- FUSION SKILLS --- //
-fuse: {name: "Fuse", description: "Get a 'Fuse' counter."},
-fusion: {name: "Fusion", description: "Summon from the hand | Attach 2 units of the same type/archetype that have a 'Fuse' counter on it."},
-voidFusion: {name: "Void Fusion", description: "Summon from the hand/void | Attach 2 units of the same type/archetype that have a 'Fuse' counter on it."},
+fuse: {name: "Fuse", description: "Get a 'Fuse' counter.", icon: "OtherImages/StatIcons/Fuse.png" },
+fusion: {name: "Fusion", description: "Summon from the hand | Attach 2 units of the same type/archetype that have a 'Fuse' counter on it.", icon: "OtherImages/StatIcons/Fusion.png" },
+voidFusion: {name: "Void Fusion", description: "Summon from the hand/void | Attach 2 units of the same type/archetype that have a 'Fuse' counter on it.", icon: "OtherImages/StatIcons/VoidFusion.png" },
 // --- TRANSFORMATION SKILLS --- //
-transform: {name: "Transform", description: "Transforms unit by certain conditions | Attach it to the summoned unit"},
+transform: {name: "Transform", description: "Transforms unit by certain conditions | Attach it to the summoned unit", icon: "OtherImages/StatIcons/Transform.png" },
 // --- ARTIFACT SKILLS --- //
-relic: {name: "Relic", description: "Attach to Domains of the same Color."},
-equipment: {name: "Equipment", description: "Attach to Creatures of the same Color/Type/Archetype."},
+relic: {name: "Relic", description: "Attach to Domains of the same Color.", icon: "OtherImages/StatIcons/Relic.png" },
+equipment: {name: "Equipment", description: "Attach to Creatures of the same Color/Type/Archetype.", icon: "OtherImages/StatIcons/Equipment.png" },
 // --- AURA SKILLS --- //
-aura: {name: "Aura", description: "Attach to units of the same Color."},
+aura: {name: "Aura", description: "Attach to units of the same Color.", icon: "OtherImages/StatIcons/Aura.png" },
+
+// ----- //
+// TYPES //
+// ----- //
+/* dragon: {name: "Dragon", icon: "OtherImages/StatIcons/Dragon.png" , description: "Majestic, ancient, and unmatched in power, dragons embody the primal forces of creation and destruction. Each scale glimmers with the legacy of ages, and each breath reshapes the world itself. Though their temperaments vary—from wise guardians to wrathful tyrants—all dragons command awe and fear in equal measure, their presence a living reminder that the elements themselves can take form and will."},
+beast: {name: "Beast", icon: "OtherImages/StatIcons/Beast.png" , description: "Untamed and primal, beasts embody the raw pulse of nature unshaped by reason or restraint. From the silent hunter stalking through shadowed woods to the thunderous titan that shakes the earth, each creature moves with instinctive purpose. Though driven by hunger and survival, beasts are more than mere savagery — they are the heartbeat of the wild, the first language of a world that remembers no masters."},
+elemental: {name: "Elemental", icon: "OtherImages/StatIcons/Elemental.png" , description: "Primordial and eternal, elementals are the living essence of the world’s raw forces. They are not born, but awakened — the whisper of wind given voice, the heartbeat of stone given motion. Neither good nor evil, they embody balance itself, shaping and unshaping creation with every surge of flame, wave, or storm. To face an elemental is to confront the untamed will of the world made flesh."},
+construct: {name: "Construct", icon: "OtherImages/StatIcons/Construct.png" , description: "Forged by mortal hands yet animated by unnatural will, constructs stand as monuments to creation without life. Some serve with perfect obedience, others wander seeking the purpose their makers abandoned. Whether wrought from steel, stone, or enchanted coral, each construct bears the echo of its creator’s intent — a silent testament to the line between genius and hubris."},
+faefolk: {name: "Faefolk", icon: "OtherImages/StatIcons/Faefolk.png" , description: "Enigmatic and timeless, the Faefolk dwell where wonder and deceit intertwine. They are the laughter in moonlit groves, the whispers between leaves, and the shimmer at the edge of mortal sight. Guided by whim as much as wisdom, their magic bends nature’s laws with effortless grace — nurturing or destroying with the same delicate hand. To bargain with the Faefolk is to dance with beauty and peril alike."},
+demon: {name: "Demon", icon: "OtherImages/StatIcons/Demon.png" , description: "Born from malice, ambition, and the echoes of forsaken gods, demons are the chaos that festers beneath creation. They thrive in conflict, feeding on desire, fear, and despair — yet each is bound by its own cunning will. To mortals they appear as nightmares made flesh, but to themselves they are architects of freedom, tearing down the fragile order that cages the world. Their power is corruption, and their truth — liberation through ruin."},
+undead: {name: "Undead", icon: "OtherImages/StatIcons/Undead.png" , description: "Bound by neither time nor death, the undead are echoes of life that refuse to fade. Animated by cursed will or unholy power, they wander between worlds — relics of hatred, sorrow, or unfinished purpose. Where they tread, warmth withers and silence reigns. To some they are abominations; to others, proof that even death can be conquered — at a terrible cost." },
+celestial: {name: "Celestial", icon: "OtherImages/StatIcons/Celestial.png" , description: "Beacons of divinity and order, the celestials are born of pure light and cosmic harmony. Their presence bends the heavens and stills the storms, for they are the will of creation made radiant. Guided by purpose beyond mortal grasp, they bring both mercy and judgment — for in their eyes, salvation and destruction are but reflections of balance restored."},
+avian: {name: "Construct", icon: "OtherImages/StatIcons/Avian.png" , description: "Graceful and fierce, the avians rule the skies with wisdom born of the wind. From mountaintop sanctuaries they watch the shifting lands below, their keen eyes ever wary, their hearts bound to the endless horizon. Whether messengers of dawn or harbingers of storm, the Avians embody freedom itself — swift, untouchable, and guided by the breath of the heavens."},
+
+*/
+
 // ---------- //
 // ARCHETYPES //
 // ---------- //
-firelands: {name: "Firelands", description: "Born of volcanic wrath and infernal hunger, these fire-beasts hunt not for survival, but to spread the consuming blaze of their cursed homeland. Fueled by relentless ferocity, the Firelands are defined by their fiery rushing strikes. They are known by their aggression, overwhelming foes with sudden, searing attacks before the battle has even begun."},
-webcursed: {name: "Webcursed", description: "Born from shadowed corners and forgotten ruins, the Webcursed are spiders whose venom and silk ensnare all who dare enter their lair. Each step into their tangled domain invites paralysis and dread, as they patiently hunt, binding prey in intricate traps. Cunning and relentless, the Webcursed weave both terror and death into every silken strand."},
-frostlands: {name: "Frostlands", description: "Born of glacial silence and eternal winter, the Frostlands embody the merciless stillness of the frozen wastes. Their strength lies not in speed, but in control, freezing foes in place and shattering them with ruthless precision. Defined by their mastery of ice, they lock enemies in chilling stasis before striking the final, frigid blow."},
-skullframe: {name: "Skullframe", description: "Clad in bone and bound by forbidden sorcery, the Skullframe march as deathless engines of war. When shattered, dark magic stitches marrow and spirit back together, raising them anew. Masters of necrotic arts and relentless persistence, the Skullframe are an archetype of inevitability, overwhelming foes with grim magic and unending reanimation until nothing living remains to resist."},
-voltwings: {name: "Voltwings", description: "Born of storm and sky, the Voltwings are avians whose wings crackle with raw electricity. They dive with blinding speed, striking with piercing thunder that rends the air and scorches the battlefield. Agile and relentless, Voltwings are living lightning, their attacks swift, precise, and impossible to evade."},
-duskwings: {name: "Duskwings", description: "Shadows take flight in the form of Duskwings, dark avians whose sleek, crow-like forms glide silently through the night. With piercing eyes and razor-sharp talons, they watch from above, harbingers of omens and stealthy strikes. Wherever they gather, darkness deepens, and the unseen becomes a dangerous ally."},
-hybrids: {name: "Hybrids", description: "Ferocious and untamed, Hybrids roam the wilds with bodies forged from multiple forms. With the strength of a bull, the speed of a stag, or the cunning of a fox, each beast strikes fear into those who cross their path. Raw instincts and primal power guide them, making every encounter with a Hybrid a savage test of survival."},
-moonfang: {name: "Moonfang", description: "Born of lunar light and shadowed forests, the Moonfang wolves prowl by day with keen senses and silent steps. When the moon rises, their forms twist into fearsome werewolves, claws and fangs sharpened by the night. Driven by instinct and the pull of the moon, they strike with relentless ferocity, hunting as packs that embody both cunning and primal wrath."},
-pyreclad: {name: "Pyreclad", description: "Born from blazing skies and molten embers, the Pyreclad are fierce avians wreathed in fire. Some bear armor forged in volcanic heat, turning them into flying fortresses of flame. Swift and relentless, they scorch the battlefield with fiery talons and blazing wings, leaving nothing but ash in their wake."},
-goblins: {name: "Goblins", description: "Small, cunning, and endlessly resourceful, goblins thrive in hidden warrens and shadowed corners. They scurry with mischievous intent, ambushing foes and exploiting every weakness. Though individually weak, they strike in numbers, their chaotic energy turning even the simplest skirmish into unpredictable mayhem."},
-fairies: {name: "Fairies", description: "Delicate yet mischievous, fairies flit through forests and meadows, their presence leaving trails of sparkling light. Though small, they wield surprising magic, weaving illusions and enchantments to protect their homes or play tricks on unwary travelers. Their beauty belies a cunning and spirited nature, always dancing between wonder and mischief."},
-dwarves: {name: "Dwarves", description: "Stout and steadfast, dwarves are master smiths and artisans, shaping stone and metal with unmatched skill. Their halls echo with hammer strikes and the roar of furnaces, as they craft weapons, armor, and treasures of legendary quality. Fierce in defense and meticulous in craft, dwarves embody endurance, precision, and the enduring strength of their mountain homes."},
-elves: {name: "Elves", description: "Graceful and eternal, elves move with the harmony of the forests they protect. Skilled in both magic and archery, they strike with precision and wisdom, blending into nature as if part of it. Their keen senses and ancient knowledge make them formidable guardians, defending their realms with elegance, patience, and unwavering resolve."},
-orcs: {name: "Orcs", description: "Brutal, relentless, and fiercely proud, orcs thrive on the chaos of battle. Their strength and endurance make them formidable warriors, while their tribal bonds and warlike culture drive them to conquer and dominate. Though often feared for their ferocity, orcs are bound by honor within their clans, turning raw power into disciplined, devastating force."},
-golems: {name: "Golems", description: "Forged from stone, metal, and elemental essence, golems are unstoppable engines of brute force. Their armored bodies shrug off attacks, while their immense strength allows them to exploit every weakness in their foes. Patient yet relentless, golems dominate the battlefield, their elemental fury leaving devastation in their calculated, crushing path."},
-seraph: {name: "Seraph", description: "Born of radiant light and celestial grace, the Seraph soar above the battlefield as guardians and warriors. Their wings gleam with divine energy, and their presence purifies and inspires those around them. Majestic and unwavering, they strike with the justice of the heavens, defending the innocent and smiting darkness wherever it dwells."},
+firelands: {name: "Firelands",   profile: { offense: 9, defense: 3, utility: 4, tempo: 8 }, icon: "OtherImages/StatIcons/Fireland.png" , description: "Born of volcanic wrath and infernal hunger, these fire-beasts hunt not for survival, but to spread the consuming blaze of their cursed homeland. Fueled by relentless ferocity, the Firelands are defined by their fiery rushing strikes. They are known by their aggression, overwhelming foes with sudden, searing attacks before the battle has even begun."},
+webcursed: {name: "Webcursed", icon: "OtherImages/StatIcons/Webcursed.png" , description: "Born from shadowed corners and forgotten ruins, the Webcursed are spiders whose venom and silk ensnare all who dare enter their lair. Each step into their tangled domain invites paralysis and dread, as they patiently hunt, binding prey in intricate traps. Cunning and relentless, the Webcursed weave both terror and death into every silken strand."},
+frostlands: {name: "Frostlands", icon: "OtherImages/StatIcons/Frostland.png" , description: "Born of glacial silence and eternal winter, the Frostlands embody the merciless stillness of the frozen wastes. Their strength lies not in speed, but in control, freezing foes in place and shattering them with ruthless precision. Defined by their mastery of ice, they lock enemies in chilling stasis before striking the final, frigid blow."},
+golems: {name: "Golems", icon: "OtherImages/StatIcons/Golem.png" , description: "Forged from stone, metal, and elemental essence, golems are unstoppable engines of brute force. Their armored bodies shrug off attacks, while their immense strength allows them to exploit every weakness in their foes. Patient yet relentless, golems dominate the battlefield, their elemental fury leaving devastation in their calculated, crushing path."},
 
-// --- Constructs --- //
-cindercore: {name: "Cindercore", description: "Forged in molten crucibles deep beneath the world, the Cindercore are living constructs of stone and flame. Their hearts burn with rivers of lava, each strike searing with lingering pain. Unlike other flames that flare and fade, Cindercore are defined by their never-ending burning mastery and unyielding defenses. They are an archetype of attrition, grinding foes down with relentless heat until only ash and ruin remain."},
-coralbound: {name: "Coralbound", description: "Forged in the abyssal depths where steel meets coral, these aquatic constructs channel the crushing force of the ocean. With cannons unleashing torrents of compressed, high-pressure water, the Coralbound strike with relentless precision. Their true lethality emerges against soaked opponents, turning vulnerability into devastation. Defined by their mechanical resilience and liquid ferocity, they drown foes beneath waves of unyielding power."},
-stratosurge: {name: "Stratosurge", description: "Forged from clouds, lightning, and the power of the heavens, the Stratosurge soar through the skies with divine purpose. Their bodies hum with electric energy, and their strikes rain down with precision from above. Majestic and unstoppable, they bring the fury of storms and the might of the heavens to every battlefield."},
-stormdrive: {name: "Stormdrive", description: "Fueled by raw electricity and engineered for flight, Stormdrive blaze across the battlefield with blinding speed. Their crackling bodies strike with precision, discharging bolts that tear through defenses. Agile and relentless, they harness the chaotic energy of storms to dominate the skies and outpace any foe."},
-solarforge: {name: "Solarforge", description: "Forged from molten light and radiant energy, the Solarforge shine with unyielding brilliance. Their bodies radiate warmth and power, blinding foes while protecting allies. Every strike channels the fury of the sun, turning their presence into a beacon of strength and a force of relentless illumination on the battlefield."},
-plagueaxis: {name: "Plagueaxis", description: "Forged from toxic sludge and corrupted machinery, the Plagueaxis spread decay wherever they tread. Their bodies exude poisonous fumes, and their attacks corrode both earth and enemy alike. Relentless and insidious, they turn the battlefield into a hazardous wasteland, leaving blighted terrain and weakened foes in their wake."},
-ironwrought: {name: "Ironwrought", description: "Bound from stone and forged with iron, the Ironwrought constructs are embodiments of unyielding strength. Their massive frames crush obstacles and shield allies alike, moving with the relentless weight of the earth. Slow but unstoppable, they dominate the battlefield through sheer durability and grounded might."},
-shadowgear: {name: "Shadowgear", description: "Bound by darkness and animated by restless shades, the Shadowgear move with eerie precision. Armor and weaponry fused with shadow strike unseen, slipping through defenses to overwhelm foes. Silent and relentless, they turn ordinary machinery into vessels of fear, wielding shadows as both shield and blade."},
+// --- Undead --- //
+skullframe: {name: "Skullframe", icon: "OtherImages/StatIcons/Skullframe.png" , description: "Clad in bone and bound by forbidden sorcery, the Skullframe march as deathless engines of war. When shattered, dark magic stitches marrow and spirit back together, raising them anew. Masters of necrotic arts and relentless persistence, the Skullframe are an archetype of inevitability, overwhelming foes with grim magic and unending reanimation until nothing living remains to resist."},
+
+// --- Celestial --- //
+seraph: {name: "Seraph", icon: "OtherImages/StatIcons/Seraph.png" , description: "Born of radiant light and celestial grace, the Seraph soar above the battlefield as guardians and warriors. Their wings gleam with divine energy, and their presence purifies and inspires those around them. Majestic and unwavering, they strike with the justice of the heavens, defending the innocent and smiting darkness wherever it dwells."},
+
+// --- Beast --- //
+hybrids: {name: "Hybrids", icon: "OtherImages/StatIcons/Hybrid.png" , description: "Ferocious and untamed, Hybrids roam the wilds with bodies forged from multiple forms. With the strength of a bull, the speed of a stag, or the cunning of a fox, each beast strikes fear into those who cross their path. Raw instincts and primal power guide them, making every encounter with a Hybrid a savage test of survival."},
+moonfang: {name: "Moonfang", icon: "OtherImages/StatIcons/Moonfang.png" , description: "Born of lunar light and shadowed forests, the Moonfang wolves prowl by day with keen senses and silent steps. When the moon rises, their forms twist into fearsome werewolves, claws and fangs sharpened by the night. Driven by instinct and the pull of the moon, they strike with relentless ferocity, hunting as packs that embody both cunning and primal wrath."},
+
+// --- Faefolk --- //
+goblins: {name: "Goblins", icon: "OtherImages/StatIcons/Goblin.png" , description: "Small, cunning, and endlessly resourceful, goblins thrive in hidden warrens and shadowed corners. They scurry with mischievous intent, ambushing foes and exploiting every weakness. Though individually weak, they strike in numbers, their chaotic energy turning even the simplest skirmish into unpredictable mayhem."},
+fairies: {name: "Fairies", icon: "OtherImages/StatIcons/Fairy.png" , description: "Delicate yet mischievous, fairies flit through forests and meadows, their presence leaving trails of sparkling light. Though small, they wield surprising magic, weaving illusions and enchantments to protect their homes or play tricks on unwary travelers. Their beauty belies a cunning and spirited nature, always dancing between wonder and mischief."},
+dwarves: {name: "Dwarves", icon: "OtherImages/StatIcons/Dwarf.png" , description: "Stout and steadfast, dwarves are master smiths and artisans, shaping stone and metal with unmatched skill. Their halls echo with hammer strikes and the roar of furnaces, as they craft weapons, armor, and treasures of legendary quality. Fierce in defense and meticulous in craft, dwarves embody endurance, precision, and the enduring strength of their mountain homes."},
+elves: {name: "Elves", icon: "OtherImages/StatIcons/Elf.png" , description: "Graceful and eternal, elves move with the harmony of the forests they protect. Skilled in both magic and archery, they strike with precision and wisdom, blending into nature as if part of it. Their keen senses and ancient knowledge make them formidable guardians, defending their realms with elegance, patience, and unwavering resolve."},
+orcs: {name: "Orcs", icon: "OtherImages/StatIcons/Orc.png" , description: "Brutal, relentless, and fiercely proud, orcs thrive on the chaos of battle. Their strength and endurance make them formidable warriors, while their tribal bonds and warlike culture drive them to conquer and dominate. Though often feared for their ferocity, orcs are bound by honor within their clans, turning raw power into disciplined, devastating force."},
+satyr: {name: "Satyr", icon: "OtherImages/StatIcons/Satyr.png" , description: "Wild-hearted and cunning, Satyrs embody the untamed spirit of nature. Their laughter echoes through moonlit groves as they dance between mischief and wisdom, balancing chaos and creation. Though their revels seem carefree, Satyrs are fierce protectors of their forests—striking swiftly with wit, charm, and primal magic when their woodland sanctuaries are threatened."},
+
+// --- Avian --- //
+voltwings: {name: "Voltwings", icon: "OtherImages/StatIcons/Voltwing.png" , description: "Born of storm and sky, the Voltwings are avians whose wings crackle with raw electricity. They dive with blinding speed, striking with piercing thunder that rends the air and scorches the battlefield. Agile and relentless, Voltwings are living lightning, their attacks swift, precise, and impossible to evade."},
+duskwings: {name: "Duskwings", icon: "OtherImages/StatIcons/Duskwing.png" , description: "Shadows take flight in the form of Duskwings, dark avians whose sleek, crow-like forms glide silently through the night. With piercing eyes and razor-sharp talons, they watch from above, harbingers of omens and stealthy strikes. Wherever they gather, darkness deepens, and the unseen becomes a dangerous ally."},
+pyreclad: {name: "Pyreclad", icon: "OtherImages/StatIcons/Pyreclad.png" , description: "Born from blazing skies and molten embers, the Pyreclad are fierce avians wreathed in fire. Some bear armor forged in volcanic heat, turning them into flying fortresses of flame. Swift and relentless, they scorch the battlefield with fiery talons and blazing wings, leaving nothing but ash in their wake."},
+
+ 
+// --- Construct --- //
+cindercore: {name: "Cindercore", icon: "OtherImages/StatIcons/Cindercore.png" , description: "Forged in molten crucibles deep beneath the world, the Cindercore are living constructs of stone and flame. Their hearts burn with rivers of lava, each strike searing with lingering pain. Unlike other flames that flare and fade, Cindercore are defined by their never-ending burning mastery and unyielding defenses. They are an archetype of attrition, grinding foes down with relentless heat until only ash and ruin remain."},
+coralbound: {name: "Coralbound", icon: "OtherImages/StatIcons/Coralbound.png" , description: "Forged in the abyssal depths where steel meets coral, these aquatic constructs channel the crushing force of the ocean. With cannons unleashing torrents of compressed, high-pressure water, the Coralbound strike with relentless precision. Their true lethality emerges against soaked opponents, turning vulnerability into devastation. Defined by their mechanical resilience and liquid ferocity, they drown foes beneath waves of unyielding power."},
+stratosurge: {name: "Stratosurge", icon: "OtherImages/StatIcons/Stratosurge.png" , description: "Forged from clouds, lightning, and the power of the heavens, the Stratosurge soar through the skies with divine purpose. Their bodies hum with electric energy, and their strikes rain down with precision from above. Majestic and unstoppable, they bring the fury of storms and the might of the heavens to every battlefield."},
+stormdrive: {name: "Stormdrive", icon: "OtherImages/StatIcons/Stormdrive.png" , description: "Fueled by raw electricity and engineered for flight, Stormdrive blaze across the battlefield with blinding speed. Their crackling bodies strike with precision, discharging bolts that tear through defenses. Agile and relentless, they harness the chaotic energy of storms to dominate the skies and outpace any foe."},
+solarforge: {name: "Solarforge", icon: "OtherImages/StatIcons/Solarforge.png" , description: "Forged from molten light and radiant energy, the Solarforge shine with unyielding brilliance. Their bodies radiate warmth and power, blinding foes while protecting allies. Every strike channels the fury of the sun, turning their presence into a beacon of strength and a force of relentless illumination on the battlefield."},
+plagueaxis: {name: "Plagueaxis", icon: "OtherImages/StatIcons/Plagueaxis.png" , description: "Forged from toxic sludge and corrupted machinery, the Plagueaxis spread decay wherever they tread. Their bodies exude poisonous fumes, and their attacks corrode both earth and enemy alike. Relentless and insidious, they turn the battlefield into a hazardous wasteland, leaving blighted terrain and weakened foes in their wake."},
+ironwrought: {name: "Ironwrought", icon: "OtherImages/StatIcons/Ironwrought.png" , description: "Bound from stone and forged with iron, the Ironwrought constructs are embodiments of unyielding strength. Their massive frames crush obstacles and shield allies alike, moving with the relentless weight of the earth. Slow but unstoppable, they dominate the battlefield through sheer durability and grounded might."},
+shadowgear: {name: "Shadowgear", icon: "OtherImages/StatIcons/Shadowgear.png" , description: "Bound by darkness and animated by restless shades, the Shadowgear move with eerie precision. Armor and weaponry fused with shadow strike unseen, slipping through defenses to overwhelm foes. Silent and relentless, they turn ordinary machinery into vessels of fear, wielding shadows as both shield and blade."},
 
 // --- Elemental --- // 
-lignals: {name: "Lignals", description: "Born of roots, bark, and the living green of forests, the Lignals are guardians of nature’s heart. Their limbs weave and grow with unstoppable force, entangling foes and protecting the land. Patient yet relentless, they draw strength from the earth, turning forests into living battlegrounds where every vine and branch is a weapon."},
-pyroclast: {name: "Pyroclast", description: "Born from molten fury and the heart of burning flames, the Pyroclasts are pure embodiments of fire. Their bodies blaze with uncontrolled heat, and their movements ignite the air itself. Wherever they tread, flames consume and scorch, leaving nothing but ash in their wake, a testament to their unrelenting, fiery essence."},
-hyrals: {name: "Hyrals", description: "Forged from rivers, tides, and the endless depths, the Hyrals are living currents of water given form. They surge and crash with unrelenting force, drenching and drowning all who oppose them. Fluid and adaptable, they strike with the inevitability of the ocean, pulling foes beneath waves of relentless, liquid power."},
-galeforms: {name: "Galeforms", description: "Born of tempests and the rush of wind, Galeforms are swift, elusive elementals that strike with blades of air. Their movements are a blur, their attacks slicing and tearing with unerring precision. Masters of speed and agility, they descend like hurricanes, overwhelming foes with relentless, cutting gusts and the fury of the skies."},
-stonekin: {name: "Stonekin", description: "Forged from bedrock and shaped by the ages, the Stonekin are embodiments of the earth. Their massive forms crush all that stand against them, while their unyielding bodies shrug off attacks with unwavering resilience. Slow but unstoppable, they move with the relentless patience of mountains, turning the battlefield into a fortress of stone and earth."},
-obscurids: {name: "Obscurids", description: "Born from shadow and void, the Obscurids are creeping shades that feed on the essence of life. Their forms shift and blur, slipping through defenses to drain strength and spirit from all who stand before them. Masters of subtlety and decay, they leave only emptiness in their wake, turning vitality into darkness."},
-luminauts: {name: "Luminauts", description: "Born of pure light and radiant energy, the Luminauts illuminate the battlefield with brilliance. Their presence purifies corruption and inspires allies, while their searing attacks blaze with the power of the sun. Majestic and unwavering, they embody the essence of radiance, turning darkness into hope and striking down those who oppose their light."},
-corruptors: {name: "Corruptors", description: "Born of venom, rot, and foul decay, the Corruptors spread poison wherever they go. Their touch withers plant and flesh alike, and their toxic presence corrupts even the purest of lands. Relentless and insidious, they revel in contamination, leaving blighted ground and weakened foes in their poisonous wake."},
-voltkin: {name: "Voltkin", description: "Forged from lightning and crackling energy, the Voltkin are living storms incarnate. Their bodies surge with electric power, striking with blinding speed and precision. Every movement sparks chaos, and every attack leaves a trail of crackling destruction, embodying the relentless fury of the storm."},
-glacials: {name: "Glacials", description: "Born from frost and frozen winds, the Glacials are elementals of ice and chill. Their touch freezes the air and hardens the ground, slowing all who oppose them. Silent and relentless, they strike with the precision of falling icicles, leaving the battlefield encased in frost and their enemies trapped in the grip of winter’s wrath."},
+arbor: {name: "Arbor", icon: "OtherImages/StatIcons/Arbor.png" , description: "Born of roots, bark, and the living green of forests, the Arbor are guardians of nature’s heart. Their limbs weave and grow with unstoppable force, entangling foes and protecting the land. Patient yet relentless, they draw strength from the earth, turning forests into living battlegrounds where every vine and branch is a weapon."},
+pyroclast: {name: "Pyroclast", icon: "OtherImages/StatIcons/Pyroclast.png" , description: "Born from molten fury and the heart of burning flames, the Pyroclasts are pure embodiments of fire. Their bodies blaze with uncontrolled heat, and their movements ignite the air itself. Wherever they tread, flames consume and scorch, leaving nothing but ash in their wake, a testament to their unrelenting, fiery essence."},
+hydral: {name: "Hyral", icon: "OtherImages/StatIcons/Hydral.png" , description: "Forged from rivers, tides, and the endless depths, the Hyrals are living currents of water given form. They surge and crash with unrelenting force, drenching and drowning all who oppose them. Fluid and adaptable, they strike with the inevitability of the ocean, pulling foes beneath waves of relentless, liquid power."},
+galeform: {name: "Galeforms", icon: "OtherImages/StatIcons/Galeform.png" , description: "Born of tempests and the rush of wind, Galeforms are swift, elusive elementals that strike with blades of air. Their movements are a blur, their attacks slicing and tearing with unerring precision. Masters of speed and agility, they descend like hurricanes, overwhelming foes with relentless, cutting gusts and the fury of the skies."},
+stonekin: {name: "Stonekin", icon: "OtherImages/StatIcons/Stonekin.png" , description: "Forged from bedrock and shaped by the ages, the Stonekin are embodiments of the earth. Their massive forms crush all that stand against them, while their unyielding bodies shrug off attacks with unwavering resilience. Slow but unstoppable, they move with the relentless patience of mountains, turning the battlefield into a fortress of stone and earth."},
+obscurid: {name: "Obscurid", icon: "OtherImages/StatIcons/Obscurid.png" , description: "Born from shadow and void, the Obscurids are creeping shades that feed on the essence of life. Their forms shift and blur, slipping through defenses to drain strength and spirit from all who stand before them. Masters of subtlety and decay, they leave only emptiness in their wake, turning vitality into darkness."},
+luminaut: {name: "Luminaut", icon: "OtherImages/StatIcons/Luminaut.png" , description: "Born of pure light and radiant energy, the Luminauts illuminate the battlefield with brilliance. Their presence purifies corruption and inspires allies, while their searing attacks blaze with the power of the sun. Majestic and unwavering, they embody the essence of radiance, turning darkness into hope and striking down those who oppose their light."},
+corruptor: {name: "Corruptor", icon: "OtherImages/StatIcons/Corruptor.png" , description: "Born of venom, rot, and foul decay, the Corruptors spread poison wherever they go. Their touch withers plant and flesh alike, and their toxic presence corrupts even the purest of lands. Relentless and insidious, they revel in contamination, leaving blighted ground and weakened foes in their poisonous wake."},
+voltkin: {name: "Voltkin", icon: "OtherImages/StatIcons/Voltkin.png" , description: "Forged from lightning and crackling energy, the Voltkin are living storms incarnate. Their bodies surge with electric power, striking with blinding speed and precision. Every movement sparks chaos, and every attack leaves a trail of crackling destruction, embodying the relentless fury of the storm."},
+glacial: {name: "Glacial", icon: "OtherImages/StatIcons/Glacial.png" , description: "Born from frost and frozen winds, the Glacials are elementals of ice and chill. Their touch freezes the air and hardens the ground, slowing all who oppose them. Silent and relentless, they strike with the precision of falling icicles, leaving the battlefield encased in frost and their enemies trapped in the grip of winter’s wrath."},
 
-// --- Dragons --- //
-blazingscale: {name: "Blazingscale", description: "Dragons wreathed in flame and fury, the Blazingscale are living wildfires given form. With every wingbeat they ignite the skies, leaving charred wastelands in their wake. They are devastation incarnate turning the land itself into an endless inferno."},
-abyssdrake: {name: "Abyssdrake", description: "Born from the crushing depths, the Abyssdrakes command the ocean’s fury as their weapon. With thunderous roars they summon towering tides, swallowing armies and kingdoms beneath relentless waves. To face an Abyssdrake is to stand against the endless surge of the abyss, a flood that drowns all hope beneath its dark waters."},
-stormrazor: {name: "Stormrazor", description: "Forged in the heart of raging tempests, the Stormrazors embody the untamed wrath of thunder and sky. They descend with blinding speed, their wings crackling with storms as lightning answers their command. Each strike is a flash of devastation, leaving smoldering ruin in the wake of their tempestuous fury."},
-venomspines: {name: "Venomspines", description: "Twisted by venom and rot, the Venomspines spread decay wherever their wings shadow the land. Their breath carries no flame, but a vile miasma that withers forests, poisons rivers, and corrodes stone. To face them is to watch life unravel into ruin, for their presence festers the earth with corruption untamed."},
-ironclaw: {name: "Ironclaw", description: "Carved from stone and tempered iron, the Ironclaw dragons are bastions of unyielding strength. Their armored scales deflect even the fiercest assaults, and their presence fortifies the lands they guard. Patient and resolute, they stand as living ramparts, defending their territory with unbreakable resolve and steadfast vigilance."},
-thornwing: {name: "Thornwing", description: "Forged of scale, bark, and living wood, the Thornwing dragons embody the resilience of the ancient forests. Their hides are plated in thorned armor, their wings creaking like timber in the wind. Where others strike with fire or venom, they endure, turning battles into wars of attrition. The Thornwing are defined by their unyielding defenses, outlasting foes until nature itself reclaims the battlefield."},
-nightshroud: {name: "Nightshroud", description: "Born from the abyss of endless night, the Nightshrouds are dragons wreathed in shadow and silence. Their scales absorb the faintest light, and their movements are whispers across the battlefield. Masters of stealth and dread, they strike from darkness, leaving fear and uncertainty in their wake, as if the night had taken form to hunt."},
-solarwyrm: {name: "Solarwyrm", description: "Born of pure light and radiant fire, the Solarwyrms stand as vigilant guardians of sacred lands. Their wings shimmer with the brilliance of the sun, and their gaze pierces through shadows of corruption. Guided by unwavering justice, they defend their realm with searing power, purifying all that threatens the sanctity of their domain."},
-glimmerscale: {name: "Glimmerscale", description: "Born of starlight and shimmering wings, the Glimmerscale are fairy-dragons whose radiant power is as enchanting as it is devastating. They weave between grace and fury, purifying corruption with gleaming light before unleashing searing, luminous strikes. Defined by their dual nature of elegance and ferocity, they are an archetype that blinds foes with brilliance, striking down darkness in a cascade of radiant fire."},  
+// --- Dragon --- //
+blazingscale: {name: "Blazingscale", icon: "OtherImages/StatIcons/Blazingscale.png" , description: "Dragons wreathed in flame and fury, the Blazingscale are living wildfires given form. With every wingbeat they ignite the skies, leaving charred wastelands in their wake. They are devastation incarnate turning the land itself into an endless inferno."},
+abyssdrake: {name: "Abyssdrake", icon: "OtherImages/StatIcons/Abyssdrake.png" , description: "Born from the crushing depths, the Abyssdrakes command the ocean’s fury as their weapon. With thunderous roars they summon towering tides, swallowing armies and kingdoms beneath relentless waves. To face an Abyssdrake is to stand against the endless surge of the abyss, a flood that drowns all hope beneath its dark waters."},
+stormrazor: {name: "Stormrazor", icon: "OtherImages/StatIcons/Stormrazor.png" , description: "Forged in the heart of raging tempests, the Stormrazors embody the untamed wrath of thunder and sky. They descend with blinding speed, their wings crackling with storms as lightning answers their command. Each strike is a flash of devastation, leaving smoldering ruin in the wake of their tempestuous fury."},
+venomspines: {name: "Venomspines", icon: "OtherImages/StatIcons/Venomspine.png" , description: "Twisted by venom and rot, the Venomspines spread decay wherever their wings shadow the land. Their breath carries no flame, but a vile miasma that withers forests, poisons rivers, and corrodes stone. To face them is to watch life unravel into ruin, for their presence festers the earth with corruption untamed."},
+ironclaw: {name: "Ironclaw", icon: "OtherImages/StatIcons/Ironclaw.png" , description: "Carved from stone and tempered iron, the Ironclaw dragons are bastions of unyielding strength. Their armored scales deflect even the fiercest assaults, and their presence fortifies the lands they guard. Patient and resolute, they stand as living ramparts, defending their territory with unbreakable resolve and steadfast vigilance."},
+thornwing: {name: "Thornwing", icon: "OtherImages/StatIcons/Thornwing.png" , description: "Forged of scale, bark, and living wood, the Thornwing dragons embody the resilience of the ancient forests. Their hides are plated in thorned armor, their wings creaking like timber in the wind. Where others strike with fire or venom, they endure, turning battles into wars of attrition. The Thornwing are defined by their unyielding defenses, outlasting foes until nature itself reclaims the battlefield."},
+nightshroud: {name: "Nightshroud", icon: "OtherImages/StatIcons/Nightshroud.png" , description: "Born from the abyss of endless night, the Nightshrouds are dragons wreathed in shadow and silence. Their scales absorb the faintest light, and their movements are whispers across the battlefield. Masters of stealth and dread, they strike from darkness, leaving fear and uncertainty in their wake, as if the night had taken form to hunt."},
+solarwyrm: {name: "Solarwyrm", icon: "OtherImages/StatIcons/Solarwyrm.png" , description: "Born of pure light and radiant fire, the Solarwyrms stand as vigilant guardians of sacred lands. Their wings shimmer with the brilliance of the sun, and their gaze pierces through shadows of corruption. Guided by unwavering justice, they defend their realm with searing power, purifying all that threatens the sanctity of their domain."},
+glimmerscale: {name: "Glimmerscale", icon: "OtherImages/StatIcons/Glimmerscale.png" , description: "Born of starlight and shimmering wings, the Glimmerscale are fairy-dragons whose radiant power is as enchanting as it is devastating. They weave between grace and fury, purifying corruption with gleaming light before unleashing searing, luminous strikes. Defined by their dual nature of elegance and ferocity, they are an archetype that blinds foes with brilliance, striking down darkness in a cascade of radiant fire."},  
 
  /*------ //
 // TRAITS //
 // ------- */
-champion: {name: "Champion", description: "Main creatures that can be upgraded to Champion and provide essence support. Champion creatures receive +{1}/+{1} and upgraded skills"},
-fusion: {name: "Fusion", description: "Evolved creatures with better stats and skills."},
-evolution: {name: "Evolution", description: "Evolved creatures with better stats and skills."},
-
+champion: {name: "Champion", icon: "OtherImages/StatIcons/Champion.png" , description: "Main creatures that can be upgraded to Champion and provide essence support. Champion creatures receive +{1}/+{1} and upgraded skills"},
 };
+
+const PROFILE_METRICS = [
+  { key: 'offense', label: 'Offense', color: '#ff6b4a' },
+  { key: 'defense', label: 'Defense', color: '#44e055' },
+  { key: 'utility', label: 'Utility', color: '#ffd166' },
+  { key: 'tempo', label: 'Tempo', color: '#66d1ff' }
+];
+// Default profile used when none provided
+const DEFAULT_KEYWORD_PROFILE = { offense: 5, defense: 5, utility: 5, tempo: 5 };
+// Return the profile object for a single keyword (type/archetype/ability), or default if none
+function getKeywordProfile(name) {
+  if (!name && name !== 0) return DEFAULT_KEYWORD_PROFILE;
+  const key = normalizeKey(name);
+  if (!key) return DEFAULT_KEYWORD_PROFILE;
+  if (typeof CARD_KEYWORD_EXPLANATIONS === 'object' && CARD_KEYWORD_EXPLANATIONS[key] && CARD_KEYWORD_EXPLANATIONS[key].profile) {
+    return Object.assign({}, DEFAULT_KEYWORD_PROFILE, CARD_KEYWORD_EXPLANATIONS[key].profile);
+  }
+  // no explicit profile, return default
+  return DEFAULT_KEYWORD_PROFILE;
+}
+
+// Merge multiple keyword names into one combined profile (average)
+function mergeKeywordProfiles(values) {
+  if (!values) return DEFAULT_KEYWORD_PROFILE;
+  const arr = Array.isArray(values) ? values : [values];
+  const sum = PROFILE_METRICS.reduce((acc, m) => { acc[m.key] = 0; return acc; }, {});
+  let count = 0;
+  for (const v of arr) {
+    if (v === null || v === undefined) continue;
+    const prof = getKeywordProfile(v);
+    PROFILE_METRICS.forEach(m => { sum[m.key] += (typeof prof[m.key] === 'number' ? prof[m.key] : DEFAULT_KEYWORD_PROFILE[m.key]); });
+    count++;
+  }
+  if (count === 0) return DEFAULT_KEYWORD_PROFILE;
+  const avg = {};
+  PROFILE_METRICS.forEach(m => { avg[m.key] = Math.round((sum[m.key] / count) * 10) / 10; }); // keep one decimal if desired
+  return avg;
+}
+
+// Render profile bars HTML (profile: object with metric keys). widthPctScale scales values 0..10 to 0..100%.
+// returns HTML string
+function renderProfileBars(profile, opts = {}) {
+  if (!profile) profile = DEFAULT_KEYWORD_PROFILE;
+  const scaleMax = opts.scaleMax || 10; // expected max value
+  const containerClass = opts.containerClass || 'keyword-profile';
+  let html = `<div class="${containerClass}">`;
+  PROFILE_METRICS.forEach(m => {
+    const val = Math.max(0, Math.min(scaleMax, Number(profile[m.key] || 0)));
+    const pct = Math.round((val / scaleMax) * 100);
+    html += `
+      <div class="kp-row">
+        <div class="kp-label">${m.label}</div>
+        <div class="kp-bar" role="img" aria-label="${m.label}: ${val}/${scaleMax}">
+          <div class="kp-bar-fill" style="width:${pct}%; background:${m.color}"></div>
+        </div>
+        <div class="kp-value">${val}</div>
+      </div>
+    `;
+  });
+  html += `</div>`;
+  return html;
+}
 const DAILY_LOGIN_REWARDS = [
  /* Example
 {
@@ -1796,7 +1883,43 @@ document.getElementById('daily-login-icon').onclick = function() {
   showDailyLoginModal(dayIdx);
 };
 
+function normalizeKey(s) {
+  if (!s && s !== 0) return '';
+  return String(s).toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/g, '');
+}
 
+// Return icon URL for a keyword (type/ability/archetype/trait/etc.)
+function getKeywordIcon(name) {
+  if (!name) return null;
+  const key = normalizeKey(name);
+  // Prefer keywords explanations map
+  if (CARD_KEYWORD_EXPLANATIONS[key] && CARD_KEYWORD_EXPLANATIONS[key].icon) {
+    return CARD_KEYWORD_EXPLANATIONS[key].icon;
+  }
+  // Try fallback icon map
+  if (ICON_MAP[key]) return ICON_MAP[key];
+  return null;
+}
+
+// Render one or multiple keywords as small chips with optional icon.
+// values may be string, array, or undefined. Returns an HTML string.
+function renderKeywordChips(values, opts = {}) {
+  if (!values && values !== 0) return '';
+  const arr = Array.isArray(values) ? values : [values];
+  const chips = arr.map(v => {
+    if (v === null || v === undefined) return '';
+    const text = typeof v === 'string' ? v : String(v);
+    const icon = getKeywordIcon(text);
+    // escape text a bit
+    const escText = text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    if (icon) {
+      return `<div class="kw-chip"><img src="${icon}" alt="${escText}" title="${escText}" class="kw-chip-icon"><span class="kw-chip-text">${escText}</span></div>`;
+    } else {
+      return `<div class="kw-chip"><span class="kw-chip-text">${escText}</span></div>`;
+    }
+  }).filter(Boolean);
+  return `<div class="kw-chip-row">${chips.join('')}</div>`;
+}
 // Use this to parse effect text with tokens into HTML with images/icons
 function parseEffectText(effect) {
   if (!effect) return "";
@@ -1966,11 +2089,11 @@ function showInfoModal(cardObj) {
     let values = Array.isArray(value) ? value : [value];
     for (const v of values) {
     const key = String(v).toLowerCase().replace(/\s+/g, ''); // Lowercase and remove all spaces
-      if (CARD_KEYWORD_EXPLANATIONS[key]) {
+      if (CARD_KEYWORD[key]) {
         keywordSections.push({
           type,
-          name: CARD_KEYWORD_EXPLANATIONS[key].name || v,
-          desc: CARD_KEYWORD_EXPLANATIONS[key].description
+          name: CARD_KEYWORD[key].name || v,
+          desc: CARD_KEYWORD[key].description
         });
       }
     }
@@ -2028,12 +2151,40 @@ function showFullCardModal(cardObj) {
   let infoHtml = '';
   infoHtml += `<div class="full-card-info-title">${card.name}</div>`;
   infoHtml += `<div class="card-modal-divider"></div>`;
-  infoHtml += labeled("Category", card.category);
-  infoHtml += labeled("Rarity", card.rarity);
-  infoHtml += labeled("Archetype", Array.isArray(card.archetype) ? card.archetype.join(", ") : card.archetype);
-  infoHtml += labeled("Type", Array.isArray(card.type) ? card.type.join(", ") : card.type);
-  infoHtml += labeled("Ability", Array.isArray(card.ability) ? card.ability.join(", ") : card.ability);
-  infoHtml += labeled("Trait", Array.isArray(card.trait) ? card.trait.join(", ") : card.trait);
+ 
+  // Category (show chip(s))
+  if (card.category) {
+    const catHtml = renderKeywordChips(card.category) || (Array.isArray(card.category) ? card.category.join(', ') : card.category);
+    infoHtml += labeled("Category", catHtml);
+  }
+
+  // Rarity simple label
+  infoHtml += labeled("Rarity", card.rarity || "");
+
+  // Archetype
+  if (card.archetype) {
+    const archHtml = renderKeywordChips(card.archetype) || (Array.isArray(card.archetype) ? card.archetype.join(', ') : card.archetype);
+    infoHtml += labeled("Archetype", archHtml);
+  }
+
+  // Type(s) chips
+  if (card.type) {
+    const typeHtml = renderKeywordChips(card.type) || (Array.isArray(card.type) ? card.type.join(', ') : card.type);
+    infoHtml += labeled("Type", typeHtml);
+  }
+
+  // Ability chips
+  if (card.ability) {
+    const abilityHtml = renderKeywordChips(card.ability) || (Array.isArray(card.ability) ? card.ability.join(', ') : card.ability);
+    infoHtml += labeled("Ability", abilityHtml);
+  }
+
+  // Trait / special (champion/dominion/etc)
+  if (card.trait) {
+    const traitHtml = renderKeywordChips(card.trait) || (Array.isArray(card.trait) ? card.trait.join(', ') : card.trait);
+    infoHtml += labeled("Trait", traitHtml);
+  }
+ 
 if (card.skill) {
   let skills = Array.isArray(card.skill) ? card.skill : [card.skill];
   infoHtml += `<div class="full-card-info-row"><span class="full-card-info-label">Skills:</span></div>`;
@@ -2084,6 +2235,8 @@ if (card.skill) {
   });
 }
   infoHtml += `<div class="card-modal-divider"></div>`;
+ 
+  // Stats row (hp/atk/def/cost)
   let statsRow = '';
   if (card.hp !== undefined || card.atk !== undefined || card.def !== undefined || card.cost !== undefined) {
    statsRow = '<div class="full-card-info-row">' +
@@ -2093,14 +2246,15 @@ if (card.skill) {
    `<span class="full-card-info-label">Cost:</span> ${renderCardCost(card.cost)}` +
    '</div>';
   }
+  infoHtml += statsRow;
   infoHtml += `<div class="card-modal-divider"></div>`;
-  let textHtml = '';
-  if (card.text) {
-    textHtml = `<div class="full-card-info-section" style="font-size:1.08em;color:#ffe066;margin-top:10px;">${card.text}</div>`;
-  }
-  let effectHtml = '';
+ 
+  // Text/effect areas
   if (card.effect) {
-   effectHtml = `<div class="full-card-info-section" style="font-size:1.08em;color:#ffe066;margin-top:10px;">${parseEffectText(card.effect)}</div>`;
+    infoHtml += `<div class="full-card-info-section" style="font-size:1.08em;color:#ffe066;margin-top:10px;">${parseEffectText(card.effect)}</div>`;
+  }
+  if (card.text) {
+    infoHtml += `<div class="full-card-info-section" style="font-size:1.08em;color:#ffe066;margin-top:10px;">${card.text}</div>`;
   }
 
    // --- INFO BUTTON ---
@@ -2114,9 +2268,6 @@ if (card.skill) {
       </div>
       <div class="full-card-info-panel">
         ${infoHtml}
-        ${statsRow}
-        ${effectHtml}
-        ${textHtml}
       </div>
     </div>
   `;
