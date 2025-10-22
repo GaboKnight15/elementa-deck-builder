@@ -1648,8 +1648,8 @@ function getKeywordProfile(name) {
   if (!name && name !== 0) return DEFAULT_KEYWORD_PROFILE;
   const key = normalizeKey(name);
   if (!key) return DEFAULT_KEYWORD_PROFILE;
-  if (typeof CARD_KEYWORD_EXPLANATIONS === 'object' && CARD_KEYWORD_EXPLANATIONS[key] && CARD_KEYWORD_EXPLANATIONS[key].profile) {
-    return Object.assign({}, DEFAULT_KEYWORD_PROFILE, CARD_KEYWORD_EXPLANATIONS[key].profile);
+  if (typeof CARD_KEYWORD === 'object' && CARD_KEYWORD[key] && CARD_KEYWORD[key].profile) {
+    return Object.assign({}, DEFAULT_KEYWORD_PROFILE, CARD_KEYWORD[key].profile);
   }
   // no explicit profile, return default
   return DEFAULT_KEYWORD_PROFILE;
@@ -1893,8 +1893,8 @@ function getKeywordIcon(name) {
   if (!name) return null;
   const key = normalizeKey(name);
   // Prefer keywords explanations map
-  if (CARD_KEYWORD_EXPLANATIONS[key] && CARD_KEYWORD_EXPLANATIONS[key].icon) {
-    return CARD_KEYWORD_EXPLANATIONS[key].icon;
+  if (CARD_KEYWORD[key] && CARD_KEYWORD[key].icon) {
+    return CARD_KEYWORD[key].icon;
   }
   // Try fallback icon map
   if (ICON_MAP[key]) return ICON_MAP[key];
