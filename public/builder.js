@@ -568,47 +568,121 @@ if (deleteDeckImgBtn) {
 }
 
 // VIEW DECK MODAL
+// Adds a fallback to read DEFAULT_CPU_DECKS (or window.DEFAULT_CPU_DECKS
+// or window.selectedPlayerDeck) when no card entries are found in the saved deck.
 function showDeckViewModal(deckName) {
+  // Keep original behavior: prefer saved decks mapping
   deckViewModalTitle.textContent = deckName;
   deckViewModalList.innerHTML = "";
-  const deck = decks[deckName] || {};
+  const savedDeck = (typeof decks !== 'undefined' && decks[deckName]) ? decks[deckName] : {};
   let total = 0;
-  for (const [id, count] of Object.entries(deck)) {
+  let rendered = 0;
+
+  // Render mapping-style deck entries (cardId -> count) — unchanged logic
+  for (const [id, count] of Object.entries(savedDeck)) {
     const card = dummyCards.find(c => c.id === id);
     if (!card) continue;
+
     const wrapper = document.createElement('div');
     wrapper.className = 'modal-card-wrapper';
 
     const img = document.createElement('img');
     img.className = 'modal-card-img';
     img.src = card.image;
-    img.alt = card.name;
-
-    // Add click handler to show modal
-    img.onclick = (e) => {
-      e.stopPropagation();
-      showFullCardModal(card);
-    };
+    img.alt = card.name || '';
+    (function(cardCopy){ img.onclick = function(e){ e.stopPropagation(); showFullCardModal(cardCopy); }; })(card);
 
     wrapper.appendChild(img);
 
-    // This badge is already being created per card
     const badge = document.createElement('div');
     badge.textContent = `x${count}`;
     badge.className = 'deck-card-count-badge';
     wrapper.appendChild(badge);
 
     deckViewModalList.appendChild(wrapper);
-    total += count;
+    total += Number(count) || 0;
+    rendered++;
   }
+
+  // If nothing rendered from savedDeck, try to locate a DEFAULT_CPU_DECKS entry
+  // or the window.selectedPlayerDeck (which may contain the default deck object).
+  if (rendered === 0) {
+    var fallbackDeckObj = null;
+
+    // 1) Check window.selectedPlayerDeck if it matches the name/id
+    if (window && window.selectedPlayerDeck) {
+      var sp = window.selectedPlayerDeck;
+      if (sp.id === deckName || sp.name === deckName) {
+        fallbackDeckObj = sp.deckObj || sp;
+      }
+    }
+
+    // 2) Check global DEFAULT_CPU_DECKS (module-level) if present
+    if (!fallbackDeckObj) {
+      var cpuList = null;
+      if (window && window.DEFAULT_CPU_DECKS) cpuList = window.DEFAULT_CPU_DECKS;
+      else if (typeof DEFAULT_CPU_DECKS !== 'undefined') cpuList = DEFAULT_CPU_DECKS;
+      if (Array.isArray(cpuList)) {
+        for (var i = 0; i < cpuList.length; i++) {
+          var candidate = cpuList[i];
+          if (!candidate) continue;
+          if (candidate.id === deckName || candidate.name === deckName) {
+            fallbackDeckObj = candidate;
+            break;
+          }
+        }
+      }
+    }
+
+    // If we found a fallback and it has a .cards array (DEFAULT_CPU_DECKS style), render it
+    if (fallbackDeckObj && Array.isArray(fallbackDeckObj.cards) && fallbackDeckObj.cards.length > 0) {
+      for (var j = 0; j < fallbackDeckObj.cards.length; j++) {
+        var entry = fallbackDeckObj.cards[j];
+        if (!entry || !entry.id) continue;
+        var cardEntry = dummyCards.find(function(c) { return c.id === entry.id; });
+        if (!cardEntry) continue;
+
+        var wrap = document.createElement('div');
+        wrap.className = 'modal-card-wrapper';
+
+        var im = document.createElement('img');
+        im.className = 'modal-card-img';
+        im.src = cardEntry.image;
+        im.alt = cardEntry.name || '';
+        (function(cardCopy){ im.onclick = function(e){ e.stopPropagation(); showFullCardModal(cardCopy); }; })(cardEntry);
+        wrap.appendChild(im);
+
+        var b = document.createElement('div');
+        var amt = Number(entry.amount) || 0;
+        b.textContent = 'x' + amt;
+        b.className = 'deck-card-count-badge';
+        wrap.appendChild(b);
+
+        deckViewModalList.appendChild(wrap);
+        total += amt;
+        rendered++;
+      }
+    }
+  }
+
+  // If still nothing rendered, show an informative message (helps debugging)
+  if (rendered === 0) {
+    var emptyMsg = document.createElement('div');
+    emptyMsg.style.color = '#ffe066';
+    emptyMsg.style.textAlign = 'center';
+    emptyMsg.style.padding = '18px';
+    emptyMsg.textContent = 'No cards found for this deck.';
+    deckViewModalList.appendChild(emptyMsg);
+  }
+
+  // Show modal and update title (total)
   deckViewModal.style.display = 'flex';
-  
   deckViewModalTitle.innerHTML = `
-    <span>${deckName}</span>
+    <span>${deckName || 'Deck'}</span>
     <span style="font-size:0.9em; font-weight:normal; color:#ffe066; margin-left:18px;">
       ${total} / 50 cards
     </span>
-  `;  
+  `;
 }
 closeDeckViewModalBtn.classList.add('btn-negative-secondary');
 closeDeckViewModalBtn.onclick = function() {
