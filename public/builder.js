@@ -125,9 +125,9 @@ builderBackBtn.onclick = function() {
 };
 
 // SAVING DECK
-const saveDeckBtn = document.getElementById('save-deck-btn');
-if (saveDeckBtn) {
-  saveDeckBtn.onclick = function() {
+const saveDeckImg = document.getElementById('save-deck-img');
+if (saveDeckImg) {
+  saveDeckImg.onclick = function() {
     const deck = getCurrentDeck();
     // Count dominion cards in deck
     let dominionCount = Object.entries(deck).reduce((sum, [cardId, count]) => {
@@ -795,6 +795,8 @@ function removeCardFromDeck(cardId) {
 // DECK CREATION LOGIC
 function updateDeckDisplay() {
   const deck = getCurrentDeck();
+  // Use the UL deck-list as before
+  if (!deckList) return;
   deckList.innerHTML = '';
   let total = 0;
 
@@ -811,28 +813,33 @@ function updateDeckDisplay() {
   for (const [id, count] of Object.entries(deck)) {
     const card = dummyCards.find(c => c.id === id);
     if (!card) continue;
-    const trait = card.trait ? card.trait.toLowerCase() : '';
+    const trait = card.trait ? String(card.trait).toLowerCase() : '';
     if (trait === "dominion") {
       sections.dominion.push({ card, count });
     } else if (trait === "champion") {
-        sections.champion.push({ card, count });
+      sections.champion.push({ card, count });
+    } else {
+      const cat = getCardCategory(card);
+      if (sections.hasOwnProperty(cat)) {
+        sections[cat].push({ card, count });
       } else {
-        const cat = getCardCategory(card);
-        if (sections.hasOwnProperty(cat)) {
-          sections[cat].push({ card, count });
-        }
+        // fallback to creature if unknown
+        sections.creature.push({ card, count });
       }
-      total += count;
     }
+    total += count;
+  }
+
   // Section display order
-    const sectionNames = [
-      { key: "dominion", label: "Dominion" },
-      { key: "champion", label: "Champion" },
-      { key: "creature", label: "Creatures" },
-      { key: "artifact", label: "Artifacts" },
-      { key: "spell", label: "Spells" },
-      { key: "domain", label: "Domains" }
-    ];
+  const sectionNames = [
+    { key: "dominion", label: "Dominion" },
+    { key: "champion", label: "Champion" },
+    { key: "creature", label: "Creatures" },
+    { key: "artifact", label: "Artifacts" },
+    { key: "spell", label: "Spells" },
+    { key: "domain", label: "Domains" }
+  ];
+
   // Define rarity order
   const rarityOrder = {
     legendary: 0,
@@ -840,10 +847,72 @@ function updateDeckDisplay() {
     rare: 2,
     common: 3
   };
-  
-  for (const {key, label} of sectionNames) {
-    if (sections[key].length === 0) continue;
-    sections[key].sort((a, b) => {
+
+  // Helper to create list item (image + badge) — same behavior as before but condensed
+  function makeTileLI(card, count) {
+    const li = document.createElement('li');
+    li.classList.add('deck-draggable');
+    li.setAttribute('data-card-id', card.id);
+    li.setAttribute('draggable', 'true');
+    li.style.position = li.style.position || 'relative';
+
+    // Hold handlers (preview/remove on hold/click)
+    const { startHold, clearHold, mouseUp } = makeHoldHandlers(
+      () => showFullCardModal(card),
+      () => {
+        removeCardFromDeck(card.id);
+        updateDeckDisplay();
+        renderBuilder();
+      }
+    );
+    li.addEventListener('mousedown', startHold);
+    li.addEventListener('touchstart', startHold);
+    li.addEventListener('mouseup', mouseUp);
+    li.addEventListener('touchend', mouseUp);
+    li.addEventListener('mouseleave', clearHold);
+    li.addEventListener('touchcancel', clearHold);
+
+    // Drag handlers
+    li.addEventListener('dragstart', function(e) {
+      e.dataTransfer.setData('card-id', card.id);
+      e.dataTransfer.setData('from', 'deck');
+      const img = li.querySelector('img');
+      if (img) e.dataTransfer.setDragImage(img, img.width / 2, img.height / 2);
+      li.classList.add('dragging');
+    });
+    li.addEventListener('dragend', function(e) {
+      li.classList.remove('dragging');
+    });
+
+    const img = document.createElement('img');
+    img.src = card.image;
+    img.alt = card.name || '';
+    img.className = 'deck-list-thumb';
+    img.style.width = '64px';
+    img.style.height = 'auto';
+    img.style.display = 'block';
+    li.appendChild(img);
+
+    // Counter badge
+    const badge = document.createElement('span');
+    badge.className = 'deck-count-badge';
+    badge.textContent = `×${count}`;
+    badge.setAttribute('role', 'status');
+    badge.setAttribute('aria-label', `${count} copies in deck`);
+    badge.title = `${count} in deck`;
+    li.appendChild(badge);
+
+    return li;
+  }
+
+  // Iterate sections and append items; insert divider LI between non-empty sections
+  for (let sIndex = 0; sIndex < sectionNames.length; sIndex++) {
+    const { key } = sectionNames[sIndex];
+    const items = sections[key] || [];
+    if (items.length === 0) continue;
+
+    // sort items by rarity then name
+    items.sort((a, b) => {
       const ra = (a.card.rarity || '').toLowerCase();
       const rb = (b.card.rarity || '').toLowerCase();
       const orderA = rarityOrder.hasOwnProperty(ra) ? rarityOrder[ra] : 99;
@@ -852,68 +921,33 @@ function updateDeckDisplay() {
       return a.card.name.localeCompare(b.card.name);
     });
 
-    for (const { card, count } of sections[key]) {
-      const li = document.createElement('li');
-      li.classList.add('deck-draggable');
-      li.setAttribute('data-card-id', card.id);
-      li.setAttribute('draggable', 'true');
-
-      // Ensure positioning for absolute badge
-      li.style.position = li.style.position || 'relative';
-
-      // Hold handlers (preview/remove on hold/click)
-      const { startHold, clearHold, mouseUp } = makeHoldHandlers(
-        () => showFullCardModal(card),
-        () => {
-          removeCardFromDeck(card.id);
-          updateDeckDisplay();
-          renderBuilder();
-        }
-      );
-      li.addEventListener('mousedown', startHold);
-      li.addEventListener('touchstart', startHold);
-      li.addEventListener('mouseup', mouseUp);
-      li.addEventListener('touchend', mouseUp);
-      li.addEventListener('mouseleave', clearHold);
-      li.addEventListener('touchcancel', clearHold);
-
-      // Drag handlers
-      li.addEventListener('dragstart', function(e) {
-        e.dataTransfer.setData('card-id', card.id);
-        e.dataTransfer.setData('from', 'deck');
-        const img = li.querySelector('img');
-        if (img) e.dataTransfer.setDragImage(img, img.width / 2, img.height / 2);
-        li.classList.add('dragging');
-      });
-      li.addEventListener('dragend', function(e) {
-        li.classList.remove('dragging');
-      });
-
-      // Thumbnail
-      const img = document.createElement('img');
-      img.src = card.image;
-      img.alt = card.name;
-      img.className = 'deck-list-thumb';
-      img.style.width = '64px';
-      img.style.height = 'auto';
-      img.style.display = 'block';
-      li.appendChild(img);
-
-      // COUNTER BADGE (accessible)
-      const badge = document.createElement('span');
-      badge.className = 'deck-count-badge';
-      badge.textContent = `×${count}`;
-      badge.setAttribute('role', 'status');
-      badge.setAttribute('aria-label', `${count} copies in deck`);
-      badge.title = `${count} in deck`;
-      li.appendChild(badge);
-
+    // Append tile items for this section
+    for (const { card, count } of items) {
+      const li = makeTileLI(card, count);
       deckList.appendChild(li);
     }
+
+    // Add a divider between groups if there is a later non-empty section
+    let hasLater = false;
+    for (let j = sIndex + 1; j < sectionNames.length; j++) {
+      if ((sections[sectionNames[j].key] || []).length > 0) {
+        hasLater = true;
+        break;
+      }
+    }
+    if (hasLater) {
+      const divLi = document.createElement('li');
+      divLi.className = 'deck-list-divider';
+      divLi.setAttribute('aria-hidden', 'true');
+      deckList.appendChild(divLi);
+    }
   }
-  // Update total somewhere in the UI as needed
-  const cardCount = document.getElementById('deck-card-count');
-  if (cardCount) cardCount.textContent = total;
+
+  // Update total in both possible UI elements (compat)
+  const cardCountEl = document.getElementById('card-count');
+  if (cardCountEl) cardCountEl.textContent = total;
+  const deckCardCountEl = document.getElementById('deck-card-count');
+  if (deckCardCountEl) deckCardCountEl.textContent = `${total} / 50`;
 }
 function getCardCategory(card) {
   return card.category ? card.category.toLowerCase() : '';
