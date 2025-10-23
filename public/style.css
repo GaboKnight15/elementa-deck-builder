@@ -1424,6 +1424,28 @@ button {}
   border: 1px solid rgba(255,255,255,0.03);
   box-shadow: 0 6px 18px rgba(0,0,0,0.45) inset;
 }
+/* Divider between groups in deck list */
+#deck-list li.deck-list-divider {
+  list-style: none;
+  width: 100%;
+  height: 10px; /* spacer height; adjust if you want thinner */
+  display: block;
+  position: relative;
+  margin: 10px 0;
+}
+#deck-list li.deck-list-divider::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 50%;
+  height: 2px;
+  transform: translateY(-50%);
+  background: #222;
+  border-radius: 2px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+}
+
 /* Each draggable list item */
 li.deck-draggable {
   position: relative; /* so badges can be absolute positioned */
