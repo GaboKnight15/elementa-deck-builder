@@ -192,7 +192,7 @@ function renderDeckSelection() {
   const grid = document.getElementById('deck-selection-grid');
   grid.innerHTML = '';
 
-  // Always 9 slots (fill with deck names, then "Empty Slot")
+  // 12 slots //
   for (let i = 0; i < 12; i++) {
     const slotName = deckSlots[i];
     const tile = document.createElement('div');
@@ -795,7 +795,6 @@ function removeCardFromDeck(cardId) {
 // DECK CREATION LOGIC
 function updateDeckDisplay() {
   const deck = getCurrentDeck();
-  const deckList = document.getElementById('deck-list');
   deckList.innerHTML = '';
   let total = 0;
 
