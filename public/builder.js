@@ -899,21 +899,6 @@ function updateDeckDisplay() {
       img.style.display = 'block';
       li.appendChild(img);
 
-      // Optional meta (name / rarity)
-      const meta = document.createElement('div');
-      meta.className = 'card-meta';
-      const nameDiv = document.createElement('div');
-      nameDiv.className = 'card-name';
-      nameDiv.textContent = card.name;
-      const subDiv = document.createElement('div');
-      subDiv.className = 'card-sub';
-      subDiv.textContent = `${(card.rarity || '').toUpperCase()} • ${card.type || ''}`;
-      subDiv.style.fontSize = '12px';
-      subDiv.style.opacity = '0.8';
-      meta.appendChild(nameDiv);
-      meta.appendChild(subDiv);
-      li.appendChild(meta);
-
       // COUNTER BADGE (accessible)
       const badge = document.createElement('span');
       badge.className = 'deck-count-badge';
