@@ -1,6 +1,5 @@
 const DEFAULT_CPU_DECKS = [
-  {
-    id: 'green',
+  { id: 'Sylvan1',
     name: 'Verdant Might',
     color: 'green',
     difficulty: '⭐',
@@ -26,8 +25,7 @@ const DEFAULT_CPU_DECKS = [
       // ... etc
     ]
   },
-  {
-    id: 'red',
+  { id: 'Inferno1',
     name: 'Ember Tyranny',
     color: 'red',
     difficulty: '⭐',
@@ -46,8 +44,7 @@ const DEFAULT_CPU_DECKS = [
       // ... etc
     ]
   },
-    {
-    id: 'blue',
+  { id: 'Tidal1',
     name: 'Tidebound Will',
     color: 'blue',
     difficulty: '⭐',
@@ -63,8 +60,7 @@ const DEFAULT_CPU_DECKS = [
       // ... etc
     ]
   },
-  {
-    id: 'yellow',
+  { id: 'Tempest1',
     name: 'Surgecallers Rite',
     color: 'yellow',
     difficulty: '⭐',
@@ -79,25 +75,7 @@ const DEFAULT_CPU_DECKS = [
       // ... etc
     ]
   },
-  {
-    id: 'purple',
-    name: 'Venom Bloom',
-    color: 'purple',
-    difficulty: '⭐',
-    image: 'CardImages/Avatars/Goblin.png',
-    bannerArt: 'CardImages/Banners/PurpleBanner.png',
-    cardbackArt: 'OtherImages/Cardbacks/CBGoblins.png',
-    cards: [
-      { id: 'Virkul', amount: 1 },
-      { id: 'Goblin', amount: 4 },
-      { id: 'PlagueThornTalisman', amount: 4 },
-      { id: 'EssenceBreak', amount: 4 },
-      { id: 'Swamp', amount: 4 },
-      // ... etc
-    ]
-  },
-  {
-    id: 'gray',
+  { id: 'Terra1',
     name: 'Ironroot Vow',
     color: 'gray',
     difficulty: '⭐',
@@ -114,8 +92,41 @@ const DEFAULT_CPU_DECKS = [
       // ... etc
     ]
   },
-  {
-    id: 'black',
+  { id: 'Cursed1',
+    name: 'Venom Bloom',
+    color: 'purple',
+    difficulty: '⭐',
+    image: 'CardImages/Avatars/Goblin.png',
+    bannerArt: 'CardImages/Banners/PurpleBanner.png',
+    cardbackArt: 'OtherImages/Cardbacks/CBGoblins.png',
+    cards: [
+      { id: 'Virkul', amount: 1 },
+      { id: 'Goblin', amount: 4 },
+      { id: 'PlagueThornTalisman', amount: 4 },
+      { id: 'EssenceBreak', amount: 4 },
+      { id: 'Swamp', amount: 4 },
+      // ... etc
+    ]
+  },
+
+  { id: 'Radiant1',
+    name: 'Radiant Oath',
+    color: 'white',
+    difficulty: '⭐',
+    image: 'CardImages/Avatars/AngelicWarrior.png',
+    bannerArt: 'CardImages/Banners/WhiteBanner.png',
+    cardbackArt: 'OtherImages/Cardbacks/WhiteCardback.png',
+    cards: [
+      { id: 'Solmara', amount: 1 },
+      { id: 'AngelicWarrior', amount: 4 },
+      { id: 'basicfirepixie', amount: 4 },
+      { id: 'LumenSpire', amount: 4 },
+      { id: 'EssenceBlessing', amount: 4 },
+      { id: 'Plains', amount: 4 },
+      // ... etc
+    ]
+  },
+  { id: 'Umbral1',
     name: 'Shadowy Descent',
     color: 'black',
     difficulty: '⭐',
@@ -135,26 +146,10 @@ const DEFAULT_CPU_DECKS = [
       // ... etc
     ]
   },
-  {
-    id: 'white',
-    name: 'Radiant Oath',
-    color: 'white',
-    difficulty: '⭐',
-    image: 'CardImages/Avatars/AngelicWarrior.png',
-    bannerArt: 'CardImages/Banners/WhiteBanner.png',
-    cardbackArt: 'OtherImages/Cardbacks/WhiteCardback.png',
-    cards: [
-      { id: 'Solmara', amount: 1 },
-      { id: 'AngelicWarrior', amount: 4 },
-      { id: 'basicfirepixie', amount: 4 },
-      { id: 'LumenSpire', amount: 4 },
-      { id: 'EssenceBlessing', amount: 4 },
-      { id: 'Plains', amount: 4 },
-      // ... etc
-    ]
-  },
-  {
-    id: 'Fairy',
+// -------------- //  
+// --- TIER 2 --- //
+// -------------- //
+  { id: 'Fairy2',
     name: 'Everbloom Harmony',
     color: ['green', 'white'],
     difficulty: '⭐⭐',
@@ -179,8 +174,7 @@ const DEFAULT_CPU_DECKS = [
       // ... etc
     ]
   },
-  {
-    id: 'Satyr',
+  { id: 'Satyr2',
     name: 'Thornwine Chorus',
     color: ['green', 'purple'],
     difficulty: '⭐⭐',
@@ -205,8 +199,7 @@ const DEFAULT_CPU_DECKS = [
       // ... etc
     ]
   },
-  {
-    id: 'Treant',
+  { id: 'Treant2',
     name: 'Oakhaven Awakening',
     color: ['green', 'black'],
     difficulty: '⭐⭐',
@@ -231,8 +224,7 @@ const DEFAULT_CPU_DECKS = [
       // ... etc
     ]
   },
-  {
-    id: 'Golems',
+  { id: 'Golem2',
     name: 'Forgebound Titans',
     color: ['red','gray'],
     difficulty: '⭐⭐',
@@ -256,8 +248,39 @@ const DEFAULT_CPU_DECKS = [
       // ... etc
     ]
   },
+// -------------- //  
+// --- TIER 3 --- //
+// -------------- //
   {
-    id: 'Firelands',
+    id: 'Fairy3',
+    name: 'Everbloom Harmony',
+    color: ['green', 'white'],
+    difficulty: '⭐⭐',
+    image: 'CardImages/Avatars/Fairy.png',
+    bannerArt: 'CardImages/Banners/GreenBanner.png',
+    cardbackArt: 'OtherImages/Cardbacks/CBFairy.png',
+    cards: [
+      { id: 'Verdara', amount: 1 },
+      { id: 'SylvaniaThornEmpress', amount: 1 },      
+      { id: 'ForestFairy', amount: 4 },
+      { id: 'FairyWarrior', amount: 4 },
+      { id: 'ForestGoblin', amount: 4 },
+      { id: 'FairyDrakeling', amount: 4 },
+      { id: 'WyrmofThornsandSunfire', amount: 2 },
+      { id: 'FairyAmphitere', amount: 1 },
+      { id: 'HeartwoodRelic', amount: 4 },
+      { id: 'LifeGrowth', amount: 4 },
+      { id: 'VerdantRebirth', amount: 3 },
+      { id: 'EssenceSurge', amount: 4 },
+      { id: 'FairyFountain', amount: 3 },
+      { id: 'Forest', amount: 4 },
+      // ... etc
+    ]
+  },
+// -------------- //  
+// --- TIER 4 --- //
+// -------------- //
+  { id: 'Golem4',
     name: 'Forgebound Titans',
     color: ['red','gray'],
     difficulty: '⭐⭐⭐⭐',
@@ -281,8 +304,10 @@ const DEFAULT_CPU_DECKS = [
       // ... etc
     ]
   },
-  {
-    id: 'Firelands',
+// -------------- //  
+// --- TIER 5 --- //
+// -------------- //
+  { id: 'Golem5',
     name: 'Forgebound Titans',
     color: ['red','gray'],
     difficulty: '⭐⭐⭐⭐⭐',
@@ -306,8 +331,35 @@ const DEFAULT_CPU_DECKS = [
       // ... etc
     ]
   },
-  {
-    id: 'Firelands',
+  { id: 'Fairy5',
+    name: 'Everbloom Harmony',
+    color: ['green', 'white'],
+    difficulty: '⭐⭐⭐⭐⭐',
+    image: 'CardImages/Avatars/Fairy.png',
+    bannerArt: 'CardImages/Banners/GreenBanner.png',
+    cardbackArt: 'OtherImages/Cardbacks/CBFairy.png',
+    cards: [
+      { id: 'Verdara', amount: 1 },
+      { id: 'SylvaniaThornEmpress', amount: 1 },      
+      { id: 'ForestFairy', amount: 4 },
+      { id: 'FairyWarrior', amount: 4 },
+      { id: 'ForestGoblin', amount: 4 },
+      { id: 'FairyDrakeling', amount: 4 },
+      { id: 'WyrmofThornsandSunfire', amount: 2 },
+      { id: 'FairyAmphitere', amount: 1 },
+      { id: 'HeartwoodRelic', amount: 4 },
+      { id: 'LifeGrowth', amount: 4 },
+      { id: 'VerdantRebirth', amount: 3 },
+      { id: 'EssenceSurge', amount: 4 },
+      { id: 'FairyFountain', amount: 3 },
+      { id: 'Forest', amount: 4 },
+      // ... etc
+    ]
+  },
+// -------------- //  
+// --- TIER 6 --- //
+// -------------- //
+  { id: 'Golem6',
     name: 'Forgebound Titans',
     color: ['red','gray'],
     difficulty: '⭐⭐⭐⭐⭐⭐',
