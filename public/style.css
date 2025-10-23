@@ -1417,17 +1417,12 @@ button {}
   margin: 0;
   padding: 6px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 10px;
-  width: 260px;                     /* adjust width to taste */
-  max-height: calc(100vh - 220px);  /* keep it scrollable within the viewport */
   overflow-y: auto;
-  overflow-x: hidden;
-  background: rgba(255,255,255,0.015);
   border-radius: 10px;
   border: 1px solid rgba(255,255,255,0.03);
   box-shadow: 0 6px 18px rgba(0,0,0,0.45) inset;
-  padding-right: 8px; /* room for scrollbar */
 }
 /* Each draggable list item */
 li.deck-draggable {
