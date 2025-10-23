@@ -385,7 +385,58 @@ const DEFAULT_CPU_DECKS = [
   },
   // ...repeat for other colors
 ];
+// --- Helper: resolve simple color tokens to CSS colors (extend mapping as needed) ---
+const NAMED_COLOR_MAP = {
+  green: '#2aa64f',
+  red: '#e74c3c',
+  blue: '#2e9afe',
+  yellow: '#ffd24d',
+  gray: '#9aa0a6',
+  purple: '#b36be4',
+  white: '#fff8e6',
+  black: '#222'
+};
+function resolveColorToken(token) {
+  if (!token) return '#ffe066';
+  if (typeof token !== 'string') return '#ffe066';
+  const t = token.toLowerCase();
+  return NAMED_COLOR_MAP[t] || token; // if it's already a hex or css value, return it
+}
 
+// Escape HTML to avoid injection in inserted overlays
+function escapeHtml(s) {
+  if (s === undefined || s === null) return '';
+  return String(s).replace(/[&<>"']/g, function (m) {
+    return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m];
+  });
+}
+
+// --- Helper: generate deck name overlay HTML (single color OR two-color split) ---
+// For two colors we render:
+//  - two background halves (left/right) with the two colors
+//  - two identical text elements clipped to left and right halves so letters appear half-colored
+function getDeckNameOverlayHtml(deck) {
+  const name = escapeHtml(deck && deck.name ? deck.name : '');
+  const color = deck && deck.color ? deck.color : null;
+
+  // Two-color split
+  if (Array.isArray(color) && color.length >= 2) {
+    const left = resolveColorToken(color[0]);
+    const right = resolveColorToken(color[1]);
+    return `
+      <div class="deck-name-split" aria-hidden="true">
+        <div class="deck-name-bg left" style="background:${left};"></div>
+        <div class="deck-name-bg right" style="background:${right};"></div>
+        <div class="deck-name-text left">${name}</div>
+        <div class="deck-name-text right">${name}</div>
+      </div>
+    `;
+  }
+
+  // Single color — keep the existing style (dark translucent background + colored text)
+  const c = Array.isArray(color) ? resolveColorToken(color[0]) : resolveColorToken(color);
+  return `<div class="deck-name" style="position:absolute;bottom:0;width:100%;background:rgba(10,12,20,0.84);color:${c};letter-spacing:0.5px;padding:6px 0;z-index:2;text-align:center;font-weight:bold;">${name}</div>`;
+}
 // Handle mode selection
 function showCpuDeckModal() {
   const modal = document.getElementById('cpu-deck-modal');
@@ -464,10 +515,7 @@ function renderDeckOptions() {
     div.innerHTML = `
       <div style="position:relative;width:100%;height:100%;">
         <img src="${deck.image}" alt="${deck.name}" class="deck-art-img" style="width:100%;height:100%;object-fit:cover;border-radius:16px;">
-        <div class="deck-name"
-          style="position:absolute;bottom:0;width:100%;background:rgba(10,12,20,0.84);color:${deck.color};letter-spacing:0.5px;padding:4px 0 4px 0;z-index:2;">
-          ${deck.name}
-        </div>
+        ${getDeckNameOverlayHtml(deck)}
         <div class="deck-difficulty"
           style="position:absolute;top:1px;left:1px;z-index:3;">
           <span style="background:rgba(0,0,0,0.65);border-radius:50%;padding:3px 3px;">
@@ -611,10 +659,7 @@ function showPlayerDeckModal() {
 div.innerHTML = `
   <div style="position:relative;width:100%;height:100%;">
     <img src="${deck.image}" alt="${deck.name}" class="deck-art-img" style="width:100%;height:100%;object-fit:cover;border-radius:16px;">
-    <div class="deck-name"
-      style="position:absolute;bottom:0;width:100%;background:rgba(10,12,20,0.84);color:${deck.color};letter-spacing:0.5px;padding:4px 0 4px 0;z-index:2;">
-      ${deck.name}
-    </div>
+        ${getDeckNameOverlayHtml(deck)}
   </div>
 `;
 div.onclick = () => {
