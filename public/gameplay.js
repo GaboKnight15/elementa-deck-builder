@@ -169,7 +169,7 @@ const STATUS_EFFECTS = {
   Freeze: {
     icon: 'OtherImages/Icons/Freeze.png',
     name: 'Freeze',
-    description: 'Cannot attack for 1 turn.',
+    description: 'Cannot attack, use skills and receive damage.',
     duration: 1,
     tick: "allEnd", // Decrement on every End Phase
     apply: (cardObj) => {
@@ -243,7 +243,7 @@ const STATUS_EFFECTS = {
 Bind: {
   icon: 'OtherImages/Icons/Bind.png',
   name: 'Bind',
-  description: 'Cannot attack or activate skills while bound (removed at next opponent End Phase).',
+  description: 'Cannot attack or activate skills (removed at next opponent End Phase).',
   // Don't set duration here, handle it in your end phase check!
   apply: function(cardObj) {
     cardObj._bound = true;
@@ -305,7 +305,7 @@ const TARGET_FILTER_ABILITY = {
   Flying: {
     icon: 'OtherImages/Icons/Flying.png',
     name: 'Flying',
-    description: 'Ignores color protection, but only Flying or Ranged can block/retaliate Flying.',
+    description: 'Ignores color protection, but only Flying or Ranged can block/attack Flying. Speed {1}',
     filter: (attacker, targets) => {
       // Flying ignores color protection (handled outside), so here: allow all
       return targets;
@@ -314,7 +314,7 @@ const TARGET_FILTER_ABILITY = {
   Ranged: {
     icon: 'OtherImages/Icons/Ranged.png',
     name: 'Ranged',
-    description: 'Can attack Flying; does not receive retaliation from non-Ranged defenders.',
+    description: 'Can attack Flying; Speed {1}.',
     filter: (attacker, targets) => {
       // Ranged can attack Flying, and vice versa; don't restrict targets
       return targets;
@@ -706,7 +706,7 @@ const SKILL_EFFECT_MAP = {
 Strike: {
   icon: 'OtherImages/skillEffect/Strike.png',
   name: 'Strike',
-  description: 'Deals damage to a single target.',
+  description: 'Deals damage.',
   // Now using (sourceCardObj, skillObj, step, nextEffect)
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
     // For your rule: any card on the field can be a target (player+opponent, creatures+domains)
@@ -724,31 +724,31 @@ Strike: {
 Burn: {
   icon: 'OtherImages/skillEffect/Burn.png',
   name: 'Burn',
-  description: 'Deals damage and applies Burn status.',
+  description: 'Deals damage and burns.',
   handler: effectStatusHandler('Burn')
 },
 Poison: {
   icon: 'OtherImages/skillEffect/Poison.png',
   name: 'Poison',
-  description: 'Deals damage and applies Poison status.',
+  description: 'Deals damage and poisons.',
   handler: effectStatusHandler('Poison')
 },
 Freeze: {
   icon: 'OtherImages/skillEffect/Freeze.png',
   name: 'Freeze',
-  description: 'Deals damage and applies Freeze status.',
+  description: 'Deals damage and freezes.',
   handler: effectStatusHandler('Freeze')
 },
 Paralysis: {
   icon: 'OtherImages/skillEffect/Paralysis.png',
   name: 'Paralysis',
-  description: 'Deals damage and applies Paralysis status.',
+  description: 'Deals damage and paralyzes.',
   handler: effectStatusHandler('Paralysis')
 },
 Bind: {
   icon: 'OtherImages/skillEffect/Bind.png',
   name: 'Bind',
-  description: 'Deals damage and applies Bind status.',
+  description: 'Deals damage and binds.',
   handler: effectStatusHandler('Bind')
 },
   /*
@@ -778,7 +778,7 @@ Burst: {
 Dash: {
   icon: 'OtherImages/skillEffect/Dash.png',
   name: 'Dash',
-  description: 'Summon this card from your hand to the field. It enters with half its base HP (rounded up).',
+  description: 'Summon this card from your hand with half HP (rounded up).',
   // Updated signature: accepts (sourceCardObj, skillObj, step, nextEffect)
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
     // Only activate if in hand
@@ -832,7 +832,7 @@ Dash: {
 Reanimate: {
   icon: 'OtherImages/skillEffect/Reanimate.png',
   name: 'Reanimate',
-  description: 'Return this card from the void to the field.',
+  description: 'Summon this card from the void.',
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
     // Only resolve if card is in void
     const isVoid = gameState.playerVoid.includes(sourceCardObj);
@@ -877,7 +877,7 @@ Reanimate: {
 Awaken: {
   icon: 'OtherImages/skillEffect/Awaken.png',
   name: 'Awaken',
-  description: 'Summon this card from your deck to the field.',
+  description: 'Summon this card from your deck.',
   handler: function(sourceCardObj, skillObj) {
     // Only activate if in deck
     const isDeck = gameState.playerDeck.includes(sourceCardObj);
@@ -1073,7 +1073,7 @@ Destroy: {
   Revive: {
     icon: 'OtherImages/skillEffect/Revive.png',
     name: 'Revive',
-    description: 'Revive a card from your void to the field.',
+    description: 'Revive a card from your void.',
     handler: function(sourceCardObj, skillObj) {
       const res = skillObj.resolution || {};
       const filterKeys = Object.keys(res).filter(k => !['zone', 'type', 'effect'].includes(k));
@@ -1218,7 +1218,7 @@ Banish: {
 Seal: {
   icon: "OtherImages/skillEffect/Seal.png",
   name: "Seal",
-  description: "Disables all skills on the target card until Seal is removed.",
+  description: "Disables all skills on the target until Seal is removed.",
   handler: function(sourceCardObj, skillObj, effectStep, nextEffect) {
     // Assume effectStep.target is the target cardObj or its instanceId
     let target = effectStep.target;
