@@ -1403,9 +1403,8 @@ button {}
   flex-direction: row;
   align-items: center;
   overflow-x: auto;
-  width: 100%;
   background: #232a3c;
-  margin: 8px 0;
+  margin: 8px;
   border-radius: 16px;
   box-shadow: 0 2px 12px #0003;
   padding: 8px 12px;
@@ -1505,12 +1504,12 @@ li.deck-draggable .card-meta {
 }
 .deck-count-badge {
   position: absolute;
-  right: 8px;
-  top: 8px;
+  left: 0;
+  top: 0;
   background: rgba(0,0,0,0.65);
-  color: #fff;
-  font-weight: 700;
-  font-size: 12px;
+  color: #ffdb64;
+  font-weight: bold;
+  font-size: 10px;
   padding: 4px 8px;
   border-radius: 12px;
   border: 1px solid rgba(255,255,255,0.06);
@@ -1536,11 +1535,7 @@ li.deck-draggable .card-meta {
   background: #ffe066;
   border-radius: 4px;
 }
-#deck-panel > ul, #deck-panel > .deck-list {
-  margin: 0;
-  padding: 0;
-  /* let the parent handle the scrolling */
-}
+
 .card-unavailable {
     opacity: 0.5;
     filter: grayscale(0.7);
@@ -1781,19 +1776,6 @@ li.deck-draggable .card-meta {
   background: transparent;
 }
 
-/* Responsive layout: shrink deck-list on narrow screens */
-@media (max-width: 900px) {
-  #deck-list {
-    width: 200px;
-    max-height: calc(100vh - 160px);
-  }
-  li.deck-draggable img { width: 56px; }
-}
-@media (max-width: 520px) {
-  #deck-list { width: 160px; }
-  li.deck-draggable img { width: 48px; }
-  .deck-count-badge { font-size: 11px; padding: 3px 6px; }
-}
 #deck-list li {
   margin: 0.3em 0;
   display: flex;
@@ -1817,10 +1799,7 @@ li.deck-draggable .card-meta {
 .btn-add:disabled {
   background-color: gray;
 }
-.deck-count-badge {
-  color: #ffdb64;
-  font-weight: bold;
-}
+
 .deck-card-count-badge {
   position: absolute;
   top: 0;
