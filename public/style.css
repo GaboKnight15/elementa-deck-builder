@@ -2798,7 +2798,6 @@ button[disabled], .btn-disabled {
 }
 .deck-name {
   pointer-events: none;
-  
 }
 .cpu-deck-option .deck-name, .default-player-deck-option .deck-name {
   font-weight: bold;
@@ -2828,7 +2827,58 @@ button[disabled], .btn-disabled {
   font-size: 1.05em;
   text-align: center;
 }
+/* Split two-color deck name overlay (left/right halves) */
+.deck-name-split {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  z-index: 2;
+  overflow: visible;
+  pointer-events: none;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 0.5px;
+  font-size: 0.95em;
+}
 
+/* background halves */
+.deck-name-split .deck-name-bg {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  opacity: 0.92;
+  z-index: 1;
+}
+.deck-name-split .deck-name-bg.left { left: 0; border-bottom-left-radius: 8px; }
+.deck-name-split .deck-name-bg.right { right: 0; border-bottom-right-radius: 8px; }
+
+/* text halves — each contains the full name but clipped to half width */
+.deck-name-split .deck-name-text {
+  position: absolute;
+  bottom: 6px;
+  width: 50%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: clip;
+  z-index: 2;
+  color: rgba(6,6,8,0.98); /* dark text for contrast; adjust if you prefer light text */
+  font-weight: 800;
+  padding: 0 6px;
+  box-sizing: border-box;
+}
+/* left text sits on left half, center-aligned inside its half */
+.deck-name-split .deck-name-text.left {
+  left: 0;
+  text-align: left;
+}
+/* right text sits on right half */
+.deck-name-split .deck-name-text.right {
+  right: 0;
+  text-align: right;
+}
 
 /* BATTLEFIELD CSS */
 #battlefield {
