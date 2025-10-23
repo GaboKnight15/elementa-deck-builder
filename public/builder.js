@@ -45,6 +45,8 @@ const deckCardbackModal = document.getElementById('deck-cardback-modal');
 const deckCardbackArtList = document.getElementById('deck-cardback-art-list');
 const closeDeckCardbackModalBtn = document.getElementById('close-deck-cardback-modal');
 
+let deckBuilderDraft = null;   // null = not currently editing; object = current draft mapping cardId->count
+let deckBuilderDirty = false;  // true when draft differs from saved deck
 let showFavoritesOnlyBuilder = false;
 
 // Cardback options (expand as needed)
@@ -105,41 +107,67 @@ document.addEventListener('DOMContentLoaded', function() {
     };
   }
 });
-builderBackBtn.onclick = function() {
-  // Check for unsaved changes before returning to deck selection
-  if (typeof deckBuilderHasUnsavedChanges === "function" && deckBuilderHasUnsavedChanges()) {
-    showToast("Any unsaved changes will be lost");
-    if (confirm("Any unsaved changes will be lost. Are you sure you want to leave?")) {
-      // Clear unsaved draft from localStorage
-      const deckId = currentDeckSlot || selectedDeckId;
-      if (deckId) {
-        localStorage.removeItem(`deckbuilder_draft_${deckId}`);
-      }
-      // Optionally clear draft in memory
-      deckBuilderDraft = null;
-      showDeckSelection();
-    }
-  } else {
-    showDeckSelection();
+window.addEventListener('beforeunload', function(e) {
+  if (deckBuilderDirty) {
+    const confirmationMessage = 'You have unsaved changes. Changes made will NOT be saved. Proceed anyway?';
+    (e || window.event).returnValue = confirmationMessage; // Gecko + IE
+    return confirmationMessage; // Webkit, etc.
   }
-};
-
+});
+if (builderBackBtn) {
+  builderBackBtn.addEventListener('click', function (ev) {
+    // If there are unsaved changes, confirm before leaving
+    if (typeof deckBuilderDirty !== 'undefined' && deckBuilderDirty) {
+      const ok = confirm("Changes made will not be saved. Proceed anyway?");
+      if (!ok) {
+        return; // user cancelled, stay in builder
+      }
+      // user confirmed — discard draft so UI reflects saved deck
+      if (typeof discardDeckDraft === 'function') discardDeckDraft();
+    }
+    // Navigate back to deck selection (explicit, reliable)
+    if (typeof showDeckSelection === 'function') {
+      showDeckSelection();
+    } else {
+      // Fallback: hide builder UI and show deck-selection elements manually
+      const dsHeader = document.getElementById('deck-selection-header');
+      const builderHeader = document.getElementById('builder-header');
+      if (dsHeader) dsHeader.style.display = 'flex';
+      if (builderHeader) builderHeader.style.display = 'none';
+      if (deckSelectionGrid) deckSelectionGrid.style.display = '';
+      if (deckBuilderUI) deckBuilderUI.style.display = 'none';
+      if (builderContainer) builderContainer.classList.add('flex-layout');
+    }
+  });
+}
+function deckBuilderHasUnsavedChanges() {
+  return !!deckBuilderDirty;
+}
 // SAVING DECK
-const saveDeckImg = document.getElementById('save-deck-img');
+// Update save handler to commit a draft if present
+const saveDeckImg = document.getElementById('save-deck-img') || document.getElementById('save-deck-btn');
 if (saveDeckImg) {
   saveDeckImg.onclick = function() {
-    const deck = getCurrentDeck();
-    // Count dominion cards in deck
-    let dominionCount = Object.entries(deck).reduce((sum, [cardId, count]) => {
+    // Validate dominion count on the draft (if editing) or the saved deck if not
+    const deckToCheck = deckBuilderDraft !== null ? deckBuilderDraft : (getCurrentDeck() || {});
+    const dominionCount = Object.entries(deckToCheck).reduce((sum, [cardId, count]) => {
       const card = dummyCards.find(c => c.id === cardId);
-      return sum + ((card && card.trait && card.trait.toLowerCase() === 'dominion') ? count : 0);
+      return sum + ((card && card.trait && String(card.trait).toLowerCase() === 'dominion') ? Number(count) : 0);
     }, 0);
     if (dominionCount !== 1) {
       showToast("Deck must have exactly one Dominion card.", { type: "error" });
       return;
     }
-    saveProgress();
-    showToast("Deck saved!", { type: "success" });
+
+    // If a draft exists, commit it; otherwise fall back to saving as before
+    if (deckBuilderDraft !== null) {
+      commitDeckDraft();
+      showToast("Deck saved!", { type: "success" });
+    } else {
+      // original save behavior (in case other code calls save when not editing)
+      saveProgress();
+      showToast("Deck saved!", { type: "success" });
+    }
   };
 }
 const deckSelectionSettingsBtn = document.getElementById('deck-selection-settings-btn');
@@ -184,6 +212,7 @@ function showDeckBuilder() {
   builderContainer.style.display = '';
   builderContainer.classList.remove('flex-layout');
   deckPanel.style.display = '';
+  if (currentDeckSlot) startDeckEditing(currentDeckSlot);
   updateDeckDisplay();
   renderBuilder();
 }
@@ -587,12 +616,24 @@ closeDeckViewModalBtn.onclick = function() {
 };
 
 function getCurrentDeck() {
-    return decks[currentDeckSlot] || {};
-  }
+  // Return the draft while editing, otherwise the saved deck
+  if (deckBuilderDraft !== null) return deckBuilderDraft;
+  return decks[currentDeckSlot] || {};
+}
+
 function setCurrentDeck(deckObj) {
+  // If editing, update the draft and mark dirty; otherwise update the saved deck as before
+  if (deckBuilderDraft !== null) {
+    deckBuilderDraft = deckObj || {};
+    deckBuilderDirty = true;
+    // update UI to reflect changes
+    updateDeckDisplay();
+    renderBuilder();
+  } else {
     decks[currentDeckSlot] = deckObj;
     if (window.renderModePlayerDeckTile) window.renderModePlayerDeckTile();
   }
+}
 // ==========================
 // === RENDERING CARDS ===
 // ==========================
@@ -783,6 +824,34 @@ document.addEventListener('drop', function(e) {
     renderBuilder();
   }
 });
+function startDeckEditing(slotName) {
+  // Start editing the given deck slot by cloning the saved deck into the draft.
+  deckBuilderDraft = JSON.parse(JSON.stringify(decks[slotName] || {}));
+  deckBuilderDirty = false;
+  currentDeckSlot = slotName;
+}
+
+function discardDeckDraft() {
+  // Cancel editing and discard the draft.
+  deckBuilderDraft = null;
+  deckBuilderDirty = false;
+  // Re-render UI from the saved deck
+  updateDeckDisplay();
+  renderBuilder();
+}
+
+function commitDeckDraft() {
+  // Commit draft into the authoritative decks object and persist
+  if (!currentDeckSlot) return;
+  decks[currentDeckSlot] = JSON.parse(JSON.stringify(deckBuilderDraft || {}));
+  deckBuilderDirty = false;
+  deckBuilderDraft = null;
+  saveProgress(); // existing persistence method in your codebase
+  // Refresh UIs
+  renderDeckSelection();
+  updateDeckDisplay();
+  renderBuilder();
+}
 // --- Utility for removing a card from deck (removes one copy) --- //
 function removeCardFromDeck(cardId) {
   const deck = getCurrentDeck();
