@@ -1588,10 +1588,10 @@ armor: {name: "Armor", description: "Secondary sustain stat. Units loss armor fi
 veil: {name: "Veil", description: "Cannot be targeted by skills.", icon: "OtherImages/StatIcons/Veil.png" },
 immunity: {name: "Immunity", description: "Unaffected by status ailments.", icon: "OtherImages/StatIcons/Immunity.png" },
 ambush: {name: "Ambush", description: "Cannot be targeted by opponent's attacks or skills. Unit is revealed after attacking or using a skill", icon: "OtherImages/StatIcons/Ambush.png" },
-flying: {name: "Flying", description: "Can only be blocked by other units with Flying or Ranged. Gain {1} Speed.", icon: "OtherImages/StatIcons/Flying.png" },
-ranged: {name: "Ranged", description: "Can attack units with Flying and Dive. Gain {1} Speed.", icon: "OtherImages/StatIcons/Ranged.png" },
+flying: {name: "Flying", description: "Can only be blocked by other units with Flying or Ranged. Speed {1}.", icon: "OtherImages/StatIcons/Flying.png" },
+ranged: {name: "Ranged", description: "Can attack units with Flying and Dive. Speed {1}.", icon: "OtherImages/StatIcons/Ranged.png" },
 
-rush: {name: "Rush", description: "Can attack on the turn it is played. Gain {1} Speed.", icon: "OtherImages/StatIcons/Rush.png" },
+rush: {name: "Rush", description: "Can attack on the turn it is played. Speed {1}.", icon: "OtherImages/StatIcons/Rush.png" },
 drain: {name: "Drain", description: "When this unit deals damage, gain that much life.", icon: "OtherImages/StatIcons/Drain.png" },
 pierce: {name: "Pierce", description: "Ignores armor."},
 
