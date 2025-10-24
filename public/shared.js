@@ -2053,7 +2053,110 @@ function getKeywordIcon(name) {
   }
   return null;
 }
+// --- Inline icon parsing helpers (use CARD_KEYWORD map from shared.js) ---
+// Looks up the token in CARD_KEYWORD (supports string value or object with .icon/.image path)
+function getKeywordIconPath(token) {
+  if (!token) return null;
+  // Accept either global CARD_KEYWORD or window.CARD_KEYWORD (shared.js may export either)
+  const map = (typeof CARD_KEYWORD !== 'undefined') ? CARD_KEYWORD : (window.CARD_KEYWORD || {});
+  if (!map) return null;
+  const entry = map[token] || map[token.toLowerCase()] || map[token.toUpperCase()];
+  if (!entry) return null;
+  // Support value shapes: string path, or object { icon: "...", image: "...", path: "..." }
+  if (typeof entry === 'string') return entry;
+  if (typeof entry === 'object') {
+    return entry.icon || entry.image || entry.path || null;
+  }
+  return null;
+}
 
+// Escape HTML for safe HTML generation
+function _escapeHtmlInline(s) {
+  return String(s || '').replace(/[&<>"']/g, function (m) {
+    return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m];
+  });
+}
+
+// Replace tokens like {fireIcon} with <img> nodes inside a DocumentFragment.
+// options: { size: number (px), className: string, altPrefix: string }
+function parseInlineIconsToFragment(text, options = {}) {
+  const { size = 18, className = 'inline-icon', altPrefix = '' } = options;
+  const frag = document.createDocumentFragment();
+  if (text === undefined || text === null) return frag;
+  const str = String(text);
+  // Match tokens like {tokenName}
+  const re = /\{([a-zA-Z0-9_\-]+)\}/g;
+  let lastIndex = 0;
+  let m;
+  while ((m = re.exec(str)) !== null) {
+    // push plain text before token
+    if (m.index > lastIndex) {
+      frag.appendChild(document.createTextNode(str.slice(lastIndex, m.index)));
+    }
+    lastIndex = re.lastIndex;
+    const token = m[1];
+    const path = getKeywordIconPath(token);
+    if (path) {
+      const img = document.createElement('img');
+      img.src = path;
+      img.alt = (altPrefix ? altPrefix + ' ' : '') + token;
+      img.className = className;
+      img.style.width = size + 'px';
+      img.style.height = size + 'px';
+      img.style.verticalAlign = 'middle';
+      img.style.margin = '0 6px';
+      frag.appendChild(img);
+    } else {
+      // unknown token: keep literal text
+      frag.appendChild(document.createTextNode('{' + token + '}'));
+    }
+  }
+  // remaining text
+  if (lastIndex < str.length) frag.appendChild(document.createTextNode(str.slice(lastIndex)));
+  return frag;
+}
+
+// If you need an HTML string (escaped), use this
+function parseInlineIconsToHtml(text, options = {}) {
+  const { size = 18, className = 'inline-icon', altPrefix = '' } = options;
+  if (text === undefined || text === null) return '';
+  const str = String(text);
+  const re = /\{([a-zA-Z0-9_\-]+)\}/g;
+  let lastIndex = 0;
+  let out = '';
+  let m;
+  while ((m = re.exec(str)) !== null) {
+    if (m.index > lastIndex) {
+      out += _escapeHtmlInline(str.slice(lastIndex, m.index));
+    }
+    lastIndex = m.index + m[0].length;
+    const token = m[1];
+    const path = getKeywordIconPath(token);
+    if (path) {
+      out += `<img src="${_escapeHtmlInline(path)}" class="${_escapeHtmlInline(className)}" alt="${_escapeHtmlInline((altPrefix ? altPrefix + ' ' : '') + token)}" style="width:${size}px;height:${size}px;vertical-align:middle;margin:0 6px;">`;
+    } else {
+      out += _escapeHtmlInline('{' + token + '}');
+    }
+  }
+  if (lastIndex < str.length) out += _escapeHtmlInline(str.slice(lastIndex));
+  return out;
+}
+function replaceTokensInElement(rootEl, options = {}) {
+  const walker = document.createTreeWalker(rootEl, NodeFilter.SHOW_TEXT, null, false);
+  const textNodes = [];
+  let node;
+  while ((node = walker.nextNode())) {
+    if (node.nodeValue && node.nodeValue.indexOf('{') !== -1) {
+      textNodes.push(node);
+    }
+  }
+  // Replace in reverse order (though order doesn't strictly matter, this avoids problems with live NodeList)
+  for (let i = textNodes.length - 1; i >= 0; i--) {
+    const txt = textNodes[i].nodeValue;
+    const frag = parseInlineIconsToFragment(txt, options);
+    textNodes[i].parentNode.replaceChild(frag, textNodes[i]);
+  }
+}
 // Render one or multiple keywords as small chips with optional icon.
 // values may be string, array, or undefined. Returns an HTML string.
 function renderKeywordChips(values, opts = {}) {
