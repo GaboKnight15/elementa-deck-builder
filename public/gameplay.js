@@ -5147,8 +5147,28 @@ function changeCardPosition(cardObj, newOrientation, callback) {
 // APPEND TO LOG
 function appendVisualLog(obj, fromSocket = false, isMe = true) {
   const logDiv = document.getElementById('game-log');
-  logDiv.insertAdjacentHTML('beforeend', renderLogAction(obj));
+  if (!logDiv) return;
+
+  const container = document.createElement('div');
+  container.className = 'log-row';
+
+  // If the log object contains a plain message/text, parse tokens in that text
+  const text = obj && (obj.message || obj.text);
+  if (text) {
+    container.appendChild(parseInlineIconsToFragment(text, { size: 18 }));
+  } else {
+    // Fallback: render the existing HTML block and then replace any tokens inside its text nodes
+    const tmp = document.createElement('div');
+    tmp.innerHTML = renderLogAction(obj);
+    // Replace tokens in tmp (so tokens inside the rendered HTML also get replaced)
+    replaceTokensInElement(tmp, { size: 18 });
+    // Move children from tmp into container
+    while (tmp.firstChild) container.appendChild(tmp.firstChild);
+  }
+
+  logDiv.appendChild(container);
   logDiv.scrollTop = logDiv.scrollHeight;
+
   // Only emit if not from socket
   if (!fromSocket && window.socket && window.currentRoomId) {
     obj.sender = gameState.playerProfile?.username || "me";
