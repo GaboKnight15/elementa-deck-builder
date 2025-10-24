@@ -550,14 +550,16 @@ function getDeckNameOverlayHtml(deck) {
   if (Array.isArray(color) && color.length >= 2) {
     const left = resolveColorToken(color[0]);
     const right = resolveColorToken(color[1]);
-    return `
-      <div class="deck-name-split" aria-hidden="true">
-        <div class="deck-name-bg left" style="background:${left};"></div>
-        <div class="deck-name-bg right" style="background:${right};"></div>
-        <div class="deck-name-text left">${name}</div>
-        <div class="deck-name-text right">${name}</div>
-      </div>
-    `;
+    // background halves + two identical centered text layers trimmed with clip-path
+    return (
+      '<div class="deck-name-split" aria-hidden="true">' +
+        '<div class="deck-name-bg left" style="background:' + left + ';"></div>' +
+        '<div class="deck-name-bg right" style="background:' + right + ';"></div>' +
+        // each .deck-name-text covers full width; clip-path limits visible portion to half
+        '<div class="deck-name-text left"><span class="deck-name-text-inner">' + name + '</span></div>' +
+        '<div class="deck-name-text right"><span class="deck-name-text-inner">' + name + '</span></div>' +
+      '</div>'
+    );
   }
 
   // Single color — keep the existing style (dark translucent background + colored text)
