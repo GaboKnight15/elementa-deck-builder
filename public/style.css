@@ -4307,7 +4307,7 @@ button[disabled], .btn-disabled {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 100000; /* high above other UI */
+  width: 313px;
   background: rgba(0,0,0,0.55);
 }
 
