@@ -1063,6 +1063,7 @@ function renderShop() {
       renderShopAvatars()
       renderShopPacks();
       renderIndividualCardsShop(false);
+	  renderShopDecks(); 
       updateCurrencyDisplay();
 }
 window.renderShop = renderShop;
