@@ -2869,6 +2869,11 @@ button[disabled], .btn-disabled {
   padding: 0 6px;
   box-sizing: border-box;
 }
+.deck-name-split .deck-name-text .deck-name-text-inner {
+  display: inline-block;
+  padding: 0 6px;
+  box-sizing: border-box;
+}
 /* left text sits on left half, center-aligned inside its half */
 .deck-name-split .deck-name-text.left {
   left: 0;
@@ -2878,6 +2883,12 @@ button[disabled], .btn-disabled {
 .deck-name-split .deck-name-text.right {
   right: 0;
   text-align: right;
+}
+/* Slight font-size/padding adjustments for small screens */
+@media (max-width: 480px) {
+  .deck-name-split { font-size: 0.85em; }
+  .deck-name-split .deck-name-text .deck-name-text-inner { padding: 0 4px; }
+  .deck-name-split .deck-name-text { bottom: 4px; }
 }
 
 /* BATTLEFIELD CSS */
@@ -3783,7 +3794,6 @@ button[disabled], .btn-disabled {
   width: 100%;
 }
 .shop-modal-card-img:hover {
-  box-shadow: 0 0 18px #ffe06688, 0 2px 12px #212a3a;
   transform: scale(1.06);
 }
 /* COSMETICS ANIMATION */
