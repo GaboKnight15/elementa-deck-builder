@@ -6503,61 +6503,57 @@ function isAnyVoidCardActionable(gameState, dummyCards) {
   }
 
   // Insert the clickable icon between profiles on DOMContentLoaded
-  function insertGameLogIcon() {
-    // Avoid duplicate icon
-    if (document.getElementById('game-log-icon')) return;
+function insertGameLogIcon() {
+  // Attempt to place the icon between opponent and player profile in the battlefield leftbar.
+  var leftbar = document.getElementById('battlefield-leftbar');
+  if (!leftbar) return;
 
-    // Create icon element
-    const btnWrap = document.createElement('div');
-    btnWrap.id = 'game-log-icon-wrap';
-    btnWrap.className = 'game-log-icon-wrap';
-    const img = document.createElement('img');
-    img.id = 'game-log-icon';
-    img.src = 'OtherImages/FieldIcons/GameLog.png';
-    img.alt = 'Open Game Log';
-    img.title = 'Open Game Log';
-    img.className = 'game-log-icon';
-    img.onclick = (e) => {
-      e.stopPropagation();
-      toggleGameLogModal();
-    };
-    btnWrap.appendChild(img);
+  // Remove any existing toggle to avoid duplicates
+  var existing = document.getElementById('game-log-toggle-wrap');
+  if (existing) existing.remove();
 
-    // Preferred target: battlefield-leftbar
-    let leftbar = document.getElementById('battlefield-leftbar') || document.getElementById('battlefield-left');
+  // Find the player profile element to insert before it (so icon sits between the two profiles)
+  var myProfile = document.getElementById('my-profile');
 
-    // Fallback: insert between #my-profile and #opponent-profile if they share a parent
-    if (!leftbar) {
-      const my = document.getElementById('my-profile');
-      const opp = document.getElementById('opponent-profile');
-      if (my && opp && my.parentNode === opp.parentNode) {
-        leftbar = my.parentNode;
-        // insert between my and opp (before opp)
-        leftbar.insertBefore(btnWrap, opp);
-        return;
-      }
-    }
+  // Create wrapper and icon
+  var wrap = document.createElement('div');
+  wrap.id = 'game-log-toggle-wrap';
+  wrap.style.display = 'flex';
+  wrap.style.justifyContent = 'center';
+  wrap.style.margin = '10px 0';
+  wrap.style.zIndex = '5'; // ensure visible
 
-    if (leftbar) {
-      // Try to place between the two known profile elements if present
-      const my = document.getElementById('my-profile');
-      const opp = document.getElementById('opponent-profile');
+  var img = document.createElement('img');
+  img.id = 'game-log-toggle';
+  // Use a notebook/view icon you have in assets; adjust path if different
+  img.src = 'OtherImages/Icons/Notebook.png';
+  img.alt = 'Game Log';
+  img.title = 'Toggle Game Log';
+  img.style.width = '44px';
+  img.style.height = '44px';
+  img.style.cursor = 'pointer';
+  img.style.filter = 'drop-shadow(0 2px 8px rgba(0,0,0,0.45))';
+  img.style.borderRadius = '8px';
+  img.style.background = '#1f2a3a';
 
-      if (my && opp && my.parentNode === leftbar && opp.parentNode === leftbar) {
-        // insert between them: after my
-        if (my.nextSibling) leftbar.insertBefore(btnWrap, my.nextSibling);
-        else leftbar.appendChild(btnWrap);
-      } else {
-        // Append to leftbar as a fallback
-        leftbar.appendChild(btnWrap);
-      }
+  // Toggle handler: show/hide the game log panel (keeps DOM element location intact)
+  img.onclick = function(e) {
+    e.stopPropagation();
+    var gl = document.getElementById('game-log');
+    if (!gl) return;
+    if (gl.style.display === 'none' || getComputedStyle(gl).display === 'none') {
+      gl.style.display = 'flex';
     } else {
-      // As a last resort, append to top of battlefield area
-      const battlefield = document.getElementById('battlefield');
-      if (battlefield) battlefield.insertBefore(btnWrap, battlefield.firstChild);
-      else document.body.appendChild(btnWrap);
+      gl.style.display = 'none';
     }
-  }
+  };
+
+  wrap.appendChild(img);
+
+  // Insert into leftbar before the player profile (so it's between opponent and player)
+  if (myProfile) leftbar.insertBefore(wrap, myProfile);
+  else leftbar.appendChild(wrap);
+}
 
   // Attach insertion on DOM ready
   document.addEventListener('DOMContentLoaded', () => {
