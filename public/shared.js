@@ -460,7 +460,7 @@ const dummyCards = [
  category: 'Creature', color: 'Green', type: 'Faefolk', archetype: 'Fairy', hp: 1, atk: 1, def: 0,
  cost: '{0}', ability: 'Flying', set: 'ElementaGenesis'},
 {id: 'ForestGoblin', name: 'Forest Goblin', rarity: 'Common', image: 'CardImages/BasicCreatures/Goblin.png', 
- category: 'Creature', color: 'Green', type: 'Faefolk', archetype: 'Goblin', hp: 3, atk: 1, def: 0,
+ category: 'Creature', color: 'Green', type: 'Brutefolk', archetype: 'Goblin', hp: 3, atk: 1, def: 0,
  cost: '{0}', set: 'ElementaGenesis'},
 {id: 'Emberling', name: 'Emberling', rarity: 'Common', image: 'CardImages/BasicCreatures/Emberling.png', 
  category: 'Creature', color: 'Red', type: 'Beast', archetype: 'Fireland', hp: 3, atk: 2, def: 0,
@@ -658,7 +658,7 @@ const dummyCards = [
 */
  
 // CINDERCORE //
-{id: 'CindercoreSentry', name: 'Cindercore Sentry', rarity: 'Common', image: 'CardImages/Cindercore/Cindercore Sentry.png', 
+{id: 'CindercoreSentry', name: 'Cindercore Sentry', rarity: 'Common', image: 'CardImages/Cindercore/CindercoreSentry.png', 
  category: 'Creature', color: 'Red', type: 'Construct', hp: 2, armor: 3, atk: 2, def: 1,
  cost: '{1}{R}', archetype: 'Cindercore', ability: ['Armor','Fire Exploit'], set: 'StandardPack',
  skill: [
@@ -668,7 +668,7 @@ const dummyCards = [
   {name: 'Fuse', cost: '{R}{R}', 
    effect: {class: 'Fuse'}}
  ]},
-{id: 'CindercoreProtector', name: 'Cindercore Protector', rarity: 'Rare', image: 'CardImages/Cindercore/Cindercore Protector.png', 
+{id: 'CindercoreProtector', name: 'Cindercore Protector', rarity: 'Rare', image: 'CardImages/Cindercore/CindercoreProtector.png', 
  category: 'Creature', color: 'Red', type: 'Construct', hp: 15, atk: 6, def: 3,
  cost: '{3}{R}', archetype: 'Cindercore', ability: ['Armor','Exploit','Protect'], set: 'StandardPack',
  skill: [
@@ -678,7 +678,7 @@ const dummyCards = [
   {name: 'Fuse', cost: '{R}', 
    effect: {class: 'Fuse'}}
  ]},
-{id: 'CindercoreVanguard', name: 'Cindercore Vanguard', rarity: 'Common', image: 'CardImages/Cindercore/Cindercore Vanguard.png', 
+{id: 'CindercoreVanguard', name: 'Cindercore Vanguard', rarity: 'Common', image: 'CardImages/Cindercore/CindercoreVanguard.png', 
  category: 'Creature', color: 'Red', type: 'Construct', hp: 15, atk: 6, def: 3,
  cost: '{1}{R}', archetype: 'Cindercore', ability: ['Armor', 'Exploit', 'Rush'], set: 'StandardPack',
 skill: [
@@ -688,7 +688,7 @@ skill: [
  {name: 'Fuse', cost: '{R}', 
    effect: {class: 'Fuse'}}
  ]},
-{id: 'CindercoreGolem', name: 'Cindercore Golem', rarity: 'Rare', image: 'CardImages/Cindercore/Cindercore Golem.png', 
+{id: 'CindercoreGolem', name: 'Cindercore Golem', rarity: 'Rare', image: 'CardImages/Cindercore/CindercoreGolem.png', 
  category: 'Creature', color: ['Red', 'Gray'], type: 'Elemental', hp: 15, atk: 6, def: 3,
  cost: '{3}{R}', archetype: ['Cindercore','Golemheart'], ability: 'Armor', set: 'StandardPack',
  skill: [
@@ -714,24 +714,24 @@ skill: [
  ]},
 
 // Fireland //
-{id: 'FirelandScamperling', name: 'Fireland Scamperling', rarity: 'Common', image: 'CardImages/Fireland/Fireland Scamperling.png', 
+{id: 'FirelandScamperling', name: 'Fireland Scamperling', rarity: 'Common', image: 'CardImages/Fireland/FirelandScamperling.png', 
  category: 'Creature', color: 'Red', type: 'Beast', hp: 3, atk: 2, def: 1,
  cost: '{2}', archetype: 'Fireland', ability: ['Burn','Rush'], set: 'StandardPack'},
-{id: 'FirelandCindercub', name: 'Fireland Cindercub', rarity: 'Common', image: 'CardImages/Fireland/Fireland Cindercub.png', 
+{id: 'FirelandCindercub', name: 'Fireland Cindercub', rarity: 'Common', image: 'CardImages/Fireland/FirelandCindercub.png', 
  category: 'Creature', color: 'Red', type: 'Beast', hp: 3, atk: 2, def: 1,
  cost: '{1}', archetype: 'Fireland', ability: ['Burn','Rush'], set: 'StandardPack',
  skill: [
   {name: 'Evolve', cost: '{r}{r}', 
    effect: {class: 'Evolve'}}
  ]},
-{id: 'FirelandLynx', name: 'Fireland Lynx', rarity: 'Common', image: 'CardImages/Fireland/Fireland Lynx.png', 
+{id: 'FirelandLynx', name: 'Fireland Lynx', rarity: 'Common', image: 'CardImages/Fireland/FirelandLynx.png', 
  category: 'Creature', color: 'Red', type: 'Beast', hp: 3, atk: 2, def: 1,
  cost: '{3}{R}', archetype: 'Fireland', ability: ['Burn','Leap','Rush'], set: 'StandardPack',
  skill: [
   {name: 'Evolve', cost: '{r}', 
    effect: {class: 'Evolve'}}
  ]},
-{id: 'FirelandKitsune', name: 'Fireland Kitsune', rarity: 'Common', image: 'CardImages/Fireland/Fireland Kitsune.png', 
+{id: 'FirelandKitsune', name: 'Fireland Kitsune', rarity: 'Common', image: 'CardImages/Fireland/FirelandKitsune.png', 
  category: 'Creature', color: 'Red', type: 'Beast', hp: 4, atk: 3, def: 0,
  cost: '{1}{R}', archetype: 'Fireland', ability: ['Burn','Leap','Rush'], set: 'StandardPack',
  skill: [
@@ -739,14 +739,14 @@ skill: [
    activation: {class: 'Arrival', type: 'Beast'},
    effect: {class: 'Search', archetype: 'Fireland'}}
  ]},
-{id: 'FirelandDirebeast', name: 'Fireland Direbeast', rarity: 'Rare', image: 'CardImages/Fireland/Fireland Direbeast.png', 
+{id: 'FirelandDirebeast', name: 'Fireland Direbeast', rarity: 'Rare', image: 'CardImages/Fireland/FirelandDirebeast.png', 
  category: 'Creature', color: 'Red', type: 'Beast', hp: 9, atk: 5, def: 2,
  cost: '{4}{R}', archetype: 'Fireland', ability: ['Burn','Rush'], set: 'StandardPack',
  skill: [
   {name: 'Evolution', cost: '{r}{r}', 
    effect: {class: 'Evolution'}}
  ]},
-{id: 'FirelandHellhound', name: 'Fireland Hellhound', rarity: 'Rare', image: 'CardImages/Fireland/Fireland Hellhound.png', 
+{id: 'FirelandHellhound', name: 'Fireland Hellhound', rarity: 'Rare', image: 'CardImages/Fireland/FirelandHellhound.png', 
  category: 'Creature', color: ['Red','Black'], type: ['Beast','Demon'], hp: 7, atk: 5, def: 1,
  cost: '{2}{R}', archetype: 'Fireland', ability: ['Burn','Intimidate','Rush'], set: 'StandardPack',
  skill: [
@@ -760,7 +760,7 @@ skill: [
   {name: 'Evolve', cost: '{r}', 
    effect: {class: 'Evolve'}}
  ]},
-{id: 'EphorosFirelandBehemoth', name: 'Ephoros, Fireland Behemoth', rarity: 'Legendary', image: 'CardImages/Fireland/Ephoros, Fireland Behemoth.png', 
+{id: 'EphorosFirelandBehemoth', name: 'Ephoros, Fireland Behemoth', rarity: 'Legendary', image: 'CardImages/Fireland/EphorosFirelandBehemoth.png', 
  category: 'Creature', color: ['Red','Black'], type: ['Beast','Demon'], hp: 13, atk: 9, def: 3,
  cost: '{5}{R}{B}', archetype: 'Fireland', ability: [{effect: "Inspire", archetype: "Rush", atk: 1, def: 1}, 'Burn','Crush','Intimidate'], set: 'StandardPack',
  skill: [
@@ -828,7 +828,7 @@ skill: [
   {name: 'Fuse', cost: '{r}', 
    effect: {class: 'Fuse'}},  
  ]},
-{id: 'KaelgorranElementalPrimordial', name: 'Kaelgorran, Elemental Primordial', rarity: 'Legendary', image: 'CardImages/Golems/Kaelgorran, Elemental Primordial.png', 
+{id: 'KaelgorranElementalPrimordial', name: 'Kaelgorran, Elemental Primordial', rarity: 'Legendary', image: 'CardImages/Golems/KaelgorranElementalPrimordial.png', imageFullArt: 'CardImages/Golems/KaelgorranElementalPrimordialFA.png',
  category: 'Creature', color: ['Green','Red', 'Gray'], type: ['Elemental','Golem'], hp: 20, armor: 8, atk: 6, def: 4, cost: '{4}{R}{C}',
  archetype: 'Golemheart', ability: 'Burn', trait: 'Fusion', set: 'Primordial Ascension',
  skill: [
@@ -841,7 +841,7 @@ skill: [
   {name: 'Fusion', cost: '{g}{r}{c}', 
    effect: {class: 'Fusion'}},  
  ]},
-{id: 'AcidicGolem', name: 'Acidic Golem', rarity: 'Rare', image: 'CardImages/Golems/Acidic Golem.png', 
+{id: 'AcidicGolem', name: 'Acidic Golem', rarity: 'Rare', image: 'CardImages/Golems/AcidicGolem.png', 
  category: 'Creature', color: ['Purple', 'Gray'], type: ['Elemental','Golem'], hp: 8, armor: 4, atk: 4, def: 3,
  cost: '{2}{P}{C}', archetype: 'Golemheart', ability: 'toxic', set: 'PrimordialAscension'},
  
@@ -885,7 +885,7 @@ skill: [
   {name: 'Fuse', cost: '{u}', 
    effect: {class: 'Fuse'}},
  ]},
-{id: 'MaelvyrnCoralboundAutomatonFA', name: 'Maelvyrn, Coralbound Automaton', rarity: 'Legendary', image: 'CardImages/Coralbound/MaelvyrnCoralboundAutomatonFA.png', 
+{id: 'MaelvyrnCoralboundAutomaton', name: 'Maelvyrn, Coralbound Automaton', rarity: 'Legendary', image: 'CardImages/Coralbound/MaelvyrnCoralboundAutomaton.png', imageFullArt: 'CardImages/Coralbound/MaelvyrnCoralboundAutomatonFA.png',
  category: 'Creature', color: 'Blue', type: 'Construct', hp: 14, atk: 7, armor: 5, def: 4, cost: '{6}{U}{U}', archetype: 'Coralbound',
  ability: ['Protect', 'Water Exploit'], trait: 'Fusion', set: 'IronbornProtocol',
  skill: [
@@ -943,7 +943,7 @@ skill: [
 // Goblins //
 
 {id: 'GoblinWarlod', name: 'Goblin Warlod', rarity: 'Legendary', image: 'CardImages/Goblin/GoblinWarlod.png', 
- category: 'Creature', color: ['Green', 'Purple', 'Black'], type: ['Faefolk', 'Mage'], hp: 13, atk: 4, def: 1,
+ category: 'Creature', color: ['Green', 'Purple', 'Black'], type: ['Brutefolk', 'Mage'], hp: 13, atk: 4, def: 1,
  cost: '{g}{p}{b}', archetype: 'Goblin', ability: 'Ranged', set: 'MischiefUnbound'
  skill: [
   {name: 'Inspire Goblins', cost: '{g}',
@@ -980,21 +980,21 @@ skill: [
 */
  
 // SKULLFRAME //
-{id: 'SkullframeDefector', name: 'Skullframe Defector', rarity: 'Common', image: 'CardImages/Skullframe/Skullframe Defector.png', 
+{id: 'SkullframeDefector', name: 'Skullframe Defector', rarity: 'Common', image: 'CardImages/Skullframe/SkullframeDefector.png', 
  category: 'Creature', color: 'Black', type: ['Undead','Warrior'], hp: 3, atk: 2, def: 1,
  cost: '{1}', archetype: 'Skullframe', ability: 'Immunity', set: 'StandardPack',
  skill: [
   {name: 'Reanimate', cost: '{2}{B}', 
    effect: {class: 'Reanimate'}}
  ]},
-{id: 'SkullframeUnyielding', name: 'Skullframe Unyielding', rarity: 'Common', image: 'CardImages/Skullframe/Skullframe Unyielding.png', 
+{id: 'SkullframeUnyielding', name: 'Skullframe Unyielding', rarity: 'Common', image: 'CardImages/Skullframe/SkullframeUnyielding.png', 
  category: 'Creature', color: 'Black', type: 'Undead', hp: 4, atk: 1, def: 0,
  cost: '{1}{B}', archetype: 'Skullframe', ability: ['Immunity','Rush'], set: 'StandardPack',
  skill: [
   {name: 'Reanimate', cost: '{2}{B}{B}', 
    effect: {class: 'Reanimate'}}
  ]},
-{id: 'SkullframeAcolyte', name: 'Skullframe Acolyte', rarity: 'Common', image: 'CardImages/Skullframe/Skullframe Acolyte.png', 
+{id: 'SkullframeAcolyte', name: 'Skullframe Acolyte', rarity: 'Common', image: 'CardImages/Skullframe/SkullframeAcolyte.png', 
  category: 'Creature', color: ['Black', 'Purple'], type: 'Undead', hp: 5, atk: 3, def: 1,
  cost: '{1}{P}{B}', archetype: 'Skullframe', ability: ['Immunity','Ranged'], set: 'StandardPack',
  skill: [
@@ -1004,7 +1004,7 @@ skill: [
   {name: 'Reanimate', cost: '{2}{B}{B}', 
    effect: {class: 'Reanimate'}}
  ]},
-{id: 'SkullframeCryptwinds', name: 'Skullframe Cryptwinds', rarity: 'Rare', image: 'CardImages/Skullframe/Skullframe Cryptwinds.png', 
+{id: 'SkullframeCryptwinds', name: 'Skullframe Cryptwinds', rarity: 'Rare', image: 'CardImages/Skullframe/SkullframeCryptwinds.png', 
  category: 'Creature', color: ['Black', 'Purple'], type: ['Dragon','Undead'], hp: 8, atk: 4, def: 1,
  cost: '{1}{B}{B}', archetype: 'Skullframe', ability: ['Flying', 'Immunity'], set: 'StandardPack',
  skill: [
@@ -1015,7 +1015,7 @@ skill: [
    requirement: {class: 'Sacrifice', amount: 1},
    effect: {class: 'Reanimate'}}
   ]},
-{id: 'SkullframeSpectralDragon', name: 'Skullframe Spectral Dragon', rarity: 'Epic', image: 'CardImages/Skullframe/Skullframe Spectral Dragon.png', 
+{id: 'SkullframeSpectralDragon', name: 'Skullframe Spectral Dragon', rarity: 'Epic', image: 'CardImages/Skullframe/SkullframeSpectralDragon.png', 
  category: 'Creature', color: ['Black', 'Purple'], type: ['Dragon','Undead'], hp: 12, atk: 6, def: 2, cost: '{3}{P}{B}',
  archetype: 'Skullframe', ability: ['Flying', 'Immunity'], set: 'StandardPack',
  skill: [
@@ -1026,7 +1026,7 @@ skill: [
    requirement: {class: 'Sacrifice', amount: 1},
    effect: {class: 'Reanimate'}}
  ]},
-{id: 'SkullframeArmoredDragon', name: 'Skullframe Armored Dragon', rarity: 'Rare', image: 'CardImages/Skullframe/Skullframe Armored Dragon.png', 
+{id: 'SkullframeArmoredDragon', name: 'Skullframe Armored Dragon', rarity: 'Rare', image: 'CardImages/Skullframe/SkullframeArmoredDragon.png', 
  category: 'Creature', color: ['Black', 'Purple'], type: ['Dragon','Undead'], hp: 5, armor: 4, atk: 5, def: 2,
  cost: '{2}{P}{B}', archetype: 'Skullframe', ability: ['Flying','Immunity','Armor'], set: 'StandardPack',
  skill: [
@@ -1034,7 +1034,7 @@ skill: [
    requirement: {class: 'Sacrifice'}, amount: 1,
    effect: {class: 'Reanimate'}}
  ]},
-{id: 'SkullframeHexmistress', name: 'Skullframe Hexmistress', rarity: 'Epic', image: 'CardImages/Skullframe/Skullframe Hexmistress.png', 
+{id: 'SkullframeHexmistress', name: 'Skullframe Hexmistress', rarity: 'Epic', image: 'CardImages/Skullframe/SkullframeHexmistress.png', 
  category: 'Creature', color: ['Black', 'Purple'], type: ['Undead','Mage'], hp: 6, atk: 3, def: 1,
  cost: '{1}{B}{P}', archetype: 'Skullframe', ability: ['Immunity','Ranged'], set: 'StandardPack',
  skill: [
@@ -1047,7 +1047,7 @@ skill: [
   {name: 'Reanimate', cost: '{1}{B}{B}{p}', 
    effect: {class:'Reanimate'}}
  ]},
-{id: 'MaldryssSkullframeArchmage', name: 'Maldryss, Skullframe Archmage', rarity: 'Legendary', image: 'CardImages/Skullframe/Maldryss, Skullframe Archmage.png', imageFullArt: 'CardImages/Skullframe/MaldryssSkullframeArchmageFA.png',
+{id: 'MaldryssSkullframeArchmage', name: 'Maldryss, Skullframe Archmage', rarity: 'Legendary', image: 'CardImages/Skullframe/MaldryssSkullframeArchmage.png', imageFullArt: 'CardImages/Skullframe/MaldryssSkullframeArchmageFA.png',
  category: 'Creature', color: ['Black', 'Purple'], type: ['Undead','Mage'], trait: 'Champion', hp: 8, atk: 1, def: 0,
  cost: '{B}{B}{P}', archetype: 'Skullframe', ability: ['Drain','Immunity','Ranged'], set: 'StandardPack',
  skill: [
@@ -1074,16 +1074,16 @@ skill: [
 */
  
 // Frostland //
-{id: 'FrostlandDragon', name: 'Frostland Dragon', rarity: 'Rare', image: 'CardImages/Frostland/Frostland Dragon.png', 
+{id: 'FrostlandDragon', name: 'Frostland Dragon', rarity: 'Rare', image: 'CardImages/Frostland/FrostlandDragon.png', 
  category: 'Creature', color: ['Blue', 'Gray'], type: 'Dragon', hp: 9, atk: 5, def: 2,
  cost: '{3}{U}{C}', archetype: 'Frostland', ability: ['Ice Armor','Flying'], set: 'StandardPack'},
-{id: 'FrostlandWyrm', name: 'Frostland Wyrm', rarity: 'Rare', image: 'CardImages/Frostland/Frostland Wyrm.png', 
+{id: 'FrostlandWyrm', name: 'Frostland Wyrm', rarity: 'Rare', image: 'CardImages/Frostland/FrostlandWyrm.png', 
  category: 'Creature', color: ['Blue', 'Gray'], type: 'Dragon', hp: 9, atk: 5, def: 2,
  cost: '{1}{U}{C}', archetype: 'Frostland', ability: ['Ice Armor','Flying'], set: 'StandardPack'},
-{id: 'FrostlandGolem', name: 'Frostland Golem', rarity: 'Rare', image: 'CardImages/Frostland/Frostland Golem.png', 
+{id: 'FrostlandGolem', name: 'Frostland Golem', rarity: 'Rare', image: 'CardImages/Frostland/FrostlandGolem.png', 
  category: 'Creature', color: ['Blue', 'Gray'], type: 'Elemental', hp: 9, atk: 5, def: 2,
  cost: '{1}{U}{C}', archetype: 'Frostland', ability: 'Ice Armor', set: 'StandardPack'},
-{id: 'FrostlandPhoenix', name: 'Frostland Phoenix', rarity: 'Rare', image: 'CardImages/Frostland/Frostland Phoenix.png', 
+{id: 'FrostlandPhoenix', name: 'Frostland Phoenix', rarity: 'Rare', image: 'CardImages/Frostland/FrostlandPhoenix.png', 
  category: 'Creature', color: ['Blue', 'Gray'], type: 'Avian', hp: 9, atk: 5, def: 1,
  cost: '{U}{C}', archetype: 'Frostland', ability: ['Ice Armor','Flying'], set: 'StandardPack',
  skill: [
@@ -1091,67 +1091,67 @@ skill: [
    activation: {class: 'Echo'}, 
    effect: {class: 'Token', token: 'Phoenix Ashes'}},
  ]},
-{id: 'FrostlandRuneforgedAutomaton', name: 'Frostland Runeforged Automaton', rarity: 'Rare', image: 'CardImages/Frostland/Frostland Runeforged Automaton.png', 
+{id: 'FrostlandRuneforgedAutomaton', name: 'Frostland Runeforged Automaton', rarity: 'Rare', image: 'CardImages/Frostland/FrostlandRuneforgedAutomaton.png', 
  category: 'Creature', color: ['Blue', 'Gray'], type: 'Construct', hp: 9, atk: 5, def: 2,
  cost: '{2}{U}{C}', archetype: 'Frostland', ability: 'Ice Armor', set: 'StandardPack'},
-{id: 'FrostlandRuneforgedColossus', name: 'Frostland Runeforged Colossus', rarity: 'Epic', image: 'CardImages/Frostland/Frostland Runeforged Colossus.png', 
+{id: 'FrostlandRuneforgedColossus', name: 'Frostland Runeforged Colossus', rarity: 'Epic', image: 'CardImages/Frostland/FrostlandRuneforgedColossus.png', 
  category: 'Creature', color: ['Blue', 'Gray'], type: 'Construct', hp: 9, atk: 5, def: 2,
  cost: '{4}{U}{C}', archetype: 'Frostland', ability: ['Ice Armor','Crush'], set: 'StandardPack'},
-{id: 'EirawenFrostlandQueenFA', name: 'Eirawen, Frostland Queen', rarity: 'Legendary', image: 'CardImages/Frostland/Eirawen, Frostland Queen.png', 
+{id: 'EirawenFrostlandQueenFA', name: 'Eirawen, Frostland Queen', rarity: 'Legendary', image: 'CardImages/Frostland/EirawenFrostlandQueen.png', 
  category: 'Creature', color: ['Blue', 'Gray'], type: 'Mage', trait: 'Champion', hp: 11, atk: 1, def: 0,
  cost: '{U}{U}{C}', archetype: 'Frostland', ability: ['Ice Armor','Flying'], set: 'StandardPack'},
 
 // ARTIFACTS //
-{id: 'GolemheartInfusor', name: 'Golemheart Infusor', rarity: 'Common', image: 'CardImages/Artifacts/Golemheart Infusor.png', 
- category: 'Artifact', color: 'Gray', type: 'Relic', hp: 5, cost: '{C}', archetype: 'Golemheart', ability: '', set: 'StandardPack'},
-{id: 'HeartwoodEmeralds', name: 'Heartwood Emeralds', rarity: 'Common', image: 'CardImages/Artifacts/Heartwood Emeralds.png', 
- category: 'Artifact', color: 'Green', type: 'Relic', hp: 5, cost: '{1}{G}', archetype: 'Heartwood', ability: '', set: 'StandardPack'},
-{id: 'CindercoreEmber', name: 'Cindercore Ember', rarity: 'Common', image: 'CardImages/Artifacts/Cindercore Ember.png', 
- category: 'Artifact', color: 'Red', type: 'Relic', hp: 5, cost: '{2}{R}', archetype: 'Cindercore', ability: '', set: 'StandardPack'},
-{id: 'TidecallersPearl', name: 'Tidecallers Pearl', rarity: 'Common', image: 'CardImages/Artifacts/Tidecallers Pearl.png', 
- category: 'Artifact', color: 'Blue', type: 'Relic', hp: 5, cost: '{2}{U}', archetype: 'Coralbound', ability: '', set: 'StandardPack'},
-{id: 'StormcoreDynamo', name: 'Stormcore Dynamo', rarity: 'Common', image: 'CardImages/Artifacts/Stormcore Dynamo.png', 
- category: 'Artifact', color: 'Yellow', type: 'Relic', hp: 5, cost: '{2}{Y}', archetype: 'Stormcore', ability: '', set: 'StandardPack'},
-{id: 'PlagueThornTalisman', name: 'Plague Thorn Talisman', rarity: 'Common', image: 'CardImages/Artifacts/Plague Thorn Talisman.png', 
- category: 'Artifact', color: 'Purple', type: 'Relic', hp: 5, cost: '{2}{P}', archetype: 'Plaguecore', ability: '', set: 'StandardPack'},
-{id: 'TitansAnvil', name: 'Titans Anvil', rarity: 'Common', image: 'CardImages/Artifacts/Titans Anvil.png', 
- category: 'Artifact', color: 'Gray', type: 'Relic', hp: 5, cost: '{1}{C}', archetype: '', ability: '', set: 'StandardPack'},
-{id: 'VeiloftheForgotten', name: 'Veil of the Forgotten', rarity: 'Common', image: 'CardImages/Artifacts/Veil of the Forgotten.png', 
- category: 'Artifact', color: 'Black', type: 'Relic', hp: 5, cost: '{2}{B}', archetype: '', ability: '', set: 'StandardPack'},
+{id: 'GolemheartInfusor', name: 'Golemheart Infusor', rarity: 'Common', image: 'CardImages/Artifacts/GolemheartInfusor.png', 
+ category: 'Artifact', color: 'Gray', type: 'Relic', hp: 5, cost: '{C}', archetype: 'Golemheart', ability: '', set: 'ElementalGenesis'},
+{id: 'HeartwoodEmeralds', name: 'Heartwood Emeralds', rarity: 'Common', image: 'CardImages/Artifacts/HeartwoodEmeralds.png', 
+ category: 'Artifact', color: 'Green', type: 'Relic', hp: 5, cost: '{1}{G}', archetype: 'Heartwood', ability: '', set: 'ElementalGenesis'},
+{id: 'CindercoreEmber', name: 'Cindercore Ember', rarity: 'Common', image: 'CardImages/Artifacts/CindercoreEmber.png', 
+ category: 'Artifact', color: 'Red', type: 'Relic', hp: 5, cost: '{2}{R}', archetype: 'Cindercore', ability: '', set: 'ElementalGenesis'},
+{id: 'TidecallersPearl', name: 'Tidecallers Pearl', rarity: 'Common', image: 'CardImages/Artifacts/TidecallersPearl.png', 
+ category: 'Artifact', color: 'Blue', type: 'Relic', hp: 5, cost: '{2}{U}', archetype: 'Coralbound', ability: '', set: 'ElementalGenesis'},
+{id: 'StormcoreDynamo', name: 'Stormcore Dynamo', rarity: 'Common', image: 'CardImages/Artifacts/StormcoreDynamo.png', 
+ category: 'Artifact', color: 'Yellow', type: 'Relic', hp: 5, cost: '{2}{Y}', archetype: 'Stormcore', ability: '', set: 'ElementalGenesis'},
+{id: 'PlagueThornTalisman', name: 'Plague Thorn Talisman', rarity: 'Common', image: 'CardImages/Artifacts/PlagueThornTalisman.png', 
+ category: 'Artifact', color: 'Purple', type: 'Relic', hp: 5, cost: '{2}{P}', archetype: 'Plaguecore', ability: '', set: 'ElementalGenesis'},
+{id: 'TitansAnvil', name: 'Titans Anvil', rarity: 'Common', image: 'CardImages/Artifacts/TitansAnvil.png', 
+ category: 'Artifact', color: 'Gray', type: 'Relic', hp: 5, cost: '{1}{C}', archetype: '', ability: '', set: 'ElementalGenesis'},
+{id: 'VeiloftheForgotten', name: 'Veil of the Forgotten', rarity: 'Common', image: 'CardImages/Artifacts/VeiloftheForgotten.png', 
+ category: 'Artifact', color: 'Black', type: 'Relic', hp: 5, cost: '{2}{B}', archetype: '', ability: '', set: 'ElementalGenesis'},
 {id: 'LumenSpire', name: 'Lumen Spire', rarity: 'Common', image: 'CardImages/Artifacts/Lumen Spire.png', 
- category: 'Artifact', color: 'White', type: 'Relic', hp: 5, cost: '{2}{W}', archetype: '', ability: '', set: 'StandardPack'},
+ category: 'Artifact', color: 'White', type: 'Relic', hp: 5, cost: '{2}{W}', archetype: '', ability: '', set: 'ElementalGenesis'},
 
 // SPELLS //
-{id: 'EssenceSurge', name: 'Essence Surge', rarity: 'Common', image: 'CardImages/Spells/Essence Surge.png', 
- category: 'Spell', color: 'Green', type: 'Spell', cost: '{2}', set: 'StandardPack',
+{id: 'EssenceSurge', name: 'Essence Surge', rarity: 'Common', image: 'CardImages/Spells/EssenceSurge.png', 
+ category: 'Spell', color: 'Green', type: 'Spell', cost: '{2}', set: 'ElementalGenesis',
  skill: [
   {name: 'Essence', cost: '{2}', 
    effect: {class: 'Essence', color: 'Green', amount: 3}},
  ]},
-{id: 'EssenceAssault', name: 'Essence Assault', rarity: 'Common', image: 'CardImages/Spells/Essence Assault.png', 
- category: 'Spell', color: 'Red', type: 'Spell', cost: '{1}', effect: 'Give a unit +2/0', set: 'StandardPack'},
-{id: 'EssenceRift', name: 'Essence Rift', rarity: 'Common', image: 'CardImages/Spells/Essence Rift.png', 
+{id: 'EssenceAssault', name: 'Essence Assault', rarity: 'Common', image: 'CardImages/Spells/EssenceAssault.png', 
+ category: 'Spell', color: 'Red', type: 'Spell', cost: '{1}', effect: 'Give a unit +2/0', set: 'ElementalGenesis'},
+{id: 'EssenceRift', name: 'Essence Rift', rarity: 'Common', image: 'CardImages/Spells/EssenceRift.png', 
  category: 'Spell', color: 'Blue', type: 'Spell', cost: '{2}', set: 'StandardPack',
  skill: [
   {name: 'Draw', cost: '{2}', 
    effect: {class: 'Draw', amount: 2}},
  ]},
-{id: 'EssenceBolt', name: 'Essence Bolt', rarity: 'Common', image: 'CardImages/Spells/Essence Bolt.png', 
- category: 'Spell', color: 'Yellow', type: 'Spell', cost: '{1}', set: 'StandardPack',
+{id: 'EssenceBolt', name: 'Essence Bolt', rarity: 'Common', image: 'CardImages/Spells/EssenceBolt.png', 
+ category: 'Spell', color: 'Yellow', type: 'Spell', cost: '{1}', set: 'ElementalGenesis',
  skill: [
   {name: 'Spell', cost: '{1}', 
    effect: {class: 'Strike', amount: 3}},
  ]},
-{id: 'EssenceBreak', name: 'Essence Break', rarity: 'Common', image: 'CardImages/Spells/Essence Break.png', 
- category: 'Spell', color: 'Purple', type: 'Spell', cost: '{1}', effect: 'Destroy 1 essence', set: 'StandardPack'},
-{id: 'EssenceBarrier', name: 'Essence Barrier', rarity: 'Common', image: 'CardImages/Spells/Essence Barrier.png', 
- category: 'Spell', color: 'Gray', type: 'Aura', cost: '{1}', effect: 'Aegis', set: 'StandardPack'},
-{id: 'EssencePurge', name: 'Essence Purge', rarity: 'Common', image: 'CardImages/Spells/Essence Purge.png', 
- category: 'Spell', color: 'Black', type: 'Aura', cost: '{2}', effect: 'Cannot generate essence', set: 'StandardPack'},
-{id: 'EssenceBlessing', name: 'Essence Blessing', rarity: 'Common', image: 'CardImages/Spells/Essence Blessing.png', 
- category: 'Spell', color: 'White', type: 'Spell', cost: '{1}', effect: 'Cleanse 5', set: 'StandardPack'},
-{id: 'LifeGrowth', name: 'Life Growth', rarity: 'Common', image: 'CardImages/Spells/Life Growth.png', 
- category: 'Spell', color: 'Green', type: 'Spell', cost: '{G}', effect: 'Gain {G}{G}', set: 'StandardPack'},
+{id: 'EssenceBreak', name: 'Essence Break', rarity: 'Common', image: 'CardImages/Spells/EssenceBreak.png', 
+ category: 'Spell', color: 'Purple', type: 'Spell', cost: '{1}', effect: 'Destroy 1 essence', set: 'ElementalGenesis'},
+{id: 'EssenceBarrier', name: 'Essence Barrier', rarity: 'Common', image: 'CardImages/Spells/EssenceBarrier.png', 
+ category: 'Spell', color: 'Gray', type: 'Aura', cost: '{1}', effect: 'Aegis', set: 'ElementalGenesis'},
+{id: 'EssencePurge', name: 'Essence Purge', rarity: 'Common', image: 'CardImages/Spells/EssencePurge.png', 
+ category: 'Spell', color: 'Black', type: 'Aura', cost: '{2}', effect: 'Cannot generate essence', set: 'ElementalGenesis'},
+{id: 'EssenceBlessing', name: 'Essence Blessing', rarity: 'Common', image: 'CardImages/Spells/EssenceBlessing.png', 
+ category: 'Spell', color: 'White', type: 'Spell', cost: '{1}', effect: 'Cleanse 5', set: 'ElementalGenesis'},
+{id: 'LifeGrowth', name: 'Life Growth', rarity: 'Common', image: 'CardImages/Spells/LifeGrowth.png', 
+ category: 'Spell', color: 'Green', type: 'Spell', cost: '{G}', effect: 'Gain {G}{G}', set: 'ElementalGenesis'},
 {id: 'HydrosurgeProtocol', name: 'Hydrosurge Protocol', rarity: 'Common', image: 'CardImages/Coralbound/HydrosurgeProtocol.png', 
  category: 'Spell', color: 'Blue', type: 'Construct',
  cost: '{1}{U}', archetype: 'Coralbound', set: 'IronbornProtocol',
@@ -1161,9 +1161,9 @@ skill: [
  ]},
 /*
 {id: 'HardenedScales', name: 'Hardened Scales', rarity: 'Common', image: 'CardImages/Spells/HardenedScales.png', 
- category: 'Spell', color: ['Green','Red'], type: 'Aura', cost: '{1}', effect: 'Gain {G}{G}', set: 'StandardPack'},
+ category: 'Spell', color: ['Green','Red'], type: 'Aura', cost: '{1}', effect: 'Gain {G}{G}', set: 'ElementalGenesis'},
 {id: 'VerdantRebirth', name: 'Verdant Rebirth', rarity: 'Common', image: 'CardImages/Spells/VerdantRebirth.png', 
- category: 'Spell', color: 'Green', type: 'Spell', cost: '{2}{G}', effect: 'Gain {G}{G}', set: 'StandardPack'},
+ category: 'Spell', color: 'Green', type: 'Spell', cost: '{2}{G}', effect: 'Gain {G}{G}', set: 'ElementalGenesis'},
 
 Dragon Terrains
 {id: 'DragonsGrove', name: 'Dragon's Grove', rarity: 'Epic', image: 'CardImages/Thornwing/DragonsGrove.png', 
@@ -1572,27 +1572,27 @@ const CARD_KEYWORD = {
 // ABILITIES //
 ------------- */
 // --- Frenzy Abilities --- //
-burn: {name: "Burn", description: "Burns opposing unit upon dealing damage with an attack or skill.", icon: "OtherImages/StatIcons/Burn.png" },
-freeze: {name: "Freeze", description: "Freezes opposing unit upon dealing damage with an attack or skill.", icon: "OtherImages/StatIcons/Freeze.png" },
-paralyze: {name: "Paralyze", description: "Paralyzes opposing unit upon striking with an attack or skill.", icon: "OtherImages/StatIcons/Paralyze.png" },
-soak: {name: "Soak", description: "Soaks opposing unit upon striking with an attack or skill.", icon: "OtherImages/StatIcons/Soak.png" },
-venom: {name: "Venom", description: "Poisons opposing unit upon striking with an attack or skill.", icon: "OtherImages/StatIcons/Venom.png" },
+burn: {name: "Burn", description: "Burns opposing unit upon dealing damage with an attack or skill.", icon: "Icons/Ability/Burn.png" },
+freeze: {name: "Freeze", description: "Freezes opposing unit upon dealing damage with an attack or skill.", icon: "Icons/Ability/Freeze.png" },
+paralyze: {name: "Paralyze", description: "Paralyzes opposing unit upon striking with an attack or skill.", icon: "Icons/Ability/Paralyze.png" },
+soak: {name: "Soak", description: "Soaks opposing unit upon striking with an attack or skill.", icon: "Icons/Ability/Soak.png" },
+venom: {name: "Venom", description: "Poisons opposing unit upon striking with an attack or skill.", icon: "Icons/Ability/Venom.png" },
 
-protect: {name: "Protect", description: "Opponent can only target this unit for attacks.", icon: "OtherImages/StatIcons/Protect.png" },
-barrier: {name: "Barrier", description: "Prevents the next damage received to any unit.", icon: "OtherImages/StatIcons/Barrier.png" },
-evasion: {name: "Evasion", description: "Prevents the next skill target.", icon: "OtherImages/StatIcons/Evasion.png" },
-aegis: {name: "Aegis", description: "Unaffected by skills and effects.", icon: "OtherImages/StatIcons/Venom.png" },
-armor: {name: "Armor", description: "Secondary sustain stat. Units loss armor first before HP. When the armor breaks, nullifies remaining damage. Losses {1} Speed", icon: "OtherImages/StatIcons/Aegis.png" },
+protect: {name: "Protect", description: "Opponent can only target this unit for attacks.", icon: "Icons/Ability/Protect.png" },
+barrier: {name: "Barrier", description: "Prevents the next damage received to any unit.", icon: "Icons/Ability/Barrier.png" },
+evasion: {name: "Evasion", description: "Prevents the next skill target.", icon: "Icons/Ability/Evasion.png" },
+aegis: {name: "Aegis", description: "Unaffected by skills and effects.", icon: "Icons/Ability/Venom.png" },
+armor: {name: "Armor", description: "Secondary sustain stat. Units loss armor first before HP. When the armor breaks, nullifies remaining damage. Losses {1} Speed", icon: "Icons/Ability/Aegis.png" },
 
 // --- Target Related Abilities --- //
-veil: {name: "Veil", description: "Cannot be targeted by skills.", icon: "OtherImages/StatIcons/Veil.png" },
-immunity: {name: "Immunity", description: "Unaffected by status ailments.", icon: "OtherImages/StatIcons/Immunity.png" },
-ambush: {name: "Ambush", description: "Cannot be targeted by opponent's attacks or skills. Unit is revealed after attacking or using a skill", icon: "OtherImages/StatIcons/Ambush.png" },
-flying: {name: "Flying", description: "Can only be blocked by other units with Flying or Ranged. Speed {1}.", icon: "OtherImages/StatIcons/Flying.png" },
-ranged: {name: "Ranged", description: "Can attack units with Flying and Dive. Speed {1}.", icon: "OtherImages/StatIcons/Ranged.png" },
+veil: {name: "Veil", description: "Cannot be targeted by skills.", icon: "Icons/Ability/Veil.png" },
+immunity: {name: "Immunity", description: "Unaffected by status ailments.", icon: "Icons/Ability/Immunity.png" },
+ambush: {name: "Ambush", description: "Cannot be targeted by opponent's attacks or skills. Unit is revealed after attacking or using a skill", icon: "Icons/Ability/Ambush.png" },
+flying: {name: "Flying", description: "Can only be blocked by other units with Flying or Ranged. Speed {1}.", icon: "Icons/Ability/Flying.png" },
+ranged: {name: "Ranged", description: "Can attack units with Flying and Dive. Speed {1}.", icon: "Icons/Ability/Ranged.png" },
 
-rush: {name: "Rush", description: "Can attack on the turn it is played. Speed {1}.", icon: "OtherImages/StatIcons/Rush.png" },
-drain: {name: "Drain", description: "When this unit deals damage, gain that much life.", icon: "OtherImages/StatIcons/Drain.png" },
+rush: {name: "Rush", description: "Can attack on the turn it is played. Speed {1}.", icon: "Icons/Ability/Rush.png" },
+drain: {name: "Drain", description: "When this unit deals damage, gain that much life.", icon: "Icons/Ability/Drain.png" },
 pierce: {name: "Pierce", description: "Ignores armor."},
 
 // --- Assault Abilities --- //
@@ -1600,11 +1600,11 @@ intimidate: {name: "Intimidate", description: "When declaring an attack, {CW} th
 provoke: {name: "Provoke", description: "When declaring an attack, {CCW} that unit", icon: "OtherImages/StatIcons/Provoke.png" },
 
  // --- Brace Abilities --- //
-scorch: {name: "Scorch", description: "Burns opponent after receiving an attack", icon: "OtherImages/StatIcons/Scorch.png" },
-frostbite: {name: "Frostbite", description: "Freezes opponent after receiving an attack", icon: "OtherImages/StatIcons/Frostbite.png" },
-poisonous: {name: "Poisonous", description: "Poisons opponent after receiving an attack", icon: "OtherImages/StatIcons/Poisonous.png" },
-drenched: {name: "Drenched", description: "Soaks opponent after receiving an attack", icon: "OtherImages/StatIcons/Drenched.png" },
-static: {name: "Static", description: "Paralyzes opponent after receiving an attack", icon: "OtherImages/StatIcons/Static.png" },
+scorch: {name: "Scorch", description: "Burns opponent after receiving an attack", icon: "Icons/Ability/Scorch.png" },
+frostbite: {name: "Frostbite", description: "Freezes opponent after receiving an attack", icon: "Icons/Ability/Frostbite.png" },
+poisonous: {name: "Poisonous", description: "Poisons opponent after receiving an attack", icon: "Icons/Ability/Poisonous.png" },
+drenched: {name: "Drenched", description: "Soaks opponent after receiving an attack", icon: "Icons/Ability/Drenched.png" },
+static: {name: "Static", description: "Paralyzes opponent after receiving an attack", icon: "Icons/Ability/Static.png" },
 
 // -------------------- //
 // --- REQUIREMENTS --- //
@@ -1645,14 +1645,14 @@ awaken: {name: "Awaken", description: "Activates during the draw step."},
 aftermath: {name: "Aftermath", description: "Activates during the end step."},
 
 // --- WEATHER SKILLS --- //
-drought: {name: "Drought", description: "Summons Sunlight and Sunburst.", icon: "OtherImages/StatIcons/Drought.png" },
-drizzle: {name: "Drizzle", description: "Summons Rain and Downpour.", icon: "OtherImages/StatIcons/Drizzle.png" },
-stormcall: {name: "Stormcall", description: "Summons Storm and Thunderstorm.", icon: "OtherImages/StatIcons/Stormcall.png" },
-frostcall: {name: "Frostcall", description: "Summons Snowfall and Blizzard.", icon: "OtherImages/StatIcons/Frostcall.png" },
-strongwinds: {name: "Strongwinds", description: "Summons Gale and Hurricane.", icon: "OtherImages/StatIcons/Strongwinds.png" },
-eruption: {name: "Eruption", description: "Summons Ashfall.", icon: "OtherImages/StatIcons/Eruption.png" },
-decay: {name: "Decay", description: "Summons Miasma.", icon: "OtherImages/StatIcons/Decay.png" },
-mystveil: {name: "Mystveil", description: "Summons Mist", icon: "OtherImages/StatIcons/Mist.png" },
+drought: {name: "Drought", description: "Summons Sunlight and Sunburst.", icon: "Icons/Weather/Drought.png" },
+drizzle: {name: "Drizzle", description: "Summons Rain and Downpour.", icon: "Icons/Weather/Drizzle.png" },
+stormcall: {name: "Stormcall", description: "Summons Storm and Thunderstorm.", icon: "Icons/Weather/Stormcall.png" },
+frostcall: {name: "Frostcall", description: "Summons Snowfall and Blizzard.", icon: "Icons/Weather/Frostcall.png" },
+strongwinds: {name: "Strongwinds", description: "Summons Gale and Hurricane.", icon: "Icons/Weather/Strongwinds.png" },
+eruption: {name: "Eruption", description: "Summons Ashfall.", icon: "Icons/Weather/Eruption.png" },
+decay: {name: "Decay", description: "Summons Miasma.", icon: "Icons/Weather/Decay.png" },
+mystveil: {name: "Mystveil", description: "Summons Mist", icon: "Icons/Weather/Mist.png" },
 
 // ---------------------------------- //
 // --- STATUS AND WEATHER EFFECTS --- //
@@ -1666,19 +1666,19 @@ paralysis: {name: "Paralysis", description: "Cannot attack. Lasts 2 turns per st
 soaked: {name: "Soaked", description: "Lose -1 ATK per stack."},
 
 // --- WEATHER EFFECTS --- //
-sunlight: {name: "Sunlight", description: "Inferno +{1}/{0}. Radiance {0}/+{1}.", icon: "OtherImages/StatIcons/Sunlight.png" },
-sunburst: {name: "Sunburst", description: "Inferno +{2}/{0}. Radiance +{1}/+{1}.", icon: "OtherImages/StatIcons/Sunburst.png" },
-rain: {name: "Rain", description: "Tidal +{1}/{0}. Sylvan {0}/+{1}.", icon: "OtherImages/StatIcons/Rain.png" },
-downpour: {name: "Downpour", description: "Tidal +{1}/+{1}. Sylvan {0}/+{1}.", icon: "OtherImages/StatIcons/Downpour.png" },
-storm: {name: "Storm", description: "Tempest +{1}/{0}. Tidal {0}/+{1}.", icon: "OtherImages/StatIcons/Storm.png" },
-thunderstorm: {name: "Thunderstorm", description: "Tempest +{2}/{0}. Tidal {0}/+{1}.", icon: "OtherImages/StatIcons/Thunderstorm.png" },
-snowfall: {name: "Snowfall", description: "Frozen units lose 1 HP during the end step. Inspire Tidal → Freeze.", icon: "OtherImages/StatIcons/Snowfall.png" },
-blizzard: {name: "Blizzard", description: "Non-Tidal units lose 1 HP during the end step. Inspire Tidal → Freeze.", icon: "OtherImages/StatIcons/Blizzard.png" },
-gale: {name: "Gale", description: "Tempest +{1}/{0}.", icon: "OtherImages/StatIcons/Gale.png" },
-hurricane: {name: "Hurricane", description: "Tempest +{2}/{0}.", icon: "OtherImages/StatIcons/Hurricane.png" },
-eruption: {name: "Eruption", description: "Interno +{1}/{0}. Terra {0}/+{1}.", icon: "OtherImages/StatIcons/Eruption.png" },
-decay: {name: "decay", description: "Corrupted +{1}/+{1}.", icon: "OtherImages/StatIcons/Decay.png" },
-mystveil: {name: "Mystveil", description: "Sylvan +{1}/+{1}.", icon: "OtherImages/StatIcons/Mystveil.png" },
+sunlight: {name: "Sunlight", description: "Inferno +{1}/{0}. Radiance {0}/+{1}.", icon: "Icons/Weather/Sunlight.png" },
+sunburst: {name: "Sunburst", description: "Inferno +{2}/{0}. Radiance +{1}/+{1}.", icon: "Icons/Weather/Sunburst.png" },
+rain: {name: "Rain", description: "Tidal +{1}/{0}. Sylvan {0}/+{1}.", icon: "Icons/Weather/Rain.png" },
+downpour: {name: "Downpour", description: "Tidal +{1}/+{1}. Sylvan {0}/+{1}.", icon: "Icons/Weather/Downpour.png" },
+storm: {name: "Storm", description: "Tempest +{1}/{0}. Tidal {0}/+{1}.", icon: "Icons/Weather/Storm.png" },
+thunderstorm: {name: "Thunderstorm", description: "Tempest +{2}/{0}. Tidal {0}/+{1}.", icon: "Icons/Weather/Thunderstorm.png" },
+snowfall: {name: "Snowfall", description: "Frozen units lose 1 HP during the end step. Inspire Tidal → Freeze.", icon: "Icons/Weather/Snowfall.png" },
+blizzard: {name: "Blizzard", description: "Non-Tidal units lose 1 HP during the end step. Inspire Tidal → Freeze.", icon: "Icons/Weather/Blizzard.png" },
+gale: {name: "Gale", description: "Tempest +{1}/{0}.", icon: "Icons/Weather/Gale.png" },
+hurricane: {name: "Hurricane", description: "Tempest +{2}/{0}.", icon: "Icons/Weather/Hurricane.png" },
+eruption: {name: "Eruption", description: "Interno +{1}/{0}. Terra {0}/+{1}.", icon: "Icons/Weather/Eruption.png" },
+decay: {name: "decay", description: "Corrupted +{1}/+{1}.", icon: "Icons/Weather/Decay.png" },
+mystveil: {name: "Mystveil", description: "Sylvan +{1}/+{1}.", icon: "Icons/Weather/Mystveil.png" },
 
 // -------------------- //
 // --- TRAIT SKILLS --- //
@@ -1706,88 +1706,89 @@ aura: {name: "Aura", description: "Attach to units of the same Color.", icon: "O
 // ----- //
 // TYPES //
 // ----- //
-/* dragon: {name: "Dragon", icon: "OtherImages/StatIcons/Dragon.png" , description: "Majestic, ancient, and unmatched in power, dragons embody the primal forces of creation and destruction. Each scale glimmers with the legacy of ages, and each breath reshapes the world itself. Though their temperaments vary—from wise guardians to wrathful tyrants—all dragons command awe and fear in equal measure, their presence a living reminder that the elements themselves can take form and will."},
-beast: {name: "Beast", icon: "OtherImages/StatIcons/Beast.png" , description: "Untamed and primal, beasts embody the raw pulse of nature unshaped by reason or restraint. From the silent hunter stalking through shadowed woods to the thunderous titan that shakes the earth, each creature moves with instinctive purpose. Though driven by hunger and survival, beasts are more than mere savagery — they are the heartbeat of the wild, the first language of a world that remembers no masters."},
-elemental: {name: "Elemental", icon: "OtherImages/StatIcons/Elemental.png" , description: "Primordial and eternal, elementals are the living essence of the world’s raw forces. They are not born, but awakened — the whisper of wind given voice, the heartbeat of stone given motion. Neither good nor evil, they embody balance itself, shaping and unshaping creation with every surge of flame, wave, or storm. To face an elemental is to confront the untamed will of the world made flesh."},
-construct: {name: "Construct", icon: "OtherImages/StatIcons/Construct.png" , description: "Forged by mortal hands yet animated by unnatural will, constructs stand as monuments to creation without life. Some serve with perfect obedience, others wander seeking the purpose their makers abandoned. Whether wrought from steel, stone, or enchanted coral, each construct bears the echo of its creator’s intent — a silent testament to the line between genius and hubris."},
-faefolk: {name: "Faefolk", icon: "OtherImages/StatIcons/Faefolk.png" , description: "Enigmatic and timeless, the Faefolk dwell where wonder and deceit intertwine. They are the laughter in moonlit groves, the whispers between leaves, and the shimmer at the edge of mortal sight. Guided by whim as much as wisdom, their magic bends nature’s laws with effortless grace — nurturing or destroying with the same delicate hand. To bargain with the Faefolk is to dance with beauty and peril alike."},
-demon: {name: "Demon", icon: "OtherImages/StatIcons/Demon.png" , description: "Born from malice, ambition, and the echoes of forsaken gods, demons are the chaos that festers beneath creation. They thrive in conflict, feeding on desire, fear, and despair — yet each is bound by its own cunning will. To mortals they appear as nightmares made flesh, but to themselves they are architects of freedom, tearing down the fragile order that cages the world. Their power is corruption, and their truth — liberation through ruin."},
-undead: {name: "Undead", icon: "OtherImages/StatIcons/Undead.png" , description: "Bound by neither time nor death, the undead are echoes of life that refuse to fade. Animated by cursed will or unholy power, they wander between worlds — relics of hatred, sorrow, or unfinished purpose. Where they tread, warmth withers and silence reigns. To some they are abominations; to others, proof that even death can be conquered — at a terrible cost." },
-celestial: {name: "Celestial", icon: "OtherImages/StatIcons/Celestial.png" , description: "Beacons of divinity and order, the celestials are born of pure light and cosmic harmony. Their presence bends the heavens and stills the storms, for they are the will of creation made radiant. Guided by purpose beyond mortal grasp, they bring both mercy and judgment — for in their eyes, salvation and destruction are but reflections of balance restored."},
-avian: {name: "Construct", icon: "OtherImages/StatIcons/Avian.png" , description: "Graceful and fierce, the avians rule the skies with wisdom born of the wind. From mountaintop sanctuaries they watch the shifting lands below, their keen eyes ever wary, their hearts bound to the endless horizon. Whether messengers of dawn or harbingers of storm, the Avians embody freedom itself — swift, untouchable, and guided by the breath of the heavens."},
+/* dragon: {name: "Dragon", icon: "Icons/Type/Dragon.png" , description: "Majestic, ancient, and unmatched in power, dragons embody the primal forces of creation and destruction. Each scale glimmers with the legacy of ages, and each breath reshapes the world itself. Though their temperaments vary—from wise guardians to wrathful tyrants—all dragons command awe and fear in equal measure, their presence a living reminder that the elements themselves can take form and will."},
+beast: {name: "Beast", icon: "Icons/Type/Beast.png" , description: "Untamed and primal, beasts embody the raw pulse of nature unshaped by reason or restraint. From the silent hunter stalking through shadowed woods to the thunderous titan that shakes the earth, each creature moves with instinctive purpose. Though driven by hunger and survival, beasts are more than mere savagery — they are the heartbeat of the wild, the first language of a world that remembers no masters."},
+elemental: {name: "Elemental", icon: "Icons/Type/Elemental.png" , description: "Primordial and eternal, elementals are the living essence of the world’s raw forces. They are not born, but awakened — the whisper of wind given voice, the heartbeat of stone given motion. Neither good nor evil, they embody balance itself, shaping and unshaping creation with every surge of flame, wave, or storm. To face an elemental is to confront the untamed will of the world made flesh."},
+construct: {name: "Construct", icon: "Icons/Type/Construct.png" , description: "Forged by mortal hands yet animated by unnatural will, constructs stand as monuments to creation without life. Some serve with perfect obedience, others wander seeking the purpose their makers abandoned. Whether wrought from steel, stone, or enchanted coral, each construct bears the echo of its creator’s intent — a silent testament to the line between genius and hubris."},
+faefolk: {name: "Faefolk", icon: "Icons/Type/Faefolk.png" , description: "Enigmatic and timeless, the Faefolk dwell where wonder and deceit intertwine. They are the laughter in moonlit groves, the whispers between leaves, and the shimmer at the edge of mortal sight. Guided by whim as much as wisdom, their magic bends nature’s laws with effortless grace — nurturing or destroying with the same delicate hand. To bargain with the Faefolk is to dance with beauty and peril alike."},
+brutefolk: {name: "brutefolk", icon: "Icons/Type/brutefolk.png" , description: "Savage and unyielding, the Brutefolk are forged in struggle and bound by blood. They thrive where strength is law and survival the only creed, their lives shaped by war, hunger, and the will to endure. Though scorned as beasts by softer races, they bear a primal honor — a truth carved in scars and fire. To face the Brutefolk is to meet the raw, untamed spirit of the world before it learned mercy."},
+demon: {name: "Demon", icon: "Icons/Type/Demon.png" , description: "Born from malice, ambition, and the echoes of forsaken gods, demons are the chaos that festers beneath creation. They thrive in conflict, feeding on desire, fear, and despair — yet each is bound by its own cunning will. To mortals they appear as nightmares made flesh, but to themselves they are architects of freedom, tearing down the fragile order that cages the world. Their power is corruption, and their truth — liberation through ruin."},
+undead: {name: "Undead", icon: "Icons/Type/Undead.png" , description: "Bound by neither time nor death, the undead are echoes of life that refuse to fade. Animated by cursed will or unholy power, they wander between worlds — relics of hatred, sorrow, or unfinished purpose. Where they tread, warmth withers and silence reigns. To some they are abominations; to others, proof that even death can be conquered — at a terrible cost." },
+celestial: {name: "Celestial", icon: "Icons/Type/Celestial.png" , description: "Beacons of divinity and order, the celestials are born of pure light and cosmic harmony. Their presence bends the heavens and stills the storms, for they are the will of creation made radiant. Guided by purpose beyond mortal grasp, they bring both mercy and judgment — for in their eyes, salvation and destruction are but reflections of balance restored."},
+avian: {name: "Construct", icon: "Icons/Type/Avian.png" , description: "Graceful and fierce, the avians rule the skies with wisdom born of the wind. From mountaintop sanctuaries they watch the shifting lands below, their keen eyes ever wary, their hearts bound to the endless horizon. Whether messengers of dawn or harbingers of storm, the Avians embody freedom itself — swift, untouchable, and guided by the breath of the heavens."},
 
 */
 
 // ---------- //
 // ARCHETYPES //
 // ---------- //
-fireland: {name: "Fireland", profile: { hp: 4, atk: 10, def: 2, spd: 9, hc: 3, ep: 8 }, icon: "OtherImages/StatIcons/Fireland.png" , description: "Born of volcanic wrath and infernal hunger, these fire-beasts hunt not for survival, but to spread the consuming blaze of their cursed homeland. Fueled by relentless ferocity, the Fireland are defined by their fiery rushing strikes. They are known by their aggression, overwhelming foes with sudden, searing attacks before the battle has even begun."},
-webcursed: {name: "Webcursed", profile: { hp: 4, atk: 10, def: 2, spd: 9, hc: 3, ep: 8 }, icon: "OtherImages/StatIcons/Webcursed.png" , description: "Born from shadowed corners and forgotten ruins, the Webcursed are spiders whose venom and silk ensnare all who dare enter their lair. Each step into their tangled domain invites paralysis and dread, as they patiently hunt, binding prey in intricate traps. Cunning and relentless, the Webcursed weave both terror and death into every silken strand."},
-frostland: {name: "Frostland", profile: { hp: 8, atk: 2, def: 9, spd: 2, hc: 10, ep: 1 }, icon: "OtherImages/StatIcons/Frostland.png" , description: "Born of glacial silence and eternal winter, the Frostland embody the merciless stillness of the frozen wastes. Their strength lies not in speed, but in control, freezing foes in place and shattering them with ruthless precision. Defined by their mastery of ice, they lock enemies in chilling stasis before striking the final, frigid blow."},
-golem: {name: "Golem", profile: { hp: 4, atk: 10, def: 2, spd: 9, hc: 3, ep: 8 }, icon: "OtherImages/StatIcons/Golem.png" , description: "Forged from stone, metal, and elemental essence, golems are unstoppable engines of brute force. Their armored bodies shrug off attacks, while their immense strength allows them to exploit every weakness in their foes. Patient yet relentless, golems dominate the battlefield, their elemental fury leaving devastation in their calculated, crushing path."},
+fireland: {name: "Fireland", profile: { hp: 4, atk: 10, def: 2, spd: 9, hc: 3, ep: 8 }, icon: "Icons/Archetype/Fireland.png" , description: "Born of volcanic wrath and infernal hunger, these fire-beasts hunt not for survival, but to spread the consuming blaze of their cursed homeland. Fueled by relentless ferocity, the Fireland are defined by their fiery rushing strikes. They are known by their aggression, overwhelming foes with sudden, searing attacks before the battle has even begun."},
+webcursed: {name: "Webcursed", profile: { hp: 4, atk: 10, def: 2, spd: 9, hc: 3, ep: 8 }, icon: "Icons/Archetype/Webcursed.png" , description: "Born from shadowed corners and forgotten ruins, the Webcursed are spiders whose venom and silk ensnare all who dare enter their lair. Each step into their tangled domain invites paralysis and dread, as they patiently hunt, binding prey in intricate traps. Cunning and relentless, the Webcursed weave both terror and death into every silken strand."},
+frostland: {name: "Frostland", profile: { hp: 8, atk: 2, def: 9, spd: 2, hc: 10, ep: 1 }, icon: "Icons/Archetype/Frostland.png" , description: "Born of glacial silence and eternal winter, the Frostland embody the merciless stillness of the frozen wastes. Their strength lies not in speed, but in control, freezing foes in place and shattering them with ruthless precision. Defined by their mastery of ice, they lock enemies in chilling stasis before striking the final, frigid blow."},
+golem: {name: "Golem", profile: { hp: 4, atk: 10, def: 2, spd: 9, hc: 3, ep: 8 }, icon: "Icons/Archetype/Golem.png" , description: "Forged from stone, metal, and elemental essence, golems are unstoppable engines of brute force. Their armored bodies shrug off attacks, while their immense strength allows them to exploit every weakness in their foes. Patient yet relentless, golems dominate the battlefield, their elemental fury leaving devastation in their calculated, crushing path."},
 
 // --- Undead --- //
-skullframe: {name: "Skullframe", profile: { hp: 4, atk: 10, def: 2, spd: 9, hc: 3, ep: 5 }, icon: "OtherImages/StatIcons/Skullframe.png" , description: "Clad in bone and bound by forbidden sorcery, the Skullframe march as deathless engines of war. When shattered, dark magic stitches marrow and spirit back together, raising them anew. Masters of necrotic arts and relentless persistence, the Skullframe are an archetype of inevitability, overwhelming foes with grim magic and unending reanimation until nothing living remains to resist."},
+skullframe: {name: "Skullframe", profile: { hp: 4, atk: 10, def: 2, spd: 9, hc: 3, ep: 5 }, icon: "Icons/Archetype/Skullframe.png" , description: "Clad in bone and bound by forbidden sorcery, the Skullframe march as deathless engines of war. When shattered, dark magic stitches marrow and spirit back together, raising them anew. Masters of necrotic arts and relentless persistence, the Skullframe are an archetype of inevitability, overwhelming foes with grim magic and unending reanimation until nothing living remains to resist."},
 
 // --- Celestial --- //
-seraph: {name: "Seraph", profile: { hp: 9, atk: 4, def: 8, spd: 4, hc: 3, ep: 4 }, icon: "OtherImages/StatIcons/Seraph.png" , description: "Born of radiant light and celestial grace, the Seraph soar above the battlefield as guardians and warriors. Their wings gleam with divine energy, and their presence purifies and inspires those around them. Majestic and unwavering, they strike with the justice of the heavens, defending the innocent and smiting darkness wherever it dwells."},
+seraph: {name: "Seraph", profile: { hp: 9, atk: 4, def: 8, spd: 4, hc: 3, ep: 4 }, icon: "Icons/Archetype/Seraph.png" , description: "Born of radiant light and celestial grace, the Seraph soar above the battlefield as guardians and warriors. Their wings gleam with divine energy, and their presence purifies and inspires those around them. Majestic and unwavering, they strike with the justice of the heavens, defending the innocent and smiting darkness wherever it dwells."},
 
 // --- Beast --- //
-hybrid: {name: "Hybrid", profile: { hp: 8, atk: 7, def: 4, spd: 5, hc: 2, ep: 3 }, icon: "OtherImages/StatIcons/Hybrid.png" , description: "Ferocious and untamed, Hybrids roam the wilds with bodies forged from multiple forms. With the strength of a bull, the speed of a stag, or the cunning of a fox, each beast strikes fear into those who cross their path. Raw instincts and primal power guide them, making every encounter with a Hybrid a savage test of survival."},
-moonfang: {name: "Moonfang", profile: { hp: 5, atk: 9, def: 3, spd: 8, hc: 1, ep: 5 }, icon: "OtherImages/StatIcons/Moonfang.png" , description: "Born of lunar light and shadowed forests, the Moonfang wolves prowl by day with keen senses and silent steps. When the moon rises, their forms twist into fearsome werewolves, claws and fangs sharpened by the night. Driven by instinct and the pull of the moon, they strike with relentless ferocity, hunting as packs that embody both cunning and primal wrath."},
+hybrid: {name: "Hybrid", profile: { hp: 8, atk: 7, def: 4, spd: 5, hc: 2, ep: 3 }, icon: "Icons/Archetype/Hybrid.png" , description: "Ferocious and untamed, Hybrids roam the wilds with bodies forged from multiple forms. With the strength of a bull, the speed of a stag, or the cunning of a fox, each beast strikes fear into those who cross their path. Raw instincts and primal power guide them, making every encounter with a Hybrid a savage test of survival."},
+moonfang: {name: "Moonfang", profile: { hp: 5, atk: 9, def: 3, spd: 8, hc: 1, ep: 5 }, icon: "Icons/Archetype/Moonfang.png" , description: "Born of lunar light and shadowed forests, the Moonfang wolves prowl by day with keen senses and silent steps. When the moon rises, their forms twist into fearsome werewolves, claws and fangs sharpened by the night. Driven by instinct and the pull of the moon, they strike with relentless ferocity, hunting as packs that embody both cunning and primal wrath."},
 
 // --- Faefolk --- //
-goblin: {name: "Goblin", profile: { hp: 2, atk: 7, def: 2, spd: 5, hc: 2, ep: 7 }, icon: "OtherImages/StatIcons/Goblin.png" , description: "Small, cunning, and endlessly resourceful, goblins thrive in hidden warrens and shadowed corners. They scurry with mischievous intent, ambushing foes and exploiting every weakness. Though individually weak, they strike in numbers, their chaotic energy turning even the simplest skirmish into unpredictable mayhem."},
-fairy: {name: "Fairy", profile: { hp: 1, atk: 8, def: 2, spd: 8, hc: 2, ep: 10 }, icon: "OtherImages/StatIcons/Fairy.png" , description: "Delicate yet mischievous, fairies flit through forests and meadows, their presence leaving trails of sparkling light. Though small, they wield surprising magic, weaving illusions and enchantments to protect their homes or play tricks on unwary travelers. Their beauty belies a cunning and spirited nature, always dancing between wonder and mischief."},
-elf: {name: "Elf", profile: { hp: 6, atk: 6, def: 4, spd: 6, hc: 2, ep: 7 }, icon: "OtherImages/StatIcons/Elf.png" , description: "Graceful and eternal, elves move with the harmony of the forests they protect. Skilled in both magic and archery, they strike with precision and wisdom, blending into nature as if part of it. Their keen senses and ancient knowledge make them formidable guardians, defending their realms with elegance, patience, and unwavering resolve."},
-satyr: {name: "Satyr", profile: { hp: 7, atk: 5, def: 5, spd: 5, hc: 3, ep: 8 }, icon: "OtherImages/StatIcons/Satyr.png" , description: "Wild-hearted and cunning, Satyrs embody the untamed spirit of nature. Their laughter echoes through moonlit groves as they dance between mischief and wisdom, balancing chaos and creation. Though their revels seem carefree, Satyrs are fierce protectors of their forests—striking swiftly with wit, charm, and primal magic when their woodland sanctuaries are threatened."},
-orc: {name: "Orcs", profile: { hp: 9, atk: 6, def: 8, spd: 3, hc: 1, ep: 1 }, icon: "OtherImages/StatIcons/Orc.png" , description: "Brutal, relentless, and fiercely proud, orcs thrive on the chaos of battle. Their strength and endurance make them formidable warriors, while their tribal bonds and warlike culture drive them to conquer and dominate. Though often feared for their ferocity, orcs are bound by honor within their clans, turning raw power into disciplined, devastating force."},
-dwarf: {name: "Dwarf", profile: { hp: 8, atk: 5, def: 9, spd: 1, hc: 3, ep: 3 }, icon: "OtherImages/StatIcons/Dwarf.png" , description: "Stout and steadfast, dwarves are master smiths and artisans, shaping stone and metal with unmatched skill. Their halls echo with hammer strikes and the roar of furnaces, as they craft weapons, armor, and treasures of legendary quality. Fierce in defense and meticulous in craft, dwarves embody endurance, precision, and the enduring strength of their mountain homes."},
+goblin: {name: "Goblin", profile: { hp: 2, atk: 7, def: 2, spd: 5, hc: 2, ep: 7 }, icon: "Icons/Archetype/Goblin.png" , description: "Small, cunning, and endlessly resourceful, goblins thrive in hidden warrens and shadowed corners. They scurry with mischievous intent, ambushing foes and exploiting every weakness. Though individually weak, they strike in numbers, their chaotic energy turning even the simplest skirmish into unpredictable mayhem."},
+fairy: {name: "Fairy", profile: { hp: 1, atk: 8, def: 2, spd: 8, hc: 2, ep: 10 }, icon: "Icons/Archetype/Fairy.png" , description: "Delicate yet mischievous, fairies flit through forests and meadows, their presence leaving trails of sparkling light. Though small, they wield surprising magic, weaving illusions and enchantments to protect their homes or play tricks on unwary travelers. Their beauty belies a cunning and spirited nature, always dancing between wonder and mischief."},
+elf: {name: "Elf", profile: { hp: 6, atk: 6, def: 4, spd: 6, hc: 2, ep: 7 }, icon: "Icons/Archetype/Elf.png" , description: "Graceful and eternal, elves move with the harmony of the forests they protect. Skilled in both magic and archery, they strike with precision and wisdom, blending into nature as if part of it. Their keen senses and ancient knowledge make them formidable guardians, defending their realms with elegance, patience, and unwavering resolve."},
+satyr: {name: "Satyr", profile: { hp: 7, atk: 5, def: 5, spd: 5, hc: 3, ep: 8 }, icon: "Icons/Archetype/Satyr.png" , description: "Wild-hearted and cunning, Satyrs embody the untamed spirit of nature. Their laughter echoes through moonlit groves as they dance between mischief and wisdom, balancing chaos and creation. Though their revels seem carefree, Satyrs are fierce protectors of their forests—striking swiftly with wit, charm, and primal magic when their woodland sanctuaries are threatened."},
+orc: {name: "Orcs", profile: { hp: 9, atk: 6, def: 8, spd: 3, hc: 1, ep: 1 }, icon: "Icons/Archetype/Orc.png" , description: "Brutal, relentless, and fiercely proud, orcs thrive on the chaos of battle. Their strength and endurance make them formidable warriors, while their tribal bonds and warlike culture drive them to conquer and dominate. Though often feared for their ferocity, orcs are bound by honor within their clans, turning raw power into disciplined, devastating force."},
+dwarf: {name: "Dwarf", profile: { hp: 8, atk: 5, def: 9, spd: 1, hc: 3, ep: 3 }, icon: "Icons/Archetype/Dwarf.png" , description: "Stout and steadfast, dwarves are master smiths and artisans, shaping stone and metal with unmatched skill. Their halls echo with hammer strikes and the roar of furnaces, as they craft weapons, armor, and treasures of legendary quality. Fierce in defense and meticulous in craft, dwarves embody endurance, precision, and the enduring strength of their mountain homes."},
 
 // --- Avian --- //
-pyreclad: {name: "Pyreclad", profile: { hp: 1, atk: 8, def: 2, spd: 8, hc: 2, ep: 8 }, icon: "OtherImages/StatIcons/Pyreclad.png" , description: "Born from blazing skies and molten embers, the Pyreclad are fierce avians wreathed in fire. Some bear armor forged in volcanic heat, turning them into flying fortresses of flame. Swift and relentless, they scorch the battlefield with fiery talons and blazing wings, leaving nothing but ash in their wake."},
-voltwing: {name: "Voltwing", profile: { hp: 1, atk: 8, def: 1, spd: 10, hc: 3, ep: 10 }, icon: "OtherImages/StatIcons/Voltwing.png" , description: "Born of storm and sky, the Voltwings are avians whose wings crackle with raw electricity. They dive with blinding speed, striking with piercing thunder that rends the air and scorches the battlefield. Agile and relentless, Voltwings are living lightning, their attacks swift, precise, and impossible to evade."},
-zephyra: {name: "Zephyra", profile: { hp: 5, atk: 6, def: 5, spd: 9, hc: 1, ep: 8 }, icon: "OtherImages/StatIcons/Voltwing.png" , description: "Born of storm and sky, the Voltwings are avians whose wings crackle with raw electricity. They dive with blinding speed, striking with piercing thunder that rends the air and scorches the battlefield. Agile and relentless, Voltwings are living lightning, their attacks swift, precise, and impossible to evade."},
-duskwing: {name: "Duskwing", profile: { hp: 4, atk: 8, def: 2, spd: 7, hc: 4, ep: 9 }, icon: "OtherImages/StatIcons/Duskwing.png" , description: "Shadows take flight in the form of Duskwings, dark avians whose sleek, crow-like forms glide silently through the night. With piercing eyes and razor-sharp talons, they watch from above, harbingers of omens and stealthy strikes. Wherever they gather, darkness deepens, and the unseen becomes a dangerous ally."},
+pyreclad: {name: "Pyreclad", profile: { hp: 1, atk: 8, def: 2, spd: 8, hc: 2, ep: 8 }, icon: "Icons/Archetype/Pyreclad.png" , description: "Born from blazing skies and molten embers, the Pyreclad are fierce avians wreathed in fire. Some bear armor forged in volcanic heat, turning them into flying fortresses of flame. Swift and relentless, they scorch the battlefield with fiery talons and blazing wings, leaving nothing but ash in their wake."},
+voltwing: {name: "Voltwing", profile: { hp: 1, atk: 8, def: 1, spd: 10, hc: 3, ep: 10 }, icon: "Icons/Archetype/Voltwing.png" , description: "Born of storm and sky, the Voltwings are avians whose wings crackle with raw electricity. They dive with blinding speed, striking with piercing thunder that rends the air and scorches the battlefield. Agile and relentless, Voltwings are living lightning, their attacks swift, precise, and impossible to evade."},
+zephyra: {name: "Zephyra", profile: { hp: 5, atk: 6, def: 5, spd: 9, hc: 1, ep: 8 }, icon: "Icons/Archetype/Voltwing.png" , description: "Born of storm and sky, the Voltwings are avians whose wings crackle with raw electricity. They dive with blinding speed, striking with piercing thunder that rends the air and scorches the battlefield. Agile and relentless, Voltwings are living lightning, their attacks swift, precise, and impossible to evade."},
+duskwing: {name: "Duskwing", profile: { hp: 4, atk: 8, def: 2, spd: 7, hc: 4, ep: 9 }, icon: "Icons/Archetype/Duskwing.png" , description: "Shadows take flight in the form of Duskwings, dark avians whose sleek, crow-like forms glide silently through the night. With piercing eyes and razor-sharp talons, they watch from above, harbingers of omens and stealthy strikes. Wherever they gather, darkness deepens, and the unseen becomes a dangerous ally."},
  
 // --- Construct --- //
-grovehusk: {name: "Grovehusk", profile: { hp: 9, atk: 2, def: 10, spd: 2, hc: 5, ep: 7 }, icon: "OtherImages/StatIcons/Grovehusk.png" , description: "NA."},
-cindercore: {name: "Cindercore", profile: { hp: 2, atk: 8, def: 7, spd: 1, hc: 2, ep: 6 }, icon: "OtherImages/StatIcons/Cindercore.png" , description: "Forged in molten crucibles deep beneath the world, the Cindercore are living constructs of stone and flame. Their hearts burn with rivers of lava, each strike searing with lingering pain. Unlike other flames that flare and fade, Cindercore are defined by their never-ending burning mastery and unyielding defenses. They are an archetype of attrition, grinding foes down with relentless heat until only ash and ruin remain."},
-coralbound: {name: "Coralbound", profile: { hp: 9, atk: 4, def: 7, spd: 3, hc: 3, ep: 1 }, icon: "OtherImages/StatIcons/Coralbound.png" , description: "Forged in the abyssal depths where steel meets coral, these aquatic constructs channel the crushing force of the ocean. With cannons unleashing torrents of compressed, high-pressure water, the Coralbound strike with relentless precision. Their true lethality emerges against soaked opponents, turning vulnerability into devastation. Defined by their mechanical resilience and liquid ferocity, they drown foes beneath waves of unyielding power."},
-stratosurge: {name: "Stratosurge", profile: { hp: 4, atk: 10, def: 2, spd: 9, hc: 3, ep: 8 }, icon: "OtherImages/StatIcons/Stratosurge.png" , description: "Forged from clouds, lightning, and the power of the heavens, the Stratosurge soar through the skies with divine purpose. Their bodies hum with electric energy, and their strikes rain down with precision from above. Majestic and unstoppable, they bring the fury of storms and the might of the heavens to every battlefield."},
-stormdrive: {name: "Stormdrive", profile: { hp: 2, atk: 7, def: 4, spd: 6, hc: 5, ep: 6 }, icon: "OtherImages/StatIcons/Stormdrive.png" , description: "Fueled by raw electricity and engineered for flight, Stormdrive blaze across the battlefield with blinding speed. Their crackling bodies strike with precision, discharging bolts that tear through defenses. Agile and relentless, they harness the chaotic energy of storms to dominate the skies and outpace any foe."},
-ironwrought: {name: "Ironwrought", profile: { hp: 7, atk: 5, def: 10, spd: 1, hc: 2, ep: 4 }, icon: "OtherImages/StatIcons/Ironwrought.png" , description: "Bound from stone and forged with iron, the Ironwrought constructs are embodiments of unyielding strength. Their massive frames crush obstacles and shield allies alike, moving with the relentless weight of the earth. Slow but unstoppable, they dominate the battlefield through sheer durability and grounded might."},
-plagueaxis: {name: "Plagueaxis", profile: { hp: 7, atk: 7, def: 4, spd: 2, hc: 6, ep: 5 }, icon: "OtherImages/StatIcons/Plagueaxis.png" , description: "Forged from toxic sludge and corrupted machinery, the Plagueaxis spread decay wherever they tread. Their bodies exude poisonous fumes, and their attacks corrode both earth and enemy alike. Relentless and insidious, they turn the battlefield into a hazardous wasteland, leaving blighted terrain and weakened foes in their wake."},
-solarforge: {name: "Solarforge", profile: { hp: 9, atk: 4, def: 8, spd: 3, hc: 2, ep: 7 }, icon: "OtherImages/StatIcons/Solarforge.png" , description: "Forged from molten light and radiant energy, the Solarforge shine with unyielding brilliance. Their bodies radiate warmth and power, blinding foes while protecting allies. Every strike channels the fury of the sun, turning their presence into a beacon of strength and a force of relentless illumination on the battlefield."},
-shadowgear: {name: "Shadowgear", profile: { hp: 1, atk: 7, def: 5, spd: 5, hc: 7, ep: 6 }, icon: "OtherImages/StatIcons/Shadowgear.png" , description: "Bound by darkness and animated by restless shades, the Shadowgear move with eerie precision. Armor and weaponry fused with shadow strike unseen, slipping through defenses to overwhelm foes. Silent and relentless, they turn ordinary machinery into vessels of fear, wielding shadows as both shield and blade."},
+grovehusk: {name: "Grovehusk", profile: { hp: 9, atk: 2, def: 10, spd: 2, hc: 5, ep: 7 }, icon: "Icons/Archetype/Grovehusk.png" , description: "NA."},
+cindercore: {name: "Cindercore", profile: { hp: 2, atk: 8, def: 7, spd: 1, hc: 2, ep: 6 }, icon: "Icons/Archetype/Cindercore.png" , description: "Forged in molten crucibles deep beneath the world, the Cindercore are living constructs of stone and flame. Their hearts burn with rivers of lava, each strike searing with lingering pain. Unlike other flames that flare and fade, Cindercore are defined by their never-ending burning mastery and unyielding defenses. They are an archetype of attrition, grinding foes down with relentless heat until only ash and ruin remain."},
+coralbound: {name: "Coralbound", profile: { hp: 9, atk: 4, def: 7, spd: 3, hc: 3, ep: 1 }, icon: "Icons/Archetype/Coralbound.png" , description: "Forged in the abyssal depths where steel meets coral, these aquatic constructs channel the crushing force of the ocean. With cannons unleashing torrents of compressed, high-pressure water, the Coralbound strike with relentless precision. Their true lethality emerges against soaked opponents, turning vulnerability into devastation. Defined by their mechanical resilience and liquid ferocity, they drown foes beneath waves of unyielding power."},
+stratosurge: {name: "Stratosurge", profile: { hp: 4, atk: 10, def: 2, spd: 9, hc: 3, ep: 8 }, icon: "Icons/Archetype/Stratosurge.png" , description: "Forged from clouds, lightning, and the power of the heavens, the Stratosurge soar through the skies with divine purpose. Their bodies hum with electric energy, and their strikes rain down with precision from above. Majestic and unstoppable, they bring the fury of storms and the might of the heavens to every battlefield."},
+stormdrive: {name: "Stormdrive", profile: { hp: 2, atk: 7, def: 4, spd: 6, hc: 5, ep: 6 }, icon: "Icons/Archetype/Stormdrive.png" , description: "Fueled by raw electricity and engineered for flight, Stormdrive blaze across the battlefield with blinding speed. Their crackling bodies strike with precision, discharging bolts that tear through defenses. Agile and relentless, they harness the chaotic energy of storms to dominate the skies and outpace any foe."},
+ironwrought: {name: "Ironwrought", profile: { hp: 7, atk: 5, def: 10, spd: 1, hc: 2, ep: 4 }, icon: "Icons/Archetype/Ironwrought.png" , description: "Bound from stone and forged with iron, the Ironwrought constructs are embodiments of unyielding strength. Their massive frames crush obstacles and shield allies alike, moving with the relentless weight of the earth. Slow but unstoppable, they dominate the battlefield through sheer durability and grounded might."},
+plagueaxis: {name: "Plagueaxis", profile: { hp: 7, atk: 7, def: 4, spd: 2, hc: 6, ep: 5 }, icon: "Icons/Archetype/Plagueaxis.png" , description: "Forged from toxic sludge and corrupted machinery, the Plagueaxis spread decay wherever they tread. Their bodies exude poisonous fumes, and their attacks corrode both earth and enemy alike. Relentless and insidious, they turn the battlefield into a hazardous wasteland, leaving blighted terrain and weakened foes in their wake."},
+solarforge: {name: "Solarforge", profile: { hp: 9, atk: 4, def: 8, spd: 3, hc: 2, ep: 7 }, icon: "Icons/Archetype/Solarforge.png" , description: "Forged from molten light and radiant energy, the Solarforge shine with unyielding brilliance. Their bodies radiate warmth and power, blinding foes while protecting allies. Every strike channels the fury of the sun, turning their presence into a beacon of strength and a force of relentless illumination on the battlefield."},
+shadowgear: {name: "Shadowgear", profile: { hp: 1, atk: 7, def: 5, spd: 5, hc: 7, ep: 6 }, icon: "Icons/Archetype/Shadowgear.png" , description: "Bound by darkness and animated by restless shades, the Shadowgear move with eerie precision. Armor and weaponry fused with shadow strike unseen, slipping through defenses to overwhelm foes. Silent and relentless, they turn ordinary machinery into vessels of fear, wielding shadows as both shield and blade."},
 
 // --- Elemental --- // 
-arbor: {name: "Arbor", icon: "OtherImages/StatIcons/Arbor.png" , description: "Born of roots, bark, and the living green of forests, the Arbor are guardians of nature’s heart. Their limbs weave and grow with unstoppable force, entangling foes and protecting the land. Patient yet relentless, they draw strength from the earth, turning forests into living battlegrounds where every vine and branch is a weapon."},
-pyroclast: {name: "Pyroclast", icon: "OtherImages/StatIcons/Pyroclast.png" , description: "Born from molten fury and the heart of burning flames, the Pyroclasts are pure embodiments of fire. Their bodies blaze with uncontrolled heat, and their movements ignite the air itself. Wherever they tread, flames consume and scorch, leaving nothing but ash in their wake, a testament to their unrelenting, fiery essence."},
-hydral: {name: "Hyral", icon: "OtherImages/StatIcons/Hydral.png" , description: "Forged from rivers, tides, and the endless depths, the Hyrals are living currents of water given form. They surge and crash with unrelenting force, drenching and drowning all who oppose them. Fluid and adaptable, they strike with the inevitability of the ocean, pulling foes beneath waves of relentless, liquid power."},
-galeform: {name: "Galeform", icon: "OtherImages/StatIcons/Galeform.png" , description: "Born of tempests and the rush of wind, Galeforms are swift, elusive elementals that strike with blades of air. Their movements are a blur, their attacks slicing and tearing with unerring precision. Masters of speed and agility, they descend like hurricanes, overwhelming foes with relentless, cutting gusts and the fury of the skies."},
-stonekin: {name: "Stonekin", icon: "OtherImages/StatIcons/Stonekin.png" , description: "Forged from bedrock and shaped by the ages, the Stonekin are embodiments of the earth. Their massive forms crush all that stand against them, while their unyielding bodies shrug off attacks with unwavering resilience. Slow but unstoppable, they move with the relentless patience of mountains, turning the battlefield into a fortress of stone and earth."},
-obscurid: {name: "Obscurid", icon: "OtherImages/StatIcons/Obscurid.png" , description: "Born from shadow and void, the Obscurids are creeping shades that feed on the essence of life. Their forms shift and blur, slipping through defenses to drain strength and spirit from all who stand before them. Masters of subtlety and decay, they leave only emptiness in their wake, turning vitality into darkness."},
-luminaut: {name: "Luminaut", icon: "OtherImages/StatIcons/Luminaut.png" , description: "Born of pure light and radiant energy, the Luminauts illuminate the battlefield with brilliance. Their presence purifies corruption and inspires allies, while their searing attacks blaze with the power of the sun. Majestic and unwavering, they embody the essence of radiance, turning darkness into hope and striking down those who oppose their light."},
-corruptor: {name: "Corruptor", icon: "OtherImages/StatIcons/Corruptor.png" , description: "Born of venom, rot, and foul decay, the Corruptors spread poison wherever they go. Their touch withers plant and flesh alike, and their toxic presence corrupts even the purest of lands. Relentless and insidious, they revel in contamination, leaving blighted ground and weakened foes in their poisonous wake."},
-voltkin: {name: "Voltkin", icon: "OtherImages/StatIcons/Voltkin.png" , description: "Forged from lightning and crackling energy, the Voltkin are living storms incarnate. Their bodies surge with electric power, striking with blinding speed and precision. Every movement sparks chaos, and every attack leaves a trail of crackling destruction, embodying the relentless fury of the storm."},
-glacial: {name: "Glacial", icon: "OtherImages/StatIcons/Glacial.png" , description: "Born from frost and frozen winds, the Glacials are elementals of ice and chill. Their touch freezes the air and hardens the ground, slowing all who oppose them. Silent and relentless, they strike with the precision of falling icicles, leaving the battlefield encased in frost and their enemies trapped in the grip of winter’s wrath."},
+arbor: {name: "Arbor", icon: "Icons/Archetype/Arbor.png" , description: "Born of roots, bark, and the living green of forests, the Arbor are guardians of nature’s heart. Their limbs weave and grow with unstoppable force, entangling foes and protecting the land. Patient yet relentless, they draw strength from the earth, turning forests into living battlegrounds where every vine and branch is a weapon."},
+pyroclast: {name: "Pyroclast", icon: "Icons/Archetype/Pyroclast.png" , description: "Born from molten fury and the heart of burning flames, the Pyroclasts are pure embodiments of fire. Their bodies blaze with uncontrolled heat, and their movements ignite the air itself. Wherever they tread, flames consume and scorch, leaving nothing but ash in their wake, a testament to their unrelenting, fiery essence."},
+hydral: {name: "Hyral", icon: "Icons/Archetype/Hydral.png" , description: "Forged from rivers, tides, and the endless depths, the Hyrals are living currents of water given form. They surge and crash with unrelenting force, drenching and drowning all who oppose them. Fluid and adaptable, they strike with the inevitability of the ocean, pulling foes beneath waves of relentless, liquid power."},
+galeform: {name: "Galeform", icon: "Icons/Archetype/Galeform.png" , description: "Born of tempests and the rush of wind, Galeforms are swift, elusive elementals that strike with blades of air. Their movements are a blur, their attacks slicing and tearing with unerring precision. Masters of speed and agility, they descend like hurricanes, overwhelming foes with relentless, cutting gusts and the fury of the skies."},
+stonekin: {name: "Stonekin", icon: "Icons/Archetype/Stonekin.png" , description: "Forged from bedrock and shaped by the ages, the Stonekin are embodiments of the earth. Their massive forms crush all that stand against them, while their unyielding bodies shrug off attacks with unwavering resilience. Slow but unstoppable, they move with the relentless patience of mountains, turning the battlefield into a fortress of stone and earth."},
+obscurid: {name: "Obscurid", icon: "Icons/Archetype/Obscurid.png" , description: "Born from shadow and void, the Obscurids are creeping shades that feed on the essence of life. Their forms shift and blur, slipping through defenses to drain strength and spirit from all who stand before them. Masters of subtlety and decay, they leave only emptiness in their wake, turning vitality into darkness."},
+luminaut: {name: "Luminaut", icon: "Icons/Archetype/Luminaut.png" , description: "Born of pure light and radiant energy, the Luminauts illuminate the battlefield with brilliance. Their presence purifies corruption and inspires allies, while their searing attacks blaze with the power of the sun. Majestic and unwavering, they embody the essence of radiance, turning darkness into hope and striking down those who oppose their light."},
+corruptor: {name: "Corruptor", icon: "Icons/Archetype/Corruptor.png" , description: "Born of venom, rot, and foul decay, the Corruptors spread poison wherever they go. Their touch withers plant and flesh alike, and their toxic presence corrupts even the purest of lands. Relentless and insidious, they revel in contamination, leaving blighted ground and weakened foes in their poisonous wake."},
+voltkin: {name: "Voltkin", icon: "Icons/Archetype/Voltkin.png" , description: "Forged from lightning and crackling energy, the Voltkin are living storms incarnate. Their bodies surge with electric power, striking with blinding speed and precision. Every movement sparks chaos, and every attack leaves a trail of crackling destruction, embodying the relentless fury of the storm."},
+glacial: {name: "Glacial", icon: "Icons/Archetype/Glacial.png" , description: "Born from frost and frozen winds, the Glacials are elementals of ice and chill. Their touch freezes the air and hardens the ground, slowing all who oppose them. Silent and relentless, they strike with the precision of falling icicles, leaving the battlefield encased in frost and their enemies trapped in the grip of winter’s wrath."},
 
 // --- Dragon --- //
-thornwing: {name: "Thornwing", profile: { hp: 9, atk: 4, def: 9, spd: 3, hc: 4, ep: 3 }, icon: "OtherImages/StatIcons/Thornwing.png" , description: "Forged of scale, bark, and living wood, the Thornwing dragons embody the resilience of the ancient forests. Their hides are plated in thorned armor, their wings creaking like timber in the wind. Where others strike with fire or venom, they endure, turning battles into wars of attrition. The Thornwing are defined by their unyielding defenses, outlasting foes until nature itself reclaims the battlefield."},
-blazingscale: {name: "Blazingscale", profile: { hp: 2, atk: 10, def: 3, spd: 8, hc: 3, ep: 8 }, icon: "OtherImages/StatIcons/Blazingscale.png" , description: "Dragons wreathed in flame and fury, the Blazingscale are living wildfires given form. With every wingbeat they ignite the skies, leaving charred wastelands in their wake. They are devastation incarnate turning the land itself into an endless inferno."},
-abyssdrake: {name: "Abyssdrake", profile: { hp: 9, atk: 3, def: 8, spd: 7, hc: 8, ep: 2 }, icon: "OtherImages/StatIcons/Abyssdrake.png" , description: "Born from the crushing depths, the Abyssdrakes command the ocean’s fury as their weapon. With thunderous roars they summon towering tides, swallowing armies and kingdoms beneath relentless waves. To face an Abyssdrake is to stand against the endless surge of the abyss, a flood that drowns all hope beneath its dark waters."},
-stormrazor: {name: "Stormrazor", profile: { hp: 4, atk: 9, def: 3, spd: 9, hc: 4, ep: 9 }, icon: "OtherImages/StatIcons/Stormrazor.png" , description: "Forged in the heart of raging tempests, the Stormrazors embody the untamed wrath of thunder and sky. They descend with blinding speed, their wings crackling with storms as lightning answers their command. Each strike is a flash of devastation, leaving smoldering ruin in the wake of their tempestuous fury."},
-ironclaw: {name: "Ironclaw", profile: { hp: 8, atk: 4, def: 9, spd: 3, hc: 2, ep: 3 }, icon: "OtherImages/StatIcons/Ironclaw.png" , description: "Carved from stone and tempered iron, the Ironclaw dragons are bastions of unyielding strength. Their armored scales deflect even the fiercest assaults, and their presence fortifies the lands they guard. Patient and resolute, they stand as living ramparts, defending their territory with unbreakable resolve and steadfast vigilance."},
-venomspine: {name: "Venomspine", profile: { hp: 6, atk: 7, def: 4, spd: 5, hc: 6, ep: 5 }, icon: "OtherImages/StatIcons/Venomspine.png" , description: "Twisted by venom and rot, the Venomspines spread decay wherever their wings shadow the land. Their breath carries no flame, but a vile miasma that withers forests, poisons rivers, and corrodes stone. To face them is to watch life unravel into ruin, for their presence festers the earth with corruption untamed."},
-solarwyrm: {name: "Solarwyrm", profile: { hp: 8, atk: 5, def: 6, spd: 6, hc: 5, ep: 4 }, icon: "OtherImages/StatIcons/Solarwyrm.png" , description: "Born of pure light and radiant fire, the Solarwyrms stand as vigilant guardians of sacred lands. Their wings shimmer with the brilliance of the sun, and their gaze pierces through shadows of corruption. Guided by unwavering justice, they defend their realm with searing power, purifying all that threatens the sanctity of their domain."},
-nightshroud: {name: "Nightshroud", profile: { hp: 6, atk: 7, def: 3, spd: 6, hc: 4, ep: 6 }, icon: "OtherImages/StatIcons/Nightshroud.png" , description: "Born from the abyss of endless night, the Nightshrouds are dragons wreathed in shadow and silence. Their scales absorb the faintest light, and their movements are whispers across the battlefield. Masters of stealth and dread, they strike from darkness, leaving fear and uncertainty in their wake, as if the night had taken form to hunt."},
-glimmerscale: {name: "Glimmerscale", profile: { hp: 4, atk: 10, def: 2, spd: 9, hc: 3, ep: 8 }, icon: "OtherImages/StatIcons/Glimmerscale.png" , description: "Born of starlight and shimmering wings, the Glimmerscale are fairy-dragons whose radiant power is as enchanting as it is devastating. They weave between grace and fury, purifying corruption with gleaming light before unleashing searing, luminous strikes. Defined by their dual nature of elegance and ferocity, they are an archetype that blinds foes with brilliance, striking down darkness in a cascade of radiant fire."},  
+thornwing: {name: "Thornwing", profile: { hp: 9, atk: 4, def: 9, spd: 3, hc: 4, ep: 3 }, icon: "Icons/Archetype/Thornwing.png" , description: "Forged of scale, bark, and living wood, the Thornwing dragons embody the resilience of the ancient forests. Their hides are plated in thorned armor, their wings creaking like timber in the wind. Where others strike with fire or venom, they endure, turning battles into wars of attrition. The Thornwing are defined by their unyielding defenses, outlasting foes until nature itself reclaims the battlefield."},
+blazingscale: {name: "Blazingscale", profile: { hp: 2, atk: 10, def: 3, spd: 8, hc: 3, ep: 8 }, icon: "Icons/Archetype/Blazingscale.png" , description: "Dragons wreathed in flame and fury, the Blazingscale are living wildfires given form. With every wingbeat they ignite the skies, leaving charred wastelands in their wake. They are devastation incarnate turning the land itself into an endless inferno."},
+abyssdrake: {name: "Abyssdrake", profile: { hp: 9, atk: 3, def: 8, spd: 7, hc: 8, ep: 2 }, icon: "Icons/Archetype/Abyssdrake.png" , description: "Born from the crushing depths, the Abyssdrakes command the ocean’s fury as their weapon. With thunderous roars they summon towering tides, swallowing armies and kingdoms beneath relentless waves. To face an Abyssdrake is to stand against the endless surge of the abyss, a flood that drowns all hope beneath its dark waters."},
+stormrazor: {name: "Stormrazor", profile: { hp: 4, atk: 9, def: 3, spd: 9, hc: 4, ep: 9 }, icon: "Icons/Archetype/Stormrazor.png" , description: "Forged in the heart of raging tempests, the Stormrazors embody the untamed wrath of thunder and sky. They descend with blinding speed, their wings crackling with storms as lightning answers their command. Each strike is a flash of devastation, leaving smoldering ruin in the wake of their tempestuous fury."},
+ironclaw: {name: "Ironclaw", profile: { hp: 8, atk: 4, def: 9, spd: 3, hc: 2, ep: 3 }, icon: "Icons/Archetype/Ironclaw.png" , description: "Carved from stone and tempered iron, the Ironclaw dragons are bastions of unyielding strength. Their armored scales deflect even the fiercest assaults, and their presence fortifies the lands they guard. Patient and resolute, they stand as living ramparts, defending their territory with unbreakable resolve and steadfast vigilance."},
+venomspine: {name: "Venomspine", profile: { hp: 6, atk: 7, def: 4, spd: 5, hc: 6, ep: 5 }, icon: "Icons/Archetype/Venomspine.png" , description: "Twisted by venom and rot, the Venomspines spread decay wherever their wings shadow the land. Their breath carries no flame, but a vile miasma that withers forests, poisons rivers, and corrodes stone. To face them is to watch life unravel into ruin, for their presence festers the earth with corruption untamed."},
+solarwyrm: {name: "Solarwyrm", profile: { hp: 8, atk: 5, def: 6, spd: 6, hc: 5, ep: 4 }, icon: "Icons/Archetype/Solarwyrm.png" , description: "Born of pure light and radiant fire, the Solarwyrms stand as vigilant guardians of sacred lands. Their wings shimmer with the brilliance of the sun, and their gaze pierces through shadows of corruption. Guided by unwavering justice, they defend their realm with searing power, purifying all that threatens the sanctity of their domain."},
+nightshroud: {name: "Nightshroud", profile: { hp: 6, atk: 7, def: 3, spd: 6, hc: 4, ep: 6 }, icon: "Icons/Archetype/Nightshroud.png" , description: "Born from the abyss of endless night, the Nightshrouds are dragons wreathed in shadow and silence. Their scales absorb the faintest light, and their movements are whispers across the battlefield. Masters of stealth and dread, they strike from darkness, leaving fear and uncertainty in their wake, as if the night had taken form to hunt."},
+glimmerscale: {name: "Glimmerscale", profile: { hp: 4, atk: 10, def: 2, spd: 9, hc: 3, ep: 8 }, icon: "Icons/Archetype/Glimmerscale.png" , description: "Born of starlight and shimmering wings, the Glimmerscale are fairy-dragons whose radiant power is as enchanting as it is devastating. They weave between grace and fury, purifying corruption with gleaming light before unleashing searing, luminous strikes. Defined by their dual nature of elegance and ferocity, they are an archetype that blinds foes with brilliance, striking down darkness in a cascade of radiant fire."},  
 
  /*------ //
 // TRAITS //
 // ------- */
-champion: {name: "Champion", icon: "OtherImages/StatIcons/Champion.png" , description: "Main creatures that can be upgraded to Champion and provide essence support. Champion creatures receive +{1}/+{1} and upgraded skills"},
+champion: {name: "Champion", icon: "Icons/StatIcons/Champion.png" , description: "Main creatures that can be upgraded to Champion and provide essence support. Champion creatures receive +{1}/+{1} and upgraded skills"},
 };
 
 const PROFILE_METRICS = [
