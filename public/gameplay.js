@@ -2834,12 +2834,19 @@ function computeCardStat(cardObj, statName) {
   if (statName === "speed") {
     // getCardAbilities helper exists elsewhere in file; use it to read ability list
     const abilityList = getCardAbilities(cardObj) || [];
-    const speedGranting = new Set(["Dash", "Dive", "Flying", "Leap", "Ranged", "Range", "Rush"]);
+    const speedGranting = new Set(["Dash", "Dive", "Flying", "Leap", "Rush"]);
     abilityList.forEach(a => {
       if (typeof a === "string" && speedGranting.has(a)) {
         mods += 1;
       }
     });
+    
+  if (typeof isMage === "function" && isMage(cardObj)) {
+    mods += 1;
+  }
+  if (typeof isRanger === "function" && isRanger(cardObj)) {
+    mods += 2;
+  }
 
     // === Armor penalty: any Armor on the instance lowers Speed by 1 ===
     // Determine current armor (consider instance value, definition, attachments, and modifiers)
@@ -2868,6 +2875,20 @@ function computeCardStat(cardObj, statName) {
     // If any armor is present, apply -1 speed penalty (single step, not per-armor point)
     if (currentArmor > 0) mods -= 1;
   }
+  if ((statName === "atk" || statName === "def") && typeof isWarriorTrait === "function" && isWarriorTrait(cardObj)) {
+  try {
+    // Only apply for creatures (optional - remove isCreature check if you want trait to apply to domains too)
+    if (isCreature(cardObj)) {
+      const baseHp = getBaseHp(cardObj.cardId) || 1;
+      // Only apply when we have currentHP information and it's below 1/3 of base HP
+      if (typeof cardObj.currentHP === "number" && cardObj.currentHP < (baseHp / 3)) {
+        mods += 1;
+      }
+    }
+  } catch (e) {
+    console.warn("Warrior low-HP buff check failed for", cardObj, e);
+  }
+}
   // === Per-tier passive effects (Speed tiers 0..5) ===
   // Compute effective speed now so we can apply tier-dependent stat buffs.
   // Note: we only apply these passive stat bonuses here (so other code reading atk/def uses them).
@@ -6236,17 +6257,11 @@ function fieldIncludes(cardObj, field, value) {
 }
 
 // --- ATTACK LOGIC HELPERS --- //
-function attackerHasAbility(cardObj, abilityName) {
-  return hasAbility(cardObj, abilityName);
-}
+function attackerHasAbility(cardObj, abilityName) {return hasAbility(cardObj, abilityName);}
 
-function defenderHasAbility(cardObj, abilityName) {
-  return hasAbility(cardObj, abilityName);
-}
+function defenderHasAbility(cardObj, abilityName) {return hasAbility(cardObj, abilityName);}
 // --- COLOR --- //
-function isColor(cardObj, color) {
-  return fieldIncludes(cardObj, "color", color);
-}
+function isColor(cardObj, color) {return fieldIncludes(cardObj, "color", color);}
 function isWhite(cardObj) { return isColor(cardObj, "White"); }
 function isBlack(cardObj) { return isColor(cardObj, "Black"); }
 function isRed(cardObj)   { return isColor(cardObj, "Red"); }
@@ -6257,40 +6272,74 @@ function isGray(cardObj)  { return isColor(cardObj, "Gray"); }
 function isPurple(cardObj){ return isColor(cardObj, "Purple"); }
 
 // CATEGORY
-function isCategory(cardObj, category) {
-  return fieldIncludes(cardObj, "category", category);
-}
+function isCategory(cardObj, category) {return fieldIncludes(cardObj, "category", category);}
 function isCreature(cardObj) { return isCategory(cardObj, "Creature"); }
 function isDomain(cardObj)   { return isCategory(cardObj, "Domain"); }
 function isArtifact(cardObj) { return isCategory(cardObj, "Artifact"); }
 function isSpell(cardObj)    { return isCategory(cardObj, "Spell"); }
 
 // TYPE
-function isType(cardObj, type) {
-  return fieldIncludes(cardObj, "type", type);
-}
-function isDragon(cardObj)   { return isType(cardObj, "Dragon"); }
-function isFairy(cardObj)    { return isType(cardObj, "Fairy"); }
-function isWarrior(cardObj)  { return isType(cardObj, "Warrior"); }
-function isMage(cardObj)     { return isType(cardObj, "Mage"); }
-function isBeast(cardObj)    { return isType(cardObj, "Beast"); }
-function isElemental(cardObj){ return isType(cardObj, "Elemental"); }
+function isType(cardObj, type) {return fieldIncludes(cardObj, "type", type);}
 function isAvian(cardObj)    { return isType(cardObj, "Avian"); }
-function isDemon(cardObj)    { return isType(cardObj, "Demon"); }
-function isUndead(cardObj)   { return isType(cardObj, "Undead"); }
+function isBeast(cardObj)    { return isType(cardObj, "Beast"); }
+function isBrute(cardObj)    { return isType(cardObj, "Brute"); }
 function isConstruct(cardObj){ return isType(cardObj, "Construct"); }
+function isDemon(cardObj)    { return isType(cardObj, "Demon"); }
+function isDragon(cardObj)   { return isType(cardObj, "Dragon"); }
+function isElemental(cardObj){ return isType(cardObj, "Elemental"); }
+function isFaefolk(cardObj)  { return isType(cardObj, "Faefolk"); }
+function isUndead(cardObj)   { return isType(cardObj, "Undead"); }
 
 // ARCHETYPE
-function isArchetype(cardObj, archetype) {
-  return fieldIncludes(cardObj, "archetype", archetype);
-}
-function isFirelands(cardObj)   { return isArchetype(cardObj, "Firelands"); }
+function isArchetype(cardObj, archetype) {return fieldIncludes(cardObj, "archetype", archetype);}
+// Dragons //
+function isThornwing(cardObj)    { return isArchetype(cardObj, "Thornwing"); }
+function isBlazingScale(cardObj) { return isArchetype(cardObj, "Blazingscale"); }
+function isAbyssdrake(cardObj)   { return isArchetype(cardObj, "Abyssdrake"); }
+function isStormRazor(cardObj)   { return isArchetype(cardObj, "Stormrazor"); }
+function isIronclaw(cardObj)     { return isArchetype(cardObj, "Ironclaw"); }
+function isCursedspine(cardObj)  { return isArchetype(cardObj, "Cursedspine"); }
+function isSolarwyrm(cardObj)    { return isArchetype(cardObj, "Solarwyrm"); }
+function isNightshroud(cardObj)  { return isArchetype(cardObj, "Nightshroud"); }
+function isGlimmerscale(cardObj) { return isArchetype(cardObj, "Glimmerscale"); }
+
+// Elementals //
+function isArbor(cardObj)      { return isArchetype(cardObj, "Arbor"); }
+function isPyro(cardObj)       { return isArchetype(cardObj, "Pyro"); }
+function isHydral(cardObj)     { return isArchetype(cardObj, "Hydral"); }
+function isVoltkin(cardObj)    { return isArchetype(cardObj, "Voltkin"); }
+function isGolem(cardObj)      { return isArchetype(cardObj, "Golem"); }
+function isCorruptor(cardObj)  { return isArchetype(cardObj, "Corruptor"); }
+function isLuminaut(cardObj)   { return isArchetype(cardObj, "Luminaut"); }
+function isObscurid(cardObj)   { return isArchetype(cardObj, "Obscurid"); }
+
+// Constructs //
+function isGrovehusk(cardObj)   { return isArchetype(cardObj, "Grovehusk"); }
 function isCindercore(cardObj)  { return isArchetype(cardObj, "Cindercore"); }
 function isCoralbound(cardObj)  { return isArchetype(cardObj, "Coralbound"); }
-function isFrostlands(cardObj)  { return isArchetype(cardObj, "Frostlands"); }
-function isGlimmerscale(cardObj){ return isArchetype(cardObj, "Glimmerscale"); }
+function isStratosurge(cardObj) { return isArchetype(cardObj, "Stratosurge"); }
+function isIronwrought(cardObj) { return isArchetype(cardObj, "Ironwrought"); }
+function isPlagueaxis(cardObj)  { return isArchetype(cardObj, "Plagueaxis"); }
+function isSolarforge(cardObj)  { return isArchetype(cardObj, "Solarforge"); }
+function isShadowgear(cardObj)  { return isArchetype(cardObj, "Shadowgear"); }
+
+// Beasts //
+function isFireland(cardObj)   { return isArchetype(cardObj, "Fireland"); }
+function isFrostland(cardObj)  { return isArchetype(cardObj, "Frostland"); }
+
+// Faefolk and Brutes //
+function isDwarf(cardObj)  { return isArchetype(cardObj, "Dwarf"); }
+function isElf(cardObj)    { return isArchetype(cardObj, "Elf"); }
+function isFairy(cardObj)  { return isArchetype(cardObj, "Fairy"); }
+function isGoblin(cardObj) { return isArchetype(cardObj, "Goblin"); }
+function isOrc(cardObj)    { return isArchetype(cardObj, "Orc"); }
+function isSatyr(cardObj)  { return isArchetype(cardObj, "Satyr"); }
+
+// Undead //
 function isSkullframe(cardObj)  { return isArchetype(cardObj, "Skullframe"); }
-function isPixiebound(cardObj)  { return isArchetype(cardObj, "Pixiebound"); }
+function isVampiric(cardObj)  { return isArchetype(cardObj, "Vampiric"); }
+
+// Celestial //
 function isSeraph(cardObj)      { return isArchetype(cardObj, "Seraph"); }
 // Add more as needed...
 
@@ -6298,9 +6347,12 @@ function isSeraph(cardObj)      { return isArchetype(cardObj, "Seraph"); }
 function isTrait(cardObj, trait) {
   return fieldIncludes(cardObj, "trait", trait);
 }
-function isChampion(cardObj)    { return isTrait(cardObj, "Champion"); }
-function isEvolution(cardObj)   { return isTrait(cardObj, "Evolution"); }
-function isFusion(cardObj)      { return isTrait(cardObj, "Fusion"); }
+function isChampion(cardObj)  { return isTrait(cardObj, "Champion"); }
+function isWarrior(cardObj)   { return isTrait(cardObj, "Warrior"); }
+function isMage(cardObj)      { return isTrait(cardObj, "Mage"); }
+function isRanger(cardObj)    { return isTrait(cardObj, "Ranger"); }
+function isEvolution(cardObj) { return isTrait(cardObj, "Evolution"); }
+function isFusion(cardObj)    { return isTrait(cardObj, "Fusion"); }
 // Add more as needed...
 
 // ABILITY
@@ -6314,7 +6366,6 @@ function hasProtect(cardObj)    { return hasAbility(cardObj, "Protect"); }
 function hasAegis(cardObj)      { return hasAbility(cardObj, "Aegis"); }
 function hasVeil(cardObj)       { return hasAbility(cardObj, "Veil"); }
 function hasImmunity(cardObj)   { return hasAbility(cardObj, "Immunity"); }
-function hasRanged(cardObj)     { return hasAbility(cardObj, "Ranged"); }
 function hasIntimidate(cardObj) { return hasAbility(cardObj, "Intimidate"); }
 function hasAmbush(cardObj)     { return hasAbility(cardObj, "Ambush"); }
 
