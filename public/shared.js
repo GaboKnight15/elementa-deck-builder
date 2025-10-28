@@ -5,8 +5,8 @@ const dummyCards = [
 // CHAMPIONS BASIC //
 
 {id: 'SylvaniaThornEmpress', name: 'Sylvania, Thorn Empress', rarity: 'Legendary', image: 'CardImages/Sylvan/SylvaniaThornEmpress.png', 
- category: 'Creature', color: 'Green', type: 'Elf', archetype: '', trait: ['Champion', 'Mage'], hp: 11, atk: 1, def: 0,
- cost: '{G}', ability: 'Ranged', set: 'ElementaGenesis'
+ category: 'Creature', color: 'Green', type: 'Faefolk', archetype: 'Elf', trait: ['Champion', 'Mage'], hp: 11, atk: 1, def: 0,
+ cost: '{G}', ability: '', set: 'ElementaGenesis'
  skill: [
   {name: 'Champion Ascent', cost: '{g}', 
    effect: {class: 'Unseal'}, championAscend: true}
@@ -388,7 +388,7 @@ const dummyCards = [
 
 {id: 'TydrosCoralboundTidebreaker', name: 'Tydros, Coralbound Tidebreaker', rarity: 'Legendary', image: 'CardImages/Coralbound/TydrosCoralboundTidebreaker.png', 
  category: 'Creature', color: ['Blue','Gray'], type: '', archetype: 'Coralbound', trait: ['Champion', 'Warrior'], hp: 12, atk: 2, def: 0,
- cost: '{U}{U}{C}', ability: ['Dive','Ranged'], set: 'StandardPack',
+ cost: '{U}{U}{C}', ability: 'Dive', set: 'IronbornProtocol',
  skill: [
   {name: 'XXX', cost: '{W}{W}',
    requirement: {class: 'CCW'},
@@ -460,7 +460,7 @@ const dummyCards = [
  category: 'Creature', color: 'Green', type: 'Faefolk', archetype: 'Fairy', hp: 1, atk: 1, def: 0,
  cost: '{0}', ability: 'Flying', set: 'ElementaGenesis'},
 {id: 'ForestGoblin', name: 'Forest Goblin', rarity: 'Common', image: 'CardImages/BasicCreatures/Goblin.png', 
- category: 'Creature', color: 'Green', type: 'Brutefolk', archetype: 'Goblin', hp: 3, atk: 1, def: 0,
+ category: 'Creature', color: 'Green', type: 'Brute', archetype: 'Goblin', hp: 3, atk: 1, def: 0,
  cost: '{0}', set: 'ElementaGenesis'},
 {id: 'Emberling', name: 'Emberling', rarity: 'Common', image: 'CardImages/BasicCreatures/Emberling.png', 
  category: 'Creature', color: 'Red', type: 'Beast', archetype: 'Fireland', hp: 3, atk: 2, def: 0,
@@ -559,10 +559,10 @@ const dummyCards = [
    effect: {class: 'Token', name: 'Treant'}},
  ]},
 {id: 'AnvilguardDwarf', name: 'Anvilguard Dwarf', rarity: 'Common', image: 'CardImages/Drakzul/AnvilguardDwarf.png', 
- category: 'Creature', color: 'Gray', type: 'Brutefolk', archetype: 'Dwarf', trait: 'Warrior', hp: 8, atk: 3, def: 2,
+ category: 'Creature', color: 'Gray', type: 'Brute', archetype: 'Dwarf', trait: 'Warrior', hp: 8, atk: 3, def: 2,
  cost: '{1}{c}', ability: 'Ambush', set: 'ElementaGenesis'},
 {id: 'DrakzulBrute', name: 'Drakzul Brute', rarity: 'Common', image: 'CardImages/Drakzul/DrakzulBrute.png', 
- category: 'Creature', color: 'Gray', type: 'Brutefolk', archetype: 'Dwarf', trait: 'Warrior', hp: 8, atk: 3, def: 2,
+ category: 'Creature', color: 'Gray', type: 'Brute', archetype: 'Dwarf', trait: 'Warrior', hp: 8, atk: 3, def: 2,
  cost: '{1}{c}', ability: 'Crush', set: 'ElementaGenesis'},
 {id: 'SatyrRitualist', name: 'Satyr Ritualist', rarity: 'Rare', image: 'CardImages/Satyr/SatyrRitualist.png', 
  category: 'Creature', color: 'Purple', type: 'Faefolk', archetype: 'Satyr', trait: 'Mage', hp: 4, atk: 2, def: 0, cost: '{P}', 
@@ -615,8 +615,8 @@ const dummyCards = [
 // OTHER MULTICOLORED //
 
 {id: 'DragonsApprentice', name: "Dragon's Apprentice", rarity: 'Rare', image: 'CardImages/Dragon/DragonsApprentice.png', 
- category: 'Creature', color: 'Red', type: 'Dragon', trait: 'Evolution', hp: 4, atk: 2, def: 0,
- cost: '{2}', archetype: '', ability: ['Burn','Flying','Ranged'], set: 'ScalesofRuin',
+ category: 'Creature', color: 'Red', type: 'Dragon', archetype: '', hp: 4, atk: 2, def: 0,
+ cost: '{2}', ability: 'Flying', set: 'ScalesofRuin',
  skill: [
   {name: 'Evolve', cost: '{2}', 
    effect: {class: 'Evolve'}}
@@ -940,8 +940,8 @@ skill: [
 // Goblins //
 
 {id: 'GoblinWarlod', name: 'Goblin Warlod', rarity: 'Legendary', image: 'CardImages/Goblin/GoblinWarlod.png', 
- category: 'Creature', color: ['Green', 'Purple', 'Black'], type: 'Brutefolk', archetype: 'Goblin', trait: 'Mage', hp: 13, atk: 4, def: 1,
- cost: '{g}{p}{b}', ability: 'Ranged', set: 'MischiefUnbound'
+ category: 'Creature', color: ['Green', 'Purple', 'Black'], type: 'Brute', archetype: 'Goblin', trait: 'Mage', hp: 13, atk: 4, def: 1,
+ cost: '{g}{p}{b}', ability: '', set: 'MischiefUnbound'
  skill: [
   {name: 'Inspire Goblins', cost: '{g}',
    requirement: {class:'Special'}, 
@@ -1033,7 +1033,7 @@ skill: [
  ]},
 {id: 'SkullframeHexmistress', name: 'Skullframe Hexmistress', rarity: 'Epic', image: 'CardImages/Skullframe/SkullframeHexmistress.png', 
  category: 'Creature', color: ['Black', 'Purple'], type: 'Undead', archetype: 'Skullframe', trait: 'Mage', hp: 6, atk: 3, def: 1,
- cost: '{1}{B}{P}', ability: ['Immunity','Ranged'], set: 'StandardPack',
+ cost: '{1}{B}{P}', ability: 'Immunity', set: 'ShadowsBeyond',
  skill: [
   {name: 'Bonecall', cost: '{b}',
    requirement: [{class: 'Special'}, {class: 'CW'}],
@@ -1100,63 +1100,63 @@ skill: [
 
 // ARTIFACTS //
 {id: 'GolemheartInfusor', name: 'Golemheart Infusor', rarity: 'Common', image: 'CardImages/Artifacts/GolemheartInfusor.png', 
- category: 'Artifact', color: 'Gray', type: 'Relic', hp: 5, cost: '{C}', archetype: 'Golemheart', ability: '', set: 'ElementalGenesis'},
+ category: 'Artifact', color: 'Gray', type: 'Relic', hp: 5, cost: '{C}', archetype: 'Golemheart', ability: '', set: 'ElementaGenesis'},
 {id: 'HeartwoodEmeralds', name: 'Heartwood Emeralds', rarity: 'Common', image: 'CardImages/Artifacts/HeartwoodEmeralds.png', 
- category: 'Artifact', color: 'Green', type: 'Relic', hp: 5, cost: '{1}{G}', archetype: 'Heartwood', ability: '', set: 'ElementalGenesis'},
+ category: 'Artifact', color: 'Green', type: 'Relic', archetype: 'Heartwood', hp: 5, cost: '{1}{G}', ability: '', set: 'ElementaGenesis'},
 {id: 'CindercoreEmber', name: 'Cindercore Ember', rarity: 'Common', image: 'CardImages/Artifacts/CindercoreEmber.png', 
- category: 'Artifact', color: 'Red', type: 'Relic', hp: 5, cost: '{2}{R}', archetype: 'Cindercore', ability: '', set: 'ElementalGenesis'},
+ category: 'Artifact', color: 'Red', type: 'Relic', archetype: 'Cindercore', hp: 5, cost: '{2}{R}', ability: '', set: 'ElementaGenesis'},
 {id: 'TidecallersPearl', name: 'Tidecallers Pearl', rarity: 'Common', image: 'CardImages/Artifacts/TidecallersPearl.png', 
- category: 'Artifact', color: 'Blue', type: 'Relic', hp: 5, cost: '{2}{U}', archetype: 'Coralbound', ability: '', set: 'ElementalGenesis'},
+ category: 'Artifact', color: 'Blue', type: 'Relic', hp: 5, cost: '{2}{U}', archetype: 'Coralbound', ability: '', set: 'ElementaGenesis'},
 {id: 'StormcoreDynamo', name: 'Stormcore Dynamo', rarity: 'Common', image: 'CardImages/Artifacts/StormcoreDynamo.png', 
- category: 'Artifact', color: 'Yellow', type: 'Relic', hp: 5, cost: '{2}{Y}', archetype: 'Stormcore', ability: '', set: 'ElementalGenesis'},
+ category: 'Artifact', color: 'Yellow', type: 'Relic', archetype: 'Stormcore', hp: 5, cost: '{2}{Y}', ability: '', set: 'ElementaGenesis'},
 {id: 'PlagueThornTalisman', name: 'Plague Thorn Talisman', rarity: 'Common', image: 'CardImages/Artifacts/PlagueThornTalisman.png', 
- category: 'Artifact', color: 'Purple', type: 'Relic', hp: 5, cost: '{2}{P}', archetype: 'Plaguecore', ability: '', set: 'ElementalGenesis'},
+ category: 'Artifact', color: 'Purple', type: 'Relic', hp: 5, cost: '{2}{P}', archetype: 'Plaguecore', ability: '', set: 'ElementaGenesis'},
 {id: 'TitansAnvil', name: 'Titans Anvil', rarity: 'Common', image: 'CardImages/Artifacts/TitansAnvil.png', 
- category: 'Artifact', color: 'Gray', type: 'Relic', hp: 5, cost: '{1}{C}', archetype: '', ability: '', set: 'ElementalGenesis'},
+ category: 'Artifact', color: 'Gray', type: 'Relic', hp: 5, cost: '{1}{C}', archetype: '', ability: '', set: 'ElementaGenesis'},
 {id: 'VeiloftheForgotten', name: 'Veil of the Forgotten', rarity: 'Common', image: 'CardImages/Artifacts/VeiloftheForgotten.png', 
- category: 'Artifact', color: 'Black', type: 'Relic', hp: 5, cost: '{2}{B}', archetype: '', ability: '', set: 'ElementalGenesis'},
+ category: 'Artifact', color: 'Black', type: 'Relic', hp: 5, cost: '{2}{B}', archetype: '', ability: '', set: 'ElementaGenesis'},
 {id: 'LumenSpire', name: 'Lumen Spire', rarity: 'Common', image: 'CardImages/Artifacts/Lumen Spire.png', 
- category: 'Artifact', color: 'White', type: 'Relic', hp: 5, cost: '{2}{W}', archetype: '', ability: '', set: 'ElementalGenesis'},
+ category: 'Artifact', color: 'White', type: 'Relic', hp: 5, cost: '{2}{W}', archetype: '', ability: '', set: 'ElementaGenesis'},
 
 // SPELLS //
 {id: 'EssenceSurge', name: 'Essence Surge', rarity: 'Common', image: 'CardImages/Spells/EssenceSurge.png', 
- category: 'Spell', color: 'Green', type: 'Spell', cost: '{2}', set: 'ElementalGenesis',
+ category: 'Spell', color: 'Green', type: 'Spell', cost: '{2}', set: 'ElementaGenesis',
  skill: [
   {name: 'Essence', cost: '{2}', 
    effect: {class: 'Essence', color: 'Green', amount: 3}},
  ]},
 {id: 'EssenceAssault', name: 'Essence Assault', rarity: 'Common', image: 'CardImages/Spells/EssenceAssault.png', 
- category: 'Spell', color: 'Red', type: 'Spell', cost: '{1}', effect: 'Give a unit +2/0', set: 'ElementalGenesis'},
+ category: 'Spell', color: 'Red', type: 'Spell', cost: '{1}', effect: 'Give a unit +2/0', set: 'ElementaGenesis'},
 {id: 'EssenceRift', name: 'Essence Rift', rarity: 'Common', image: 'CardImages/Spells/EssenceRift.png', 
- category: 'Spell', color: 'Blue', type: 'Spell', cost: '{2}', set: 'StandardPack',
+ category: 'Spell', color: 'Blue', type: 'Spell', cost: '{2}', set: 'ElementaGenesis',
  skill: [
   {name: 'Draw', cost: '{2}', 
    effect: {class: 'Draw', amount: 2}},
  ]},
 {id: 'EssenceBolt', name: 'Essence Bolt', rarity: 'Common', image: 'CardImages/Spells/EssenceBolt.png', 
- category: 'Spell', color: 'Yellow', type: 'Spell', cost: '{1}', set: 'ElementalGenesis',
+ category: 'Spell', color: 'Yellow', type: 'Spell', cost: '{1}', set: 'ElementaGenesis',
  skill: [
   {name: 'Spell', cost: '{1}', 
    effect: {class: 'Strike', amount: 3}},
  ]},
 {id: 'EssenceBreak', name: 'Essence Break', rarity: 'Common', image: 'CardImages/Spells/EssenceBreak.png', 
- category: 'Spell', color: 'Purple', type: 'Spell', cost: '{1}', set: 'ElementalGenesis',
+ category: 'Spell', color: 'Purple', type: 'Spell', cost: '{1}', set: 'ElementaGenesis',
  skill: [
   {name: 'Spell', cost: '{1}', 
    effect: {class: 'Strike', amount: 3}},
  ]},
 {id: 'EssenceBarrier', name: 'Essence Barrier', rarity: 'Common', image: 'CardImages/Spells/EssenceBarrier.png', 
- category: 'Spell', color: 'Gray', type: 'Aura', cost: '{1}', set: 'ElementalGenesis',
+ category: 'Spell', color: 'Gray', type: 'Aura', cost: '{1}', set: 'ElementaGenesis',
  skill: [
   {name: 'Inspire', cost: '{1}', 
    effect: {class: 'Strike', amount: 3}},
  ]},
 {id: 'EssencePurge', name: 'Essence Purge', rarity: 'Common', image: 'CardImages/Spells/EssencePurge.png', 
- category: 'Spell', color: 'Black', type: 'Aura', cost: '{2}', effect: 'Cannot generate essence', set: 'ElementalGenesis'},
+ category: 'Spell', color: 'Black', type: 'Aura', cost: '{2}', effect: 'Cannot generate essence', set: 'ElementaGenesis'},
 {id: 'EssenceBlessing', name: 'Essence Blessing', rarity: 'Common', image: 'CardImages/Spells/EssenceBlessing.png', 
- category: 'Spell', color: 'White', type: 'Spell', cost: '{1}', effect: 'Cleanse 5', set: 'ElementalGenesis'},
+ category: 'Spell', color: 'White', type: 'Spell', cost: '{1}', effect: 'Cleanse 5', set: 'ElementaGenesis'},
 {id: 'LifeGrowth', name: 'Life Growth', rarity: 'Common', image: 'CardImages/Spells/LifeGrowth.png', 
- category: 'Spell', color: 'Green', type: 'Spell', cost: '{G}', set: 'ElementalGenesis',
+ category: 'Spell', color: 'Green', type: 'Spell', cost: '{G}', set: 'ElementaGenesis',
  skill: [
   {name: 'Essence',  
    effect: {class: 'Essence', amount: 2, color: 'Green'}},
@@ -1170,9 +1170,9 @@ skill: [
  ]},
 /*
 {id: 'HardenedScales', name: 'Hardened Scales', rarity: 'Common', image: 'CardImages/Spells/HardenedScales.png', 
- category: 'Spell', color: ['Green','Red'], type: 'Aura', cost: '{1}', effect: 'Gain {G}{G}', set: 'ElementalGenesis'},
+ category: 'Spell', color: ['Green','Red'], type: 'Aura', cost: '{1}', effect: 'Gain {G}{G}', set: 'ElementaGenesis'},
 {id: 'VerdantRebirth', name: 'Verdant Rebirth', rarity: 'Common', image: 'CardImages/Spells/VerdantRebirth.png', 
- category: 'Spell', color: 'Green', type: 'Spell', cost: '{2}{G}', effect: 'Gain {G}{G}', set: 'ElementalGenesis'},
+ category: 'Spell', color: 'Green', type: 'Spell', cost: '{2}{G}', effect: 'Gain {G}{G}', set: 'ElementaGenesis'},
 
 Dragon Terrains
 {id: 'DragonsGrove', name: 'Dragon's Grove', rarity: 'Epic', image: 'CardImages/Thornwing/DragonsGrove.png', 
@@ -1451,15 +1451,15 @@ White Domains
 /*
 // --- Goblin Tokens --- //
 {id: 'GoblinTokenGreen', name: 'Forest Goblin', rarity: 'Common', image: 'CardImages/Tokens/GoblinTokenGreen.png', 
- category: 'Creature', color: 'Green', type: 'Brutefolk', archetype: 'Goblin', hp: 4, atk: 1, def: 0},
+ category: 'Creature', color: 'Green', type: 'Brute', archetype: 'Goblin', hp: 4, atk: 1, def: 0},
 {id: 'GoblinTokenRed', name: 'Smoke Goblin', rarity: 'Common', image: 'CardImages/Tokens/GoblinTokenRed.png', 
- category: 'Creature', color: 'Red', type: 'Brutefolk', archetype: 'Goblin', hp: 2, atk: 2, def: 0},
+ category: 'Creature', color: 'Red', type: 'Brute', archetype: 'Goblin', hp: 2, atk: 2, def: 0},
 {id: 'GoblinTokenPurple', name: 'Mire Goblin', rarity: 'Common', image: 'CardImages/Tokens/GoblinTokenPurple.png', 
- category: 'Creature', color: 'Purple', type: 'Brutefolk', archetype: 'Goblin', hp: 3, atk: 1, def: 0},
+ category: 'Creature', color: 'Purple', type: 'Brute', archetype: 'Goblin', hp: 3, atk: 1, def: 0},
 {id: 'GoblinTokenGray', name: 'Craft Goblin', rarity: 'Common', image: 'CardImages/Tokens/GoblinTokenGray.png', 
- category: 'Creature', color: 'Gray', type: 'Brutefolk', archetype: 'Goblin', hp: 3, atk: 1, def: 1},
+ category: 'Creature', color: 'Gray', type: 'Brute', archetype: 'Goblin', hp: 3, atk: 1, def: 1},
 {id: 'GoblinTokenBlack', name: 'Evil Goblin', rarity: 'Common', image: 'CardImages/Tokens/GoblinTokenBlack.png', 
- category: 'Creature', color: 'Black', type: 'Brutefolk', archetype: 'Goblin', hp: 3, atk: 1, def: 0},
+ category: 'Creature', color: 'Black', type: 'Brute', archetype: 'Goblin', hp: 3, atk: 1, def: 0},
 // --- Fairy Tokens --- //
 {id: 'FairyTokenGreen', name: 'Forest Fairy', rarity: 'Common', image: 'CardImages/Tokens/FairyTokenGreen.png', 
  category: 'Creature', color: 'Green', type: 'Fairy', hp: 1, atk: 1, def: 0, archetype: 'Fairy', ability: 'Flying'},
@@ -1567,7 +1567,7 @@ const FILTERS_CONFIG = [
   { key: 'rarity', label: 'Rarity', options: ['All','Common','Rare','Epic','Legendary'] },
   { key: 'trait', label: 'Trait', options: ['All','Champion','Dominion','Evolution','Fusion'] },
   { key: 'archetype', label: 'Archetype', options: ['All','Blazefeather','Cindercore','Coralbound','Fireland','Frostland','Golemheart','Moonfang','Skullframe','Voltwing','Zephyra'] },
-  { key: 'ability', label: 'Ability', options: ['All','Ambush','Dive','Burn','Drain','Elusive','Flying','Ice Armor','Immunity','Intimidate','Leap','Lifelink','Protect','Provoke','Ranged','Rush','Toxic'] },
+  { key: 'ability', label: 'Ability', options: ['All','Ambush','Dive','Burn','Drain','Elusive','Flying','Ice Armor','Immunity','Intimidate','Leap','Lifelink','Protect','Provoke','Rush','Toxic'] },
   { key: 'pack', label: 'Pack', options: ['All', 'Standard Pack', 'Standard Pack 2'] }
  // Add more as needed
 ];
@@ -1599,8 +1599,7 @@ armor: {name: "Armor", description: "Secondary sustain stat. Units loss armor fi
 veil: {name: "Veil", description: "Cannot be targeted by skills.", icon: "Icons/Ability/Veil.png" },
 immunity: {name: "Immunity", description: "Unaffected by status ailments.", icon: "Icons/Ability/Immunity.png" },
 ambush: {name: "Ambush", description: "Cannot be targeted by opponent's attacks or skills. Unit is revealed after attacking or using a skill", icon: "Icons/Ability/Ambush.png" },
-flying: {name: "Flying", description: "Can only be blocked by other units with Flying or Ranged. Speed {1}.", icon: "Icons/Ability/Flying.png" },
-ranged: {name: "Ranged", description: "Can attack units with Flying and Dive. Speed {1}.", icon: "Icons/Ability/Ranged.png" },
+flying: {name: "Flying", description: "Can only be blocked by other Flying, Mage or Ranger units. Speed {1}.", icon: "Icons/Ability/Flying.png" },
 
 rush: {name: "Rush", description: "Can attack on the turn it is played. Speed {1}.", icon: "Icons/Ability/Rush.png" },
 drain: {name: "Drain", description: "When this unit deals damage, gain that much life.", icon: "Icons/Ability/Drain.png" },
@@ -1722,7 +1721,7 @@ beast: {name: "Beast", icon: "Icons/Type/Beast.png" , description: "Untamed and 
 elemental: {name: "Elemental", icon: "Icons/Type/Elemental.png" , description: "Primordial and eternal, elementals are the living essence of the world’s raw forces. They are not born, but awakened — the whisper of wind given voice, the heartbeat of stone given motion. Neither good nor evil, they embody balance itself, shaping and unshaping creation with every surge of flame, wave, or storm. To face an elemental is to confront the untamed will of the world made flesh."},
 construct: {name: "Construct", icon: "Icons/Type/Construct.png" , description: "Forged by mortal hands yet animated by unnatural will, constructs stand as monuments to creation without life. Some serve with perfect obedience, others wander seeking the purpose their makers abandoned. Whether wrought from steel, stone, or enchanted coral, each construct bears the echo of its creator’s intent — a silent testament to the line between genius and hubris."},
 faefolk: {name: "Faefolk", icon: "Icons/Type/Faefolk.png" , description: "Enigmatic and timeless, the Faefolk dwell where wonder and deceit intertwine. They are the laughter in moonlit groves, the whispers between leaves, and the shimmer at the edge of mortal sight. Guided by whim as much as wisdom, their magic bends nature’s laws with effortless grace — nurturing or destroying with the same delicate hand. To bargain with the Faefolk is to dance with beauty and peril alike."},
-brutefolk: {name: "brutefolk", icon: "Icons/Type/brutefolk.png" , description: "Savage and unyielding, the Brutefolk are forged in struggle and bound by blood. They thrive where strength is law and survival the only creed, their lives shaped by war, hunger, and the will to endure. Though scorned as beasts by softer races, they bear a primal honor — a truth carved in scars and fire. To face the Brutefolk is to meet the raw, untamed spirit of the world before it learned mercy."},
+Brute: {name: "Brute", icon: "Icons/Type/Brute.png" , description: "Savage and unyielding, the Brute are forged in struggle and bound by blood. They thrive where strength is law and survival the only creed, their lives shaped by war, hunger, and the will to endure. Though scorned as beasts by softer races, they bear a primal honor — a truth carved in scars and fire. To face the Brute is to meet the raw, untamed spirit of the world before it learned mercy."},
 demon: {name: "Demon", icon: "Icons/Type/Demon.png" , description: "Born from malice, ambition, and the echoes of forsaken gods, demons are the chaos that festers beneath creation. They thrive in conflict, feeding on desire, fear, and despair — yet each is bound by its own cunning will. To mortals they appear as nightmares made flesh, but to themselves they are architects of freedom, tearing down the fragile order that cages the world. Their power is corruption, and their truth — liberation through ruin."},
 undead: {name: "Undead", icon: "Icons/Type/Undead.png" , description: "Bound by neither time nor death, the undead are echoes of life that refuse to fade. Animated by cursed will or unholy power, they wander between worlds — relics of hatred, sorrow, or unfinished purpose. Where they tread, warmth withers and silence reigns. To some they are abominations; to others, proof that even death can be conquered — at a terrible cost." },
 celestial: {name: "Celestial", icon: "Icons/Type/Celestial.png" , description: "Beacons of divinity and order, the celestials are born of pure light and cosmic harmony. Their presence bends the heavens and stills the storms, for they are the will of creation made radiant. Guided by purpose beyond mortal grasp, they bring both mercy and judgment — for in their eyes, salvation and destruction are but reflections of balance restored."},
