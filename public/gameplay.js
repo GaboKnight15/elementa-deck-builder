@@ -47,7 +47,8 @@ let gameState = {
   opponentVoid: [],
   playerDominion: null,
   opponentDominion: null,
-
+  playerNullCounters: 0,    // number of Null Counters the player currently has
+  opponentNullCounters: 0,  // number of Null Counters the opponent currently has
   turn: "player",
   phase: "draw",
   timeOfDay: "day", // Initial state
@@ -1447,6 +1448,33 @@ Evolution: {
     renderGameState && renderGameState();
     setupDropZones && setupDropZones();
     nextEffect && nextEffect();
+  }
+},
+NullCounter: {
+  icon: 'OtherImages/skillEffect/NullCounter.png',
+  name: 'Null Counter',
+  description: 'Grants Null Counters to a player. Step fields: amount (number), owner ("source" | "player" | "opponent" | "opponentOfSource").',
+  handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
+    const amount = Math.max(0, Number(step.amount) || 1);
+
+    // Determine who receives the counters (default = source owner)
+    const sourceOwner = getCardOwner(sourceCardObj) || 'player';
+    const opponent = sourceOwner === 'player' ? 'opponent' : 'player';
+    let grantTo = sourceOwner;
+
+    if (step.owner === 'player') grantTo = 'player';
+    else if (step.owner === 'opponent') grantTo = 'opponent';
+    else if (step.owner === 'opponentOfSource' || step.owner === 'opponent_of_source') grantTo = opponent;
+    else if (step.owner === 'source') grantTo = sourceOwner;
+
+    addNullCounters(grantTo, amount);
+
+    appendVisualLog && appendVisualLog({
+      action: 'nullCounter',
+      text: `${grantTo === 'player' ? 'You' : 'Opponent'} gained ${amount} Null Counter${amount === 1 ? '' : 's'}.`
+    });
+
+    if (typeof nextEffect === "function") nextEffect();
   }
 },
 Token: {
@@ -5690,12 +5718,33 @@ function runRequirements() {
 }
 
   function runResolution() {
-    // 4. Resolution
+    // NULL COUNTER CHECK:
+    // If the opponent has any Null Counters they consume one to counter this skill.
+    try {
+      const consumedBy = tryConsumeOpponentNullCounterForSkill(cardObj);
+      if (consumedBy) {
+        // Notify players and stop resolution
+        const whoText = consumedBy === 'player' ? 'Player' : 'Opponent';
+        showToast && showToast(`Null Counter consumed by ${whoText}! Skill was countered.`, { type: "info" });
+        // Optional: append to the game log for clarity
+        appendVisualLog && appendVisualLog({
+          action: "nullCounter",
+          text: `${whoText} consumed a Null Counter and countered ${cardObj.name || cardObj.cardId}'s skill: ${skillObj.name || ''}`,
+          who: getCardOwner(cardObj) === "player" ? "opponent" : "player"
+        });
+        // Re-render state and stop (do not resolve skill)
+        renderGameState && renderGameState();
+        return;
+      }
+    } catch (err) {
+      console.warn("Null Counter check error:", err);
+      // Continue to resolve skill even if null counter check failed unexpectedly
+    }
+
+    // No Null Counter consumed — proceed to resolve the skill
     resolveSkill(cardObj, skillObj);
-    renderGameState();
-    // 5. Event queue (already auto-processed after resolution)
+    renderGameState && renderGameState();
   }
-}
 
 function proceedSkillActivation(cardObj, skillObj, options = {}) {
   const activation = skillObj.activation || {};
@@ -6419,7 +6468,41 @@ function haveSharedTypeOrArchetype(cardA, cardB) {
   const aArchs = getCardArchetypes(cardA), bArchs = getCardArchetypes(cardB);
   return aTypes.some(t => bTypes.includes(t)) || aArchs.some(a => bArchs.includes(a));
 }
-
+// --- NULL COUNTER HELPERS ---
+// owner: "player" or "opponent"
+function getNullCounters(owner) {
+  if (owner === "opponent") return Number(gameState.opponentNullCounters || 0);
+  return Number(gameState.playerNullCounters || 0);
+}
+function setNullCounters(owner, n) {
+  const val = Math.max(0, Number(n) || 0);
+  if (owner === "opponent") gameState.opponentNullCounters = val;
+  else gameState.playerNullCounters = val;
+  // UI update if needed
+  renderGameState && renderGameState();
+}
+function addNullCounters(owner, amount = 1) {
+  const current = getNullCounters(owner);
+  setNullCounters(owner, current + Math.max(0, Number(amount) || 0));
+  // Optional log
+  showToast && showToast(`${owner === 'player' ? 'You' : 'Opponent'} gained ${amount} Null Counter${amount === 1 ? '' : 's'}`, { type: 'info' });
+}
+function consumeNullCounter(owner) {
+  const current = getNullCounters(owner);
+  if (current <= 0) return false;
+  setNullCounters(owner, current - 1);
+  return true;
+}
+// Utility: check and consume a counter belonging to the opponent of the given card's owner
+function tryConsumeOpponentNullCounterForSkill(cardObj) {
+  const owner = getCardOwner(cardObj) || (cardObj.owner || "player");
+  const opponent = owner === "player" ? "opponent" : "player";
+  if (getNullCounters(opponent) > 0) {
+    consumeNullCounter(opponent);
+    return opponent; // return which side consumed
+  }
+  return null;
+}
 // ------------------------------------- //
 // --- HELPERS FOR SPRITE ANIMATIONS --- //
 // ------------------------------------- //
