@@ -1599,7 +1599,7 @@ armor: {name: "Armor", description: "Secondary sustain stat. Units loss armor fi
 veil: {name: "Veil", description: "Cannot be targeted by skills.", icon: "Icons/Ability/Veil.png" },
 immunity: {name: "Immunity", description: "Unaffected by status ailments.", icon: "Icons/Ability/Immunity.png" },
 ambush: {name: "Ambush", description: "Cannot be targeted by opponent's attacks or skills. Unit is revealed after attacking or using a skill", icon: "Icons/Ability/Ambush.png" },
-flying: {name: "Flying", description: "Can only be blocked by other Flying, Mage or Ranger units. Speed {1}.", icon: "Icons/Ability/Flying.png" },
+flying: {name: "Flying", description: "Can only be blocked by other Flying{flying}, Mage{mage} or Ranger{ranger} units. Speed {1}.", icon: "Icons/Ability/Flying.png" },
 
 rush: {name: "Rush", description: "Can attack on the turn it is played. Speed {1}.", icon: "Icons/Ability/Rush.png" },
 drain: {name: "Drain", description: "When this unit deals damage, gain that much life.", icon: "Icons/Ability/Drain.png" },
@@ -1655,9 +1655,9 @@ awaken: {name: "Awaken", description: "Activates during the draw step."},
 aftermath: {name: "Aftermath", description: "Activates during the end step."},
 
 // --- WEATHER SKILLS --- //
-drought: {name: "Drought", description: "Summons Sunlight and Sunburst.", icon: "Icons/Weather/Drought.png" },
-drizzle: {name: "Drizzle", description: "Summons Rain and Downpour.", icon: "Icons/Weather/Drizzle.png" },
-stormcall: {name: "Stormcall", description: "Summons Storm and Thunderstorm.", icon: "Icons/Weather/Stormcall.png" },
+drought: {name: "Drought", description: "Summons Sunlight{sunlight} and Sunburst{sunburst}.", icon: "Icons/Weather/Drought.png" },
+drizzle: {name: "Drizzle", description: "Summons Rain{rain} and Downpour{downpour}.", icon: "Icons/Weather/Drizzle.png" },
+stormcall: {name: "Stormcall", description: "Summons Storm{storm} and Thunderstorm{thunderstorm}.", icon: "Icons/Weather/Stormcall.png" },
 frostcall: {name: "Frostcall", description: "Summons Snowfall and Blizzard.", icon: "Icons/Weather/Frostcall.png" },
 strongwinds: {name: "Strongwinds", description: "Summons Gale and Hurricane.", icon: "Icons/Weather/Strongwinds.png" },
 eruption: {name: "Eruption", description: "Summons Ashfall.", icon: "Icons/Weather/Eruption.png" },
@@ -1682,11 +1682,11 @@ rain: {name: "Rain", description: "Tidal +{1}/{0}. Sylvan {0}/+{1}.", icon: "Ico
 downpour: {name: "Downpour", description: "Tidal +{1}/+{1}. Sylvan {0}/+{1}.", icon: "Icons/Weather/Downpour.png" },
 storm: {name: "Storm", description: "Tempest +{1}/{0}. Tidal {0}/+{1}.", icon: "Icons/Weather/Storm.png" },
 thunderstorm: {name: "Thunderstorm", description: "Tempest +{2}/{0}. Tidal {0}/+{1}.", icon: "Icons/Weather/Thunderstorm.png" },
-snowfall: {name: "Snowfall", description: "Frozen units lose 1 HP during the end step. Inspire Tidal → Freeze.", icon: "Icons/Weather/Snowfall.png" },
-blizzard: {name: "Blizzard", description: "Non-Tidal units lose 1 HP during the end step. Inspire Tidal → Freeze.", icon: "Icons/Weather/Blizzard.png" },
+snowfall: {name: "Snowfall", description: "Frozen units lose 1 HP during the end step. Inspire {u} → Freeze.", icon: "Icons/Weather/Snowfall.png" },
+blizzard: {name: "Blizzard", description: "Non-{u} units lose 1 HP during the end step. Inspire {u} → Freeze.", icon: "Icons/Weather/Blizzard.png" },
 gale: {name: "Gale", description: "Tempest +{1}/{0}.", icon: "Icons/Weather/Gale.png" },
 hurricane: {name: "Hurricane", description: "Tempest +{2}/{0}.", icon: "Icons/Weather/Hurricane.png" },
-eruption: {name: "Eruption", description: "Interno +{1}/{0}. Terra {0}/+{1}.", icon: "Icons/Weather/Eruption.png" },
+eruption: {name: "Eruption", description: "Inferno +{1}/{0}. Terra {0}/+{1}.", icon: "Icons/Weather/Eruption.png" },
 decay: {name: "decay", description: "Corrupted +{1}/+{1}.", icon: "Icons/Weather/Decay.png" },
 mystveil: {name: "Mystveil", description: "Sylvan +{1}/+{1}.", icon: "Icons/Weather/Mystveil.png" },
 
@@ -2068,12 +2068,24 @@ function getKeywordIcon(name) {
 // Looks up the token in CARD_KEYWORD (supports string value or object with .icon/.image path)
 function getKeywordIconPath(token) {
   if (!token) return null;
-  // Accept either global CARD_KEYWORD or window.CARD_KEYWORD (shared.js may export either)
+  // prefer the CARD_KEYWORD map if available
   const map = (typeof CARD_KEYWORD !== 'undefined') ? CARD_KEYWORD : (window.CARD_KEYWORD || {});
   if (!map) return null;
-  const entry = map[token] || map[token.toLowerCase()] || map[token.toUpperCase()];
+
+  // Normalize the token into the same canonical key shape used across the file
+  // (remove spaces, punctuation, lowercase). Uses the existing normalizeKey helper.
+  const key = normalizeKey(token);
+  let entry = map[key];
+
+  // fallback attempts: sometimes callers pass already-normalized keys or different casing
+  if (!entry) {
+    const lower = String(token).toLowerCase();
+    entry = map[lower] || map[token] || map[token.toLowerCase()] || map[token.toUpperCase()];
+  }
+
   if (!entry) return null;
-  // Support value shapes: string path, or object { icon: "...", image: "...", path: "..." }
+
+  // Support shapes: string -> path, object -> { icon, image, path }
   if (typeof entry === 'string') return entry;
   if (typeof entry === 'object') {
     return entry.icon || entry.image || entry.path || null;
@@ -2215,16 +2227,32 @@ function parseEffectText(effect) {
 
   // Replace numbers {0}..{20} with bold numbers or custom spans
  // Replace numbers {0}..{20} with colorless essence images!
- effect = effect.replace(/\{([0-9]|1[0-9]|20)\}/g, (match, num) => {
-  // Use COST_IMAGE_MAP['X'+num] to match renderCardCost logic
-   const imgSrc = typeof COST_IMAGE_MAP !== 'undefined' ? COST_IMAGE_MAP['X'+num] : null;
-   if (imgSrc) {
-     return `<img src="${imgSrc}" style="height:1.3em;vertical-align:middle;margin-right:2px;">`;
-   }
-   // fallback: number as before
-   return `<span style="font-weight:bold;color:#ffe066;font-size:1.12em;vertical-align:middle;margin-right: 2px;">${num}</span>`;
- });
+  effect = effect.replace(/\{([0-9]|1[0-9]|20)\}/g, (match, num) => {
+    const imgSrc = typeof COST_IMAGE_MAP !== 'undefined' ? COST_IMAGE_MAP['X'+num] : null;
+    if (imgSrc) {
+      return `<img src="${_escapeHtmlInline(imgSrc)}" style="height:1.3em;vertical-align:middle;margin-right:2px;">`;
+    }
+    return `<span style="font-weight:bold;color:#ffe066;font-size:1.12em;vertical-align:middle;margin-right: 2px;">${num}</span>`;
+  });
+  // --- NEW: replace keyword tokens like {flying}, {ambush}, {zephyra}, {golem} etc. ---
+  // This regex intentionally selects tokens that start with a letter (to avoid colliding with
+  // the single-letter cost tokens and the numeric tokens already handled above).
+  effect = effect.replace(/\{([a-zA-Z][a-zA-Z0-9_\-\s]*)\}/g, (match, token) => {
+    // Skip tokens that are single-letter upper-case or pure numbers (already handled)
+    if (/^[GRUYCPBW]$/.test(token)) return match;
+    if (/^[0-9]+$/.test(token)) return match;
 
+    const path = getKeywordIconPath(token);
+    if (path) {
+      // Use escaped path and include alt/title for accessibility
+      const alt = _escapeHtmlInline(String(token));
+      const title = _escapeHtmlInline(String(token));
+      return `<img src="${_escapeHtmlInline(path)}" alt="${alt}" title="${title}" style="height:1.3em;vertical-align:middle;margin-right:2px;">`;
+    }
+    // No icon found for the token: keep the literal token text (or remove braces, depending on preference)
+    // Here we return the token text without braces to be friendly in UI.
+    return _escapeHtmlInline(token);
+  });
   return effect;
 }
 function countEssenceType(essenceStr, typeCode) {
