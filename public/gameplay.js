@@ -4267,7 +4267,13 @@ function checkEndGame() {
 function extractDominionFromDeck(deckArr) {
   const idx = deckArr.findIndex(cardObj => {
     const card = dummyCards.find(c => c.id === cardObj.cardId);
-    return card && card.trait && card.trait.toLowerCase() === "dominion";
+    if (!card) return false;
+    // Prefer the shared helper if present
+    if (typeof isDominion === 'function') return isDominion(card);
+    // Fallback: support trait as string or array
+    const t = card.trait;
+    if (Array.isArray(t)) return t.map(x => String(x).toLowerCase()).includes('dominion');
+    return String(t || '').toLowerCase() === 'dominion';
   });
   if (idx !== -1) {
     return deckArr.splice(idx, 1)[0];
@@ -4297,10 +4303,14 @@ function initiateDominionSelection(deckArr, afterSelection) {
   }
 }
 function putRandomChampionOnTop(deckArr) {
-  // Get all champions in deck
+  // Get all champions in deck (robust to trait shape)
   const champions = deckArr.filter(cardObj => {
     const card = dummyCards.find(c => c.id === cardObj.cardId);
-    return card && card.trait && card.trait.toLowerCase() === "champion";
+    if (!card) return false;
+    if (typeof isChampion === 'function') return isChampion(card);
+    const t = card.trait;
+    if (Array.isArray(t)) return t.map(x => String(x).toLowerCase()).includes('champion');
+    return String(t || '').toLowerCase() === 'champion';
   });
   if (champions.length === 0) return; // no champion found
 
