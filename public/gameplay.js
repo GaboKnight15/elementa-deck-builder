@@ -53,6 +53,7 @@ let gameState = {
   phase: "draw",
   timeOfDay: "day", // Initial state
   dayNightCycleCounter: 0, // Counts end phases
+  pendingDayNightTransition: null,
   weatherEffects: []
 };
 const ZONE_MAP = {
@@ -1518,51 +1519,85 @@ Token: {
   // Add more effects as needed (Strike, Heal, Destroy, etc.)
 };
 const WEATHER_EFFECTS = {
-  Drought: {
+  Sunlight: {
+    icon: 'Icons/Status/Sunlight.png',
     color: "Red",
-    description: "Red creatures gain +1 ATK.",
+    description: "Red{r} creatures gain {1}/{0}.",
     passive: (cardObj) => isRed(cardObj) ? { atk: 1 } : null
   },
+  Sunburst: {
+    icon: 'Icons/Status/Sunburst.png',
+    name: 'Sunburst',
+    description: '{r} & {w} creatures gain {2}/{1}.',
+    passive: (cardObj) => (isWhite(cardObj) || isRed(cardObj) ? { atk: 1 } : null)
+  },
   Rain: {
+    icon: 'Icons/Status/Rain.png',
     color: "Blue",
-    description: "Blue creatures gain +1 DEF.",
+    description: "{u} creatures gain {0}/{1}.",
     passive: (cardObj) => isBlue(cardObj) ? { def: 1 } : null
   },
+  Downpour: {
+    icon: 'Icons/Status/Downpour.png',
+    name: 'Downpour',
+    description: '{u} creatures gain {1}/{2}.',
+    passive: (cardObj) => (isBlue(cardObj) ? { def: 2 } : null)
+  },
+  Storm: {
+    icon: 'Icons/Status/Storm.png',
+    name: 'Storm',
+    description: '{u} & {y} creatures gain {1}/{0}.',
+    passive: (cardObj) => (isBlue(cardObj) || isYellow(cardObj) ? { atk: 1 } : null)
+  },
   Thunderstorm: {
+    icon: 'Icons/Status/Thunderstorm.png',
     colors: ["Blue", "Yellow"], archetype: "Stormcore",
-    description: "Blue/Yellow and Stormcore creatures gain +1 ATK.",
+    description: "{u} & {y} creatures gain {1}/{0}.",
     passive: (cardObj) =>
       (isBlue(cardObj) || isYellow(cardObj) || isArchetype(cardObj, "Stormcore")) ? { atk: 1 } : null
   },
   Snowfall: {
-    archetype: "Frostlands",
-    description: "Frostlands creatures gain +1 DEF.",
+    icon: 'Icons/Status/Snowfall.png',
+    archetype: "Frostland",
+    description: "Frostland {frostland} creatures gain {0}/{1}.",
     passive: (cardObj) => isArchetype(cardObj, "Frostlands") ? { def: 1 } : null
   },
   GaleWinds: {
-    archetype: "Zephyra", ability: "Flying",
-    description: "Zephyra and Flying creatures gain +1 DEF.",
+    ability: "Flying",
+    description: "Flying {flying} creatures gain {0}/{1} and {1} Spd.",
     passive: (cardObj) => (isArchetype(cardObj, "Zephyra") || hasFlying(cardObj)) ? { def: 1 } : null
   },
-  BloodMoon: {
-    archetype: "Moonfang", type: "Beast",
-    description: "Moonfang and Beast creatures gain +1 ATK.",
-    passive: (cardObj) => (isArchetype(cardObj, "Moonfang") || isBeast(cardObj)) ? { atk: 1 } : null
-  },
+BloodMoon: {
+  archetype: "Moonfang",
+  type: "Beast",
+  description: "Moonfang {moonfang} and Beast {beast} creatures gain {1}/{0}.",
+  passive: (cardObj) => {
+    if (!cardObj) return null;
+    const mods = {};
+    // grant +1 ATK for being Moonfang
+    if (isArchetype(cardObj, "Moonfang")) {mods.atk = (mods.atk || 0) + 1;}
+    // grant +1 ATK for being a Beast type
+    if (isBeast(cardObj)) {mods.atk = (mods.atk || 0) + 1;}
+    return Object.keys(mods).length ? mods : null;
+  }
+},
   Ashfall: {
-    colors: ["Red", "Gray"], archetype: "Golemheart",
-    description: "Red/Gray and Golemheart creatures gain +1 DEF.",
+    icon: 'Icons/Status/Ashfall.png',
+    colors: ["Red", "Gray"], archetype: "Golem",
+    description: "Red{r}/Gray{c} and Golem {golem} creatures gain {0}/{1}.",
     passive: (cardObj) =>
       (isRed(cardObj) || isGray(cardObj) || isArchetype(cardObj, "Golemheart")) ? { def: 1 } : null
   },
-  ToxicMiasma: {
+  Decay: {
+    icon: 'Icons/Status/Decay.png',
     color: "Purple",
-    description: "Purple creatures gain +1 ATK.",
+    description: "{p} creatures gain {1}/{0}.",
     passive: (cardObj) => isPurple(cardObj) ? { atk: 1 } : null
   },
-  Mystveil: {
-    color: "Green", type: "Fairy",
-    description: "Green and Fairy creatures gain +1 DEF.",
+  Myst: {
+    icon: 'Icons/Status/Myst.png',
+    color: "Green", type: "Faefolk",
+    description: "Green {g} and Fairy {fairy} creatures gain +1 DEF {0}/{1}.",
     passive: (cardObj) => (isGreen(cardObj) || isFairy(cardObj)) ? { def: 1 } : null
   }
 };
@@ -1573,7 +1608,7 @@ const phasePlayerSpan    = document.getElementById('phase-player');
 const phaseNameSpan      = document.getElementById('phase-name');
 const nextPhaseBtn       = document.getElementById('next-phase-btn');
 const battlefield        = document.getElementById('battlefield');
-const phaseBadge = document.getElementById('phase-badge');
+const phaseBadge         = document.getElementById('phase-badge');
 
 // ==========================
 // === RENDERING / UI ===
@@ -1623,8 +1658,13 @@ function startGame({
   gameState.opponentCreatures = [];
   gameState.opponentDomains = [];
   gameState.opponentVoid = [];
+  
   gameState.turn = "player";
   gameState.phase = "draw";
+  
+  gameState.timeOfDay = "dawn";
+  gameState.pendingDayNightTransition = "day";
+  
   gameState.playerDominion = null;
   gameState.opponentDominion = null;
   putRandomChampionOnTop(gameState.playerDeck);
@@ -1902,17 +1942,64 @@ function matchesFilter(cardObj, filter) {
   }
   return true;
 }
+// Advance / manage the Day-Night cycle including Dusk/Dawn intermediate states.
+//
+// Behavior:
+//  - gameState.timeOfDay ∈ {"day","dusk","night","dawn"}
+//  - dayNightCycleCounter counts End Phases (resets on major transitions)
+//  - When counter reaches CYCLE_LENGTH we enter the intermediate state:
+//      if current === "day"  => set "dusk" for 1 End Phase, pending => "night"
+//      if current === "night"=> set "dawn" for 1 End Phase, pending => "day"
+//  - The intermediate state ("dusk" or "dawn") lasts exactly one End Phase; at the next End Phase
+//    we advance to the pendingDayNightTransition and clear the pending flag.
 function handleDayNightCycle() {
-  gameState.dayNightCycleCounter = (gameState.dayNightCycleCounter || 0) + 1;
-  if (gameState.dayNightCycleCounter >= 4) {
-    // Switch Day <-> Night
-    gameState.timeOfDay = gameState.timeOfDay === "day" ? "night" : "day";
+  // number of end-phases per main Day/Night period (keeps previous behavior)
+  const CYCLE_LENGTH = 4;
+
+  // Ensure fields exist
+  gameState.dayNightCycleCounter = Number(gameState.dayNightCycleCounter || 0);
+  gameState.pendingDayNightTransition = gameState.pendingDayNightTransition || null;
+  gameState.timeOfDay = gameState.timeOfDay || 'day';
+
+  // If we're currently in an intermediate period (dusk/dawn), it only lasts one End Phase.
+  if (gameState.timeOfDay === 'dusk' || gameState.timeOfDay === 'dawn') {
+    // Move to the pending main state (if set). If not set, fallback to 'night' for dusk and 'day' for dawn.
+    const next = gameState.pendingDayNightTransition
+      || (gameState.timeOfDay === 'dusk' ? 'night' : 'day');
+    gameState.timeOfDay = next;
+    gameState.pendingDayNightTransition = null;
     gameState.dayNightCycleCounter = 0;
-    showToast(gameState.timeOfDay === "day" ? "Day breaks!" : "Night falls!", { type: "info" });
-    renderGameState(); // Update field visuals if needed
+    renderGameState && renderGameState();
+    showToast && showToast(`${capitalize(next)} begins!`, { type: 'info' });
+    return;
+  }
+
+  // If we're in a main period (day or night), increment the counter and check for scheduled major transition.
+  gameState.dayNightCycleCounter++;
+
+  if (gameState.dayNightCycleCounter >= CYCLE_LENGTH) {
+    // schedule a short intermediate state before the major switch
+    if (gameState.timeOfDay === 'day') {
+      gameState.timeOfDay = 'dusk';
+      gameState.pendingDayNightTransition = 'night';
+      showToast && showToast('Dusk falls...', { type: 'info' });
+    } else if (gameState.timeOfDay === 'night') {
+      gameState.timeOfDay = 'dawn';
+      gameState.pendingDayNightTransition = 'day';
+      showToast && showToast('Dawn breaks...', { type: 'info' });
+    } else {
+      // fallback safety
+      gameState.timeOfDay = 'day';
+      gameState.pendingDayNightTransition = null;
+    }
+    gameState.dayNightCycleCounter = 0;
+    renderGameState && renderGameState();
   }
 }
-
+// small helper used above
+function capitalize(s) {
+  return String(s || '').charAt(0).toUpperCase() + String(s || '').slice(1);
+}
 // --- WEATHER --- //
 function handleWeatherEffectsEndPhase() {
   if (!Array.isArray(gameState.weatherEffects)) return;
@@ -6286,6 +6373,167 @@ function getStatColor(cardObj, statName) {
   if (current < base) return "#e53935";   // red
   return "#fff";                          // default/neutral
 }
+// --- BADGES / COUNTERS UI HELPERS ---
+// Renders a row of simple icon+count badges into containerId
+function renderBadgeRow(containerId, badges) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.innerHTML = '';
+  badges.forEach(b => {
+    const el = document.createElement('div');
+    el.className = 'badge-counter';
+    el.style.display = 'inline-flex';
+    el.style.alignItems = 'center';
+    el.style.gap = '6px';
+    el.style.padding = '6px 8px';
+    el.style.borderRadius = '8px';
+    el.style.background = b.background || '#1b2430';
+    el.style.color = b.color || '#fff';
+    el.title = b.title || '';
+    el.innerHTML = `
+      ${b.icon ? `<img src="${b.icon}" alt="${b.key || ''}" style="width:18px;height:18px;display:inline-block;">` : ''}
+      <span class="badge-count" style="font-weight:700;color:${b.countColor||'#ffe066'};min-width:18px;text-align:right;">${b.count}</span>
+      ${b.label ? `<span style="font-size:0.85em;color:#d0d6df;margin-left:6px;">${b.label}</span>` : ''}
+    `;
+    container.appendChild(el);
+  });
+}
+
+// Convenience wrappers. Use your gameState/getNullCounters functions as available.
+function updateOpponentBadges() {
+  // example: show Null Counters (falls back to gameState.opponentNullCounters)
+  const nullCount = (typeof getNullCounters === 'function') ? getNullCounters('opponent') : (gameState.opponentNullCounters || 0);
+  const badges = [
+    { key: 'nullCounterOpp', icon: 'OtherImages/Icons/NullCounterSmall.png', count: nullCount, label: '', title: `Null Counters: ${nullCount}` }
+    // add more opponent badges here as { key, icon, count, label, title }
+  ];
+  renderBadgeRow('opponent-badges-row', badges);
+}
+
+function updatePlayerBadges() {
+  const nullCount = (typeof getNullCounters === 'function') ? getNullCounters('player') : (gameState.playerNullCounters || 0);
+  const badges = [
+    { key: 'nullCounterPlayer', icon: 'OtherImages/Icons/NullCounterSmall.png', count: nullCount, label: '', title: `Null Counters: ${nullCount}` }
+    // add more player badges here
+  ];
+  renderBadgeRow('player-badges-row', badges);
+}
+
+// Hook into UI refresh: call these from your renderGameState (or after relevant state updates)
+const _origRenderGameState = typeof renderGameState === 'function' ? renderGameState : null;
+function renderGameStateWithBadges() {
+  if (typeof _origRenderGameState === 'function') _origRenderGameState();
+  updateOpponentBadges();
+  updatePlayerBadges();
+}
+// If renderGameState already exists, override it to ensure badges update automatically
+if (typeof renderGameState === 'function') {
+  const orig = renderGameState;
+  renderGameState = function() {
+    orig.apply(this, arguments);
+    updateOpponentBadges();
+    updatePlayerBadges();
+  };
+}
+// --- GAME STATUS UI (Day/Night + Weather) ---
+// Renders a compact row showing current time-of-day and active weather effects.
+// Call updateGameStatusRow() from renderGameState() or whenever gameState.timeOfDay/gameState.weatherEffects change.
+function formatWeatherTitle(effectObj) {
+  // effectObj: { name: "Rain", duration: 2 } - adapt as needed
+  const effectDef = WEATHER_EFFECTS && WEATHER_EFFECTS[effectObj.name];
+  const desc = effectDef && effectDef.description ? effectDef.description : "";
+  return `${effectObj.name}${effectObj.duration ? ` (${effectObj.duration})` : ""}${desc ? ` — ${desc}` : ""}`;
+}
+// --- REPLACEMENT: updateGameStatusRow (renders day/night and weather icons)
+// Updated to use OtherImages/Icons/Status/Day.png and .../Night.png
+function updateGameStatusRow() {
+  const container = document.getElementById('game-status-inline');
+  if (!container) return;
+  container.innerHTML = '';
+
+  // Day / Night badge (vertical compact column)
+  const tod = gameState.timeOfDay || 'day';
+  const todWrap = document.createElement('div');
+  todWrap.style.display = 'flex';
+  todWrap.style.flexDirection = 'column';
+  todWrap.style.alignItems = 'center';
+  todWrap.style.gap = '6px';
+
+  const todIcon = document.createElement('img');
+  // Use the Status subfolder icons per design
+  todIcon.src = tod === 'day'
+    ? 'OtherImages/Icons/Status/Day.png'
+    : 'OtherImages/Icons/Status/Night.png';
+  todIcon.alt = tod;
+  todIcon.title = `Time: ${tod === 'day' ? 'Day' : 'Night'}`;
+  todIcon.style.width = '28px';
+  todIcon.style.height = '28px';
+  todIcon.style.cursor = 'pointer';
+  todIcon.onclick = () => {
+    showToast && showToast(`Time of day: ${tod === 'day' ? 'Day' : 'Night'}`, { type: 'info' });
+  };
+
+  const todLabel = document.createElement('div');
+  todLabel.textContent = tod === 'day' ? 'Day' : 'Night';
+  todLabel.style.fontSize = '0.75em';
+  todLabel.style.color = '#ffe066';
+  todLabel.style.fontWeight = '700';
+
+  todWrap.appendChild(todIcon);
+  todWrap.appendChild(todLabel);
+  container.appendChild(todWrap);
+
+  // Weather icons (stack under day/night)
+  if (Array.isArray(gameState.weatherEffects) && gameState.weatherEffects.length > 0) {
+    const weatherStack = document.createElement('div');
+    weatherStack.style.display = 'flex';
+    weatherStack.style.flexDirection = 'column';
+    weatherStack.style.alignItems = 'center';
+    weatherStack.style.gap = '6px';
+
+    gameState.weatherEffects.forEach(effectObj => {
+      const name = effectObj.name || effectObj;
+      const effectDef = WEATHER_EFFECTS && WEATHER_EFFECTS[name];
+      const icon = document.createElement('img');
+      const iconPath = (effectDef && effectDef.icon)
+        ? effectDef.icon
+        : `OtherImages/Icons/${String(name).replace(/\s+/g,'')}.png`;
+      icon.src = iconPath;
+      icon.alt = name;
+      icon.title = (effectObj.duration ? `${name} (${effectObj.duration})` : name) + (effectDef && effectDef.description ? ` — ${effectDef.description}` : '');
+      icon.style.width = '20px';
+      icon.style.height = '20px';
+      icon.style.cursor = 'pointer';
+      icon.onclick = (e) => {
+        e.stopPropagation();
+        showToast && showToast(icon.title, { type: 'info', duration: 2200 });
+      };
+      weatherStack.appendChild(icon);
+    });
+
+    container.appendChild(weatherStack);
+  } else {
+    const placeholder = document.createElement('div');
+    placeholder.style.height = '8px';
+    container.appendChild(placeholder);
+  }
+}
+
+// Hook into renderGameState so updates happen automatically
+if (typeof renderGameState === 'function') {
+  const _origRenderGameState = renderGameState;
+  renderGameState = function() {
+    _origRenderGameState.apply(this, arguments);
+    try {
+      updateGameStatusRow();
+    } catch (err) {
+      console.warn("updateGameStatusRow error:", err);
+    }
+  };
+} else {
+  // If renderGameState is not defined yet, ensure we call update on DOMContentLoaded
+  document.addEventListener('DOMContentLoaded', () => updateGameStatusRow());
+}
 // ----------------------------------- //
 // --- Card Field Helper Functions --- //
 // These functions work for both array and string fields (case-insensitive) //
@@ -6393,21 +6641,17 @@ function isSeraph(cardObj)      { return isArchetype(cardObj, "Seraph"); }
 // Add more as needed...
 
 // TRAIT
-function isTrait(cardObj, trait) {
-  return fieldIncludes(cardObj, "trait", trait);
-}
-function isChampion(cardObj)  { return isTrait(cardObj, "Champion"); }
-function isWarrior(cardObj)   { return isTrait(cardObj, "Warrior"); }
-function isMage(cardObj)      { return isTrait(cardObj, "Mage"); }
-function isRanger(cardObj)    { return isTrait(cardObj, "Ranger"); }
-function isEvolution(cardObj) { return isTrait(cardObj, "Evolution"); }
-function isFusion(cardObj)    { return isTrait(cardObj, "Fusion"); }
+function hasTrait(cardObj, trait) {return fieldIncludes(cardObj, "trait", trait);}
+function isChampion(cardObj)  { return hasTrait(cardObj, "Champion"); }
+function isWarrior(cardObj)   { return hasTrait(cardObj, "Warrior"); }
+function isMage(cardObj)      { return hasTrait(cardObj, "Mage"); }
+function isRanger(cardObj)    { return hasTrait(cardObj, "Ranger"); }
+function isEvolution(cardObj) { return hasTrait(cardObj, "Evolution"); }
+function isFusion(cardObj)    { return hasTrait(cardObj, "Fusion"); }
 // Add more as needed...
 
 // ABILITY
-function hasAbility(cardObj, ability) {
-  return fieldIncludes(cardObj, "ability", ability);
-}
+function hasAbility(cardObj, ability) {return fieldIncludes(cardObj, "ability", ability);}
 function hasBurn(cardObj)       { return hasAbility(cardObj, "Burn"); }
 function hasFlying(cardObj)     { return hasAbility(cardObj, "Flying"); }
 function hasRush(cardObj)       { return hasAbility(cardObj, "Rush"); }
@@ -6417,16 +6661,23 @@ function hasVeil(cardObj)       { return hasAbility(cardObj, "Veil"); }
 function hasImmunity(cardObj)   { return hasAbility(cardObj, "Immunity"); }
 function hasIntimidate(cardObj) { return hasAbility(cardObj, "Intimidate"); }
 function hasAmbush(cardObj)     { return hasAbility(cardObj, "Ambush"); }
+function isSkillSealed(cardObj) {return (cardObj.status && cardObj.status.includes("Seal"));}
+function getTimeOfDay() {if (!gameState || !gameState.timeOfDay) return 'day';return String(gameState.timeOfDay).toLowerCase();}
+function isDay() {return getTimeOfDay() === 'day';}
+function isNight() {return getTimeOfDay() === 'night';}
+function isDusk() {return getTimeOfDay() === 'dusk';}
+function isDawn() {return getTimeOfDay() === 'dawn';}
 
-function isSkillSealed(cardObj) {
-  return (cardObj.status && cardObj.status.includes("Seal"));
+// Expose to window in case other modules (shop, UI) want to read them directly
+if (typeof window !== 'undefined') {
+  window.getTimeOfDay = getTimeOfDay;
+  window.isDay = isDay;
+  window.isNight = isNight;
+  window.isDusk = isDusk;
+  window.isDawn = isDawn;
 }
 // Add more as needed...
-function weatherSetter(weatherName) {
-  return (cardObj, skillObj, context) => {
-    if (context.setWeather) context.setWeather(weatherName, cardObj);
-  };
-}
+function weatherSetter(weatherName) {return (cardObj, skillObj, context) => {if (context.setWeather) context.setWeather(weatherName, cardObj);};}
 // --- Utility: get all colors/types/archetypes/traits/abilities (for filters, etc.) ---
 function getCardColors(cardObj) {
   const card = getCardDef(cardObj);
