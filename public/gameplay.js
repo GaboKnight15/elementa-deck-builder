@@ -3277,23 +3277,38 @@ badgesRow.style.flexDirection = 'column';
 badgesRow.style.gap = '6px';
 
 // Speed badge
-const speedVal = getSpeedValue(cardObj);
-const speedBadge = document.createElement('div');
-speedBadge.className = 'card-speed-badge';
-speedBadge.title = `Speed: ${speedVal} (Tier ${getSpeedTier(cardObj)})`;
-speedBadge.innerHTML = `<img src="OtherImages/FieldIcons/Speed.png" style="width:18px;height:18px;vertical-align:middle;margin-right:6px;"><span style="font-weight:bold;color:#fff;">${speedVal}</span>`;
-badgesRow.appendChild(speedBadge);
-
-// Evasion badge (only if > 0)
-const evCount = getEvasionCount(cardObj);
-if (evCount > 0) {
-  const evBadge = document.createElement('div');
-  evBadge.className = 'card-evasion-badge';
-  evBadge.title = `Evasion: ${evCount} (consumed when targeted by opponent)`;
-  evBadge.innerHTML = `<img src="OtherImages/FieldIcons/Evasion.png" style="width:18px;height:18px;vertical-align:middle;margin-right:6px;"><span style="font-weight:bold;color:#ffd700;">${evCount}</span>`;
-  badgesRow.appendChild(evBadge);
+try {
+  const speedVal = getSpeedValue(cardObj);
+  const speedBadge = document.createElement('div');
+  speedBadge.className = 'card-speed-badge';
+  speedBadge.title = `Speed: ${speedVal} (Tier ${getSpeedTier(cardObj)})`;
+  speedBadge.innerHTML = `
+    <img src="OtherImages/FieldIcons/Speed.png" style="width:18px;height:18px;vertical-align:middle;margin-right:6px;">
+    <span style="font-weight:bold;color:#fff;">${speedVal}</span>
+  `;
+  badgesRow.appendChild(speedBadge);
+} catch (err) {
+  console.warn('Failed to render speed badge', err);
 }
 
+// Evasion badge (only if > 0)
+try {
+  const evCount = getEvasionCount(cardObj);
+  if (evCount > 0) {
+    const evBadge = document.createElement('div');
+    evBadge.className = 'card-evasion-badge';
+    evBadge.title = `Evasion: ${evCount} (consumed when targeted by opponent)`;
+    evBadge.innerHTML = `
+      <img src="OtherImages/FieldIcons/Evasion.png" style="width:18px;height:18px;vertical-align:middle;margin-right:6px;">
+      <span style="font-weight:bold;color:#ffd700;">${evCount}</span>
+    `;
+    badgesRow.appendChild(evBadge);
+  }
+} catch (err) {
+  console.warn('Failed to render evasion badge', err);
+}
+
+// Append badges row to overlay
 statsAndIconsOverlay.appendChild(badgesRow);
 
   // --- HP Bar (move to bottom, behind statRow) ---
