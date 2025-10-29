@@ -5894,26 +5894,9 @@ function canActivateSkill(cardObj, skillObj, currentZone, gameState, targetObj =
     const targets = getTargets(skillObj.target, cardObj);
     if (!targets || targets.length === 0) return false;
   }
-
-  // 6. Attack Declaration Ability/Skill Check (if needed)
-  if (targetObj) {
-    const attackerDef = dummyCards.find(c => c.id === cardObj.cardId);
-    if (attackerDef && attackerDef.ability) {
-      for (const abilityName in ATTACK_DECLARATION_ABILITY) {
-        if (attackerDef.ability.includes(abilityName)) {
-          if (
-            (abilityName === "Intimidate" && targetObj.orientation === "horizontal") ||
-            (abilityName === "Provoke" && targetObj.orientation === "vertical")
-          ) {
-            return false;
-          }
-        }
-      }
-    }
-  }
-
   return true;
 }
+
 // Update activateSkill to use the animation before requirements/effects
 function activateSkill(cardObj, skillObj, options = {}) {
   const zoneId = findZoneIdForCard(cardObj);
@@ -5943,43 +5926,6 @@ function getSkillRequirements(skillObj) {
     return Array.isArray(activation.requirement) ? activation.requirement : [activation.requirement];
   }
   return [];
-}
-
-// In canActivateSkill:
-const requirements = getSkillRequirements(skillObj);
-for (const requirement of requirements) {
-  let reqKey = (typeof requirement === 'object' && requirement.class) ? requirement.class : requirement;
-  if (REQUIREMENT_MAP[reqKey] && REQUIREMENT_MAP[reqKey].canActivate) {
-    // Always pass the requirement object as the last argument
-    if (!REQUIREMENT_MAP[reqKey].canActivate(cardObj, skillObj, currentZone, gameState, requirement)) return false;
-  }
-}
-
-// In activateSkill's runRequirements step:
-function runRequirements() {
-  const requirements = getSkillRequirements(skillObj);
-  function nextReq(i) {
-    if (i >= requirements.length) {
-      runResolution();
-      return;
-    }
-    const requirement = requirements[i];
-    let reqKey = (typeof requirement === 'object' && requirement.class) ? requirement.class : requirement;
-    if (REQUIREMENT_MAP[reqKey] && REQUIREMENT_MAP[reqKey].handler) {
-      // Always pass requirement object as last argument
-      if (REQUIREMENT_MAP[reqKey].handler.length >= 4) {
-        REQUIREMENT_MAP[reqKey].handler(cardObj, skillObj, () => nextReq(i + 1), requirement);
-      } else if (REQUIREMENT_MAP[reqKey].handler.length === 3) {
-        REQUIREMENT_MAP[reqKey].handler(cardObj, skillObj, () => nextReq(i + 1));
-      } else {
-        REQUIREMENT_MAP[reqKey].handler(cardObj, skillObj);
-        nextReq(i + 1);
-      }
-    } else {
-      nextReq(i + 1);
-    }
-  }
-  nextReq(0);
 }
 
   function runResolution() {
