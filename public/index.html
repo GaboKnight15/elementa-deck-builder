@@ -261,10 +261,29 @@
         <span class="profile-username"></span>
       </div>
     </div>
+<div id="opponent-badges-row" class="badges-row"
+     style="display:flex;gap:8px;align-items:center;margin:8px 6px 12px 6px;">
+  <!-- Example badge template (JS will populate dynamically)
+       <div class="badge-counter" data-key="nullCounterOpp" style="display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:8px;background:#1e2938;">
+         <img src="OtherImages/Icons/NullCounterSmall.png" style="width:18px;height:18px;">
+         <span class="badge-count" style="color:#ffe066;font-weight:bold;">0</span>
+       </div>
+  -->
+</div>
   <!-- GAME LOG (moved here between the profiles) -->
-  <div id="game-log" class="game-log" style="overflow:auto;max-height:240px;padding:8px;gap:8px;display:block;flex-direction:column;margin:12px 0;">
+<div id="game-log-row" style="display:flex;align-items:flex-start;gap:12px;width:100%;box-sizing:border-box;">
+  <!-- Inline status area for Day/Night + Weather (icons rendered here) -->
+  <div id="game-status-inline" style="display:flex;flex-direction:column;align-items:center;gap:8px;min-width:56px;">
+    <!-- JS will populate day/night and weather icons here -->
+  </div>
+
+  <!-- Game log: takes remaining width -->
+  <div id="game-log" class="game-log" style="overflow:auto;flex:1;max-height:240px;padding:8px;gap:8px;display:flex;flex-direction:column;margin:12px 0;">
     <!-- Game action entries will be appended here by gameplay.js -->
   </div>
+</div>
+<div id="player-badges-row" class="badges-row" style="display:flex;gap:8px;align-items:center;margin:12px 6px 8px 6px;">
+  <!-- JS will populate badges here dynamically --></div>
     <!-- MY PROFILE (BATTLEFIELD) -->
     <div id="my-profile" class="profile-panel">
       <div class="profile-banner-container">
@@ -747,6 +766,7 @@
  
 </body> 
 </html>
+
 
 
 
