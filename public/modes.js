@@ -545,7 +545,54 @@ function resolveColorToken(token) {
   const t = token.toLowerCase();
   return NAMED_COLOR_MAP[t] || token; // if it's already a hex or css value, return it
 }
+// Convert a hex color like "#aabbcc" to {r,g,b}
+function hexToRgb(hex) {
+  if (!hex) return null;
+  let h = String(hex).trim();
+  if (h[0] === '#') h = h.slice(1);
+  if (h.length === 3) {
+    h = h.split('').map(ch => ch + ch).join('');
+  }
+  if (h.length !== 6) return null;
+  const num = parseInt(h, 16);
+  if (isNaN(num)) return null;
+  return { r: (num >> 16) & 0xff, g: (num >> 8) & 0xff, b: num & 0xff };
+}
+function rgbToHex({ r, g, b }) {
+  const clamp = v => Math.max(0, Math.min(255, Math.round(v)));
+  return '#' + ((1 << 24) + (clamp(r) << 16) + (clamp(g) << 8) + clamp(b)).toString(16).slice(1);
+}
 
+// Given an array of color tokens (e.g. ["green","red"]) returns a blended hex color.
+// Uses resolveColorToken to map named tokens to hex when possible; if resolveColorToken returns a non-hex, it will be ignored.
+function getCombinedColor(colorInput) {
+  if (!colorInput) return '#ffe066';
+  const colors = Array.isArray(colorInput) ? colorInput : [colorInput];
+  const rgbs = [];
+  for (const c of colors) {
+    let resolved = resolveColorToken(c);
+    if (!resolved) continue;
+    // If resolveColorToken returned a CSS color keyword (not hex), try to normalize common keywords to hex via NAMED_COLOR_MAP
+    if (typeof resolved === 'string' && !resolved.startsWith('#')) {
+      const lower = resolved.toLowerCase();
+      if (NAMED_COLOR_MAP[lower]) resolved = NAMED_COLOR_MAP[lower];
+    }
+    const rgb = hexToRgb(resolved);
+    if (rgb) rgbs.push(rgb);
+  }
+  if (rgbs.length === 0) {
+    // last resort: attempt to average NAMED_COLOR_MAP values for tokens
+    const fallback = colors.map(c => NAMED_COLOR_MAP[String(c).toLowerCase()]).filter(Boolean).map(hexToRgb);
+    if (fallback.length === 0) return '#ffe066';
+    const avg = fallback.reduce((acc, v) => ({ r: acc.r + v.r, g: acc.g + v.g, b: acc.b + v.b }), { r: 0, g: 0, b: 0 });
+    avg.r /= fallback.length; avg.g /= fallback.length; avg.b /= fallback.length;
+    return rgbToHex(avg);
+  }
+  // Average components
+  const summed = rgbs.reduce((acc, v) => ({ r: acc.r + v.r, g: acc.g + v.g, b: acc.b + v.b }), { r: 0, g: 0, b: 0 });
+  const avg = { r: summed.r / rgbs.length, g: summed.g / rgbs.length, b: summed.b / rgbs.length };
+  return rgbToHex(avg);
+}
 // Escape HTML to avoid injection in inserted overlays
 function escapeHtml(s) {
   if (s === undefined || s === null) return '';
@@ -558,29 +605,21 @@ function escapeHtml(s) {
 // For two colors we render:
 //  - two background halves (left/right) with the two colors
 //  - two identical text elements clipped to left and right halves so letters appear half-colored
+// --- Helper: generate deck name overlay HTML (single color OR mix) ---
 function getDeckNameOverlayHtml(deck) {
   const name = escapeHtml(deck && deck.name ? deck.name : '');
   const color = deck && deck.color ? deck.color : null;
 
-  // Two-color split
-  if (Array.isArray(color) && color.length >= 2) {
-    const left = resolveColorToken(color[0]);
-    const right = resolveColorToken(color[1]);
-    // background halves + two identical centered text layers trimmed with clip-path
-    return (
-      '<div class="deck-name-split" aria-hidden="true">' +
-        '<div class="deck-name-bg left" style="background:' + left + ';"></div>' +
-        '<div class="deck-name-bg right" style="background:' + right + ';"></div>' +
-        // each .deck-name-text covers full width; clip-path limits visible portion to half
-        '<div class="deck-name-text left"><span class="deck-name-text-inner">' + name + '</span></div>' +
-        '<div class="deck-name-text right"><span class="deck-name-text-inner">' + name + '</span></div>' +
-      '</div>'
-    );
+  // If multiple colors specified, compute a single combined color and use it
+  if (Array.isArray(color) && color.length >= 1) {
+    const combined = getCombinedColor(color);
+    return `<div class="deck-name" style="position:absolute;bottom:0;width:100%;background:rgba(10,12,20,0.84);color:${combined};letter-spacing:0.5px;padding:6px 0;z-index:2;text-align:center;font-weight:bold;">${name}</div>`;
   }
 
-  // Single color — keep the existing style (dark translucent background + colored text)
+  // Single color — keep the existing style
   const c = Array.isArray(color) ? resolveColorToken(color[0]) : resolveColorToken(color);
-  return `<div class="deck-name" style="position:absolute;bottom:0;width:100%;background:rgba(10,12,20,0.84);color:${c};letter-spacing:0.5px;padding:6px 0;z-index:2;text-align:center;font-weight:bold;">${name}</div>`;
+  const safeColor = c || '#ffe066';
+  return `<div class="deck-name" style="position:absolute;bottom:0;width:100%;background:rgba(10,12,20,0.84);color:${safeColor};letter-spacing:0.5px;padding:6px 0;z-index:2;text-align:center;font-weight:bold;">${name}</div>`;
 }
 // Handle mode selection
 function showCpuDeckModal() {
@@ -650,7 +689,8 @@ function renderDeckOptions() {
     div.style.position = 'relative';
     div.style.width = '140px';
     div.style.height = '140px';
-    div.style.border = '3px solid ' + deck.color;
+    const borderColor = Array.isArray(deck.color) ? getCombinedColor(deck.color) : resolveColorToken(deck.color) || '#ffe066';
+    div.style.border = '3px solid ' + borderColor;
     div.style.borderRadius = '18px';
     div.style.background = '#232a3c';
     div.style.margin = '10px';
@@ -796,7 +836,8 @@ function showPlayerDeckModal() {
         div.style.position = 'relative';
         div.style.width = '140px';
         div.style.height = '140px';
-        div.style.border = '3px solid ' + deck.color;
+        const borderColorDefault = Array.isArray(deck.color) ? getCombinedColor(deck.color) : resolveColorToken(deck.color) || '#ffe066';
+        div.style.border = '3px solid ' + borderColorDefault;
         div.style.borderRadius = '18px';
         div.style.display = 'inline-block';
         div.style.overflow = 'hidden';
