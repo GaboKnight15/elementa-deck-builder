@@ -54,7 +54,11 @@ let gameState = {
   timeOfDay: "day", // Initial state
   dayNightCycleCounter: 0, // Counts end phases
   pendingDayNightTransition: null,
-  weatherEffects: []
+  weatherEffects: [],
+  essencePools: {
+    player: { green:0, red:0, blue:0, yellow:0, purple:0, gray:0, black:0, white:0, colorless:0 },
+    opponent: { green:0, red:0, blue:0, yellow:0, purple:0, gray:0, black:0, white:0, colorless:0 }
+  },
 };
 const ZONE_MAP = {
   // Player zones
@@ -1934,7 +1938,7 @@ function resetTurnFlags(turn) {
 }
 function resetTurnResources(turn) {
   const domains = turn === "player" ? gameState.playerDomains : gameState.opponentDomains;
-  domains.forEach(domain => generateEssenceForCard(domain));
+  domains.forEach(domain => generateEssence(domain));
 }
 function matchesFilter(cardObj, filter) {
   for (let key in filter) {
@@ -3405,10 +3409,6 @@ statsAndIconsOverlay.appendChild(badgesRow);
     cardDiv.appendChild(stackDiv);
   }
 
-  // Essence pool rendering (unchanged)
-  const essenceDiv = renderEssencePool(cardObj);
-  if (essenceDiv) cardDiv.appendChild(essenceDiv);
-
   // Add cardDiv to wrapper
   wrapper.appendChild(cardDiv);
 
@@ -3542,6 +3542,48 @@ function consumeEssence(cardObj, type, amount) {
   cardObj.essence = essenceStr;
   renderGameState();
   return true;
+}
+// --- Essence pool helpers ---
+function getEssencePool(owner = 'player') {
+  if (!gameState.essencePools) {
+    gameState.essencePools = {
+      player: { green:0, red:0, blue:0, yellow:0, purple:0, gray:0, black:0, white:0, colorless:0 },
+      opponent: { green:0, red:0, blue:0, yellow:0, purple:0, gray:0, black:0, white:0, colorless:0 }
+    };
+  }
+  return gameState.essencePools[owner === 'opponent' ? 'opponent' : 'player'];
+}
+
+function addEssenceToPool(owner = 'player', type, amount = 1) {
+  const pool = getEssencePool(owner);
+  if (!pool) return;
+  if (typeof type === 'string') {
+    if (type === 'colorless') pool.colorless += Number(amount || 0);
+    else pool[type] = (pool[type] || 0) + Number(amount || 0);
+  }
+  renderGameState && renderGameState();
+}
+
+function consumeEssenceFromPool(owner = 'player', type, amount = 1) {
+  const pool = getEssencePool(owner);
+  if (!pool) return false;
+  if (type === 'colorless') {
+    if (pool.colorless < amount) return false;
+    pool.colorless -= amount;
+    renderGameState && renderGameState();
+    return true;
+  } else {
+    if ((pool[type] || 0) < amount) return false;
+    pool[type] -= amount;
+    renderGameState && renderGameState();
+    return true;
+  }
+}
+
+// Utility: get total units in pool (colored + colorless)
+function getTotalPoolEssence(owner = 'player') {
+  const p = getEssencePool(owner);
+  return Object.values(p).reduce((s,n) => s + (Number(n) || 0), 0);
 }
 
 // Actions in zones
@@ -4259,19 +4301,45 @@ function putRandomChampionOnTop(deckArr) {
   // Put on top of deck
   deckArr.unshift(championCard);
 }
-// ESSENCE GENERATION
-function generateEssenceForCard(cardObj) {
+
+// ESSENCE GENERATION //
+function generateEssence(cardObj) {
+  // Add the card's defined essence into the owner's pooled essence
+  if (!cardObj) return;
   const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
   if (!cardDef || !cardDef.essence) return;
-  // Just append the essence string for this card to cardObj.essence
-  cardObj.essence = (cardObj.essence || "") + cardDef.essence;
-  renderGameState();
+
+  // Determine owner by membership in gameState arrays
+  const owner = (gameState.playerDomains.includes(cardObj) || gameState.playerCreatures.includes(cardObj)) ? 'player'
+    : (gameState.opponentDomains.includes(cardObj) || gameState.opponentCreatures.includes(cardObj)) ? 'opponent'
+    : (cardObj.owner ? (cardObj.owner === 'player' ? 'player' : 'opponent') : 'player');
+
+  // Parse the essence string like "{g}{g}{r}{2}" and add to pool counts
+  const essStr = cardDef.essence || '';
+  // color letters map
+  const letters = { G: 'green', R: 'red', U: 'blue', Y: 'yellow', C: 'gray', P: 'purple', B: 'black', W: 'white' };
+  const matches = essStr.match(/\{([GRUYCPBW]|[0-9]+)\}/gi) || [];
+  matches.forEach(m => {
+    const inner = m.replace(/[{}]/g, '').toUpperCase();
+    if (/^[0-9]+$/.test(inner)) {
+      // treat numeric token as that many colorless units
+      gameState.essencePools[owner].colorless += Number(inner);
+    } else if (letters[inner]) {
+      gameState.essencePools[owner][letters[inner]] += 1;
+    }
+  });
+
+  // trigger UI update
+  renderGameState && renderGameState();
 }
 
 
 // ESSENCE CONSUPTION LOGIC
-function showEssencePaymentModal(opts) {
+function showEssencePaymentModal(opts = {}) {
+  // opts expected:
+  // { card: cardDataOrObj, cost: parsedCostObject, owner: 'player'|'opponent', onPaid: fn }
   closeAllModals();
+
   // Setup modal base
   let modal = document.getElementById('essence-payment-modal');
   if (!modal) {
@@ -4282,223 +4350,332 @@ function showEssencePaymentModal(opts) {
   }
   modal.innerHTML = '';
   modal.style.display = 'flex';
-  modal.onclick = function(e) { if (e.target === modal) modal.style.display = 'none'; };
+  // backdrop click -> close and clear casting preview
+  modal.onclick = function(e) { 
+    if (e.target === modal) {
+      window.currentCasting = null;
+      if (typeof updateGameStatusRow === 'function') updateGameStatusRow();
+      modal.style.display = 'none'; 
+    }
+  };
 
   // Modal content
   const content = document.createElement('div');
   content.className = 'modal-content';
   content.onclick = e => e.stopPropagation();
+  content.style.maxWidth = '680px';
+  content.style.padding = '16px';
+  content.style.display = 'flex';
+  content.style.flexDirection = 'column';
+  content.style.alignItems = 'center';
   modal.appendChild(content);
 
-  // Header: Show card/ability being played/activated (card image + cost icons)
-  const card = opts.card;
-  const cardData = card || {};
-  const img = document.createElement('img');
-  img.src = cardData.image || '';
-  img.alt = cardData.name || '';
-  img.style.width = '100px';
-  img.style.marginRight = '12px';
-  img.style.cursor = 'pointer';
-  img.onclick = (e) => {
-    e.stopPropagation();
-    showFullCardModal(card);
-  };
-  
-  img.className = 'modal-main-card-img';
-  
+  // Track current casting so HUD shows the card + cost
+  const owner = opts.owner === 'opponent' ? 'opponent' : 'player';
+  try {
+    window.currentCasting = { card: opts.card || null, cost: opts.cost || null, owner };
+    if (typeof updateGameStatusRow === 'function') updateGameStatusRow();
+  } catch (e) {
+    console.warn("Could not set currentCasting:", e);
+  }
+
+  // Header: card image + (optional) cost
+  const card = opts.card || {};
   const header = document.createElement('div');
   header.style.display = 'flex';
   header.style.alignItems = 'center';
+  header.style.gap = '12px';
   header.style.marginBottom = '10px';
+  header.style.width = '100%';
+  header.style.justifyContent = 'center';
 
-  // Card image on left
+  const img = document.createElement('img');
+  img.src = card.image || '';
+  img.alt = card.name || '';
+  img.style.width = '120px';
+  img.style.height = 'auto';
+  img.style.cursor = 'pointer';
+  img.onclick = (e) => { e.stopPropagation(); showFullCardModal(card); };
   header.appendChild(img);
+
+  // Cost display (if parsed)
+  const parsedCost = opts.cost || (card && card.cost ? parseCost(card.cost) : null);
+  if (parsedCost) {
+    const costDiv = document.createElement('div');
+    costDiv.innerHTML = getEssenceCostDisplay(parsedCost);
+    costDiv.style.display = 'flex';
+    costDiv.style.alignItems = 'center';
+    costDiv.style.gap = '6px';
+    header.appendChild(costDiv);
+  }
   content.appendChild(header);
 
-  // Requirement display
+  // Requirements container (keeps same look/behaviour as before)
   const reqDiv = document.createElement('div');
   reqDiv.className = 'essence-requirements';
   reqDiv.style.display = 'flex';
   reqDiv.style.alignItems = 'center';
+  reqDiv.style.marginBottom = '12px';
+  content.appendChild(reqDiv);
 
-  // Convert opts.cost to array of {color, needed, paid}
+  // Build requirements array and local trackers
   let requirements = [];
-  if (typeof opts.cost === "number" && opts.cost === 0) {
-    requirements = [];
-  } else if (typeof opts.cost === "object" && opts.cost !== null) {
-    for (const color in opts.cost) {
-      requirements.push({color, needed: opts.cost[color], paid: 0});
+  if (parsedCost && typeof parsedCost === 'object') {
+    for (const color in parsedCost) {
+      requirements.push({ color, needed: parsedCost[color], paid: 0 });
     }
   }
-
-  // Payment state trackers
   let reqPaid = {};
   requirements.forEach(r => { reqPaid[r.color] = 0; });
 
-  // Initial requirements display
-  updateReqDiv(requirements, reqPaid, reqDiv);
-  content.appendChild(reqDiv);
+  // render requirements using existing helper if present
+  if (typeof updateReqDiv === 'function') updateReqDiv(requirements, reqPaid, reqDiv);
+  else reqDiv.textContent = JSON.stringify(requirements);
 
-  // Payment assignment state (array of {cardObj, color, essenceIdx})
+  // Payment plan array: entries are { poolOwner, color, amount }
   let paymentPlan = [];
 
-  function isPaidFull() {
+  // Helper to check completeness
+  function isPaid() {
+    if (!requirements || requirements.length === 0) return true;
     for (const r of requirements) {
       if ((reqPaid[r.color] || 0) < r.needed) return false;
     }
     return true;
   }
 
-  // Eligible sources and their Essence
-  const sourcesDiv = document.createElement('div');
-  sourcesDiv.className = 'essence-source-list';
-  sourcesDiv.style.display = 'flex';
-  sourcesDiv.style.justifyContent = 'center';
-  sourcesDiv.style.flexWrap = 'wrap';
-  sourcesDiv.style.gap = '18px';
-  sourcesDiv.style.margin = '10px 0 18px 0';
+  // POOLED ESSENCE UI: render clickable tokens from the pool (player or opponent)
+  const poolOwner = owner;
+  const pool = (typeof getEssencePool === 'function') ? getEssencePool(poolOwner) : { green:0, red:0, blue:0, yellow:0, purple:0, gray:0, black:0, white:0, colorless:0 };
+  const poolTokensDiv = document.createElement('div');
+  poolTokensDiv.style.display = 'flex';
+  poolTokensDiv.style.flexWrap = 'wrap';
+  poolTokensDiv.style.gap = '12px';
+  poolTokensDiv.style.justifyContent = 'center';
+  poolTokensDiv.style.width = '100%';
+  poolTokensDiv.style.margin = '8px 0 14px 0';
 
-  opts.eligibleCards.forEach(sourceCard => {
-    const cardDiv = document.createElement('div');
-    cardDiv.className = 'essence-source-card';
-    cardDiv.style.display = 'flex';
-    cardDiv.style.flexDirection = 'column';
-    cardDiv.style.alignItems = 'center';
-    cardDiv.style.minWidth = '90px';
-    cardDiv.style.background = '#20283e';
-    cardDiv.style.border = '2px solid #333';
-    cardDiv.style.padding = '7px';
-    cardDiv.style.borderRadius = '9px';
-    cardDiv.style.position = 'relative';
+  const colorOrder = ['green','red','blue','yellow','purple','gray','black','white'];
+  const imageMap = typeof ESSENCE_IMAGE_MAP !== 'undefined' ? ESSENCE_IMAGE_MAP : {};
 
-    // Card image (clickable)
-    const smallImg = document.createElement('img');
-    smallImg.src = (dummyCards.find(c=>c.id===sourceCard.cardId)||{}).image || '';
-    smallImg.className = 'card-img';
-    smallImg.style.width = '100px';
-    smallImg.style.cursor = 'pointer';
-    smallImg.style.marginBottom = '4px';
-    smallImg.onclick = (e) => {
-      e.stopPropagation();
-      showFullCardModal(sourceCard);
-    };
-    cardDiv.appendChild(smallImg);
+  // local transient map to track how many from pool we've tentatively assigned in this modal
+  const assignedFromPool = { colorless: 0, green:0, red:0, blue:0, yellow:0, purple:0, gray:0, black:0, white:0 };
 
-    // Essence icons
-    const essenceWrap = document.createElement('div');
-    essenceWrap.style.display = 'flex';
-    essenceWrap.style.flexWrap = 'wrap';
-    essenceWrap.style.gap = '5px';
-    essenceWrap.style.justifyContent = 'center';
+  function renderPoolTokens() {
+    poolTokensDiv.innerHTML = '';
+    const curPool = (typeof getEssencePool === 'function') ? getEssencePool(poolOwner) : pool;
+    colorOrder.forEach(color => {
+      const amt = (curPool && curPool[color]) ? curPool[color] : 0;
+      const assigned = assignedFromPool[color] || 0;
+      const available = Math.max(0, amt - assigned);
+      if (amt <= 0 && available <= 0) return;
 
-    // Colored essence
-    for (const code in ESSENCE_IMAGE_MAP) {
-      const codeLetterMap = {green: 'G', red: 'R', blue: 'U', yellow: 'Y', gray: 'C', purple: 'P', black: 'B', white: 'W'};
-      const codeLetter = codeLetterMap[code];
-      let amt = countEssenceType(sourceCard.essence, codeLetter);
-      for (let i = 0; i < amt; i++) {
-        const icon = document.createElement('img');
-        icon.src = ESSENCE_IMAGE_MAP[code];
-        icon.className = 'essence-img';
-        icon.style.width = '22px';
-        icon.style.borderRadius = '50%';
-        icon.style.cursor = "pointer";
-        icon.style.border = '2px solid #aaa';
-        icon.style.background = '#222';
-        icon.style.margin = '1px';
-        icon.title = code.charAt(0).toUpperCase()+code.slice(1) + " Essence (click to select)";
+      const tokenWrap = document.createElement('div');
+      tokenWrap.style.display = 'flex';
+      tokenWrap.style.flexDirection = 'column';
+      tokenWrap.style.alignItems = 'center';
+      tokenWrap.style.gap = '6px';
+      tokenWrap.style.minWidth = '56px';
 
-        let assigned = false;
-        icon.onclick = function() {
-          let assignColor = null;
-          if ((reqPaid[code] || 0) < (opts.cost[code] || 0)) {
-            assignColor = code;
-          } else if (code !== "colorless" && (opts.cost.colorless && (reqPaid.colorless || 0) < opts.cost.colorless)) {
-            assignColor = "colorless";
-          }
-          if (!assignColor || assigned) return;
+      const tokenImg = document.createElement('img');
+      tokenImg.src = imageMap[color] || '';
+      tokenImg.style.width = '28px';
+      tokenImg.style.height = '28px';
+      tokenImg.title = `${color} (${amt})`;
+      tokenImg.style.cursor = available > 0 ? 'pointer' : 'default';
+      tokenWrap.appendChild(tokenImg);
 
-          reqPaid[assignColor]++;
-          paymentPlan.push({cardObj: sourceCard, color: code, essenceIdx: i, codeLetter: codeLetter});
-          assigned = true;
-          icon.style.opacity = '0.4';
-          icon.style.border = '2.5px solid #ffe066';
+      const count = document.createElement('div');
+      count.textContent = `${available}`;
+      count.style.color = '#ffe066';
+      count.style.fontWeight = '700';
+      tokenWrap.appendChild(count);
 
-          updateReqDiv(requirements, reqPaid, reqDiv);
-          updateConfirmBtn();
-        };
-        essenceWrap.appendChild(icon);
-      }
-    }
-    // Colorless essence
-    let colorlessAmt = countColorlessEssence(sourceCard.essence);
-    for (let i = 0; i < colorlessAmt; i++) {
-      const icon = document.createElement('img');
-      icon.src = ESSENCE_IMAGE_MAP['gray'];
-      icon.className = 'essence-img';
-      icon.style.width = '22px';
-      icon.style.borderRadius = '50%';
-      icon.style.cursor = "pointer";
-      icon.style.border = '2px solid #aaa';
-      icon.style.background = '#222';
-      icon.style.margin = '1px';
-      icon.title = "Colorless Essence (click to select)";
-      let assigned = false;
-      icon.onclick = function() {
-        if ((reqPaid.colorless || 0) < (opts.cost.colorless || 0) && !assigned) {
-          reqPaid.colorless++;
-          paymentPlan.push({cardObj: sourceCard, color: 'colorless', essenceIdx: i});
-          assigned = true;
-          icon.style.opacity = '0.4';
-          icon.style.border = '2.5px solid #ffe066';
-          updateReqDiv(requirements, reqPaid, reqDiv);
-          updateConfirmBtn();
+      tokenImg.onclick = function(e) {
+        e.stopPropagation();
+        if (available <= 0) {
+          showToast && showToast('No available tokens of that color.', { type: 'info' });
+          return;
         }
+        // Prefer filling exact color need first, else colorless
+        const needExact = parsedCost && parsedCost[color] ? (parsedCost[color] - (reqPaid[color] || 0)) : 0;
+        if (needExact > 0) {
+          reqPaid[color] = (reqPaid[color] || 0) + 1;
+          paymentPlan.push({ poolOwner, color, amount: 1 });
+          assignedFromPool[color] = (assignedFromPool[color] || 0) + 1;
+          count.textContent = `${Math.max(0, (curPool[color] - assignedFromPool[color]))}`;
+        } else if (parsedCost && parsedCost.colorless && (reqPaid.colorless || 0) < parsedCost.colorless) {
+          // assign to colorless need
+          reqPaid.colorless = (reqPaid.colorless || 0) + 1;
+          paymentPlan.push({ poolOwner, color: 'colorless', amount: 1 });
+          assignedFromPool[color] = (assignedFromPool[color] || 0) + 1;
+          count.textContent = `${Math.max(0, (curPool[color] - assignedFromPool[color]))}`;
+        } else {
+          showToast && showToast('No matching requirement for this token.', { type: 'info' });
+          return;
+        }
+        if (typeof updateReqDiv === 'function') updateReqDiv(requirements, reqPaid, reqDiv);
+        else reqDiv.textContent = JSON.stringify(reqPaid);
+        updateConfirmBtn();
       };
-      essenceWrap.appendChild(icon);
-    }
-    cardDiv.appendChild(essenceWrap);
-    sourcesDiv.appendChild(cardDiv);
-  });
-  content.appendChild(sourcesDiv);
 
-  // Confirm button
+      poolTokensDiv.appendChild(tokenWrap);
+    });
+
+    // Colorless tokens
+    const clAmt = (curPool && curPool.colorless) ? curPool.colorless : 0;
+    const clAssigned = assignedFromPool.colorless || 0;
+    const clAvailable = Math.max(0, clAmt - clAssigned);
+    if (clAmt > 0) {
+      const clWrap = document.createElement('div');
+      clWrap.style.display = 'flex';
+      clWrap.style.flexDirection = 'column';
+      clWrap.style.alignItems = 'center';
+      clWrap.style.gap = '6px';
+      clWrap.style.minWidth = '56px';
+
+      const clImg = document.createElement('img');
+      clImg.src = imageMap['X1'] || imageMap['X0'] || '';
+      clImg.style.width = '28px';
+      clImg.style.height = '28px';
+      clImg.title = `Colorless (${clAmt})`;
+      clImg.style.cursor = clAvailable > 0 ? 'pointer' : 'default';
+      clWrap.appendChild(clImg);
+
+      const clCnt = document.createElement('div');
+      clCnt.textContent = `${clAvailable}`;
+      clCnt.style.color = '#ffe066';
+      clCnt.style.fontWeight = '700';
+      clWrap.appendChild(clCnt);
+
+      clImg.onclick = function(e) {
+        e.stopPropagation();
+        if (clAvailable <= 0) {
+          showToast && showToast('No colorless essence available.', { type: 'info' });
+          return;
+        }
+        if (parsedCost && parsedCost.colorless && (reqPaid.colorless || 0) < parsedCost.colorless) {
+          reqPaid.colorless = (reqPaid.colorless || 0) + 1;
+          paymentPlan.push({ poolOwner, color: 'colorless', amount: 1 });
+          assignedFromPool.colorless = (assignedFromPool.colorless || 0) + 1;
+          clCnt.textContent = `${Math.max(0, clAmt - assignedFromPool.colorless)}`;
+        } else {
+          // fallback: if no explicit colorless need, try to fill any remaining color requirements (not implemented here)
+          showToast && showToast('No colorless requirement to fill.', { type: 'info' });
+        }
+        if (typeof updateReqDiv === 'function') updateReqDiv(requirements, reqPaid, reqDiv);
+        else reqDiv.textContent = JSON.stringify(reqPaid);
+        updateConfirmBtn();
+      };
+
+      poolTokensDiv.appendChild(clWrap);
+    }
+  } // end renderPoolTokens
+
+  renderPoolTokens();
+  content.appendChild(poolTokensDiv);
+
+  // Confirm / Cancel row
+  const actions = document.createElement('div');
+  actions.style.display = 'flex';
+  actions.style.gap = '12px';
+  actions.style.marginTop = '8px';
+  content.appendChild(actions);
+
   const confirmBtn = document.createElement('button');
   confirmBtn.type = 'button';
   confirmBtn.className = 'btn-primary';
   confirmBtn.textContent = 'Confirm';
   confirmBtn.disabled = true;
-  confirmBtn.style.marginBottom = '10px';
-  confirmBtn.onclick = function() {
-    // Actually deduct the paid Essence (from string)
-    for (const pay of paymentPlan) {
-      if (!pay.cardObj.essence) continue;
-      // Remove one colored essence
-      if (pay.color !== 'colorless') {
-        pay.cardObj.essence = pay.cardObj.essence.replace(new RegExp(`\\{${pay.codeLetter}\\}`), "");
-      } else {
-        pay.cardObj.essence = pay.cardObj.essence.replace(/\{([1-9]|1[0-9]|20)\}/, "");
-      }
-    }
-    renderGameState();
-    modal.style.display = 'none';
-    if (opts.onPaid) opts.onPaid(paymentPlan);
-  };
-  content.appendChild(confirmBtn);
+  actions.appendChild(confirmBtn);
 
-  function updateConfirmBtn() {
-    confirmBtn.disabled = !isPaidFull();
-  }
-
-  // Cancel button
   const cancelBtn = document.createElement('button');
   cancelBtn.type = 'button';
-  cancelBtn.textContent = 'Cancel';
   cancelBtn.className = 'btn-negative-secondary';
-  cancelBtn.onclick = function() {
+  cancelBtn.textContent = 'Cancel';
+  actions.appendChild(cancelBtn);
+
+  function updateConfirmBtn() {
+    confirmBtn.disabled = !isPaid();
+  }
+
+  cancelBtn.onclick = function(e) {
+    e.stopPropagation();
+    // rollback local tentative assignments (no pool consumption happened yet, so just clear)
+    paymentPlan = [];
+    for (const k in assignedFromPool) assignedFromPool[k] = 0;
+    reqPaid = {};
+    requirements.forEach(r => { reqPaid[r.color] = 0; });
+    window.currentCasting = null;
+    if (typeof updateGameStatusRow === 'function') updateGameStatusRow();
     modal.style.display = 'none';
   };
-  content.appendChild(cancelBtn);
+
+  confirmBtn.onclick = function(e) {
+    e.stopPropagation();
+    if (!isPaid()) {
+      showToast && showToast('Payment incomplete', { type: 'warning' });
+      return;
+    }
+
+    // Consume pooled essence for each paymentPlan entry. If any consumption fails, roll back what's consumed.
+    const consumed = [];
+    let failed = false;
+    for (const pay of paymentPlan) {
+      const poolOwnerLocal = pay.poolOwner || poolOwner;
+      const colorKey = pay.color === 'colorless' ? 'colorless' : pay.color;
+      const amt = Number(pay.amount || 1);
+      const ok = (typeof consumeEssenceFromPool === 'function')
+        ? consumeEssenceFromPool(poolOwnerLocal, colorKey, amt)
+        : false;
+      if (ok) {
+        consumed.push({ poolOwnerLocal, colorKey, amt });
+      } else {
+        failed = true;
+        break;
+      }
+    }
+
+    if (failed) {
+      // rollback
+      consumed.forEach(c => {
+        if (typeof addEssenceToPool === 'function') addEssenceToPool(c.poolOwnerLocal, c.colorKey, c.amt);
+      });
+      showToast && showToast('Payment failed (insufficient pooled essence).', { type: 'error' });
+      renderPoolTokens();
+      return;
+    }
+
+    // Success: clear modal transient state and casting preview
+    paymentPlan = [];
+    for (const k in assignedFromPool) assignedFromPool[k] = 0;
+    reqPaid = {};
+    requirements.forEach(r => { reqPaid[r.color] = 0; });
+
+    window.currentCasting = null;
+    if (typeof updateGameStatusRow === 'function') updateGameStatusRow();
+
+    // Call callback
+    if (typeof opts.onPaid === 'function') {
+      try { opts.onPaid(); } catch (err) { console.warn('onPaid threw', err); }
+    }
+
+    modal.style.display = 'none';
+    renderGameState && renderGameState();
+  };
+
+  // Keep pool rendering updated in case pool changes externally while modal open
+  const refreshInterval = setInterval(() => {
+    if (!modal || modal.style.display === 'none') {
+      clearInterval(refreshInterval);
+      return;
+    }
+    renderPoolTokens();
+    updateConfirmBtn();
+  }, 700);
+
+  // initial confirm button state
+  updateConfirmBtn();
 }
 
 // Requirement "progress" update
@@ -6445,78 +6622,127 @@ function formatWeatherTitle(effectObj) {
   return `${effectObj.name}${effectObj.duration ? ` (${effectObj.duration})` : ""}${desc ? ` — ${desc}` : ""}`;
 }
 // --- REPLACEMENT: updateGameStatusRow (renders day/night and weather icons)
-// Updated to use OtherImages/Icons/Status/Day.png and .../Night.png
+// Updated updateGameStatusRow - ensures pooled essence and casting preview are shown
 function updateGameStatusRow() {
   const container = document.getElementById('game-status-inline');
   if (!container) return;
   container.innerHTML = '';
 
-  // Day / Night badge (vertical compact column)
+  // Day / Night icon (supports all four)
   const tod = gameState.timeOfDay || 'day';
+  const todMap = {
+    day: 'OtherImages/Icons/Status/Day.png',
+    dusk: 'OtherImages/Icons/Status/Dusk.png',
+    night: 'OtherImages/Icons/Status/Night.png',
+    dawn: 'OtherImages/Icons/Status/Dawn.png'
+  };
   const todWrap = document.createElement('div');
   todWrap.style.display = 'flex';
   todWrap.style.flexDirection = 'column';
   todWrap.style.alignItems = 'center';
   todWrap.style.gap = '6px';
 
-  const todIcon = document.createElement('img');
-  // Use the Status subfolder icons per design
-  todIcon.src = tod === 'day'
-    ? 'OtherImages/Icons/Status/Day.png'
-    : 'OtherImages/Icons/Status/Night.png';
-  todIcon.alt = tod;
-  todIcon.title = `Time: ${tod === 'day' ? 'Day' : 'Night'}`;
-  todIcon.style.width = '28px';
-  todIcon.style.height = '28px';
-  todIcon.style.cursor = 'pointer';
-  todIcon.onclick = () => {
-    showToast && showToast(`Time of day: ${tod === 'day' ? 'Day' : 'Night'}`, { type: 'info' });
-  };
+  const todImg = document.createElement('img');
+  todImg.src = todMap[tod] || todMap.day;
+  todImg.alt = tod;
+  todImg.title = `Time: ${tod}`;
+  todImg.style.width = '28px';
+  todImg.style.height = '28px';
+  todWrap.appendChild(todImg);
 
-  const todLabel = document.createElement('div');
-  todLabel.textContent = tod === 'day' ? 'Day' : 'Night';
-  todLabel.style.fontSize = '0.75em';
-  todLabel.style.color = '#ffe066';
-  todLabel.style.fontWeight = '700';
+  const todLbl = document.createElement('div');
+  todLbl.textContent = tod.charAt(0).toUpperCase() + tod.slice(1);
+  todLbl.style.fontSize = '0.75em';
+  todLbl.style.color = '#ffe066';
+  todLbl.style.fontWeight = '700';
+  todWrap.appendChild(todLbl);
 
-  todWrap.appendChild(todIcon);
-  todWrap.appendChild(todLabel);
-  container.appendChild(todWrap);
+  // Player essence block
+  const pWrap = document.createElement('div');
+  pWrap.style.display = 'flex';
+  pWrap.style.flexDirection = 'column';
+  pWrap.style.alignItems = 'center';
+  pWrap.style.gap = '4px';
+  const pLabel = document.createElement('div');
+  pLabel.textContent = 'You';
+  pLabel.style.fontSize = '0.75em';
+  pLabel.style.color = '#d0d6df';
+  pWrap.appendChild(pLabel);
+  const pIcons = document.createElement('div');
+  pIcons.style.display = 'flex';
+  pIcons.style.flexWrap = 'wrap';
+  pIcons.style.justifyContent = 'center';
+  pIcons.style.gap = '4px';
+  renderEssenceSummaryInto(pIcons, getEssencePool('player'), { size: 16 });
+  pWrap.appendChild(pIcons);
 
-  // Weather icons (stack under day/night)
-  if (Array.isArray(gameState.weatherEffects) && gameState.weatherEffects.length > 0) {
-    const weatherStack = document.createElement('div');
-    weatherStack.style.display = 'flex';
-    weatherStack.style.flexDirection = 'column';
-    weatherStack.style.alignItems = 'center';
-    weatherStack.style.gap = '6px';
+  // Opponent essence block
+  const oWrap = document.createElement('div');
+  oWrap.style.display = 'flex';
+  oWrap.style.flexDirection = 'column';
+  oWrap.style.alignItems = 'center';
+  oWrap.style.gap = '4px';
+  const oLabel = document.createElement('div');
+  oLabel.textContent = 'Opp';
+  oLabel.style.fontSize = '0.75em';
+  oLabel.style.color = '#d0d6df';
+  oWrap.appendChild(oLabel);
+  const oIcons = document.createElement('div');
+  oIcons.style.display = 'flex';
+  oIcons.style.flexWrap = 'wrap';
+  oIcons.style.justifyContent = 'center';
+  oIcons.style.gap = '4px';
+  renderEssenceSummaryInto(oIcons, getEssencePool('opponent'), { size: 16 });
+  oWrap.appendChild(oIcons);
 
-    gameState.weatherEffects.forEach(effectObj => {
-      const name = effectObj.name || effectObj;
-      const effectDef = WEATHER_EFFECTS && WEATHER_EFFECTS[name];
-      const icon = document.createElement('img');
-      const iconPath = (effectDef && effectDef.icon)
-        ? effectDef.icon
-        : `OtherImages/Icons/${String(name).replace(/\s+/g,'')}.png`;
-      icon.src = iconPath;
-      icon.alt = name;
-      icon.title = (effectObj.duration ? `${name} (${effectObj.duration})` : name) + (effectDef && effectDef.description ? ` — ${effectDef.description}` : '');
-      icon.style.width = '20px';
-      icon.style.height = '20px';
-      icon.style.cursor = 'pointer';
-      icon.onclick = (e) => {
-        e.stopPropagation();
-        showToast && showToast(icon.title, { type: 'info', duration: 2200 });
-      };
-      weatherStack.appendChild(icon);
-    });
-
-    container.appendChild(weatherStack);
-  } else {
-    const placeholder = document.createElement('div');
-    placeholder.style.height = '8px';
-    container.appendChild(placeholder);
+  // Casting preview (if payment modal is open)
+  const casting = window.currentCasting || null;
+  const castWrap = document.createElement('div');
+  castWrap.style.display = 'flex';
+  castWrap.style.flexDirection = 'column';
+  castWrap.style.alignItems = 'center';
+  castWrap.style.gap = '6px';
+  if (casting && casting.card) {
+    const img = document.createElement('img');
+    img.src = casting.card.image || '';
+    img.alt = casting.card.name || 'Casting';
+    img.style.width = '36px';
+    img.style.height = '36px';
+    img.style.borderRadius = '6px';
+    img.style.boxShadow = '0 2px 10px rgba(0,0,0,0.45)';
+    castWrap.appendChild(img);
+    if (casting.cost) {
+      const costDiv = document.createElement('div');
+      costDiv.innerHTML = getEssenceCostDisplay(casting.cost);
+      castWrap.appendChild(costDiv);
+    }
   }
+
+  // Weather icons stack (kept minimal)
+  const weatherWrap = document.createElement('div');
+  weatherWrap.style.display = 'flex';
+  weatherWrap.style.flexDirection = 'column';
+  weatherWrap.style.alignItems = 'center';
+  weatherWrap.style.gap = '6px';
+  if (Array.isArray(gameState.weatherEffects) && gameState.weatherEffects.length) {
+    gameState.weatherEffects.forEach(e => {
+      const def = WEATHER_EFFECTS[e.name] || {};
+      const icon = document.createElement('img');
+      icon.src = def.icon || `OtherImages/Icons/${String(e.name).replace(/\s+/g,'')}.png`;
+      icon.alt = e.name;
+      icon.title = `${e.name}${e.duration ? ' ('+e.duration+')' : ''}`;
+      icon.style.width = '18px';
+      icon.style.height = '18px';
+      weatherWrap.appendChild(icon);
+    });
+  }
+
+  // assemble
+  container.appendChild(todWrap);
+  container.appendChild(pWrap);
+  if (castWrap.children.length) container.appendChild(castWrap);
+  container.appendChild(oWrap);
+  container.appendChild(weatherWrap);
 }
 
 // Hook into renderGameState so updates happen automatically
