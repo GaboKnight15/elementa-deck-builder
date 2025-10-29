@@ -5922,30 +5922,16 @@ function activateSkill(cardObj, skillObj, options = {}) {
   // 1. Activation animation or handler (if present)
   if (skillObj.activation && skillObj.activation.handler) {
     skillObj.activation.handler(cardObj, skillObj, () => {
-      showEssencePayment();
+      showEssencePaymentModal();
     });
   } else {
     // Default: animate only
     animateSkillActivation(cardObj, zoneId, () => {
-      showEssencePayment();
+      showEssencePaymentModal();
     });
   }
+}
 
-  function showEssencePayment() {
-    // 2. Show essence payment modal (if cost)
-    if (skillObj.cost) {
-      showEssencePaymentModal({
-        card: cardObj,
-        cost: parseCost(skillObj.cost),
-        eligibleCards: getAllEssenceSources(),
-        onPaid: () => {
-          runRequirements();
-        }
-      });
-    } else {
-      runRequirements();
-    }
-  }
 
 // Helper to get requirement(s) for a skill
 function getSkillRequirements(skillObj) {
