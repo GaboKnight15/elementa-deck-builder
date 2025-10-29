@@ -19,12 +19,12 @@ const dummyCards = [
   ]},
 
 {id: 'KaelenBlazebornHuntress', name: 'Kaelen, Blazeborn Huntress', rarity: 'Legendary', image: 'CardImages/Inferno/KaelenBlazebornHuntress.png', 
- category: 'Creature', color: 'Red', type: '', archetype: '', trait: ['Champion', 'Ranger'], hp: 4, atk: 1, def: 0,
+ category: 'Creature', color: 'Red', type: 'Human', archetype: '', trait: ['Champion', 'Ranger'], hp: 4, atk: 1, def: 0,
  cost: '{R}', ability: 'Burn', set: 'ElementaGenesis',
  skill: [
   {name: 'Flameshot', cost: '{r}',
    requirement: [{class:'Special'}, {class: 'CCW'}], 
-   effect: {class: 'Strike', status: 'Burn', amount: 2}},
+   effect: {class: 'Burn', amount: 3}},
   {name: 'Scorching Skyfall', cost: '{R}{R}',
    requirement: [{class:'Ultimate'}, {class: 'CCW'}], 
    effect: {class: 'Burn', amount: 2, target: 3}}
@@ -43,7 +43,7 @@ const dummyCards = [
  ]},
 
 {id: 'ZyraThunderbladeDuelist', name: 'Zyra, Thunderblade Duelist', rarity: 'Legendary', image: 'CardImages/Tempest/ZyraThunderbladeDuelist.png', 
- category: 'Creature', color: 'Yellow', type: '', archetype: '', trait: ['Champion', 'Warrior'], hp: 7, atk: 1, def: 1,
+ category: 'Creature', color: 'Yellow', type: 'Human', archetype: '', trait: ['Champion', 'Warrior'], hp: 7, atk: 1, def: 1,
  cost: '{Y}{Y}', ability: ['Dash'] set: 'ElementaGenesis',
  skill: [
   {name: 'Voltcleave', cost: '{y}',
@@ -55,7 +55,7 @@ const dummyCards = [
  ]},
 
 {id: 'GravokDrakzulTyrant', name: 'Gravok, Drakzul Tyrant', rarity: 'Legendary', image: 'CardImages/Terra/GravokDrakzulTyrant.png', 
- category: 'Creature', color: 'Gray', type: '', archetype: '', trait: ['Champion', 'Warrior'], hp: 10, atk: 2, def: 1,
+ category: 'Creature', color: 'Gray', type: 'Brute', archetype: '', trait: ['Champion', 'Warrior'], hp: 10, atk: 2, def: 1,
  cost: '{C}', ability: ['Armor','Crush'], set: 'ElementaGenesis',
  skill: [
   {name: 'Twin Impact', cost: '{c}',
@@ -67,7 +67,7 @@ const dummyCards = [
  ]},
 
 {id: 'MordrathVirkulPhantom', name: 'Mordrath, Virkul Phantom', rarity: 'Legendary', image: 'CardImages/Cursed/MordrathVirkulPhantom.png', 
- category: 'Creature', color: 'Purple', type: 'Undead', archetype: '', trait: ['Champion', 'Warrior'], hp: 6, atk: 1, def: 1,
+ category: 'Creature', color: 'Purple', type: 'Undead', archetype: 'Ghost', trait: ['Champion', 'Warrior'], hp: 6, atk: 1, def: 1,
  cost: '{P}', ability: ['Immunity','Venom'], set: 'ElementaGenesis',
  skill: [
   {name: 'Reanimate', cost: '{1}{P}{P}',
@@ -81,7 +81,7 @@ const dummyCards = [
  ]},
 
 {id: 'ElyndraDawnbladeofHeavens', name: 'Elyndra, Dawnblade of Heavens', rarity: 'Legendary', image: 'CardImages/Radiance/ElyndraDawnbladeofHeavens.png', 
- category: 'Creature', color: 'White', type: '', archetype: '', trait: ['Champion', 'Warrior'], hp: 11, atk: 1, def: 1,
+ category: 'Creature', color: 'White', type: 'Human', archetype: '', trait: ['Champion', 'Warrior'], hp: 11, atk: 1, def: 1,
  cost: '{W}', ability: ['Aegis','Veil'], set: 'ElementaGenesis',
  skill: [
   {name: 'Bloomchant', cost: '{w}',
@@ -94,7 +94,7 @@ const dummyCards = [
  ]},
 
 {id: 'VelmiraMistressofSilence', name: 'Velmira, Mistress of Silence', rarity: 'Legendary', image: 'CardImages/Umbral/VelmiraMistressofSilence.png', 
- category: 'Creature', color: 'Black', type: '', archetype: '', trait: ['Champion', 'Mage'], hp: 5, atk: 1, def: 0,
+ category: 'Creature', color: 'Black', type: 'Human', archetype: '', trait: ['Champion', 'Mage'], hp: 5, atk: 1, def: 0,
  cost: '{B}', ability: 'Veil', set: 'ElementaGenesis',
  skill: [
   {name:'Lifetithe', cost: '{B}',
