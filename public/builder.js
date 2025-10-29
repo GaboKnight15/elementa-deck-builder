@@ -1120,10 +1120,10 @@ function canAddCard(card, currentInDeck, ownedCount) {
   if (card.rarity && card.rarity.toLowerCase() === 'epic' && count >= 2) return false;
   if (card.rarity && card.rarity.toLowerCase() === 'rare' && count >= 3) return false;
   if (card.rarity && card.rarity.toLowerCase() === 'common' && count >= 4) return false;
-  if (card.trait && card.trait.toLowerCase() === 'dominion') {
+  if (typeof isDominion === 'function' && isDominion(card)) {
     for (const cardId in deck) {
       const c = dummyCards.find(dc => dc.id === cardId);
-      if (c && c.trait && c.trait.toLowerCase() === 'dominion') return false;
+      if (c && typeof isDominion === 'function' && isDominion(c)) return false;
     }
     if (count >= 1) return false;
   }
