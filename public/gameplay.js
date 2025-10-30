@@ -114,7 +114,7 @@ let isProcessingEvents = false;
 let attackMode = {attackerId: null, attackerZone: null, cancelHandler: null};
 
 const INITIAL_HAND_SIZE = 5;
-const SPEED_MAX_TIER = 5;
+
 const ESSENCE_IMAGE_MAP = {
   red: "OtherImages/Essence/Red.png",
   blue: "OtherImages/Essence/Blue.png",
@@ -3015,7 +3015,7 @@ function computeCardStat(cardObj, statName) {
     // We need an approximate speedTier: compute current provisional speed = base + modsBeforeTier
     // To avoid recursive computeCardStat calls, compute provisional speed: base + mods_so_far (only statName 'speed' affects final speed via other modifiers)
     // But here we can call computeCardStat(cardObj, "speed") safely because computeCardStat for 'speed' will not look at atk/def.
-    const tier = clamp(Math.round(computeCardStat(cardObj, "speed")), 0, SPEED_MAX_TIER);
+    const tier = Math.max(0, Math.round(computeCardStat(cardObj, "speed")));
 
     // Speed 0 => DEF +1
     if (tier === 0 && statName === "def") {
@@ -3061,9 +3061,7 @@ function getSpeedValue(cardObj) {
 }
 function getSpeedTier(cardObj) {
   const val = getSpeedValue(cardObj) || 0;
-  // Decide mapping of speed value to tiers. Here we clamp directly to 0..SPEED_MAX_TIER.
-  // If you want custom thresholds, change this function accordingly.
-  return clamp(val, 0, SPEED_MAX_TIER);
+  return Math.max(0, Math.round(val));
 }
 function getSpeedDifference(a, b) {
   // positive means a is faster than b
@@ -3977,19 +3975,11 @@ function openVoidModal(isOpponent = false) {
 // -------------------- //
 // --- PHASES LOGIC --- //
 // -------------------- //
-function getCurrentPhaseObj() {
-  return { turn: gameState.turn, phase: gameState.phase };
-}
-function getPhaseIndex(phaseObj) {
-  return PHASES.findIndex(
-    p => p.turn === phaseObj.turn && p.phase === phaseObj.phase
-  );
-}
+function getCurrentPhaseObj() {return { turn: gameState.turn, phase: gameState.phase };}
+function getPhaseIndex(phaseObj) {return PHASES.findIndex(p => p.turn === phaseObj.turn && p.phase === phaseObj.phase);}
 
 // Navigation
-function getCurrentPhaseIndex() {
-  return getPhaseIndex(getCurrentPhaseObj());
-}
+function getCurrentPhaseIndex() {return getPhaseIndex(getCurrentPhaseObj());}
 function getNextPhase(phaseObj) {
   const idx = getPhaseIndex(phaseObj);
   return PHASES[(idx + 1) % PHASES.length];
