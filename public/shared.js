@@ -8,8 +8,8 @@ const dummyCards = [
  category: 'Creature', color: 'Green', type: 'Faefolk', archetype: 'Elf', trait: ['Champion', 'Mage'], hp: 6, atk: 1, def: 0,
  cost: '{G}', ability: '', set: 'ElementaGenesis'
  skill: [
-  {name: 'Champion Ascent', cost: '{g}', 
-   effect: {class: 'Unseal'}, championAscend: true}
+  {name: 'Champion', cost: '{g}', 
+   effect: [{class: 'Unseal', championAscend: true}, {class: 'Inspire', atk: 1, def: 1}]},
   {name: 'Bloomchant', cost: '{g}',
    requirement: [{class:'Special'}, {class: 'CW'}], 
    effect: {class: 'essenceGreen', amount: 2}},
@@ -339,9 +339,8 @@ const dummyCards = [
  category: 'Creature', color: 'Green', type: 'Faefolk', archetype: 'Satyr', trait: ['Champion', 'Mage'], hp: 6, atk: 1, def: 0,
  cost: '{G}', ability: '', set: 'SavageTerritory',
  skill: [
-  {name: 'Mystveil',
-   activation: {class: 'Arrival'},
-   effect: {class: 'Mystveil'}},
+  {name: 'Champion', cost: '{g}{g}',
+   effect: [{class: '{class: 'Mystveil'}},
   {name: 'Manifest', cost: '{g}'
    requirement: [{class: 'Special}, {class: 'CW'}],
    effect: {class: 'Token', tokenChoices: ['SatyrTokenGreen', 'SatyrTokenRed', 'SatyrTokenPurple'], amount: 1}},
@@ -1069,7 +1068,7 @@ skill: [
  ]},
 {id: 'MaldryssSkullframeArchmage', name: 'Maldryss, Skullframe Archmage', rarity: 'Legendary', image: 'CardImages/Skullframe/MaldryssSkullframeArchmage.png', imageFullArt: 'CardImages/Skullframe/MaldryssSkullframeArchmageFA.png',
  category: 'Creature', color: ['Black', 'Purple'], type: 'Undead', archetype: 'Skullframe', trait: ['Champion', 'Mage'], hp: 8, atk: 1, def: 0,
- cost: '{B}{B}{P}', ability: ['Drain','Immunity'], set: 'StandardPack',
+ cost: '{B}', ability: ['Drain','Immunity'], set: 'StandardPack',
  skill: [
   {name: 'Hexbind', cost: '{P}{B}', 
    requirement: [{class: 'Special'}, {class: 'CCW'}],
