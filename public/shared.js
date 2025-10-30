@@ -4,8 +4,8 @@ const dummyCards = [
 
 // CHAMPIONS BASIC //
 
-{id: 'SylvaniaThornEmpress', name: 'Sylvania, Thorn Empress', rarity: 'Legendary', image: 'CardImages/Sylvan/SylvaniaThornEmpress.png', 
- category: 'Creature', color: 'Green', type: 'Faefolk', archetype: 'Elf', trait: ['Champion', 'Mage'], hp: 11, atk: 1, def: 0,
+{id: 'SylvaniaThornvaleQueen', name: 'Sylvania, Thornvale Queen', rarity: 'Legendary', image: 'CardImages/Sylvan/SylvaniaThornvaleQueen.png', 
+ category: 'Creature', color: 'Green', type: 'Faefolk', archetype: 'Elf', trait: ['Champion', 'Mage'], hp: 6, atk: 1, def: 0,
  cost: '{G}', ability: '', set: 'ElementaGenesis'
  skill: [
   {name: 'Champion Ascent', cost: '{g}', 
@@ -15,7 +15,7 @@ const dummyCards = [
    effect: {class: 'essenceGreen', amount: 2}},
   {name: "Briar Queen's Grasp", cost: '{G}',
    requirement: [{class:'Ultimate'}, {class: 'CCW'}], 
-   effect: {class: 'Strike', amount: 3, status: 'Bind'}},
+   effect: {class: 'Bind', amount: 1, status: 2}},
   ]},
 
 {id: 'KaelenBlazebornHuntress', name: 'Kaelen, Blazeborn Huntress', rarity: 'Legendary', image: 'CardImages/Inferno/KaelenBlazebornHuntress.png', 
@@ -44,8 +44,10 @@ const dummyCards = [
 
 {id: 'ZyraThunderbladeDuelist', name: 'Zyra, Thunderblade Duelist', rarity: 'Legendary', image: 'CardImages/Tempest/ZyraThunderbladeDuelist.png', 
  category: 'Creature', color: 'Yellow', type: 'Human', archetype: '', trait: ['Champion', 'Warrior'], hp: 7, atk: 1, def: 1,
- cost: '{Y}{Y}', ability: ['Dash'] set: 'ElementaGenesis',
+ cost: '{Y}', ability: ['Dash'] set: 'ElementaGenesis',
  skill: [
+  {name: 'Dash', cost: '{0}',
+   effect: {class: 'Dash'},
   {name: 'Voltcleave', cost: '{y}',
    requirement: [{class:'Special'}, {class: 'CCW'}], 
    effect: {class: 'Pierce', amount: 2}},
@@ -333,9 +335,9 @@ const dummyCards = [
 
 // CHAMPIONS ADVANCED //
 
-{id: 'FaelyraSatyrEmpress', name: 'Faelyra, Satyr Empress', rarity: 'Legendary', image: 'CardImages/Satyrs/FaelyraSatyrEmpress.png', imageFullArt: 'CardImages/Satyrs/FaelyraSatyrEmpressFA.png',
- category: 'Creature', color: 'Green', type: 'Faefolk', archetype: 'Satyr', trait: ['Champion', 'Mage'], hp: 11, atk: 1, def: 0,
- cost: '{G}{G}', ability: '', set: 'SavageTerritory',
+{id: 'FaelyraWildhornEmpress', name: 'Faelyra, Wildhorn Empress', rarity: 'Legendary', image: 'CardImages/Satyr/FaelyraWildhornEmpress.png', imageFullArt: 'CardImages/Satyrs/FaelyraSatyrEmpressFA.png',
+ category: 'Creature', color: 'Green', type: 'Faefolk', archetype: 'Satyr', trait: ['Champion', 'Mage'], hp: 6, atk: 1, def: 0,
+ cost: '{G}', ability: '', set: 'SavageTerritory',
  skill: [
   {name: 'Mystveil',
    activation: {class: 'Arrival'},
@@ -348,11 +350,11 @@ const dummyCards = [
    effect: {class: 'Heal', amount: 3}},
   {name: 'Chorus of the Wild', cost: '{g}{g}',
    requirement: [{class: 'Ultimate'}, {class: 'CW'}],
-   effect: {class: 'Heal', target: 'allPlayerField', amount: 2}}
+   effect: {class: 'Heal', amount: 2, target: 3}}
  ]},
 
 {id: 'LyssaraScarletVindicator', name: 'Lyssara, Scarlet Vindicator', rarity: 'Legendary', image: 'CardImages/Fireland/LyssaraScarletVindicator.png', 
- category: 'Creature', color: ['Black','Red'], type: '', archetype: '', trait: ['Champion', 'Warrior'], hp: 7, atk: 3, def: 1,
+ category: 'Creature', color: ['Black','Red'], type: 'Human', archetype: '', trait: ['Champion', 'Warrior'], hp: 7, atk: 3, def: 1,
  cost: '{r}{c}', ability: 'Rush', set: 'StandardPack',
  skill: [
   {name: 'Scarlet Reprisal', cost: '{r}',
@@ -459,6 +461,27 @@ const dummyCards = [
 {id: 'ForestFairy', name: 'Forest Fairy', rarity: 'Common', image: 'CardImages/BasicCreatures/Fairy.png', 
  category: 'Creature', color: 'Green', type: 'Faefolk', archetype: 'Fairy', hp: 1, atk: 1, def: 0,
  cost: '{0}', ability: 'Flying', set: 'ElementaGenesis'},
+{id: 'Satyr', name: 'Satyr', rarity: 'Common', image: 'CardImages/Satyr/Satyr.png', 
+ category: 'Creature', color: 'Green', type: 'Faefolk', archetype: 'Satyr', hp: 5, atk: 1, def: 1,
+ cost: '{1}', ability: '', set: 'ElementaGenesis'},
+{id: 'WildHuntress', name: 'Wild Huntress', rarity: 'Common', image: 'CardImages/Satyr/WildHuntress.png', 
+ category: 'Creature', color: 'Green', type: 'Faefolk', archetype: 'Satyr', trait: 'Warrior', hp: 7, atk: 4, def: 2,
+ cost: '{1}{g}', ability: 'Rush', set: 'ElementaGenesis'},
+{id: 'FaunRanger', name: 'Faun Ranger', rarity: 'Common', image: 'CardImages/Satyr/FaunRanger.png', 
+ category: 'Creature', color: 'Green', type: 'Faefolk', archetype: 'Satyr', trait: 'Ranger', hp: 6, atk: 3, def: 1,
+ cost: '{1}{g}', ability: '', set: 'ElementaGenesis'},
+{id: 'FaunDiviner', name: 'Faun Diviner', rarity: 'Common', image: 'CardImages/Satyr/FaunDiviner.png', 
+ category: 'Creature', color: 'Green', type: 'Faefolk', archetype: 'Satyr', hp: 7, atk: 1, def: 0,
+ cost: '{1}{g}', ability: '', set: 'ElementaGenesis'},
+{id: 'SummitWatcher', name: 'Summit Watcher', rarity: 'Common', image: 'CardImages/Satyr/SummitWatcher.png', 
+ category: 'Creature', color: 'Gray', type: 'Faefolk', archetype: 'Satyr', hp: 7, atk: 1, def: 1,
+ cost: '{c}', ability: '', set: 'ElementaGenesis'},
+{id: 'WildhornRavager', name: 'Wildhorn Ravager', rarity: 'Common', image: 'CardImages/Satyr/WildhornRavager.png', 
+ category: 'Creature', color: 'Gray', type: 'Faefolk', archetype: 'Satyr', hp: 7, atk: 3, def: 1,
+ cost: '{1}{c}', ability: 'Rush', set: 'ElementaGenesis'},
+{id: 'ElderwoodOccultist', name: 'Elderwood Occultist', rarity: 'Common', image: 'CardImages/Satyr/ElderwoodOccultist.png', 
+ category: 'Creature', color: 'Purple', type: 'Faefolk', archetype: 'Satyr', trait: 'Mage', hp: 4, atk: 2, def: 0,
+ cost: '{p}', ability: '', set: 'ElementaGenesis'},
 {id: 'ForestGoblin', name: 'Forest Goblin', rarity: 'Common', image: 'CardImages/BasicCreatures/Goblin.png', 
  category: 'Creature', color: 'Green', type: 'Brute', archetype: 'Goblin', hp: 3, atk: 1, def: 0,
  cost: '{0}', set: 'ElementaGenesis'},
