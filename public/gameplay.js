@@ -3780,9 +3780,17 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
     cardData.skill
     .filter(skillObj => !skillObj.activation) // Only show skills without activation
     .forEach(skillObj => {
-      const isChampionAscend = !!skillObj.championAscend;
-      const isSealed = isSkillSealed(cardObj);
-      const isEnabled = (!isSealed || isChampionAscend) && canActivateSkill(cardObj, skillObj, currentZone, gameState);
+      const sealed = typeof isSealed === 'function' ? isSealed(cardObj) : (typeof isSkillSealed === 'function' ? isSkillSealed(cardObj) : false);
+      const canAct = canActivateSkill(cardObj, skillObj, currentZone, gameState);
+
+      const isEnabled = canAct && !sealed;
+
+      // explanatory title when disabled
+      let title = "";
+      if (!isEnabled) {
+        if (sealed) title = "Sealed: Cannot activate skills.";
+        else title = "Cannot activate skill in current state.";
+      }
 
       const activation = skillObj.activation || {};
       let requirements = Array.isArray(activation.requirement)
@@ -3794,10 +3802,11 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
         text: `${skillObj.name} ${parseEffectText(skillObj.cost)}${reqIcons}`,
         html: true,
         disabled: !isEnabled,
-        title: isSealed && !isChampionAscend ? "Sealed: Cannot activate skills." : "",
+        title: title,
         onClick: function(e) {
           e.stopPropagation();
-          if ((!isChampionAscend && !canActivateSkill(cardObj, skillObj, currentZone, gameState)) || (isSealed && !isChampionAscend)) return;
+          if (!canActivateSkill(cardObj, skillObj, currentZone, gameState)) return;
+          if (sealed) return;
           activateSkill(cardObj, skillObj, { currentZone });
           closeAllMenus();
         }
@@ -6817,9 +6826,8 @@ function isCardActionable(cardObj, cardData, gameState, zone) {
   if (cardData.skill && Array.isArray(cardData.skill)) {
     if (cardData.skill.some(skillObj =>
       !skillObj.activation && (
-        // Champion Ascend bypasses Seal
-        (!!skillObj.championAscend && canActivateSkill(cardObj, skillObj, zone, gameState)) ||
-        (!isSkillSealed(cardObj) && canActivateSkill(cardObj, skillObj, zone, gameState))
+        // Only allow skill activation if the card is not sealed and canActivateSkill passes.
+        (!isSealed(cardObj) && canActivateSkill(cardObj, skillObj, zone, gameState))
       )
     )) return true;
   }
