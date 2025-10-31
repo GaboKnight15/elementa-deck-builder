@@ -9,7 +9,7 @@ const dummyCards = [
  cost: '{G}', ability: '', set: 'ElementaGenesis'
  skill: [
   {name: 'Champion', cost: '{g}', 
-   effect: [{class: 'Unseal', championAscend: true}, {class: 'Inspire', atk: 1, def: 1}]},
+   effect: [{class: 'Champion', atk: 1, def: 1}},
   {name: 'Bloomchant', cost: '{g}',
    requirement: [{class:'Special'}, {class: 'CW'}], 
    effect: {class: 'essenceGreen', amount: 2}},
