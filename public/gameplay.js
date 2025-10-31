@@ -709,6 +709,68 @@ Sacrifice: {
 };
 
 const SKILL_EFFECT_MAP = {
+Champion: {
+  icon: "Icons/Status/Champion.png",
+  name: "Champion",
+  description: "Grants Champion bonuses (stats, abilities) to this card.",
+  // handler signature matches other effect handlers: (sourceCardObj, skillObj, step, nextEffect)
+  handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
+    if (!sourceCardObj) {
+      if (nextEffect) nextEffect();
+      return;
+    }
+    // Ensure instance structures exist
+    sourceCardObj.modifiers = sourceCardObj.modifiers || [];
+    sourceCardObj._grantedAbilities = sourceCardObj._grantedAbilities || [];
+
+    // Apply stat increases as permanent modifiers (tagged by effect "Champion" for easy removal if needed)
+    const champSourceTag = 'Champion';
+    if (typeof step.atk === 'number' && step.atk !== 0) {
+      sourceCardObj.modifiers.push({ effect: champSourceTag, stat: 'atk', value: Number(step.atk), source: champSourceTag });
+    }
+    if (typeof step.def === 'number' && step.def !== 0) {
+      sourceCardObj.modifiers.push({ effect: champSourceTag, stat: 'def', value: Number(step.def), source: champSourceTag });
+    }
+    if (typeof step.speed === 'number' && step.speed !== 0) {
+      sourceCardObj.modifiers.push({ effect: champSourceTag, stat: 'speed', value: Number(step.speed), source: champSourceTag });
+    }
+    // Armor isn't part of computeCardStat directly; store on instance
+    if (typeof step.armor === 'number' && step.armor !== 0) {
+      sourceCardObj.armor = (sourceCardObj.armor || 0) + Number(step.armor);
+    }
+
+    // Grant abilities (strings or objects). If an object, store it as-is; if string, store string.
+    if (step.abilities) {
+      const abilities = Array.isArray(step.abilities) ? step.abilities : [step.abilities];
+      abilities.forEach(ab => {
+        // Avoid duplicates
+        if (!sourceCardObj._grantedAbilities.some(x => JSON.stringify(x) === JSON.stringify(ab))) {
+          sourceCardObj._grantedAbilities.push(ab);
+        }
+      });
+    }
+
+    // Mark instance as Champion (so UI and requirement checks can use _isChampion/_championActive)
+    sourceCardObj._isChampion = true;
+    // If the effect is meant to "activate" Champion immediately, set _championActive; default true for this effect
+    sourceCardObj._championActive = true;
+
+    // Optionally add a persistent status entry so hasStatus(...,'Champion') works
+    sourceCardObj.statuses = sourceCardObj.statuses || [];
+    if (!sourceCardObj.statuses.some(s => s.name === 'Champion')) {
+      sourceCardObj.statuses.push({ name: 'Champion', duration: null });
+    }
+
+    // Visual / feedback
+    try { showToast && showToast(`${sourceCardObj.name || sourceCardObj.cardId} is now a Champion!`, { type: 'info' }); } catch (e) { /* no-op */ }
+
+    // Re-render so badge and stat changes are visible
+    renderGameState && renderGameState();
+
+    if (typeof nextEffect === 'function') nextEffect();
+  },
+  // Champion application has no special canActivate guard here; activation should be handled by the skill's canActivate / requirement.
+},
 Strike: {
   icon: 'OtherImages/skillEffect/Strike.png',
   name: 'Strike',
@@ -3273,7 +3335,25 @@ badgesRow.style.zIndex = 40;
 badgesRow.style.display = 'flex';
 badgesRow.style.flexDirection = 'column';
 badgesRow.style.gap = '6px';
-
+// --- Champion badge (show if instance has Champion status/flag) ---
+try {
+  const isChampionInstance = !!(cardObj._isChampion || (Array.isArray(cardObj.statuses) && cardObj.statuses.some(s => s.name === 'Champion')));
+  if (isChampionInstance) {
+    const champBadge = document.createElement('div');
+    champBadge.className = 'card-champion-badge';
+    const active = !!cardObj._championActive;
+    champBadge.title = active ? 'Champion (Active)' : 'Champion';
+    champBadge.style.display = 'flex';
+    champBadge.style.alignItems = 'center';
+    champBadge.style.justifyContent = 'center';
+    champBadge.style.cursor = 'default';
+    champBadge.innerHTML = `<img src="Icons/Status/Champion.png" alt="Champion" style="width:18px;height:18px;vertical-align:middle;filter: drop-shadow(0 2px 6px #0007);opacity:${active ? 1 : 0.85}">`;
+    // If you want to allow clicking to toggle Champion active/inactive, you can add an onclick here.
+    badgesRow.appendChild(champBadge);
+  }
+} catch (err) {
+  console.warn('Failed to render Champion badge', err);
+}
 // Speed badge
 try {
   const speedVal = getSpeedValue(cardObj);
@@ -6757,11 +6837,26 @@ function getCardTraits(cardObj) {
   return [];
 }
 function getCardAbilities(cardObj) {
+  // Prefer a helper that reads the card definition, then include any instance-granted abilities.
   const card = getCardDef(cardObj);
-  if (!card) return [];
-  if (Array.isArray(card.ability)) return card.ability;
-  if (typeof card.ability === "string") return [card.ability];
-  return [];
+  let abilities = [];
+  if (card) {
+    if (Array.isArray(card.ability)) abilities = abilities.concat(card.ability);
+    else if (typeof card.ability === "string" && card.ability) abilities.push(card.ability);
+  }
+  // Instance-granted abilities from effects (e.g., Champion)
+  if (cardObj && Array.isArray(cardObj._grantedAbilities)) {
+    // Merge unique entries; _grantedAbilities elements may be strings or objects
+    cardObj._grantedAbilities.forEach(ab => {
+      // Avoid duplicates (string compare for primitives, JSON compare for objects)
+      const exists = abilities.some(existing => {
+        if (typeof existing === 'string' && typeof ab === 'string') return existing === ab;
+        try { return JSON.stringify(existing) === JSON.stringify(ab); } catch (e) { return false; }
+      });
+      if (!exists) abilities.push(ab);
+    });
+  }
+  return abilities;
 }
 function haveSharedTypeOrArchetype(cardA, cardB) {
   const aTypes = getCardTypes(cardA), bTypes = getCardTypes(cardB);
