@@ -3620,6 +3620,90 @@ function renderEssencePool(cardObj) {
 
   return poolDiv;
 }
+// --- Helper: render small essence summary icons into an existing container ---
+// Insert this function somewhere before updateGameStatusRow() (for example, just above it).
+// It fixes the ReferenceError by providing the missing renderEssenceSummaryInto used in updateGameStatusRow.
+function renderEssenceSummaryInto(container, pool = {}, opts = {}) {
+  if (!container) return;
+  container.innerHTML = '';
+
+  const size = Number(opts.size || 16);
+  // Fallback mapping if global ESSENCE_IMAGE_MAP is not present for some reason
+  const fallbackMap = {
+    green: "OtherImages/Essence/Green.png",
+    red: "OtherImages/Essence/Red.png",
+    blue: "OtherImages/Essence/Blue.png",
+    yellow: "OtherImages/Essence/Yellow.png",
+    purple: "OtherImages/Essence/Purple.png",
+    gray: "OtherImages/Essence/Gray.png",
+    black: "OtherImages/Essence/Black.png",
+    white: "OtherImages/Essence/White.png",
+    X0: "OtherImages/Essence/Zero.png",
+    X1: "OtherImages/Essence/One.png"
+  };
+  const imageMap = (typeof ESSENCE_IMAGE_MAP !== 'undefined') ? ESSENCE_IMAGE_MAP : fallbackMap;
+
+  // Color order to show
+  const colors = ['green','red','blue','yellow','purple','gray','black','white'];
+
+  // For each color, show icon + count (compact)
+  colors.forEach(color => {
+    const amt = Number(pool?.[color] || 0);
+    if (amt <= 0) return;
+
+    const wrap = document.createElement('div');
+    wrap.style.display = 'inline-flex';
+    wrap.style.alignItems = 'center';
+    wrap.style.gap = '6px';
+    wrap.style.margin = '0 6px 0 0';
+
+    const img = document.createElement('img');
+    img.src = imageMap[color] || fallbackMap[color] || '';
+    img.alt = color + " essence";
+    img.style.width = `${size}px`;
+    img.style.height = `${size}px`;
+    img.style.verticalAlign = 'middle';
+    wrap.appendChild(img);
+
+    if (amt !== 1) {
+      const span = document.createElement('span');
+      span.textContent = String(amt);
+      span.style.color = '#ffe066';
+      span.style.fontWeight = '700';
+      span.style.fontSize = `${Math.max(10, Math.floor(size * 0.8))}px`;
+      wrap.appendChild(span);
+    }
+
+    container.appendChild(wrap);
+  });
+
+  // Colorless / numeric pool
+  const colorless = Number(pool?.colorless || 0);
+  if (colorless > 0) {
+    const wrap = document.createElement('div');
+    wrap.style.display = 'inline-flex';
+    wrap.style.alignItems = 'center';
+    wrap.style.gap = '6px';
+    wrap.style.margin = '0 6px 0 0';
+
+    // Show a small X1 icon (fallback to X0 if not found) and the count
+    const img = document.createElement('img');
+    img.src = imageMap['X1'] || imageMap['X0'] || fallbackMap['X1'] || fallbackMap['X0'] || '';
+    img.alt = 'colorless essence';
+    img.style.width = `${size}px`;
+    img.style.height = `${size}px`;
+    wrap.appendChild(img);
+
+    const span = document.createElement('span');
+    span.textContent = String(colorless);
+    span.style.color = '#ffe066';
+    span.style.fontWeight = '700';
+    span.style.fontSize = `${Math.max(10, Math.floor(size * 0.8))}px`;
+    wrap.appendChild(span);
+
+    container.appendChild(wrap);
+  }
+}
 function addEssence(cardObj, type, amount) {
   let addStr = "";
   for (let i = 0; i < amount; i++) addStr += `{${type}}`;
