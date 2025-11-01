@@ -3091,7 +3091,7 @@ button[disabled], .btn-disabled {
 .card-battlefield:focus .hp-bar-wrap,
 .card-battlefield:hover .hp-bar,
 .card-battlefield:focus .hp-bar {
-  transform: scale(1.1) translateY(-5px);
+  transform: scale(1.1);
   box-shadow: 0 8px 24px rgba(0,0,0,0.22);
   z-index: 10;
   filter: brightness(1.15) drop-shadow(0 0 6px #ffe066aa);
@@ -4386,36 +4386,97 @@ button[disabled], .btn-disabled {
 .log-action.opponent { background: #7a292922 !important; }
 .log-card-img:hover, .log-zone-img:hover { box-shadow:0 0 8px #ffe066; }
 
-/* ===== ELEMENT GLOW KEYFRAMES ===== */
-/* ===== CARD PULSE EFFECTS FOR GAMEPLAY ===== */
-.card-animatable {
-  position: relative;
-  z-index: 1;
-  animation: card-pulse-glow 1.3s infinite;
-  box-shadow: 0 0 0 0 rgba(80, 240, 100, 0.7);
-  transition: box-shadow 0.3s;
-}
-.card-animatable-horizontal {
-  position: relative;
-  z-index: 1;
-  animation: card-pulse-glow-horizontal 1.3s infinite;
-  box-shadow: 0 0 0 0 rgba(80, 240, 100, 0.7);
-  transition: box-shadow 0.3s;
+/* ===== ELEMENT / CARD PULSE: inside -> out, then snap back (no reverse) ===== */
+/* Card actionable pulse (vertical) */
+@keyframes card-pulse-glow {
+  0% {
+    /* inner subtle glow */
+    box-shadow: inset 0 6px 10px rgba(80, 240, 100, 0.18), 0 0 0 0 rgba(255, 224, 102, 0);
+    transform: scale(1);
+  }
+  60% {
+    /* outward peak */
+    box-shadow:
+      0 6px 18px rgba(80, 240, 100, 0.9),   /* strong colored outer glow */
+      0 0 34px rgba(255, 224, 102, 0.18);   /* warm rim */
+    transform: scale(1.04);
+  }
+  /* instant snap back to inner state to avoid a smooth reverse */
+  61% {
+    box-shadow: inset 0 6px 10px rgba(80, 240, 100, 0.18), 0 0 0 0 rgba(255, 224, 102, 0);
+    transform: scale(1);
+  }
+  100% {
+    /* hold inner state until next iteration */
+    box-shadow: inset 0 6px 10px rgba(80, 240, 100, 0.18), 0 0 0 0 rgba(255, 224, 102, 0);
+    transform: scale(1);
+  }
 }
 
-@keyframes card-pulse-glow {
-  0%   { box-shadow: 0 0 0 0 rgba(80, 240, 100, 0.7);}
-  60%  { box-shadow: 0 0 32px 24px rgba(80, 240, 100, 0.0);}
-  100% { box-shadow: 0 0 0 0 rgba(80, 240, 100, 0.7);}
-}
+/* Card actionable pulse (horizontal / rotated cards) */
 @keyframes card-pulse-glow-horizontal {
-  0%   { box-shadow: 0 0 0 0 rgba(80, 240, 100, 0.7);}
-  60%  { box-shadow: 0 0 40px 30px rgba(80, 240, 100, 0.0);}
-  100% { box-shadow: 0 0 0 0 rgba(80, 240, 100, 0.7);}
+  0% {
+    box-shadow: inset 0 6px 10px rgba(80, 240, 100, 0.14), 0 0 0 0 rgba(255, 224, 102, 0);
+    transform: scale(1);
+  }
+  60% {
+    box-shadow:
+      0 6px 22px rgba(80, 240, 100, 0.85),
+      0 0 44px rgba(255, 224, 102, 0.14);
+    transform: scale(1.03);
+  }
+  61% {
+    box-shadow: inset 0 6px 10px rgba(80, 240, 100, 0.14), 0 0 0 0 rgba(255, 224, 102, 0);
+    transform: scale(1);
+  }
+  100% {
+    box-shadow: inset 0 6px 10px rgba(80, 240, 100, 0.14), 0 0 0 0 rgba(255, 224, 102, 0);
+    transform: scale(1);
+  }
+}
+
+/* Apply pulse to actionable card classes (vertical & horizontal) */
+.card-animatable {
+  animation-name: card-pulse-glow;
+  animation-duration: 1200ms;
+  animation-timing-function: cubic-bezier(.22,1.14,.32,1);
+  animation-iteration-count: infinite;
+  animation-direction: normal; /* do not alternate / reverse */
+  animation-fill-mode: none;   /* ensure snap via keyframes */
+  will-change: transform, box-shadow;
+}
+
+.card-animatable-horizontal {
+  animation-name: card-pulse-glow-horizontal;
+  animation-duration: 1200ms;
+  animation-timing-function: cubic-bezier(.22,1.14,.32,1);
+  animation-iteration-count: infinite;
+  animation-direction: normal;
+  animation-fill-mode: none;
+  will-change: transform, box-shadow;
+}
+
+/* Zone pulse (outer area) - slower, subtler outward pulse that snaps back */
+@keyframes zone-pulse-glow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(80, 160, 240, 0.12);
+    transform: none;
+  }
+  65% {
+    box-shadow: 0 0 48px 34px rgba(80, 160, 240, 0.12);
+    transform: none;
+  }
+  66% {
+    box-shadow: 0 0 0 0 rgba(80, 160, 240, 0.12);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(80, 160, 240, 0.12);
+  }
 }
 .zone-animatable {
-  animation: card-pulse-glow 1.3s infinite;
-  box-shadow: 0 0 0 0 rgba(80, 160, 240, 0.7);
+  animation: zone-pulse-glow 1600ms cubic-bezier(.22,1.14,.32,1) infinite normal;
+  /* keep a subtle baseline shadow */
+  box-shadow: 0 0 0 0 rgba(80, 160, 240, 0.12);
 }
 
 /* ===== CARD PULSE EFFECTS FOR GALLERY ===== */
