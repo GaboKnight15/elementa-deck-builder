@@ -2802,7 +2802,7 @@ function showSummonPositionModal(cardObj, onSelected) {
   content.style.gap = '18px';
   content.onclick = e => e.stopPropagation();
 
-  content.innerHTML = `<h3>Select Summon Position</h3>
+  content.innerHTML = `
     <div style="display:flex;gap:30px;justify-content:center;">
       <div id="summon-atk-choice" style="cursor:pointer;text-align:center;">
         <div style="margin-bottom:6px;font-weight:bold;">ATK</div>
