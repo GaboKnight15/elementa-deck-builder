@@ -160,9 +160,10 @@ button {}
   border: none;
   padding: 3px;
 }
-.section-header-btn:hover {
-  background: #2a3550;
-  box-shadow: 0 2px 14px #ffe06655;
+.section-header-btn:hover, #player-badge-img:hover {
+  transform: scale(1.13);
+  filter: drop-shadow(0 0 10px #ffe066);
+  z-index: 10;
 }
 .section-header-essence {
   font-size: 1.08em;
@@ -843,7 +844,6 @@ button {}
 }
 #bulk-void-btn:hover {
   transform: scale(1.13);
-  box-shadow: 0 3px 12px #ffe06699;
   filter: drop-shadow(0 0 10px #ffe066);
   z-index: 10;
 }
@@ -2653,6 +2653,9 @@ button[disabled], .btn-disabled {
   overflow: hidden;
 }
 .cpu-deck-option:hover, .default-player-deck-option:hover {
+  transform: scale(1.13);
+  filter: drop-shadow(0 0 10px #ffe066);
+  z-index: 10;
   box-shadow: 0 0 0 3px #ffe066;
   cursor: pointer;
 }
@@ -3872,7 +3875,7 @@ button[disabled], .btn-disabled {
 }
 .shop-pack-option .pack-image:hover {
   box-shadow: 0 8px 32px #50eaffcc;
-  transform: translateY(-6px) scale(1.04);
+  transform: scale(1.04);
   z-index: 2;
 }
 .shop-pack-option .currency-display {
