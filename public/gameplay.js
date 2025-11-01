@@ -6699,20 +6699,38 @@ function renderBadgeRow(containerId, badges) {
 // Convenience wrappers. Use your gameState/getNullCounters functions as available.
 function updateOpponentBadges() {
   // example: show Null Counters (falls back to gameState.opponentNullCounters)
-  const nullCount = (typeof getNullCounters === 'function') ? getNullCounters('opponent') : (gameState.opponentNullCounters || 0);
-  const badges = [
-    { key: 'nullCounterOpp', icon: 'OtherImages/Icons/NullCounterSmall.png', count: nullCount, label: '', title: `Null Counters: ${nullCount}` }
-    // add more opponent badges here as { key, icon, count, label, title }
-  ];
+  const nullCount = (typeof getNullCounters === 'function') ? Number(getNullCounters('opponent') || 0) : Number(gameState.opponentNullCounters || 0);
+
+  const badges = [];
+  // Only add null counter badge when we actually have > 0 counters
+  if (nullCount > 0) {
+    badges.push({
+      key: 'nullCounterOpp',
+      icon: 'OtherImages/Icons/NullCounterSmall.png',
+      count: nullCount,
+      label: '',
+      title: `Null Counters: ${nullCount}`
+    });
+  }
+
   renderBadgeRow('opponent-badges-row', badges);
 }
 
 function updatePlayerBadges() {
-  const nullCount = (typeof getNullCounters === 'function') ? getNullCounters('player') : (gameState.playerNullCounters || 0);
-  const badges = [
-    { key: 'nullCounterPlayer', icon: 'OtherImages/Icons/NullCounterSmall.png', count: nullCount, label: '', title: `Null Counters: ${nullCount}` }
-    // add more player badges here
-  ];
+  const nullCount = (typeof getNullCounters === 'function') ? Number(getNullCounters('player') || 0) : Number(gameState.playerNullCounters || 0);
+
+  const badges = [];
+  // Only show the player's null-counter badge when there is at least one counter
+  if (nullCount > 0) {
+    badges.push({
+      key: 'nullCounterPlayer',
+      icon: 'OtherImages/Icons/NullCounterSmall.png',
+      count: nullCount,
+      label: '',
+      title: `Null Counters: ${nullCount}`
+    });
+  }
+
   renderBadgeRow('player-badges-row', badges);
 }
 
