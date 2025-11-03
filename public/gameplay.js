@@ -300,7 +300,7 @@ InvulnerableAtk: {
 ------------------------------*/
 const TARGET_FILTER_ABILITY = {
   Ambush: {
-    icon: 'OtherImages/Icons/Ambush.png',
+    icon: 'Icons/Ability/Ambush.png',
     name: 'Ambush',
     description: 'Cannot be targeted for attacks, skills, or effects. Removed if this creature attacks or uses a skill.',
     filter: (attacker, targets) => {
@@ -309,7 +309,7 @@ const TARGET_FILTER_ABILITY = {
     }
   },
   Flying: {
-    icon: 'OtherImages/Icons/Flying.png',
+    icon: 'Icons/Ability/Flying.png',
     name: 'Flying',
     description: 'Ignores color protection, but only Flying or Ranged can block/attack Flying. Speed {1}',
     filter: (attacker, targets) => {
@@ -317,17 +317,8 @@ const TARGET_FILTER_ABILITY = {
       return targets;
     }
   },
-  Ranged: {
-    icon: 'OtherImages/Icons/Ranged.png',
-    name: 'Ranged',
-    description: 'Can attack Flying; Speed {1}.',
-    filter: (attacker, targets) => {
-      // Ranged can attack Flying, and vice versa; don't restrict targets
-      return targets;
-    }
-  },
   Protect: {
-    icon: 'OtherImages/Icons/Protect.png',
+    icon: 'Icons/Ability/Protect.png',
     name: 'Protect',
     description: 'If any opponent creature has Protect, only those can be attacked (unless attacker is Flying).',
     filter: (attacker, targets) => {
@@ -338,8 +329,33 @@ const TARGET_FILTER_ABILITY = {
       return targets;
     }
   },
+Conceal: {
+  icon: 'Icons/Ability/Conceal.png',
+  name: 'Conceal',
+  description: 'Makes this card harder to be targeted — Concealed cards are targeted after other valid targets (targeted last).',
+  filter: (attacker, targets) => {
+    // Reorder targets so that any target with Conceal is placed at the end.
+    // Preserve the relative order within each group (non-conceal first, then conceal).
+    // Use the existing defenderHasAbility helper (used by Ambush) if available.
+    try {
+      const normal = [];
+      const concealed = [];
+      targets.forEach(t => {
+        const has = (typeof defenderHasAbility === 'function') ? defenderHasAbility(t, 'Conceal') : (
+          Array.isArray(getCardAbilities(t)) && getCardAbilities(t).some(a => (typeof a === 'string' ? a === 'Conceal' : false))
+        );
+        if (has) concealed.push(t);
+        else normal.push(t);
+      });
+      return [...normal, ...concealed];
+    } catch (err) {
+      console.warn('Conceal filter failed, returning original targets', err);
+      return targets;
+    }
+  }
+},
   Veil: {
-    icon: 'OtherImages/skillEffect/Veil.png',
+    icon: 'Icons/Ability/Veil.png',
     name: 'Veil',
     description: 'Grants protection from debuffs for a duration.',
     handler: function(sourceCardObj, skillObj) {
