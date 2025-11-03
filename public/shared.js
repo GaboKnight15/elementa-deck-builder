@@ -6,16 +6,16 @@ const dummyCards = [
 
 {id: 'SylvaniaThornvaleQueen', name: 'Sylvania, Thornvale Queen', rarity: 'Legendary', image: 'Cards/Elf/SylvaniaThornvaleQueen.png', 
  category: 'Creature', color: 'Green', type: 'Faefolk', archetype: 'Elf', trait: ['Champion', 'Mage'], hp: 6, atk: 1, def: 0,
- cost: '{G}', ability: '', set: 'ElementaGenesis'
+ cost: '{G}', ability: '', set: 'ElementaGenesis',
  skill: [
-  {name: 'Champion', cost: '{g}', 
-   effect: [{class: 'Champion', atk: 1, def: 1}},
   {name: 'Bloomchant', cost: '{g}',
    requirement: [{class:'Special'}, {class: 'CW'}], 
    effect: {class: 'essenceGreen', amount: 2}},
+  {name: 'Champion', cost: '{r}', 
+   effect: [{class: 'Champion'}, {class: 'Buff', atk: 1, def: 1}]},
   {name: "Briar Queen's Grasp", cost: '{G}',
    requirement: [{class:'Ultimate'}, {class: 'CCW'}], 
-   effect: {class: 'Bind', amount: 1, status: 2}},
+   effect: {class: 'Bind', amount: 1, target: 2}},
   ]},
 
 {id: 'KaelenBlazebornHuntress', name: 'Kaelen, Blazeborn Huntress', rarity: 'Legendary', image: 'Cards/Human/KaelenBlazebornHuntress.png', 
@@ -25,6 +25,8 @@ const dummyCards = [
   {name: 'Flameshot', cost: '{r}',
    requirement: [{class:'Special'}, {class: 'CCW'}], 
    effect: {class: 'Burn', amount: 3}},
+  {name: 'Champion', cost: '{r}', 
+   effect: [{class: 'Champion'}, {class: 'Buff', atk: 2}]},
   {name: 'Scorching Skyfall', cost: '{R}{R}',
    requirement: [{class:'Ultimate'}, {class: 'CCW'}], 
    effect: {class: 'Burn', amount: 2, target: 3}}
@@ -32,11 +34,13 @@ const dummyCards = [
 
 {id: 'ZaryonPearlhavenCommander', name: 'Zaryon, Pearlhaven Commander', rarity: 'Legendary', image: 'Cards/Merfolk/ZaryonPearlhavenCommander.png', 
  category: 'Creature', color: 'Blue', type: 'Merfolk', archetype: '', trait: ['Champion', 'Warrior'], hp: 12, atk: 2, def: 1,
- cost: '{U}', ability: ['Dive','Pierce'], set: 'ElementaGenesis'
+ cost: '{U}', ability: ['Dive','Pierce'], set: 'ElementaGenesis',
  skill: [
   {name: 'Deepkin Rally', cost: '{u}',
    requirement: [{class:'Special'}, {class: 'CW'}], 
    effect: {class: 'Token', tokenChoices: ['MerfolkWarrior', 'MerfolkMermaid'], amount: }},
+  {name: 'Champion', cost: '{u}', 
+   effect: [{class: 'Champion'}, {class: 'Buff', speed: 1, atk: 1, def: 1}]},
   {name: 'Tidepiercer Vortex', cost: '{u}{u}',
    requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
    effect: {class: 'Soak', amount: 3, target: 3}}
@@ -51,6 +55,8 @@ const dummyCards = [
   {name: 'Voltcleave', cost: '{y}',
    requirement: [{class:'Special'}, {class: 'CCW'}], 
    effect: {class: 'Pierce', amount: 2}},
+  {name: 'Champion', cost: '{y}', 
+   effect: [{class: 'Champion'}, {class: 'Buff', speed: 1, atk: 1}]},
   {name:'Blade Tempest, cost: '{Y}{Y}',
    requirement: {class:'Ultimate'}, 
    effect: {class: 'Strike', target: 3 amount: 2}}
@@ -63,6 +69,8 @@ const dummyCards = [
   {name: 'Twin Impact', cost: '{c}',
    requirement: [{class:'Special'}, {class: 'CCW'}], 
    effect: {class: 'Strike', target: 2, amount: 2}},
+  {name: 'Champion', cost: '{c}', 
+   effect: [{class: 'Champion'}, {class: 'Buff', armor: 3, atk: 1, def: 2}]},
   {name: 'Seismic Smite', cost: '{c}{C}',
    requirement: [{class:'Ultimate'}, {class: 'CCW'}], 
    effect: {class: 'Strike', target: 3, amount: 2}}
@@ -77,6 +85,8 @@ const dummyCards = [
   {name: 'Blightfall Slash', cost: '{P}{P}', 
    requirement: [{class: 'Special'}, {class: 'CCW'}],
    effect: {class: 'Strike', amount: 1}},
+  {name: 'Champion', cost: '{p}', 
+   effect: [{class: 'Champion'}, {class: 'Buff', atk: 1, def: 1}]},
   {name: 'Toxic Miasma', cost: '{p}{p}',
    requirement: [{class:'Ultimate'}, {class: 'CW'}], 
    effect: {class: 'Miasma', def: 1}},
@@ -89,6 +99,8 @@ const dummyCards = [
   {name: 'Bloomchant', cost: '{w}',
    requirement: [{class:'Special'}, {class: 'CW'}], 
    effect: {class: 'Inspire', def: 1}},
+  {name: 'Champion', cost: '{w}', 
+   effect: [{class: 'Champion'}, {class: 'Buff', ability: 'Aegis', atk: 1, def: 1}]},
   {name: 'Radiant Severance', cost: '{w}{W}',
    requirement: [{class: 'Ultimate'}, {class:'CCW'}], 
    effect: {class: 'Strike', status: 'Aegis'},
@@ -102,14 +114,16 @@ const dummyCards = [
   {name:'Lifetithe', cost: '{B}',
    requirement: {class:'CCW'}, 
    effect: {class: 'Seal'}},
+  {name: 'Champion', cost: '{b}', 
+   effect: [{class: 'Champion'}, {class: 'Buff', atk: 2, def: 1}]},
   {name: 'Eternal Silence', cost: '{b}{b}',
    requirement: [{class:'Ultimate'}, {class: 'CCW'}], 
-   effect: {class: 'Burst', amount: 0, status: 'Seal'}
+   effect: {class: 'Seal', amount: 0, target: 3}
  ]},
 
 // DRAGONS //
 
-{id: 'VerdarokSylvanWarden', name: 'Verdarok, Sylvan Warden', rarity: 'Legendary', image: 'Cards/Thornwing/VerdarokSylvanWarden.png', 
+{id: 'VerdarokSylvanThornwing', name: 'Verdarok, Sylvan Thornwing', rarity: 'Legendary', image: 'Cards/Thornwing/VerdarokSylvanThornwing.png', 
  category: 'Creature', color: 'Green', type: 'Dragon', archetype: 'Thornwing', trait: 'Evolution', hp: 18, atk: 5, def: 3,
  cost: '{4}{G}{G}', ability: ['Flying','Protect'], set: 'ScalesofRuin',
  skill: [
@@ -341,8 +355,8 @@ const dummyCards = [
  category: 'Creature', color: 'Green', type: 'Faefolk', archetype: 'Satyr', trait: ['Champion', 'Mage'], hp: 6, atk: 1, def: 0,
  cost: '{G}', ability: '', set: 'SavageTerritory',
  skill: [
-  {name: 'Champion', cost: '{g}{g}',
-   effect: [{class: '{class: 'Mystveil'}},
+  {name: 'Champion', cost: '{g}{g}', 
+   effect: [{class: 'Champion'}, {class: 'Mystveil'}, {class: 'Buff', atk: 2, def: 1}]},
   {name: 'Manifest', cost: '{g}'
    requirement: [{class: 'Special}, {class: 'CW'}],
    effect: {class: 'Token', tokenChoices: ['SatyrTokenGreen', 'SatyrTokenRed', 'SatyrTokenPurple'], amount: 1}},
@@ -361,6 +375,8 @@ const dummyCards = [
   {name: 'Scarlet Reprisal', cost: '{r}',
    requirement: {class: 'Special', class: 'CCW'},
    effect: {class: 'Burn', amount: 3}},
+  {name: 'Champion', cost: '{r}{b}', 
+   effect: [{class: 'Champion'}, {class: 'Buff', atk: 2, def: 1}]},
   {name: 'Scarlet Crescent', cost: '{R}{B}',
    requirement: {class: 'Special', class: 'CCW'},
    effect: {class: 'Exploit', amount: 1, target:3}}
@@ -372,6 +388,8 @@ const dummyCards = [
  skill: [
   {name: 'Manifest', cost: '{r}',
    effect: {class: 'Token', name: 'Emberling'}},
+  {name: 'Champion', cost: '{r}{r}', 
+   effect: [{class: 'Champion'}, {class: 'Buff', atk: 2, def: 1}]},
   {name: 'Flametongue Invocation', cost: '{R}{B}',
    requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
    effect: {class: 'Invoke', archetype: 'Fireland'}}
@@ -384,6 +402,8 @@ const dummyCards = [
   {name: 'Pyrecleave', cost: '{r}',
    requirement: {class: 'CCW'},
    effect: {class: 'Burn', amount: 3}},
+  {name: 'Champion', cost: '{r}{b}', 
+   effect: [{class: 'Champion'}, {class: 'Buff', atk: 2, def: 1}]},
   {name: 'Scarlet Crescent', cost: '{R}{B}',
    requirement: {class: 'CCW'},
    effect: {class: 'Exploit', amount: 1, target:3}}
@@ -393,12 +413,14 @@ const dummyCards = [
  category: 'Creature', color: ['Blue','Gray'], type: 'Merfolk', archetype: 'Coralbound', trait: ['Champion', 'Warrior'], hp: 12, atk: 2, def: 0,
  cost: '{U}{U}{C}', ability: 'Dive', set: 'IronbornProtocol',
  skill: [
-  {name: 'XXX', cost: '{W}{W}',
+  {name: 'Brine Embrace', cost: '{u}',
    requirement: {class: 'CCW'},
-   effect: {class: 'XXX'}},
-  {name: 'Flametongue Invocation', cost: '{R}{B}',
-   requirement: {class: 'CW'},
-   effect: {class: 'Invoke', archetype: 'Fireland'}}
+   effect: {class: 'Inspire', drenchedArmor: 3, target: 1}},
+  {name: 'Champion', cost: '{u}{u}', 
+   effect: [{class: 'Champion'}, {class: 'Buff', atk: 2, def: 2}]},
+  {name: 'Hydrosurge Wave', cost: '{u}{u}',
+   requirement: {class: 'CCW'},
+   effect: {class: 'Soak', amount: 2, target: 3}}
  ]},
  
 {id: 'AstranyraThunderbane', name: 'Astranyra, Thunderbane', rarity: 'Legendary', image: 'Cards/Demon/AstranyraThunderbane.png', 
@@ -419,7 +441,9 @@ const dummyCards = [
  skill: [
   {name: 'Manifest', cost: '{p}{g}',
    requirement: {class: 'CW'},
-   effect: {class: 'Token', token: 'Spider', amount: 2}},
+   effect: {class: 'Token', token: 'SpiderToken', amount: 2}},
+  {name: 'Champion', cost: '{p}{g}', 
+   effect: [{class: 'Champion'}, {class: 'Token', token: 'SpiderToken'}, {class: 'Buff', atk: 1, def: 1}]},
   {name: 'Silken Dominion', cost: '{P}{G}',
    requirement: [{class: 'Ultimate'}, {class: 'CCW'}], 
    effect: {class: 'Bind', amount: 0, target: 4}}
@@ -431,6 +455,8 @@ const dummyCards = [
  skill: [
   {name: 'Dash', cost: '{Y}',
    effect: {class: 'Dash'}},
+  {name: 'Champion', cost: '{b}{y}', 
+   effect: [{class: 'Champion'}, {class: 'Token', token: 'CrowToken'}, {class: 'Buff', speed: 1, atk: 1, def: 1}]},
   {name: 'Shadowfeather Storm', cost: '{B}{Y}',
    requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
    effect: {class: 'Strike', amount: 2, target: 3}}
@@ -440,11 +466,13 @@ const dummyCards = [
  category: 'Creature', color: ['Yellow','White'], type: 'Avian', archetype: 'Zephyra', trait: ['Champion', 'Warrior'], hp: 9, atk: 2, def: 1,
  cost: '{Y}{W}', ability: ['Flying'], set: 'FeatheredOmen',
  skill: [
-  {name:'Dash', cost: '{Y}',
+  {name:'Dash', cost: '{w}',
    effect: {class: 'Dash'}},
+  {name: 'Champion', cost: '{y}{w}', 
+   effect: [{class: 'Champion'}, {class: 'Buff', speed: 1, atk: 1, def: 1}]},
   {name: 'Featherfall Tempest', cost: '{Y}{W}',
    requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
-   effect: {class: 'Burst', amount: 1}}
+   effect: {class: 'Strike', amount: 1, target: 3}}
  ]},
 {id: 'NyzarielArchdemonDuchess', name: 'Nyzariel, Archdemon Duchess', rarity: 'Legendary', image: 'Cards/Demon/NyzarielArchdemonDuchess.png', 
  category: 'Creature', color: 'Black', type: 'Demon', archetype: 'Archdemon', trait: ['Champion', 'Mage'], hp: 6, atk: 2, def: 0,
@@ -453,6 +481,8 @@ const dummyCards = [
   {name: '', cost: '{b}',
    requirement: {class: 'CCW'},
    effect: {class: 'Burn', amount: 3}},
+  {name: 'Champion', cost: '{b}{b}', 
+   effect: [{class: 'Champion'}, {class: 'Token', tokem: 'ImpToken'}, {class: 'Buff', atk: 2, def: 1}]},
   {name: 'Soulrend Sovereignty', cost: '{b}{B}',
    requirement: [{class: 'Ultimate'}, {class:'Sacrifice', amount: 1}, {class: 'CW'}],
    effect: {class: 'Destroy', target: 1 }}
@@ -1653,6 +1683,11 @@ frostbite: {name: "Frostbite", description: "Freezes after an attack", icon: "Ic
 poisonous: {name: "Poisonous", description: "Poisons after an attack", icon: "Icons/Ability/Poisonous.png" },
 drenched: {name: "Drenched", description: "Soaks after an attack", icon: "Icons/Ability/Drenched.png" },
 static: {name: "Static", description: "Paralyzes after an attack", icon: "Icons/Ability/Static.png" },
+scorchArmor: {name: "Flame Armor", description: "Burns after an attack", icon: "Icons/Ability/FlameArmor.png" },
+frostbiteArmor: {name: "Frost Armor", description: "Freezes after an attack", icon: "Icons/Ability/FrostArmor.png" },
+poisonousArmor: {name: "Poisonous Armor", description: "Poisons after an attack", icon: "Icons/Ability/PoisonousArmor.png" },
+drenchedArmor: {name: "Aqua Armor", description: "Soaks after an attack", icon: "Icons/Ability/AquaArmor.png" },
+staticArmor: {name: "Static Armor", description: "Paralyzes after an attack", icon: "Icons/Ability/StaticArmor.png" },
 
 // -------------------- //
 // --- REQUIREMENTS --- //
