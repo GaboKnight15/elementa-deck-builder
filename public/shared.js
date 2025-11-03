@@ -171,9 +171,9 @@ const dummyCards = [
    effect: {class: 'Burn', amount: 3, target: 2}},
  ]},
 
-{id: 'AbyndraTidalWraith', name: 'Abyndra, Tidal Wraith', rarity: 'Legendary', image: 'Cards/Abyssdrake/AbyndraTidalWraith.png', 
+{id: 'AbyndraTidalAbyssdrake', name: 'Abyndra, Tidal Abyssdrake', rarity: 'Legendary', image: 'Cards/Abyssdrake/AbyndraTidalAbyssdrake.png', 
  category: 'Creature', color: 'Blue', type: 'Dragon', archetype: 'Abyssdrake', trait: 'Evolution', hp: 19, atk: 4, def: 2,
- cost: '{5}{U}{U}', ability: ['Flying','Aegis','Veil'], set: 'ScalesofRuin',
+ cost: '{5}{U}{U}', ability: ['Flying','Veil'], set: 'ScalesofRuin',
  skill: [
   {name: 'Reveal', cost: '{u}',
    requirement: {class: 'Reveal'}
@@ -304,8 +304,8 @@ const dummyCards = [
   {name: 'Nightfall Surge', cost: '{B}',
    requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
    effect: {class: 'Burst'}},
-  {name: 'Void Evolution', cost: '{b}{b}',
-   effect: {class: 'Void Evolution'}}
+  {name: 'Evolve', cost: '{b}',
+   effect: [{class: 'Evolve'}, {class: 'Dusk'}]},
  ]},
 
 {id: 'SolarythRadiantSolarwyrm', name: 'Solaryth, Radiant Solarwyrm', rarity: 'Legendary', image: 'Cards/Solarwyrm/SolarythRadiantSolarwyrm.png', 
@@ -1609,21 +1609,28 @@ const filterState = {
 };
 
 const CARD_KEYWORD = {
-/*-------------
-// ABILITIES //
-------------- */
+// ------------- //
+// --- STATS --- //
+// ------------- //
+attack: {name: "Attack", description: "Attack value.", icon: "Icons/Stat/Atk.png" },
+defense: {name: "Defense", description: "Defense value.", icon: "Icons/Stat/Def.png" },
+armor: {name: "Armor", description: "Secondary sustain stat. Units loss armor first before HP. When the armor breaks, nullifies remaining damage. Losses {1} Speed", icon: "Icons/Stat/Armor.png" },
+speed: {name: "Speed", description: "Speed value. Dash, Dive, Flying, Leap, and Rush +1 Spd. Mage +1 Spd. Ranger +2 Spd. Armor -1 Spd. Spd dif is  =>2 gain Quickstrike. Spd dif is => 3 gain Superstrike.", icon: "Icons/Stat/Spd.png" },
+// ----------------- //
+// --- ABILITIES --- //
+// ----------------- //
 // --- Frenzy Abilities --- //
-burn: {name: "Burn", description: "Burns opposing unit upon dealing damage with an attack or skill.", icon: "Icons/Ability/Burn.png" },
-freeze: {name: "Freeze", description: "Freezes opposing unit upon dealing damage with an attack or skill.", icon: "Icons/Ability/Freeze.png" },
-paralyze: {name: "Paralyze", description: "Paralyzes opposing unit upon striking with an attack or skill.", icon: "Icons/Ability/Paralyze.png" },
-soak: {name: "Soak", description: "Soaks opposing unit upon striking with an attack or skill.", icon: "Icons/Ability/Soak.png" },
-toxic: {name: "Venom", description: "Poisons opposing unit upon striking with an attack or skill.", icon: "Icons/Ability/Venom.png" },
+burn: {name: "Burn", description: "Burns after an attack or skill.", icon: "Icons/Ability/Burn.png" },
+freeze: {name: "Freeze", description: "Freezes after an attack or skill.", icon: "Icons/Ability/Freeze.png" },
+paralyze: {name: "Paralyze", description: "Paralyzes after an attack or skill.", icon: "Icons/Ability/Paralyze.png" },
+soak: {name: "Soak", description: "Soaks after an attack or skill.", icon: "Icons/Ability/Soak.png" },
+toxic: {name: "Venom", description: "Poisons after an attack or skill.", icon: "Icons/Ability/Toxic.png" },
 
 protect: {name: "Protect", description: "Opponent can only target this unit for attacks.", icon: "Icons/Ability/Protect.png" },
+conceil: {name: "Conceil", description: "Opponent can only target this unit for attacks last", icon: "Icons/Ability/Conceil.png" },
 barrier: {name: "Barrier", description: "Prevents the next damage received to any unit.", icon: "Icons/Ability/Barrier.png" },
 evasion: {name: "Evasion", description: "Prevents the next skill target.", icon: "Icons/Ability/Evasion.png" },
 aegis: {name: "Aegis", description: "Unaffected by skills and effects.", icon: "Icons/Ability/Venom.png" },
-armor: {name: "Armor", description: "Secondary sustain stat. Units loss armor first before HP. When the armor breaks, nullifies remaining damage. Losses {1} Speed", icon: "Icons/Ability/Aegis.png" },
 
 // --- Target Related Abilities --- //
 veil: {name: "Veil", description: "Cannot be targeted by skills.", icon: "Icons/Ability/Veil.png" },
@@ -1640,11 +1647,11 @@ intimidate: {name: "Intimidate", description: "When declaring an attack, {CW} th
 provoke: {name: "Provoke", description: "When declaring an attack, {CCW} that unit", icon: "OtherImages/StatIcons/Provoke.png" },
 
  // --- Brace Abilities --- //
-scorch: {name: "Scorch", description: "Burns opponent after receiving an attack", icon: "Icons/Ability/Scorch.png" },
-frostbite: {name: "Frostbite", description: "Freezes opponent after receiving an attack", icon: "Icons/Ability/Frostbite.png" },
-poisonous: {name: "Poisonous", description: "Poisons opponent after receiving an attack", icon: "Icons/Ability/Poisonous.png" },
-drenched: {name: "Drenched", description: "Soaks opponent after receiving an attack", icon: "Icons/Ability/Drenched.png" },
-static: {name: "Static", description: "Paralyzes opponent after receiving an attack", icon: "Icons/Ability/Static.png" },
+scorch: {name: "Scorch", description: "Burns after an attack", icon: "Icons/Ability/Scorch.png" },
+frostbite: {name: "Frostbite", description: "Freezes after an attack", icon: "Icons/Ability/Frostbite.png" },
+poisonous: {name: "Poisonous", description: "Poisons after an attack", icon: "Icons/Ability/Poisonous.png" },
+drenched: {name: "Drenched", description: "Soaks after an attack", icon: "Icons/Ability/Drenched.png" },
+static: {name: "Static", description: "Paralyzes after an attack", icon: "Icons/Ability/Static.png" },
 
 // -------------------- //
 // --- REQUIREMENTS --- //
@@ -1677,8 +1684,12 @@ banish: {name: "Banish", description: "Return one unit from the field to the dec
 repel: {name: "Repel", description: "Return one unit from the field to the hand."},
 mill: {name: "Mill", description: "Sends one card from the deck to the void."},
 crush: {name: "Crush", description: "Remove all armor from target unit."},
-reanimate: {name: "Reanimate", description: "Summons this unit from the void."},
-dash: {name: "Dash", description: "Summons this unit from the hand with half HP (rounded up). Gain {1} Speed."},
+
+// --- SELF SUMMON SKILLS --- //
+reanimate: {name: "Reanimate", description: "Summon from the void."},
+dash: {name: "Dash", description: "Summon from the hand with half HP (rounded up). Gain {1} Speed."},
+overcharge: {name: "Overcharge", description: "Summon from the hand. Gain {1}/{1}"},
+manifest: {name: "Manifest", description: "Summon from the deck after meeting certain conditions."},
 
 // --- PHASE SKILLS --- //
 awaken: {name: "Awaken", description: "Activates during the draw step."},
@@ -1725,15 +1736,15 @@ mystveil: {name: "Mystveil", description: "Sylvan +{1}/+{1}.", icon: "Icons/Weat
 // -------------------- //
 champion: {name: "Champion", description: "Summon Champion without skills."},
 evolve: {name: "Evolve", description: "Get an 'Evolve' counter.", icon: "OtherImages/StatIcons/Evolve.png" },
-evolution: {name: "Evolution", description: "Summon from the hand | Attach 1 unit of the same type/archetype that have an 'Evolve' counter on it.", icon: "OtherImages/StatIcons/Evolution.png" },
+evolution: {name: "Evolution", description: "Summon from the hand | Attach 1 unit of the same archetype that have an 'Evolve' counter on it.", icon: "OtherImages/StatIcons/Evolution.png" },
 voidEvolution: {name: "Void Evolution", description: "Summon from the hand/void | Attach 1 unit of the same type/archetype that have an 'Evolve' counter on it.", icon: "OtherImages/StatIcons/VoidEvolution.png" },
 fuse: {name: "Fuse", description: "Get a 'Fuse' counter.", icon: "OtherImages/StatIcons/Fuse.png" },
-fusion: {name: "Fusion", description: "Summon from the hand | Attach 2 units of the same type/archetype that have a 'Fuse' counter on it.", icon: "OtherImages/StatIcons/Fusion.png" },
+fusion: {name: "Fusion", description: "Summon from the hand | Attach 2 units of the same archetype that have a 'Fuse' counter on it.", icon: "OtherImages/StatIcons/Fusion.png" },
 voidFusion: {name: "Void Fusion", description: "Summon from the hand/void | Attach 2 units of the same type/archetype that have a 'Fuse' counter on it.", icon: "OtherImages/StatIcons/VoidFusion.png" },
 transform: {name: "Transform", description: "Transforms unit by certain conditions | Attach it to the summoned unit", icon: "OtherImages/StatIcons/Transform.png" },
-warrior: {name: "Warrior", description: "DESCRIPTION.", icon: "Icons/StatIcons/Warrior.png" },
-mage: {name: "Mage", description: "DESCRIPTION.", icon: "Icons/StatIcons/Mage.png" },
-ranger: {name: "Ranger", description: "DESCRIPTION.", icon: "Icons/StatIcons/Ranger.png" },
+warrior: {name: "Warrior", description: "Close combat units. If HP is below 1/3, gain {1}/{1}.", icon: "Icons/StatIcons/Warrior.png" },
+mage: {name: "Mage", description: "Spell caster units. Gain {1} Spd.", icon: "Icons/StatIcons/Mage.png" },
+ranger: {name: "Ranger", description: "Ranged units. Gain {2} Spd.", icon: "Icons/StatIcons/Ranger.png" },
 relic: {name: "Relic", description: "Attach to Domains of the same Color.", icon: "OtherImages/StatIcons/Relic.png" },
 equipment: {name: "Equipment", description: "Attach to Creatures of the same Color/Type/Archetype.", icon: "OtherImages/StatIcons/Equipment.png" },
 aura: {name: "Aura", description: "Attach to units of the same Color.", icon: "OtherImages/StatIcons/Aura.png" },
