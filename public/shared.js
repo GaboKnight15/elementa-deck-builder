@@ -1627,9 +1627,9 @@ soak: {name: "Soak", description: "Soaks after an attack or skill.", icon: "Icon
 toxic: {name: "Venom", description: "Poisons after an attack or skill.", icon: "Icons/Ability/Toxic.png" },
 
 protect: {name: "Protect", description: "Opponent can only target this unit for attacks.", icon: "Icons/Ability/Protect.png" },
-conceil: {name: "Conceil", description: "Opponent can only target this unit for attacks last", icon: "Icons/Ability/Conceil.png" },
+conceal: {name: "Conceal", description: "Opponent can only target this unit for attacks last", icon: "Icons/Ability/Conceal.png" },
 barrier: {name: "Barrier", description: "Prevents the next damage received to any unit.", icon: "Icons/Ability/Barrier.png" },
-evasion: {name: "Evasion", description: "Prevents the next skill target.", icon: "Icons/Ability/Evasion.png" },
+evasion: {name: "Evasion", description: "Prevents the next attack or skill to your unit. Consumes {1} Evasion counter.", icon: "Icons/Ability/Evasion.png" },
 aegis: {name: "Aegis", description: "Unaffected by skills and effects.", icon: "Icons/Ability/Venom.png" },
 
 // --- Target Related Abilities --- //
@@ -1639,8 +1639,9 @@ ambush: {name: "Ambush", description: "Cannot be targeted by opponent's attacks 
 flying: {name: "Flying", description: "Can only be blocked by other Flying{flying}, Mage{mage} or Ranger{ranger} units. Speed {1}.", icon: "Icons/Ability/Flying.png" },
 
 rush: {name: "Rush", description: "Can attack on the turn it is played. Speed {1}.", icon: "Icons/Ability/Rush.png" },
-drain: {name: "Drain", description: "When this unit deals damage, gain that much life.", icon: "Icons/Ability/Drain.png" },
-pierce: {name: "Pierce", description: "Ignores armor."},
+drain: {name: "Drain", description: "Gain HP equal to damage dealt by attacks.", icon: "Icons/Ability/Drain.png" },
+pierce: {name: "Pierce", description: "Ignores Armor.", icon: "Icons/Ability/Pierce.png"},
+precision: {name: "Precision", description: "Ignores Evasion. Speed {1}", icon: "Icons/Ability/Precision.png" },
 
 // --- Assault Abilities --- //
 intimidate: {name: "Intimidate", description: "When declaring an attack, {CW} that unit", icon: "OtherImages/StatIcons/Intimidate.png" },
