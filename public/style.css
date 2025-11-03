@@ -1217,7 +1217,7 @@ button {}
   position: relative;
 }
 .card-gallery:hover {
-  transform: translateY(-5px) scale(1.05);
+  transform: scale(1.05);
   box-shadow: 0 10px 24px rgba(0,0,0,0.4);
   z-index: 5000;
 }
@@ -1467,13 +1467,6 @@ li.deck-draggable.dragging {
   transform: scale(0.995);
   cursor: grabbing;
   box-shadow: 0 10px 30px rgba(0,0,0,0.45);
-}
-
-/* Hover / focus state */
-li.deck-draggable:hover {
-  background: linear-gradient(180deg, rgba(255,255,255,0.025), rgba(0,0,0,0.04));
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.35);
 }
 
 /* Card thumbnail inside list */
@@ -4172,7 +4165,7 @@ button[disabled], .btn-disabled {
 .shop-cardback-img:hover,
 .shop-cardback-option:hover .shop-cardback-img {
   box-shadow: 0 6px 18px #50eaffcc, 0 0 0 2px #ffe066;
-  transform: scale(1.07) translateY(-3px);
+  transform: scale(1.07);
   outline: 2px solid #ffe066;
   outline-offset: 2px;
   z-index: 2;
