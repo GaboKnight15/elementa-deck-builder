@@ -1,4 +1,4 @@
-const DEFAULT_CPU_DECKS = [
+const DEFAULT_DECKS = [
 { id: 'Sylvan1', name: 'Verdant Might', color: 'green', difficulty: '⭐',
   image: 'Avatar/Fairy.png', bannerArt: 'CardImages/Banner/GreenBanner.png', cardbackArt: 'OtherImages/Cardback/CBFairy.png',
   cards: [ { id: 'Verdara', amount: 1 },
@@ -648,7 +648,7 @@ function showCpuDeckModal() {
   // Define and call renderDeckOptions INSIDE this function
 function renderDeckOptions() {
   list.innerHTML = '';
-  DEFAULT_CPU_DECKS.filter(deck => deck.difficulty === selectedDifficulty).forEach(deck => {
+  DEFAULT_DECKS.filter(deck => deck.difficulty === selectedDifficulty).forEach(deck => {
     const div = document.createElement('div');
     div.className = 'cpu-deck-option';
     div.style.position = 'relative';
@@ -788,7 +788,7 @@ function showPlayerDeckModal() {
   // --- Render Default Decks ---
   function renderDefaultDecks() {
     defaultList.innerHTML = '';
-    const defaultDecks = DEFAULT_CPU_DECKS;
+    const defaultDecks = DEFAULT_DECKS;
     if (Array.isArray(defaultDecks) && defaultDecks.length > 0) {
       const row = document.createElement('div');
       row.style.display = "flex";
