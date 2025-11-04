@@ -892,7 +892,6 @@ function generateUniqueId() {
 }
 
 // =========== PRIVATE LOBBY UI ===========
-
 function showPrivateLobbyModal() {
   closeAllModals();
   const modal = document.getElementById('private-lobby-modal');
