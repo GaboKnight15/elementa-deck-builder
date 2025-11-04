@@ -156,7 +156,7 @@ const dummyCards = [
    effect: {class: 'Evolve'}}
  ]},
 
-{id: 'PyronyxInfernoBlazingscale', name: 'Pyronyx, Inferno Blazingscale', rarity: 'Legendary', image: 'Cards/Cinderscale/PyronyxInfernoBlazingscale.png', 
+{id: 'PyronyxInfernoBlazingscale', name: 'Pyronyx, Inferno Blazingscale', rarity: 'Legendary', image: 'Cards/Blazingscale/PyronyxInfernoBlazingscale.png', 
  category: 'Creature', color: 'Red', type: 'Dragon', archetype: 'Blazingscale', trait: 'Evolution', hp: 11, atk: 5, def: 2,
  cost: '{3}{R}{R}', ability: 'Flying', set: 'ScalesofRuin',
  skill: [
@@ -169,7 +169,7 @@ const dummyCards = [
   {name: 'Evolution', cost: '{r}{r}',
    effect: {class: 'Evolution'}}
  ]},
-{id: 'PyronyxEmberBreeze', name: 'Pyronyx, Ember Breeze', rarity: 'Legendary', image: 'Cards/Cinderscale/PyronyxEmberBreeze.png', 
+{id: 'PyronyxEmberBreeze', name: 'Pyronyx, Ember Breeze', rarity: 'Legendary', image: 'Cards/Blazingscale/PyronyxEmberBreeze.png', 
  category: 'Creature', color: 'Red', type: 'Dragon', archetype: 'Blazingscale', hp: 4, atk: 3, def: 1,
  cost: '{R}{R}', ability: 'Flying', set: 'WyrmheartAwakening',
  skill: [
