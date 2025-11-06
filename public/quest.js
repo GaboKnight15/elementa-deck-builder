@@ -75,10 +75,10 @@ const ARCHETYPE_ACHIEVEMENT_TIERS = [
   { tier: 5, goal: 1000, reward: { type: 'currency', amount: 2500 }, description: "Collect 2000 {type} cards" }
 ];
 const ARCHETYPE_ACHIEVEMENTS = [
-  { value: 'Satyr', label: 'Satyr', icon: 'Images/Satyr/FaeliraSatyrEmpress.png', colorHex: '#888888' },
-  { value: 'Goblin', label: 'Goblin', icon: 'Images/Goblin/GoblinWarlord.png', colorHex: '#888888' },
-  { value: 'Duskwing', label: 'Duskwing', icon: 'Images/Duskwing/RaukharDuskwingKnight.png', colorHex: '#888888' },
-  { value: 'Fireland', label: 'Fireland', icon: 'Images/Fireland/EphorosFirelandBehemoth.png', colorHex: '#888888' },
+  { value: 'Satyr', label: 'Satyr', icon: 'Images/Satyr/FaeliraWildhornEmpress.png', icon: 'Images/Satyr/Satyr.png', colorHex: '#888888' },
+  { value: 'Goblin', label: 'Goblin', icon: 'Images/Goblin/GoblinWarlord.png', icon: 'Images/Goblin/Goblin.png', colorHex: '#888888' },
+  { value: 'Duskwing', label: 'Duskwing', icon: 'Images/Duskwing/RaukharDuskwingKnight.png', icon: 'Images/Duskwing/Crow.png', colorHex: '#888888' },
+  { value: 'Fireland', label: 'Fireland', icon: 'Images/Fireland/EphorosFirelandBehemoth.png', icon: 'Images/Fireland/Emberling.png', colorHex: '#888888' },
   { value: 'Frostland', label: 'Frostland', icon: 'Images/Frostland/EirawenFrostlandQueen.png', colorHex: '#888888' },
   { value: 'Golemheart', label: 'Golemheart', icon: 'Images/Golem/PyrokragGolemheartTitan.png', colorHex: '#888888' },
 
@@ -88,7 +88,7 @@ const ARCHETYPE_ACHIEVEMENTS = [
   { value: 'Abyssdrake', label: 'Abyssdrake', icon: 'Images/Abyssdrake/AbyndraTidalAbyssdrake.png', colorHex: '#888888' },
   { value: 'Stormrazor', label: 'Stormrazor', icon: 'Images/Stormrazor/VoltrazekTempestStormrazor.png', colorHex: '#888888' },
   { value: 'Ironclaw', label: 'Ironclaw', icon: 'Images/Ironclaw/FerronyxTerraIronclaw.png', colorHex: '#888888' },
-  { value: 'Dreadspine', label: 'Dreadspine', icon: 'Images/Venomspine/MyxarothCorruptedDreadspine.png', colorHex: '#888888' },
+  { value: 'Dreadspine', label: 'Dreadspine', icon: 'Images/Venomspine/MyxarothCursedDreadspine.png', colorHex: '#888888' },
   { value: 'Solarwyrm', label: 'Solarwyrm', icon: 'Images/Solarwyrm/SolarythRadianceSolarwyrm.png', colorHex: '#888888' },
   { value: 'Nightshroud', label: 'Nightshroud', icon: 'Images/Nightshroud/NochtyrosUmbralNightshroud.png', colorHex: '#888888' },
 
