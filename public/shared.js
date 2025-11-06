@@ -194,7 +194,7 @@ const dummyCards = [
    effect: {class: 'Search', name category: 'Domain', color: 'Blue'}},
   {name: 'Ocean's Requiem', cost: '{u}{u}',
    requirement: [{class: 'Ultimate'}, {class:'CCW'}], 
-   effect: {class: 'Burst', amount: 3, status: 'Burn'}},
+   effect: {class: '', amount: 3, status: 'Burn'}},
   {name: 'Evolution', cost: '{u}{u}{u}',
    effect: {class: 'Evolution'}},
   {name: 'Maelstrom Oblivion', cost: '{u}{u}',
@@ -212,7 +212,7 @@ const dummyCards = [
    effect: {class: 'Evolve'}},
   {name: 'Mirror of the Deep', cost: '{u}{u}',
    requirement: [{class: 'Ultimate'}, {class:'CCW'}], 
-   effect: {class: 'Burst', amount: 3, status: 'Burn'}},
+   effect: {class: '', amount: 3, status: 'Burn'}},
  ]},
 
 {id: 'VoltrazekTempestStormrazor', name: 'Voltrazek, Tempest Stormrazor', rarity: 'Legendary', image: 'Cards/Stormrazor/VoltrazekTempestStormrazor.png', 
@@ -226,7 +226,7 @@ const dummyCards = [
    effect: {class: 'Evolution'}},
   {name: 'Electro Burst', cost: '{y}',
    requirement: [{class: 'Ultimate'}, {class:'CCW'}], 
-   effect: {class: 'Burst', amount: 1}},
+   effect: {class: 'Strike', amount: 1, target: 3}},
  ]},
 {id: 'VoltrazekSparkletStormling', name: 'Voltrazek, Sparklet Stormling', rarity: 'Legendary', image: 'Cards/Stormrazor/VoltrazekSparkletStormling.png', 
  category: 'Creature', color: 'Yellow', type: 'Dragon', archetype: 'Stormrazor', hp: 5, atk: 4, def: 1,
@@ -238,7 +238,7 @@ const dummyCards = [
    effect: [{class: 'Evolve'}, {class: 'Storm'}]},
   {name: 'Gigavolt Prance', cost: '{y}',
    requirement: [{class: 'Ultimate'}, {class:'CCW'}], 
-   effect: {class: 'Burst', amount: 1}},
+   effect: {class: '', amount: 1}},
  ]},
 
 {id: 'MyxarothCursedDreadspine', name: 'Myxaroth, Cursed Dreadspine', rarity: 'Legendary', image: 'Cards/Dreadspine/MyxarothCursedDreadspine.png', 
@@ -304,7 +304,7 @@ const dummyCards = [
    effect: {class: 'Mill', type: 'Dragon'}},
   {name: 'Nightfall Surge', cost: '{B}',
    requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
-   effect: {class: 'Burst'}},
+   effect: {class: ''}},
   {name: 'Void Evolution', cost: '{b}{b}',
    effect: {class: 'Void Evolution'}}
  ]},
@@ -317,7 +317,7 @@ const dummyCards = [
    effect: {class: 'Mill', type: 'Dragon'}},
   {name: 'Nightfall Surge', cost: '{B}',
    requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
-   effect: {class: 'Burst'}},
+   effect: {class: ''}},
   {name: 'Evolve', cost: '{b}',
    effect: [{class: 'Evolve'}, {class: 'Dusk'}]},
  ]},
@@ -843,7 +843,7 @@ skill: [
    effect: {class: 'Armor', amount: 4}},
   {name: 'Moltern Aegis Nova', cost: '{r}{r}{c}',
    requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
-   effect: {class: 'Burst', amount: 3, status: 'Burn'}},
+   effect: {class: 'Burn', amount: 3, target: 3}},
   {name: 'Void Fusion', cost: '{r}{c}', 
    effect: {class: 'Void Fusion'}}
  ]},
@@ -864,7 +864,7 @@ skill: [
    effect: {class: 'Armor', armor: 3}},
   {name: 'Emberplate Detonation', cost: '{r}',
    requirement: {class: 'Ultimate'},
-   effect: {class: 'Burst', status: 'Burn', amount: 2}},
+   effect: {class: 'Burn', amount: 2, target: 3}},
   {name: 'Fuse', cost: '{r}',
    effect: {class: 'Fuse'}},  
  ]},
@@ -950,12 +950,12 @@ skill: [
     effect: {class: 'Search', archetype: 'Coralbound'}},
   {name: 'Echo',
    activation: {class: 'Echo'},
-   effect: {class: 'Token', name: 'Coral Drone', amount: 2}},  
+   effect: {class: 'Token', name: 'Coral Drone', amount: 2}},
+  {name: 'Fusion', cost: '{u}{u}{u}{u}', 
+   effect: {class: 'Fusion'}},
   {name: 'Hydroburst Cannon', cost: '{U}{U}', 
    requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
-   effect: {class: 'Strike', amount: 8, status: 'Soak'}},
-  {name: 'Fusion', cost: '{u}{u}{U}{U}', 
-   effect: {class: 'Fusion'}}
+   effect: {class: 'Soak', amount: 8}},
  ]},
 
 // GLIMMERSCALE //
@@ -968,9 +968,9 @@ skill: [
     effect: {class: 'Essence'}},
   {name: 'Sunfire Blast', cost: '{r}{g}{w}', 
    requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
-   effect: {class: 'Burst', amount: 2, status: 'Burn'}},
+   effect: {class: 'Burn', amount: 2, target: 3}},
   {name: 'Evolve', cost: '{g}{w}', 
-   effect: {class: 'Evolve'}}
+   effect: {class: 'Evolve'}},
  ]},
 /*
 {id: 'FairyDragon', name: 'Fairy Dragon', rarity: 'Rare', image: 'Cards/Dragon/FairyDragon.png', 
@@ -1048,7 +1048,7 @@ skill: [
  cost: '{1}{B}', ability: ['Immunity','Rush'], set: 'ElementaGenesis',
  skill: [
   {name: 'Reanimate', cost: '{2}{B}{B}', 
-   effect: {class: 'Reanimate'}}
+   effect: {class: 'Reanimate'}},
  ]},
 {id: 'SkullframeAcolyte', name: 'Skullframe Acolyte', rarity: 'Common', image: 'Cards/Undead/SkullframeAcolyte.png', 
  category: 'Creature', color: ['Black', 'Purple'], type: 'Undead', archetype: 'Skullframe', trait: 'Mage', hp: 5, atk: 3, def: 1,
@@ -1058,7 +1058,7 @@ skill: [
    requirement: {class: 'CW'},
    effect: {class: 'Revive', archetype: 'Skullframe'}},
   {name: 'Reanimate', cost: '{2}{B}{B}', 
-   effect: {class: 'Reanimate'}}
+   effect: {class: 'Reanimate'}},
  ]},
 {id: 'SkullframeCryptwinds', name: 'Skullframe Cryptwinds', rarity: 'Rare', image: 'Cards/Undead/SkullframeCryptwinds.png', 
  category: 'Creature', color: ['Black', 'Purple'], type: ['Dragon','Undead'], archetype: 'Skullframe', hp: 8, atk: 4, def: 1,
@@ -1069,7 +1069,7 @@ skill: [
    effect: {class: 'Search', amount: 1, type: ['Dragon','Undead']}},
   {name: 'Reanimate', cost: '{b}{B}{B}',
    requirement: {class: 'Sacrifice', amount: 1},
-   effect: {class: 'Reanimate'}}
+   effect: {class: 'Reanimate'}},
   ]},
 {id: 'SkullframeSpectralDragon', name: 'Skullframe Spectral Dragon', rarity: 'Epic', image: 'Cards/Undead/SkullframeSpectralDragon.png', 
  category: 'Creature', color: ['Black', 'Purple'], type: ['Dragon','Undead'], archetype: 'Skullframe', hp: 12, atk: 6, def: 2,
@@ -1077,7 +1077,7 @@ skill: [
  skill: [
   {name: 'Curseflame Inferno', cost: '{2}{P}{P}{B}', 
    requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
-   effect: {class: 'Burst', amount: 2, status: 'Burn'}},
+   effect: {class: 'Burn', amount: 2, target: 3}},
   {name: 'Reanimate', cost: '{2}{B}{B}', 
    requirement: {class: 'Sacrifice', amount: 1},
    effect: {class: 'Reanimate'}}
@@ -1119,7 +1119,12 @@ skill: [
 {id: 'Soulhexing', name: 'Soulhexing', rarity: 'Common', image: 'Cards/Undead/Soulhexing.png', 
  category: 'Spell', color: 'Black', type: 'Spell', cost: '{2}{B}', archetype: 'Skullframe', effect: 'Destroy a creature afflicted by any status', set: 'ElementaGenesis'},
 {id: 'Witherwake', name: 'Witherwake', rarity: 'Common', image: 'Cards/Undead/Witherwake.png', 
- category: 'Spell', color: ['Black','Purple'], type: 'Spell', cost: '{P}{B}', archetype: 'Skullframe', effect: 'Burst Poison', set: 'ElementaGenesis'},
+ category: 'Spell', color: ['Black','Purple'], type: 'Spell', cost: '{P}{B}', archetype: 'Skullframe', set: 'ElementaGenesis',
+ skill: [
+  {name: 'Hexbind', cost: '{P}{B}', 
+   requirement: [{class: 'Special'}, {class: 'CCW'}],
+   effect: {class: 'Bind', amount: 4}},
+ ]},
 
 // SERAPH
 /*
@@ -1585,35 +1590,35 @@ Dragon Terrains
 ];
 // Cost mapping and renderer (returns HTML string)
 const COST_IMAGE_MAP = {
-  G: "OtherImages/Essence/Green.png",
-  R: "OtherImages/Essence/Red.png",
-  U: "OtherImages/Essence/Blue.png",
-  Y: "OtherImages/Essence/Yellow.png",
-  C: "OtherImages/Essence/Gray.png",
-  P: "OtherImages/Essence/Purple.png",
-  B: "OtherImages/Essence/Black.png",
-  W: "OtherImages/Essence/White.png",
-  X0: "OtherImages/Essence/Zero.png",
-  X1: "OtherImages/Essence/One.png",
-  X2: "OtherImages/Essence/Two.png",
-  X3: "OtherImages/Essence/Three.png",
-  X4: "OtherImages/Essence/Four.png",
-  X5: "OtherImages/Essence/Five.png",
-  X6: "OtherImages/Essence/Six.png",
-  X7: "OtherImages/Essence/Seven.png",
-  X8: "OtherImages/Essence/Eight.png",
-  X9: "OtherImages/Essence/Nine.png",
-  X10: "OtherImages/Essence/Ten.png",
-  X11: "OtherImages/Essence/Eleven.png",
-  X12: "OtherImages/Essence/Twelve.png",
-  X13: "OtherImages/Essence/Thirteen.png",
-  X14: "OtherImages/Essence/Fourteen.png",
-  X15: "OtherImages/Essence/Fifteen.png",
-  X16: "OtherImages/Essence/Sixteen.png",
-  X17: "OtherImages/Essence/Seventeen.png",
-  X18: "OtherImages/Essence/Eighteen.png",
-  X19: "OtherImages/Essence/Nineteen.png",
-  X20: "OtherImages/Essence/Twenty.png"
+  G: "Images/Essence/Green.png",
+  R: "Images/Essence/Red.png",
+  U: "Images/Essence/Blue.png",
+  Y: "Images/Essence/Yellow.png",
+  C: "Images/Essence/Gray.png",
+  P: "Images/Essence/Purple.png",
+  B: "Images/Essence/Black.png",
+  W: "Images/Essence/White.png",
+  X0: "Images/Essence/Zero.png",
+  X1: "Images/Essence/One.png",
+  X2: "Images/Essence/Two.png",
+  X3: "Images/Essence/Three.png",
+  X4: "Images/Essence/Four.png",
+  X5: "Images/Essence/Five.png",
+  X6: "Images/Essence/Six.png",
+  X7: "Images/Essence/Seven.png",
+  X8: "Images/Essence/Eight.png",
+  X9: "Images/Essence/Nine.png",
+  X10: "Images/Essence/Ten.png",
+  X11: "Images/Essence/Eleven.png",
+  X12: "Images/Essence/Twelve.png",
+  X13: "Images/Essence/Thirteen.png",
+  X14: "Images/Essence/Fourteen.png",
+  X15: "Images/Essence/Fifteen.png",
+  X16: "Images/Essence/Sixteen.png",
+  X17: "Images/Essence/Seventeen.png",
+  X18: "Images/Essence/Eighteen.png",
+  X19: "Images/Essence/Nineteen.png",
+  X20: "Images/Essence/Twenty.png"
 };
 const addCoinsBtn = document.getElementById('add-coins-btn');
 const LEVEL_THRESHOLDS = [0, 100, 250, 500, 1000, 2000, 4000, 8000];
@@ -1674,8 +1679,8 @@ pierce: {name: "Pierce", description: "Ignores Armor.", icon: "Icons/Ability/Pie
 precision: {name: "Precision", description: "Ignores Evasion. Speed {1}", icon: "Icons/Ability/Precision.png" },
 
 // --- Assault Abilities --- //
-intimidate: {name: "Intimidate", description: "When declaring an attack, {CW} that unit", icon: "OtherImages/StatIcons/Intimidate.png" },
-provoke: {name: "Provoke", description: "When declaring an attack, {CCW} that unit", icon: "OtherImages/StatIcons/Provoke.png" },
+intimidate: {name: "Intimidate", description: "When declaring an attack, {CW} that unit", icon: "Icons/Ability/Intimidate.png" },
+provoke: {name: "Provoke", description: "When declaring an attack, {CCW} that unit", icon: "Icons/Ability/Provoke.png" },
 
  // --- Brace Abilities --- //
 scorch: {name: "Scorch", description: "Burns after an attack", icon: "Icons/Ability/Scorch.png" },
@@ -1770,20 +1775,20 @@ mystveil: {name: "Mystveil", description: "Sylvan +{1}/+{1}.", icon: "Icons/Weat
 // -------------------- //
 // --- TRAIT SKILLS --- //
 // -------------------- //
-champion: {name: "Champion", description: "Summon Champion without skills."},
-evolve: {name: "Evolve", description: "Get an 'Evolve' counter.", icon: "OtherImages/StatIcons/Evolve.png" },
-evolution: {name: "Evolution", description: "Summon from the hand | Attach 1 unit of the same archetype that have an 'Evolve' counter on it.", icon: "OtherImages/StatIcons/Evolution.png" },
-voidEvolution: {name: "Void Evolution", description: "Summon from the hand/void | Attach 1 unit of the same type/archetype that have an 'Evolve' counter on it.", icon: "OtherImages/StatIcons/VoidEvolution.png" },
-fuse: {name: "Fuse", description: "Get a 'Fuse' counter.", icon: "OtherImages/StatIcons/Fuse.png" },
-fusion: {name: "Fusion", description: "Summon from the hand | Attach 2 units of the same archetype that have a 'Fuse' counter on it.", icon: "OtherImages/StatIcons/Fusion.png" },
-voidFusion: {name: "Void Fusion", description: "Summon from the hand/void | Attach 2 units of the same type/archetype that have a 'Fuse' counter on it.", icon: "OtherImages/StatIcons/VoidFusion.png" },
-transform: {name: "Transform", description: "Transforms unit by certain conditions | Attach it to the summoned unit", icon: "OtherImages/StatIcons/Transform.png" },
-warrior: {name: "Warrior", description: "Close combat units. If HP is below 1/3, gain {1}/{1}.", icon: "Icons/StatIcons/Warrior.png" },
-mage: {name: "Mage", description: "Spell caster units. Gain {1} Spd.", icon: "Icons/StatIcons/Mage.png" },
-ranger: {name: "Ranger", description: "Ranged units. Gain {2} Spd.", icon: "Icons/StatIcons/Ranger.png" },
-relic: {name: "Relic", description: "Attach to Domains of the same Color.", icon: "OtherImages/StatIcons/Relic.png" },
-equipment: {name: "Equipment", description: "Attach to Creatures of the same Color/Type/Archetype.", icon: "OtherImages/StatIcons/Equipment.png" },
-aura: {name: "Aura", description: "Attach to units of the same Color.", icon: "OtherImages/StatIcons/Aura.png" },
+champion: {name: "Champion", description: "Summon Champion without skills.", icon: "Icons/Trait/Champion.png" },
+evolve: {name: "Evolve", description: "Get an 'Evolve' counter.", icon: "Icons/Trait/Evolve.png" },
+evolution: {name: "Evolution", description: "Summon from the hand | Attach 1 unit of the same archetype that have an 'Evolve' counter on it.", icon: "Icons/Trait/Evolution.png" },
+voidEvolution: {name: "Void Evolution", description: "Summon from the hand/void | Attach 1 unit of the same type/archetype that have an 'Evolve' counter on it.", icon: "Icons/Trait/VoidEvolution.png" },
+fuse: {name: "Fuse", description: "Get a 'Fuse' counter.", icon: "Icons/Trait/Fuse.png" },
+fusion: {name: "Fusion", description: "Summon from the hand | Attach 2 units of the same archetype that have a 'Fuse' counter on it.", icon: "Icons/Trait/Fusion.png" },
+voidFusion: {name: "Void Fusion", description: "Summon from the hand/void | Attach 2 units of the same type/archetype that have a 'Fuse' counter on it.", icon: "Icons/Trait/VoidFusion.png" },
+transform: {name: "Transform", description: "Transforms unit by certain conditions | Attach it to the summoned unit", icon: "Icons/Trait/Transform.png" },
+warrior: {name: "Warrior", description: "Close combat units. If HP is below 1/3, gain {1}/{1}.", icon: "Icons/Trait/Warrior.png" },
+mage: {name: "Mage", description: "Spell caster units. Gain {1} Spd.", icon: "Icons/Trait/Mage.png" },
+ranger: {name: "Ranger", description: "Ranged units. Gain {2} Spd.", icon: "Icons/Trait/Ranger.png" },
+relic: {name: "Relic", description: "Attach to Domains of the same Color.", icon: "Icons/Trait/Relic.png" },
+equipment: {name: "Equipment", description: "Attach to Creatures of the same Color/Type/Archetype.", icon: "Icons/Trait/Equipment.png" },
+aura: {name: "Aura", description: "Attach to units of the same Color.", icon: "Icons/Trait/Aura.png" },
 
 // ----- //
 // TYPES //
@@ -1885,57 +1890,57 @@ const profileBannerModal = document.getElementById('profile-banner-modal');
 const profileBanners = document.getElementById('profile-banners');
 const closeProfileBannerModalBtn = document.getElementById('close-profile-banner-modal');
 
-const defaultIcon = "CardImages/Avatars/Default.png";
-const defaultBanner = "CardImages/Banners/DefaultBanner.png";
+const defaultIcon = "Images/Avatar/Default.png";
+const defaultBanner = "Images/Banner/DefaultBanner.png";
 // --- Profile Icon Choices ---
-const iconOptions = [
-    "CardImages/Avatars/Default.png",
-    "CardImages/Avatars/Fairy.png",
-    "CardImages/Avatars/Emberling.png",
-    "CardImages/Avatars/WaterElemental.png",
-    "CardImages/Avatars/Thunderspawn.png",
-    "CardImages/Avatars/Goblin.png",
-    "CardImages/Avatars/RockLizard.png",
-    "CardImages/Avatars/Wolf.png",
-    "CardImages/Avatars/AngelicWarrior.png",
-    "CardImages/Avatars/Faelyra.png",
-    "CardImages/Avatars/Kaelyn.png",
-    "CardImages/Avatars/Zaryon.png",
-    "CardImages/Avatars/Zyra.png",
-    "CardImages/Avatars/Veniryss.png",
-    "CardImages/Avatars/Gravok.png",
-    "CardImages/Avatars/Nyzariel.png",
-    "CardImages/Avatars/Elyndra.png",
-    "CardImages/Avatars/Aureavian.png",
-    "CardImages/Avatars/Maldryss.png",
-    "CardImages/Avatars/Tydros.png",
-    "CardImages/Avatars/Ephoros.png",
-    "CardImages/Avatars/Mordrath.png",
-    "CardImages/Avatars/Raukhar.png",
-    "CardImages/Avatars/Velmira.png",
-    "CardImages/Avatars/Verdarok.png",
-    "CardImages/Avatars/Pyronyx.png",
-    "CardImages/Avatars/Abyndra.png",
-    "CardImages/Avatars/Voltrazek.png",
-    "CardImages/Avatars/Toxigon.png",
-    "CardImages/Avatars/Ferronyx.png",
-    "CardImages/Avatars/Nochtyros.png",
-    "CardImages/Avatars/Solaryth.png"
+const avatarOptions = [
+    "Images/Avatar/Default.png",
+    "Images/Avatar/Fairy.png",
+    "Images/Avatar/Emberling.png",
+    "Images/Avatar/WaterElemental.png",
+    "Images/Avatar/Thunderspawn.png",
+    "Images/Avatar/Goblin.png",
+    "Images/Avatar/RockLizard.png",
+    "Images/Avatar/Wolf.png",
+    "Images/Avatar/AngelicWarrior.png",
+    "Images/Avatar/Faelyra.png",
+    "Images/Avatar/Kaelyn.png",
+    "Images/Avatar/Zaryon.png",
+    "Images/Avatar/Zyra.png",
+    "Images/Avatar/Veniryss.png",
+    "Images/Avatar/Gravok.png",
+    "Images/Avatar/Nyzariel.png",
+    "Images/Avatar/Elyndra.png",
+    "Images/Avatar/Aureavian.png",
+    "Images/Avatar/Maldryss.png",
+    "Images/Avatar/Tydros.png",
+    "Images/Avatar/Ephoros.png",
+    "Images/Avatar/Mordrath.png",
+    "Images/Avatar/Raukhar.png",
+    "Images/Avatar/Velmira.png",
+    "Images/Avatar/Verdarok.png",
+    "Images/Avatar/Pyronyx.png",
+    "Images/Avatar/Abyndra.png",
+    "Images/Avatar/Voltrazek.png",
+    "Images/Avatar/Toxigon.png",
+    "Images/Avatar/Ferronyx.png",
+    "Images/Avatar/Nochtyros.png",
+    "Images/Avatar/Solaryth.png"
 ];
   
 const bannerOptions = [
-  "CardImages/Banners/DefaultBanner.png",
-  "CardImages/Banners/Verdara.png",
-  "CardImages/Banners/Ashkar.png",
-  "CardImages/Banners/Pearlhaven.png",
-  "CardImages/Banners/Aetherion.png",
-  "CardImages/Banners/Drakzul.png",
-  "CardImages/Banners/GlimbarkFrontier.png",
-  "CardImages/Banners/SkywardArchipelago.png",
-  "CardImages/Banners/Duskhaven.png",
-  "CardImages/Banners/Nochtyra.png",
-  "CardImages/Banners/Solmara.png",   
-  "CardImages/Banners/DefaultBanner.png"
+  "Images/Banner/DefaultBanner.png",
+  "Images/Banner/Verdara.png",
+  "Images/Banner/Ashkar.png",
+  "Images/Banner/Pearlhaven.png",
+  "Images/Banner/Aetherion.png",
+  "Images/Banner/Drakzul.png",
+  "Images/Banner/GlimbarkFrontier.png",
+  "Images/Banner/SkywardArchipelago.png",
+  "Images/Banner/Duskhaven.png",
+  "Images/Banner/Nochtyra.png",
+  "Images/Banner/Solmara.png",   
+  "Images/Banner/DefaultBanner.png"
 ];
 const PROFILE_METRICS = [
   { key: 'offense', label: 'Offense', color: '#ff6b4a' },
@@ -2003,12 +2008,12 @@ const DAILY_LOGIN_REWARDS = [
 {
   coins: 50,
   essence: 10,
-  avatar: "Cards/Avatars/Maldryss.png",
-  banner: "Cards/Banners/SkywardArchipelago.png",
-  cardback: "OtherImages/Cardbacks/CBInferno.png",
-  avatars: ["Cards/Avatars/Kaelyra.png", "Cards/Avatars/Gravok.png"],
-  banners: ["Cards/Banners/Verdara.png"],
-  cardbacks: ["OtherImages/Cardbacks/CBMystic.png"]
+  avatar: "Cards/Avatar/Maldryss.png",
+  banner: "Cards/Banner/SkywardArchipelago.png",
+  cardback: "Images/Cardbacks/CBInferno.png",
+  avatars: ["Cards/Avatar/Kaelyra.png", "Cards/Avatar/Gravok.png"],
+  banners: ["Cards/Banner/Verdara.png"],
+  cardbacks: ["Images/Cardbacks/CBMystic.png"]
 } */
   // Week 1
   { title: "Day 1", coins: 50, essence: 10 },
@@ -2113,17 +2118,17 @@ function showDailyLoginModal(dayIdx) {
            title="${isToday && !isClaimed ? "Claim today's reward" : isClaimed ? "Already claimed" : "Not yet available"}">
         <div style="font-weight:bold;color:${textColor};">${reward.title}</div>
         <div style="margin:4px 0;">
-          <img src="OtherImages/Currency/Coins.png" style="width:22px;vertical-align:middle;">
+          <img src="Images/Currency/Coins.png" style="width:22px;vertical-align:middle;">
           <span style="color:#fff;">${reward.coins}</span>
         </div>
         <div>
-          <img src="OtherImages/Icons/Essence.png" style="width:22px;vertical-align:middle;">
+          <img src="Images/Icons/Essence.png" style="width:22px;vertical-align:middle;">
           <span style="color:#fff;">${reward.essence}</span>
         </div>
         ${isToday && !isClaimed ? `<div style="position:absolute;top:6px;right:6px;">
-            <img src="OtherImages/Icons/Star.png" style="width:18px;" title="Claimable Today"></div>` : ''}
+            <img src="Images/Icons/Star.png" style="width:18px;" title="Claimable Today"></div>` : ''}
         ${isClaimed ? `<div style="position:absolute;top:6px;right:6px;">
-            <img src="OtherImages/Icons/Checkmark.png" style="width:18px;" title="Claimed"></div>` : ''}
+            <img src="Images/Icons/Checkmark.png" style="width:18px;" title="Claimed"></div>` : ''}
       </div>
     `;
   });
@@ -2355,10 +2360,10 @@ function parseEffectText(effect) {
 
   // Replace tapped/untapped icons
   effect = effect.replace(/\{CW\}/gi,
-    '<img src="OtherImages/Icons/Tapped.png" style="height:1.3em;vertical-align:middle;margin-right: 2px;" title="Tapped">'
+    '<img src="Images/Icons/Tapped.png" style="height:1.3em;vertical-align:middle;margin-right: 2px;" title="Tapped">'
   );
   effect = effect.replace(/\{CCW\}/gi,
-    '<img src="OtherImages/Icons/Untapped.png" style="height:1.3em;vertical-align:middle;margin-right: 2px;" title="Untapped">'
+    '<img src="Images/Icons/Untapped.png" style="height:1.3em;vertical-align:middle;margin-right: 2px;" title="Untapped">'
   );
 
   // Replace numbers {0}..{20} with bold numbers or custom spans
@@ -2497,9 +2502,9 @@ function getRequirementIcons(requirementsArr) {
   let icons = "";
   requirementsArr.forEach(r => {
     if (r === "CW") {
-      icons += `<img src="OtherImages/Icons/Tapped.png" title="Activate in ATK position" style="width:21px;vertical-align:middle;">`;
+      icons += `<img src="Images/Icons/Tapped.png" title="Activate in ATK position" style="width:21px;vertical-align:middle;">`;
     } else if (r === "CCW") {
-      icons += `<img src="OtherImages/Icons/Untapped.png" title="Activate in DEF position" style="width:21px;vertical-align:middle;">`;
+      icons += `<img src="Images/Icons/Untapped.png" title="Activate in DEF position" style="width:21px;vertical-align:middle;">`;
     }
     // Add more requirement icons as needed
   });
@@ -2837,7 +2842,7 @@ if (card.skill) {
   }
 
    // --- INFO BUTTON ---
-  let infoButtonHtml = `<img id="card-info-btn" src="OtherImages/Icons/Info.png" alt="Info" title="Keyword & Ability Info">`;
+  let infoButtonHtml = `<img id="card-info-btn" src="Images/Icons/Info.png" alt="Info" title="Keyword & Ability Info">`;
   // Compose modal content (side-by-side)
   modalContent.innerHTML = `
     <div class="full-card-modal-flex" style="position:relative;">
@@ -2904,10 +2909,10 @@ function renderCardCost(costData) {
     });
      // Tap/untap (case-insensitive)
     html = html.replace(/\{CW\}/gi,
-      `<img src="OtherImages/Icons/Tapped.png" style="width:22px;height:22px;vertical-align:middle;">`
+      `<img src="Images/Icons/Tapped.png" style="width:22px;height:22px;vertical-align:middle;">`
     );
     html = html.replace(/\{CCW\}/gi,
-      `<img src="OtherImages/Icons/Untapped.png" style="width:22px;height:22px;vertical-align:middle;">`
+      `<img src="Images/Icons/Untapped.png" style="width:22px;height:22px;vertical-align:middle;">`
     );
     return html;
   }
@@ -3130,7 +3135,7 @@ function getUniqueCollectedCardsCount() {
 // Placeholder for badge image selection (replace with your unlock logic)
 function getCurrentPlayerBadgeImage() {
   // For now, just default, later use player level or unlocks
-  return "OtherImages/Levels/One.png";
+  return "Images/Levels/One.png";
 }
 
 // PROFILE PANEL POP-UP
@@ -3142,7 +3147,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const playerData = {
         username: window.playerUsername || (window.auth && window.auth.currentUser && window.auth.currentUser.displayName) || "Player",
         profilePic: window.playerProfilePic || badgeImg.src,
-        profileBanner: window.playerProfileBanner || "Cards/Banners/DefaultBanner.png",
+        profileBanner: window.playerProfileBanner || "Cards/Banner/DefaultBanner.png",
         power: typeof calculatePlayerPower === "function" ? calculatePlayerPower() : 0,
         achievements: (typeof getAchievementData === "function" && typeof ACHIEVEMENTS !== "undefined")
           ? ACHIEVEMENTS.filter(a => getAchievementData()[a.id]?.claimed).map(a => a.id)
@@ -3215,8 +3220,8 @@ function renderPlayerPower() {
 
 function renderProfilePanel(profile, options = {}) {
   profile = profile || {};
-  const profileBanner = profile.profileBanner || profile.banner || "Cards/Banners/DefaultBanner.png";
-  const profilePic = profile.profilePic || profile.avatar || "Cards/Avatars/Default.png";
+  const profileBanner = profile.profileBanner || profile.banner || "Cards/Banner/DefaultBanner.png";
+  const profilePic = profile.profilePic || profile.avatar || "Cards/Avatar/Default.png";
   const username = profile.username || "Unknown";
   const power = typeof profile.power === "number" ? profile.power : 0;
   const displayUsername = username.length > 12 ? username.slice(0, 12) + "…" : username;
@@ -3304,8 +3309,8 @@ function showProfileModal(profile) {
   // Use only what's passed in
   // Example:
   const username = profile.username || "Unknown";
-  const profilePic = profile.profilePic || profile.avatar || "Cards/Avatars/Default.png";
-  const profileBanner = profile.profileBanner || profile.banner || "Cards/Banners/DefaultBanner.png";
+  const profilePic = profile.profilePic || profile.avatar || "Cards/Avatar/Default.png";
+  const profileBanner = profile.profileBanner || profile.banner || "Cards/Banner/DefaultBanner.png";
   const power = typeof profile.power === "number" ? profile.power : 0;
   const achievements = profile.achievements || [];
   const badges = profile.badges || [];
@@ -3500,7 +3505,7 @@ function showInputModal({
 }
 window.showInputModal = showInputModal;
 // Example usage (for testing in console):
-// showProfileModal({username:"Gabo", profilePic:"Cards/Avatars/Faelyra.png", profileBanner:"Cards/Banners/Verdara.png", power:1234, achievements:["achv1","achv2"], badges:["badge1"]});
+// showProfileModal({username:"Gabo", profilePic:"Cards/Avatar/Faelyra.png", profileBanner:"Cards/Banner/Verdara.png", power:1234, achievements:["achv1","achv2"], badges:["badge1"]});
 // FILTERS FOR GALLERY AND DECK BUILDER
 function filterCards({
   collection,
@@ -3968,7 +3973,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // --- Render Profile Avatars ---
   function renderProfileIcons(selectedIcon, unlocked) {
     profileIcons.innerHTML = "";
-    iconOptions.forEach(iconUrl => {
+    avatarOptions.forEach(iconUrl => {
       if (!unlocked.includes(iconUrl)) return;
       const img = document.createElement('img');
       img.src = iconUrl;
