@@ -2254,6 +2254,7 @@ function createCardMenu(buttons = []) {
     btn.className = 'btn-secondary';
     if (btnConf.html) btn.innerHTML = btnConf.text;
     else btn.innerText = btnConf.text;
+    if (btnConf.title) btn.title = btnConf.title;
     if (btnConf.disabled) {
       btn.disabled = true;
       btn.classList.add("btn-disabled");
@@ -2497,6 +2498,7 @@ if (isCardActionable(cardObj, cardData, gameState, 'hand')) {
       buttons.push({
         text: `${skillObj.name} ${parseEffectText(skillObj.cost)}${reqIcons}`,
         html: true,
+        title: titleText, 
         disabled: !isEnabled,
         onClick: function(e) {
           e.stopPropagation();
@@ -3290,7 +3292,7 @@ function renderCardOnField(cardObj, zoneId) {
       const icon = document.createElement('img');
       icon.src = skill.icon;
       icon.alt = skill.name || "Skill";
-      icon.title = skill.name || "Skill";
+      icon.title = _escapeHtmlInline(skill.title || skillTitle(skill) || skill.name || "Skill");
       icon.className = 'card-skill-icon';
       iconRow.appendChild(icon);
     });
@@ -3981,6 +3983,7 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
       buttons.push({
         text: `${skillObj.name} ${parseEffectText(skillObj.cost)}${reqIcons}`,
         html: true,
+        title: titleText, 
         disabled: !isEnabled,
         title: title,
         onClick: function(e) {
@@ -6573,7 +6576,42 @@ function tickStatusDurations(phaseObj) {
     });
   });
 }
+// --- Skill title helper (add near other shared helpers) ---
+function _skillTitleFromEffect(effect) {
+  if (!effect) return '';
+  const effects = Array.isArray(effect) ? effect : [effect];
+  const parts = effects.map(e => {
+    if (!e) return '';
+    const cls = e.class || e.type || e.effect;
+    const amount = (typeof e.amount === 'number') ? e.amount : (typeof e.value === 'number' ? e.value : null);
+    if (cls && amount !== null) {
+      // e.g. "Burn {3}"
+      return `${String(cls).charAt(0).toUpperCase() + String(cls).slice(1)} {${amount}}`;
+    }
+    if (cls === 'Buff' && (e.atk || e.def || e.hp)) {
+      const buffs = [];
+      if (e.atk) buffs.push(`+${e.atk} ATK`);
+      if (e.def) buffs.push(`+${e.def} DEF`);
+      if (e.hp)  buffs.push(`+${e.hp} HP`);
+      return `Buff (${buffs.join(', ')})`;
+    }
+    if (cls) return String(cls).charAt(0).toUpperCase() + String(cls).slice(1);
+    if (typeof e === 'string') return e;
+    return '';
+  }).filter(Boolean);
+  return parts.join(' / ');
+}
 
+function skillTitle(skill) {
+  if (!skill) return '';
+  if (skill.title && String(skill.title).trim()) return String(skill.title).trim();
+  const costPart = skill.cost ? `${String(skill.cost)} ` : '';
+  const effectText = _skillTitleFromEffect(skill.effect || skill.effects || skill.resolution || skill.effectText);
+  if (effectText) return (costPart + effectText).trim();
+  if (skill.name) return skill.name;
+  return '';
+}
+window.skillTitle = skillTitle; // optional global for console/tests
 // ----------------------------------- //
 // --- Card Field Helper Functions --- //
 // ----------------------------------- //
