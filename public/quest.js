@@ -5,15 +5,15 @@ const COLOR_QUESTS = ['green', 'red', 'blue', 'yellow', 'purple', 'gray', 'black
 // Quest LIST
 const QUEST_SLOTS = 5;
 const QUEST_POOL = [
-  { id: 'purchase_pack', type: 'quest', description: 'Purchase a Booster Pack', goal: 1, reward: { type: 'currency', amount: 100 }, image: 'CardImages/Blank/Pack.png', progress: 0, claimed: false, completed: false, refillAt: null},
-  { id: 'collect_green_card', type: 'quest', description: 'Collect a Green Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'CardImages/Blank/GreenCard.png', progress: 0, claimed: false, completed: false, refillAt: null},
-  { id: 'collect_red_card', type: 'quest', description: 'Collect a Red Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'CardImages/Blank/RedCard.png', progress: 0, claimed: false, completed: false, refillAt: null},
-  { id: 'collect_blue_card', type: 'quest', description: 'Collect a Blue Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'CardImages/Blank/BlueCard.png', progress: 0, claimed: false, completed: false, refillAt: null},
-  { id: 'collect_yellow_card', type: 'quest', description: 'Collect a Yellow Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'CardImages/Blank/YellowCard.png', progress: 0, claimed: false, completed: false, refillAt: null},
-  { id: 'collect_purple_card', type: 'quest', description: 'Collect a Purple Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'CardImages/Blank/PurpleCard.png', progress: 0, claimed: false, completed: false, refillAt: null},
-  { id: 'collect_gray_card', type: 'quest', description: 'Collect a Gray Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'CardImages/Blank/GrayCard.png', progress: 0, claimed: false, completed: false, refillAt: null},
-  { id: 'collect_black_card', type: 'quest', description: 'Collect a Black Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'CardImages/Blank/BlackCard.png', progress: 0, claimed: false, completed: false, refillAt: null},
-  { id: 'collect_white_card', type: 'quest', description: 'Collect a White Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'CardImages/Blank/WhiteCard.png', progress: 0, claimed: false, completed: false, refillAt: null},
+  { id: 'purchase_pack', type: 'quest', description: 'Purchase a Booster Pack', goal: 1, reward: { type: 'currency', amount: 100 }, image: 'Images/Blank/Pack.png', progress: 0, claimed: false, completed: false, refillAt: null},
+  { id: 'collect_green_card', type: 'quest', description: 'Collect a Green Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'Images/Blank/GreenCard.png', progress: 0, claimed: false, completed: false, refillAt: null},
+  { id: 'collect_red_card', type: 'quest', description: 'Collect a Red Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'Images/Blank/RedCard.png', progress: 0, claimed: false, completed: false, refillAt: null},
+  { id: 'collect_blue_card', type: 'quest', description: 'Collect a Blue Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'Images/Blank/BlueCard.png', progress: 0, claimed: false, completed: false, refillAt: null},
+  { id: 'collect_yellow_card', type: 'quest', description: 'Collect a Yellow Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'Images/Blank/YellowCard.png', progress: 0, claimed: false, completed: false, refillAt: null},
+  { id: 'collect_purple_card', type: 'quest', description: 'Collect a Purple Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'Images/Blank/PurpleCard.png', progress: 0, claimed: false, completed: false, refillAt: null},
+  { id: 'collect_gray_card', type: 'quest', description: 'Collect a Gray Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'Images/Blank/GrayCard.png', progress: 0, claimed: false, completed: false, refillAt: null},
+  { id: 'collect_black_card', type: 'quest', description: 'Collect a Black Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'Images/Blank/BlackCard.png', progress: 0, claimed: false, completed: false, refillAt: null},
+  { id: 'collect_white_card', type: 'quest', description: 'Collect a White Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'Images/Blank/WhiteCard.png', progress: 0, claimed: false, completed: false, refillAt: null},
   { questId: null, refillAt: 1720000000000 },
 ];
 
@@ -28,14 +28,14 @@ const COLOR_ACHIEVEMENT_TIERS = [
   { tier: 5, goal: 5000, description: "Collect 5000 {color} cards", reward: 500 },
 ];
 const COLOR_ACHIEVEMENTS = [
-  { color: 'green',  image: 'CardImages/Blank/GreenCard.png' },
-  { color: 'red',    image: 'CardImages/Blank/RedCard.png' },
-  { color: 'blue',   image: 'CardImages/Blank/BlueCard.png' },
-  { color: 'yellow', image: 'CardImages/Blank/YellowCard.png' },
-  { color: 'purple', image: 'CardImages/Blank/PurpleCard.png' },
-  { color: 'gray',   image: 'CardImages/Blank/GrayCard.png' },
-  { color: 'black',  image: 'CardImages/Blank/BlackCard.png' },
-  { color: 'white',  image: 'CardImages/Blank/WhiteCard.png' },
+  { color: 'green',  image: 'Images/Blank/GreenCard.png' },
+  { color: 'red',    image: 'Images/Blank/RedCard.png' },
+  { color: 'blue',   image: 'Images/Blank/BlueCard.png' },
+  { color: 'yellow', image: 'Images/Blank/YellowCard.png' },
+  { color: 'purple', image: 'Images/Blank/PurpleCard.png' },
+  { color: 'gray',   image: 'Images/Blank/GrayCard.png' },
+  { color: 'black',  image: 'Images/Blank/BlackCard.png' },
+  { color: 'white',  image: 'Images/Blank/WhiteCard.png' },
 ];
 const colorAchievements = generateAchievements(COLOR_ACHIEVEMENTS, COLOR_ACHIEVEMENT_TIERS, 'color');
 
@@ -50,16 +50,16 @@ const TYPE_ACHIEVEMENT_TIERS = [
   { tier: 5, goal: 2000, reward: { type: 'currency', amount: 3500 }, description: "Collect 2000 {type} cards" }
 ];
 const TYPE_ACHIEVEMENTS = [
-  { type: 'Avian', label: 'Avian', icon: 'CardImages/Avian/Avian.png', colorHex: '#a47c3b' },
-  { type: 'Beast', label: 'Beast', icon: 'CardImages/Blank/BeastCard.png', colorHex: '#a47c3b' },
-  { type: 'Construct', label: 'Construct', icon: 'CardImages/Construct/Construct.png', colorHex: '#a47c3b' },
-  { type: 'Demon', label: 'Demon', icon: 'CardImages/Demon/Demon.png', colorHex: '#e0801c' },
-  { type: 'Dragon', label: 'Dragon', icon: 'CardImages/Blank/DragonCard.png', colorHex: '#e0801c' },
-  { type: 'Elemental', label: 'Elemental', icon: 'CardImages/Elemental/Elemental.png', colorHex: '#e0801c' },
-  { type: 'Faefolk', label: 'Faefolk', icon: 'CardImages/Faefolk/Faefolk.png', colorHex: '#e0801c' },
-  { type: 'Mage', label: 'Mage', icon: 'CardImages/Mage/Mage.png', colorHex: '#a47c3b' },
-  { type: 'Undead', label: 'Undead', icon: 'CardImages/Undead/Undead.png', colorHex: '#a47c3b' },
-  { type: 'Warrior', label: 'Warrior', icon: 'CardImages/Warrior/Warrior.png', colorHex: '#e0801c' },
+  { type: 'Avian', label: 'Avian', icon: 'Icons/Avian/Avian.png', colorHex: '#a47c3b' },
+  { type: 'Beast', label: 'Beast', icon: 'Icons/Blank/BeastCard.png', colorHex: '#a47c3b' },
+  { type: 'Construct', label: 'Construct', icon: 'Icons/Construct/Construct.png', colorHex: '#a47c3b' },
+  { type: 'Demon', label: 'Demon', icon: 'Icons/Demon/Demon.png', colorHex: '#e0801c' },
+  { type: 'Dragon', label: 'Dragon', icon: 'Icons/Blank/DragonCard.png', colorHex: '#e0801c' },
+  { type: 'Elemental', label: 'Elemental', icon: 'Icons/Elemental/Elemental.png', colorHex: '#e0801c' },
+  { type: 'Faefolk', label: 'Faefolk', icon: 'Icons/Faefolk/Faefolk.png', colorHex: '#e0801c' },
+  { type: 'Mage', label: 'Mage', icon: 'Icons/Mage/Mage.png', colorHex: '#a47c3b' },
+  { type: 'Undead', label: 'Undead', icon: 'Icons/Undead/Undead.png', colorHex: '#a47c3b' },
+  { type: 'Warrior', label: 'Warrior', icon: 'Icons/Warrior/Warrior.png', colorHex: '#e0801c' },
   // ... add more types as needed ...
 ];
 const typeAchievements = generateAchievements(TYPE_ACHIEVEMENTS, TYPE_ACHIEVEMENT_TIERS, 'type');
@@ -75,40 +75,63 @@ const ARCHETYPE_ACHIEVEMENT_TIERS = [
   { tier: 5, goal: 1000, reward: { type: 'currency', amount: 2500 } }
 ];
 const ARCHETYPE_ACHIEVEMENTS = [
-  { value: 'Satyr', label: 'Satyr', icon: 'CardImages/Satyr/FaeliraSatyrEmpress.png', colorHex: '#888888' },
-  { value: 'Goblin', label: 'Goblin', icon: 'CardImages/Goblin/GoblinWarlord.png', colorHex: '#888888' },
-  { value: 'Duskwing', label: 'Duskwing', icon: 'CardImages/Duskwing/RaukharDuskwingKnight.png', colorHex: '#888888' },
-  { value: 'Fireland', label: 'Fireland', icon: 'CardImages/Fireland/EphorosFirelandBehemoth.png', colorHex: '#888888' },
-  { value: 'Frostland', label: 'Frostland', icon: 'CardImages/Frostland/EirawenFrostlandQueen.png', colorHex: '#888888' },
-  { value: 'Golemheart', label: 'Golemheart', icon: 'CardImages/Golem/PyrokragGolemheartTitan.png', colorHex: '#888888' },
+  { value: 'Satyr', label: 'Satyr', icon: 'Images/Satyr/FaeliraSatyrEmpress.png', colorHex: '#888888' },
+  { value: 'Goblin', label: 'Goblin', icon: 'Images/Goblin/GoblinWarlord.png', colorHex: '#888888' },
+  { value: 'Duskwing', label: 'Duskwing', icon: 'Images/Duskwing/RaukharDuskwingKnight.png', colorHex: '#888888' },
+  { value: 'Fireland', label: 'Fireland', icon: 'Images/Fireland/EphorosFirelandBehemoth.png', colorHex: '#888888' },
+  { value: 'Frostland', label: 'Frostland', icon: 'Images/Frostland/EirawenFrostlandQueen.png', colorHex: '#888888' },
+  { value: 'Golemheart', label: 'Golemheart', icon: 'Images/Golem/PyrokragGolemheartTitan.png', colorHex: '#888888' },
 
   // --- Dragons --- //
-  { value: 'Thornwing', label: 'Thornwing', icon: 'CardImages/Thornwing/VerdarokSylvanThornwing.png', colorHex: '#888888' },
-  { value: 'Blazingscale', label: 'Blazingscale', icon: 'CardImages/Blazingscale/PyranixInfernoBlazingscale.png', colorHex: '#888888' },
-  { value: 'Abyssdrake', label: 'Abyssdrake', icon: 'CardImages/Abyssdrake/AbyndraTidalAbyssdrake.png', colorHex: '#888888' },
-  { value: 'Stormrazor', label: 'Stormrazor', icon: 'CardImages/Stormrazor/VoltrazekTempestStormrazor.png', colorHex: '#888888' },
-  { value: 'Ironclaw', label: 'Ironclaw', icon: 'CardImages/Ironclaw/FerronyxTerraIronclaw.png', colorHex: '#888888' },
-  { value: 'Venomspine', label: 'Venomspine', icon: 'CardImages/Venomspine/MyxarothCorruptedVenomspine.png', colorHex: '#888888' },
-  { value: 'Solarwyrm', label: 'Solarwyrm', icon: 'CardImages/Solarwyrm/SolarythRadianceSolarwyrm.png', colorHex: '#888888' },
-  { value: 'Nightshroud', label: 'Nightshroud', icon: 'CardImages/Nightshroud/NochtyrosUmbralNightshroud.png', colorHex: '#888888' },
+  { value: 'Thornwing', label: 'Thornwing', icon: 'Images/Thornwing/VerdarokSylvanThornwing.png', colorHex: '#888888' },
+  { value: 'Blazingscale', label: 'Blazingscale', icon: 'Images/Blazingscale/PyranixInfernoBlazingscale.png', colorHex: '#888888' },
+  { value: 'Abyssdrake', label: 'Abyssdrake', icon: 'Images/Abyssdrake/AbyndraTidalAbyssdrake.png', colorHex: '#888888' },
+  { value: 'Stormrazor', label: 'Stormrazor', icon: 'Images/Stormrazor/VoltrazekTempestStormrazor.png', colorHex: '#888888' },
+  { value: 'Ironclaw', label: 'Ironclaw', icon: 'Images/Ironclaw/FerronyxTerraIronclaw.png', colorHex: '#888888' },
+  { value: 'Venomspine', label: 'Dreadspine', icon: 'Images/Venomspine/MyxarothCorruptedDreadspine.png', colorHex: '#888888' },
+  { value: 'Solarwyrm', label: 'Solarwyrm', icon: 'Images/Solarwyrm/SolarythRadianceSolarwyrm.png', colorHex: '#888888' },
+  { value: 'Nightshroud', label: 'Nightshroud', icon: 'Images/Nightshroud/NochtyrosUmbralNightshroud.png', colorHex: '#888888' },
 
   // --- Constructs --- //
-  { value: 'Grovehusk', label: 'Grovehusk', icon: 'CardImages/Grovehusk/Grovehusk.png', colorHex: '#888888' },
-  { value: 'Cindercore', label: 'Cindercore', icon: 'CardImages/Cindercore/IgnavarynCindercoreAutomaton.png', colorHex: '#888888' },
-  { value: 'Coralbound', label: 'Coralbound', icon: 'CardImages/Coralbound/MaelvyrnCoralboundAutomaton.png', colorHex: '#888888' },
-  { value: 'Stormdrive', label: 'Stormdrive', icon: 'CardImages/Stormdrive/Stormdrive.png', colorHex: '#888888' },
-  { value: 'Ironwrought', label: 'Ironwrought', icon: 'CardImages/Ironwrought/Ironwrought.png', colorHex: '#888888' },
-  { value: 'Plagueaxis', label: 'Plagueaxis', icon: 'CardImages/Plagueaxis/Plagueaxis.png', colorHex: '#888888' },
-  { value: 'Solarforge', label: 'Solarforge', icon: 'CardImages/Solarforge/Solarforge.png', colorHex: '#888888' },
-  { value: 'Shadowgear', label: 'Shadowgear', icon: 'CardImages/Shadowgear/Shadowgear.png', colorHex: '#888888' },
+  { value: 'Grovehusk', label: 'Grovehusk', icon: 'Images/Grovehusk/Grovehusk.png', colorHex: '#888888' },
+  { value: 'Cindercore', label: 'Cindercore', icon: 'Images/Cindercore/IgnavarynCindercoreAutomaton.png', colorHex: '#888888' },
+  { value: 'Coralbound', label: 'Coralbound', icon: 'Images/Coralbound/MaelvyrnCoralboundAutomaton.png', colorHex: '#888888' },
+  { value: 'Stormdrive', label: 'Stormdrive', icon: 'Images/Stormdrive/Stormdrive.png', colorHex: '#888888' },
+  { value: 'Ironwrought', label: 'Ironwrought', icon: 'Images/Ironwrought/Ironwrought.png', colorHex: '#888888' },
+  { value: 'Plagueaxis', label: 'Plagueaxis', icon: 'Images/Plagueaxis/Plagueaxis.png', colorHex: '#888888' },
+  { value: 'Solarforge', label: 'Solarforge', icon: 'Images/Solarforge/Solarforge.png', colorHex: '#888888' },
+  { value: 'Shadowgear', label: 'Shadowgear', icon: 'Images/Shadowgear/Shadowgear.png', colorHex: '#888888' },
 
-  { value: 'Hybrid', label: 'Hybrid', icon: 'CardImages/Hybrid/Hybrid.png', colorHex: '#888888' },
-  { value: 'Webcursed', label: 'Webcursed', icon: 'CardImages/Webcursed/Webcursed.png', colorHex: '#888888' },
-  { value: 'Seraph', label: 'Seraph', icon: 'CardImages/Seraph/Seraph.png', colorHex: '#888888' },
-  { value: 'Zephyra', label: 'Zephyra', icon: 'CardImages/Zephyra/GarudaWingsofZephyra.png', colorHex: '#888888' },
+  { value: 'Hybrid', label: 'Hybrid', icon: 'Images/Hybrid/Hybrid.png', colorHex: '#888888' },
+  { value: 'Webcursed', label: 'Webcursed', icon: 'Images/Webcursed/Webcursed.png', colorHex: '#888888' },
+  { value: 'Seraph', label: 'Seraph', icon: 'Images/Seraph/Seraph.png', colorHex: '#888888' },
+  { value: 'Zephyra', label: 'Zephyra', icon: 'Images/Zephyra/GarudaWingsofZephyra.png', colorHex: '#888888' },
   // ...add more archetypes as needed
 ];
 const archetypeAchievements = generateAchievements(ARCHETYPE_ACHIEVEMENTS, ARCHETYPE_ACHIEVEMENT_TIERS, 'archetype');
+
+// ------------------------- //
+// --- TYPE ACHIEVEMENTS --- //
+// ------------------------- //
+const TRAIT_ACHIEVEMENT_TIERS = [
+  { tier: 1, goal: 30,   reward: { type: 'currency', amount: 50 }, description: "Collect 30 {trait} cards" },
+  { tier: 2, goal: 100,  reward: { type: 'currency', amount: 120 }, description: "Collect 100 {trait} cards" },
+  { tier: 3, goal: 250,  reward: { type: 'currency', amount: 350 }, description: "Collect 250 {trait} cards" },
+  { tier: 4, goal: 800,  reward: { type: 'currency', amount: 1200 }, description: "Collect 800 {trait} cards" },
+  { tier: 5, goal: 2000, reward: { type: 'currency', amount: 3500 }, description: "Collect 2000 {trait} cards" }
+];
+const TRAIT_ACHIEVEMENTS = [
+  { trait: 'Champion', label: 'Champion', icon: 'Icons/Trait/Champion.png', colorHex: '#a47c3b' },
+  { trait: 'Evolution', label: 'Evolution', icon: 'Icons/Trait/Evolution.png', colorHex: '#a47c3b' },
+  { trait: 'Fusion', label: 'Fusion', icon: 'Icons/Trait/Fusion.png', colorHex: '#a47c3b' },
+  { trait: 'Relic', label: 'Relic', icon: 'Icons/Trait/Relic.png', colorHex: '#e0801c' },
+  { trait: 'Equipment', label: 'Equipment', icon: 'Icons/Trait/Equipment.png', colorHex: '#e0801c' },
+  { trait: 'Mage', label: 'Mage', icon: 'Icons/Trait/Mage.png', colorHex: '#a47c3b' },
+  { trait: 'Ranger', label: 'Ranger', icon: 'Icons/Trait/Ranger.png', colorHex: '#a47c3b' },
+  { trait: 'Warrior', label: 'Warrior', icon: 'Icons/Trait/Warrior.png', colorHex: '#e0801c' },
+  // ... add more types as needed ...
+];
+const traitAchievements = generateAchievements(TYPE_ACHIEVEMENTS, TYPE_ACHIEVEMENT_TIERS, 'type');
 
 // ------------------------------ //
 // --- COSMETICS ACHIEVEMENTS --- //
@@ -352,7 +375,7 @@ function renderQuests() {
       const entry = document.createElement('div');
       entry.className = 'quest-entry';
       entry.innerHTML = `
-        <img src="${questDef.image || 'CardImages/Domains/placeholder.png'}" alt="Quest" class="quest-image">
+        <img src="${questDef.image || 'Images/Domains/placeholder.png'}" alt="Quest" class="quest-image">
         <div class="quest-main">
           <div class="quest-desc">${questDef.description}</div>
           ${timerHtml}
