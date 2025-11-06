@@ -50,16 +50,16 @@ const TYPE_ACHIEVEMENT_TIERS = [
   { tier: 5, goal: 2000, reward: { type: 'currency', amount: 3500 }, description: "Collect 2000 {type} cards" }
 ];
 const TYPE_ACHIEVEMENTS = [
-  { type: 'Avian', label: 'Avian', icon: 'Icons/Avian/Avian.png', colorHex: '#a47c3b' },
-  { type: 'Beast', label: 'Beast', icon: 'Icons/Blank/BeastCard.png', colorHex: '#a47c3b' },
-  { type: 'Construct', label: 'Construct', icon: 'Icons/Construct/Construct.png', colorHex: '#a47c3b' },
-  { type: 'Demon', label: 'Demon', icon: 'Icons/Demon/Demon.png', colorHex: '#e0801c' },
-  { type: 'Dragon', label: 'Dragon', icon: 'Icons/Blank/DragonCard.png', colorHex: '#e0801c' },
-  { type: 'Elemental', label: 'Elemental', icon: 'Icons/Elemental/Elemental.png', colorHex: '#e0801c' },
-  { type: 'Faefolk', label: 'Faefolk', icon: 'Icons/Faefolk/Faefolk.png', colorHex: '#e0801c' },
-  { type: 'Mage', label: 'Mage', icon: 'Icons/Mage/Mage.png', colorHex: '#a47c3b' },
-  { type: 'Undead', label: 'Undead', icon: 'Icons/Undead/Undead.png', colorHex: '#a47c3b' },
-  { type: 'Warrior', label: 'Warrior', icon: 'Icons/Warrior/Warrior.png', colorHex: '#e0801c' },
+  { type: 'Avian', label: 'Avian', icon: 'Icons/Type/Avian.png', colorHex: '#a47c3b' },
+  { type: 'Beast', label: 'Beast', icon: 'Icons/Type/BeastCard.png', colorHex: '#a47c3b' },
+  { type: 'Brute', label: 'Brute', icon: 'Icons/Type/Brute.png', colorHex: '#a47c3b' },
+  { type: 'Construct', label: 'Construct', icon: 'Icons/Type/Construct.png', colorHex: '#a47c3b' },
+  { type: 'Demon', label: 'Demon', icon: 'Icons/Type/Demon.png', colorHex: '#e0801c' },
+  { type: 'Dragon', label: 'Dragon', icon: 'Icons/Type/Dragon.png', colorHex: '#e0801c' },
+  { type: 'Elemental', label: 'Elemental', icon: 'Icons/Type/Elemental.png', colorHex: '#e0801c' },
+  { type: 'Faefolk', label: 'Faefolk', icon: 'Icons/Type/Faefolk.png', colorHex: '#e0801c' },
+  { type: 'Undead', label: 'Undead', icon: 'Icons/Type/Undead.png', colorHex: '#a47c3b' },
+  { type: 'Warrior', label: 'Warrior', icon: 'Icons/Type/Warrior.png', colorHex: '#e0801c' },
   // ... add more types as needed ...
 ];
 const typeAchievements = generateAchievements(TYPE_ACHIEVEMENTS, TYPE_ACHIEVEMENT_TIERS, 'type');
@@ -68,11 +68,11 @@ const typeAchievements = generateAchievements(TYPE_ACHIEVEMENTS, TYPE_ACHIEVEMEN
 // --- ARCHETYPE ACHIEVEMENTS --- //
 // ------------------------------ //
 const ARCHETYPE_ACHIEVEMENT_TIERS = [
-  { tier: 1, goal: 15,   reward: { type: 'currency', amount: 40 } },
-  { tier: 2, goal: 50,   reward: { type: 'currency', amount: 100 } },
-  { tier: 3, goal: 150,  reward: { type: 'currency', amount: 300 } },
-  { tier: 4, goal: 400,  reward: { type: 'currency', amount: 900 } },
-  { tier: 5, goal: 1000, reward: { type: 'currency', amount: 2500 } }
+  { tier: 1, goal: 15,   reward: { type: 'currency', amount: 40 }, description: "Collect 2000 {type} cards" },
+  { tier: 2, goal: 50,   reward: { type: 'currency', amount: 100 }, description: "Collect 2000 {type} cards" },
+  { tier: 3, goal: 150,  reward: { type: 'currency', amount: 300 }, description: "Collect 2000 {type} cards" },
+  { tier: 4, goal: 400,  reward: { type: 'currency', amount: 900 }, description: "Collect 2000 {type} cards" },
+  { tier: 5, goal: 1000, reward: { type: 'currency', amount: 2500 }, description: "Collect 2000 {type} cards" }
 ];
 const ARCHETYPE_ACHIEVEMENTS = [
   { value: 'Satyr', label: 'Satyr', icon: 'Images/Satyr/FaeliraSatyrEmpress.png', colorHex: '#888888' },
@@ -88,7 +88,7 @@ const ARCHETYPE_ACHIEVEMENTS = [
   { value: 'Abyssdrake', label: 'Abyssdrake', icon: 'Images/Abyssdrake/AbyndraTidalAbyssdrake.png', colorHex: '#888888' },
   { value: 'Stormrazor', label: 'Stormrazor', icon: 'Images/Stormrazor/VoltrazekTempestStormrazor.png', colorHex: '#888888' },
   { value: 'Ironclaw', label: 'Ironclaw', icon: 'Images/Ironclaw/FerronyxTerraIronclaw.png', colorHex: '#888888' },
-  { value: 'Venomspine', label: 'Dreadspine', icon: 'Images/Venomspine/MyxarothCorruptedDreadspine.png', colorHex: '#888888' },
+  { value: 'Dreadspine', label: 'Dreadspine', icon: 'Images/Venomspine/MyxarothCorruptedDreadspine.png', colorHex: '#888888' },
   { value: 'Solarwyrm', label: 'Solarwyrm', icon: 'Images/Solarwyrm/SolarythRadianceSolarwyrm.png', colorHex: '#888888' },
   { value: 'Nightshroud', label: 'Nightshroud', icon: 'Images/Nightshroud/NochtyrosUmbralNightshroud.png', colorHex: '#888888' },
 
@@ -129,9 +129,8 @@ const TRAIT_ACHIEVEMENTS = [
   { trait: 'Mage', label: 'Mage', icon: 'Icons/Trait/Mage.png', colorHex: '#a47c3b' },
   { trait: 'Ranger', label: 'Ranger', icon: 'Icons/Trait/Ranger.png', colorHex: '#a47c3b' },
   { trait: 'Warrior', label: 'Warrior', icon: 'Icons/Trait/Warrior.png', colorHex: '#e0801c' },
-  // ... add more types as needed ...
 ];
-const traitAchievements = generateAchievements(TYPE_ACHIEVEMENTS, TYPE_ACHIEVEMENT_TIERS, 'type');
+const traitAchievements = generateAchievements(TRAIT_ACHIEVEMENTS, TRAIT_ACHIEVEMENT_TIERS, 'trait');
 
 // ------------------------------ //
 // --- COSMETICS ACHIEVEMENTS --- //
