@@ -51,39 +51,41 @@ let showFavoritesOnlyBuilder = false;
 
 // Cardback options (expand as needed)
 const cardbackOptions = [
-  "OtherImages/Cardbacks/CBDefault.png",
-  "OtherImages/Cardbacks/Cardback1.png",
-  "OtherImages/Cardbacks/CBFairy.png",
-  "OtherImages/Cardbacks/CBCindercore.png",
-  "OtherImages/Cardbacks/CBConstructs.png",
-  "OtherImages/Cardbacks/CBCoralbound.png",
-  "OtherImages/Cardbacks/CBFirelands.png",
-  "OtherImages/Cardbacks/CBGoblins.png",
-  "OtherImages/Cardbacks/CBGolemheart.png",
-  "OtherImages/Cardbacks/CBMerfolk.png",
-  "OtherImages/Cardbacks/CBMoonfang.png",
-  "OtherImages/Cardbacks/CBSatyr.png",
-  "OtherImages/Cardbacks/CBShadowbound.png",
-  "OtherImages/Cardbacks/CBStonebound.png",
-  "OtherImages/Cardbacks/CBStormcore.png",
-  "OtherImages/Cardbacks/CBVenomcore.png",
-  "OtherImages/Cardbacks/CBWoodframe.png"
+  'Images/Cardback/CBDefault.png',
+  'Images/Cardback/Cardback1.png',
+  'Images/Cardback/CBFairy.png',
+  'Images/Cardback/CBCindercore.png',
+  'Images/Cardback/CBConstructs.png',
+  'Images/Cardback/CBCoralbound.png',
+  'Images/Cardback/CBFirelands.png',
+  'Images/Cardback/CBGoblins.png',
+  'Images/Cardback/CBGolemheart.png',
+  'Images/Cardback/CBMerfolk.png',
+  'Images/Cardback/CBMoonfang.png',
+  'Images/Cardback/CBSatyr.png',
+  'Images/Cardback/CBShadowbound.png',
+  'Images/Cardback/CBStonebound.png',
+  'Images/Cardback/CBStormcore.png',
+  'Images/Cardback/CBVenomcore.png',
+  'Images/Cardback/CBWoodframe.png'
 ];
 const AUTOFILL_COLORS = [
-  { name: "Green", icon: "OtherImages/Essence/Green.png" },
-  { name: "Red", icon: "OtherImages/Essence/Red.png" },
-  { name: "Blue", icon: "OtherImages/Essence/Blue.png" },
-  { name: "White", icon: "OtherImages/Essence/White.png" },
-  { name: "Black", icon: "OtherImages/Essence/Black.png" },
-  { name: "Yellow", icon: "OtherImages/Essence/Yellow.png" },
-  { name: "Gray", icon: "OtherImages/Essence/Gray.png" },
-  { name: "Purple", icon: "OtherImages/Essence/Purple.png" },
+  { name: "Green", icon: 'Icons/Essence/Green.png' },
+  { name: "Red", icon: 'Icons/Essence/Red.png' },
+  { name: "Blue", icon: 'Icons/Essence/Blue.png' },
+  { name: "White", icon: 'Icons/Essence/White.png' },
+  { name: "Black", icon: 'Icons/Essence/Black.png' },
+  { name: "Yellow", icon: 'Icons/Essence/Yellow.png' },
+  { name: "Gray", icon: 'Icons/Essence/Gray.png' },
+  { name: "Purple", icon: 'Icons/Essence/Purple.png' },
 ];
 const AUTOFILL_TYPES = [
-  "Elemental","Dragon","Construct","Beast","Undead","Demon","Mage","Equipment","Relic"
+  "Beast", "Brute", "Construct", "Demon", "Dragon", "Elemental", "Faefolk", "Undead"
 ];
 const AUTOFILL_ARCHETYPES = [
-  "Blazefeather","Cindercore","Coralbound","Firelands","Frostlands","Golemheart","Moonfang","Skullframe","Voltwing","Zephyra"
+  "Abyssdrake","Blazefeather","Blazingscale","Cindercore","Coralbound","Corruptor","Duskwing","Dwarf","Elf","Fireland",
+  "Frostland","Goblin","Hydral","Golemheart","Moonfang","Orc","Plagueaxis","Pyroclast","Satyr","Skullframe","Stormrazor",
+  "Thornwing","Voltwing","Zephyra"
 ];
 
 // Show modal when autofill icon clicked
@@ -238,7 +240,7 @@ if (deck.highlightArt) {
     <img class="deck-slot-highlight-img" src="${deck.highlightArt}" alt="highlight" />
     <div class="deck-slot-title-overlay">${slotName}</div>
     <img class="deck-slot-cardback-img"
-         src="${deck.cardbackArt || "OtherImages/Cardbacks/CBDefault.png"}"
+         src="${deck.cardbackArt || 'Images/Cardback/CBDefault.png'}"
          alt="Cardback"
          style="position:absolute;right:8px;bottom:8px;width:32px;height:44px;z-index:10;">
   `;
@@ -393,9 +395,9 @@ function updateDeckHighlightArt(deckName) {
   const deck = decks[deckName] || {};
   deckHighlightArtImg.onerror = function() {
     this.onerror = null;
-    this.src = "CardImages/Domains/placeholder.png";
+    this.src = "CardImages/Domains/placeholder.png';
   };
-  deckHighlightArtImg.src = deck.highlightArt || "CardImages/Domains/placeholder.png";
+  deckHighlightArtImg.src = deck.highlightArt || "CardImages/Domains/placeholder.png';
 }
 deckHighlightArtImg.onclick = function() {
   closeDeckTileMenu();
@@ -437,19 +439,19 @@ function updateDeckBanner(deckName) {
   const deck = decks[deckName] || {};
   deckBannerImg.onerror = function() {
     this.onerror = null;
-    this.src = "CardImages/Banners/DefaultBanner.png";
+    this.src = "CardImages/Banners/DefaultBanner.png';
   };
-  deckBannerImg.src = deck.bannerArt || "CardImages/Banners/DefaultBanner.png";
+  deckBannerImg.src = deck.bannerArt || "CardImages/Banners/DefaultBanner.png';
 }
 
-// --- NEW: BANNER LOGIC (update to match avatars/cardbacks) ---
+// --- NEW: BANNER LOGIC (update to match avatars/Cardback) ---
 deckBannerImg.onclick = function() {
   closeDeckTileMenu();
   deckBannerModal.style.display = "flex";
   deckBannerArtList.innerHTML = "";
   const deckName = deckMenu.dataset.deckName;
   const unlocked = getUnlockedBanners ? getUnlockedBanners() :
-    (window.getUnlockedBanners ? window.getUnlockedBanners() : ["CardImages/Banners/DefaultBanner.png"]); 
+    (window.getUnlockedBanners ? window.getUnlockedBanners() : ["CardImages/Banners/DefaultBanner.png']); 
   if (!unlocked || unlocked.length === 0) {
     deckBannerArtList.innerHTML = "<div style='color:#eee'>No unlocked banners available.</div>";
     return;
@@ -476,10 +478,10 @@ closeDeckBannerModalBtn.onclick = () => (deckBannerModal.style.display = "none")
 // Update displayed cardback in deck menu
 function updateDeckCardback(deckName) {
   const deck = decks[deckName] || {};
-  deckCardbackImg.src = deck.cardbackArt || "OtherImages/Cardbacks/CBDefault.png";
+  deckCardbackImg.src = deck.cardbackArt || 'Images/Cardback/CBDefault.png';
 }
 
-// --- CARDBACK ---
+// --- CARDBACK --- //
 deckCardbackImg.onclick = function() {
   closeDeckTileMenu();
   deckCardbackModal.style.display = "flex";
@@ -488,7 +490,7 @@ deckCardbackImg.onclick = function() {
   const deck = decks[deckName] || {};
   const unlocked = getUnlockedCardbacks ? getUnlockedCardbacks() : 
     (window.getUnlockedCardbacks ? window.getUnlockedCardbacks() : 
-      ["OtherImages/Cardbacks/CBDefault.png"]);
+      ['Images/Cardback/CBDefault.png']);
   unlocked.forEach(cb => {
     const img = document.createElement('img');
     img.src = cb;
@@ -738,7 +740,7 @@ function createCardBuilder(card, ownedCount) {
     img.src = card.image;
     img.onerror = function() {
       this.onerror = null;
-      this.src = "CardImages/Domains/placeholder.png";
+      this.src = "CardImages/Domains/placeholder.png';
     };
     img.alt = card.name;
   
@@ -1535,7 +1537,7 @@ window.getPlayerDecks = function() {
   return deckSlots.map(deckName => {
     const deckObj = decks[deckName] || {};
     // Use highlightArt, bannerArt, or a default image for the deck image:
-    let image = deckObj.highlightArt || deckObj.bannerArt || "CardImages/Banners/DefaultBanner.png";
+    let image = deckObj.highlightArt || deckObj.bannerArt || "CardImages/Banners/DefaultBanner.png';
     return {
       id: deckName,
       name: deckName,
