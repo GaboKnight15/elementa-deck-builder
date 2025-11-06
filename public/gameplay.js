@@ -116,40 +116,40 @@ let attackMode = {attackerId: null, attackerZone: null, cancelHandler: null};
 const INITIAL_HAND_SIZE = 5;
 
 const ESSENCE_IMAGE_MAP = {
-  red: "OtherImages/Essence/Red.png",
-  blue: "OtherImages/Essence/Blue.png",
-  green: "OtherImages/Essence/Green.png",
-  yellow: "OtherImages/Essence/Yellow.png",
-  purple: "OtherImages/Essence/Purple.png",
-  gray: "OtherImages/Essence/Gray.png",
-  black: "OtherImages/Essence/Black.png",
-  white: "OtherImages/Essence/White.png",
-  X0: "OtherImages/Essence/Zero.png",
-  X1: "OtherImages/Essence/One.png",
-  X2: "OtherImages/Essence/Two.png",
-  X3: "OtherImages/Essence/Three.png",
-  X4: "OtherImages/Essence/Four.png",
-  X5: "OtherImages/Essence/Five.png",
-  X6: "OtherImages/Essence/Six.png",
-  X7: "OtherImages/Essence/Seven.png",
-  X8: "OtherImages/Essence/Eight.png",
-  X9: "OtherImages/Essence/Nine.png",
-  X10: "OtherImages/Essence/Ten.png",
-  X11: "OtherImages/Essence/Eleven.png",
-  X12: "OtherImages/Essence/Twelve.png",
-  X13: "OtherImages/Essence/Thirteen.png",
-  X14: "OtherImages/Essence/Fourteen.png",
-  X15: "OtherImages/Essence/Fifteen.png",
-  X16: "OtherImages/Essence/Sixteen.png",
-  X17: "OtherImages/Essence/Seventeen.png",
-  X18: "OtherImages/Essence/Eighteen.png",
-  X19: "OtherImages/Essence/Nineteen.png",
-  X20: "OtherImages/Essence/Twenty.png"
+  red: "Icons/Essence/Red.png",
+  blue: "Icons/Essence/Blue.png",
+  green: "Icons/Essence/Green.png",
+  yellow: "Icons/Essence/Yellow.png",
+  purple: "Icons/Essence/Purple.png",
+  gray: "Icons/Essence/Gray.png",
+  black: "Icons/Essence/Black.png",
+  white: "Icons/Essence/White.png",
+  X0: "Icons/Essence/Zero.png",
+  X1: "Icons/Essence/One.png",
+  X2: "Icons/Essence/Two.png",
+  X3: "Icons/Essence/Three.png",
+  X4: "Icons/Essence/Four.png",
+  X5: "Icons/Essence/Five.png",
+  X6: "Icons/Essence/Six.png",
+  X7: "Icons/Essence/Seven.png",
+  X8: "Icons/Essence/Eight.png",
+  X9: "Icons/Essence/Nine.png",
+  X10: "Icons/Essence/Ten.png",
+  X11: "Icons/Essence/Eleven.png",
+  X12: "Icons/Essence/Twelve.png",
+  X13: "Icons/Essence/Thirteen.png",
+  X14: "Icons/Essence/Fourteen.png",
+  X15: "Icons/Essence/Fifteen.png",
+  X16: "Icons/Essence/Sixteen.png",
+  X17: "Icons/Essence/Seventeen.png",
+  X18: "Icons/Essence/Eighteen.png",
+  X19: "Icons/Essence/Nineteen.png",
+  X20: "Icons/Essence/Twenty.png"
 };
 // STATUS EFFECTS
 const STATUS_EFFECTS = {
   Burn: {
-    icon: 'OtherImages/Icons/Burn.png',
+    icon: 'Icons/Status/Burn.png',
     name: 'Burn',
     description: 'Deals 1 damage at End Phase and lowers DEF by 1.',
     duration: 2,
@@ -173,7 +173,7 @@ const STATUS_EFFECTS = {
     }
   },
   Freeze: {
-    icon: 'OtherImages/Icons/Freeze.png',
+    icon: 'Icons/Status/Freeze.png',
     name: 'Freeze',
     description: 'Cannot attack, use skills and receive damage.',
     duration: 1,
@@ -188,7 +188,7 @@ const STATUS_EFFECTS = {
     },
   },
   Poison: {
-    icon: 'OtherImages/Icons/Poison.png',
+    icon: 'Icons/Status/Poison.png',
     name: 'Poison',
     description: 'Deals 1 damage at the beginning of each turn. Reduces max HP by 1 while poisoned.',
     duration: 3,
@@ -214,7 +214,7 @@ const STATUS_EFFECTS = {
     }
   },
   Paralysis: {
-    icon: 'OtherImages/Icons/Paralysis.png',
+    icon: 'Icons/Status/Paralysis.png',
     name: 'Paralysis',
     description: 'Cannot attack or activate skills for 2 turns.',
     duration: 2,
@@ -232,7 +232,7 @@ const STATUS_EFFECTS = {
     // For now, logic is purely duration-based
   },
   Soak: {
-    icon: 'OtherImages/Icons/Soak.png',
+    icon: 'Icons/Status/Soak.png',
     name: 'Soak',
     description: 'Takes 2 extra damage from all sources until end of next turn.',
     duration: 1,
@@ -247,7 +247,7 @@ const STATUS_EFFECTS = {
     // Optionally add logic for duration ticks
   },
 Bind: {
-  icon: 'OtherImages/Icons/Bind.png',
+  icon: 'Icons/Status/Bind.png',
   name: 'Bind',
   description: 'Cannot attack or activate skills (removed at next opponent End Phase).',
   // Don't set duration here, handle it in your end phase check!
@@ -266,11 +266,11 @@ Bind: {
 },
 Seal: {
   name: "Seal",
-  icon: "OtherImages/status/seal.png",
+  icon: "Icons/Status/seal.png",
   description: "This card's skills cannot be activated."
 },
 Quickstrike: {
-  icon: 'OtherImages/Icons/Quickstrike.png',
+  icon: 'Icons/Status/Quickstrike.png',
   name: 'Quickstrike',
   description: 'This creature deals damage before an enemy it attacks.',
   // short duration used only for a single attack resolution; apply/remove toggle the flag
@@ -282,7 +282,7 @@ Quickstrike: {
   }
 },
 InvulnerableAtk: {
-  icon: 'OtherImages/Icons/Invulnerable.png',
+  icon: 'Icons/Status/Invulnerable.png',
   name: 'Invulnerable (attacking)',
   description: "This creature takes no retaliation damage when it attacks.",
   apply: function(cardObj) {
@@ -461,7 +461,7 @@ const SKILL_ACTIVATION_MAP = {
 // ATTACK RESOLUTION ABILITIES
 const ATTACK_DECLARATION_ABILITY = {
   Intimidate: {
-    icon: 'OtherImages/Icons/Intimidate.png',
+    icon: 'Icons/Ability/Intimidate.png',
     name: 'Intimidate',
     description: 'When attacking, changes defending creature to DEF.',
     handler: function(attacker, defender, next) {
@@ -486,7 +486,7 @@ const ATTACK_DECLARATION_ABILITY = {
     }
   },
   Provoke: {
-    icon: 'OtherImages/Icons/Provoke.png',
+    icon: 'Icons/Ability/Provoke.png',
     name: 'Provoke',
     description: 'When attacking, changes defending creature to ATK.',
     handler: function(attacker, defender, next) {
@@ -518,12 +518,18 @@ const ATTACK_DECLARATION_ABILITY = {
 // Helper for requirements //
 const REQUIREMENT_MAP = {
   Special: {
+    icon: 'Icons/Ability/Special.png',
+    name: 'Special',
+    description: 'Description of the skill.',
     zones: ['playerCreatures', 'playerDomains'], // field
     canActivate: (cardObj, skillObj, currentZone) =>
       ['playerCreatures', 'playerDomains'].includes(currentZone),
     handler: (cardObj, skillObj, next) => next && next()
   },
   Ultimate: {
+    icon: 'Icons/Ability/Ultimate.png',
+    name: 'Ultimate',
+    description: 'Description of the skill.',
     zones: ['playerCreatures', 'playerDomains'], // field
     canActivate: (cardObj, skillObj, currentZone) =>
       ['playerCreatures', 'playerDomains'].includes(currentZone),
@@ -531,6 +537,9 @@ const REQUIREMENT_MAP = {
     // Later you could add more restrictions for "Ultimate" here
   },
   CW: {
+    icon: 'Icons/Essence/CW.png',
+    name: 'Defense',
+    description: 'Change the unit to Defense mode.',
     zones: ['playerCreatures', 'playerDomains'],
     handler: function(sourceCardObj, skillObj, next) {
       // If already in DEF (horizontal), just proceed with skill activation
@@ -551,6 +560,9 @@ const REQUIREMENT_MAP = {
     }
   },
   CCW: {
+    icon: 'Icons/Essence/CCW.png',
+    name: 'Attack',
+    description: 'Change the unit to Attack mode.',
     zones: ['playerCreatures', 'playerDomains'],
     handler: function(sourceCardObj, skillObj, next) {
       // If already in ATK (vertical), just proceed with skill activation
@@ -728,7 +740,7 @@ const SKILL_EFFECT_MAP = {
 Champion: {
   icon: "Icons/Status/Champion.png",
   name: "Champion",
-  description: "Grants Champion bonuses (stats, abilities) to this card.",
+  description: "Upgrades your unit to Champion {champion}.",
   // handler signature matches other effect handlers: (sourceCardObj, skillObj, step, nextEffect)
   handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
     if (!sourceCardObj) {
@@ -788,7 +800,7 @@ Champion: {
   // Champion application has no special canActivate guard here; activation should be handled by the skill's canActivate / requirement.
 },
 Strike: {
-  icon: 'OtherImages/skillEffect/Strike.png',
+  icon: 'Icons/Skill/Strike.png',
   name: 'Strike',
   description: 'Deals damage.',
   // Now using (sourceCardObj, skillObj, step, nextEffect)
@@ -806,38 +818,38 @@ Strike: {
   }
 },
 Burn: {
-  icon: 'OtherImages/skillEffect/Burn.png',
+  icon: 'Icons/Skill/Burn.png',
   name: 'Burn',
   description: 'Deals damage and burns.',
   handler: effectStatusHandler('Burn')
 },
 Poison: {
-  icon: 'OtherImages/skillEffect/Poison.png',
+  icon: 'Icons/Skill/Poison.png',
   name: 'Poison',
   description: 'Deals damage and poisons.',
   handler: effectStatusHandler('Poison')
 },
 Freeze: {
-  icon: 'OtherImages/skillEffect/Freeze.png',
+  icon: 'Icons/Skill/Freeze.png',
   name: 'Freeze',
   description: 'Deals damage and freezes.',
   handler: effectStatusHandler('Freeze')
 },
 Paralysis: {
-  icon: 'OtherImages/skillEffect/Paralysis.png',
+  icon: 'Icons/Skill/Paralysis.png',
   name: 'Paralysis',
   description: 'Deals damage and paralyzes.',
   handler: effectStatusHandler('Paralysis')
 },
 Bind: {
-  icon: 'OtherImages/skillEffect/Bind.png',
+  icon: 'Icons/Skill/Bind.png',
   name: 'Bind',
   description: 'Deals damage and binds.',
   handler: effectStatusHandler('Bind')
 },
   /*
 Burst: {
-  icon: 'OtherImages/skillEffect/Burst.png',
+  icon: 'Icons/Skill/Burst.png',
   name: 'Burst',
   description: 'Deals damage to all enemy targets.',
   // Updated signature for effect chaining
@@ -860,7 +872,7 @@ Burst: {
 
 // --- SELF SUMMONING SKILLS --- //
 Dash: {
-  icon: 'OtherImages/skillEffect/Dash.png',
+  icon: 'Icons/Skill/Dash.png',
   name: 'Dash',
   description: 'Summon this card from your hand with half HP (rounded up).',
   // Updated signature: accepts (sourceCardObj, skillObj, step, nextEffect)
@@ -914,7 +926,7 @@ Dash: {
   }
 },
 Reanimate: {
-  icon: 'OtherImages/skillEffect/Reanimate.png',
+  icon: 'Icons/Skill/Reanimate.png',
   name: 'Reanimate',
   description: 'Summon this card from the void.',
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
@@ -959,7 +971,7 @@ Reanimate: {
   }
 },
 Awaken: {
-  icon: 'OtherImages/skillEffect/Awaken.png',
+  icon: 'Icons/Skill/Awaken.png',
   name: 'Awaken',
   description: 'Summon this card from your deck.',
   handler: function(sourceCardObj, skillObj) {
@@ -1001,7 +1013,7 @@ Awaken: {
   }
 },
 Heal: {
-  icon: 'OtherImages/skillEffect/Heal.png',
+  icon: 'Icons/Skill/Heal.png',
   name: 'Heal',
   description: 'Heals an ally.',
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
@@ -1022,7 +1034,7 @@ Heal: {
   }
 },
   Cleanse: {
-    icon: 'OtherImages/skillEffect/Cleanse.png',
+    icon: 'Icons/Skill/Cleanse.png',
     name: 'Cleanse',
     description: 'Removes debuffs/status effects from an allied target.',
     handler: function(sourceCardObj, skillObj) {
@@ -1036,7 +1048,7 @@ Heal: {
     }
   },
 Armor: {
-  icon: 'OtherImages/skillEffect/Armor.png',
+  icon: 'Icons/Skill/Armor.png',
   name: 'Armor',
   description: 'Grants armor to an ally.',
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
@@ -1057,7 +1069,7 @@ Armor: {
   }
 },
   Aegis: {
-    icon: 'OtherImages/skillEffect/Aegis.png',
+    icon: 'Icons/skillEffect/Aegis.png',
     name: 'Aegis',
     description: 'Grants a shield that blocks the next incoming damage.',
     handler: function(sourceCardObj, skillObj) {
@@ -1071,7 +1083,7 @@ Armor: {
     }
   },
   Recall: {
-    icon: 'OtherImages/skillEffect/Recall.png',
+    icon: 'Icons/skillEffect/Recall.png',
     name: 'Recall',
     description: 'Return this card from the void to your hand.',
     handler: function(sourceCardObj, skillObj) {
@@ -1085,7 +1097,7 @@ Armor: {
     }
   },
 Destroy: {
-  icon: 'OtherImages/skillEffect/Destroy.png',
+  icon: 'Icons/skillEffect/Destroy.png',
   name: 'Destroy',
   description: 'Destroy a valid target according to skill condition.',
   handler: function(sourceCardObj, skillObj) {
@@ -1117,7 +1129,7 @@ Destroy: {
   }
 },
   Search: {
-    icon: 'OtherImages/skillEffect/Search.png',
+    icon: 'Icons/skillEffect/Search.png',
     name: 'Search',
     description: 'Search your deck for a card matching criteria and add it to your hand.',
     // Now using (sourceCardObj, skillObj, step, nextEffect)
@@ -1155,7 +1167,7 @@ Destroy: {
   },
   // --- Moves another player card from void to field ---
   Revive: {
-    icon: 'OtherImages/skillEffect/Revive.png',
+    icon: 'Icons/skillEffect/Revive.png',
     name: 'Revive',
     description: 'Revive a card from your void.',
     handler: function(sourceCardObj, skillObj) {
@@ -1200,7 +1212,7 @@ Destroy: {
   },
   // --- Moves another opponent card from field to hand ---
 Bounce: {
-  icon: 'OtherImages/skillEffect/Bounce.png',
+  icon: 'Icons/skillEffect/Bounce.png',
   name: 'Bounce',
   description: 'Return any card from the field to the hand.',
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
@@ -1248,7 +1260,7 @@ Bounce: {
 
   // --- Moves another opponent card from field to deck ---
 Banish: {
-  icon: 'OtherImages/skillEffect/Banish.png',
+  icon: 'Icons/skillEffect/Banish.png',
   name: 'Banish',
   description: 'Return any card from the field to the deck.',
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
@@ -1300,7 +1312,7 @@ Banish: {
   }
 },
 Seal: {
-  icon: "OtherImages/skillEffect/Seal.png",
+  icon: "Icons/skillEffect/Seal.png",
   name: "Seal",
   description: "Disables all skills on the target until Seal is removed.",
   handler: function(sourceCardObj, skillObj, effectStep, nextEffect) {
@@ -1329,7 +1341,7 @@ Unseal: {
   }
 },
 Essence: {
-  icon: 'OtherImages/skillEffect/Essence.png',
+  icon: 'Icons/skillEffect/Essence.png',
   name: 'Essence',
   description: 'Gain Essence.',
   // step should have: { color: "{g}{g}{r}" } or similar
@@ -1362,7 +1374,7 @@ Essence: {
 },
 // --- FUSION --- //
   Fuse: {
-    icon: 'OtherImages/skillEffect/Fuse.png',
+    icon: 'Icons/skillEffect/Fuse.png',
     name: 'Fuse',
     description: 'This card becomes Fused, enabling fusion combos.',
     zones: ['playerCreatures', 'playerDomains'], // Only from field
@@ -1381,7 +1393,7 @@ Essence: {
     }
   },
   Fusion: {
-    icon: 'OtherImages/skillEffect/Fusion.png',
+    icon: 'Icons/skillEffect/Fusion.png',
     name: 'Fusion',
     description: 'Attach two Fused cards of the same type/archetype from your field to this card when summoning it from your hand.',
     zones: ['hand'],
@@ -1462,7 +1474,7 @@ Essence: {
   },
 // --- EVOLUTION --- //
   Evolve: {
-    icon: 'OtherImages/skillEffect/Evolve.png',
+    icon: 'Icons/skillEffect/Evolve.png',
     name: 'Evolve',
     description: 'Gains an Evolution Sigil.',
     zones: ['playerCreatures', 'playerDomains'], // Only from field
@@ -1534,7 +1546,7 @@ Evolution: {
   }
 },
 NullCounter: {
-  icon: 'OtherImages/skillEffect/NullCounter.png',
+  icon: 'Icons/skillEffect/NullCounter.png',
   name: 'Null Counter',
   description: 'Grants Null Counters to a player. Step fields: amount (number), owner ("source" | "player" | "opponent" | "opponentOfSource").',
   handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
@@ -1561,7 +1573,7 @@ NullCounter: {
   }
 },
 Token: {
-  icon: "OtherImages/skillEffect/Token.png",
+  icon: "Icons/skillEffect/Token.png",
   name: "Token",
   description: "Summon tokens to the battlefield.",
   handler: function(sourceCardObj, skillObj, effectStep, nextEffect) {
@@ -2096,7 +2108,7 @@ function renderWeatherEffects() {
   div.innerHTML = gameState.weatherEffects.map(e => {
     const w = WEATHER_EFFECTS[e.name];
     return `<span style="margin-right:10px;">
-      <img src="OtherImages/Icons/${e.name.replace(/\s+/g, '')}.png" style="height:26px;vertical-align:middle;">
+      <img src="Icons/Icons/${e.name.replace(/\s+/g, '')}.png" style="height:26px;vertical-align:middle;">
       <span style="color:#ffe066;font-weight:bold">${e.name}</span>
       <span style="color:#fff">(${e.duration})</span>
     </span>`;
@@ -2309,7 +2321,7 @@ function renderGameState() {
   opponentHandDiv.innerHTML = '';
   let opponentCardback = (window.selectedCpuDeck && window.selectedCpuDeck.cardbackArt)
     ? window.selectedCpuDeck.cardbackArt
-    : "OtherImages/Cardbacks/CBDefault.png"; // fallback
+    : "Icons/Cardbacks/CBDefault.png"; // fallback
 
   for (let i = 0; i < gameState.opponentHand.length; i++) {
     const div = document.createElement('div');
@@ -2651,7 +2663,7 @@ function appendDeckZone(parentDiv, deckArray, who) {
   const deckCard = document.createElement('div');
   deckCard.className = 'card-deck';
 
-  let deckCardback = "OtherImages/Cardbacks/CBDefault.png";
+  let deckCardback = "Icons/Cardbacks/CBDefault.png";
   if (who === "player" && window.selectedPlayerDeck && window.selectedPlayerDeck.deckObj && window.selectedPlayerDeck.deckObj.cardbackArt
   ) {
     deckCardback = window.selectedPlayerDeck.deckObj.cardbackArt;
@@ -2781,9 +2793,9 @@ function renderDeckVoidCountRow(rowId, deckCount, voidCount) {
   if (!row) return;
   row.innerHTML = `
     <span style="display:inline-flex;align-items:center;gap:4px;">
-      <img src="OtherImages/Icons/DefaultDeckBox.png" alt="Deck" style="width:30px;height:30px;">
+      <img src="Icons/Icons/DefaultDeckBox.png" alt="Deck" style="width:30px;height:30px;">
       <span class="deck-count-number">${deckCount}</span>
-      <img src="OtherImages/Icons/Void.png" alt="Void" style="width:30px;height:30px;margin-left:10px;">
+      <img src="Icons/Icons/Void.png" alt="Void" style="width:30px;height:30px;margin-left:10px;">
       <span class="deck-count-number">${voidCount}</span>
     </span>
   `;
@@ -3234,12 +3246,12 @@ function renderCardOnField(cardObj, zoneId) {
   cardDiv.appendChild(img);
 
   // Cardback (player or opponent)
-  let cardbackUrl = window.selectedPlayerDeck?.deckObj?.cardbackArt || "OtherImages/Cardbacks/CBDefault.png";
+  let cardbackUrl = window.selectedPlayerDeck?.deckObj?.cardbackArt || "Icons/Cardbacks/CBDefault.png";
   if (zoneId && zoneId.startsWith("opponent")) {
     cardbackUrl =
       window.selectedOpponentDeck?.cardbackArt ||
       gameState.opponentProfile?.cardbackArt ||
-      "OtherImages/Cardbacks/CBDefault.png";
+      "Icons/Cardbacks/CBDefault.png";
   }
   const backDiv = document.createElement('div');
   backDiv.className = 'card-back';
@@ -3304,7 +3316,7 @@ function renderCardOnField(cardObj, zoneId) {
     const armorDiv = document.createElement('div');
     armorDiv.className = 'card-armor-icon-badge';
     armorDiv.innerHTML = `
-      <img src="OtherImages/FieldIcons/Armor.png" alt="Armor" class="card-armor-icon">
+      <img src="Icons/FieldIcons/Armor.png" alt="Armor" class="card-armor-icon">
       <span class="card-armor-value">${currentArmor}</span>
     `;
     iconRow.appendChild(armorDiv);
@@ -3321,21 +3333,21 @@ function renderCardOnField(cardObj, zoneId) {
   let currentHP = undefined;
   if (typeof cardData.hp === "number") {
     currentHP = typeof cardObj.currentHP === "number" ? cardObj.currentHP : cardData?.hp ?? 0;
-    statRow.appendChild(makeStatBadge("OtherImages/FieldIcons/HP.png", currentHP, "#fff", "HP"));
+    statRow.appendChild(makeStatBadge("Icons/FieldIcons/HP.png", currentHP, "#fff", "HP"));
   }
 
 // ATK (center)
 if (typeof cardData.atk === "number") {
   const currentATK = computeCardStat(cardObj, "atk");
   const atkColor = getStatColor(cardObj, "atk");
-  statRow.appendChild(makeStatBadge("OtherImages/FieldIcons/ATK.png", currentATK, atkColor, "ATK"));
+  statRow.appendChild(makeStatBadge("Icons/FieldIcons/ATK.png", currentATK, atkColor, "ATK"));
 }
 
 // DEF (right)
 if (typeof cardData.def === "number") {
   const currentDEF = computeCardStat(cardObj, "def");
   const defColor = getStatColor(cardObj, "def");
-  statRow.appendChild(makeStatBadge("OtherImages/FieldIcons/DEF.png", currentDEF, defColor, "DEF"));
+  statRow.appendChild(makeStatBadge("Icons/FieldIcons/DEF.png", currentDEF, defColor, "DEF"));
 }
 
   // Attach stat row to overlay
@@ -3379,7 +3391,7 @@ try {
   speedBadge.className = 'card-speed-badge';
   speedBadge.title = `Speed: ${speedVal} (Tier ${getSpeedTier(cardObj)})`;
   speedBadge.innerHTML = `
-    <img src="OtherImages/FieldIcons/Speed.png" style="width:18px;height:18px;vertical-align:middle;margin-right:6px;">
+    <img src="Icons/FieldIcons/Speed.png" style="width:18px;height:18px;vertical-align:middle;margin-right:6px;">
     <span style="font-weight:bold;color:#fff;">${speedVal}</span>
   `;
   badgesRow.appendChild(speedBadge);
@@ -3395,7 +3407,7 @@ try {
     evBadge.className = 'card-evasion-badge';
     evBadge.title = `Evasion: ${evCount} (consumed when targeted by opponent)`;
     evBadge.innerHTML = `
-      <img src="OtherImages/FieldIcons/Evasion.png" style="width:18px;height:18px;vertical-align:middle;margin-right:6px;">
+      <img src="Icons/FieldIcons/Evasion.png" style="width:18px;height:18px;vertical-align:middle;margin-right:6px;">
       <span style="font-weight:bold;color:#ffd700;">${evCount}</span>
     `;
     badgesRow.appendChild(evBadge);
@@ -3588,14 +3600,14 @@ function renderEssencePool(cardObj) {
 
   // Color codes and their image sources
   const ESSENCE_IMAGE_MAP = {
-    green: "OtherImages/Essence/Green.png",
-    red: "OtherImages/Essence/Red.png",
-    blue: "OtherImages/Essence/Blue.png",
-    yellow: "OtherImages/Essence/Yellow.png",
-    gray: "OtherImages/Essence/Gray.png",
-    purple: "OtherImages/Essence/Purple.png",
-    black: "OtherImages/Essence/Black.png",
-    white: "OtherImages/Essence/White.png"
+    green: "Icons/Essence/Green.png",
+    red: "Icons/Essence/Red.png",
+    blue: "Icons/Essence/Blue.png",
+    yellow: "Icons/Essence/Yellow.png",
+    gray: "Icons/Essence/Gray.png",
+    purple: "Icons/Essence/Purple.png",
+    black: "Icons/Essence/Black.png",
+    white: "Icons/Essence/White.png"
   };
   // Map from code to color name
   const colorCodes = {
@@ -3648,16 +3660,16 @@ function renderEssenceSummaryInto(container, pool = {}, opts = {}) {
   const size = Number(opts.size || 16);
   // Fallback mapping if global ESSENCE_IMAGE_MAP is not present for some reason
   const fallbackMap = {
-    green: "OtherImages/Essence/Green.png",
-    red: "OtherImages/Essence/Red.png",
-    blue: "OtherImages/Essence/Blue.png",
-    yellow: "OtherImages/Essence/Yellow.png",
-    purple: "OtherImages/Essence/Purple.png",
-    gray: "OtherImages/Essence/Gray.png",
-    black: "OtherImages/Essence/Black.png",
-    white: "OtherImages/Essence/White.png",
-    X0: "OtherImages/Essence/Zero.png",
-    X1: "OtherImages/Essence/One.png"
+    green: "Icons/Essence/Green.png",
+    red: "Icons/Essence/Red.png",
+    blue: "Icons/Essence/Blue.png",
+    yellow: "Icons/Essence/Yellow.png",
+    purple: "Icons/Essence/Purple.png",
+    gray: "Icons/Essence/Gray.png",
+    black: "Icons/Essence/Black.png",
+    white: "Icons/Essence/White.png",
+    X0: "Icons/Essence/Zero.png",
+    X1: "Icons/Essence/One.png"
   };
   const imageMap = (typeof ESSENCE_IMAGE_MAP !== 'undefined') ? ESSENCE_IMAGE_MAP : fallbackMap;
 
@@ -5315,8 +5327,8 @@ function showCoinFlipModal(onResult) {
     isHeads = Math.random() < 0.5;
   }
   // Flip logic
-  const headsImg = "OtherImages/Icons/Heads.png";
-  const tailsImg = "OtherImages/Icons/Tails.png";
+  const headsImg = "Icons/Icons/Heads.png";
+  const tailsImg = "Icons/Icons/Tails.png";
   const chosenImg = isHeads ? headsImg : tailsImg;
   const chosenText = isHeads ? "Heads" : "Tails";
   // Create overlay/modal
@@ -5456,7 +5468,7 @@ function cardImgLog(card, {
   if (showCardback) {
     let cardback = window.selectedOpponentDeck?.cardbackArt
       || gameState.opponentProfile?.cardbackArt
-      || "OtherImages/Cardbacks/CBDefault.png";
+      || "Icons/Cardbacks/CBDefault.png";
     return `<img class="log-card-img ${extraClass}" src="${cardback}" data-cardid="${card.cardId}" title="Cardback" style="border:2px solid #e25555;width:${width}px;vertical-align:middle;">`;
   }
   // Otherwise show actual card
@@ -5474,11 +5486,11 @@ function cardImgLog(card, {
 }
 function zoneImgLog(zone) {
   const zoneIcons = {
-    Void: "OtherImages/Icons/Void.png",
-    Deck: "OtherImages/Icons/DefaultDeckBox.png",
-    Hand: "OtherImages/Icons/Hand.png",
-    Domains: "OtherImages/Icons/Domains.png",
-    Creatures: "OtherImages/Icons/Domains.png",    
+    Void: "Icons/Icons/Void.png",
+    Deck: "Icons/Icons/DefaultDeckBox.png",
+    Hand: "Icons/Icons/Hand.png",
+    Domains: "Icons/Icons/Domains.png",
+    Creatures: "Icons/Icons/Domains.png",    
       // Add more as needed
   };  
   return `<img class="log-zone-img" src="${zoneIcons[zone] || ''}" title="${zone}" style="width:32px;vertical-align:middle;">`;
@@ -5491,10 +5503,10 @@ function renderLogAction({
   who = "player"     // "player" or "opponent"
 }, isMe = true) {
 const actionIcons = {
-  move: "OtherImages/Icons/Move.png",
-  attack: "OtherImages/Icons/Attack.png",
-  effect: "OtherImages/Icons/Effect.png",
-  draw: "OtherImages/Icons/Move.png",
+  move: "Icons/Icons/Move.png",
+  attack: "Icons/Icons/Attack.png",
+  effect: "Icons/Icons/Effect.png",
+  draw: "Icons/Icons/Move.png",
     // Add more as needed
 };
 let showCardback = action === "draw" && !isMe;
@@ -5528,7 +5540,7 @@ function appendAttackLog({ attacker, defender, defenderOrientation, who = "playe
   logHtml += cardImgLog(attackerDef, { width: 38, who });
 
   // Attack icon
-  logHtml += `<img src="OtherImages/Icons/Attack.png" alt="Attack" style="width:32px;height:32px;vertical-align:middle;margin:0 9px;">`;
+  logHtml += `<img src="Icons/Icons/Attack.png" alt="Attack" style="width:32px;height:32px;vertical-align:middle;margin:0 9px;">`;
 
   // Defender image
   logHtml += cardImgLog(defenderDef, {width: 38, marginLeft: "8px", who, rotate: defenderOrientation === "horizontal" ? 90 : 0 });
@@ -5575,13 +5587,13 @@ function appendPositionChangeLog(cardObj, newOrientation, prevOrientation, fromS
   if (prevOrientation === "vertical" && newOrientation === "horizontal") {
     // ATK to DEF
     logHtml += cardImgLog(cardDef, { border: "2px solid #ffe066", width: 36, rotate: 0 });
-    logHtml += `<img src="OtherImages/Icons/Tapped.png"
+    logHtml += `<img src="Icons/Icons/Tapped.png"
       alt="Tapped" style="width:28px;vertical-align:middle;margin-left:8px;margin-right:13px;">`;
     logHtml += cardImgLog(cardDef, { border: "2px solid #ffe066", width: 36, marginLeft: "7px", rotate: 90 });
   } else if (prevOrientation === "horizontal" && newOrientation === "vertical") {
     // DEF to ATK
     logHtml += cardImgLog(cardDef, { border: "2px solid #ffe066", width: 36, marginRight: "7px", rotate: 90 });
-    logHtml += `<img src="OtherImages/Icons/Untapped.png" alt="Untapped" style="width:28px;vertical-align:middle;margin:0 7px;">`;
+    logHtml += `<img src="Icons/Icons/Untapped.png" alt="Untapped" style="width:28px;vertical-align:middle;margin:0 7px;">`;
     logHtml += cardImgLog(cardDef, { border: "2px solid #ffe066", width: 36, rotate: 0 });
   }
   logHtml += `</div>`;
@@ -6760,7 +6772,7 @@ function updateOpponentBadges() {
   if (nullCount > 0) {
     badges.push({
       key: 'nullCounterOpp',
-      icon: 'OtherImages/Icons/NullCounterSmall.png',
+      icon: 'Icons/Icons/NullCounterSmall.png',
       count: nullCount,
       label: '',
       title: `Null Counters: ${nullCount}`
@@ -6778,7 +6790,7 @@ function updatePlayerBadges() {
   if (nullCount > 0) {
     badges.push({
       key: 'nullCounterPlayer',
-      icon: 'OtherImages/Icons/NullCounterSmall.png',
+      icon: 'Icons/Icons/NullCounterSmall.png',
       count: nullCount,
       label: '',
       title: `Null Counters: ${nullCount}`
@@ -6823,10 +6835,10 @@ function updateGameStatusRow() {
   // Day / Night icon (supports all four)
   const tod = gameState.timeOfDay || 'day';
   const todMap = {
-    day: 'OtherImages/Icons/Status/Day.png',
-    dusk: 'OtherImages/Icons/Status/Dusk.png',
-    night: 'OtherImages/Icons/Status/Night.png',
-    dawn: 'OtherImages/Icons/Status/Dawn.png'
+    day: 'Icons/Icons/Status/Day.png',
+    dusk: 'Icons/Icons/Status/Dusk.png',
+    night: 'Icons/Icons/Status/Night.png',
+    dawn: 'Icons/Icons/Status/Dawn.png'
   };
   const todWrap = document.createElement('div');
   todWrap.style.display = 'flex';
@@ -7230,7 +7242,7 @@ function insertGameLogIcon() {
   var img = document.createElement('img');
   img.id = 'game-log-toggle';
   // Use a notebook/view icon you have in assets; adjust path if different
-  img.src = 'OtherImages/Icons/Notebook.png';
+  img.src = 'Icons/Icons/Notebook.png';
   img.alt = 'Game Log';
   img.title = 'Toggle Game Log';
   img.style.width = '44px';
