@@ -254,9 +254,9 @@ Poisoned: {
     }
     // Optionally add logic for duration ticks
   },
-Binded: {
-  icon: 'Icons/Status/Binded.png',
-  name: 'Binded',
+Bound: {
+  icon: 'Icons/Status/Bound.png',
+  name: 'Bound',
   description: 'Cannot attack or activate skills (removed at next opponent End Phase).',
   // Don't set duration here, handle it in your end phase check!
   apply: function(cardObj) {
