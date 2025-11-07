@@ -1712,33 +1712,7 @@ Evolution: {
     if (nextEffect) nextEffect();
   }
 },
-NullSigil: {
-  icon: 'Icons/Skill/NullSigil.png',
-  name: 'Null Sigil',
-  description: 'Grants Null Sigil to a player. Step fields: amount (number), owner ("source" | "player" | "opponent" | "opponentOfSource").',
-  handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
-    const amount = Math.max(0, Number(step.amount) || 1);
 
-    // Determine who receives the counters (default = source owner)
-    const sourceOwner = getCardOwner(sourceCardObj) || 'player';
-    const opponent = sourceOwner === 'player' ? 'opponent' : 'player';
-    let grantTo = sourceOwner;
-
-    if (step.owner === 'player') grantTo = 'player';
-    else if (step.owner === 'opponent') grantTo = 'opponent';
-    else if (step.owner === 'opponentOfSource' || step.owner === 'opponent_of_source') grantTo = opponent;
-    else if (step.owner === 'source') grantTo = sourceOwner;
-
-    addNullSigil(grantTo, amount);
-
-    appendVisualLog && appendVisualLog({
-      action: 'nullSigil',
-      text: `${grantTo === 'player' ? 'You' : 'Opponent'} gained ${amount} Null Counter${amount === 1 ? '' : 's'}.`
-    });
-
-    if (typeof nextEffect === "function") nextEffect();
-  }
-},
 Token: {
   icon: "Icons/skillEffect/Token.png",
   name: "Token",
@@ -1777,7 +1751,62 @@ Token: {
   Ashfall:      { handler: weatherSetter("Ashfall") },
   ToxicMiasma:  { handler: weatherSetter("ToxicMiasma") },
   Mystveil:     { handler: weatherSetter("Mystveil") },
-  // Add more effects as needed (Strike, Heal, Destroy, etc.)
+  
+Sigil: {
+  icon: 'Icons/Skill/Sigil.png',
+  name: 'Sigil',
+  description: 'Grants one or more sigils to a player or opponent. Step fields: sigil (string), amount (number), duration (number|null), owner ("source"|"player"|"opponent"|"opponentOfSource"|"all").',
+  handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
+    if (!step || !step.sigil) {
+      if (typeof nextEffect === 'function') nextEffect();
+      return;
+    }
+
+    const sigilName = String(step.sigil);
+    const amount = Math.max(0, Number(step.amount) || 1);
+    const duration = (typeof step.duration === 'number') ? Number(step.duration) : null;
+
+    // Resolve recipient(s)
+    const sourceOwner = getCardOwner(sourceCardObj) || (sourceCardObj && sourceCardObj.owner) || 'player';
+    const opponentOwner = sourceOwner === 'player' ? 'opponent' : 'player';
+    let targets = [];
+
+    const ownerToken = String(step.owner || 'source').toLowerCase();
+    if (ownerToken === 'player') targets = ['player'];
+    else if (ownerToken === 'opponent') targets = ['opponent'];
+    else if (ownerToken === 'opponentofsource' || ownerToken === 'opponent_of_source' || ownerToken === 'opponentofsource') targets = [opponentOwner];
+    else if (ownerToken === 'source') targets = [sourceOwner];
+    else if (ownerToken === 'all' || ownerToken === 'both') targets = ['player','opponent'];
+    else targets = [sourceOwner];
+
+    // Apply: use addSigil which will call applySigil for each instance and keep legacy sync
+    for (const tgt of targets) {
+      if (amount <= 0) continue;
+      // addSigil accepts amount and will loop internally; pass duration via meta
+      addSigil(tgt, sigilName, amount);
+      // If you want duration stored per entry, call applySigil repeatedly with opts including duration:
+      if (duration !== null && typeof applySigil === 'function') {
+        // replace last-added entries' durations — simpler approach: add individually with duration
+        for (let i = 0; i < amount; i++) {
+          applySigil(tgt, sigilName, { duration, meta: step.meta || {} });
+        }
+      }
+    }
+
+    // Visual/log
+    appendVisualLog && appendVisualLog({
+      action: 'grantSigil',
+      text: `${sourceOwner === 'player' ? 'You' : 'Opponent'} granted ${amount} ${sigilName} Sigil${amount === 1 ? '' : 's'} to ${targets.join(', ')}.`
+    });
+
+    renderGameState && renderGameState();
+    if (typeof nextEffect === 'function') nextEffect();
+  },
+  canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
+    // optional: restrict activation zones or conditions if needed
+    return true;
+  }
+},
 };
 const WEATHER_EFFECTS = {
   Sunlight: {
@@ -1866,32 +1895,34 @@ const SIGIL_EFFECTS = {
   // 'Null' sigil: integrates with your existing null-counter utilities for compatibility.
   // Applying this sigil to an owner increments their "null" counter (via addNullSigil(owner))
   // Removing it consumes/decrements the null counter (via consumeNullSigil(owner)).
-  Null: {
-    key: 'Null',
-    name: 'Null',
-    icon: 'Icons/Sigils/null.png', // add this asset or change path
-    description: "Awards a Null marker to the owner. Consumed by certain reactions to nullify skills/effects.",
-    // apply(owner, opts) - owner is 'player' or 'opponent'
-    apply(owner, opts = {}) {
-      const amount = Number(opts.amount || 1);
-      try {
-        // Use existing null-counter helper to keep compatibility
-        addNullSigil(owner, amount);
-      } catch (err) {
-        console.warn('SIGIL_EFFECTS.Null.apply error', err);
-      }
-    },
-    // remove(owner, opts) - removes/consumes the sigil markers
-    remove(owner, opts = {}) {
-      const amount = Number(opts.amount || 1);
-      try {
-        for (let i = 0; i < amount; i++) consumeNullSigil(owner);
-      } catch (err) {
-        console.warn('SIGIL_EFFECTS.Null.remove error', err);
-      }
+Null: {
+  key: 'Null',
+  name: 'Null',
+  icon: 'Icons/Sigils/null.png',
+  description: 'Nullifies certain skill/effect interactions when consumed. Behavior implemented by SIGIL_EFFECTS hooks and resolution logic.',
+  // called when a Null sigil entry is created (applySigil will call this)
+  apply(owner, opts = {}) {
+    // Prefer to be lightweight. If you must keep the legacy numeric counters for backward compatibility,
+    // update them here. Do NOT call addSigil/applySigil again (would double-add).
+    try {
+      // optional legacy sync (remove later)
+      if (owner === 'opponent') gameState.opponentNullSigil = (Number(gameState.opponentNullSigil) || 0) + Number(opts.amount || 1);
+      else gameState.playerNullSigil = (Number(gameState.playerNullSigil) || 0) + Number(opts.amount || 1);
+    } catch (e) {
+      console.warn('SIGIL_EFFECTS.Null.apply error', e);
     }
   },
-
+  // called when a Null sigil entry is removed (removeSigil will call this)
+  remove(owner, opts = {}) {
+    try {
+      const amount = Number(opts.amount || 1);
+      if (owner === 'opponent') gameState.opponentNullSigil = Math.max(0, (Number(gameState.opponentNullSigil) || 0) - amount);
+      else gameState.playerNullSigil = Math.max(0, (Number(gameState.playerNullSigil) || 0) - amount);
+    } catch (e) {
+      console.warn('SIGIL_EFFECTS.Null.remove error', e);
+    }
+  }
+},
   // Example placeholder for other sigils:
   // ExampleSigil: { key: 'ExampleSigil', name:'Example', icon:'Icons/Sigils/example.png', description:'...', apply(owner, opts){}, remove(owner, opts){} }
 };
@@ -7416,41 +7447,7 @@ function haveSharedTypeOrArchetype(cardA, cardB) {
   const aArchs = getCardArchetypes(cardA), bArchs = getCardArchetypes(cardB);
   return aTypes.some(t => bTypes.includes(t)) || aArchs.some(a => bArchs.includes(a));
 }
-// --- NULL COUNTER HELPERS ---
-// owner: "player" or "opponent"
-function getNullSigil(owner) {
-  if (owner === "opponent") return Number(gameState.opponentNullSigil || 0);
-  return Number(gameState.playerNullSigil || 0);
-}
-function setNullSigil(owner, n) {
-  const val = Math.max(0, Number(n) || 0);
-  if (owner === "opponent") gameState.opponentNullSigil = val;
-  else gameState.playerNullSigil = val;
-  // UI update if needed
-  renderGameState && renderGameState();
-}
-function addNullSigil(owner, amount = 1) {
-  const current = getNullSigil(owner);
-  setNullSigil(owner, current + Math.max(0, Number(amount) || 0));
-  // Optional log
-  showToast && showToast(`${owner === 'player' ? 'You' : 'Opponent'} gained ${amount} Null Counter${amount === 1 ? '' : 's'}`, { type: 'info' });
-}
-function consumeNullSigil(owner) {
-  const current = getNullSigil(owner);
-  if (current <= 0) return false;
-  setNullSigil(owner, current - 1);
-  return true;
-}
-// Utility: check and consume a counter belonging to the opponent of the given card's owner
-function tryConsumeOpponentNullSigilForSkill(cardObj) {
-  const owner = getCardOwner(cardObj) || (cardObj.owner || "player");
-  const opponent = owner === "player" ? "opponent" : "player";
-  if (getNullSigil(opponent) > 0) {
-    consumeNullSigil(opponent);
-    return opponent; // return which side consumed
-  }
-  return null;
-}
+
 // ------------------------------------- //
 // --- HELPERS FOR SPRITE ANIMATIONS --- //
 // ------------------------------------- //
