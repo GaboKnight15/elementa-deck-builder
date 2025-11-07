@@ -3845,6 +3845,11 @@ function isFusion(cardObj)    { return isTrait(cardObj, "Fusion"); }
 // --- ABILITY --- //
 function hasAbility(cardObj, ability) {return fieldIncludes(cardObj, "ability", ability);}
 function hasBurn(cardObj)       { return hasAbility(cardObj, "Burn"); }
+function hasToxic(cardObj)      { return hasAbility(cardObj, "Toxic"); }
+function hasSoak(cardObj)       { return hasAbility(cardObj, "Soak"); }
+function hasFreeze(cardObj)     { return hasAbility(cardObj, "Freeze"); }
+function hasBind(cardObj)       { return hasAbility(cardObj, "Bind"); }
+function hasCurse(cardObj)      { return hasAbility(cardObj, "Curse"); }
 function hasFlying(cardObj)     { return hasAbility(cardObj, "Flying"); }
 function hasRush(cardObj)       { return hasAbility(cardObj, "Rush"); }
 function hasProtect(cardObj)    { return hasAbility(cardObj, "Protect"); }
@@ -3853,6 +3858,8 @@ function hasVeil(cardObj)       { return hasAbility(cardObj, "Veil"); }
 function hasImmunity(cardObj)   { return hasAbility(cardObj, "Immunity"); }
 function hasIntimidate(cardObj) { return hasAbility(cardObj, "Intimidate"); }
 function hasAmbush(cardObj)     { return hasAbility(cardObj, "Ambush"); }
+
+// --- BLIGHT --- //
 function isSealed(cardObj) {if (!cardObj) return false; if (cardObj._sealed) return true; return hasStatus(cardObj, 'Seal');}
 // Helper: check Evolve/Fuse sigils quickly (useful in canActivate checks)
 function hasEvolveSigil(cardObj) {
