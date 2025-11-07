@@ -631,7 +631,7 @@ const dummyCards = [
    activation: {class: 'Arrival'}
    effect: {class: 'Search', color: 'Purple'}},
  ]},
-{id: 'TreantWitch', name: 'Treant Witch', rarity: 'Epic', image: 'Cards/Arbor/TreantWitch.png', 
+{id: 'TreantWitch', name: 'Treant Witch', rarity: 'Rare', image: 'Cards/Arbor/TreantWitch.png', 
  category: 'Creature', color: ['Green','Black'], type: 'Elemental', archetype: 'Arbor', trait: 'Mage', hp: 8, atk: 3, def: 1, cost: '{1}{G}{B}', 
   ability: '', set: 'Primordial Ascension',
  skill: [
@@ -659,7 +659,7 @@ const dummyCards = [
    requirement: {class: 'CW'},
    effect: {class: 'Essence', color: 'White'}}
  ]},
-{id: 'SacredKirin', name: 'Sacred Kirin', rarity: 'Epic', image: 'Cards/Hybrid/SacredKirin.png', 
+{id: 'SacredKirin', name: 'Sacred Kirin', rarity: 'Rare', image: 'Cards/Hybrid/SacredKirin.png', 
  category: 'Creature', color: 'White', type: 'Beast', archetype: 'Hybrid', hp: 13, atk: 4, def: 1, cost: '{3}{W}', 
  ability: 'Rush', set: 'SavageTerritory',
  skill: [
@@ -812,7 +812,7 @@ skill: [
   {name: 'Evolve', cost: '{r}', 
    effect: {class: 'Evolve'}}
  ]},
-{id: 'FirelandHellmaw', name: 'Fireland Hellmaw', rarity: 'Epic', image: 'Cards/Beast/Fireland Hellmaw.png', 
+{id: 'FirelandHellmaw', name: 'Fireland Hellmaw', rarity: 'Rare', image: 'Cards/Beast/Fireland Hellmaw.png', 
  category: 'Creature', color: ['Red','Black'], type: ['Dragon','Demon'], archetype: 'Fireland', hp: 8, atk: 6, def: 1,
  cost: '{2}{R}{B}', ability: ['Burn','Flying','Rush'], set: 'ElementaGenesis',
  skill: [
@@ -1016,14 +1016,14 @@ skill: [
   
 // MOONFANG //
 
-{id: 'SinisterWolf', name: 'Sinister Wolf', rarity: 'Epic', image: 'Cards/Beast/SinisterWolf.png', 
+{id: 'SinisterWolf', name: 'Sinister Wolf', rarity: 'Common', image: 'Cards/Beast/SinisterWolf.png', 
  category: 'Creature', color: ['Black'], type: 'Beast', archetype: 'Moonfang', hp: 5, atk: 3, def: 0,
  cost: '{1}{B}', ability: ['Ambush','Rush'], set: 'ElementaGenesis',
  skill: [
   {name: 'Transform', cost: '{P}{P}{B}', 
    effect: {class: 'Transform'}}
  ]},
-{id: 'Werewolf', name: 'Werewolf', rarity: 'Epic', image: 'Cards/Beast/Werewolf.png', 
+{id: 'Werewolf', name: 'Werewolf', rarity: 'Common', image: 'Cards/Beast/Werewolf.png', 
  category: 'Creature', color: ['Black'], type: 'Beast', hp: 10, atk: 4, def: 1,
  cost: '{3}{B}', archetype: 'Moonfang', ability: ['Ambush'], set: 'ElementaGenesis',
  skill: [
@@ -1071,7 +1071,7 @@ skill: [
    requirement: {class: 'Sacrifice', amount: 1},
    effect: {class: 'Reanimate'}},
   ]},
-{id: 'SkullframeSpectralDragon', name: 'Skullframe Spectral Dragon', rarity: 'Epic', image: 'Cards/Undead/SkullframeSpectralDragon.png', 
+{id: 'SkullframeSpectralDragon', name: 'Skullframe Spectral Dragon', rarity: 'Rare', image: 'Cards/Undead/SkullframeSpectralDragon.png', 
  category: 'Creature', color: ['Black', 'Purple'], type: ['Dragon','Undead'], archetype: 'Skullframe', hp: 12, atk: 6, def: 2,
   cost: '{3}{P}{B}', ability: ['Flying', 'Immunity'], set: 'ElementaGenesis',
  skill: [
@@ -1090,7 +1090,7 @@ skill: [
    requirement: {class: 'Sacrifice'}, amount: 1,
    effect: {class: 'Reanimate'}}
  ]},
-{id: 'SkullframeHexmistress', name: 'Skullframe Hexmistress', rarity: 'Epic', image: 'Cards/Undead/SkullframeHexmistress.png', 
+{id: 'SkullframeHexmistress', name: 'Skullframe Hexmistress', rarity: 'Rare', image: 'Cards/Undead/SkullframeHexmistress.png', 
  category: 'Creature', color: ['Black', 'Purple'], type: 'Undead', archetype: 'Skullframe', trait: 'Mage', hp: 6, atk: 3, def: 1,
  cost: '{1}{B}{P}', ability: 'Immunity', set: 'ShadowsBeyond',
  skill: [
@@ -1155,7 +1155,7 @@ skill: [
 {id: 'FrostlandRuneforgedAutomaton', name: 'Frostland Runeforged Automaton', rarity: 'Rare', image: 'Cards/Frostland/FrostlandRuneforgedAutomaton.png', 
  category: 'Creature', color: ['Blue', 'Gray'], type: 'Construct', archetype: 'Frostland', hp: 9, atk: 5, def: 2,
  cost: '{2}{U}{C}', ability: ['Crush','Exploit'], set: 'ElementaGenesis'},
-{id: 'FrostlandRuneforgedColossus', name: 'Frostland Runeforged Colossus', rarity: 'Epic', image: 'Cards/Frostland/FrostlandRuneforgedColossus.png', 
+{id: 'FrostlandRuneforgedColossus', name: 'Frostland Runeforged Colossus', rarity: 'Rare', image: 'Cards/Frostland/FrostlandRuneforgedColossus.png', 
  category: 'Creature', color: ['Blue', 'Gray'], type: 'Construct', archetype: 'Frostland', hp: 9, atk: 5, def: 2,
  cost: '{4}{U}{C}', ability: ['Crush', 'Exploit'], set: 'ElementaGenesis'},
 {id: 'EirawenFrostlandQueenFA', name: 'Eirawen, Frostland Queen', rarity: 'Legendary', image: 'Cards/Frostland/EirawenFrostlandQueen.png', 
@@ -1239,7 +1239,7 @@ skill: [
  category: 'Spell', color: 'Green', type: 'Spell', cost: '{2}{G}', effect: 'Gain {G}{G}', set: 'ElementaGenesis'},
 
 Dragon Terrains
-{id: 'DragonsGrove', name: 'Dragon's Grove', rarity: 'Epic', image: 'Cards/Dragon/DragonsGrove.png', 
+{id: 'DragonsGrove', name: 'Dragon's Grove', rarity: 'Rare', image: 'Cards/Dragon/DragonsGrove.png', 
  category: 'Domain', color: 'Green', type: ['Terrain', 'Dragon'], archetype: 'Thornwing', hp: 13, cost: '{g}{g}', essence: '{g}{g}', set: 'WyrmheartAwakening',
  skill: [
   {name: 'Draconic Pulse', cost: '{g}{g}',
@@ -1248,7 +1248,7 @@ Dragon Terrains
    activation: {'Summon', archetype: 'Dragon'},
    effect: {class: 'Burn', amount: 1}},
  ]},
-{id: 'DragonsSpire', name: 'Dragon's Spire', rarity: 'Epic', image: 'Cards/Dragon/DragonsSpire.png', 
+{id: 'DragonsSpire', name: 'Dragon's Spire', rarity: 'Rare', image: 'Cards/Dragon/DragonsSpire.png', 
  category: 'Domain', color: 'Red', type: ['Terrain', 'Dragon'], archetype: 'Blazingscale', hp: 8, cost: '{r}{r}', essence: '{r}{R}', set: 'WyrmheartAwakening',
  skill: [
   {name: 'Dragon Summon', 
@@ -1257,7 +1257,7 @@ Dragon Terrains
   {name: 'Draconic Blaze', cost: '{r}{r}',
    effect: {class: 'Burn', amount: 2, target: 2}},
  ]},
-{id: 'DragonsAtoll', name: 'Dragon's Atoll', rarity: 'Epic', image: 'Cards/Dragon/DragonsAtoll.png', 
+{id: 'DragonsAtoll', name: 'Dragon's Atoll', rarity: 'Rare', image: 'Cards/Dragon/DragonsAtoll.png', 
  category: 'Domain', color: 'Blue', type: ['Terrain', 'Dragon'], archetype: 'Abyssdrake', hp: 14, cost: '{u}{u}', essence: '{u}{u}', set: 'WyrmheartAwakening',
   skill: [
   {name: 'Awaken', cost: '{u}{u}',
@@ -1270,7 +1270,7 @@ Dragon Terrains
   activation: {'Echo', archetype: 'Dragon'},
   effect: {class: 'NullSigil'}},
  ]},
-{id: 'DragonsSkyreach', name: 'Dragon's Skyreach', rarity: 'Epic', image: 'Cards/Dragon/DragonsSkyreach.png', 
+{id: 'DragonsSkyreach', name: 'Dragon's Skyreach', rarity: 'Rare', image: 'Cards/Dragon/DragonsSkyreach.png', 
  category: 'Domain', color: 'Yellow', type: ['Terrain', 'Dragon'], archetype: 'Stormrazor', hp: 5, cost: '{y}{y}', essence: '{Y}', set: 'StandardPack2',
  skill: [
   {name: 'Awaken', cost: '{u}{u}',
@@ -1283,7 +1283,7 @@ Dragon Terrains
   effect: {class: 'Thunderstorm'}},
  ]},
 
-{id: 'DragonsBastion', name: 'Dragon's Bastion', rarity: 'Epic', image: 'Cards/Dragon/DragonsBastion.png', 
+{id: 'DragonsBastion', name: 'Dragon's Bastion', rarity: 'Rare', image: 'Cards/Dragon/DragonsBastion.png', 
  category: 'Domain', color: 'Gray', type: ['Terrain', 'Dragon'], archetype: 'Ironclaw', hp: 5, cost: '{c}{c}', essence: '{C}', set: 'WyrmheartAwakening',
  skill: [
   {name: 'Awaken', cost: '{u}{u}',
@@ -1295,7 +1295,7 @@ Dragon Terrains
  {name: 'Draconic Ironwall', cost: '{c}{c}',
   effect: {class: 'Curse'}},
  ]},
-{id: 'DragonsHollow', name: 'Dragon's Hollow', rarity: 'Epic', image: 'Cards/Dragon/DragonsHollow.png', 
+{id: 'DragonsHollow', name: 'Dragon's Hollow', rarity: 'Rare', image: 'Cards/Dragon/DragonsHollow.png', 
  category: 'Domain', color: 'Purple', type: ['Terrain', 'Dragon'], archetype: 'Dreadspine', hp: 5, cost: '{0}', essence: '{P}', set: 'WyrmheartAwakening',
  skill: [
   {name: 'Awaken', cost: '{u}{u}',
@@ -1307,7 +1307,7 @@ Dragon Terrains
  {name: 'Draconic Curse', cost: '{p}{p}',
   effect: {class: 'Curse'}},
  ]}, 
-{id: 'DragonsHaven', name: 'Dragon's Haven', rarity: 'Epic', image: 'Cards/Dragon/DragonsHaven.png', 
+{id: 'DragonsHaven', name: 'Dragon's Haven', rarity: 'Rare', image: 'Cards/Dragon/DragonsHaven.png', 
  category: 'Domain', color: 'White', type: 'Terrain', hp: 5, cost: '{0}', essence: '{W}', set: 'WyrmheartAwakening',
   skill: [
   {name: 'Awaken', cost: '{u}{u}',
@@ -1320,7 +1320,7 @@ Dragon Terrains
   effect: {class: 'Night'}},
  ]},
  
-{id: 'DragonsMoonhold', name: 'Dragon's Moonhold', rarity: 'Epic', image: 'Cards/Dragon/DragonsMoonhold.png', 
+{id: 'DragonsMoonhold', name: 'Dragon's Moonhold', rarity: 'Rare', image: 'Cards/Dragon/DragonsMoonhold.png', 
  category: 'Domain', color: 'Black', type: 'Terrain', hp: 5, cost: '{0}', essence: '{B}', set: 'WyrmheartAwakening',
  skill: [
   {name: 'Awaken', cost: '{u}{u}',
@@ -1629,7 +1629,7 @@ const FILTERS_CONFIG = [
   { key: 'color', label: 'Color', options: ['All','Green','Red','Blue','Gray','Purple','Yellow','Black','White'] },
   { key: 'category', label: 'Category', options: ['All','Creature','Artifact','Spell','Domain'] },
   { key: 'type', label: 'Type', options: ['All','Elemental','Dragon','Construct','Beast','Demon','Faefolk','Brute','Undead'] },
-  { key: 'rarity', label: 'Rarity', options: ['All','Common','Rare','Epic','Legendary'] },
+  { key: 'rarity', label: 'Rarity', options: ['All','Common','Rare','Legendary'] },
   { key: 'trait', label: 'Trait', options: ['All','Champion','Dominion','Evolution','Fusion','Warrior','Mage','Ranger','Relic','Equipment','Aura','Terrain','Locale'] },
   { key: 'archetype', label: 'Archetype', options: ['All','Blazefeather','Cindercore','Coralbound','Fireland','Frostland','Golemheart','Moonfang','Skullframe','Voltwing','Zephyra'] },
   { key: 'ability', label: 'Ability', options: ['All','Ambush','Dive','Burn','Drain','Elusive','Flying','Ice Armor','Immunity','Intimidate','Leap','Lifelink','Protect','Provoke','Rush','Toxic'] },
@@ -3135,7 +3135,7 @@ function getUniqueCollectedCardsCount() {
 // Placeholder for badge image selection (replace with your unlock logic)
 function getCurrentPlayerBadgeImage() {
   // For now, just default, later use player level or unlocks
-  return "Images/Levels/One.png";
+  return "Images/Level/One.png";
 }
 
 // PROFILE PANEL POP-UP
@@ -3174,10 +3174,9 @@ function calculatePlayerPower() {
 
     let maxCount = 0, perCardPower = 0, foilPower = 0;
     switch (rarity) {
-      case 'common':    maxCount = 4; perCardPower = 1; foilPower = 2; break;
-      case 'rare':      maxCount = 3; perCardPower = 3; foilPower = 6; break;
-      case 'epic':      maxCount = 2; perCardPower = 10; foilPower = 20; break;
-      case 'legendary': maxCount = 1; perCardPower = 25; foilPower = 50; break;
+      case 'common':    maxCount = 3; perCardPower = 1; foilPower = 2; break;
+      case 'rare':      maxCount = 2; perCardPower = 3; foilPower = 6; break;
+      case 'Legendary': maxCount = 1; perCardPower = 10; foilPower = 20; break;
       default:          maxCount = 4; perCardPower = 1; foilPower = 2; break;
     }
     if (owned > 0) {
@@ -3660,7 +3659,7 @@ function getFilterOptions(key, context) {
   // Return options for each filter; can be static or dynamic
   switch (key) {
     case 'color': return ['All', 'Green', 'Red', 'Blue', 'White', 'Black', 'Yellow', 'Gray', 'Purple'];
-    case 'rarity': return ['All', 'Common', 'Rare', 'Epic', 'Legendary'];
+    case 'rarity': return ['All', 'Common', 'Rare', 'Legendary'];
     // ... and so on for others ...
     default: return ['All'];
   }
