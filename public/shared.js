@@ -3862,40 +3862,44 @@ function hasAmbush(cardObj)     { return hasAbility(cardObj, "Ambush"); }
 // --- BLIGHT --- //
 function hasBlight(cardObj) {
   return Boolean( isBurned(cardObj) || isPoisoned(cardObj) || isSoaked(cardObj) || 
-                  isFrozen(cardObj) || isBound(cardObj) || isCursed(cardObj) );
+  isFrozen(cardObj) || isBound(cardObj) || isCursed(cardObj) || isSealed(cardObj) );
 }
 function isBurned(cardObj) {
   if (!cardObj) return false;
   if (cardObj._burned || cardObj._burnedDEF) return true;
-  return hasStatus(cardObj, 'Burn') || hasStatus(cardObj, 'Burned');}
+  return hasBlight(cardObj, 'Burned');
+}
 function isPoisoned(cardObj) {
   if (!cardObj) return false;
   if (cardObj._poisoned) return true;
-  return hasStatus(cardObj, 'Poison') || hasStatus(cardObj, 'Poisoned');
+  return hasBlight(cardObj, 'Poisoned');
 }
 function isSoaked(cardObj) {
   if (!cardObj) return false;
   if (cardObj._soak) return true;
-  return hasStatus(cardObj, 'Soak') || hasStatus(cardObj, 'Soaked');
+  return hasBlight(cardObj, 'Soaked');
 }
 function isFrozen(cardObj) {
   if (!cardObj) return false;
   if (cardObj._frozen) return true;
-  return hasStatus(cardObj, 'Freeze') || hasStatus(cardObj, 'Frozen');
+  return hasBlight(cardObj, 'Frozen');
 }
 function isBound(cardObj) {
   if (!cardObj) return false;
   if (cardObj._bound) return true;
-  return hasStatus(cardObj, 'Bind') || hasStatus(cardObj, 'Bound');
+  return hasBlight(cardObj, 'Bound');
 }
 function isCursed(cardObj) {
   if (!cardObj) return false;
   if (cardObj._cursed) return true;
-  return hasStatus(cardObj, 'Cursed') || hasStatus(cardObj, 'Curse');
+  return hasBlight(cardObj, 'Curse');
 }
-function isSealed(cardObj) {if (!cardObj) return false; if (cardObj._sealed) return true; return hasStatus(cardObj, 'Seal');}
-
-// Helper: check Evolve/Fuse sigils quickly (useful in canActivate checks)
+function isSealed(cardObj) {
+  if (!cardObj) return false;
+  if (cardObj._sealed) return true; 
+  return hasBlight(cardObj, 'Seal');
+}
+// --- TRAIT STATUS --- //
 function hasEvolveSigil(cardObj) {
   if (!cardObj) return false;
   if (cardObj._hasEvolveSigil) return true;
