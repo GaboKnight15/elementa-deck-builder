@@ -47,8 +47,8 @@ let gameState = {
   opponentVoid: [],
   playerDominion: null,
   opponentDominion: null,
-  playerNullSigil: 0,    // number of Null Counters the player currently has
-  opponentNullSigil: 0,  // number of Null Counters the opponent currently has
+  playerSigils: [],    // e.g. [{ name: 'Null', appliedAt:{turn:'player',phase:'start'}, duration: null, meta:{} }]
+  opponentSigils: [],
   turn: "player",
   phase: "start",
   timeOfDay: "dawn", // Initial state
@@ -1862,6 +1862,39 @@ BloodMoon: {
     passive: (cardObj) => (isGreen(cardObj) || isFairy(cardObj)) ? { def: 1 } : null
   }
 };
+const SIGIL_EFFECTS = {
+  // 'Null' sigil: integrates with your existing null-counter utilities for compatibility.
+  // Applying this sigil to an owner increments their "null" counter (via addNullSigil(owner))
+  // Removing it consumes/decrements the null counter (via consumeNullSigil(owner)).
+  Null: {
+    key: 'Null',
+    name: 'Null',
+    icon: 'Icons/Sigils/null.png', // add this asset or change path
+    description: "Awards a Null marker to the owner. Consumed by certain reactions to nullify skills/effects.",
+    // apply(owner, opts) - owner is 'player' or 'opponent'
+    apply(owner, opts = {}) {
+      const amount = Number(opts.amount || 1);
+      try {
+        // Use existing null-counter helper to keep compatibility
+        addNullSigil(owner, amount);
+      } catch (err) {
+        console.warn('SIGIL_EFFECTS.Null.apply error', err);
+      }
+    },
+    // remove(owner, opts) - removes/consumes the sigil markers
+    remove(owner, opts = {}) {
+      const amount = Number(opts.amount || 1);
+      try {
+        for (let i = 0; i < amount; i++) consumeNullSigil(owner);
+      } catch (err) {
+        console.warn('SIGIL_EFFECTS.Null.remove error', err);
+      }
+    }
+  },
+
+  // Example placeholder for other sigils:
+  // ExampleSigil: { key: 'ExampleSigil', name:'Example', icon:'Icons/Sigils/example.png', description:'...', apply(owner, opts){}, remove(owner, opts){} }
+};
 // ==========================
 // === DOM REFERENCES ===
 // ==========================
@@ -1925,6 +1958,9 @@ function startGame({
   gameState.timeOfDay = gameState.timeOfDay || "dawn";
   gameState.pendingDayNightTransition = gameState.pendingDayNightTransition || "day";
   gameState.dayNightCycleCounter = 0;
+  
+  gameState.playerSigils = [];
+  gameState.opponentSigils = []; 
   
   gameState.playerDominion = null;
   gameState.opponentDominion = null;
@@ -5592,9 +5628,11 @@ document.getElementById('mode-player-deck-tile').onclick = function (e) {
     window.showPlayerDeckModal();
 };
 
-// RESET GAMESTATE WHEN A PLAYER LEAVES/CONCEDES
-function resetGameState() {
-  gameState = {
+// --- Game state factory: canonical initial state for a fresh match ---
+// Use this wherever you need a clean/new game state (startGame, resetGameState, tests, etc.)
+function getInitialGameState() {
+  return {
+    // Zones
     playerDeck: [],
     playerHand: [],
     playerCreatures: [],
@@ -5605,19 +5643,79 @@ function resetGameState() {
     opponentCreatures: [],
     opponentDomains: [],
     opponentVoid: [],
+
+    // Dominion / meta
     playerDominion: null,
     opponentDominion: null,
+
+    // Counters and flags
+    playerNullCounters: 0,
+    opponentNullCounters: 0,
+
+    // Sigils (owner-scoped arrays, per recent changes)
+    playerSigils: [],
+    opponentSigils: [],
+
+    // Essence pools (keep as map of colors)
+    essencePools: {
+      player: { green:0, red:0, blue:0, yellow:0, purple:0, gray:0, black:0, white:0, colorless:0 },
+      opponent: { green:0, red:0, blue:0, yellow:0, purple:0, gray:0, black:0, white:0, colorless:0 }
+    },
+
+    // Weather / global effects
+    weatherEffects: [],
+
+    // Turn/phase/time-of-day defaults
     turn: "player",
-    phase: "draw"
+    phase: "start",
+    timeOfDay: "dawn",
+    pendingDayNightTransition: "day",
+    dayNightCycleCounter: 0,
+
+    // Other runtime flags you may have — include them here if you use them
+    // e.g. currentCasting: null, eventQueue: [], etc.
   };
-  renderGameState();
-  setupDropZones();
-  // Optionally hide gameplay UI
-  document.getElementById('gameplay-section').classList.remove('active');
-  document.getElementById('mode-select-section').classList.add('active');
-  // Hide profiles
-  document.getElementById('my-profile').style.display = 'none';
-  document.getElementById('opponent-profile').style.display = 'none';
+}
+
+// --- Reset the whole match state to a clean initial state ---
+// Replaces the previous, partial reset function.
+function resetGameState() {
+  // Replace the global gameState object with a fresh initial state
+  gameState = getInitialGameState();
+
+  // Clear or reset any auxiliary runtime structures your engine uses:
+  // - status/event queues, animation queues, attack mode, global timers, UI selections, etc.
+  // Only clear those that are present in your codebase; the examples below are common ones.
+  try { 
+    if (typeof eventQueue !== 'undefined' && Array.isArray(eventQueue)) eventQueue.length = 0;
+  } catch (e) {}
+  try {
+    if (typeof queuedTriggers !== 'undefined' && Array.isArray(queuedTriggers)) queuedTriggers.length = 0;
+  } catch (e) {}
+
+  // Close or clear modals / menus that could remain open
+  try { closeAllMenus(); } catch (e) {}
+  try { closeAllModals(); } catch (e) {}
+
+  // Reset UI to mode-select
+  try {
+    renderGameState && renderGameState();
+    setupDropZones && setupDropZones();
+  } catch (err) {
+    console.warn('resetGameState: render/setup error', err);
+  }
+
+  // Optionally hide gameplay UI and show mode select (your existing behavior)
+  const gameplaySection = document.getElementById('gameplay-section');
+  const modeSelectSection = document.getElementById('mode-select-section');
+  if (gameplaySection) gameplaySection.classList.remove('active');
+  if (modeSelectSection) modeSelectSection.classList.add('active');
+
+  // Hide profiles if required
+  const myProfile = document.getElementById('my-profile');
+  const opponentProfile = document.getElementById('opponent-profile');
+  if (myProfile) myProfile.style.display = 'none';
+  if (opponentProfile) opponentProfile.style.display = 'none';
 }
 // Re-render when needed (after deck changes)
 if (window.renderDeckSelection) {
@@ -7118,7 +7216,46 @@ function updateGameStatusRow() {
       weatherWrap.appendChild(icon);
     });
   }
+// --- inside updateGameStatusRow() where you build status UI ---
+// Render player's sigils (if any)
+const playerSigArr = getSigils('player');
+if (playerSigArr && playerSigArr.length) {
+  const pSigWrap = document.createElement('div');
+  pSigWrap.style.display = 'flex';
+  pSigWrap.style.gap = '6px';
+  pSigWrap.style.alignItems = 'center';
+  playerSigArr.forEach(s => {
+    const eff = SIGIL_EFFECTS[s.name] || {};
+    const img = document.createElement('img');
+    img.src = eff.icon || 'Icons/Sigils/default.png';
+    img.alt = s.name;
+    img.title = `${eff.name || s.name}${s.duration ? ` (${s.duration})` : ''}`;
+    img.style.width = '22px';
+    img.style.height = '22px';
+    pSigWrap.appendChild(img);
+  });
+  container.appendChild(pSigWrap); // or append to the player column you use
+}
 
+// Render opponent sigils similarly
+const opponentSigArr = getSigils('opponent');
+if (opponentSigArr && opponentSigArr.length) {
+  const oSigWrap = document.createElement('div');
+  oSigWrap.style.display = 'flex';
+  oSigWrap.style.gap = '6px';
+  oSigWrap.style.alignItems = 'center';
+  opponentSigArr.forEach(s => {
+    const eff = SIGIL_EFFECTS[s.name] || {};
+    const img = document.createElement('img');
+    img.src = eff.icon || 'Icons/Sigils/default.png';
+    img.alt = s.name;
+    img.title = `${eff.name || s.name}${s.duration ? ` (${s.duration})` : ''}`;
+    img.style.width = '22px';
+    img.style.height = '22px';
+    oSigWrap.appendChild(img);
+  });
+  container.appendChild(oSigWrap);
+}
   // assemble
   container.appendChild(todWrap);
   container.appendChild(pWrap);
@@ -7153,6 +7290,76 @@ if (typeof window !== 'undefined') {
 }
 // Add more as needed...
 function weatherSetter(weatherName) {return (cardObj, skillObj, context) => {if (context.setWeather) context.setWeather(weatherName, cardObj);};}
+// --- Sigil helpers (owner = 'player' | 'opponent') ---
+function _getSigilArrayForOwner(owner) {
+  return owner === 'opponent' ? gameState.opponentSigils : gameState.playerSigils;
+}
+
+// Apply a sigil to an owner. opts: { amount, duration, meta }
+function applySigil(owner = 'player', sigilName, opts = {}) {
+  if (!sigilName) return;
+  owner = owner === 'opponent' ? 'opponent' : 'player';
+  const sigils = _getSigilArrayForOwner(owner);
+  // push a sigil entry (allow duplicates)
+  sigils.push({
+    name: sigilName,
+    appliedAt: getCurrentPhaseObj ? getCurrentPhaseObj() : { turn: gameState.turn, phase: gameState.phase },
+    duration: opts.duration || null,
+    meta: opts.meta || {}
+  });
+  // call SIGIL_EFFECTS apply if present
+  if (SIGIL_EFFECTS && SIGIL_EFFECTS[sigilName] && typeof SIGIL_EFFECTS[sigilName].apply === 'function') {
+    try { SIGIL_EFFECTS[sigilName].apply(owner, opts); } catch (e) { console.warn('applySigil: handler threw', e); }
+  }
+  renderGameState && renderGameState();
+}
+window.applySigil = applySigil;
+
+// Remove one or all matching sigils for owner. opts: { amount, removeAll }
+function removeSigil(owner = 'player', sigilName, opts = {}) {
+  if (!sigilName) return;
+  owner = owner === 'opponent' ? 'opponent' : 'player';
+  const sigils = _getSigilArrayForOwner(owner);
+  const removeAll = Boolean(opts.removeAll);
+  const amount = Number(opts.amount || 1);
+
+  if (removeAll) {
+    // remove all occurrences
+    const removed = sigils.filter(s => s.name === sigilName);
+    gameState[owner === 'opponent' ? 'opponentSigils' : 'playerSigils'] = sigils.filter(s => s.name !== sigilName);
+    // call handler to remove same number
+    if (SIGIL_EFFECTS && SIGIL_EFFECTS[sigilName] && typeof SIGIL_EFFECTS[sigilName].remove === 'function') {
+      try { SIGIL_EFFECTS[sigilName].remove(owner, { amount: removed.length }); } catch (e) {}
+    }
+  } else {
+    // remove up to amount from earliest applied
+    let removedCount = 0;
+    for (let i = 0; i < sigils.length && removedCount < amount; ) {
+      if (sigils[i].name === sigilName) {
+        sigils.splice(i, 1);
+        removedCount++;
+      } else i++;
+    }
+    if (SIGIL_EFFECTS && SIGIL_EFFECTS[sigilName] && typeof SIGIL_EFFECTS[sigilName].remove === 'function') {
+      try { SIGIL_EFFECTS[sigilName].remove(owner, { amount: removedCount }); } catch (e) {}
+    }
+  }
+  renderGameState && renderGameState();
+}
+window.removeSigil = removeSigil;
+
+// Query helpers
+function getSigils(owner = 'player') {
+  return Array.isArray(_getSigilArrayForOwner(owner)) ? _getSigilArrayForOwner(owner).slice() : [];
+}
+window.getSigils = getSigils;
+
+function hasSigil(owner = 'player', name) {
+  if (!name) return false;
+  const sigils = getSigils(owner);
+  return sigils.some(s => s.name === name);
+}
+window.hasSigil = hasSigil;
 // --- Utility: get all colors/types/archetypes/traits/abilities (for filters, etc.) ---
 function getCardColors(cardObj) {
   const card = getCardDef(cardObj);
