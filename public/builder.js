@@ -249,10 +249,10 @@ if (deck.highlightArt) {
 }
       // --- CARD COUNT WARNING MESSAGE --- //
 let warningDiv = null;
-if (count < 50) {
+if (count < 40) {
   warningDiv = document.createElement('div');
   warningDiv.className = 'deck-slot-warning';
-  warningDiv.textContent = "Deck cannot be used, less than 50 cards";
+  warningDiv.textContent = "Less than 40 cards";
 }
       // --- ACTIVE DECK BUTTON/STAR ---
 const isActive = slotName === currentDeckSlot;
@@ -313,7 +313,7 @@ function showDeckTileMenu(deckName, anchorElem) {
   const count = Object.values(deck)
     .filter(v => typeof v === 'number')
     .reduce((a, b) => a + b, 0);
-  deckCardCount.textContent = `${count} / 50`;
+  deckCardCount.textContent = `${count} / 40`;
 
   // Show as menu
   const menu = document.getElementById('deck-menu');
@@ -682,7 +682,7 @@ function showDeckViewModal(deckName) {
   deckViewModalTitle.innerHTML = `
     <span>${deckName || 'Deck'}</span>
     <span style="font-size:0.9em; font-weight:normal; color:#ffe066; margin-left:18px;">
-      ${total} / 50 cards
+      ${total} / 40 cards
     </span>
   `;
 }
@@ -988,9 +988,8 @@ function updateDeckDisplay() {
   // Define rarity order
   const rarityOrder = {
     legendary: 0,
-    epic: 1,
-    rare: 2,
-    common: 3
+    rare: 1,
+    common: 2
   };
 
   // Helper to create list item (image + badge) — same behavior as before but condensed
@@ -1092,7 +1091,7 @@ function updateDeckDisplay() {
   const cardCountEl = document.getElementById('card-count');
   if (cardCountEl) cardCountEl.textContent = total;
   const deckCardCountEl = document.getElementById('deck-card-count');
-  if (deckCardCountEl) deckCardCountEl.textContent = `${total} / 50`;
+  if (deckCardCountEl) deckCardCountEl.textContent = `${total} / 40`;
 }
 function getCardCategory(card) {
   return card.category ? card.category.toLowerCase() : '';
@@ -1115,13 +1114,12 @@ function canAddCard(card, currentInDeck, ownedCount) {
   const count = currentInDeck || 0;
   const total = Object.values(deck).reduce((a, b) => a + b, 0);
 
-  if (total >= 50) return false;
+  if (total >= 40) return false;
   if (count >= ownedCount) return false;
   // Rarity limits
   if (card.rarity && card.rarity.toLowerCase() === 'legendary' && count >= 1) return false;
-  if (card.rarity && card.rarity.toLowerCase() === 'epic' && count >= 2) return false;
-  if (card.rarity && card.rarity.toLowerCase() === 'rare' && count >= 3) return false;
-  if (card.rarity && card.rarity.toLowerCase() === 'common' && count >= 4) return false;
+  if (card.rarity && card.rarity.toLowerCase() === 'rare' && count >= 2) return false;
+  if (card.rarity && card.rarity.toLowerCase() === 'common' && count >= 3) return false;
   if (typeof isDominion === 'function' && isDominion(card)) {
     for (const cardId in deck) {
       const c = dummyCards.find(dc => dc.id === cardId);
@@ -1363,7 +1361,7 @@ function showAutofillModal() {
 
 // Themed autofill logic
 function autofillDeck({colors, types, archetypes}) {
-  const MAX_DECK_SIZE = 50;
+  const MAX_DECK_SIZE = 40;
   const MAX_COPIES = 3;
   setCurrentDeck({});
   let deck = {};
