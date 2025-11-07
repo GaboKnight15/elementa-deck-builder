@@ -148,10 +148,10 @@ const ESSENCE_IMAGE_MAP = {
 };
 // STATUS EFFECTS
 const STATUS_EFFECTS = {
-  Burn: {
-    icon: 'Icons/Status/Burn.png',
-    name: 'Burn',
-    description: 'Deals 1 damage at End Phase and lowers DEF by 1.',
+  Burned: {
+    icon: 'Icons/Status/Burned.png',
+    name: 'Burned',
+    description: 'Lowers DEF by 1.',
     duration: 2,
     tick: "opponentEnd", // Only decrement at opponent's End Phase!
     apply: function(cardObj) {
@@ -172,9 +172,9 @@ const STATUS_EFFECTS = {
       cardObj.currentHP = Math.max(0, (cardObj.currentHP || getBaseHp(cardObj.cardId)) - 1);
     }
   },
-  Freeze: {
-    icon: 'Icons/Status/Freeze.png',
-    name: 'Freeze',
+  Frozen: {
+    icon: 'Icons/Status/Frozen.png',
+    name: 'Frozen',
     description: 'Cannot attack, use skills and receive damage.',
     duration: 1,
     tick: "allEnd", // Decrement on every End Phase
@@ -187,36 +187,44 @@ const STATUS_EFFECTS = {
       cardObj.canAttack = true;
     },
   },
-  Poison: {
-    icon: 'Icons/Status/Poison.png',
-    name: 'Poison',
-    description: 'Deals 1 damage at the beginning of each turn. Reduces max HP by 1 while poisoned.',
-    duration: 3,
-    apply: function(cardObj) {
-      if (!cardObj._poisonedMaxHP) {
-        cardObj._originalMaxHP = cardObj._originalMaxHP || getBaseHp(cardObj.cardId);
-        cardObj._poisonedMaxHP = true;
-        cardObj.maxHP = (cardObj.maxHP || getBaseHp(cardObj.cardId)) - 1;
-        // If currentHP is above new max, lower it
-        if (cardObj.currentHP > cardObj.maxHP) {
-          cardObj.currentHP = cardObj.maxHP;
-        }
+Poisoned: {
+  icon: 'Icons/Status/Poisoned.png',
+  name: 'Poisoned',
+  description: 'Takes 1 damage during each End Phase.',
+  duration: 3,
+  tick: "allEnd",
+  apply: function(cardObj) {
+    try {
+      // mark instance as poisoned for quick checks / UI
+      cardObj._poisoned = true;
+      // store original max HP if needed by other effects (no maxHP change at apply)
+      if (typeof cardObj._originalMaxHP === 'undefined') {
+        cardObj._originalMaxHP = (typeof cardObj.maxHP === 'number' ? cardObj.maxHP : getBaseHp(cardObj.cardId));
       }
-    },
-    remove: function(cardObj) {
-      if (cardObj._poisonedMaxHP) {
-        cardObj.maxHP = cardObj._originalMaxHP || getBaseHp(cardObj.cardId);
-        cardObj._poisonedMaxHP = false;
-      }
-    },
-    onTurnStart: function(cardObj) {
-      cardObj.currentHP = Math.max(0, (cardObj.currentHP || getBaseHp(cardObj.cardId)) - 1);
-    }
+    } catch (err) { console.warn('Poisoned.apply failed', err); }
   },
-  Paralysis: {
-    icon: 'Icons/Status/Paralysis.png',
-    name: 'Paralysis',
-    description: 'Cannot attack or activate skills for 2 turns.',
+  remove: function(cardObj) {
+    try {
+      cardObj._poisoned = false;
+      delete cardObj._poisoned;
+      // Do not restore HP here; Poison deals damage each End Phase while present.
+    } catch (err) { console.warn('Poisoned.remove failed', err); }
+  },
+  onEndPhase: function(cardObj) {
+    try {
+      if (typeof cardObj.currentHP !== 'number') {
+        cardObj.currentHP = getBaseHp(cardObj.cardId);
+      }
+      cardObj.currentHP = Math.max(0, cardObj.currentHP - 1);
+    } catch (err) {
+      console.warn('Poisoned.onEndPhase error', err);
+    }
+  }
+},
+  Paralized: {
+    icon: 'Icons/Status/Paralized.png',
+    name: 'Paralized',
+    description: 'Cannot attack or activate skills.',
     duration: 2,
     apply: function(cardObj) {
       cardObj._paralyzed = true;
@@ -231,10 +239,10 @@ const STATUS_EFFECTS = {
     // Optionally, you can add a visual tick at each turn start or end
     // For now, logic is purely duration-based
   },
-  Soak: {
-    icon: 'Icons/Status/Soak.png',
-    name: 'Soak',
-    description: 'Takes 2 extra damage from all sources until end of next turn.',
+  Soaked: {
+    icon: 'Icons/Status/Soaked.png',
+    name: 'Soaked',
+    description: 'Decreases {atk} by {1}.',
     duration: 1,
     apply: function(cardObj) {
       cardObj._soak = true;
@@ -246,9 +254,9 @@ const STATUS_EFFECTS = {
     }
     // Optionally add logic for duration ticks
   },
-Bind: {
-  icon: 'Icons/Status/Bind.png',
-  name: 'Bind',
+Binded: {
+  icon: 'Icons/Status/Binded.png',
+  name: 'Binded',
   description: 'Cannot attack or activate skills (removed at next opponent End Phase).',
   // Don't set duration here, handle it in your end phase check!
   apply: function(cardObj) {
@@ -264,8 +272,8 @@ Bind: {
     delete cardObj._bindPendingRemoval;
   }
 },
-Seal: {
-  name: "Seal",
+Sealed: {
+  name: "Sealed",
   icon: "Icons/Status/Sealed.png",
   description: "This card's skills cannot be activated.",
   // apply/remove set an instance-level flag so checks are cheap and reliable
@@ -287,6 +295,45 @@ Seal: {
       delete cardObj.canActivateSkill;
     } catch (err) {
       console.warn('Seal.remove failed', err);
+    }
+  }
+},
+Cursed: {
+  icon: 'Icons/Status/Cursed.png',
+  name: 'Cursed',
+  description: 'Reduces max HP by 1 during each End Phase.',
+  duration: 3,
+  tick: "allEnd",
+  apply: function(cardObj) {
+    try {
+      // mark instance as cursed (for quick checks / UI)
+      cardObj._cursed = true;
+      // persist original max HP once so we know the base if needed elsewhere
+      if (typeof cardObj._originalMaxHP === 'undefined') {
+        cardObj._originalMaxHP = (typeof cardObj.maxHP === 'number' ? cardObj.maxHP : getBaseHp(cardObj.cardId));
+      }
+    } catch (err) { console.warn('Cursed.apply failed', err); }
+  },
+  remove: function(cardObj) {
+    try {
+      cardObj._cursed = false;
+      // NOTE: we intentionally do NOT restore reduced maxHP on remove, because Cursed reduces maxHP each End Phase while active.
+      // If you prefer restoring at removal, restore here using cardObj._originalMaxHP and subtracting applied reductions.
+      delete cardObj._cursed;
+    } catch (err) { console.warn('Cursed.remove failed', err); }
+  },
+  onEndPhase: function(cardObj) {
+    try {
+      // Ensure maxHP exists
+      const base = (typeof cardObj.maxHP === 'number') ? cardObj.maxHP : (cardObj._originalMaxHP || getBaseHp(cardObj.cardId));
+      // Lower maxHP by 1 (but never below 1)
+      cardObj.maxHP = Math.max(1, (typeof cardObj.maxHP === 'number' ? cardObj.maxHP - 1 : base - 1));
+      // Clamp currentHP to new max
+      if (typeof cardObj.currentHP === 'number' && cardObj.currentHP > cardObj.maxHP) {
+        cardObj.currentHP = cardObj.maxHP;
+      }
+    } catch (err) {
+      console.warn('Cursed.onEndPhase error', err);
     }
   }
 },
@@ -523,10 +570,6 @@ const SKILL_ACTIVATION_MAP = {
   }
   // Add more triggers as needed!
 };
-// ATTACK RESOLUTION ABILITIES
-const ATTACK_DECLARATION_ABILITY = {
-  // ...add more declaration abilities here!
-};
 
 /*------------------------------
 //---- SKILL TARGET TYPE ---- //
@@ -599,6 +642,9 @@ const REQUIREMENT_MAP = {
     }
   },
   Stash: {
+    icon: 'Icons/Skill/Stash.png',
+    name: 'Stash',
+    description: 'Returns a card from the hand to the deck.',
     zones: ['hand'],
     handler: function(sourceCardObj, skillObj) {
       const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
@@ -616,6 +662,9 @@ const REQUIREMENT_MAP = {
     }
   },
   Discard: {
+    icon: 'Icons/Skill/Discard.png',
+    name: 'Discard',
+    description: 'Sends a card from the hand to the void.',
     zones: ['hand'],
     handler: function(sourceCardObj, skillObj) {
       runHandSkillWithAnimation(sourceCardObj, skillObj, gameState.playerVoid);
@@ -633,6 +682,9 @@ const REQUIREMENT_MAP = {
     }
   },
 Sacrifice: {
+  icon: 'Icons/Skill/Sacrifice.png',
+  name: 'Sacrifice',
+  description: 'Sends a card from the field to the void.',
   zones: ['playerCreatures', 'playerDomains'],
   handler: function(sourceCardObj, skillObj, next, requirement) {
     const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
@@ -686,7 +738,10 @@ Sacrifice: {
     return pool.length >= amount;
   }
 },
-  Return: {
+Return: {
+  icon: 'Icons/Skill/Return.png',
+  name: 'Return',
+  description: 'Returns a card from the field to the hand.',
     zones: ['playerCreatures', 'playerDomains'],
     handler: function(sourceCardObj, skillObj) {
       const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
@@ -709,47 +764,53 @@ Sacrifice: {
       return validZones.includes(currentZone);
     }
   },
-  Retreat: {
-    zones: ['playerCreatures', 'playerDomains'],
-    handler: function(sourceCardObj, skillObj) {
-      const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
-      const isField = validZones.some(zone =>
-        (zone === 'playerCreatures' && gameState.playerCreatures.includes(sourceCardObj)) ||
-        (zone === 'playerDomains' && gameState.playerDomains.includes(sourceCardObj))
-      );
-      if (!isField) {
-        showToast("Retreat can only be activated from the field.");
-        return;
-      }
-      const fromArr = gameState.playerCreatures.includes(sourceCardObj)
-        ? gameState.playerCreatures
-        : gameState.playerDomains;
-      moveCard(sourceCardObj.instanceId, fromArr, gameState.playerDeck);
-      gameState.playerDeck = shuffle(gameState.playerDeck);
-      renderGameState();
-    },
-    canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
-      const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
-      return validZones.includes(currentZone);
+Retreat: {
+  icon: 'Icons/Skill/Retreat.png',
+  name: 'Retreat',
+  description: 'Returns a card from the field to the deck.',
+  zones: ['playerCreatures', 'playerDomains'],
+  handler: function(sourceCardObj, skillObj) {
+    const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
+    const isField = validZones.some(zone =>
+      (zone === 'playerCreatures' && gameState.playerCreatures.includes(sourceCardObj)) ||
+      (zone === 'playerDomains' && gameState.playerDomains.includes(sourceCardObj))
+    );
+    if (!isField) {
+      showToast("Retreat can only be activated from the field.");
+      return;
     }
+    const fromArr = gameState.playerCreatures.includes(sourceCardObj)
+      ? gameState.playerCreatures
+      : gameState.playerDomains;
+    moveCard(sourceCardObj.instanceId, fromArr, gameState.playerDeck);
+    gameState.playerDeck = shuffle(gameState.playerDeck);
+    renderGameState();
   },
-  Reforge: {
-    zones: ["playerVoid"],
-    handler: function(sourceCardObj, skillObj) {
-      const isVoid = gameState.playerVoid.includes(sourceCardObj);
-      if (!isVoid) {
-        showToast("Reforge can only be activated from the void.");
-        return;
-      }
-      moveCard(sourceCardObj.instanceId, gameState.playerVoid, gameState.playerDeck);
-      gameState.playerDeck = shuffle(gameState.playerDeck);
-      renderGameState();
-    },
-    canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
-      return currentZone === "playerVoid";
+  canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
+    const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
+    return validZones.includes(currentZone);
+  }
+},
+Reforge: {
+  icon: 'Icons/Skill/Reforge.png',
+  name: 'Reforge',
+  description: 'Returns a card from the void to the deck.',
+  zones: ["playerVoid"],
+  handler: function(sourceCardObj, skillObj) {
+    const isVoid = gameState.playerVoid.includes(sourceCardObj);
+    if (!isVoid) {
+      showToast("Reforge can only be activated from the void.");
+      return;
     }
+    moveCard(sourceCardObj.instanceId, gameState.playerVoid, gameState.playerDeck);
+    gameState.playerDeck = shuffle(gameState.playerDeck);
+    renderGameState();
   },
-  "": { handler: function() {} }
+  canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
+    return currentZone === "playerVoid";
+  }
+},
+"": { handler: function() {} }
 };
 
 const SKILL_EFFECT_MAP = {
@@ -862,6 +923,12 @@ Bind: {
   name: 'Bind',
   description: 'Deals damage and binds.',
   handler: effectStatusHandler('Bind')
+},
+Curse: {
+  icon: 'Icons/Skill/Curse.png',
+  name: 'Curse',
+  description: 'Deals damage and curses.',
+  handler: effectStatusHandler('Curse')
 },
   /*
 Burst: {
