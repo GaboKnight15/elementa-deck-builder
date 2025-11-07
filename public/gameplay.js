@@ -859,8 +859,6 @@ Champion: {
     sourceCardObj._isChampion = true;
     // If the effect is meant to "activate" Champion immediately, set _championActive; default true for this effect
     sourceCardObj._championActive = true;
-
-    // Optionally add a persistent status entry so hasStatus(...,'Champion') works
     sourceCardObj.statuses = sourceCardObj.statuses || [];
     if (!sourceCardObj.statuses.some(s => s.name === 'Champion')) {
       sourceCardObj.statuses.push({ name: 'Champion', duration: null });
@@ -3111,9 +3109,6 @@ gameState.playerDeck.forEach((cardObj, idx) => {
     placeMenuWithinViewport(menu, rect);
 
     menu.onclick = function(e) { e.stopPropagation(); };
-
-    // Hide menu when clicking elsewhere
-    // Robust: Hide menu when clicking anywhere except the menu itself
     modal.onclick = function(e) {
       if (!e.target.closest('.card-menu')) {
         closeAllMenus();
@@ -3209,8 +3204,7 @@ function computeCardStat(cardObj, statName) {
     });
   });
 
-  // === NEW: Ability-based passive Speed bonuses ===
-  // Abilities that grant +1 Speed: Dash, Dive, Flying, Leap, Ranged/Range, Rush
+  // Abilities that grant +1 Speed: Dash, Dive, Flying, Leap, Rush, Mage and Ranger
   if (statName === "speed") {
     // getCardAbilities helper exists elsewhere in file; use it to read ability list
     const abilityList = getCardAbilities(cardObj) || [];
