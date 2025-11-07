@@ -17,8 +17,8 @@ const filterSelectLabels = {
   'filter-archetype-builder': 'Archetype',
   'filter-ability-builder': 'Ability'
 };
-const CREATE_ESSENCE_COST = {common: 5, rare: 25, epic: 100, legendary: 500};
-const VOID_ESSENCE_REFUND = {common: 1, rare: 5, epic: 20, legendary: 100};
+const CREATE_ESSENCE_COST = {common: 5, rare: 25, legendary: 100};
+const VOID_ESSENCE_REFUND = {common: 1, rare: 5, legendary: 20};
 const isFoil = window.playerFoilCards && window.playerFoilCards[card.id];
 if (isFoil) {
   div.classList.add('card-foil');
@@ -123,9 +123,8 @@ function getMinimumKeptForRarity(card) {
   if (!card.rarity) return 1; // Default fallback
   switch (card.rarity.toLowerCase()) {
     case 'legendary': return 1;
-    case 'epic':      return 2;
-    case 'rare':      return 3;
-    case 'common':    return 4;
+    case 'rare':      return 2;
+    case 'common':      return 3;
     default:          return 1;
   }
 }
@@ -133,9 +132,8 @@ function getFoilConsumeAmount(card) {
   if (!card.rarity) return 1;
   switch (card.rarity.toLowerCase()) {
     case 'legendary': return 1;
-    case 'epic':      return 2;
-    case 'rare':      return 3;
-    case 'common':    return 4;
+    case 'rare':      return 2;
+    case 'common':    return 3;
     default:          return 1;
   }
 }
@@ -156,7 +154,6 @@ function getRarityBgClass(card) {
   switch ((card.rarity || '').toLowerCase()) {
     case 'common':    return 'card-rarity-common';
     case 'rare':      return 'card-rarity-rare';
-    case 'epic':      return 'card-rarity-epic';
     case 'legendary': return 'card-rarity-legendary';
     default:          return 'card-rarity-common';
   }
