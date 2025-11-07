@@ -168,15 +168,13 @@ const INDIVIDUAL_CARDS_RESET_KEY = getUserShopKey(INDIVIDUAL_CARDS_RESET_KEY_BAS
 const INDIVIDUAL_CARDS_PURCHASED_KEY = getUserShopKey(INDIVIDUAL_CARDS_PURCHASED_KEY_BASE);
 const INDIVIDUAL_CARD_SLOTS = [
   { rarity: "Legendary", count: 1 },
-  { rarity: "Epic", count: 2 },
-  { rarity: "Rare", count: 3 },
-  { rarity: "Common", count: 4 }
+  { rarity: "Rare", count: 2 },
+  { rarity: "Common", count: 3 },
 ];
 const individualCardPrices = {
-  "Legendary": 1000,
-  "Epic": 400,
-  "Rare": 120,
-  "Common": 30
+  "Legendary": 500,
+  "Rare": 100,
+  "Common": 20
 };
 const INDIVIDUAL_CARDS_REFRESH_COST = 250;
 
@@ -460,9 +458,6 @@ openedPackRowModal.innerHTML = `
         case 'rare':
           flipSnd = document.getElementById('card-flip-rare-sound');
           break;
-        case 'epic':
-          flipSnd = document.getElementById('card-flip-epic-sound');
-          break;
         case 'legendary':
           flipSnd = document.getElementById('card-flip-legendary-sound');
           break;
@@ -474,13 +469,11 @@ openedPackRowModal.innerHTML = `
         flipSnd.play();
       }
 
-      // Special zoom-in animation for rare/epic/legendary
+      // Special zoom-in animation for rare/legendary
       let zoomClass = '';
       switch ((card.rarity || '').toLowerCase()) {
         case 'rare':
           zoomClass = 'zoom-rare'; break;
-        case 'epic':
-          zoomClass = 'zoom-epic'; break;
         case 'legendary':
           zoomClass = 'zoom-legendary'; break;
       }
