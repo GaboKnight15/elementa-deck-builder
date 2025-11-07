@@ -3853,8 +3853,18 @@ function hasVeil(cardObj)       { return hasAbility(cardObj, "Veil"); }
 function hasImmunity(cardObj)   { return hasAbility(cardObj, "Immunity"); }
 function hasIntimidate(cardObj) { return hasAbility(cardObj, "Intimidate"); }
 function hasAmbush(cardObj)     { return hasAbility(cardObj, "Ambush"); }
-function isSkillSealed(cardObj) {return (cardObj.status && cardObj.status.includes("Seal"));}
-
+function isSealed(cardObj) {if (!cardObj) return false; if (cardObj._sealed) return true; return hasStatus(cardObj, 'Seal');}
+// Helper: check Evolve/Fuse sigils quickly (useful in canActivate checks)
+function hasEvolveSigil(cardObj) {
+  if (!cardObj) return false;
+  if (cardObj._hasEvolveSigil) return true;
+  return Array.isArray(cardObj.statuses) && cardObj.statuses.some(s => s.name === 'EvolveSigil');
+}
+function hasFuseSigil(cardObj) {
+  if (!cardObj) return false;
+  if (cardObj._hasFuseSigil) return true;
+  return Array.isArray(cardObj.statuses) && cardObj.statuses.some(s => s.name === 'FuseSigil');
+}
 // --- DAY/NIGHT CYCLE --- //
 function getTimeOfDay() {if (!gameState || !gameState.timeOfDay) return 'day';return String(gameState.timeOfDay).toLowerCase();}
 function isDay() {return getTimeOfDay() === 'day';}
