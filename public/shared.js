@@ -717,6 +717,19 @@ const dummyCards = [
 */
  
 // CINDERCORE //
+{id: 'CinderScout', name: 'Cinder Scout', rarity: 'Common', image: 'Cards/Construct/CinderScout.png', 
+ category: 'Creature', color: 'Red', type: 'Construct', archetype: 'Cindercore', hp: 1, armor: 1, atk: 2, def: 0,
+ cost: '{R}', ability: ['Armor','Exploit'], set: 'IronbornProtocol',
+ skill: [
+  {name: 'Discard', cost: '{R}', 
+   requirement: {class: 'Discard'},
+   effect: [{class: 'Search', archetype: 'Cindercore'}, {class: 'Burn', amount: 0}]},
+  {name: 'Sacrifice', cost: '{R}', 
+   requirement: {class: 'Sacrifice'},
+   effect: [{class: 'Exploit',  amount: 0, target 2}]},
+  {name: 'Fuse', cost: '{R}{R}', 
+   effect: {class: 'Fuse'}}
+ ]},
 {id: 'CindercoreSentry', name: 'Cindercore Sentry', rarity: 'Common', image: 'Cards/Construct/CindercoreSentry.png', 
  category: 'Creature', color: 'Red', type: 'Construct', archetype: 'Cindercore', hp: 2, armor: 3, atk: 2, def: 1,
  cost: '{1}{R}', ability: ['Armor','Fire Exploit'], set: 'IronbornProtocol',
