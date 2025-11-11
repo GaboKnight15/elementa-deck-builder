@@ -395,9 +395,9 @@ function updateDeckHighlightArt(deckName) {
   const deck = decks[deckName] || {};
   deckHighlightArtImg.onerror = function() {
     this.onerror = null;
-    this.src = "CardImages/Domains/placeholder.png';
+    this.src = 'Images/Domains/placeholder.png';
   };
-  deckHighlightArtImg.src = deck.highlightArt || "CardImages/Domains/placeholder.png';
+  deckHighlightArtImg.src = deck.highlightArt || 'Images/Domains/placeholder.png';
 }
 deckHighlightArtImg.onclick = function() {
   closeDeckTileMenu();
@@ -439,9 +439,9 @@ function updateDeckBanner(deckName) {
   const deck = decks[deckName] || {};
   deckBannerImg.onerror = function() {
     this.onerror = null;
-    this.src = "CardImages/Banners/DefaultBanner.png';
+    this.src = 'Images/Banner/DefaultBanner.png';
   };
-  deckBannerImg.src = deck.bannerArt || "CardImages/Banners/DefaultBanner.png';
+  deckBannerImg.src = deck.bannerArt || 'Images/Banner/DefaultBanner.png';
 }
 
 // --- NEW: BANNER LOGIC (update to match avatars/Cardback) ---
@@ -451,7 +451,7 @@ deckBannerImg.onclick = function() {
   deckBannerArtList.innerHTML = "";
   const deckName = deckMenu.dataset.deckName;
   const unlocked = getUnlockedBanners ? getUnlockedBanners() :
-    (window.getUnlockedBanners ? window.getUnlockedBanners() : ["CardImages/Banners/DefaultBanner.png']); 
+    (window.getUnlockedBanners ? window.getUnlockedBanners() : ['Images/Banner/DefaultBanner.png']); 
   if (!unlocked || unlocked.length === 0) {
     deckBannerArtList.innerHTML = "<div style='color:#eee'>No unlocked banners available.</div>";
     return;
@@ -740,7 +740,7 @@ function createCardBuilder(card, ownedCount) {
     img.src = card.image;
     img.onerror = function() {
       this.onerror = null;
-      this.src = "CardImages/Domains/placeholder.png';
+      this.src = 'Images/Domains/placeholder.png';
     };
     img.alt = card.name;
   
@@ -1535,7 +1535,7 @@ window.getPlayerDecks = function() {
   return deckSlots.map(deckName => {
     const deckObj = decks[deckName] || {};
     // Use highlightArt, bannerArt, or a default image for the deck image:
-    let image = deckObj.highlightArt || deckObj.bannerArt || "CardImages/Banners/DefaultBanner.png';
+    let image = deckObj.highlightArt || deckObj.bannerArt || 'Images/Banner/DefaultBanner.png';
     return {
       id: deckName,
       name: deckName,
