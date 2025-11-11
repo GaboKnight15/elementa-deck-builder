@@ -2898,7 +2898,7 @@ if (isCardActionable(cardObj, cardData, gameState, 'hand')) {
 }
   // Define actions
   const buttons = [
-    {
+/*    {
       text: `<span>${playLabel}</span> <span >${costHtml}</span>`,
       html: true,
       disabled: !canPay,
@@ -2955,7 +2955,7 @@ if (isCardActionable(cardObj, cardData, gameState, 'hand')) {
           }
         });
       }
-    },
+    }, */
     {
       text: "Send to Void",
       onClick: function(e) {
@@ -2990,13 +2990,24 @@ if (isCardActionable(cardObj, cardData, gameState, 'hand')) {
     cardData.skill
     .filter(skillObj => !skillObj.activation) // Only show skills without activation
     .forEach(skillObj => {
-      const isEnabled = canActivateSkill(cardObj, skillObj, 'hand', gameState);
-      // PATCH: show CW/CCW icons
+        // Compute sealed/enabled/title the same way showCardActionMenu does to avoid undefined vars
+        const sealed = typeof isSealed === 'function' ? isSealed(cardObj) : (cardObj._sealed === true);
+        const canAct = canActivateSkill(cardObj, skillObj, 'hand', gameState);
+        const isEnabled = canAct && !sealed;
+      
+        let disabledReason = "";
+        if (!isEnabled) {
+          if (sealed) disabledReason = "Sealed: Cannot activate skills.";
+          else disabledReason = "Cannot activate skill in current state.";
+        }
+      
       const activation = skillObj.activation || {};
       let requirements = Array.isArray(activation.requirement)
         ? activation.requirement
         : (activation.requirement ? [activation.requirement] : []);
       const reqIcons = getRequirementIcons(requirements);
+      
+      const titleText = _escapeHtmlInline((disabledReason || skillTitle(skillObj) || skillObj.name || '').trim());
 
       buttons.push({
         text: `${skillObj.name} ${parseEffectText(skillObj.cost)}${reqIcons}`,
