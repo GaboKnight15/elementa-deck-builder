@@ -2899,6 +2899,64 @@ if (isCardActionable(cardObj, cardData, gameState, 'hand')) {
   // Define actions
   const buttons = [
     {
+      text: `<span>${playLabel}</span> <span >${costHtml}</span>`,
+      html: true,
+      disabled: !canPay,
+      onClick: function(e) {
+        e.stopPropagation();
+        if (!canPay) return;
+        closeAllMenus();
+        const cardObj = gameState.playerHand.find(c => c.instanceId === instanceId);
+        const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+
+        // Determine allowed target zone
+        let targetArr, toZoneId;
+        const category = Array.isArray(cardData.category)
+          ? cardData.category.map(c => c.toLowerCase())
+          : [String(cardData.category).toLowerCase()];
+
+        if (category.includes("creature")) {
+          targetArr = gameState.playerCreatures;
+          toZoneId = "player-creatures-zone";
+        } else if (category.includes("domain")) {
+          targetArr = gameState.playerDomains;
+          toZoneId = "player-domains-zone";
+        } else {
+          alert("Card cannot be played.");
+          return;
+        }
+        const parsedCost = parseCost(cardData.cost);
+        
+        // No cost, play immediately
+        if (
+          !cardData.cost ||
+          Object.values(parsedCost).reduce((a, b) => a + b, 0) === 0 ||
+          (typeof cardData.cost === "string" && cardData.cost === "{0}")
+        ) {
+          showSummonPositionModal(cardObj, function(chosenOrientation) {
+            moveCard(instanceId, gameState.playerHand, targetArr, { orientation: chosenOrientation });
+            renderGameState();
+            setupDropZones();
+          });
+          return;
+        }
+
+        // Otherwise, show payment modal and move after payment
+        showEssencePaymentModal({
+          card: cardData,
+          cost: parsedCost,
+          eligibleCards: getAllEssenceSources(),
+          onPaid: function() {
+            showSummonPositionModal(cardObj, function(chosenOrientation) {
+              moveCard(instanceId, gameState.playerHand, targetArr, { orientation: chosenOrientation });
+              renderGameState();
+              setupDropZones();
+            });
+          }
+        });
+      }
+    },
+    {
       text: "Send to Void",
       onClick: function(e) {
         e.stopPropagation();
