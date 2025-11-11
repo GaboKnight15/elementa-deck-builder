@@ -125,33 +125,33 @@ const allBannerOptions = [
 ];
 
 const allCardbackOptions = [
-  { name: 'Cardback', src: "Images/Cardback/Cardback1.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Fairy', src: "Images/Cardback/CBFairy.png', rarity: 'Common', price: 100, obtain: 'shop' },
-  { name: 'Cindercore', src: "Images/Cardback/CBCindercore.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
-  { name: 'Construct', src: "Images/Cardback/CBConstructs.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
-  { name: 'Coralbound', src: "Images/Cardback/CBCoralbound.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
-  { name: 'Fireland', src: "Images/Cardback/CBFirelands.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
-  { name: 'Goblin', src: "Images/Cardback/CBGoblins.png', rarity: 'Common', price: 100, obtain: 'shop' },
-  { name: 'Golemheart', src: "Images/Cardback/CBGolemheart.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
-  { name: 'Merfolk', src: "Images/Cardback/CBMerfolk.png', rarity: 'Common', price: 100, obtain: 'shop' },
-  { name: 'Moonfang', src: "Images/Cardback/CBMoonfang.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
-  { name: 'Satyr', src: "Images/Cardback/CBSatyr.png', rarity: 'Common', price: 100, obtain: 'shop' },
-  { name: 'Obscurid', src: "Images/Cardback/CBShadowbound.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
-  { name: 'Stonebound', src: "Images/Cardback/CBStonebound.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
-  { name: 'Stormcore', src: "Images/Cardback/CBStormcore.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
-  { name: 'Plagueaxis', src: "Images/Cardback/CBVenomcore.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
-  { name: 'Grovehusk', src: "Images/Cardback/CBWoodframe.png', rarity: 'Legendary', price: 100, obtain: 'shop' }
+  { name: 'Cardback', src: 'Images/Cardback/Cardback1.png', rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Fairy', src: 'Images/Cardback/Fairy.png', rarity: 'Common', price: 100, obtain: 'shop' },
+  { name: 'Cindercore', src: 'Images/Cardback/Cindercore.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Construct', src: 'Images/Cardback/Construct.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Coralbound', src: 'Images/Cardback/Coralbound.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Fireland', src: 'Images/Cardback/Fireland.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Goblin', src: 'Images/Cardback/Goblin.png', rarity: 'Common', price: 100, obtain: 'shop' },
+  { name: 'Golemheart', src: 'Images/Cardback/Golemheart.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Merfolk', src: 'Images/Cardback/Merfolk.png', rarity: 'Common', price: 100, obtain: 'shop' },
+  { name: 'Moonfang', src: 'Images/Cardback/Moonfang.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Satyr', src: 'Images/Cardback/Satyr.png', rarity: 'Common', price: 100, obtain: 'shop' },
+  { name: 'Obscurid', src: 'Images/Cardback/Obscurid.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Stonebound', src: 'Images/Cardback/Stonebound.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Stormcore', src: 'Images/Cardback/Stormcore.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Plagueaxis', src: 'Images/Cardback/Plagueaxis.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Grovehusk', src: 'Images/Cardback/Woodframe.png', rarity: 'Legendary', price: 100, obtain: 'shop' }
 ];
 
 const packPrices = [
   { id: "ElementaGenesis", name: "Elementa Genesis", price: 100,
-    image: 'Images/Packs/StandardPack.png'
+    image: 'Images/Packs/ElementaGenesis.png'
   },
   {
     id: "ScalesofRuin",
     name: "Scales of Ruin",
     price: 100,
-    image: 'Images/Pack/StandardPack2.png',
+    image: 'Images/Pack/ScalesofRuin.png',
 	pack: ['CardImages/Pack/ScalesofRuinPyronyx.png', 'CardImages/Pack/ScalesofRuinVoltrazek.png',
 		   'CardImages/Pack/ScalesofRuinMyxaroth.png', 'CardImages/Pack/ScalesofRuinNoctyros.png']
   },
@@ -289,11 +289,11 @@ function showCosmeticConfirmModal({imgSrc, name, type, price, onConfirm, packId}
   cosmeticConfirmModal.innerHTML = `
     <div class="modal-content" style="position:relative;">
       <button id="pack-info-btn" style="position:absolute;top:5px;right:0;background:none;border:none;cursor:pointer;">
-        <img src="Images/Icons/Info.png' alt="Pack Info" style="width:28px;">
+        <img src='Images/Icons/Info.png' alt="Pack Info" style="width:28px;">
       </button>
       <img src="${imgSrc}" alt="Cosmetic Preview" title="${name || ''}" style="max-width:120px;box-shadow:0 2px 10px #0005;">
       <div class="currency-display" style="margin:10px 0;">
-        <img class="currency-icon" src="Images/Icon/GoldCoin.png' alt="Coins">
+        <img class="currency-icon" src='Images/Icon/GoldCoin.png' alt="Coins">
         <span id="modal-total-price">${price}</span>
       </div>
       ${bulkSelectorHtml}
@@ -601,7 +601,7 @@ function renderShopPacks() {
     priceTag.style.justifyContent = 'center';
     priceTag.style.marginTop = '8px';
     priceTag.innerHTML = `
-      <img class="currency-icon" src="Images/Currency/Coins.png' alt="Coins">
+      <img class="currency-icon" src='Images/Currency/Coins.png' alt="Coins">
       <span>${pack.price}</span>
     `;
 	  
@@ -691,7 +691,7 @@ function renderShopCosmetics({
     priceTag.style.justifyContent = 'center';
     priceTag.style.marginTop = '8px';
     priceTag.innerHTML = `
-      <img class="currency-icon" src="Images/Currency/Coins.png' alt="Coins">
+      <img class="currency-icon" src='Images/Currency/Coins.png' alt="Coins">
       <span>${price}</span>
     `;
     img.onclick = function() {
@@ -834,7 +834,7 @@ function renderIndividualCardsShop(shouldAnimateFlip = false) {
     const refreshBtn = document.createElement('button');
     refreshBtn.type = 'button';
     refreshBtn.className = 'btn-secondary individual-cards-refresh-btn';
-    refreshBtn.innerHTML = `Refresh <span style="color:#ffe066;"><img src="Images/Currency/Coins.png' style="width:18px;vertical-align:middle;"> ${INDIVIDUAL_CARDS_REFRESH_COST}</span>`;
+    refreshBtn.innerHTML = `Refresh <span style="color:#ffe066;"><img src='Images/Currency/Coins.png' style="width:18px;vertical-align:middle;"> ${INDIVIDUAL_CARDS_REFRESH_COST}</span>`;
     refreshBtn.style.margin = "5px";
     refreshBtn.onclick = function() {
       if (getCurrency() < INDIVIDUAL_CARDS_REFRESH_COST) {
@@ -949,7 +949,7 @@ INDIVIDUAL_CARD_SLOTS.forEach(slot => {
     // Card details below
     const priceDiv = document.createElement('div');
     priceDiv.className = 'currency-display';
-    priceDiv.innerHTML = `<img class="currency-icon" src="Images/Currency/Coins.png' alt="Coins"><span>${individualCardPrices[card.rarity]}</span>`;
+    priceDiv.innerHTML = `<img class="currency-icon" src='Images/Currency/Coins.png' alt="Coins"><span>${individualCardPrices[card.rarity]}</span>`;
     cardOuterDiv.appendChild(priceDiv);
 
     if (isPurchased) cardOuterDiv.classList.add('card-locked');
@@ -994,7 +994,7 @@ function showIndividualCardModal(card, isPurchased) {
       <div style="margin:10px 0;">
         <span class="shop-individual-card-rarity">${card.rarity}</span>
         <span class="currency-display" style="text-align:center;margin-top:10px;">
-          <img class="currency-icon" src="Images/Currency/Coins.png' alt="Coins">
+          <img class="currency-icon" src='Images/Currency/Coins.png' alt="Coins">
           <span>${individualCardPrices[card.rarity]}</span>
         </span>
       </div>
