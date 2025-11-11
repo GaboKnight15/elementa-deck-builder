@@ -4254,44 +4254,118 @@ function hasIntimidate(cardObj) { return hasAbility(cardObj, "Intimidate"); }
 function hasAmbush(cardObj)     { return hasAbility(cardObj, "Ambush"); }
 
 // --- BLIGHT --- //
+// Primitive checks do direct, non-recursive inspection of internal flags and the statuses[] array.
+// hasBlight simply composes the primitives.
+
 function hasBlight(cardObj) {
-  return Boolean( isBurned(cardObj) || isPoisoned(cardObj) || isSoaked(cardObj) || 
-  isFrozen(cardObj) || isBound(cardObj) || isCursed(cardObj) || isSealed(cardObj) );
+  return Boolean(
+    isBurned(cardObj) ||
+    isPoisoned(cardObj) ||
+    isSoaked(cardObj) ||
+    isFrozen(cardObj) ||
+    isBound(cardObj) ||
+    isCursed(cardObj) ||
+    isSealed(cardObj)
+  );
 }
+
 function isBurned(cardObj) {
   if (!cardObj) return false;
+  // Check internal flags first (back-compat)
   if (cardObj._burned || cardObj._burnedDEF) return true;
-  return hasBlight(cardObj, 'Burned');
+  // Then check statuses array (strings or objects with .name)
+  if (Array.isArray(cardObj.statuses)) {
+    for (const s of cardObj.statuses) {
+      const name = (typeof s === 'string') ? s : (s && (s.name || s.id));
+      if (!name) continue;
+      const n = String(name).toLowerCase();
+      if (n === 'burn' || n === 'burned') return true;
+    }
+  }
+  return false;
 }
+
 function isPoisoned(cardObj) {
   if (!cardObj) return false;
   if (cardObj._poisoned) return true;
-  return hasBlight(cardObj, 'Poisoned');
+  if (Array.isArray(cardObj.statuses)) {
+    for (const s of cardObj.statuses) {
+      const name = (typeof s === 'string') ? s : (s && (s.name || s.id));
+      if (!name) continue;
+      const n = String(name).toLowerCase();
+      if (n === 'poison' || n === 'poisoned') return true;
+    }
+  }
+  return false;
 }
+
 function isSoaked(cardObj) {
   if (!cardObj) return false;
   if (cardObj._soak) return true;
-  return hasBlight(cardObj, 'Soaked');
+  if (Array.isArray(cardObj.statuses)) {
+    for (const s of cardObj.statuses) {
+      const name = (typeof s === 'string') ? s : (s && (s.name || s.id));
+      if (!name) continue;
+      const n = String(name).toLowerCase();
+      if (n === 'soak' || n === 'soaked') return true;
+    }
+  }
+  return false;
 }
+
 function isFrozen(cardObj) {
   if (!cardObj) return false;
   if (cardObj._frozen) return true;
-  return hasBlight(cardObj, 'Frozen');
+  if (Array.isArray(cardObj.statuses)) {
+    for (const s of cardObj.statuses) {
+      const name = (typeof s === 'string') ? s : (s && (s.name || s.id));
+      if (!name) continue;
+      const n = String(name).toLowerCase();
+      if (n === 'freeze' || n === 'frozen') return true;
+    }
+  }
+  return false;
 }
+
 function isBound(cardObj) {
   if (!cardObj) return false;
   if (cardObj._bound) return true;
-  return hasBlight(cardObj, 'Bound');
+  if (Array.isArray(cardObj.statuses)) {
+    for (const s of cardObj.statuses) {
+      const name = (typeof s === 'string') ? s : (s && (s.name || s.id));
+      if (!name) continue;
+      if (String(name).toLowerCase() === 'bound') return true;
+    }
+  }
+  return false;
 }
+
 function isCursed(cardObj) {
   if (!cardObj) return false;
   if (cardObj._cursed) return true;
-  return hasBlight(cardObj, 'Curse');
+  if (Array.isArray(cardObj.statuses)) {
+    for (const s of cardObj.statuses) {
+      const name = (typeof s === 'string') ? s : (s && (s.name || s.id));
+      if (!name) continue;
+      const n = String(name).toLowerCase();
+      if (n === 'cursed' || n === 'curse') return true;
+    }
+  }
+  return false;
 }
+
 function isSealed(cardObj) {
   if (!cardObj) return false;
-  if (cardObj._sealed) return true; 
-  return hasBlight(cardObj, 'Seal');
+  if (cardObj._sealed) return true;
+  if (Array.isArray(cardObj.statuses)) {
+    for (const s of cardObj.statuses) {
+      const name = (typeof s === 'string') ? s : (s && (s.name || s.id));
+      if (!name) continue;
+      const n = String(name).toLowerCase();
+      if (n === 'sealed' || n === 'seal') return true;
+    }
+  }
+  return false;
 }
 // --- TRAIT STATUS --- //
 function hasEvolveSigil(cardObj) {
