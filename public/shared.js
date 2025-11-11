@@ -1053,7 +1053,7 @@ const dummyCards = [
    effect: [{class: 'Search', archetype: 'Cindercore'}, {class: 'Burn', amount: 0}]},
   {name: 'Sacrifice', cost: '{R}', 
    requirement: {class: 'Sacrifice'},
-   effect: [{class: 'Exploit',  amount: 0, target 2}]},
+   effect: [{class: 'Exploit', amount: 0, target: 2}]},
   {name: 'Fuse', cost: '{R}{R}', 
    effect: {class: 'Fuse'}}
  ]},
