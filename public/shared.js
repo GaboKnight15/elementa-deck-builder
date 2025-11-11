@@ -155,6 +155,38 @@ const dummyCards = [
    requirement: [{class: 'Ultimate'}, {class:'CW'}],
    effect: {class: 'Mossbound Terrain'}},
  ]},
+{id: 'ThicketmistDrakeling', name: 'Thicketmist Drakeling', rarity: 'Legendary', image: 'Cards/Thornwing/ThicketmistDrakeling.png', 
+ category: 'Creature', color: 'Green', type: 'Dragon', archetype: 'Thornwing', hp: 7, atk: 2, def: 1,
+ cost: '{G}{G}', ability: ['Flying','Protect'], set: 'WyrmheartAwakening',
+ skill: [
+  {name: 'Reveal', cost: '{g}',
+   requirement: {class: 'Reveal'},
+   resolution: {effect: 'Inspire', ability: 'Protect', def: 1}},
+  {name: 'Defender', 
+   activation: {class: 'Defender'},
+   resolution: {effect: 'Search', archetype: 'Thornwing', amount: 1}},
+  {name: 'Evolve', cost: '{g}',
+   effect: {class: 'Evolve'}},
+  {name: 'Verdant Galeburst', cost: '{g}{g}',
+   requirement: [{class: 'Ultimate'}, {class:'CW'}],
+   effect: {class: 'Mossbound Terrain'}},
+ ]},
+{id: 'VerdantLindwurm', name: 'Verdant Lindwurm', rarity: 'Legendary', image: 'Cards/Thornwing/VerdantLindwurm.png', 
+ category: 'Creature', color: 'Green', type: 'Dragon', archetype: 'Thornwing', hp: 7, atk: 2, def: 1,
+ cost: '{G}{G}', ability: ['Flying','Protect'], set: 'WyrmheartAwakening',
+ skill: [
+  {name: 'Reveal', cost: '{g}',
+   requirement: {class: 'Reveal'},
+   resolution: {effect: 'Inspire', ability: 'Protect', def: 1}},
+  {name: 'Defender', 
+   activation: {class: 'Defender'},
+   resolution: {effect: 'Search', archetype: 'Thornwing', amount: 1}},
+  {name: 'Evolve', cost: '{g}',
+   effect: {class: 'Evolve'}},
+  {name: 'Verdant Galeburst', cost: '{g}{g}',
+   requirement: [{class: 'Ultimate'}, {class:'CW'}],
+   effect: {class: 'Mossbound Terrain'}},
+ ]},
 
 {id: 'PyronyxInfernoBlazingscale', name: 'Pyronyx, Inferno Blazingscale', rarity: 'Legendary', image: 'Cards/Blazingscale/PyronyxInfernoBlazingscale.png', 
  category: 'Creature', color: 'Red', type: 'Dragon', archetype: 'Blazingscale', trait: 'Evolution', hp: 11, atk: 5, def: 2,
@@ -474,9 +506,172 @@ const dummyCards = [
    requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
    effect: {class: 'Strike', amount: 1, target: 3}}
  ]},
+{id: 'EcliphosAethercruxPrime', name: 'Ecliphos, Aethercrux Prime', rarity: 'Legendary', image: 'Cards/Lightforge/EcliphosAethercruxPrime.png', 
+ category: 'Creature', color:'White', type: 'Construct', archetype: 'Lightforge', trait: ['Champion', 'Warrior'], hp: 9, atk: 2, def: 1,
+ cost: '{w}{w}', ability: ['Protect'], set: 'FeatheredOmen',
+ skill: [
+  {name:'Dash', cost: '{w}',
+   effect: {class: 'Dash'}},
+  {name: 'Champion', cost: '{y}{w}', 
+   effect: [{class: 'Champion'}, {class: 'Buff', speed: 1, atk: 1, def: 1}]},
+  {name: 'Featherfall Tempest', cost: '{Y}{W}',
+   requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
+   effect: {class: 'Strike', amount: 1, target: 3}}
+ ]},
+{id: 'AethercruxParagon', name: 'Aethercrux Paragon', rarity: 'Legendary', image: 'Cards/Lightforge/AethercruxParagon.png', 
+ category: 'Creature', color:'White', type: 'Construct', archetype: 'Lightforge', trait:  'Warrior', hp: 9, atk: 2, def: 1,
+ cost: '{w}{w}', ability: ['Protect'], set: 'FeatheredOmen',
+ skill: [
+  {name:'Dash', cost: '{w}',
+   effect: {class: 'Dash'}},
+  {name: 'Champion', cost: '{y}{w}', 
+   effect: [{class: 'Champion'}, {class: 'Buff', speed: 1, atk: 1, def: 1}]},
+  {name: 'Featherfall Tempest', cost: '{Y}{W}',
+   requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
+   effect: {class: 'Strike', amount: 1, target: 3}}
+ ]},
+{id: 'OrbitronExarch', name: 'Orbitron Exarch', rarity: 'Legendary', image: 'Cards/Lightforge/OrbitronExarch.png', 
+ category: 'Creature', color:'White', type: 'Construct', archetype: 'Lightforge', trait:  'Warrior', hp: 9, atk: 2, def: 1,
+ cost: '{w}{w}', ability: ['Protect'], set: 'FeatheredOmen',
+ skill: [
+  {name:'Dash', cost: '{w}',
+   effect: {class: 'Dash'}},
+  {name: 'Champion', cost: '{y}{w}', 
+   effect: [{class: 'Champion'}, {class: 'Buff', speed: 1, atk: 1, def: 1}]},
+  {name: 'Featherfall Tempest', cost: '{Y}{W}',
+   requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
+   effect: {class: 'Strike', amount: 1, target: 3}}
+ ]},
+{id: 'GalaxionStrider', name: 'GalaxionStrider', rarity: 'Legendary', image: 'Cards/Lightforge/GalaxionStrider.png', 
+ category: 'Creature', color:'White', type: 'Construct', archetype: 'Lightforge', trait:  'Warrior', hp: 9, atk: 2, def: 1,
+ cost: '{w}{w}', ability: ['Protect'], set: 'CelestialWonders',
+ skill: [
+  {name:'Dash', cost: '{w}',
+   effect: {class: 'Dash'}},
+  {name: 'Champion', cost: '{y}{w}', 
+   effect: [{class: 'Champion'}, {class: 'Buff', speed: 1, atk: 1, def: 1}]},
+  {name: 'Featherfall Tempest', cost: '{Y}{W}',
+   requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
+   effect: {class: 'Strike', amount: 1, target: 3}}
+ ]},
+{id: 'AngelicPaladin', name: 'Angelic Paladin', rarity: 'Common', image: 'Cards/Lightforge/AngelicPaladin.png', 
+ category: 'Creature', color:'White', type: 'Construct', archetype: 'Lightforge', trait:  'Warrior', hp: 9, atk: 2, def: 1,
+ cost: '{w}{w}', ability: ['Protect'], set: 'CelestialWonders',
+ skill: [
+  {name:'Dash', cost: '{w}',
+   effect: {class: 'Dash'}},
+  {name: 'Champion', cost: '{y}{w}', 
+   effect: [{class: 'Champion'}, {class: 'Buff', speed: 1, atk: 1, def: 1}]},
+  {name: 'Featherfall Tempest', cost: '{Y}{W}',
+   requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
+   effect: {class: 'Strike', amount: 1, target: 3}}
+ ]},
+{id: 'DawnbladeSeraph', name: 'Dawnblade Seraph', rarity: 'Common', image: 'Cards/Seraph/DawnbladeSeraph.png', 
+ category: 'Creature', color:'White', type: 'Construct', archetype: 'Lightforge', trait:  'Warrior', hp: 9, atk: 2, def: 1,
+ cost: '{w}{w}', ability: ['Protect'], set: 'CelestialWonders',
+ skill: [
+  {name:'Dash', cost: '{w}',
+   effect: {class: 'Dash'}},
+  {name: 'Champion', cost: '{y}{w}', 
+   effect: [{class: 'Champion'}, {class: 'Buff', speed: 1, atk: 1, def: 1}]},
+  {name: 'Featherfall Tempest', cost: '{Y}{W}',
+   requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
+   effect: {class: 'Strike', amount: 1, target: 3}}
+ ]},
+{id: 'DawlightLady', name: 'Dawlight Lady', rarity: 'Common', image: 'Cards/Human/DawlightLady.png', 
+ category: 'Creature', color:'White', type: 'Construct', archetype: 'Lightforge', trait:  'Warrior', hp: 9, atk: 2, def: 1,
+ cost: '{w}{w}', ability: ['Protect'], set: 'CelestialWonders',
+ skill: [
+  {name:'Dash', cost: '{w}',
+   effect: {class: 'Dash'}},
+  {name: 'Champion', cost: '{y}{w}', 
+   effect: [{class: 'Champion'}, {class: 'Buff', speed: 1, atk: 1, def: 1}]},
+  {name: 'Featherfall Tempest', cost: '{Y}{W}',
+   requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
+   effect: {class: 'Strike', amount: 1, target: 3}}
+ ]},
+
 {id: 'NyzarielArchdemonDuchess', name: 'Nyzariel, Archdemon Duchess', rarity: 'Legendary', image: 'Cards/Demon/NyzarielArchdemonDuchess.png', 
  category: 'Creature', color: 'Black', type: 'Demon', archetype: 'Archdemon', trait: ['Champion', 'Mage'], hp: 6, atk: 2, def: 0,
  cost: '{b}{b}', ability: '', set: 'SavageTerritory',
+ skill: [
+  {name: '', cost: '{b}',
+   requirement: {class: 'CCW'},
+   effect: {class: 'Burn', amount: 3}},
+  {name: 'Champion', cost: '{b}{b}', 
+   effect: [{class: 'Champion'}, {class: 'Token', tokem: 'ImpToken'}, {class: 'Buff', atk: 2, def: 1}]},
+  {name: 'Soulrend Sovereignty', cost: '{b}{B}',
+   requirement: [{class: 'Ultimate'}, {class:'Sacrifice', amount: 1}, {class: 'CW'}],
+   effect: {class: 'Destroy', target: 1 }}
+ ]},
+{id: 'ShadeWisp', name: 'Shade Wisp', rarity: 'Common', image: 'Cards/Obscurid/ShadeWisp.png', 
+ category: 'Creature', color: 'Black', type: 'Elemental', archetype: 'Obscurid', trait: '', hp: 2, atk: 2, def: 0,
+ cost: '{b}{b}', ability: '', set: 'ShadowsBeyond',
+ skill: [
+  {name: '', cost: '{b}',
+   requirement: {class: 'CCW'},
+   effect: {class: 'Burn', amount: 3}},
+  {name: 'Champion', cost: '{b}{b}', 
+   effect: [{class: 'Champion'}, {class: 'Token', tokem: 'ImpToken'}, {class: 'Buff', atk: 2, def: 1}]},
+  {name: 'Soulrend Sovereignty', cost: '{b}{B}',
+   requirement: [{class: 'Ultimate'}, {class:'Sacrifice', amount: 1}, {class: 'CW'}],
+   effect: {class: 'Destroy', target: 1 }}
+ ]},
+{id: 'ShadeMurkkin', name: 'Shade Murkkin', rarity: 'Common', image: 'Cards/Obscurid/ShadeMurkkin.png', 
+ category: 'Creature', color: 'Black', type: 'Elemental', archetype: 'Obscurid', trait: '', hp: 2, atk: 2, def: 0,
+ cost: '{b}{b}', ability: '', set: 'ShadowsBeyond',
+ skill: [
+  {name: '', cost: '{b}',
+   requirement: {class: 'CCW'},
+   effect: {class: 'Burn', amount: 3}},
+  {name: 'Champion', cost: '{b}{b}', 
+   effect: [{class: 'Champion'}, {class: 'Token', tokem: 'ImpToken'}, {class: 'Buff', atk: 2, def: 1}]},
+  {name: 'Soulrend Sovereignty', cost: '{b}{B}',
+   requirement: [{class: 'Ultimate'}, {class:'Sacrifice', amount: 1}, {class: 'CW'}],
+   effect: {class: 'Destroy', target: 1 }}
+ ]},
+{id: 'ShadeReaver', name: 'Shade Reaver', rarity: 'Rare', image: 'Cards/Obscurid/ShadeReaver.png', 
+ category: 'Creature', color: 'Black', type: 'Elemental', archetype: 'Obscurid', trait: '', hp: 2, atk: 2, def: 0,
+ cost: '{b}{b}', ability: '', set: 'ShadowsBeyond',
+ skill: [
+  {name: '', cost: '{b}',
+   requirement: {class: 'CCW'},
+   effect: {class: 'Burn', amount: 3}},
+  {name: 'Champion', cost: '{b}{b}', 
+   effect: [{class: 'Champion'}, {class: 'Token', tokem: 'ImpToken'}, {class: 'Buff', atk: 2, def: 1}]},
+  {name: 'Soulrend Sovereignty', cost: '{b}{B}',
+   requirement: [{class: 'Ultimate'}, {class:'Sacrifice', amount: 1}, {class: 'CW'}],
+   effect: {class: 'Destroy', target: 1 }}
+ ]},
+{id: 'ShadeColossus', name: 'Shade Colossus', rarity: 'Rare', image: 'Cards/Obscurid/ShadeColossus.png', 
+ category: 'Creature', color: 'Black', type: 'Elemental', archetype: 'Obscurid', trait: '', hp: 2, atk: 2, def: 0,
+ cost: '{b}{b}', ability: '', set: 'ShadowsBeyond',
+ skill: [
+  {name: '', cost: '{b}',
+   requirement: {class: 'CCW'},
+   effect: {class: 'Burn', amount: 3}},
+  {name: 'Champion', cost: '{b}{b}', 
+   effect: [{class: 'Champion'}, {class: 'Token', tokem: 'ImpToken'}, {class: 'Buff', atk: 2, def: 1}]},
+  {name: 'Soulrend Sovereignty', cost: '{b}{B}',
+   requirement: [{class: 'Ultimate'}, {class:'Sacrifice', amount: 1}, {class: 'CW'}],
+   effect: {class: 'Destroy', target: 1 }}
+ ]},
+{id: 'ShadowgearScout', name: 'Shadowgear Scout', rarity: 'Rare', image: 'Cards/Obscurid/ShadowgearScout.png', 
+ category: 'Creature', color: 'Black', type: 'Construct', archetype: 'Shadowgear', trait: '', hp: 2, atk: 2, def: 0,
+ cost: '{b}{b}', ability: '', set: 'ShadowsBeyond',
+ skill: [
+  {name: '', cost: '{b}',
+   requirement: {class: 'CCW'},
+   effect: {class: 'Burn', amount: 3}},
+  {name: 'Champion', cost: '{b}{b}', 
+   effect: [{class: 'Champion'}, {class: 'Token', tokem: 'ImpToken'}, {class: 'Buff', atk: 2, def: 1}]},
+  {name: 'Soulrend Sovereignty', cost: '{b}{B}',
+   requirement: [{class: 'Ultimate'}, {class:'Sacrifice', amount: 1}, {class: 'CW'}],
+   effect: {class: 'Destroy', target: 1 }}
+ ]},
+{id: 'ShadowgearAutomaton', name: 'Shadowgear Automaton', rarity: 'Rare', image: 'Cards/Obscurid/ShadowgearAutomaton.png', 
+ category: 'Creature', color: 'Black', type: 'Construct', archetype: 'Shadowgear', trait: '', hp: 2, atk: 2, def: 0,
+ cost: '{b}{b}', ability: '', set: 'ShadowsBeyond',
  skill: [
   {name: '', cost: '{b}',
    requirement: {class: 'CCW'},
@@ -588,7 +783,117 @@ const dummyCards = [
  ]},
 {id: 'ForestMage', name: 'Forest Mage', rarity: 'Rare', image: 'Cards/Arbor/ForestMage.png', 
  category: 'Creature', color: 'Green', type: 'Elemental', archetype: 'Arbor', trait: 'Mage', hp: 5, atk: 2, def: 0, cost: '{1}{G}', 
- ability: '', set: 'StandardPack'
+ ability: '', set: 'ElementaGenesis'
+ skill: [
+  {name: 'Arrival',
+   activation: {class: 'Arrival'},
+   effect: {class: 'Search', category: 'Spell'}},
+  {name: 'Bloomchant',
+   requirement: {class: 'CW'}
+   effect: {class: 'Essence', color: '{G}', amount: 1}}
+ ]},
+{id: 'ArborColossus', name: 'Arbor Colossus', rarity: 'Rare', image: 'Cards/Arbor/ArborColossus.png', 
+ category: 'Creature', color: 'Green', type: 'Elemental', archetype: 'Arbor', trait: 'Mage', hp: 5, atk: 2, def: 0, cost: '{1}{G}', 
+ ability: '', set: 'ElementaGenesis'
+ skill: [
+  {name: 'Arrival',
+   activation: {class: 'Arrival'},
+   effect: {class: 'Search', category: 'Spell'}},
+  {name: 'Bloomchant',
+   requirement: {class: 'CW'}
+   effect: {class: 'Essence', color: '{G}', amount: 1}}
+ ]},
+{id: 'GroveMage', name: 'Grove Mage', rarity: 'Rare', image: 'Cards/Arbor/GroveMage.png', 
+ category: 'Creature', color: 'Green', type: 'Elemental', archetype: 'Arbor', trait: 'Mage', hp: 5, atk: 2, def: 0, cost: '{1}{G}', 
+ ability: '', set: 'ElementaGenesis'
+ skill: [
+  {name: 'Arrival',
+   activation: {class: 'Arrival'},
+   effect: {class: 'Search', category: 'Spell'}},
+  {name: 'Bloomchant',
+   requirement: {class: 'CW'}
+   effect: {class: 'Essence', color: '{G}', amount: 1}}
+ ]},
+{id: 'GroveWatcher', name: 'Grove Watcher', rarity: 'Rare', image: 'Cards/Arbor/GroveWatcher.png', 
+ category: 'Creature', color: 'Green', type: 'Elemental', archetype: 'Arbor', trait: 'Mage', hp: 5, atk: 2, def: 0, cost: '{1}{G}', 
+ ability: '', set: 'ElementaGenesis'
+ skill: [
+  {name: 'Arrival',
+   activation: {class: 'Arrival'},
+   effect: {class: 'Search', category: 'Spell'}},
+  {name: 'Bloomchant',
+   requirement: {class: 'CW'}
+   effect: {class: 'Essence', color: '{G}', amount: 1}}
+ ]},
+{id: 'VerdantSage', name: 'Verdant Sage', rarity: 'Rare', image: 'Cards/Arbor/VerdantSage.png', 
+ category: 'Creature', color: 'Green', type: 'Elemental', archetype: 'Arbor', trait: 'Mage', hp: 5, atk: 2, def: 0, cost: '{1}{G}', 
+ ability: '', set: 'ElementaGenesis'
+ skill: [
+  {name: 'Arrival',
+   activation: {class: 'Arrival'},
+   effect: {class: 'Search', category: 'Spell'}},
+  {name: 'Bloomchant',
+   requirement: {class: 'CW'}
+   effect: {class: 'Essence', color: '{G}', amount: 1}}
+ ]},
+{id: 'ElementalofFoliages', name: 'Elemental of Foliages', rarity: 'Rare', image: 'Cards/Arbor/ElementalofFoliages.png', 
+ category: 'Creature', color: 'Green', type: 'Elemental', archetype: 'Arbor', trait: 'Mage', hp: 5, atk: 2, def: 0, cost: '{1}{G}', 
+ ability: '', set: 'ElementaGenesis'
+ skill: [
+  {name: 'Arrival',
+   activation: {class: 'Arrival'},
+   effect: {class: 'Search', category: 'Spell'}},
+  {name: 'Bloomchant',
+   requirement: {class: 'CW'}
+   effect: {class: 'Essence', color: '{G}', amount: 1}}
+ ]},
+{id: 'VerdantGolemite', name: 'Verdant Golemite', rarity: 'Rare', image: 'Cards/Arbor/VerdantGolemite.png', 
+ category: 'Creature', color: 'Green', type: 'Elemental', archetype: 'Arbor', trait: 'Mage', hp: 5, atk: 2, def: 0, cost: '{1}{G}', 
+ ability: '', set: 'ElementaGenesis'
+ skill: [
+  {name: 'Arrival',
+   activation: {class: 'Arrival'},
+   effect: {class: 'Search', category: 'Spell'}},
+  {name: 'Bloomchant',
+   requirement: {class: 'CW'}
+   effect: {class: 'Essence', color: '{G}', amount: 1}}
+ ]},
+{id: 'SylvanManifestation', name: 'Sylvan Manifestation', rarity: 'Rare', image: 'Cards/Arbor/SylvanManifestation.png', 
+ category: 'Creature', color: 'Green', type: 'Elemental', archetype: 'Arbor', trait: 'Mage', hp: 5, atk: 2, def: 0, cost: '{1}{G}', 
+ ability: '', set: 'ElementaGenesis'
+ skill: [
+  {name: 'Arrival',
+   activation: {class: 'Arrival'},
+   effect: {class: 'Search', category: 'Spell'}},
+  {name: 'Bloomchant',
+   requirement: {class: 'CW'}
+   effect: {class: 'Essence', color: '{G}', amount: 1}}
+ ]},
+{id: 'VerdaraSoldier', name: 'Verdara Soldier', rarity: 'Rare', image: 'Cards/Arbor/VerdaraSoldier.png', 
+ category: 'Creature', color: 'Green', type: 'Elemental', archetype: 'Arbor', trait: 'Mage', hp: 5, atk: 2, def: 0, cost: '{1}{G}', 
+ ability: '', set: 'ElementaGenesis'
+ skill: [
+  {name: 'Arrival',
+   activation: {class: 'Arrival'},
+   effect: {class: 'Search', category: 'Spell'}},
+  {name: 'Bloomchant',
+   requirement: {class: 'CW'}
+   effect: {class: 'Essence', color: '{G}', amount: 1}}
+ ]},
+{id: 'JadebarkWarden', name: 'Jadebark Warden', rarity: 'Rare', image: 'Cards/Arbor/JadebarkWarden.png', 
+ category: 'Creature', color: 'Green', type: 'Elemental', archetype: 'Arbor', trait: 'Mage', hp: 5, atk: 2, def: 0, cost: '{1}{G}', 
+ ability: '', set: 'ElementaGenesis'
+ skill: [
+  {name: 'Arrival',
+   activation: {class: 'Arrival'},
+   effect: {class: 'Search', category: 'Spell'}},
+  {name: 'Bloomchant',
+   requirement: {class: 'CW'}
+   effect: {class: 'Essence', color: '{G}', amount: 1}}
+ ]},
+{id: 'ElarisGroveLeafcaller', name: 'Elaris, Grove Leafcaller', rarity: 'Rare', image: 'Cards/Arbor/ElarisGroveLeafcaller.png', 
+ category: 'Creature', color: 'Green', type: 'Elemental', archetype: 'Arbor', trait: 'Mage', hp: 5, atk: 2, def: 0, cost: '{1}{G}', 
+ ability: '', set: 'ElementaGenesis'
  skill: [
   {name: 'Arrival',
    activation: {class: 'Arrival'},
@@ -706,6 +1011,13 @@ const dummyCards = [
 
 {id: 'FairyWarrior', name: 'Fairy Warrior', rarity: 'Rare', image: 'Cards/Fairy/FairyWarrior.png', 
  category: 'Creature', color: 'Green', type: 'Faefolk', archetype: 'Fairy', type: 'Warrior', hp: 5, atk: 3, def: 1, cost: '{1}{G}', 
+ ability: ['Flying','Rush'], set: 'ElementaGenesis',
+ skill: [
+  {name: 'Dash', cost: '{G}',
+  effect: {class: 'Dash'}}
+ ]},
+{id: 'DreadbloomFaerie', name: 'Dreadbloom Faerie', rarity: 'Rare', image: 'Cards/Fairy/DreadbloomFaerie.png', 
+ category: 'Creature', color: ['Green','Purple'], type: 'Faefolk', archetype: 'Fairy', type: '', hp: 5, atk: 3, def: 1, cost: '{1}{G}', 
  ability: ['Flying','Rush'], set: 'ElementaGenesis',
  skill: [
   {name: 'Dash', cost: '{G}',
@@ -970,7 +1282,22 @@ skill: [
    requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
    effect: {class: 'Soak', amount: 8}},
  ]},
-
+{id: 'HydrionPrimevalFloodbringer', name: 'Hydrion, Primeval Floodbringer', rarity: 'Legendary', image: 'Cards/Construct/HydrionPrimevalFloodbringer.png', imageFullArt: 'Cards/Coralbound/MaelvyrnCoralboundAutomatonFA.png',
+ category: 'Creature', color: 'Blue', type: 'Elemental', archetype: 'Hydral', trait: 'Fusion', hp: 20, atk: 0, def: 0, cost: '{6}{U}{U}',
+ ability: ['Dive', 'Elusive', 'Soak'], set: 'PrimordialAscension',
+ skill: [
+  {name: 'Stash', cost: '{U}', 
+    requirement: {class: 'Stash'},
+    effect: {class: 'Search', archetype: 'Coralbound'}},
+  {name: 'Deluge Incarnate',
+   activation: {class: 'Echo'},
+   effect: {class: 'Token', name: 'Coral Drone', amount: 2}},
+  {name: 'Fusion', cost: '{u}{u}{u}{u}', 
+   effect: {class: 'Fusion'}},
+  {name: 'Tide of Oblivion', cost: '{U}{U}', 
+   requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
+   effect: {class: 'Soak', amount: 8}},
+ ]},
 // GLIMMERSCALE //
 {id: 'WyrmofThornsandSunfire', name: 'Wyrm of Thorns and Sunfire', rarity: 'Rare', image: 'Cards/Dragon/Wyrm of Thorns and Sunfire.png', 
  category: 'Creature', color: ['Green', 'Red', 'White'], type: 'Dragon', archetype: ['Fairy', 'Glimmerscale'], hp: 10, atk: 3, def: 1,
@@ -1195,6 +1522,18 @@ skill: [
 {id: 'LumenSpire', name: 'Lumen Spire', rarity: 'Common', image: 'Cards/Artifacts/Lumen Spire.png', 
  category: 'Artifact', color: 'White', type: 'Relic', hp: 5, cost: '{2}{W}', archetype: '', ability: '', set: 'ElementaGenesis'},
 
+{id: 'DrakzulTwinHammers', name: 'Drakzul Twin Hammers', rarity: 'Common', image: 'Cards/Artifacts/DrakzulTwinHammers.png', 
+ category: 'Artifact', color: 'Gray', type: 'Equipment', hp: 5, cost: '{c}{C}', archetype: '', ability: '', set: 'ElementaGenesis',
+ skill: [
+  {name: 'Equip', cost: '{c}{c}', 
+   requirement: {class: 'Equip', targetColor: 'Gray', targetTrait: 'Warrior'},
+   effect: {class: 'Inspire', ability: 'Crush'}},
+  {name: 'Twin Impact', cost: '{c}{c}', 
+   requirement: {class: 'ccw'},
+   effect: {class: 'Strike', amount: 2, target: 2}},
+ ]},
+
+ 
 // SPELLS //
 {id: 'EssenceSurge', name: 'Essence Surge', rarity: 'Common', image: 'Cards/Spell/EssenceSurge.png', 
  category: 'Spell', color: 'Green', type: 'Spell', cost: '{2}', set: 'ElementaGenesis',
