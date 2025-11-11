@@ -814,6 +814,263 @@ Reforge: {
 };
 
 const SKILL_EFFECT_MAP = {
+// SUMMON handler: moves a card from hand (sourceCardObj) to player's field (or specified owner)
+// step: { cardId, amount, owner, orientation, cost, targetCategory }
+Summon: {
+  name: 'Summon',
+  description: 'Summons a card from hand to the field (handles cost/payment and summon position).',
+  handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
+    try {
+      // Resolve data
+      const instance = sourceCardObj; // when called from hand menu, this is the instance in hand
+      const cardId = step.cardId || (instance && instance.cardId);
+      if (!cardId) { if (typeof nextEffect === 'function') nextEffect(); return; }
+      const cardDef = dummyCards.find(c => c.id === cardId);
+      if (!cardDef) { if (typeof nextEffect === 'function') nextEffect(); return; }
+
+      // Determine owner to place (source / player / opponent)
+      const sourceOwner = getCardOwner(instance) || (instance && instance.owner) || 'player';
+      const ownerToken = String(step.owner || 'source').toLowerCase();
+      let placeOwner = sourceOwner;
+      if (ownerToken === 'player') placeOwner = 'player';
+      else if (ownerToken === 'opponent') placeOwner = 'opponent';
+      else if (ownerToken === 'opponentofsource' || ownerToken === 'opponent_of_source') placeOwner = (sourceOwner === 'player' ? 'opponent' : 'player');
+
+      // Determine target zone array and toZoneId by category
+      const category = Array.isArray(cardDef.category) ? cardDef.category.map(x => x.toLowerCase()) : [String(cardDef.category).toLowerCase()];
+      let targetArr = (placeOwner === 'opponent') ? gameState.opponentCreatures : gameState.playerCreatures;
+      let toZoneId = (placeOwner === 'opponent') ? 'opponent-creatures-zone' : 'player-creatures-zone';
+      if (category.includes('domain')) {
+        targetArr = (placeOwner === 'opponent') ? gameState.opponentDomains : gameState.playerDomains;
+        toZoneId = (placeOwner === 'opponent') ? 'opponent-domains-zone' : 'player-domains-zone';
+      } else if (!category.includes('creature') && !category.includes('domain')) {
+        // Unsupported summon category
+        showToast && showToast('Cannot summon this card type.', { type: 'error' });
+        if (typeof nextEffect === 'function') nextEffect();
+        return;
+      }
+
+      // Cost handling: use provided step.cost or cardDef.cost
+      const rawCost = step.cost || cardDef.cost;
+      const parsedCost = rawCost ? parseCost(rawCost) : null;
+      const performSummon = function() {
+        const promptOrientation = (step.orientation === 'prompt' || !step.orientation);
+        const placeOrientation = (promptOrientation ? 'prompt' : step.orientation || 'vertical');
+        const doMove = function(chosenOrientation) {
+          // If the instance is a hand instance in its owner array, move it; else this may be a token creation flow
+          if (instance && findZoneIdForCard(instance) === 'player-hand' || findZoneIdForCard(instance) === 'opponent-hand') {
+            // Move the exact instance from its hand array
+            moveCard(instance.instanceId, (placeOwner === 'opponent' ? gameState.opponentHand : gameState.playerHand), targetArr, { orientation: chosenOrientation });
+          } else {
+            // If no instance (e.g., skill spawned token), create a new instance and push to targetArr
+            const newInst = summonTokenInstance(cardDef, null); // returns instance already pushed? adapt as your summonTokenInstance implementation
+            // If summonTokenInstance doesn't push, push and set fields:
+            if (!targetArr.includes(newInst)) targetArr.push(newInst);
+            newInst.orientation = chosenOrientation;
+          }
+          // Post-summon triggers
+          appendVisualLog && appendVisualLog({ action: 'summon', text: `${placeOwner === 'player' ? 'You' : 'Opponent'} summoned ${cardDef.name}` });
+          renderGameState && renderGameState();
+          if (typeof nextEffect === 'function') nextEffect();
+        };
+
+        if (placeOrientation === 'prompt') {
+          showSummonPositionModal(instance || {}, (chosenOrientation) => doMove(chosenOrientation));
+        } else {
+          doMove(placeOrientation);
+        }
+      };
+
+      // If no cost, summon immediately
+      const isFree = !rawCost || (parsedCost && Object.values(parsedCost).reduce((a,b) => a + b, 0) === 0) || (rawCost === '{0}');
+      if (isFree) {
+        performSummon();
+        return;
+      }
+
+      // Otherwise show payment modal that will call performSummon on onPaid
+      showEssencePaymentModal({
+        card: cardDef,
+        cost: parsedCost,
+        eligibleCards: getAllEssenceSources(),
+        onPaid: function() {
+          performSummon();
+        },
+        onCancel: function() {
+          // If payment canceled, run nextEffect to continue resolution chain
+          if (typeof nextEffect === 'function') nextEffect();
+        }
+      });
+
+    } catch (err) {
+      console.warn('Summon handler error', err);
+      if (typeof nextEffect === 'function') nextEffect();
+    }
+  },
+  // Optional canActivate check: only from hand or allowed zones
+  canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
+    // allow from hand (player or opponent) or other sources as needed
+    return ['playerHand','opponentHand','playerCreatures','playerDomains','opponentCreatures','opponentDomains'].includes(currentZone);
+  }
+},
+
+// CAST handler: plays a spell/ability from hand (resolves immediately and typically goes to void)
+Cast: {
+  name: 'Cast',
+  description: 'Cast a spell card (handles payment and resolution).',
+  handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
+    try {
+      const instance = sourceCardObj;
+      const cardId = step.cardId || (instance && instance.cardId);
+      if (!cardId) { if (typeof nextEffect === 'function') nextEffect(); return; }
+      const cardDef = dummyCards.find(c => c.id === cardId);
+      if (!cardDef) { if (typeof nextEffect === 'function') nextEffect(); return; }
+
+      const parsedCost = step.cost ? parseCost(step.cost) : (cardDef.cost ? parseCost(cardDef.cost) : null);
+      const performCast = function() {
+        // Resolve the card's effects (assume its skill array contains effects)
+        // If the card is in hand, move it to void after resolution
+        const resolveAndMoveToVoid = function() {
+          // Run card's skill resolution or effect steps (you likely have resolveSkill/runSkillEffect)
+          runHandSkillWithAnimation(instance, { class: 'ResolveCard', cardId: cardId }, function() {
+            // move to void
+            if (instance && findZoneIdForCard(instance) === 'player-hand') {
+              moveCard(instance.instanceId, gameState.playerHand, gameState.playerVoid, { orientation: null });
+            }
+            renderGameState && renderGameState();
+            if (typeof nextEffect === 'function') nextEffect();
+          });
+        };
+
+        resolveAndMoveToVoid();
+      };
+
+      const isFree = !cardDef.cost || (parsedCost && Object.values(parsedCost).reduce((a,b)=>a+b,0) === 0) || cardDef.cost === '{0}';
+      if (isFree) {
+        performCast();
+      } else {
+        showEssencePaymentModal({
+          card: cardDef,
+          cost: parsedCost,
+          eligibleCards: getAllEssenceSources(),
+          onPaid: function() { performCast(); },
+          onCancel: function() { if (typeof nextEffect === 'function') nextEffect(); }
+        });
+      }
+    } catch (err) {
+      console.warn('Cast handler error', err);
+      if (typeof nextEffect === 'function') nextEffect();
+    }
+  },
+  canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
+    return currentZone === 'playerHand' || currentZone === 'opponentHand';
+  }
+},
+
+// EQUIP handler: attach an equipment card to a target creature
+Equip: {
+  name: 'Equip',
+  description: 'Equip an Artifact onto a target unit.',
+  handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
+    try {
+      const instance = sourceCardObj;
+      const cardId = step.cardId || (instance && instance.cardId);
+      const cardDef = dummyCards.find(c => c.id === cardId);
+      if (!cardDef) { if (typeof nextEffect === 'function') nextEffect(); return; }
+
+      // find valid targets: you can pass a targetFilter in step or default to friendly creatures
+      const owner = getCardOwner(instance) || (instance && instance.owner) || 'player';
+      const targets = step.target === 'friendly' ? (owner === 'player' ? gameState.playerCreatures : gameState.opponentCreatures)
+                     : (step.target === 'opponent' ? (owner === 'player' ? gameState.opponentCreatures : gameState.playerCreatures)
+                     : getTargets(step.target || { zone: 'allCreatures' }, instance) );
+
+      // Launch target selection UI
+      startSkillTarget(targets, function(selectedTargets) {
+        if (!selectedTargets || !selectedTargets.length) {
+          if (typeof nextEffect === 'function') nextEffect();
+          return;
+        }
+        // Payment logic as above
+        const parsedCost = step.cost ? parseCost(step.cost) : (cardDef.cost ? parseCost(cardDef.cost) : null);
+        const doEquip = function() {
+          // Move equipment from hand to attachment on chosen target
+          const target = selectedTargets[0];
+          // Attach using existing attachCard helper
+          attachCard(target, instance);
+          appendVisualLog && appendVisualLog({ action: 'equip', text: `${getCardOwner(instance) === 'player' ? 'You' : 'Opponent'} equipped ${cardDef.name}` });
+          renderGameState && renderGameState();
+          if (typeof nextEffect === 'function') nextEffect();
+        };
+
+        const isFree = !cardDef.cost || (parsedCost && Object.values(parsedCost).reduce((a,b)=>a+b,0) === 0) || cardDef.cost === '{0}';
+        if (isFree) doEquip();
+        else {
+          showEssencePaymentModal({
+            card: cardDef,
+            cost: parsedCost,
+            eligibleCards: getAllEssenceSources(),
+            onPaid: doEquip,
+            onCancel: function() { if (typeof nextEffect === 'function') nextEffect(); }
+          });
+        }
+      }, { multi: false, confirm: true });
+
+    } catch (err) {
+      console.warn('Equip handler error', err);
+      if (typeof nextEffect === 'function') nextEffect();
+    }
+  },
+  canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
+    // Only equip from hand (or modify to allow equipping from field if you wish)
+    return currentZone === 'playerHand' || currentZone === 'opponentHand';
+  }
+},
+
+// TERRAFORM handler: place a domain/terrain under player's domains
+Terraform: {
+  name: 'Terraform',
+  description: 'Place a Domain/Terrain onto the owner\'s domain zones.',
+  handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
+    try {
+      const instance = sourceCardObj;
+      const cardId = step.cardId || (instance && instance.cardId);
+      if (!cardId) { if (typeof nextEffect === 'function') nextEffect(); return; }
+      const cardDef = dummyCards.find(c => c.id === cardId);
+      if (!cardDef) { if (typeof nextEffect === 'function') nextEffect(); return; }
+
+      // Owner
+      const owner = getCardOwner(instance) || (instance && instance.owner) || 'player';
+      const domainArr = owner === 'player' ? gameState.playerDomains : gameState.opponentDomains;
+
+      const parsedCost = step.cost ? parseCost(step.cost) : (cardDef.cost ? parseCost(cardDef.cost) : null);
+      const doTerraform = function() {
+        // Show summon/orientation if needed or place directly
+        moveCard(instance.instanceId, (owner === 'player' ? gameState.playerHand : gameState.opponentHand), domainArr, { orientation: 'horizontal' });
+        appendVisualLog && appendVisualLog({ action: 'terraform', text: `${owner === 'player' ? 'You' : 'Opponent'} placed ${cardDef.name} as a Domain` });
+        renderGameState && renderGameState();
+        if (typeof nextEffect === 'function') nextEffect();
+      };
+
+      const isFree = !cardDef.cost || (parsedCost && Object.values(parsedCost).reduce((a,b)=>a+b,0) === 0) || cardDef.cost === '{0}';
+      if (isFree) doTerraform();
+      else {
+        showEssencePaymentModal({
+          card: cardDef,
+          cost: parsedCost,
+          eligibleCards: getAllEssenceSources(),
+          onPaid: doTerraform,
+          onCancel: function() { if (typeof nextEffect === 'function') nextEffect(); }
+        });
+      }
+    } catch (err) {
+      console.warn('Terraform handler error', err);
+      if (typeof nextEffect === 'function') nextEffect();
+    }
+  },
+  canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
+    return currentZone === 'playerHand' || currentZone === 'opponentHand';
+  }
+},
 Champion: {
   icon: "Icons/Status/Champion.png",
   name: "Champion",
@@ -2641,64 +2898,6 @@ if (isCardActionable(cardObj, cardData, gameState, 'hand')) {
 }
   // Define actions
   const buttons = [
-    {
-      text: `<span>${playLabel}</span> <span >${costHtml}</span>`,
-      html: true,
-      disabled: !canPay,
-      onClick: function(e) {
-        e.stopPropagation();
-        if (!canPay) return;
-        closeAllMenus();
-        const cardObj = gameState.playerHand.find(c => c.instanceId === instanceId);
-        const cardData = dummyCards.find(c => c.id === cardObj.cardId);
-
-        // Determine allowed target zone
-        let targetArr, toZoneId;
-        const category = Array.isArray(cardData.category)
-          ? cardData.category.map(c => c.toLowerCase())
-          : [String(cardData.category).toLowerCase()];
-
-        if (category.includes("creature")) {
-          targetArr = gameState.playerCreatures;
-          toZoneId = "player-creatures-zone";
-        } else if (category.includes("domain")) {
-          targetArr = gameState.playerDomains;
-          toZoneId = "player-domains-zone";
-        } else {
-          alert("Card cannot be played.");
-          return;
-        }
-        const parsedCost = parseCost(cardData.cost);
-        
-        // No cost, play immediately
-        if (
-          !cardData.cost ||
-          Object.values(parsedCost).reduce((a, b) => a + b, 0) === 0 ||
-          (typeof cardData.cost === "string" && cardData.cost === "{0}")
-        ) {
-          showSummonPositionModal(cardObj, function(chosenOrientation) {
-            moveCard(instanceId, gameState.playerHand, targetArr, { orientation: chosenOrientation });
-            renderGameState();
-            setupDropZones();
-          });
-          return;
-        }
-
-        // Otherwise, show payment modal and move after payment
-        showEssencePaymentModal({
-          card: cardData,
-          cost: parsedCost,
-          eligibleCards: getAllEssenceSources(),
-          onPaid: function() {
-            showSummonPositionModal(cardObj, function(chosenOrientation) {
-              moveCard(instanceId, gameState.playerHand, targetArr, { orientation: chosenOrientation });
-              renderGameState();
-              setupDropZones();
-            });
-          }
-        });
-      }
-    },
     {
       text: "Send to Void",
       onClick: function(e) {
