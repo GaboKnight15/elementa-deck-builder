@@ -2015,6 +2015,7 @@ const addCoinsBtn = document.getElementById('add-coins-btn');
 const LEVEL_THRESHOLDS = [0, 100, 250, 500, 1000, 2000, 4000, 8000];
 let lastPlayerPower = null;
 
+const BLIGHTS = ['Soaked','Burned','Poisoned','Paralized','Bound','Sealed','Cursed','Frozen'];
 const FILTERS_CONFIG = [
   { key: 'ownership', label: 'Ownership', options: ['All','Owned','Undiscovered','Locked'], hideIn: ['builder'] },
   { key: 'color', label: 'Color', options: ['All','Green','Red','Blue','Gray','Purple','Yellow','Black','White'] },
@@ -4364,6 +4365,55 @@ function isSealed(cardObj) {
   }
   return false;
 }
+// internal listener registry: { "Soaked": [fn,fn], ... }
+const blightListeners = {};
+BLIGHT_EVENT_NAMES.forEach(n => { blightListeners[n] = []; });
+
+// internal: add listener, returns unsubscribe()
+function addBlightListener(eventName, callback) {
+  if (!eventName || typeof callback !== 'function') return () => {};
+  const canonical = String(eventName).trim();
+  if (!blightListeners[canonical]) blightListeners[canonical] = [];
+  blightListeners[canonical].push(callback);
+  return function unsubscribe() {
+    const arr = blightListeners[canonical];
+    if (!arr) return;
+    const idx = arr.indexOf(callback);
+    if (idx !== -1) arr.splice(idx, 1);
+  };
+}
+
+// internal: notify listeners (defensive)
+function notifyBlight(eventName, cardObj) {
+  if (!eventName) return;
+  const canonical = String(eventName).trim();
+  const listeners = (blightListeners[canonical] || []).slice(); // copy
+  for (const fn of listeners) {
+    try { fn(cardObj); } catch (err) { console.warn(`notifyBlight listener for ${canonical} threw`, err); }
+  }
+}
+
+// Public registration helpers (one per requested blight)
+function onSoaked(cb)     { return addBlightListener('Soaked', cb); }
+function onBurned(cb)     { return addBlightListener('Burned', cb); }
+function onPoisoned(cb)   { return addBlightListener('Poisoned', cb); }
+function onParalyzed(cb)  { return addBlightListener('Paralized', cb); }
+function onBound(cb)      { return addBlightListener('Bound', cb); }
+function onSealed(cb)     { return addBlightListener('Sealed', cb); }
+function onCursed(cb)     { return addBlightListener('Cursed', cb); }
+function onFrozen(cb)     { return addBlightListener('Frozen', cb); }
+
+// Expose to window for console/tests if desired
+window.onSoaked    = onSoaked;
+window.onBurned    = onBurned;
+window.onPoisoned  = onPoisoned;
+window.onParalyzed = onParalyzed;
+window.onBound     = onBound;
+window.onSealed    = onSealed;
+window.onCursed    = onCursed;
+window.onFrozen    = onFrozen;
+
+
 // --- TRAIT STATUS --- //
 function hasEvolveSigil(cardObj) {
   if (!cardObj) return false;
@@ -4382,6 +4432,21 @@ function isNight() {return getTimeOfDay() === 'night';}
 function isDusk() {return getTimeOfDay() === 'dusk';}
 function isDawn() {return getTimeOfDay() === 'dawn';}
 
+// Count cards in player's hand (defensive)
+function countHandPlayer() {
+  if (!window.gameState || !Array.isArray(gameState.playerHand)) return 0;
+  return gameState.playerHand.length;
+}
+
+// Count cards in opponent's hand (defensive)
+function countHandOpponent() {
+  if (!window.gameState || !Array.isArray(gameState.opponentHand)) return 0;
+  return gameState.opponentHand.length;
+}
+
+// expose to window for use in UI/templates if desired
+window.countHandPlayer = countHandPlayer;
+window.countHandOpponent = countHandOpponent;
 // --- COUNTING HELPERS --- //
 function countType(typeName) {
   if (!typeName) return 0;
