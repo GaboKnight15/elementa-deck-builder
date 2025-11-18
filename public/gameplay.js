@@ -7215,14 +7215,22 @@ function applyStatus(cardObj, statusName, duration = (STATUS_EFFECTS[statusName]
     }
 
     // Notify any JS listeners registered via onSoaked/onBurned/...
-    // Use case-insensitive matching against BLIGHT_EVENT_NAMES
+    // Use case-insensitive matching against STATUS_EFFECTS keys (single source of truth)
     try {
-      const normalized = String(statusName).trim();
-      // find canonical name from BLIGHT_EVENT_NAMES matching case-insensitively
-      const canonical = BLIGHTS.find(n => n.toLowerCase() === normalized.toLowerCase());
+      const normalized = String(statusName).trim().toLowerCase();
+      let canonical = null;
+
+      if (typeof STATUS_EFFECTS === 'object' && STATUS_EFFECTS !== null) {
+        canonical = Object.keys(STATUS_EFFECTS).find(k => String(k).toLowerCase() === normalized);
+      }
+
       if (canonical) {
         // notify listeners (synchronous)
-        notifyBlight(canonical, cardObj);
+        try {
+          notifyBlight && notifyBlight(canonical, cardObj);
+        } catch (e) {
+          console.warn('notifyBlight failed for', canonical, e);
+        }
 
         // also queue the event into the existing engine queue for skills that use activation.trigger
         try {
