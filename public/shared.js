@@ -2019,7 +2019,6 @@ const addCoinsBtn = document.getElementById('add-coins-btn');
 const LEVEL_THRESHOLDS = [0, 100, 250, 500, 1000, 2000, 4000, 8000];
 let lastPlayerPower = null;
 
-const BLIGHTS = ['Soaked','Burned','Poisoned','Paralized','Bound','Sealed','Cursed','Frozen'];
 const FILTERS_CONFIG = [
   { key: 'ownership', label: 'Ownership', options: ['All','Owned','Undiscovered','Locked'], hideIn: ['builder'] },
   { key: 'color', label: 'Color', options: ['All','Green','Red','Blue','Gray','Purple','Yellow','Black','White'] },
