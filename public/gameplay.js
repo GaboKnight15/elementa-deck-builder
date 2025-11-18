@@ -1718,7 +1718,62 @@ Seal: {
     nextEffect && nextEffect();
   }
 },
+Inspire: {
+  name: 'Inspire',
+  description: 'Apply modifier or grant an ability to a target.',
+  handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
+    try {
+      // Determine intended target:
+      // Prefer the host the source was just attached to (set by Equip handler)
+      let target = null;
+      if (sourceCardObj && sourceCardObj._lastEquippedTarget) {
+        target = sourceCardObj._lastEquippedTarget;
+      }
+      // Or the resolution context could include a triggered target (some pipelines pass context)
+      // If there's no equipped target, try step.target (selection) or default to self
+      if (!target && step.target) {
+        const targets = getTargets(step.target, sourceCardObj);
+        target = Array.isArray(targets) && targets.length ? targets[0] : null;
+      }
+      if (!target) target = sourceCardObj; // fallback: apply to source
 
+      // Apply armor if present
+      if (typeof step.armor === 'number' && step.armor !== 0) {
+        target.armor = (target.armor || 0) + Number(step.armor);
+      }
+      // Apply stat modifiers (atk, def, speed)
+      target.modifiers = target.modifiers || [];
+      if (typeof step.atk === 'number' && step.atk !== 0) {
+        target.modifiers.push({ effect: 'Inspire', stat: 'atk', value: Number(step.atk), source: sourceCardObj.instanceId });
+      }
+      if (typeof step.def === 'number' && step.def !== 0) {
+        target.modifiers.push({ effect: 'Inspire', stat: 'def', value: Number(step.def), source: sourceCardObj.instanceId });
+      }
+      if (typeof step.speed === 'number' && step.speed !== 0) {
+        target.modifiers.push({ effect: 'Inspire', stat: 'speed', value: Number(step.speed), source: sourceCardObj.instanceId });
+      }
+      // Grant ability strings into _grantedAbilities
+      if (step.ability) {
+        target._grantedAbilities = target._grantedAbilities || [];
+        const abilities = Array.isArray(step.ability) ? step.ability : [step.ability];
+        abilities.forEach(ab => {
+          if (!target._grantedAbilities.some(x => JSON.stringify(x) === JSON.stringify(ab))) {
+            target._grantedAbilities.push(ab);
+          }
+        });
+      }
+
+      // Clean the temporary marker so later unrelated effects don't reuse it
+      if (sourceCardObj && sourceCardObj._lastEquippedTarget) delete sourceCardObj._lastEquippedTarget;
+
+      renderGameState && renderGameState();
+    } catch (err) {
+      console.warn('Inspire effect handler error', err);
+    } finally {
+      if (typeof nextEffect === 'function') nextEffect();
+    }
+  }
+},
 Essence: {
   icon: 'Icons/skillEffect/Essence.png',
   name: 'Essence',
