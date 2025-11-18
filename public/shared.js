@@ -2019,12 +2019,12 @@ const FILTERS_CONFIG = [
   { key: 'ownership', label: 'Ownership', options: ['All','Owned','Undiscovered','Locked'], hideIn: ['builder'] },
   { key: 'color', label: 'Color', options: ['All','Green','Red','Blue','Gray','Purple','Yellow','Black','White'] },
   { key: 'category', label: 'Category', options: ['All','Creature','Artifact','Spell','Domain'] },
-  { key: 'type', label: 'Type', options: ['All','Elemental','Dragon','Construct','Beast','Demon','Faefolk','Brute','Undead'] },
+  { key: 'type', label: 'Type', options: ['All','Beast','Brute','Construct','Demon','Dragon','Elemental','Faefolk','Human','Undead'] },
   { key: 'rarity', label: 'Rarity', options: ['All','Common','Rare','Legendary'] },
   { key: 'trait', label: 'Trait', options: ['All','Champion','Dominion','Evolution','Fusion','Warrior','Mage','Ranger','Relic','Equipment','Aura','Terrain','Locale'] },
   { key: 'archetype', label: 'Archetype', options: ['All','Blazefeather','Cindercore','Coralbound','Fireland','Frostland','Golemheart','Moonfang','Skullframe','Voltwing','Zephyra'] },
   { key: 'ability', label: 'Ability', options: ['All','Ambush','Dive','Burn','Drain','Elusive','Flying','Ice Armor','Immunity','Intimidate','Leap','Lifelink','Protect','Provoke','Rush','Toxic'] },
-  { key: 'pack', label: 'Pack', options: ['All', 'ElementaGenesis', 'StandardPack2'] }
+  { key: 'pack', label: 'Pack', options: ['All', 'ElementaGenesis', 'FracturedOrigins'] }
  // Add more as needed
 ];
 
@@ -4381,6 +4381,36 @@ function isDay() {return getTimeOfDay() === 'day';}
 function isNight() {return getTimeOfDay() === 'night';}
 function isDusk() {return getTimeOfDay() === 'dusk';}
 function isDawn() {return getTimeOfDay() === 'dawn';}
+
+// --- COUNTING HELPERS --- //
+function countType(typeName) {
+  if (!typeName) return 0;
+  if (!window.gameState || !Array.isArray(gameState.playerCreatures)) return 0;
+  try {
+    return gameState.playerCreatures.filter(c => isType(c, typeName)).length;
+  } catch (e) {
+    // defensive fallback: match string field(s)
+    try {
+      return gameState.playerCreatures.filter(c => {
+        const t = Array.isArray(c.type) ? c.type : [c.type];
+        return t.some(x => String(x || '').toLowerCase() === String(typeName).toLowerCase());
+      }).length;
+    } catch (e2) {
+      return 0;
+    }
+  }
+}
+
+// Per-type convenience wrappers (you requested these exact types)
+function countBeast()     { return countType('Beast'); }
+function countBrute()     { return countType('Brute'); }
+function countConstruct() { return countType('Construct'); }
+function countDemon()     { return countType('Demon'); }
+function countDragon()    { return countType('Dragon'); }
+function countElemental() { return countType('Elemental'); }
+function countFaefolk()   { return countType('Faefolk'); }
+function countHuman()     { return countType('Human'); }
+function countUndead()    { return countType('Undead'); }
 
 
 function closeAllFilterDropdowns() {
