@@ -1611,16 +1611,20 @@ skill: [{name: 'Summon', cost: '{1}{r}', effect: {class: 'Summon'}},
 {id: 'HydrosurgeProtocol', name: 'Hydrosurge Protocol', rarity: 'Common', image: 'Cards/Construct/HydrosurgeProtocol.png', flavor: '', 
  category: 'Spell', color: 'Blue', type: 'Construct',
  cost: '{1}{U}', archetype: 'Coralbound', set: 'IronbornProtocol',
- skill: [{name: 'Cast', cost: '{0}', effect: {class: 'Cast'}},
-  {name: 'Soak', effect: {class: 'Soak', amount: 1, target: 3}},
+ skill: [
+  {name: 'Cast', cost: '{0}', effect: [{class: 'Soak', amount: 1, target: 3}, {class: 'Cast'}}, ,
   {name: 'Recycle', cost: '{u}', effect: {class: 'Soak', amount: 0, target: 2}},
  ]},
-/*
+
 {id: 'HardenedScales', name: 'Hardened Scales', rarity: 'Common', image: 'Cards/Dragon/HardenedScales.png', flavor: '', 
- category: 'Spell', color: ['Green','Red'], type: 'Aura', cost: '{1}', effect: 'Gain {G}{G}', set: 'ElementaGenesis'},
+ category: 'Spell', color: ['Green','Red'], type: 'Dragon', trait: 'Aura', cost: '{1}', set: 'ElementaGenesis',
+ skill: [
+  {name: 'Cast', cost: '{0}', effect: [{class: 'Equip', type: 'Dragon'}, {class: 'Inspire', armor: 2},
+                                       {class: 'Inspire', ability: 'Immunity'}, {class: 'Inspire', def: 1}]},
+ ]},
 {id: 'VerdantRebirth', name: 'Verdant Rebirth', rarity: 'Common', image: 'Cards/Spells/VerdantRebirth.png', flavor: '', 
  category: 'Spell', color: 'Green', type: 'Spell', cost: '{2}{G}', effect: 'Gain {G}{G}', set: 'ElementaGenesis'},
-
+/*
 Dragon Terrains
 {id: 'DragonsGrove', name: 'Dragon's Grove', rarity: 'Rare', image: 'Cards/Dragon/DragonsGrove.png', flavor: '', 
  category: 'Domain', color: 'Green', type: ['Terrain', 'Dragon'], archetype: 'Thornwing', hp: 13, cost: '{g}{g}', essence: '{g}{g}', set: 'WyrmheartAwakening',
