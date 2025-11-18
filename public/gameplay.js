@@ -7093,11 +7093,46 @@ function parseCost(costStr) {
 /*------------------
 // STATUS EFFECTS //
 ------------------*/
-function applyStatus(cardObj, statusName, duration = STATUS_EFFECTS[statusName].duration) {
+function applyStatus(cardObj, statusName, duration = (STATUS_EFFECTS[statusName] && STATUS_EFFECTS[statusName].duration)) {
+  if (!cardObj || !statusName) return;
   cardObj.statuses = cardObj.statuses || [];
   if (!cardObj.statuses.some(s => s.name === statusName)) {
-    cardObj.statuses.push({ name: statusName, duration });
-    STATUS_EFFECTS[statusName].apply(cardObj);
+    // push status instance
+    cardObj.statuses.push({ name: statusName, duration: typeof duration === 'number' ? duration : null });
+
+    // call the status-specific apply callback if present (preserve existing behavior)
+    try {
+      if (STATUS_EFFECTS[statusName] && typeof STATUS_EFFECTS[statusName].apply === 'function') {
+        STATUS_EFFECTS[statusName].apply(cardObj);
+      }
+    } catch (err) {
+      console.warn(`STATUS_EFFECTS.${statusName}.apply failed`, err);
+    }
+
+    // Notify any JS listeners registered via onSoaked/onBurned/...
+    // Use case-insensitive matching against BLIGHT_EVENT_NAMES
+    try {
+      const normalized = String(statusName).trim();
+      // find canonical name from BLIGHT_EVENT_NAMES matching case-insensitively
+      const canonical = BLIGHTS.find(n => n.toLowerCase() === normalized.toLowerCase());
+      if (canonical) {
+        // notify listeners (synchronous)
+        notifyBlight(canonical, cardObj);
+
+        // also queue the event into the existing engine queue for skills that use activation.trigger
+        try {
+          if (typeof queueEvent === 'function') {
+            // keep context shape compatible with collectTriggersForEvent (it expects context.summonedCard for many handlers)
+            queueEvent(canonical, { summonedCard: cardObj });
+          }
+        } catch (e) {
+          // non-fatal: queueEvent may not be available in some contexts
+          console.warn('queueEvent failed for', canonical, e);
+        }
+      }
+    } catch (e) {
+      console.warn('Blight notification failed for', statusName, e);
+    }
   }
 }
 
