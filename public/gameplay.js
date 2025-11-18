@@ -2799,6 +2799,7 @@ function renderGameState() {
     img.alt = card.name;
     img.style.width = "80px";
     div.appendChild(img);
+    if (typeof renderHandCostBadge === 'function') renderHandCostBadge(div, card);
     div.onclick = (e) => {
       e.stopPropagation();
       showHandCardMenu(cardObj.instanceId, div);
@@ -2824,15 +2825,6 @@ function renderGameState() {
     div.appendChild(img);
     opponentHandDiv.appendChild(div);
   }
-
-  // The following block is invalid and should be removed:
-  // const cardData = dummyCards.find(c => c.id === cardObj.cardId);
-  // if (isCardActionable(cardObj, cardData, gameState, 'hand')) {
-  //   div.classList.add('card-animatable');
-  // } else {
-  //   div.classList.remove('card-animatable');
-  // }
-
   // RENDER FIELD ZONES
   renderRowZone('opponent-creatures-zone', gameState.opponentCreatures, "creature");
   renderRowZone('opponent-domains-zone', gameState.opponentDomains, "domain");
@@ -2841,6 +2833,64 @@ function renderGameState() {
   renderRightbarZones();
 }
 
+// --- RENDER CARD COST IN HAND --- //
+function renderHandCostBadge(cardDiv, cardData) {
+  try {
+    if (!cardData || !cardData.cost) return;
+    // parseCost already exists in this file
+    const parsed = typeof parseCost === 'function' ? parseCost(cardData.cost) : null;
+    if (!parsed || (Object.keys(parsed).length === 0 && !parsed.colorless)) {
+      // handle single-symbol cost like "{g}" may still produce parsed object; bail if empty
+      return;
+    }
+
+    // Ensure the cardDiv is positioned so absolute children are placed correctly
+    const prevPos = cardDiv.style.position;
+    if (!prevPos || prevPos === '') cardDiv.style.position = 'relative';
+
+    const badge = document.createElement('div');
+    badge.className = 'hand-cost-badge';
+    // Inline styles to avoid requiring CSS edits; you can move to stylesheet later
+    badge.style.position = 'absolute';
+    badge.style.left = '6px';
+    badge.style.top = '6px';
+    badge.style.zIndex = 60;
+    badge.style.display = 'inline-flex';
+    badge.style.alignItems = 'center';
+    badge.style.gap = '4px';
+    badge.style.padding = '4px 6px';
+    badge.style.borderRadius = '10px';
+    badge.style.background = 'rgba(0,0,0,0.6)';
+    badge.style.backdropFilter = 'blur(4px)';
+    badge.style.color = '#fff';
+    badge.style.fontWeight = '700';
+    badge.style.fontSize = '12px';
+    badge.style.pointerEvents = 'none'; // badge should not interfere with clicks
+
+    // Reuse getEssenceCostDisplay to build HTML for parsed cost (it returns HTML with images)
+    // but shrink icon sizes for the compact badge
+    let html = '';
+    if (typeof getEssenceCostDisplay === 'function') {
+      html = getEssenceCostDisplay(parsed);
+    } else {
+      // fallback: render colorless number if parseCost not available
+      if (parsed.colorless) html = `<span>${parsed.colorless}</span>`;
+    }
+    badge.innerHTML = html;
+
+    // Shrink any images produced by getEssenceCostDisplay to fit badge
+    Array.from(badge.querySelectorAll('img')).forEach(img => {
+      img.style.width = '14px';
+      img.style.height = '14px';
+      img.style.verticalAlign = 'middle';
+      img.style.marginRight = '2px';
+    });
+
+    cardDiv.appendChild(badge);
+  } catch (err) {
+    console.warn('renderHandCostBadge failed', err);
+  }
+}
 function setCardAnimatableClass(div, cardObj, cardData, gameState, zone) {
   if (isCardActionable(cardObj, cardData, gameState, zone)) {
     div.classList.add('card-animatable');
