@@ -2,7 +2,9 @@
 const dummyCards = [
 /*
 
-// CHAMPIONS BASIC //
+// ------------------------ //
+// --- ELEMENTA GENESIS --- //
+// ------------------------ //
 
 {id: 'SylvaniaThornvaleQueen', name: 'Sylvania, Thornvale Queen', rarity: 'Legendary', image: 'Cards/Elf/SylvaniaThornvaleQueen.png', flavor: '', 
  category: 'Creature', color: 'Green', type: 'Faefolk', archetype: 'Elf', trait: ['Champion', 'Mage'], hp: 6, atk: 1, def: 0,
@@ -742,7 +744,7 @@ const dummyCards = [
  skill: [{name: 'Summon', cost: '{1}', effect: {class: 'Summon'}}]},
 {id: 'WaterElemental', name: 'Water Elemental', rarity: 'Common', image: 'Cards/Elemental/WaterElemental.png', flavor: '', flavor: '',
  category: 'Creature', color: 'Blue', type: 'Elemental', archetype: 'Hydral', hp: 5, atk: 2, def: 0,
- cost: '{U}', ability: ['Dive','Elusive','Soak'], set: 'ElementaGenesis',
+ cost: '{U}', ability: ['Elusive','Soak'], set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{u}', effect: {class: 'Summon'}}]},
 {id: 'DesertWolf', name: 'Desert Wolf', rarity: 'Common', image: 'Cards/Beast/DesertWolf.png', flavor: '', flavor: '',
  category: 'Creature', color: 'Gray', type: 'Beast', archetype: 'Moonfang', hp: 3, atk: 2, def: 0,
@@ -770,8 +772,7 @@ const dummyCards = [
  category: 'Creature', color: 'Black', type: 'Undead', archetype: 'Skullframe', hp: 1, atk: 1, def: 0,
  cost: '{0}', ability: 'Immunity', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{0}', effect: {class: 'Summon'}},
-  {name: 'Reanimate', cost: '{B}', 
-   effect: {class: 'Reanimate'}},
+  {name: 'Reanimate', cost: '{B}', effect: {class: 'Reanimate'}},
  ]},
 {id: 'Bat', name: 'Bat', rarity: 'Common', image: 'Cards/Vampiric/Bat.png', flavor: '', flavor: '',
  category: 'Creature', color: 'Black', type: ['Beast', 'Avian'], archetype: 'Vampiric', hp: 3, atk: 2, def: 0,
@@ -945,7 +946,7 @@ const dummyCards = [
  cost: '{1}{c}', ability: 'Crush', set: 'ElementaGenesis'},
 {id: 'SatyrRitualist', name: 'Satyr Ritualist', rarity: 'Rare', image: 'Cards/Satyr/SatyrRitualist.png', flavor: '', 
  category: 'Creature', color: 'Purple', type: 'Faefolk', archetype: 'Satyr', trait: 'Mage', hp: 4, atk: 2, def: 0, cost: '{P}', 
-  ability: 'Spellboost', skill: 'Arrival', set: 'MischieveUnbound',
+ ability: 'Spellboost', skill: 'Arrival', set: 'MischieveUnbound',
  skill: [
   {name: 'Arrival',
    activation: {class: 'Arrival'}
@@ -1042,75 +1043,6 @@ const dummyCards = [
 
 
 */
- 
-// CINDERCORE //
-{id: 'CinderScout', name: 'Cinder Scout', rarity: 'Common', image: 'Cards/Construct/CinderScout.png', flavor: '', 
- category: 'Creature', color: 'Red', type: 'Construct', archetype: 'Cindercore', hp: 1, armor: 1, atk: 2, def: 0,
- cost: '{R}', ability: ['Armor','Exploit'], set: 'IronbornProtocol',
- skill: [{name: 'Summon', cost: '{r}', effect: {class: 'Summon'}},
-  {name: 'Discard', cost: '{R}', 
-   requirement: {class: 'Discard'},
-   effect: [{class: 'Search', archetype: 'Cindercore'}, {class: 'Burn', amount: 0}]},
-  {name: 'Sacrifice', cost: '{R}', 
-   requirement: {class: 'Sacrifice'},
-   effect: [{class: 'Exploit', amount: 0, target: 2}]},
-  {name: 'Fuse', cost: '{R}{R}', 
-   effect: {class: 'Fuse'}}
- ]},
-{id: 'CindercoreSentry', name: 'Cindercore Sentry', rarity: 'Common', image: 'Cards/Construct/CindercoreSentry.png', flavor: '', 
- category: 'Creature', color: 'Red', type: 'Construct', archetype: 'Cindercore', hp: 2, armor: 3, atk: 2, def: 1,
- cost: '{1}{R}', ability: ['Armor','Fire Exploit'], set: 'IronbornProtocol',
- skill: [{name: 'Summon', cost: '{1}{r}', effect: {class: 'Summon'}},
-  {name: 'Scorch Protocol', cost: '{1}{R}', 
-   requirement: {class: 'Special'},
-   effect: [{class: 'Search', archetype: 'Cindercore'}, {class: 'Burn', amount: 0}]},
-  {name: 'Fuse', cost: '{R}{R}', 
-   effect: {class: 'Fuse'}}
- ]},
-{id: 'CindercoreProtector', name: 'Cindercore Protector', rarity: 'Rare', image: 'Cards/Construct/CindercoreProtector.png', flavor: '', 
- category: 'Creature', color: 'Red', type: 'Construct', archetype: 'Cindercore', hp: 15, atk: 6, def: 3,
- cost: '{3}{R}', ability: ['Armor','Exploit','Protect'], set: 'IronbornProtocol',
- skill: [{name: 'Summon', cost: '{3}{r}', effect: {class: 'Summon'}},
-  {name: 'Volcanic Vortex', cost: '{1}{R}', 
-   requirement: [{class: 'Special'}, {class: 'CCW'}],
-   effect: {class: 'Strike', amount: 3, status: ['Burn','Bind']}},
-  {name: 'Fuse', cost: '{R}', 
-   effect: {class: 'Fuse'}}
- ]},
-{id: 'CindercoreVanguard', name: 'Cindercore Vanguard', rarity: 'Common', image: 'Cards/Construct/CindercoreVanguard.png', flavor: '', 
- category: 'Creature', color: 'Red', type: 'Construct', archetype: 'Cindercore', hp: 15, atk: 6, def: 3,
- cost: '{1}{R}', ability: ['Armor', 'Exploit', 'Rush'], set: 'IronbornProtocol',
-skill: [{name: 'Summon', cost: '{1}{r}', effect: {class: 'Summon'}},
-  {name: 'Fire Pulse', cost: '{R}', 
-   requirement: [{class: 'Special'}, {class: 'CCW'}], 
-   effect: {class: 'Burn', amount: 1, target: 2}},
- {name: 'Fuse', cost: '{R}', 
-   effect: {class: 'Fuse'}}
- ]},
-{id: 'CindercoreGolem', name: 'Cindercore Golem', rarity: 'Rare', image: 'Cards/Construct/CindercoreGolem.png', flavor: '', 
- category: 'Creature', color: ['Red', 'Gray'], type: 'Elemental', archetype: ['Cindercore','Golemheart'], hp: 15, atk: 6, def: 3,
- cost: '{3}{R}', ability: 'Armor', set: 'IronbornProtocol',
- skill: [{name: 'Summon', cost: '{0}', effect: {class: 'Summon'}},
-  {name: 'Volcanic Vortex', cost: '{1}{R}',
-   requirement: [{class: 'Special'}, {class: 'CCW'}],
-   effect: {class: 'Strike', amount: 3, status: ['Burn','Bind']}}
- ]},
-{id: 'IgnavarynCindercoreAutomaton', name: 'Ignavaryn, Cindercore Automaton', rarity: 'Legendary', image: 'Cards/Construct/IgnavarynCindercoreAutomaton.png', flavor: '', 
- category: 'Creature', color: 'Red', type: 'Construct', archetype: 'Cindercore', hp: 5, armor: 10, atk: 6, def: 3,
- cost: '{5}{R}{R}', ability: ['Armor','Exploit','Protect'], set: 'IronbornProtocol',
- skill: [{name: 'Summon', cost: '{0}', effect: {class: 'Summon'}},
-  {name: 'Stash', cost: '{R}', description: 'Return from your hand to your deck and burn {2}',
-   requirement: {class: 'Stash'},
-   effect: {class: 'Burn', amount: 2}},
-  {name: 'Thermal Overdrive', cost: '{r}{r}{r}', 
-   requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
-   effect: {class: 'Burn', amount: 3, target: 3}},
-  {name: 'Recycle', cost: '{R}', 
-   effect: {class: 'Recycle'},
-   effect: {class: 'Burn', amount: 2}},
-  {name: 'Fusion', cost: '{r}{r}{r}', 
-   effect: {class: 'Fusion'}}
- ]},
 
 // Fireland //
 {id: 'FirelandScamperling', name: 'Fireland Scamperling', rarity: 'Common', image: 'Cards/Beast/FirelandScamperling.png', flavor: '', 
@@ -1242,6 +1174,78 @@ skill: [{name: 'Summon', cost: '{1}{r}', effect: {class: 'Summon'}},
  category: 'Creature', color: ['Purple', 'Gray'], type: 'Elemental', archetype: 'Golem', hp: 8, armor: 4, atk: 4, def: 3,
  cost: '{2}{P}{C}', ability: 'Poisonous', set: 'PrimordialAscension',
  skill: [{name: 'Summon', cost: '{0}', effect: {class: 'Summon'}}]},
+
+// ------------------------- //
+// --- IRONBORN PROTOCOL --- //
+// ------------------------- //
+// CINDERCORE //
+{id: 'CinderScout', name: 'Cinder Scout', rarity: 'Common', image: 'Cards/Construct/CinderScout.png', flavor: '', 
+ category: 'Creature', color: 'Red', type: 'Construct', archetype: 'Cindercore', hp: 1, armor: 1, atk: 2, def: 0,
+ cost: '{R}', ability: ['Armor','Exploit'], set: 'IronbornProtocol',
+ skill: [{name: 'Summon', cost: '{r}', effect: {class: 'Summon'}},
+  {name: 'Discard', cost: '{R}', 
+   requirement: {class: 'Discard'},
+   effect: [{class: 'Search', archetype: 'Cindercore'}, {class: 'Burn', amount: 0}]},
+  {name: 'Sacrifice', cost: '{R}', 
+   requirement: {class: 'Sacrifice'},
+   effect: [{class: 'Exploit', amount: 0, target: 2}]},
+  {name: 'Fuse', cost: '{R}{R}', 
+   effect: {class: 'Fuse'}}
+ ]},
+{id: 'CindercoreSentry', name: 'Cindercore Sentry', rarity: 'Common', image: 'Cards/Construct/CindercoreSentry.png', flavor: '', 
+ category: 'Creature', color: 'Red', type: 'Construct', archetype: 'Cindercore', hp: 2, armor: 3, atk: 2, def: 1,
+ cost: '{1}{R}', ability: ['Armor','Fire Exploit'], set: 'IronbornProtocol',
+ skill: [{name: 'Summon', cost: '{1}{r}', effect: {class: 'Summon'}},
+  {name: 'Scorch Protocol', cost: '{1}{R}', 
+   requirement: {class: 'Special'},
+   effect: [{class: 'Search', archetype: 'Cindercore'}, {class: 'Burn', amount: 0}]},
+  {name: 'Fuse', cost: '{R}{R}', 
+   effect: {class: 'Fuse'}}
+ ]},
+{id: 'CindercoreProtector', name: 'Cindercore Protector', rarity: 'Rare', image: 'Cards/Construct/CindercoreProtector.png', flavor: '', 
+ category: 'Creature', color: 'Red', type: 'Construct', archetype: 'Cindercore', hp: 15, atk: 6, def: 3,
+ cost: '{3}{R}', ability: ['Armor','Exploit','Protect'], set: 'IronbornProtocol',
+ skill: [{name: 'Summon', cost: '{3}{r}', effect: {class: 'Summon'}},
+  {name: 'Volcanic Vortex', cost: '{1}{R}', 
+   requirement: [{class: 'Special'}, {class: 'CCW'}],
+   effect: {class: 'Strike', amount: 3, status: ['Burn','Bind']}},
+  {name: 'Fuse', cost: '{R}', 
+   effect: {class: 'Fuse'}}
+ ]},
+{id: 'CindercoreVanguard', name: 'Cindercore Vanguard', rarity: 'Common', image: 'Cards/Construct/CindercoreVanguard.png', flavor: '', 
+ category: 'Creature', color: 'Red', type: 'Construct', archetype: 'Cindercore', hp: 15, atk: 6, def: 3,
+ cost: '{1}{R}', ability: ['Armor', 'Exploit', 'Rush'], set: 'IronbornProtocol',
+skill: [{name: 'Summon', cost: '{1}{r}', effect: {class: 'Summon'}},
+  {name: 'Fire Pulse', cost: '{R}', 
+   requirement: [{class: 'Special'}, {class: 'CCW'}], 
+   effect: {class: 'Burn', amount: 1, target: 2}},
+ {name: 'Fuse', cost: '{R}', 
+   effect: {class: 'Fuse'}}
+ ]},
+{id: 'CindercoreGolem', name: 'Cindercore Golem', rarity: 'Rare', image: 'Cards/Construct/CindercoreGolem.png', flavor: '', 
+ category: 'Creature', color: ['Red', 'Gray'], type: 'Elemental', archetype: ['Cindercore','Golemheart'], hp: 15, atk: 6, def: 3,
+ cost: '{3}{R}', ability: 'Armor', set: 'IronbornProtocol',
+ skill: [{name: 'Summon', cost: '{0}', effect: {class: 'Summon'}},
+  {name: 'Volcanic Vortex', cost: '{1}{R}',
+   requirement: [{class: 'Special'}, {class: 'CCW'}],
+   effect: {class: 'Strike', amount: 3, status: ['Burn','Bind']}}
+ ]},
+{id: 'IgnavarynCindercoreAutomaton', name: 'Ignavaryn, Cindercore Automaton', rarity: 'Legendary', image: 'Cards/Construct/IgnavarynCindercoreAutomaton.png', flavor: '', 
+ category: 'Creature', color: 'Red', type: 'Construct', archetype: 'Cindercore', hp: 5, armor: 10, atk: 6, def: 3,
+ cost: '{5}{R}{R}', ability: ['Armor','Exploit','Protect'], set: 'IronbornProtocol',
+ skill: [{name: 'Summon', cost: '{0}', effect: {class: 'Summon'}},
+  {name: 'Stash', cost: '{R}', description: 'Return from your hand to your deck and burn {2}',
+   requirement: {class: 'Stash'},
+   effect: {class: 'Burn', amount: 2}},
+  {name: 'Thermal Overdrive', cost: '{r}{r}{r}', 
+   requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
+   effect: {class: 'Burn', amount: 3, target: 3}},
+  {name: 'Recycle', cost: '{R}', 
+   effect: {class: 'Recycle'},
+   effect: {class: 'Burn', amount: 2}},
+  {name: 'Fusion', cost: '{r}{r}{r}', 
+   effect: {class: 'Fusion'}}
+ ]},
  
 // CORALBOUND //
  {id: 'CoralDrone', name: 'Coral Drone', rarity: 'Common', image: 'Cards/Construct/CoralDrone.png', flavor: '', 
@@ -1312,6 +1316,7 @@ skill: [{name: 'Summon', cost: '{1}{r}', effect: {class: 'Summon'}},
    requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
    effect: {class: 'Soak', amount: 8}},
  ]},
+/*
 // GLIMMERSCALE //
 {id: 'WyrmofThornsandSunfire', name: 'Wyrm of Thorns and Sunfire', rarity: 'Rare', image: 'Cards/Dragon/Wyrm of Thorns and Sunfire.png', flavor: '', 
  category: 'Creature', color: ['Green', 'Red', 'White'], type: 'Dragon', archetype: ['Fairy', 'Glimmerscale'], hp: 10, atk: 3, def: 1,
@@ -1326,7 +1331,7 @@ skill: [{name: 'Summon', cost: '{1}{r}', effect: {class: 'Summon'}},
   {name: 'Evolve', cost: '{g}{w}', 
    effect: {class: 'Evolve'}},
  ]},
-/*
+
 {id: 'FairyDragon', name: 'Fairy Dragon', rarity: 'Rare', image: 'Cards/Dragon/FairyDragon.png', flavor: '', 
  category: 'Creature', color: ['Green', 'Red', 'White'], type: 'Dragon', hp: 6, atk: 2, def: 1, cost: '{G}{R}{W}',
  ability: ['Flying','Intimidate'], archetype: ['Fairy', 'Glimmerscale'], set: 'MischiefUnbound',
@@ -1595,10 +1600,7 @@ skill: [{name: 'Summon', cost: '{1}{r}', effect: {class: 'Summon'}},
  skill: [{name: 'Cast', cost: '{0}', effect: {class: 'Cast'}}]},
 {id: 'LifeGrowth', name: 'Life Growth', rarity: 'Common', image: 'Cards/Spell/LifeGrowth.png', flavor: '', 
  category: 'Spell', color: 'Green', type: 'Spell', cost: '{G}', set: 'ElementaGenesis',
- skill: [{name: 'Cast', cost: '{0}', effect: {class: 'Cast'}},
-  {name: 'Essence',  
-   effect: {class: 'Essence', amount: 2, color: 'Green'}},
- ]},
+ skill: [{name: 'Cast', cost: '{0}', effect: [{class: 'Essence', amount: 2, color: 'Green'}, {class: 'Cast'}]}]},
 {id: 'HydrosurgeProtocol', name: 'Hydrosurge Protocol', rarity: 'Common', image: 'Cards/Construct/HydrosurgeProtocol.png', flavor: '', 
  category: 'Spell', color: 'Blue', type: 'Construct',
  cost: '{1}{U}', archetype: 'Coralbound', set: 'IronbornProtocol',
