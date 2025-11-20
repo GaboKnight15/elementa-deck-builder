@@ -45,7 +45,7 @@ const dummyCards = [
    effect: [{class: 'Champion'}, {class: 'Buff', speed: 1, atk: 1, def: 1}]},
   {name: 'Tidepiercer Vortex', cost: '{u}{u}',
    requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
-   effect: {class: 'Soak', amount: 3, target: 3}}
+   effect: {class: 'Soak', amount: 3, target: 3, zone: opponentCreatures}}
  ]},
 
 {id: 'ZyraThunderbladeDuelist', name: 'Zyra, Thunderblade Duelist', rarity: 'Legendary', image: 'Cards/Human/ZyraThunderbladeDuelist.png', flavor: '', 
