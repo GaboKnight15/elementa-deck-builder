@@ -4436,21 +4436,24 @@ function isNight() {return getTimeOfDay() === 'night';}
 function isDusk() {return getTimeOfDay() === 'dusk';}
 function isDawn() {return getTimeOfDay() === 'dawn';}
 
-// Count cards in player's hand (defensive)
-function countHandPlayer() {
-  if (!window.gameState || !Array.isArray(gameState.playerHand)) return 0;
-  return gameState.playerHand.length;
-}
 
-// Count cards in opponent's hand (defensive)
-function countHandOpponent() {
-  if (!window.gameState || !Array.isArray(gameState.opponentHand)) return 0;
-  return gameState.opponentHand.length;
-}
+function countHandPlayer() {if (!window.gameState || !Array.isArray(gameState.playerHand)) return 0;
+ return gameState.playerHand.length;}
+function countHandOpponent() {if (!window.gameState || !Array.isArray(gameState.opponentHand)) return 0;
+ return gameState.opponentHand.length;}
+function countVoidPlayer() {if (!window.gameState || !Array.isArray(gameState.playerVoid)) 
+ return 0; return gameState.playerVoid.length;}
+function countVoidOpponent() {if (!window.gameState || !Array.isArray(gameState.opponentVoid)) 
+ return 0;return gameState.opponentVoid.length;}
+function countVoid() {return countVoidPlayer() + countVoidOpponent();}
+
 
 // expose to window for use in UI/templates if desired
 window.countHandPlayer = countHandPlayer;
 window.countHandOpponent = countHandOpponent;
+window.countVoid = countVoid;
+window.countVoidOpponent = countVoidOpponent;
+window.countVoidPlayer = countVoidPlayer;
 // --- COUNTING HELPERS --- //
 function countType(typeName) {
   if (!typeName) return 0;
@@ -4480,7 +4483,68 @@ function countElemental() { return countType('Elemental'); }
 function countFaefolk()   { return countType('Faefolk'); }
 function countHuman()     { return countType('Human'); }
 function countUndead()    { return countType('Undead'); }
+function countTypeVoid(typeName) {
+  if (!typeName) return 0;
+  if (!window.gameState || !Array.isArray(gameState.playerVoid)) return 0;
 
+  try {
+    // Prefer an existing helper (isType) when available
+    if (typeof isType === 'function') {
+      return gameState.playerVoid.filter(c => {
+        try { return isType(c, typeName); } catch (e) { return false; }
+      }).length;
+    }
+
+    // Fallback: inspect instance.type if available (string or array)
+    return gameState.playerVoid.filter(c => {
+      try {
+        const t = Array.isArray(c.type) ? c.type : [c.type];
+        return t.some(x => String(x || '').toLowerCase() === String(typeName).toLowerCase());
+      } catch (e) {
+        return false;
+      }
+    }).length;
+  } catch (err) {
+    // Last-resort defensive fallback: check the card definition (dummyCards) if present
+    try {
+      const defs = (typeof dummyCards !== 'undefined') ? dummyCards : [];
+      return gameState.playerVoid.filter(c => {
+        try {
+          const def = defs.find(d => d.id === c.cardId) || {};
+          const t = Array.isArray(def.type) ? def.type : [def.type];
+          return t.some(x => String(x || '').toLowerCase() === String(typeName).toLowerCase());
+        } catch (e2) {
+          return false;
+        }
+      }).length;
+    } catch (e2) {
+      return 0;
+    }
+  }
+}
+window.countTypeVoid = countTypeVoid;
+
+// --- COUNT TYPE VOID --- //
+// Per-type convenience wrappers (player's VOID)
+function countBeastVoid()     { return countTypeVoid('Beast'); }
+function countBruteVoid()     { return countTypeVoid('Brute'); }
+function countConstructVoid() { return countTypeVoid('Construct'); }
+function countDemonVoid()     { return countTypeVoid('Demon'); }
+function countDragonVoid()    { return countTypeVoid('Dragon'); }
+function countElementalVoid() { return countTypeVoid('Elemental'); }
+function countFaefolkVoid()   { return countTypeVoid('Faefolk'); }
+function countHumanVoid()     { return countTypeVoid('Human'); }
+function countUndeadVoid()    { return countTypeVoid('Undead'); }
+
+window.countBeastVoid     = countBeastVoid;
+window.countBruteVoid     = countBruteVoid;
+window.countConstructVoid = countConstructVoid;
+window.countDemonVoid     = countDemonVoid;
+window.countDragonVoid    = countDragonVoid;
+window.countElementalVoid = countElementalVoid;
+window.countFaefolkVoid   = countFaefolkVoid;
+window.countHumanVoid     = countHumanVoid;
+window.countUndeadVoid    = countUndeadVoid;
 
 function closeAllFilterDropdowns() {
   document.querySelectorAll('.filter-dropdown-menu').forEach(el => el.remove());
