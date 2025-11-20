@@ -730,7 +730,7 @@ const dummyCards = [
  category: 'Creature', color: 'Red', type: 'Beast', archetype: 'Fireland', hp: 3, atk: 2, def: 0,
  cost: '{0}', ability: 'Burn', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{0}', effect: {class: 'Summon'}},
-  {name:'Discard', cost: '{r}', description: 'Burn 1 unit',
+  {name:'Discard', cost: '{r}', description: 'Burn 1 enemy',
    requirement: {class: 'Discard'},
    effect: {class: 'Burn', amount: 0}},
  ]},
