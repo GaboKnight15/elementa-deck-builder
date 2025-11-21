@@ -6895,6 +6895,10 @@ function resolveSkill(cardObj, skillObj, context = {}, onComplete) {
       return;
     }
     const step = effectSteps[i++];
+    try { 
+      step.availableTargets = getTargetsFromEffect(step, cardObj, context); 
+    } catch(e) { step.availableTargets = []; }
+
     const className = step.class;
     const handler = SKILL_EFFECT_MAP[className];
     if (!handler || !handler.handler) {
@@ -6993,6 +6997,259 @@ function startSkillTarget(validTargets, onSelect, opts = {}) {
     cleanup();
   }
   setTimeout(() => document.body.addEventListener('click', cancelHandler, { once: true }), 10);
+}
+function getTargetsFromEffect(step = {}, sourceCardObj = null, context = {}) {
+  // Return a plain array of candidate card instances (no UI).
+  // If the step points to hands/voids and those zones contain card objects,
+  // they will be returned. For hand/void selections you'd normally call chooseTargetsForEffect to show a modal.
+  try {
+    // If the step explicitly prefilled availableTargets, return that (defensive)
+    if (Array.isArray(step.availableTargets) && step.availableTargets.length) return step.availableTargets.slice();
+
+    // If step.target is a number -> any card in the field is valid
+    if (typeof step.target === 'number') {
+      return [...gameState.playerCreatures, ...gameState.playerDomains, ...gameState.opponentCreatures, ...gameState.opponentDomains];
+    }
+
+    // If target is missing -> default to whole field (single target expected elsewhere)
+    if (!step.target) {
+      return [...gameState.playerCreatures, ...gameState.playerDomains, ...gameState.opponentCreatures, ...gameState.opponentDomains];
+    }
+
+    // If step.target is an object describing zone/filter, try using getTargets (existing helper)
+    if (typeof step.target === 'object' && step.target && step.target.zone) {
+      const arr = getTargets(step.target, sourceCardObj, context);
+      if (Array.isArray(arr)) {
+        if (step.filter) return arr.filter(c => matchesFilter(c, step.filter));
+        return arr;
+      }
+    }
+
+    // If step.zone provided (string like 'opponentCreatures')
+    if (step.zone && typeof step.zone === 'string') {
+      if (ZONE_MAP[step.zone]) {
+        let arr = ZONE_MAP[step.zone].arr() || [];
+        if (step.filter) arr = arr.filter(c => matchesFilter(c, step.filter));
+        return arr.slice();
+      }
+      // fallback to generic getTargets
+      try {
+        let arr = getTargets(step.zone, sourceCardObj, context);
+        if (step.filter) arr = arr.filter(c => matchesFilter(c, step.filter));
+        return arr;
+      } catch (e) { /* continue to string cases below */ }
+    }
+
+    // If step.target is a string shorthand
+    if (typeof step.target === 'string') {
+      const key = step.target.trim();
+      switch (key) {
+        case 'targetOpponent':
+        case 'opponent':
+          return [...gameState.opponentCreatures, ...gameState.opponentDomains];
+        case 'targetPlayer':
+        case 'player':
+          return [...gameState.playerCreatures, ...gameState.playerDomains];
+        case 'targetHandOpponent':
+          return Array.isArray(gameState.opponentHand) ? gameState.opponentHand.slice() : [];
+        case 'targetHandPlayer':
+          return Array.isArray(gameState.playerHand) ? gameState.playerHand.slice() : [];
+        case 'targetVoidOpponent':
+          return Array.isArray(gameState.opponentVoid) ? gameState.opponentVoid.slice() : [];
+        case 'targetVoidPlayer':
+          return Array.isArray(gameState.playerVoid) ? gameState.playerVoid.slice() : [];
+        case 'targetVoid':
+          // merged: player's void first, then opponent's
+          return [
+            ...(Array.isArray(gameState.playerVoid) ? gameState.playerVoid.slice() : []),
+            ...(Array.isArray(gameState.opponentVoid) ? gameState.opponentVoid.slice() : [])
+          ];
+        case 'allCreatures':
+          return [...gameState.playerCreatures, ...gameState.opponentCreatures];
+        case 'allDomains':
+          return [...gameState.playerDomains, ...gameState.opponentDomains];
+        case 'any':
+          return Object.values(gameState).flat().filter(card => card && card.cardId);
+        default:
+          // last resort: attempt to resolve via getTargets; some skill definitions may use the same names
+          try {
+            const arr = getTargets(key, sourceCardObj, context);
+            if (Array.isArray(arr)) return arr;
+          } catch (e) { /* ignore */ }
+      }
+    }
+  } catch (err) {
+    console.warn('getTargetsFromEffect error', err);
+  }
+  return [];
+}
+
+// Choose targets and display appropriate UI when needed.
+// - step: the effect step (may contain .target or .zone or numeric .target)
+// - onSelect(selectedArray) will be called with the chosen card instance(s)
+// - opts: optional { title, multi(boolean), count(number), confirm(boolean) }
+function chooseTargetsForEffect(step = {}, sourceCardObj = null, onSelect = () => {}, opts = {}) {
+  // Normalize step.target count
+  const count = (typeof step.target === 'number') ? Number(step.target) : (opts.count || (step.count || null));
+  // If no explicit target and no number, default count=1 (single selection)
+  const expectedCount = (count && Number(count) > 0) ? Number(count) : (opts.count || 1);
+
+  // Determine the target kind/string to decide which UI to show
+  const targetSpec = step.target || step.zone || null;
+
+  // Field-based selections -> use existing startSkillTarget which highlights cards on battlefield
+  if (!targetSpec || typeof targetSpec === 'number' || (typeof targetSpec === 'string' && ['targetOpponent','targetPlayer','allCreatures','allDomains','any','opponent','player'].includes(String(targetSpec)))) {
+    // Use getTargetsFromEffect to produce candidate array
+    const candidates = getTargetsFromEffect(step, sourceCardObj);
+    // startSkillTarget expects the list of card objects and will handle selection highlighting
+    startSkillTarget(candidates, selected => {
+      onSelect(Array.isArray(selected) ? selected : [selected]);
+    }, { title: opts.title || step.title || null, count: expectedCount });
+    return;
+  }
+
+  // Hand selections -> show modal listing those hand cards
+  if (String(targetSpec) === 'targetHandOpponent' || String(targetSpec) === 'targetHandPlayer') {
+    const arr = getTargetsFromEffect(step, sourceCardObj);
+    // For opponent hand: card objects may be concealed; we still present them in modal.
+    showFilteredCardSelectionModal(arr, selected => {
+      // selected may be a single card instance or an object depending on modal usage - normalize to array
+      onSelect(Array.isArray(selected) ? selected : [selected]);
+    }, {
+      title: opts.title || step.title || 'Select from Hand',
+      count: expectedCount
+    });
+    return;
+  }
+
+  // Void selections
+  if (['targetVoidOpponent','targetVoidPlayer'].includes(String(targetSpec))) {
+    const arr = getTargetsFromEffect(step, sourceCardObj);
+    showFilteredCardSelectionModal(arr, selected => {
+      onSelect(Array.isArray(selected) ? selected : [selected]);
+    }, {
+      title: opts.title || step.title || 'Select from Void',
+      count: expectedCount
+    });
+    return;
+  }
+
+  // Combined void modal: player's void first, opponent's below
+  if (String(targetSpec) === 'targetVoid') {
+    const playerVoid = Array.isArray(gameState.playerVoid) ? gameState.playerVoid.slice() : [];
+    const opponentVoid = Array.isArray(gameState.opponentVoid) ? gameState.opponentVoid.slice() : [];
+
+    // showBothVoidsModal provides grouped UI (player first, then opponent)
+    showBothVoidsModal(playerVoid, opponentVoid, selected => {
+      onSelect(Array.isArray(selected) ? selected : [selected]);
+    }, { title: opts.title || 'Select from Voids', count: expectedCount });
+    return;
+  }
+
+  // If we reach here, fallback to a simple field selection using getTargetsFromEffect
+  const fallback = getTargetsFromEffect(step, sourceCardObj);
+  startSkillTarget(fallback, selected => {
+    onSelect(Array.isArray(selected) ? selected : [selected]);
+  }, { title: opts.title || step.title || null, count: expectedCount });
+}
+
+// Small grouped modal for combined voids (player then opponent).
+// Uses a lightweight modal to present player's void cards first, then opponent's below.
+// onSelect receives the chosen card instance(s).
+function showBothVoidsModal(playerVoidArr = [], opponentVoidArr = [], onSelect = () => {}, opts = {}) {
+  // Build a simple modal with two sections
+  let modal = document.getElementById('both-voids-modal');
+  if (modal) modal.remove();
+  modal = document.createElement('div');
+  modal.id = 'both-voids-modal';
+  modal.className = 'modal';
+  modal.style.display = 'flex';
+  modal.style.alignItems = 'center';
+  modal.style.justifyContent = 'center';
+  modal.style.zIndex = 99999;
+
+  const content = document.createElement('div');
+  content.className = 'modal-content';
+  content.style.maxWidth = '90vw';
+  content.style.maxHeight = '80vh';
+  content.style.overflow = 'auto';
+  content.onclick = e => e.stopPropagation();
+
+  const title = document.createElement('h3');
+  title.innerText = opts.title || 'Select from Voids';
+  content.appendChild(title);
+
+  const playerSection = document.createElement('div');
+  playerSection.innerHTML = `<h4>Your Void</h4>`;
+  playerSection.style.display = 'flex';
+  playerSection.style.flexWrap = 'wrap';
+  playerSection.style.gap = '12px';
+  playerVoidArr.forEach(cardObj => {
+    const cardData = dummyCards.find(c => c.id === cardObj.cardId) || {};
+    const div = document.createElement('div');
+    div.className = 'card-battlefield';
+    div.style.cursor = 'pointer';
+    div.style.width = '100px';
+    div.style.textAlign = 'center';
+    const img = document.createElement('img');
+    img.src = cardData.image || '';
+    img.alt = cardData.name || '';
+    img.style.width = '100%';
+    div.appendChild(img);
+    const lbl = document.createElement('div');
+    lbl.style.fontSize = '0.85em';
+    lbl.style.color = '#ffe066';
+    lbl.textContent = cardData.name || cardObj.cardId;
+    div.appendChild(lbl);
+    div.onclick = () => {
+      modal.remove();
+      onSelect([cardObj]);
+    };
+    playerSection.appendChild(div);
+  });
+  content.appendChild(playerSection);
+
+  const oppSection = document.createElement('div');
+  oppSection.innerHTML = `<h4>Opponent Void</h4>`;
+  oppSection.style.display = 'flex';
+  oppSection.style.flexWrap = 'wrap';
+  oppSection.style.gap = '12px';
+  opponentVoidArr.forEach(cardObj => {
+    const cardData = dummyCards.find(c => c.id === cardObj.cardId) || {};
+    const div = document.createElement('div');
+    div.className = 'card-battlefield';
+    div.style.cursor = 'pointer';
+    div.style.width = '100px';
+    div.style.textAlign = 'center';
+    const img = document.createElement('img');
+    img.src = cardData.image || '';
+    img.alt = cardData.name || '';
+    img.style.width = '100%';
+    div.appendChild(img);
+    const lbl = document.createElement('div');
+    lbl.style.fontSize = '0.85em';
+    lbl.style.color = '#fff';
+    lbl.textContent = cardData.name || cardObj.cardId;
+    div.appendChild(lbl);
+    div.onclick = () => {
+      modal.remove();
+      onSelect([cardObj]);
+    };
+    oppSection.appendChild(div);
+  });
+  content.appendChild(oppSection);
+
+  // Cancel button
+  const cancel = document.createElement('button');
+  cancel.className = 'btn-negative-secondary';
+  cancel.textContent = 'Cancel';
+  cancel.style.marginTop = '10px';
+  cancel.onclick = () => modal.remove();
+  content.appendChild(cancel);
+
+  modal.appendChild(content);
+  document.body.appendChild(modal);
+  modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
 }
 function showFilteredCardSelectionModal(cards, onSelect, opts = {}) {
   // Remove any previous modal
