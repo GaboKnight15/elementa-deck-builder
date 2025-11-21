@@ -1491,7 +1491,7 @@ skill: [{name: 'Summon', cost: '{1}{r}', effect: {class: 'Summon'}},
  category: 'Creature', color: 'White', type: 'Angel', archetype: 'Seraph', trait: ['Champion', 'Warrior'], hp: 10, atk: 2, def: 1,
  cost: '{W}{W}', ability: 'Flying', set: 'ElementaGenesis'},
 
-*/
+
  
 // Frostland //
 {id: 'FrostlandDragon', name: 'Frostland Dragon', rarity: 'Rare', image: 'Cards/Frostland/FrostlandDragon.png', flavor: '', 
@@ -1526,7 +1526,7 @@ skill: [{name: 'Summon', cost: '{1}{r}', effect: {class: 'Summon'}},
  category: 'Creature', color: ['Blue', 'Gray'], type: 'Elf', archetype: 'Frostland', trait: ['Champion', 'Mage'], hp: 11, atk: 1, def: 0,
  cost: '{U}{U}{C}', ability: ['Ice Armor','Flying'], set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{0}', effect: {class: 'Summon'}}]},
-
+*/
 // ARTIFACTS //
 {id: 'GolemheartInfusor', name: 'Golemheart Infusor', rarity: 'Common', image: 'Cards/Elemental/GolemheartInfusor.png', flavor: '', 
  category: 'Artifact', color: 'Gray', type: 'Relic', hp: 5, cost: '{C}', archetype: 'Golemheart', set: 'ElementaGenesis',
