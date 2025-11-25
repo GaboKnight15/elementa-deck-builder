@@ -71,7 +71,7 @@ const dummyCards = [
   {name: 'Twin Impact', cost: '{c}',
    requirement: [{class:'Special'}, {class: 'CCW'}], 
    effect: {class: 'Strike', target: 2, amount: 2}},
-  {name: 'Champion', cost: '{c}', 
+  {name: 'Rage', cost: '{c}', 
    effect: [{class: 'Champion'}, {class: 'Buff', armor: 3, atk: 1, def: 2}]},
   {name: 'Seismic Smite', cost: '{c}{C}',
    requirement: [{class:'Ultimate'}, {class: 'CCW'}], 
