@@ -948,7 +948,6 @@ function updateDeckDisplay() {
   // Group cards by category
   const sections = {
     dominion: [],
-    champion: [],
     creature: [],
     artifact: [],
     spell: [],
@@ -961,8 +960,6 @@ function updateDeckDisplay() {
     const trait = card.trait ? String(card.trait).toLowerCase() : '';
     if (trait === "dominion") {
       sections.dominion.push({ card, count });
-    } else if (trait === "champion") {
-      sections.champion.push({ card, count });
     } else {
       const cat = getCardCategory(card);
       if (sections.hasOwnProperty(cat)) {
@@ -978,7 +975,6 @@ function updateDeckDisplay() {
   // Section display order
   const sectionNames = [
     { key: "dominion", label: "Dominion" },
-    { key: "champion", label: "Champion" },
     { key: "creature", label: "Creatures" },
     { key: "artifact", label: "Artifacts" },
     { key: "spell", label: "Spells" },
@@ -1391,9 +1387,6 @@ function autofillDeck({colors, types, archetypes}) {
   const dominions = dummyCards.filter(
     c => c.trait && c.trait.toLowerCase() === 'dominion' && cardMatchesTheme(c)
   );
-  const champions = dummyCards.filter(
-    c => c.trait && c.trait.toLowerCase() === 'champion' && cardMatchesTheme(c)
-  );
   const creatures = dummyCards.filter(
     c => getCardCategory(c) === 'creature' && cardMatchesTheme(c)
   );
@@ -1422,13 +1415,6 @@ function autofillDeck({colors, types, archetypes}) {
     deck[dom.id] = 1;
     total++;
   }
-
-  // Up to 2 Champions
-  shuffle(champions).slice(0, 2).forEach(champ => {
-    const count = Math.min(MAX_COPIES, MAX_DECK_SIZE - total, 2);
-    deck[champ.id] = count;
-    total += count;
-  });
 
   // Fill order and counts
   const fillOrder = [
