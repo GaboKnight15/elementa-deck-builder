@@ -1071,66 +1071,7 @@ Terraform: {
     return currentZone === 'playerHand' || currentZone === 'opponentHand';
   }
 },
-Champion: {
-  icon: "Icons/Status/Champion.png",
-  name: "Champion",
-  description: "Upgrades your unit to Champion {champion}.",
-  // handler signature matches other effect handlers: (sourceCardObj, skillObj, step, nextEffect)
-  handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
-    if (!sourceCardObj) {
-      if (nextEffect) nextEffect();
-      return;
-    }
-    // Ensure instance structures exist
-    sourceCardObj.modifiers = sourceCardObj.modifiers || [];
-    sourceCardObj._grantedAbilities = sourceCardObj._grantedAbilities || [];
 
-    // Apply stat increases as permanent modifiers (tagged by effect "Champion" for easy removal if needed)
-    const champSourceTag = 'Champion';
-    if (typeof step.atk === 'number' && step.atk !== 0) {
-      sourceCardObj.modifiers.push({ effect: champSourceTag, stat: 'atk', value: Number(step.atk), source: champSourceTag });
-    }
-    if (typeof step.def === 'number' && step.def !== 0) {
-      sourceCardObj.modifiers.push({ effect: champSourceTag, stat: 'def', value: Number(step.def), source: champSourceTag });
-    }
-    if (typeof step.speed === 'number' && step.speed !== 0) {
-      sourceCardObj.modifiers.push({ effect: champSourceTag, stat: 'speed', value: Number(step.speed), source: champSourceTag });
-    }
-    // Armor isn't part of computeCardStat directly; store on instance
-    if (typeof step.armor === 'number' && step.armor !== 0) {
-      sourceCardObj.armor = (sourceCardObj.armor || 0) + Number(step.armor);
-    }
-
-    // Grant abilities (strings or objects). If an object, store it as-is; if string, store string.
-    if (step.abilities) {
-      const abilities = Array.isArray(step.abilities) ? step.abilities : [step.abilities];
-      abilities.forEach(ab => {
-        // Avoid duplicates
-        if (!sourceCardObj._grantedAbilities.some(x => JSON.stringify(x) === JSON.stringify(ab))) {
-          sourceCardObj._grantedAbilities.push(ab);
-        }
-      });
-    }
-
-    // Mark instance as Champion (so UI and requirement checks can use _isChampion/_championActive)
-    sourceCardObj._isChampion = true;
-    // If the effect is meant to "activate" Champion immediately, set _championActive; default true for this effect
-    sourceCardObj._championActive = true;
-    sourceCardObj.statuses = sourceCardObj.statuses || [];
-    if (!sourceCardObj.statuses.some(s => s.name === 'Champion')) {
-      sourceCardObj.statuses.push({ name: 'Champion', duration: null });
-    }
-
-    // Visual / feedback
-    try { showToast && showToast(`${sourceCardObj.name || sourceCardObj.cardId} is now a Champion!`, { type: 'info' }); } catch (e) { /* no-op */ }
-
-    // Re-render so badge and stat changes are visible
-    renderGameState && renderGameState();
-
-    if (typeof nextEffect === 'function') nextEffect();
-  },
-  // Champion application has no special canActivate guard here; activation should be handled by the skill's canActivate / requirement.
-},
 Strike: {
   icon: 'Icons/Skill/Strike.png',
   name: 'Strike',
@@ -2307,7 +2248,6 @@ function startGame({
   
   gameState.playerDominion = null;
   gameState.opponentDominion = null;
-  putRandomChampionOnTop(gameState.playerDeck);
   // --- Battlefield backgrounds ---
   setBattlefieldBackgrounds(
     playerDeck?.bannerArt || "CardImages/Banners/DefaultBanner.png",
@@ -2346,7 +2286,7 @@ function startGame({
   setupDropZones();
   updatePhase();
 
-  // --- Game Start Animation, Coin Flip, Champion/Domain selection ---
+  // --- Game Start Animation, Coin Flip, Domain selection ---
   showGameStartAnimation(() => {
     showCoinFlipModal(function(whoStarts) {
       gameState.turn = whoStarts;
@@ -3968,26 +3908,7 @@ badgesRow.style.zIndex = 40;
 badgesRow.style.display = 'flex';
 badgesRow.style.flexDirection = 'column';
 badgesRow.style.gap = '6px';
-// --- Champion badge (show if instance has Champion status/flag) ---
-try {
-  const isChampionInstance = !!(cardObj._isChampion || (Array.isArray(cardObj.statuses) && cardObj.statuses.some(s => s.name === 'Champion')));
-  if (isChampionInstance) {
-    const champBadge = document.createElement('div');
-    champBadge.className = 'card-champion-badge';
-    const active = !!cardObj._championActive;
-    champBadge.title = active ? 'Champion (Active)' : 'Champion';
-    champBadge.style.display = 'flex';
-    champBadge.style.alignItems = 'center';
-    champBadge.style.justifyContent = 'center';
-    champBadge.style.cursor = 'default';
-    champBadge.innerHTML = `<img src="Icons/Status/Champion.png" alt="Champion" style="width:18px;height:18px;vertical-align:middle;filter: drop-shadow(0 2px 6px #0007);opacity:${active ? 1 : 0.85}">`;
-    // If you want to allow clicking to toggle Champion active/inactive, you can add an onclick here.
-    badgesRow.appendChild(champBadge);
-  }
-} catch (err) {
-  console.warn('Failed to render Champion badge', err);
-}
-// Add Seal badge to badgesRow (insert after Champion badge block)
+
 try {
   if (hasStatus(cardObj, 'Seal')) {
     const sealBadge = document.createElement('div');
@@ -5115,30 +5036,6 @@ function initiateDominionSelection(deckArr, afterSelection) {
     if (idx !== -1) deckArr.splice(idx, 1);
     renderGameState();
   }
-}
-function putRandomChampionOnTop(deckArr) {
-  // Get all champions in deck (robust to trait shape)
-  const champions = deckArr.filter(cardObj => {
-    const card = dummyCards.find(c => c.id === cardObj.cardId);
-    if (!card) return false;
-    if (typeof isChampion === 'function') return isChampion(card);
-    const t = card.trait;
-    if (Array.isArray(t)) return t.map(x => String(x).toLowerCase()).includes('champion');
-    return String(t || '').toLowerCase() === 'champion';
-  });
-  if (champions.length === 0) return; // no champion found
-
-  // Pick random champion
-  const idx = Math.floor(Math.random() * champions.length);
-  const championCard = champions[idx];
-
-  // Remove from current position
-  const deckIdx = deckArr.findIndex(c => c.instanceId === championCard.instanceId);
-  if (deckIdx === -1) return;
-  deckArr.splice(deckIdx, 1);
-
-  // Put on top of deck
-  deckArr.unshift(championCard);
 }
 
 // ESSENCE GENERATION //
@@ -8101,7 +7998,6 @@ function getCardAbilities(cardObj) {
     if (Array.isArray(card.ability)) abilities = abilities.concat(card.ability);
     else if (typeof card.ability === "string" && card.ability) abilities.push(card.ability);
   }
-  // Instance-granted abilities from effects (e.g., Champion)
   if (cardObj && Array.isArray(cardObj._grantedAbilities)) {
     // Merge unique entries; _grantedAbilities elements may be strings or objects
     cardObj._grantedAbilities.forEach(ab => {
