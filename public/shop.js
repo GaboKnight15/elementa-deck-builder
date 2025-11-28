@@ -41,10 +41,10 @@ const allAvatarOptions = [
 	
 
 // --- RARE GREEN AVATARS --- //
-  { name: 'Treant Witch', src: 'Images/Avatar/TreantWitch.png', rarity: 'Common', price: 50, obtain: 'shop' },
+  { name: 'Treant Witch', src: 'Images/Avatar/TreantWitch.png', rarity: 'Rare', price: 50, obtain: 'shop' },
 // --- RARE RED AVATARS --- //
 // --- RARE BLUE AVATARS --- //
-  { name: 'Coralbound Protector', src: 'Images/Avatar/CoralboundProtector.png', rarity: 'Common', price: 50, obtain: 'shop' },
+  { name: 'Coralbound Protector', src: 'Images/Avatar/CoralboundProtector.png', rarity: 'Rare', price: 50, obtain: 'shop' },
 // --- RARE YELLOW AVATARS --- //
 // --- RARE GRAY AVATARS --- //
 // --- RARE PURPLE AVATARS --- //
@@ -105,6 +105,7 @@ const allAvatarOptions = [
 const allBannerOptions = [
   { name: 'Verdara', src: 'Images/Banner/Verdara.png', price: 100, obtain: 'shop' },
   { name: 'Ashkar', src: 'Images/Banner/Ashkar.png', price: 100, obtain: 'shop' },
+  { name: 'Umarion', src: 'Images/Banner/Umarion.png', price: 100, obtain: 'shop' },
   { name: 'Pearlhaven', src: 'Images/Banner/Pearlhaven.png', price: 100, obtain: 'shop' },
   { name: 'Aetherion', src: 'Images/Banner/Aetherion.png', price: 100, obtain: 'shop' },
   { name: 'Drakzul', src: 'Images/Banner/Drakzul.png', price: 100, obtain: 'shop' },
