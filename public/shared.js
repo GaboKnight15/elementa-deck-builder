@@ -3,17 +3,21 @@ const dummyCards = [
 // --- ELEMENTA GENESIS --- //
 // ------------------------ //
 
-{id: 'SylvaniaThornvaleQueen', name: 'Sylvania, Thornvale Queen', rarity: 'Legendary', image: 'Cards/Elf/SylvaniaThornvaleQueen.png', flavor: '', 
- category: 'Creature', color: 'Green', type: 'Faefolk', archetype: 'Elf', trait: 'Mage', hp: 6, atk: 1, def: 0,
+{id: 'VeyaEmeraldDruidess', name: 'Veya, Emerald Druidess', rarity: 'Legendary', image: 'Cards/Human/VeyaEmeraldDruidess.png', flavor: '', 
+ category: 'Creature', color: 'Green', type: 'Human', archetype: '', trait: 'Mage', hp: 6, atk: 1, def: 0,
  cost: '{G}', ability: '', set: 'ElementaGenesis',
  skill: [
-  {name: 'Bloomchant', cost: '{g}',
+  {name: 'Summon', cost: '{g}',
+   requirement: {class:'Special'}, 
+   effect: {class: 'Summon'}},
+  {name: 'Verdant Invocation', cost: '{0}',
    requirement: [{class:'Special'}, {class: 'CW'}], 
-   effect: {class: 'essenceGreen', amount: 2}},
-  {name: "Briar Queen's Grasp", cost: '{G}',
+   effect: {class: 'essenceGreen', amount: 1}},
+  {name: "Lifebloom Grace", cost: '{G}',
    requirement: [{class:'Ultimate'}, {class: 'CCW'}], 
    effect: {class: 'Bind', amount: 1, target: 2}},
   ]},
+
 {id: 'Verdara', name: 'Verdara', rarity: 'Legendary', image: 'Cards/Dominion/Verdara.png', flavor: '', 
  category: 'Domain', color: 'Green', type: '', hp: 20, cost: '{0}', essence: '{G}', trait: 'Dominion', set: 'ElementaGenesis',
  skill: [{name: 'Flourish', cost: '{g}', effect: {class: 'Search', trait: 'Terrain'}}]},
@@ -26,10 +30,10 @@ const dummyCards = [
  cost: '{R}', ability: 'Burn', set: 'ElementaGenesis',
  skill: [
   {name: 'Flameshot', cost: '{r}',
-   requirement: [{class:'Special'}, {class: 'CCW'}], 
+   requirement: [{class:'Special'}, {class: 'CW'}], 
    effect: {class: 'Burn', amount: 3}},
-  {name: 'Scorching Skyfall', cost: '{R}{R}',
-   requirement: [{class:'Ultimate'}, {class: 'CCW'}], 
+  {name: 'Scorching Arrowcall', cost: '{R}{R}',
+   requirement: [{class:'Special'}, {class: 'CCW'}], 
    effect: {class: 'Burn', amount: 2, target: 3}}
   ]},
 {id: 'Ashkar', name: 'Ashkar', rarity: 'Legendary', image: 'Cards/Dominion/Ashkar.png', flavor: '', 
@@ -443,7 +447,17 @@ const dummyCards = [
    requirement: {class: 'Special', class: 'CCW'},
    effect: {class: 'Exploit', amount: 1, target:3}}
  ]},
- 
+{id: 'SylvaniaThornvaleQueen', name: 'Sylvania, Thornvale Queen', rarity: 'Legendary', image: 'Cards/Elf/SylvaniaThornvaleQueen.png', flavor: '', 
+ category: 'Creature', color: 'Green', type: 'Faefolk', archetype: 'Elf', trait: 'Mage', hp: 6, atk: 1, def: 0,
+ cost: '{G}', ability: '', set: 'ElementaGenesis',
+ skill: [
+  {name: 'Bloomchant', cost: '{g}',
+   requirement: [{class:'Special'}, {class: 'CW'}], 
+   effect: {class: 'essenceGreen', amount: 2}},
+  {name: "Briar Queen's Grasp", cost: '{G}',
+   requirement: [{class:'Ultimate'}, {class: 'CCW'}], 
+   effect: {class: 'Bind', amount: 1, target: 2}},
+  ]}, 
 {id: 'KaelyraFirelandHeiress', name: 'Kaelyra, Fireland Heiress', rarity: 'Legendary', image: 'Cards/Fireland/KaelyraFirelandHeiress.png', flavor: '', imageFullArt: 'Cards/Fireland/KaelyraFirelandHeiressFA.png', flavor: '',
  category: 'Creature', color: ['Red','Black'], type: 'Demon', archetype: 'Fireland', trait: 'Mage', hp: 8, atk: 2, def: 0,
  cost: '{R}{R}{B}', ability: 'Burn', set: 'Savage Territory',
@@ -1514,8 +1528,16 @@ skill: [{name: 'Summon', cost: '{1}{r}', effect: {class: 'Summon'}},
 
 // SERAPH
 {id: 'SeraphielSolmaraPrincess', name: 'Seraphiel, Solmara Princess', rarity: 'Legendary', image: 'Cards/Seraph/SeraphielSolmaraPrincess.png', flavor: '', 
- category: 'Creature', color: 'White', type: 'Angel', archetype: 'Seraph', trait: 'Warrior', hp: 10, atk: 2, def: 1,
- cost: '{W}{W}', ability: 'Flying', set: 'ElementaGenesis'},
+ category: 'Creature', color: 'White', type: 'Angel', archetype: 'Seraph', trait: 'Warrior', hp: 6, atk: 1, def: 1,
+ cost: '{W}{W}', ability: 'Flying', set: 'FracturedOrigins',
+ skill: [
+  {name: 'Divine Ascendance', cost: '{w}{w}',
+   requirement: [{class: 'Special'}, {class: 'CCW'}],
+   effect: [{class: 'Buff', atk: 1, def: 1}, {class: 'Summon'}, {class: 'Aegis}]},
+  {name: 'Seraphic Judgement', cost: '{2}{w}{w}', 
+   requirement: [{class: 'Ultimate'}, {class: 'CW'}],
+   effect: {class: 'Banish', amount: 1}},
+ ]},
  
 // Frostland //
 {id: 'FrostlandDragon', name: 'Frostland Dragon', rarity: 'Rare', image: 'Cards/Frostland/FrostlandDragon.png', flavor: '', 
