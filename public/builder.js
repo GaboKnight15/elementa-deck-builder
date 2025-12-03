@@ -249,10 +249,10 @@ if (deck.highlightArt) {
 }
       // --- CARD COUNT WARNING MESSAGE --- //
 let warningDiv = null;
-if (count < 40) {
+if (count < 30) {
   warningDiv = document.createElement('div');
   warningDiv.className = 'deck-slot-warning';
-  warningDiv.textContent = "Less than 40 cards";
+  warningDiv.textContent = "Less than 30 cards";
 }
       // --- ACTIVE DECK BUTTON/STAR ---
 const isActive = slotName === currentDeckSlot;
@@ -313,7 +313,7 @@ function showDeckTileMenu(deckName, anchorElem) {
   const count = Object.values(deck)
     .filter(v => typeof v === 'number')
     .reduce((a, b) => a + b, 0);
-  deckCardCount.textContent = `${count} / 40`;
+  deckCardCount.textContent = `${count} / 30`;
 
   // Show as menu
   const menu = document.getElementById('deck-menu');
@@ -682,7 +682,7 @@ function showDeckViewModal(deckName) {
   deckViewModalTitle.innerHTML = `
     <span>${deckName || 'Deck'}</span>
     <span style="font-size:0.9em; font-weight:normal; color:#ffe066; margin-left:18px;">
-      ${total} / 40 cards
+      ${total} / 30 cards
     </span>
   `;
 }
@@ -1087,7 +1087,7 @@ function updateDeckDisplay() {
   const cardCountEl = document.getElementById('card-count');
   if (cardCountEl) cardCountEl.textContent = total;
   const deckCardCountEl = document.getElementById('deck-card-count');
-  if (deckCardCountEl) deckCardCountEl.textContent = `${total} / 40`;
+  if (deckCardCountEl) deckCardCountEl.textContent = `${total} / 30`;
 }
 function getCardCategory(card) {
   return card.category ? card.category.toLowerCase() : '';
@@ -1110,7 +1110,7 @@ function canAddCard(card, currentInDeck, ownedCount) {
   const count = currentInDeck || 0;
   const total = Object.values(deck).reduce((a, b) => a + b, 0);
 
-  if (total >= 40) return false;
+  if (total >= 30) return false;
   if (count >= ownedCount) return false;
   // Rarity limits
   if (card.rarity && card.rarity.toLowerCase() === 'legendary' && count >= 1) return false;
@@ -1357,7 +1357,7 @@ function showAutofillModal() {
 
 // Themed autofill logic
 function autofillDeck({colors, types, archetypes}) {
-  const MAX_DECK_SIZE = 40;
+  const MAX_DECK_SIZE = 30;
   const MAX_COPIES = 3;
   setCurrentDeck({});
   let deck = {};
