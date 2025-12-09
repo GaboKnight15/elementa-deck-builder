@@ -31,8 +31,8 @@ const dummyCards = [
    requirement: [{class:'Special'}, {class: 'CW'}], 
    effect: {class: 'essenceGreen', amount: 1}},
   ]},
-{id: 'ThorncrownBehemoth', name: 'Thorncrown Behemoth', rarity: 'Rare', image: 'Cards/Beast/ThorncrownBehemoth.png', flavor: '', 
- category: 'Creature', color: 'Green', type: 'Beast', archetype: '', trait: '', hp: 12, atk: 5, def: 2,
+{id: 'EarthrootTitan', name: 'Earthroot Titan', rarity: 'Rare', image: 'Cards/Beast/EarthrootTitan.png', flavor: '', 
+ category: 'Creature', color: 'Green', type: 'Beast', archetype: 'Giant', trait: '', hp: 12, atk: 5, def: 2,
  cost: '{G}', ability: '', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{2}{g}{g}', effect: {class: 'Summon'}},
   {name: 'Defender', cost: '{0}',
@@ -54,7 +54,34 @@ const dummyCards = [
 {id: 'LifeGrowth', name: 'Life Growth', rarity: 'Common', image: 'Cards/Spell/LifeGrowth.png', flavor: '', 
  category: 'Spell', color: 'Green', type: 'Spell', cost: '{G}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{0}', effect: [{class: 'Essence', amount: 2, color: 'Green'}, {class: 'Cast'}]}]},
+
+{id: 'ForestFairy', name: 'Forest Fairy', rarity: 'Common', image: 'Cards/Faefolk/Fairy.png', flavor: '', 
+ category: 'Creature', color: 'Green', type: 'Faefolk', archetype: 'Fairy', hp: 2, atk: 1, def: 0,
+ cost: '{0}', ability: 'Flying', set: 'ElementaGenesis',
+ skill: [{name: 'Summon', cost: '{0}', effect: {class: 'Summon'}}]},
  
+{id: 'Satyr', name: 'Satyr', rarity: 'Common', image: 'Cards/Faefolk/Satyr.png', flavor: '', 
+ category: 'Creature', color: 'Green', type: 'Faefolk', archetype: 'Satyr', hp: 5, atk: 1, def: 1,
+ cost: '{1}', ability: '', set: 'ElementaGenesis', 
+ skill: [{name: 'Summon', cost: '{1}', effect: {class: 'Summon'}}]},
+
+{id: 'WildwoodGoblin', name: 'Forest Goblin', rarity: 'Common', image: 'Cards/Brute/Goblin.png', flavor: '',
+ category: 'Creature', color: 'Green', type: 'Brute', archetype: 'Goblin', hp: 3, atk: 1, def: 0,
+ cost: '{0}', set: 'ElementaGenesis',
+ skill: [{name: 'Summon', cost: '{0}', effect: {class: 'Summon'}}]},
+
+{id: 'Forest', name: 'Forest', rarity: 'Common', image: 'Cards/Terrain/Forest.png', flavor: '', 
+ category: 'Domain', color: 'Green', type: 'Terrain', hp: 5, cost: '{0}', essence: '{G}', set: 'ElementaGenesis',
+ skill: [{name: 'Terraform', cost: '{0}', effect: {class: 'Terraform'}}]},
+
+{id: 'Thicket', name: 'Thicket', rarity: 'Common', image: 'Cards/Terrain/Thicket.png', flavor: '', 
+ category: 'Domain', color: 'Green', type: 'Terrain', hp: 8, cost: '{1}', essence: '{G}{g}', set: 'ElementaGenesis',
+ skill: [{name: 'Terraform', cost: '{1}', effect: {class: 'Terraform'}}]},
+
+{id: 'EssenceSurge', name: 'Essence Surge', rarity: 'Common', image: 'Cards/Spell/EssenceSurge.png', flavor: '', 
+ category: 'Spell', color: 'Green', type: 'Spell', cost: '{2}', set: 'ElementaGenesis',
+ skill: [{name: 'Cast', cost: '{2}', effect: [{class: 'Essence', color: 'Green', amount: 3}, {class: 'Cast'}]}]},
+
 // --- EG RED --- //
 {id: 'KaelenBlazebornHuntress', name: 'Kaelen, Blazeborn Huntress', rarity: 'Legendary', image: 'Cards/Human/KaelenBlazebornHuntress.png', flavor: '', 
  category: 'Creature', color: 'Red', type: 'Human', archetype: '', trait: 'Ranger', hp: 4, atk: 1, def: 0,
@@ -84,14 +111,16 @@ const dummyCards = [
    requirement: [{class:'Special'}, {class: 'CW'}], 
    effect: {class: 'Burn', amount: 3}},
   ]},
+
 {id: 'BlazewingWarDrake', name: 'Blazewing War-Drake', rarity: 'Rare', image: 'Cards/Dragon/BlazewingWarDrake.png', flavor: '', 
  category: 'Creature', color: 'Red', type: 'Dragon', archetype: '', trait: 'Ranger', hp: 8, atk: 4, def: 2,
  cost: '{r}{r}', ability: '', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{r}{r}', effect: {class: 'Summon'}},
-  {name: 'Flameshot', cost: '{r}',
-   requirement: [{class:'Special'}, {class: 'CW'}], 
-   effect: {class: 'Burn', amount: 3}},
-  ]},
+ {name: 'Flameshot', cost: '{r}',
+  requirement: [{class:'Special'}, {class: 'CW'}], 
+  effect: {class: 'Burn', amount: 3}},
+ ]},
+
 {id: 'AshforgeJuggernaut', name: 'Ashforge Juggernaut', rarity: 'Rare', image: 'Cards/Brute/AshforgeJuggernaut.png', flavor: '', 
  category: 'Creature', color: 'Red', type: 'Dragon', archetype: '', trait: 'Ranger', hp: 13, atk: 5, def: 3,
  cost: '{2}{r}{r}', ability: '', set: 'ElementaGenesis',
@@ -916,14 +945,6 @@ const dummyCards = [
  ]},
 */
  
-{id: 'ForestFairy', name: 'Forest Fairy', rarity: 'Common', image: 'Cards/Faefolk/Fairy.png', flavor: '', 
- category: 'Creature', color: 'Green', type: 'Faefolk', archetype: 'Fairy', hp: 1, atk: 1, def: 0,
- cost: '{0}', ability: 'Flying', set: 'ElementaGenesis',
- skill: [{name: 'Summon', cost: '{0}', effect: {class: 'Summon'}}]},
-{id: 'Satyr', name: 'Satyr', rarity: 'Common', image: 'Cards/Faefolk/Satyr.png', flavor: '', 
- category: 'Creature', color: 'Green', type: 'Faefolk', archetype: 'Satyr', hp: 5, atk: 1, def: 1,
- cost: '{1}', ability: '', set: 'ElementaGenesis', 
- skill: [{name: 'Summon', cost: '{1}', effect: {class: 'Summon'}}]},
 {id: 'WildHuntress', name: 'Wild Huntress', rarity: 'Common', image: 'Cards/Faefolk/WildHuntress.png', flavor: '', 
  category: 'Creature', color: 'Green', type: 'Faefolk', archetype: 'Satyr', trait: 'Warrior', hp: 7, atk: 4, def: 2,
  cost: '{1}{g}', ability: 'Rush', set: 'ElementaGenesis',
@@ -952,10 +973,7 @@ const dummyCards = [
    requirement: {class: 'Discard'},
    effect: {class: 'Strike', amount: 0, status: 'Burn'}},
  ]},
-{id: 'ForestGoblin', name: 'Forest Goblin', rarity: 'Common', image: 'Cards/Brutefolk/Goblin.png', flavor: '',
- category: 'Creature', color: 'Green', type: 'Brute', archetype: 'Goblin', hp: 3, atk: 1, def: 0,
- cost: '{0}', set: 'ElementaGenesis',
- skill: [{name: 'Summon', cost: '{0}', effect: {class: 'Summon'}}]},
+
 {id: 'Emberling', name: 'Emberling', rarity: 'Common', image: 'Cards/Beast/Emberling.png', flavor: '', flavor: '',
  category: 'Creature', color: 'Red', type: 'Beast', archetype: 'Fireland', hp: 3, atk: 2, def: 0,
  cost: '{0}', ability: 'Burn', set: 'ElementaGenesis',
@@ -1807,9 +1825,6 @@ skill: [{name: 'Summon', cost: '{1}{r}', effect: {class: 'Summon'}},
  ]},
  
 // SPELLS //
-{id: 'EssenceSurge', name: 'Essence Surge', rarity: 'Common', image: 'Cards/Spell/EssenceSurge.png', flavor: '', 
- category: 'Spell', color: 'Green', type: 'Spell', cost: '{2}', set: 'ElementaGenesis',
- skill: [{name: 'Cast', cost: '{2}', effect: [{class: 'Essence', color: 'Green', amount: 3}, {class: 'Cast'}]}]},
 {id: 'EssenceAssault', name: 'Essence Assault', rarity: 'Common', image: 'Cards/Spell/EssenceAssault.png', flavor: '', 
  category: 'Spell', color: 'Red', type: 'Spell', cost: '{1}', effect: 'Give a unit +2/0', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{0}', effect: {class: 'Cast'}}]},
@@ -2079,9 +2094,6 @@ Dragon Terrains
  */
 
 // DOMAINS //
-{id: 'Forest', name: 'Forest', rarity: 'Common', image: 'Cards/Terrain/Forest.png', flavor: '', 
- category: 'Domain', color: 'Green', type: 'Terrain', hp: 5, cost: '{0}', essence: '{G}', set: 'ElementaGenesis',
- skill: [{name: 'Terraform', cost: '{0}', effect: {class: 'Terraform'}}]},
 {id: 'Volcano', name: 'Volcano', rarity: 'Common', image: 'Cards/Terrain/Volcano.png', flavor: '', 
  category: 'Domain', color: 'Red', type: 'Terrain', hp: 5, cost: '{0}', essence: '{R}', set: 'ElementaGenesis',
  skill: [{name: 'Terraform', cost: '{0}', effect: {class: 'Terraform'}}]},
