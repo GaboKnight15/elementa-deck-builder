@@ -19,7 +19,8 @@ const dummyCards = [
 {id: 'Verdara', name: 'Verdara', rarity: 'Legendary', image: 'Cards/Dominion/Verdara.png', flavor: '', 
  category: 'Domain', color: 'Green', type: '', hp: 20, cost: '{0}', essence: '{G}', trait: 'Dominion', set: 'ElementaGenesis',
  skill: [{name: 'Flourish', cost: '{g}', requirement: {class: 'CW'}, effect: {class: 'Search', trait: 'Terrain'}}]},
-{id: 'SylvanAnima', name: 'Sylvan Anima', rarity: 'Legendary', image: 'Cards/Spell/Sylvan Anima.png', flavor: '', 
+
+{id: 'SylvanAnima', name: 'Sylvan Anima', rarity: 'Legendary', image: 'Cards/Spell/SylvanAnima.png', flavor: '', 
  category: 'Spell', color: 'Green', type: 'Aura', cost: '{2}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{2}', effect: [{class: 'Essence', color: 'Green', amount: 3}, {class: 'Cast'}]}]},
 
@@ -104,8 +105,8 @@ const dummyCards = [
  skill: [{name: 'Cast', cost: '{0}', effect: {class: 'Cast'}}]},
 
 {id: 'CinderpeakTyrant', name: 'Cinderpeak Tyrant', rarity: 'Rare', image: 'Cards/Human/CinderpeakTyrant.png', flavor: '', 
- category: 'Creature', color: 'Red', type: 'Brute', archetype: 'Giant', trait: 'Ranger', hp: 11, atk: 5, def: 2,
- cost: '{1}{r}{R}', ability: 'Burn', set: 'ElementaGenesis',
+ category: 'Creature', color: 'Red', type: 'Brute', archetype: 'Giant', trait: '', hp: 11, atk: 5, def: 2,
+ cost: '{2}{r}{R}', ability: 'Crush', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{1}{r}{r}', effect: {class: 'Summon'}},
   {name: 'Flameshot', cost: '{r}',
    requirement: [{class:'Special'}, {class: 'CW'}], 
@@ -114,7 +115,7 @@ const dummyCards = [
 
 {id: 'BlazewingWarDrake', name: 'Blazewing War-Drake', rarity: 'Rare', image: 'Cards/Dragon/BlazewingWarDrake.png', flavor: '', 
  category: 'Creature', color: 'Red', type: 'Dragon', archetype: '', trait: 'Ranger', hp: 8, atk: 4, def: 2,
- cost: '{r}{r}', ability: '', set: 'ElementaGenesis',
+ cost: '{1}{r}{r}', ability: 'Rush', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{r}{r}', effect: {class: 'Summon'}},
  {name: 'Flameshot', cost: '{r}',
   requirement: [{class:'Special'}, {class: 'CW'}], 
@@ -129,10 +130,12 @@ const dummyCards = [
    requirement: [{class:'Special'}, {class: 'CW'}], 
    effect: {class: 'Burn', amount: 3}},
   ]},
+
 {id: 'MoltenExpanse', name: 'Molten Expanse', rarity: 'Rare', image: 'Cards/Domain/MoltenExpanse.png', flavor: '', 
  category: 'Domain', color: 'Red', type: 'Terrain', hp: 7, cost: '{r}', essence: '{R}', set: 'ElementaGenesis',
  skill: [{name: 'Terraform', cost: '{r}', effect: {class: 'Terraform'}},
   {name: 'Flourish', cost: '{g}', requirement: {class: 'CW'}, effect: {class: 'Search', trait: 'Terrain'}}]},
+
 {id: 'Emberstorm', name: 'Emberstorm', rarity: 'Rare', image: 'Cards/Spell/Emberstorm.png', flavor: '', 
  category: 'Spell', color: 'Red', type: 'Fire', cost: '{1}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{0}', effect: {class: 'Cast'}}]},
@@ -142,9 +145,7 @@ const dummyCards = [
  category: 'Creature', color: 'Blue', type: 'Human', archetype: '', trait: 'Mage', hp: 7, atk: 1, def: 0,
  cost: '{U}', ability: '', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{u}', effect: {class: 'Summon'}},
-  {name: 'Deepkin Rally', cost: '{u}',
-   requirement: [{class:'Special'}, {class: 'CW'}], 
-   effect: {class: 'Token', tokenChoices: ['MerfolkWarrior', 'MerfolkMermaid'], amount: }},
+  {name: 'Tidecall', cost: '{u}', requirement: {class: 'CW'}, effect: {class: 'Draw', amount: 1 }},
   {name: 'Tidepiercer Vortex', cost: '{u}{u}',
    requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
    effect: {class: 'Soak', amount: 3, target: 3, zone: 'opponentCreatures'}}
