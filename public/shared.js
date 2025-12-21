@@ -50,7 +50,7 @@ const dummyCards = [
    activation: {class: 'Arrival'},
    effect: {class: 'Search', category: 'Spell'}},
   {name: 'Bloomchant',
-   requirement: {class: 'CW'}
+   requirement: {class: 'CW'},
    effect: {class: 'Essence', color: '{G}', amount: 1}}
  ]},
 
@@ -86,7 +86,7 @@ const dummyCards = [
    activation: {class: 'Arrival'},
    effect: {class: 'Search', category: 'Spell'}},
   {name: 'Bloomchant',
-   requirement: {class: 'CW'}
+   requirement: {class: 'CW'},
    effect: {class: 'Essence', color: '{G}', amount: 1}}
  ]},
 
