@@ -220,7 +220,7 @@ const dummyCards = [
  skill: [{name: 'Summon', cost: '{1}{u}{u}', effect: {class: 'Summon'}},
   {name: 'Colossal Constriction', cost: '{u}',
    requirement: [{class:'Special'}, {class: 'CW'}], 
-   effect: {class: 'Bind', amount: 0, target: 'opponentCreatures' }},
+   effect: {class: 'Bind', amount: 0, target:'opponentCreatures'}},
  ]},
  
 {id: 'WavecrashWhale', name: 'Wavecrash Whale', rarity: 'Rare', image: 'Cards/eg/WavecrashWhale.png', flavor: '', 
