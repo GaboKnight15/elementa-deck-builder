@@ -226,11 +226,7 @@ const dummyCards = [
 {id: 'WavecrashWhale', name: 'Wavecrash Whale', rarity: 'Rare', image: 'Cards/eg/WavecrashWhale.png', flavor: '', 
  category: 'Creature', color: 'Blue', type: 'Oceanic', archetype: '', trait: '', hp: 18, atk: 4, def: 1,
  cost: '{3}{u}{U}', ability: 'Dive', set: 'ElementaGenesis',
- skill: [{name: 'Summon', cost: '{3}{u}{u}', effect: {class: 'Summon'}},
-  {name: '', cost: '{u}',
-   requirement: [{class:'Special'}, {class: 'CW'}], 
-   effect: {class: 'Token', tokenChoices: ['MerfolkWarrior', 'MerfolkMermaid'], amount: }},
- ]},
+ skill: [{name: 'Summon', cost: '{3}{u}{u}', effect: {class: 'Summon'}}]},
 
 {id: 'ElementalofTorrents', name: 'Elemental of Torrents', rarity: 'Rare', image: 'Cards/eg/ElementalofTorrents.png', flavor: '', 
  category: 'Creature', color: 'Blue', type: 'Elemental', archetype: 'Hydral', trait: '', hp: 8, atk: 3, def: 0,
