@@ -359,8 +359,7 @@ const dummyCards = [
  skill: [{name: 'Cast', cost: '{c}{c}', effect: [{class: 'Cast'}, {class: 'Search', targetTrait: 'Terrain'}]},
   {name: 'Expel', cost: '{c}',
    requirement: {class: 'Expel'},
-   effect: {class: 'Search', targetTrait: 'Terrain'},
- ]},
+   effect: {class: 'Search', targetTrait: 'Terrain'}}]},
 
 {id: 'RockmaulRhino', name: 'Rockmaul Rhino', rarity: 'Rare', image: 'Cards/eg/RockmaulRhino.png', flavor: '', 
  category: 'Creature', color: 'Gray', type: 'Beast', archetype: '', trait: '', hp: 8, atk: 4, def: 2,
@@ -371,8 +370,7 @@ const dummyCards = [
    effect: {class: 'Strike', target: 2, amount: 2}},
   {name: 'Seismic Smite', cost: '{c}{C}',
    requirement: [{class:'Ultimate'}, {class: 'CCW'}], 
-   effect: {class: 'Strike', target: 3, amount: 2}}
- ]},
+   effect: {class: 'Strike', target: 3, amount: 2}}]},
 
 {id: 'ElementalofBoulders', name: 'Elemental of Boulders', rarity: 'Rare', image: 'Cards/eg/ElementalofBoulders.png', flavor: '', 
  category: 'Creature', color: 'Gray', type: 'Elemental', archetype: 'Golem', trait: '', hp: 6, atk: 4, def: 3,
@@ -459,10 +457,7 @@ const dummyCards = [
          
 {id: 'CursedWorldfall', name: 'Cursed Worldfall', rarity: 'Legendary', image: 'Cards/eg/CursedWorldfall.png', flavor: '', 
  category: 'Spell', color: 'Purple', type: 'Aura', cost: '{p}{p}', set: 'ElementaGenesis',
- skill: [
-  {name: 'Cast', cost: '{p}{p}',
-   effect: [{class: 'Aura'}, {class: 'Hindrance'}]}
- ]},
+ skill: [{name: 'Cast', cost: '{p}{p}', effect: [{class: 'Aura'}, {class: 'Hindrance'}]}]},
 
 {id: 'GoliathCroaker', name: 'Goliath Croaker', rarity: 'Rare', image: 'Cards/eg/GoliathCroaker.png', flavor: '', 
  category: 'Creature', color: 'Purple', type: 'Beast', archetype: '', trait: '', hp: 11, atk: 3, def: 2,
@@ -497,17 +492,14 @@ const dummyCards = [
  category: 'Spell', color: 'Purple', type: 'Poison', cost: '{p}{p}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{p}{p}', effect: [{class: 'Cast'}, {class: 'Search'}]},
   {name: 'Expel', cost: '{c}', 
-   requirement: {class: 'Expel'},
-   effect: {class: 'Search', targetTrait: 'Terrain'},
- ]},
+   requirement: {class: 'Expel'}, effect: {class: 'Search', targetTrait: 'Terrain'}}]},
 
 {id: 'GiantHornet', name: 'GiantHornet', rarity: 'Rare', image: 'Cards/eg/GiantHornet.png', flavor: '', 
  category: 'Creature', color: 'Purple', type: 'Beast', archetype: '', trait: '', hp: 3, atk: 2, def: 0,
  cost: '{p}{p}', ability: 'Toxic', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{p}{p}', effect: {class: 'Summon'}},
   {name: 'Reanimate', cost: '{1}{P}{P}',
-   effect: {class: 'Reanimate'}},
- ]},
+   effect: {class: 'Reanimate'}}]},
 
 {id: 'ElementalofToxins', name: 'Elemental of Toxins', rarity: 'Rare', image: 'Cards/eg/ElementalofToxins.png', flavor: '', 
  category: 'Creature', color: 'Purple', type: 'Elemental', archetype: 'Corruptor', trait: '', hp: 4, atk: 1, def: 0,
@@ -529,8 +521,7 @@ const dummyCards = [
  category: 'Spell', color: 'Purple', type: 'Spell', cost: '{1}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{2}', effect: {class: 'Cast'}},
   {name: 'Spell', cost: '{1}', 
-   effect: {class: 'Strike', amount: 3}},
- ]},
+   effect: {class: 'Strike', amount: 3}}]},
 
 // --- EG WHITE --- //
 {id: 'ElyndraDawnbladeofHeavens', name: 'Elyndra, Dawnblade of Heavens', rarity: 'Legendary', image: 'Cards/eg/ElyndraDawnbladeofHeavens.png', flavor: '', 
@@ -542,8 +533,7 @@ const dummyCards = [
    effect: {class: 'Bolster', amount: 1}},
   {name: 'Radiant Severance', cost: '{w}{w}',
    requirement: [{class: 'Ultimate'}, {class:'CW'}], 
-   effect: [{class: 'Strike', amount: 4}, {status: 'Aegis'}],
- ]},
+   effect: [{class: 'Strike', amount: 4}, {status: 'Aegis'}]}]},
 
 {id: 'Solmara', name: 'Solmara', rarity: 'Legendary', image: 'Cards/eg/Solmara.png', flavor: '', 
  category: 'Domain', color: 'White', type: '', hp: 20, cost: '{0}', essence: '{W}', trait: 'Dominion', set: 'ElementaGenesis',
@@ -564,11 +554,10 @@ const dummyCards = [
  skill: [{name: 'Summon', cost: '{2}{w}', effect: {class: 'Summon'}},
  {name: 'Radiant Severance', cost: '{w}{W}',
    activation: {class: 'Arrival'}, 
-   effect: {class: 'Search', targetColor: 'White', targetTrait: 'Terrain'},
+   effect: {class: 'Search', targetColor: 'White', targetTrait: 'Terrain'}},
  {name: 'Blinding Splendor', cost: '{w}',
    requirement: [{class: 'Ultimate'}, {class:'CW'}], 
-   effect: {class: 'Disable', target: 'opponentCreatures'}, 
-  ]},
+   effect: {class: 'Disable', target: 'opponentCreatures'}}]},
 
 {id: 'ElementalofGleams', name: 'Elemental of Gleams', rarity: 'Common', image: 'Cards/eg/ElementalofGleams.png', flavor: '', 
  category: 'Creature', color: 'White', type: 'Elemental', archetype: 'Luminaut', trait: '', hp: 5, atk: 1, def: 0,
@@ -620,11 +609,10 @@ const dummyCards = [
    effect: {class: 'Rally', amount: 1}},
   {name: 'Eternal Silence',
    requirement: [{class:'Ultimate'}, {class: 'CW'}], 
-   effect: {class: 'Seal', amount: 0, target: 1},
+   effect: {class: 'Seal', amount: 0, target: 1}},
   {name: 'Eternal Silence', cost: '{b}',
    requirement: [{class:'Ultimate'}, {class: 'CW'}], 
-   effect: {class: 'Seal', amount: 2, target: 2},
- ]},
+   effect: {class: 'Seal', amount: 2, target: 2}}]},
 
 {id: 'Nocthyra', name: 'Nocthyra', rarity: 'Legendary', image: 'Cards/eg/Nocthyra.png', flavor: '', 
  category: 'Domain', color: 'Black', type: '', hp: 20, cost: '{0}', essence: '{B}', trait: 'Dominion', set: 'ElementaGenesis',
@@ -640,8 +628,7 @@ const dummyCards = [
  skill: [{name: 'Summon', cost: '{b}', effect: {class: 'Summon'}},
   {name:'Lifetithe', cost: '{B}',
    requirement: {class:'CCW'}, 
-   effect: {class: 'Token', token: 'Imp'}},
- ]},
+   effect: {class: 'Token', token: 'Imp'}}]},
 
 {id: 'GraveweaverWarlock', name: 'Graveweaver Warlock', rarity: 'Rare', image: 'Cards/eg/GraveweaverWarlock.png', flavor: '', 
  category: 'Creature', color: 'Black', type: 'Brute', archetype: 'Orc', trait: 'Mage', hp: 6, atk: 3, def: 2,
@@ -649,16 +636,14 @@ const dummyCards = [
  skill: [{name: 'Summon', cost: '{b}', effect: {class: 'Summon'}},
   {name:'Lifetithe', cost: '{B}',
    requirement: {class:'CW'}, 
-   effect: {class: 'Token', token: 'Imp'}},
- ]},
+   effect: {class: 'Token', token: 'Imp'}}]},
 
 {id: 'ElementalofShadows', name: 'Elemental of Shadows', rarity: 'Rare', image: 'Cards/eg/ElementalofShadows.png', flavor: '', 
  category: 'Creature', color: 'Black', type: 'Elemental', archetype: 'Obscurid', trait: '', hp: 6, atk: 3, def: 0,
  cost: '{B}', ability: ['Ambush','Elusive'], set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{b}', effect: {class: 'Summon'}},
   {name:'Umbral Discovery', activation: {class:'Arrival'}, 
-   effect: {class: 'Search', amount: 1, targetColor: 'Black', targetTrait: 'Terrain'}},
- ]},
+   effect: {class: 'Search', amount: 1, targetColor: 'Black', targetTrait: 'Terrain'}}]},
 
 {id: 'UmbrawindHollow', name: 'Umbrawind Hollow', rarity: 'Rare', image: 'Cards/eg/UmbrawindHollow.png', flavor: '', 
  category: 'Domain', color: 'Black', type: 'Terrain', hp: 8, cost: '{1}{b}', essence: '{B}', set: 'ElementaGenesis'},
@@ -704,8 +689,7 @@ const dummyCards = [
  skill: [{name: 'Summon', cost: '{b}', effect: {class: 'Summon'}},
   {name:'Lifetithe', cost: '{B}',
    requirement: {class:'CCW'}, 
-   effect: {class: 'Token', token: 'Imp'}},
- ]},
+   effect: {class: 'Token', token: 'Imp'}}]},
          
 {id: 'Shadowland', name: 'Shadowland', rarity: 'Common', image: 'Cards/eg/Shadowland.png', flavor: '', 
  category: 'Domain', color: 'Black', type: 'Terrain', hp: 5, cost: '{0}', essence: '{B}', set: 'ElementaGenesis',
