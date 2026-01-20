@@ -4901,7 +4901,6 @@ function isSealed(cardObj) {
 }
 // internal listener registry: { "Soaked": [fn,fn], ... }
 const blightListeners = {};
-BLIGHT_EVENT_NAMES.forEach(n => { blightListeners[n] = []; });
 
 // internal: add listener, returns unsubscribe()
 function addBlightListener(eventName, callback) {
