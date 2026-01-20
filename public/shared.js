@@ -161,8 +161,7 @@ const dummyCards = [
  {name: 'Flaming Slash', cost: '{r}', requirement: [{class:'Special'}, {class: 'CW'}], 
   effect: {class: 'Burn', amount: 4}},
  {name: 'Scorching Contract', activation: {class:'Frenzy'}, 
-  effect: [{class: 'Draw', amount: 1}, {class: 'Discard', amount: 1}},
- ]},
+  effect: [{class: 'Draw', amount: 1}, {class: 'Discard', amount: 1}]}]},
 
 {id: 'MoltenExpanse', name: 'Molten Expanse', rarity: 'Rare', image: 'Cards/eg/MoltenExpanse.png', flavor: '', 
  category: 'Domain', color: 'Red', type: 'Terrain', hp: 7, cost: '{r}', essence: '{R}', set: 'ElementaGenesis',
