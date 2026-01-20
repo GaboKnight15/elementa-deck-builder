@@ -112,7 +112,7 @@ const dummyCards = [
 
 // --- EG RED --- //
 {id: 'KaelenBlazebornHuntress', name: 'Kaelen, Blazeborn Huntress', rarity: 'Legendary', image: 'Cards/Human/KaelenBlazebornHuntress.png', flavor: '', 
- category: 'Creature', color: 'Red', type: 'Human', archetype: '', trait: 'Ranger', hp: 4, atk: 1, def: 0,
+ category: 'Creature', color: 'Red', type: 'Human', archetype: '', trait: 'Ranger', hp: 3, atk: 1, def: 0,
  cost: '{R}', ability: 'Burn', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{r}', effect: {class: 'Summon'}},
   {name: 'Flameshot', cost: '{r}',
@@ -132,8 +132,8 @@ const dummyCards = [
  skill: [{name: 'Cast', cost: '{0}', effect: {class: 'Cast'}}]},
 
 {id: 'CinderpeakTyrant', name: 'Cinderpeak Tyrant', rarity: 'Rare', image: 'Cards/Brute/CinderpeakTyrant.png', flavor: '', 
- category: 'Creature', color: 'Red', type: 'Brute', archetype: 'Giant', trait: '', hp: 11, atk: 5, def: 2,
- cost: '{2}{r}{R}', ability: 'Crush', set: 'ElementaGenesis',
+ category: 'Creature', color: 'Red', type: 'Brute', archetype: 'Giant', trait: '', hp: 10, atk: 5, def: 2,
+ cost: '{2}{r}', ability: 'Crush', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{1}{r}{r}', effect: {class: 'Summon'}},
   {name: 'Flameshot', cost: '{r}',
    requirement: [{class:'Special'}, {class: 'CW'}], 
@@ -153,9 +153,18 @@ const dummyCards = [
  category: 'Creature', color: 'Red', type: 'Elemental', archetype: 'Pyro', trait: '', hp: 6, atk: 3, def: 0,
  cost: '{1}{r}', ability: 'Scorch', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{r}{r}', effect: {class: 'Summon'}},
- {name: 'Flameshot', cost: '{r}',
-  requirement: [{class:'Special'}, {class: 'CW'}], 
-  effect: {class: 'Burn', amount: 3}},
+ {name: 'Inferno Discovery', activation: {class:'Arrival'},
+  effect: {class: 'Search', amount: 1, targetColor: 'Red', targetTrait: 'Terrain'}},
+ ]},
+
+{id: 'MagmarisMercenary', name: 'Magmaris Mercenary', rarity: 'Rare', image: 'Cards/Warrior/MagmarisMercenary.png', flavor: '', 
+ category: 'Creature', color: 'Red', type: 'Human', archetype: '', trait: '', hp: 4, atk: 2, def: 1,
+ cost: '{1}{r}', ability: 'Defiant', set: 'ElementaGenesis',
+ skill: [{name: 'Summon', cost: '{r}{r}', effect: {class: 'Summon'}},
+ {name: 'Flaming Slash', cost: '{r}', requirement: [{class:'Special'}, {class: 'CW'}], 
+  effect: {class: 'Burn', amount: 4}},
+ {name: 'Scorching Contract', activation: {class:'Frenzy'}, 
+  effect: [{class: 'Draw', amount: 1}, {class: 'Discard', amount: 1}},
  ]},
 
 {id: 'MoltenExpanse', name: 'Molten Expanse', rarity: 'Rare', image: 'Cards/Domain/MoltenExpanse.png', flavor: '', 
@@ -164,11 +173,11 @@ const dummyCards = [
   {name: 'Flourish', cost: '{g}', requirement: {class: 'CW'}, effect: {class: 'Search', trait: 'Terrain'}}]},
 
 {id: 'EmberstormCyclone', name: 'Emberstorm Cyclone', rarity: 'Rare', image: 'Cards/Spell/EmberstormCyclone.png', flavor: '', 
- category: 'Spell', color: 'Red', type: 'Fire', cost: '{1}', set: 'ElementaGenesis',
- skill: [{name: 'Cast', cost: '{0}', effect: {class: 'Cast'}}]},
+ category: 'Spell', color: 'Red', type: 'Fire', trait: 'Aura', cost: '{2}{r}', set: 'ElementaGenesis',
+ skill: [{name: 'Cast', cost: '{2}{r}', effect: {class: 'Cast'}}]},
 
-{id: 'Emberling', name: 'Emberling', rarity: 'Common', image: 'Cards/Beast/Emberling.png', flavor: '', flavor: '',
- category: 'Creature', color: 'Red', type: 'Beast', archetype: 'Fireland', hp: 3, atk: 2, def: 0,
+{id: 'Emberling', name: 'Emberling', rarity: 'Common', image: 'Cards/Beast/Emberling.png', flavor: '',
+ category: 'Creature', color: 'Red', type: 'Beast', archetype: 'Fireland', hp: 2, atk: 1, def: 0,
  cost: '{0}', ability: 'Burn', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{0}', effect: {class: 'Summon'}},
   {name:'Discard', cost: '{r}', description: 'Burn 1 enemy',
@@ -177,9 +186,9 @@ const dummyCards = [
  ]},
  
 {id: 'ElementalofEmbers', name: 'Elemental of Embers', rarity: 'Rare', image: 'Cards/Elemental/ElementalofEmbers.png', flavor: '', 
- category: 'Creature', color: 'Red', type: 'Elemental', archetype: 'Pyro', trait: '', hp: 6, atk: 3, def: 0,
+ category: 'Creature', color: 'Red', type: 'Elemental', archetype: 'Pyro', trait: '', hp: 3, atk: 2, def: 0,
  cost: '{r}', ability: 'Scorch', set: 'ElementaGenesis',
- skill: [{name: 'Summon', cost: '{r}{r}', effect: {class: 'Summon'}},
+ skill: [{name: 'Summon', cost: '{r}', effect: {class: 'Summon'}},
  {name: 'Flameshot', cost: '{r}',
   requirement: [{class:'Special'}, {class: 'CW'}], 
   effect: {class: 'Burn', amount: 3}},
@@ -190,7 +199,7 @@ const dummyCards = [
  skill: [{name: 'Terraform', cost: '{0}', effect: {class: 'Terraform'}}]},
 
 {id: 'FlameBlast', name: 'Flame Blast', rarity: 'Common', image: 'Cards/Spell/FlameBlast.png', flavor: '', 
- category: 'Spell', color: 'Red', type: 'Spell', cost: '{r}', set: 'ElementaGenesis',
+ category: 'Spell', color: 'Red', type: 'Fire', cost: '{r}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{1}', effect: {class: 'Cast'}}]},
 
 {id: 'EssenceAssault', name: 'Essence Assault', rarity: 'Common', image: 'Cards/Spell/EssenceAssault.png', flavor: '', 
@@ -199,30 +208,31 @@ const dummyCards = [
  
 // --- EG BLUE --- //
 {id: 'SerenyaTideboundEnchantress', name: 'Serenya, Tidebound Enchantress', rarity: 'Legendary', image: 'Cards/Human/SerenyaTideboundEnchantress.png', flavor: '', 
- category: 'Creature', color: 'Blue', type: 'Human', archetype: '', trait: 'Mage', hp: 7, atk: 1, def: 0,
- cost: '{U}', ability: '', set: 'ElementaGenesis',
+ category: 'Creature', color: 'Blue', type: 'Human', archetype: '', trait: 'Mage', hp: 5, atk: 1, def: 0,
+ cost: '{U}', ability: 'Soak', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{u}', effect: {class: 'Summon'}},
-  {name: 'Tidecall', cost: '{u}', requirement: {class: 'CW'}, effect: {class: 'Draw', amount: 1 }},
-  {name: 'Tidepiercer Vortex', cost: '{u}{u}',
-   requirement: [{class: 'Ultimate'}, {class: 'CCW'}],
-   effect: {class: 'Soak', amount: 3, target: 3, zone: 'opponentCreatures'}}
+  {name: 'Tidecall Ascendance', cost: '{u}', requirement: {class: 'Special'}, effect: {class: 'Draw', amount: 1}},
+  {name: 'Riptide Command', cost: '{u}{u}',
+   requirement: [{class: 'Ultimate'}, {class: 'CW'}],
+   effect: {class: 'Repel', amount: 2, target:'opponentCreatures'}}
  ]},
  
 {id: 'Umarion', name: 'Umarion', rarity: 'Legendary', image: 'Cards/Dominion/Umarion.png', flavor: '', 
  category: 'Domain', color: 'Blue', type: '', hp: 20, cost: '{0}', essence: '{U}', trait: 'Dominion', set: 'ElementaGenesis',
- skill: [{name: 'Insight', cost: '{u}', requirement: {class: 'CW'}, effect: {class: 'Draw', amount:1}}]},
+ skill: [{name: 'Insight', cost: '{u}', requirement: {class: 'CW'}, effect: {class: 'Draw', amount:1}},
+ {name: 'Insight', cost: '{u}', requirement: {class: 'CW'}, effect: {class: 'Draw', amount:1}}]},
  
 {id: 'TidalMaelstrom', name: 'Tidal Maelstrom', rarity: 'Legendary', image: 'Cards/Spells/TidalMaelstrom.png', flavor: '', 
  category: 'Spell', color: 'Blue', type: 'Water', cost: '{2}', set: 'ElementaGenesis',
- skill: [{name: 'Cast', cost: '{0}', effect: [{class: 'Soak', amount: 2, target: 3}, {class: 'Cast'}]}]},
+ skill: [{name: 'Cast', cost: '{u}{u}{u}', effect: [{class: 'Soak', amount: 2, target: 3}, {class: 'Cast'}]}]},
 
 {id: 'GiantMaelstromSquid', name: 'Giant Maelstrom-Squid', rarity: 'Rare', image: 'Cards/Oceanic/GiantMaelstromSquid.png', flavor: '', 
  category: 'Creature', color: 'Blue', type: 'Oceanic', archetype: '', trait: '', hp: 11, atk: 3, def: 1,
  cost: '{1}{u}{U}', ability: '', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{1}{u}{u}', effect: {class: 'Summon'}},
-  {name: '', cost: '{u}',
+  {name: 'Colossal Constriction', cost: '{u}',
    requirement: [{class:'Special'}, {class: 'CW'}], 
-   effect: {class: 'Token', tokenChoices: ['MerfolkWarrior', 'MerfolkMermaid'], amount: }},
+   effect: {class: 'Bind', amount: 0, target: 'opponentCreatures' }},
  ]},
  
 {id: 'WavecrashWhale', name: 'Wavecrash Whale', rarity: 'Rare', image: 'Cards/Oceanic/WavecrashWhale.png', flavor: '', 
@@ -236,25 +246,21 @@ const dummyCards = [
 
 {id: 'ElementalofTorrents', name: 'Elemental of Torrents', rarity: 'Rare', image: 'Cards/Elemental/ElementalofTorrents.png', flavor: '', 
  category: 'Creature', color: 'Blue', type: 'Elemental', archetype: 'Hydral', trait: '', hp: 8, atk: 3, def: 0,
- cost: '{1}{u}', ability: 'Dive', set: 'ElementaGenesis',
+ cost: '{1}{u}', ability: 'Drench', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{1}{u}', effect: {class: 'Summon'}},
-  {name: '', cost: '{u}',
-   requirement: [{class:'Special'}, {class: 'CW'}], 
-   effect: {class: 'Token', tokenChoices: ['MerfolkWarrior', 'MerfolkMermaid'], amount: }},
+  {name: 'Tidal Discovery',
+   activation: {class: 'Arrival'}, 
+   effect: {class: 'Search', amount: 1, targetColor: 'Blue', targetTrait: 'Terrain'}},
  ]},
 
 {id: 'Mermaid', name: 'Mermaid', rarity: 'Common', image: 'Cards/Oceanic/Mermaid.png', flavor: '', 
- category: 'Creature', color: 'Blue', type: 'Oceanic', archetype: 'Merfolk', trait: '', hp: 5, atk: 1, def: 0,
- cost: '{1}', ability: 'Dive', set: 'ElementaGenesis',
- skill: [{name: 'Summon', cost: '{1}{u}', effect: {class: 'Summon'}},
-  {name: '', cost: '{u}',
-   requirement: [{class:'Special'}, {class: 'CW'}], 
-   effect: {class: 'Token', tokenChoices: ['MerfolkWarrior', 'MerfolkMermaid'], amount: }},
- ]},
+ category: 'Creature', color: 'Blue', type: 'Oceanic', archetype: 'Merfolk', trait: '', hp: 4, atk: 1, def: 0,
+ cost: '{0}', ability: 'Dive', set: 'ElementaGenesis',
+ skill: [{name: 'Summon', cost: '{0}', effect: {class: 'Summon'}}]},
 
 {id: 'ElementalofDroplets', name: 'Elemental of Droplets', rarity: 'Common', image: 'Cards/Elemental/ElementalofDroplets.png', flavor: '', 
- category: 'Creature', color: 'Blue', type: 'Elemental', archetype: 'Hydral', trait: '', hp: 5, atk: 1, def: 0,
- cost: '{1}{u}', ability: 'Dive', set: 'ElementaGenesis',
+ category: 'Creature', color: 'Blue', type: 'Elemental', archetype: 'Hydral', trait: '', hp: 4, atk: 1, def: 0,
+ cost: '{1}{u}', ability: ['Drench', 'Elusive'], set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{1}{u}', effect: {class: 'Summon'}},
   {name: '', cost: '{u}',
    requirement: [{class:'Special'}, {class: 'CW'}], 
@@ -274,11 +280,9 @@ const dummyCards = [
  category: 'Creature', color: 'Yellow', type: 'Human', archetype: '', trait: 'Warrior', hp: 5, atk: 1, def: 1,
  cost: '{Y}', ability: ['Dash'], set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{y}', effect: {class: 'Summon'}},
-  {name: 'Dash', cost: '{0}',
-   effect: {class: 'Dash'},
-  {name: 'Voltcleave', cost: '{y}',
-   requirement: [{class:'Special'}, {class: 'CCW'}], 
-   effect: {class: 'Pierce', amount: 2}},
+  {name: 'Thunderclap Tempo', cost: '{y}',
+   requirement: {class:'Special'}, 
+   effect: {class: 'Flurry', amount: 1}},
   {name:'Blade Tempest, cost: '{Y}{Y}', requirement: {class: 'Ultimate'}, effect: {class: 'Strike', target: 3, amount: 2}}
  ]},
          
@@ -292,17 +296,17 @@ const dummyCards = [
          
 {id: 'GalestrikeRoc', name: 'Galestrike Roc', rarity: 'Rare', image: 'Cards/Avian/GalestrikeRoc.png', flavor: '', 
  category: 'Creature', color: 'Yellow', type: 'Avian', archetype: '', trait: '', hp: 6, atk: 4, def: 2,
- cost: '{y}{y}', ability: 'Flying', set: 'ElementaGenesis',
- skill: [{name: 'Summon', cost: '{y}{y}', effect: {class: 'Summon'}}]},
+ cost: '{1}{y}', ability: 'Flying', set: 'ElementaGenesis',
+ skill: [{name: 'Summon', cost: '{1}{y}', effect: {class: 'Summon'}}]},
 
 {id: 'ElementalofGales', name: 'Elemental of Gales', rarity: 'Rare', image: 'Cards/Elemental/ElementalofGales.png', flavor: '', 
  category: 'Creature', color: 'Yellow', type: 'Elemental', archetype: 'Wind', trait: '', hp: 6, atk: 3, def: 0,
- cost: '{1}{y}', ability: 'Flying', set: 'ElementaGenesis',
+ cost: '{1}{y}', ability: ['Elusive','Flying'], set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{y}{y}', effect: {class: 'Summon'}}]},
 
 {id: 'ElementalofLightning', name: 'Elemental of Lightning', rarity: 'Rare', image: 'Cards/Elemental/ElementalofLightning.png', flavor: '', 
- category: 'Creature', color: 'Yellow', type: 'Elemental', archetype: 'Voltkin', trait: '', hp: 6, atk: 3, def: 0,
- cost: '{1}{y}', ability: 'Flying', set: 'ElementaGenesis',
+ category: 'Creature', color: 'Yellow', type: 'Elemental', archetype: 'Voltkin', trait: '', hp: 5, atk: 3, def: 0,
+ cost: '{y}{y}', ability: ['Elusive','Static'], set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{y}{y}', effect: {class: 'Summon'}}]},
          
 {id: 'StratosCloudBeast', name: 'Stratos Cloud Beast', rarity: 'Rare', image: 'Cards/Beast/StratosCloudBeast.png', flavor: '', 
@@ -321,7 +325,7 @@ const dummyCards = [
 
 {id: 'Birdfolk', name: 'Birdfolk', rarity: 'Common', image: 'Cards/Avian/Birdfolk.png', flavor: '', 
  category: 'Creature', color: 'Yellow', type: 'Avian', archetype: 'Zephyra', hp: 4, atk: 2, def: 1, 
- cost: '{y}{y}', ability: 'Flying', set: 'ElementaGenesis',
+ cost: '{y}', ability: 'Flying', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{y}{y}', effect: {class: 'Summon'}}]},
 
 {id: 'SuncrestFalcon', name: 'Suncrest Falcon', rarity: 'Common', image: 'Cards/Avian/SuncrestFalcon.png', flavor: '', 
@@ -331,7 +335,7 @@ const dummyCards = [
 
 {id: 'ElementalofSparks', name: 'Elemental of Sparks', rarity: 'Rare', image: 'Cards/Elemental/ElementalofSparks.png', flavor: '', 
  category: 'Creature', color: 'Yellow', type: 'Elemental', archetype: 'Voltkin', trait: '', hp: 2, atk: 2, def: 0,
- cost: '{y}', ability: 'Static', set: 'ElementaGenesis',
+ cost: '{y}', ability: ['Elusive','Static'], set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{y}{y}', effect: {class: 'Summon'}}]},
 
 {id: 'ZephyrSprite', name: 'Zephyr Sprite', rarity: 'Rare', image: 'Cards/Elemental/ZephyrSprite.png', flavor: '', 
@@ -353,15 +357,15 @@ const dummyCards = [
 
 // --- EG GRAY --- //
 {id: 'RudgarIronfistMauler', name: 'Rudgar, Ironfist Mauler', rarity: 'Legendary', image: 'Cards/Brute/RudgarIronfistMauler.png', flavor: '', 
- category: 'Creature', color: 'Gray', type: 'Brute', archetype: '', trait: 'Warrior', hp: 6, atk: 2, def: 1,
+ category: 'Creature', color: 'Gray', type: 'Human', archetype: '', trait: 'Warrior', hp: 5, atk: 2, def: 1,
  cost: '{C}', ability: 'Crush', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{c}', effect: {class: 'Summon'}},
-  {name: 'Twin Impact', cost: '{c}',
-   requirement: [{class:'Special'}, {class: 'CCW'}], 
-   effect: {class: 'Strike', target: 2, amount: 2}},
-  {name: 'Seismic Smite', cost: '{c}{C}',
-   requirement: [{class:'Ultimate'}, {class: 'CCW'}], 
-   effect: {class: 'Strike', target: 3, amount: 2}}
+  {name: 'Stonebreaker Punch', cost: '{c}',
+   requirement: [{class:'Special'}, {class: 'CW'}], 
+   effect: {class: 'Strike', target: 1, amount: 5}},
+  {name: 'Village Hero', cost: '{c}{c}',
+   requirement: {class:'Ultimate'}, 
+   effect: [{class: 'Ascend', amount: 1},{class: 'Rally', amount: 1}]}
  ]},
          
 {id: 'Drakzul', name: 'Drakzul', rarity: 'Legendary', image: 'Cards/Dominion/Drakzul.png', flavor: '', 
@@ -369,7 +373,7 @@ const dummyCards = [
  skill: [{name: 'Fortify', cost: '{c}', requirement: {class: 'CW'}, effect: {class: 'Armor', amount: 1}}]},
 
 {id: 'TerraEmergence', name: 'Terra Emergence', rarity: 'Legendary', image: 'Cards/Spell/TerraEmergence.png', flavor: '', 
- category: 'Spell', color: 'Gray', type: '', cost: '{c}{c}', set: 'ElementaGenesis',
+ category: 'Spell', color: 'Gray', type: '', cost: '{c}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{c}{c}', effect: [{class: 'Cast'}, {class: 'Search', targetTrait: 'Terrain'}]},
   {name: 'Expel', cost: '{c}',
    requirement: {class: 'Expel'},
@@ -390,14 +394,10 @@ const dummyCards = [
 
 {id: 'ElementalofBoulders', name: 'Elemental of Boulders', rarity: 'Rare', image: 'Cards/Golem/ElementalofBoulders.png', flavor: '', 
  category: 'Creature', color: 'Gray', type: 'Elemental', archetype: 'Golem', trait: '', hp: 6, atk: 4, def: 3,
- cost: '{C}', ability: 'Crush', set: 'ElementaGenesis',
+ cost: '{c}{c}', ability: 'Immunity', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{c}', effect: {class: 'Summon'}},
-  {name: 'Twin Impact', cost: '{c}',
-   requirement: [{class:'Special'}, {class: 'CCW'}], 
-   effect: {class: 'Strike', target: 2, amount: 2}},
-  {name: 'Seismic Smite', cost: '{c}{C}',
-   requirement: [{class:'Ultimate'}, {class: 'CCW'}], 
-   effect: {class: 'Strike', target: 3, amount: 2}}
+  {name: 'Terra Discovery', activation: {class:'Arrival'}, 
+   effect: {class: 'Search', amount: 1, targetColor: 'Gray', targetTrait: 'Terrain'}}
  ]},
 
 {id: 'SlatebackLizard', name: 'Slateback Lizard', rarity: 'Rare', image: 'Cards/Reptile/SlatebackLizard.png', flavor: '', 
@@ -413,15 +413,15 @@ const dummyCards = [
  ]},
 
  {id: 'SeismicRupture', name: 'Seismic Rupture', rarity: 'Common', image: 'Cards/Spell/SeismicRupture.png', flavor: '', 
- category: 'Spell', color: 'Gray', type: '', cost: '{c}', set: 'ElementaGenesis',
- skill: [{name: 'Cast', cost: '{0}', effect: {class: 'Cast'}},
-  {name: 'Inspire', cost: '{1}', 
-   effect: {class: 'Strike', amount: 3}},
+ category: 'Spell', color: 'Gray', type: '', cost: '{c}{c}', set: 'ElementaGenesis',
+ skill: [{name: 'Cast', cost: '{c}{c}', effect: {class: 'Cast'}},
+  {name: 'Disable', cost: '{1}', 
+   effect: {class: 'Disable', amount: 2, target: 3}},
  ]},
 
 {id: 'Orc', name: 'Orc', rarity: 'Common', image: 'Cards/Brute/Orc.png', flavor: '', 
- category: 'Creature', color: 'Gray', type: 'Beast', archetype: 'Orc', trait: '', hp: 5, atk: 3, def: 2,
- cost: '{C}', ability: 'Crush', set: 'ElementaGenesis',
+ category: 'Creature', color: 'Gray', type: 'Beast', archetype: 'Orc', trait: 'Warrior', hp: 5, atk: 3, def: 2,
+ cost: '{C}', ability: 'Defiant', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{c}', effect: {class: 'Summon'}},
  ]},
 
@@ -432,8 +432,8 @@ const dummyCards = [
  ]},
 
 {id: 'RockshellArmadillo', name: 'Rockshell Armadillo', rarity: 'Common', image: 'Cards/Beast/RockshellArmadillo.png', flavor: '', 
- category: 'Creature', color: 'Gray', type: 'Beast', archetype: 'Orc', trait: '', hp: 3, atk: 1, def: 2,
- cost: '{C}', ability: 'Defender', set: 'ElementaGenesis',
+ category: 'Creature', color: 'Gray', type: 'Beast', archetype: '', trait: '', hp: 3, atk: 1, def: 2,
+ cost: '{C}', ability: ['Defender','Unbreakable'], set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{c}', effect: {class: 'Summon'}},
  ]},
 
@@ -449,10 +449,7 @@ const dummyCards = [
 
 {id: 'StoneFist', name: 'Stone Fist', rarity: 'Common', image: 'Cards/Spell/StoneFist.png', flavor: '', 
  category: 'Spell', color: 'Gray', type: 'Aura', cost: '{c}', set: 'ElementaGenesis',
- skill: [{name: 'Cast', cost: '{0}', effect: {class: 'Cast'}},
-  {name: 'Inspire', cost: '{1}', 
-   effect: {class: 'Strike', amount: 3}},
- ]},
+ skill: [{name: 'Cast', cost: '{0}', effect: {class: 'Cast'}}]},
          
 {id: 'EssenceBarrier', name: 'Essence Barrier', rarity: 'Common', image: 'Cards/Spell/EssenceBarrier.png', flavor: '', 
  category: 'Spell', color: 'Gray', type: 'Aura', cost: '{1}', set: 'ElementaGenesis',
@@ -464,16 +461,14 @@ const dummyCards = [
 // --- EG PURPLE --- //
 {id: 'SelgorCorruptedWarlock', name: 'Selgor, Corrupted Warlock', rarity: 'Legendary', image: 'Cards/Human/SelgorCorruptedWarlock.png', flavor: '', 
  category: 'Creature', color: 'Purple', type: 'Human', archetype: '', trait: 'Mage', hp: 4, atk: 1, def: 1,
- cost: '{P}', ability: 'Curse', set: 'ElementaGenesis',
+ cost: '{P}', ability: 'Wither', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{p}', effect: {class: 'Summon'}},
-  {name: 'Reanimate', cost: '{1}{P}{P}',
-   effect: {class: 'Reanimate'}},
-  {name: 'Blightfall Slash', cost: '{P}{P}', 
+  {name: 'Soul Reap',
+   requirement: [{class: 'Special'}, {class: 'Sacrifice', target: 1, targetCategory: 'Creature'}],
+   effect: {class: 'Rally', amount: 2}},
+  {name: 'Corruptive Surge', cost: '{P}{P}', 
    requirement: [{class: 'Special'}, {class: 'CCW'}],
-   effect: {class: 'Strike', amount: 1}},
-  {name: 'Toxic Miasma', cost: '{p}{p}',
-   requirement: [{class:'Ultimate'}, {class: 'CW'}], 
-   effect: {class: 'Miasma', def: 1}},
+   effect: {class: 'Strike', amount: 1}}
  ]},
 
 {id: 'Virkul', name: 'Virkul', rarity: 'Legendary', image: 'Cards/Dominion/Virkul.png', flavor: '', 
@@ -481,9 +476,9 @@ const dummyCards = [
  skill: [{name: 'Corrupt', cost: '{p}', requirement: {class: 'CW'}, effect: {class: 'Curse', amount: 1}}]},
          
 {id: 'CursedWorldfall', name: 'Cursed Worldfall', rarity: 'Legendary', image: 'Cards/Spell/CursedWorldfall.png', flavor: '', 
- category: 'Spell', color: 'Purple', type: 'Aura', cost: '{1}', set: 'ElementaGenesis',
+ category: 'Spell', color: 'Purple', type: 'Aura', cost: '{p}{p}', set: 'ElementaGenesis',
  skill: [
-  {name: 'Cast', cost: '{0}',
+  {name: 'Cast', cost: '{p}{p}',
    effect: [{class: 'Aura'}, {class: 'Hindrance'}]}
  ]},
 
@@ -507,6 +502,8 @@ const dummyCards = [
  category: 'Creature', color: 'Purple', type: 'Elemental', archetype: 'Corruptor', trait: '', hp: 7, atk: 3, def: 1,
  cost: '{p}{p}', ability: 'Poisonous', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{p}{p}', effect: {class: 'Summon'}},
+ {name: 'Cursed Discovery', activation: {class:'Arrival'}, 
+  effect: {class: 'Search', amount: 1, targetColor: 'Gray', targetTrait: 'Terrain'}}
  ]},
 
 {id: 'FesterglowFrontier', name: 'Festerglow Frontier', rarity: 'Rare', image: 'Cards/Terrain/FesterglowFrontier.png', flavor: '', 
@@ -532,11 +529,8 @@ const dummyCards = [
 
 {id: 'ElementalofToxins', name: 'Elemental of Toxins', rarity: 'Rare', image: 'Cards/Elemental/ElementalofToxins.png', flavor: '', 
  category: 'Creature', color: 'Purple', type: 'Elemental', archetype: 'Corruptor', trait: '', hp: 4, atk: 1, def: 0,
- cost: '{p}', ability: 'Toxic', set: 'ElementaGenesis',
- skill: [{name: 'Summon', cost: '{p}{p}', effect: {class: 'Summon'}},
-  {name: 'Reanimate', cost: '{1}{P}{P}',
-   effect: {class: 'Reanimate'}},
- ]},
+ cost: '{p}', ability: ['Elusive','Poisonous'], set: 'ElementaGenesis',
+ skill: [{name: 'Summon', cost: '{p}{p}', effect: {class: 'Summon'}}]},
          
 {id: 'Swamp', name: 'Swamp', rarity: 'Common', image: 'Cards/Terrain/Swamp.png', flavor: '', 
  category: 'Domain', color: 'Purple', type: 'Terrain', hp: 5, cost: '{0}', essence: '{P}', set: 'ElementaGenesis',
@@ -558,24 +552,24 @@ const dummyCards = [
 
 // --- EG WHITE --- //
 {id: 'ElyndraDawnbladeofHeavens', name: 'Elyndra, Dawnblade of Heavens', rarity: 'Legendary', image: 'Cards/Human/ElyndraDawnbladeofHeavens.png', flavor: '', 
- category: 'Creature', color: 'White', type: 'Human', archetype: '', trait: 'Warrior', hp: 11, atk: 1, def: 1,
- cost: '{W}', ability: ['Aegis','Veil'], set: 'ElementaGenesis',
+ category: 'Creature', color: 'White', type: 'Human', archetype: '', trait: 'Warrior', hp: 5, atk: 2, def: 1,
+ cost:'{w}', ability:'Aegis', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{w}', effect: {class: 'Summon'}},
-  {name: 'Bloomchant', cost: '{w}',
-   requirement: [{class:'Special'}, {class: 'CW'}], 
-   effect: {class: 'Inspire', def: 1}},
-  {name: 'Radiant Severance', cost: '{w}{W}',
-   requirement: [{class: 'Ultimate'}, {class:'CCW'}], 
-   effect: {class: 'Strike', status: 'Aegis'},
+  {name: 'Dawnbreak', cost: '{w}',
+   requirement: {class:'Special'}, 
+   effect: {class: 'Bolster', amount: 1}},
+  {name: 'Radiant Severance', cost: '{w}{w}',
+   requirement: [{class: 'Ultimate'}, {class:'CW'}], 
+   effect: [{class: 'Strike', amount: 4}, {status: 'Aegis'}],
  ]},
 
 {id: 'Solmara', name: 'Solmara', rarity: 'Legendary', image: 'Cards/Dominion/Solmara.png', flavor: '', 
  category: 'Domain', color: 'White', type: '', hp: 20, cost: '{0}', essence: '{W}', trait: 'Dominion', set: 'ElementaGenesis',
  skill: [{name: 'Blessing', cost: '{w}', requirement: {class: 'CW'}, effect: {class: 'Terraform'}}]},
 
-{id: 'RadiantProminence', name: 'Radiant Prominence', rarity: 'Legendary', image: 'Cards/Spells/RadiantProminence.png', flavor: '', 
+{id: 'RadiantJudgement', name: 'Radiant Judgement', rarity: 'Legendary', image: 'Cards/Spell/RadiantJudgement.png', flavor: '', 
  category: 'Spell', color: 'White', type: 'Spell', cost: '{1}', set: 'ElementaGenesis',
- skill: [{name: 'Cast', cost: '{0}', effect: {class: 'Cast'}}]},
+ skill: [{name: 'Cast', cost: '{w}{w}', effect: {class: 'Cast'}}]},
 
 {id: 'Pegasus', name: 'Pegasus', rarity: 'Rare', image: 'Cards/Beast/Pegasus.png', flavor: '', 
  category: 'Creature', color: 'White', type: 'Beast', archetype: '', trait: '', hp: 6, atk: 2, def: 1,
@@ -590,7 +584,14 @@ const dummyCards = [
 {id: 'ElementalofLusters', name: 'Elemental of Lusters', rarity: 'Rare', image: 'Cards/Elemental/ElementalofLusters.png', flavor: '', 
  category: 'Creature', color: 'White', type: 'Elemental', archetype: 'Luminaut', trait: '', hp: 7, atk: 3, def: 0,
  cost: '{1}{W}', ability: 'Elusive', set: 'ElementaGenesis',
- skill: [{name: 'Summon', cost: '{2}{w}', effect: {class: 'Summon'}}]},
+ skill: [{name: 'Summon', cost: '{2}{w}', effect: {class: 'Summon'}},
+ {name: 'Radiant Severance', cost: '{w}{W}',
+   activation: {class: 'Arrival'}, 
+   effect: {class: 'Search', targetColor: 'White', targetTrait: 'Terrain'},
+ {name: 'Blinding Splendor', cost: '{w}',
+   requirement: [{class: 'Ultimate'}, {class:'CW'}], 
+   effect: {class: 'Disable', target: 'opponentCreatures'}, 
+  ]},
 
 {id: 'ElementalofGleams', name: 'Elemental of Gleams', rarity: 'Common', image: 'Cards/Elemental/ElementalofGleams.png', flavor: '', 
  category: 'Creature', color: 'White', type: 'Elemental', archetype: 'Luminaut', trait: '', hp: 5, atk: 1, def: 0,
@@ -2552,10 +2553,13 @@ const FILTERS_CONFIG = [
   { key: 'category', label: 'Category', options: ['All','Creature','Artifact','Spell','Domain'] },
   { key: 'type', label: 'Type', options: ['All','Beast','Brute','Construct','Demon','Dragon','Elemental','Faefolk','Human','Undead'] },
   { key: 'rarity', label: 'Rarity', options: ['All','Common','Rare','Legendary'] },
-  { key: 'trait', label: 'Trait', options: ['All','Dominion','Evolution','Fusion','Warrior','Mage','Ranger','Relic','Equipment','Aura','Terrain','Locale'] },
+  { key: 'trait', label: 'Trait', options: ['All','Assembly','Dominion','Evolution','Fusion','Warrior','Mage','Ranger','Relic','Equipment','Aura','Terrain','Locale'] },
   { key: 'archetype', label: 'Archetype', options: ['All','Blazefeather','Cindercore','Coralbound','Fireland','Frostland','Golemheart','Moonfang','Skullframe','Voltwing','Zephyra'] },
-  { key: 'ability', label: 'Ability', options: ['All','Ambush','Dive','Burn','Drain','Elusive','Flying','Ice Armor','Immunity','Intimidate','Leap','Lifelink','Protect','Provoke','Rush','Toxic'] },
-  { key: 'pack', label: 'Pack', options: ['All', 'ElementaGenesis', 'FracturedOrigins','EchoesofCreations'] }
+  { key: 'ability', label: 'Ability', options: ['All','Aegis','Ambush','Blightstrike','Burn','Conceal','Crush','Curse',
+    'Defender','Defiant','Dive','Dormant','Drain','Drench','Elusive','Exploit','Flying','Focus','Freeze','Frostbite',
+    'Immunity','Intimidate','Leap','Levitate','Paralyze','Pierce','Pilfer','Poisonous','Precision','Protect','Provoke',
+    'Regenerate','Relentless','Resilience','Rush','Scorch','Soak','Static','Toxic','Unbreakable','Veil','Wither']},
+  { key: 'pack', label: 'Pack', options: ['All', 'ElementaGenesis', 'FracturedOrigins','EchoesofCreations','DesolateFrontiers','InfiniteHorizons'] }
  // Add more as needed
 ];
 
@@ -2573,48 +2577,62 @@ attack: {name: "Attack", description: "Attack value.", icon: "Icons/Stat/Atk.png
 defense: {name: "Defense", description: "Defense value.", icon: "Icons/Stat/Def.png" },
 armor: {name: "Armor", description: "Secondary sustain stat. Units loss armor first before HP. When the armor breaks, nullifies remaining damage. Losses {1} Speed", icon: "Icons/Stat/Armor.png" },
 speed: {name: "Speed", description: "Speed value. Dash, Dive, Flying, Leap, and Rush +1 Spd. Mage +1 Spd. Ranger +2 Spd. Armor -1 Spd. Spd dif is  =>2 gain Quickstrike. Spd dif is => 3 gain Superstrike.", icon: "Icons/Stat/Spd.png" },
+
 // ----------------- //
 // --- ABILITIES --- //
 // ----------------- //
-// --- Frenzy Abilities --- //
+aegis: {name: "Aegis", description: "Prevents the next damage received, then is removed.", icon: "Icons/Ability/Aegis.png" },
+ambush: {name: "Ambush", description: "Cannot be targeted by opponent's attacks or skills. Gets revealed after attacking or using a skill.", icon: "Icons/Ability/Ambush.png" },
+blightstrike: {name: "Blightstrike", description: "Destroys enemy creature after dealing damage.", icon: "Icons/Ability/Blightstrike.png" },
+bind: {name: "Bind", description: "Burns after an attack or skill.", icon: "Icons/Ability/Bind.png" },
 burn: {name: "Burn", description: "Burns after an attack or skill.", icon: "Icons/Ability/Burn.png" },
-freeze: {name: "Freeze", description: "Freezes after an attack or skill.", icon: "Icons/Ability/Freeze.png" },
-paralyze: {name: "Paralyze", description: "Paralyzes after an attack or skill.", icon: "Icons/Ability/Paralyze.png" },
-soak: {name: "Soak", description: "Soaks after an attack or skill.", icon: "Icons/Ability/Soak.png" },
-toxic: {name: "Venom", description: "Poisons after an attack or skill.", icon: "Icons/Ability/Toxic.png" },
-
-protect: {name: "Protect", description: "Opponent can only target this unit for attacks.", icon: "Icons/Ability/Protect.png" },
-conceal: {name: "Conceal", description: "Opponent can only target this unit for attacks last", icon: "Icons/Ability/Conceal.png" },
-barrier: {name: "Barrier", description: "Prevents the next damage received to any unit.", icon: "Icons/Ability/Barrier.png" },
-evasion: {name: "Evasion", description: "Prevents the next attack or skill to your unit. Consumes {1} Evasion counter.", icon: "Icons/Ability/Evasion.png" },
-aegis: {name: "Aegis", description: "Unaffected by skills and effects.", icon: "Icons/Ability/Venom.png" },
-
-// --- Target Related Abilities --- //
-veil: {name: "Veil", description: "Cannot be targeted by skills.", icon: "Icons/Ability/Veil.png" },
-immunity: {name: "Immunity", description: "Unaffected by status ailments.", icon: "Icons/Ability/Immunity.png" },
-ambush: {name: "Ambush", description: "Cannot be targeted by opponent's attacks or skills. Unit is revealed after attacking or using a skill", icon: "Icons/Ability/Ambush.png" },
-flying: {name: "Flying", description: "Can only be blocked by other Flying{flying}, Mage{mage} or Ranger{ranger} units. Speed {1}.", icon: "Icons/Ability/Flying.png" },
-
-rush: {name: "Rush", description: "Can attack on the turn it is played. Speed {1}.", icon: "Icons/Ability/Rush.png" },
+conceal: {name: "Conceal", description: "Opponent can only target this creature for attacks last", icon: "Icons/Ability/Conceal.png" },
+crush: {name: "Crush", description: "Remove all armor from target unit.", icon: "Icons/Ability/Crush.png"},
+curse: {name: "Curse", description: "Curses opposing creature after dealing damage.", icon: "Icons/Ability/Curse.png"},
+defender: {name: "Defender", description: "Deals damage using its defense while disabled.", icon: "Icons/Ability/Defender.png" },
+defiant: {name: "Defiant", description: "Does not disable after attacking.", icon: "Icons/Ability/Defiant.png" },
+dive: {name: "Dive", description: "Cannot be targeted while disabled.", icon: "Icons/Ability/Dive.png" },
+dormant: {name: "Dormant", description: "When summoned, it gets disabled.", icon: "Icons/Ability/Dormant.png" },
 drain: {name: "Drain", description: "Gain HP equal to damage dealt by attacks.", icon: "Icons/Ability/Drain.png" },
-pierce: {name: "Pierce", description: "Ignores Armor.", icon: "Icons/Ability/Pierce.png"},
-precision: {name: "Precision", description: "Ignores Evasion. Speed {1}", icon: "Icons/Ability/Precision.png" },
-
-// --- Assault Abilities --- //
-intimidate: {name: "Intimidate", description: "When declaring an attack, {CW} that unit", icon: "Icons/Ability/Intimidate.png" },
-provoke: {name: "Provoke", description: "When declaring an attack, {CCW} that unit", icon: "Icons/Ability/Provoke.png" },
-
- // --- Brace Abilities --- //
-scorch: {name: "Scorch", description: "Burns after an attack", icon: "Icons/Ability/Scorch.png" },
+drench: {name: "Drench", description: "Soaks after an attack", icon: "Icons/Ability/Drench.png" },
+elusive: {name: "Elusive", description: "Cannot be damaged by attacks.", icon: "Icons/Ability/Elusive.png" },
+exploit: {name: "Exploit", description: "Deals {1} more damage with attacks if the enemy has any hindrance.", icon: "Icons/Ability/Exploit.png" },
+flying: {name: "Flying", description: "Can only be blocked by other Flying{flying}, Mage{mage} or Ranger{ranger} units. Speed {1}.", icon: "Icons/Ability/Flying.png" },
+focus: {name: "Focus", description: "Can attack any card regardless of abilities (except Ambush)", icon: "Icons/Ability/Focus.png" },
+freeze: {name: "Freeze", description: "Freezes after an attack or skill.", icon: "Icons/Ability/Freeze.png" },
 frostbite: {name: "Frostbite", description: "Freezes after an attack", icon: "Icons/Ability/Frostbite.png" },
+immunity: {name: "Immunity", description: "Unaffected by status ailments.", icon: "Icons/Ability/Immunity.png" },
+intimidate: {name: "Intimidate", description: "When declaring an attack, disable defending creature", icon: "Icons/Ability/Intimidate.png" },
+leap: {name: "Leap", description: "Can attack Flying characters. Speed +{1}", icon: "Icons/Ability/Leap.png" },
+levitate: {name: "Levitate", description: "Cannot be disabled. Speed +{1}", icon: "Icons/Ability/Levitate.png" },
+paralyze: {name: "Paralyze", description: "Paralyzes after an attack or skill.", icon: "Icons/Ability/Paralyze.png" },
+pierce: {name: "Pierce", description: "Ignores Armor.", icon: "Icons/Ability/Pierce.png"},
+pilfer: {name: "Pilfer", description: "Steals any essence after attacking.", icon: "Icons/Ability/Pilfer.png"},
 poisonous: {name: "Poisonous", description: "Poisons after an attack", icon: "Icons/Ability/Poisonous.png" },
-drenched: {name: "Drenched", description: "Soaks after an attack", icon: "Icons/Ability/Drenched.png" },
-static: {name: "Static", description: "Paralyzes after an attack", icon: "Icons/Ability/Static.png" },
+precision: {name: "Precision", description: "Ignores Evasion. Speed {1}", icon: "Icons/Ability/Precision.png" },
+provoke: {name: "Provoke", description: "Enemy creatures must attack if able", icon: "Icons/Ability/Provoke.png" },
+protect: {name: "Protect", description: "Opponent can only target this creature for attacks.", icon: "Icons/Ability/Protect.png" },
+regenerate: {name: "Regenerate", description: "Recover {1} HP during each End Step.", icon: "Icons/Ability/Regenerate.png" },
+relentless: {name: "Relentless", description: "Does not disable after the first attack. Can attack again.", icon: "Icons/Ability/Relentless.png" },
+resilience: {name: "Resilience", description: "Does not disable after defending", icon: "Icons/Ability/Resilience.png" },
+rush: {name: "Rush", description: "Can attack on the turn it is played. Speed {1}.", icon: "Icons/Ability/Rush.png" },
+scorch: {name: "Scorch", description: "Burns after an attack", icon: "Icons/Ability/Scorch.png" },
+soak: {name: "Soak", description: "Soaks after an attack or skill.", icon: "Icons/Ability/Soak.png" },
+static: {name: "Static", description: "Inflicts {paralysis} upon fighting. Paralyzed cards cannot", icon: "Icons/Ability/Static.png" },
+toxic: {name: "Venom", description: "Poisons after an attack or skill.", icon: "Icons/Ability/Toxic.png" },
+unbreakable: {name: "Unbreakable", description: "Cannot be destroyed by effects.", icon: "Icons/Ability/Unbreakable.png" },
+veil: {name: "Veil", description: "Cannot be targeted by effects.", icon: "Icons/Ability/Veil.png" },
+wither: {name: "Wither", description: "Inflict {wither} upon dealing damage. Withered cards cannot be healed.", icon: "Icons/Ability/Wither.png" },
+
+
+
 scorchArmor: {name: "Flame Armor", description: "Burns after an attack", icon: "Icons/Ability/FlameArmor.png" },
 frostbiteArmor: {name: "Frost Armor", description: "Freezes after an attack", icon: "Icons/Ability/FrostArmor.png" },
 poisonousArmor: {name: "Poisonous Armor", description: "Poisons after an attack", icon: "Icons/Ability/PoisonousArmor.png" },
 drenchedArmor: {name: "Aqua Armor", description: "Soaks after an attack", icon: "Icons/Ability/AquaArmor.png" },
 staticArmor: {name: "Static Armor", description: "Paralyzes after an attack", icon: "Icons/Ability/StaticArmor.png" },
+
+evasion: {name: "Evasion", description: "Prevents the next attack or skill to your unit. Consumes {1} Evasion counter.", icon: "Icons/Ability/Evasion.png" },
 
 // -------------------- //
 // --- REQUIREMENTS --- //
@@ -2646,7 +2664,6 @@ destroy: {name: "Destroy", description: "Send one unit from the field to the voi
 banish: {name: "Banish", description: "Return one unit from the field to the deck."},
 repel: {name: "Repel", description: "Return one unit from the field to the hand."},
 mill: {name: "Mill", description: "Sends one card from the deck to the void."},
-crush: {name: "Crush", description: "Remove all armor from target unit."},
 
 // --- SELF SUMMON SKILLS --- //
 reanimate: {name: "Reanimate", description: "Summon from the void."},
@@ -2674,10 +2691,12 @@ mystveil: {name: "Mystveil", description: "Summons Mist", icon: "Icons/Weather/M
 
 // --- STATUS EFFECTS --- //
 poisoned: {name: "Poisoned", description: "Lose 1 HP during each end step."},
-burned: {name: "Burned", description: "Lose 1 HP during each end step per stack, and receive 1 more damage upon attack or skill."},
-frozen: {name: "Frozen", description: "Cannot attack, activate skills or receive damage. Lasts 2 turns per stack. If damaged, reduce the countdown by 1."},
+bound: {name: "Bound", description: "Gets disabled. Does not enable during Start Step."},
+burned: {name: "Burned", description: "Receives 1 more damage."},
+frozen: {name: "Frozen", description: "Cannot do any action. Does not receive damage. If damaged, reduce the countdown by 1."},
 paralysis: {name: "Paralysis", description: "Cannot attack. Lasts 2 turns per stack"},
-soaked: {name: "Soaked", description: "Lose -1 ATK per stack."},
+soaked: {name: "Soaked", description: "Loses -{1} {atk}."},
+withered: {name: "Withered", description: "Cannot be healed."},
 
 // --- WEATHER EFFECTS --- //
 sunlight: {name: "Sunlight", description: "Inferno +{1}/{0}. Radiance {0}/+{1}.", icon: "Icons/Weather/Sunlight.png" },
@@ -2697,6 +2716,7 @@ mystveil: {name: "Mystveil", description: "Sylvan +{1}/+{1}.", icon: "Icons/Weat
 // -------------------- //
 // --- TRAIT SKILLS --- //
 // -------------------- //
+assembly: {name: "Assembly", description: "Summon from the hand | Attach selected spare parts.", icon: "Icons/Trait/Assembly.png" },
 evolve: {name: "Evolve", description: "Get an 'Evolve' counter.", icon: "Icons/Trait/Evolve.png" },
 evolution: {name: "Evolution", description: "Summon from the hand | Attach 1 unit of the same archetype that have an 'Evolve' counter on it.", icon: "Icons/Trait/Evolution.png" },
 voidEvolution: {name: "Void Evolution", description: "Summon from the hand/void | Attach 1 unit of the same type/archetype that have an 'Evolve' counter on it.", icon: "Icons/Trait/VoidEvolution.png" },
@@ -2709,7 +2729,8 @@ mage: {name: "Mage", description: "Spell caster units. Gain {1} Spd.", icon: "Ic
 ranger: {name: "Ranger", description: "Ranged units. Gain {2} Spd.", icon: "Icons/Trait/Ranger.png" },
 relic: {name: "Relic", description: "Attach to Domains of the same Color.", icon: "Icons/Trait/Relic.png" },
 equipment: {name: "Equipment", description: "Attach to Creatures of the same Color/Type/Archetype.", icon: "Icons/Trait/Equipment.png" },
-aura: {name: "Aura", description: "Attach to units of the same Color.", icon: "Icons/Trait/Aura.png" },
+aura: {name: "Aura", description: "Attach to creatures.", icon: "Icons/Trait/Aura.png" },
+enchantment: {name: "Enchantment", description: "Attach to lands.", icon: "Icons/Trait/Enchantment.png" },
 
 // ----- //
 // TYPES //
@@ -2744,10 +2765,12 @@ hybrid: {name: "Hybrid", profile: { hp: 8, atk: 7, def: 4, spd: 5, hc: 2, ep: 3 
 moonfang: {name: "Moonfang", profile: { hp: 5, atk: 9, def: 3, spd: 8, hc: 1, ep: 5 }, icon: "Icons/Archetype/Moonfang.png" , description: "Born of lunar light and shadowed forests, the Moonfang wolves prowl by day with keen senses and silent steps. When the moon rises, their forms twist into fearsome werewolves, claws and fangs sharpened by the night. Driven by instinct and the pull of the moon, they strike with relentless ferocity, hunting as packs that embody both cunning and primal wrath."},
 
 // --- Faefolk --- //
-goblin: {name: "Goblin", profile: { hp: 2, atk: 7, def: 2, spd: 5, hc: 2, ep: 7 }, icon: "Icons/Archetype/Goblin.png" , description: "Small, cunning, and endlessly resourceful, goblins thrive in hidden warrens and shadowed corners. They scurry with mischievous intent, ambushing foes and exploiting every weakness. Though individually weak, they strike in numbers, their chaotic energy turning even the simplest skirmish into unpredictable mayhem."},
 fairy: {name: "Fairy", profile: { hp: 1, atk: 8, def: 2, spd: 8, hc: 2, ep: 10 }, icon: "Icons/Archetype/Fairy.png" , description: "Delicate yet mischievous, fairies flit through forests and meadows, their presence leaving trails of sparkling light. Though small, they wield surprising magic, weaving illusions and enchantments to protect their homes or play tricks on unwary travelers. Their beauty belies a cunning and spirited nature, always dancing between wonder and mischief."},
 elf: {name: "Elf", profile: { hp: 6, atk: 6, def: 4, spd: 6, hc: 2, ep: 7 }, icon: "Icons/Archetype/Elf.png" , description: "Graceful and eternal, elves move with the harmony of the forests they protect. Skilled in both magic and archery, they strike with precision and wisdom, blending into nature as if part of it. Their keen senses and ancient knowledge make them formidable guardians, defending their realms with elegance, patience, and unwavering resolve."},
 satyr: {name: "Satyr", profile: { hp: 7, atk: 5, def: 5, spd: 5, hc: 3, ep: 8 }, icon: "Icons/Archetype/Satyr.png" , description: "Wild-hearted and cunning, Satyrs embody the untamed spirit of nature. Their laughter echoes through moonlit groves as they dance between mischief and wisdom, balancing chaos and creation. Though their revels seem carefree, Satyrs are fierce protectors of their forests—striking swiftly with wit, charm, and primal magic when their woodland sanctuaries are threatened."},
+
+// --- Brute --- // 
+goblin: {name: "Goblin", profile: { hp: 2, atk: 7, def: 2, spd: 5, hc: 2, ep: 7 }, icon: "Icons/Archetype/Goblin.png" , description: "Small, cunning, and endlessly resourceful, goblins thrive in hidden warrens and shadowed corners. They scurry with mischievous intent, ambushing foes and exploiting every weakness. Though individually weak, they strike in numbers, their chaotic energy turning even the simplest skirmish into unpredictable mayhem."},
 orc: {name: "Orcs", profile: { hp: 9, atk: 6, def: 8, spd: 3, hc: 1, ep: 1 }, icon: "Icons/Archetype/Orc.png" , description: "Brutal, relentless, and fiercely proud, orcs thrive on the chaos of battle. Their strength and endurance make them formidable warriors, while their tribal bonds and warlike culture drive them to conquer and dominate. Though often feared for their ferocity, orcs are bound by honor within their clans, turning raw power into disciplined, devastating force."},
 dwarf: {name: "Dwarf", profile: { hp: 8, atk: 5, def: 9, spd: 1, hc: 3, ep: 3 }, icon: "Icons/Archetype/Dwarf.png" , description: "Stout and steadfast, dwarves are master smiths and artisans, shaping stone and metal with unmatched skill. Their halls echo with hammer strikes and the roar of furnaces, as they craft weapons, armor, and treasures of legendary quality. Fierce in defense and meticulous in craft, dwarves embody endurance, precision, and the enduring strength of their mountain homes."},
 
