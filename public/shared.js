@@ -3,7 +3,7 @@ const dummyCards = [
 // --- ELEMENTA GENESIS --- //
 // ------------------------ //
 
-{id: 'VeyaEmeraldDruidess', name: 'Veya, Emerald Druidess', rarity: 'Legendary', image: 'Cards/Human/VeyaEmeraldDruidess.png', flavor: '', 
+{id: 'VeyaEmeraldDruidess', name: 'Veya, Emerald Druidess', rarity: 'Legendary', image: 'Cards/eg/VeyaEmeraldDruidess.png', flavor: '', 
  category: 'Creature', color: 'Green', type: 'Human', archetype: '', trait: 'Mage', hp: 5, atk: 1, def: 0,
  cost: '{G}', ability: '', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{g}', effect: {class: 'Summon'}},
@@ -15,15 +15,15 @@ const dummyCards = [
    effect: {class: 'Heal', amount: 2, target: 2}},
   ]},
 
-{id: 'Verdara', name: 'Verdara', rarity: 'Legendary', image: 'Cards/Dominion/Verdara.png', flavor: '', 
+{id: 'Verdara', name: 'Verdara', rarity: 'Legendary', image: 'Cards/eg/Verdara.png', flavor: '', 
  category: 'Domain', color: 'Green', type: '', hp: 20, cost: '{0}', essence: '{G}', trait: 'Dominion', set: 'ElementaGenesis',
  skill: [{name: 'Flourish', cost: '{g}', requirement: {class: 'CW'}, effect: {class: 'Search', trait: 'Terrain'}}]},
 
-{id: 'SylvanAnima', name: 'Sylvan Anima', rarity: 'Legendary', image: 'Cards/Spell/SylvanAnima.png', flavor: '', 
+{id: 'SylvanAnima', name: 'Sylvan Anima', rarity: 'Legendary', image: 'Cards/eg/SylvanAnima.png', flavor: '', 
  category: 'Spell', color: 'Green', type: 'Aura', cost: '{2}', set: 'ElementaGenesis',
- skill: [{name: 'Cast', cost: '{2}', effect: [{class: 'Essence', color: 'Green', amount: 3}, {class: 'Cast'}]}]},
+ skill: [{name: 'Cast', cost: '{2}', effect: [{class : 'Essence', color: 'Green', amount: 3}, {class: 'Cast'}]}]},
 
-{id: 'DeepwoodUrsan', name: 'Deepwood Ursan', rarity: 'Rare', image: 'Cards/Beast/DeepwoodUrsan.png', flavor: '', 
+{id: 'DeepwoodUrsan', name: 'Deepwood Ursan', rarity: 'Rare', image: 'Cards/eg/DeepwoodUrsan.png', flavor: '', 
  category: 'Creature', color: 'Green', type: 'Beast', archetype: '', trait: '', hp: 10, atk: 4, def: 2,
  cost: '{G}', ability: '', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{1}{g}{g}', effect: {class: 'Summon'}},
@@ -32,7 +32,7 @@ const dummyCards = [
    effect: {class: 'essenceGreen', amount: 1}},
   ]},
 
-{id: 'EarthrootTitan', name: 'Earthroot Titan', rarity: 'Rare', image: 'Cards/Beast/EarthrootTitan.png', flavor: '', 
+{id: 'EarthrootTitan', name: 'Earthroot Titan', rarity: 'Rare', image: 'Cards/eg/EarthrootTitan.png', flavor: '', 
  category: 'Creature', color: 'Green', type: 'Beast', archetype: 'Giant', trait: '', hp: 12, atk: 5, def: 2,
  cost: '{G}', ability: '', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{2}{g}{g}', effect: {class: 'Summon'}},
@@ -41,47 +41,44 @@ const dummyCards = [
    effect: {class: 'essenceGreen', amount: 1}},
   ]},
 
-{id: 'ElementalofFoliages', name: 'Elemental of Foliages', rarity: 'Rare', image: 'Cards/Arbor/ElementalofFoliages.png', flavor: '', 
- category: 'Creature', color: 'Green', type: 'Elemental', archetype: 'Arbor', trait: '', hp: 8, atk: 3, def: 1, cost: '{1}{G}', 
- ability: '', set: 'ElementaGenesis',
+{id: 'ElementalofFoliages', name: 'Elemental of Foliages', rarity: 'Rare', image: 'Cards/eg/ElementalofFoliages.png', flavor: '', 
+ category: 'Creature', color: 'Green', type: 'Elemental', archetype: 'Arbor', trait: '', hp: 8, atk: 3, def: 1, cost: '{g}{g}', 
+ ability: ['Protect','Regenerate'], set: 'ElementaGenesis',
  skill: [
-  {name: 'Arrival',
+  {name: 'Sylvan Discovery',
    activation: {class: 'Arrival'},
-   effect: {class: 'Search', category: 'Spell'}},
-  {name: 'Bloomchant',
-   requirement: {class: 'CW'},
-   effect: {class: 'Essence', color: '{G}', amount: 1}}
+   effect: {class: 'Search', targetColor: 'Green', targetTrait: 'Terrain'}},
  ]},
 
-{id: 'HeartwoodEmeralds', name: 'Heartwood Emeralds', rarity: 'Common', image: 'Cards/Artifact/HeartwoodEmeralds.png', flavor: '', 
- category: 'Artifact', color: 'Green', type: 'Relic', archetype: 'Heartwood', hp: 8, cost: '{1}{G}', set: 'ElementaGenesis',
+{id: 'HeartwoodEmeralds', name: 'Heartwood Emeralds', rarity: 'Common', image: 'Cards/eg/HeartwoodEmeralds.png', flavor: '', 
+ category: 'Artifact', color: 'Green', type: 'Relic', archetype: 'Heartwood', hp: 8, cost: '{1}{g}', set: 'ElementaGenesis',
  skill: [{name: 'Equip', cost: '{1}{g}', effect: {class: 'Equip'}}]},
  
-{id: 'EmeraldVeil', name: 'Emerald Veil', rarity: 'Legendary', image: 'Cards/Terrain/EmeraldVeil.png', flavor: '', 
+{id: 'EmeraldVeil', name: 'Emerald Veil', rarity: 'Legendary', image: 'Cards/eg/EmeraldVeil.png', flavor: '', 
  category: 'Domain', color: 'Green', type: '', hp: 8, cost: '{g}', essence: '{G}', trait: 'Terrain', set: 'ElementaGenesis',
  skill: [{name: 'Terraform', cost: '{g}', effect: {class: 'Terraform'}},
   {name: 'Flourish', cost: '{g}', requirement: {class: 'CW'}, effect: {class: 'Search', trait: 'Terrain'}}]},
 
-{id: 'LifeGrowth', name: 'Life Growth', rarity: 'Common', image: 'Cards/Spell/LifeGrowth.png', flavor: '', 
+{id: 'LifeGrowth', name: 'Life Growth', rarity: 'Common', image: 'Cards/eg/LifeGrowth.png', flavor: '', 
  category: 'Spell', color: 'Green', type: 'Spell', cost: '{g}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{g}', effect: [{class: 'Essence', amount: 2, color: 'Green'}, {class: 'Cast'}]}]},
 
-{id: 'ForestFairy', name: 'Forest Fairy', rarity: 'Common', image: 'Cards/Faefolk/Fairy.png', flavor: '', 
+{id: 'ForestFairy', name: 'Forest Fairy', rarity: 'Common', image: 'Cards/eg/Fairy.png', flavor: '', 
  category: 'Creature', color: 'Green', type: 'Faefolk', archetype: 'Fairy', hp: 2, atk: 1, def: 0,
  cost: '{0}', ability: 'Flying', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{0}', effect: {class: 'Summon'}}]},
  
-{id: 'Satyr', name: 'Satyr', rarity: 'Common', image: 'Cards/Faefolk/Satyr.png', flavor: '', 
+{id: 'Satyr', name: 'Satyr', rarity: 'Common', image: 'Cards/eg/Satyr.png', flavor: '', 
  category: 'Creature', color: 'Green', type: 'Faefolk', archetype: 'Satyr', hp: 5, atk: 1, def: 1,
  cost: '{1}', ability: '', set: 'ElementaGenesis', 
  skill: [{name: 'Summon', cost: '{1}', effect: {class: 'Summon'}}]},
 
-{id: 'WildwoodGoblin', name: 'Forest Goblin', rarity: 'Common', image: 'Cards/Brute/Goblin.png', flavor: '',
+{id: 'WildwoodGoblin', name: 'Forest Goblin', rarity: 'Common', image: 'Cards/eg/Goblin.png', flavor: '',
  category: 'Creature', color: 'Green', type: 'Brute', archetype: 'Goblin', hp: 3, atk: 1, def: 0,
  cost: '{0}', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{0}', effect: {class: 'Summon'}}]},
 
-{id: 'ElementalofLeaves', name: 'Elemental of Leaves', rarity: 'Rare', image: 'Cards/Arbor/ElementalofLeaves.png', flavor: '', 
+{id: 'ElementalofLeaves', name: 'Elemental of Leaves', rarity: 'Rare', image: 'Cards/eg/ElementalofLeaves.png', flavor: '', 
  category: 'Creature', color: 'Green', type: 'Elemental', archetype: 'Arbor', trait: '', hp: 4, atk: 1, def: 0, cost: '{G}', 
  ability: '', set: 'ElementaGenesis',
  skill: [
@@ -93,45 +90,45 @@ const dummyCards = [
    effect: {class: 'Essence', color: '{G}', amount: 1}}
  ]},
 
-{id: 'VineApe', name: 'Vine Ape', rarity: 'Common', image: 'Cards/Beast/VineApe.png', flavor: '', 
+{id: 'VineApe', name: 'Vine Ape', rarity: 'Common', image: 'Cards/fo/VineApe.png', flavor: '', 
  category: 'Creature', color: 'Green', type: 'Beast', archetype: 'Ape', hp: 4, atk: 2, def: 1,
  cost: '{1}', ability: '', set: 'ElementaGenesis', 
  skill: [{name: 'Summon', cost: '{1}', effect: {class: 'Summon'}}]},
 
-{id: 'Forest', name: 'Forest', rarity: 'Common', image: 'Cards/Terrain/Forest.png', flavor: '', 
+{id: 'Forest', name: 'Forest', rarity: 'Common', image: 'Cards/eg/Forest.png', flavor: '', 
  category: 'Domain', color: 'Green', type: 'Terrain', hp: 5, cost: '{0}', essence: '{G}', set: 'ElementaGenesis',
  skill: [{name: 'Terraform', cost: '{0}', effect: {class: 'Terraform'}}]},
 
-{id: 'Thicket', name: 'Thicket', rarity: 'Common', image: 'Cards/Terrain/Thicket.png', flavor: '', 
- category: 'Domain', color: 'Green', type: 'Terrain', hp: 8, cost: '{1}', essence: '{G}{g}', set: 'ElementaGenesis',
- skill: [{name: 'Terraform', cost: '{1}', effect: {class: 'Terraform'}}]},
-
-{id: 'EssenceSurge', name: 'Essence Surge', rarity: 'Common', image: 'Cards/Spell/EssenceSurge.png', flavor: '', 
+{id: 'Flourish', name: 'Flourish', rarity: 'Common', image: 'Cards/eg/Flourish.png', flavor: '', 
+ category: 'Spell', color: 'Green', type: 'Spell', cost: '{2}', set: 'ElementaGenesis',
+ skill: [{name: 'Cast', cost: '{2}', effect: [{class: 'Essence', color: 'Green', amount: 3}, {class: 'Cast'}]}]},
+ 
+{id: 'EssenceSurge', name: 'Essence Surge', rarity: 'Common', image: 'Cards/eg/EssenceSurge.png', flavor: '', 
  category: 'Spell', color: 'Green', type: 'Spell', cost: '{2}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{2}', effect: [{class: 'Essence', color: 'Green', amount: 3}, {class: 'Cast'}]}]},
 
 // --- EG RED --- //
-{id: 'KaelenBlazebornHuntress', name: 'Kaelen, Blazeborn Huntress', rarity: 'Legendary', image: 'Cards/Human/KaelenBlazebornHuntress.png', flavor: '', 
+{id: 'KaelenBlazebornHuntress', name: 'Kaelen, Blazeborn Huntress', rarity: 'Legendary', image: 'Cards/eg/KaelenBlazebornHuntress.png', flavor: '', 
  category: 'Creature', color: 'Red', type: 'Human', archetype: '', trait: 'Ranger', hp: 3, atk: 1, def: 0,
  cost: '{R}', ability: 'Burn', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{r}', effect: {class: 'Summon'}},
   {name: 'Flameshot', cost: '{r}',
    requirement: [{class:'Special'}, {class: 'CW'}], 
    effect: {class: 'Burn', amount: 3}},
-  {name: 'Scorching Arrowcall', cost: '{R}{R}',
-   requirement: [{class:'Special'}, {class: 'CCW'}], 
-   effect: {class: 'Burn', amount: 2, target: 3}}
+  {name: 'Scorching Arrowcall',
+   requirement: [{class:'Ultimate'}, {class: 'CW'}], 
+   effect: {class: 'Rally', amount: 1}}
   ]},
  
-{id: 'Magmaris', name: 'Magmaris', rarity: 'Legendary', image: 'Cards/Dominion/Magmaris.png', flavor: '', 
+{id: 'Magmaris', name: 'Magmaris', rarity: 'Legendary', image: 'Cards/eg/Magmaris.png', flavor: '', 
  category: 'Domain', color: 'Red', type: '', hp: 20, cost: '{0}', essence: '{R}', trait: 'Dominion', set: 'ElementaGenesis',
  skill: [{name: 'Ignite', cost: '{r}', requirement: {class: 'CW'}, effect: {class: 'Burn', amount: 1}}]},
  
-{id: 'InfernoEruption', name: 'Inferno Eruption', rarity: 'Legendary', image: 'Cards/Spell/InfernoEruption.png', flavor: '', 
+{id: 'InfernoEruption', name: 'Inferno Eruption', rarity: 'Legendary', image: 'Cards/eg/InfernoEruption.png', flavor: '', 
  category: 'Spell', color: 'Red', type: 'Fire', trait: '', cost: '{1}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{0}', effect: {class: 'Cast'}}]},
 
-{id: 'CinderpeakTyrant', name: 'Cinderpeak Tyrant', rarity: 'Rare', image: 'Cards/Brute/CinderpeakTyrant.png', flavor: '', 
+{id: 'CinderpeakTyrant', name: 'Cinderpeak Tyrant', rarity: 'Rare', image: 'Cards/eg/CinderpeakTyrant.png', flavor: '', 
  category: 'Creature', color: 'Red', type: 'Brute', archetype: 'Giant', trait: '', hp: 10, atk: 5, def: 2,
  cost: '{2}{r}', ability: 'Crush', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{1}{r}{r}', effect: {class: 'Summon'}},
@@ -140,7 +137,7 @@ const dummyCards = [
    effect: {class: 'Burn', amount: 3}},
   ]},
 
-{id: 'BlazescaleWarDrake', name: 'Blazescale War-Drake', rarity: 'Rare', image: 'Cards/Dragon/BlazescaleWarDrake.png', flavor: '', 
+{id: 'BlazescaleWarDrake', name: 'Blazescale War-Drake', rarity: 'Rare', image: 'Cards/eg/BlazescaleWarDrake.png', flavor: '', 
  category: 'Creature', color: 'Red', type: 'Dragon', archetype: 'Blazescale', trait: 'Ranger', hp: 8, atk: 4, def: 2,
  cost: '{1}{r}{r}', ability: 'Rush', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{r}{r}', effect: {class: 'Summon'}},
@@ -149,16 +146,16 @@ const dummyCards = [
   effect: {class: 'Burn', amount: 3}},
  ]},
 
-{id: 'ElementalofFlames', name: 'Elemental of Flames', rarity: 'Rare', image: 'Cards/Elemental/ElementalofFlames.png', flavor: '', 
- category: 'Creature', color: 'Red', type: 'Elemental', archetype: 'Pyro', trait: '', hp: 6, atk: 3, def: 0,
- cost: '{1}{r}', ability: 'Scorch', set: 'ElementaGenesis',
+{id: 'ElementalofFlames', name: 'Elemental of Flames', rarity: 'Rare', image: 'Cards/eg/ElementalofFlames.png', flavor: '', 
+ category: 'Creature', color: 'Red', type: 'Elemental', archetype: 'Pyro', trait: '', hp: 6, atk: 4, def: 0,
+ cost: '{r}{r}', ability: ['Elusive','Scorch'], set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{r}{r}', effect: {class: 'Summon'}},
  {name: 'Inferno Discovery', activation: {class:'Arrival'},
   effect: {class: 'Search', amount: 1, targetColor: 'Red', targetTrait: 'Terrain'}},
  ]},
 
-{id: 'MagmarisMercenary', name: 'Magmaris Mercenary', rarity: 'Rare', image: 'Cards/Warrior/MagmarisMercenary.png', flavor: '', 
- category: 'Creature', color: 'Red', type: 'Human', archetype: '', trait: '', hp: 4, atk: 2, def: 1,
+{id: 'MagmarisMercenary', name: 'Magmaris Mercenary', rarity: 'Rare', image: 'Cards/eg/MagmarisMercenary.png', flavor: '', 
+ category: 'Creature', color: 'Red', type: 'Human', archetype: '', trait: '', hp: 5, atk: 2, def: 1,
  cost: '{1}{r}', ability: 'Defiant', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{r}{r}', effect: {class: 'Summon'}},
  {name: 'Flaming Slash', cost: '{r}', requirement: [{class:'Special'}, {class: 'CW'}], 
@@ -167,34 +164,26 @@ const dummyCards = [
   effect: [{class: 'Draw', amount: 1}, {class: 'Discard', amount: 1}},
  ]},
 
-{id: 'MoltenExpanse', name: 'Molten Expanse', rarity: 'Rare', image: 'Cards/Domain/MoltenExpanse.png', flavor: '', 
+{id: 'MoltenExpanse', name: 'Molten Expanse', rarity: 'Rare', image: 'Cards/eg/MoltenExpanse.png', flavor: '', 
  category: 'Domain', color: 'Red', type: 'Terrain', hp: 7, cost: '{r}', essence: '{R}', set: 'ElementaGenesis',
  skill: [{name: 'Terraform', cost: '{r}', effect: {class: 'Terraform'}},
   {name: 'Flourish', cost: '{g}', requirement: {class: 'CW'}, effect: {class: 'Search', trait: 'Terrain'}}]},
 
-{id: 'EmberstormCyclone', name: 'Emberstorm Cyclone', rarity: 'Rare', image: 'Cards/Spell/EmberstormCyclone.png', flavor: '', 
+{id: 'EmberstormCyclone', name: 'Emberstorm Cyclone', rarity: 'Rare', image: 'Cards/eg/EmberstormCyclone.png', flavor: '', 
  category: 'Spell', color: 'Red', type: 'Fire', trait: 'Aura', cost: '{2}{r}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{2}{r}', effect: {class: 'Cast'}}]},
 
-{id: 'Emberling', name: 'Emberling', rarity: 'Common', image: 'Cards/Beast/Emberling.png', flavor: '',
+{id: 'Emberling', name: 'Emberling', rarity: 'Common', image: 'Cards/eg/Emberling.png', flavor: '',
  category: 'Creature', color: 'Red', type: 'Beast', archetype: 'Fireland', hp: 2, atk: 1, def: 0,
- cost: '{0}', ability: 'Burn', set: 'ElementaGenesis',
- skill: [{name: 'Summon', cost: '{0}', effect: {class: 'Summon'}},
-  {name:'Discard', cost: '{r}', description: 'Burn 1 enemy',
-   requirement: {class: 'Discard'},
-   effect: {class: 'Burn', amount: 0}},
- ]},
+ cost: '{0}', ability: ['Burn','Rush'], set: 'ElementaGenesis',
+ skill: [{name: 'Summon', cost: '{0}', effect: {class: 'Summon'}}]},
  
-{id: 'ElementalofEmbers', name: 'Elemental of Embers', rarity: 'Rare', image: 'Cards/Elemental/ElementalofEmbers.png', flavor: '', 
+{id: 'ElementalofEmbers', name: 'Elemental of Embers', rarity: 'Rare', image: 'Cards/eg/ElementalofEmbers.png', flavor: '', 
  category: 'Creature', color: 'Red', type: 'Elemental', archetype: 'Pyro', trait: '', hp: 3, atk: 2, def: 0,
- cost: '{r}', ability: 'Scorch', set: 'ElementaGenesis',
- skill: [{name: 'Summon', cost: '{r}', effect: {class: 'Summon'}},
- {name: 'Flameshot', cost: '{r}',
-  requirement: [{class:'Special'}, {class: 'CW'}], 
-  effect: {class: 'Burn', amount: 3}},
- ]},
+ cost: '{r}', ability: ['Elusive','Scorch'], set: 'ElementaGenesis',
+ skill: [{name: 'Summon', cost: '{r}', effect: {class: 'Summon'}}]},
 
-{id: 'Volcano', name: 'Volcano', rarity: 'Common', image: 'Cards/Terrain/Volcano.png', flavor: '', 
+{id: 'Volcano', name: 'Volcano', rarity: 'Common', image: 'Cards/eg/Volcano.png', flavor: '', 
  category: 'Domain', color: 'Red', type: 'Terrain', hp: 5, cost: '{0}', essence: '{R}', set: 'ElementaGenesis',
  skill: [{name: 'Terraform', cost: '{0}', effect: {class: 'Terraform'}}]},
 
@@ -202,12 +191,12 @@ const dummyCards = [
  category: 'Spell', color: 'Red', type: 'Fire', cost: '{r}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{1}', effect: {class: 'Cast'}}]},
 
-{id: 'EssenceAssault', name: 'Essence Assault', rarity: 'Common', image: 'Cards/Spell/EssenceAssault.png', flavor: '', 
+{id: 'EssenceAssault', name: 'Essence Assault', rarity: 'Common', image: 'Cards/eg/EssenceAssault.png', flavor: '', 
  category: 'Spell', color: 'Red', type: 'Spell', cost: '{1}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{1}', effect: {class: 'Cast'}}]},
  
 // --- EG BLUE --- //
-{id: 'SerenyaTideboundEnchantress', name: 'Serenya, Tidebound Enchantress', rarity: 'Legendary', image: 'Cards/Human/SerenyaTideboundEnchantress.png', flavor: '', 
+{id: 'SerenyaTideboundEnchantress', name: 'Serenya, Tidebound Enchantress', rarity: 'Legendary', image: 'Cards/eg/SerenyaTideboundEnchantress.png', flavor: '', 
  category: 'Creature', color: 'Blue', type: 'Human', archetype: '', trait: 'Mage', hp: 5, atk: 1, def: 0,
  cost: '{U}', ability: 'Soak', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{u}', effect: {class: 'Summon'}},
@@ -217,16 +206,16 @@ const dummyCards = [
    effect: {class: 'Repel', amount: 2, target:'opponentCreatures'}}
  ]},
  
-{id: 'Umarion', name: 'Umarion', rarity: 'Legendary', image: 'Cards/Dominion/Umarion.png', flavor: '', 
+{id: 'Umarion', name: 'Umarion', rarity: 'Legendary', image: 'Cards/eg/Umarion.png', flavor: '', 
  category: 'Domain', color: 'Blue', type: '', hp: 20, cost: '{0}', essence: '{U}', trait: 'Dominion', set: 'ElementaGenesis',
  skill: [{name: 'Insight', cost: '{u}', requirement: {class: 'CW'}, effect: {class: 'Draw', amount:1}},
  {name: 'Insight', cost: '{u}', requirement: {class: 'CW'}, effect: {class: 'Draw', amount:1}}]},
  
-{id: 'TidalMaelstrom', name: 'Tidal Maelstrom', rarity: 'Legendary', image: 'Cards/Spells/TidalMaelstrom.png', flavor: '', 
+{id: 'TidalMaelstrom', name: 'Tidal Maelstrom', rarity: 'Legendary', image: 'Cards/eg/TidalMaelstrom.png', flavor: '', 
  category: 'Spell', color: 'Blue', type: 'Water', cost: '{2}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{u}{u}{u}', effect: [{class: 'Soak', amount: 2, target: 3}, {class: 'Cast'}]}]},
 
-{id: 'GiantMaelstromSquid', name: 'Giant Maelstrom-Squid', rarity: 'Rare', image: 'Cards/Oceanic/GiantMaelstromSquid.png', flavor: '', 
+{id: 'GiantMaelstromSquid', name: 'Giant Maelstrom-Squid', rarity: 'Rare', image: 'Cards/eg/GiantMaelstromSquid.png', flavor: '', 
  category: 'Creature', color: 'Blue', type: 'Oceanic', archetype: '', trait: '', hp: 11, atk: 3, def: 1,
  cost: '{1}{u}{U}', ability: '', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{1}{u}{u}', effect: {class: 'Summon'}},
@@ -235,7 +224,7 @@ const dummyCards = [
    effect: {class: 'Bind', amount: 0, target: 'opponentCreatures' }},
  ]},
  
-{id: 'WavecrashWhale', name: 'Wavecrash Whale', rarity: 'Rare', image: 'Cards/Oceanic/WavecrashWhale.png', flavor: '', 
+{id: 'WavecrashWhale', name: 'Wavecrash Whale', rarity: 'Rare', image: 'Cards/eg/WavecrashWhale.png', flavor: '', 
  category: 'Creature', color: 'Blue', type: 'Oceanic', archetype: '', trait: '', hp: 18, atk: 4, def: 1,
  cost: '{3}{u}{U}', ability: 'Dive', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{3}{u}{u}', effect: {class: 'Summon'}},
@@ -244,30 +233,26 @@ const dummyCards = [
    effect: {class: 'Token', tokenChoices: ['MerfolkWarrior', 'MerfolkMermaid'], amount: }},
  ]},
 
-{id: 'ElementalofTorrents', name: 'Elemental of Torrents', rarity: 'Rare', image: 'Cards/Elemental/ElementalofTorrents.png', flavor: '', 
+{id: 'ElementalofTorrents', name: 'Elemental of Torrents', rarity: 'Rare', image: 'Cards/eg/ElementalofTorrents.png', flavor: '', 
  category: 'Creature', color: 'Blue', type: 'Elemental', archetype: 'Hydral', trait: '', hp: 8, atk: 3, def: 0,
- cost: '{1}{u}', ability: 'Drench', set: 'ElementaGenesis',
- skill: [{name: 'Summon', cost: '{1}{u}', effect: {class: 'Summon'}},
+ cost: '{u}{u}', ability: 'Drench', set: 'ElementaGenesis',
+ skill: [{name: 'Summon', cost: '{u}{u}', effect: {class: 'Summon'}},
   {name: 'Tidal Discovery',
    activation: {class: 'Arrival'}, 
    effect: {class: 'Search', amount: 1, targetColor: 'Blue', targetTrait: 'Terrain'}},
  ]},
 
-{id: 'Mermaid', name: 'Mermaid', rarity: 'Common', image: 'Cards/Oceanic/Mermaid.png', flavor: '', 
+{id: 'Mermaid', name: 'Mermaid', rarity: 'Common', image: 'Cards/eg/Mermaid.png', flavor: '', 
  category: 'Creature', color: 'Blue', type: 'Oceanic', archetype: 'Merfolk', trait: '', hp: 4, atk: 1, def: 0,
  cost: '{0}', ability: 'Dive', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{0}', effect: {class: 'Summon'}}]},
 
-{id: 'ElementalofDroplets', name: 'Elemental of Droplets', rarity: 'Common', image: 'Cards/Elemental/ElementalofDroplets.png', flavor: '', 
+{id: 'ElementalofDroplets', name: 'Elemental of Droplets', rarity: 'Common', image: 'Cards/eg/ElementalofDroplets.png', flavor: '', 
  category: 'Creature', color: 'Blue', type: 'Elemental', archetype: 'Hydral', trait: '', hp: 4, atk: 1, def: 0,
- cost: '{1}{u}', ability: ['Drench', 'Elusive'], set: 'ElementaGenesis',
- skill: [{name: 'Summon', cost: '{1}{u}', effect: {class: 'Summon'}},
-  {name: '', cost: '{u}',
-   requirement: [{class:'Special'}, {class: 'CW'}], 
-   effect: {class: 'Token', tokenChoices: ['MerfolkWarrior', 'MerfolkMermaid'], amount: }},
- ]},
+ cost: '{u}', ability: ['Drench','Elusive'], set: 'ElementaGenesis',
+ skill: [{name: 'Summon', cost: '{u}', effect: {class: 'Summon'}}]},
 
-{id: 'Ocean', name: 'Ocean', rarity: 'Common', image: 'Cards/Terrain/Ocean.png', flavor: '', 
+{id: 'Ocean', name: 'Ocean', rarity: 'Common', image: 'Cards/eg/Ocean.png', flavor: '', 
  category: 'Domain', color: 'Blue', type: 'Terrain', hp: 5, cost: '{0}', essence: '{U}', set: 'ElementaGenesis',
  skill: [{name: 'Terraform', cost: '{0}', effect: {class: 'Terraform'}}]},
 
@@ -276,103 +261,105 @@ const dummyCards = [
  skill: [{name: 'Cast', cost: '{1}', effect: [{class: 'Draw', amount: 2}, {class: 'Cast'}]}]},
 
 // --- EG YELLOW --- //
-{id: 'ZyraThunderbladeDuelist', name: 'Zyra, Thunderblade Duelist', rarity: 'Legendary', image: 'Cards/Human/ZyraThunderbladeDuelist.png', flavor: '', 
+{id: 'ZyraThunderbladeDuelist', name: 'Zyra, Thunderblade Duelist', rarity: 'Legendary', image: 'Cards/eg/ZyraThunderbladeDuelist.png', flavor: '', 
  category: 'Creature', color: 'Yellow', type: 'Human', archetype: '', trait: 'Warrior', hp: 5, atk: 1, def: 1,
  cost: '{Y}', ability: ['Dash'], set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{y}', effect: {class: 'Summon'}},
+  {name: 'Dash', cost: '{0}',
+   effect: {class: 'Dash'}},
   {name: 'Thunderclap Tempo', cost: '{y}',
    requirement: {class:'Special'}, 
    effect: {class: 'Flurry', amount: 1}},
-  {name:'Blade Tempest, cost: '{Y}{Y}', requirement: {class: 'Ultimate'}, effect: {class: 'Strike', target: 3, amount: 2}}
+  {name: 'Blade Tempest', cost: '{Y}{Y}', requirement: {class: 'Ultimate'}, effect: {class: 'Strike', target: 3, amount: 2}}
  ]},
          
-{id: 'Aetherion', name: 'Aetherion', rarity: 'Legendary', image: 'Cards/Dominion/Aetherion.png', flavor: '', 
+{id: 'Aetherion', name: 'Aetherion', rarity: 'Legendary', image: 'Cards/eg/Aetherion.png', flavor: '', 
  category: 'Domain', color: 'Yellow', type: '', hp: 20, cost: '{0}', essence: '{Y}', trait: 'Dominion', set: 'ElementaGenesis',
  skill: [{name: 'Shock', cost: '{y}', requirement: {class: 'CW'}, effect: {class: 'Strike', amount: 2}}]},
          
-{id: 'TempestDevastation', name: 'Tempest Devastation', rarity: 'Legendary', image: 'Cards/Spell/TempestDevastation.png', flavor: '', 
+{id: 'TempestDevastation', name: 'Tempest Devastation', rarity: 'Legendary', image: 'Cards/eg/TempestDevastation.png', flavor: '', 
  category: 'Spell', color: 'Yellow', type: 'Thunder', cost: '{y}{y}{y}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{y}{y}{y}', effect: [{class: 'Strike', amount: 3}, {class: 'Cast'}]}]},
          
-{id: 'GalestrikeRoc', name: 'Galestrike Roc', rarity: 'Rare', image: 'Cards/Avian/GalestrikeRoc.png', flavor: '', 
+{id: 'GalestrikeRoc', name: 'Galestrike Roc', rarity: 'Rare', image: 'Cards/eg/GalestrikeRoc.png', flavor: '', 
  category: 'Creature', color: 'Yellow', type: 'Avian', archetype: '', trait: '', hp: 6, atk: 4, def: 2,
  cost: '{1}{y}', ability: 'Flying', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{1}{y}', effect: {class: 'Summon'}}]},
 
-{id: 'ElementalofGales', name: 'Elemental of Gales', rarity: 'Rare', image: 'Cards/Elemental/ElementalofGales.png', flavor: '', 
+{id: 'ElementalofGales', name: 'Elemental of Gales', rarity: 'Rare', image: 'Cards/eg/ElementalofGales.png', flavor: '', 
  category: 'Creature', color: 'Yellow', type: 'Elemental', archetype: 'Wind', trait: '', hp: 6, atk: 3, def: 0,
  cost: '{1}{y}', ability: ['Elusive','Flying'], set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{y}{y}', effect: {class: 'Summon'}}]},
 
-{id: 'ElementalofLightning', name: 'Elemental of Lightning', rarity: 'Rare', image: 'Cards/Elemental/ElementalofLightning.png', flavor: '', 
+{id: 'ElementalofLightning', name: 'Elemental of Lightning', rarity: 'Rare', image: 'Cards/eg/ElementalofLightning.png', flavor: '', 
  category: 'Creature', color: 'Yellow', type: 'Elemental', archetype: 'Voltkin', trait: '', hp: 5, atk: 3, def: 0,
  cost: '{y}{y}', ability: ['Elusive','Static'], set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{y}{y}', effect: {class: 'Summon'}}]},
          
-{id: 'StratosCloudBeast', name: 'Stratos Cloud Beast', rarity: 'Rare', image: 'Cards/Beast/StratosCloudBeast.png', flavor: '', 
+{id: 'StratosCloudBeast', name: 'Stratos Cloud Beast', rarity: 'Rare', image: 'Cards/eg/StratosCloudBeast.png', flavor: '', 
  category: 'Creature', color: 'Yellow', type: 'Beast', archetype: '', trait: '', hp: 6, atk: 4, def: 0,
  cost: '{2}{y}', ability: 'Flying', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{y}{y}', effect: {class: 'Summon'}}]},
          
-{id: 'SkywardArchipelago', name: 'Skyward Archipelago', rarity: 'Rare', image: 'Cards/Terrain/SkywardArchipelago.png', flavor: '', 
+{id: 'SkywardArchipelago', name: 'Skyward Archipelago', rarity: 'Rare', image: 'Cards/eg/SkywardArchipelago.png', flavor: '', 
  category: 'Domain', color: 'Yellow', type: 'Terrain', hp: 6, cost: '{y}', essence: '{Y}', set: 'ElementaGenesis',
  skill: [{name: 'Terraform', cost: '{y}', effect: {class: 'Terraform'}},
   {name: 'Flourish', cost: '{g}', requirement: {class: 'CW'}, effect: {class: 'Search', trait: 'Terrain'}}]},
          
-{id: 'PiercingLightning', name: 'Piercing Lightning', rarity: 'Rare', image: 'Cards/Spell/PiercingLightning.png', flavor: '', 
+{id: 'PiercingLightning', name: 'Piercing Lightning', rarity: 'Rare', image: 'Cards/eg/PiercingLightning.png', flavor: '', 
  category: 'Spell', color: 'Yellow', type: 'Thunder', cost: '{y}{y}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{y}{y}', effect: [{class: 'Strike', amount: 3}, {class: 'Cast'}]}]},
 
-{id: 'Birdfolk', name: 'Birdfolk', rarity: 'Common', image: 'Cards/Avian/Birdfolk.png', flavor: '', 
+{id: 'Birdfolk', name: 'Birdfolk', rarity: 'Common', image: 'Cards/eg/Birdfolk.png', flavor: '', 
  category: 'Creature', color: 'Yellow', type: 'Avian', archetype: 'Zephyra', hp: 4, atk: 2, def: 1, 
  cost: '{y}', ability: 'Flying', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{y}{y}', effect: {class: 'Summon'}}]},
 
-{id: 'SuncrestFalcon', name: 'Suncrest Falcon', rarity: 'Common', image: 'Cards/Avian/SuncrestFalcon.png', flavor: '', 
+{id: 'SuncrestFalcon', name: 'Suncrest Falcon', rarity: 'Common', image: 'Cards/eg/SuncrestFalcon.png', flavor: '', 
  category: 'Creature', color: 'Yellow', type: 'Avian', archetype: 'Zephyra', hp: 3, atk: 2, def: 1, 
  cost: '{y}{y}', ability: 'Flying', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{y}{y}', effect: {class: 'Summon'}}]},
 
-{id: 'ElementalofSparks', name: 'Elemental of Sparks', rarity: 'Rare', image: 'Cards/Elemental/ElementalofSparks.png', flavor: '', 
+{id: 'ElementalofSparks', name: 'Elemental of Sparks', rarity: 'Rare', image: 'Cards/eg/ElementalofSparks.png', flavor: '', 
  category: 'Creature', color: 'Yellow', type: 'Elemental', archetype: 'Voltkin', trait: '', hp: 2, atk: 2, def: 0,
  cost: '{y}', ability: ['Elusive','Static'], set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{y}{y}', effect: {class: 'Summon'}}]},
 
-{id: 'ZephyrSprite', name: 'Zephyr Sprite', rarity: 'Rare', image: 'Cards/Elemental/ZephyrSprite.png', flavor: '', 
+{id: 'ZephyrSprite', name: 'Zephyr Sprite', rarity: 'Rare', image: 'Cards/eg/ZephyrSprite.png', flavor: '', 
  category: 'Creature', color: 'Yellow', type: 'Elemental', archetype: 'Wind', trait: '', hp: 2, atk: 2, def: 0,
  cost: '{y}', ability: 'Flying', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{y}{y}', effect: {class: 'Summon'}}]},
 
-{id: 'Peaks', name: 'Peaks', rarity: 'Common', image: 'Cards/Terrain/Peaks.png', flavor: '', 
+{id: 'Peaks', name: 'Peaks', rarity: 'Common', image: 'Cards/eg/Peaks.png', flavor: '', 
  category: 'Domain', color: 'Yellow', type: 'Terrain', hp: 5, cost: '{0}', essence: '{Y}', set: 'ElementaGenesis',
  skill: [{name: 'Terraform', cost: '{0}', effect: {class: 'Terraform'}}]},
 
-{id: 'Thunderlash', name: 'Thunderlash', rarity: 'Common', image: 'Cards/Spell/Thunderlash.png', flavor: '', 
+{id: 'Thunderlash', name: 'Thunderlash', rarity: 'Common', image: 'Cards/eg/Thunderlash.png', flavor: '', 
  category: 'Spell', color: 'Yellow', type: 'Spell', cost: '{y}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{1}', effect: [{class: 'Strike', amount: 3}, {class: 'Cast'}]}]},
 
-{id: 'EssenceRay', name: 'Essence Ray', rarity: 'Common', image: 'Cards/Spell/EssenceRay.png', flavor: '', 
+{id: 'EssenceRay', name: 'Essence Ray', rarity: 'Common', image: 'Cards/eg/EssenceRay.png', flavor: '', 
  category: 'Spell', color: 'Yellow', type: 'Spell', cost: '{1}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{1}', effect: [{class: 'Strike', amount: 3}, {class: 'Cast'}]}]},
 
 // --- EG GRAY --- //
-{id: 'RudgarIronfistMauler', name: 'Rudgar, Ironfist Mauler', rarity: 'Legendary', image: 'Cards/Brute/RudgarIronfistMauler.png', flavor: '', 
+{id: 'RudgarIronfistMauler', name: 'Rudgar, Ironfist Mauler', rarity: 'Legendary', image: 'Cards/eg/RudgarIronfistMauler.png', flavor: '', 
  category: 'Creature', color: 'Gray', type: 'Human', archetype: '', trait: 'Warrior', hp: 5, atk: 2, def: 1,
  cost: '{C}', ability: 'Crush', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{c}', effect: {class: 'Summon'}},
   {name: 'Stonebreaker Punch', cost: '{c}',
    requirement: [{class:'Special'}, {class: 'CW'}], 
    effect: {class: 'Strike', target: 1, amount: 5}},
-  {name: 'Village Hero', cost: '{c}{c}',
+  {name: 'Village Hero', cost: '{c}',
    requirement: {class:'Ultimate'}, 
-   effect: [{class: 'Ascend', amount: 1},{class: 'Rally', amount: 1}]}
+   effect: {class: 'Ascend', amount: 1}}
  ]},
          
-{id: 'Drakzul', name: 'Drakzul', rarity: 'Legendary', image: 'Cards/Dominion/Drakzul.png', flavor: '', 
+{id: 'Drakzul', name: 'Drakzul', rarity: 'Legendary', image: 'Cards/eg/Drakzul.png', flavor: '', 
  category: 'Domain', color: 'Gray', type: '', hp: 20, cost: '{0}', essence: '{C}', trait: 'Dominion', set: 'ElementaGenesis',
  skill: [{name: 'Fortify', cost: '{c}', requirement: {class: 'CW'}, effect: {class: 'Armor', amount: 1}}]},
 
-{id: 'TerraEmergence', name: 'Terra Emergence', rarity: 'Legendary', image: 'Cards/Spell/TerraEmergence.png', flavor: '', 
+{id: 'TerraEmergence', name: 'Terra Emergence', rarity: 'Legendary', image: 'Cards/eg/TerraEmergence.png', flavor: '', 
  category: 'Spell', color: 'Gray', type: '', cost: '{c}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{c}{c}', effect: [{class: 'Cast'}, {class: 'Search', targetTrait: 'Terrain'}]},
   {name: 'Expel', cost: '{c}',
@@ -380,7 +367,7 @@ const dummyCards = [
    effect: {class: 'Search', targetTrait: 'Terrain'},
  ]},
 
-{id: 'RockmaulRhino', name: 'Rockmaul Rhino', rarity: 'Rare', image: 'Cards/Beast/RockmaulRhino.png', flavor: '', 
+{id: 'RockmaulRhino', name: 'Rockmaul Rhino', rarity: 'Rare', image: 'Cards/eg/RockmaulRhino.png', flavor: '', 
  category: 'Creature', color: 'Gray', type: 'Beast', archetype: '', trait: '', hp: 8, atk: 4, def: 2,
  cost: '{C}', ability: 'Crush', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{c}', effect: {class: 'Summon'}},
@@ -392,7 +379,7 @@ const dummyCards = [
    effect: {class: 'Strike', target: 3, amount: 2}}
  ]},
 
-{id: 'ElementalofBoulders', name: 'Elemental of Boulders', rarity: 'Rare', image: 'Cards/Golem/ElementalofBoulders.png', flavor: '', 
+{id: 'ElementalofBoulders', name: 'Elemental of Boulders', rarity: 'Rare', image: 'Cards/eg/ElementalofBoulders.png', flavor: '', 
  category: 'Creature', color: 'Gray', type: 'Elemental', archetype: 'Golem', trait: '', hp: 6, atk: 4, def: 3,
  cost: '{c}{c}', ability: 'Immunity', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{c}', effect: {class: 'Summon'}},
@@ -400,7 +387,7 @@ const dummyCards = [
    effect: {class: 'Search', amount: 1, targetColor: 'Gray', targetTrait: 'Terrain'}}
  ]},
 
-{id: 'SlatebackLizard', name: 'Slateback Lizard', rarity: 'Rare', image: 'Cards/Reptile/SlatebackLizard.png', flavor: '', 
+{id: 'SlatebackLizard', name: 'Slateback Lizard', rarity: 'Rare', image: 'Cards/eg/SlatebackLizard.png', flavor: '', 
  category: 'Creature', color: 'Gray', type: 'Reptile', archetype: '', trait: '', hp: 6, atk: 4, def: 2,
  cost: '{C}', ability: 'Crush', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{c}', effect: {class: 'Summon'}},
@@ -412,46 +399,46 @@ const dummyCards = [
    effect: {class: 'Strike', target: 3, amount: 2}}
  ]},
 
- {id: 'SeismicRupture', name: 'Seismic Rupture', rarity: 'Common', image: 'Cards/Spell/SeismicRupture.png', flavor: '', 
+ {id: 'SeismicRupture', name: 'Seismic Rupture', rarity: 'Common', image: 'Cards/eg/SeismicRupture.png', flavor: '', 
  category: 'Spell', color: 'Gray', type: '', cost: '{c}{c}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{c}{c}', effect: {class: 'Cast'}},
   {name: 'Disable', cost: '{1}', 
    effect: {class: 'Disable', amount: 2, target: 3}},
  ]},
 
-{id: 'Orc', name: 'Orc', rarity: 'Common', image: 'Cards/Brute/Orc.png', flavor: '', 
- category: 'Creature', color: 'Gray', type: 'Beast', archetype: 'Orc', trait: 'Warrior', hp: 5, atk: 3, def: 2,
- cost: '{C}', ability: 'Defiant', set: 'ElementaGenesis',
+{id: 'Orc', name: 'Orc', rarity: 'Common', image: 'Cards/eg/Orc.png', flavor: '', 
+ category: 'Creature', color: 'Gray', type: 'Beast', archetype: 'Orc', trait: 'Warrior', hp: 5, atk: 3, def: 1,
+ cost: '{C}', ability: ['Defiant','Intimidate'], set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{c}', effect: {class: 'Summon'}},
  ]},
 
-{id: 'BarrensTrampler', name: 'Barrens Trampler', rarity: 'Common', image: 'Cards/Beast/BarrensTrampler.png', flavor: '', 
+{id: 'BarrensTrampler', name: 'Barrens Trampler', rarity: 'Common', image: 'Cards/eg/BarrensTrampler.png', flavor: '', 
  category: 'Creature', color: 'Gray', type: 'Beast', archetype: 'Orc', trait: '', hp: 10, atk: 2, def: 2,
  cost: '{C}', ability: 'Crush', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{c}', effect: {class: 'Summon'}},
  ]},
 
-{id: 'RockshellArmadillo', name: 'Rockshell Armadillo', rarity: 'Common', image: 'Cards/Beast/RockshellArmadillo.png', flavor: '', 
+{id: 'RockshellArmadillo', name: 'Rockshell Armadillo', rarity: 'Common', image: 'Cards/eg/RockshellArmadillo.png', flavor: '', 
  category: 'Creature', color: 'Gray', type: 'Beast', archetype: '', trait: '', hp: 3, atk: 1, def: 2,
  cost: '{C}', ability: ['Defender','Unbreakable'], set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{c}', effect: {class: 'Summon'}},
  ]},
 
-{id: 'ElementalofPebbles', name: 'Elemental of Pebbles', rarity: 'Rare', image: 'Cards/Golem/ElementalofPebbles.png', flavor: '', 
+{id: 'ElementalofPebbles', name: 'Elemental of Pebbles', rarity: 'Rare', image: 'Cards/eg/ElementalofPebbles.png', flavor: '', 
  category: 'Creature', color: 'Gray', type: 'Elemental', archetype: 'Golem', trait: '', hp: 3, atk: 2, def: 2,
- cost: '{C}', ability: '', set: 'ElementaGenesis',
+ cost: '{C}', ability: ['Dormant','Immunity'], set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{c}', effect: {class: 'Summon'}},
  ]},
 
-{id: 'Mountain', name: 'Mountain', rarity: 'Common', image: 'Cards/Terrain/Mountain.png', flavor: '', 
+{id: 'Mountain', name: 'Mountain', rarity: 'Common', image: 'Cards/eg/Mountain.png', flavor: '', 
  category: 'Domain', color: 'Gray', type: 'Terrain', hp: 5, cost: '{0}', essence: '{C}', set: 'ElementaGenesis',
  skill: [{name: 'Terraform', cost: '{0}', effect: {class: 'Terraform'}}]},
 
-{id: 'StoneFist', name: 'Stone Fist', rarity: 'Common', image: 'Cards/Spell/StoneFist.png', flavor: '', 
+{id: 'StoneFist', name: 'Stone Fist', rarity: 'Common', image: 'Cards/eg/StoneFist.png', flavor: '', 
  category: 'Spell', color: 'Gray', type: 'Aura', cost: '{c}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{0}', effect: {class: 'Cast'}}]},
          
-{id: 'EssenceBarrier', name: 'Essence Barrier', rarity: 'Common', image: 'Cards/Spell/EssenceBarrier.png', flavor: '', 
+{id: 'EssenceBarrier', name: 'Essence Barrier', rarity: 'Common', image: 'Cards/eg/EssenceBarrier.png', flavor: '', 
  category: 'Spell', color: 'Gray', type: 'Aura', cost: '{1}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{0}', effect: {class: 'Cast'}},
   {name: 'Inspire', cost: '{1}', 
@@ -459,7 +446,7 @@ const dummyCards = [
  ]},
 
 // --- EG PURPLE --- //
-{id: 'SelgorCorruptedWarlock', name: 'Selgor, Corrupted Warlock', rarity: 'Legendary', image: 'Cards/Human/SelgorCorruptedWarlock.png', flavor: '', 
+{id: 'SelgorCorruptedWarlock', name: 'Selgor, Corrupted Warlock', rarity: 'Legendary', image: 'Cards/eg/SelgorCorruptedWarlock.png', flavor: '', 
  category: 'Creature', color: 'Purple', type: 'Human', archetype: '', trait: 'Mage', hp: 4, atk: 1, def: 1,
  cost: '{P}', ability: 'Wither', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{p}', effect: {class: 'Summon'}},
@@ -471,18 +458,18 @@ const dummyCards = [
    effect: {class: 'Strike', amount: 1}}
  ]},
 
-{id: 'Virkul', name: 'Virkul', rarity: 'Legendary', image: 'Cards/Dominion/Virkul.png', flavor: '', 
+{id: 'Virkul', name: 'Virkul', rarity: 'Legendary', image: 'Cards/eg/Virkul.png', flavor: '', 
  category: 'Domain', color: 'Purple', type: '', hp: 20, cost: '{0}', essence: '{P}', trait: 'Dominion', set: 'ElementaGenesis',
  skill: [{name: 'Corrupt', cost: '{p}', requirement: {class: 'CW'}, effect: {class: 'Curse', amount: 1}}]},
          
-{id: 'CursedWorldfall', name: 'Cursed Worldfall', rarity: 'Legendary', image: 'Cards/Spell/CursedWorldfall.png', flavor: '', 
+{id: 'CursedWorldfall', name: 'Cursed Worldfall', rarity: 'Legendary', image: 'Cards/eg/CursedWorldfall.png', flavor: '', 
  category: 'Spell', color: 'Purple', type: 'Aura', cost: '{p}{p}', set: 'ElementaGenesis',
  skill: [
   {name: 'Cast', cost: '{p}{p}',
    effect: [{class: 'Aura'}, {class: 'Hindrance'}]}
  ]},
 
-{id: 'GoliathCroaker', name: 'Goliath Croaker', rarity: 'Rare', image: 'Cards/Beast/GoliathCroaker.png', flavor: '', 
+{id: 'GoliathCroaker', name: 'Goliath Croaker', rarity: 'Rare', image: 'Cards/eg/GoliathCroaker.png', flavor: '', 
  category: 'Creature', color: 'Purple', type: 'Beast', archetype: '', trait: '', hp: 11, atk: 3, def: 2,
  cost: '{1}{p}{P}', ability: 'Poisonous', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{1}{p}{p}', effect: {class: 'Summon'}},
@@ -490,7 +477,7 @@ const dummyCards = [
    effect: {class: 'Reanimate'}},
  ]},
 
-{id: 'DreadcoilViper', name: 'Dreadcoil Viper', rarity: 'Rare', image: 'Cards/Beast/DreadcoilViper.png', flavor: '', 
+{id: 'DreadcoilViper', name: 'Dreadcoil Viper', rarity: 'Rare', image: 'Cards/eg/DreadcoilViper.png', flavor: '', 
  category: 'Creature', color: 'Purple', type: 'Beast', archetype: '', trait: '', hp: 7, atk: 3, def: 1,
  cost: '{p}{P}', ability: 'Poisonous', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{p}{p}', effect: {class: 'Summon'}},
@@ -498,7 +485,7 @@ const dummyCards = [
    effect: {class: 'Reanimate'}},
  ]},
 
-{id: 'ElementalofMiasmas', name: 'Elemental of Miasmas', rarity: 'Rare', image: 'Cards/Beast/ElementalofMiasmas.png', flavor: '', 
+{id: 'ElementalofMiasmas', name: 'Elemental of Miasmas', rarity: 'Rare', image: 'Cards/eg/ElementalofMiasmas.png', flavor: '', 
  category: 'Creature', color: 'Purple', type: 'Elemental', archetype: 'Corruptor', trait: '', hp: 7, atk: 3, def: 1,
  cost: '{p}{p}', ability: 'Poisonous', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{p}{p}', effect: {class: 'Summon'}},
@@ -506,7 +493,7 @@ const dummyCards = [
   effect: {class: 'Search', amount: 1, targetColor: 'Gray', targetTrait: 'Terrain'}}
  ]},
 
-{id: 'FesterglowFrontier', name: 'Festerglow Frontier', rarity: 'Rare', image: 'Cards/Terrain/FesterglowFrontier.png', flavor: '', 
+{id: 'FesterglowFrontier', name: 'Festerglow Frontier', rarity: 'Rare', image: 'Cards/eg/FesterglowFrontier.png', flavor: '', 
  category: 'Domain', color: 'Purple', type: 'Terrain', hp: 6, cost: '{p}', essence: '{p}', set: 'ElementaGenesis',
  skill: [{name: 'Terraform', cost: '{p}', effect: {class: 'Terraform'}},
   {name: 'Flourish', cost: '{g}', requirement: {class: 'CW'}, effect: {class: 'Search', trait: 'Terrain'}}]},
@@ -519,7 +506,7 @@ const dummyCards = [
    effect: {class: 'Search', targetTrait: 'Terrain'},
  ]},
 
-{id: 'GiantHornet', name: 'GiantHornet', rarity: 'Rare', image: 'Cards/Beast/GiantHornet.png', flavor: '', 
+{id: 'GiantHornet', name: 'GiantHornet', rarity: 'Rare', image: 'Cards/eg/GiantHornet.png', flavor: '', 
  category: 'Creature', color: 'Purple', type: 'Beast', archetype: '', trait: '', hp: 3, atk: 2, def: 0,
  cost: '{p}{p}', ability: 'Toxic', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{p}{p}', effect: {class: 'Summon'}},
@@ -527,23 +514,23 @@ const dummyCards = [
    effect: {class: 'Reanimate'}},
  ]},
 
-{id: 'ElementalofToxins', name: 'Elemental of Toxins', rarity: 'Rare', image: 'Cards/Elemental/ElementalofToxins.png', flavor: '', 
+{id: 'ElementalofToxins', name: 'Elemental of Toxins', rarity: 'Rare', image: 'Cards/eg/ElementalofToxins.png', flavor: '', 
  category: 'Creature', color: 'Purple', type: 'Elemental', archetype: 'Corruptor', trait: '', hp: 4, atk: 1, def: 0,
  cost: '{p}', ability: ['Elusive','Poisonous'], set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{p}{p}', effect: {class: 'Summon'}}]},
          
-{id: 'Swamp', name: 'Swamp', rarity: 'Common', image: 'Cards/Terrain/Swamp.png', flavor: '', 
+{id: 'Swamp', name: 'Swamp', rarity: 'Common', image: 'Cards/eg/Swamp.png', flavor: '', 
  category: 'Domain', color: 'Purple', type: 'Terrain', hp: 5, cost: '{0}', essence: '{P}', set: 'ElementaGenesis',
  skill: [{name: 'Terraform', cost: '{0}', effect: {class: 'Terraform'}}]},
 
-{id: 'ToxicSpores', name: 'Toxic Spores', rarity: 'Common', image: 'Cards/Spell/ToxicSpores.png', flavor: '', 
+{id: 'ToxicSpores', name: 'Toxic Spores', rarity: 'Common', image: 'Cards/eg/ToxicSpores.png', flavor: '', 
  category: 'Spell', color: 'Purple', type: 'Spell', cost: '{1}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{2}', effect: {class: 'Cast'}},
   {name: 'Spell', cost: '{1}', 
    effect: {class: 'Strike', amount: 3}},
  ]},
          
-{id: 'EssenceBreak', name: 'Essence Break', rarity: 'Common', image: 'Cards/Spell/EssenceBreak.png', flavor: '', 
+{id: 'EssenceBreak', name: 'Essence Break', rarity: 'Common', image: 'Cards/eg/EssenceBreak.png', flavor: '', 
  category: 'Spell', color: 'Purple', type: 'Spell', cost: '{1}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{2}', effect: {class: 'Cast'}},
   {name: 'Spell', cost: '{1}', 
@@ -551,9 +538,9 @@ const dummyCards = [
  ]},
 
 // --- EG WHITE --- //
-{id: 'ElyndraDawnbladeofHeavens', name: 'Elyndra, Dawnblade of Heavens', rarity: 'Legendary', image: 'Cards/Human/ElyndraDawnbladeofHeavens.png', flavor: '', 
+{id: 'ElyndraDawnbladeofHeavens', name: 'Elyndra, Dawnblade of Heavens', rarity: 'Legendary', image: 'Cards/eg/ElyndraDawnbladeofHeavens.png', flavor: '', 
  category: 'Creature', color: 'White', type: 'Human', archetype: '', trait: 'Warrior', hp: 5, atk: 2, def: 1,
- cost:'{w}', ability:'Aegis', set: 'ElementaGenesis',
+ cost:'{w}', ability: 'Aegis', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{w}', effect: {class: 'Summon'}},
   {name: 'Dawnbreak', cost: '{w}',
    requirement: {class:'Special'}, 
@@ -563,27 +550,22 @@ const dummyCards = [
    effect: [{class: 'Strike', amount: 4}, {status: 'Aegis'}],
  ]},
 
-{id: 'Solmara', name: 'Solmara', rarity: 'Legendary', image: 'Cards/Dominion/Solmara.png', flavor: '', 
+{id: 'Solmara', name: 'Solmara', rarity: 'Legendary', image: 'Cards/eg/Solmara.png', flavor: '', 
  category: 'Domain', color: 'White', type: '', hp: 20, cost: '{0}', essence: '{W}', trait: 'Dominion', set: 'ElementaGenesis',
  skill: [{name: 'Blessing', cost: '{w}', requirement: {class: 'CW'}, effect: {class: 'Terraform'}}]},
 
-{id: 'RadiantJudgement', name: 'Radiant Judgement', rarity: 'Legendary', image: 'Cards/Spell/RadiantJudgement.png', flavor: '', 
+{id: 'RadiantJudgement', name: 'Radiant Judgement', rarity: 'Legendary', image: 'Cards/eg/RadiantJudgement.png', flavor: '', 
  category: 'Spell', color: 'White', type: 'Spell', cost: '{1}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{w}{w}', effect: {class: 'Cast'}}]},
 
-{id: 'Pegasus', name: 'Pegasus', rarity: 'Rare', image: 'Cards/Beast/Pegasus.png', flavor: '', 
+{id: 'Pegasus', name: 'Pegasus', rarity: 'Rare', image: 'Cards/eg/Pegasus.png', flavor: '', 
  category: 'Creature', color: 'White', type: 'Beast', archetype: '', trait: '', hp: 6, atk: 2, def: 1,
  cost: '{2}{W}', ability: 'Flying', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{2}{w}', effect: {class: 'Summon'}}]},
 
-{id: 'MysticalBaize', name: 'Mystical Baize', rarity: 'Rare', image: 'Cards/Beast/MysticalBaize.png', flavor: '', 
- category: 'Creature', color: 'White', type: 'Beast', archetype: '', trait: '', hp: 6, atk: 2, def: 1,
- cost: '{2}{W}', ability: 'Flying', set: 'ElementaGenesis',
- skill: [{name: 'Summon', cost: '{2}{w}', effect: {class: 'Summon'}}]},
-
-{id: 'ElementalofLusters', name: 'Elemental of Lusters', rarity: 'Rare', image: 'Cards/Elemental/ElementalofLusters.png', flavor: '', 
+{id: 'ElementalofLusters', name: 'Elemental of Lusters', rarity: 'Rare', image: 'Cards/eg/ElementalofLusters.png', flavor: '', 
  category: 'Creature', color: 'White', type: 'Elemental', archetype: 'Luminaut', trait: '', hp: 7, atk: 3, def: 0,
- cost: '{1}{W}', ability: 'Elusive', set: 'ElementaGenesis',
+ cost: '{w}{w}', ability: 'Elusive', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{2}{w}', effect: {class: 'Summon'}},
  {name: 'Radiant Severance', cost: '{w}{W}',
    activation: {class: 'Arrival'}, 
@@ -593,22 +575,22 @@ const dummyCards = [
    effect: {class: 'Disable', target: 'opponentCreatures'}, 
   ]},
 
-{id: 'ElementalofGleams', name: 'Elemental of Gleams', rarity: 'Common', image: 'Cards/Elemental/ElementalofGleams.png', flavor: '', 
+{id: 'ElementalofGleams', name: 'Elemental of Gleams', rarity: 'Common', image: 'Cards/eg/ElementalofGleams.png', flavor: '', 
  category: 'Creature', color: 'White', type: 'Elemental', archetype: 'Luminaut', trait: '', hp: 5, atk: 1, def: 0,
  cost: '{W}', ability: 'Elusive', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{2}{w}', effect: {class: 'Summon'}}]},
          
-{id: 'LightmaneHorse', name: 'Lightmane Horse', rarity: 'Common', image: 'Cards/Beast/LightmaneHorse.png', flavor: '', 
+{id: 'LightmaneHorse', name: 'Lightmane Horse', rarity: 'Common', image: 'Cards/eg/LightmaneHorse.png', flavor: '', 
  category: 'Creature', color: 'White', type: 'Beast', archetype: '', trait: '', hp: 6, atk: 2, def: 1,
  cost: '{2}{W}', ability: 'Rush', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{2}{w}', effect: {class: 'Summon'}}]},
 
-{id: 'SheperdDog', name: 'Sheperd Dog', rarity: 'Common', image: 'Cards/Beast/SheperdDog.png', flavor: '', 
+{id: 'SheperdDog', name: 'Sheperd Dog', rarity: 'Common', image: 'Cards/eg/SheperdDog.png', flavor: '', 
  category: 'Creature', color: 'White', type: 'Beast', archetype: '', trait: '', hp: 6, atk: 2, def: 1,
  cost: '{W}', ability: '', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{w}', effect: {class: 'Summon'}}]},
 
-{id: 'GuardianOwl', name: 'Guardian Owl', rarity: 'Common', image: 'Cards/Avian/GuardianOwl.png', flavor: '', 
+{id: 'GuardianOwl', name: 'Guardian Owl', rarity: 'Common', image: 'Cards/eg/GuardianOwl.png', flavor: '', 
  category: 'Creature', color: 'White', type: 'Avian', archetype: '', trait: '', hp: 6, atk: 2, def: 1,
  cost: '{W}', ability: 'Flying', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{w}', effect: {class: 'Summon'}},
@@ -617,44 +599,47 @@ const dummyCards = [
    effect: {class: 'Inspire', def: 1}},
  ]},
 
-{id: 'SunbatheHills', name: 'Sunbathe Hills', rarity: 'Common', image: 'Cards/Terrain/SunbatheHills.png', flavor: '', 
+{id: 'SunbatheHills', name: 'Sunbathe Hills', rarity: 'Common', image: 'Cards/eg/SunbatheHills.png', flavor: '', 
  category: 'Domain', color: 'White', type: 'Terrain', hp: 8, cost: '{1}', essence: '{W}', set: 'ElementaGenesis',
  skill: [{name: 'Terraform', cost: '{1}', effect: {class: 'Terraform'}}]},
 
-{id: 'Plains', name: 'Plains', rarity: 'Common', image: 'Cards/Terrain/Plains.png', flavor: '', 
+{id: 'Plains', name: 'Plains', rarity: 'Common', image: 'Cards/eg/Plains.png', flavor: '', 
  category: 'Domain', color: 'White', type: 'Terrain', hp: 5, cost: '{0}', essence: '{W}', set: 'ElementaGenesis',
  skill: [{name: 'Terraform', cost: '{0}', effect: {class: 'Terraform'}}]},
 
-{id: 'HaloFlare', name: 'Halo Flare', rarity: 'Common', image: 'Cards/Spells/HaloFlare.png', flavor: '', 
+{id: 'HaloFlare', name: 'Halo Flare', rarity: 'Common', image: 'Cards/eg/HaloFlare.png', flavor: '', 
  category: 'Spell', color: 'White', type: 'Spell', cost: '{1}{w}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{1}{w}', effect: {class: 'Cast'}}]},
 
-{id: 'EssenceBlessing', name: 'Essence Blessing', rarity: 'Common', image: 'Cards/Spells/EssenceBlessing.png', flavor: '', 
+{id: 'EssenceBlessing', name: 'Essence Blessing', rarity: 'Common', image: 'Cards/eg/EssenceBlessing.png', flavor: '', 
  category: 'Spell', color: 'White', type: 'Spell', cost: '{1}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{0}', effect: {class: 'Cast'}}]},
          
 // --- EG BLACK --- //
-{id: 'VelmiraMistressofSilence', name: 'Velmira, Mistress of Silence', rarity: 'Legendary', image: 'Cards/Human/VelmiraMistressofSilence.png', flavor: '', 
- category: 'Creature', color: 'Black', type: 'Human', archetype: '', trait: 'Mage', hp: 4, atk: 2, def: 0,
+{id: 'VelmiraMistressofSilence', name: 'Velmira, Mistress of Silence', rarity: 'Legendary', image: 'Cards/eg/VelmiraMistressofSilence.png', flavor: '', 
+ category: 'Creature', color: 'Black', type: 'Human', archetype: '', trait: 'Mage', hp: 4, atk: 1, def: 0,
  cost: '{B}', ability: 'Veil', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{b}', effect: {class: 'Summon'}},
-  {name:'Lifetithe', cost: '{B}',
-   requirement: {class:'CCW'}, 
-   effect: {class: 'Token', token: 'Imp'}},
-  {name: 'Eternal Silence', cost: '{b}{b}',
-   requirement: [{class:'Ultimate'}, {class: 'CCW'}], 
-   effect: {class: 'Seal', amount: 0, target: 3}
+  {name:'Shadowseal Vigor',
+   activation: {class:'Sealed'}, 
+   effect: {class: 'Rally', amount: 1}},
+  {name: 'Eternal Silence',
+   requirement: [{class:'Ultimate'}, {class: 'CW'}], 
+   effect: {class: 'Seal', amount: 0, target: 1},
+  {name: 'Eternal Silence', cost: '{b}',
+   requirement: [{class:'Ultimate'}, {class: 'CW'}], 
+   effect: {class: 'Seal', amount: 2, target: 2},
  ]},
 
-{id: 'Nocthyra', name: 'Nocthyra', rarity: 'Legendary', image: 'Cards/Dominion/Nocthyra.png', flavor: '', 
+{id: 'Nocthyra', name: 'Nocthyra', rarity: 'Legendary', image: 'Cards/eg/Nocthyra.png', flavor: '', 
  category: 'Domain', color: 'Black', type: '', hp: 20, cost: '{0}', essence: '{B}', trait: 'Dominion', set: 'ElementaGenesis',
  skill: [{name: 'Life-Tithe', cost: '{b}', requirement: {class: 'CW'}, effect: [{class: 'Soulcost', amount: 1}, {class: 'Draw', amount: 2}]}]},
 
-{id: 'UmbralNova', name: 'Umbral Nova', rarity: 'Legendary', image: 'Cards/Spell/UmbralNova.png', flavor: '', 
+{id: 'UmbralNova', name: 'Umbral Nova', rarity: 'Legendary', image: 'Cards/eg/UmbralNova.png', flavor: '', 
  category: 'Spell', color: 'Black', type: '', cost: '{2}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{0}', effect: {class: 'Cast'}}]},
 
-{id: 'BroodTyrant', name: 'Brood Tyrant', rarity: 'Rare', image: 'Cards/Dragon/BroodTyrant.png', flavor: '', 
+{id: 'BroodTyrant', name: 'Brood Tyrant', rarity: 'Rare', image: 'Cards/eg/BroodTyrant.png', flavor: '', 
  category: 'Creature', color: 'Black', type: 'Dragon', archetype: '', trait: 'Mage', hp: 7, atk: 4, def: 2,
  cost: '{B}', ability: 'Flying', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{b}', effect: {class: 'Summon'}},
@@ -663,41 +648,62 @@ const dummyCards = [
    effect: {class: 'Token', token: 'Imp'}},
  ]},
 
-{id: 'GraveweaverWarlock', name: 'Graveweaver Warlock', rarity: 'Rare', image: 'Cards/Orc/GraveweaverWarlock.png', flavor: '', 
+{id: 'GraveweaverWarlock', name: 'Graveweaver Warlock', rarity: 'Rare', image: 'Cards/eg/GraveweaverWarlock.png', flavor: '', 
  category: 'Creature', color: 'Black', type: 'Brute', archetype: 'Orc', trait: 'Mage', hp: 6, atk: 3, def: 2,
  cost: '{B}', ability: '', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{b}', effect: {class: 'Summon'}},
   {name:'Lifetithe', cost: '{B}',
-   requirement: {class:'CCW'}, 
+   requirement: {class:'CW'}, 
    effect: {class: 'Token', token: 'Imp'}},
  ]},
 
-{id: 'ElementalofShadows', name: 'Elemental of Shadows', rarity: 'Rare', image: 'Cards/Elemental/ElementalofShadows.png', flavor: '', 
- category: 'Creature', color: 'Black', type: 'Elemental', archetype: 'Obscurid', trait: 'Mage', hp: 6, atk: 3, def: 0,
- cost: '{B}', ability: '', set: 'ElementaGenesis',
+{id: 'ElementalofShadows', name: 'Elemental of Shadows', rarity: 'Rare', image: 'Cards/eg/ElementalofShadows.png', flavor: '', 
+ category: 'Creature', color: 'Black', type: 'Elemental', archetype: 'Obscurid', trait: '', hp: 6, atk: 3, def: 0,
+ cost: '{B}', ability: ['Ambush','Elusive'], set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{b}', effect: {class: 'Summon'}},
-  {name:'Lifetithe', cost: '{B}',
-   requirement: {class:'CCW'}, 
-   effect: {class: 'Token', token: 'Imp'}},
+  {name:'Umbral Discovery', activation: {class:'Arrival'}, 
+   effect: {class: 'Search', amount: 1, targetColor: 'Black', targetTrait: 'Terrain'}},
  ]},
 
-{id: 'UmbrawindHollow', name: 'Umbrawind Hollow', rarity: 'Rare', image: 'Cards/Domain/UmbrawindHollow.png', flavor: '', 
+{id: 'UmbrawindHollow', name: 'Umbrawind Hollow', rarity: 'Rare', image: 'Cards/eg/UmbrawindHollow.png', flavor: '', 
  category: 'Domain', color: 'Black', type: 'Terrain', hp: 8, cost: '{1}{b}', essence: '{B}', set: 'ElementaGenesis'},
 
-{id: 'Mindbreak', name: 'Mindbreak', rarity: 'Rare', image: 'Cards/Spell/Mindbreak.png', flavor: '', 
+{id: 'Mindbreak', name: 'Mindbreak', rarity: 'Rare', image: 'Cards/eg/Mindbreak.png', flavor: '', 
  category: 'Spell', color: 'Black', type: '', cost: '{2}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{0}', effect: {class: 'Cast'}}]},
          
-{id: 'ElementalofShades', name: 'Elemental of Shades', rarity: 'Common', image: 'Cards/Elemental/ElementalofShades.png', flavor: '', 
- category: 'Creature', color: 'Black', type: 'Elemental', archetype: 'Obscurid', trait: 'Mage', hp: 3, atk: 2, def: 0,
- cost: '{B}', ability: '', set: 'ElementaGenesis',
+{id: 'ElementalofShades', name: 'Elemental of Shades', rarity: 'Common', image: 'Cards/eg/ElementalofShades.png', flavor: '', 
+ category: 'Creature', color: 'Black', type: 'Elemental', archetype: 'Obscurid', trait: '', hp: 3, atk: 2, def: 0,
+ cost: '{B}', ability: ['Ambush','Elusive'], set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{b}', effect: {class: 'Summon'}},
   {name:'Lifetithe', cost: '{B}',
    requirement: {class:'CCW'}, 
-   effect: {class: 'Token', token: 'Imp'}},
- ]},
+   effect: {class: 'Token', token: 'Imp'}}]},
+         
+{id: 'Skeleton', name: 'Skeleton', rarity: 'Common', image: 'Cards/eg/Skeleton.png', flavor: '', 
+ category: 'Creature', color: 'Black', type: 'Undead', archetype: 'Skullframe', hp: 1, atk: 1, def: 0,
+ cost: '{0}', ability: 'Immunity', set: 'ElementaGenesis',
+ skill: [{name: 'Summon', cost: '{0}', effect: {class: 'Summon'}},
+ {name: 'Reanimate', cost: '{1}', effect: {class: 'Reanimate'}}]},
 
-{id: 'CarrionCrow', name: 'CarrionCrow', rarity: 'Common', image: 'Cards/Avian/CarrionCrow.png', flavor: '', 
+{id: 'Zombie', name: 'Zombie', rarity: 'Common', image: 'Cards/eg/Zombie.png', flavor: '', 
+ category: 'Creature', color: 'Black', type: 'Undead', archetype: '', hp: 3, atk: 2, def: 0,
+ cost: '{1}', ability: ['Curse','Immunity'], set: 'ElementaGenesis',
+ skill: [{name: 'Summon', cost: '{1}', effect: {class: 'Summon'}},
+ {name: 'Reanimate', cost: '{b}', effect: {class: 'Reanimate'}}]},
+
+{id: 'Ghost', name: 'Ghost', rarity: 'Common', image: 'Cards/eg/Ghost.png', flavor: '', 
+ category: 'Creature', color: 'Black', type: 'Undead', archetype: '', hp: 1, atk: 1, def: 0,
+ cost: '{0}', ability: ['Elusive','Intimidate'], set: 'ElementaGenesis',
+ skill: [{name: 'Summon', cost: '{0}', effect: {class: 'Summon'}},
+ {name: 'Reanimate', cost: '{b}', effect: {class: 'Reanimate'}}]}, 
+
+{id: 'Bat', name: 'Bat', rarity: 'Common', image: 'Cards/eg/Bat.png', flavor: '', 
+ category: 'Creature', color: 'Black', type: ['Beast', 'Avian'], archetype: 'Vampiric', hp: 3, atk: 1, def: 0,
+ cost: '{1}', ability: ['Drain','Flying'], set: 'ElementaGenesis',
+ skill: [{name: 'Summon', cost: '{1}', effect: {class: 'Summon'}}]},
+         
+{id: 'CarrionCrow', name: 'CarrionCrow', rarity: 'Common', image: 'Cards/eg/CarrionCrow.png', flavor: '', 
  category: 'Creature', color: 'Black', type: 'Avian', archetype: 'Duskwing', trait: 'Mage', hp: 3, atk: 2, def: 0,
  cost: '{1}', ability: '', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{b}', effect: {class: 'Summon'}},
@@ -706,16 +712,16 @@ const dummyCards = [
    effect: {class: 'Token', token: 'Imp'}},
  ]},
          
-{id: 'Shadowland', name: 'Shadowland', rarity: 'Common', image: 'Cards/Terrain/Shadowland.png', flavor: '', 
+{id: 'Shadowland', name: 'Shadowland', rarity: 'Common', image: 'Cards/eg/Shadowland.png', flavor: '', 
  category: 'Domain', color: 'Black', type: 'Terrain', hp: 5, cost: '{0}', essence: '{B}', set: 'ElementaGenesis',
  skill: [{name: 'Terraform', cost: '{0}', effect: {class: 'Terraform'}}]},
 
-{id: 'ShadowLeech', name: 'Shadow Leech', rarity: 'Common', image: 'Cards/Spell/ShadowLeech.png', flavor: '', 
+{id: 'ShadowLeech', name: 'Shadow Leech', rarity: 'Common', image: 'Cards/eg/ShadowLeech.png', flavor: '', 
  category: 'Spell', color: 'Black', type: '', cost: '{b}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{0}', effect: {class: 'Cast'}}]},
          
-{id: 'EssencePurge', name: 'Essence Purge', rarity: 'Common', image: 'Cards/Spell/EssencePurge.png', flavor: '', 
- category: 'Spell', color: 'Black', type: 'Aura', cost: '{2}', set: 'ElementaGenesis',
+{id: 'EssencePurge', name: 'Essence Purge', rarity: 'Common', image: 'Cards/eg/EssencePurge.png', flavor: '', 
+ category: 'Spell', color: 'Black', type: 'Spell', cost: '{2}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{0}', effect: {class: 'Cast'}}]},
 
 // DRAGONS //
@@ -1333,17 +1339,7 @@ const dummyCards = [
   {name: 'Transform', cost: '{b}{b}',
    effect: {class: 'Transform', name: 'Werewolf'}},
  ]},
-{id: 'Skeleton', name: 'Skeleton', rarity: 'Common', image: 'Cards/Skullframe/Skeleton.png', flavor: '', 
- category: 'Creature', color: 'Black', type: 'Undead', archetype: 'Skullframe', hp: 1, atk: 1, def: 1,
- cost: '{0}', ability: 'Immunity', set: 'ElementaGenesis',
- skill: [{name: 'Summon', cost: '{0}', effect: {class: 'Summon'}},
-         {name: 'Reanimate', cost: '{B}', effect: {class: 'Reanimate'}},
- ]},
 
-{id: 'Bat', name: 'Bat', rarity: 'Common', image: 'Cards/Vampiric/Bat.png', flavor: '', 
- category: 'Creature', color: 'Black', type: ['Beast', 'Avian'], archetype: 'Vampiric', hp: 3, atk: 2, def: 0,
- cost: '{1}', ability: ['Drain','Flying'], set: 'ElementaGenesis',
- skill: [{name: 'Summon', cost: '{1}', effect: {class: 'Summon'}}]},
 {id: 'Imp', name: 'Imp', rarity: 'Common', image: 'Cards/Demon/Imp.png', flavor: '', 
  category: 'Creature', color: 'Black', type: 'Demon', archetype: '', hp: 1, atk: 2, def: 0,
  cost: '{1}', ability: ['Ambush','Flying'], set: 'ElementaGenesis',
@@ -2263,9 +2259,17 @@ Dragon Terrains
           effect: [{class: 'Equip', type: 'Dragon'}, {class: 'Inspire', armor: 2},
                    {class: 'Inspire', ability: 'Immunity'}, {class: 'Inspire', def: 1}]},
  ]},
+
+ {id: 'MysticalBaize', name: 'Mystical Baize', rarity: 'Rare', image: 'Cards/dh/MysticalBaize.png', flavor: '', 
+ category: 'Creature', color: 'White', type: 'Beast', archetype: '', trait: '', hp: 6, atk: 2, def: 1,
+ cost: '{2}{W}', ability: 'Flying', set: 'ElementaGenesis',
+ skill: [{name: 'Summon', cost: '{2}{w}', effect: {class: 'Summon'}}]},
  
 // --- Green Domains --- //
-
+{id: 'Thicket', name: 'Thicket', rarity: 'Common', image: 'Cards/FTOG/Thicket.png', flavor: '', 
+ category: 'Domain', color: 'Green', type: 'Terrain', hp: 8, cost: '{1}', essence: '{G}{g}', set: 'ElementaGenesis',
+ skill: [{name: 'Terraform', cost: '{1}', effect: {class: 'Terraform'}}]},
+ 
 {id: 'GoblinVillage', name: 'Goblin Village', rarity: 'Common', image: 'Cards/Brute/GoblinVillage.png', flavor: '', 
  category: 'Domain', color: 'Green', type: 'Terrain', hp: 5, cost: '{0}', essence: '{G}', set: 'StandardPack2'},
  
