@@ -37,7 +37,7 @@ const DEFAULT_DECKS = [
 ]},
 // --- GOBLIN DECKS --- //
 { id: 'Goblin1', name: 'Thornwine Chorus', color: ['green', 'red', 'gray', 'purple', 'black'], difficulty: '⭐',
-  image: 'Images/Avatar/Goblin.png', bannerArt: 'Images/Banner/GreenBanner.png', cardbackArt: 'Images/Cardback/SylvanGoblin.png',
+  image: 'Images/Avatar/WildwoodGoblin.png', bannerArt: 'Images/Banner/GreenBanner.png', cardbackArt: 'Images/Cardback/Goblin.png',
   cards: [ { id: 'Verdara', amount: 1 },
     { id: 'FaunDiviner', amount: 3 },      
     { id: 'WildHuntress', amount: 3 },
@@ -52,7 +52,7 @@ const DEFAULT_DECKS = [
 ]},
 // --- SATYR DECKS --- //
 { id: 'Satyr1', name: 'Thornwine Chorus', color: ['green', 'purple'], difficulty: '⭐',
-  image: 'Images/Avatar/Satyr.png', bannerArt: 'Images/Banner/GreenBanner.png', cardbackArt: 'Images/Cardback/Fairy.png',
+  image: 'Images/Avatar/Satyr.png', bannerArt: 'Images/Banner/GreenBanner.png', cardbackArt: 'Images/Cardback/Satyr.png',
   cards: [ { id: 'Verdara', amount: 1 },
     { id: 'FaunDiviner', amount: 3 },      
     { id: 'WildHuntress', amount: 3 },
@@ -64,7 +64,7 @@ const DEFAULT_DECKS = [
     { id: 'EmeraldVeil', amount: 3 }, { id: 'Forest', amount: 3 },
 ]},
 { id: 'Satyr2', name: 'Thornwine Chorus', color: ['green', 'purple'], difficulty: '⭐⭐',
-  image: 'Images/Avatar/FaelyraWildhornEmpress.png', bannerArt: 'Images/Banner/GreenBanner.png', cardbackArt: 'Images/Cardback/Fairy.png',
+  image: 'Images/Avatar/FaelyraWildhornEmpress.png', bannerArt: 'Images/Banner/GreenBanner.png', cardbackArt: 'Images/Cardback/Satyr.png',
   cards: [ { id: 'Verdara', amount: 1 }, { id: 'FaelyraWildhornEmpress', amount: 1 }, 
     { id: 'LifeGrowth', amount: 1 },
     { id: 'FaunDiviner', amount: 3 },      
@@ -77,7 +77,7 @@ const DEFAULT_DECKS = [
     { id: 'EmeraldVeil', amount: 3 }, { id: 'Forest', amount: 3 },
 ]},
 { id: 'Satyr3', name: 'Thornwine Chorus', color: ['green', 'purple'], difficulty: '⭐⭐',
-  image: 'Images/Avatar/FaelyraWildhornEmpress.png', bannerArt: 'Images/Banner/GreenBanner.png', cardbackArt: 'Images/Cardback/Fairy.png',
+  image: 'Images/Avatar/FaelyraWildhornEmpress.png', bannerArt: 'Images/Banner/GreenBanner.png', cardbackArt: 'Images/Cardback/Satyr.png',
   cards: [ { id: 'Verdara', amount: 1 }, { id: 'FaelyraWildhornEmpress', amount: 1 }, 
     { id: 'LifeGrowth', amount: 1 },
     { id: 'FaunDiviner', amount: 3 },      
@@ -268,7 +268,7 @@ const DEFAULT_DECKS = [
 ]},
 // --- ARBOR DECKS --- //
 { id: 'Arbor2', name: 'Oakhaven Awakening', color: ['green', 'black'], difficulty: '⭐⭐',
-    image: 'Images/Avatar/TreantWitch.png', bannerArt: 'Images/Banner/GreenBanner.png', cardbackArt: 'Images/Cardback/CBFairy.png',
+    image: 'Images/Avatar/TreantWitch.png', bannerArt: 'Images/Banner/GreenBanner.png', cardbackArt: 'Images/Cardback/Arbor.png',
     cards: [ { id: 'Verdara', amount: 1 },
       { id: 'SylvaniaThornEmpress', amount: 1 },      
       { id: 'TreantWitch', amount: 2 },
@@ -405,7 +405,7 @@ const DEFAULT_DECKS = [
 
 // --- GOLEM DECKS --- //
 { id: 'Golem2', name: 'Pebble Sentinels', color: ['red','gray'], difficulty: '⭐⭐',
-    image: 'Images/Avatar/FireGolem.png', bannerArt: 'Images/Banner/RedBanner.png', cardbackArt: 'Images/Cardback/RedCardback.png',
+    image: 'Images/Avatar/FireGolem.png', bannerArt: 'Images/Banner/RedBanner.png', cardbackArt: 'Images/Cardback/Golem.png',
     cards: [ { id: 'Ashkar', amount: 1 },
       { id: 'SmolderingGolemheart', amount: 2 },
       { id: 'GolemheartSentinel', amount: 3 },
@@ -417,7 +417,7 @@ const DEFAULT_DECKS = [
       { id: 'Volcano', amount: 3 }, { id: 'Mountain', amount: 3 },
 ]},
 { id: 'Golem4', name: 'Flameforge Guardians', color: ['red','gray'], difficulty: '⭐⭐⭐⭐',
-    image: 'Images/Avatar/GolemheartSentinel.png', bannerArt: 'Images/Banner/RedBanner.png', cardbackArt: 'Images/Cardback/RedCardback.png',
+    image: 'Images/Avatar/GolemheartSentinel.png', bannerArt: 'Images/Banner/RedBanner.png', cardbackArt: 'Images/Cardback/Golem.png',
     cards: [ { id: 'Ashkar', amount: 1 },
       { id: 'SmolderingGolemheart', amount: 2 },
       { id: 'GolemheartSentinel', amount: 3 },
@@ -429,7 +429,7 @@ const DEFAULT_DECKS = [
       { id: 'Volcano', amount: 3 }, { id: 'Mountain', amount: 3 },
 ]},
 { id: 'Golem5', name: 'Pyrestone Giants', color: ['red','gray'], difficulty: '⭐⭐⭐⭐⭐',
-  image: 'Images/Avatar/PyrokragGolemheartTitan.png', bannerArt: 'Images/Banner/RedBanner.png', cardbackArt: 'Images/Cardback/RedCardback.png',
+  image: 'Images/Avatar/PyrokragGolemheartTitan.png', bannerArt: 'Images/Banner/RedBanner.png', cardbackArt: 'Images/Cardback/Golem.png',
   cards: [ { id: 'Ashkar', amount: 1 },
       { id: 'PyrokragGolemheartTitan', amount: 1 },
       { id: 'SmolderingGolemheart', amount: 2 },
@@ -442,7 +442,7 @@ const DEFAULT_DECKS = [
       { id: 'Volcano', amount: 3 }, { id: 'Mountain', amount: 3 },
 ]},
 { id: 'Golem6', name: 'Forgebound Titans', color: ['red','gray'], difficulty: '⭐⭐⭐⭐⭐⭐',
-    image: 'Images/Avatar/KaelgorranElementalPrimordial.png', bannerArt: 'Images/Banner/RedBanner.png', cardbackArt: 'Images/Cardback/RedCardback.png',
+    image: 'Images/Avatar/KaelgorranElementalPrimordial.png', bannerArt: 'Images/Banner/RedBanner.png', cardbackArt: 'Images/Cardback/Golem.png',
     cards: [ { id: 'Ashkar', amount: 1 },
       { id: 'KaelgorranElementalPrimordial', amount: 1 },
       { id: 'SmolderingGolemheart', amount: 2 },
@@ -1099,7 +1099,7 @@ function renderModePlayerDeckTile() {
   slotDiv.innerHTML = `
     <img class="deck-slot-highlight-img" src="${image}" alt="highlight" />
     <div class="deck-slot-title-overlay">${deckName}</div>
-    <img class="deck-slot-cardback-img" src="${deckObj.cardbackArt || "Images/Cardback/DefaultCardback.png"}" alt="Cardback" style="position:absolute;right:8px;width:32px;height:44px;">
+    <img class="deck-slot-cardback-img" src="${deckObj.cardbackArt || "Images/Cardback/Default.png"}" alt="Cardback" style="position:absolute;right:8px;width:32px;height:44px;">
     <img id="deck-slot-view-icon" src="Images/Icons/View.png" alt="View Deck" 
       style="position:absolute;top:8px;right:8px;width:30px;height:30px;z-index:10;cursor:pointer;filter:drop-shadow(0 0 4px #000b);">
   `;
