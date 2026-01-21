@@ -785,7 +785,7 @@ function createCardBuilder(card, ownedCount) {
     minusBtn.style.justifyContent = 'flex-start';
     minusBtn.title = 'Remove a copy of this card from deck';
     const minusImg = document.createElement('img');
-    minusImg.src = 'OtherImages/Icons/Minus.png';
+    minusImg.src = 'Icons/Icons/Minus.png';
     minusImg.alt = 'Minus';
     minusBtn.appendChild(minusImg);
     minusBtn.onclick = function(e) {
@@ -806,7 +806,7 @@ function createCardBuilder(card, ownedCount) {
   viewBtn.style.justifyContent = 'center';
   viewBtn.title = 'View card details';
   const viewImg = document.createElement('img');
-  viewImg.src = 'OtherImages/Icons/View.png';
+  viewImg.src = 'Icons/Icons/View.png';
   viewImg.alt = 'View';
   viewBtn.appendChild(viewImg);
   viewBtn.onclick = function(e) {
@@ -821,7 +821,7 @@ function createCardBuilder(card, ownedCount) {
   plusBtn.style.justifyContent = 'flex-end';
   plusBtn.title = 'Add a copy of this card to deck';
   const plusImg = document.createElement('img');
-  plusImg.src = 'OtherImages/Icons/Plus.png';
+  plusImg.src = 'Icons/Icons/Plus.png';
   plusImg.alt = 'Plus';
   plusBtn.appendChild(plusImg);
   plusBtn.onclick = function(e) {
