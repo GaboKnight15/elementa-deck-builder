@@ -2496,35 +2496,35 @@ Dragon Terrains
 ];
 // Cost mapping and renderer (returns HTML string)
 const COST_IMAGE_MAP = {
-  G: "Images/Essence/Green.png",
-  R: "Images/Essence/Red.png",
-  U: "Images/Essence/Blue.png",
-  Y: "Images/Essence/Yellow.png",
-  C: "Images/Essence/Gray.png",
-  P: "Images/Essence/Purple.png",
-  B: "Images/Essence/Black.png",
-  W: "Images/Essence/White.png",
-  X0: "Images/Essence/Zero.png",
-  X1: "Images/Essence/One.png",
-  X2: "Images/Essence/Two.png",
-  X3: "Images/Essence/Three.png",
-  X4: "Images/Essence/Four.png",
-  X5: "Images/Essence/Five.png",
-  X6: "Images/Essence/Six.png",
-  X7: "Images/Essence/Seven.png",
-  X8: "Images/Essence/Eight.png",
-  X9: "Images/Essence/Nine.png",
-  X10: "Images/Essence/Ten.png",
-  X11: "Images/Essence/Eleven.png",
-  X12: "Images/Essence/Twelve.png",
-  X13: "Images/Essence/Thirteen.png",
-  X14: "Images/Essence/Fourteen.png",
-  X15: "Images/Essence/Fifteen.png",
-  X16: "Images/Essence/Sixteen.png",
-  X17: "Images/Essence/Seventeen.png",
-  X18: "Images/Essence/Eighteen.png",
-  X19: "Images/Essence/Nineteen.png",
-  X20: "Images/Essence/Twenty.png"
+  G: "Icons/Essence/Green.png",
+  R: "Icons/Essence/Red.png",
+  U: "Icons/Essence/Blue.png",
+  Y: "Icons/Essence/Yellow.png",
+  C: "Icons/Essence/Gray.png",
+  P: "Icons/Essence/Purple.png",
+  B: "Icons/Essence/Black.png",
+  W: "Icons/Essence/White.png",
+  X0: "Icons/Essence/Zero.png",
+  X1: "Icons/Essence/One.png",
+  X2: "Icons/Essence/Two.png",
+  X3: "Icons/Essence/Three.png",
+  X4: "Icons/Essence/Four.png",
+  X5: "Icons/Essence/Five.png",
+  X6: "Icons/Essence/Six.png",
+  X7: "Icons/Essence/Seven.png",
+  X8: "Icons/Essence/Eight.png",
+  X9: "Icons/Essence/Nine.png",
+  X10: "Icons/Essence/Ten.png",
+  X11: "Icons/Essence/Eleven.png",
+  X12: "Icons/Essence/Twelve.png",
+  X13: "Icons/Essence/Thirteen.png",
+  X14: "Icons/Essence/Fourteen.png",
+  X15: "Icons/Essence/Fifteen.png",
+  X16: "Icons/Essence/Sixteen.png",
+  X17: "Icons/Essence/Seventeen.png",
+  X18: "Icons/Essence/Eighteen.png",
+  X19: "Icons/Essence/Nineteen.png",
+  X20: "Icons/Essence/Twenty.png"
 };
 const addCoinsBtn = document.getElementById('add-coins-btn');
 const LEVEL_THRESHOLDS = [0, 100, 250, 500, 1000, 2000, 4000, 8000];
@@ -3045,7 +3045,7 @@ function showDailyLoginModal(dayIdx) {
            title="${isToday && !isClaimed ? "Claim today's reward" : isClaimed ? "Already claimed" : "Not yet available"}">
         <div style="font-weight:bold;color:${textColor};">${reward.title}</div>
         <div style="margin:4px 0;">
-          <img src="Images/Currency/Coins.png" style="width:22px;vertical-align:middle;">
+          <img src="Images/Icons/Coins.png" style="width:22px;vertical-align:middle;">
           <span style="color:#fff;">${reward.coins}</span>
         </div>
         <div>
