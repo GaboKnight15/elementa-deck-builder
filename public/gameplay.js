@@ -2250,8 +2250,8 @@ function startGame({
   gameState.opponentDominion = null;
   // --- Battlefield backgrounds ---
   setBattlefieldBackgrounds(
-    playerDeck?.bannerArt || "CardImages/Banners/DefaultBanner.png",
-    opponentDeck?.bannerArt || "CardImages/Banners/DefaultBanner.png"
+    playerDeck?.bannerArt || "Images/Banners/DefaultBanner.png",
+    opponentDeck?.bannerArt || "Images/Banners/DefaultBanner.png"
   );
 
   // --- UI activation ---
@@ -2266,8 +2266,8 @@ function startGame({
   myProfileDiv.innerHTML = "";
   const realProfile = {
     username: window.playerUsername || "You",
-    avatar: window.playerProfilePic || "CardImages/Avatars/Default.png",
-    banner: window.playerProfileBanner || "CardImages/Banners/DefaultBanner.png",
+    avatar: window.playerProfilePic || "Images/Avatars/Default.png",
+    banner: window.playerProfileBanner || "Images/Banners/DefaultBanner.png",
     power: typeof calculatePlayerPower === "function" ? calculatePlayerPower() : 0
   };
   // Use real profile in solo/CPU mode, but not for casual/private modes (where playerProfile is correct)
@@ -4850,8 +4850,8 @@ function logSystem(text) {
 function getCpuProfile(deck) {
   return {
     username: deck.name, // e.g. "Verdant Might"
-    avatar: deck.image,  // e.g. 'CardImages/Avatars/Fairy.png'
-    banner: deck.bannerArt, // e.g. 'CardImages/Banners/GreenBanner.png'
+    avatar: deck.image,  // e.g. 'Images/Avatars/Fairy.png'
+    banner: deck.bannerArt, // e.g. 'Images/Banners/GreenBanner.png'
   };
 }
 
@@ -7809,7 +7809,7 @@ function updateGameStatusRow() {
     gameState.weatherEffects.forEach(e => {
       const def = WEATHER_EFFECTS[e.name] || {};
       const icon = document.createElement('img');
-      icon.src = def.icon || `OtherImages/Icons/${String(e.name).replace(/\s+/g,'')}.png`;
+      icon.src = def.icon || `Icons/Weather/${String(e.name).replace(/\s+/g,'')}.png`;
       icon.alt = e.name;
       icon.title = `${e.name}${e.duration ? ' ('+e.duration+')' : ''}`;
       icon.style.width = '18px';
@@ -8336,8 +8336,8 @@ socket.on('casual-match-found', function(matchData) {
   const playerDeckObj = window.selectedPlayerDeck?.deckObj || window.selectedPlayerDeck;
   const playerProfile = {
     username: window.playerUsername || "You",
-    avatar: window.playerProfilePic || "CardImages/Avatars/Default.png",
-    banner: window.playerProfileBanner || "CardImages/Banners/DefaultBanner.png",
+    avatar: window.playerProfilePic || "Images/Avatars/Default.png",
+    banner: window.playerProfileBanner || "Images/Banners/DefaultBanner.png",
     power: typeof calculatePlayerPower === "function" ? calculatePlayerPower() : 0
   };
   socket.emit('profile', playerProfile);
@@ -8361,8 +8361,8 @@ if (window.socket) {
     const playerDeckObj = window.selectedPlayerDeck?.deckObj || window.selectedPlayerDeck;
     const playerProfile = {
       username: window.playerUsername || "You",
-      avatar: window.playerProfilePic || "CardImages/Avatars/Default.png",
-      banner: window.playerProfileBanner || "CardImages/Banners/DefaultBanner.png",
+      avatar: window.playerProfilePic || "Images/Avatars/Default.png",
+      banner: window.playerProfileBanner || "Images/Banners/DefaultBanner.png",
       power: typeof calculatePlayerPower === "function" ? calculatePlayerPower() : 0
     };
 
