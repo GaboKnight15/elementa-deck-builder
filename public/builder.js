@@ -51,23 +51,23 @@ let showFavoritesOnlyBuilder = false;
 
 // Cardback options (expand as needed)
 const cardbackOptions = [
-  'Images/Cardback/CBDefault.png',
+  'Images/Cardback/Default.png',
   'Images/Cardback/Cardback1.png',
-  'Images/Cardback/CBFairy.png',
-  'Images/Cardback/CBCindercore.png',
-  'Images/Cardback/CBConstructs.png',
-  'Images/Cardback/CBCoralbound.png',
-  'Images/Cardback/CBFirelands.png',
-  'Images/Cardback/CBGoblins.png',
-  'Images/Cardback/CBGolemheart.png',
-  'Images/Cardback/CBMerfolk.png',
-  'Images/Cardback/CBMoonfang.png',
-  'Images/Cardback/CBSatyr.png',
-  'Images/Cardback/CBShadowbound.png',
-  'Images/Cardback/CBStonebound.png',
-  'Images/Cardback/CBStormcore.png',
-  'Images/Cardback/CBVenomcore.png',
-  'Images/Cardback/CBWoodframe.png'
+  'Images/Cardback/Fairy.png',
+  'Images/Cardback/Cindercore.png',
+  'Images/Cardback/Construct.png',
+  'Images/Cardback/Coralbound.png',
+  'Images/Cardback/Fireland.png',
+  'Images/Cardback/Goblin.png',
+  'Images/Cardback/Golemheart.png',
+  'Images/Cardback/Merfolk.png',
+  'Images/Cardback/Moonfang.png',
+  'Images/Cardback/Satyr.png',
+  'Images/Cardback/Obscurid.png',
+  'Images/Cardback/Stonebound.png',
+  'Images/Cardback/Stormcore.png',
+  'Images/Cardback/Plagueaxis.png',
+  'Images/Cardback/Woodframe.png'
 ];
 const AUTOFILL_COLORS = [
   { name: "Green", icon: 'Icons/Essence/Green.png' },
