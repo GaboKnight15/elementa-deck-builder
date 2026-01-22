@@ -2824,7 +2824,7 @@ const allAvatarOptions = [
   { name: 'Elemental of Leaves', src: 'Images/Avatar/ElementalofLeaves.png', rarity: 'Common', price: 10, obtain: 'shop' },
 
   { name: 'Fairy', src: 'Images/Avatar/Fairy.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Sylvan Goblin', src: 'Images/Avatar/Goblin.png', rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Wildwood Goblin', src: 'Images/Avatar/WildwoodGoblin.png', rarity: 'Common', price: 10, obtain: 'shop' },
   { name: 'Satyr', src: 'Images/Avatar/Satyr.png', rarity: 'Common', price: 10, obtain: 'shop' },
   { name: 'Verdant Serpent', src: 'Images/Avatar/VerdantSerpent.png', rarity: 'Common', price: 10, obtain: 'shop' },
 // --- COMMON RED AVATARS --- //
@@ -2839,7 +2839,8 @@ const allAvatarOptions = [
   { name: 'Water Elemental', src: 'Images/Avatar/WaterElemental.png', rarity: 'Common', price: 10, obtain: 'shop' },
   { name: 'Coral Drone', src: 'Images/Avatar/CoralDrone.png', rarity: 'Common', price: 10, obtain: 'shop' },
 // --- COMMON YELLOW AVATARS --- //
-  { name: 'Elemental of Gales', src: 'Images/Avatar/ElementalofGales.png', rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Elemental of Sparks', src: 'Images/Avatar/ElementalofSparks.png', rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Elemental of Breeze', src: 'Images/Avatar/ElementalofBreeze.png', rarity: 'Common', price: 10, obtain: 'shop' },
 
   { name: 'Thunderspawn', src: 'Images/Avatar/Thunderspawn.png', rarity: 'Common', price: 10, obtain: 'shop' },
 // --- COMMON GRAY AVATARS --- //
@@ -2864,7 +2865,7 @@ const allAvatarOptions = [
 
 // --- RARE GREEN AVATARS --- //
   { name: 'Treant Witch', src: 'Images/Avatar/TreantWitch.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-  { name: 'Elemental of Leaves', src: 'Images/Avatar/ElementalofLeaves.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+  { name: 'Elemental of Foliages', src: 'Images/Avatar/ElementalofFoliages.png', rarity: 'Rare', price: 50, obtain: 'shop' },
   { name: 'Verdara Soldier', src: 'Images/Avatar/VerdaraSoldier.png', rarity: 'Rare', price: 50, obtain: 'shop' },
 
 // --- RARE RED AVATARS --- //
