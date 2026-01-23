@@ -240,7 +240,7 @@ if (deck.highlightArt) {
     <img class="deck-slot-highlight-img" src="${deck.highlightArt}" alt="highlight" />
     <div class="deck-slot-title-overlay">${slotName}</div>
     <img class="deck-slot-cardback-img"
-         src="${deck.cardbackArt || 'Images/Cardback/CBDefault.png'}"
+         src="${deck.cardbackArt || 'Images/Cardback/Default.png'}"
          alt="Cardback"
          style="position:absolute;right:8px;bottom:8px;width:32px;height:44px;z-index:10;">
   `;
@@ -397,7 +397,7 @@ function updateDeckHighlightArt(deckName) {
     this.onerror = null;
     this.src = 'Images/Domains/placeholder.png';
   };
-  deckHighlightArtImg.src = deck.highlightArt || 'Images/Domains/placeholder.png';
+  deckHighlightArtImg.src = deck.highlightArt || 'Images/Domain/Default.png';
 }
 deckHighlightArtImg.onclick = function() {
   closeDeckTileMenu();
@@ -439,9 +439,9 @@ function updateDeckBanner(deckName) {
   const deck = decks[deckName] || {};
   deckBannerImg.onerror = function() {
     this.onerror = null;
-    this.src = 'Images/Banner/DefaultBanner.png';
+    this.src = 'Images/Banner/Default.png';
   };
-  deckBannerImg.src = deck.bannerArt || 'Images/Banner/DefaultBanner.png';
+  deckBannerImg.src = deck.bannerArt || 'Images/Banner/Default.png';
 }
 
 // --- NEW: BANNER LOGIC (update to match avatars/Cardback) ---
@@ -451,7 +451,7 @@ deckBannerImg.onclick = function() {
   deckBannerArtList.innerHTML = "";
   const deckName = deckMenu.dataset.deckName;
   const unlocked = getUnlockedBanners ? getUnlockedBanners() :
-    (window.getUnlockedBanners ? window.getUnlockedBanners() : ['Images/Banner/DefaultBanner.png']); 
+    (window.getUnlockedBanners ? window.getUnlockedBanners() : ['Images/Banner/Default.png']); 
   if (!unlocked || unlocked.length === 0) {
     deckBannerArtList.innerHTML = "<div style='color:#eee'>No unlocked banners available.</div>";
     return;
@@ -478,7 +478,7 @@ closeDeckBannerModalBtn.onclick = () => (deckBannerModal.style.display = "none")
 // Update displayed cardback in deck menu
 function updateDeckCardback(deckName) {
   const deck = decks[deckName] || {};
-  deckCardbackImg.src = deck.cardbackArt || 'Images/Cardback/CBDefault.png';
+  deckCardbackImg.src = deck.cardbackArt || 'Images/Cardback/Default.png';
 }
 
 // --- CARDBACK --- //
@@ -490,7 +490,7 @@ deckCardbackImg.onclick = function() {
   const deck = decks[deckName] || {};
   const unlocked = getUnlockedCardbacks ? getUnlockedCardbacks() : 
     (window.getUnlockedCardbacks ? window.getUnlockedCardbacks() : 
-      ['Images/Cardback/CBDefault.png']);
+      ['Images/Cardback/Default.png']);
   unlocked.forEach(cb => {
     const img = document.createElement('img');
     img.src = cb;
@@ -740,7 +740,7 @@ function createCardBuilder(card, ownedCount) {
     img.src = card.image;
     img.onerror = function() {
       this.onerror = null;
-      this.src = 'Images/Domains/placeholder.png';
+      this.src = 'Images/Domain/Default.png';
     };
     img.alt = card.name;
   
@@ -785,7 +785,7 @@ function createCardBuilder(card, ownedCount) {
     minusBtn.style.justifyContent = 'flex-start';
     minusBtn.title = 'Remove a copy of this card from deck';
     const minusImg = document.createElement('img');
-    minusImg.src = 'Icons/Icons/Minus.png';
+    minusImg.src = 'Icons/Other/Minus.png';
     minusImg.alt = 'Minus';
     minusBtn.appendChild(minusImg);
     minusBtn.onclick = function(e) {
@@ -806,7 +806,7 @@ function createCardBuilder(card, ownedCount) {
   viewBtn.style.justifyContent = 'center';
   viewBtn.title = 'View card details';
   const viewImg = document.createElement('img');
-  viewImg.src = 'Icons/Icons/View.png';
+  viewImg.src = 'Icons/Other/View.png';
   viewImg.alt = 'View';
   viewBtn.appendChild(viewImg);
   viewBtn.onclick = function(e) {
@@ -821,7 +821,7 @@ function createCardBuilder(card, ownedCount) {
   plusBtn.style.justifyContent = 'flex-end';
   plusBtn.title = 'Add a copy of this card to deck';
   const plusImg = document.createElement('img');
-  plusImg.src = 'Icons/Icons/Plus.png';
+  plusImg.src = 'Icons/Other/Plus.png';
   plusImg.alt = 'Plus';
   plusBtn.appendChild(plusImg);
   plusBtn.onclick = function(e) {
