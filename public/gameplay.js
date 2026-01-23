@@ -3340,7 +3340,7 @@ function renderDeckVoidCountRow(rowId, deckCount, voidCount) {
   if (!row) return;
   row.innerHTML = `
     <span style="display:inline-flex;align-items:center;gap:4px;">
-      <img src="Icons/Other/DefaultDeckBox.png" alt="Deck" style="width:30px;height:30px;">
+      <img src="Icons/Other/BlueDeckBox.png" alt="Deck" style="width:30px;height:30px;">
       <span class="deck-count-number">${deckCount}</span>
       <img src="Icons/Other/Void.png" alt="Void" style="width:30px;height:30px;margin-left:10px;">
       <span class="deck-count-number">${voidCount}</span>
@@ -6066,7 +6066,7 @@ function cardImgLog(card, {
 function zoneImgLog(zone) {
   const zoneIcons = {
     Void: "Icons/Other/Void.png",
-    Deck: "Icons/Other/DefaultDeckBox.png",
+    Deck: "Icons/Other/BlueDeckBox.png",
     Hand: "Icons/Other/Hand.png",
     Domains: "Icons/Other/Domains.png",
     Creatures: "Icons/Other/Creatures.png",    
