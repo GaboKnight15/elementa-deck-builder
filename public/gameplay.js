@@ -2250,8 +2250,8 @@ function startGame({
   gameState.opponentDominion = null;
   // --- Battlefield backgrounds ---
   setBattlefieldBackgrounds(
-    playerDeck?.bannerArt || "Images/Banners/DefaultBanner.png",
-    opponentDeck?.bannerArt || "Images/Banners/DefaultBanner.png"
+    playerDeck?.bannerArt || "Images/Banner/Default.png",
+    opponentDeck?.bannerArt || "Images/Banner/Default.png"
   );
 
   // --- UI activation ---
@@ -2266,8 +2266,8 @@ function startGame({
   myProfileDiv.innerHTML = "";
   const realProfile = {
     username: window.playerUsername || "You",
-    avatar: window.playerProfilePic || "Images/Avatars/Default.png",
-    banner: window.playerProfileBanner || "Images/Banners/DefaultBanner.png",
+    avatar: window.playerProfilePic || "Images/Avatar/Default.png",
+    banner: window.playerProfileBanner || "Images/Banner/DefaultBanner.png",
     power: typeof calculatePlayerPower === "function" ? calculatePlayerPower() : 0
   };
   // Use real profile in solo/CPU mode, but not for casual/private modes (where playerProfile is correct)
@@ -2594,7 +2594,7 @@ function renderWeatherEffects() {
   div.innerHTML = gameState.weatherEffects.map(e => {
     const w = WEATHER_EFFECTS[e.name];
     return `<span style="margin-right:10px;">
-      <img src="Icons/Icons/${e.name.replace(/\s+/g, '')}.png" style="height:26px;vertical-align:middle;">
+      <img src="Icons/Weather/${e.name.replace(/\s+/g, '')}.png" style="height:26px;vertical-align:middle;">
       <span style="color:#ffe066;font-weight:bold">${e.name}</span>
       <span style="color:#fff">(${e.duration})</span>
     </span>`;
@@ -3340,9 +3340,9 @@ function renderDeckVoidCountRow(rowId, deckCount, voidCount) {
   if (!row) return;
   row.innerHTML = `
     <span style="display:inline-flex;align-items:center;gap:4px;">
-      <img src="Icons/Icons/DefaultDeckBox.png" alt="Deck" style="width:30px;height:30px;">
+      <img src="Icons/Other/DefaultDeckBox.png" alt="Deck" style="width:30px;height:30px;">
       <span class="deck-count-number">${deckCount}</span>
-      <img src="Icons/Icons/Void.png" alt="Void" style="width:30px;height:30px;margin-left:10px;">
+      <img src="Icons/Other/Void.png" alt="Void" style="width:30px;height:30px;margin-left:10px;">
       <span class="deck-count-number">${voidCount}</span>
     </span>
   `;
@@ -4850,8 +4850,8 @@ function logSystem(text) {
 function getCpuProfile(deck) {
   return {
     username: deck.name, // e.g. "Verdant Might"
-    avatar: deck.image,  // e.g. 'Images/Avatars/Fairy.png'
-    banner: deck.bannerArt, // e.g. 'Images/Banners/GreenBanner.png'
+    avatar: deck.image,  // e.g. 'Images/Avatar/Fairy.png'
+    banner: deck.bannerArt, // e.g. 'Images/Banner/GreenBanner.png'
   };
 }
 
@@ -5844,8 +5844,8 @@ function showCoinFlipModal(onResult) {
     isHeads = Math.random() < 0.5;
   }
   // Flip logic
-  const headsImg = "Icons/Icons/Heads.png";
-  const tailsImg = "Icons/Icons/Tails.png";
+  const headsImg = "Icons/Other/Heads.png";
+  const tailsImg = "Icons/Other/Tails.png";
   const chosenImg = isHeads ? headsImg : tailsImg;
   const chosenText = isHeads ? "Heads" : "Tails";
   // Create overlay/modal
@@ -6065,11 +6065,11 @@ function cardImgLog(card, {
 }
 function zoneImgLog(zone) {
   const zoneIcons = {
-    Void: "Icons/Icons/Void.png",
-    Deck: "Icons/Icons/DefaultDeckBox.png",
-    Hand: "Icons/Icons/Hand.png",
-    Domains: "Icons/Icons/Domains.png",
-    Creatures: "Icons/Icons/Domains.png",    
+    Void: "Icons/Other/Void.png",
+    Deck: "Icons/Other/DefaultDeckBox.png",
+    Hand: "Icons/Other/Hand.png",
+    Domains: "Icons/Other/Domains.png",
+    Creatures: "Icons/Other/Creatures.png",    
       // Add more as needed
   };  
   return `<img class="log-zone-img" src="${zoneIcons[zone] || ''}" title="${zone}" style="width:32px;vertical-align:middle;">`;
@@ -6082,10 +6082,10 @@ function renderLogAction({
   who = "player"     // "player" or "opponent"
 }, isMe = true) {
 const actionIcons = {
-  move: "Icons/Icons/Move.png",
-  attack: "Icons/Icons/Attack.png",
-  effect: "Icons/Icons/Effect.png",
-  draw: "Icons/Icons/Move.png",
+  move: "Icons/Other/Move.png",
+  attack: "Icons/Other/Attack.png",
+  effect: "Icons/Other/Effect.png",
+  draw: "Icons/Other/Move.png",
     // Add more as needed
 };
 let showCardback = action === "draw" && !isMe;
@@ -6119,7 +6119,7 @@ function appendAttackLog({ attacker, defender, defenderOrientation, who = "playe
   logHtml += cardImgLog(attackerDef, { width: 38, who });
 
   // Attack icon
-  logHtml += `<img src="Icons/Icons/Attack.png" alt="Attack" style="width:32px;height:32px;vertical-align:middle;margin:0 9px;">`;
+  logHtml += `<img src="Icons/Other/Attack.png" alt="Attack" style="width:32px;height:32px;vertical-align:middle;margin:0 9px;">`;
 
   // Defender image
   logHtml += cardImgLog(defenderDef, {width: 38, marginLeft: "8px", who, rotate: defenderOrientation === "horizontal" ? 90 : 0 });
@@ -6166,13 +6166,13 @@ function appendPositionChangeLog(cardObj, newOrientation, prevOrientation, fromS
   if (prevOrientation === "vertical" && newOrientation === "horizontal") {
     // ATK to DEF
     logHtml += cardImgLog(cardDef, { border: "2px solid #ffe066", width: 36, rotate: 0 });
-    logHtml += `<img src="Icons/Icons/Tapped.png"
+    logHtml += `<img src="Icons/Essence/Tap.png"
       alt="Tapped" style="width:28px;vertical-align:middle;margin-left:8px;margin-right:13px;">`;
     logHtml += cardImgLog(cardDef, { border: "2px solid #ffe066", width: 36, marginLeft: "7px", rotate: 90 });
   } else if (prevOrientation === "horizontal" && newOrientation === "vertical") {
     // DEF to ATK
     logHtml += cardImgLog(cardDef, { border: "2px solid #ffe066", width: 36, marginRight: "7px", rotate: 90 });
-    logHtml += `<img src="Icons/Icons/Untapped.png" alt="Untapped" style="width:28px;vertical-align:middle;margin:0 7px;">`;
+    logHtml += `<img src="Icons/Essence/Untap.png" alt="Untapped" style="width:28px;vertical-align:middle;margin:0 7px;">`;
     logHtml += cardImgLog(cardDef, { border: "2px solid #ffe066", width: 36, rotate: 0 });
   }
   logHtml += `</div>`;
@@ -7649,7 +7649,7 @@ function updateOpponentBadges() {
   if (nullCount > 0) {
     badges.push({
       key: 'nullSigilOpp',
-      icon: 'Icons/Icons/NullSigilmall.png',
+      icon: 'Icons/Sigil/Null.png',
       count: nullCount,
       label: '',
       title: `Null Counters: ${nullCount}`
@@ -7667,7 +7667,7 @@ function updatePlayerBadges() {
   if (nullCount > 0) {
     badges.push({
       key: 'nullSigilPlayer',
-      icon: 'Icons/Icons/NullSigil.png',
+      icon: 'Icons/Sigil/Null.png',
       count: nullCount,
       label: '',
       title: `Null Counters: ${nullCount}`
@@ -7712,10 +7712,10 @@ function updateGameStatusRow() {
   // Day / Night icon (supports all four)
   const tod = gameState.timeOfDay || 'day';
   const todMap = {
-    day: 'Icons/Icons/Status/Day.png',
-    dusk: 'Icons/Icons/Status/Dusk.png',
-    night: 'Icons/Icons/Status/Night.png',
-    dawn: 'Icons/Icons/Status/Dawn.png'
+    day: 'Icons/Weather/Day.png',
+    dusk: 'Icons/Weather/Dusk.png',
+    night: 'Icons/Weather/Night.png',
+    dawn: 'Icons/Weather/Dawn.png'
   };
   const todWrap = document.createElement('div');
   todWrap.style.display = 'flex';
@@ -8193,7 +8193,7 @@ function insertGameLogIcon() {
   var img = document.createElement('img');
   img.id = 'game-log-toggle';
   // Use a notebook/view icon you have in assets; adjust path if different
-  img.src = 'Icons/Icons/Notebook.png';
+  img.src = 'Icons/Other/Notebook.png';
   img.alt = 'Game Log';
   img.title = 'Toggle Game Log';
   img.style.width = '44px';
@@ -8336,8 +8336,8 @@ socket.on('casual-match-found', function(matchData) {
   const playerDeckObj = window.selectedPlayerDeck?.deckObj || window.selectedPlayerDeck;
   const playerProfile = {
     username: window.playerUsername || "You",
-    avatar: window.playerProfilePic || "Images/Avatars/Default.png",
-    banner: window.playerProfileBanner || "Images/Banners/DefaultBanner.png",
+    avatar: window.playerProfilePic || "Images/Avatar/Default.png",
+    banner: window.playerProfileBanner || "Images/Banner/Default.png",
     power: typeof calculatePlayerPower === "function" ? calculatePlayerPower() : 0
   };
   socket.emit('profile', playerProfile);
@@ -8361,8 +8361,8 @@ if (window.socket) {
     const playerDeckObj = window.selectedPlayerDeck?.deckObj || window.selectedPlayerDeck;
     const playerProfile = {
       username: window.playerUsername || "You",
-      avatar: window.playerProfilePic || "Images/Avatars/Default.png",
-      banner: window.playerProfileBanner || "Images/Banners/DefaultBanner.png",
+      avatar: window.playerProfilePic || "Images/Avatar/Default.png",
+      banner: window.playerProfileBanner || "Images/Banner/Default.png",
       power: typeof calculatePlayerPower === "function" ? calculatePlayerPower() : 0
     };
 
