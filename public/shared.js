@@ -3261,17 +3261,17 @@ function showDailyLoginModal(dayIdx) {
            title="${isToday && !isClaimed ? "Claim today's reward" : isClaimed ? "Already claimed" : "Not yet available"}">
         <div style="font-weight:bold;color:${textColor};">${reward.title}</div>
         <div style="margin:4px 0;">
-          <img src="Images/Icons/Coins.png" style="width:22px;vertical-align:middle;">
+          <img src="Icons/Other/Coins.png" style="width:22px;vertical-align:middle;">
           <span style="color:#fff;">${reward.coins}</span>
         </div>
         <div>
-          <img src="Images/Icons/Essence.png" style="width:22px;vertical-align:middle;">
+          <img src="Icons/Other/Essence.png" style="width:22px;vertical-align:middle;">
           <span style="color:#fff;">${reward.essence}</span>
         </div>
         ${isToday && !isClaimed ? `<div style="position:absolute;top:6px;right:6px;">
             <img src="Images/Icons/Star.png" style="width:18px;" title="Claimable Today"></div>` : ''}
         ${isClaimed ? `<div style="position:absolute;top:6px;right:6px;">
-            <img src="Images/Icons/Checkmark.png" style="width:18px;" title="Claimed"></div>` : ''}
+            <img src="Icons/Other/Checkmark.png" style="width:18px;" title="Claimed"></div>` : ''}
       </div>
     `;
   });
@@ -3503,10 +3503,10 @@ function parseEffectText(effect) {
 
   // Replace tapped/untapped icons
   effect = effect.replace(/\{CW\}/gi,
-    '<img src="Images/Icons/Tapped.png" style="height:1.3em;vertical-align:middle;margin-right: 2px;" title="Tapped">'
+    '<img src="Icons/Essence/Tap.png" style="height:1.3em;vertical-align:middle;margin-right: 2px;" title="Tapped">'
   );
   effect = effect.replace(/\{CCW\}/gi,
-    '<img src="Images/Icons/Untapped.png" style="height:1.3em;vertical-align:middle;margin-right: 2px;" title="Untapped">'
+    '<img src="Icons/Essence/Untap.png" style="height:1.3em;vertical-align:middle;margin-right: 2px;" title="Untapped">'
   );
 
   // Replace numbers {0}..{20} with bold numbers or custom spans
@@ -3645,9 +3645,9 @@ function getRequirementIcons(requirementsArr) {
   let icons = "";
   requirementsArr.forEach(r => {
     if (r === "CW") {
-      icons += `<img src="Images/Icons/Tapped.png" title="Activate in ATK position" style="width:21px;vertical-align:middle;">`;
+      icons += `<img src="Icons/Essence/Tap.png" title="Activate in ATK position" style="width:21px;vertical-align:middle;">`;
     } else if (r === "CCW") {
-      icons += `<img src="Images/Icons/Untapped.png" title="Activate in DEF position" style="width:21px;vertical-align:middle;">`;
+      icons += `<img src="Icons/Essence/Untap.png" title="Activate in DEF position" style="width:21px;vertical-align:middle;">`;
     }
     // Add more requirement icons as needed
   });
@@ -3985,7 +3985,7 @@ if (card.skill) {
   }
 
    // --- INFO BUTTON ---
-  let infoButtonHtml = `<img id="card-info-btn" src="Images/Icons/Info.png" alt="Info" title="Keyword & Ability Info">`;
+  let infoButtonHtml = `<img id="card-info-btn" src="Icons/Other/Info.png" alt="Info" title="Keyword & Ability Info">`;
   // Compose modal content (side-by-side)
   modalContent.innerHTML = `
     <div class="full-card-modal-flex" style="position:relative;">
@@ -4052,10 +4052,10 @@ function renderCardCost(costData) {
     });
      // Tap/untap (case-insensitive)
     html = html.replace(/\{CW\}/gi,
-      `<img src="Images/Icons/Tapped.png" style="width:22px;height:22px;vertical-align:middle;">`
+      `<img src="Icons/Essence/Tap.png" style="width:22px;height:22px;vertical-align:middle;">`
     );
     html = html.replace(/\{CCW\}/gi,
-      `<img src="Images/Icons/Untapped.png" style="width:22px;height:22px;vertical-align:middle;">`
+      `<img src="Icons/Essence/Untap.png" style="width:22px;height:22px;vertical-align:middle;">`
     );
     return html;
   }
@@ -4278,7 +4278,7 @@ function getUniqueCollectedCardsCount() {
 // Placeholder for badge image selection (replace with your unlock logic)
 function getCurrentPlayerBadgeImage() {
   // For now, just default, later use player level or unlocks
-  return "Images/Level/One.png";
+  return "Icons/Level/One.png";
 }
 
 // PROFILE PANEL POP-UP
@@ -4290,7 +4290,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const playerData = {
         username: window.playerUsername || (window.auth && window.auth.currentUser && window.auth.currentUser.displayName) || "Player",
         profilePic: window.playerProfilePic || badgeImg.src,
-        profileBanner: window.playerProfileBanner || "Cards/Banner/DefaultBanner.png",
+        profileBanner: window.playerProfileBanner || "Images/Banner/Default.png",
         power: typeof calculatePlayerPower === "function" ? calculatePlayerPower() : 0,
         achievements: (typeof getAchievementData === "function" && typeof ACHIEVEMENTS !== "undefined")
           ? ACHIEVEMENTS.filter(a => getAchievementData()[a.id]?.claimed).map(a => a.id)
@@ -4362,8 +4362,8 @@ function renderPlayerPower() {
 
 function renderProfilePanel(profile, options = {}) {
   profile = profile || {};
-  const profileBanner = profile.profileBanner || profile.banner || "Cards/Banner/DefaultBanner.png";
-  const profilePic = profile.profilePic || profile.avatar || "Cards/Avatar/Default.png";
+  const profileBanner = profile.profileBanner || profile.banner || "Images/Banner/Default.png";
+  const profilePic = profile.profilePic || profile.avatar || "Images/Avatar/Default.png";
   const username = profile.username || "Unknown";
   const power = typeof profile.power === "number" ? profile.power : 0;
   const displayUsername = username.length > 12 ? username.slice(0, 12) + "…" : username;
@@ -4416,7 +4416,7 @@ function renderProfilePanel(profile, options = {}) {
   powerDiv.style.gap = '8px';
 
   const powerIcon = document.createElement('img');
-  powerIcon.src = 'OtherImages/Icons/Power.png';
+  powerIcon.src = 'Icons/Other/Power.png';
   powerIcon.style.width = '24px';
 
   const powerValue = document.createElement('span');
@@ -4451,8 +4451,8 @@ function showProfileModal(profile) {
   // Use only what's passed in
   // Example:
   const username = profile.username || "Unknown";
-  const profilePic = profile.profilePic || profile.avatar || "Cards/Avatar/Default.png";
-  const profileBanner = profile.profileBanner || profile.banner || "Cards/Banner/DefaultBanner.png";
+  const profilePic = profile.profilePic || profile.avatar || "Images/Avatar/Default.png";
+  const profileBanner = profile.profileBanner || profile.banner || "CaImagesrds/Banner/Default.png";
   const power = typeof profile.power === "number" ? profile.power : 0;
   const achievements = profile.achievements || [];
   const badges = profile.badges || [];
@@ -4486,7 +4486,7 @@ function showProfileModal(profile) {
     const isOwned = ownedBadges.includes(badge.id);
     badgeSection += `
       <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
-        <img src="${badgeImageMap[badge.id] || 'OtherImages/Icons/Rewards.png'}"
+        <img src="${badgeImageMap[badge.id] || 'Icons/Other/Rewards.png'}"
           alt="${badge.name || badge.title || badge.id}"
           style="width:54px;height:54px;${isOwned ? '' : 'filter:grayscale(1) brightness(0.6) opacity(0.5);'}box-shadow:0 2px 8px #0004;">
       </div>
@@ -4716,8 +4716,8 @@ if (selectedAbilities && selectedAbilities.length) {
     if (selectedPacks && selectedPacks.length && !selectedPacks.includes("All")) {
       // Map display names to dummyCards.set values
       const setMap = {
-        "Standard Pack": "StandardPack",
-        "Standard Pack 2": "StandardPack2"
+        "Elementa Genesis": "ElementaGenesis",
+        "Scales of Ruin": "ScalesofRuin"
       };
       // If card.set is not in any selected pack, filter out
       if (!selectedPacks.some(pack => setMap[pack] === card.set)) return false;
