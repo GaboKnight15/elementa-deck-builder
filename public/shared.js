@@ -3005,7 +3005,7 @@ const allCardbackOptions = [
 
 const packPrices = [
   { id: "ElementaGenesis", name: "Elementa Genesis", price: 100,
-    image: 'Images/Packs/ElementaGenesis.png'
+    image: 'Images/Pack/ElementaGenesis.png'
   },
   {
     id: "ScalesofRuin",
