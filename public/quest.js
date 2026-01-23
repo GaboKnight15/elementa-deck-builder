@@ -166,14 +166,14 @@ const ACHIEVEMENTS = [
   description: 'Collect 20 different cards',
   goal: 20,
   reward: { type: 'currency', amount: 500 },
-  image: 'Icons/Icons/Rewards.png'
+  image: 'Icons/Other/Rewards.png'
   },
   {
     id: 'collect_avatars',
     label: 'Unlock Avatars',
     category: 'cosmetic',
     target: { property: 'cosmetic', value: 'avatar' }, // for logic use
-    icon: 'Icons/Icons/Avatar.png', // use your own icon
+    icon: 'Icons/Other/Avatar.png', // use your own icon
     color: '#70b0fd',
     tiers: AVATAR_ACHIEVEMENT_TIERS.map(tier => ({
       ...tier,
@@ -187,7 +187,7 @@ const ACHIEVEMENTS = [
     label: 'Unlock Banners',
     category: 'cosmetic',
     target: { property: 'cosmetic', value: 'banner' },
-    icon: 'Icons/Icons/Banner.png',
+    icon: 'Icons/Other/Banner.png',
     color: '#ffe066',
     tiers: BANNER_ACHIEVEMENT_TIERS.map(tier => ({
       ...tier,
@@ -201,7 +201,7 @@ const ACHIEVEMENTS = [
     label: 'Unlock Cardbacks',
     category: 'cosmetic',
     target: { property: 'cosmetic', value: 'cardback' },
-    icon: 'Icons/Icons/Cardback.png',
+    icon: 'Icons/Other/Cardback.png',
     color: '#bdbdbd',
     tiers: CARDBACK_ACHIEVEMENT_TIERS.map(tier => ({
       ...tier,
