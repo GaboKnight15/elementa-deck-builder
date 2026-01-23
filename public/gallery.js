@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!bulkVoidBtn) {
       bulkVoidBtn = document.createElement('img');
       bulkVoidBtn.id = 'bulk-void-btn';
-      bulkVoidBtn.src = 'OtherImages/Icons/Void.png';
+      bulkVoidBtn.src = 'Icons/Other/Void.png';
       bulkVoidBtn.alt = 'Bulk Void';
       bulkVoidBtn.title = 'Bulk Void duplicates for essence';
       bulkVoidBtn.style.width = '28px';
@@ -205,7 +205,7 @@ function createCardGallery(card) {
     // Add star for favorite
     if (isFavorite(card.id)) {
       const star = document.createElement('img');
-      star.src = 'OtherImages/Icons/Star.png';
+      star.src = 'Icons/Other/Star.png';
       star.alt = 'Favorite';
       star.className = 'gallery-favorite-star';
       star.style.position = 'absolute';
@@ -495,7 +495,7 @@ function showGalleryCardMenu(card, anchorDiv) {
   favoriteBtn.style.width = "100%";
   favoriteBtn.style.textAlign = "left";
   const isFav = isFavorite(card.id);
-  favoriteBtn.innerHTML = `<img src="OtherImages/Icons/Star.png" alt="Favorite" style="width:20px;vertical-align:middle;margin-right:10px;"> ${isFav ? 'Unfavorite' : 'Favorite'}`;
+  favoriteBtn.innerHTML = `<img src="Icons/Other/Star.png" alt="Favorite" style="width:20px;vertical-align:middle;margin-right:10px;"> ${isFav ? 'Unfavorite' : 'Favorite'}`;
   favoriteBtn.onclick = function(e) {
     e.stopPropagation();
     toggleFavorite(card.id);
@@ -517,7 +517,7 @@ function showGalleryCardMenu(card, anchorDiv) {
   styleBtn.className = "settings-item";
   styleBtn.style.width = "100%";
   styleBtn.style.textAlign = "left";
-  styleBtn.innerHTML = `<img src="OtherImages/Icons/Style.png" alt="Style" style="width:20px;vertical-align:middle;margin-right:10px;"> Style`;
+  styleBtn.innerHTML = `<img src="Icons/Other/Style.png" alt="Style" style="width:20px;vertical-align:middle;margin-right:10px;"> Style`;
 
   // Determine all possible style images for this card
   const allStyles = [];
@@ -599,7 +599,7 @@ function showCardStyleModal(card, styleImages) {
 function createCreateCardButton(card, onActionDone) {
   const owned = getCollection()[card.id] || 0;
   const btn = document.createElement('img');
-  btn.src = 'OtherImages/Icons/Essence.png';
+  btn.src = 'Icons/Other/Essence.png';
   btn.alt = 'Create';
   const rarityKey = getRarityKey(card);
   const cost = CREATE_ESSENCE_COST[rarityKey] || 5;
@@ -648,7 +648,7 @@ function createCreateCardButton(card, onActionDone) {
 function createVoidCardButton(card, onActionDone) {
   const owned = getCollection()[card.id] || 0;
   const btn = document.createElement('img');
-  btn.src = 'OtherImages/Icons/Void.png';
+  btn.src = 'Icons/Other/Void.png';
   btn.alt = 'Void';
   const rarityKey = getRarityKey(card);
   const refund = VOID_ESSENCE_REFUND[rarityKey] || 1;
@@ -709,7 +709,7 @@ function showEssenceConfirmModal({action, card, amount, onConfirm }) {
   cardImg.src = card.image;
   cardImg.alt = card.name;
   // Amount with icon
-  amtDiv.innerHTML = `${amount} <img src="OtherImages/Icons/Essence.png" alt="Essence" style="width:24px;height:24px;vertical-align:middle;">`;
+  amtDiv.innerHTML = `${amount} <img src="Icons/Other/Essence.png" alt="Essence" style="width:24px;height:24px;vertical-align:middle;">`;
   // Show modal
   modal.style.display = "flex";
   // Confirm handler
@@ -842,7 +842,7 @@ function showBulkVoidModal() {
     // Recalculate totals
     let totalEssence = 0;
     let checkedCount = 0;
-    const essenceImg = `<img src="OtherImages/Icons/Essence.png" alt="Essence" style="width:18px;height:18px;vertical-align:middle;">`;
+    const essenceImg = `<img src="Icons/Other/Essence.png" alt="Essence" style="width:18px;height:18px;vertical-align:middle;">`;
 
     let cardRows = cardsToVoid.map((cdata, idx) => {
       if (cdata.checked) {
