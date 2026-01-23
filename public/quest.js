@@ -6,14 +6,14 @@ const COLOR_QUESTS = ['green', 'red', 'blue', 'yellow', 'purple', 'gray', 'black
 const QUEST_SLOTS = 5;
 const QUEST_POOL = [
   { id: 'purchase_pack', type: 'quest', description: 'Purchase a Booster Pack', goal: 1, reward: { type: 'currency', amount: 100 }, image: 'Images/Blank/Pack.png', progress: 0, claimed: false, completed: false, refillAt: null},
-  { id: 'collect_green_card', type: 'quest', description: 'Collect a Green Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'Images/Blank/GreenCard.png', progress: 0, claimed: false, completed: false, refillAt: null},
-  { id: 'collect_red_card', type: 'quest', description: 'Collect a Red Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'Images/Blank/RedCard.png', progress: 0, claimed: false, completed: false, refillAt: null},
-  { id: 'collect_blue_card', type: 'quest', description: 'Collect a Blue Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'Images/Blank/BlueCard.png', progress: 0, claimed: false, completed: false, refillAt: null},
-  { id: 'collect_yellow_card', type: 'quest', description: 'Collect a Yellow Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'Images/Blank/YellowCard.png', progress: 0, claimed: false, completed: false, refillAt: null},
-  { id: 'collect_purple_card', type: 'quest', description: 'Collect a Purple Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'Images/Blank/PurpleCard.png', progress: 0, claimed: false, completed: false, refillAt: null},
-  { id: 'collect_gray_card', type: 'quest', description: 'Collect a Gray Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'Images/Blank/GrayCard.png', progress: 0, claimed: false, completed: false, refillAt: null},
-  { id: 'collect_black_card', type: 'quest', description: 'Collect a Black Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'Images/Blank/BlackCard.png', progress: 0, claimed: false, completed: false, refillAt: null},
-  { id: 'collect_white_card', type: 'quest', description: 'Collect a White Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'Images/Blank/WhiteCard.png', progress: 0, claimed: false, completed: false, refillAt: null},
+  { id: 'collect_green_card', type: 'quest', description: 'Collect a Green Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'Images/Blank/Green.png', progress: 0, claimed: false, completed: false, refillAt: null},
+  { id: 'collect_red_card', type: 'quest', description: 'Collect a Red Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'Images/Blank/Red.png', progress: 0, claimed: false, completed: false, refillAt: null},
+  { id: 'collect_blue_card', type: 'quest', description: 'Collect a Blue Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'Images/Blank/Blue.png', progress: 0, claimed: false, completed: false, refillAt: null},
+  { id: 'collect_yellow_card', type: 'quest', description: 'Collect a Yellow Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'Images/Blank/Yellow.png', progress: 0, claimed: false, completed: false, refillAt: null},
+  { id: 'collect_purple_card', type: 'quest', description: 'Collect a Purple Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'Images/Blank/Purple.png', progress: 0, claimed: false, completed: false, refillAt: null},
+  { id: 'collect_gray_card', type: 'quest', description: 'Collect a Gray Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'Images/Blank/Gray.png', progress: 0, claimed: false, completed: false, refillAt: null},
+  { id: 'collect_black_card', type: 'quest', description: 'Collect a Black Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'Images/Blank/Black.png', progress: 0, claimed: false, completed: false, refillAt: null},
+  { id: 'collect_white_card', type: 'quest', description: 'Collect a White Card', goal: 1, reward: { type: 'currency', amount: 80 }, image: 'Images/Blank/White.png', progress: 0, claimed: false, completed: false, refillAt: null},
   { questId: null, refillAt: 1720000000000 },
 ];
 
