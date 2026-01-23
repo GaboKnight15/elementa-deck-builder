@@ -137,17 +137,13 @@ auth.onAuthStateChanged(function(user) {
       updateQuestsNotificationDot();  
       startQuestTimers();
       updateAchievementsNotificationDot();
-      profileArea.style.display = '';
-      profileMenu.classList.remove('active');
-      loginMenu.classList.remove('active');
       appMain.classList.add('active');
+      loginMenu.classList.remove('active');
       loadProfile(user);  
     });
   } else {
     console.log("User logged out, setting defaults");
     // Reset UI and data to logged-out state
-    profileArea.style.display = 'none';
-    profileMenu.classList.remove('active');
     loginMenu.classList.add('active');
     appMain.classList.remove('active');
     loginUsernameInput.value = "";
