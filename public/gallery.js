@@ -173,7 +173,7 @@ function createCardGallery(card) {
     img.src = card.image;
     img.onerror = function() {
       this.onerror = null;
-      this.src = "CardImages/Domains/placeholder.png";
+      this.src = "Images/Other/Placeholder.png";
     };
     img.alt = card.name;
     img.classList.add('card-art-image');
@@ -455,7 +455,7 @@ function showGalleryCardMenu(card, anchorDiv) {
   foilBtn.style.width = "100%";
   foilBtn.style.textAlign = "left";
   foilBtn.innerHTML =
-    `<img src="OtherImages/Icons/Foil.png" alt="Foil" style="width:20px;vertical-align:middle;margin-right:10px;"> Foil`;
+    `<img src="Icons/Other/Foil.png" alt="Foil" style="width:20px;vertical-align:middle;margin-right:10px;"> Foil`;
 
   const owned = getCollection()[card.id] || 0;
   const consumeAmt = getFoilConsumeAmount(card);
