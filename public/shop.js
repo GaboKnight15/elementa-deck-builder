@@ -460,7 +460,7 @@ function renderShopPacks() {
     priceTag.style.justifyContent = 'center';
     priceTag.style.marginTop = '8px';
     priceTag.innerHTML = `
-      <img class="currency-icon" src='Images/Currency/Coins.png' alt="Coins">
+      <img class="currency-icon" src='Icons/Other/Coins.png' alt="Coins">
       <span>${pack.price}</span>
     `;
 	  
@@ -550,7 +550,7 @@ function renderShopCosmetics({
     priceTag.style.justifyContent = 'center';
     priceTag.style.marginTop = '8px';
     priceTag.innerHTML = `
-      <img class="currency-icon" src='Images/Currency/Coins.png' alt="Coins">
+      <img class="currency-icon" src='Icons/Other/Coins.png' alt="Coins">
       <span>${price}</span>
     `;
     img.onclick = function() {
@@ -693,7 +693,7 @@ function renderIndividualCardsShop(shouldAnimateFlip = false) {
     const refreshBtn = document.createElement('button');
     refreshBtn.type = 'button';
     refreshBtn.className = 'btn-secondary individual-cards-refresh-btn';
-    refreshBtn.innerHTML = `Refresh <span style="color:#ffe066;"><img src='Images/Currency/Coins.png' style="width:18px;vertical-align:middle;"> ${INDIVIDUAL_CARDS_REFRESH_COST}</span>`;
+    refreshBtn.innerHTML = `Refresh <span style="color:#ffe066;"><img src='Icons/Other/Coins.png' style="width:18px;vertical-align:middle;"> ${INDIVIDUAL_CARDS_REFRESH_COST}</span>`;
     refreshBtn.style.margin = "5px";
     refreshBtn.onclick = function() {
       if (getCurrency() < INDIVIDUAL_CARDS_REFRESH_COST) {
@@ -808,7 +808,7 @@ INDIVIDUAL_CARD_SLOTS.forEach(slot => {
     // Card details below
     const priceDiv = document.createElement('div');
     priceDiv.className = 'currency-display';
-    priceDiv.innerHTML = `<img class="currency-icon" src='Images/Currency/Coins.png' alt="Coins"><span>${individualCardPrices[card.rarity]}</span>`;
+    priceDiv.innerHTML = `<img class="currency-icon" src='Icons/Other/Coins.png' alt="Coins"><span>${individualCardPrices[card.rarity]}</span>`;
     cardOuterDiv.appendChild(priceDiv);
 
     if (isPurchased) cardOuterDiv.classList.add('card-locked');
@@ -853,7 +853,7 @@ function showIndividualCardModal(card, isPurchased) {
       <div style="margin:10px 0;">
         <span class="shop-individual-card-rarity">${card.rarity}</span>
         <span class="currency-display" style="text-align:center;margin-top:10px;">
-          <img class="currency-icon" src='Images/Currency/Coins.png' alt="Coins">
+          <img class="currency-icon" src='Icons/Other/Coins.png' alt="Coins">
           <span>${individualCardPrices[card.rarity]}</span>
         </span>
       </div>
