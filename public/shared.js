@@ -2822,23 +2822,23 @@ const defaultBanner = "Images/Banner/DefaultBanner.png";
 const allAvatarOptions = [
 // --- COMMON GREEN AVATARS --- //
   { name: 'Elemental of Leaves', src: 'Images/Avatar/ElementalofLeaves.png', rarity: 'Common', price: 10, obtain: 'shop' },
-
   { name: 'Fairy', src: 'Images/Avatar/Fairy.png', rarity: 'Common', price: 10, obtain: 'shop' },
   { name: 'Wildwood Goblin', src: 'Images/Avatar/WildwoodGoblin.png', rarity: 'Common', price: 10, obtain: 'shop' },
   { name: 'Satyr', src: 'Images/Avatar/Satyr.png', rarity: 'Common', price: 10, obtain: 'shop' },
   { name: 'Verdant Serpent', src: 'Images/Avatar/VerdantSerpent.png', rarity: 'Common', price: 10, obtain: 'shop' },
 // --- COMMON RED AVATARS --- //
   { name: 'Elemental of Embers', src: 'Images/Avatar/ElementalofEmbers.png', rarity: 'Common', price: 10, obtain: 'shop' },
-
   { name: 'Emberling', src: 'Images/Avatar/Emberling.png', rarity: 'Common', price: 10, obtain: 'shop' },
   { name: 'Fire Golem', src: 'Images/Avatar/FireGolem.png', rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Kobold', src: 'Images/Avatar/Kobold.png', rarity: 'Common', price: 10, obtain: 'shop' },
 // --- COMMON BLUE AVATARS --- //
   { name: 'Elemental of Droplets', src: 'Images/Avatar/ElementalofDroplets.png', rarity: 'Common', price: 10, obtain: 'shop' },
   { name: 'Mermaid', src: 'Images/Avatar/Mermaid.png', rarity: 'Common', price: 10, obtain: 'shop' },
-
   { name: 'Water Elemental', src: 'Images/Avatar/WaterElemental.png', rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Runebound Shark', src: 'Images/Avatar/RuneboundShark.png', rarity: 'Common', price: 10, obtain: 'shop' },
   { name: 'Coral Drone', src: 'Images/Avatar/CoralDrone.png', rarity: 'Common', price: 10, obtain: 'shop' },
 // --- COMMON YELLOW AVATARS --- //
+  { name: 'Birdfolk', src: 'Images/Avatar/Birdfolk.png', rarity: 'Common', price: 10, obtain: 'shop' },
   { name: 'Elemental of Sparks', src: 'Images/Avatar/ElementalofSparks.png', rarity: 'Common', price: 10, obtain: 'shop' },
   { name: 'Elemental of Breeze', src: 'Images/Avatar/ElementalofBreeze.png', rarity: 'Common', price: 10, obtain: 'shop' },
 
@@ -2850,32 +2850,35 @@ const allAvatarOptions = [
   { name: 'Rock Lizard', src: 'Images/Avatar/RockLizard.png', rarity: 'Common', price: 10, obtain: 'shop' },
 // --- COMMON PURPLE AVATARS --- //
   { name: 'Elemental of Toxins', src: 'Images/Avatar/ElementalofToxins.png', rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Fen Goblin', src: 'Images/Avatar/FenGoblin.png', rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Giant Hornet', src: 'Images/Avatar/GiantHornet.png', rarity: 'Common', price: 10, obtain: 'shop' },
 
 // --- COMMON WHITE AVATARS --- //
   { name: 'Elemental of Gleams', src: 'Images/Avatar/ElementalofGleams.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Angel', src: 'Images/Avatar/Angel.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+  { name: 'Angel', src: 'Images/Avatar/Angel.png', rarity: 'Common', price: 50, obtain: 'shop' },
+  { name: 'Valkyrie', src: 'Images/Avatar/Valkyrie.png', rarity: 'Common', price: 50, obtain: 'shop' },
 
   { name: 'Angelic Warrior', src: 'Images/Avatar/AngelicWarrior.png', rarity: 'Common', price: 10, obtain: 'shop' },
 // --- COMMON BLACK AVATARS --- //
   { name: 'Elemental of Shades', src: 'Images/Avatar/ElementalofShades.png', rarity: 'Common', price: 10, obtain: 'shop' },
-
+  { name: 'Skeleton', src: 'Images/Avatar/Skeleton.png', rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Zombie', src: 'Images/Avatar/Zombie.png', rarity: 'Common', price: 10, obtain: 'shop' },
   { name: 'Wolf', src: 'Images/Avatar/Wolf.png', rarity: 'Common', price: 10, obtain: 'shop' },
 
-	
-
 // --- RARE GREEN AVATARS --- //
-  { name: 'Treant Witch', src: 'Images/Avatar/TreantWitch.png', rarity: 'Rare', price: 50, obtain: 'shop' },
   { name: 'Elemental of Foliages', src: 'Images/Avatar/ElementalofFoliages.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+  { name: 'Deepwood Ursan', src: 'Images/Avatar/DeepwoodUrsan.png', rarity: 'Rare', price: 50, obtain: 'shop' },
   { name: 'Verdara Soldier', src: 'Images/Avatar/VerdaraSoldier.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-
+  { name: 'Treant Witch', src: 'Images/Avatar/TreantWitch.png', rarity: 'Rare', price: 50, obtain: 'shop' },
 // --- RARE RED AVATARS --- //
   { name: 'Elemental of Flames', src: 'Images/Avatar/ElementalofFlames.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+  { name: 'Blazescale War-Drake', src: 'Images/Avatar/BlazescaleWarDrake.png', rarity: 'Rare', price: 50, obtain: 'shop' },
   { name: 'Magmaris Mercenary', src: 'Images/Avatar/MagmarisMercenary.png', rarity: 'Rare', price: 50, obtain: 'shop' },
 
 // --- RARE BLUE AVATARS --- //
   { name: 'Elemental of Torrents', src: 'Images/Avatar/ElementalofTorrents.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-  { name: 'Umarion Paladin', src: 'I mages/Avatar/UmarionPaladin.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-
+  { name: 'WavecrashWhale', src: 'Images/Avatar/WavecrashWhale.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+  { name: 'Umarion Paladin', src: 'Images/Avatar/UmarionPaladin.png', rarity: 'Rare', price: 50, obtain: 'shop' },
   { name: 'Coralbound Protector', src: 'Images/Avatar/CoralboundProtector.png', rarity: 'Rare', price: 50, obtain: 'shop' },
 // --- RARE YELLOW AVATARS --- //
   { name: 'Elemental of Gales', src: 'Images/Avatar/ElementalofGales.png', rarity: 'Rare', price: 50, obtain: 'shop' },
@@ -2883,14 +2886,19 @@ const allAvatarOptions = [
 
 // --- RARE GRAY AVATARS --- //
   { name: 'Elemental of Boulders', src: 'Images/Avatar/ElementalofBoulders.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+  { name: 'Rockmaul Rhino', src: 'Images/Avatar/RockmaulRhino.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+
   { name: 'Drakzul Warmonger', src: 'Images/Avatar/DrakzulWarmonger.png', rarity: 'Rare', price: 50, obtain: 'shop' },
 
 // --- RARE PURPLE AVATARS --- //
   { name: 'Elemental of Miasmas', src: 'Images/Avatar/ElementalofMiasmas.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+  { name: 'Dreadcoil Viper', src: 'Images/Avatar/DreadcoilViper.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+
   { name: 'Virkul Assassin', src: 'Images/Avatar/VirkulAssassin.png', rarity: 'Rare', price: 50, obtain: 'shop' },
 
 // --- RARE WHITE AVATARS --- //
   { name: 'Elemental of Lusters', src: 'Images/Avatar/ElementalofLusters.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+  { name: 'Solmara Crusader', src: 'Images/Avatar/SolmaraCrusader.png', rarity: 'Rare', price: 50, obtain: 'shop' },
 
 // --- RARE BLACK AVATARS --- //
   { name: 'Elemental of Shadows', src: 'Images/Avatar/ElementalofShadows.png', rarity: 'Rare', price: 50, obtain: 'shop' },
