@@ -596,9 +596,9 @@ const REQUIREMENT_MAP = {
     // Later you could add more restrictions for "Ultimate" here
   },
   CW: {
-    icon: 'Icons/Essence/CW.png',
+    icon: 'Icons/Essence/Tap.png',
     name: 'Defense',
-    description: 'Change the unit to Defense mode.',
+    description: 'Disable card.',
     zones: ['playerCreatures', 'playerDomains'],
     handler: function(sourceCardObj, skillObj, next) {
       // If already in DEF (horizontal), just proceed with skill activation
@@ -610,7 +610,7 @@ const REQUIREMENT_MAP = {
         changeCardPosition(sourceCardObj, "horizontal", next);
         return;
       }
-      showToast("Card must be in ATK or DEF position to activate this skill.");
+      showToast("Card must be enabled to activate this skill.");
     },
     canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
       const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
@@ -619,9 +619,9 @@ const REQUIREMENT_MAP = {
     }
   },
   CCW: {
-    icon: 'Icons/Essence/CCW.png',
+    icon: 'Icons/Essence/Untap.png',
     name: 'Attack',
-    description: 'Change the unit to Attack mode.',
+    description: 'Enable card.',
     zones: ['playerCreatures', 'playerDomains'],
     handler: function(sourceCardObj, skillObj, next) {
       // If already in ATK (vertical), just proceed with skill activation
@@ -633,7 +633,7 @@ const REQUIREMENT_MAP = {
         changeCardPosition(sourceCardObj, "vertical", next);
         return;
       }
-      showToast("Card must be in ATK or DEF position to activate this skill.");
+      showToast("Card must be disabled to activate this skill.");
     },
     canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
       const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
@@ -873,12 +873,6 @@ Summon: {
           renderGameState && renderGameState();
           if (typeof nextEffect === 'function') nextEffect();
         };
-
-        if (placeOrientation === 'prompt') {
-          showSummonPositionModal(instance || {}, (chosenOrientation) => doMove(chosenOrientation));
-        } else {
-          doMove(placeOrientation);
-        }
       };
 
       // If no cost, summon immediately
@@ -1179,24 +1173,6 @@ Dash: {
       return;
     }
     runHandSkillWithAnimation(sourceCardObj, skillObj, targetArr, () => {
-      showSummonPositionModal(sourceCardObj, function(chosenOrientation) {
-        // Calculate half base HP (rounded up), fallback to 1 if not defined
-        const baseHp = getBaseHp(sourceCardObj.cardId) || 1;
-        const halfHp = Math.ceil(baseHp / 2);
-
-        // If step overrides HP, use that (future-proofing)
-        const summonHp = typeof step.hp === "number" ? step.hp : halfHp;
-
-        moveCard(
-          sourceCardObj.instanceId,
-          gameState.playerHand,
-          targetArr,
-          { orientation: chosenOrientation, currentHP: summonHp }
-        );
-        renderGameState();
-        setupDropZones && setupDropZones();
-        if (nextEffect) nextEffect();
-      });
     });
   },
   canActivate: function(cardObj, skillObj, currentZone, gameState) {
@@ -1231,18 +1207,6 @@ Reanimate: {
       if (nextEffect) nextEffect();
       return;
     }
-    // Prompt orientation (if needed)
-    showSummonPositionModal(sourceCardObj, function(chosenOrientation) {
-      moveCard(
-        sourceCardObj.instanceId,
-        gameState.playerVoid,
-        targetArr,
-        { orientation: chosenOrientation, currentHP: getBaseHp(sourceCardObj.cardId) }
-      );
-      closeAllModals();
-      renderGameState();
-      if (nextEffect) nextEffect();
-    });
   },
   canActivate: function(cardObj, skillObj, currentZone, gameState) {
     // Only allow activation if the card is in the void zone
@@ -1275,16 +1239,6 @@ Awaken: {
     }
     // Animation (optional)
     runDeckSkillWithAnimation && runDeckSkillWithAnimation(sourceCardObj, skillObj, targetArr, () => {
-      showSummonPositionModal(sourceCardObj, function(chosenOrientation) {
-        moveCard(
-          sourceCardObj.instanceId,
-          gameState.playerDeck,
-          targetArr,
-          { orientation: chosenOrientation, currentHP: getBaseHp(sourceCardObj.cardId) }
-        );
-        closeAllModals();
-        renderGameState();
-      });
     });
   },
   canActivate: function(cardObj, skillObj, currentZone, gameState) {
@@ -1348,7 +1302,7 @@ Armor: {
   }
 },
   Aegis: {
-    icon: 'Icons/skillEffect/Aegis.png',
+    icon: 'Icons/Skill/Aegis.png',
     name: 'Aegis',
     description: 'Grants a shield that blocks the next incoming damage.',
     handler: function(sourceCardObj, skillObj) {
@@ -1362,7 +1316,7 @@ Armor: {
     }
   },
   Recall: {
-    icon: 'Icons/skillEffect/Recall.png',
+    icon: 'Icons/Skill/Recall.png',
     name: 'Recall',
     description: 'Return this card from the void to your hand.',
     handler: function(sourceCardObj, skillObj) {
@@ -1376,7 +1330,7 @@ Armor: {
     }
   },
 Destroy: {
-  icon: 'Icons/skillEffect/Destroy.png',
+  icon: 'Icons/Skill/Destroy.png',
   name: 'Destroy',
   description: 'Destroy a valid target according to skill condition.',
   handler: function(sourceCardObj, skillObj) {
@@ -1408,7 +1362,7 @@ Destroy: {
   }
 },
   Search: {
-    icon: 'Icons/skillEffect/Search.png',
+    icon: 'Icons/Skill/Search.png',
     name: 'Search',
     description: 'Search your deck for a card matching criteria and add it to your hand.',
     // Now using (sourceCardObj, skillObj, step, nextEffect)
@@ -1482,10 +1436,6 @@ Destroy: {
           showToast("Revive can only be used for creatures or domains.");
           return;
         }
-        showSummonPositionModal(selectedCardObj, function(chosenOrientation) {
-          moveCard(selectedCardObj.instanceId, gameState.playerVoid, targetArr, { orientation: chosenOrientation, currentHP: getBaseHp(selectedCardObj.cardId) });
-          renderGameState();
-        });
       }, { title: "Revive from Void - Choose a card" });
     }
   },
@@ -1593,7 +1543,7 @@ Banish: {
   Intimidate: {
     icon: 'Icons/Ability/Intimidate.png',
     name: 'Intimidate',
-    description: 'When attacking, changes defending creature to DEF.',
+    description: 'When attacking, disables defending creature.',
     handler: function(attacker, defender, next) {
       // Only trigger Intimidate if defender is in ATK (vertical)
       if (defender.orientation === "vertical") {
@@ -2978,11 +2928,6 @@ if (isCardActionable(cardObj, cardData, gameState, 'hand')) {
           Object.values(parsedCost).reduce((a, b) => a + b, 0) === 0 ||
           (typeof cardData.cost === "string" && cardData.cost === "{0}")
         ) {
-          showSummonPositionModal(cardObj, function(chosenOrientation) {
-            moveCard(instanceId, gameState.playerHand, targetArr, { orientation: chosenOrientation });
-            renderGameState();
-            setupDropZones();
-          });
           return;
         }
 
@@ -2992,11 +2937,6 @@ if (isCardActionable(cardObj, cardData, gameState, 'hand')) {
           cost: parsedCost,
           eligibleCards: getAllEssenceSources(),
           onPaid: function() {
-            showSummonPositionModal(cardObj, function(chosenOrientation) {
-              moveCard(instanceId, gameState.playerHand, targetArr, { orientation: chosenOrientation });
-              renderGameState();
-              setupDropZones();
-            });
           }
         });
       }
@@ -3357,58 +3297,6 @@ function cleanCard(cardObj) {
 
 function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
 
-// CARD POSITION SELECTION MODAL
-function showSummonPositionModal(cardObj, onSelected) {
-  // Remove any existing modal
-  let modal = document.getElementById('summon-position-modal');
-  if (modal) modal.remove();
-
-  modal = document.createElement('div');
-  modal.id = 'summon-position-modal';
-  modal.className = 'modal';
-  modal.style.display = 'flex';
-  modal.style.alignItems = 'center';
-  modal.style.justifyContent = 'center';
-  modal.style.zIndex = 99999;
-
-  const content = document.createElement('div');
-  content.className = 'modal-content';
-  content.style.display = 'flex';
-  content.style.flexDirection = 'column';
-  content.style.alignItems = 'center';
-  content.style.gap = '18px';
-  content.onclick = e => e.stopPropagation();
-
-  content.innerHTML = `
-    <div style="display:flex;gap:30px;justify-content:center;">
-      <div id="summon-atk-choice" style="cursor:pointer;text-align:center;">
-        <div style="margin-bottom:6px;font-weight:bold;">ATK</div>
-        <img src="${dummyCards.find(c => c.id === cardObj.cardId).image}" 
-             alt="ATK Position" 
-             style="width:90px;transform:rotate(0deg);border:3px solid #ffe066;border-radius:10px;box-shadow:0 0 12px #ffe06677;">
-      </div>
-      <div id="summon-def-choice" style="cursor:pointer;text-align:center;">
-        <div style="margin-bottom:6px;font-weight:bold;">DEF</div>
-        <img src="${dummyCards.find(c => c.id === cardObj.cardId).image}" 
-             alt="DEF Position" 
-             style="width:90px;transform:rotate(90deg);border:3px solid #66aaff;border-radius:10px;box-shadow:0 0 12px #66aaff77;">
-      </div>
-    </div>
-  `;
-
-  modal.appendChild(content);
-  document.body.appendChild(modal);
-
-  // Click handlers
-  content.querySelector('#summon-atk-choice').onclick = function() {
-    modal.remove();
-    onSelected("vertical"); // ATK
-  };
-  content.querySelector('#summon-def-choice').onclick = function() {
-    modal.remove();
-    onSelected("horizontal"); // DEF
-  };
-}
 // OPEN DECK MODAL
 function openDeckModal(filteredCards) {
   const modal = document.getElementById('deck-modal');
@@ -4438,24 +4326,6 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
         renderGameState();
         setupDropZones();
         emitPublicState();
-        closeAllMenus();
-      }
-    },
-    {
-      text: "Change Position",
-      disabled: !cardObj || cardObj.hasChangedPositionThisTurn,
-      onClick: function(e) {
-        e.stopPropagation();
-        if (!cardObj || cardObj.hasChangedPositionThisTurn) return;
-        let arr = getZoneArray(zoneId);
-        if (arr) {
-          let card = arr.find(c => c.instanceId === instanceId);
-          if (card) {
-            let prevOrientation = card.orientation;
-            const newOrientation = card.orientation === "horizontal" ? "vertical" : "horizontal";
-            changeCardPosition(card, newOrientation);
-          }
-        }
         closeAllMenus();
       }
     },
@@ -6148,49 +6018,10 @@ window.socket.on('game action log', (obj) => {
   if (isMe) return;
   if (obj.type === "attack") {
     appendAttackLog(obj, true, false);
-  } else if (obj.type === "changePosition") {
-    // Find the card object using instanceId and cardId if needed
-    const cardObj = { cardId: obj.cardId, instanceId: obj.instanceId };
-    appendPositionChangeLog(cardObj, obj.newOrientation, obj.prevOrientation, true);
   } else {
     appendVisualLog(obj, true, false);
   }
 });
-// CHANGE POSITION LOG
-function appendPositionChangeLog(cardObj, newOrientation, prevOrientation, fromSocket = false) {
-  const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
-  if (!cardDef) return;
-  const logDiv = document.getElementById('game-log');
-  let logHtml = `<div class="log-action" style="padding:5px 0;display:flex;align-items:center;">`;
-
-  if (prevOrientation === "vertical" && newOrientation === "horizontal") {
-    // ATK to DEF
-    logHtml += cardImgLog(cardDef, { border: "2px solid #ffe066", width: 36, rotate: 0 });
-    logHtml += `<img src="Icons/Essence/Tap.png"
-      alt="Tapped" style="width:28px;vertical-align:middle;margin-left:8px;margin-right:13px;">`;
-    logHtml += cardImgLog(cardDef, { border: "2px solid #ffe066", width: 36, marginLeft: "7px", rotate: 90 });
-  } else if (prevOrientation === "horizontal" && newOrientation === "vertical") {
-    // DEF to ATK
-    logHtml += cardImgLog(cardDef, { border: "2px solid #ffe066", width: 36, marginRight: "7px", rotate: 90 });
-    logHtml += `<img src="Icons/Essence/Untap.png" alt="Untapped" style="width:28px;vertical-align:middle;margin:0 7px;">`;
-    logHtml += cardImgLog(cardDef, { border: "2px solid #ffe066", width: 36, rotate: 0 });
-  }
-  logHtml += `</div>`;
-  logDiv.insertAdjacentHTML('beforeend', logHtml);
-  logDiv.scrollTop = logDiv.scrollHeight;
-  // Only emit if not from socket
-  if (!fromSocket && window.socket && window.currentRoomId) {
-    const obj = {
-      cardId: cardObj.cardId,
-      instanceId: cardObj.instanceId,
-      newOrientation,
-      prevOrientation,
-      sender: gameState.playerProfile?.username || "me",
-      type: "changePosition"
-    };
-    window.socket.emit('game action log', window.currentRoomId, obj);
-  }
-}
 
 // CONDITIONAL TARGETS FOR SKILL ACTIVATION //
 function getValidTargetsByCondition(cardArr, conditionArr) {
@@ -6238,23 +6069,7 @@ function filterCardsByCriteria(cardArr, criteria) {
     return true;
   });
 }
-// CHANGE POSITION HELPER
-function changeCardPosition(cardObj, newOrientation, callback) {
-  if (!cardObj) return;
-  const prevOrientation = cardObj.orientation;
-  if (prevOrientation === newOrientation) { if (callback) callback(); return; }
-  const zoneId = findZoneIdForCard(cardObj);
 
-  animateCardPositionChange(cardObj, zoneId, prevOrientation, newOrientation, () => {
-    cardObj.orientation = newOrientation;
-    cardObj.hasChangedPositionThisTurn = true;
-    appendPositionChangeLog(cardObj, newOrientation, prevOrientation);
-    renderGameState();
-    setupDropZones();
-    emitPublicState();
-    if (callback) callback();
-  });
-}
 // APPEND TO LOG
 function appendVisualLog(obj, fromSocket = false, isMe = true) {
   const logDiv = document.getElementById('game-log');
@@ -6513,7 +6328,7 @@ function animateDefenderHit(cardObj, zoneId, callback) {
     if (callback) callback();
   }, 220); // match shake-hit animation duration
 }
-function animateCardPositionChange(cardObj, zoneId, prevOrientation, newOrientation, callback) {
+function animateCardDisable(cardObj, zoneId, prevOrientation, newOrientation, callback) {
   const cardDiv = findCardDivInZone(zoneId, cardObj.instanceId);
   if (!cardDiv) { if (callback) callback(); return; }
 
@@ -8029,11 +7844,6 @@ function isCardActionable(cardObj, cardData, gameState, zone) {
   // 2. Can attack (for creatures on field)
   if (zone === 'player-creatures-zone' && typeof canAttack === "function") {
     if (canAttack(cardObj, gameState)) return true;
-  }
-
-  // 3. Can change position (for creatures/domains on field)
-  if ((zone === 'player-creatures-zone' || zone === 'player-domains-zone') && typeof canChangePosition === "function") {
-    if (canChangePosition(cardObj, zone, gameState)) return true;
   }
 
   // 4. Can activate any skill in this zone
