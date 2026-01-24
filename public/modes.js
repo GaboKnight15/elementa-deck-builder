@@ -1403,7 +1403,7 @@ function renderModePlayerDeckTile() {
     <img class="deck-slot-highlight-img" src="${image}" alt="highlight" />
     <div class="deck-slot-title-overlay">${deckName}</div>
     <img class="deck-slot-cardback-img" src="${deckObj.cardbackArt || "Images/Cardback/Default.png"}" alt="Cardback" style="position:absolute;right:8px;width:32px;height:44px;">
-    <img id="deck-slot-view-icon" src="Images/Icons/View.png" alt="View Deck" 
+    <img id="deck-slot-view-icon" src="Icons/Other/View.png" alt="View Deck" 
       style="position:absolute;top:8px;right:8px;width:30px;height:30px;z-index:10;cursor:pointer;filter:drop-shadow(0 0 4px #000b);">
   `;
   slotDiv.onclick = function(e) {
