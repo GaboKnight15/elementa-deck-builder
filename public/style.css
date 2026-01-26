@@ -473,7 +473,7 @@ button {}
   display: flex;
   justify-content: center;
   gap: 20px;
-  margin: 24px 0 12px 0;
+  margin: 0 0 12px 0;
 }
 .friends-tab-btn {
   padding: 10px 26px;
