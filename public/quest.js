@@ -385,8 +385,7 @@ function renderQuests() {
             </div>
             <div class="quest-progress-numbers">${progress.progress} / ${questDef.goal}</div>
             <div class="quest-reward">
-              <img class="currency-icon" src="Icons/Other/Coins.png" alt="Coins">
-              +${questDef.reward.amount}
+              <img class="currency-icon" src="Icons/Other/Coins.png" alt="Coins">${questDef.reward.amount}
             </div>
           </div>
         </div>
