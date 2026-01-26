@@ -2145,7 +2145,7 @@ button[disabled], .btn-disabled {
   padding: 4px 10px;
   border-radius: 8px;
   position: absolute;
-  top: 8px;
+  bottom: 0;
   z-index: 3;
   pointer-events: none;
 }
@@ -2802,10 +2802,6 @@ button[disabled], .btn-disabled {
   text-align: center;
 }
 
-.cpu-deck-option .deck-difficulty {}
-.deck-difficulty {
-  pointer-events: none;
-}
 .player-deck-option img {
   width: 100%;
   object-fit: cover;
