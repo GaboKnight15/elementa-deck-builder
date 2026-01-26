@@ -49,7 +49,7 @@ const dummyCards = [
    activation: {class: 'Arrival'},
    effect: {class: 'Search', targetColor: 'Green', targetTrait: 'Terrain'}},
  ]},
-
+/*
 {id: 'HeartwoodEmeralds', name: 'Heartwood Emeralds', rarity: 'Common', image: 'Cards/ecg/HeartwoodEmeralds.png', flavor: '', 
  category: 'Artifact', color: 'Green', type: 'Relic', archetype: 'Heartwood', hp: 8, cost: '{1}{g}', set: 'ElementaGenesis',
  skill: [{name: 'Equip', cost: '{1}{g}', effect: {class: 'Equip'}}]},
@@ -58,8 +58,8 @@ const dummyCards = [
  category: 'Domain', color: 'Green', type: '', hp: 8, cost: '{g}', essence: '{G}', trait: 'Terrain', set: 'ElementaGenesis',
  skill: [{name: 'Terraform', cost: '{g}', effect: {class: 'Terraform'}},
   {name: 'Flourish', cost: '{g}', requirement: {class: 'CW'}, effect: {class: 'Search', trait: 'Terrain'}}]},
-
-{id: 'LifeGrowth', name: 'Life Growth', rarity: 'Common', image: 'Cards/egg/LifeGrowth.png', flavor: '', 
+*/
+{id: 'LifesGrowth', name: "Life's Growth", rarity: 'Rare', image: 'Cards/egg/LifesGrowth.png', flavor: '', 
  category: 'Spell', color: 'Green', type: 'Spell', cost: '{g}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{g}', effect: [{class: 'Essence', amount: 2, color: 'Green'}, {class: 'Cast'}]}]},
 
