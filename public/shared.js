@@ -2557,6 +2557,18 @@ defense: {name: "Defense", description: "Defense value.", icon: "Icons/Stat/Def.
 armor: {name: "Armor", description: "Secondary sustain stat. Units loss armor first before HP. When the armor breaks, nullifies remaining damage. Losses {1} Speed", icon: "Icons/Stat/Armor.png" },
 speed: {name: "Speed", description: "Speed value. Dash, Dive, Flying, Leap, and Rush +1 Spd. Mage +1 Spd. Ranger +2 Spd. Armor -1 Spd. Spd dif is  =>2 gain Quickstrike. Spd dif is => 3 gain Superstrike.", icon: "Icons/Stat/Spd.png" },
 
+// -------------- //
+// --- COLORS --- //
+// -------------- //
+green: {name: "Green", description: "", icon: "Icons/Color/Green.png" },
+red: {name: "Red", description: "", icon: "Icons/Color/Red.png" },
+blue: {name: "Blue", description: "", icon: "Icons/Color/Blue.png" },
+yellow: {name: "Yellow", description: "", icon: "Icons/Color/Yellow.png" },
+gray: {name: "Gray", description: "", icon: "Icons/Color/Gray.png" },
+purple: {name: "Purple", description: "", icon: "Icons/Color/Purple.png" },
+white: {name: "White", description: "", icon: "Icons/Color/White.png" },
+black: {name: "Black", description: "", icon: "Icons/Color/Black.png" },
+
 // ----------------- //
 // --- ABILITIES --- //
 // ----------------- //
@@ -3876,6 +3888,12 @@ function showFullCardModal(cardObj) {
   let infoHtml = '';
   infoHtml += `<div class="full-card-info-title">${card.name}</div>`;
   infoHtml += `<div class="card-modal-divider"></div>`;
+
+	// Color
+if (card.color) {
+  const colorHtml = renderKeywordChips(card.color) || (Array.isArray(card.color) ? card.color.join(', ') : card.color);
+  infoHtml += labeled("Color", colorHtml);
+}
  
   // Category (show chip(s))
   if (card.category) {
