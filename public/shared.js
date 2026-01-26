@@ -3737,16 +3737,17 @@ function getCombinedKeywordStats(values) {
 // color mapping: values 1..9 -> gradient red -> green, value 10 -> blue
 function getStatColor(value) {
   const v = Math.max(1, Math.min(10, Number(value) || 1));
-  if (v === 10) return '#4aa3ff'; // blue for top value
-  // gradient red -> green for 1..9
-  const t = (v - 1) / (9 - 1); // 0..1 across 1..9
-  // red: #ff4d4d -> rgb(255,77,77)
-  // green: #4dff88 -> rgb(77,255,136)
-  const r1 = 255, g1 = 77, b1 = 77;
-  const r2 = 77,  g2 = 255, b2 = 136;
-  const r = Math.round(r1 + (r2 - r1) * t);
-  const g = Math.round(g1 + (g2 - g1) * t);
-  const b = Math.round(b1 + (b2 - b1) * t);
+  if (v === 10) return '#4aa3ff'; // Blue for top value
+  // Gradient from red (#ff4d4d) to green (#4dff88) for values 1 to 9
+  const gradientStop = (v - 1) / 8; // Normalize value (1 maps to 0, 9 maps to 1)
+  const startColor = [255, 77, 77]; // RGB for red
+  const endColor = [77, 255, 136]; // RGB for green
+
+  // Interpolate RGB values
+  const r = Math.round(startColor[0] + (endColor[0] - startColor[0]) * gradientStop);
+  const g = Math.round(startColor[1] + (endColor[1] - startColor[1]) * gradientStop);
+  const b = Math.round(startColor[2] + (endColor[2] - startColor[2]) * gradientStop);
+
   return `rgb(${r},${g},${b})`;
 }
 
