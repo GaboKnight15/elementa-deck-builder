@@ -256,7 +256,6 @@ if (count < 30) {
 }
       
 if (warningDiv) tile.appendChild(warningDiv);
-tile.appendChild(activeBtn);
 tile.onclick = (e) => {
   showDeckTileMenu(slotName, tile);
 };
