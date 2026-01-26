@@ -1251,7 +1251,6 @@ const dummyCards = [
    requirement: [{class: 'Ultimate'}, {class:'Sacrifice', amount: 1}, {class: 'CW'}],
    effect: {class: 'Destroy', target: 1 }}
  ]},
-*/
  
 {id: 'WildHuntress', name: 'Wild Huntress', rarity: 'Common', image: 'Cards/Faefolk/WildHuntress.png', flavor: '', 
  category: 'Creature', color: 'Green', type: 'Faefolk', archetype: 'Satyr', trait: 'Warrior', hp: 7, atk: 4, def: 2,
@@ -1328,7 +1327,6 @@ const dummyCards = [
  cost: '{1}{B}', ability: ['Drain','Flying'], set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{1}{b}', effect: {class: 'Summon'}}]},
  
-/*
 {id: 'ForestWarrior', name: 'Forest Warrior', rarity: 'Rare', image: 'Cards/Arbor/ForestWarrior.png', flavor: '', 
  category: 'Creature', color: 'Green', type: 'Construct', archetype: 'Arbor', trait: 'Warrior', hp: 6, atk: 3, def: 1, cost: '{1}{G}', 
  ability: ['Drain','Rush'], set: 'ElementaGenesis',
@@ -2416,8 +2414,6 @@ Dragon Terrains
 {id: 'RadianteEnclave', name: 'Radiante Enclave', rarity: 'Common', image: 'Cards/Domain/RadianteEnclave.png', flavor: '', 
  category: 'Domain', color: 'White', type: 'Terrain', hp: 5, cost: '{0}', essence: '{W}', set: 'EchoesofCreation'},
 
- */
-
 // ---- TOKENS ---- //
  
 // --- Goblin Tokens --- //
@@ -2492,7 +2488,7 @@ Dragon Terrains
 {id: 'ElementalTokenWhite', name: 'Elemental of Gleams', rarity: 'Common', image: 'Cards/Token/ElementalTokenWhite.png', flavor: '', 
  category: 'Creature', color: 'White', type: 'Elemental', archetype: 'Luminaut', hp: 4, atk: 1, def: 0,
  skill: [{name: 'Fuse', cost: '{w}', effect: {class: 'Fuse'}}]},
- 
+ */
 ];
 // Cost mapping and renderer (returns HTML string)
 const COST_IMAGE_MAP = {
@@ -2607,14 +2603,6 @@ unbreakable: {name: "Unbreakable", description: "Cannot be destroyed by effects.
 veil: {name: "Veil", description: "Cannot be targeted by effects.", icon: "Icons/Ability/Veil.png" },
 wither: {name: "Wither", description: "Inflict {wither} upon dealing damage. Withered cards cannot be healed.", icon: "Icons/Ability/Wither.png" },
 
-
-
-scorchArmor: {name: "Flame Armor", description: "Burns after an attack", icon: "Icons/Ability/FlameArmor.png" },
-frostbiteArmor: {name: "Frost Armor", description: "Freezes after an attack", icon: "Icons/Ability/FrostArmor.png" },
-poisonousArmor: {name: "Poisonous Armor", description: "Poisons after an attack", icon: "Icons/Ability/PoisonousArmor.png" },
-drenchedArmor: {name: "Aqua Armor", description: "Soaks after an attack", icon: "Icons/Ability/AquaArmor.png" },
-staticArmor: {name: "Static Armor", description: "Paralyzes after an attack", icon: "Icons/Ability/StaticArmor.png" },
-
 evasion: {name: "Evasion", description: "Prevents the next attack or skill to your unit. Consumes {1} Evasion counter.", icon: "Icons/Ability/Evasion.png" },
 
 // -------------------- //
@@ -2719,14 +2707,15 @@ enchantment: {name: "Enchantment", description: "Attach to lands.", icon: "Icons
 // TYPES //
 // ----- //
 avian: {name: "Construct", icon: "Icons/Type/Avian.png" , description: "Graceful and fierce, the avians rule the skies with wisdom born of the wind. From mountaintop sanctuaries they watch the shifting lands below, their keen eyes ever wary, their hearts bound to the endless horizon. Whether messengers of dawn or harbingers of storm, the Avians embody freedom itself — swift, untouchable, and guided by the breath of the heavens."},
-dragon: {name: "Dragon", icon: "Icons/Type/Dragon.png" , description: "Majestic, ancient, and unmatched in power, dragons embody the primal forces of creation and destruction. Each scale glimmers with the legacy of ages, and each breath reshapes the world itself. Though their temperaments vary—from wise guardians to wrathful tyrants—all dragons command awe and fear in equal measure, their presence a living reminder that the elements themselves can take form and will."},
 beast: {name: "Beast", icon: "Icons/Type/Beast.png" , description: "Untamed and primal, beasts embody the raw pulse of nature unshaped by reason or restraint. From the silent hunter stalking through shadowed woods to the thunderous titan that shakes the earth, each creature moves with instinctive purpose. Though driven by hunger and survival, beasts are more than mere savagery — they are the heartbeat of the wild, the first language of a world that remembers no masters."},
-elemental: {name: "Elemental", icon: "Icons/Type/Elemental.png" , description: "Primordial and eternal, elementals are the living essence of the world’s raw forces. They are not born, but awakened — the whisper of wind given voice, the heartbeat of stone given motion. Neither good nor evil, they embody balance itself, shaping and unshaping creation with every surge of flame, wave, or storm. To face an elemental is to confront the untamed will of the world made flesh."},
-construct: {name: "Construct", icon: "Icons/Type/Construct.png" , description: "Forged by mortal hands yet animated by unnatural will, constructs stand as monuments to creation without life. Some serve with perfect obedience, others wander seeking the purpose their makers abandoned. Whether wrought from steel, stone, or enchanted coral, each construct bears the echo of its creator’s intent — a silent testament to the line between genius and hubris."},
-faefolk: {name: "Faefolk", icon: "Icons/Type/Faefolk.png" , description: "Enigmatic and timeless, the Faefolk dwell where wonder and deceit intertwine. They are the laughter in moonlit groves, the whispers between leaves, and the shimmer at the edge of mortal sight. Guided by whim as much as wisdom, their magic bends nature’s laws with effortless grace — nurturing or destroying with the same delicate hand. To bargain with the Faefolk is to dance with beauty and peril alike."},
 brute: {name: "Brute", icon: "Icons/Type/Brute.png" , description: "Savage and unyielding, the Brute are forged in struggle and bound by blood. They thrive where strength is law and survival the only creed, their lives shaped by war, hunger, and the will to endure. Though scorned as beasts by softer races, they bear a primal honor — a truth carved in scars and fire. To face the Brute is to meet the raw, untamed spirit of the world before it learned mercy."},
+construct: {name: "Construct", icon: "Icons/Type/Construct.png" , description: "Forged by mortal hands yet animated by unnatural will, constructs stand as monuments to creation without life. Some serve with perfect obedience, others wander seeking the purpose their makers abandoned. Whether wrought from steel, stone, or enchanted coral, each construct bears the echo of its creator’s intent — a silent testament to the line between genius and hubris."},
 demon: {name: "Demon", icon: "Icons/Type/Demon.png" , description: "Born from malice, ambition, and the echoes of forsaken gods, demons are the chaos that festers beneath creation. They thrive in conflict, feeding on desire, fear, and despair — yet each is bound by its own cunning will. To mortals they appear as nightmares made flesh, but to themselves they are architects of freedom, tearing down the fragile order that cages the world. Their power is corruption, and their truth — liberation through ruin."},
-undead: {name: "Undead", icon: "Icons/Type/Undead.png" , description: "Bound by neither time nor death, the undead are echoes of life that refuse to fade. Animated by cursed will or unholy power, they wander between worlds — relics of hatred, sorrow, or unfinished purpose. Where they tread, warmth withers and silence reigns. To some they are abominations; to others, proof that even death can be conquered — at a terrible cost." },
+dragon: {name: "Dragon", icon: "Icons/Type/Dragon.png" , description: "Majestic, ancient, and unmatched in power, dragons embody the primal forces of creation and destruction. Each scale glimmers with the legacy of ages, and each breath reshapes the world itself. Though their temperaments vary—from wise guardians to wrathful tyrants—all dragons command awe and fear in equal measure, their presence a living reminder that the elements themselves can take form and will."},
+elemental: {name: "Elemental", icon: "Icons/Type/Elemental.png" , description: "Primordial and eternal, elementals are the living essence of the world’s raw forces. They are not born, but awakened — the whisper of wind given voice, the heartbeat of stone given motion. Neither good nor evil, they embody balance itself, shaping and unshaping creation with every surge of flame, wave, or storm. To face an elemental is to confront the untamed will of the world made flesh."},
+faefolk: {name: "Faefolk", icon: "Icons/Type/Faefolk.png" , description: "Enigmatic and timeless, the Faefolk dwell where wonder and deceit intertwine. They are the laughter in moonlit groves, the whispers between leaves, and the shimmer at the edge of mortal sight. Guided by whim as much as wisdom, their magic bends nature’s laws with effortless grace — nurturing or destroying with the same delicate hand. To bargain with the Faefolk is to dance with beauty and peril alike."},
+human: {name: "Human", icon: "Icons/Type/Dragon.png" , description: "Majestic, ancient, and unmatched in power, dragons embody the primal forces of creation and destruction. Each scale glimmers with the legacy of ages, and each breath reshapes the world itself. Though their temperaments vary—from wise guardians to wrathful tyrants—all dragons command awe and fear in equal measure, their presence a living reminder that the elements themselves can take form and will."},
+undead: {name: "Undead", icon: "Icons/Type/Human.png" , description: "" },
 celestial: {name: "Celestial", icon: "Icons/Type/Celestial.png" , description: "Beacons of divinity and order, the celestials are born of pure light and cosmic harmony. Their presence bends the heavens and stills the storms, for they are the will of creation made radiant. Guided by purpose beyond mortal grasp, they bring both mercy and judgment — for in their eyes, salvation and destruction are but reflections of balance restored."},
 
 // ---------- //
