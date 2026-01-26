@@ -254,25 +254,12 @@ if (count < 30) {
   warningDiv.className = 'deck-slot-warning';
   warningDiv.textContent = "Less than 30 cards";
 }
-      // --- ACTIVE DECK BUTTON/STAR ---
-const isActive = slotName === currentDeckSlot;
-const activeBtn = document.createElement('button');
-activeBtn.innerHTML = isActive ? '⭐ Active' : '☆ Inactive';
-activeBtn.className = 'deck-active-btn';
-activeBtn.disabled = isActive;
-activeBtn.onclick = (e) => {
-  e.stopPropagation();
-  currentDeckSlot = slotName;
-  saveProgress();
-  renderDeckSelection();
-};
       
 if (warningDiv) tile.appendChild(warningDiv);
 tile.appendChild(activeBtn);
-
-      tile.onclick = (e) => {
-        showDeckTileMenu(slotName, tile);
-      };
+tile.onclick = (e) => {
+  showDeckTileMenu(slotName, tile);
+};
     } else {
       tile.classList.add('empty');
       tile.textContent = '+ New Deck';
