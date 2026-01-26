@@ -148,11 +148,11 @@ function showCosmeticConfirmModal({imgSrc, name, type, price, onConfirm, packId}
   cosmeticConfirmModal.innerHTML = `
     <div class="modal-content" style="position:relative;">
       <button id="pack-info-btn" style="position:absolute;top:5px;right:0;background:none;border:none;cursor:pointer;">
-        <img src='Images/Icons/Info.png' alt="Pack Info" style="width:28px;">
+        <img src='Icons/Other/Info.png' alt="Pack Info" style="width:28px;">
       </button>
       <img src="${imgSrc}" alt="Cosmetic Preview" title="${name || ''}" style="max-width:120px;box-shadow:0 2px 10px #0005;">
       <div class="currency-display" style="margin:10px 0;">
-        <img class="currency-icon" src='Images/Icon/GoldCoin.png' alt="Coins">
+        <img class="currency-icon" src='Icons/Other/Coin.png' alt="Coins">
         <span id="modal-total-price">${price}</span>
       </div>
       ${bulkSelectorHtml}
