@@ -3885,7 +3885,7 @@ function showFullCardModal(cardObj) {
   // Rarity simple label
   if (card.rarity) {
     const rarHtml = renderKeywordChips(card.rarity) || (Array.isArray(card.rarity) ? card.rarity.join(', ') : card.rarity);
-    infoHtml += labeled("Rarity", catHtml);
+    infoHtml += labeled("Rarity", rarHtml);
   }
 
   // Archetype
