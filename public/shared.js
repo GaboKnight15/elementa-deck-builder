@@ -2483,8 +2483,9 @@ Dragon Terrains
 {id: 'ElementalTokenWhite', name: 'Elemental of Gleams', rarity: 'Common', image: 'Cards/Token/ElementalTokenWhite.png', flavor: '', 
  category: 'Creature', color: 'White', type: 'Elemental', archetype: 'Luminaut', hp: 4, atk: 1, def: 0,
  skill: [{name: 'Fuse', cost: '{w}', effect: {class: 'Fuse'}}]},
- */
+
 ];
+*/
 // Cost mapping and renderer (returns HTML string)
 const COST_IMAGE_MAP = {
   G: "Icons/Essence/Green.png",
