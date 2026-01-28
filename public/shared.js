@@ -274,8 +274,8 @@ const dummyCards = [
  cost: '{2}{y}', ability: 'Flying', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{y}{y}', effect: {class: 'Summon'}}]},
          
-{id: 'SkywardArchipelago', name: 'Skyward Archipelago', rarity: 'Rare', image: 'Cards/egy/SkywardArchipelago.png', flavor: '', 
- category: 'Domain', color: 'Yellow', type: 'Terrain', hp: 6, cost: '{y}', essence: '{Y}', set: 'ElementaGenesis',
+{id: 'StormspirePinnacle', name: 'Stormspire Pinnacle', rarity: 'Rare', image: 'Cards/egy/StormspirePinnacle.png', flavor: '', 
+ category: 'Domain', color: 'Yellow', type: 'Terrain', hp: 9, cost: '{y}', essence: '{Y}', set: 'ElementaGenesis',
  skill: [{name: 'Terraform', cost: '{y}', effect: {class: 'Terraform'}},
   {name: 'Flourish', cost: '{g}', requirement: {class: 'CW'}, effect: {class: 'Search', trait: 'Terrain'}}]},
          
@@ -351,11 +351,10 @@ const dummyCards = [
    effect: {class: 'Strike', target: 3, amount: 2}}]},
 
 {id: 'ElementalofBoulders', name: 'Elemental of Boulders', rarity: 'Rare', image: 'Cards/egc/ElementalofBoulders.png', flavor: '', 
- category: 'Creature', color: 'Gray', type: 'Elemental', archetype: 'Golem', trait: '', hp: 6, atk: 4, def: 3,
+ category: 'Creature', color: 'Gray', type: 'Elemental', archetype: 'Golem', trait: '', hp: 5, atk: 4, def: 3,
  cost: '{c}{c}', ability: 'Immunity', set: 'ElementaGenesis',
- skill: [{name: 'Summon', cost: '{c}', effect: {class: 'Summon'}},
-  {name: 'Terra Discovery', activation: {class:'Arrival'}, 
-   effect: {class: 'Search', amount: 1, targetColor: 'Gray', targetTrait: 'Terrain'}}
+ skill: [{name: 'Terra Discovery', cost: '{c}', effect: [{class: 'Summon'}, {class: 'Search', amount: 1, targetColor: 'Gray', targetTrait: 'Terrain'}]},
+  {name: 'Mountain Earthcraft', activation: {class:'Brace'}, effect: {class: 'Inspire', armor: 1, targetCategory: 'Terrain'}
  ]},
 
 {id: 'SlatebackLizard', name: 'Slateback Lizard', rarity: 'Rare', image: 'Cards/egc/SlatebackLizard.png', flavor: '', 
@@ -471,28 +470,28 @@ const dummyCards = [
   {name: 'Expel', cost: '{c}', 
    requirement: {class: 'Expel'}, effect: {class: 'Search', targetTrait: 'Terrain'}}]},
 
-{id: 'GiantHornet', name: 'GiantHornet', rarity: 'Common', image: 'Cards/egp/GiantHornet.png', flavor: '', 
- category: 'Creature', color: 'Purple', type: 'Beast', archetype: '', trait: '', hp: 3, atk: 2, def: 0,
- cost: '{p}{p}', ability: 'Toxic', set: 'ElementaGenesis',
- skill: [{name: 'Summon', cost: '{p}{p}', effect: {class: 'Summon'}},
-  {name: 'Reanimate', cost: '{1}{P}{P}',
-   effect: {class: 'Reanimate'}}]},
+{id: 'GiantHornet', name: 'Giant Hornet', rarity: 'Common', image: 'Cards/egp/GiantHornet.png', flavor: '', 
+ category: 'Creature', color: 'Purple', type: 'Bug', archetype: '', trait: '', hp: 3, atk: 2, def: 0,
+ cost: '{p}', ability: ['Flying','Venom'], set: 'ElementaGenesis',
+ skill: [{name: 'Summon', cost: '{p}', effect: {class: 'Summon'}}]},
 
 {id: 'ElementalofToxins', name: 'Elemental of Toxins', rarity: 'Common', image: 'Cards/egp/ElementalofToxins.png', flavor: '', 
- category: 'Creature', color: 'Purple', type: 'Elemental', archetype: 'Corruptor', trait: '', hp: 4, atk: 1, def: 0,
+ category: 'Creature', color: 'Purple', type: 'Elemental', archetype: 'Corruptor', trait: '', hp: 3, atk: 1, def: 0,
  cost: '{p}', ability: ['Elusive','Poisonous'], set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{p}{p}', effect: {class: 'Summon'}}]},
+
+{id: 'FenGoblin', name: 'Fen Goblin', rarity: 'Common', image: 'Cards/egp/FenGoblin.png', flavor: '', 
+ category: 'Creature', color: 'Purple', type: 'Brute', archetype: 'Goblin', trait: '', hp: 2, atk: 1, def: 0,
+ cost: '{0}', ability: ['Pilfer','Venom'], set: 'ElementaGenesis',
+ skill: [{name: 'Summon', cost: '{0}', effect: {class: 'Summon'}}]},
          
 {id: 'Swamp', name: 'Swamp', rarity: 'Common', image: 'Cards/egp/Swamp.png', flavor: '', 
  category: 'Domain', color: 'Purple', type: 'Terrain', hp: 5, cost: '{0}', essence: '{P}', set: 'ElementaGenesis',
  skill: [{name: 'Terraform', cost: '{0}', effect: {class: 'Terraform'}}]},
 
-{id: 'ToxicSpores', name: 'Toxic Spores', rarity: 'Common', image: 'Cards/egp/ToxicSpores.png', flavor: '', 
- category: 'Spell', color: 'Purple', type: 'Spell', cost: '{1}', set: 'ElementaGenesis',
- skill: [{name: 'Cast', cost: '{2}', effect: {class: 'Cast'}},
-  {name: 'Spell', cost: '{1}', 
-   effect: {class: 'Strike', amount: 3}},
- ]},
+{id: 'SporeCloud', name: 'Spore Cloud', rarity: 'Common', image: 'Cards/egp/SporeCloud.png', flavor: '', 
+ category: 'Spell', color: 'Purple', type: 'Toxic', cost: '{1}{p}', set: 'ElementaGenesis',
+ skill: [{name: 'Cast', cost: '{1}{p}', effect: [{class: 'Poison', amount: 0, target: 3}, {class: 'Cast'}]}]},
          
 {id: 'EssenceBreak', name: 'Essence Break', rarity: 'Common', image: 'Cards/egp/EssenceBreak.png', flavor: '', 
  category: 'Spell', color: 'Purple', type: 'Spell', cost: '{1}', set: 'ElementaGenesis',
@@ -2274,7 +2273,11 @@ Dragon Terrains
  category: 'Domain', color: 'Blue', type: 'Terrain', hp: 5, cost: '{0}', essence: '{U}', set: 'StandardPack2'},
 
 // --- Yellow Domains --- //
-
+{id: 'SkywardArchipelago', name: 'Skyward Archipelago', rarity: 'Rare', image: 'Cards/egy/SkywardArchipelago.png', flavor: '', 
+ category: 'Domain', color: 'Yellow', type: 'Terrain', hp: 6, cost: '{y}', essence: '{Y}', set: 'ElementaGenesis',
+ skill: [{name: 'Terraform', cost: '{y}', effect: {class: 'Terraform'}},
+{name: 'Flourish', cost: '{g}', requirement: {class: 'CW'}, effect: {class: 'Search', trait: 'Terrain'}}]},
+  
 {id: 'TempestCradle', name: 'Tempest Cradle', rarity: 'Common', image: 'Cards/Domain/TempestCradle.png', flavor: '', 
  category: 'Domain', color: 'Yellow', type: 'Terrain', hp: 5, cost: '{0}', essence: '{Y}', set: 'StandardPack2'},
 
