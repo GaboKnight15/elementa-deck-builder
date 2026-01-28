@@ -173,7 +173,7 @@ function createCardGallery(card) {
     img.src = card.image;
     img.onerror = function() {
       this.onerror = null;
-      this.src = "Images/Other/Placeholder.png";
+      this.src = "Icons/Other/Placeholder.png";
     };
     img.alt = card.name;
     img.classList.add('card-art-image');
