@@ -355,7 +355,7 @@ const dummyCards = [
  cost: '{c}{c}', ability: 'Immunity', set: 'ElementaGenesis',
  skill: [{name: 'Terra Discovery', cost: '{c}{c}',
 		  effect: [{class: 'Summon'}, {class: 'Search', amount: 1, targetColor: 'Gray', targetTrait: 'Terrain'}]},
-  {name: 'Mountain Earthcraft', activation: {class:'Brace'}, effect: {class: 'Inspire', armor: 1, targetCategory: 'Terrain'}},
+  {name: 'Mountain Earthcraft', activation: {class:'Brace'}, effect: {class: 'Inspire', armor: 1, targetCategory: 'Terrain'}]},
 
 {id: 'SlatebackLizard', name: 'Slateback Lizard', rarity: 'Rare', image: 'Cards/egc/SlatebackLizard.png', flavor: '', 
  category: 'Creature', color: 'Gray', type: 'Reptile', archetype: '', trait: '', hp: 6, atk: 4, def: 2,
@@ -379,14 +379,12 @@ const dummyCards = [
 {id: 'Orc', name: 'Orc', rarity: 'Common', image: 'Cards/egc/Orc.png', flavor: '', 
  category: 'Creature', color: 'Gray', type: 'Beast', archetype: 'Orc', trait: 'Warrior', hp: 5, atk: 3, def: 1,
  cost: '{C}', ability: ['Defiant','Intimidate'], set: 'ElementaGenesis',
- skill: [{name: 'Summon', cost: '{c}', effect: {class: 'Summon'}},
- ]},
+ skill: [{name: 'Summon', cost: '{c}', effect: {class: 'Summon'}}]},
 
 {id: 'BarrensTrampler', name: 'Barrens Trampler', rarity: 'Common', image: 'Cards/egc/BarrensTrampler.png', flavor: '', 
  category: 'Creature', color: 'Gray', type: 'Beast', archetype: 'Orc', trait: '', hp: 10, atk: 2, def: 2,
  cost: '{C}', ability: 'Crush', set: 'ElementaGenesis',
- skill: [{name: 'Summon', cost: '{c}', effect: {class: 'Summon'}},
- ]},
+ skill: [{name: 'Summon', cost: '{c}', effect: {class: 'Summon'}}]},
 
 {id: 'RockshellArmadillo', name: 'Rockshell Armadillo', rarity: 'Common', image: 'Cards/egc/RockshellArmadillo.png', flavor: '', 
  category: 'Creature', color: 'Gray', type: 'Beast', archetype: '', trait: '', hp: 3, atk: 1, def: 2,
@@ -397,8 +395,7 @@ const dummyCards = [
 {id: 'ElementalofPebbles', name: 'Elemental of Pebbles', rarity: 'Common', image: 'Cards/egc/ElementalofPebbles.png', flavor: '', 
  category: 'Creature', color: 'Gray', type: 'Elemental', archetype: 'Golem', trait: '', hp: 3, atk: 2, def: 2,
  cost: '{C}', ability: ['Dormant','Immunity'], set: 'ElementaGenesis',
- skill: [{name: 'Summon', cost: '{c}', effect: {class: 'Summon'}},
- ]},
+ skill: [{name: 'Summon', cost: '{c}', effect: {class: 'Summon'}}]},
 
 {id: 'Mountain', name: 'Mountain', rarity: 'Common', image: 'Cards/egc/Mountain.png', flavor: '', 
  category: 'Domain', color: 'Gray', type: 'Terrain', hp: 5, cost: '{0}', essence: '{C}', set: 'ElementaGenesis',
@@ -411,9 +408,7 @@ const dummyCards = [
 {id: 'EssenceBarrier', name: 'Essence Barrier', rarity: 'Common', image: 'Cards/egc/EssenceBarrier.png', flavor: '', 
  category: 'Spell', color: 'Gray', type: 'Aura', cost: '{1}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{0}', effect: {class: 'Cast'}},
-  {name: 'Inspire', cost: '{1}', 
-   effect: {class: 'Strike', amount: 3}},
- ]},
+  {name: 'Inspire', cost: '{1}', effect: {class: 'Strike', amount: 3}}]},
 
 // --- EG PURPLE --- //
 {id: 'SelgorCorruptedWarlock', name: 'Selgor, Corrupted Warlock', rarity: 'Legendary', image: 'Cards/egp/SelgorCorruptedWarlock.png', flavor: '', 
@@ -439,25 +434,18 @@ const dummyCards = [
 {id: 'GoliathCroaker', name: 'Goliath Croaker', rarity: 'Rare', image: 'Cards/egp/GoliathCroaker.png', flavor: '', 
  category: 'Creature', color: 'Purple', type: 'Beast', archetype: '', trait: '', hp: 11, atk: 3, def: 2,
  cost: '{1}{p}{P}', ability: 'Poisonous', set: 'ElementaGenesis',
- skill: [{name: 'Summon', cost: '{1}{p}{p}', effect: {class: 'Summon'}},
-  {name: 'Reanimate', cost: '{1}{P}{P}',
-   effect: {class: 'Reanimate'}},
- ]},
+ skill: [{name: 'Summon', cost: '{1}{p}{p}', effect: {class: 'Summon'}}]},
 
 {id: 'DreadcoilViper', name: 'Dreadcoil Viper', rarity: 'Rare', image: 'Cards/egp/DreadcoilViper.png', flavor: '', 
- category: 'Creature', color: 'Purple', type: 'Beast', archetype: '', trait: '', hp: 7, atk: 3, def: 1,
- cost: '{p}{P}', ability: 'Poisonous', set: 'ElementaGenesis',
- skill: [{name: 'Summon', cost: '{p}{p}', effect: {class: 'Summon'}},
-  {name: 'Reanimate', cost: '{1}{P}{P}',
-   effect: {class: 'Reanimate'}},
- ]},
+ category: 'Creature', color: 'Purple', type: 'Reptile', archetype: '', trait: '', hp: 7, atk: 3, def: 1,
+ cost: '{p}{p}', ability: 'Venom', set: 'ElementaGenesis',
+ skill: [{name: 'Summon', cost: '{p}{p}', effect: {class: 'Summon'}}]},
 
 {id: 'ElementalofMiasmas', name: 'Elemental of Miasmas', rarity: 'Rare', image: 'Cards/egp/ElementalofMiasmas.png', flavor: '', 
  category: 'Creature', color: 'Purple', type: 'Elemental', archetype: 'Corruptor', trait: '', hp: 7, atk: 3, def: 1,
  cost: '{p}{p}', ability: 'Poisonous', set: 'ElementaGenesis',
- skill: [{name: 'Cursed Discovery', cost: '{p}{p}', activation: {class:'Arrival'}, effect: {class: 'Summon'},
-		  effect: {class: 'Search', amount: 1, targetColor: 'Purple', targetTrait: 'Terrain'}},
- ]},
+ skill: [{name: 'Cursed Discovery', cost: '{p}{p}', activation: {class:'Arrival'},
+		  effect: [{class: 'Summon'}, {class: 'Search', amount: 1, targetColor: 'Purple', targetTrait: 'Terrain'}]}]},
 
 {id: 'FesterglowFrontier', name: 'Festerglow Frontier', rarity: 'Rare', image: 'Cards/egp/FesterglowFrontier.png', flavor: '', 
  category: 'Domain', color: 'Purple', type: 'Terrain', hp: 6, cost: '{p}', essence: '{p}', set: 'ElementaGenesis',
@@ -496,8 +484,7 @@ const dummyCards = [
 {id: 'EssenceBreak', name: 'Essence Break', rarity: 'Common', image: 'Cards/egp/EssenceBreak.png', flavor: '', 
  category: 'Spell', color: 'Purple', type: 'Spell', cost: '{1}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{2}', effect: {class: 'Cast'}},
-  {name: 'Spell', cost: '{1}', 
-   effect: {class: 'Strike', amount: 3}}]},
+  {name: 'Spell', cost: '{1}', effect: {class: 'Strike', amount: 3}}]},
 
 // --- EG WHITE --- //
 {id: 'ElyndraDawnbladeofHeavens', name: 'Elyndra, Dawnblade of Heavens', rarity: 'Legendary', image: 'Cards/egw/ElyndraDawnbladeofHeavens.png', flavor: '', 
@@ -684,11 +671,11 @@ const dummyCards = [
  skill: [{name: 'Cast', cost: '{0}', effect: {class: 'Cast'}}]},
          
 {id: 'EssencePurge', name: 'Essence Purge', rarity: 'Common', image: 'Cards/egb/EssencePurge.png', flavor: '', 
- category: 'Spell', color: 'Black', type: 'Spell', cost: '{2}', set: 'ElementaGenesis',
- skill: [{name: 'Cast', cost: '{0}', effect: {class: 'Cast'}}]},
-
-// DRAGONS //
+ category: 'Spell', color: 'Black', type: 'Spell', cost: '{3}', set: 'ElementaGenesis',
+ skill: [{name: 'Cast', cost: '{3}', effect: {class: 'Cast'}}]},
 /*
+// DRAGONS //
+
 {id: 'VerdarokSylvanThornwing', name: 'Verdarok, Sylvan Thornwing', rarity: 'Legendary', image: 'Cards/Thornwing/VerdarokSylvanThornwing.png', flavor: '', 
  category: 'Creature', color: 'Green', type: 'Dragon', archetype: 'Thornwing', trait: 'Evolution', hp: 9, atk: 5, def: 3,
  cost: '{4}{G}{G}', ability: ['Flying','Protect'], set: 'ScalesofRuin',
@@ -2483,9 +2470,9 @@ Dragon Terrains
 {id: 'ElementalTokenWhite', name: 'Elemental of Gleams', rarity: 'Common', image: 'Cards/Token/ElementalTokenWhite.png', flavor: '', 
  category: 'Creature', color: 'White', type: 'Elemental', archetype: 'Luminaut', hp: 4, atk: 1, def: 0,
  skill: [{name: 'Fuse', cost: '{w}', effect: {class: 'Fuse'}}]},
-
+ */
 ];
-*/
+
 // Cost mapping and renderer (returns HTML string)
 const COST_IMAGE_MAP = {
   G: "Icons/Essence/Green.png",
