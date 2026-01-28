@@ -353,9 +353,9 @@ const dummyCards = [
 {id: 'ElementalofBoulders', name: 'Elemental of Boulders', rarity: 'Rare', image: 'Cards/egc/ElementalofBoulders.png', flavor: '', 
  category: 'Creature', color: 'Gray', type: 'Elemental', archetype: 'Golem', trait: '', hp: 5, atk: 4, def: 3,
  cost: '{c}{c}', ability: 'Immunity', set: 'ElementaGenesis',
- skill: [{name: 'Terra Discovery', cost: '{c}', effect: [{class: 'Summon'}, {class: 'Search', amount: 1, targetColor: 'Gray', targetTrait: 'Terrain'}]},
-  {name: 'Mountain Earthcraft', activation: {class:'Brace'}, effect: {class: 'Inspire', armor: 1, targetCategory: 'Terrain'}
- ]},
+ skill: [{name: 'Terra Discovery', cost: '{c}{c}',
+		  effect: [{class: 'Summon'}, {class: 'Search', amount: 1, targetColor: 'Gray', targetTrait: 'Terrain'}]},
+  {name: 'Mountain Earthcraft', activation: {class:'Brace'}, effect: {class: 'Inspire', armor: 1, targetCategory: 'Terrain'}},
 
 {id: 'SlatebackLizard', name: 'Slateback Lizard', rarity: 'Rare', image: 'Cards/egc/SlatebackLizard.png', flavor: '', 
  category: 'Creature', color: 'Gray', type: 'Reptile', archetype: '', trait: '', hp: 6, atk: 4, def: 2,
