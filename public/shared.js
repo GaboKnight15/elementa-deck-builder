@@ -635,8 +635,8 @@ const dummyCards = [
 
 {id: 'UmbrawindHollow', name: 'Umbrawind Hollow', rarity: 'Rare', image: 'Cards/egb/UmbrawindHollow.png', flavor: '', 
  category: 'Domain', color: 'Black', type: 'Terrain', hp: 8, cost: '{1}{b}', essence: '{B}', set: 'ElementaGenesis',
- skill: [{name: 'Silent Quarry', requirement: {class:'CW'}, effect: {class: 'Search', amount: 1, targetCategory: 'Creature', targetAbility: 'Ambush'}
-]},
+ skill: [{name: 'Silent Quarry', requirement: {class:'CW'},
+		  effect: {class: 'Search', amount: 1, targetCategory: 'Creature', targetAbility: 'Ambush'}}]},
 
 {id: 'Mindbreak', name: 'Mindbreak', rarity: 'Rare', image: 'Cards/egb/Mindbreak.png', flavor: '', 
  category: 'Spell', color: 'Black', type: '', cost: '{2}', set: 'ElementaGenesis',
