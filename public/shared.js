@@ -522,6 +522,14 @@ const dummyCards = [
  cost: '{2}{W}', ability: 'Flying', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{2}{w}', effect: {class: 'Summon'}}]},
 
+{id: 'SkylionExemplar', name: 'Skylion Exemplar', rarity: 'Rare', image: 'Cards/egw/SkylionExemplar.png', flavor: '', 
+ category: 'Creature', color: 'White', type: 'Beast', archetype: '', trait: '', hp: 8, atk: 4, def: 2,
+ cost: '{3}{w}', ability: ['Aegis', 'Flying', 'Protect'], set: 'ElementaGenesis',
+ skill: [{name: 'Wings of Absolution', cost: '{4}{w}',
+		  effect: [{class: 'Summon'}, {class: 'Inspire', status: 'Aegis', target: 2, targetCategory: 'Creature'}]},
+ {name: 'Hallowed Conviction', requirement: {class: 'Passive'}, 
+   effect: {class: 'Inspire', rally: 1, target: 'playerCreatures', targetStatus: 'Aegis'}}]},
+
 {id: 'ElementalofLusters', name: 'Elemental of Lusters', rarity: 'Rare', image: 'Cards/egw/ElementalofLusters.png', flavor: '', 
  category: 'Creature', color: 'White', type: 'Elemental', archetype: 'Luminaut', trait: '', hp: 7, atk: 3, def: 0,
  cost: '{w}{w}', ability: 'Elusive', set: 'ElementaGenesis',
@@ -531,10 +539,22 @@ const dummyCards = [
    requirement: [{class: 'Ultimate'}, {class:'CW'}], 
    effect: {class: 'Disable', target: 'opponentCreatures'}}]},
 
+{id: 'Angel', name: 'Angel', rarity: 'Common', image: 'Cards/egw/Angel.png', flavor: '', 
+ category: 'Creature', color: 'White', type: 'Angel', archetype: 'Seraph', trait: '', hp: 5, atk: 1, def: 0,
+ cost: '{w}', ability: ['Flying', 'Veil'], set: 'ElementaGenesis',
+ skill: [{name: 'Summon', cost: '{w}', effect: {class: 'Summon'}},
+	{name: 'Frenzy', activation: {class:'Frenzy'}, effect: {class: 'Frenzy'}},
+ 	{name: 'Graceborn', requirement: {class:'Frenzy'}, effect: {class: 'Purify', target: 1}}]},
+
 {id: 'ElementalofGleams', name: 'Elemental of Gleams', rarity: 'Common', image: 'Cards/egw/ElementalofGleams.png', flavor: '', 
  category: 'Creature', color: 'White', type: 'Elemental', archetype: 'Luminaut', trait: '', hp: 3, atk: 1, def: 0,
  cost: '{W}', ability: ['Elusive', 'Regenerate'], set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{2}{w}', effect: {class: 'Summon'}}]},
+
+{id: 'Valkyrie', name: 'Valkyrie', rarity: 'Common', image: 'Cards/egw/Valkyrie.png', flavor: '', 
+ category: 'Creature', color: 'White', type: 'Celestial', archetype: '', trait: 'Warrior', hp: 5, atk: 2, def: 1,
+ cost: '{1}', ability: 'Defiant', set: 'ElementaGenesis',
+ skill: [{name: 'Summon', cost: '{1}', effect: {class: 'Summon'}}]},
          
 {id: 'LightmaneHorse', name: 'Lightmane Horse', rarity: 'Common', image: 'Cards/egw/LightmaneHorse.png', flavor: '', 
  category: 'Creature', color: 'White', type: 'Beast', archetype: '', trait: '', hp: 6, atk: 2, def: 1,
@@ -1470,9 +1490,7 @@ const dummyCards = [
 {id: 'AngelicWarrior', name: 'Angelic Warrior', rarity: 'Common', image: 'Cards/Seraph/AngelicWarrior.png', flavor: '', 
  category: 'Creature', color: 'White', type: 'Celestial', archetype: 'Seraph', trait: 'Warrior', hp: 6, atk: 3, def: 2,
  cost: '{1}{W}', ability: 'Flying', set: 'StandardPack'},
-{id: 'Valkyrie', name: 'Valkyrie', rarity: 'Common', image: 'Cards/BasicCreatures/Valkyrie.png', flavor: '', 
- category: 'Creature', color: 'White', type: '', archetype: '', trait: 'Warrior',hp: 5, atk: 3, def: 1,
- cost: '{2}', ability: '', set: 'StandardPack'},
+
 {id: 'HeraldofLight', name: 'Herald of Light', rarity: 'Rare', image: 'Cards/BasicCreatures/HeraldofLight.png', flavor: '', 
  category: 'Creature', color: 'White', type: 'Construct', archetype: 'Seraph', hp: 8, atk: 2, def: 1,
  cost: '{1}{W}', ability: ['Flying','Aegis'], set: 'ElementaGenesis',
@@ -2833,8 +2851,8 @@ const allAvatarOptions = [
 
 // --- COMMON WHITE AVATARS --- //
   { name: 'Elemental of Gleams', src: 'Images/Avatar/ElementalofGleams.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Angel', src: 'Images/Avatar/Angel.png', rarity: 'Common', price: 50, obtain: 'shop' },
-  { name: 'Valkyrie', src: 'Images/Avatar/Valkyrie.png', rarity: 'Common', price: 50, obtain: 'shop' },
+  { name: 'Angel', src: 'Images/Avatar/Angel.png', rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Valkyrie', src: 'Images/Avatar/Valkyrie.png', rarity: 'Common', price: 10, obtain: 'shop' },
 
   { name: 'Angelic Warrior', src: 'Images/Avatar/AngelicWarrior.png', rarity: 'Common', price: 10, obtain: 'shop' },
 // --- COMMON BLACK AVATARS --- //
