@@ -381,7 +381,7 @@ function updateDeckHighlightArt(deckName) {
   const deck = decks[deckName] || {};
   deckHighlightArtImg.onerror = function() {
     this.onerror = null;
-    this.src = 'Images/Domains/placeholder.png';
+    this.src = 'Images/Other/Placeholder.png';
   };
   deckHighlightArtImg.src = deck.highlightArt || 'Images/Domain/Default.png';
 }
