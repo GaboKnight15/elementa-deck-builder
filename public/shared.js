@@ -5391,12 +5391,13 @@ function renderProfileBanners(selectedBanner) {
 }
     
 // --- Open/Close Avatar Modal ---
-profilePicMenuBtn.onclick = function() {
-  const currentIcon = profilePicMenu && profilePicMenu.src ? profilePicMenu.src.split('?')[0] : "";
-  getUnlockedAvatars(function(unlocked) {
-    renderProfileIcons(currentIcon, unlocked);
-    if (profileIconModal) profileIconModal.style.display = 'flex';
-  });
+profilePicMenuBtn.onclick = function () {
+  const currentIcon = profilePicMenu && profilePicMenu.src ? profilePicMenu.src.split("?")[0] : "";
+
+  // Use the new getAvailableAvatars function instead of getUnlockedAvatars
+  renderProfileIcons(currentIcon); // Update the render logic to work dynamically
+
+  if (profileIconModal) profileIconModal.style.display = "flex";
 };
 closeProfileIconModalBtn.onclick = function() {
   if (profileIconModal) profileIconModal.style.display = 'none';
@@ -5407,60 +5408,76 @@ profileIconModal.onclick = function(e) {
   }
 };
     
-  // --- Avatar Selection ---
-  function selectProfileIcon(iconUrl) {
-    const user = auth.currentUser;
-    if (!user) return;
-    window.playerProfilePic = iconUrl;
-    firebase.firestore().collection('users').doc(user.uid)
-      .set({ profilePic: iconUrl }, {merge: true})
-      .then(function() {
-          if (profilePic) profilePic.src = iconUrl;
-          if (profilePicMenu) profilePicMenu.src = iconUrl;          
-          getUnlockedAvatars(function(unlocked) {
-              renderProfileIcons(iconUrl, unlocked);
-          });
-          if (profileIconModal) profileIconModal.style.display = 'none';
-      })
-      .catch(function(err) {
-        console.error('[auth] Failed to update profile icon:', err);
-      });
-  }
+// --- Avatar Selection ---
+function selectProfileIcon(iconUrl) {
+  const user = auth.currentUser;
+  if (!user) return;
 
-  // --- Banner Modal ---
-  profileBanner.onclick = function() {
-    const currentBanner = profileBanner.src.split('?')[0];
-    getUnlockedBanners(function(unlocked) {
-      renderProfileBanners(currentBanner, unlocked);
-      profileBannerModal.style.display = 'flex';
+  window.playerProfilePic = iconUrl; // Update the local profile pic
+  firebase
+    .firestore()
+    .collection("users")
+    .doc(user.uid)
+    .set({ profilePic: iconUrl }, { merge: true }) // Update Firestore with new profile pic
+    .then(function () {
+      // Update profile picture displays
+      if (profilePic) profilePic.src = iconUrl;
+      if (profilePicMenu) profilePicMenu.src = iconUrl;
+
+      // Re-render profile icons
+      renderProfileIcons(iconUrl);
+
+      // Close the avatar modal
+      if (profileIconModal) profileIconModal.style.display = "none";
+    })
+    .catch(function (err) {
+      console.error("[auth] Failed to update profile icon:", err);
     });
-  };
-  closeProfileBannerModalBtn.onclick = function() {
-    profileBannerModal.style.display = 'none';
-  };
-  profileBannerModal.onclick = function(e) {
-    if (e.target === profileBannerModal) {
-      profileBannerModal.style.display = 'none';
-    }
-  };
+}
 
-  // --- Banner Selection ---
-  function selectProfileBanner(bannerUrl) {
-    const user = auth.currentUser;
-    if (!user) return;
-    window.playerProfileBanner = bannerUrl;
-    firebase.firestore().collection('users').doc(user.uid)
-      .set({ profileBanner: bannerUrl }, { merge: true })
-      .then(function() {
-        getUnlockedBanners(function(unlocked) {
-          renderProfileBanners(bannerUrl, unlocked);
-        });
-        if (profileBannerModal) profileBannerModal.style.display = 'none';
-      })
-      .catch(function(err) {
-        console.error('[auth] Failed to update profile banner:', err);
-      });
+// --- Banner Modal ---
+profileBanner.onclick = function () {
+  const currentBanner = profileBanner.src.split("?")[0];
+
+  // Use the new getAvailableBanners function
+  renderProfileBanners(currentBanner);
+
+  // Show the banner modal
+  profileBannerModal.style.display = "flex";
+};
+
+closeProfileBannerModalBtn.onclick = function () {
+  if (profileBannerModal) profileBannerModal.style.display = "none";
+};
+
+profileBannerModal.onclick = function (e) {
+  if (e.target === profileBannerModal) {
+    profileBannerModal.style.display = "none";
   }
+};
+
+// --- Banner Selection ---
+function selectProfileBanner(bannerUrl) {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  window.playerProfileBanner = bannerUrl; // Update local state with the selected banner
+  firebase
+    .firestore()
+    .collection("users")
+    .doc(user.uid)
+    .set({ profileBanner: bannerUrl }, { merge: true }) // Update Firestore with the selected banner
+    .then(function () {
+      // Re-render banners
+      renderProfileBanners(bannerUrl);
+
+      // Close the banner modal
+      if (profileBannerModal) profileBannerModal.style.display = "none";
+    })
+    .catch(function (err) {
+      console.error("[auth] Failed to update profile banner:", err);
+    });
+}
 
 // --- Profile menu open logic ---
 profilePic.onclick = function(e) {
