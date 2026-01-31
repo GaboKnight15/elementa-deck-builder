@@ -207,9 +207,11 @@ const dummyCards = [
  ]},
  
 {id: 'WavecrashWhale', name: 'Wavecrash Whale', rarity: 'Rare', image: 'Cards/egu/WavecrashWhale.png', flavor: '', 
- category: 'Creature', color: 'Blue', type: 'Oceanic', archetype: '', trait: '', hp: 18, atk: 4, def: 1,
- cost: '{3}{u}', ability: 'Dive', set: 'ElementaGenesis',
- skill: [{name: 'Summon', cost: '{3}{u}', effect: {class: 'Summon'}}]},
+ category: 'Creature', color: 'Blue', type: 'Oceanic', archetype: 'Marine', trait: '', hp: 15, atk: 5, def: 1,
+ cost: '{4}{u}', ability: 'Dive', set: 'ElementaGenesis',
+ skill: [{name: 'Whalefall Wake', cost: '{4}{u}', effect: {class: 'Summon'}},
+	{name: 'Riptide Rush', requirement: {class: 'Passive'},
+	 effect: {class: 'Inspire', target: 'playerCreatures', targetType: 'Oceanic', accel: 1}}]},
 
 {id: 'ElementalofTorrents', name: 'Elemental of Torrents', rarity: 'Rare', image: 'Cards/egu/ElementalofTorrents.png', flavor: '', 
  category: 'Creature', color: 'Blue', type: 'Elemental', archetype: 'Hydral', trait: '', hp: 8, atk: 3, def: 0,
