@@ -1124,44 +1124,52 @@ function showPlayerDeckModal() {
   defaultList.className = 'deck-tab-panel';
 
   // --- Render My Decks ---
-  function renderMyDecks() {
-    playerList.innerHTML = '';
-    const playerDecks = window.getPlayerDecks ? window.getPlayerDecks() : [];
-    const activeId = window.getActiveDeckId ? window.getActiveDeckId() : null;
-    if (!playerDecks.length) {
-      playerList.innerHTML = '<div style="color:#ffe066;">No decks found! Please build a deck or select a Default deck</div>';
-    } else {
-      playerDecks.forEach(deck => {
-        const totalCards = deck.deckObj && typeof deck.deckObj === "object"
-          ? Object.values(deck.deckObj).filter(v => typeof v === 'number').reduce((a, b) => a + b, 0)
-          : 0;
-        const image = deck.deckObj && deck.deckObj.highlightArt ? deck.deckObj.highlightArt : null;
-        const div = document.createElement('div');
-        div.className = 'player-deck-option';
-        div.style.cursor = totalCards >= 50 ? 'pointer' : 'not-allowed';
+function renderMyDecks() {
+  playerList.innerHTML = '';
+  const playerDecks = window.getPlayerDecks ? window.getPlayerDecks() : [];
+  const activeId = window.getActiveDeckId ? window.getActiveDeckId() : null;
+  if (!playerDecks.length) {
+    playerList.innerHTML = '<div style="color:#ffe066;">No decks found! Please build a deck or select a Default deck</div>';
+  } else {
+    playerDecks.forEach(deck => {
+      const totalCards = deck.deckObj && typeof deck.deckObj === "object"
+        ? Object.values(deck.deckObj).filter(v => typeof v === 'number').reduce((a, b) => a + b, 0)
+        : 0;
+      const image = deck.deckObj && deck.deckObj.highlightArt ? deck.deckObj.highlightArt : null;
+      const div = document.createElement('div');
+      div.className = 'player-deck-option';
+
+      // Only decks with exactly 30 cards are selectable
+      if (totalCards === 30) {
+        div.style.cursor = 'pointer';
         div.style.border = deck.id === activeId ? '3px solid #ffe066' : '2px solid #333';
-        div.innerHTML = `
-          <div style="position:relative; width:100%; height:140px;">
-            ${image ? `<img src="${image}" alt="${deck.name}" class="deck-art-img" style="width:100%;height:100%;object-fit:cover;border-radius:16px;">` : ''}
-            <div class="deck-name"
-              style="position:absolute;bottom:0;width:100%;background:rgba(10,12,20,0.84);color:#ffe066;font-weight:bold;text-align:center;letter-spacing:0.5px;padding:4px 0 4px 0;z-index:2;">
-              ${deck.name}
-            </div>
+        div.onclick = () => {
+          window.selectedPlayerDeck = deck;
+          if (typeof renderModePlayerDeckTile === "function") renderModePlayerDeckTile();
+          modal.style.display = 'none';
+        };
+      } else {
+        div.style.cursor = 'not-allowed';
+        div.style.border = '2px solid #999'; // Lighter gray border for unselectable decks
+        div.title = totalCards < 30 
+          ? "Deck must have 30 cards to be used" 
+          : "Deck cannot have more than 30 cards";
+        div.onclick = null; // Prevent selection
+      }
+
+      div.innerHTML = `
+        <div style="position:relative; width:100%; height:140px;">
+          ${image ? `<img src="${image}" alt="${deck.name}" class="deck-art-img" style="width:100%;height:100%;object-fit:cover;border-radius:16px;">` : ''}
+          <div class="deck-name"
+            style="position:absolute;bottom:0;width:100%;background:rgba(10,12,20,0.84);color:#ffe066;font-weight:bold;text-align:center;letter-spacing:0.5px;padding:4px 0 4px 0;z-index:2;">
+            ${deck.name} (${totalCards} cards)
           </div>
-        `;
-        if (totalCards >= 50) {
-          div.onclick = () => {
-            window.selectedPlayerDeck = deck;
-            if (typeof renderModePlayerDeckTile === "function") renderModePlayerDeckTile();
-            modal.style.display = 'none';
-          };
-        } else {
-          div.onclick = null;
-        }
-        playerList.appendChild(div);
-      });
-    }
+        </div>
+      `;
+      playerList.appendChild(div);
+    });
   }
+}
 
   // --- Render Default Decks ---
   function renderDefaultDecks() {
