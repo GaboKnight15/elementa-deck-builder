@@ -125,7 +125,7 @@ function showPackContentsModal(packId, packName) {
     modal.remove();
   };
 }
-function showCosmeticConfirmModal({imgSrc, name, type, price, onConfirm, packId}) {
+function showCosmeticConfirmModal({imgSrc, name, type, price, onConfirm, packId, itemId}) {
   if (cosmeticConfirmModal) cosmeticConfirmModal.remove();
   cosmeticConfirmModal = null;
   cosmeticConfirmModal = document.createElement('div');
@@ -191,6 +191,33 @@ function showCosmeticConfirmModal({imgSrc, name, type, price, onConfirm, packId}
         cosmeticConfirmModal.querySelector('#cosmetic-get-btn').disabled = false;
         return;
       }
+      // Handle avatar, banner, or cardback purchase
+      if (type === "avatar" || type === "banner" || type === "cardback") {
+        // Select the correct global variable based on type
+        const unlockKeyMap = {
+          avatar: "playerUnlockedAvatars",
+          banner: "playerUnlockedBanners",
+          cardback: "playerUnlockedCardbacks",
+        };
+        const unlockKey = unlockKeyMap[type];
+
+        // Get the list of unlocked items for the specified type
+        window[unlockKey] = window[unlockKey] || [];
+        if (!window[unlockKey].includes(itemId)) {
+          // Add the purchased item to the corresponding list
+          window[unlockKey].push(itemId);
+
+          // Save progress dynamically using appropriate set function
+          const setFunctionMap = {
+            avatar: setUnlockedAvatars,
+            banner: setUnlockedBanners,
+            cardback: setUnlockedCardbacks,
+          };
+          setFunctionMap[type](window[unlockKey]); // Dynamically call the corresponding save function
+          saveProgress(); // Ensure state is updated
+        }
+      }
+		
       cosmeticConfirmModal.remove();
       cosmeticConfirmModal = null;
     });
