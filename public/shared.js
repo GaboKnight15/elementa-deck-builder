@@ -4697,7 +4697,28 @@ function showFilterModal(context, callback) {
     }
   };
 }
+function getSelectedFiltersFromModal() {
+  const modal = document.getElementById('filter-modal');
 
+  // Extract the values from the modal fields dynamically
+  const nameFilter = modal.querySelector('#filter-name')?.value.toLowerCase() || '';
+  const selectedFilters = {};
+
+  // Example structure aligning with the modal setup
+  selectedFilters.nameFilter = nameFilter; // Name input field
+  selectedFilters.selectedColors = Array.from(modal.querySelectorAll('[data-filter="color"]:checked')).map((el) =>
+    el.value.toLowerCase()
+  );
+  selectedFilters.selectedTypes = Array.from(modal.querySelectorAll('[data-filter="type"]:checked')).map((el) =>
+    el.value.toLowerCase()
+  );
+  selectedFilters.selectedRarities = Array.from(modal.querySelectorAll('[data-filter="rarity"]:checked')).map((el) =>
+    el.value.toLowerCase()
+  );
+
+  // Add more filters as needed
+  return selectedFilters;
+}
 // ----------------------------------- //
 // --- Card Field Helper Functions --- //
 // These functions work for both array and string fields (case-insensitive) //
