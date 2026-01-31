@@ -71,8 +71,20 @@ const AUTOFILL_ARCHETYPES = [
 // Show modal when autofill icon clicked
 
 document.getElementById('filter-name-builder').addEventListener('input', renderBuilder);
-document.getElementById('builder-filter-btn').onclick = function(e) {
-  openFiltersMasterMenu('builder', e.target);
+document.getElementById("builder-filter-btn").onclick = () => {
+  showFilterModal((selectedFilters) => {
+    // Call `filterCards` with builder filters
+    const filteredCards = filterCards({
+      collection: getCollection(),
+      favoriteIds: getFavoriteCards(),
+      showFavoritesOnly: false, // Set to true if favorites-only toggle is active
+      nameFilter: "", // Search query, if any
+      selectedFilters,
+    });
+
+    // Render the filtered cards in the builder
+    renderBuilder(filteredCards);
+  });
 };
 document.getElementById('builder-autofill-btn').onclick = function() {
   showAutofillModal();
@@ -80,15 +92,7 @@ document.getElementById('builder-autofill-btn').onclick = function() {
 document.getElementById('builder-settings-btn').onclick = function() {
   document.getElementById('settings-modal').style.display = 'flex';
 };
-// Add this at the top or with your other DOMContentLoaded inits
-document.addEventListener('DOMContentLoaded', function() {
-  const builderFilterBtn = document.getElementById('open-filters-menu-builder');
-  if (builderFilterBtn) {
-    builderFilterBtn.onclick = function(e) {
-      openFiltersMasterMenu('builder', e.target);
-    };
-  }
-});
+
 window.addEventListener('beforeunload', function(e) {
   if (deckBuilderDirty) {
     const confirmationMessage = 'You have unsaved changes. Changes made will NOT be saved. Proceed anyway?';
@@ -1114,71 +1118,6 @@ function addCardToDeck(cardId) {
   setCurrentDeck(deck);
 }
 
-// Dropdown open/close logic
-document.querySelectorAll('#filters-builder .filter-dropdown .filter-label').forEach(label => {
-  label.onclick = function(e) {
-    e.stopPropagation();
-    document.querySelectorAll('#filters-builder .filter-dropdown').forEach(dd => dd.classList.remove('open'));
-    label.parentElement.classList.toggle('open');
-  };
-});
-
-// Checkbox logic for builder filters
-document.querySelectorAll('#filters-builder .filter-dropdown .filter-option input[type="checkbox"]').forEach(cb => {
-  cb.onchange = function(e) {
-    const dropdown = cb.closest('.filter-dropdown');
-    let vals = Array.from(dropdown.querySelectorAll('input[type="checkbox"]:checked')).map(inp => inp.value).filter(Boolean);
-
-    if (cb.value === "") {
-      // "All" was toggled
-      if (cb.checked) {
-        dropdown.querySelectorAll('input[type="checkbox"]').forEach(inp => { if (inp.value !== "") inp.checked = false; });
-        vals = [];
-      }
-    } else {
-      // If any specific option checked, uncheck "All"
-      dropdown.querySelector('input[type="checkbox"][value=""]').checked = false;
-    }
-    updateFilterLabel(dropdown, vals);
-    renderBuilder();
-  };
-});
-
-// Close dropdowns on click elsewhere
-document.body.onclick = function() {
-  document.querySelectorAll('#filters-builder .filter-dropdown').forEach(dd => dd.classList.remove('open'));
-};
-function updateBuilderFilterSummary() {
-  // Filter dropdowns to include in summary
-  const filterDropdownIds = [
-    'filter-rarity-builder-dropdown',
-    'filter-color-builder-dropdown',
-    'filter-type-builder-dropdown',
-    'filter-trait-builder-dropdown',
-    'filter-archetype-builder-dropdown',
-    'filter-ability-builder-dropdown',
-    'filter-category-builder-dropdown'
-  ];
-  let filterInfoArray = [];
-  filterDropdownIds.forEach(id => {
-    const vals = getFilterDropdownValues(id);
-    if (vals.length > 0) filterInfoArray.push(...vals);
-  });
-
-  // Name filter
-  const nameInput = document.getElementById('filter-name-builder');
-  const nameFilter = nameInput ? nameInput.value.trim() : "";
-  if (nameFilter) filterInfoArray.push(nameFilter);
-
-  // Compose summary text
-  const summaryDiv = document.getElementById('builder-filter-summary');
-  if (!summaryDiv) return;
-  if (filterInfoArray.length) {
-    summaryDiv.innerHTML = `<b>${filterInfoArray.join(' ')}</b>`;
-  } else {
-    summaryDiv.innerHTML = "";
-  }
-}
 function renderBuilder() {
     builderGallery.innerHTML = '';
     const collection = getCollection();
@@ -1204,8 +1143,8 @@ let filteredCards = filterCards({
   selectedTraits,
   selectedArchetypes,
   selectedAbilities,
-  selectedPacks: filterState.builder.pack || [], 
-  selectedOwnerships: ['Owned'] 
+  selectedPacks,
+  selectedOwnerships,
 });
   updateBuilderFilterSummary();
   filteredCards
