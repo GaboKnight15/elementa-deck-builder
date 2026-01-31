@@ -1133,7 +1133,8 @@ function renderBuilder() {
   const filteredCards = filterCards({
     collection,
     favoriteIds,
-    showFavoritesOnly: showFavoritesOnlyBuilder,
+    showFavoritesOnly,
+    nameFilter,     
     ...selectedFilters, // Use the filters provided by the modal instead of dropdowns
   });
 
