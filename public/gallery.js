@@ -216,7 +216,14 @@ function createCardGallery(card) {
       star.style.zIndex = '5';
       div.appendChild(star);
     }
-  
+    // Add click and hold functionality to open full card modal
+    let holdTimer;
+
+    div.addEventListener('mousedown', function (e) {
+      holdTimer = setTimeout(() => {
+        showFullCardModal(card); // Open the modal after holding
+      }, 500); // Hold duration = 500ms
+    });  
     div.onclick = function(e) {
       e.stopPropagation();
       showGalleryCardMenu(card, div);
