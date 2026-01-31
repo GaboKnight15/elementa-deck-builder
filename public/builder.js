@@ -1119,39 +1119,30 @@ function addCardToDeck(cardId) {
 }
 
 function renderBuilder() {
-    builderGallery.innerHTML = '';
-    const collection = getCollection();
-    const nameFilter = document.getElementById('filter-name-builder').value.toLowerCase();
-    const favoriteIds = getFavoriteCards ? getFavoriteCards() : [];
-    const selectedColors = getFilterDropdownValues('filter-color-builder-dropdown').map(x => x.toLowerCase());
-    const selectedTypes = getFilterDropdownValues('filter-type-builder-dropdown').map(x => x.toLowerCase());
-    const selectedRarities = getFilterDropdownValues('filter-rarity-builder-dropdown').map(x => x.toLowerCase());
-    const selectedArchetypes = getFilterDropdownValues('filter-archetype-builder-dropdown').map(x => x.toLowerCase());
-    const selectedTraits = getFilterDropdownValues('filter-trait-builder-dropdown').map(x => x.toLowerCase());
-    const selectedAbilities = getFilterDropdownValues('filter-ability-builder-dropdown').map(x => x.toLowerCase());
-    const selectedCategories = getFilterDropdownValues('filter-category-builder-dropdown').map(x => x.toLowerCase());
+  // Clear the builder gallery
+  builderGallery.innerHTML = '';
 
-let filteredCards = filterCards({
-  collection,
-  favoriteIds,
-  showFavoritesOnly: showFavoritesOnlyBuilder,
-  nameFilter,
-  selectedColors,
-  selectedCategories,
-  selectedTypes,
-  selectedRarities,
-  selectedTraits,
-  selectedArchetypes,
-  selectedAbilities,
-  selectedPacks,
-  selectedOwnerships,
-});
-  updateBuilderFilterSummary();
-  filteredCards
-  .filter(card => collection[card.id] && collection[card.id] > 0)
-  .forEach(card => {
-    builderGallery.appendChild(createCardBuilder(card, collection[card.id]));
+  // Gather the collection and favorites
+  const collection = getCollection();
+  const favoriteIds = getFavoriteCards ? getFavoriteCards() : [];
+
+  // Collect filters from the modal (stored in some shared state or passed directly)
+  const selectedFilters = getSelectedFiltersFromModal(); // Fetch modal-selected filters
+
+  // Filter cards based on the selections from the modal
+  const filteredCards = filterCards({
+    collection,
+    favoriteIds,
+    showFavoritesOnly: showFavoritesOnlyBuilder,
+    ...selectedFilters, // Use the filters provided by the modal instead of dropdowns
   });
+
+  // Render each matching card in the builder gallery
+  filteredCards
+    .filter((card) => collection[card.id] && collection[card.id] > 0) // Only show cards in the collection
+    .forEach((card) => {
+      builderGallery.appendChild(createCardBuilder(card, collection[card.id] || 0));
+    });
 }
 function makeHoldHandlers(onHold, onClick, holdTime = 400) {
   let holdTimer = null;
