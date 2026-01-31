@@ -219,26 +219,22 @@ function renderGallery() {
   const collection = getCollection();
   const favoriteIds = getFavoriteCards();
 
-  // Fetch filter values from the modal
-  const selectedFilters = getSelectedFiltersFromModal(); // Dynamically fetch filters
-  const { nameFilter, selectedOwnerships, selectedColors, selectedTypes, selectedRarities, selectedArchetypes, selectedTraits, selectedAbilities, selectedCategories } = selectedFilters;
+  const selectedFilters = getSelectedFiltersFromModal(); // Fetch modal-selected filters
 
-  // Apply filters to get the filtered list of cards
+  // Filter cards based on the selections from the modal
   const filteredCards = filterCards({
     collection,
     favoriteIds,
-    showFavoritesOnly, // Pass global or modal-based flag
-    nameFilter,
-    selectedOwnerships,
-    selectedColors,
-    selectedCategories,
-    selectedTypes,
-    selectedRarities,
-    selectedTraits,
-    selectedArchetypes,
-    selectedAbilities,
-    selectedPacks: filterState.gallery?.pack || [], // Ensure pack filtering remains optional
+    showFavoritesOnly: showFavoritesOnlyBuilder,
+    ...selectedFilters, // Use the filters provided by the modal instead of dropdowns
   });
+
+  // Render each matching card in the builder gallery
+  filteredCards
+    .filter((card) => collection[card.id] && collection[card.id] > 0) // Only show cards in the collection
+    .forEach((card) => {
+      builderGallery.appendChild(createCardBuilder(card, collection[card.id] || 0));
+    });
 
   // Update the collection progress display based on filtered cards
   updateGalleryCollectionProgress(filteredCards);
