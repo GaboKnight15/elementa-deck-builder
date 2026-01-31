@@ -2999,92 +2999,20 @@ const packPrices = [
 ];
 const allPackOptions = packPrices;
 // --- Profile Icon Choices ---
-const avatarOptions = [
-    "Images/Avatar/Default.png",
-    "Images/Avatar/Fairy.png",
-    "Images/Avatar/Emberling.png",
-    "Images/Avatar/WaterElemental.png",
-    "Images/Avatar/Thunderspawn.png",
-    "Images/Avatar/Goblin.png",
-    "Images/Avatar/RockLizard.png",
-    "Images/Avatar/Orc.png",
-    "Images/Avatar/Wolf.png",
-    "Images/Avatar/AngelicWarrior.png",
-    "Images/Avatar/Angel.png",
-    "Images/Avatar/VerdaraSoldier.png",
-    "Images/Avatar/MagmarisMercenary.png",
-    "Images/Avatar/UmarionPaladin.png",
-    "Images/Avatar/AetherionElectromancer.png",
-    "Images/Avatar/DrakzulWarmonger.png",
-    "Images/Avatar/VirkulAssassin.png",
-    "Images/Avatar/SolmaraCrusader.png",
-    "Images/Avatar/NoctyraEnforcer.png",
-    "Images/Avatar/ElementalofLeaves.png",
-    "Images/Avatar/ElementalofEmbers.png",
-    "Images/Avatar/ElementalofDroplets.png",
-    "Images/Avatar/ElementalofSparks.png",
-    "Images/Avatar/ElementalofBreeze.png",
-    "Images/Avatar/ElementalofPebbles.png",
-    "Images/Avatar/ElementalofToxins.png",
-    "Images/Avatar/ElementalofGleams.png",
-    "Images/Avatar/ElementalofShades.png",
-    "Images/Avatar/ElementalofFoliages.png",
-    "Images/Avatar/ElementalofFlames.png",
-    "Images/Avatar/ElementalofTorrents.png",
-    "Images/Avatar/ElementalofLightning.png",
-    "Images/Avatar/ElementalofGales.png",
-    "Images/Avatar/ElementalofBoulders.png",
-    "Images/Avatar/ElementalofMiasmas.png",
-    "Images/Avatar/ElementalofLusters.png",
-    "Images/Avatar/ElementalofShadows.png",
-];
+function getAvailableAvatars() {
+  // Use the allAvatarOptions array and filter unlocked avatars
+  return allAvatarOptions.filter(avatar => window.playerUnlockedAvatars.includes(avatar.id));
+}
   
-const bannerOptions = [
-  "Images/Banner/DefaultBanner.png",
-  "Images/Banner/Forest.png",
-  "Images/Banner/Volcano.png",
-  "Images/Banner/Ocean.png",
-  "Images/Banner/Mountain.png",
-  "Images/Banner/Peaks.png",
-  "Images/Banner/Swamp.png",
-  "Images/Banner/Plains.png",
-  "Images/Banner/Shadowland.png",
-  "Images/Banner/Verdara.png",
-  "Images/Banner/Magmaris.png",
-  "Images/Banner/Umarion.png",
-  "Images/Banner/Aetherion.png",
-  "Images/Banner/Drakzul.png",
-  "Images/Banner/Virkul.png",
-  "Images/Banner/Solmara.png",
-  "Images/Banner/Nochtyra.png",
-  "Images/Banner/GlimbarkFrontier.png",
-  "Images/Banner/SkywardArchipelago.png",
-  "Images/Banner/Thornvale.png",
-  "Images/Banner/Ashkar.png",
-  "Images/Banner/Pearlhaven.png",
-  "Images/Banner/Rotspira.png",
-  "Images/Banner/Duskhaven.png",
-];
+function getAvailableBanners() {
+  // Use the allBannerOptions array and filter unlocked banners
+  return allBannerOptions.filter(banner => window.playerUnlockedBanners.includes(banner.id));
+}
 // Cardback options (expand as needed)
-const cardbackOptions = [
-  'Images/Cardback/Default.png',
-  'Images/Cardback/Cardback1.png',
-  'Images/Cardback/Fairy.png',
-  'Images/Cardback/Cindercore.png',
-  'Images/Cardback/Construct.png',
-  'Images/Cardback/Coralbound.png',
-  'Images/Cardback/Fireland.png',
-  'Images/Cardback/Goblin.png',
-  'Images/Cardback/Golemheart.png',
-  'Images/Cardback/Merfolk.png',
-  'Images/Cardback/Moonfang.png',
-  'Images/Cardback/Satyr.png',
-  'Images/Cardback/Obscurid.png',
-  'Images/Cardback/Stonebound.png',
-  'Images/Cardback/Stormcore.png',
-  'Images/Cardback/Plagueaxis.png',
-  'Images/Cardback/Woodframe.png'
-];
+function getAvailableCardbacks() {
+  // Use the allCardbackOptions array and filter unlocked cardbacks
+  return allCardbackOptions.filter(cardback => window.playerUnlockedCardbacks.includes(cardback.id));
+}
 const PROFILE_METRICS = [
   { key: 'offense', label: 'Offense', color: '#ff6b4a' },
   { key: 'defense', label: 'Defense', color: '#44e055' },
@@ -5408,29 +5336,57 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // --- Render Profile Avatars ---
-  function renderProfileIcons(selectedIcon, unlocked) {
-    profileIcons.innerHTML = "";
-    avatarOptions.forEach(iconUrl => {
-      if (!unlocked.includes(iconUrl)) return;
-      const img = document.createElement('img');
-      img.src = iconUrl;
-      img.className = (iconUrl === selectedIcon) ? "selected" : "";
-      img.onclick = function() { selectProfileIcon(iconUrl); };
-      profileIcons.appendChild(img);
-    });
+function renderProfileIcons(selectedIcon) {
+  profileIcons.innerHTML = "";
+
+  // Dynamically fetch available avatars
+  const availableAvatars = getAvailableAvatars();
+
+  if (availableAvatars.length === 0) {
+    // Display fallback if no avatars are unlocked
+    profileIcons.innerHTML = "<div style='color:#eee;'>No avatars available.</div>";
+    return;
   }
+
+  // Generate avatar UI elements
+  availableAvatars.forEach((avatar) => {
+    const img = document.createElement("img");
+    img.src = avatar.src; // Use avatar src for the image source 
+    img.className = avatar.src === selectedIcon ? "selected" : ""; // Add "selected" class if it's the selected icon
+    img.alt = avatar.name || avatar.id; // Add alt attribute for accessibility
+    img.title = avatar.name || avatar.id; // Add a title tooltip
+    img.onclick = function () {
+      selectProfileIcon(avatar.src); // Handle avatar selection
+    };
+    profileIcons.appendChild(img); // Append the image to the profileIcons container
+  });
+}
   // --- Render Banners ---
-  function renderProfileBanners(selectedBanner, unlocked) {
-    profileBanners.innerHTML = "";
-    bannerOptions.forEach(bannerUrl => {
-      if (!unlocked.includes(bannerUrl)) return;
-      const img = document.createElement('img');
-      img.src = bannerUrl;
-      img.className = (bannerUrl === selectedBanner) ? "selected" : "";
-      img.onclick = function() { selectProfileBanner(bannerUrl); };
-      profileBanners.appendChild(img);
-    });
+function renderProfileBanners(selectedBanner) {
+  profileBanners.innerHTML = "";
+
+  // Dynamically fetch available banners
+  const availableBanners = getAvailableBanners();
+
+  if (availableBanners.length === 0) {
+    // Display fallback message if no banners are unlocked
+    profileBanners.innerHTML = "<div style='color:#eee;'>No banners available.</div>";
+    return;
   }
+
+  // Generate banner UI elements
+  availableBanners.forEach((banner) => {
+    const img = document.createElement("img");
+    img.src = banner.src; // Use banner src for the image source
+    img.className = banner.src === selectedBanner ? "selected" : ""; // Add "selected" class if it's the selected banner
+    img.alt = banner.name || banner.id; // Add alt attribute for accessibility
+    img.title = banner.name || banner.id; // Add a title tooltip
+    img.onclick = function () {
+      selectProfileBanner(banner.src); // Handle banner selection
+    };
+    profileBanners.appendChild(img); // Append the image to the profileBanners container
+  });
+}
     
 // --- Open/Close Avatar Modal ---
 profilePicMenuBtn.onclick = function() {
