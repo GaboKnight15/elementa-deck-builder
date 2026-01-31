@@ -212,25 +212,24 @@ function createCardGallery(card) {
 }
 
 function renderGallery() {
+  // Clear the gallery before rendering
   gallery.innerHTML = '';
-  const nameFilter = document.getElementById('filter-name-gallery').value.toLowerCase();
-  const selectedOwnerships = getFilterDropdownValues('filter-ownership-dropdown').map(x => x); // No need to lowercase unless you want
-  const selectedColors = getFilterDropdownValues('filter-color-dropdown').map(x => x.toLowerCase());
-  const selectedTypes = getFilterDropdownValues('filter-type-dropdown').map(x => x.toLowerCase());
-  const selectedRarities = getFilterDropdownValues('filter-rarity-dropdown').map(x => x.toLowerCase());
-  const selectedArchetypes = getFilterDropdownValues('filter-archetype-dropdown').map(x => x.toLowerCase());
-  const selectedTraits = getFilterDropdownValues('filter-trait-dropdown').map(x => x.toLowerCase());
-  const selectedAbilities = getFilterDropdownValues('filter-ability-dropdown').map(x => x.toLowerCase());
-  const selectedCategories = getFilterDropdownValues('filter-category-dropdown').map(x => x.toLowerCase());
+
+  // Get the player collection and favorite cards
   const collection = getCollection();
   const favoriteIds = getFavoriteCards();
 
-  let filteredCards = filterCards({
+  // Fetch filter values from the modal
+  const selectedFilters = getSelectedFiltersFromModal(); // Dynamically fetch filters
+  const { nameFilter, selectedOwnerships, selectedColors, selectedTypes, selectedRarities, selectedArchetypes, selectedTraits, selectedAbilities, selectedCategories } = selectedFilters;
+
+  // Apply filters to get the filtered list of cards
+  const filteredCards = filterCards({
     collection,
     favoriteIds,
-    showFavoritesOnly,
-    selectedOwnerships,
+    showFavoritesOnly, // Pass global or modal-based flag
     nameFilter,
+    selectedOwnerships,
     selectedColors,
     selectedCategories,
     selectedTypes,
@@ -238,14 +237,25 @@ function renderGallery() {
     selectedTraits,
     selectedArchetypes,
     selectedAbilities,
-    selectedPacks: filterState.gallery.pack || [] 
+    selectedPacks: filterState.gallery?.pack || [], // Ensure pack filtering remains optional
   });
+
+  // Update the collection progress display based on filtered cards
   updateGalleryCollectionProgress(filteredCards);
-  if (filteredCards.length === 0) return;
-  filteredCards.forEach(card => {
-    const cardDiv = createCardGallery(card);
-    gallery.appendChild(cardDiv);
+
+  // Early return if no cards match the filters
+  if (filteredCards.length === 0) {
+    gallery.innerHTML = "<div>No cards match the selected filters.</div>";
+    return;
+  }
+
+  // Render each card that matches the filters
+  filteredCards.forEach((card) => {
+    const cardDiv = createCardGallery(card); // Generate the card HTML
+    gallery.appendChild(cardDiv); // Append the card to the gallery
   });
+
+  // Optionally update the essence display for the UI
   updateEssenceDisplay();
 }
 
