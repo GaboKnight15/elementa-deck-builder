@@ -49,26 +49,6 @@ let deckBuilderDraft = null;   // null = not currently editing; object = current
 let deckBuilderDirty = false;  // true when draft differs from saved deck
 let showFavoritesOnlyBuilder = false;
 
-// Cardback options (expand as needed)
-const cardbackOptions = [
-  'Images/Cardback/Default.png',
-  'Images/Cardback/Cardback1.png',
-  'Images/Cardback/Fairy.png',
-  'Images/Cardback/Cindercore.png',
-  'Images/Cardback/Construct.png',
-  'Images/Cardback/Coralbound.png',
-  'Images/Cardback/Fireland.png',
-  'Images/Cardback/Goblin.png',
-  'Images/Cardback/Golemheart.png',
-  'Images/Cardback/Merfolk.png',
-  'Images/Cardback/Moonfang.png',
-  'Images/Cardback/Satyr.png',
-  'Images/Cardback/Obscurid.png',
-  'Images/Cardback/Stonebound.png',
-  'Images/Cardback/Stormcore.png',
-  'Images/Cardback/Plagueaxis.png',
-  'Images/Cardback/Woodframe.png'
-];
 const AUTOFILL_COLORS = [
   { name: "Green", icon: 'Icons/Essence/Green.png' },
   { name: "Red", icon: 'Icons/Essence/Red.png' },
