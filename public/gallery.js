@@ -55,14 +55,6 @@ resetBtn.onclick = function() {
   const ownershipInput = document.getElementById('filter-ownership-gallery');
   if (ownershipInput) ownershipInput.value = "Owned";
 
-  // Reset all custom dropdown filters: check "All", uncheck others, update label
-  document.querySelectorAll('#filters-gallery .filter-dropdown').forEach(dd => {
-    const allCb = dd.querySelector('input[type="checkbox"][value=""]');
-    if (allCb) allCb.checked = true;
-    dd.querySelectorAll('input[type="checkbox"]:not([value=""])').forEach(cb => cb.checked = false);
-    updateFilterLabel(dd, []);
-  });
-
   // Reset favorites
   showFavoritesOnly = false;
   updateFavoriteFilterIcon();
@@ -218,67 +210,7 @@ function createCardGallery(card) {
     };
   return div;
 }
-// Helper: Read selected values for each filter dropdown (returns array or empty for "All")
-function getFilterDropdownValues(dropdownId) {
-  const dropdown = document.getElementById(dropdownId);
-  if (!dropdown) return [];
-  const checked = Array.from(dropdown.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value).filter(v => v);
-  return checked;
-}
 
-// Setup dropdown open/close
-document.querySelectorAll('.filter-dropdown .filter-label').forEach(label => {
-  label.onclick = function(e) {
-    e.stopPropagation();
-    // Close all others
-    document.querySelectorAll('.filter-dropdown').forEach(dd => dd.classList.remove('open'));
-    label.parentElement.classList.toggle('open');
-  };
-});
-
-// Option click handler (checkboxes, including "All" logic)
-document.querySelectorAll('.filter-dropdown .filter-option input[type="checkbox"]').forEach(cb => {
-  cb.onchange = function(e) {
-    const dropdown = cb.closest('.filter-dropdown');
-    const filterKey = dropdown.id.replace('filter-', '').replace('-dropdown', '');
-    let vals = Array.from(dropdown.querySelectorAll('input[type="checkbox"]:checked')).map(inp => inp.value).filter(Boolean);
-
-    if (cb.value === "") {
-      // "All" was toggled
-      if (cb.checked) {
-        dropdown.querySelectorAll('input[type="checkbox"]').forEach(inp => { if (inp.value !== "") inp.checked = false; });
-        vals = [];
-      }
-    } else {
-      // If any specific option checked, uncheck "All"
-      dropdown.querySelector('input[type="checkbox"][value=""]').checked = false;
-    }
-
-    // Optionally update label to show selection
-    updateFilterLabel(dropdown, vals);
-    renderGallery();
-  };
-});
-
-// Update label to show selected options or just filter name
-function updateFilterLabel(dropdown, vals) {
-  const label = dropdown.querySelector('.filter-label');
-  const base = label.getAttribute('data-default') || label.textContent.split(':')[0];
-  label.textContent = base;
-  if (vals.length === 0) {
-    label.classList.remove('active');
-  } else {
-    label.classList.add('active');
-  }
-}
-
-// Close dropdowns on click outside
-document.addEventListener('mousedown', function(e) {
-  // If the click is outside any .filter-dropdown, close all
-  if (![...document.querySelectorAll('.filter-dropdown')].some(dd => dd.contains(e.target))) {
-    document.querySelectorAll('.filter-dropdown.open').forEach(dd => dd.classList.remove('open'));
-  }
-});
 function renderGallery() {
   gallery.innerHTML = '';
   const nameFilter = document.getElementById('filter-name-gallery').value.toLowerCase();
