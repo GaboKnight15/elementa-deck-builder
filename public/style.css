@@ -2165,6 +2165,7 @@ button[disabled], .btn-disabled {
   padding: 2px 4px;
   position: absolute;
   z-index: 2;
+  top: 0;
 }
 .highlight-art-choice {
   width: 96px;
