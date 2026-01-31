@@ -3065,6 +3065,26 @@ const bannerOptions = [
   "Images/Banner/Rotspira.png",
   "Images/Banner/Duskhaven.png",
 ];
+// Cardback options (expand as needed)
+const cardbackOptions = [
+  'Images/Cardback/Default.png',
+  'Images/Cardback/Cardback1.png',
+  'Images/Cardback/Fairy.png',
+  'Images/Cardback/Cindercore.png',
+  'Images/Cardback/Construct.png',
+  'Images/Cardback/Coralbound.png',
+  'Images/Cardback/Fireland.png',
+  'Images/Cardback/Goblin.png',
+  'Images/Cardback/Golemheart.png',
+  'Images/Cardback/Merfolk.png',
+  'Images/Cardback/Moonfang.png',
+  'Images/Cardback/Satyr.png',
+  'Images/Cardback/Obscurid.png',
+  'Images/Cardback/Stonebound.png',
+  'Images/Cardback/Stormcore.png',
+  'Images/Cardback/Plagueaxis.png',
+  'Images/Cardback/Woodframe.png'
+];
 const PROFILE_METRICS = [
   { key: 'offense', label: 'Offense', color: '#ff6b4a' },
   { key: 'defense', label: 'Defense', color: '#44e055' },
