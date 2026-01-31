@@ -2953,7 +2953,6 @@ const allBannerOptions = [
   { name: 'Solmara', src: 'Images/Banner/Solmara.png', price: 100, obtain: 'shop' },
   { name: 'Noctyra', src: 'Images/Banner/Noctyra.png', price: 100, obtain: 'shop' },
   { name: 'Thornvale', src: 'Images/Banner/Thornvale.png', price: 100, obtain: 'shop' },
-  { name: 'Ashkar', src: 'Images/Banner/Ashkar.png', price: 100, obtain: 'shop' },
   { name: 'Pearlhaven', src: 'Images/Banner/Pearlhaven.png', price: 100, obtain: 'shop' },
   { name: 'Duskhaven', src: 'Images/Banner/Duskhaven.png', price: 100, obtain: 'shop' },
   { name: 'Dragons Grove', src: 'Images/Banner/DragonsGrove.png', price: 100, obtain: 'shop' },
