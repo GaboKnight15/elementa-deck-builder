@@ -60,7 +60,7 @@ const dummyCards = [
  cost: '{1}', ability: '', set: 'ElementaGenesis', 
  skill: [{name: 'Summon', cost: '{1}', effect: {class: 'Summon'}}]},
 
-{id: 'WildwoodGoblin', name: 'Forest Goblin', rarity: 'Common', image: 'Cards/egg/Goblin.png', flavor: '',
+{id: 'WildwoodGoblin', name: 'Wildwood Goblin', rarity: 'Common', image: 'Cards/egg/WildwoodGoblin.png', flavor: '',
  category: 'Creature', color: 'Green', type: 'Brute', archetype: 'Goblin', hp: 3, atk: 1, def: 0,
  cost: '{0}', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{0}', effect: {class: 'Summon'}}]},
@@ -234,7 +234,7 @@ const dummyCards = [
  category: 'Domain', color: 'Blue', type: 'Terrain', hp: 5, cost: '{0}', essence: '{U}', set: 'ElementaGenesis',
  skill: [{name: 'Terraform', cost: '{0}', effect: {class: 'Terraform'}}]},
 
-{id: 'EssenceRift', name: 'Essence Rift', rarity: 'Common', image: 'Cards/egu/EssenceRift.png', flavor: '', 
+{id: 'EssenceInsight', name: 'Essence Insight', rarity: 'Common', image: 'Cards/egu/EssenceInsight.png', flavor: '', 
  category: 'Spell', color: 'Blue', type: 'Spell', cost: '{1}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{1}', effect: [{class: 'Draw', amount: 2}, {class: 'Cast'}]}]},
 
