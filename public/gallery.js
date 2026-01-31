@@ -880,8 +880,6 @@ window.selectCardStyle = function(cardId, styleKey) {
   let modal = document.getElementById('card-style-modal');
   if (modal) modal.remove();
 };
-// On DOM ready
-document.addEventListener('DOMContentLoaded', setupFilterSelectPlaceholders);
 // ==========================
 // === EVENT LISTENERS ===
 // ==========================
