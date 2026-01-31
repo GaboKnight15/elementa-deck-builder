@@ -369,17 +369,15 @@ function updateDeckHighlightArt(deckName) {
     this.onerror = null;
     this.src = 'Images/Other/Placeholder.png';
   };
-  deckHighlightArtImg.src = deck.highlightArt || 'Images/Domain/Default.png';
+  deckHighlightArtImg.src = deck.highlightArt || 'Images/Banner/Default.png';
 }
 deckHighlightArtImg.onclick = function() {
   closeDeckTileMenu();
   highlightArtModal.style.display = "flex";
   highlightArtList.innerHTML = "";
 
-  // Use unlocked avatars if available, fallback to iconOptions if not
-  const avatarOptions = Array.isArray(window.playerUnlockedAvatars) && window.playerUnlockedAvatars.length > 0
-    ? window.playerUnlockedAvatars
-    : (typeof iconOptions !== "undefined" ? iconOptions : []);
+  // Use the new getAvailableAvatars function
+  const avatarOptions = getAvailableAvatars();
 
   if (avatarOptions.length === 0) {
     highlightArtList.innerHTML = "<div style='color:#eee'>No avatar artwork available.</div>";
@@ -388,13 +386,13 @@ deckHighlightArtImg.onclick = function() {
 
   avatarOptions.forEach(avatarPath => {
     const img = document.createElement('img');
-    img.src = avatarPath;
-    img.alt = avatarPath.split('/').pop().replace('.png', '');
+    img.src = avatar.src; // Use the avatar's image path
+    img.alt = avatar.name || avatar.id; // Set alt to avatar name or id
+    img.title = avatar.name || avatar.id;
     img.className = "highlight-art-choice";
-    img.title = img.alt;
     img.onclick = () => {
       const deckName = deckMenu.dataset.deckName;
-      decks[deckName].highlightArt = avatarPath;
+      decks[deckName].highlightArt = avatar.src;
       renderDeckSelection();
       highlightArtModal.style.display = "none";
       closeDeckTileMenu();
@@ -422,23 +420,24 @@ deckBannerImg.onclick = function() {
   deckBannerModal.style.display = "flex";
   deckBannerArtList.innerHTML = "";
   const deckName = deckMenu.dataset.deckName;
-  const unlocked = getUnlockedBanners ? getUnlockedBanners() :
-    (window.getUnlockedBanners ? window.getUnlockedBanners() : ['Images/Banner/Default.png']); 
-  if (!unlocked || unlocked.length === 0) {
+  // Dynamically fetch available banners
+  const bannerOptions = getAvailableBanners();
+  
+  if (!bannerOptions || bannerOptions.length === 0) {
     deckBannerArtList.innerHTML = "<div style='color:#eee'>No unlocked banners available.</div>";
     return;
   }
 
-  unlocked.forEach(bannerUrl => {
-    const img = document.createElement('img');
-    img.src = bannerUrl;
-    img.alt = bannerUrl.split('/').pop().replace('.png', '');
+  bannerOptions.forEach((banner) => {
+    const img = document.createElement("img");
+    img.src = banner.src; // Use the banner's src
+    img.alt = banner.name || banner.id; // Optional alt text
     img.className = "deck-banner-choice";
-    img.title = img.alt;
+    img.title = banner.name || banner.id;
     img.onclick = () => {
-      decks[deckName].bannerArt = bannerUrl;
+      decks[deckName].bannerArt = banner.src; // Save user's selected banner
       saveProgress();
-      updateDeckBanner(deckName);
+      updateDeckBanner(deckName); // Update banner visuals
       deckBannerModal.style.display = "none";
       closeDeckTileMenu();
       renderDeckSelection();
@@ -450,7 +449,11 @@ closeDeckBannerModalBtn.onclick = () => (deckBannerModal.style.display = "none")
 // Update displayed cardback in deck menu
 function updateDeckCardback(deckName) {
   const deck = decks[deckName] || {};
-  deckCardbackImg.src = deck.cardbackArt || 'Images/Cardback/Default.png';
+  deckCardbackImg.onerror = function () {
+    this.onerror = null;
+    this.src = "Images/Cardback/Default.png";
+  };
+  deckCardbackImg.src = deck.cardbackArt || "Images/Cardback/Default.png";
 }
 
 // --- CARDBACK --- //
@@ -459,19 +462,22 @@ deckCardbackImg.onclick = function() {
   deckCardbackModal.style.display = "flex";
   deckCardbackArtList.innerHTML = "";
   const deckName = deckMenu.dataset.deckName;
-  const deck = decks[deckName] || {};
-  const unlocked = getUnlockedCardbacks ? getUnlockedCardbacks() : 
-    (window.getUnlockedCardbacks ? window.getUnlockedCardbacks() : 
-      ['Images/Cardback/Default.png']);
-  unlocked.forEach(cb => {
-    const img = document.createElement('img');
-    img.src = cb;
-    img.alt = "Cardback";
+  // Dynamically fetch available cardbacks
+  const cardbackOptions = getAvailableCardbacks();
+
+  if (!cardbackOptions || cardbackOptions.length === 0) {
+    deckCardbackArtList.innerHTML = "<div style='color:#eee'>No cardbacks available.</div>";
+    return;
+  }
+  cardbackOptions.forEach((cardback) => {
+    const img = document.createElement("img");
+    img.src = cardback.src; // Use the cardback's src
+    img.alt = "Cardback"; // Optional alt text
     img.className = "deck-cardback-choice";
     img.onclick = () => {
-      decks[deckName].cardbackArt = cb;
+      decks[deckName].cardbackArt = cardback.src; // Save user's selected cardback
       saveProgress();
-      updateDeckCardback(deckName);
+      updateDeckCardback(deckName); // Update cardback visuals
       deckCardbackModal.style.display = "none";
       closeDeckTileMenu();
       renderDeckSelection();
@@ -479,12 +485,12 @@ deckCardbackImg.onclick = function() {
     deckCardbackArtList.appendChild(img);
   });
 };
-window.renderDeckCardbackChoices = function() {
+window.renderDeckCardbackChoices = function () {
   // If modal is open, re-render its contents after unlock
   if (deckCardbackModal.style.display === "flex") {
     deckCardbackImg.onclick();
   }
-}
+};
 closeDeckCardbackModalBtn.onclick = () => (deckCardbackModal.style.display = "none");
 
 
