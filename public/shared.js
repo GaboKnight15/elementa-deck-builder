@@ -5599,6 +5599,82 @@ document.getElementById('friends-modal').onclick = function(e) {
   if (e.target === this) this.style.display = 'none';
 };
 
+// ---------------- //
+// --- SETTINGS --- //
+// ---------------- //
+
+// Popover Settings Menu Logic (applies sitewide)
+document.addEventListener("DOMContentLoaded", function() {
+  // Support all settings icons in all sections (add more if needed)
+  const settingIds = [
+    'home-settings-btn',
+    'gallery-settings-btn',
+    'builder-settings-btn',
+    'gameplay-settings-btn',
+    'shop-settings-btn'
+  ];
+  const settings = settingIds
+    .map(id => document.getElementById(id))
+    .filter(Boolean);
+
+  const menu = document.getElementById('settings-menu-pop');
+  const toggleNotices = document.getElementById('toggle-notices');
+  const toggleMusic = document.getElementById('toggle-music');
+
+  // Open menu for any settings icon
+  settings.forEach(setting => {
+    setting.onclick = function(e) {
+      e.stopPropagation();
+      // Position menu below/right of the icon
+      const rect = setting.getBoundingClientRect();
+      placeMenuWithinViewport(menu, rect, "bottom");
+      menu.classList.add('active');
+      menu.style.display = 'block';
+
+      // Load saved settings (example)
+      toggleNotices.checked = localStorage.getItem('settings-notices') === 'on';
+      toggleMusic.checked = localStorage.getItem('settings-music') === 'on';
+
+      // Hide on outside click
+      setTimeout(() => {
+        document.body.addEventListener('mousedown', hideSettingsMenu, { once: true });
+      }, 10);
+    };
+  });
+
+  function hideSettingsMenu(e) {
+    menu.classList.remove('active');
+    menu.style.display = 'none';
+  }
+
+  // Prevent menu click from closing it
+  menu.onclick = function(e) { e.stopPropagation(); };
+
+  // Toggle handlers
+  toggleNotices.onchange = function() {
+    localStorage.setItem('settings-notices', this.checked ? 'on' : 'off');
+    // Add logic for enabling/disabling notices if needed
+  };
+  toggleMusic.onchange = function() {
+    localStorage.setItem('settings-music', this.checked ? 'on' : 'off');
+    // Add logic for enabling/disabling music if needed
+  };
+
+  // Logout button logic
+  const settingsLogoutBtn = document.getElementById('settings-logout-btn');
+  if (settingsLogoutBtn) {
+    settingsLogoutBtn.onclick = function() {
+      // If you have a function like logout() defined in auth.js:
+      if (typeof logout === "function") {
+        logout();
+      } else if (typeof firebase !== 'undefined' && firebase.auth) {
+        firebase.auth().signOut().then(function() {
+          location.reload();
+        });
+      }
+    };
+  }
+});
 // PARTICLE EFFECT
 document.addEventListener("DOMContentLoaded", function() {
   // Only load particles when Home is visible (optional, can always load)
