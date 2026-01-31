@@ -4806,6 +4806,13 @@ function openFilterDropdownMenu(context, filterConfig, anchorElem) {
   // Remove any previous dropdown
   closeAllFilterDropdowns();
   document.body.appendChild(dropdown);
+  // Click-outside logic: close dropdown
+  const handleClickOutside = (e) => {
+    if (!dropdown.contains(e.target) && !anchorElem.contains(e.target)) {
+      dropdown.remove();
+      document.removeEventListener("click", handleClickOutside);
+    }
+  };	
 }
 // ----------------------------------- //
 // --- Card Field Helper Functions --- //
