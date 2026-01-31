@@ -4017,7 +4017,6 @@ button[disabled], .btn-disabled {
 /* This should be in your CSS file (e.g. shop.css or global styles) */
 .opened-card-front img:hover {
   box-shadow: 0 0 18px #ffe066, 0 0 6px #222;
-  transform: scale(1.08);
   z-index: 4;
   transition: box-shadow 0.2s, transform 0.2s;
 }
