@@ -305,7 +305,7 @@ openedPackRowModal.innerHTML = `
       <div class="opened-card opened-card-flip" data-card-idx="${i}">
         <div class="opened-card-inner">
           <div class="opened-card-back">
-            <img src='Images/Domains/placeholder.png' alt="Card Back" style="width:100px;height:auto;display:block;margin:auto;">
+            <img src='Icons/Other/Placeholder.png' alt="Card Back" style="width:100px;height:auto;display:block;margin:auto;">
           </div>
           <div class="opened-card-front" data-rarity="${card.rarity || ''}">
             <img src="${card.image}" alt="${card.name}" style="width:100px;height:auto;display:block;margin:auto;">
