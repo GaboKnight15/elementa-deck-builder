@@ -4737,16 +4737,6 @@ function openFiltersMasterMenu(context, anchorElem) {
   setTimeout(() => document.addEventListener('mousedown', closeMenu, true), 10);
 }
 
-// Helper: get filter options for a key (implement as needed)
-function getFilterOptions(key, context) {
-  // Return options for each filter; can be static or dynamic
-  switch (key) {
-    case 'color': return ['All', 'Green', 'Red', 'Blue', 'White', 'Black', 'Yellow', 'Gray', 'Purple'];
-    case 'rarity': return ['All', 'Common', 'Rare', 'Legendary'];
-    // ... and so on for others ...
-    default: return ['All'];
-  }
-}
 function openFilterDropdownMenu(context, filterConfig, anchorElem) {
   closeAllFilterDropdowns();
 
@@ -4768,15 +4758,17 @@ function openFilterDropdownMenu(context, filterConfig, anchorElem) {
     label.innerHTML = `<input type="checkbox" value="${opt}" ${checked ? 'checked' : ''} style="margin-right:8px;">${opt}`;
     label.querySelector('input').onchange = function() {
       let arr = [...(filterState[context][filterConfig.key] || [])];
-      if (opt === 'All') {
-        // Clear all on All
-        if (this.checked) arr = [];
+      if (opt === "All") {
+        // Clearing all when "All" is checked
+        arr = this.checked ? [] : arr;
       } else {
-        // Uncheck All if any specific is checked
+        // Update specific options
+        if (this.checked) arr.push(opt);
+        else arr = arr.filter((v) => v !== opt);
+
+        // Uncheck "All" if another option is selected
         const allBox = dropdown.querySelector('input[value="All"]');
         if (allBox) allBox.checked = false;
-        if (this.checked) arr.push(opt);
-        else arr = arr.filter(v => v !== opt);
       }
       // Remove dupes
       arr = [...new Set(arr)];
