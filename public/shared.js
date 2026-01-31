@@ -5622,25 +5622,48 @@ document.addEventListener("DOMContentLoaded", function() {
   const toggleMusic = document.getElementById('toggle-music');
 
   // Open menu for any settings icon
-  settings.forEach(setting => {
-    setting.onclick = function(e) {
-      e.stopPropagation();
-      // Position menu below/right of the icon
-      const rect = setting.getBoundingClientRect();
-      placeMenuWithinViewport(menu, rect, "bottom");
-      menu.classList.add('active');
-      menu.style.display = 'block';
+// Open menu for any settings icon
+settings.forEach(setting => {
+  setting.onclick = function(e) {
+    e.stopPropagation();
 
-      // Load saved settings (example)
-      toggleNotices.checked = localStorage.getItem('settings-notices') === 'on';
-      toggleMusic.checked = localStorage.getItem('settings-music') === 'on';
+    // Get the bounding rect of the icon (anchor)
+    const rect = setting.getBoundingClientRect();
 
-      // Hide on outside click
-      setTimeout(() => {
-        document.body.addEventListener('mousedown', hideSettingsMenu, { once: true });
-      }, 10);
-    };
-  });
+    // Make the menu temporarily visible to calculate placement but keep it hidden initially
+    menu.style.display = 'block'; // Ensure the menu is in the DOM for size calculations
+    menu.style.visibility = 'hidden';
+
+    // Position the menu first (before correcting it with placeMenuWithinViewport)
+    menu.style.top = `${rect.bottom + window.scrollY}px`; // Place the menu right below
+    menu.style.left = `${rect.right + window.scrollX}px`; // Place the menu to the right
+
+    // Adjust the menu to ensure it remains within the viewport
+    placeMenuWithinViewport(menu, rect, "bottom-right");
+
+    // Show and activate the menu
+    menu.classList.add('active');
+    menu.style.visibility = 'visible';
+    menu.style.display = 'block';
+
+    // Load saved settings (example)
+    toggleNotices.checked = localStorage.getItem('settings-notices') === 'on';
+    toggleMusic.checked = localStorage.getItem('settings-music') === 'on';
+
+    // Hide menu if user clicks outside
+    setTimeout(() => {
+      document.body.addEventListener('mousedown', hideSettingsMenu, { once: true });
+    }, 10);
+  };
+});
+
+function hideSettingsMenu(e) {
+  menu.classList.remove('active');
+  menu.style.display = 'none';
+}
+
+// Prevent clicks inside the menu from closing it
+menu.onclick = function(e) { e.stopPropagation(); };
 
   function hideSettingsMenu(e) {
     menu.classList.remove('active');
