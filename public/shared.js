@@ -4583,7 +4583,7 @@ window.showInputModal = showInputModal;
 // Example usage (for testing in console):
 // showProfileModal({username:"Gabo", profilePic:"Cards/Avatar/Faelyra.png", profileBanner:"Cards/Banner/Verdara.png", power:1234, achievements:["achv1","achv2"], badges:["badge1"]});
 // FILTERS FOR GALLERY AND DECK BUILDER
-function filterCards({
+function filterCards(filters) {
   collection,
   favoriteIds,
   showFavoritesOnly,
@@ -4706,7 +4706,6 @@ function getSelectedFiltersFromModal() {
   }
 
   return {
-    nameFilter: modal.querySelector('#filter-name')?.value?.toLowerCase() || '',
     selectedOwnerships: Array.from(
       modal.querySelectorAll('[data-filter="ownership"]:checked') || []
     ).map((el) => el.value),
