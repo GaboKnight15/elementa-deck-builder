@@ -2510,26 +2510,20 @@ const addCoinsBtn = document.getElementById('add-coins-btn');
 const LEVEL_THRESHOLDS = [0, 100, 250, 500, 1000, 2000, 4000, 8000];
 let lastPlayerPower = null;
 
-const FILTERS = [
-  { key: 'ownership', label: 'Ownership', options: ['All','Owned','Undiscovered','Locked'], hideIn: ['builder'] },
-  { key: 'color', label: 'Color', options: ['All','Green','Red','Blue','Gray','Purple','Yellow','Black','White'] },
-  { key: 'category', label: 'Category', options: ['All','Creature','Artifact','Spell','Domain'] },
-  { key: 'type', label: 'Type', options: ['All','Beast','Brute','Construct','Demon','Dragon','Elemental','Faefolk','Human','Undead'] },
-  { key: 'rarity', label: 'Rarity', options: ['All','Common','Rare','Legendary'] },
-  { key: 'trait', label: 'Trait', options: ['All','Assembly','Dominion','Evolution','Fusion','Warrior','Mage','Ranger','Relic','Equipment','Aura','Terrain','Locale'] },
-  { key: 'archetype', label: 'Archetype', options: ['All','Blazefeather','Cindercore','Coralbound','Fireland','Frostland','Golemheart','Moonfang','Skullframe','Voltwing','Zephyra'] },
-  { key: 'ability', label: 'Ability', options: ['All','Aegis','Ambush','Blightstrike','Burn','Conceal','Crush','Curse',
+const FILTERS = {
+  ownership: { key: 'ownership', label: 'Ownership', options: ['All','Owned','Undiscovered','Locked'] },
+  color: { key: 'color', label: 'Color', options: ['All','Green','Red','Blue','Gray','Purple','Yellow','Black','White'] },
+  category: { key: 'category', label: 'Category', options: ['All','Creature','Artifact','Spell','Domain'] },
+  type: { key: 'type', label: 'Type', options: ['All','Beast','Brute','Construct','Demon','Dragon','Elemental','Faefolk','Human','Undead'] },
+  rarity: { key: 'rarity', label: 'Rarity', options: ['All','Common','Rare','Legendary'] },
+  trait: { key: 'trait', label: 'Trait', options: ['All','Assembly','Dominion','Evolution','Fusion','Warrior','Mage','Ranger','Relic','Equipment','Aura','Terrain','Locale'] },
+  archetype: { key: 'archetype', label: 'Archetype', options: ['All','Blazefeather','Cindercore','Coralbound','Fireland','Frostland','Golemheart','Moonfang','Skullframe','Voltwing','Zephyra'] },
+  ability: { key: 'ability', label: 'Ability', options: ['All','Aegis','Ambush','Blightstrike','Burn','Conceal','Crush','Curse',
     'Defender','Defiant','Dive','Dormant','Drain','Drench','Elusive','Exploit','Flying','Focus','Freeze','Frostbite',
     'Immunity','Intimidate','Leap','Levitate','Paralyze','Pierce','Pilfer','Poisonous','Precision','Protect','Provoke',
     'Regenerate','Relentless','Resilience','Rush','Scorch','Soak','Static','Toxic','Unbreakable','Veil','Wither']},
-  { key: 'pack', label: 'Pack', options: ['All', 'ElementaGenesis', 'FracturedOrigins','EchoesofCreations','DesolateFrontiers','InfiniteHorizons'] }
+  pack: { key: 'pack', label: 'Pack', options: ['All', 'ElementaGenesis', 'FracturedOrigins','EchoesofCreations','DesolateFrontiers','InfiniteHorizons'] }
  // Add more as needed
-];
-
-const filterState = {
-  gallery: {},
-  builder: {}
-  // Each key: filterKey -> array of selected options
 };
 
 const CARD_KEYWORD = {
@@ -4593,79 +4587,116 @@ function filterCards({
   collection,
   favoriteIds,
   showFavoritesOnly,
-  selectedOwnerships,
   nameFilter,
-  selectedColors,
-  selectedCategories,
-  selectedTypes,
-  selectedRarities,
-  selectedTraits,
-  selectedArchetypes,
-  selectedAbilities,
-  selectedPacks
+  selectedFilters, // This will contain modal-generated filters
 }) {
-  return dummyCards.filter(card => {
-    // Ownership filter (custom multi-select logic)
-    if (selectedOwnerships && selectedOwnerships.length && !selectedOwnerships.includes("")) {
-      if (selectedOwnerships.includes("Owned") && (!collection[card.id] || collection[card.id] === 0))
-        return false;
-      if (selectedOwnerships.includes("Undiscovered") && (collection[card.id] || 0) > 0)
-        return false;
-      if (selectedOwnerships.includes("Locked") && !card.locked)
-        return false;
-      if (
-        !selectedOwnerships.includes("Owned") &&
-        !selectedOwnerships.includes("Undiscovered") &&
-        !selectedOwnerships.includes("Locked")
-      )
-        return false;
+  return dummyCards.filter((card) => {
+    // Name filter (outside the modal)
+    if (nameFilter && !card.name.toLowerCase().includes(nameFilter.toLowerCase())) {
+      return false; // Card name doesn't match
     }
-    if (nameFilter && !card.name.toLowerCase().includes(nameFilter)) return false;
 
-    if (showFavoritesOnly && !favoriteIds.includes(card.id)) return false;
-    // Color multi-filter
-if (selectedColors && selectedColors.length) {
-  const cardColors = Array.isArray(card.color) ? card.color.map(c => c.toLowerCase()) : [String(card.color).toLowerCase()];
-  if (!cardColors.some(c => selectedColors.includes(c))) return false;
-}
-if (selectedCategories && selectedCategories.length) {
-  const cardCategories = Array.isArray(card.category) ? card.category.map(c => c.toLowerCase()) : [String(card.category).toLowerCase()];
-  if (!cardCategories.some(c => selectedCategories.includes(c))) return false;
-}
-if (selectedTypes && selectedTypes.length) {
-  const cardTypes = Array.isArray(card.type) ? card.type.map(t => t.toLowerCase()) : [String(card.type).toLowerCase()];
-  if (!cardTypes.some(t => selectedTypes.includes(t))) return false;
-}
-if (selectedRarities && selectedRarities.length) {
-  const cardRarities = Array.isArray(card.rarity) ? card.rarity.map(r => r.toLowerCase()) : [String(card.rarity).toLowerCase()];
-  if (!cardRarities.some(r => selectedRarities.includes(r))) return false;
-}
-if (selectedTraits && selectedTraits.length) {
-  const cardTraits = Array.isArray(card.trait) ? card.trait.map(t => t.toLowerCase()) : [String(card.trait || '').toLowerCase()];
-  if (!cardTraits.some(t => selectedTraits.includes(t))) return false;
-}
-if (selectedArchetypes && selectedArchetypes.length) {
-  const cardArchetypes = Array.isArray(card.archetype) ? card.archetype.map(a => a.toLowerCase()) : [String(card.archetype).toLowerCase()];
-  if (!cardArchetypes.some(a => selectedArchetypes.includes(a))) return false;
-}
-if (selectedAbilities && selectedAbilities.length) {
-  const cardAbilities = Array.isArray(card.ability) ? card.ability.map(a => a.toLowerCase()) : [String(card.ability).toLowerCase()];
-  if (!cardAbilities.some(a => selectedAbilities.includes(a))) return false;
-}
-    // --- PACK FILTER LOGIC: ---
-    if (selectedPacks && selectedPacks.length && !selectedPacks.includes("All")) {
-      // Map display names to dummyCards.set values
-      const setMap = {
-        "Elementa Genesis": "ElementaGenesis",
-        "Scales of Ruin": "ScalesofRuin"
-      };
-      // If card.set is not in any selected pack, filter out
-      if (!selectedPacks.some(pack => setMap[pack] === card.set)) return false;
+    // Favorites filter (outside the modal)
+    if (showFavoritesOnly && !favoriteIds.includes(card.id)) {
+      return false; // Card is not in the favorites list
     }
-    return true;
+
+    // Process filters generated by the modal
+    for (const [key, selectedValues] of Object.entries(selectedFilters)) {
+      if (!selectedValues || selectedValues.length === 0 || selectedValues.includes("All")) {
+        continue; // No filter applied for this category or "All" is selected
+      }
+
+      const cardField = Array.isArray(card[FILTERS[key].key]) // Check if the field is an array
+        ? card[FILTERS[key].key].map((value) => value.toLowerCase())
+        : [String(card[FILTERS[key].key] || "").toLowerCase()];
+
+      // Check if the card's field matches any of the selected filter values
+      if (!cardField.some((value) => selectedValues.includes(value))) {
+        return false; // Card doesn't match the filter
+      }
+    }
+
+    return true; // Card matches all filters
   });
 }
 window.filterCards = filterCards;
+
+function showFilterModal(context, callback) {
+  let modal = document.getElementById('filter-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'filter-modal';
+    modal.className = 'modal';
+    document.body.appendChild(modal);
+  }
+
+  // Build modal content dynamically
+  modal.innerHTML = `
+    <div class="modal-content">
+      <h2>Filters</h2>
+      <div id="filter-options">
+        ${Object.keys(FILTERS)
+          .map(
+            (key) => `
+            <div class="filter-category">
+              <h3>${FILTERS[key].label}</h3>
+              ${FILTERS[key].options
+                .map(
+                  (option) => `
+                  <label>
+                    <input 
+                      type="checkbox" 
+                      data-filter="${key}" 
+                      value="${option}"
+                    >
+                    ${option}
+                  </label>`
+                )
+                .join('')}
+            </div>
+          `
+          )
+          .join('')}
+      </div>
+      <div class="modal-buttons">
+        <button id="filter-apply-btn" class="btn-primary">Apply</button>
+        <button id="filter-cancel-btn" class="btn-secondary">Cancel</button>
+      </div>
+    </div>
+  `;
+
+  modal.style.display = 'flex'; // Display the modal
+
+  // Apply button logic: Read filter values and trigger the callback
+  modal.querySelector('#filter-apply-btn').onclick = () => {
+    modal.style.display = 'none'; // Close modal
+
+    // Collect selected filters
+    const selectedFilters = {};
+    Object.keys(FILTERS).forEach((key) => {
+      const selectedOptions = [
+        ...modal.querySelectorAll(`input[data-filter="${key}"]:checked`),
+      ];
+      selectedFilters[key] = selectedOptions.map((checkbox) => checkbox.value.toLowerCase());
+    });
+
+    // Pass the selected filters to the callback
+    if (callback) callback(selectedFilters);
+  };
+
+  // Cancel button logic: Close modal
+  modal.querySelector("#filter-cancel-btn").onclick = () => {
+    modal.style.display = "none";
+  };
+
+  // Close modal when clicking outside the content
+  modal.onclick = (e) => {
+    if (e.target === modal) {
+      modal.style.display = "none";
+    }
+  };
+}
 
 // ----------------------------------- //
 // --- Card Field Helper Functions --- //
