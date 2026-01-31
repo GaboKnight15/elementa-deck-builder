@@ -248,11 +248,17 @@ if (deck.highlightArt) {
   tile.textContent = slotName;
 }
       // --- CARD COUNT WARNING MESSAGE --- //
+// Card count warning message
 let warningDiv = null;
+
 if (count < 30) {
   warningDiv = document.createElement('div');
   warningDiv.className = 'deck-slot-warning';
-  warningDiv.textContent = "Less than 30 cards";
+  warningDiv.textContent = "Less than 30 cards"; // Existing message
+} else if (count > 30) {
+  warningDiv = document.createElement('div');
+  warningDiv.className = 'deck-slot-warning deck-slot-error'; // Add a new CSS class if needed
+  warningDiv.textContent = "More than 30 cards";
 }
       
 if (warningDiv) tile.appendChild(warningDiv);
