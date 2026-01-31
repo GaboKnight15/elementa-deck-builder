@@ -220,21 +220,20 @@ function renderGallery() {
   const favoriteIds = getFavoriteCards();
 
   const selectedFilters = getSelectedFiltersFromModal(); // Fetch modal-selected filters
-
+  if (!selectedFilters) {
+    console.error('No filters available; rendering aborted.');
+    return;
+  }
+  const nameFilterInput = document.getElementById('filter-name-gallery');
+  const nameFilter = nameFilterInput?.value?.toLowerCase() || '';
   // Filter cards based on the selections from the modal
   const filteredCards = filterCards({
     collection,
     favoriteIds,
-    showFavoritesOnly: showFavoritesOnlyBuilder,
+    showFavoritesOnly,
+    nameFilter,  
     ...selectedFilters, // Use the filters provided by the modal instead of dropdowns
   });
-
-  // Render each matching card in the builder gallery
-  filteredCards
-    .filter((card) => collection[card.id] && collection[card.id] > 0) // Only show cards in the collection
-    .forEach((card) => {
-      builderGallery.appendChild(createCardBuilder(card, collection[card.id] || 0));
-    });
 
   // Update the collection progress display based on filtered cards
   updateGalleryCollectionProgress(filteredCards);
