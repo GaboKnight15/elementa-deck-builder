@@ -4583,13 +4583,13 @@ window.showInputModal = showInputModal;
 // Example usage (for testing in console):
 // showProfileModal({username:"Gabo", profilePic:"Cards/Avatar/Faelyra.png", profileBanner:"Cards/Banner/Verdara.png", power:1234, achievements:["achv1","achv2"], badges:["badge1"]});
 // FILTERS FOR GALLERY AND DECK BUILDER
-function filterCards(filters) {
+function filterCards({
   collection,
-  favoriteIds,
-  showFavoritesOnly,
-  nameFilter,
-  selectedFilters, // This will contain modal-generated filters
-} {
+  favoriteIds = [],        // Default to an empty array for safety
+  showFavoritesOnly = false,
+  nameFilter = "",
+  selectedFilters = {},    // Default to an empty object
+}) {
   return dummyCards.filter((card) => {
     // Name filter (outside the modal)
     if (nameFilter && !card.name.toLowerCase().includes(nameFilter.toLowerCase())) {
