@@ -379,35 +379,43 @@ function updateDeckHighlightArt(deckName) {
   };
   deckHighlightArtImg.src = deck.highlightArt || 'Images/Banner/Default.png';
 }
-deckHighlightArtImg.onclick = function() {
+deckHighlightArtImg.onclick = function () {
   closeDeckTileMenu();
   highlightArtModal.style.display = "flex";
   highlightArtList.innerHTML = "";
 
-  // Use the new getAvailableAvatars function
-  const avatarOptions = getAvailableAvatars();
+  // Fetch unlocked avatars directly
+  const avatarOptions = getUnlockedAvatars()
+    .map((src) => allAvatarOptions.find((avatar) => avatar.src === src))
+    .filter((avatar) => avatar); // Ensure only valid/unlocked avatars
 
+  // If no avatars are available, show a message
   if (avatarOptions.length === 0) {
     highlightArtList.innerHTML = "<div style='color:#eee'>No avatar artwork available.</div>";
     return;
   }
 
-  avatarOptions.forEach(avatarPath => {
+  // Render the unlocked avatars
+  avatarOptions.forEach((avatar) => {
+    // Create avatar element
     const img = document.createElement('img');
-    img.src = avatar.src; // Use the avatar's image path
-    img.alt = avatar.name || avatar.id; // Set alt to avatar name or id
-    img.title = avatar.name || avatar.id;
+    img.src = avatar.src;
+    img.alt = avatar.name;
+    img.title = avatar.name;
     img.className = "highlight-art-choice";
+    
+    // Set onclick handler to update the deck highlight art
     img.onclick = () => {
-      const deckName = deckMenu.dataset.deckName;
+      const deckName = deckMenu.dataset.deckName; // Assumes dataset is set correctly on deckMenu
       decks[deckName].highlightArt = avatar.src;
-      renderDeckSelection();
-      highlightArtModal.style.display = "none";
+      saveProgress(); // Save the updated deck to persist changes
+      renderDeckSelection(); // Refresh deck selection UI
+      highlightArtModal.style.display = "none"; // Close modal
       closeDeckTileMenu();
-      updateDeckHighlightArt(deckName);
-      saveProgress();
+      updateDeckHighlightArt(deckName); // Refresh highlighted art
     };
-    highlightArtList.appendChild(img);
+
+    highlightArtList.appendChild(img); // Add the avatar to the list
   });
 };
 closeHighlightArtBtn.onclick = () => highlightArtModal.style.display = "none";
@@ -423,33 +431,41 @@ function updateDeckBanner(deckName) {
 }
 
 // --- NEW: BANNER LOGIC (update to match avatars/Cardback) ---
-deckBannerImg.onclick = function() {
+deckBannerImg.onclick = function () {
   closeDeckTileMenu();
   deckBannerModal.style.display = "flex";
   deckBannerArtList.innerHTML = "";
   const deckName = deckMenu.dataset.deckName;
-  // Dynamically fetch available banners
-  const bannerOptions = getAvailableBanners();
-  
-  if (!bannerOptions || bannerOptions.length === 0) {
+
+  // Fetch unlocked banners instead of available banners
+  const unlockedBanners = getUnlockedBanners()
+    .map((src) => allBannerOptions.find((banner) => banner.src === src))
+    .filter((banner) => banner); // Ensure only valid banners
+
+  if (!unlockedBanners || unlockedBanners.length === 0) {
     deckBannerArtList.innerHTML = "<div style='color:#eee'>No unlocked banners available.</div>";
     return;
   }
 
-  bannerOptions.forEach((banner) => {
+  // Render each unlocked banner
+  unlockedBanners.forEach((banner) => {
     const img = document.createElement("img");
-    img.src = banner.src; // Use the banner's src
-    img.alt = banner.name || banner.id; // Optional alt text
+    img.src = banner.src;
+    img.alt = banner.name || banner.id;
     img.className = "deck-banner-choice";
     img.title = banner.name || banner.id;
+
+    // Handle banner selection
     img.onclick = () => {
-      decks[deckName].bannerArt = banner.src; // Save user's selected banner
-      saveProgress();
-      updateDeckBanner(deckName); // Update banner visuals
-      deckBannerModal.style.display = "none";
+      decks[deckName].bannerArt = banner.src; // Save selected banner
+      saveProgress(); // Save changes
+      updateDeckBanner(deckName); // Refresh the banner preview
+      deckBannerModal.style.display = "none"; // Close modal
       closeDeckTileMenu();
-      renderDeckSelection();
+      renderDeckSelection(); // Update the deck UI
     };
+
+    // Append image to the banner list
     deckBannerArtList.appendChild(img);
   });
 };
@@ -465,32 +481,38 @@ function updateDeckCardback(deckName) {
 }
 
 // --- CARDBACK --- //
-deckCardbackImg.onclick = function() {
+deckCardbackImg.onclick = function () {
   closeDeckTileMenu();
   deckCardbackModal.style.display = "flex";
   deckCardbackArtList.innerHTML = "";
   const deckName = deckMenu.dataset.deckName;
-  // Dynamically fetch available cardbacks
-  const cardbackOptions = getAvailableCardbacks();
 
-  if (!cardbackOptions || cardbackOptions.length === 0) {
+  // Fetch unlocked cardbacks instead of available cardbacks
+  const unlockedCardbacks = getUnlockedCardbacks()
+    .map((src) => allCardbackOptions.find((cardback) => cardback.src === src))
+    .filter((cardback) => cardback); // Ensure only valid cardbacks
+
+  // Handle case where no cardbacks are unlocked
+  if (!unlockedCardbacks || unlockedCardbacks.length === 0) {
     deckCardbackArtList.innerHTML = "<div style='color:#eee'>No cardbacks available</div>";
     return;
   }
-  cardbackOptions.forEach((cardback) => {
+
+  // Render each unlocked cardback
+  unlockedCardbacks.forEach((cardback) => {
     const img = document.createElement("img");
-    img.src = cardback.src; // Use the cardback's src
-    img.alt = "Cardback"; // Optional alt text
+    img.src = cardback.src; // Set the cardback's source
+    img.alt = "Cardback"; // Optional alt attribute for accessibility
     img.className = "deck-cardback-choice";
     img.onclick = () => {
-      decks[deckName].cardbackArt = cardback.src; // Save user's selected cardback
-      saveProgress();
-      updateDeckCardback(deckName); // Update cardback visuals
-      deckCardbackModal.style.display = "none";
+      decks[deckName].cardbackArt = cardback.src; // Save selected cardback
+      saveProgress(); // Save changes
+      updateDeckCardback(deckName); // Refresh selected cardback preview
+      deckCardbackModal.style.display = "none"; // Close modal
       closeDeckTileMenu();
-      renderDeckSelection();
+      renderDeckSelection(); // Refresh deck selection visuals
     };
-    deckCardbackArtList.appendChild(img);
+    deckCardbackArtList.appendChild(img); // Add the cardback image to the modal
   });
 };
 window.renderDeckCardbackChoices = function () {
