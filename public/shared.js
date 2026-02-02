@@ -2800,134 +2800,131 @@ const defaultIcon = "Images/Avatar/Default.png";
 const defaultBanner = "Images/Banner/DefaultBanner.png";
 const allAvatarOptions = [
 // --- COMMON GREEN AVATARS --- //
-  { name: 'Elemental of Leaves', src: 'Images/Avatar/ElementalofLeaves.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Fairy', src: 'Images/Avatar/Fairy.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Wildwood Goblin', src: 'Images/Avatar/WildwoodGoblin.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Satyr', src: 'Images/Avatar/Satyr.png', rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Elemental of Leaves', src: 'Images/Avatar/Green/ElementalofLeaves.png', rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Fairy', src: 'Images/Avatar/Green/Fairy.png', rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Wildwood Goblin', src: 'Images/Avatar/Green/WildwoodGoblin.png', rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Satyr', src: 'Images/Avatar/Green/Satyr.png', rarity: 'Common', price: 10, obtain: 'shop' },
   /*{ name: 'Verdant Serpent', src: 'Images/Avatar/VerdantSerpent.png', rarity: 'Common', price: 10, obtain: 'shop' },*/
 // --- COMMON RED AVATARS --- //
-  { name: 'Elemental of Embers', src: 'Images/Avatar/ElementalofEmbers.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Emberling', src: 'Images/Avatar/Emberling.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Fire Golem', src: 'Images/Avatar/FireGolem.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Kobold', src: 'Images/Avatar/Kobold.png', rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Elemental of Embers', src: 'Images/Avatar/Red/ElementalofEmbers.png', rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Emberling', src: 'Images/Avatar/Red/Emberling.png', rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Fire Golem', src: 'Images/Avatar/Red/FireGolem.png', rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Kobold', src: 'Images/Avatar/Red/Kobold.png', rarity: 'Common', price: 10, obtain: 'shop' },
 // --- COMMON BLUE AVATARS --- //
-  { name: 'Elemental of Droplets', src: 'Images/Avatar/ElementalofDroplets.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Mermaid', src: 'Images/Avatar/Mermaid.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Water Elemental', src: 'Images/Avatar/WaterElemental.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Runebound Shark', src: 'Images/Avatar/RuneboundShark.png', rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Elemental of Droplets', src: 'Images/Avatar/Blue/ElementalofDroplets.png', rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Mermaid', src: 'Images/Avatar/Blue/Mermaid.png', rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Water Elemental', src: 'Images/Avatar/Blue/WaterElemental.png', rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Runebound Shark', src: 'Images/Avatar/Blue/RuneboundShark.png', rarity: 'Common', price: 10, obtain: 'shop' },
 // --- COMMON YELLOW AVATARS --- //
-  { name: 'Birdfolk', src: 'Images/Avatar/Birdfolk.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Elemental of Sparks', src: 'Images/Avatar/ElementalofSparks.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Elemental of Breeze', src: 'Images/Avatar/ElementalofBreeze.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Thunderspawn', src: 'Images/Avatar/Thunderspawn.png', rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Birdfolk', src: 'Images/Avatar/Yellow/Birdfolk.png', rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Elemental of Sparks', src: 'Images/Avatar/Yellow/ElementalofSparks.png', rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Elemental of Breeze', src: 'Images/Avatar/Yellow/ElementalofBreeze.png', rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Thunderspawn', src: 'Images/Avatar/Yellow/Thunderspawn.png', rarity: 'Common', price: 10, obtain: 'shop' },
 // --- COMMON GRAY AVATARS --- //
-  { name: 'Elemental of Pebbles', src: 'Images/Avatar/ElementalofPebbles.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Orc', src: 'Images/Avatar/Orc.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Rockshell Armadillo', src: 'Images/Avatar/RockshellArmadill.png', rarity: 'Common', price: 10, obtain: 'shop' },
-
-  { name: 'Rock Lizard', src: 'Images/Avatar/RockLizard.png', rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Elemental of Pebbles', src: 'Images/Avatar/Gray/ElementalofPebbles.png', rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Orc', src: 'Images/Avatar/Gray/Orc.png', rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Rockshell Armadillo', src: 'Images/Avatar/Gray/RockshellArmadillo.png', rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Rock Lizard', src: 'Images/Avatar/Gray/RockLizard.png', rarity: 'Common', price: 10, obtain: 'shop' },
 // --- COMMON PURPLE AVATARS --- //
-  { name: 'Elemental of Toxins', src: 'Images/Avatar/ElementalofToxins.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Fen Goblin', src: 'Images/Avatar/FenGoblin.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Giant Hornet', src: 'Images/Avatar/GiantHornet.png', rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Elemental of Toxins', src: 'Images/Avatar/Purple/ElementalofToxins.png', rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Fen Goblin', src: 'Images/Avatar/Purple/FenGoblin.png', rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Giant Hornet', src: 'Images/Avatar/Purple/GiantHornet.png', rarity: 'Common', price: 10, obtain: 'shop' },
 
 // --- COMMON WHITE AVATARS --- //
-  { name: 'Elemental of Gleams', src: 'Images/Avatar/ElementalofGleams.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Angel', src: 'Images/Avatar/Angel.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Valkyrie', src: 'Images/Avatar/Valkyrie.png', rarity: 'Common', price: 10, obtain: 'shop' },
-
-  { name: 'Angelic Warrior', src: 'Images/Avatar/AngelicWarrior.png', rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Elemental of Gleams', src: 'Images/Avatar/White/ElementalofGleams.png', rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Angel', src: 'Images/Avatar/White/Angel.png', rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Valkyrie', src: 'Images/Avatar/White/Valkyrie.png', rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Angelic Warrior', src: 'Images/Avatar/White/AngelicWarrior.png', rarity: 'Common', price: 10, obtain: 'shop' },
 // --- COMMON BLACK AVATARS --- //
-  { name: 'Elemental of Shades', src: 'Images/Avatar/ElementalofShades.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Skeleton', src: 'Images/Avatar/Skeleton.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Zombie', src: 'Images/Avatar/Zombie.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Wolf', src: 'Images/Avatar/Wolf.png', rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Elemental of Shades', src: 'Images/Avatar/Black/ElementalofShades.png', rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Skeleton', src: 'Images/Avatar/Black/Skeleton.png', rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Zombie', src: 'Images/Avatar/Black/Zombie.png', rarity: 'Common', price: 10, obtain: 'shop' },
+  { name: 'Wolf', src: 'Images/Avatar/Black/Wolf.png', rarity: 'Common', price: 10, obtain: 'shop' },
 
 // --- RARE GREEN AVATARS --- //
-  { name: 'Elemental of Foliages', src: 'Images/Avatar/ElementalofFoliages.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-  { name: 'Verdara Soldier', src: 'Images/Avatar/VerdaraSoldier.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+  { name: 'Elemental of Foliages', src: 'Images/Avatar/Green/ElementalofFoliages.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+  { name: 'Verdara Soldier', src: 'Images/Avatar/Green/VerdaraSoldier.png', rarity: 'Rare', price: 50, obtain: 'shop' },
 // --- RARE RED AVATARS --- //
-  { name: 'Elemental of Flames', src: 'Images/Avatar/ElementalofFlames.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-  { name: 'Magmaris Mercenary', src: 'Images/Avatar/MagmarisMercenary.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+  { name: 'Elemental of Flames', src: 'Images/Avatar/Red/ElementalofFlames.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+  { name: 'Magmaris Mercenary', src: 'Images/Avatar/Red/MagmarisMercenary.png', rarity: 'Rare', price: 50, obtain: 'shop' },
 
 // --- RARE BLUE AVATARS --- //
-  { name: 'Elemental of Torrents', src: 'Images/Avatar/ElementalofTorrents.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-  { name: 'Umarion Paladin', src: 'Images/Avatar/UmarionPaladin.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+  { name: 'Elemental of Torrents', src: 'Images/Avatar/Blue/ElementalofTorrents.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+  { name: 'Umarion Paladin', src: 'Images/Avatar/Blue/UmarionPaladin.png', rarity: 'Rare', price: 50, obtain: 'shop' },
 // --- RARE YELLOW AVATARS --- //
-  { name: 'Elemental of Gales', src: 'Images/Avatar/ElementalofGales.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-  { name: 'Aetherion Electromancer', src: 'Images/Avatar/AetherionElectromancer.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+  { name: 'Elemental of Gales', src: 'Images/Avatar/Yellow/ElementalofGales.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+  { name: 'Aetherion Electromancer', src: 'Images/Avatar/Yellow/AetherionElectromancer.png', rarity: 'Rare', price: 50, obtain: 'shop' },
 
 // --- RARE GRAY AVATARS --- //
-  { name: 'Elemental of Boulders', src: 'Images/Avatar/ElementalofBoulders.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-  { name: 'Rockmaul Rhino', src: 'Images/Avatar/RockmaulRhino.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-
-  { name: 'Drakzul Warmonger', src: 'Images/Avatar/DrakzulWarmonger.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+  { name: 'Elemental of Boulders', src: 'Images/Avatar/Gray/ElementalofBoulders.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+  { name: 'Rockmaul Rhino', src: 'Images/Avatar/Gray/RockmaulRhino.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+  { name: 'Drakzul Warmonger', src: 'Images/Avatar/Gray/DrakzulWarmonger.png', rarity: 'Rare', price: 50, obtain: 'shop' },
 
 // --- RARE PURPLE AVATARS --- //
-  { name: 'Elemental of Miasmas', src: 'Images/Avatar/ElementalofMiasmas.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-  { name: 'Virkul Assassin', src: 'Images/Avatar/VirkulAssassin.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+  { name: 'Elemental of Miasmas', src: 'Images/Avatar/Purple/ElementalofMiasmas.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+  { name: 'Virkul Assassin', src: 'Images/Avatar/Purple/VirkulAssassin.png', rarity: 'Rare', price: 50, obtain: 'shop' },
 
 // --- RARE WHITE AVATARS --- //
-  { name: 'Elemental of Lusters', src: 'Images/Avatar/ElementalofLusters.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-  { name: 'Solmara Crusader', src: 'Images/Avatar/SolmaraCrusader.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+  { name: 'Elemental of Lusters', src: 'Images/Avatar/White/ElementalofLusters.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+  { name: 'Solmara Crusader', src: 'Images/Avatar/White/SolmaraCrusader.png', rarity: 'Rare', price: 50, obtain: 'shop' },
 
 // --- RARE BLACK AVATARS --- //
-  { name: 'Elemental of Shadows', src: 'Images/Avatar/ElementalofShadows.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-  { name: 'NoctyraEnforcer', src: 'Images/Avatar/NoctyraEnforcer.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+  { name: 'Elemental of Shadows', src: 'Images/Avatar/Black/ElementalofShadows.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+  { name: 'NoctyraEnforcer', src: 'Images/Avatar/Black/NoctyraEnforcer.png', rarity: 'Rare', price: 50, obtain: 'shop' },
 
 // --- LEGENDARY GREEN AVATARS --- //
-  { name: 'Sylvania, Thornvale Queen', src: 'Images/Avatar/Sylvania.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
-  { name: 'Veya, Emerald Druidess', src: 'Images/Avatar/Veya.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
-  { name: 'Faelyra, Wildhorn Empress', src: 'Images/Avatar/Faelyra.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
-  { name: 'Verdarok, Sylvan Thornwing', src: 'Images/Avatar/Verdarok.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Sylvania, Thornvale Queen', src: 'Images/Avatar/Green/Sylvania.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Veya, Emerald Druidess', src: 'Images/Avatar/Green/Veya.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Faelyra, Wildhorn Empress', src: 'Images/Avatar/Green/Faelyra.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Verdarok, Sylvan Thornwing', src: 'Images/Avatar/Green/Verdarok.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
 
 // --- LEGENDARY RED AVATARS --- //
-  { name: 'Kaelen, Blazeborn Huntress', src: 'Images/Avatar/Kaelen.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
-  { name: 'Kaelyra, Fireland Heiress', src: 'Images/Avatar/Kaelyra.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
-  { name: 'Pyronyx, Inferno Blazingscale', src: 'Images/Avatar/Pyronyx.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
-  { name: 'Ephoros, Hellfire Behemoth', src: 'Images/Avatar/Ephoros.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
-  { name: 'Pyrokrag, Golemheart Titan', src: 'Images/Avatar/Pyrokrag.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
-  { name: 'Ashara, Hellfire Matriarch', src: 'Images/Avatar/Ashara.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Kaelen, Blazeborn Huntress', src: 'Images/Avatar/Red/Kaelen.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Kaelyra, Fireland Heiress', src: 'Images/Avatar/Red/Kaelyra.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Pyronyx, Inferno Blazingscale', src: 'Images/Avatar/Red/Pyronyx.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Ephoros, Hellfire Behemoth', src: 'Images/Avatar/Red/Ephoros.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Pyrokrag, Golemheart Titan', src: 'Images/Avatar/Red/Pyrokrag.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Ashara, Hellfire Matriarch', src: 'Images/Avatar/Red/Ashara.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
 
 // --- LEGENDARY BLUE AVATARS --- //
-  { name: 'Serenya, Tidebound Enchantress', src: 'Images/Avatar/Serenya.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
-  { name: 'Zaryon, Pearlhaven Commander', src: 'Images/Avatar/Zaryon.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
-  { name: 'Tydros, Coralbound Tidebreaker', src: 'Images/Avatar/Tydros.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
-  { name: 'Abyndra, Tidal Abyssdrake', src: 'Images/Avatar/Abyndra.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
-  { name: 'Maelvyrn, Coralbound Leviathan', src: 'Images/Avatar/Maelvyrn.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
-  { name: 'Eirawen, Frostland Queen', src: 'Images/Avatar/Eirawen.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Serenya, Tidebound Enchantress', src: 'Images/Avatar/Blue/Serenya.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Zaryon, Pearlhaven Commander', src: 'Images/Avatar/Blue/Zaryon.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Tydros, Coralbound Tidebreaker', src: 'Images/Avatar/Blue/Tydros.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Abyndra, Tidal Abyssdrake', src: 'Images/Avatar/Blue/Abyndra.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Maelvyrn, Coralbound Leviathan', src: 'Images/Avatar/Blue/Maelvyrn.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Eirawen, Frostland Queen', src: 'Images/Avatar/Blue/Eirawen.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
 
 // --- LEGENDARY YELLOW AVATARS --- //
-  { name: 'Zyra, Thunderblade Duelist', src: 'Images/Avatar/Zyra.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
-  { name: 'Garuda, Wings of Zephyra', src: 'Images/Avatar/Garuda.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
-  { name: 'Voltrazek, Tempest Stormrazor', src: 'Images/Avatar/Voltrazek.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
-  { name: 'Astranyra, Thunderbane', src: 'Images/Avatar/Astranyra.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Zyra, Thunderblade Duelist', src: 'Images/Avatar/Yellow/Zyra.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Garuda, Wings of Zephyra', src: 'Images/Avatar/Yellow/Garuda.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Voltrazek, Tempest Stormrazor', src: 'Images/Avatar/Yellow/Voltrazek.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Astranyra, Thunderbane', src: 'Images/Avatar/Yellow/Astranyra.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
 
 // --- LEGENDARY GRAY AVATARS --- //
-  { name: 'Rudgar, Ironfist Mauler', src: 'Images/Avatar/Rudgar.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
-  { name: 'Veniryss, Spider Princess', src: 'Images/Avatar/Veniryss.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
-  { name: 'Gravok, Drakzul Tyrant', src: 'Images/Avatar/Gravok.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
-  { name: 'Ferronyx, Terra Ironclaw', src: 'Images/Avatar/Ferronyx.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
-  { name: 'Lyssara, Scarlet Vindicator', src: 'Images/Avatar/Lyssara.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
-  { name: 'Draven, Adamant Emperor', src: 'Images/Avatar/Draven.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Rudgar, Ironfist Mauler', src: 'Images/Avatar/Gray/Rudgar.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Veniryss, Spider Princess', src: 'Images/Avatar/Purple/Veniryss.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Gravok, Drakzul Tyrant', src: 'Images/Avatar/Gray/Gravok.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Ferronyx, Terra Ironclaw', src: 'Images/Avatar/Gray/Ferronyx.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Lyssara, Scarlet Vindicator', src: 'Images/Avatar/Gray/Lyssara.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Draven, Adamant Emperor', src: 'Images/Avatar/Gray/Draven.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
 
 // --- LEGENDARY PURPLE AVATARS --- //
-  { name: 'Selgor, Corrupted Warlord', src: 'Images/Avatar/Selgor.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
-  { name: 'Mordrath, Virkul Phantom', src: 'Images/Avatar/Mordrath.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
-  { name: 'Myxaroth, Cursed Dreadspine', src: 'Images/Avatar/Myxaroth.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Selgor, Corrupted Warlord', src: 'Images/Avatar/Purple/Selgor.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Mordrath, Virkul Phantom', src: 'Images/Avatar/Purple/Mordrath.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Myxaroth, Cursed Dreadspine', src: 'Images/Avatar/Purple/Myxaroth.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
 	
 // --- LEGENDARY WHITE AVATARS --- //
-  { name: 'Elyndra, Dawnblade of Heavens', src: 'Images/Avatar/Elyndra.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
-  { name: 'Solaryth, Radiant Solarwyrm', src: 'Images/Avatar/Solaryth.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
-  { name: 'Seraphiel, Solmara Paragon', src: 'Images/Avatar/Seraphiel.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Elyndra, Dawnblade of Heavens', src: 'Images/Avatar/White/Elyndra.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Solaryth, Radiant Solarwyrm', src: 'Images/Avatar/White/Solaryth.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Seraphiel, Solmara Paragon', src: 'Images/Avatar/White/Seraphiel.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
 
 // --- LEGENDARY BLACK AVATARS --- //
-  { name: 'Velmira, Mistress of Silence', src: 'Images/Avatar/Velmira.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
-  { name: 'Maldryss, Skullframe Archmage', src: 'Images/Avatar/Maldryss.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
-  { name: 'Nyzariel, Archdemon Duchess', src: 'Images/Avatar/Nyzariel.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
-  { name: 'Raukhar, Duskwing Knight', src: 'Images/Avatar/Raukhar.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
-  { name: 'Noctyros, Umbral Nightshroud', src: 'Images/Avatar/Noctyros.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
-  { name: 'Vorganna, Crimson Blade', src: 'Images/Avatar/Vorganna.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Velmira, Mistress of Silence', src: 'Images/Avatar/Black/Velmira.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Maldryss, Skullframe Archmage', src: 'Images/Avatar/Black/Maldryss.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Nyzariel, Archdemon Duchess', src: 'Images/Avatar/Black/Nyzariel.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Raukhar, Duskwing Knight', src: 'Images/Avatar/Black/Raukhar.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Noctyros, Umbral Nightshroud', src: 'Images/Avatar/Black/Noctyros.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Vorganna, Crimson Blade', src: 'Images/Avatar/Black/Vorganna.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
 
 ];
 
