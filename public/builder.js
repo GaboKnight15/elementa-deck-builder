@@ -160,17 +160,9 @@ if (saveDeckImg) {
     }
   };
 }
-const deckSelectionSettingsBtn = document.getElementById('deck-selection-settings-btn');
-if (deckSelectionSettingsBtn) {
-  deckSelectionSettingsBtn.onclick = function() {
-    const settingsMenu = document.getElementById('settings-menu-pop');
-    if (settingsMenu) {
-      settingsMenu.style.display = 'block';
-      settingsMenu.classList.add('active');
-      // Optionally, position it next to the button if needed
-    }
-  };
-}
+document.getElementById('deck-selection-settings-btn').onclick = function() {
+  document.getElementById('settings-modal').style.display = 'flex';
+};
 
 const deckSelectionBackBtn = document.getElementById('deck-selection-back-btn');
 if (deckSelectionBackBtn) {
