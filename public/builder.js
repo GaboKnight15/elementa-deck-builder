@@ -1399,14 +1399,6 @@ if (resetBtn) {
   resetBtn.onclick = function() {
     // Clear the text filter
     document.getElementById('filter-name-builder').value = "";
-    // Reset all dropdowns to "All"
-    document.querySelectorAll('#filters-builder .filter-dropdown').forEach(dd => {
-      // check "All"
-      dd.querySelector('input[type="checkbox"][value=""]').checked = true;
-      // uncheck others
-      dd.querySelectorAll('input[type="checkbox"]:not([value=""])').forEach(cb => cb.checked = false);
-      updateFilterLabel(dd, []);
-    });
     // Reset favorites filter
     showFavoritesOnlyBuilder = false;
     updateFavoriteFilterIconBuilder();
