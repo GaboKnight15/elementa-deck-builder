@@ -4589,7 +4589,7 @@ function filterCards(filters) {
   showFavoritesOnly,
   nameFilter,
   selectedFilters, // This will contain modal-generated filters
-}) {
+} {
   return dummyCards.filter((card) => {
     // Name filter (outside the modal)
     if (nameFilter && !card.name.toLowerCase().includes(nameFilter.toLowerCase())) {
