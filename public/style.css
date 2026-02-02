@@ -2003,14 +2003,6 @@ button[disabled], .btn-disabled {
 
 
 /* ============================= FILTER OPTIONS =========================== */
-.filter-dropdown {
-  position: relative;
-  display: inline-block;
-  min-width: 120px;
-  margin: 0 7px 7px 0;
-  font-family: inherit;
-}
-
 .filter-label {
   background: #232a3c;
   color: #ffe066;
@@ -2040,7 +2032,7 @@ button[disabled], .btn-disabled {
   overflow-y: auto;
 }
 
-.filter-dropdown.open .filter-options {
+.filter-options {
   display: block;
 }
 
