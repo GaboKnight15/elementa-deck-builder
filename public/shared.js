@@ -2994,21 +2994,7 @@ const packPrices = [
   // "ScalesofRuin": 100,"WyrmheartAwakening": 100,"MischiefUnbound": 100,"PrimordialAscension": 100,"IronbornProtocol": 100,"SavageTerritory": 100,"FeatheredOmen": 100,
 ];
 const allPackOptions = packPrices;
-// --- Profile Icon Choices ---
-function getAvailableAvatars() {
-  // Use the allAvatarOptions array and filter unlocked avatars
-  return allAvatarOptions.filter(avatar => window.playerUnlockedAvatars.includes(avatar.id));
-}
-  
-function getAvailableBanners() {
-  // Use the allBannerOptions array and filter unlocked banners
-  return allBannerOptions.filter(banner => window.playerUnlockedBanners.includes(banner.id));
-}
-// Cardback options (expand as needed)
-function getAvailableCardbacks() {
-  // Use the allCardbackOptions array and filter unlocked cardbacks
-  return allCardbackOptions.filter(cardback => window.playerUnlockedCardbacks.includes(cardback.id));
-}
+
 const PROFILE_METRICS = [
   { key: 'offense', label: 'Offense', color: '#ff6b4a' },
   { key: 'defense', label: 'Defense', color: '#44e055' },
@@ -5262,56 +5248,72 @@ document.addEventListener('DOMContentLoaded', function () {
       });
   }
 
-  // --- Render Profile Avatars ---
+// --- Render Profile Avatars ---
 function renderProfileIcons(selectedIcon) {
+  // Clear the container
   profileIcons.innerHTML = "";
 
-  // Dynamically fetch available avatars
-  const availableAvatars = getAvailableAvatars();
+  // Fetch unlocked avatars
+  const unlockedAvatars = getUnlockedAvatars()
+    .map((src) => allAvatarOptions.find((avatar) => avatar.src === src))
+    .filter((avatar) => avatar); // Ensure valid avatars
 
-  if (availableAvatars.length === 0) {
-    // Display fallback if no avatars are unlocked
+  // Handle case where no avatars are unlocked
+  if (unlockedAvatars.length === 0) {
     profileIcons.innerHTML = "<div style='color:#eee;'>No avatars available.</div>";
     return;
   }
 
-  // Generate avatar UI elements
-  availableAvatars.forEach((avatar) => {
+  // Render each unlocked avatar
+  unlockedAvatars.forEach((avatar) => {
     const img = document.createElement("img");
-    img.src = avatar.src; // Use avatar src for the image source 
-    img.className = avatar.src === selectedIcon ? "selected" : ""; // Add "selected" class if it's the selected icon
-    img.alt = avatar.name || avatar.id; // Add alt attribute for accessibility
-    img.title = avatar.name || avatar.id; // Add a title tooltip
+    img.src = avatar.src;
+    img.className = avatar.src === selectedIcon ? "selected" : ""; // Highlight selected avatar
+    img.alt = avatar.name || avatar.id;
+    img.title = avatar.name || avatar.id;
+
+    // Handle avatar selection
     img.onclick = function () {
-      selectProfileIcon(avatar.src); // Handle avatar selection
+      selectProfileIcon(avatar.src); // Save selected avatar
+      renderProfileIcons(avatar.src); // Re-render to update selection state
     };
-    profileIcons.appendChild(img); // Append the image to the profileIcons container
+
+    // Append the avatar image to the profileIcons container
+    profileIcons.appendChild(img);
   });
 }
-  // --- Render Banners ---
+// --- Render Banners ---
 function renderProfileBanners(selectedBanner) {
+  // Clear the container
   profileBanners.innerHTML = "";
 
-  // Dynamically fetch available banners
-  const availableBanners = getAvailableBanners();
+  // Fetch unlocked banners
+  const unlockedBanners = getUnlockedBanners()
+    .map((src) => allBannerOptions.find((banner) => banner.src === src))
+    .filter((banner) => banner); // Ensure valid banners
 
-  if (availableBanners.length === 0) {
-    // Display fallback message if no banners are unlocked
+  // Handle case where no banners are unlocked
+  if (unlockedBanners.length === 0) {
     profileBanners.innerHTML = "<div style='color:#eee;'>No banners available.</div>";
     return;
   }
 
-  // Generate banner UI elements
-  availableBanners.forEach((banner) => {
+  // Render each unlocked banner
+  unlockedBanners.forEach((banner) => {
     const img = document.createElement("img");
-    img.src = banner.src; // Use banner src for the image source
-    img.className = banner.src === selectedBanner ? "selected" : ""; // Add "selected" class if it's the selected banner
-    img.alt = banner.name || banner.id; // Add alt attribute for accessibility
-    img.title = banner.name || banner.id; // Add a title tooltip
+    img.src = banner.src;
+    img.className = banner.src === selectedBanner ? "selected" : ""; // Highlight selected banner
+    img.alt = banner.name || banner.id;
+    img.title = banner.name || banner.id;
+
+    // Handle banner selection
     img.onclick = function () {
-      selectProfileBanner(banner.src); // Handle banner selection
+      selectProfileBanner(banner.src); // Save selected banner
+      renderProfileBanners(banner.src); // Re-render to update selection state
     };
-    profileBanners.appendChild(img); // Append the image to the profileBanners container
+
+    // Append the banner image to the profileBanners container
+    profileBanners.appendChild(img);
   });
 }
     
@@ -5319,7 +5321,6 @@ function renderProfileBanners(selectedBanner) {
 profilePicMenuBtn.onclick = function () {
   const currentIcon = profilePicMenu && profilePicMenu.src ? profilePicMenu.src.split("?")[0] : "";
 
-  // Use the new getAvailableAvatars function instead of getUnlockedAvatars
   renderProfileIcons(currentIcon); // Update the render logic to work dynamically
 
   if (profileIconModal) profileIconModal.style.display = "flex";
@@ -5364,7 +5365,6 @@ function selectProfileIcon(iconUrl) {
 profileBanner.onclick = function () {
   const currentBanner = profileBanner.src.split("?")[0];
 
-  // Use the new getAvailableBanners function
   renderProfileBanners(currentBanner);
 
   // Show the banner modal
