@@ -73,13 +73,17 @@ const AUTOFILL_ARCHETYPES = [
 document.getElementById('filter-name-builder').addEventListener('input', renderBuilder);
 document.getElementById("builder-filter-btn").onclick = () => {
   showFilterModal((selectedFilters) => {
-    // Call `filterCards` with builder filters
+    // Retrieve external inputs (e.g., name filter and favorites toggle)
+    const nameFilter = document.getElementById('filter-name-builder')?.value?.toLowerCase() || '';
+    const showFavoritesOnly = window.showFavoritesOnlyBuilder || false; // Default to false
+
+    // Call `filterCards` with collected filters, including modal and external filters
     const filteredCards = filterCards({
       collection: getCollection(),
       favoriteIds: getFavoriteCards(),
-      showFavoritesOnly: false, // Set to true if favorites-only toggle is active
-      nameFilter: "", // Search query, if any
-      selectedFilters,
+      showFavoritesOnly,
+      nameFilter,
+      ...selectedFilters, // Spread the modal filters
     });
 
     // Render the filtered cards in the builder
@@ -1125,7 +1129,10 @@ function renderBuilder() {
   // Gather the collection and favorites
   const collection = getCollection();
   const favoriteIds = getFavoriteCards ? getFavoriteCards() : [];
-
+  
+  // Get external filters (name filter and favorites toggle)
+  const nameFilter = document.getElementById('filter-name-builder')?.value?.toLowerCase() || '';
+  const showFavoritesOnly = window.showFavoritesOnlyBuilder || false;
   // Collect filters from the modal (stored in some shared state or passed directly)
   const selectedFilters = getSelectedFiltersFromModal(); // Fetch modal-selected filters
 
