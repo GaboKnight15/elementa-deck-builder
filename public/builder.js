@@ -474,7 +474,7 @@ deckCardbackImg.onclick = function() {
   const cardbackOptions = getAvailableCardbacks();
 
   if (!cardbackOptions || cardbackOptions.length === 0) {
-    deckCardbackArtList.innerHTML = "<div style='color:#eee'>No cardbacks available.</div>";
+    deckCardbackArtList.innerHTML = "<div style='color:#eee'>No cardbacks available</div>";
     return;
   }
   cardbackOptions.forEach((cardback) => {
@@ -659,7 +659,7 @@ function showDeckViewModal(deckName) {
     emptyMsg.style.color = '#ffe066';
     emptyMsg.style.textAlign = 'center';
     emptyMsg.style.padding = '18px';
-    emptyMsg.textContent = 'No cards found for this deck.';
+    emptyMsg.textContent = 'No cards found for this deck';
     deckViewModalList.appendChild(emptyMsg);
   }
 
