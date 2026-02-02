@@ -8096,14 +8096,9 @@ document.getElementById('gameplay-back-btn').onclick = function() {
 // ASSIGNMENTS
 document.addEventListener('DOMContentLoaded', function() {
   // Settings button (top right of battlefield)
-  var settingsBtn = document.getElementById('battlefield-settings-btn');
-  if (settingsBtn) {
-    settingsBtn.onclick = function() {
-      var modal = document.getElementById('settings-menu-pop');
-      if (modal) modal.style.display = 'flex';
-      else console.warn("Settings modal not found!");
-    };
-  }
+  document.getElementById('battlefield-settings-btn').onclick = function() {
+    document.getElementById('settings-modal').style.display = 'flex';
+  };
   // Back button (top left of battlefield)
   var backBtn = document.getElementById('battlefield-back-btn');
   if (backBtn) {
