@@ -232,7 +232,7 @@ function renderGallery() {
     favoriteIds,
     showFavoritesOnly,
     nameFilter,  
-    ...selectedFilters, // Use the filters provided by the modal instead of dropdowns
+    ...selectedFilters,
   });
 
   // Update the collection progress display based on filtered cards
@@ -630,68 +630,62 @@ function showEssenceConfirmModal({action, card, amount, onConfirm }) {
 }
 function updateGalleryCollectionProgress(filteredCards) {
   const collection = getCollection();
-  const owned = filteredCards.filter(card => (collection[card.id] || 0) > 0).length;
+  const owned = filteredCards.filter((card) => (collection[card.id] || 0) > 0).length;
   const total = filteredCards.length;
 
-  // Ownership filter
-  const selectedOwnerships = getFilterDropdownValues('filter-ownership-dropdown');
-  const ownershipAll = selectedOwnerships.length === 0 || selectedOwnerships.includes("");
-  const ownershipSingle = selectedOwnerships.length === 1 ? selectedOwnerships[0] : null;
+  // Retrieve filters from the modal
+  const selectedFilters = getSelectedFiltersFromModal();
 
-  // Gather all other filter values
-  const filterDropdownIds = [
-    'filter-rarity-dropdown',
-    'filter-color-dropdown',
-    'filter-type-dropdown',
-    'filter-trait-dropdown',
-    'filter-archetype-dropdown',
-    'filter-ability-dropdown',
-    'filter-category-dropdown'
-  ];
-  let filterInfoArray = [];
-  filterDropdownIds.forEach(id => {
-    const vals = getFilterDropdownValues(id);
-    if (vals.length > 0) filterInfoArray.push(...vals);
-  });
+  // Ownership-specific logic
+  const ownershipFilters = selectedFilters.selectedOwnerships || [];
+  const ownershipAll = ownershipFilters.length === 0 || ownershipFilters.includes("All");
+  const ownershipSingle = ownershipFilters.length === 1 ? ownershipFilters[0] : null;
 
-  // Name filter
+  // Gather all modal-applied filters
+  let filterInfoArray = Object.entries(selectedFilters)
+    .filter(([key, values]) => values && values.length > 0) // Remove empty filters
+    .flatMap(([key, values]) => values);
+
+  // Add the name filter if provided (not part of the modal)
   const nameInput = document.getElementById('filter-name-gallery');
-  const nameFilter = nameInput ? nameInput.value : "";
-  if (nameFilter) filterInfoArray.push(nameFilter);
+  const nameFilter = nameInput ? nameInput.value.toLowerCase() : "";
+  if (nameFilter) {
+    filterInfoArray.push(nameFilter);
+  }
 
-  // Join filter info with space (NO commas), no labels
+  // Combine filter info into a readable summary
   const filterInfo = filterInfoArray.length ? filterInfoArray.join(' ') : '';
 
   // Determine collection progress string
   let str = '';
   if (total === 0) {
-    if (filterInfo) {
-      str = `No cards match the selected filters: <b>${filterInfo}</b>`;
-    } else {
-      str = 'No cards match the selected filters.';
-    }
+    // No matching cards
+    str = filterInfo
+      ? `No cards match the selected filters: <b>${filterInfo}</b>`
+      : 'No cards match the selected filters.';
   } else if (ownershipAll) {
-    // Show "Collected X/Y"
+    // Display "Collected X/Y"
     str = `Collected <b>${owned}</b> / <b>${total}</b>`;
     if (filterInfo) str += ` (${filterInfo})`;
   } else if (ownershipSingle === 'Undiscovered') {
-    // Show "Undiscovered X"
+    // Display "Undiscovered X"
     str = `Undiscovered <b>${total}</b>`;
     if (filterInfo) str += ` (${filterInfo})`;
   } else if (ownershipSingle === 'Locked') {
-    // Show "Locked X"
+    // Display "Locked X"
     str = `Locked <b>${total}</b>`;
     if (filterInfo) str += ` (${filterInfo})`;
   } else if (ownershipSingle === 'Owned') {
-    // Show "Owned X"
+    // Display "Owned X"
     str = `Owned <b>${owned}</b>`;
     if (filterInfo) str += ` (${filterInfo})`;
   } else {
-    // Multiple ownerships selected, fallback to Collected X/Y
+    // Default: "Collected X/Y"
     str = `Collected <b>${owned}</b> / <b>${total}</b>`;
     if (filterInfo) str += ` (${filterInfo})`;
   }
 
+  // Update the progress element in the UI
   const progDiv = document.getElementById('gallery-collection-progress');
   if (progDiv) progDiv.innerHTML = str;
 }
