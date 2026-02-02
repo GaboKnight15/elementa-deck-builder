@@ -818,93 +818,71 @@ const SKILL_EFFECT_MAP = {
 // step: { cardId, amount, owner, orientation, cost, targetCategory }
 Summon: {
   name: 'Summon',
-  description: 'Summons a card from hand to the field (handles cost/payment and summon position).',
-  handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
+  description: 'Summons a card from the hand to the player creature zone, after handling essence payment.',
+  handler: function (sourceCardObj, skillObj, step = {}, nextEffect) {
     try {
-      // Resolve data
-      const instance = sourceCardObj; // when called from hand menu, this is the instance in hand
-      const cardId = step.cardId || (instance && instance.cardId);
-      if (!cardId) { if (typeof nextEffect === 'function') nextEffect(); return; }
-      const cardDef = dummyCards.find(c => c.id === cardId);
-      if (!cardDef) { if (typeof nextEffect === 'function') nextEffect(); return; }
-
-      // Determine owner to place (source / player / opponent)
-      const sourceOwner = getCardOwner(instance) || (instance && instance.owner) || 'player';
-      const ownerToken = String(step.owner || 'source').toLowerCase();
-      let placeOwner = sourceOwner;
-      if (ownerToken === 'player') placeOwner = 'player';
-      else if (ownerToken === 'opponent') placeOwner = 'opponent';
-      else if (ownerToken === 'opponentofsource' || ownerToken === 'opponent_of_source') placeOwner = (sourceOwner === 'player' ? 'opponent' : 'player');
-
-      // Determine target zone array and toZoneId by category
-      const category = Array.isArray(cardDef.category) ? cardDef.category.map(x => x.toLowerCase()) : [String(cardDef.category).toLowerCase()];
-      let targetArr = (placeOwner === 'opponent') ? gameState.opponentCreatures : gameState.playerCreatures;
-      let toZoneId = (placeOwner === 'opponent') ? 'opponent-creatures-zone' : 'player-creatures-zone';
-      if (category.includes('domain')) {
-        targetArr = (placeOwner === 'opponent') ? gameState.opponentDomains : gameState.playerDomains;
-        toZoneId = (placeOwner === 'opponent') ? 'opponent-domains-zone' : 'player-domains-zone';
-      } else if (!category.includes('creature') && !category.includes('domain')) {
-        // Unsupported summon category
-        showToast && showToast('Cannot summon this card type.', { type: 'error' });
+      // Resolve the card object and ensure it's valid
+      const instance = sourceCardObj; // Source card instance in the hand
+      if (!instance) {
+        console.warn('No card instance found for summoning.');
         if (typeof nextEffect === 'function') nextEffect();
         return;
       }
 
-      // Cost handling: use provided step.cost or cardDef.cost
-      const rawCost = step.cost || cardDef.cost;
+      // Check if the card is in the player's hand
+      const cardZone = findZoneIdForCard(instance);
+      if (cardZone !== 'player-hand') {
+        showToast('Card can only be summoned from your hand.', { type: 'error' });
+        if (typeof nextEffect === 'function') nextEffect();
+        return;
+      }
+
+      // Parse summon cost
+      const cardDef = getCardDefinition(instance.cardId);
+      const rawCost = cardDef.cost;
       const parsedCost = rawCost ? parseCost(rawCost) : null;
-      const performSummon = function() {
-        const promptOrientation = (step.orientation === 'prompt' || !step.orientation);
-        const placeOrientation = (promptOrientation ? 'prompt' : step.orientation || 'vertical');
-        const doMove = function(chosenOrientation) {
-          // If the instance is a hand instance in its owner array, move it; else this may be a token creation flow
-          if (instance && findZoneIdForCard(instance) === 'player-hand' || findZoneIdForCard(instance) === 'opponent-hand') {
-            // Move the exact instance from its hand array
-            moveCard(instance.instanceId, (placeOwner === 'opponent' ? gameState.opponentHand : gameState.playerHand), targetArr, { orientation: chosenOrientation });
-          } else {
-            // If no instance (e.g., skill spawned token), create a new instance and push to targetArr
-            const newInst = summonTokenInstance(cardDef, null); // returns instance already pushed? adapt as your summonTokenInstance implementation
-            // If summonTokenInstance doesn't push, push and set fields:
-            if (!targetArr.includes(newInst)) targetArr.push(newInst);
-            newInst.orientation = chosenOrientation;
-          }
-          // Post-summon triggers
-          appendVisualLog && appendVisualLog({ action: 'summon', text: `${placeOwner === 'player' ? 'You' : 'Opponent'} summoned ${cardDef.name}` });
-          renderGameState && renderGameState();
-          if (typeof nextEffect === 'function') nextEffect();
-        };
+
+      const performSummon = function () {
+        // Move the card from the player's hand to their creature zone
+        moveCard(instance.instanceId, gameState.playerHand, gameState.playerCreatures, { orientation: step.orientation || 'vertical' });
+
+        // Display visual log and refresh game state
+        appendVisualLog({ action: 'summon', text: `You summoned ${cardDef.name} to the field.` });
+        renderGameState();
+
+        // Continue with the next effect, if specified
+        if (typeof nextEffect === 'function') nextEffect();
       };
 
-      // If no cost, summon immediately
-      const isFree = !rawCost || (parsedCost && Object.values(parsedCost).reduce((a,b) => a + b, 0) === 0) || (rawCost === '{0}');
+      // If the card has no cost or the cost is free, summon directly
+      const isFree = !rawCost || (parsedCost && Object.values(parsedCost).reduce((a, b) => a + b, 0) === 0) || (rawCost === '{0}');
       if (isFree) {
         performSummon();
         return;
       }
 
-      // Otherwise show payment modal that will call performSummon on onPaid
+      // Otherwise, open the essence payment modal
       showEssencePaymentModal({
         card: cardDef,
         cost: parsedCost,
         eligibleCards: getAllEssenceSources(),
-        onPaid: function() {
+        onPaid: function () {
           performSummon();
         },
-        onCancel: function() {
-          // If payment canceled, run nextEffect to continue resolution chain
+        onCancel: function () {
+          // If payment is canceled, proceed to the next effect (if any)
           if (typeof nextEffect === 'function') nextEffect();
         }
       });
-
     } catch (err) {
-      console.warn('Summon handler error', err);
+      console.error('Error in Summon handler:', err);
       if (typeof nextEffect === 'function') nextEffect();
     }
   },
-  // Optional canActivate check: only from hand or allowed zones
-  canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
-    // allow from hand (player or opponent) or other sources as needed
-    return ['playerHand','opponentHand','playerCreatures','playerDomains','opponentCreatures','opponentDomains'].includes(currentZone);
+  // Check if Summon can be activated (only valid if card is in the hand)
+  canActivate: function (sourceCardObj, skillObj, currentZone) {
+    // Summon can only be activated from the player's hand
+    return currentZone === 'playerHand';
   }
 },
 
@@ -1090,7 +1068,7 @@ Burn: {
   description: 'Deals damage and burns.',
   handler: effectStatusHandler('Burn')
 },
-Poison: {
+Venom: {
   icon: 'Icons/Skill/Poison.png',
   name: 'Poison',
   description: 'Deals damage and poisons.',
@@ -1120,28 +1098,6 @@ Curse: {
   description: 'Deals damage and curses.',
   handler: effectStatusHandler('Curse')
 },
-  /*
-Burst: {
-  icon: 'Icons/Skill/Burst.png',
-  name: 'Burst',
-  description: 'Deals damage to all enemy targets.',
-  // Updated signature for effect chaining
-  handler: function(sourceCardObj, skillObj, step, nextEffect) {
-    const targets = [...gameState.opponentCreatures, ...gameState.opponentDomains];
-    targets.forEach(target => {
-      const damage = step.amount != null ? step.amount : 0;
-      if (damage > 0) dealDamage(sourceCardObj, target, damage);
-      // General status effect logic: apply any status flagged in step
-      let statuses = Array.isArray(step.status) ? step.status : (step.status ? [step.status] : []);
-      statuses.forEach(statusName => {
-        if (STATUS_EFFECTS[statusName]) {
-          applyStatus(target, statusName);
-        }
-      });
-    });
-    if (nextEffect) nextEffect();
-  }
-}, */
 
 // --- SELF SUMMONING SKILLS --- //
 Dash: {
