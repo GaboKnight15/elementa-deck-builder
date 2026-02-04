@@ -51,6 +51,10 @@ let gameState = {
   opponentSigils: [],
   turn: "player",
   phase: "start",
+  hasTerraformed: {
+    player: false,
+    opponent: false,
+  },
   timeOfDay: "dawn", // Initial state
   dayNightCycleCounter: 0, // Counts end phases
   pendingDayNightTransition: "day",
@@ -597,7 +601,7 @@ const REQUIREMENT_MAP = {
   },
   CW: {
     icon: 'Icons/Essence/Tap.png',
-    name: 'Defense',
+    name: 'Disable',
     description: 'Disable card.',
     zones: ['playerCreatures', 'playerDomains'],
     handler: function(sourceCardObj, skillObj, next) {
@@ -620,7 +624,7 @@ const REQUIREMENT_MAP = {
   },
   CCW: {
     icon: 'Icons/Essence/Untap.png',
-    name: 'Attack',
+    name: 'Enable',
     description: 'Enable card.',
     zones: ['playerCreatures', 'playerDomains'],
     handler: function(sourceCardObj, skillObj, next) {
@@ -1001,46 +1005,102 @@ Equip: {
 // TERRAFORM handler: place a domain/terrain under player's domains
 Terraform: {
   name: 'Terraform',
-  description: 'Place a Domain/Terrain onto the owner\'s domain zones.',
-  handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
+  description: 'Allows the player to play a domain/land card to the field. Restricted to once per turn.',
+  handler: function (sourceCardObj, skillObj, step = {}, nextEffect) {
     try {
-      const instance = sourceCardObj;
-      const cardId = step.cardId || (instance && instance.cardId);
-      if (!cardId) { if (typeof nextEffect === 'function') nextEffect(); return; }
-      const cardDef = dummyCards.find(c => c.id === cardId);
-      if (!cardDef) { if (typeof nextEffect === 'function') nextEffect(); return; }
+      const activePlayer = gameState.turn; // Determine the current turn
 
-      // Owner
-      const owner = getCardOwner(instance) || (instance && instance.owner) || 'player';
-      const domainArr = owner === 'player' ? gameState.playerDomains : gameState.opponentDomains;
+      // Check if the player has already Terraform'ed this turn
+      if (gameState.hasTerraformed[activePlayer]) {
+        showToast("You can only Terraform once per turn!", { type: "error" });
+        if (typeof nextEffect === "function") nextEffect();
+        return;
+      }
 
-      const parsedCost = step.cost ? parseCost(step.cost) : (cardDef.cost ? parseCost(cardDef.cost) : null);
-      const doTerraform = function() {
-        // Show summon/orientation if needed or place directly
-        moveCard(instance.instanceId, (owner === 'player' ? gameState.playerHand : gameState.opponentHand), domainArr, { orientation: 'horizontal' });
-        appendVisualLog && appendVisualLog({ action: 'terraform', text: `${owner === 'player' ? 'You' : 'Opponent'} placed ${cardDef.name} as a Domain` });
-        renderGameState && renderGameState();
-        if (typeof nextEffect === 'function') nextEffect();
+      // Resolve the source card object
+      if (!sourceCardObj || !sourceCardObj.cardId) {
+        console.warn("Invalid card object passed to Terraform handler.");
+        if (typeof nextEffect === "function") nextEffect();
+        return;
+      }
+
+      // Ensure the card is in the player's hand
+      const cardZone = findZoneIdForCard(sourceCardObj);
+      if (cardZone !== "player-hand") {
+        showToast("You can only Terraform domains from your hand.", { type: "error" });
+        if (typeof nextEffect === "function") nextEffect();
+        return;
+      }
+
+      // Check if the card is a valid domain
+      const cardDef = getCardDefinition(sourceCardObj.cardId);
+      const isDomain = Array.isArray(cardDef.category) 
+        ? cardDef.category.includes("Domain") 
+        : String(cardDef.category).toLowerCase() === "domain";
+
+      if (!isDomain) {
+        showToast("Only domain cards can be Terraform'ed.", { type: "error" });
+        if (typeof nextEffect === "function") nextEffect();
+        return;
+      }
+
+      // Handle essence payment (if required)
+      const rawCost = cardDef.cost;
+      const parsedCost = rawCost ? parseCost(rawCost) : null;
+
+      const performTerraform = function () {
+        // Move the domain card from the hand to the player's domain zone
+        moveCard(
+          sourceCardObj.instanceId,
+          gameState.playerHand,
+          gameState.playerDomains,
+          { orientation: "vertical" }
+        );
+
+        // Update game state to track Terraform action
+        gameState.hasTerraformed[activePlayer] = true;
+
+        // Show feedback and refresh game state
+        appendVisualLog({ action: "terraform", text: `You have Terraform'ed ${cardDef.name}.` });
+        renderGameState();
+
+        // Continue with the next effect, if any
+        if (typeof nextEffect === "function") nextEffect();
       };
 
-      const isFree = !cardDef.cost || (parsedCost && Object.values(parsedCost).reduce((a,b)=>a+b,0) === 0) || cardDef.cost === '{0}';
-      if (isFree) doTerraform();
-      else {
-        showEssencePaymentModal({
-          card: cardDef,
-          cost: parsedCost,
-          eligibleCards: getAllEssenceSources(),
-          onPaid: doTerraform,
-          onCancel: function() { if (typeof nextEffect === 'function') nextEffect(); }
-        });
+      // Check if the Terraform is cost-free
+      const isFree = !rawCost || (parsedCost && Object.values(parsedCost).reduce((a, b) => a + b, 0) === 0);
+      if (isFree) {
+        performTerraform();
+        return;
       }
+
+      // Show payment modal for Terraform cost
+      showEssencePaymentModal({
+        card: cardDef,
+        cost: parsedCost,
+        eligibleCards: getAllEssenceSources(),
+        onPaid: function () {
+          performTerraform();
+        },
+        onCancel: function () {
+          if (typeof nextEffect === "function") nextEffect();
+        },
+      });
     } catch (err) {
-      console.warn('Terraform handler error', err);
-      if (typeof nextEffect === 'function') nextEffect();
+      console.error("Terraform handler error:", err);
+      if (typeof nextEffect === "function") nextEffect();
     }
   },
-  canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
-    return currentZone === 'playerHand' || currentZone === 'opponentHand';
+  // Optional: Add a condition to check if Terraform can be activated
+  canActivate: function (sourceCardObj, skillObj, currentZone) {
+    // Can only Terraform if in the hand and it's the player's action phase
+    const phaseObj = getCurrentPhaseObj(); 
+    return (
+      currentZone === "playerHand" &&
+      isPlayerPhase(phaseObj, "action") &&
+      !gameState.hasTerraformed.player // Ensure player has not Terraform'ed yet
+    );
   }
 },
 
@@ -3633,12 +3693,12 @@ function renderCardOnField(cardObj, zoneId) {
   cardDiv.appendChild(img);
 
   // Cardback (player or opponent)
-  let cardbackUrl = window.selectedPlayerDeck?.deckObj?.cardbackArt || "Icons/Cardback/Default.png";
+  let cardbackUrl = window.selectedPlayerDeck?.deckObj?.cardbackArt || "Images/Cardback/Default.png";
   if (zoneId && zoneId.startsWith("opponent")) {
     cardbackUrl =
       window.selectedOpponentDeck?.cardbackArt ||
       gameState.opponentProfile?.cardbackArt ||
-      "Icons/Cardbacks/CBDefault.png";
+      "Images/Cardback/Default.png";
   }
   const backDiv = document.createElement('div');
   backDiv.className = 'card-back';
@@ -4561,19 +4621,19 @@ function getPrevPhase(phaseObj) {
 }
 
 // Turn/Phase checks
-function isPlayerTurn(phaseObj)    { return phaseObj.turn === 'player'; }
-function isOpponentTurn(phaseObj)  { return phaseObj.turn === 'opponent'; }
-function isPhase(phaseObj, phase)  { return phaseObj.phase === phase; }
+function isPlayerTurn(phaseObj)           { return phaseObj.turn === 'player'; }
+function isOpponentTurn(phaseObj)         { return phaseObj.turn === 'opponent'; }
+function isPhase(phaseObj, phase)         { return phaseObj.phase === phase; }
 function isPlayerPhase(phaseObj, phase)   { return isPlayerTurn(phaseObj) && isPhase(phaseObj, phase); }
 function isOpponentPhase(phaseObj, phase) { return isOpponentTurn(phaseObj) && isPhase(phaseObj, phase); }
-function isStartPhase(phaseObj)    { return isPhase(phaseObj, 'start'); }
-function isActionPhase(phaseObj)   { return isPhase(phaseObj, 'action'); }
-function isEndPhase(phaseObj)      { return isPhase(phaseObj, 'end'); }
-function isPlayerEndPhase(phaseObj)   { return isPlayerTurn(phaseObj) && isEndPhase(phaseObj); }
-function isOpponentEndPhase(phaseObj) { return isOpponentTurn(phaseObj) && isEndPhase(phaseObj); }
-function isPlayerActionPhase(phaseObj)   { return isPlayerTurn(phaseObj) && isActionPhase(phaseObj); }
-function isOpponentActionPhase(phaseObj) { return isOpponentTurn(phaseObj) && isActionPhase(phaseObj); }
-function isStartOfTurn(phaseObj) { return isStartPhase(phaseObj); } // both player and opponent
+function isStartPhase(phaseObj)           { return isPhase(phaseObj, 'start'); }
+function isActionPhase(phaseObj)          { return isPhase(phaseObj, 'action'); }
+function isEndPhase(phaseObj)             { return isPhase(phaseObj, 'end'); }
+function isPlayerEndPhase(phaseObj)       { return isPlayerTurn(phaseObj) && isEndPhase(phaseObj); }
+function isOpponentEndPhase(phaseObj)     { return isOpponentTurn(phaseObj) && isEndPhase(phaseObj); }
+function isPlayerActionPhase(phaseObj)    { return isPlayerTurn(phaseObj) && isActionPhase(phaseObj); }
+function isOpponentActionPhase(phaseObj)  { return isOpponentTurn(phaseObj) && isActionPhase(phaseObj); }
+function isStartOfTurn(phaseObj)          { return isStartPhase(phaseObj); } // both player and opponent
 
 // Display/class helpers
 function getPhaseDisplayName(phaseKey) { return PHASE_DISPLAY_NAMES[phaseKey] || phaseKey; }
@@ -4591,6 +4651,12 @@ function handleStartPhase(turn) {
     action: "startPhase",
     who: turn
   }, false, turn === "player");
+  // Reset Terraform flag for current player
+  if (gameState.turn === "player") {
+    gameState.hasTerraformed.player = false;
+  } else {
+    gameState.hasTerraformed.opponent = false;
+  }
 }
 
 function handleActionPhase(turn) {
