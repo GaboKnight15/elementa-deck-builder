@@ -2774,7 +2774,7 @@ function renderGameState() {
   opponentHandDiv.innerHTML = '';
   let opponentCardback = (window.selectedCpuDeck && window.selectedCpuDeck.cardbackArt)
     ? window.selectedCpuDeck.cardbackArt
-    : "Icons/Cardbacks/CBDefault.png"; // fallback
+    : "Images/Cardback/Default.png"; // fallback
 
   for (let i = 0; i < gameState.opponentHand.length; i++) {
     const div = document.createElement('div');
@@ -2813,22 +2813,10 @@ function renderHandCostBadge(cardDiv, cardData) {
     badge.className = 'hand-cost-badge';
     // Inline styles to avoid requiring CSS edits; you can move to stylesheet later
     badge.style.position = 'absolute';
-    badge.style.left = '6px';
-    badge.style.top = '6px';
+    badge.style.left = '0';
+    badge.style.top = '0';
     badge.style.zIndex = 60;
-    badge.style.display = 'inline-flex';
-    badge.style.alignItems = 'center';
-    badge.style.gap = '4px';
-    badge.style.padding = '4px 6px';
-    badge.style.borderRadius = '10px';
-    badge.style.background = 'rgba(0,0,0,0.6)';
-    badge.style.backdropFilter = 'blur(4px)';
-    badge.style.color = '#fff';
-    badge.style.fontWeight = '700';
-    badge.style.fontSize = '12px';
-    badge.style.pointerEvents = 'none'; // badge should not interfere with clicks
 
-    // Reuse getEssenceCostDisplay to build HTML for parsed cost (it returns HTML with images)
     // but shrink icon sizes for the compact badge
     let html = '';
     if (typeof getEssenceCostDisplay === 'function') {
@@ -3166,7 +3154,7 @@ function appendDeckZone(parentDiv, deckArray, who) {
   const deckCard = document.createElement('div');
   deckCard.className = 'card-deck';
 
-  let deckCardback = "Icons/Cardbacks/CBDefault.png";
+  let deckCardback = "Images/Cardback/Default.png";
   if (who === "player" && window.selectedPlayerDeck && window.selectedPlayerDeck.deckObj && window.selectedPlayerDeck.deckObj.cardbackArt
   ) {
     deckCardback = window.selectedPlayerDeck.deckObj.cardbackArt;
@@ -4741,9 +4729,9 @@ function logSystem(text) {
 }
 function getCpuProfile(deck) {
   return {
-    username: deck.name, // e.g. "Verdant Might"
-    avatar: deck.image,  // e.g. 'Images/Avatar/Fairy.png'
-    banner: deck.bannerArt, // e.g. 'Images/Banner/GreenBanner.png'
+    username: deck.name,
+    avatar: deck.image,
+    banner: deck.bannerArt,
   };
 }
 
@@ -5939,7 +5927,7 @@ function cardImgLog(card, {
   if (showCardback) {
     let cardback = window.selectedOpponentDeck?.cardbackArt
       || gameState.opponentProfile?.cardbackArt
-      || "Icons/Cardbacks/CBDefault.png";
+      || "Images/Cardback/Default.png";
     return `<img class="log-card-img ${extraClass}" src="${cardback}" data-cardid="${card.cardId}" title="Cardback" style="border:2px solid #e25555;width:${width}px;vertical-align:middle;">`;
   }
   // Otherwise show actual card
@@ -7575,25 +7563,6 @@ function updateGameStatusRow() {
   todLbl.style.fontWeight = '700';
   todWrap.appendChild(todLbl);
 
-  // Player essence block
-  const pWrap = document.createElement('div');
-  pWrap.style.display = 'flex';
-  pWrap.style.flexDirection = 'column';
-  pWrap.style.alignItems = 'center';
-  pWrap.style.gap = '4px';
-  const pLabel = document.createElement('div');
-  pLabel.textContent = 'You';
-  pLabel.style.fontSize = '0.75em';
-  pLabel.style.color = '#d0d6df';
-  pWrap.appendChild(pLabel);
-  const pIcons = document.createElement('div');
-  pIcons.style.display = 'flex';
-  pIcons.style.flexWrap = 'wrap';
-  pIcons.style.justifyContent = 'center';
-  pIcons.style.gap = '4px';
-  renderEssenceSummaryInto(pIcons, getEssencePool('player'), { size: 16 });
-  pWrap.appendChild(pIcons);
-
   // Opponent essence block
   const oWrap = document.createElement('div');
   oWrap.style.display = 'flex';
@@ -7612,6 +7581,25 @@ function updateGameStatusRow() {
   oIcons.style.gap = '4px';
   renderEssenceSummaryInto(oIcons, getEssencePool('opponent'), { size: 16 });
   oWrap.appendChild(oIcons);
+  
+  // Player essence block
+  const pWrap = document.createElement('div');
+  pWrap.style.display = 'flex';
+  pWrap.style.flexDirection = 'column';
+  pWrap.style.alignItems = 'center';
+  pWrap.style.gap = '4px';
+  const pLabel = document.createElement('div');
+  pLabel.textContent = 'You';
+  pLabel.style.fontSize = '0.75em';
+  pLabel.style.color = '#d0d6df';
+  pWrap.appendChild(pLabel);
+  const pIcons = document.createElement('div');
+  pIcons.style.display = 'flex';
+  pIcons.style.flexWrap = 'wrap';
+  pIcons.style.justifyContent = 'center';
+  pIcons.style.gap = '4px';
+  renderEssenceSummaryInto(pIcons, getEssencePool('player'), { size: 16 });
+  pWrap.appendChild(pIcons);
 
   // Casting preview (if payment modal is open)
   const casting = window.currentCasting || null;
@@ -7655,6 +7643,25 @@ function updateGameStatusRow() {
     });
   }
 // --- inside updateGameStatusRow() where you build status UI ---
+// Render opponent sigils
+const opponentSigArr = getSigils('opponent');
+if (opponentSigArr && opponentSigArr.length) {
+  const oSigWrap = document.createElement('div');
+  oSigWrap.style.display = 'flex';
+  oSigWrap.style.gap = '6px';
+  oSigWrap.style.alignItems = 'center';
+  opponentSigArr.forEach(s => {
+    const eff = SIGIL_EFFECTS[s.name] || {};
+    const img = document.createElement('img');
+    img.src = eff.icon || 'Icons/Sigils/default.png';
+    img.alt = s.name;
+    img.title = `${eff.name || s.name}${s.duration ? ` (${s.duration})` : ''}`;
+    img.style.width = '22px';
+    img.style.height = '22px';
+    oSigWrap.appendChild(img);
+  });
+  container.appendChild(oSigWrap);
+}
 // Render player's sigils (if any)
 const playerSigArr = getSigils('player');
 if (playerSigArr && playerSigArr.length) {
@@ -7675,25 +7682,6 @@ if (playerSigArr && playerSigArr.length) {
   container.appendChild(pSigWrap); // or append to the player column you use
 }
 
-// Render opponent sigils similarly
-const opponentSigArr = getSigils('opponent');
-if (opponentSigArr && opponentSigArr.length) {
-  const oSigWrap = document.createElement('div');
-  oSigWrap.style.display = 'flex';
-  oSigWrap.style.gap = '6px';
-  oSigWrap.style.alignItems = 'center';
-  opponentSigArr.forEach(s => {
-    const eff = SIGIL_EFFECTS[s.name] || {};
-    const img = document.createElement('img');
-    img.src = eff.icon || 'Icons/Sigils/default.png';
-    img.alt = s.name;
-    img.title = `${eff.name || s.name}${s.duration ? ` (${s.duration})` : ''}`;
-    img.style.width = '22px';
-    img.style.height = '22px';
-    oSigWrap.appendChild(img);
-  });
-  container.appendChild(oSigWrap);
-}
   // assemble
   container.appendChild(todWrap);
   container.appendChild(pWrap);
