@@ -5528,97 +5528,93 @@ document.getElementById('friends-modal').onclick = function(e) {
 // --- SETTINGS --- //
 // ---------------- //
 
-// Popover Settings Menu Logic (applies sitewide)
-document.addEventListener("DOMContentLoaded", function() {
-  // Support all settings icons in all sections (add more if needed)
+
+
+// Settings Modal Logic
+document.addEventListener('DOMContentLoaded', function() {
+  const settingsModal = document.getElementById('settings-modal');
+  const closeSettingsModal = document.getElementById('close-settings-modal');
+  const saveSettingsBtn = document.getElementById('save-settings-btn');
+  const cancelSettingsBtn = document.getElementById('cancel-settings-btn');
+  const toggleNotices = document.getElementById('toggle-notices');
+  const toggleMusic = document.getElementById('toggle-music');
+  const settingsLogoutBtn = document.getElementById('settings-logout-btn');
+  
+  // All settings buttons
   const settingIds = [
     'home-settings-btn',
     'gallery-settings-btn',
     'builder-settings-btn',
+    'deck-selection-settings-btn',
     'gameplay-settings-btn',
     'shop-settings-btn'
   ];
-  const settings = settingIds
-    .map(id => document.getElementById(id))
-    .filter(Boolean);
+  
+  // Open modal when any settings button is clicked
+  settingIds.forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) {
+      btn.onclick = function() {
+        if (settingsModal) {
+          // Load saved settings when opening modal
+          if (toggleNotices) {
+            toggleNotices.checked = localStorage.getItem('settings-notices') === 'on';
+          }
+          if (toggleMusic) {
+            toggleMusic.checked = localStorage.getItem('settings-music') === 'on';
+          }
+          settingsModal.style.display = 'flex';
+        }
+      };
+    }
+  });
 
-  const menu = document.getElementById('settings-menu-pop');
-  const toggleNotices = document.getElementById('toggle-notices');
-  const toggleMusic = document.getElementById('toggle-music');
-
-  // Open menu for any settings icon
-// Open menu for any settings icon
-settings.forEach(setting => {
-  setting.onclick = function(e) {
-    e.stopPropagation();
-
-    // Get the bounding rect of the icon (anchor)
-    const rect = setting.getBoundingClientRect();
-
-    // Make the menu temporarily visible to calculate placement but keep it hidden initially
-    menu.style.display = 'block'; // Ensure the menu is in the DOM for size calculations
-    menu.style.visibility = 'hidden';
-
-    // Position the menu first (before correcting it with placeMenuWithinViewport)
-    menu.style.top = `${rect.bottom + window.scrollY}px`; // Place the menu right below
-    menu.style.left = `${rect.right + window.scrollX}px`; // Place the menu to the right
-
-    // Adjust the menu to ensure it remains within the viewport
-    placeMenuWithinViewport(menu, rect, "bottom-right");
-
-    // Show and activate the menu
-    menu.classList.add('active');
-    menu.style.visibility = 'visible';
-    menu.style.display = 'block';
-
-    // Load saved settings (example)
-    toggleNotices.checked = localStorage.getItem('settings-notices') === 'on';
-    toggleMusic.checked = localStorage.getItem('settings-music') === 'on';
-
-    // Hide menu if user clicks outside
-    setTimeout(() => {
-      document.body.addEventListener('mousedown', hideSettingsMenu, { once: true });
-    }, 10);
-  };
-});
-
-function hideSettingsMenu(e) {
-  menu.classList.remove('active');
-  menu.style.display = 'none';
-}
-
-// Prevent clicks inside the menu from closing it
-menu.onclick = function(e) { e.stopPropagation(); };
-
-  function hideSettingsMenu(e) {
-    menu.classList.remove('active');
-    menu.style.display = 'none';
+  // Close modal button
+  if (closeSettingsModal) {
+    closeSettingsModal.onclick = function() {
+      settingsModal.style.display = 'none';
+    };
   }
 
-  // Prevent menu click from closing it
-  menu.onclick = function(e) { e.stopPropagation(); };
+  // Save settings button
+  if (saveSettingsBtn) {
+    saveSettingsBtn.onclick = function() {
+      // Save toggle states
+      if (toggleNotices) {
+        localStorage.setItem('settings-notices', toggleNotices.checked ? 'on' : 'off');
+      }
+      if (toggleMusic) {
+        localStorage.setItem('settings-music', toggleMusic.checked ? 'on' : 'off');
+      }
+      settingsModal.style.display = 'none';
+    };
+  }
 
-  // Toggle handlers
-  toggleNotices.onchange = function() {
-    localStorage.setItem('settings-notices', this.checked ? 'on' : 'off');
-    // Add logic for enabling/disabling notices if needed
-  };
-  toggleMusic.onchange = function() {
-    localStorage.setItem('settings-music', this.checked ? 'on' : 'off');
-    // Add logic for enabling/disabling music if needed
-  };
+  // Cancel button
+  if (cancelSettingsBtn) {
+    cancelSettingsBtn.onclick = function() {
+      settingsModal.style.display = 'none';
+    };
+  }
 
-  // Logout button logic
-  const settingsLogoutBtn = document.getElementById('settings-logout-btn');
+  // Logout button
   if (settingsLogoutBtn) {
     settingsLogoutBtn.onclick = function() {
-      // If you have a function like logout() defined in auth.js:
       if (typeof logout === "function") {
         logout();
       } else if (typeof firebase !== 'undefined' && firebase.auth) {
         firebase.auth().signOut().then(function() {
           location.reload();
         });
+      }
+    };
+  }
+
+  // Close modal when clicking outside
+  if (settingsModal) {
+    settingsModal.onclick = function(e) {
+      if (e.target === settingsModal) {
+        settingsModal.style.display = 'none';
       }
     };
   }
