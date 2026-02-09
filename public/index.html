@@ -664,27 +664,40 @@
   </div>
 </div>
 
-<!-- SETTINGS MENU -->
-<div id="settings-menu-pop" class="settings-menu-pop">
-  <div id="settings-menu-inner">
-    <div class="settings-menu-title">Settings</div>
-    <div class="settings-menu-item">
-      <label class="settings-switch-label">
-        <input type="checkbox" id="toggle-notices" />
-        <span class="settings-switch-slider"></span>
-        <span class="settings-switch-desc">Notices</span>
-      </label>
+<!-- SETTINGS MODAL -->
+<div id="settings-modal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Settings</h2>
+      <button id="close-settings-modal" class="btn-close">&times;</button>
     </div>
-    <div class="settings-menu-item">
-      <label class="settings-switch-label">
-        <input type="checkbox" id="toggle-music" />
-        <span class="settings-switch-slider"></span>
-        <span class="settings-switch-desc">Music</span>
-      </label>
+    <div class="modal-body">
+      <!-- Notifications Setting -->
+      <div class="settings-section">
+        <h3>Notifications</h3>
+        <label>
+          <input type="checkbox" id="toggle-notices">
+          Enable Notifications
+        </label>
+      </div>
+      
+      <!-- Music Setting -->
+      <div class="settings-section">
+        <h3>Audio</h3>
+        <label>
+          <input type="checkbox" id="toggle-music">
+          Enable Music
+        </label>
+      </div>
+      
+      <!-- Logout Button -->
+      <div class="settings-section">
+        <button id="settings-logout-btn" class="btn-negative">Logout</button>
+      </div>
     </div>
-    <div class="settings-menu-divider"></div>
-    <div class="settings-menu-item settings-logout-row">
-      <button id="settings-logout-btn" class="btn-negative">Logout</button>
+    <div class="modal-footer">
+      <button id="save-settings-btn" class="btn-primary">Save</button>
+      <button id="cancel-settings-btn" class="btn-negative-secondary">Cancel</button>
     </div>
   </div>
 </div>
@@ -765,6 +778,7 @@
  
 </body> 
 </html>
+
 
 
 
