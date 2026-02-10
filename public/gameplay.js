@@ -8013,7 +8013,7 @@ function insertGameLogIcon() {
   var img = document.createElement('img');
   img.id = 'game-log-toggle';
   // Use a notebook/view icon you have in assets; adjust path if different
-  img.src = 'Icons/Other/Notebook.png';
+  img.src = 'Icons/Other/GameLog.png';
   img.alt = 'Game Log';
   img.title = 'Toggle Game Log';
   img.style.width = '44px';
