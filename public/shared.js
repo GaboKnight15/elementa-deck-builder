@@ -229,6 +229,11 @@ const dummyCards = [
  cost: '{u}', ability: ['Drench','Elusive'], set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{u}', effect: {class: 'Summon'}}]},
 
+{id: 'Dolphin', name: 'Dolphin', rarity: 'Common', image: 'Cards/egu/Dolphin.png', flavor: '', 
+ category: 'Creature', color: 'Blue', type: 'Oceanic', archetype: 'Marine', trait: '', hp: 4, atk: 1, def: 0,
+ cost: '{1}', ability: 'Dive', set: 'ElementaGenesis',
+ skill: [{name: 'Summon', cost: '{1}', effect: {class: 'Summon'}}]},
+
 {id: 'RuneboundShark', name: 'Runebound Shark', rarity: 'Common', image: 'Cards/egu/RuneboundShark.png', flavor: '', 
  category: 'Creature', color: 'Blue', type: 'Oceanic', archetype: 'Marine', trait: '', hp: 4, atk: 4, def: 1,
  cost: '{1}{u}', ability: 'Dive', set: 'ElementaGenesis',
@@ -384,6 +389,11 @@ const dummyCards = [
   {name: 'Disable', cost: '{1}', 
    effect: {class: 'Disable', amount: 2, target: 3}},
  ]},
+
+{id: 'Golemites', name: 'Golemites', rarity: 'Common', image: 'Cards/egc/Golemite.png', flavor: '', 
+ category: 'Creature', color: 'Gray', type: 'Elemental', archetype: 'Golemheart', hp: 1, atk: 1, def: 2,
+ cost: '{0}', ability: 'Unbreakable', set: 'ElementaGenesis',
+ skill: [{name: 'Summon', cost: '{c}', effect: {class: 'Summon'}}]},
 
 {id: 'Orc', name: 'Orc', rarity: 'Common', image: 'Cards/egc/Orc.png', flavor: '', 
  category: 'Creature', color: 'Gray', type: 'Beast', archetype: 'Orc', trait: 'Warrior', hp: 5, atk: 3, def: 1,
@@ -1287,17 +1297,6 @@ const dummyCards = [
  category: 'Creature', color: 'Gray', type: 'Beast', archetype: 'Moonfang', hp: 3, atk: 2, def: 0,
  cost: '{1}', ability: 'Ambush', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{1}', effect: {class: 'Summon'}}]},
-{id: 'Golemites', name: 'Golemites', rarity: 'Common', image: 'Cards/Elemental/Golemites.png', flavor: '', 
- category: 'Creature', color: 'Gray', type: 'Elemental', archetype: 'Golemheart', hp: 3, armor: 1, atk: 2, def: 0,
- cost: '{0}', ability: 'Armor', set: 'ElementaGenesis',
- skill: [{name: 'Summon', cost: '{0}', effect: {class: 'Summon'}},
-  {name: 'Arrival', cost: '{c}',
-   activation: {class: 'Arrival'},
-   effect: {class: 'Token', name: 'Golemite'}},
-  {name: 'Echo', 
-   activation: {class: 'Echo'},
-   effect: {class: 'Search', type: 'Golem'}},
- ]},
 
 {id: 'Wolf', name: 'Wolf', rarity: 'Common', image: 'Cards/Beast/Wolf.png', flavor: '', 
  category: 'Creature', color: 'Black', type: 'Beast', archetype: 'Moonfang', hp: 3, atk: 2, def: 0,
