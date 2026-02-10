@@ -3745,16 +3745,18 @@ function renderCardOnField(cardObj, zoneId) {
     });
   }
 
-  // Armor Icon
+  // Armor Icon - ONLY render if armor > 0
   if (typeof cardData.armor === "number" && cardData.armor > 0) {
     const currentArmor = typeof cardObj.armor === "number" ? cardObj.armor : cardData.armor;
-    const armorDiv = document.createElement('div');
-    armorDiv.className = 'card-armor-icon-badge';
-    armorDiv.innerHTML = `
-      <img src="Icons/Stat/Armor.png" alt="Armor" class="card-armor-icon">
-      <span class="card-armor-value">${currentArmor}</span>
-    `;
-    iconRow.appendChild(armorDiv);
+    if (currentArmor > 0) {
+      const armorDiv = document.createElement('div');
+      armorDiv.className = 'card-armor-icon-badge';
+      armorDiv.innerHTML = `
+        <img src="Icons/Stat/Armor.png" alt="Armor" class="card-armor-icon">
+        <span class="card-armor-value">${currentArmor}</span>
+      `;
+      iconRow.appendChild(armorDiv);
+    }
   }
 
   // Attach icon row to overlay
@@ -3771,19 +3773,12 @@ function renderCardOnField(cardObj, zoneId) {
     statRow.appendChild(makeStatBadge("Icons/Stat/HP.png", currentHP, "#fff", "HP"));
   }
 
-// ATK (center)
-if (typeof cardData.atk === "number") {
-  const currentATK = computeCardStat(cardObj, "atk");
-  const atkColor = getStatColor(cardObj, "atk");
-  statRow.appendChild(makeStatBadge("Icons/Stat/ATK.png", currentATK, atkColor, "ATK"));
-}
-
-// DEF (right)
-if (typeof cardData.def === "number") {
-  const currentDEF = computeCardStat(cardObj, "def");
-  const defColor = getStatColor(cardObj, "def");
-  statRow.appendChild(makeStatBadge("Icons/Stat/DEF.png", currentDEF, defColor, "DEF"));
-}
+  // ATK (center)
+  if (typeof cardData.atk === "number") {
+    const currentATK = computeCardStat(cardObj, "atk");
+    const atkColor = getStatColor(cardObj, "atk");
+    statRow.appendChild(makeStatBadge("Icons/Stat/ATK.png", currentATK, atkColor, "ATK"));
+  }
 
   // Attach stat row to overlay
   statsAndIconsOverlay.appendChild(statRow);
@@ -3791,65 +3786,88 @@ if (typeof cardData.def === "number") {
   // Attach overlay to cardDiv
   cardDiv.appendChild(statsAndIconsOverlay);
 
-const badgesRow = document.createElement('div');
-badgesRow.className = 'card-badges-row';
-badgesRow.style.position = 'absolute';
-badgesRow.style.right = '6px';
-badgesRow.style.top = '6px';
-badgesRow.style.zIndex = 40;
-badgesRow.style.display = 'flex';
-badgesRow.style.flexDirection = 'column';
-badgesRow.style.gap = '6px';
+  const badgesRow = document.createElement('div');
+  badgesRow.className = 'card-badges-row';
+  badgesRow.style.position = 'absolute';
+  badgesRow.style.right = '6px';
+  badgesRow.style.top = '6px';
+  badgesRow.style.zIndex = 40;
+  badgesRow.style.display = 'flex';
+  badgesRow.style.flexDirection = 'column';
+  badgesRow.style.gap = '6px';
 
-try {
-  if (hasStatus(cardObj, 'Seal')) {
-    const sealBadge = document.createElement('div');
-    sealBadge.className = 'card-seal-badge';
-    sealBadge.title = STATUS_EFFECTS['Seal']?.description || 'Sealed';
-    sealBadge.style.display = 'flex';
-    sealBadge.style.alignItems = 'center';
-    sealBadge.style.justifyContent = 'center';
-    sealBadge.style.cursor = 'default';
-    sealBadge.innerHTML = `<img src="${STATUS_EFFECTS['Seal']?.icon || 'Icons/Status/seal.png'}" alt="Sealed" style="width:18px;height:18px;filter:drop-shadow(0 2px 6px #0007);opacity:0.95">`;
-    badgesRow.appendChild(sealBadge);
+  try {
+    if (hasStatus(cardObj, 'Seal')) {
+      const sealBadge = document.createElement('div');
+      sealBadge.className = 'card-seal-badge';
+      sealBadge.title = STATUS_EFFECTS['Seal']?.description || 'Sealed';
+      sealBadge.style.display = 'flex';
+      sealBadge.style.alignItems = 'center';
+      sealBadge.style.justifyContent = 'center';
+      sealBadge.style.cursor = 'default';
+      sealBadge.innerHTML = `<img src="${STATUS_EFFECTS['Seal']?.icon || 'Icons/Status/seal.png'}" alt="Sealed" style="width:18px;height:18px;filter:drop-shadow(0 2px 6px #0007);opacity:0.95">`;
+      badgesRow.appendChild(sealBadge);
+    }
+  } catch (err) {
+    console.warn('Failed to render Seal badge', err);
   }
-} catch (err) {
-  console.warn('Failed to render Seal badge', err);
-}
-// Speed badge
-try {
-  const speedVal = getSpeedValue(cardObj);
-  const speedBadge = document.createElement('div');
-  speedBadge.className = 'card-speed-badge';
-  speedBadge.title = `Speed: ${speedVal} (Tier ${getSpeedTier(cardObj)})`;
-  speedBadge.innerHTML = `
-    <img src="Icons/Stat/Speed.png" style="width:18px;height:18px;vertical-align:middle;margin-right:6px;">
-    <span style="font-weight:bold;color:#fff;">${speedVal}</span>
-  `;
-  badgesRow.appendChild(speedBadge);
-} catch (err) {
-  console.warn('Failed to render speed badge', err);
-}
 
-// Evasion badge (only if > 0)
-try {
-  const evCount = getEvasionCount(cardObj);
-  if (evCount > 0) {
-    const evBadge = document.createElement('div');
-    evBadge.className = 'card-evasion-badge';
-    evBadge.title = `Evasion: ${evCount} (consumed when targeted by opponent)`;
-    evBadge.innerHTML = `
-      <img src="Icons/FieldIcons/Evasion.png" style="width:18px;height:18px;vertical-align:middle;margin-right:6px;">
-      <span style="font-weight:bold;color:#ffd700;">${evCount}</span>
-    `;
-    badgesRow.appendChild(evBadge);
+  // DEF badge - ONLY render if def > 0
+  try {
+    if (typeof cardData.def === "number") {
+      const currentDEF = computeCardStat(cardObj, "def");
+      if (currentDEF > 0) {
+        const defColor = getStatColor(cardObj, "def");
+        const defBadge = document.createElement('div');
+        defBadge.className = 'card-def-badge';
+        defBadge.title = `Defense: ${currentDEF}`;
+        defBadge.innerHTML = `
+          <img src="Icons/Stat/DEF.png" style="width:18px;height:18px;vertical-align:middle;margin-right:6px;">
+          <span style="font-weight:bold;color:${defColor};">${currentDEF}</span>
+        `;
+        badgesRow.appendChild(defBadge);
+      }
+    }
+  } catch (err) {
+    console.warn('Failed to render DEF badge', err);
   }
-} catch (err) {
-  console.warn('Failed to render evasion badge', err);
-}
 
-// Append badges row to overlay
-statsAndIconsOverlay.appendChild(badgesRow);
+  // Speed badge - ONLY render if speed > 0
+  try {
+    const speedVal = getSpeedValue(cardObj);
+    if (speedVal > 0) {
+      const speedBadge = document.createElement('div');
+      speedBadge.className = 'card-speed-badge';
+      speedBadge.title = `Speed: ${speedVal} (Tier ${getSpeedTier(cardObj)})`;
+      speedBadge.innerHTML = `
+        <img src="Icons/Stat/Speed.png" style="width:18px;height:18px;vertical-align:middle;margin-right:6px;">
+        <span style="font-weight:bold;color:#fff;">${speedVal}</span>
+      `;
+      badgesRow.appendChild(speedBadge);
+    }
+  } catch (err) {
+    console.warn('Failed to render speed badge', err);
+  }
+
+  // Evasion badge (only if > 0)
+  try {
+    const evCount = getEvasionCount(cardObj);
+    if (evCount > 0) {
+      const evBadge = document.createElement('div');
+      evBadge.className = 'card-evasion-badge';
+      evBadge.title = `Evasion: ${evCount} (consumed when targeted by opponent)`;
+      evBadge.innerHTML = `
+        <img src="Icons/FieldIcons/Evasion.png" style="width:18px;height:18px;vertical-align:middle;margin-right:6px;">
+        <span style="font-weight:bold;color:#ffd700;">${evCount}</span>
+      `;
+      badgesRow.appendChild(evBadge);
+    }
+  } catch (err) {
+    console.warn('Failed to render evasion badge', err);
+  }
+
+  // Append badges row to overlay
+  statsAndIconsOverlay.appendChild(badgesRow);
 
   // --- HP Bar (move to bottom, behind statRow) ---
   if (typeof cardData.hp === "number" && typeof currentHP === "number" && cardData.hp > 0) {
