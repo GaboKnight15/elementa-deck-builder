@@ -4755,15 +4755,40 @@ if(nextPhaseBtn) nextPhaseBtn.onclick = goToNextPhase;
 // --- LOG --- //
 // ----------- //
 
-// --- Example: Append action log ---
+// --- Append action log ---
+function appendChatLog(type, text) {
+  // Store in game state
+  if (!gameState.gameLog) {
+    gameState.gameLog = [];
+  }
+  
+  gameState.gameLog.push({
+    type: type,
+    text: text,
+    html: text, // Store HTML for rich formatting
+    timestamp: Date.now()
+  });
+  
+  // Limit log size to prevent memory issues (keep last 100 entries)
+  if (gameState.gameLog.length > 100) {
+    gameState.gameLog = gameState.gameLog.slice(-100);
+  }
+  
+  // If modal is open, re-render it
+  const modal = document.getElementById('game-log-modal');
+  if (modal && modal.style.display === 'flex') {
+    renderGameLogInModal();
+  }
+}
+
 function logAction(text) {
   appendChatLog('action', text);
 }
 
-// --- Example: Append system log ---
 function logSystem(text) {
   appendChatLog('system', text);
 }
+
 function getCpuProfile(deck) {
   return {
     username: deck.name,
@@ -5915,6 +5940,7 @@ function getInitialGameState() {
     weatherEffects: [],
 
     // Turn/phase/time-of-day defaults
+    gameLog: [],
     turnNumber: 0,
     turn: "player",
     phase: "start",
@@ -6151,33 +6177,68 @@ function filterCardsByCriteria(cardArr, criteria) {
 
 // APPEND TO LOG
 function appendVisualLog(obj, fromSocket = false, isMe = true) {
-  const logDiv = document.getElementById('game-log');
-  if (!logDiv) return;
-
-  const container = document.createElement('div');
-  container.className = 'log-row';
-
-  // If the log object contains a plain message/text, parse tokens in that text
-  const text = obj && (obj.message || obj.text);
-  if (text) {
-    container.appendChild(parseInlineIconsToFragment(text, { size: 18 }));
-  } else {
-    // Fallback: render the existing HTML block and then replace any tokens inside its text nodes
-    const tmp = document.createElement('div');
-    tmp.innerHTML = renderLogAction(obj);
-    // Replace tokens in tmp (so tokens inside the rendered HTML also get replaced)
-    replaceTokensInElement(tmp, { size: 18 });
-    // Move children from tmp into container
-    while (tmp.firstChild) container.appendChild(tmp.firstChild);
+  if (!obj) return;
+  
+  let logHtml = '';
+  
+  // Build the log HTML based on the object type
+  if (obj.type === 'move') {
+    const cardData = dummyCards.find(c => c.id === obj.card?.cardId);
+    logHtml = `
+      <div style="display: flex; align-items: center; gap: 8px;">
+        ${cardImgLog(cardData, { size: 32 })}
+        <span>${cardData?.name || 'Card'} moved from ${zoneImgLog(obj.from)} to ${zoneImgLog(obj.to)}</span>
+      </div>
+    `;
+  } else if (obj.type === 'attack') {
+    const attackerData = dummyCards.find(c => c.id === obj.attacker?.cardId);
+    const defenderData = dummyCards.find(c => c.id === obj.defender?.cardId);
+    logHtml = `
+      <div style="display: flex; align-items: center; gap: 8px;">
+        ${cardImgLog(attackerData, { size: 32 })}
+        <span>⚔️</span>
+        ${cardImgLog(defenderData, { size: 32 })}
+      </div>
+    `;
+  } else if (obj.type === 'damage') {
+    const cardData = dummyCards.find(c => c.id === obj.card?.cardId);
+    logHtml = `
+      <div style="display: flex; align-items: center; gap: 8px;">
+        ${cardImgLog(cardData, { size: 32 })}
+        <span>took ${obj.amount || 0} damage</span>
+      </div>
+    `;
+  } else if (obj.type === 'skill') {
+    const cardData = dummyCards.find(c => c.id === obj.card?.cardId);
+    logHtml = `
+      <div style="display: flex; align-items: center; gap: 8px;">
+        ${cardImgLog(cardData, { size: 32 })}
+        <span>activated ${obj.skillName || 'skill'}</span>
+      </div>
+    `;
   }
-
-  logDiv.appendChild(container);
-  logDiv.scrollTop = logDiv.scrollHeight;
-
-  // Only emit if not from socket
-  if (!fromSocket && window.socket && window.currentRoomId) {
-    obj.sender = gameState.playerProfile?.username || "me";
-    window.socket.emit('game action log', window.currentRoomId, obj);
+  
+  // Store in game state
+  if (!gameState.gameLog) {
+    gameState.gameLog = [];
+  }
+  
+  gameState.gameLog.push({
+    type: obj.type || 'action',
+    html: logHtml,
+    timestamp: Date.now(),
+    data: obj
+  });
+  
+  // Limit log size
+  if (gameState.gameLog.length > 100) {
+    gameState.gameLog = gameState.gameLog.slice(-100);
+  }
+  
+  // If modal is open, re-render it
+  const modal = document.getElementById('game-log-modal');
+  if (modal && modal.style.display === 'flex') {
+    renderGameLogInModal();
   }
 }
 function showWaitingForOpponentModal() {
@@ -7997,176 +8058,162 @@ function isAnyVoidCardActionable(gameState, dummyCards) {
     nextSibling: null
   };
 
-  function openGameLogModal() {
-    // If modal exists, just show it (it may have been hidden)
-    let existing = document.getElementById('game-log-modal');
-    if (existing) {
-      existing.style.display = 'flex';
-      return;
-    }
-
-    // Create modal wrapper
-    const modal = document.createElement('div');
-    modal.id = 'game-log-modal';
-    modal.className = 'game-log-modal';
-    modal.setAttribute('role', 'dialog');
-    modal.setAttribute('aria-modal', 'true');
-    modal.onclick = (e) => { if (e.target === modal) closeGameLogModal(); }; // backdrop click closes
-
-    // Modal content
-    const content = document.createElement('div');
-    content.className = 'game-log-modal-content';
-
-    // Header row (title + close)
-    const header = document.createElement('div');
-    header.className = 'game-log-modal-header';
-    const title = document.createElement('div');
-    title.className = 'game-log-modal-title';
-    title.textContent = 'Game Log';
-    const closeBtn = document.createElement('button');
-    closeBtn.className = 'game-log-modal-close';
-    closeBtn.setAttribute('aria-label', 'Close Game Log');
-    closeBtn.innerHTML = '&times;';
-    closeBtn.onclick = closeGameLogModal;
-
-    header.appendChild(title);
-    header.appendChild(closeBtn);
-    content.appendChild(header);
-
-    // Body container where we will place the existing log element
-    const body = document.createElement('div');
-    body.className = 'game-log-modal-body';
-    body.id = 'game-log-modal-body';
-    content.appendChild(body);
-
-    // Footer optional: you could add filter/search controls here later
-    modal.appendChild(content);
-    document.body.appendChild(modal);
-
-    // Move the existing log element (#game-log preferred, fallback to #chat-log) into the modal body
-    const logDiv = document.getElementById('game-log') || document.getElementById('chat-log');
-    if (logDiv) {
-      // store original place for restoration
-      __gameLog_state.originalParent = logDiv.parentNode;
-      __gameLog_state.nextSibling = logDiv.nextSibling;
-      body.appendChild(logDiv);
-      // ensure the moved node is scrollable and fits modal
-      logDiv.style.maxHeight = 'calc(100vh - 160px)';
-      logDiv.style.overflow = 'auto';
-      logDiv.style.width = '100%';
-    } else {
-      // No existing log found — create an empty placeholder inside the modal
-      const placeholder = document.createElement('div');
-      placeholder.id = 'game-log';
-      placeholder.className = 'game-log';
-      placeholder.textContent = 'No logs yet.';
-      placeholder.style.padding = '12px';
-      body.appendChild(placeholder);
-    }
+// --- GAME LOG MODAL FUNCTIONS ---
+function openGameLogModal() {
+  const modal = document.getElementById('game-log-modal');
+  if (!modal) {
+    console.warn('Game log modal not found');
+    return;
   }
-
-  function closeGameLogModal() {
-    const modal = document.getElementById('game-log-modal');
-    if (!modal) return;
-    // Try to restore the moved log element back to its original parent
-    const logDiv = document.getElementById('game-log') || document.getElementById('chat-log');
-    if (logDiv && __gameLog_state.originalParent) {
-      try {
-        // Restore style cleanup
-        logDiv.style.maxHeight = '';
-        logDiv.style.overflow = '';
-        // Reinsert to original location
-        if (__gameLog_state.nextSibling) {
-          __gameLog_state.originalParent.insertBefore(logDiv, __gameLog_state.nextSibling);
-        } else {
-          __gameLog_state.originalParent.appendChild(logDiv);
-        }
-      } catch (e) {
-        // If restoring fails, append to body to avoid losing it
-        document.body.appendChild(logDiv);
-      }
-    }
-    // Remove modal from DOM
-    modal.remove();
-    // Clear stored state
-    __gameLog_state.originalParent = null;
-    __gameLog_state.nextSibling = null;
-  }
-
-  function toggleGameLogModal() {
-    const modal = document.getElementById('game-log-modal');
-    if (modal && modal.style.display !== 'none') closeGameLogModal();
-    else openGameLogModal();
-  }
-
-  // Insert the clickable icon between profiles on DOMContentLoaded
-function insertGameLogIcon() {
-  // Attempt to place the icon between opponent and player profile in the battlefield leftbar.
-  var leftbar = document.getElementById('battlefield-leftbar');
-  if (!leftbar) return;
-
-  // Remove any existing toggle to avoid duplicates
-  var existing = document.getElementById('game-log-toggle-wrap');
-  if (existing) existing.remove();
-
-  // Find the player profile element to insert before it (so icon sits between the two profiles)
-  var myProfile = document.getElementById('my-profile');
-
-  // Create wrapper and icon
-  var wrap = document.createElement('div');
-  wrap.id = 'game-log-toggle-wrap';
-  wrap.style.display = 'flex';
-  wrap.style.justifyContent = 'center';
-  wrap.style.margin = '10px 0';
-  wrap.style.zIndex = '5'; // ensure visible
-
-  var img = document.createElement('img');
-  img.id = 'game-log-toggle';
-  // Use a notebook/view icon you have in assets; adjust path if different
-  img.src = 'Icons/Other/GameLog.png';
-  img.alt = 'Game Log';
-  img.title = 'Toggle Game Log';
-  img.style.width = '44px';
-  img.style.height = '44px';
-  img.style.cursor = 'pointer';
-  img.style.filter = 'drop-shadow(0 2px 8px rgba(0,0,0,0.45))';
-  img.style.borderRadius = '8px';
-  img.style.background = '#1f2a3a';
-
-  // Toggle handler: show/hide the game log panel (keeps DOM element location intact)
-  img.onclick = function(e) {
-    e.stopPropagation();
-    var gl = document.getElementById('game-log');
-    if (!gl) return;
-    if (gl.style.display === 'none' || getComputedStyle(gl).display === 'none') {
-      gl.style.display = 'flex';
-    } else {
-      gl.style.display = 'none';
-    }
+  
+  // Render the current game log into the modal
+  renderGameLogInModal();
+  
+  modal.style.display = 'flex';
+  
+  // Close on backdrop click
+  modal.onclick = (e) => { 
+    if (e.target === modal) closeGameLogModal(); 
   };
-
-  wrap.appendChild(img);
-
-  // Insert into leftbar before the player profile (so it's between opponent and player)
-  if (myProfile) leftbar.insertBefore(wrap, myProfile);
-  else leftbar.appendChild(wrap);
+  
+  // Prevent clicks inside modal content from closing
+  const content = modal.querySelector('.modal-content');
+  if (content) {
+    content.onclick = (e) => e.stopPropagation();
+  }
 }
 
-  // Attach insertion on DOM ready
-  document.addEventListener('DOMContentLoaded', () => {
-    // Insert the icon (if UI present)
-    insertGameLogIcon();
+function closeGameLogModal() {
+  const modal = document.getElementById('game-log-modal');
+  if (modal) {
+    modal.style.display = 'none';
+  }
+}
 
-    // Also ensure if the user interacts with profile toggles later, icon remains present
-    // Simple resilience: observe for insertion of profiles and (re)insert if needed.
-    const leftbar = document.getElementById('battlefield-leftbar') || document.getElementById('my-profile')?.parentNode;
-    if (leftbar) {
-      const observer = new MutationObserver(() => {
-        if (!document.getElementById('game-log-icon')) insertGameLogIcon();
-      });
-      observer.observe(leftbar, { childList: true, subtree: false });
+function toggleGameLogModal() {
+  const modal = document.getElementById('game-log-modal');
+  if (!modal) return;
+  
+  if (modal.style.display === 'flex') {
+    closeGameLogModal();
+  } else {
+    openGameLogModal();
+  }
+}
+
+// Render all game log entries into the modal
+function renderGameLogInModal() {
+  const container = document.getElementById('game-log-container');
+  if (!container) return;
+  
+  // Clear existing content
+  container.innerHTML = '';
+  
+  // Get all log entries from gameState
+  const logEntries = gameState.gameLog || [];
+  
+  if (logEntries.length === 0) {
+    container.innerHTML = '<div style="color: #ffe066; text-align: center; padding: 20px;">No game actions yet.</div>';
+    return;
+  }
+  
+  // Render each log entry (most recent first)
+  logEntries.slice().reverse().forEach(entry => {
+    const logDiv = document.createElement('div');
+    logDiv.className = 'game-log-entry';
+    logDiv.style.marginBottom = '12px';
+    logDiv.style.padding = '8px';
+    logDiv.style.borderRadius = '4px';
+    logDiv.style.backgroundColor = 'rgba(255, 224, 102, 0.1)';
+    
+    // Add timestamp if available
+    if (entry.timestamp) {
+      const timeSpan = document.createElement('span');
+      timeSpan.style.fontSize = '0.85em';
+      timeSpan.style.color = '#999';
+      timeSpan.textContent = new Date(entry.timestamp).toLocaleTimeString();
+      logDiv.appendChild(timeSpan);
+      logDiv.appendChild(document.createElement('br'));
     }
+    
+    // Add the log content
+    if (typeof entry === 'string') {
+      logDiv.innerHTML += entry;
+    } else if (entry.html) {
+      logDiv.innerHTML += entry.html;
+    } else if (entry.text) {
+      logDiv.textContent += entry.text;
+    }
+    
+    container.appendChild(logDiv);
   });
+  
+  // Auto-scroll to bottom (most recent)
+  container.scrollTop = container.scrollHeight;
+}
+
+// Hook up the game log icon button
+function insertGameLogIcon() {
+  const profileRow = document.getElementById('profile-display-row');
+  if (!profileRow) return;
+  
+  // Check if icon already exists
+  if (document.getElementById('game-log-icon-btn')) return;
+  
+  const iconBtn = document.createElement('div');
+  iconBtn.id = 'game-log-icon-btn';
+  iconBtn.style.cssText = `
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    transition: transform 0.2s;
+  `;
+  
+  const img = document.createElement('img');
+  img.src = 'Icons/Other/Scroll.png'; // Use your game log icon
+  img.alt = 'Game Log';
+  img.title = 'View Game Log';
+  img.style.width = '32px';
+  img.style.height = '32px';
+  img.style.filter = 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))';
+  
+  iconBtn.appendChild(img);
+  
+  // Add hover effect
+  iconBtn.onmouseenter = () => {
+    iconBtn.style.transform = 'scale(1.1)';
+  };
+  iconBtn.onmouseleave = () => {
+    iconBtn.style.transform = 'scale(1)';
+  };
+  
+  // Click handler
+  iconBtn.onclick = function(e) {
+    e.stopPropagation();
+    toggleGameLogModal();
+  };
+  
+  // Insert between the two profile panels
+  const opponentProfile = profileRow.querySelector('#opponent-profile-panel');
+  if (opponentProfile) {
+    profileRow.insertBefore(iconBtn, opponentProfile);
+  } else {
+    profileRow.appendChild(iconBtn);
+  }
+}
+
+// Close modal button handler
+document.addEventListener('DOMContentLoaded', () => {
+  const closeBtn = document.getElementById('close-game-log-modal');
+  if (closeBtn) {
+    closeBtn.onclick = closeGameLogModal;
+  }
+  
+  // Insert the game log icon when the game loads
+  insertGameLogIcon();
+});
 
   // Expose open/close for manual calls (optional)
   window.openGameLogModal = openGameLogModal;
