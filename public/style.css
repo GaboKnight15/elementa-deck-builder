@@ -3296,6 +3296,19 @@ button[disabled], .btn-disabled {
   transform: scale(1.08) rotate(-1.5deg);
   cursor: pointer;
 }
+/* SUMMONING SICKNESS */
+.summoning-sickness {
+  opacity: 0.7;
+  filter: grayscale(0.3);
+}
+.summoning-sickness::after {
+  content: '💤';
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  font-size: 20px;
+  z-index: 10;
+}
 /* ATTACHED CARDS */
 .attached-cards-stack {
   pointer-events: none;
