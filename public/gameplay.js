@@ -847,9 +847,10 @@ Summon: {
       const parsedCost = rawCost ? parseCost(rawCost) : null;
 
       const performSummon = function () {
+        const targetZone = gameState.playerCreatures;
         // Move the card from the player's hand to their creature zone
         moveCard(instance.instanceId, gameState.playerHand, gameState.playerCreatures, { orientation: step.orientation || 'vertical' });
-
+        sourceCardObj.summonedOnTurn = gameState.turnNumber || 0;
         // Display visual log and refresh game state
         appendVisualLog({ action: 'summon', text: `You summoned ${cardDef.name} to the field.` });
         renderGameState();
@@ -3663,6 +3664,15 @@ function renderCardOnField(cardObj, zoneId) {
   cardDiv.className = 'card-battlefield';
   cardDiv.dataset.instanceId = cardObj.instanceId;
 
+  // Visual indicator for summoning sickness
+  const currentTurn = gameState.turnNumber || 0;
+  const summonedTurn = cardObj.summonedOnTurn !== undefined ? cardObj.summonedOnTurn : -1;
+  const hasSummoningSickness = (summonedTurn === currentTurn) && !hasRush(cardObj);
+  
+  if (hasSummoningSickness) {
+    cardDiv.classList.add('summoning-sickness'); // Add a CSS class for visual feedback
+    cardDiv.title = 'This creature has summoning sickness and cannot attack this turn';
+  }
   const isActionable = isCardActionable(cardObj, cardData, gameState, getZoneNameForCard(cardObj));
   if (isActionable) {
     if (cardObj.orientation === "horizontal") {
@@ -4646,12 +4656,22 @@ function getPhaseDisplayName(phaseKey) { return PHASE_DISPLAY_NAMES[phaseKey] ||
 function getPhaseClass(phaseKey)       { return PHASE_CLASS[phaseKey] || ""; }
 
 function handleStartPhase(turn) {
-  // Example: Draw a card at the start of each turn
-  drawCards(turn, 1);
+  // Increment turn counter
+  if (turn === 'player') {
+    gameState.turnNumber = (gameState.turnNumber || 0) + 1;
+  }
   // Reset mana/essence or resource for this turn
+  resetTurnFlags(turn);
   resetTurnResources(turn);
-  // Trigger start-of-turn effects (statuses, abilities, etc.)
-  // triggerStartPhaseEffects(turn);
+  const creatures = turn === 'player' ? gameState.playerCreatures : gameState.opponentCreatures;
+  const domains = turn === 'player' ? gameState.playerDomains : gameState.opponentDomains;
+  
+  [...creatures, ...domains].forEach(cardObj => {
+    cardObj.orientation = 'vertical';
+  });
+  
+  drawCards(turn, 1);
+  handleDayNightCycle();
   // Log action
   appendVisualLog({
     action: "startPhase",
@@ -4663,11 +4683,10 @@ function handleStartPhase(turn) {
   } else {
     gameState.hasTerraformed.opponent = false;
   }
+  renderGameState();
 }
 
 function handleActionPhase(turn) {
-  // Reset action/attack flags for all cards/entities of this turn
-  resetTurnFlags(turn);
   // Optionally log phase start
   appendVisualLog({
     action: "actionPhase",
@@ -5396,18 +5415,36 @@ function startAttackTargeting(attackerId, attackerZone, cardDiv) {
 }
 
 function canAttack(cardObj, gameState) {
+
   // Must exist, be a creature, and be on the field
   if (!cardObj) return false;
-  // Check attacksRemaining (if undefined, default to 1)
-  const remaining = (typeof cardObj.attacksRemaining === "number") ? cardObj.attacksRemaining : 1;
-  if (remaining <= 0) return false;
+  
+  // Must be player's turn
+  if (gameState.turn !== 'player') return false;
 
+  // Must be action phase
+  if (gameState.phase !== 'action') return false;
+  
+  // Check summoning sickness
+  const currentTurn = gameState.turnNumber || 0;
+  const summonedTurn = cardObj.summonedOnTurn !== undefined ? cardObj.summonedOnTurn : -1;
+  
+  // If creature was summoned this turn, it can't attack (unless it has Rush)
+  if (summonedTurn === currentTurn && !hasRush(cardObj)) {
+    return false;
+  } 
+  
   // Summoning sickness: if it was summoned this turn and doesn't have Rush, cannot attack
   if (cardObj.hasSummonedThisTurn && !hasRush(cardObj)) return false;
 
+  // Can't attack if paralyzed, frozen, or bound
+  if (cardObj._paralyzed || cardObj._frozen || cardObj._bound) return false;
+  
   // Must be in ATK (vertical) orientation
   if (cardObj.orientation !== "vertical") return false;
-
+  
+  // Only creatures can attack
+  if (!isCreature(cardObj)) return false;
   // Add any other restrictions (e.g. tapped, stunned)
   // Check if there are any valid targets
   const targets = getAttackTargets(cardObj);
@@ -5484,16 +5521,15 @@ function endAttackTarget() {
 // --- ATTACK RESOLUTION ANIMATION ---
 function resolveAttack(attackerId, defenderId) {
   // Find attacker/defender objects
-  const attacker =
-    gameState.playerCreatures.find(c => c.instanceId === attackerId) ||
-    gameState.opponentCreatures.find(c => c.instanceId === attackerId);
-  const defender =
-    gameState.opponentCreatures.find(c => c.instanceId === defenderId) ||
-    gameState.opponentDomains.find(c => c.instanceId === defenderId) ||
-    gameState.playerCreatures.find(c => c.instanceId === defenderId) ||
-    gameState.playerDomains.find(c => c.instanceId === defenderId);
+  const attackerObj = [...gameState.playerCreatures, ...gameState.playerDomains]
+    .find(c => c.instanceId === attackerId);
+  const defenderObj = [...gameState.opponentCreatures, ...gameState.opponentDomains, ...gameState.opponentDominion ? [gameState.opponentDominion] : []]
+    .find(c => c.instanceId === defenderId);
 
   if (!attacker || !defender) return;
+
+  const attackerZone = findZoneIdForCard(attackerObj);
+  const defenderZone = findZoneIdForCard(defenderObj);
 
   // BEFORE DAMAGE: decide First Strike / Invulnerability based on speed difference
   const speedDiff = getSpeedDifference(attacker, defender); // positive means attacker faster
@@ -5502,31 +5538,45 @@ function resolveAttack(attackerId, defenderId) {
   if (-speedDiff >= 2) applyStatus(defender, 'Quickstrike', 1);
   if (-speedDiff >= 3) applyStatus(defender, 'InvulnerableAtk', 1);
 
-  // Trigger onAttack/onDefense skills BEFORE damage calculation
-  triggerOnAttackSkills(attacker, defender);
-  triggerOnDefenseSkills(defender, attacker);
+  // Step 1: Animate attacker attacking
+  animateAttack(attackerObj, attackerZone, () => {
+    // Step 2: Trigger OnAttack skills
+    triggerOnAttackSkills(attackerObj, defenderObj);
 
-  // Damage calculation and KO logic
-  damageCalculation(attacker, defender);
+    // Step 3: Trigger OnDefense skills
+    triggerOnDefenseSkills(defenderObj, attackerObj);
 
-  // After the attack resolves, consume one attack from the attacker
-  if (attacker) {
-    attacker.attacksRemaining = Math.max(0, (typeof attacker.attacksRemaining === "number" ? attacker.attacksRemaining : 1) - 1);
-    attacker.hasAttacked = attacker.attacksRemaining <= 0;
-  }
+    // Step 4: Animate defender getting hit
+    animateDefenderHit(defenderObj, defenderZone, () => {
+      // Step 5: Calculate and apply damage
+      const { attackerDamage, defenderDamage } = damageCalculation(attackerObj, defenderObj);
 
-  // AFTER DAMAGE: remove the temporary statuses applied for this attack
-  removeStatus(attacker, 'Quickstrike');
-  removeStatus(attacker, 'InvulnerableAtk');
-  removeStatus(defender, 'Quickstrike');
-  removeStatus(defender, 'InvulnerableAtk');
+      if (defenderDamage > 0) {
+        dealDamage(attackerObj, defenderObj, defenderDamage);
+      }
+      if (attackerDamage > 0) {
+        dealDamage(defenderObj, attackerObj, attackerDamage);
+      }
 
-  // Log the attack, etc. (existing log code here)
-  appendAttackLog({
-    attacker,
-    defender,
-    defenderOrientation: defender.orientation,
-    who: getCardOwner(attacker)
+      // **NEW: Disable the attacker after attack (set to horizontal)**
+      const previousOrientation = attackerObj.orientation || 'vertical';
+      attackerObj.orientation = 'horizontal';
+      
+      // Animate the disable
+      animateCardDisable(attackerObj, attackerZone, previousOrientation, 'horizontal', () => {
+        // Log the attack
+        appendAttackLog({
+          attacker: attackerObj,
+          defender: defenderObj,
+          defenderOrientation: defenderObj.orientation || 'vertical',
+          who: 'player'
+        });
+
+        // Render final state
+        renderGameState();
+        checkEndGame();
+      });
+    });
   });
 }
 
@@ -5865,6 +5915,7 @@ function getInitialGameState() {
     weatherEffects: [],
 
     // Turn/phase/time-of-day defaults
+    turnNumber: 0,
     turn: "player",
     phase: "start",
     timeOfDay: "dawn",
