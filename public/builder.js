@@ -44,7 +44,10 @@ const deckCardbackImg = document.getElementById('deck-cardback-img');
 const deckCardbackModal = document.getElementById('deck-cardback-modal');
 const deckCardbackArtList = document.getElementById('deck-cardback-art-list');
 const closeDeckCardbackModalBtn = document.getElementById('close-deck-cardback-modal');
-
+// DOMINION MODAL
+const dominionModal = document.getElementById('dominion-selection-modal');
+const dominionGrid = document.getElementById('dominion-grid');
+const closeDominionModalBtn = document.getElementById('close-dominion-modal-btn');
 let deckBuilderDraft = null;   // null = not currently editing; object = current draft mapping cardId->count
 let deckBuilderDirty = false;  // true when draft differs from saved deck
 let showFavoritesOnlyBuilder = false;
@@ -67,7 +70,16 @@ const AUTOFILL_ARCHETYPES = [
   "Frostland","Goblin","Hydral","Golemheart","Moonfang","Orc","Plagueaxis","Pyroclast","Satyr","Skullframe","Stormrazor",
   "Thornwing","Voltwing","Zephyra"
 ];
-
+const DOMINION_CARDS = [
+  'Verdara',
+  'Magmaris', 
+  'Umarion',
+  'Aetherion',
+  'Drakzul',
+  'Virkul',
+  'Solmara',
+  'Noctyra'
+];
 // Show modal when autofill icon clicked
 
 document.getElementById('filter-name-builder').addEventListener('input', renderBuilder);
@@ -900,6 +912,81 @@ document.addEventListener('drop', function(e) {
     renderBuilder();
   }
 });
+// --- DOMINION SELECTION MODAL --- //
+function showDominionSelectionModal() {
+  dominionModal.style.display = 'flex';
+  dominionGrid.innerHTML = '';
+
+  const deck = getCurrentDeck();
+  const currentDominion = Object.keys(deck).find(cardId => {
+    const card = dummyCards.find(c => c.id === cardId);
+    return card && isDominion(card);
+  });
+
+  DOMINION_CARDS.forEach(dominionId => {
+    const card = dummyCards.find(c => c.id === dominionId);
+    if (!card) return;
+
+    const wrapper = document.createElement('div');
+    wrapper.style.position = 'relative';
+    
+    const img = document.createElement('img');
+    img.src = card.image;
+    img.alt = card.name;
+    img.title = card.name;
+    img.className = 'dominion-card-choice';
+    
+    // Highlight if this is the current dominion
+    if (currentDominion === dominionId) {
+      img.classList.add('selected');
+    }
+
+    img.onclick = () => {
+      selectDominion(dominionId);
+      dominionModal.style.display = 'none';
+    };
+
+    img.onerror = function() {
+      this.onerror = null;
+      this.src = 'Images/Domain/Default.png';
+    };
+
+    wrapper.appendChild(img);
+    dominionGrid.appendChild(wrapper);
+  });
+}
+
+function selectDominion(dominionId) {
+  const deck = getCurrentDeck();
+  
+  // Remove any existing dominion from deck
+  Object.keys(deck).forEach(cardId => {
+    const card = dummyCards.find(c => c.id === cardId);
+    if (card && isDominion(card)) {
+      delete deck[cardId];
+    }
+  });
+  
+  // Add the selected dominion
+  deck[dominionId] = 1;
+  
+  setCurrentDeck(deck);
+  updateDeckDisplay();
+  renderBuilder();
+}
+
+// Close modal handlers
+if (closeDominionModalBtn) {
+  closeDominionModalBtn.onclick = () => {
+    dominionModal.style.display = 'none';
+  };
+}
+
+dominionModal.addEventListener('click', function(e) {
+  if (e.target === dominionModal) {
+    dominionModal.style.display = 'none';
+  }
+});
 function startDeckEditing(slotName) {
   // Start editing the given deck slot by cloning the saved deck into the draft.
   deckBuilderDraft = JSON.parse(JSON.stringify(decks[slotName] || {}));
@@ -971,15 +1058,44 @@ function updateDeckDisplay() {
     }
     total += count;
   }
+  // --- ADD DEDICATED DOMINION SLOT AT TOP --- //
+  const dominionSlot = document.createElement('div');
+  dominionSlot.className = 'deck-list-dominion-slot';
+  
+  if (sections.dominion.length > 0) {
+    // Display current dominion
+    const { card } = sections.dominion[0];
+    const img = document.createElement('img');
+    img.src = card.image;
+    img.alt = card.name;
+    img.title = `${card.name} (Click to change)`;
+    img.onerror = function() {
+      this.onerror = null;
+      this.src = 'Images/Domain/Default.png';
+    };
+    img.onclick = () => showDominionSelectionModal();
+    dominionSlot.appendChild(img);
+  } else {
+    // Show placeholder to select dominion
+    const placeholder = document.createElement('div');
+    placeholder.className = 'dominion-placeholder';
+    placeholder.onclick = () => showDominionSelectionModal();
+    
+    const placeholderText = document.createElement('div');
+    placeholderText.className = 'dominion-placeholder-text';
+    placeholderText.textContent = '+ Select Dominion';
+    placeholder.appendChild(placeholderText);
+    
+    dominionSlot.appendChild(placeholder);
+  }
+  
+  deckList.appendChild(dominionSlot);
 
-  // Section display order
-  const sectionNames = [
-    { key: "dominion", label: "Dominion" },
-    { key: "creature", label: "Creatures" },
-    { key: "artifact", label: "Artifacts" },
-    { key: "spell", label: "Spells" },
-    { key: "domain", label: "Domains" }
-  ];
+  // Add divider after dominion slot
+  const divLi = document.createElement('li');
+  divLi.className = 'deck-list-divider';
+  divLi.setAttribute('aria-hidden', 'true');
+  deckList.appendChild(divLi);
 
   // Define rarity order
   const rarityOrder = {
@@ -1044,7 +1160,16 @@ function updateDeckDisplay() {
 
     return li;
   }
-
+  
+  // Section display order
+  const sectionNames = [
+    { key: "dominion", label: "Dominion" },
+    { key: "creature", label: "Creatures" },
+    { key: "artifact", label: "Artifacts" },
+    { key: "spell", label: "Spells" },
+    { key: "domain", label: "Domains" }
+  ];
+  
   // Iterate sections and append items; insert divider LI between non-empty sections
   for (let sIndex = 0; sIndex < sectionNames.length; sIndex++) {
     const { key } = sectionNames[sIndex];
