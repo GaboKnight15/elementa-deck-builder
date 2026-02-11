@@ -1044,12 +1044,6 @@ function renderDeckOptions() {
       <div style="position:relative;width:100%;height:100%;">
         <img src="${deck.image}" alt="${deck.name}" class="deck-art-img" style="width:100%;height:100%;object-fit:cover;border-radius:16px;">
         ${getDeckNameOverlayHtml(deck)}
-        <div class="deck-difficulty"
-          style="position:absolute;top:1px;left:1px;z-index:3;">
-          <span style="background:rgba(0,0,0,0.65);border-radius:50%;padding:3px 3px;">
-            ${deck.difficulty}
-          </span>
-        </div>
       </div>
     `;
     div.onclick = () => {
