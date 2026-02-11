@@ -6143,29 +6143,53 @@ function closeWaitingForOpponentModal() {
 }
 
 function canPayEssence(cardObj, costStr) {
+  if (!costStr) return true;
+  
   const colorCodes = "GRUYCPBW";
   let availableEssenceStr = cardObj.essence || "";
-  // First, check colored requirements and subtract them from available
+  
+  // Parse the cost string to get requirements
+  const costRequirements = {};
+  let colorlessNeeded = 0;
+  
+  // Extract colored essence requirements
   for (let code of colorCodes) {
     const need = countEssenceType(costStr, code);
-    const have = countEssenceType(availableEssenceStr, code);
-    if (have < need) return false;
-    // Remove what you need from the available string for colorless calculation
-    for (let i = 0; i < need; i++) {
-      availableEssenceStr = availableEssenceStr.replace(new RegExp(`\\{${code}\\}`), "");
+    if (need > 0) {
+      costRequirements[code] = need;
     }
   }
-  // Now handle colorless
+  
+  // Extract colorless requirement
   const colorlessMatches = typeof costStr === "string" ? costStr.match(/\{([1-9]|1[0-9]|20)\}/g) : [];
-  let colorlessNeeded = 0;
   if (colorlessMatches) {
     colorlessNeeded = colorlessMatches.map(m => Number(m.replace(/[{}]/g, ""))).reduce((a, b) => a + b, 0);
   }
-  // Count all remaining essence units
-  const available = getTotalEssence(availableEssenceStr);
-  if (available < colorlessNeeded) return false;
+  
+  // Check colored requirements first
+  for (let code of colorCodes) {
+    const need = costRequirements[code] || 0;
+    const have = countEssenceType(availableEssenceStr, code);
+    if (have < need) {
+      return false;
+    }
+    // Remove what you need from the available string for colorless calculation
+    for (let i = 0; i < need; i++) {
+      availableEssenceStr = availableEssenceStr.replace(new RegExp(`\\{${code}\\}`, 'i'), "");
+    }
+  }
+  
+  // Now check if we have enough remaining essence for colorless cost
+  if (colorlessNeeded > 0) {
+    const available = getTotalEssence(availableEssenceStr);
+    if (available < colorlessNeeded) {
+      return false;
+    }
+  }
+  
   return true;
 }
+
 function getTotalEssence(essenceStr) {
   // Counts all essence units, colored and colorless
   if (typeof essenceStr !== "string") return 0;
@@ -6508,11 +6532,27 @@ function canActivateSkill(cardObj, skillObj, currentZone, gameState, targetObj =
   if (cardObj._paralyzed || cardObj._frozen) return false;
   if (cardObj.canActivateSkill === false) return false;
 
-  // 4. Cost (OPTIONAL: handled by requirement/effect handler or here for fallback)
+  // 4. Cost - CHECK THE PLAYER'S ESSENCE POOL (FIXED)
   if (skillObj.cost) {
-    const sources = [...gameState.playerDomains, ...gameState.playerCreatures];
-    const availableEssence = sources.map(card => card.essence || '').join('');
-    if (!canPayEssence({ essence: availableEssence }, skillObj.cost)) return false;
+    const owner = getCardOwner(cardObj);
+    if (owner === 'player') {
+      // Get the player's essence pool
+      const pool = getEssencePool('player');
+      
+      // Convert pool to essence string format for canPayEssence
+      let poolEssenceStr = '';
+      for (const [type, amount] of Object.entries(pool)) {
+        const code = type.toUpperCase().charAt(0); // G, R, U, Y, C, P, B, W
+        for (let i = 0; i < amount; i++) {
+          poolEssenceStr += `{${code}}`;
+        }
+      }
+      
+      // Check if we can pay with the pool
+      if (!canPayEssence({ essence: poolEssenceStr }, skillObj.cost)) {
+        return false;
+      }
+    }
   }
 
   // 5. Target validation (OPTIONAL: handled in effect handler or here)
@@ -6520,6 +6560,7 @@ function canActivateSkill(cardObj, skillObj, currentZone, gameState, targetObj =
     const targets = getTargets(skillObj.target, cardObj);
     if (!targets || targets.length === 0) return false;
   }
+  
   return true;
 }
 
