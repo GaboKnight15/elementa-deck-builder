@@ -3647,46 +3647,107 @@ function getCombinedKeywordStats(values) {
 
 // color mapping: values 1..9 -> gradient red -> green, value 10 -> blue
 function getStatColor(value) {
-  const v = Math.max(1, Math.min(10, Number(value) || 1));
-  if (v === 10) return '#4aa3ff'; // Blue for top value
-  // Gradient from red (#ff4d4d) to green (#4dff88) for values 1 to 9
-  const gradientStop = (v - 1) / 8; // Normalize value (1 maps to 0, 9 maps to 1)
-  const startColor = [255, 77, 77]; // RGB for red
-  const endColor = [77, 255, 136]; // RGB for green
-
-  // Interpolate RGB values
-  const r = Math.round(startColor[0] + (endColor[0] - startColor[0]) * gradientStop);
-  const g = Math.round(startColor[1] + (endColor[1] - startColor[1]) * gradientStop);
-  const b = Math.round(startColor[2] + (endColor[2] - startColor[2]) * gradientStop);
-
-  return `rgb(${r},${g},${b})`;
+  const v = Number(value) || 0;
+  
+  if (v >= 10) {
+    // Ultra high value - vibrant blue/cyan
+    return 'linear-gradient(90deg, #00d4ff 0%, #0099ff 100%)';
+  } else if (v >= 8) {
+    // High value - bright green
+    return 'linear-gradient(90deg, #00ff88 0%, #00cc66 100%)';
+  } else if (v >= 6) {
+    // Above average - lime green
+    return 'linear-gradient(90deg, #88ff44 0%, #66dd22 100%)';
+  } else if (v >= 5) {
+    // Average - yellow/green
+    return 'linear-gradient(90deg, #ffee44 0%, #ddcc22 100%)';
+  } else if (v >= 4) {
+    // Below average - yellow
+    return 'linear-gradient(90deg, #ffcc22 0%, #ff9922 100%)';
+  } else if (v >= 3) {
+    // Low - orange
+    return 'linear-gradient(90deg, #ff9922 0%, #ff6622 100%)';
+  } else if (v >= 2) {
+    // Very low - red/orange
+    return 'linear-gradient(90deg, #ff4444 0%, #ff2222 100%)';
+  } else if (v >= 1) {
+    // Minimal - red
+    return 'linear-gradient(90deg, #ff2222 0%, #cc0000 100%)';
+  } else {
+    // Zero or invalid - dark gray
+    return 'linear-gradient(90deg, #444444 0%, #333333 100%)';
+  }
 }
 
 // render the stat graph (horizontal bars). Accepts object of stat keys (hp, atk, def, spd, hc, ep)
 function renderStatGraphHtml(statsObj, opts = {}) {
-  const scaleMax = 10;
-  const containerClass = opts.containerClass || 'stat-graph';
-  const labelWidth = opts.labelWidth || 48;
-  let html = `<div class="${containerClass}">`;
-  STAT_KEYS.forEach(s => {
-    const raw = typeof statsObj[s.key] === 'number' ? statsObj[s.key] : DEFAULT_STAT_PROFILE[s.key];
-    const val = Math.max(1, Math.min(scaleMax, Number(raw)));
-    const pct = Math.round((val / scaleMax) * 100);
-    const color = getStatColor(val);
-    // Use inline styles with background + background-image:none and !important to avoid stylesheet overrides
+  const maxVal = opts.maxVal || 10;
+  const showLabels = opts.showLabels !== false;
+  const barHeight = opts.barHeight || '20px';
+  
+  const statNames = {
+    hp: 'HP',
+    atk: 'ATK',
+    def: 'DEF',
+    spd: 'SPD',
+    hc: 'Hand Cost',
+    ep: 'Essence Pay'
+  };
+  
+  let html = '<div class="stat-graph-container" style="display: flex; flex-direction: column; gap: 8px; width: 100%;">';
+  
+  for (const [key, val] of Object.entries(statsObj)) {
+    const label = statNames[key] || key.toUpperCase();
+    const value = Number(val) || 0;
+    const percent = Math.min(100, (value / maxVal) * 100);
+    const color = getStatColor(value);
+    
     html += `
-      <div class="sg-row">
-        <div class="sg-label" style="width:${labelWidth}px">${s.label}</div>
-        <div class="sg-bar" role="img" aria-label="${s.label}: ${val}/${scaleMax}">
-          <div class="sg-bar-fill"
-               style="width:${pct}%; background: ${color} !important; background-image: none !important;">
+      <div class="stat-bar-row" style="display: flex; align-items: center; gap: 10px; width: 100%;">
+        ${showLabels ? `<div class="stat-bar-label" style="min-width: 80px; font-weight: 600; color: #ffe066; font-size: 0.95em;">${label}</div>` : ''}
+        <div class="stat-bar-track" style="
+          flex: 1;
+          background: rgba(30, 40, 55, 0.8);
+          border-radius: 10px;
+          height: ${barHeight};
+          position: relative;
+          overflow: hidden;
+          border: 1.5px solid rgba(255, 224, 102, 0.3);
+          box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+        ">
+          <div class="stat-bar-fill" style="
+            width: ${percent}%;
+            height: 100%;
+            background: ${color};
+            border-radius: 8px;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 8px ${color}88;
+            position: relative;
+          ">
+            <div style="
+              position: absolute;
+              top: 0;
+              left: 0;
+              right: 0;
+              bottom: 0;
+              background: linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, transparent 50%, rgba(0, 0, 0, 0.2) 100%);
+              border-radius: 8px;
+            "></div>
           </div>
         </div>
-        <div class="sg-value">${val}</div>
+        <div class="stat-bar-value" style="
+          min-width: 30px;
+          text-align: right;
+          font-weight: bold;
+          color: ${color};
+          font-size: 1em;
+          text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        ">${value}</div>
       </div>
     `;
-  });
-  html += `</div>`;
+  }
+  
+  html += '</div>';
   return html;
 }
 // --- INFO MODAL LOGIC ---
