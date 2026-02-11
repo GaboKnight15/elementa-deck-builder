@@ -1503,7 +1503,79 @@ li.deck-draggable .card-meta {
   width: 80px;
   height: 112px;
 }
+.dominion-selection-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 16px;
+  padding: 20px;
+  max-height: 500px;
+  overflow-y: auto;
+}
 
+.dominion-card-choice {
+  cursor: pointer;
+  border-radius: 8px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  width: 100%;
+  height: auto;
+  border: 3px solid transparent;
+}
+
+.dominion-card-choice:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(255, 224, 102, 0.5);
+  border-color: #ffe066;
+}
+
+.dominion-card-choice.selected {
+  border-color: #4CAF50;
+  box-shadow: 0 0 15px rgba(76, 175, 80, 0.7);
+}
+
+.dominion-placeholder {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  border: 2px dashed #ffe066;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  min-height: 80px;
+  position: relative;
+}
+
+.dominion-placeholder:hover {
+  background: linear-gradient(135deg, #2d2d2d 0%, #3d3d3d 100%);
+  border-color: #ffed99;
+  transform: scale(1.02);
+}
+
+.dominion-placeholder-text {
+  color: #ffe066;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  padding: 8px;
+}
+
+.deck-list-dominion-slot {
+  padding: 8px;
+  margin-bottom: 12px;
+  border-bottom: 2px solid #ffe066;
+}
+
+.deck-list-dominion-slot img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.deck-list-dominion-slot img:hover {
+  transform: scale(1.05);
+}
 /* Gallery should be below the horizontal panel now */
 #deck-gallery {
   flex: 1 1 auto;
