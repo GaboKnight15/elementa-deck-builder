@@ -5525,8 +5525,6 @@ document.getElementById('friends-modal').onclick = function(e) {
 // Settings Modal Logic
 document.addEventListener('DOMContentLoaded', function() {
   const settingsModal = document.getElementById('settings-modal');
-  const closeSettingsModal = document.getElementById('close-settings-modal');
-  const saveSettingsBtn = document.getElementById('save-settings-btn');
   const cancelSettingsBtn = document.getElementById('cancel-settings-btn');
   const toggleNotices = document.getElementById('toggle-notices');
   const toggleMusic = document.getElementById('toggle-music');
@@ -5560,27 +5558,6 @@ document.addEventListener('DOMContentLoaded', function() {
       };
     }
   });
-
-  // Close modal button
-  if (closeSettingsModal) {
-    closeSettingsModal.onclick = function() {
-      settingsModal.style.display = 'none';
-    };
-  }
-
-  // Save settings button
-  if (saveSettingsBtn) {
-    saveSettingsBtn.onclick = function() {
-      // Save toggle states
-      if (toggleNotices) {
-        localStorage.setItem('settings-notices', toggleNotices.checked ? 'on' : 'off');
-      }
-      if (toggleMusic) {
-        localStorage.setItem('settings-music', toggleMusic.checked ? 'on' : 'off');
-      }
-      settingsModal.style.display = 'none';
-    };
-  }
 
   // Cancel button
   if (cancelSettingsBtn) {
