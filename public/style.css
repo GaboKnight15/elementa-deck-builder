@@ -4338,88 +4338,46 @@ button[disabled], .btn-disabled {
 /* --- GAME LOG --- /
 /* --------------- */
 /* Game Log modal and icon styles */
-.game-log-icon-wrap {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin: 8px;
-  cursor: pointer;
-}
-.game-log-icon {
-  width: 36px;
-  height: 36px;
-  object-fit: contain;
-  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.45));
-  transition: transform 0.12s ease, opacity 0.12s ease;
-}
-.game-log-icon:hover { transform: scale(1.06); opacity: 0.95; }
-
-/* Modal backdrop */
-.game-log-modal {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 313px;
-  background: rgba(0,0,0,0.55);
+#game-log-modal .modal-content {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border: 2px solid #ffe066;
 }
 
-/* Modal content box */
-.game-log-modal-content {
-  width: min(820px, 92vw);
-  max-height: calc(100vh - 80px);
-  background: linear-gradient(180deg, #0e1318 0%, #0b0f13 100%);
-  border-radius: 12px;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.6);
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  color: #eee;
-  overflow: hidden;
-  border: 1px solid rgba(255,255,255,0.04);
+#game-log-container {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  padding: 16px;
 }
 
-/* Header: title + close */
-.game-log-modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 6px 10px;
-  border-bottom: 1px solid rgba(255,255,255,0.03);
-}
-.game-log-modal-title {
-  font-weight: 700;
-  color: #ffe066;
-  font-size: 1.05rem;
-}
-.game-log-modal-close {
-  background: transparent;
-  border: none;
+.game-log-entry {
+  font-size: 0.95em;
+  line-height: 1.5;
   color: #fff;
-  font-size: 1.5rem;
-  cursor: pointer;
-  line-height: 1;
-  padding: 6px 10px;
-  border-radius: 6px;
-}
-.game-log-modal-close:hover { background: rgba(255,255,255,0.02); }
-
-/* Body: host the existing log element inside modal */
-.game-log-modal-body {
-  padding: 10px;
-  overflow: auto;
-  flex: 1 1 auto;
 }
 
-/*  */
-.game-log {
+.game-log-entry:hover {
+  background-color: rgba(255, 224, 102, 0.2) !important;
+}
+
+#game-log-icon-btn {
+  position: relative;
+}
+
+#game-log-icon-btn::after {
+  content: attr(data-count);
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: #e74c3c;
+  color: white;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  font-size: 11px;
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 6px;
-  overflow-y: auto;
-  width: 100%;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
 }
 .inline-icon {
   display: inline-block;
