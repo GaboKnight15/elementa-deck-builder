@@ -2762,10 +2762,10 @@ function renderGameState() {
     img.style.width = "80px";
     div.appendChild(img);
     if (typeof renderHandCostBadge === 'function') renderHandCostBadge(div, card);
-    div.onclick = (e) => {
-      e.stopPropagation();
+    holdClickToView(div, cardObj, (e) => {
+      // Short click shows hand menu
       showHandCardMenu(cardObj.instanceId, div);
-    };
+    });
     setCardAnimatableClass(div, cardObj, card, gameState, 'hand');
     playerHandDiv.appendChild(div);
   }
@@ -2868,7 +2868,6 @@ function drawCards(who, n) {
   setupDropZones();
   emitPublicState();
 }
-
 
 // HAND OPTIONS MENU
 function showHandCardMenu(instanceId, cardDiv) {
