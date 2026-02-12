@@ -4777,6 +4777,221 @@ function getSelectedFiltersFromModal() {
     ).map((el) => el.value.toLowerCase()),
   };
 }
+
+// HOLD CLICK //
+function holdClickToView(element, cardObj, onShortClick = null, options = {}) {
+  const {
+    holdDuration = 500,           // How long to hold (ms)
+    showVisualFeedback = true,    // Show holding animation
+    feedbackClass = 'holding',    // CSS class for feedback
+    dragThreshold = 5,            // Pixels moved before considering it a drag
+    enableDragDetection = true    // Set to false to disable drag detection
+  } = options;
+
+  let holdTimer = null;
+  let isHolding = false;
+  let isDragging = false;
+  let startX = 0;
+  let startY = 0;
+
+  // Mouse handlers
+  element.addEventListener('mousedown', function(e) {
+    // Only respond to left click
+    if (e.button !== 0) return;
+    
+    isHolding = false;
+    isDragging = false;
+    
+    // Record starting position for drag detection
+    if (enableDragDetection) {
+      startX = e.clientX;
+      startY = e.clientY;
+    }
+    
+    // Add visual feedback
+    if (showVisualFeedback) {
+      element.classList.add(feedbackClass);
+    }
+    
+    holdTimer = setTimeout(() => {
+      // Only trigger if we haven't started dragging
+      if (!isDragging) {
+        isHolding = true;
+        
+        // Remove visual feedback
+        if (showVisualFeedback) {
+          element.classList.remove(feedbackClass);
+        }
+        
+        // Show full card modal
+        showFullCardModal(cardObj);
+      }
+    }, holdDuration);
+  });
+
+  // Detect drag movement
+  if (enableDragDetection) {
+    element.addEventListener('mousemove', function(e) {
+      if (holdTimer && !isDragging && !isHolding) {
+        const deltaX = Math.abs(e.clientX - startX);
+        const deltaY = Math.abs(e.clientY - startY);
+        
+        // If mouse moved beyond threshold, it's a drag
+        if (deltaX > dragThreshold || deltaY > dragThreshold) {
+          isDragging = true;
+          clearTimeout(holdTimer);
+          
+          // Remove visual feedback
+          if (showVisualFeedback) {
+            element.classList.remove(feedbackClass);
+          }
+        }
+      }
+    });
+  }
+
+  element.addEventListener('mouseup', function(e) {
+    clearTimeout(holdTimer);
+    
+    // Remove visual feedback
+    if (showVisualFeedback) {
+      element.classList.remove(feedbackClass);
+    }
+    
+    // Handle short click (only if not holding and not dragging)
+    if (!isHolding && !isDragging && e.button === 0) {
+      if (typeof onShortClick === 'function') {
+        onShortClick(e);
+      }
+    }
+    
+    // Reset states
+    isHolding = false;
+    isDragging = false;
+  });
+
+  element.addEventListener('mouseleave', function(e) {
+    clearTimeout(holdTimer);
+    
+    // Remove visual feedback
+    if (showVisualFeedback) {
+      element.classList.remove(feedbackClass);
+    }
+    
+    // Reset states
+    isHolding = false;
+    isDragging = false;
+  });
+
+  // Touch handlers for mobile
+  let touchStartX = 0;
+  let touchStartY = 0;
+
+  element.addEventListener('touchstart', function(e) {
+    isHolding = false;
+    isDragging = false;
+    
+    // Record touch position for drag detection
+    if (enableDragDetection && e.touches.length > 0) {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+    }
+    
+    // Add visual feedback
+    if (showVisualFeedback) {
+      element.classList.add(feedbackClass);
+    }
+    
+    holdTimer = setTimeout(() => {
+      // Only trigger if we haven't started dragging
+      if (!isDragging) {
+        isHolding = true;
+        
+        // Remove visual feedback
+        if (showVisualFeedback) {
+          element.classList.remove(feedbackClass);
+        }
+        
+        // Show full card modal
+        showFullCardModal(cardObj);
+      }
+    }, holdDuration);
+  });
+
+  // Detect touch drag movement
+  if (enableDragDetection) {
+    element.addEventListener('touchmove', function(e) {
+      if (holdTimer && !isDragging && !isHolding && e.touches.length > 0) {
+        const deltaX = Math.abs(e.touches[0].clientX - touchStartX);
+        const deltaY = Math.abs(e.touches[0].clientY - touchStartY);
+        
+        // If touch moved beyond threshold, it's a drag
+        if (deltaX > dragThreshold || deltaY > dragThreshold) {
+          isDragging = true;
+          clearTimeout(holdTimer);
+          
+          // Remove visual feedback
+          if (showVisualFeedback) {
+            element.classList.remove(feedbackClass);
+          }
+        }
+      }
+    });
+  }
+
+  element.addEventListener('touchend', function(e) {
+    clearTimeout(holdTimer);
+    
+    // Remove visual feedback
+    if (showVisualFeedback) {
+      element.classList.remove(feedbackClass);
+    }
+    
+    // Handle short tap (only if not holding and not dragging)
+    if (!isHolding && !isDragging) {
+      if (typeof onShortClick === 'function') {
+        e.preventDefault();
+        onShortClick(e);
+      }
+    }
+    
+    // Reset states
+    isHolding = false;
+    isDragging = false;
+  });
+
+  element.addEventListener('touchcancel', function(e) {
+    clearTimeout(holdTimer);
+    
+    // Remove visual feedback
+    if (showVisualFeedback) {
+      element.classList.remove(feedbackClass);
+    }
+    
+    // Reset states
+    isHolding = false;
+    isDragging = false;
+  });
+
+  // Listen to dragstart event to ensure we cancel hold timer
+  if (enableDragDetection) {
+    element.addEventListener('dragstart', function(e) {
+      isDragging = true;
+      clearTimeout(holdTimer);
+      
+      // Remove visual feedback
+      if (showVisualFeedback) {
+        element.classList.remove(feedbackClass);
+      }
+    });
+
+    element.addEventListener('dragend', function(e) {
+      // Reset drag state
+      isDragging = false;
+    });
+  }
+}
+
 // ----------------------------------- //
 // --- Card Field Helper Functions --- //
 // These functions work for both array and string fields (case-insensitive) //
