@@ -187,58 +187,10 @@ function createCardGallery(card) {
       star.style.zIndex = '5';
       div.appendChild(star);
     }
-    // Add click and hold functionality to open full card modal
-// Add click and hold functionality to open full card modal
-let holdTimer = null;
-let isHolding = false;
-
-div.addEventListener('mousedown', function (e) {
-  isHolding = false;
-  holdTimer = setTimeout(() => {
-    isHolding = true;
-    showFullCardModal(card); // Open the modal after holding
-  }, 500); // Hold duration = 500ms
-});
-
-div.addEventListener('mouseup', function (e) {
-  clearTimeout(holdTimer);
-  // Only trigger click menu if we weren't holding
-  if (!isHolding) {
+  holdClickToView(div, card, (e) => {
     e.stopPropagation();
     showGalleryCardMenu(card, div);
-  }
-  isHolding = false;
-});
-
-div.addEventListener('mouseleave', function (e) {
-  clearTimeout(holdTimer);
-  isHolding = false;
-});
-    // Touch support for mobile
-    div.addEventListener('touchstart', function (e) {
-      isHolding = false;
-      holdTimer = setTimeout(() => {
-        isHolding = true;
-        showFullCardModal(card);
-      }, 500);
-    });
-
-    div.addEventListener('touchend', function (e) {
-      clearTimeout(holdTimer);
-      if (!isHolding) {
-        e.preventDefault();
-        e.stopPropagation();
-        showGalleryCardMenu(card, div);
-      }
-      isHolding = false;
-    });
-
-    div.addEventListener('touchcancel', function (e) {
-      clearTimeout(holdTimer);
-      isHolding = false;
-    });
-// Remove the old onclick handler since we're using mouseup now
-// div.onclick = function(e) { ... } // DELETE THIS
+  });
   return div;
 }
 
