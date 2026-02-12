@@ -8172,7 +8172,7 @@ function insertGameLogIcon() {
   `;
   
   const img = document.createElement('img');
-  img.src = 'Icons/Other/Scroll.png'; // Use your game log icon
+  img.src = 'Icons/Other/GameLog.png'; // Use your game log icon
   img.alt = 'Game Log';
   img.title = 'View Game Log';
   img.style.width = '32px';
