@@ -85,19 +85,6 @@ const DOMINION_CARDS = [
 document.getElementById('filter-name-builder').addEventListener('input', renderBuilder);
 document.getElementById("builder-filter-btn").onclick = () => {
   showFilterModal((selectedFilters) => {
-    // Retrieve external inputs (e.g., name filter and favorites toggle)
-    const nameFilter = document.getElementById('filter-name-builder')?.value?.toLowerCase() || '';
-    const showFavoritesOnly = window.showFavoritesOnlyBuilder || false; // Default to false
-
-    // Call `filterCards` with collected filters, including modal and external filters
-    const filteredCards = filterCards({
-      collection: getCollection(),
-      favoriteIds: getFavoriteCards(),
-      showFavoritesOnly,
-      nameFilter,
-      ...selectedFilters, // Spread the modal filters
-    });
-
     // Render the filtered cards in the builder
     renderBuilder(filteredCards);
   });
