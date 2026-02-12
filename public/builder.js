@@ -774,7 +774,7 @@ function createCardBuilder(card, ownedCount) {
         div.classList.add('card-unavailable');
         img.style.pointerEvents = 'none';
     }
-  attachHoldToViewHandlers(img, card, (e) => {
+  holdClickToView(img, card, (e) => {
     // Short click adds to deck
     if (canAddCard(card, currentInDeck, ownedCount)) {
       addCardToDeck(card.id);
