@@ -4334,7 +4334,7 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
       disabled: !canAttack(cardObj, gameState),
       title: !canAttack(cardObj, gameState) ? 
         (cardObj.orientation !== "vertical"
-          ? "Card is not in ATK position."
+          ? "Card is not enabled."
           : "No valid targets to attack.") : "",
       onClick: function(e) {
         e.stopPropagation();
@@ -4425,7 +4425,7 @@ cardData.skill
     let disabledReason = "";
     if (!isEnabled) {
       if (sealed) disabledReason = "Sealed: Cannot activate skills.";
-      else disabledReason = "Cannot activate skill in current state.";
+      else disabledReason = "Cannot activate skills while disabled.";
     }
 
     const activation = skillObj.activation || {};
