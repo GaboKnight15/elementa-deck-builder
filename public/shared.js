@@ -4781,16 +4781,17 @@ function getSelectedFiltersFromModal() {
 // HOLD CLICK //
 function holdClickToView(element, cardObj, onShortClick = null, options = {}) {
   const {
-    holdDuration = 500,           // How long to hold (ms)
-    showVisualFeedback = true,    // Show holding animation
-    feedbackClass = 'holding',    // CSS class for feedback
-    dragThreshold = 5,            // Pixels moved before considering it a drag
-    enableDragDetection = true    // Set to false to disable drag detection
+    holdDuration = 500,
+    showVisualFeedback = true,
+    feedbackClass = 'holding',
+    dragThreshold = 3,            // Lower threshold for better sensitivity
+    enableDragDetection = true
   } = options;
 
   let holdTimer = null;
   let isHolding = false;
   let isDragging = false;
+  let hasMoved = false;
   let startX = 0;
   let startY = 0;
 
@@ -4801,6 +4802,7 @@ function holdClickToView(element, cardObj, onShortClick = null, options = {}) {
     
     isHolding = false;
     isDragging = false;
+    hasMoved = false;
     
     // Record starting position for drag detection
     if (enableDragDetection) {
@@ -4814,8 +4816,8 @@ function holdClickToView(element, cardObj, onShortClick = null, options = {}) {
     }
     
     holdTimer = setTimeout(() => {
-      // Only trigger if we haven't started dragging
-      if (!isDragging) {
+      // Only trigger if we haven't started dragging AND haven't moved
+      if (!isDragging && !hasMoved) {
         isHolding = true;
         
         // Remove visual feedback
@@ -4836,9 +4838,9 @@ function holdClickToView(element, cardObj, onShortClick = null, options = {}) {
         const deltaX = Math.abs(e.clientX - startX);
         const deltaY = Math.abs(e.clientY - startY);
         
-        // If mouse moved beyond threshold, it's a drag
+        // If mouse moved beyond threshold, it's a drag or movement
         if (deltaX > dragThreshold || deltaY > dragThreshold) {
-          isDragging = true;
+          hasMoved = true;
           clearTimeout(holdTimer);
           
           // Remove visual feedback
@@ -4847,6 +4849,26 @@ function holdClickToView(element, cardObj, onShortClick = null, options = {}) {
           }
         }
       }
+    });
+
+    // Listen to dragstart event (native HTML5 drag)
+    element.addEventListener('dragstart', function(e) {
+      isDragging = true;
+      hasMoved = true;
+      clearTimeout(holdTimer);
+      
+      // Remove visual feedback
+      if (showVisualFeedback) {
+        element.classList.remove(feedbackClass);
+      }
+    });
+
+    element.addEventListener('dragend', function(e) {
+      // Reset drag state after drag ends
+      setTimeout(() => {
+        isDragging = false;
+        hasMoved = false;
+      }, 50); // Small delay to prevent click from firing
     });
   }
 
@@ -4858,16 +4880,20 @@ function holdClickToView(element, cardObj, onShortClick = null, options = {}) {
       element.classList.remove(feedbackClass);
     }
     
-    // Handle short click (only if not holding and not dragging)
-    if (!isHolding && !isDragging && e.button === 0) {
+    // Handle short click (only if not holding, not dragging, and hasn't moved)
+    if (!isHolding && !isDragging && !hasMoved && e.button === 0) {
       if (typeof onShortClick === 'function') {
         onShortClick(e);
       }
     }
     
-    // Reset states
-    isHolding = false;
-    isDragging = false;
+    // Reset states (with small delay for drag)
+    if (!isDragging) {
+      setTimeout(() => {
+        isHolding = false;
+        hasMoved = false;
+      }, 10);
+    }
   });
 
   element.addEventListener('mouseleave', function(e) {
@@ -4878,9 +4904,11 @@ function holdClickToView(element, cardObj, onShortClick = null, options = {}) {
       element.classList.remove(feedbackClass);
     }
     
-    // Reset states
-    isHolding = false;
-    isDragging = false;
+    // Reset states (but keep isDragging if actively dragging)
+    if (!isDragging) {
+      isHolding = false;
+      hasMoved = false;
+    }
   });
 
   // Touch handlers for mobile
@@ -4890,6 +4918,7 @@ function holdClickToView(element, cardObj, onShortClick = null, options = {}) {
   element.addEventListener('touchstart', function(e) {
     isHolding = false;
     isDragging = false;
+    hasMoved = false;
     
     // Record touch position for drag detection
     if (enableDragDetection && e.touches.length > 0) {
@@ -4904,7 +4933,7 @@ function holdClickToView(element, cardObj, onShortClick = null, options = {}) {
     
     holdTimer = setTimeout(() => {
       // Only trigger if we haven't started dragging
-      if (!isDragging) {
+      if (!isDragging && !hasMoved) {
         isHolding = true;
         
         // Remove visual feedback
@@ -4927,7 +4956,7 @@ function holdClickToView(element, cardObj, onShortClick = null, options = {}) {
         
         // If touch moved beyond threshold, it's a drag
         if (deltaX > dragThreshold || deltaY > dragThreshold) {
-          isDragging = true;
+          hasMoved = true;
           clearTimeout(holdTimer);
           
           // Remove visual feedback
@@ -4948,7 +4977,7 @@ function holdClickToView(element, cardObj, onShortClick = null, options = {}) {
     }
     
     // Handle short tap (only if not holding and not dragging)
-    if (!isHolding && !isDragging) {
+    if (!isHolding && !isDragging && !hasMoved) {
       if (typeof onShortClick === 'function') {
         e.preventDefault();
         onShortClick(e);
@@ -4956,8 +4985,11 @@ function holdClickToView(element, cardObj, onShortClick = null, options = {}) {
     }
     
     // Reset states
-    isHolding = false;
-    isDragging = false;
+    setTimeout(() => {
+      isHolding = false;
+      isDragging = false;
+      hasMoved = false;
+    }, 10);
   });
 
   element.addEventListener('touchcancel', function(e) {
@@ -4969,29 +5001,13 @@ function holdClickToView(element, cardObj, onShortClick = null, options = {}) {
     }
     
     // Reset states
-    isHolding = false;
-    isDragging = false;
-  });
-
-  // Listen to dragstart event to ensure we cancel hold timer
-  if (enableDragDetection) {
-    element.addEventListener('dragstart', function(e) {
-      isDragging = true;
-      clearTimeout(holdTimer);
-      
-      // Remove visual feedback
-      if (showVisualFeedback) {
-        element.classList.remove(feedbackClass);
-      }
-    });
-
-    element.addEventListener('dragend', function(e) {
-      // Reset drag state
+    setTimeout(() => {
+      isHolding = false;
       isDragging = false;
-    });
-  }
+      hasMoved = false;
+    }, 10);
+  });
 }
-
 // ----------------------------------- //
 // --- Card Field Helper Functions --- //
 // These functions work for both array and string fields (case-insensitive) //
