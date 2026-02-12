@@ -2412,7 +2412,26 @@ button[disabled], .btn-disabled {
   height: auto;
   box-shadow: 0 2px 10px #0003;
 }
+.card-battlefield.holding,
+.modal-card-img.holding {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(255, 224, 102, 0.6);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+/* Hold-to-view visual feedback */
+.holding {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(255, 224, 102, 0.6);
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
 
+/* Different feedback for modal cards */
+.modal-card-img.holding {
+  transform: scale(1.08);
+  box-shadow: 0 0 24px rgba(255, 224, 102, 0.8);
+  filter: brightness(1.1);
+}
 /* GAME MODE SELECTION */
 .mode-options {
   display: flex;
