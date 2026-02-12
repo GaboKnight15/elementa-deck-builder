@@ -774,66 +774,12 @@ function createCardBuilder(card, ownedCount) {
         div.classList.add('card-unavailable');
         img.style.pointerEvents = 'none';
     }
-      // ==== HOVER ICONS ====
-    const hoverIcons = document.createElement('div');
-    hoverIcons.className = 'card-hover-icons';
-
-    // Minus icon (lower left)
-    const minusBtn = document.createElement('button');
-    minusBtn.className = 'card-hover-icon-btn card-hover-minus';
-    minusBtn.style.justifyContent = 'flex-start';
-    minusBtn.title = 'Remove a copy of this card from deck';
-    const minusImg = document.createElement('img');
-    minusImg.src = 'Icons/Other/Minus.png';
-    minusImg.alt = 'Minus';
-    minusBtn.appendChild(minusImg);
-    minusBtn.onclick = function(e) {
-      e.stopPropagation();
-      if (deck[card.id] > 0) {
-        deck[card.id]--;
-        if (deck[card.id] <= 0) delete deck[card.id];
-        setCurrentDeck(deck);
-        updateDeckDisplay();
-        renderBuilder();
-      }
-    };
-    hoverIcons.appendChild(minusBtn);
-
-  // View icon (center)
-  const viewBtn = document.createElement('button');
-  viewBtn.className = 'card-hover-icon-btn card-hover-view';
-  viewBtn.style.justifyContent = 'center';
-  viewBtn.title = 'View card details';
-  const viewImg = document.createElement('img');
-  viewImg.src = 'Icons/Other/View.png';
-  viewImg.alt = 'View';
-  viewBtn.appendChild(viewImg);
-  viewBtn.onclick = function(e) {
-    e.stopPropagation();
-    showFullCardModal(card);
-  };
-  hoverIcons.appendChild(viewBtn);
-
-  // Plus icon (lower right)
-  const plusBtn = document.createElement('button');
-  plusBtn.className = 'card-hover-icon-btn card-hover-plus';
-  plusBtn.style.justifyContent = 'flex-end';
-  plusBtn.title = 'Add a copy of this card to deck';
-  const plusImg = document.createElement('img');
-  plusImg.src = 'Icons/Other/Plus.png';
-  plusImg.alt = 'Plus';
-  plusBtn.appendChild(plusImg);
-  plusBtn.onclick = function(e) {
-    e.stopPropagation();
+  attachHoldToViewHandlers(img, card, (e) => {
+    // Short click adds to deck
     if (canAddCard(card, currentInDeck, ownedCount)) {
-      deck[card.id] = (deck[card.id] || 0) + 1;
-      setCurrentDeck(deck);
-      updateDeckDisplay();
-      renderBuilder();
+      addCardToDeck(card.id);
     }
-  };
-  hoverIcons.appendChild(plusBtn);
-  div.appendChild(hoverIcons);
+  });
   return div;
 }
 // --- DRAG AND DROP FOR DECK BUILDER --- //
@@ -1014,7 +960,6 @@ function removeCardFromDeck(cardId) {
 // DECK CREATION LOGIC
 function updateDeckDisplay() {
   const deck = getCurrentDeck();
-  // Use the UL deck-list as before
   if (!deckList) return;
   deckList.innerHTML = '';
   let total = 0;
