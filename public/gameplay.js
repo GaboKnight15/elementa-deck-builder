@@ -3340,30 +3340,31 @@ gameState.playerDeck.forEach((cardObj, idx) => {
 
   // Make the image itself clickable for the menu
   img.style.cursor = "pointer";
-  img.onclick = (e) => {
-    e.stopPropagation();
-    closeAllMenus();
-    const buttons = [
-      {
-        text: "Add to Hand",
-        onClick: function(ev) {
-          ev.stopPropagation();
-          moveCard(cardObj.instanceId, gameState.playerDeck, gameState.playerHand);
-          renderGameState();
-          closeAllMenus();
-          openDeckModal();
-        }
-      },
-      {
-        text: "Send to Void",
-        onClick: function(ev) {
-          ev.stopPropagation();
-          moveCard(cardObj.instanceId, gameState.playerDeck, gameState.playerVoid);
-          renderGameState();
-          closeAllMenus();
-          openDeckModal();
-        }
-      },
+    holdClickToView(img, cardObj, (e) => {
+      e.stopPropagation();
+      closeAllMenus();
+      
+      const buttons = [
+        {
+          text: "Add to Hand",
+          onClick: function(ev) {
+            ev.stopPropagation();
+            moveCard(cardObj.instanceId, gameState.playerDeck, gameState.playerHand);
+            renderGameState();
+            closeAllMenus();
+            openDeckModal();
+          }
+        },
+        {
+          text: "Send to Void",
+          onClick: function(ev) {
+            ev.stopPropagation();
+            moveCard(cardObj.instanceId, gameState.playerDeck, gameState.playerVoid);
+            renderGameState();
+            closeAllMenus();
+            openDeckModal();
+          }
+        },
       {
         text: "View",
         onClick: function(ev) {
@@ -3373,25 +3374,26 @@ gameState.playerDeck.forEach((cardObj, idx) => {
         }
       }
     ];
-    const menu = createCardMenu(buttons);
-    document.body.appendChild(menu); // Append to body, not wrapper
+      const menu = createCardMenu(buttons);
+      document.body.appendChild(menu);
 
-    // Position menu absolutely using the image rect
-    const rect = img.getBoundingClientRect();
-    placeMenuWithinViewport(menu, rect);
+      const rect = img.getBoundingClientRect();
+      placeMenuWithinViewport(menu, rect);
 
-    menu.onclick = function(e) { e.stopPropagation(); };
-    modal.onclick = function(e) {
-      if (!e.target.closest('.card-menu')) {
-        closeAllMenus();
-        if (e.target === modal) modal.style.display = 'none';
-      }
-    };
-  };
-  wrapper.appendChild(cardDiv);
-  list.appendChild(wrapper);
-  cardDiv.appendChild(img);
-});
+      menu.onclick = function(e) { e.stopPropagation(); };
+      modal.onclick = function(e) {
+        if (!e.target.closest('.card-menu')) {
+          closeAllMenus();
+          if (e.target === modal) modal.style.display = 'none';
+        }
+      };
+    }, {
+      enableDragDetection: false
+    });
+
+    wrapper.appendChild(cardDiv);
+    list.appendChild(wrapper);
+  });
 
   modal.style.display = "block";
 }
@@ -3995,10 +3997,14 @@ function renderCardOnField(cardObj, zoneId) {
   wrapper.appendChild(cardDiv);
 
   // MANUAL HP UPDATE
-  cardDiv.onclick = function(e) {
-    e.stopPropagation();
-    showCardActionMenu(cardObj.instanceId, zoneId, cardObj.orientation || "vertical", cardDiv);
-  };
+  holdClickToView(cardDiv, cardObj, (e) => {
+    // Short click - show card action menu
+    const orientation = cardObj.orientation || 'vertical';
+    showCardActionMenu(cardObj.instanceId, zoneId, orientation, cardDiv);
+  }, {
+    enableDragDetection: true,
+    dragThreshold: 5
+  });
   return wrapper;
 
   // --- Helper to make a stat badge (icon with number on top) ---
@@ -4478,10 +4484,12 @@ function openVoidModal(isOpponent = false) {
     modal.appendChild(content);
     document.body.appendChild(modal);
   }
+  
   // Always attach (overwrite) close-on-backdrop handler
   modal.onclick = function(e) {
     if (e.target === modal) modal.style.display = 'none';
   };
+  
   // Always prevent modal-content clicks from closing the modal
   const modalContent = modal.querySelector('.modal-content');
   if (modalContent) {
@@ -4495,6 +4503,7 @@ function openVoidModal(isOpponent = false) {
     modal.querySelector('.modal-content').appendChild(list);
   }
   list.innerHTML = '';
+  
   // === FIX: Show correct void cards ===
   const voidCards = isOpponent ? gameState.opponentVoid : gameState.playerVoid;
   if (voidCards.length === 0) {
@@ -4519,38 +4528,43 @@ function openVoidModal(isOpponent = false) {
       img.className = "modal-card-img";
       cardDiv.appendChild(img);
 
-      // Make image clickable for menu
+      // **REPLACE img.onclick WITH HOLD-TO-VIEW HANDLER**
       img.style.cursor = "pointer";
-      img.onclick = (e) => {
-        e.stopPropagation();
-        closeAllMenus();
-        
-        if (isOpponent) {
+      
+      if (isOpponent) {
+        // For opponent's void, only allow viewing on both hold and click
+        holdClickToView(img, cardObj, (e) => {
           showFullCardModal(cardObj);
-          return;
-        }
-        // If opponent's void, only allow "View"
-        const buttons = [
-          {
-            text: "Return to Hand",
-            onClick: function(e) {
-              e.stopPropagation();
-              moveCard(cardObj.instanceId, gameState.playerVoid, gameState.playerHand);
-              renderGameState();
-              closeAllMenus();
-              openVoidModal();
-            }
-          },
-          {
-            text: "Return to Deck",
-            onClick: function(e) {
-              e.stopPropagation();
-              moveCard(cardObj.instanceId, gameState.playerVoid, gameState.playerDeck);
-              renderGameState();
-              closeAllMenus();
-              openVoidModal();
-            }
-          },
+        }, {
+          enableDragDetection: false
+        });
+      } else {
+        // For player's void, show menu on short click, modal on hold
+        holdClickToView(img, cardObj, (e) => {
+          e.stopPropagation();
+          closeAllMenus();
+          
+          const buttons = [
+            {
+              text: "Return to Hand",
+              onClick: function(e) {
+                e.stopPropagation();
+                moveCard(cardObj.instanceId, gameState.playerVoid, gameState.playerHand);
+                renderGameState();
+                closeAllMenus();
+                openVoidModal();
+              }
+            },
+            {
+              text: "Return to Deck",
+              onClick: function(e) {
+                e.stopPropagation();
+                moveCard(cardObj.instanceId, gameState.playerVoid, gameState.playerDeck);
+                renderGameState();
+                closeAllMenus();
+                openVoidModal();
+              }
+            },
           {
             text: "View",
             onClick: function(e) {
@@ -4560,61 +4574,58 @@ function openVoidModal(isOpponent = false) {
             }
           }
         ];
-
-        // --- Add Skill Buttons if card has skills ---
-        if (!isOpponent) {
           const cardData = dummyCards.find(c => c.id === cardObj.cardId);
           if (cardData && Array.isArray(cardData.skill)) {
             cardData.skill
-            .filter(skillObj => !skillObj.activation) // Only show skills without activation
-            .forEach(skillObj => {
-              // PATCH: show CW/CCW icons
-              const activation = skillObj.activation || {};
-              let requirements = Array.isArray(activation.requirement)
-                ? activation.requirement
-                : (activation.requirement ? [activation.requirement] : []);
-              const reqIcons = getRequirementIcons(requirements);
+              .filter(skillObj => !skillObj.activation)
+              .forEach(skillObj => {
+                const activation = skillObj.activation || {};
+                let requirements = Array.isArray(activation.requirement)
+                  ? activation.requirement
+                  : (activation.requirement ? [activation.requirement] : []);
+                const reqIcons = getRequirementIcons(requirements);
 
-              const isEnabled = canActivateSkill(cardObj, skillObj, 'void', gameState);
+                const isEnabled = canActivateSkill(cardObj, skillObj, 'void', gameState);
 
-              buttons.push({
-                text: `${skillObj.name} ${parseEffectText(skillObj.cost)}${reqIcons}`,
-                html: true,
-                disabled: !canActivateSkill(cardObj, skillObj, 'void', gameState),
-                onClick: function(e) {
-                  e.stopPropagation();
-                  if (!canActivateSkill(cardObj, skillObj, 'void', gameState)) return;
-                  activateSkill(cardObj, skillObj);
-                  closeAllMenus();
-                  openVoidModal();
-                }
+                buttons.push({
+                  text: `${skillObj.name} ${parseEffectText(skillObj.cost)}${reqIcons}`,
+                  html: true,
+                  title: skillTitle(skillObj),
+                  disabled: !isEnabled,
+                  onClick: function(e) {
+                    e.stopPropagation();
+                    if (!canActivateSkill(cardObj, skillObj, 'void', gameState)) return;
+                    activateSkill(cardObj, skillObj);
+                    closeAllMenus();
+                    openVoidModal();
+                  }
+                });
               });
-            });
           }
-        }
 
-        const menu = createCardMenu(buttons);
-        document.body.appendChild(menu); // Append to body, not wrapper
+          const menu = createCardMenu(buttons);
+          document.body.appendChild(menu);
 
-        // Position menu absolutely using the image rect
-        const rect = img.getBoundingClientRect();
-        placeMenuWithinViewport(menu, rect);
+          const rect = img.getBoundingClientRect();
+          placeMenuWithinViewport(menu, rect);
 
-        menu.onclick = function(e) { e.stopPropagation(); };
+          menu.onclick = function(e) { e.stopPropagation(); };
+          modal.onclick = function(e) {
+            if (!e.target.closest('.card-menu')) {
+              closeAllMenus();
+              if (e.target === modal) modal.style.display = 'none';
+            }
+          };
+        }, {
+          enableDragDetection: false
+        });
+      }
 
-        // Hide menu when clicking elsewhere
-        modal.onclick = function(e) {
-          if (!e.target.closest('.card-menu')) {
-            closeAllMenus();
-            if (e.target === modal) modal.style.display = 'none';
-          }
-        };
-      };
       wrapper.appendChild(cardDiv);
       list.appendChild(wrapper);
-      cardDiv.appendChild(img);
     });
   }
+  
   modal.style.display = 'block';
 }
 
