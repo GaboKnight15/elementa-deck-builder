@@ -772,7 +772,6 @@ function createCardBuilder(card, ownedCount) {
       // GRAY OUT IF unavailable
     if (available <= 0 || !canAddCard(card, currentInDeck, ownedCount)) {
         div.classList.add('card-unavailable');
-        img.style.pointerEvents = 'none';
     }
   holdClickToView(img, card, (e) => {
     // Short click adds to deck
