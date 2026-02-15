@@ -2787,7 +2787,7 @@ const profileBanners = document.getElementById('profile-banners');
 const closeProfileBannerModalBtn = document.getElementById('close-profile-banner-modal');
 
 const defaultIcon = "Images/Avatar/Default.png";
-const defaultBanner = "Images/Banner/DefaultBanner.png";
+const defaultBanner = "Images/Banner/Default.png";
 const allAvatarOptions = [
 // --- COMMON GREEN AVATARS --- //
   { name: 'Elemental of Leaves', src: 'Images/Avatar/Green/ElementalofLeaves.png', rarity: 'Common', price: 10, obtain: 'shop' },
