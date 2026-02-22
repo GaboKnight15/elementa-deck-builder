@@ -5557,80 +5557,124 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // --- Render Profile Avatars ---
 function renderProfileIcons(selectedIcon) {
-  // Clear the container
-  profileIcons.innerHTML = "";
+  const container = document.getElementById('profile-icon-grid');
+  if (!container) return;
 
-  // Fetch unlocked avatars
-  const unlockedAvatars = getUnlockedAvatars()
-    .map((src) => allAvatarOptions.find((avatar) => avatar.src === src))
-    .filter((avatar) => avatar); // Ensure valid avatars
+  container.innerHTML = ''; // Clear existing icons
 
-  // Handle case where no avatars are unlocked
-  if (unlockedAvatars.length === 0) {
-    profileIcons.innerHTML = "<div style='color:#eee;'>No avatars available.</div>";
-    return;
-  }
+  // Get unlocked avatars with callback
+  getUnlockedAvatars(function(avatars) {
+    // Ensure avatars is an array
+    if (!Array.isArray(avatars)) {
+      console.warn('No avatars available');
+      container.innerHTML = '<div style="color:#ffe066;text-align:center;padding:20px;">No avatars available</div>';
+      return;
+    }
 
-  // Render each unlocked avatar
-  unlockedAvatars.forEach((avatar) => {
-    const img = document.createElement("img");
-    img.src = avatar.src;
-    img.className = avatar.src === selectedIcon ? "selected" : ""; // Highlight selected avatar
-    img.alt = avatar.name || avatar.id;
-    img.title = avatar.name || avatar.id;
-
-    // Handle avatar selection
-    img.onclick = function () {
-      selectProfileIcon(avatar.src); // Save selected avatar
-      renderProfileIcons(avatar.src); // Re-render to update selection state
-    };
-
-    // Append the avatar image to the profileIcons container
-    profileIcons.appendChild(img);
+    // Render each avatar
+    avatars.forEach(avatar => {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'profile-icon-option';
+      wrapper.style.position = 'relative';
+      wrapper.style.display = 'inline-block';
+      wrapper.style.margin = '10px';
+      wrapper.style.cursor = 'pointer';
+      wrapper.style.border = selectedIcon === avatar.src ? '3px solid #ffe066' : '3px solid transparent';
+      wrapper.style.borderRadius = '50%';
+      wrapper.style.transition = 'border 0.2s, transform 0.2s';
+      
+      const img = document.createElement('img');
+      img.src = avatar.src || avatar;
+      img.alt = avatar.name || 'Avatar';
+      img.style.width = '80px';
+      img.style.height = '80px';
+      img.style.borderRadius = '50%';
+      img.style.objectFit = 'cover';
+      img.style.display = 'block';
+      
+      img.onclick = function() {
+        selectProfileIcon(avatar.src || avatar);
+        renderProfileIcons(avatar.src || avatar);
+      };
+      
+      wrapper.onmouseenter = function() {
+        wrapper.style.transform = 'scale(1.1)';
+      };
+      
+      wrapper.onmouseleave = function() {
+        wrapper.style.transform = 'scale(1)';
+      };
+      
+      wrapper.appendChild(img);
+      container.appendChild(wrapper);
+    });
   });
 }
 // --- Render Banners ---
 function renderProfileBanners(selectedBanner) {
-  // Clear the container
-  profileBanners.innerHTML = "";
+  const container = document.getElementById('profile-banner-grid');
+  if (!container) return;
 
-  // Fetch unlocked banners
-  const unlockedBanners = getUnlockedBanners()
-    .map((src) => allBannerOptions.find((banner) => banner.src === src))
-    .filter((banner) => banner); // Ensure valid banners
+  container.innerHTML = ''; // Clear existing banners
 
-  // Handle case where no banners are unlocked
-  if (unlockedBanners.length === 0) {
-    profileBanners.innerHTML = "<div style='color:#eee;'>No banners available.</div>";
-    return;
-  }
+  // Get unlocked banners with callback
+  getUnlockedBanners(function(banners) {
+    // Ensure banners is an array
+    if (!Array.isArray(banners)) {
+      console.warn('No banners available');
+      container.innerHTML = '<div style="color:#ffe066;text-align:center;padding:20px;">No banners available</div>';
+      return;
+    }
 
-  // Render each unlocked banner
-  unlockedBanners.forEach((banner) => {
-    const img = document.createElement("img");
-    img.src = banner.src;
-    img.className = banner.src === selectedBanner ? "selected" : ""; // Highlight selected banner
-    img.alt = banner.name || banner.id;
-    img.title = banner.name || banner.id;
-
-    // Handle banner selection
-    img.onclick = function () {
-      selectProfileBanner(banner.src); // Save selected banner
-      renderProfileBanners(banner.src); // Re-render to update selection state
-    };
-
-    // Append the banner image to the profileBanners container
-    profileBanners.appendChild(img);
+    // Render each banner
+    banners.forEach(banner => {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'profile-banner-option';
+      wrapper.style.position = 'relative';
+      wrapper.style.display = 'inline-block';
+      wrapper.style.margin = '10px';
+      wrapper.style.cursor = 'pointer';
+      wrapper.style.border = selectedBanner === banner.src ? '3px solid #ffe066' : '3px solid transparent';
+      wrapper.style.borderRadius = '10px';
+      wrapper.style.transition = 'border 0.2s, transform 0.2s';
+      
+      const img = document.createElement('img');
+      img.src = banner.src || banner;
+      img.alt = banner.name || 'Banner';
+      img.style.width = '200px';
+      img.style.height = '100px';
+      img.style.borderRadius = '8px';
+      img.style.objectFit = 'cover';
+      img.style.display = 'block';
+      
+      img.onclick = function() {
+        selectProfileBanner(banner.src || banner);
+        renderProfileBanners(banner.src || banner);
+      };
+      
+      wrapper.onmouseenter = function() {
+        wrapper.style.transform = 'scale(1.05)';
+      };
+      
+      wrapper.onmouseleave = function() {
+        wrapper.style.transform = 'scale(1)';
+      };
+      
+      wrapper.appendChild(img);
+      container.appendChild(wrapper);
+    });
   });
 }
     
 // --- Open/Close Avatar Modal ---
-profilePicMenuBtn.onclick = function () {
-  const currentIcon = profilePicMenu && profilePicMenu.src ? profilePicMenu.src.split("?")[0] : "";
-
-  renderProfileIcons(currentIcon); // Update the render logic to work dynamically
-
-  if (profileIconModal) profileIconModal.style.display = "flex";
+profilePicMenuBtn.onclick = function() {
+  const modal = document.getElementById('profile-icon-modal');
+  if (modal) {
+    modal.style.display = 'flex';
+    // Get current selected icon
+    const currentIcon = document.getElementById('profile-pic')?.src || 'Images/Avatar/Default.png';
+    renderProfileIcons(currentIcon);
+  }
 };
 closeProfileIconModalBtn.onclick = function() {
   if (profileIconModal) profileIconModal.style.display = 'none';
@@ -5669,13 +5713,14 @@ function selectProfileIcon(iconUrl) {
 }
 
 // --- Banner Modal ---
-profileBanner.onclick = function () {
-  const currentBanner = profileBanner.src.split("?")[0];
-
-  renderProfileBanners(currentBanner);
-
-  // Show the banner modal
-  profileBannerModal.style.display = "flex";
+profileBanner.onclick = function() {
+  const modal = document.getElementById('profile-banner-modal');
+  if (modal) {
+    modal.style.display = 'flex';
+    // Get current selected banner
+    const currentBanner = profileBanner?.src || 'Images/Banner/Default.png';
+    renderProfileBanners(currentBanner);
+  }
 };
 
 closeProfileBannerModalBtn.onclick = function () {
