@@ -87,7 +87,7 @@ function updateFavoriteFilterIconLibrary() {
 
 function createCardLibrary(card) {
   const div = document.createElement('div');
-  div.className = 'card-gallery'; // Reuse gallery card styling
+  div.className = 'card-library'; // Changed from 'card-gallery' to 'card-library'
   
   if (card.rarity) {
     div.setAttribute('data-rarity', card.rarity);
@@ -111,7 +111,7 @@ function createCardLibrary(card) {
     const star = document.createElement('img');
     star.src = 'Icons/Other/Star.png';
     star.alt = 'Favorite';
-    star.className = 'gallery-favorite-star';
+    star.className = 'library-favorite-star'; // Updated class name
     star.style.position = 'absolute';
     star.style.top = '6px';
     star.style.right = '6px';
