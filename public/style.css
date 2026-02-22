@@ -773,7 +773,159 @@ button {}
   font-weight: bold;
   letter-spacing: 1px;
 }
+/* ==================== */
+/* === LIBRARY SECTION === */
+/* ==================== */
 
+#library-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  min-height: 100%;
+  box-sizing: border-box;
+  background: #1a2533;
+  overflow-y: auto;
+  padding-bottom: 40px;
+}
+
+#library-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 20px;
+  width: 95%;
+  max-width: 1400px;
+  padding: 20px;
+  box-sizing: border-box;
+  justify-items: center;
+}
+
+/* Reuse gallery card styles for library */
+.card-library {
+  width: 140px;
+  position: relative;
+  cursor: pointer;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: transform 0.18s cubic-bezier(.22,1.14,.32,1), box-shadow 0.18s;
+  box-shadow: 0 2px 12px #0006;
+  background: #232a3c;
+}
+
+.card-library:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 24px #ffe06688;
+  z-index: 2;
+}
+
+/* Library filter row */
+#filters-library {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px 20px;
+  width: 100%;
+  box-sizing: border-box;
+  flex-wrap: wrap;
+}
+
+#library-progress {
+  margin: 10px 0;
+  font-size: 1.08em;
+  color: #ffe066;
+  text-align: center;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-shadow: 0 1px 4px #000b;
+}
+
+/* Library card menu styling */
+#library-card-menu {
+  display: none;
+  position: absolute;
+  z-index: 1000;
+  min-width: 180px;
+  background: #253047;
+  border-radius: 14px;
+  box-shadow: 0 6px 32px #000b;
+  padding: 0;
+  border: 2px solid #314175;
+}
+
+#library-card-menu .modal-content {
+  background: transparent;
+  padding: 8px;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+#library-card-menu .settings-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 12px 16px;
+  background: transparent;
+  border: none;
+  color: #ffe066;
+  font-size: 1.05em;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.15s, transform 0.1s;
+  text-align: left;
+  margin: 4px 0;
+}
+
+#library-card-menu .settings-item:hover {
+  background: #314175;
+  transform: scale(1.02);
+}
+
+#library-card-menu .settings-item img {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  filter: drop-shadow(0 1px 3px #0008);
+}
+
+/* Library favorite star on cards */
+.library-favorite-star {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 28px;
+  height: 28px;
+  z-index: 5;
+  filter: drop-shadow(0 2px 6px #000b);
+  pointer-events: none;
+}
+
+/* Reset button for library */
+#reset-library-filters-btn {
+  padding: 8px 16px;
+  background: #314175;
+  color: #ffe066;
+  border: 2px solid #ffe066;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+
+#reset-library-filters-btn:hover {
+  background: #ffe066;
+  color: #314175;
+  transform: scale(1.05);
+}
+
+/* Holding visual feedback for library cards */
+.card-library.holding {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(255, 224, 102, 0.6);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
 
 /* ============================= GALLERY =========================== */
 
