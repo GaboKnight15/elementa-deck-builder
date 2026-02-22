@@ -96,11 +96,18 @@
 
     <!-- MENU ICONS -->
     <div id="home-menu-icons">
+      
+    <!-- LIBRARY -->
+      <div class="home-menu-btn" data-section="library-section">
+        <span class="home-menu-title">Library</span>
+        <img src="Icons/Other/Library.png" alt="Library" class="home-menu-img"/>
+      </div>
       <!-- CARDS -->
       <div class="home-menu-btn" data-section="gallery-section">
         <span class="home-menu-title">Collection</span>
         <img src="Icons/Other/Gallery.png" alt="Gallery" class="home-menu-img"/>
       </div>
+
       <!-- DECKS -->
       <div class="home-menu-btn" data-section="builder-section">
         <span class="home-menu-title">Decks</span>
@@ -120,6 +127,48 @@
     </div>
   </div>
 </section>
+
+<!-- LIBRARY SECTION -->
+<section id="library-section" class="section">
+  <div id="library-container" class="section-container">
+    <!-- SECTION HEADER -->
+    <div id="library-header" class="section-header">
+      <div class="section-header-left">
+        <img id="library-back-btn" src="Icons/Other/Back.png" alt="Back" class="section-header-btn" title="Back" />
+      </div>
+      <div class="section-header-center">Card Library</div>
+      <div class="section-header-right">
+        <img id="library-settings-btn" src="Icons/Other/Settings.png" alt="Settings" class="section-header-btn" title="Settings" />
+      </div>
+    </div>
+    
+    <!-- FILTER ROW -->
+    <div id="filters-library" class="filter-row">
+      <input type="text" id="filter-name-library" class="filter-name" placeholder="Search by name..." />
+      <img id="filter-favorites-library" src="Icons/Other/Star.png" alt="Favorites" title="Show only favorites"
+        style="width:32px;height:32px;cursor:pointer;filter:grayscale(1);opacity:0.6;transition:filter 0.2s,opacity 0.2s;">
+      <img id="library-filter-btn" src="Icons/Other/Filter.png" alt="Filters"
+        title="Advanced Filters" style="width:36px;height:36px;cursor:pointer;vertical-align:middle;margin-left:8px;">
+      <button id="reset-library-filters-btn" class="btn-secondary" style="margin-left:8px;">Reset Filters</button>
+    </div>
+    
+    <!-- PROGRESS INFO -->
+    <div id="library-progress" style="margin:10px 0; font-size:1.08em; color:#ffe066;"></div>
+    
+    <!-- CARDS GRID -->
+    <div id="library-cards"></div>
+  </div>
+</section>
+
+<!-- LIBRARY CARD MENU -->
+<div id="library-card-menu" class="menu" style="display:none;">
+  <div class="modal-content">
+    <button id="library-card-view-btn" class="settings-item">
+      <img src="Icons/Other/View.png" alt="View" style="width:20px;vertical-align:middle;margin-right:10px;"> View
+    </button>
+    <!-- Favorite button added dynamically -->
+  </div>
+</div>  
                               <!-- GALLERY -->
 <section id="gallery-section" class="section">
   <div id="gallery-container" class="section-container">
@@ -147,10 +196,10 @@
   </div>
   <div id="gallery-collection-progress" style="margin:10px 0; font-size:1.08em; color:#ffe066;"></div>
   <div id="gallery-cards"></div>
-</div>  
+</div>
+
 </section>
 
-  
                       <!-- DECK BUILDER -->
 <section id="builder-section" class="section">  
   <div id="builder-container" class="section-container">
@@ -782,7 +831,8 @@
 <script src="animations.js"></script>
 <script src="shared.js"></script>
 <script src="friends.js"></script>
-<script src="quest.js"></script>  
+<script src="quest.js"></script>
+<script src="library.js"></script>
 <script src="gallery.js"></script>
 <script src="builder.js"></script>
 <script src="modes.js"></script>
@@ -791,6 +841,7 @@
  
 </body> 
 </html>
+
 
 
 
