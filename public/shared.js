@@ -562,8 +562,8 @@ const dummyCards = [
  skill: [{name: 'Summon', cost: '{1}{w}', effect: {class: 'Summon'}},
   {name: 'Divine Ascendance', cost: '{1}{w}',
    requirement: [{class: 'Special'}, {class: 'CCW'}],
-   effect: [{class: 'Buff', atk: 1, def: 1}, {class: 'Summon'}, {class: 'Aegis}]},
-  {name: 'Seraphic Judgement', cost: '{2}{w}{w}', 
+   effect: [{class: 'Buff', atk: 1, def: 1}, {class: 'Summon'}, {class: 'Aegis'}]},
+  {name: 'Seraphic Judgement', cost: '{w}{w}{w}', 
    requirement: [{class: 'Ultimate'}, {class: 'CW'}],
    effect: {class: 'Banish', amount: 1}},
  ]},
@@ -621,7 +621,7 @@ const dummyCards = [
 
 {id: 'DawlightLady', name: 'Dawlight Lady', rarity: 'Common', image: 'Cards/egw/DawlightLady.png', flavor: '', 
  category: 'Creature', color:'White', type: 'Construct', archetype: 'Lightforge', trait:  'Warrior', hp: 4, atk: 1, def: 0,
- cost: '{w}', ability: ['Protect'], set: 'CelestialWonders',
+ cost: '{w}', ability: ['Protect'], set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{w}', effect: {class: 'Summon'}},
   {name:'Dash', cost: '{w}',
    effect: {class: 'Dash'}},
@@ -725,7 +725,7 @@ const dummyCards = [
    effect: {class: 'Token', token: 'Imp'}}]},
 
 {id: 'GraveweaverWarlock', name: 'Graveweaver Warlock', rarity: 'Rare', image: 'Cards/egb/GraveweaverWarlock.png', flavor: '', 
- category: 'Creature', color: 'Black', type: 'Brute', archetype: 'Orc', trait: 'Mage', hp: 7, atk: 3, def: 0,
+ category: 'Creature', color: 'Black', type: 'Brute', archetype: 'Orc', trait: 'Mage', hp: 6, atk: 3, def: 0,
  cost: '{2}{b}', ability: '', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{2}{b}', effect: {class: 'Summon'}},
   {name:'Lifetithe', cost: '{B}',
@@ -2363,7 +2363,7 @@ Dragon Terrains
  category: 'Domain', color: 'Purple', type: 'Terrain', hp: 5, cost: '{0}', essence: '{P}', set: 'StandardPack2'},
 
 // --- Gray Domains --- //
-
+/*
 {id: 'IrondeepBastion', name: 'Irondeep Bastion', rarity: 'Common', image: 'Cards/Domain/IrondeepBastion.png', flavor: '', 
  category: 'Domain', color: 'Gray', type: 'Terrain', hp: 14, cost: '{c}{c}', essence: '{C}', set: 'StandardPack2'},
  
