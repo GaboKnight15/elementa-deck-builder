@@ -5,7 +5,7 @@ const dummyCards = [
 
 {id: 'VeyaVerdaraDruidess', name: 'Veya, Verdara Druidess', rarity: 'Legendary', image: 'Cards/egg/VeyaVerdaraDruidess.png', flavor: '', 
  category: 'Creature', color: 'Green', type: 'Human', archetype: '', trait: 'Mage', hp: 5, atk: 1, def: 0,
- cost: '{1}{g}', ability: '', set: 'ElementaGenesis',
+ cost: '{1}{g}', ability: '', set: 'ElementaGenesis', imageFullArt: 'Cards/egg/VeyaVerdaraDruidessFA.png',
  skill: [{name: 'Summon', cost: '{1}{g}', effect: {class: 'Summon'}},
   {name: 'Verdant Invocation', cost: '{cw}',
    requirement: [{class:'Special'}, {class: 'CW'}], 
@@ -4245,6 +4245,93 @@ function showToast(message, options = {}) {
     toast.style.opacity = '0';
     setTimeout(() => toast.remove(), 300);
   }, duration);
+}
+
+function getCardImage(card, preferredStyle = null) {
+  if (!card) return 'Icons/Other/Placeholder.png';
+  
+  // Get player's selected style for this specific card (if any)
+  const playerSelectedStyle = window.playerCardStyles?.[card.id];
+  const styleToUse = preferredStyle || playerSelectedStyle || 'default';
+  
+  // Map style names to card properties
+  const styleMap = {
+    'default': card.image,
+    'fullArt': card.imageFullArt,
+    'altered': card.imageAltered,
+  };
+  
+  // Get the requested style, fallback to default if not available
+  const selectedImage = styleMap[styleToUse];
+  
+  // Check if the style is unlocked for this player
+  if (styleToUse !== 'default' && selectedImage) {
+    const isUnlocked = isCardStyleUnlocked(card.id, styleToUse);
+    if (isUnlocked) {
+      return selectedImage;
+    }
+  }
+  // Fallback to default image
+  return card.image || 'Icons/Other/Placeholder.png';
+}
+
+function isCardStyleUnlocked(cardId, styleType) {
+  if (styleType === 'default') return true; // Default is always unlocked
+  switch (styleType) {
+    case 'fullArt': return window.playerUnlockedFullArt?.[cardId] === true;
+    case 'altered': return window.playerUnlockedAltered?.[cardId] === true;
+	default:
+    return false;
+  }
+}
+
+function getAvailableCardStyles(card, onlyUnlocked = false) {
+  const allStyles = [];
+  // Default is always available
+  allStyles.push({
+    key: 'default',
+    name: 'Default',
+    image: card.image,
+    unlocked: true
+  });
+  // Full Art
+  if (card.imageFullArt) {
+    allStyles.push({
+      key: 'fullArt',
+      name: 'Full Art',
+      image: card.imageFullArt,
+      unlocked: isCardStyleUnlocked(card.id, 'fullArt')
+    });
+  }
+  // Altered Art
+  if (card.imageAltered) {
+    allStyles.push({
+      key: 'altered',
+      name: 'Alternate Art',
+      image: card.imageAltered,
+      unlocked: isCardStyleUnlocked(card.id, 'altered')
+    });
+  }
+  // Filter to only unlocked if requested
+  if (onlyUnlocked) {
+    return allStyles.filter(style => style.unlocked);
+  }
+  return allStyles;
+}
+
+function unlockCardStyle(cardId, styleType) {
+  switch (styleType) {
+    case 'fullArt':
+      if (!window.playerUnlockedFullArt) window.playerUnlockedFullArt = {};
+      window.playerUnlockedFullArt[cardId] = true;
+      break;    
+    case 'altered':
+      if (!window.playerUnlockedAltered) window.playerUnlockedAltered = {};
+      window.playerUnlockedAltered[cardId] = true;
+      break;
+  }
+  saveProgress();
+  showToast(`Unlocked ${styleType} style!`, { type: 'success' });
 }
 
 // MENU INSIDE VIEWPORT
