@@ -15,9 +15,9 @@ const dummyCards = [
    effect: {class: 'Heal', amount: 2, target: 2}},
   ]},
 
-{id: 'FaelyraWildhornEmpress', name: 'Faelyra, Wildhorn Empress', rarity: 'Legendary', image: 'Cards/egg/FaelyraWildhornEmpress.png', flavor: '', imageFullArt: 'Cards/Satyrs/FaelyraSatyrEmpressFA.png', flavor: '',
+{id: 'FaelyraWildhornEmpress', name: 'Faelyra, Wildhorn Empress', rarity: 'Legendary', image: 'Cards/egg/FaelyraWildhornEmpress.png', flavor: '',
  category: 'Creature', color: 'Green', type: 'Faefolk', archetype: 'Satyr', trait: 'Mage', hp: 5, atk: 1, def: 0,
- cost: '{g}', ability: '', set: 'ElementaGenesis',
+ cost: '{g}', ability: '', set: 'ElementaGenesis', imageFullArt: 'Cards/egg/FaelyraWildhornEmpressFA.png',
  skill: [{name: 'Summon', cost: '{g}', effect: {class: 'Summon'}},
   {name: 'Satyr Echo',
    activation: {class: 'Echo', type: 'Satyr'},
@@ -186,7 +186,7 @@ const dummyCards = [
 // --- EG BLUE --- //
 {id: 'ZaryonUmarionCommander', name: 'Zaryon, Umarion Commander', rarity: 'Legendary', image: 'Cards/egu/ZaryonUmarionCommander.png', flavor: '', 
  category: 'Creature', color: 'Blue', type: 'Merfolk', archetype: '', trait: 'Warrior', hp: 6, atk: 2, def: 1,
- cost: '{1}{u}', ability: ['Dive','Pierce'], set: 'ElementaGenesis',
+ cost: '{1}{u}', ability: ['Dive','Pierce'], set: 'ElementaGenesis', imageFullArt: 'Cards/egu/ZaryonUmarionCommanderFA.png',
  skill: [{name: 'Summon', cost: '{u}', effect: {class: 'Summon'}},
   {name: 'Deepkin Rally', cost: '{u}',
    requirement: [{class:'Special'}, {class: 'CW'}],
@@ -198,7 +198,7 @@ const dummyCards = [
 
 {id: 'SerenyaTideboundEnchantress', name: 'Serenya, Tidebound Enchantress', rarity: 'Legendary', image: 'Cards/egu/SerenyaTideboundEnchantress.png', flavor: '', 
  category: 'Creature', color: 'Blue', type: 'Human', archetype: '', trait: 'Mage', hp: 5, atk: 1, def: 0,
- cost: '{1}{u}', ability: 'Soak', set: 'ElementaGenesis',
+ cost: '{1}{u}', ability: 'Soak', set: 'ElementaGenesis', imageFullArt: 'Cards/egu/SerenyaTideboundEnchantressFA.png',
  skill: [{name: 'Summon', cost: '{1}{u}', effect: {class: 'Summon'}},
   {name: 'Tidecall Ascendance', cost: '{u}', requirement: {class: 'Special'}, effect: {class: 'Draw', amount: 1}},
   {name: 'Riptide Command', cost: '{u}{u}',
@@ -272,7 +272,7 @@ const dummyCards = [
 // --- EG YELLOW --- //
 {id: 'GarudaAetherionWings', name: 'Garuda, AetherionWings', rarity: 'Legendary', image: 'Cards/Zephyra/GarudaAetherionWings.png', flavor: '', 
  category: 'Creature', color: 'Yellow', type: 'Avian', archetype: 'Zephyra', trait: 'Warrior', hp: 5, atk: 2, def: 1,
- cost: '{1}{y}', ability: 'Flying', set: 'ElementaGenesis',
+ cost: '{1}{y}', ability: 'Flying', set: 'ElementaGenesis', imageFullArt: 'Cards/Zephyra/GarudaAetherionWingsFA.png', 
  skill: [{name: 'Summon', cost: '{1}{y}', effect: {class: 'Summon'}},
   {name:'Dash', cost: '{w}',
    effect: {class: 'Dash'}},
@@ -358,7 +358,7 @@ const dummyCards = [
 // --- EG GRAY --- //
 {id: 'GravokDrakzulTyrant', name: 'Gravok, Drakzul Tyrant', rarity: 'Legendary', image: 'Cards/egc/GravokDrakzulTyrant.png', flavor: '', 
  category: 'Creature', color: 'Gray', type: 'Brute', archetype: '', trait: 'Warrior', hp: 5, atk: 2, def: 2,
- cost: '{2}{c}', ability: ['Armor','Crush'], set: 'ElementaGenesis',
+ cost: '{2}{c}', ability: ['Armor','Crush'], set: 'ElementaGenesis', imageFullArt: 'Cards/egc/GravokDrakzulTyrantFA.png',
  skill: [{name: 'Summon', cost: '{2}{c}', effect: {class: 'Summon'}},
   {name: 'Twin Impact', cost: '{c}',
    requirement: [{class:'Special'}, {class: 'CCW'}], 
@@ -370,7 +370,7 @@ const dummyCards = [
 
 {id: 'RudgarIronfistMauler', name: 'Rudgar, Ironfist Mauler', rarity: 'Legendary', image: 'Cards/egc/RudgarIronfistMauler.png', flavor: '', 
  category: 'Creature', color: 'Gray', type: 'Human', archetype: '', trait: 'Warrior', hp: 5, atk: 2, def: 1,
- cost: '{1}{c}', ability: 'Crush', set: 'ElementaGenesis',
+ cost: '{1}{c}', ability: 'Crush', set: 'ElementaGenesis', imageFullArt: 'Cards/egc/RudgarIronfistMaulerFA.png',
  skill: [{name: 'Summon', cost: '{1}{c}', effect: {class: 'Summon'}},
   {name: 'Stonebreaker Punch', cost: '{c}',
    requirement: [{class:'Special'}, {class: 'CW'}], 
@@ -469,7 +469,7 @@ const dummyCards = [
 // --- EG PURPLE --- //
 {id: 'MordrathVirkulPhantom', name: 'Mordrath, Virkul Phantom', rarity: 'Legendary', image: 'Cards/egp/MordrathVirkulPhantom.png', flavor: '', 
  category: 'Creature', color: 'Purple', type: 'Undead', archetype: 'Ghost', trait: 'Warrior', hp: 4, atk: 2, def: 2,
- cost: '{2}{p}', ability: ['Immunity','Venom'], set: 'FracturedOrigins',
+ cost: '{2}{p}', ability: ['Immunity','Venom'], set: 'ElementaGenesis', imageFullArt: 'Cards/egp/MordrathVirkulPhantomFA.png',
  skill: [{name: 'Summon', cost: '{2}{p}', effect: {class: 'Summon'}},
   {name: 'Reanimate', cost: '{1}{P}{P}',
    effect: {class: 'Reanimate'}},
@@ -483,7 +483,7 @@ const dummyCards = [
 	
 {id: 'SelgorCorruptedWarlock', name: 'Selgor, Corrupted Warlock', rarity: 'Legendary', image: 'Cards/egp/SelgorCorruptedWarlock.png', flavor: '', 
  category: 'Creature', color: 'Purple', type: 'Human', archetype: '', trait: 'Mage', hp: 5, atk: 1, def: 0,
- cost: '{1}{p}', ability: 'Wither', set: 'ElementaGenesis',
+ cost: '{1}{p}', ability: 'Wither', set: 'ElementaGenesis', imageFullArt: 'Cards/egp/SelgorCorruptedWarlockFA.png',
  skill: [{name: 'Summon', cost: '{1}{p}', effect: {class: 'Summon'}},
   {name: 'Soul Reap',
    requirement: [{class: 'Special'}, {class: 'Sacrifice', target: 1, targetCategory: 'Creature'}],
@@ -558,7 +558,7 @@ const dummyCards = [
 // --- EG WHITE --- //
 {id: 'SeraphielSolmaraParagon', name: 'Seraphiel, Solmara Paragon', rarity: 'Legendary', image: 'Cards/egw/SeraphielSolmaraParagon.png', flavor: '', 
  category: 'Creature', color: 'White', type: 'Angel', archetype: 'Seraph', trait: 'Warrior', hp: 5, atk: 2, def: 1,
- cost: '{1}{w}', ability: 'Flying', set: 'FracturedOrigins',
+ cost: '{1}{w}', ability: 'Flying', set: 'ElementaGenesis', imageFullArt: 'Cards/egw/SeraphielSolmaraParagonFA.png',
  skill: [{name: 'Summon', cost: '{1}{w}', effect: {class: 'Summon'}},
   {name: 'Divine Ascendance', cost: '{1}{w}',
    requirement: [{class: 'Special'}, {class: 'CCW'}],
@@ -570,7 +570,7 @@ const dummyCards = [
 	 
 {id: 'ElyndraDawnbladeofHeavens', name: 'Elyndra, Dawnblade of Heavens', rarity: 'Legendary', image: 'Cards/egw/ElyndraDawnbladeofHeavens.png', flavor: '', 
  category: 'Creature', color: 'White', type: 'Human', archetype: '', trait: 'Warrior', hp: 5, atk: 2, def: 1,
- cost: '{1}{w}', ability: 'Aegis', set: 'ElementaGenesis',
+ cost: '{1}{w}', ability: 'Aegis', set: 'ElementaGenesis', imageFullArt: 'Cards/egw/ElyndraDawnbladeofHeavensFA.png',
  skill: [{name: 'Summon', cost: '{1}{w}', effect: {class: 'Summon'}},
   {name: 'Dawnbreak', cost: '{w}', requirement: {class:'Special'}, effect: {class: 'Bolster', amount: 1}},
   {name: 'Radiant Severance', cost: '{w}{w}',
@@ -680,7 +680,7 @@ const dummyCards = [
 // --- EG BLACK --- //
 {id: 'MorvaneNoctyraOathbreaker', name: 'Morvane, Noctyra Oathbreaker', rarity: 'Legendary', image: 'Cards/egb/MorvaneNoctyraOathbreaker.png', flavor: '', 
  category: 'Creature', color: 'Black', type: 'Human', archetype: '', trait: 'Mage', hp: 5, atk: 2, def: 0,
- cost: '{1}{b}', ability: '', set: 'ElementaGenesis',
+ cost: '{1}{b}', ability: '', set: 'ElementaGenesis', imageFullArt: 'Cards/egb/MorvaneNoctyraOathbreakerFA.png',
  skill: [{name: 'Summon', cost: '{1}{b}', effect: {class: 'Summon'}},
   {name:'Shadowseal Vigor', activation: {class:'Sealed'}, 
    effect: {class: 'Rally', amount: 1}},
@@ -691,7 +691,7 @@ const dummyCards = [
 
 {id: 'VelmiraMistressofSilence', name: 'Velmira, Mistress of Silence', rarity: 'Legendary', image: 'Cards/egb/VelmiraMistressofSilence.png', flavor: '', 
  category: 'Creature', color: 'Black', type: 'Human', archetype: '', trait: 'Mage', hp: 3, atk: 1, def: 0,
- cost: '{b}', ability: 'Veil', set: 'ElementaGenesis',
+ cost: '{b}', ability: 'Veil', set: 'ElementaGenesis', imageFullArt: 'Cards/egb/VelmiraMistressofSilenceFA.png',
  skill: [{name: 'Summon', cost: '{1}{b}', effect: {class: 'Summon'}},
   {name:'Shadowseal Vigor', activation: {class:'Sealed'}, 
    effect: {class: 'Rally', amount: 1}},
