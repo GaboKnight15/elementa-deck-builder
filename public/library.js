@@ -155,9 +155,6 @@ function renderLibrary() {
     ...selectedFilters,
   });
 
-  // Update progress display
-  updateLibraryProgress(filteredCards);
-
   // Early return if no cards match the filters
   if (filteredCards.length === 0) {
     libraryGallery.innerHTML = "<div>No cards match the selected filters.</div>";
@@ -169,43 +166,6 @@ function renderLibrary() {
     const cardDiv = createCardLibrary(card);
     libraryGallery.appendChild(cardDiv);
   });
-}
-
-function updateLibraryProgress(filteredCards) {
-  const favoriteIds = getFavoriteCards();
-  const favoritedCount = filteredCards.filter(card => favoriteIds.includes(card.id)).length;
-  const total = filteredCards.length;
-
-  // Gather all modal-applied filters
-  const selectedFilters = getSelectedFiltersFromModal();
-  let filterInfoArray = Object.entries(selectedFilters || {})
-    .filter(([key, values]) => values && values.length > 0)
-    .flatMap(([key, values]) => values);
-
-  // Add the name filter if provided
-  const nameFilter = libraryNameFilter ? libraryNameFilter.value.toLowerCase() : "";
-  if (nameFilter) {
-    filterInfoArray.push(nameFilter);
-  }
-
-  // Combine filter info
-  const filterInfo = filterInfoArray.length ? filterInfoArray.join(' ') : '';
-
-  let str = '';
-  if (total === 0) {
-    str = filterInfo
-      ? `No cards match the selected filters: <b>${filterInfo}</b>`
-      : 'No cards match the selected filters.';
-  } else if (showFavoritesOnlyLibrary) {
-    str = `Favorites <b>${favoritedCount}</b>`;
-    if (filterInfo) str += ` (${filterInfo})`;
-  } else {
-    str = `Showing <b>${total}</b> cards`;
-    if (filterInfo) str += ` (${filterInfo})`;
-  }
-
-  const progDiv = document.getElementById('library-progress');
-  if (progDiv) progDiv.innerHTML = str;
 }
 
 function showLibraryCardMenu(card, anchorDiv) {
