@@ -17,14 +17,17 @@ const dummyCards = [
 
 {id: 'FaelyraWildhornEmpress', name: 'Faelyra, Wildhorn Empress', rarity: 'Legendary', image: 'Cards/egg/FaelyraWildhornEmpress.png', flavor: '',
  category: 'Creature', color: 'Green', type: 'Faefolk', archetype: 'Satyr', trait: 'Mage', hp: 5, atk: 1, def: 0,
- cost: '{g}', ability: '', set: 'ElementaGenesis', imageFullArt: 'Cards/egg/FaelyraWildhornEmpressFA.png',
- skill: [{name: 'Summon', cost: '{g}', effect: {class: 'Summon'}},
-  {name: 'Satyr Echo',
-   activation: {class: 'Echo', type: 'Satyr'},
-   effect: {class: 'Heal', amount: 3}},
+ cost: '{1}{g}', ability: '', set: 'ElementaGenesis', imageFullArt: 'Cards/egg/FaelyraWildhornEmpressFA.png',
+ skill: [{name: 'Summon', cost: '{1}{g}', effect: {class: 'Summon'}},
+  {name: 'Rhythmic Conjure', cost: '{g}{g}',
+   requirement: {class: 'Special'},
+   effect: {class: 'Spawn', targetId: 'Satyr', amount: 1}},
   {name: 'Chorus of the Wild', cost: '{g}{g}',
    requirement: [{class: 'Ultimate'}, {class: 'CW'}],
-   effect: {class: 'Heal', amount: 2, target: 3}}
+   effect: {class: 'Heal', amount: 2, target: 3}},
+  {name: 'Spirit of the Grove', cost: '{g}',
+   requirement: {class: 'Channel'},
+   effect: {class: 'Spawn', targetId: 'Satyr', amount: 1}},
  ]},
 	
 {id: 'Verdara', name: 'Verdara', rarity: 'Legendary', image: 'Cards/egg/Verdara.png', flavor: '', 
@@ -32,15 +35,24 @@ const dummyCards = [
  skill: [{name: 'Flourish', cost: '{g}', requirement: {class: 'CW'}, effect: {class: 'Search', trait: 'Terrain'}}]},
 
 {id: 'SylvanAnima', name: 'Sylvan Anima', rarity: 'Legendary', image: 'Cards/egg/SylvanAnima.png', flavor: '', 
- category: 'Spell', color: 'Green', type: 'Aura', cost: '{2}', set: 'ElementaGenesis',
- skill: [{name: 'Enchant', cost: '{2}', effect: {class: 'Enchant'}},
-		{name: 'Awaken', effect: [{class: 'Awaken'}, {class : 'Essence', color: 'Green', amount: 1}]}]},
+ category: 'Spell', color: 'Green', type: 'Aura', cost: '{1}{g}', set: 'ElementaGenesis',
+ skill: [{name: 'Enchant', cost: '{1}{g}', effect: {class: 'Enchant'}},
+		{name: 'Awaken', activation: {class: 'Awaken'}, effect: [{class: 'Recover', amount: 1}, {class : 'Essence', color: 'Green', amount: 1}]}]},
 
 {id: 'VerdaraSoldier', name: 'Verdara Soldier', rarity: 'Rare', image: 'Cards/egg/VerdaraSoldier.png', flavor: '', 
  category: 'Creature', color: 'Green', type: 'Human', archetype: '', trait: 'Warrior', hp: 5, atk: 3, def: 1, cost: '{2}', 
  ability: '', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{2}', effect: {class: 'Summon'}}]},
-
+	
+{id: 'WildhornSongreaver', name: 'Wildhorn Songreaver', rarity: 'Rare', image: 'Cards/egg/WildhornSongreaver.png', flavor: '', 
+ category: 'Creature', color: 'Green', type: 'Faefolk', archetype: 'Satyr', hp: 6, atk: 2, def: 0,
+ cost: '{2}{g}', ability: '', set: 'ElementaGenesis',
+ skill: [{name: 'Summon', cost: '{1}{g}', effect: {class: 'Summon'}},
+  {name: 'Hidden Overture', cost: '{g}', requirement: {class: 'Stash'},
+   effect: {class: 'Enable', targetColor: 'green', amount: 1}},
+  {name: 'Horncall Crescendo', cost: '{g}{g}', requirement: {class: 'Special'},
+   effect: {class: 'Rally', amount: 1, targetType: 'Satyr'}}]},
+	
 {id: 'DeepwoodUrsan', name: 'Deepwood Ursan', rarity: 'Rare', image: 'Cards/egg/DeepwoodUrsan.png', flavor: '', 
  category: 'Creature', color: 'Green', type: 'Beast', archetype: '', trait: '', hp: 8, atk: 4, def: 0,
  cost: '{3}{g}', ability: '', set: 'ElementaGenesis',
@@ -59,7 +71,7 @@ const dummyCards = [
   ]},
 
 {id: 'ElementalofFoliages', name: 'Elemental of Foliages', rarity: 'Rare', image: 'Cards/egg/ElementalofFoliages.png', flavor: '', 
- category: 'Creature', color: 'Green', type: 'Elemental', archetype: 'Arbor', trait: '', hp: 7, atk: 3, def: 0,
+ category: 'Creature', color: 'Green', type: 'Elemental', archetype: 'Arbor', trait: '', hp: 8, atk: 2, def: 0,
  cost: '{2}{g}',  ability: ['Protect','Regenerate'], set: 'ElementaGenesis',
  skill: [{name: 'Sylvan Discovery', cost: '{2}{g}', effect: [{class: 'Summon'}, {class: 'Search', targetColor: 'Green', targetTrait: 'Terrain'}]},
  ]},
@@ -68,7 +80,7 @@ const dummyCards = [
  category: 'Spell', color: 'Green', type: 'Spell', cost: '{1}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{1}', effect: [{class: 'Essence', amount: 2, color: 'Green'}, {class: 'Cast'}]}]},
 
-{id: 'ForestFairy', name: 'Forest Fairy', rarity: 'Common', image: 'Cards/egg/Fairy.png', flavor: '', 
+{id: 'Fairy', name: 'Fairy', rarity: 'Common', image: 'Cards/egg/Fairy.png', flavor: '', 
  category: 'Creature', color: 'Green', type: 'Faefolk', archetype: 'Fairy', hp: 2, atk: 1, def: 0,
  cost: '{0}', ability: 'Flying', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{0}', effect: {class: 'Summon'}}]},
@@ -87,6 +99,25 @@ const dummyCards = [
  category: 'Creature', color: 'Green', type: 'Brute', archetype: 'Goblin', hp: 3, atk: 1, def: 0,
  cost: '{0}', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{0}', effect: {class: 'Summon'}}]},
+
+{id: 'WildHuntress', name: 'Wild Huntress', rarity: 'Common', image: 'Cards/egg/WildHuntress.png', flavor: '', 
+ category: 'Creature', color: 'Green', type: 'Faefolk', archetype: 'Satyr', trait: 'Warrior', hp: 4, atk: 2, def: 1,
+ cost: '{1}{g}', ability: 'Rush', set: 'ElementaGenesis',
+ skill: [{name: 'Summon', cost: '{1}{g}', effect: {class: 'Summon'}}]},
+ 
+{id: 'FaunRanger', name: 'Faun Ranger', rarity: 'Common', image: 'Cards/egg/FaunRanger.png', flavor: '', 
+ category: 'Creature', color: 'Green', type: 'Faefolk', archetype: 'Satyr', trait: 'Ranger', hp: 3, atk: 2, def: 0,
+ cost: '{1}{g}', ability: 'Conceil', set: 'ElementaGenesis',
+ skill: [{name: 'Summon', cost: '{1}{g}', effect: {class: 'Summon'}}]},
+ 
+{id: 'FaunDiviner', name: 'Faun Diviner', rarity: 'Common', image: 'Cards/egg/FaunDiviner.png', flavor: '', 
+ category: 'Creature', color: 'Green', type: 'Faefolk', archetype: 'Satyr', hp: 4, atk: 1, def: 0,
+ cost: '{1}{g}', ability: '', set: 'ElementaGenesis',
+ skill: [{name: 'Summon', cost: '{1}{g}', effect: {class: 'Summon'}},
+  {name: 'Horncall Ritual', cost: '{g}', requirement: {class: 'Special'},
+   effect: {class: 'Spawn', targetId: 'Satyr', amount: 1}},
+  {name: "Grove's Requiem", activation: {class: 'Echo'},
+   effect: {class: 'Search', amount: 1, targetType: 'Satyr'}}]},
 
 {id: 'Forest', name: 'Forest', rarity: 'Common', image: 'Cards/egg/Forest.png', flavor: '', 
  category: 'Domain', color: 'Green', type: 'Terrain', hp: 5, cost: '{0}', essence: '{G}', set: 'ElementaGenesis',
@@ -1274,21 +1305,6 @@ const dummyCards = [
    requirement: [{class: 'Ultimate'}, {class:'Sacrifice', amount: 1}, {class: 'CW'}],
    effect: {class: 'Destroy', target: 1 }}
  ]},
- 
-{id: 'WildHuntress', name: 'Wild Huntress', rarity: 'Common', image: 'Cards/Faefolk/WildHuntress.png', flavor: '', 
- category: 'Creature', color: 'Green', type: 'Faefolk', archetype: 'Satyr', trait: 'Warrior', hp: 5, atk: 2, def: 1,
- cost: '{1}{g}', ability: 'Rush', set: 'ElementaGenesis',
- skill: [{name: 'Summon', cost: '{1}{g}', effect: {class: 'Summon'}}]},
- 
-{id: 'FaunRanger', name: 'Faun Ranger', rarity: 'Common', image: 'Cards/Faefolk/FaunRanger.png', flavor: '', 
- category: 'Creature', color: 'Green', type: 'Faefolk', archetype: 'Satyr', trait: 'Ranger', hp: 5, atk: 2, def: 0,
- cost: '{1}{g}', ability: '', set: 'ElementaGenesis',
- skill: [{name: 'Summon', cost: '{1}{g}', effect: {class: 'Summon'}}]},
- 
-{id: 'FaunDiviner', name: 'Faun Diviner', rarity: 'Common', image: 'Cards/Faefolk/FaunDiviner.png', flavor: '', 
- category: 'Creature', color: 'Green', type: 'Faefolk', archetype: 'Satyr', hp: 4, atk: 1, def: 0,
- cost: '{g}', ability: '', set: 'ElementaGenesis',
- skill: [{name: 'Summon', cost: '{1}{g}', effect: {class: 'Summon'}}]},
  
 {id: 'SummitWatcher', name: 'Summit Watcher', rarity: 'Common', image: 'Cards/Faefolk/SummitWatcher.png', flavor: '', 
  category: 'Creature', color: 'Gray', type: 'Faefolk', archetype: 'Satyr', hp: 4, atk: 1, def: 0,
