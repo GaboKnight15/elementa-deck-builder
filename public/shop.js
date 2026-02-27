@@ -305,7 +305,7 @@ openedPackRowModal.innerHTML = `
       <div class="opened-card opened-card-flip" data-card-idx="${i}">
         <div class="opened-card-inner">
           <div class="opened-card-back">
-            <img src='Icons/Other/Placeholder.png' alt="Card Back" style="width:100px;height:auto;display:block;margin:auto;">
+            <img src='Images/Cardback/Default.png' alt="Card Back" style="width:100px;height:auto;display:block;margin:auto;">
           </div>
           <div class="opened-card-front" data-rarity="${card.rarity || ''}">
             <img src="${card.image}" alt="${card.name}" style="width:100px;height:auto;display:block;margin:auto;">
@@ -804,7 +804,7 @@ INDIVIDUAL_CARD_SLOTS.forEach(slot => {
     const back = document.createElement('div');
     back.className = 'opened-card-back';
     const backImg = document.createElement('img');
-    backImg.src = 'Images/Domains/placeholder.png';
+    backImg.src = 'Images/Cardback/Default.png';
     backImg.alt = "Card Back";
     backImg.style.width = "90px";
     backImg.style.height = "128px";
