@@ -9,8 +9,8 @@ function appendFriendsProfilePanel(user, container, context) {
   // Use all available fields, fallback if missing
   const playerData = {
     username: user.username || user.uid,
-    profilePic: user.profilePic || user.avatar || 'CardImages/Avatars/Default.png',
-    profileBanner: user.profileBanner || user.banner || "CardImages/Banners/DefaultBanner.png",
+    profilePic: user.profilePic || user.avatar || 'Images/Avatar/Default.png',
+    profileBanner: user.profileBanner || user.banner || "Images/Banner/Default.png",
     power: typeof user.power === "number" ? user.power : 0,
     achievements: Array.isArray(user.achievements) ? user.achievements : [],
     badges: Array.isArray(user.badges) ? user.badges : [],
@@ -357,8 +357,8 @@ function renderFriendsList() {
         appendFriendsProfilePanel({
           uid: fid,
           username: userData.username || fid,
-          profilePic: userData.profilePic || userData.avatar || 'CardImages/Avatars/Default.png',
-          profileBanner: userData.profileBanner || userData.banner || 'CardImages/Banners/DefaultBanner.png',
+          profilePic: userData.profilePic || userData.avatar || 'Images/Avatar/Default.png',
+          profileBanner: userData.profileBanner || userData.banner || 'Images/Banner/Default.png',
           power: typeof userData.power === "number" ? userData.power : 0,
           achievements: Array.isArray(userData.achievements) ? userData.achievements : [],
           badges: Array.isArray(userData.badges) ? userData.badges : [],
@@ -376,8 +376,8 @@ function viewFriendProfile(fid) {
     const userData = doc.data() || {};
     const playerData = {
       username: userData.username || fid,
-      profilePic: userData.profilePic || userData.avatar || 'CardImages/Avatars/Default.png',
-      profileBanner: userData.profileBanner || userData.banner || 'CardImages/Banners/DefaultBanner.png',
+      profilePic: userData.profilePic || userData.avatar || 'Images/Avatar/Default.png',
+      profileBanner: userData.profileBanner || userData.banner || 'Images/Banner/Default.png',
       power: typeof userData.power === "number" ? userData.power : 0,
       achievements: Array.isArray(userData.achievements) ? userData.achievements : [],
       badges: Array.isArray(userData.badges) ? userData.badges : [],
@@ -764,7 +764,7 @@ function renderReceivedRequests() {
         const user = {
           uid: r.fromUid,
           username: r.fromUsername || r.fromUid,
-          avatar: senderDoc.data()?.avatar || 'CardImages/Avatars/Default.png',
+          avatar: senderDoc.data()?.avatar || 'Images/Avatar/Default.png',
           banner: senderDoc.data()?.banner,
           power: senderDoc.data()?.power || 0
         };
@@ -791,7 +791,7 @@ function renderSentRequests() {
           sent.push({
             uid: doc.id,
             username: doc.data()?.username || doc.id,
-            avatar: doc.data()?.avatar || 'CardImages/Avatars/Default.png',
+            avatar: doc.data()?.avatar || 'Images/Avatar/Default.png',
             banner: doc.data()?.banner,
             power: doc.data()?.power || 0
           });
@@ -828,7 +828,7 @@ function renderBlockedUsersList() {
         const user = {
           uid: uid,
           username: userDoc.data()?.username || uid,
-          avatar: userDoc.data()?.avatar || 'CardImages/Avatars/Default.png',
+          avatar: userDoc.data()?.avatar || 'Images/Avatar/Default.png',
           banner: userDoc.data()?.banner,
           power: userDoc.data()?.power || 0
         };
