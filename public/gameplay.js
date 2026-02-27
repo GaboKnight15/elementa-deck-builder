@@ -2234,7 +2234,7 @@ function startGame({
   const realProfile = {
     username: window.playerUsername || "You",
     avatar: window.playerProfilePic || "Images/Avatar/Default.png",
-    banner: window.playerProfileBanner || "Images/Banner/DefaultBanner.png",
+    banner: window.playerProfileBanner || "Images/Banner/Default.png",
     power: typeof calculatePlayerPower === "function" ? calculatePlayerPower() : 0
   };
   // Use real profile in solo/CPU mode, but not for casual/private modes (where playerProfile is correct)
