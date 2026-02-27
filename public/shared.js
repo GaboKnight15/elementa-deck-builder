@@ -2963,7 +2963,7 @@ const allAvatarOptions = [
 // --- LEGENDARY YELLOW AVATARS --- //
   { name: 'Zyra, Thunderblade Duelist', src: 'Images/Avatar/Yellow/Zyra.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
   { name: 'Garuda, Aetherion Wings', src: 'Images/Avatar/Yellow/Garuda.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
-  { name: 'Voltrazek, Tempest Stormrazor', src: 'Images/Avatar/Yellow/Voltrazek.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
+  { name: 'Voltrazek, Tempest Stormrazor', src: 'Images/Avatar/Yellow/VoltrazekTempestStormrazor.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
   { name: 'Astranyra, Thunderbane', src: 'Images/Avatar/Yellow/Astranyra.png', rarity: 'Legendary', price: 100, obtain: 'shop' },
 
 // --- LEGENDARY GRAY AVATARS --- //
@@ -3243,7 +3243,7 @@ function showDailyLoginModal(dayIdx) {
           <span style="color:#fff;">${reward.essence}</span>
         </div>
         ${isToday && !isClaimed ? `<div style="position:absolute;top:6px;right:6px;">
-            <img src="Images/Icons/Star.png" style="width:18px;" title="Claimable Today"></div>` : ''}
+            <img src="Icons/Other/Star.png" style="width:18px;" title="Claimable Today"></div>` : ''}
         ${isClaimed ? `<div style="position:absolute;top:6px;right:6px;">
             <img src="Icons/Other/Checkmark.png" style="width:18px;" title="Claimed"></div>` : ''}
       </div>
@@ -4584,7 +4584,7 @@ function showProfileModal(profile) {
   // Example:
   const username = profile.username || "Unknown";
   const profilePic = profile.profilePic || profile.avatar || "Images/Avatar/Default.png";
-  const profileBanner = profile.profileBanner || profile.banner || "CaImagesrds/Banner/Default.png";
+  const profileBanner = profile.profileBanner || profile.banner || "Images/Banner/Default.png";
   const power = typeof profile.power === "number" ? profile.power : 0;
   const achievements = profile.achievements || [];
   const badges = profile.badges || [];
