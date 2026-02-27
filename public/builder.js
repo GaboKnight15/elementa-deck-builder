@@ -1499,7 +1499,7 @@ window.getPlayerDecks = function() {
   return deckSlots.map(deckName => {
     const deckObj = decks[deckName] || {};
     // Use highlightArt, bannerArt, or a default image for the deck image:
-    let image = deckObj.highlightArt || deckObj.bannerArt || 'Images/Banner/DefaultBanner.png';
+    let image = deckObj.highlightArt || deckObj.bannerArt || 'Images/Banner/Default.png';
     return {
       id: deckName,
       name: deckName,
