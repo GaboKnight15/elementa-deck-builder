@@ -130,7 +130,8 @@ const dummyCards = [
 {id: 'EssenceSurge', name: 'Essence Surge', rarity: 'Common', image: 'Cards/egg/EssenceSurge.png', flavor: '', 
  category: 'Spell', color: 'Green', type: 'Spell', cost: '{2}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{2}', effect: [{class: 'Essence', color: 'Green', amount: 3}, {class: 'Cast'}]}]},
-
+	
+/*
 // --- EG RED --- //
 {id: 'KaelenBlazebornHuntress', name: 'Kaelen, Blazeborn Huntress', rarity: 'Legendary', image: 'Cards/egr/KaelenBlazebornHuntress.png', flavor: '', 
  category: 'Creature', color: 'Red', type: 'Human', archetype: '', trait: 'Ranger', hp: 3, atk: 1, def: 0,
@@ -818,7 +819,7 @@ const dummyCards = [
  category: 'Spell', color: 'Black', type: 'Spell', cost: '{1}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{1}', effect: [{class: 'Dissolve', target: 1}, {class: 'Cast'}]}]},
 
-/*
+// FRACTURED ORIGINS //
 
 {id: 'VineApe', name: 'Vine Ape', rarity: 'Common', image: 'Cards/fo/VineApe.png', flavor: '', 
  category: 'Creature', color: 'Green', type: 'Beast', archetype: 'Ape', hp: 4, atk: 2, def: 1,
