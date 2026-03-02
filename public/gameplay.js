@@ -2934,11 +2934,23 @@ function renderHandCostBadge(cardDiv, cardData) {
   }
 }
 function setCardAnimatableClass(div, cardObj, cardData, gameState, zone) {
-  const isPlayerActionPhase = gameState && gameState.turn === 'player' && gameState.phase === 'action';
-  if (isPlayerActionPhase && isCardActionable(cardObj, cardData, gameState, zone)) {
-    div.classList.add('card-animatable');
-  } else { 
+  try {
+    const isPlayerActionPhase =
+      !!gameState &&
+      gameState.turn === 'player' &&
+      gameState.phase === 'action';
+
+    const actionable =
+      isPlayerActionPhase &&
+      (typeof isCardActionable === 'function') &&
+      isCardActionable(cardObj, cardData, gameState, zone);
+
+    if (actionable) div.classList.add('card-animatable');
+    else div.classList.remove('card-animatable');
+  } catch (err) {
+    // Never break rendering because of a pulse/glow check
     div.classList.remove('card-animatable');
+    console.warn('setCardAnimatableClass failed:', err);
   }
 }
 
