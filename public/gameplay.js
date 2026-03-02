@@ -6803,18 +6803,28 @@ if (skillObj.cost) {
 // Update activateSkill to use the animation before requirements/effects
 function activateSkill(cardObj, skillObj, options = {}) {
   const zoneId = findZoneIdForCard(cardObj);
-  const currentZone = options.currentZone || getZoneNameForCard(cardObj);
+  const owner = getCardOwner(cardObj); // 'player' | 'opponent'
+  const cardData = dummyCards.find(c => c.id === cardObj.cardId) || {};
 
-  // 1. Activation animation or handler (if present)
+  // IMPORTANT: use skillObj.cost (not cardData.cost)
+  const parsedCost = skillObj.cost ? parseCost(skillObj.cost) : null;
+
+  const doOpenPayment = () => {
+    showEssencePaymentModal({
+      card: cardData,
+      cost: parsedCost,
+      owner,
+      onPaid: () => {
+        // After essence is consumed, actually resolve the skill
+        proceedSkillActivation(cardObj, skillObj, options);
+      }
+    });
+  };
+
   if (skillObj.activation && skillObj.activation.handler) {
-    skillObj.activation.handler(cardObj, skillObj, () => {
-      showEssencePaymentModal();
-    });
+    skillObj.activation.handler(cardObj, skillObj, doOpenPayment);
   } else {
-    // Default: animate only
-    animateSkillActivation(cardObj, zoneId, () => {
-      showEssencePaymentModal();
-    });
+    animateSkillActivation(cardObj, zoneId, doOpenPayment);
   }
 }
 
