@@ -2934,9 +2934,10 @@ function renderHandCostBadge(cardDiv, cardData) {
   }
 }
 function setCardAnimatableClass(div, cardObj, cardData, gameState, zone) {
-  if (isCardActionable(cardObj, cardData, gameState, zone)) {
+  const isPlayerActionPhase = gameState && gameState.turn === 'player' && gameState.phase === 'action';
+  if (isPlayerActionPhase && isCardActionable(cardObj, cardData, gameState, zone)) {
     div.classList.add('card-animatable');
-  } else {
+  } else { 
     div.classList.remove('card-animatable');
   }
 }
@@ -6356,51 +6357,49 @@ function closeWaitingForOpponentModal() {
   if (modal) modal.remove();
 }
 
+function normalizeEssence(str) {
+  // Uppercase whatever is inside {...} so {g} -> {G}, {b}->{B}, while {1} stays {1}
+  return String(str || '').replace(/\{([^}]+)\}/g, (_, tok) => `{${String(tok).toUpperCase()}}`);
+}
 function canPayEssence(cardObj, costStr) {
   if (!costStr) return true;
-  
+
   const colorCodes = "GRUYCPBW";
-  let availableEssenceStr = cardObj.essence || "";
-  
-  // Parse the cost string to get requirements
+
+  // Normalize both sides so lower/upper case costs work
+  const normalizedCostStr = normalizeEssenceTokens(costStr);
+  let availableEssenceStr = normalizeEssenceTokens(cardObj.essence || "");
+
   const costRequirements = {};
   let colorlessNeeded = 0;
-  
-  // Extract colored essence requirements
+
   for (let code of colorCodes) {
-    const need = countEssenceType(costStr, code);
-    if (need > 0) {
-      costRequirements[code] = need;
-    }
+    const need = countEssenceType(normalizedCostStr, code);
+    if (need > 0) costRequirements[code] = need;
   }
-  
-  // Extract colorless requirement
-  const colorlessMatches = typeof costStr === "string" ? costStr.match(/\{([1-9]|1[0-9]|20)\}/g) : [];
-  if (colorlessMatches) {
-    colorlessNeeded = colorlessMatches.map(m => Number(m.replace(/[{}]/g, ""))).reduce((a, b) => a + b, 0);
+
+  const colorlessMatches = normalizedCostStr.match(/\{([1-9]|1[0-9]|20)\}/g) || [];
+  if (colorlessMatches.length) {
+    colorlessNeeded = colorlessMatches
+      .map(m => Number(m.replace(/[{}]/g, "")))
+      .reduce((a, b) => a + b, 0);
   }
-  
-  // Check colored requirements first
+
   for (let code of colorCodes) {
     const need = costRequirements[code] || 0;
     const have = countEssenceType(availableEssenceStr, code);
-    if (have < need) {
-      return false;
-    }
-    // Remove what you need from the available string for colorless calculation
+    if (have < need) return false;
+
     for (let i = 0; i < need; i++) {
       availableEssenceStr = availableEssenceStr.replace(new RegExp(`\\{${code}\\}`, 'i'), "");
     }
   }
-  
-  // Now check if we have enough remaining essence for colorless cost
+
   if (colorlessNeeded > 0) {
     const available = getTotalEssence(availableEssenceStr);
-    if (available < colorlessNeeded) {
-      return false;
-    }
+    if (available < colorlessNeeded) return false;
   }
-  
+
   return true;
 }
 
