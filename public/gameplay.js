@@ -6379,8 +6379,8 @@ function canPayEssence(cardObj, costStr) {
   const colorCodes = "GRUYCPBW";
 
   // Normalize both sides so lower/upper case costs work
-  const normalizedCostStr = normalizeEssenceTokens(costStr);
-  let availableEssenceStr = normalizeEssenceTokens(cardObj.essence || "");
+  const normalizedCostStr = normalizeEssence(costStr);
+  let availableEssenceStr = normalizeEssence(cardObj.essence || "");
 
   const costRequirements = {};
   let colorlessNeeded = 0;
