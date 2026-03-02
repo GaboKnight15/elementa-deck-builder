@@ -6746,28 +6746,39 @@ function canActivateSkill(cardObj, skillObj, currentZone, gameState, targetObj =
   if (cardObj._paralyzed || cardObj._frozen) return false;
   if (cardObj.canActivateSkill === false) return false;
 
-  // 4. Cost - CHECK THE PLAYER'S ESSENCE POOL (FIXED)
-  if (skillObj.cost) {
-    const owner = getCardOwner(cardObj);
-    if (owner === 'player') {
-      // Get the player's essence pool
-      const pool = getEssencePool('player');
-      
-      // Convert pool to essence string format for canPayEssence
-      let poolEssenceStr = '';
-      for (const [type, amount] of Object.entries(pool)) {
-        const code = type.toUpperCase().charAt(0); // G, R, U, Y, C, P, B, W
-        for (let i = 0; i < amount; i++) {
-          poolEssenceStr += `{${code}}`;
-        }
-      }
-      
-      // Check if we can pay with the pool
-      if (!canPayEssence({ essence: poolEssenceStr }, skillObj.cost)) {
-        return false;
+// 4. Cost - CHECK THE PLAYER'S ESSENCE POOL (FIXED)
+if (skillObj.cost) {
+  const owner = getCardOwner(cardObj);
+  if (owner === 'player') {
+    const pool = getEssencePool('player');
+
+    // Convert pool to essence string format for canPayEssence
+    let poolEssenceStr = '';
+    for (const [type, amount] of Object.entries(pool)) {
+      const n = Number(amount || 0);
+      if (n <= 0) continue;
+
+      if (type === 'colorless') {
+        // IMPORTANT: represent generic essence as numeric tokens so `{1}` works.
+        // Each `{1}` counts as 1 unit in getTotalEssence().
+        for (let i = 0; i < n; i++) poolEssenceStr += `{1}`;
+      } else {
+        // Map pool keys -> cost letters used by canPayEssence (GRUYCPBW)
+        const map = {
+          green: 'G', red: 'R', blue: 'U', yellow: 'Y',
+          purple: 'P', gray: 'C', black: 'B', white: 'W'
+        };
+        const code = map[type];
+        if (!code) continue;
+        for (let i = 0; i < n; i++) poolEssenceStr += `{${code}}`;
       }
     }
+
+    if (!canPayEssence({ essence: poolEssenceStr }, skillObj.cost)) {
+      return false;
+    }
   }
+}
 
   // 5. Target validation (OPTIONAL: handled in effect handler or here)
   if (skillObj.target) {
