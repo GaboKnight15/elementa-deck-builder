@@ -834,12 +834,12 @@ Summon: {
       }
 
       // Check if the card is in the player's hand
-      const cardZone = findZoneIdForCard(instance);
-      if (cardZone !== 'player-hand') {
-        showToast('Card can only be summoned from your hand.', { type: 'error' });
-        if (typeof nextEffect === 'function') nextEffect();
-        return;
-      }
+const cardZone = getZoneNameForCard(instance); // use the same naming used by activateSkill
+if (cardZone !== 'playerHand') {
+  showToast('Card can only be summoned from your hand.', { type: 'error' });
+  if (typeof nextEffect === 'function') nextEffect();
+  return;
+}
 
       // Parse summon cost
       const cardDef = getCardDefinition(instance.cardId);
@@ -848,8 +848,14 @@ Summon: {
 
       const performSummon = function () {
         const targetZone = gameState.playerCreatures;
+        const summonedOrientation = hasAbility(instance, 'Dormant') ? 'horizontal' : 'vertical';
         // Move the card from the player's hand to their creature zone
-        moveCard(instance.instanceId, gameState.playerHand, gameState.playerCreatures, { orientation: step.orientation || 'vertical' });
+moveCard(
+  instance.instanceId,
+  gameState.playerHand,
+  gameState.playerCreatures,
+  { orientation: summonedOrientation }
+);
         sourceCardObj.summonedOnTurn = gameState.turnNumber || 0;
         // Display visual log and refresh game state
         appendVisualLog({ action: 'summon', text: `You summoned ${cardDef.name} to the field.` });
@@ -887,7 +893,7 @@ Summon: {
   // Check if Summon can be activated (only valid if card is in the hand)
   canActivate: function (sourceCardObj, skillObj, currentZone) {
     // Summon can only be activated from the player's hand
-    return currentZone === 'playerHand';
+  return currentZone === 'playerHand' || currentZone === 'opponentHand' || currentZone === 'player-hand' || currentZone === 'opponent-hand';
   }
 },
 
@@ -1159,7 +1165,93 @@ Curse: {
   description: 'Deals damage and curses.',
   handler: effectStatusHandler('Curse')
 },
+  
+Enable: {
+  icon: 'Icons/Essence/Untap.png',
+  name: 'Enable',
+  description: 'Rotate a card to vertical (enabled).',
+  handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
+    try {
+      // Determine target(s):
+      // - If step.target is provided, use it (supports your targeting system)
+      // - Otherwise default to self
+      const targets = step.target ? getTargets(step.target, sourceCardObj) : [sourceCardObj];
+      const arrTargets = Array.isArray(targets) ? targets : [targets];
 
+      arrTargets.filter(Boolean).forEach(t => {
+        // Only rotate if currently horizontal
+        if (t.orientation === "horizontal") {
+          t.orientation = "vertical";
+        } else if (!t.orientation) {
+          // If orientation missing (safety), set it
+          t.orientation = "vertical";
+        }
+      });
+
+      renderGameState && renderGameState();
+      setupDropZones && setupDropZones();
+    } catch (err) {
+      console.warn("Enable effect failed:", err);
+    } finally {
+      if (typeof nextEffect === "function") nextEffect();
+    }
+  },
+  canActivate: function(sourceCardObj, skillObj, currentZone, gameState, step = {}) {
+    // Allow from field by default (match your other rotation logic)
+    // If you want hand/void use too, expand this list.
+    const fieldZones = ['playerCreatures','playerDomains','opponentCreatures','opponentDomains'];
+    if (!fieldZones.includes(currentZone)) return false;
+
+    // If targeting is used, ensure at least one valid target exists
+    if (step && step.target) {
+      const targets = getTargets(step.target, sourceCardObj);
+      return Array.isArray(targets) && targets.some(t => t && t.orientation !== "vertical");
+    }
+
+    // Self default
+    return sourceCardObj && sourceCardObj.orientation !== "vertical";
+  }
+},
+
+Disable: {
+  icon: 'Icons/Essence/Tap.png',
+  name: 'Disable',
+  description: 'Rotate a card to horizontal (disabled).',
+  handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
+    try {
+      const targets = step.target ? getTargets(step.target, sourceCardObj) : [sourceCardObj];
+      const arrTargets = Array.isArray(targets) ? targets : [targets];
+
+      arrTargets.filter(Boolean).forEach(t => {
+        // Only rotate if currently vertical
+        if (t.orientation === "vertical") {
+          t.orientation = "horizontal";
+        } else if (!t.orientation) {
+          // If orientation missing (safety), assume vertical->horizontal is intended for disable
+          t.orientation = "horizontal";
+        }
+      });
+
+      renderGameState && renderGameState();
+      setupDropZones && setupDropZones();
+    } catch (err) {
+      console.warn("Disable effect failed:", err);
+    } finally {
+      if (typeof nextEffect === "function") nextEffect();
+    }
+  },
+  canActivate: function(sourceCardObj, skillObj, currentZone, gameState, step = {}) {
+    const fieldZones = ['playerCreatures','playerDomains','opponentCreatures','opponentDomains'];
+    if (!fieldZones.includes(currentZone)) return false;
+
+    if (step && step.target) {
+      const targets = getTargets(step.target, sourceCardObj);
+      return Array.isArray(targets) && targets.some(t => t && t.orientation !== "horizontal");
+    }
+
+    return sourceCardObj && sourceCardObj.orientation !== "horizontal";
+  }
+},
 // --- SELF SUMMONING SKILLS --- //
 Dash: {
   icon: 'Icons/Skill/Dash.png',
@@ -6901,6 +6993,29 @@ function startSkillTarget(validTargets, onSelect, opts = {}) {
   }
   setTimeout(() => document.body.addEventListener('click', cancelHandler, { once: true }), 10);
 }
+
+// Build a normalized filter object for effect targeting.
+// Supports shorthand fields like targetType/targetColor/etc, merged with step.filter.
+function effectTargetFilter(step = {}) {
+  const f = Object.assign({}, step.filter || {});
+
+  // Shorthand -> canonical keys used by matchesFilter/fieldIncludes
+  if (step.targetType != null)      f.type = step.targetType;
+  if (step.targetColor != null)     f.color = step.targetColor;
+  if (step.targetTrait != null)     f.trait = step.targetTrait;
+  if (step.targetArchetype != null) f.archetype = step.targetArchetype;
+  if (step.targetAbility != null)   f.ability = step.targetAbility;
+  if (step.targetCategory != null)  f.category = step.targetCategory;
+  return f;
+}
+
+// Small helper: apply the merged filter if it actually has keys
+function applyEffectTargetFilter(arr, step) {
+  const f = effectTargetFilter(step);
+  if (!f || Object.keys(f).length === 0) return arr;
+  return (arr || []).filter(c => matchesFilter(c, f));
+}
+
 function getTargetsFromEffect(step = {}, sourceCardObj = null, context = {}) {
   // Return a plain array of candidate card instances (no UI).
   // If the step points to hands/voids and those zones contain card objects,
@@ -6923,8 +7038,7 @@ function getTargetsFromEffect(step = {}, sourceCardObj = null, context = {}) {
     if (typeof step.target === 'object' && step.target && step.target.zone) {
       const arr = getTargets(step.target, sourceCardObj, context);
       if (Array.isArray(arr)) {
-        if (step.filter) return arr.filter(c => matchesFilter(c, step.filter));
-        return arr;
+        return applyEffectTargetFilter(arr, step);
       }
     }
 
@@ -6932,14 +7046,13 @@ function getTargetsFromEffect(step = {}, sourceCardObj = null, context = {}) {
     if (step.zone && typeof step.zone === 'string') {
       if (ZONE_MAP[step.zone]) {
         let arr = ZONE_MAP[step.zone].arr() || [];
-        if (step.filter) arr = arr.filter(c => matchesFilter(c, step.filter));
+        arr = applyEffectTargetFilter(arr, step);
         return arr.slice();
       }
       // fallback to generic getTargets
       try {
         let arr = getTargets(step.zone, sourceCardObj, context);
-        if (step.filter) arr = arr.filter(c => matchesFilter(c, step.filter));
-        return arr;
+        return applyEffectTargetFilter(arr, step);
       } catch (e) { /* continue to string cases below */ }
     }
 
