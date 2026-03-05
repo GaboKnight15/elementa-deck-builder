@@ -2245,7 +2245,6 @@ skill: [{name: 'Summon', cost: '{1}{r}', effect: {class: 'Summon'}},
  cost: '{2}{W}', ability: 'Flying', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{2}{w}', effect: {class: 'Summon'}}]},
  
-// --- Green Domains --- //
 {id: 'Thicket', name: 'Thicket', rarity: 'Common', image: 'Cards/fog/Thicket.png', flavor: '', 
  category: 'Terrain', color: 'Green', type: '', hp: 8, cost: '{1}', essence: '{g}', set: 'FracturedOrigins',
  skill: [{name: 'Terraform', cost: '{1}', effect: {class: 'Terraform'}}]},
@@ -2262,10 +2261,8 @@ skill: [{name: 'Summon', cost: '{1}{r}', effect: {class: 'Summon'}},
 {id: 'ElvenVillage', name: 'Elven Village', rarity: 'Common', image: 'Cards/fog/ElvenVillage.png', flavor: '', 
  category: 'Terrain', color: 'Green', type: 'Elf', hp: 10, cost: '{0}', essence: '{g}', set: 'FracturedOrigins'},
 
-{id: 'SylvanCanopy', name: 'Sylvan Canopy', rarity: 'Common', image: 'Cards/Domain/Sylvan Canopy.png', flavor: '', 
+{id: 'SylvanCanopy', name: 'Sylvan Canopy', rarity: 'Common', image: 'Cards/egg/SylvanCanopy.png', flavor: '', 
  category: 'Terrain', color: 'Green', type: '', hp: 5, cost: '{0}', essence: '{g}', set: 'ElementaGenesis'},
-
-// --- Red Domains --- //
 
 {id: 'OrcVillage', name: 'Orc Village', rarity: 'Common', image: 'Cards/for/OrcVillage.png', flavor: '', 
  category: 'Terrain', color: 'Red', type: 'Orc', hp: 7, cost: '{1}', essence: '{r}', set: 'FracturedOrigins'},
@@ -2275,8 +2272,6 @@ skill: [{name: 'Summon', cost: '{1}{r}', effect: {class: 'Summon'}},
 
 {id: 'Smokeblight Frontier', name: 'Smokeblight Frontier', rarity: 'Common', image: 'Cards/Domain/SmokeblightFrontier.png', flavor: '', 
  category: 'Terrain', color: 'Red', type: '', hp: 5, cost: '{0}', essence: '{R}', set: 'StandardPack2'},
-
-// --- Blue Domains --- //
 
 {id: 'Pearlhaven', name: 'Pearlhaven', rarity: 'Legend', image: 'Cards/fou/Pearlhaven.png', flavor: '', 
  category: 'Terrain', color: 'Blue', type: 'Locale', hp: 16, cost: '{3}', essence: '{u}{u}', set: 'FracturedOrigins'},
@@ -2302,7 +2297,6 @@ skill: [{name: 'Summon', cost: '{1}{r}', effect: {class: 'Summon'}},
 {id: 'FrostlandCitadel', name: 'Frostland Citadel', rarity: 'Common', image: 'Cards/Frostland/FrostlandCitadel.png', flavor: '', 
  category: 'Terrain', color: 'Blue', type: 'Terrain', hp: 5, cost: '{0}', essence: '{U}', set: 'StandardPack2'},
 
-// --- Yellow Domains --- //
 {id: 'SkywardArchipelago', name: 'Skyward Archipelago', rarity: 'Rare', image: 'Cards/egy/SkywardArchipelago.png', flavor: '', 
  category: 'Terrain', color: 'Yellow', type: 'Terrain', hp: 6, cost: '{y}', essence: '{Y}', set: 'ElementaGenesis',
  skill: [{name: 'Terraform', cost: '{y}', effect: {class: 'Terraform'}},
@@ -2329,8 +2323,6 @@ skill: [{name: 'Summon', cost: '{1}{r}', effect: {class: 'Summon'}},
 {id: 'SkybreakerRings', name: 'Skybreaker Rings', rarity: 'Common', image: 'Cards/Domain/SkybreakerRings.png', flavor: '', 
  category: 'Terrain', color: 'Yellow', type: 'Terrain', hp: 5, cost: '{0}', essence: '{Y}', set: 'StandardPack2'},
 
- // --- Purple Domains --- //
-
 {id: 'OrcVillage', name: 'Orc Village', rarity: 'Common', image: 'Cards/Brute/OrcVillage.png', flavor: '', 
  category: 'Terrain', color: 'Purple', type: 'Orc', hp: 5, cost: '{0}', essence: '{p}', set: 'StandardPack2'},
 
@@ -2351,8 +2343,6 @@ skill: [{name: 'Summon', cost: '{1}{r}', effect: {class: 'Summon'}},
  
 {id: 'MiregateBasin', name: 'Miregate Basin', rarity: 'Common', image: 'Cards/Domain/MiregateBasin.png', flavor: '', 
  category: 'Terrain', color: 'Purple', type: 'Terrain', hp: 5, cost: '{0}', essence: '{P}', set: 'StandardPack2'},
-
-// --- Gray Domains --- //
 
 {id: 'IrondeepBastion', name: 'Irondeep Bastion', rarity: 'Common', image: 'Cards/Domain/IrondeepBastion.png', flavor: '', 
  category: 'Terrain', color: 'Gray', type: 'Terrain', hp: 14, cost: '{c}{c}', essence: '{C}', set: 'StandardPack2'},
@@ -2375,8 +2365,6 @@ skill: [{name: 'Summon', cost: '{1}{r}', effect: {class: 'Summon'}},
 {id: 'StonewoundBarrens', name: 'Stonewound Barrens', rarity: 'Common', image: 'Cards/Domain/StonewoundBarrens.png', flavor: '', 
  category: 'Terrain', color: 'Gray', type: 'Terrain', hp: 5, cost: '{0}', essence: '{C}', set: 'StandardPack2'},
 
-// --- Black Domains --- //
-
 {id: 'Fellchasm', name: 'Fellchasm', rarity: 'Rare', image: 'Cards/fob/Fellchasm.png', flavor: '', 
  category: 'Terrain', color: 'Black', type: 'Demon', hp: 13, cost: '{1}{b}{r}', essence: '{b}{r}', set: 'FracturedOrigins'},
  
@@ -2397,8 +2385,6 @@ skill: [{name: 'Summon', cost: '{1}{r}', effect: {class: 'Summon'}},
  
 {id: 'ShadelornWastes', name: 'Shadelorn Wastes', rarity: 'Rare', image: 'Cards/ecb/ShadelornWastes.png', flavor: '', 
  category: 'Terrain', color: 'Black', type: 'Elemental', trait: 'Shadow', hp: 8, cost: '{2}', essence: '{B}', set: 'EchoesofCreation'},
-
-// --- White Domains --- //
 
 {id: 'ZephyrasPlateau', name: "Zephyra's Plateau", rarity: 'Common', image: 'Cards/Avian/ZephyrasPlateau.png', flavor: '', 
  category: 'Terrain', color: 'White', type: 'Avian', hp: 5, cost: '{0}', essence: '{W}', set: 'StandardPack2'},
@@ -2713,7 +2699,7 @@ transform: {name: "Transform", description: "Transforms unit by certain conditio
 warrior: {name: "Warrior", description: "Close combat units. If HP is below 1/3, gain {1}/{1}.", icon: "Icons/Trait/Warrior.png" },
 mage: {name: "Mage", description: "Can target flying and elusive creatures for attacks. Gain {1} Spd", icon: "Icons/Trait/Mage.png" },
 ranger: {name: "Ranger", description: "Can target flying creatures for attacks. Gain {2} Spd", icon: "Icons/Trait/Ranger.png" },
-relic: {name: "Relic", description: "Attach to Domains of the same Color.", icon: "Icons/Trait/Relic.png" },
+relic: {name: "Relic", description: "Attach to Terrains of the same Color.", icon: "Icons/Trait/Relic.png" },
 equipment: {name: "Equipment", description: "Attach to Creatures of the same Color/Type/Archetype.", icon: "Icons/Trait/Equipment.png" },
 aura: {name: "Aura", description: "Attach to creatures.", icon: "Icons/Trait/Aura.png" },
 enchantment: {name: "Enchantment", description: "Attach to lands.", icon: "Icons/Trait/Enchantment.png" },
@@ -5171,7 +5157,7 @@ function isPurple(cardObj){ return isColor(cardObj, "Purple"); }
 // CATEGORY
 function isCategory(cardObj, category) {return fieldIncludes(cardObj, "category", category);}
 function isCreature(cardObj) { return isCategory(cardObj, "Creature"); }
-function isDomain(cardObj)   { return isCategory(cardObj, "Domain"); }
+function isTerrain(cardObj)   { return isCategory(cardObj, "Terrain"); }
 function isArtifact(cardObj) { return isCategory(cardObj, "Artifact"); }
 function isSpell(cardObj)    { return isCategory(cardObj, "Spell"); }
 
