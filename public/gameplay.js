@@ -38,12 +38,12 @@ let gameState = {
   playerDeck: [],
   playerHand: [],
   playerCreatures: [],
-  playerDomains: [],
+  playerTerrains: [],
   playerVoid: [],
   opponentDeck: [],
   opponentHand: [],
   opponentCreatures: [],
-  opponentDomains: [],
+  opponentTerrains: [],
   opponentVoid: [],
   playerDominion: null,
   opponentDominion: null,
@@ -67,47 +67,47 @@ let gameState = {
 const ZONE_MAP = {
   // Player zones
   playerCreatures:   { id: "player-creatures-zone",   arr: () => gameState.playerCreatures },
-  playerDomains:     { id: "player-domains-zone",     arr: () => gameState.playerDomains },
+  playerTerrains:     { id: "player-terrains-zone",     arr: () => gameState.playerTerrains },
   playerVoid:        { id: "player-void-zone",        arr: () => gameState.playerVoid },
   playerDeck:        { id: "player-deck-zone",        arr: () => gameState.playerDeck },
   playerHand:        { id: "player-hand",             arr: () => gameState.playerHand },
 
   // Opponent zones
   opponentCreatures: { id: "opponent-creatures-zone", arr: () => gameState.opponentCreatures },
-  opponentDomains:   { id: "opponent-domains-zone",   arr: () => gameState.opponentDomains },
+  opponentTerrains:   { id: "opponent-terrains-zone",   arr: () => gameState.opponentTerrains },
   opponentVoid:      { id: "opponent-void-zone",      arr: () => gameState.opponentVoid },
   opponentDeck:      { id: "opponent-deck-zone",      arr: () => gameState.opponentDeck },
   opponentHand:      { id: "opponent-hand",           arr: () => gameState.opponentHand },
 
   // Combined/mass zones for flexible targeting
   allCreatures:      { id: null, arr: () => [...gameState.playerCreatures, ...gameState.opponentCreatures] },
-  allDomains:        { id: null, arr: () => [...gameState.playerDomains, ...gameState.opponentDomains] },
+  allTerrains:        { id: null, arr: () => [...gameState.playerTerrains, ...gameState.opponentTerrains] },
   allVoids:          { id: null, arr: () => [...gameState.playerVoid, ...gameState.opponentVoid] },
   allDecks:          { id: null, arr: () => [...gameState.playerDeck, ...gameState.opponentDeck] },
   allHands:          { id: null, arr: () => [...gameState.playerHand, ...gameState.opponentHand] },
 
-  // NEW: All player-side field (creatures + domains)
+  // NEW: All player-side field (creatures + terrains)
   allPlayerField:    { id: null, arr: () => [
     ...gameState.playerCreatures,
-    ...gameState.playerDomains
+    ...gameState.playerTerrains
   ] },
 
-  // NEW: All opponent-side field (creatures + domains)
+  // NEW: All opponent-side field (creatures + terrains)
   allOpponentField:  { id: null, arr: () => [
     ...gameState.opponentCreatures,
-    ...gameState.opponentDomains
+    ...gameState.opponentTerrains
   ] },
   
-  // Whole field (creatures + domains both sides)
+  // Whole field (creatures + terrains both sides)
   allField:          { id: null, arr: () => [
-    ...gameState.playerCreatures, ...gameState.playerDomains,
-    ...gameState.opponentCreatures, ...gameState.opponentDomains
+    ...gameState.playerCreatures, ...gameState.playerTerrains,
+    ...gameState.opponentCreatures, ...gameState.opponentTerrains
   ] },
 
   // All cards everywhere (for global effects, etc.)
   allCards:          { id: null, arr: () => [
-    ...gameState.playerCreatures, ...gameState.playerDomains, ...gameState.playerVoid, ...gameState.playerDeck, ...gameState.playerHand,
-    ...gameState.opponentCreatures, ...gameState.opponentDomains, ...gameState.opponentVoid, ...gameState.opponentDeck, ...gameState.opponentHand
+    ...gameState.playerCreatures, ...gameState.playerTerrains, ...gameState.playerVoid, ...gameState.playerDeck, ...gameState.playerHand,
+    ...gameState.opponentCreatures, ...gameState.opponentTerrains, ...gameState.opponentVoid, ...gameState.opponentDeck, ...gameState.opponentHand
   ] }
 };
 
@@ -476,7 +476,7 @@ Conceal: {
     description: 'Grants protection from debuffs for a duration.',
     handler: function(sourceCardObj, skillObj) {
       startSkillTarget(
-        [...gameState.allyCreatures, ...gameState.allyDomains],
+        [...gameState.allyCreatures, ...gameState.allyTerrains],
         selectedTarget => {
           grantVeil(selectedTarget, skillObj.duration);
           renderGameState();
@@ -584,18 +584,18 @@ const REQUIREMENT_MAP = {
     icon: 'Icons/Ability/Special.png',
     name: 'Special',
     description: 'Description of the skill.',
-    zones: ['playerCreatures', 'playerDomains'], // field
+    zones: ['playerCreatures', 'playerTerrains'], // field
     canActivate: (cardObj, skillObj, currentZone) =>
-      ['playerCreatures', 'playerDomains'].includes(currentZone),
+      ['playerCreatures', 'playerTerrains'].includes(currentZone),
     handler: (cardObj, skillObj, next) => next && next()
   },
   Ultimate: {
     icon: 'Icons/Ability/Ultimate.png',
     name: 'Ultimate',
     description: 'Description of the skill.',
-    zones: ['playerCreatures', 'playerDomains'], // field
+    zones: ['playerCreatures', 'playerTerrains'], // field
     canActivate: (cardObj, skillObj, currentZone) =>
-      ['playerCreatures', 'playerDomains'].includes(currentZone),
+      ['playerCreatures', 'playerTerrains'].includes(currentZone),
     handler: (cardObj, skillObj, next) => next && next()
     // Later you could add more restrictions for "Ultimate" here
   },
@@ -603,7 +603,7 @@ const REQUIREMENT_MAP = {
     icon: 'Icons/Essence/Tap.png',
     name: 'Disable',
     description: 'Disable card.',
-    zones: ['playerCreatures', 'playerDomains'],
+    zones: ['playerCreatures', 'playerTerrains'],
     handler: function(sourceCardObj, skillObj, next) {
       // If already in DEF (horizontal), just proceed with skill activation
       if (sourceCardObj.orientation === "horizontal") {
@@ -626,7 +626,7 @@ const REQUIREMENT_MAP = {
     icon: 'Icons/Essence/Untap.png',
     name: 'Enable',
     description: 'Enable card.',
-    zones: ['playerCreatures', 'playerDomains'],
+    zones: ['playerCreatures', 'playerTerrains'],
     handler: function(sourceCardObj, skillObj, next) {
       // If already in ATK (vertical), just proceed with skill activation
       if (sourceCardObj.orientation === "vertical") {
@@ -689,12 +689,12 @@ Sacrifice: {
   icon: 'Icons/Skill/Sacrifice.png',
   name: 'Sacrifice',
   description: 'Sends a card from the field to the void.',
-  zones: ['playerCreatures', 'playerDomains'],
+  zones: ['playerCreatures', 'playerTerrains'],
   handler: function(sourceCardObj, skillObj, next, requirement) {
     const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
     const isField = validZones.some(zone =>
       (zone === 'playerCreatures' && gameState.playerCreatures.includes(sourceCardObj)) ||
-      (zone === 'playerDomains' && gameState.playerDomains.includes(sourceCardObj))
+      (zone === 'playerTerrains' && gameState.playerTerrains.includes(sourceCardObj))
     );
     if (!isField) {
       showToast("Sacrifice can only be activated from the field.");
@@ -706,7 +706,7 @@ Sacrifice: {
     const filter = getRequirementFilter(requirement);
 
     // Exclude self from pool
-    let pool = [...gameState.playerCreatures, ...gameState.playerDomains].filter(card => card !== sourceCardObj);
+    let pool = [...gameState.playerCreatures, ...gameState.playerTerrains].filter(card => card !== sourceCardObj);
     if (Object.keys(filter).length) pool = pool.filter(card => matchesFilter(card, filter));
 
     if (pool.length < amount) {
@@ -717,13 +717,13 @@ Sacrifice: {
 
     startSkillTarget(pool, selectedCards => {
       selectedCards.forEach(card => {
-        const arr = gameState.playerCreatures.includes(card) ? gameState.playerCreatures : gameState.playerDomains;
+        const arr = gameState.playerCreatures.includes(card) ? gameState.playerCreatures : gameState.playerTerrains;
         moveCard(card.instanceId, arr, gameState.playerVoid);
       });
       // Sacrifice self, too
       const fromArr = gameState.playerCreatures.includes(sourceCardObj)
         ? gameState.playerCreatures
-        : gameState.playerDomains;
+        : gameState.playerTerrains;
       moveCard(sourceCardObj.instanceId, fromArr, gameState.playerVoid);
       renderGameState();
       if (next) next();
@@ -737,7 +737,7 @@ Sacrifice: {
     const amount = requirement?.amount || 1;
     const filter = getRequirementFilter(requirement);
 
-    let pool = [...gameState.playerCreatures, ...gameState.playerDomains].filter(card => card !== sourceCardObj);
+    let pool = [...gameState.playerCreatures, ...gameState.playerTerrains].filter(card => card !== sourceCardObj);
     if (Object.keys(filter).length) pool = pool.filter(card => matchesFilter(card, filter));
     return pool.length >= amount;
   }
@@ -746,12 +746,12 @@ Return: {
   icon: 'Icons/Skill/Return.png',
   name: 'Return',
   description: 'Returns a card from the field to the hand.',
-    zones: ['playerCreatures', 'playerDomains'],
+    zones: ['playerCreatures', 'playerTerrains'],
     handler: function(sourceCardObj, skillObj) {
       const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
       const isField = validZones.some(zone =>
         (zone === 'playerCreatures' && gameState.playerCreatures.includes(sourceCardObj)) ||
-        (zone === 'playerDomains' && gameState.playerDomains.includes(sourceCardObj))
+        (zone === 'playerTerrains' && gameState.playerTerrains.includes(sourceCardObj))
       );
       if (!isField) {
         showToast("Return can only be activated from the field.");
@@ -759,7 +759,7 @@ Return: {
       }
       const fromArr = gameState.playerCreatures.includes(sourceCardObj)
         ? gameState.playerCreatures
-        : gameState.playerDomains;
+        : gameState.playerTerrains;
       moveCard(sourceCardObj.instanceId, fromArr, gameState.playerHand);
       renderGameState();
     },
@@ -772,12 +772,12 @@ Retreat: {
   icon: 'Icons/Skill/Retreat.png',
   name: 'Retreat',
   description: 'Returns a card from the field to the deck.',
-  zones: ['playerCreatures', 'playerDomains'],
+  zones: ['playerCreatures', 'playerTerrains'],
   handler: function(sourceCardObj, skillObj) {
     const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
     const isField = validZones.some(zone =>
       (zone === 'playerCreatures' && gameState.playerCreatures.includes(sourceCardObj)) ||
-      (zone === 'playerDomains' && gameState.playerDomains.includes(sourceCardObj))
+      (zone === 'playerTerrains' && gameState.playerTerrains.includes(sourceCardObj))
     );
     if (!isField) {
       showToast("Retreat can only be activated from the field.");
@@ -785,7 +785,7 @@ Retreat: {
     }
     const fromArr = gameState.playerCreatures.includes(sourceCardObj)
       ? gameState.playerCreatures
-      : gameState.playerDomains;
+      : gameState.playerTerrains;
     moveCard(sourceCardObj.instanceId, fromArr, gameState.playerDeck);
     gameState.playerDeck = shuffle(gameState.playerDeck);
     renderGameState();
@@ -1009,10 +1009,10 @@ Equip: {
   }
 },
 
-// TERRAFORM handler: place a domain/terrain under player's domains
+// TERRAFORM handler: place a terrain/terrain under player's terrains
 Terraform: {
   name: 'Terraform',
-  description: 'Allows the player to play a domain/land card to the field. Restricted to once per turn.',
+  description: 'Allows the player to play a terrain/land card to the field. Restricted to once per turn.',
   handler: function (sourceCardObj, skillObj, step = {}, nextEffect) {
     try {
       const activePlayer = gameState.turn; // Determine the current turn
@@ -1034,19 +1034,19 @@ Terraform: {
       // Ensure the card is in the player's hand
       const cardZone = findZoneIdForCard(sourceCardObj);
       if (cardZone !== "player-hand") {
-        showToast("You can only Terraform domains from your hand.", { type: "error" });
+        showToast("You can only Terraform terrains from your hand.", { type: "error" });
         if (typeof nextEffect === "function") nextEffect();
         return;
       }
 
-      // Check if the card is a valid domain
+      // Check if the card is a valid terrain
       const cardDef = getCardDefinition(sourceCardObj.cardId);
-      const isDomain = Array.isArray(cardDef.category) 
-        ? cardDef.category.includes("Domain") 
-        : String(cardDef.category).toLowerCase() === "domain";
+      const isTerrain = Array.isArray(cardDef.category) 
+        ? cardDef.category.includes("Terrain") 
+        : String(cardDef.category).toLowerCase() === "terrain";
 
-      if (!isDomain) {
-        showToast("Only domain cards can be Terraform'ed.", { type: "error" });
+      if (!isTerrain) {
+        showToast("Only terrain cards can be Terraform'ed.", { type: "error" });
         if (typeof nextEffect === "function") nextEffect();
         return;
       }
@@ -1056,11 +1056,11 @@ Terraform: {
       const parsedCost = rawCost ? parseCost(rawCost) : null;
 
       const performTerraform = function () {
-        // Move the domain card from the hand to the player's domain zone
+        // Move the terrain card from the hand to the player's terrain zone
         moveCard(
           sourceCardObj.instanceId,
           gameState.playerHand,
-          gameState.playerDomains,
+          gameState.playerTerrains,
           { orientation: "vertical" }
         );
 
@@ -1117,8 +1117,8 @@ Strike: {
   description: 'Deals damage.',
   // Now using (sourceCardObj, skillObj, step, nextEffect)
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
-    // For your rule: any card on the field can be a target (player+opponent, creatures+domains)
-    const allOpponentField = [...gameState.opponentCreatures, ...gameState.opponentDomains];
+    // For your rule: any card on the field can be a target (player+opponent, creatures+terrains)
+    const allOpponentField = [...gameState.opponentCreatures, ...gameState.opponentTerrains];
     startSkillTarget(
       allOpponentField,
       selectedTarget => {
@@ -1199,7 +1199,7 @@ Enable: {
   canActivate: function(sourceCardObj, skillObj, currentZone, gameState, step = {}) {
     // Allow from field by default (match your other rotation logic)
     // If you want hand/void use too, expand this list.
-    const fieldZones = ['playerCreatures','playerDomains','opponentCreatures','opponentDomains'];
+    const fieldZones = ['playerCreatures','playerTerrains','opponentCreatures','opponentTerrains'];
     if (!fieldZones.includes(currentZone)) return false;
 
     // If targeting is used, ensure at least one valid target exists
@@ -1241,7 +1241,7 @@ Disable: {
     }
   },
   canActivate: function(sourceCardObj, skillObj, currentZone, gameState, step = {}) {
-    const fieldZones = ['playerCreatures','playerDomains','opponentCreatures','opponentDomains'];
+    const fieldZones = ['playerCreatures','playerTerrains','opponentCreatures','opponentTerrains'];
     if (!fieldZones.includes(currentZone)) return false;
 
     if (step && step.target) {
@@ -1274,10 +1274,10 @@ Dash: {
     let targetArr;
     if (category.includes("creature")) {
       targetArr = gameState.playerCreatures;
-    } else if (category.includes("domain")) {
-      targetArr = gameState.playerDomains;
+    } else if (category.includes("terrain")) {
+      targetArr = gameState.playerTerrains;
     } else {
-      showToast("Dash can only be used for creatures or domains.");
+      showToast("Dash can only be used for creatures or terrains.");
       if (nextEffect) nextEffect();
       return;
     }
@@ -1301,7 +1301,7 @@ Reanimate: {
       if (nextEffect) nextEffect();
       return;
     }
-    // Determine target zone: creatures/domains by card type
+    // Determine target zone: creatures/terrains by card type
     const cardData = dummyCards.find(c => c.id === sourceCardObj.cardId);
     let targetArr;
     const category = Array.isArray(cardData.category)
@@ -1309,10 +1309,10 @@ Reanimate: {
       : [String(cardData.category).toLowerCase()];
     if (category.includes("creature")) {
       targetArr = gameState.playerCreatures;
-    } else if (category.includes("domain")) {
-      targetArr = gameState.playerDomains;
+    } else if (category.includes("terrain")) {
+      targetArr = gameState.playerTerrains;
     } else {
-      showToast("Reanimate can only be used for creatures or domains.");
+      showToast("Reanimate can only be used for creatures or terrains.");
       if (nextEffect) nextEffect();
       return;
     }
@@ -1340,10 +1340,10 @@ Awaken: {
     let targetArr;
     if (category.includes("creature")) {
       targetArr = gameState.playerCreatures;
-    } else if (category.includes("domain")) {
-      targetArr = gameState.playerDomains;
+    } else if (category.includes("terrain")) {
+      targetArr = gameState.playerTerrains;
     } else {
-      showToast("Awaken can only be used for creatures or domains.");
+      showToast("Awaken can only be used for creatures or terrains.");
       return;
     }
     // Animation (optional)
@@ -1359,7 +1359,7 @@ Heal: {
   name: 'Heal',
   description: 'Heals an ally.',
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
-    const allPlayerField = [...gameState.playerCreatures, ...gameState.playerDomains];
+    const allPlayerField = [...gameState.playerCreatures, ...gameState.playerTerrains];
     startSkillTarget(
       allPlayerField,
       selectedTargets => {
@@ -1381,7 +1381,7 @@ Heal: {
     description: 'Removes debuffs/status effects from an allied target.',
     handler: function(sourceCardObj, skillObj) {
       startSkillTarget(
-        [...gameState.allyCreatures, ...gameState.allyDomains],
+        [...gameState.allyCreatures, ...gameState.allyTerrains],
         selectedTarget => {
           cleanseTarget(selectedTarget);
           renderGameState();
@@ -1394,7 +1394,7 @@ Armor: {
   name: 'Armor',
   description: 'Grants armor to an ally.',
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
-    const allPlayerField = [...gameState.playerCreatures, ...gameState.playerDomains];
+    const allPlayerField = [...gameState.playerCreatures, ...gameState.playerTerrains];
     startSkillTarget(
       allPlayerField,
       selectedTargets => {
@@ -1416,7 +1416,7 @@ Armor: {
     description: 'Grants a shield that blocks the next incoming damage.',
     handler: function(sourceCardObj, skillObj) {
       startSkillTarget(
-        [...gameState.allyCreatures, ...gameState.allyDomains],
+        [...gameState.allyCreatures, ...gameState.allyTerrains],
         selectedTarget => {
           grantAegis(selectedTarget);
           renderGameState();
@@ -1443,12 +1443,12 @@ Destroy: {
   name: 'Destroy',
   description: 'Destroy a valid target according to skill condition.',
   handler: function(sourceCardObj, skillObj) {
-    // Collect all field zones: creatures and domains (both sides)
+    // Collect all field zones: creatures and terrains (both sides)
     const fieldArrays = [
       gameState.playerCreatures,
       gameState.opponentCreatures,
-      gameState.playerDomains,
-      gameState.opponentDomains
+      gameState.playerTerrains,
+      gameState.opponentTerrains
     ];
     const allTargets = fieldArrays.flat();
 
@@ -1462,7 +1462,7 @@ Destroy: {
       // Determine correct void array based on owner
       const isPlayerCard =
         gameState.playerCreatures.includes(selectedTarget) ||
-        gameState.playerDomains.includes(selectedTarget);
+        gameState.playerTerrains.includes(selectedTarget);
       const voidArr = isPlayerCard ? gameState.playerVoid : gameState.opponentVoid;
 
       moveCard(selectedTarget.instanceId, getZoneArrayForCard(selectedTarget), voidArr);
@@ -1531,7 +1531,7 @@ Destroy: {
         return;
       }
       showFilteredCardSelectionModal(matches, selectedCardObj => {
-        // Determine target zone (creature or domain)
+        // Determine target zone (creature or terrain)
         const cardData = dummyCards.find(c => c.id === selectedCardObj.cardId);
         let targetArr;
         const category = Array.isArray(cardData.category)
@@ -1539,10 +1539,10 @@ Destroy: {
           : [String(cardData.category).toLowerCase()];
         if (category.includes("creature")) {
           targetArr = gameState.playerCreatures;
-        } else if (category.includes("domain")) {
-          targetArr = gameState.playerDomains;
+        } else if (category.includes("terrain")) {
+          targetArr = gameState.playerTerrains;
         } else {
-          showToast("Revive can only be used for creatures or domains.");
+          showToast("Revive can only be used for creatures or terrains.");
           return;
         }
       }, { title: "Revive from Void - Choose a card" });
@@ -1554,10 +1554,10 @@ Bounce: {
   name: 'Bounce',
   description: 'Return any card from the field to the hand.',
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
-    // All creatures/domains on both sides
+    // All creatures/terrains on both sides
     const fieldArrs = [
-      gameState.playerCreatures, gameState.playerDomains,
-      gameState.opponentCreatures, gameState.opponentDomains
+      gameState.playerCreatures, gameState.playerTerrains,
+      gameState.opponentCreatures, gameState.opponentTerrains
     ];
     const allField = fieldArrs.flat();
 
@@ -1602,10 +1602,10 @@ Banish: {
   name: 'Banish',
   description: 'Return any card from the field to the deck.',
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
-    // All creatures/domains on both sides
+    // All creatures/terrains on both sides
     const fieldArrs = [
-      gameState.playerCreatures, gameState.playerDomains,
-      gameState.opponentCreatures, gameState.opponentDomains
+      gameState.playerCreatures, gameState.playerTerrains,
+      gameState.opponentCreatures, gameState.opponentTerrains
     ];
     const allField = fieldArrs.flat();
 
@@ -1811,10 +1811,10 @@ Fuse: {
   icon: 'Icons/Skill/Fuse.png',
   name: 'Fuse',
   description: 'Gains a Fuse Sigil which can be consumed by Fusion.',
-  zones: ['playerCreatures', 'playerDomains'], // Only from field
+  zones: ['playerCreatures', 'playerTerrains'], // Only from field
   canActivate(cardObj, skillObj, currentZone, gameState) {
     // Only on the field, and not already fused.
-    return ['playerCreatures', 'playerDomains'].includes(currentZone) && !cardObj._fused;
+    return ['playerCreatures', 'playerTerrains'].includes(currentZone) && !cardObj._fused;
   },
   handler(cardObj, skillObj, effectStep, nextEffect) {
     // If already has a fuse sigil, notify
@@ -1858,7 +1858,7 @@ Fusion: {
     try { removeStatus(cardObj, 'FuseSigil'); } catch (e) {}
 
     // Existing Fusion logic follows (keeps original behavior)
-    const fieldCards = [...gameState.playerCreatures, ...gameState.playerDomains];
+    const fieldCards = [...gameState.playerCreatures, ...gameState.playerTerrains];
     const fusedCards = fieldCards.filter(c => c._fused);
 
     // Find valid pairs
@@ -1887,10 +1887,10 @@ Fusion: {
       : [String(cardData.category).toLowerCase()];
     if (category.includes("creature")) {
       targetArr = gameState.playerCreatures;
-    } else if (category.includes("domain")) {
-      targetArr = gameState.playerDomains;
+    } else if (category.includes("terrain")) {
+      targetArr = gameState.playerTerrains;
     } else {
-      showToast && showToast("Fusion can only be used for creatures or domains.");
+      showToast && showToast("Fusion can only be used for creatures or terrains.");
       if (nextEffect) nextEffect();
       return;
     }
@@ -1903,7 +1903,7 @@ Fusion: {
       // Remove from their zone
       let fromArr = gameState.playerCreatures.includes(fusedCard)
         ? gameState.playerCreatures
-        : gameState.playerDomains;
+        : gameState.playerTerrains;
       const idx = fromArr.indexOf(fusedCard);
       if (idx !== -1) fromArr.splice(idx, 1);
 
@@ -1950,7 +1950,7 @@ Evolve: {
   // Optional: only available on field (if you want it restricted)
   canActivate: function(cardObj, skillObj, currentZone, gameState) {
     // Allow granting the sigil only from the field
-    return ['playerCreatures', 'playerDomains'].includes(currentZone) || ['opponentCreatures','opponentDomains'].includes(currentZone);
+    return ['playerCreatures', 'playerTerrains'].includes(currentZone) || ['opponentCreatures','opponentTerrains'].includes(currentZone);
   }
 },
 
@@ -1961,7 +1961,7 @@ Evolution: {
   description: 'Consumes an Evolve Sigil to evolve this card.',
   canActivate: function(cardObj, skillObj, currentZone, gameState) {
     // Require that the card has the Evolve sigil and be on field
-    const onField = ['playerCreatures','playerDomains','opponentCreatures','opponentDomains'].includes(currentZone);
+    const onField = ['playerCreatures','playerTerrains','opponentCreatures','opponentTerrains'].includes(currentZone);
     return onField && hasEvolveSigil(cardObj);
   },
   handler: function(cardObj, skillObj, effectStep, nextEffect) {
@@ -1980,7 +1980,7 @@ Evolution: {
     // --- Find all evolved cards on field (or whatever your Evolution does) ---
     const evolvedCards = [
       ...gameState.playerCreatures,
-      ...gameState.playerDomains
+      ...gameState.playerTerrains
     ].filter(c => c._evolved);
 
     if (evolvedCards.length === 0) {
@@ -1998,9 +1998,9 @@ Evolution: {
       ? cardData.category.map(c => c.toLowerCase())
       : [String(cardData.category).toLowerCase()];
     if (category.includes("creature")) targetArr = gameState.playerCreatures;
-    else if (category.includes("domain")) targetArr = gameState.playerDomains;
+    else if (category.includes("terrain")) targetArr = gameState.playerTerrains;
     else {
-      showToast && showToast("Evolution can only be used for creatures or domains.");
+      showToast && showToast("Evolution can only be used for creatures or terrains.");
       if (nextEffect) nextEffect();
       return;
     }
@@ -2010,7 +2010,7 @@ Evolution: {
     // Remove from field and attach to the new card
     let fromArr = gameState.playerCreatures.includes(target)
       ? gameState.playerCreatures
-      : gameState.playerDomains;
+      : gameState.playerTerrains;
     const idx = fromArr.indexOf(target);
     if (idx !== -1) fromArr.splice(idx, 1);
 
@@ -2289,11 +2289,11 @@ function startGame({
   }
   gameState.playerHand = [];
   gameState.playerCreatures = [];
-  gameState.playerDomains = [];
+  gameState.playerTerrains = [];
   gameState.playerVoid = [];
   gameState.opponentHand = [];
   gameState.opponentCreatures = [];
-  gameState.opponentDomains = [];
+  gameState.opponentTerrains = [];
   gameState.opponentVoid = [];
   
   gameState.turn = gameState.turn || "player";
@@ -2345,7 +2345,7 @@ function startGame({
   setupDropZones();
   updatePhase();
 
-  // --- Game Start Animation, Coin Flip, Domain selection ---
+  // --- Game Start Animation, Coin Flip, Terrain selection ---
   showGameStartAnimation(() => {
     showCoinFlipModal(function(whoStarts) {
       gameState.turn = whoStarts;
@@ -2399,7 +2399,7 @@ function findCardFieldArray(cardObj) {
   for (const zoneName in ZONE_MAP) {
     if (
       zoneName.endsWith("Creatures") ||
-      zoneName.endsWith("Domains")
+      zoneName.endsWith("Terrains")
     ) {
       if (ZONE_MAP[zoneName].arr().includes(cardObj)) return ZONE_MAP[zoneName].arr();
     }
@@ -2437,8 +2437,8 @@ function getRequirementFilter(requirement) {
 }
 // --- Utility: Determine card owner as "player" or "opponent" ---
 function getCardOwner(cardObj) {
-  if (gameState.playerCreatures.includes(cardObj) || gameState.playerDomains.includes(cardObj)) return "player";
-  if (gameState.opponentCreatures.includes(cardObj) || gameState.opponentDomains.includes(cardObj)) return "opponent";
+  if (gameState.playerCreatures.includes(cardObj) || gameState.playerTerrains.includes(cardObj)) return "player";
+  if (gameState.opponentCreatures.includes(cardObj) || gameState.opponentTerrains.includes(cardObj)) return "opponent";
   return null;
 }
 // --- Robust Activation Trigger Handler ---
@@ -2449,9 +2449,9 @@ function handleActivationTriggers(eventType, contextCard, extraContext = {}) {
 
   // Get all cards in all relevant zones
   const allCards = [
-    ...gameState.playerCreatures, ...gameState.playerDomains,
+    ...gameState.playerCreatures, ...gameState.playerTerrains,
     ...gameState.playerVoid, ...gameState.playerHand, ...gameState.playerDeck,
-    ...gameState.opponentCreatures, ...gameState.opponentDomains,
+    ...gameState.opponentCreatures, ...gameState.opponentTerrains,
     ...gameState.opponentVoid, ...gameState.opponentHand, ...gameState.opponentDeck
   ];
 
@@ -2528,7 +2528,7 @@ function showActivationConfirmModal(cardObj, skillObj, onConfirm) {
 // --- TURN FLAGS --- //
 function resetTurnFlags(turn) {
   if (turn === "player") {
-    const arrs = [...gameState.playerCreatures, ...gameState.playerDomains];
+    const arrs = [...gameState.playerCreatures, ...gameState.playerTerrains];
     arrs.forEach(card => {
       // Clear previous per-turn flags
       card.hasChangedPositionThisTurn = false;
@@ -2553,7 +2553,7 @@ function resetTurnFlags(turn) {
       }
     });
   } else if (turn === "opponent") {
-    const arrs = [...gameState.opponentCreatures, ...gameState.opponentDomains];
+    const arrs = [...gameState.opponentCreatures, ...gameState.opponentTerrains];
     arrs.forEach(card => {
       card.hasChangedPositionThisTurn = false;
       card.hasSummonedThisTurn = false;
@@ -2572,8 +2572,8 @@ function resetTurnFlags(turn) {
   }
 }
 function resetTurnResources(turn) {
-  const domains = turn === "player" ? gameState.playerDomains : gameState.opponentDomains;
-  domains.forEach(domain => generateEssence(domain));
+  const terrains = turn === "player" ? gameState.playerTerrains : gameState.opponentTerrains;
+  terrains.forEach(terrain => generateEssence(terrain));
 }
 function matchesFilter(cardObj, filter) {
   for (let key in filter) {
@@ -2694,17 +2694,17 @@ function getTargets(target, sourceCardObj, context = {}) {
       case "self": arr = [sourceCardObj]; break;
       case "player": arr = [gameState.player]; break;
       case "playerCreatures": arr = gameState.playerCreatures; break;
-      case "playerDomains": arr = gameState.playerDomains; break;
+      case "playerTerrains": arr = gameState.playerTerrains; break;
       case "playerHand": arr = gameState.playerHand; break;
       case "playerVoid": arr = gameState.playerVoid; break;
       case "opponentCreatures": arr = gameState.opponentCreatures; break;
-      case "opponentDomains": arr = gameState.opponentDomains; break;
+      case "opponentTerrains": arr = gameState.opponentTerrains; break;
       case "opponentHand": arr = gameState.opponentHand; break;
       case "opponentVoid": arr = gameState.opponentVoid; break;
       case "playerDominion": arr = gameState.playerDominion ? [gameState.playerDominion] : []; break;
       case "opponentDominion": arr = gameState.opponentDominion ? [gameState.opponentDominion] : []; break;
       case "allCreatures": arr = [...gameState.playerCreatures, ...gameState.opponentCreatures]; break;
-      case "allDomains": arr = [...gameState.playerDomains, ...gameState.opponentDomains]; break;
+      case "allTerrains": arr = [...gameState.playerTerrains, ...gameState.opponentTerrains]; break;
       case "any": arr = Object.values(gameState).flat().filter(card => card && card.cardId); break;
       default: arr = [];
     }
@@ -2735,7 +2735,7 @@ function moveCard(instanceId, fromArr, toArr, extra = {}, callback) {
       }
 
       // If moving OUT of field, remove combat props
-      const fieldZones = ["playerCreatures", "playerDomains", "opponentCreatures", "opponentDomains"];
+      const fieldZones = ["playerCreatures", "playerTerrains", "opponentCreatures", "opponentTerrains"];
       const fromField = fieldZones.includes(fromZoneName);
       const toField = fieldZones.includes(toZoneName);
       if (fromField && !toField) {
@@ -2777,7 +2777,7 @@ function moveCard(instanceId, fromArr, toArr, extra = {}, callback) {
           action: "move",
           dest: toZoneName.replace(/([A-Z])/g, ' $1').trim(),
           from: fromZoneName,
-          who: ["playerHand","playerDeck","playerDomains","playerCreatures"].includes(fromZoneName) ? "player" : "opponent",
+          who: ["playerHand","playerDeck","playerTerrains","playerCreatures"].includes(fromZoneName) ? "player" : "opponent",
           sender: gameState.playerProfile?.username || "me"
         };
       }
@@ -2791,7 +2791,7 @@ function moveCard(instanceId, fromArr, toArr, extra = {}, callback) {
       toArr.push(cardObj);
     }
     // === Trigger onSummon event if moving to a field zone ===
-    if (["playerCreatures", "playerDomains", "opponentCreatures", "opponentDomains"].includes(getZoneNameForArray(toArr))) {
+    if (["playerCreatures", "playerTerrains", "opponentCreatures", "opponentTerrains"].includes(getZoneNameForArray(toArr))) {
       const cardObj = toArr[toArr.length - 1];
       queueEvent("onSummon", { summonedCard: cardObj });
     }    
@@ -2881,9 +2881,9 @@ function renderGameState() {
   }
   // RENDER FIELD ZONES
   renderRowZone('opponent-creatures-zone', gameState.opponentCreatures, "creature");
-  renderRowZone('opponent-domains-zone', gameState.opponentDomains, "domain");
+  renderRowZone('opponent-terrains-zone', gameState.opponentTerrains, "terrain");
   renderRowZone('player-creatures-zone', gameState.playerCreatures, "creature");
-  renderRowZone('player-domains-zone', gameState.playerDomains, "domain");
+  renderRowZone('player-terrains-zone', gameState.playerTerrains, "terrain");
   renderRightbarZones();
 }
 
@@ -2990,7 +2990,7 @@ function showHandCardMenu(instanceId, cardDiv) {
     switch (category) {
       case 'creature': playLabel = "Summon"; break;
       case 'spell': playLabel = "Cast"; break;
-      case 'domain': playLabel = "Geomancy"; break;
+      case 'terrain': playLabel = "Geomancy"; break;
       case 'artifact': playLabel = "Equip"; break;
       default: playLabel = "Play";
     }
@@ -3022,9 +3022,9 @@ if (isCardActionable(cardObj, cardData, gameState, 'hand')) {
         if (category.includes("creature")) {
           targetArr = gameState.playerCreatures;
           toZoneId = "player-creatures-zone";
-        } else if (category.includes("domain")) {
-          targetArr = gameState.playerDomains;
-          toZoneId = "player-domains-zone";
+        } else if (category.includes("terrain")) {
+          targetArr = gameState.playerTerrains;
+          toZoneId = "player-terrains-zone";
         } else {
           alert("Card cannot be played.");
           return;
@@ -3138,9 +3138,9 @@ if (isCardActionable(cardObj, cardData, gameState, 'hand')) {
 function setupDropZones() {
   [
     'player-creatures-zone', 
-    'player-domains-zone', 
+    'player-terrains-zone', 
     'opponent-creatures-zone', 
-    'opponent-domains-zone'
+    'opponent-terrains-zone'
   ].forEach(zoneId => {
     const zone = document.getElementById(zoneId);
     if (!zone) return;
@@ -3162,12 +3162,12 @@ function setupDropZones() {
       // Decide target array based on zoneId
       if (zoneId === "player-creatures-zone") {
         targetArr = gameState.playerCreatures;
-      } else if (zoneId === "player-domains-zone") {
-        targetArr = gameState.playerDomains;
+      } else if (zoneId === "player-terrains-zone") {
+        targetArr = gameState.playerTerrains;
       } else if (zoneId === "opponent-creatures-zone") {
         targetArr = gameState.opponentCreatures;
-      } else if (zoneId === "opponent-domains-zone") {
-        targetArr = gameState.opponentDomains;
+      } else if (zoneId === "opponent-terrains-zone") {
+        targetArr = gameState.opponentTerrains;
       } else {
         return;
       }
@@ -3560,7 +3560,7 @@ function computeCardStat(cardObj, statName) {
   }
   // Get all field cards using ZONE_MAP
   const fieldZoneNames = Object.keys(ZONE_MAP).filter(name =>
-    name.endsWith("Creatures") || name.endsWith("Domains") || name.endsWith("Artifacts")
+    name.endsWith("Creatures") || name.endsWith("Terrains") || name.endsWith("Artifacts")
   );
   const allFieldCards = fieldZoneNames
     .map(name => ZONE_MAP[name].arr())
@@ -3630,7 +3630,7 @@ function computeCardStat(cardObj, statName) {
   }
   if ((statName === "atk" || statName === "def") && typeof isWarriorTrait === "function" && isWarriorTrait(cardObj)) {
   try {
-    // Only apply for creatures (optional - remove isCreature check if you want trait to apply to domains too)
+    // Only apply for creatures (optional - remove isCreature check if you want trait to apply to terrains too)
     if (isCreature(cardObj)) {
       const baseHp = getBaseHp(cardObj.cardId) || 1;
       // Only apply when we have currentHP information and it's below 1/3 of base HP
@@ -4779,9 +4779,9 @@ function handleStartPhase(turn) {
   resetTurnFlags(turn);
   resetTurnResources(turn);
   const creatures = turn === 'player' ? gameState.playerCreatures : gameState.opponentCreatures;
-  const domains = turn === 'player' ? gameState.playerDomains : gameState.opponentDomains;
+  const terrains = turn === 'player' ? gameState.playerTerrains : gameState.opponentTerrains;
   
-  [...creatures, ...domains].forEach(cardObj => {
+  [...creatures, ...terrains].forEach(cardObj => {
     cardObj.orientation = 'vertical';
   });
   
@@ -5088,7 +5088,7 @@ function initiateDominionSelection(deckArr, afterSelection) {
   if (dominionObj) {
     dominionObj.currentHP = getBaseHp(dominionObj.cardId);
     gameState.playerDominion = dominionObj;
-    gameState.playerDomains.unshift(dominionObj);
+    gameState.playerTerrains.unshift(dominionObj);
     const idx = deckArr.findIndex(c => c.instanceId === dominionObj.instanceId);
     if (idx !== -1) deckArr.splice(idx, 1);
     renderGameState();
@@ -5103,8 +5103,8 @@ function generateEssence(cardObj) {
   if (!cardDef || !cardDef.essence) return;
 
   // Determine owner by membership in gameState arrays
-  const owner = (gameState.playerDomains.includes(cardObj) || gameState.playerCreatures.includes(cardObj)) ? 'player'
-    : (gameState.opponentDomains.includes(cardObj) || gameState.opponentCreatures.includes(cardObj)) ? 'opponent'
+  const owner = (gameState.playerTerrains.includes(cardObj) || gameState.playerCreatures.includes(cardObj)) ? 'player'
+    : (gameState.opponentTerrains.includes(cardObj) || gameState.opponentCreatures.includes(cardObj)) ? 'opponent'
     : (cardObj.owner ? (cardObj.owner === 'player' ? 'player' : 'opponent') : 'player');
 
   // Parse the essence string like "{g}{g}{r}{2}" and add to pool counts
@@ -5507,7 +5507,7 @@ function updateReqDiv(requirements, reqPaid, reqDiv) {
 }
   
 function getAllEssenceSources() {
-  return [...gameState.playerDomains, ...gameState.playerCreatures /* add more if needed */];
+  return [...gameState.playerTerrains, ...gameState.playerCreatures /* add more if needed */];
 }
 // ATTACHMENTS LOGIC
 function attachCard(targetCardObj, attachmentCardObj) {
@@ -5536,7 +5536,7 @@ function startAttackTargeting(attackerId, attackerZone, cardDiv) {
   targets.forEach(cardObj => {
     // Try both rows for finding the DOM element
     let targetDiv = findCardDivInZone('opponent-creatures-zone', cardObj.instanceId)
-      || findCardDivInZone('opponent-domains-zone', cardObj.instanceId);
+      || findCardDivInZone('opponent-terrains-zone', cardObj.instanceId);
     if (targetDiv) {
       targetDiv.classList.add('attack-target-highlight');
       targetDiv.onclick = function(e) {
@@ -5594,9 +5594,9 @@ function canAttack(cardObj, gameState) {
 function getAttackTargets(attackerObj = null) {
   // Gather all opponent cards
   const creatures = gameState.opponentCreatures;
-  const domains = gameState.opponentDomains;
+  const terrains = gameState.opponentTerrains;
   const artifacts = gameState.opponentArtifacts || [];
-  const allOpponentField = [...creatures, ...domains, ...artifacts];
+  const allOpponentField = [...creatures, ...terrains, ...artifacts];
 
   // Build map of colors to opponent creatures
   const colorToCreatures = {};
@@ -5607,23 +5607,23 @@ function getAttackTargets(attackerObj = null) {
     });
   });
 
-  // Domains and artifacts to filter
-  const domainsAndArtifacts = [...domains, ...artifacts];
+  // Terrains and artifacts to filter
+  const terrainsAndArtifacts = [...terrains, ...artifacts];
 
-  // Filter out protected domains/artifacts
-  const protectedDomainsArtifacts = domainsAndArtifacts.filter(cardObj => {
+  // Filter out protected terrains/artifacts
+  const protectedTerrainsArtifacts = terrainsAndArtifacts.filter(cardObj => {
     const cardColors = getCardColors(cardObj);
-    // If ANY color of the domain/artifact has a protecting creature, it's protected
+    // If ANY color of the terrain/artifact has a protecting creature, it's protected
     return cardColors.some(color => colorToCreatures[color] && colorToCreatures[color].length > 0);
   });
 
-  // Only allow attack on protected domains/artifacts if no creature of that color exists
-  const attackableDomainsArtifacts = domainsAndArtifacts.filter(cardObj => !protectedDomainsArtifacts.includes(cardObj));
+  // Only allow attack on protected terrains/artifacts if no creature of that color exists
+  const attackableTerrainsArtifacts = terrainsAndArtifacts.filter(cardObj => !protectedTerrainsArtifacts.includes(cardObj));
 
   // Build initial target list applying color protection rule
   let targets = [
     ...creatures,
-    ...attackableDomainsArtifacts
+    ...attackableTerrainsArtifacts
   ];
 
   // If no attackerObj provided, just return targets after color protection
@@ -5661,9 +5661,9 @@ function endAttackTarget() {
 // --- ATTACK RESOLUTION ANIMATION ---
 function resolveAttack(attackerId, defenderId) {
   // Find attacker/defender objects
-  const attackerObj = [...gameState.playerCreatures, ...gameState.playerDomains]
+  const attackerObj = [...gameState.playerCreatures, ...gameState.playerTerrains]
     .find(c => c.instanceId === attackerId);
-  const defenderObj = [...gameState.opponentCreatures, ...gameState.opponentDomains, ...gameState.opponentDominion ? [gameState.opponentDominion] : []]
+  const defenderObj = [...gameState.opponentCreatures, ...gameState.opponentTerrains, ...gameState.opponentDominion ? [gameState.opponentDominion] : []]
     .find(c => c.instanceId === defenderId);
 
   if (!attacker || !defender) return;
@@ -5992,7 +5992,7 @@ function emitPublicState() {
     deckCount: gameState.playerDeck.length,
     handCount: gameState.playerHand.length,
     creatures: gameState.playerCreatures.map(stripCardForSync),
-    domains: gameState.playerDomains.map(stripCardForSync),
+    terrains: gameState.playerTerrains.map(stripCardForSync),
     voidCards: gameState.playerVoid.map(stripCardForSync),
     phase: gameState.phase,
     turn: gameState.turn
@@ -6025,12 +6025,12 @@ function getInitialGameState() {
     playerDeck: [],
     playerHand: [],
     playerCreatures: [],
-    playerDomains: [],
+    playerTerrains: [],
     playerVoid: [],
     opponentDeck: [],
     opponentHand: [],
     opponentCreatures: [],
-    opponentDomains: [],
+    opponentTerrains: [],
     opponentVoid: [],
 
     // Dominion / meta
@@ -6158,7 +6158,7 @@ function zoneImgLog(zone) {
     Void: "Icons/Other/Void.png",
     Deck: "Icons/Other/BlueDeckBox.png",
     Hand: "Icons/Other/Hand.png",
-    Domains: "Icons/Other/Domains.png",
+    Terrains: "Icons/Other/Terrains.png",
     Creatures: "Icons/Other/Creatures.png",    
       // Add more as needed
   };  
@@ -6253,8 +6253,8 @@ function getValidTargetsByCondition(cardArr, conditionArr) {
       }
       // Owner check
       if (cond.owner) {
-        if (cond.owner === "player" && !(gameState.playerCreatures.includes(cardObj) || gameState.playerDomains.includes(cardObj))) return false;
-        if (cond.owner === "opponent" && !(gameState.opponentCreatures.includes(cardObj) || gameState.opponentDomains.includes(cardObj))) return false;
+        if (cond.owner === "player" && !(gameState.playerCreatures.includes(cardObj) || gameState.playerTerrains.includes(cardObj))) return false;
+        if (cond.owner === "opponent" && !(gameState.opponentCreatures.includes(cardObj) || gameState.opponentTerrains.includes(cardObj))) return false;
       }
       // Category/type check (from dummyCards)
       const cardData = dummyCards.find(c => c.id === cardObj.cardId);
@@ -6424,7 +6424,7 @@ function getTotalEssence(essenceStr) {
 
 /**
  * PRIORITY ORDER for trigger collection:
- * 1. Player's cards: field (creatures+domains), hand, void, deck (by instanceId)
+ * 1. Player's cards: field (creatures+terrains), hand, void, deck (by instanceId)
  * 2. Opponent's cards: field, hand, void, deck (by instanceId)
  */
 function collectTriggersForEvent(eventType, context) {
@@ -6435,14 +6435,14 @@ function collectTriggersForEvent(eventType, context) {
   // Get in priority order
   const playerZones = [
     sortById(gameState.playerCreatures),
-    sortById(gameState.playerDomains),
+    sortById(gameState.playerTerrains),
     sortById(gameState.playerHand),
     sortById(gameState.playerVoid),
     sortById(gameState.playerDeck)
   ];
   const oppZones = [
     sortById(gameState.opponentCreatures),
-    sortById(gameState.opponentDomains),
+    sortById(gameState.opponentTerrains),
     sortById(gameState.opponentHand),
     sortById(gameState.opponentVoid),
     sortById(gameState.opponentDeck)
@@ -6957,8 +6957,8 @@ function startSkillTarget(validTargets, onSelect, opts = {}) {
   validTargets.forEach(cardObj => {
     // Find card DOM in all field zones
     const zoneIds = [
-      'player-creatures-zone', 'player-domains-zone',
-      'opponent-creatures-zone', 'opponent-domains-zone'
+      'player-creatures-zone', 'player-terrains-zone',
+      'opponent-creatures-zone', 'opponent-terrains-zone'
     ];
     let cardDiv = null;
     for (const zoneId of zoneIds) {
@@ -7058,12 +7058,12 @@ function getTargetsFromEffect(step = {}, sourceCardObj = null, context = {}) {
 
     // If step.target is a number -> any card in the field is valid
     if (typeof step.target === 'number') {
-      return [...gameState.playerCreatures, ...gameState.playerDomains, ...gameState.opponentCreatures, ...gameState.opponentDomains];
+      return [...gameState.playerCreatures, ...gameState.playerTerrains, ...gameState.opponentCreatures, ...gameState.opponentTerrains];
     }
 
     // If target is missing -> default to whole field (single target expected elsewhere)
     if (!step.target) {
-      return [...gameState.playerCreatures, ...gameState.playerDomains, ...gameState.opponentCreatures, ...gameState.opponentDomains];
+      return [...gameState.playerCreatures, ...gameState.playerTerrains, ...gameState.opponentCreatures, ...gameState.opponentTerrains];
     }
 
     // If step.target is an object describing zone/filter, try using getTargets (existing helper)
@@ -7094,10 +7094,10 @@ function getTargetsFromEffect(step = {}, sourceCardObj = null, context = {}) {
       switch (key) {
         case 'targetOpponent':
         case 'opponent':
-          return [...gameState.opponentCreatures, ...gameState.opponentDomains];
+          return [...gameState.opponentCreatures, ...gameState.opponentTerrains];
         case 'targetPlayer':
         case 'player':
-          return [...gameState.playerCreatures, ...gameState.playerDomains];
+          return [...gameState.playerCreatures, ...gameState.playerTerrains];
         case 'targetHandOpponent':
           return Array.isArray(gameState.opponentHand) ? gameState.opponentHand.slice() : [];
         case 'targetHandPlayer':
@@ -7114,8 +7114,8 @@ function getTargetsFromEffect(step = {}, sourceCardObj = null, context = {}) {
           ];
         case 'allCreatures':
           return [...gameState.playerCreatures, ...gameState.opponentCreatures];
-        case 'allDomains':
-          return [...gameState.playerDomains, ...gameState.opponentDomains];
+        case 'allTerrains':
+          return [...gameState.playerTerrains, ...gameState.opponentTerrains];
         case 'any':
           return Object.values(gameState).flat().filter(card => card && card.cardId);
         default:
@@ -7146,7 +7146,7 @@ function chooseTargetsForEffect(step = {}, sourceCardObj = null, onSelect = () =
   const targetSpec = step.target || step.zone || null;
 
   // Field-based selections -> use existing startSkillTarget which highlights cards on battlefield
-  if (!targetSpec || typeof targetSpec === 'number' || (typeof targetSpec === 'string' && ['targetOpponent','targetPlayer','allCreatures','allDomains','any','opponent','player'].includes(String(targetSpec)))) {
+  if (!targetSpec || typeof targetSpec === 'number' || (typeof targetSpec === 'string' && ['targetOpponent','targetPlayer','allCreatures','allTerrains','any','opponent','player'].includes(String(targetSpec)))) {
     // Use getTargetsFromEffect to produce candidate array
     const candidates = getTargetsFromEffect(step, sourceCardObj);
     // startSkillTarget expects the list of card objects and will handle selection highlighting
@@ -7417,7 +7417,7 @@ function runSkillEffect(sourceCardObj, skillObj) {
 
 function effectStatusHandler(statusName) {
   return function(sourceCardObj, skillObj, step, nextEffect) {
-    const allOpponentField = [...gameState.opponentCreatures, ...gameState.opponentDomains];
+    const allOpponentField = [...gameState.opponentCreatures, ...gameState.opponentTerrains];
     startSkillTarget(
       allOpponentField,
       selectedTargets => {
@@ -7440,7 +7440,7 @@ function isValidForSkillType(sourceCardObj, skillObj, type) {
     // Only allow if sourceCardObj is still in hand or field
     return gameState.playerHand.includes(sourceCardObj) ||
            gameState.playerCreatures.includes(sourceCardObj) ||
-           gameState.playerDomains.includes(sourceCardObj);
+           gameState.playerTerrains.includes(sourceCardObj);
   }
   // For other types, add custom logic as needed
   return true;
@@ -7448,7 +7448,7 @@ function isValidForSkillType(sourceCardObj, skillObj, type) {
 function isSkillEffectValid(sourceCardObj, skillObj) {
   // For single-target skills:
   if (skillObj.target) {
-    // If the target is no longer in the zone (e.g. not in field, not in domains array, etc)
+    // If the target is no longer in the zone (e.g. not in field, not in terrains array, etc)
     if (!isTargetStillPresent(skillObj.target)) return false;
   }
   // For multi-target skills:
@@ -7466,9 +7466,9 @@ function isTargetStillPresent(targetObj) {
   // Check all possible arrays/zones
   return (
     gameState.playerCreatures.includes(targetObj) ||
-    gameState.playerDomains.includes(targetObj) ||
+    gameState.playerTerrains.includes(targetObj) ||
     gameState.opponentCreatures.includes(targetObj) ||
-    gameState.opponentDomains.includes(targetObj)
+    gameState.opponentTerrains.includes(targetObj)
     // ...add other zones as needed
   );
 }
@@ -7592,10 +7592,10 @@ function handleEndPhaseStatuses() {
   renderGameState();
 }
 function tickStatusDurations(phaseObj) {
-  // Get all relevant cards (creatures, domains, etc)
+  // Get all relevant cards (creatures, terrains, etc)
   const allCards = [
-    ...gameState.playerCreatures, ...gameState.playerDomains,
-    ...gameState.opponentCreatures, ...gameState.opponentDomains
+    ...gameState.playerCreatures, ...gameState.playerTerrains,
+    ...gameState.opponentCreatures, ...gameState.opponentTerrains
   ];
   allCards.forEach(cardObj => {
     if (!cardObj.statuses) return;
@@ -7669,9 +7669,9 @@ function summonTokenInstance(tokenDef, ownerCardObj) {
   if (tokenDef.category && tokenDef.category.toLowerCase() === "creature") {
     if (tokenInstance.owner === "player") gameState.playerCreatures.push(tokenInstance);
     else gameState.opponentCreatures.push(tokenInstance);
-  } else if (tokenDef.category && tokenDef.category.toLowerCase() === "domain") {
-    if (tokenInstance.owner === "player") gameState.playerDomains.push(tokenInstance);
-    else gameState.opponentDomains.push(tokenInstance);
+  } else if (tokenDef.category && tokenDef.category.toLowerCase() === "terrain") {
+    if (tokenInstance.owner === "player") gameState.playerTerrains.push(tokenInstance);
+    else gameState.opponentTerrains.push(tokenInstance);
   }
   renderGameState();
   setupDropZones && setupDropZones();
@@ -8383,11 +8383,11 @@ document.getElementById('game-log').addEventListener('click', function(e) {
     const allArrays = [
       gameState.playerHand,
       gameState.playerCreatures,
-      gameState.playerDomains,
+      gameState.playerTerrains,
       gameState.playerVoid,
       gameState.opponentHand,
       gameState.opponentCreatures,
-      gameState.opponentDomains,
+      gameState.opponentTerrains,
       gameState.opponentVoid,
       gameState.playerDeck,
       gameState.opponentDeck,
@@ -8447,7 +8447,7 @@ if (window.socket) {
     gameState.opponentHand = Array.from({ length: state.handCount }, () => ({}));
     // Battlefield zones: use the real card objects sent from server
     gameState.opponentCreatures = state.creatures || [];
-    gameState.opponentDomains = state.domains || [];
+    gameState.opponentTerrains = state.terrains || [];
     gameState.opponentVoid = state.voidCards || [];
     gameState.opponentPhase = state.phase;
     gameState.opponentTurn = state.turn;
