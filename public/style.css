@@ -3441,22 +3441,6 @@ button[disabled], .btn-disabled {
 .essence-pop {
   animation: essence-pop 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 }
-.main-domain-highlight {
-  border: 3px solid #ffd700;
-  box-shadow: 0 0 20px #ffd70088;
-  position: relative;
-}
-.main-domain-highlight::after {
-  content: "Main Domain";
-  position: absolute;
-  top: 5px; left: 5px;
-  background: #ffd700;
-  color: #222;
-  font-weight: bold;
-  padding: 2px 8px;
-  border-radius: 7px;
-  font-size: 0.85em;
-}
 .target-highlight {
   outline: 3px solid #ffe066;
   box-shadow: 0 0 12px 4px #ffe066, 0 0 0 4px #ffe066 inset;
