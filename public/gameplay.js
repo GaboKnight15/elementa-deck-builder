@@ -47,7 +47,7 @@ let gameState = {
   opponentVoid: [],
   playerDominion: null,
   opponentDominion: null,
-  playerSigils: [],    // e.g. [{ name: 'Null', appliedAt:{turn:'player',phase:'start'}, duration: null, meta:{} }]
+  playerSigils: [],
   opponentSigils: [],
   turn: "player",
   phase: "start",
