@@ -739,7 +739,7 @@ function createCardBuilder(card, ownedCount) {
     img.src = card.image;
     img.onerror = function() {
       this.onerror = null;
-      this.src = 'Images/Domain/Default.png';
+      this.src = 'Images/Banner/Default.png';
     };
     img.alt = card.name;
   
@@ -880,7 +880,7 @@ function showDominionSelectionModal() {
 
     img.onerror = function() {
       this.onerror = null;
-      this.src = 'Images/Domain/Default.png';
+      this.src = 'Images/Banner/Default.png';
     };
 
     wrapper.appendChild(img);
@@ -969,7 +969,7 @@ function updateDeckDisplay() {
     creature: [],
     artifact: [],
     spell: [],
-    domain: []
+    terrain: []
   };
 
   for (const [id, count] of Object.entries(deck)) {
@@ -1002,7 +1002,7 @@ function updateDeckDisplay() {
     img.title = `${card.name} (Click to change)`;
     img.onerror = function() {
       this.onerror = null;
-      this.src = 'Images/Domain/Default.png';
+      this.src = 'Images/Banner/Default.png';
     };
     img.onclick = () => showDominionSelectionModal();
     dominionSlot.appendChild(img);
@@ -1098,7 +1098,7 @@ function updateDeckDisplay() {
     { key: "creature", label: "Creatures" },
     { key: "artifact", label: "Artifacts" },
     { key: "spell", label: "Spells" },
-    { key: "domain", label: "Domains" }
+    { key: "terrain", label: "Terrains" }
   ];
   
   // Iterate sections and append items; insert divider LI between non-empty sections
@@ -1382,8 +1382,8 @@ function autofillDeck({colors, types, archetypes}) {
   const artifacts = dummyCards.filter(
     c => getCardCategory(c) === 'artifact' && cardMatchesTheme(c)
   );
-  const domains = dummyCards.filter(
-    c => getCardCategory(c) === 'domain' && !(c.trait && c.trait.toLowerCase() === 'dominion') && cardMatchesTheme(c)
+  const terrains = dummyCards.filter(
+    c => getCardCategory(c) === 'terrain' && !(c.trait && c.trait.toLowerCase() === 'dominion') && cardMatchesTheme(c)
   );
 
   // Shuffle helper
@@ -1407,7 +1407,7 @@ function autofillDeck({colors, types, archetypes}) {
     { arr: creatures, max: 27 },
     { arr: spells, max: 10 },
     { arr: artifacts, max: 5 },
-    { arr: domains, max: 5 }
+    { arr: terrains, max: 5 }
   ];
 
   for (const { arr, max } of fillOrder) {
