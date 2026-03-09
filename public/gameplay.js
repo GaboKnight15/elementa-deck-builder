@@ -864,53 +864,45 @@ Summon: {
 // CAST handler: plays a spell/ability from hand (resolves immediately and typically goes to void)
 Cast: {
   name: 'Cast',
-  description: 'Cast a spell card (handles payment and resolution).',
+  description: 'Cast a spell from hand: resolve, then send to void.',
+  canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
+    // Accept common spellings used across your code
+    return currentZone === 'playerHand' || currentZone === 'hand' || currentZone === 'player-hand';
+  },
   handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
     try {
-      const instance = sourceCardObj;
-      const cardId = step.cardId || (instance && instance.cardId);
-      if (!cardId) { if (typeof nextEffect === 'function') nextEffect(); return; }
-      const cardDef = dummyCards.find(c => c.id === cardId);
-      if (!cardDef) { if (typeof nextEffect === 'function') nextEffect(); return; }
+      const owner = (getCardOwner(sourceCardObj) === 'opponent') ? 'opponent' : 'player';
+      const handArr = owner === 'player' ? gameState.playerHand : gameState.opponentHand;
+      const voidArr = owner === 'player' ? gameState.playerVoid : gameState.opponentVoid;
 
-      const parsedCost = step.cost ? parseCost(step.cost) : (cardDef.cost ? parseCost(cardDef.cost) : null);
-      const performCast = function() {
-        // Resolve the card's effects (assume its skill array contains effects)
-        // If the card is in hand, move it to void after resolution
-        const resolveAndMoveToVoid = function() {
-          // Run card's skill resolution or effect steps (you likely have resolveSkill/runSkillEffect)
-          runHandSkillWithAnimation(instance, { class: 'ResolveCard', cardId: cardId }, function() {
-            // move to void
-            if (instance && findZoneIdForCard(instance) === 'player-hand') {
-              moveCard(instance.instanceId, gameState.playerHand, gameState.playerVoid, { orientation: null });
-            }
-            renderGameState && renderGameState();
-            if (typeof nextEffect === 'function') nextEffect();
-          });
-        };
-
-        resolveAndMoveToVoid();
-      };
-
-      const isFree = !cardDef.cost || (parsedCost && Object.values(parsedCost).reduce((a,b)=>a+b,0) === 0) || cardDef.cost === '{0}';
-      if (isFree) {
-        performCast();
-      } else {
-        showEssencePaymentModal({
-          card: cardDef,
-          cost: parsedCost,
-          eligibleCards: getAllEssenceSources(),
-          onPaid: function() { performCast(); },
-          onCancel: function() { if (typeof nextEffect === 'function') nextEffect(); }
-        });
+      // Must be in hand
+      if (!handArr.includes(sourceCardObj)) {
+        showToast && showToast('Cast can only be used from hand.', { type: 'error' });
+        nextEffect && nextEffect();
+        return;
       }
+
+      // Must be a Spell by definition
+      const def = dummyCards.find(c => c.id === sourceCardObj.cardId);
+      const isSpell = String(def?.category || '').toLowerCase() === 'spell';
+      if (!isSpell) {
+        showToast && showToast('Only spell cards can be Cast.', { type: 'error' });
+        nextEffect && nextEffect();
+        return;
+      }
+
+      // Resolve the spell's skill effects (do NOT move yet)
+      // If you want an animation, keep using your existing helper.
+      runHandSkillWithAnimation(sourceCardObj, skillObj, voidArr, () => {
+        // runHandSkillWithAnimation already moves hand->destinationArray (voidArr)
+        // so just finish
+        nextEffect && nextEffect();
+      });
+
     } catch (err) {
       console.warn('Cast handler error', err);
-      if (typeof nextEffect === 'function') nextEffect();
+      nextEffect && nextEffect();
     }
-  },
-  canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
-    return currentZone === 'playerHand' || currentZone === 'opponentHand';
   }
 },
 
@@ -975,102 +967,53 @@ Equip: {
 // TERRAFORM handler: place a terrain/terrain under player's terrains
 Terraform: {
   name: 'Terraform',
-  description: 'Allows the player to play a terrain/land card to the field. Restricted to once per turn.',
-  handler: function (sourceCardObj, skillObj, step = {}, nextEffect) {
+  description: 'Play a terrain from hand to terrain zone. Once per turn.',
+  canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
+    // Must be in hand (tolerant naming), and terraform not used this turn by current player
+    const inHand = (currentZone === 'playerHand' || currentZone === 'hand' || currentZone === 'player-hand');
+    const activePlayer = gameState.turn;
+    return inHand && !gameState.hasTerraformed?.[activePlayer];
+  },
+  handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
     try {
-      const activePlayer = gameState.turn; // Determine the current turn
+      const activePlayer = gameState.turn;
 
-      // Check if the player has already Terraform'ed this turn
-      if (gameState.hasTerraformed[activePlayer]) {
-        showToast("You can only Terraform once per turn!", { type: "error" });
-        if (typeof nextEffect === "function") nextEffect();
+      if (gameState.hasTerraformed?.[activePlayer]) {
+        showToast && showToast("You can only Terraform once per turn!", { type: "error" });
+        nextEffect && nextEffect();
         return;
       }
 
-      // Resolve the source card object
-      if (!sourceCardObj || !sourceCardObj.cardId) {
-        console.warn("Invalid card object passed to Terraform handler.");
-        if (typeof nextEffect === "function") nextEffect();
+      const owner = (getCardOwner(sourceCardObj) === 'opponent') ? 'opponent' : 'player';
+      const handArr = owner === 'player' ? gameState.playerHand : gameState.opponentHand;
+      const terrainsArr = owner === 'player' ? gameState.playerTerrains : gameState.opponentTerrains;
+
+      // Must be in hand
+      if (!handArr.includes(sourceCardObj)) {
+        showToast && showToast("You can only Terraform terrains from your hand.", { type: "error" });
+        nextEffect && nextEffect();
         return;
       }
 
-      // Ensure the card is in the player's hand
-      const cardZone = findZoneIdForCard(sourceCardObj);
-      if (cardZone !== "player-hand") {
-        showToast("You can only Terraform terrains from your hand.", { type: "error" });
-        if (typeof nextEffect === "function") nextEffect();
-        return;
-      }
-
-      // Check if the card is a valid terrain
-      const cardDef = getCardDefinition(sourceCardObj.cardId);
-      const isTerrain = Array.isArray(cardDef.category) 
-        ? cardDef.category.includes("Terrain") 
-        : String(cardDef.category).toLowerCase() === "terrain";
-
+      // Must be a Terrain by definition
+      const def = dummyCards.find(c => c.id === sourceCardObj.cardId);
+      const isTerrain = String(def?.category || '').toLowerCase() === 'terrain';
       if (!isTerrain) {
-        showToast("Only terrain cards can be Terraform'ed.", { type: "error" });
-        if (typeof nextEffect === "function") nextEffect();
+        showToast && showToast("Only terrain cards can be Terraform'ed.", { type: "error" });
+        nextEffect && nextEffect();
         return;
       }
 
-      // Handle essence payment (if required)
-      const rawCost = cardDef.cost;
-      const parsedCost = rawCost ? parseCost(rawCost) : null;
-
-      const performTerraform = function () {
-        // Move the terrain card from the hand to the player's terrain zone
-        moveCard(
-          sourceCardObj.instanceId,
-          gameState.playerHand,
-          gameState.playerTerrains,
-          { orientation: "vertical" }
-        );
-
-        // Update game state to track Terraform action
+      moveCard(sourceCardObj.instanceId, handArr, terrainsArr, { orientation: "vertical" }, () => {
         gameState.hasTerraformed[activePlayer] = true;
-
-        // Show feedback and refresh game state
-        appendVisualLog({ action: "terraform", text: `You have Terraform'ed ${cardDef.name}.` });
-        renderGameState();
-
-        // Continue with the next effect, if any
-        if (typeof nextEffect === "function") nextEffect();
-      };
-
-      // Check if the Terraform is cost-free
-      const isFree = !rawCost || (parsedCost && Object.values(parsedCost).reduce((a, b) => a + b, 0) === 0);
-      if (isFree) {
-        performTerraform();
-        return;
-      }
-
-      // Show payment modal for Terraform cost
-      showEssencePaymentModal({
-        card: cardDef,
-        cost: parsedCost,
-        eligibleCards: getAllEssenceSources(),
-        onPaid: function () {
-          performTerraform();
-        },
-        onCancel: function () {
-          if (typeof nextEffect === "function") nextEffect();
-        },
+        renderGameState && renderGameState();
+        nextEffect && nextEffect();
       });
+
     } catch (err) {
       console.error("Terraform handler error:", err);
-      if (typeof nextEffect === "function") nextEffect();
+      nextEffect && nextEffect();
     }
-  },
-  // Optional: Add a condition to check if Terraform can be activated
-  canActivate: function (sourceCardObj, skillObj, currentZone) {
-    // Can only Terraform if in the hand and it's the player's action phase
-    const phaseObj = getCurrentPhaseObj(); 
-    return (
-      currentZone === "playerHand" &&
-      isPlayerPhase(phaseObj, "action") &&
-      !gameState.hasTerraformed.player // Ensure player has not Terraform'ed yet
-    );
   }
 },
 
