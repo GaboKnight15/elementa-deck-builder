@@ -17,64 +17,72 @@ const QUEST_POOL = [
   { questId: null, refillAt: 1720000000000 },
 ];
 
-// -------------------------- //
-// --- COLOR ACHIEVEMENTS --- //
-// -------------------------- //
-const COLOR_ACHIEVEMENT_TIERS = [
-  { tier: 1, goal: 100,  description: "Collect 100 {color} cards", reward: 100 },
-  { tier: 2, goal: 300, description: "Collect 300 {color} cards", reward: 200 },
-  { tier: 3, goal: 800, description: "Collect 800 {color} cards", reward: 300 },
-  { tier: 4, goal: 1500,  description: "Collect 1500 {color} cards", reward: 400 },
-  { tier: 5, goal: 5000, description: "Collect 5000 {color} cards", reward: 500 },
-];
-const COLOR_ACHIEVEMENTS = [
-  { color: 'green',  image: 'Images/Blank/Green.png' },
-  { color: 'red',    image: 'Images/Blank/Red.png' },
-  { color: 'blue',   image: 'Images/Blank/Blue.png' },
-  { color: 'yellow', image: 'Images/Blank/Yellow.png' },
-  { color: 'purple', image: 'Images/Blank/Purple.png' },
-  { color: 'gray',   image: 'Images/Blank/Gray.png' },
-  { color: 'black',  image: 'Images/Blank/Black.png' },
-  { color: 'white',  image: 'Images/Blank/White.png' },
-];
-const colorAchievements = generateAchievements(COLOR_ACHIEVEMENTS, COLOR_ACHIEVEMENT_TIERS, 'color');
+// -------------------- //
+// --- ACHIEVEMENTS --- //
+// -------------------- //
 
-// ------------------------- //
-// --- TYPE ACHIEVEMENTS --- //
-// ------------------------- //
-const TYPE_ACHIEVEMENT_TIERS = [
-  { tier: 1, goal: 30,   reward: { type: 'currency', amount: 50 }, description: "Collect 30 {type} cards" },
-  { tier: 2, goal: 100,  reward: { type: 'currency', amount: 120 }, description: "Collect 100 {type} cards" },
-  { tier: 3, goal: 250,  reward: { type: 'currency', amount: 350 }, description: "Collect 250 {type} cards" },
-  { tier: 4, goal: 800,  reward: { type: 'currency', amount: 1200 }, description: "Collect 800 {type} cards" },
-  { tier: 5, goal: 2000, reward: { type: 'currency', amount: 3500 }, description: "Collect 2000 {type} cards" }
-];
-const TYPE_ACHIEVEMENTS = [
-  { type: 'Avian', label: 'Avian', icon: 'Icons/Type/Avian.png', colorHex: '#a47c3b' },
-  { type: 'Beast', label: 'Beast', icon: 'Icons/Type/BeastCard.png', colorHex: '#a47c3b' },
-  { type: 'Brute', label: 'Brute', icon: 'Icons/Type/Brute.png', colorHex: '#a47c3b' },
-  { type: 'Construct', label: 'Construct', icon: 'Icons/Type/Construct.png', colorHex: '#a47c3b' },
-  { type: 'Demon', label: 'Demon', icon: 'Icons/Type/Demon.png', colorHex: '#e0801c' },
-  { type: 'Dragon', label: 'Dragon', icon: 'Icons/Type/Dragon.png', colorHex: '#e0801c' },
-  { type: 'Elemental', label: 'Elemental', icon: 'Icons/Type/Elemental.png', colorHex: '#e0801c' },
-  { type: 'Faefolk', label: 'Faefolk', icon: 'Icons/Type/Faefolk.png', colorHex: '#e0801c' },
-  { type: 'Undead', label: 'Undead', icon: 'Icons/Type/Undead.png', colorHex: '#a47c3b' },
-  { type: 'Warrior', label: 'Warrior', icon: 'Icons/Type/Warrior.png', colorHex: '#e0801c' },
-  // ... add more types as needed ...
-];
-const typeAchievements = generateAchievements(TYPE_ACHIEVEMENTS, TYPE_ACHIEVEMENT_TIERS, 'type');
+const ACHIEVEMENTS = [
+  { id: 'green1', group: 'Color', tier: 1, goal: 25,  description: "Collect 25 {green} cards", reward: 100, image: 'Images/Blank/Green.png' },
+  { id: 'green2', group: 'Color', tier: 2, goal: 50,  description: "Collect 50 {green} cards", reward: 100, image: 'Images/Blank/Green.png' },
+  { id: 'green3', group: 'Color', tier: 3, goal: 100,  description: "Collect 100 {green} cards", reward: 100, image: 'Images/Blank/Green.png' },
+  { id: 'green4', group: 'Color', tier: 4, goal: 200,  description: "Collect 200 {green} cards", reward: 100, image: 'Images/Blank/Green.png' },
+  { id: 'green5', group: 'Color', tier: 5, goal: 400,  description: "Collect 400 {green} cards", reward: 100, image: 'Images/Blank/Green.png' },
+  
+  { id: 'red1', group: 'Color', tier: 1, goal: 25,  description: "Collect 25 {red} cards", reward: 100, image: 'Images/Blank/Red.png' },
+  { id: 'red2', group: 'Color', tier: 2, goal: 50,  description: "Collect 50 {red} cards", reward: 100, image: 'Images/Blank/Red.png' },
+  { id: 'red3', group: 'Color', tier: 3, goal: 100,  description: "Collect 100 {red} cards", reward: 100, image: 'Images/Blank/Red.png' },
+  { id: 'red4', group: 'Color', tier: 4, goal: 200,  description: "Collect 200 {red} cards", reward: 100, image: 'Images/Blank/Red.png' },
+  { id: 'red5', group: 'Color', tier: 5, goal: 400,  description: "Collect 400 {red} cards", reward: 100, image: 'Images/Blank/Red.png' },
 
-// ------------------------------ //
-// --- ARCHETYPE ACHIEVEMENTS --- //
-// ------------------------------ //
-const ARCHETYPE_ACHIEVEMENT_TIERS = [
-  { tier: 1, goal: 15,   reward: { type: 'currency', amount: 40 }, description: "Collect 2000 {type} cards" },
-  { tier: 2, goal: 50,   reward: { type: 'currency', amount: 100 }, description: "Collect 2000 {type} cards" },
-  { tier: 3, goal: 150,  reward: { type: 'currency', amount: 300 }, description: "Collect 2000 {type} cards" },
-  { tier: 4, goal: 400,  reward: { type: 'currency', amount: 900 }, description: "Collect 2000 {type} cards" },
-  { tier: 5, goal: 1000, reward: { type: 'currency', amount: 2500 }, description: "Collect 2000 {type} cards" }
-];
-const ARCHETYPE_ACHIEVEMENTS = [
+  { id: 'blue1', group: 'Color', tier: 1, goal: 25,  description: "Collect 25 {blue} cards", reward: 100, image: 'Images/Blank/Blue.png' },
+  { id: 'blue2', group: 'Color', tier: 2, goal: 50,  description: "Collect 50 {blue} cards", reward: 100, image: 'Images/Blank/Blue.png' },
+  { id: 'blue3', group: 'Color', tier: 3, goal: 100,  description: "Collect 100 {blue} cards", reward: 100, image: 'Images/Blank/Blue.png' },
+  { id: 'blue4', group: 'Color', tier: 4, goal: 200,  description: "Collect 200 {blue} cards", reward: 100, image: 'Images/Blank/Blue.png' },
+  { id: 'blue5', group: 'Color', tier: 5, goal: 400,  description: "Collect 400 {blue} cards", reward: 100, image: 'Images/Blank/Blue.png' },
+
+  { id: 'yellow1', group: 'Color', tier: 1, goal: 25,  description: "Collect 25 {yellow} cards", reward: 100, image: 'Images/Blank/Yellow.png' },
+  { id: 'yellow2', group: 'Color', tier: 2, goal: 50,  description: "Collect 50 {yellow} cards", reward: 100, image: 'Images/Blank/Yellow.png' },
+  { id: 'yellow3', group: 'Color', tier: 3, goal: 100,  description: "Collect 100 {yellow} cards", reward: 100, image: 'Images/Blank/Yellow.png' },
+  { id: 'yellow4', group: 'Color', tier: 4, goal: 200,  description: "Collect 200 {yellow} cards", reward: 100, image: 'Images/Blank/Yellow.png' },
+  { id: 'yellow5', group: 'Color', tier: 5, goal: 400,  description: "Collect 400 {yellow} cards", reward: 100, image: 'Images/Blank/Yellow.png' },
+
+  { id: 'purple1', group: 'Color', tier: 1, goal: 25,  description: "Collect 25 {purple} cards", reward: 100, image: 'Images/Blank/Purple.png' },
+  { id: 'purple2', group: 'Color', tier: 2, goal: 50,  description: "Collect 500 {purple} cards", reward: 100, image: 'Images/Blank/Purple.png' },
+  { id: 'purple3', group: 'Color', tier: 3, goal: 100,  description: "Collect 100 {purple} cards", reward: 100, image: 'Images/Blank/Purple.png' },
+  { id: 'purple4', group: 'Color', tier: 4, goal: 200,  description: "Collect 200 {purple} cards", reward: 100, image: 'Images/Blank/Purple.png' },
+  { id: 'purple5', group: 'Color', tier: 5, goal: 400,  description: "Collect 400 {purple} cards", reward: 100, image: 'Images/Blank/Purple.png' },
+
+  { id: 'gray1', group: 'Color', tier: 1, goal: 25,  description: "Collect 25 {gray} cards", reward: 100, image: 'Images/Blank/Gray.png' },
+  { id: 'gray2', group: 'Color', tier: 2, goal: 50,  description: "Collect 50 {gray} cards", reward: 100, image: 'Images/Blank/Gray.png' },
+  { id: 'gray3', group: 'Color', tier: 3, goal: 100,  description: "Collect 100 {gray} cards", reward: 100, image: 'Images/Blank/Gray.png' },
+  { id: 'gray4', group: 'Color', tier: 4, goal: 200,  description: "Collect 200 {gray} cards", reward: 100, image: 'Images/Blank/Gray.png' },
+  { id: 'gray5', group: 'Color', tier: 5, goal: 400,  description: "Collect 400 {gray} cards", reward: 100, image: 'Images/Blank/Gray.png' },
+
+  { id: 'black1', group: 'Color', tier: 1, goal: 25,  description: "Collect 25 {black} cards", reward: 100, image: 'Images/Blank/Black.png' },
+  { id: 'black2', group: 'Color', tier: 2, goal: 50,  description: "Collect 50 {black} cards", reward: 100, image: 'Images/Blank/Black.png' },
+  { id: 'black3', group: 'Color', tier: 3, goal: 100,  description: "Collect 100 {black} cards", reward: 100, image: 'Images/Blank/Black.png' },
+  { id: 'black4', group: 'Color', tier: 4, goal: 200,  description: "Collect 200 {black} cards", reward: 100, image: 'Images/Blank/Black.png' },
+  { id: 'black5', group: 'Color', tier: 5, goal: 400,  description: "Collect 400 {black} cards", reward: 100, image: 'Images/Blank/Black.png' },
+
+  { id: 'white1', group: 'Color', tier: 1, goal: 25,  description: "Collect 25 {white} cards", reward: 100, image: 'Images/Blank/White.png' },
+  { id: 'white2', group: 'Color', tier: 2, goal: 50,  description: "Collect 50 {white} cards", reward: 100, image: 'Images/Blank/White.png' },
+  { id: 'white3', group: 'Color', tier: 3, goal: 100,  description: "Collect 100 {white} cards", reward: 100, image: 'Images/Blank/White.png' },
+  { id: 'white4', group: 'Color', tier: 4, goal: 200,  description: "Collect 200 {white} cards", reward: 100, image: 'Images/Blank/White.png' },
+  { id: 'white5', group: 'Color', tier: 5, goal: 400,  description: "Collect 400 {white} cards", reward: 100, image: 'Images/Blank/White.png' },
+
+  { id: 'Avian', label: 'Avian', icon: 'Icons/Type/Avian.png', colorHex: '#a47c3b' },
+  { id: 'human', label: 'Human', icon: 'Icons/Type/Human.png', colorHex: '#a47c3b' },
+
+  { id: 'Beast', label: 'Beast', icon: 'Icons/Type/BeastCard.png', colorHex: '#a47c3b' },
+  { id: 'Brute', label: 'Brute', icon: 'Icons/Type/Brute.png', colorHex: '#a47c3b' },
+  { id: 'Construct', label: 'Construct', icon: 'Icons/Type/Construct.png', colorHex: '#a47c3b' },
+  { id: 'Demon', label: 'Demon', icon: 'Icons/Type/Demon.png', colorHex: '#e0801c' },
+  { id: 'Dragon', label: 'Dragon', icon: 'Icons/Type/Dragon.png', colorHex: '#e0801c' },
+  { id: 'Elemental', label: 'Elemental', icon: 'Icons/Type/Elemental.png', colorHex: '#e0801c' },
+  { id: 'Faefolk', label: 'Faefolk', icon: 'Icons/Type/Faefolk.png', colorHex: '#e0801c' },
+  { id: 'Undead', label: 'Undead', icon: 'Icons/Type/Undead.png', colorHex: '#a47c3b' },
+  { id: 'Warrior', label: 'Warrior', icon: 'Icons/Type/Warrior.png', colorHex: '#e0801c' },
+
   { value: 'Satyr', label: 'Satyr', icon: 'Icons/Archetype/Satyr.png', colorHex: '#888888' },
   { value: 'Goblin', label: 'Goblin', icon: 'Icons/Archetype/Goblin.png', colorHex: '#888888' },
   { value: 'Duskwing', label: 'Duskwing', icon: 'Icons/Archetype/Duskwing.png', colorHex: '#888888' },
@@ -106,21 +114,7 @@ const ARCHETYPE_ACHIEVEMENTS = [
   { value: 'Webcursed', label: 'Webcursed', icon: 'Icons/Archetype/Webcursed.png', colorHex: '#888888' },
   { value: 'Seraph', label: 'Seraph', icon: 'Icons/Archetype/Seraph.png', colorHex: '#888888' },
   { value: 'Zephyra', label: 'Zephyra', icon: 'Icons/Archetype/Zephyra.png', colorHex: '#888888' },
-  // ...add more archetypes as needed
-];
-const archetypeAchievements = generateAchievements(ARCHETYPE_ACHIEVEMENTS, ARCHETYPE_ACHIEVEMENT_TIERS, 'archetype');
 
-// ------------------------- //
-// --- TYPE ACHIEVEMENTS --- //
-// ------------------------- //
-const TRAIT_ACHIEVEMENT_TIERS = [
-  { tier: 1, goal: 30,   reward: { type: 'currency', amount: 50 }, description: "Collect 30 {trait} cards" },
-  { tier: 2, goal: 100,  reward: { type: 'currency', amount: 120 }, description: "Collect 100 {trait} cards" },
-  { tier: 3, goal: 250,  reward: { type: 'currency', amount: 350 }, description: "Collect 250 {trait} cards" },
-  { tier: 4, goal: 800,  reward: { type: 'currency', amount: 1200 }, description: "Collect 800 {trait} cards" },
-  { tier: 5, goal: 2000, reward: { type: 'currency', amount: 3500 }, description: "Collect 2000 {trait} cards" }
-];
-const TRAIT_ACHIEVEMENTS = [
   { trait: 'Evolution', label: 'Evolution', icon: 'Icons/Trait/Evolution.png', colorHex: '#a47c3b' },
   { trait: 'Assembly', label: 'Assembly', icon: 'Icons/Trait/Assembly.png', colorHex: '#a47c3b' },
   { trait: 'Fusion', label: 'Fusion', icon: 'Icons/Trait/Fusion.png', colorHex: '#a47c3b' },
@@ -130,35 +124,17 @@ const TRAIT_ACHIEVEMENTS = [
   { trait: 'Mage', label: 'Mage', icon: 'Icons/Trait/Mage.png', colorHex: '#a47c3b' },
   { trait: 'Ranger', label: 'Ranger', icon: 'Icons/Trait/Ranger.png', colorHex: '#a47c3b' },
   { trait: 'Warrior', label: 'Warrior', icon: 'Icons/Trait/Warrior.png', colorHex: '#e0801c' },
-];
-const traitAchievements = generateAchievements(TRAIT_ACHIEVEMENTS, TRAIT_ACHIEVEMENT_TIERS, 'trait');
 
-// ------------------------------ //
-// --- COSMETICS ACHIEVEMENTS --- //
-// ------------------------------ //
-const AVATAR_ACHIEVEMENT_TIERS = [
-  { tier: 1, goal: 5,   reward: { type: 'currency', amount: 100 } },
-  { tier: 2, goal: 12,  reward: { type: 'currency', amount: 200 } },
-  { tier: 3, goal: 25,  reward: { type: 'currency', amount: 300 } },
-  { tier: 4, goal: 50,  reward: { type: 'currency', amount: 400 } }
-];
+  { id: 'avatar1', group: 'Avatar', tier: 1, goal: 25,  description: "Collect 25 Avatars", reward: 100, image: 'Images/Blank/Green.png' },
+  { id: 'banner1', group: 'Banner', tier: 1, goal: 25,  description: "Collect 25 Banners", reward: 100, image: 'Images/Blank/Green.png' },
+  { id: 'cardback1', group: 'Cardback', tier: 1, goal: 25,  description: "Collect 25 Cardbacks", reward: 100, image: 'Images/Blank/Green.png' },
 
-const BANNER_ACHIEVEMENT_TIERS = [
-  { tier: 1, goal: 3,   reward: { type: 'currency', amount: 100 } },
-  { tier: 2, goal: 8,   reward: { type: 'currency', amount: 200 } },
-  { tier: 3, goal: 15,  reward: { type: 'currency', amount: 300 } }
-];
-
-const CARDBACK_ACHIEVEMENT_TIERS = [
-  { tier: 1, goal: 2,   reward: { type: 'currency', amount: 100 } },
-  { tier: 2, goal: 5,   reward: { type: 'currency', amount: 200 } },
-  { tier: 3, goal: 10,  reward: { type: 'currency', amount: 300 } }
 ];
 
 // -------------------- //
 // --- ACHIEVEMENTS --- //
 // -------------------- //
-const ACHIEVEMENTS = [
+const LEGACY_ACHIEVEMENTS = [ // this was the legacy code, now we are switching to one single source of truth in const ACHIEVEMENTS, with all the objects and caracteristics above //
 ...generateAchievements(COLOR_ACHIEVEMENTS, COLOR_ACHIEVEMENT_TIERS, 'color'),
   // ...add more colors as needed
   {
