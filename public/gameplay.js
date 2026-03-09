@@ -4292,6 +4292,7 @@ function showSetHpModal(cardObj, onSet) {
 
 function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
   closeAllMenus();
+  if (attackMode && attackMode.attackerId) return;
   currentCardMenuState = { instanceId, zoneId, orientation };
   const arr = getZoneArray(zoneId);
   const cardObj = arr ? arr.find(card => card.instanceId === instanceId) : null;
@@ -5430,9 +5431,7 @@ function startAttackTargeting(attackerId, attackerZone, cardDiv) {
     if (targetDiv) {
       targetDiv.classList.add('attack-target-highlight');
       targetDiv.onclick = function(e) {
-        e.preventDefault();
         e.stopPropagation();
-        e.stopImmediatePropagation();
         endAttackTarget();
         resolveAttack(attackerId, cardObj.instanceId);
         return false;
@@ -6514,7 +6513,7 @@ function animateDefenderHit(cardObj, zoneId, callback) {
     if (callback) callback();
   }, 220); // match shake-hit animation duration
 }
-function animateCardDisable(cardObj, zoneId, prevOrientation, newOrientation, callback) {
+function animateCardRotation(cardObj, zoneId, prevOrientation, newOrientation, callback) {
   const cardDiv = findCardDivInZone(zoneId, cardObj.instanceId);
   if (!cardDiv) { if (callback) callback(); return; }
 
@@ -7065,7 +7064,38 @@ function getTargetsFromEffect(step = {}, sourceCardObj = null, context = {}) {
   }
   return [];
 }
+// Canonical orientation helper used by Disable/Enable, combat tap, and rotation effects.
+// newOrientation: "vertical" (enabled/ATK) | "horizontal" (disabled/DEF)
+function changeCardPosition(cardObj, newOrientation, onComplete) {
+  try {
+    if (!cardObj) return onComplete && onComplete();
 
+    const prev = cardObj.orientation || 'vertical';
+    const next = (newOrientation === 'horizontal') ? 'horizontal' : 'vertical';
+    if (prev === next) return onComplete && onComplete();
+
+    // Update state first (source of truth)
+    cardObj.orientation = next;
+
+    const zoneId = findZoneIdForCard(cardObj);
+
+    // Animate if possible; otherwise just rerender.
+    if (typeof animateCardRotation === 'function' && zoneId) {
+      animateCardRotation(cardObj, zoneId, prev, next, () => {
+        renderGameState && renderGameState();
+        onComplete && onComplete();
+      });
+    } else {
+      renderGameState && renderGameState();
+      onComplete && onComplete();
+    }
+  } catch (err) {
+    console.warn('changeCardPosition failed:', err);
+    // Ensure the game doesn't get stuck in an async chain
+    renderGameState && renderGameState();
+    onComplete && onComplete();
+  }
+}
 // Choose targets and display appropriate UI when needed.
 // - step: the effect step (may contain .target or .zone or numeric .target)
 // - onSelect(selectedArray) will be called with the chosen card instance(s)
