@@ -2959,9 +2959,9 @@ function showHandCardMenu(instanceId, cardDiv) {
   closeAllMenus();
   const cardObj = gameState.playerHand.find(c => c.instanceId === instanceId);
   const cardData = dummyCards.find(c => c.id === cardObj.cardId);
-
-  // Always treat cost as string, parse it once for logic
-  const canPay = canPayEssence(cardData.cost, getAllEssenceSources());
+  const parsed = parseCost(cardData.cost || "{0}");
+  const pool = getEssencePool('player') || {};
+  
   let playLabel = "Play";
   let costHtml = getEssenceCostDisplay(cardData.cost);
 
@@ -2975,11 +2975,6 @@ function showHandCardMenu(instanceId, cardDiv) {
       default: playLabel = "Play";
     }
   }
-if (isCardActionable(cardObj, cardData, gameState, 'hand')) {
-  cardDiv.classList.add('card-animatable');
-} else {
-  cardDiv.classList.remove('card-animatable');
-}
   // Define actions
   const buttons = [
 /*    {
