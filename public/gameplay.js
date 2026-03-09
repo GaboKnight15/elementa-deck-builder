@@ -5559,17 +5559,18 @@ function resolveAttack(attackerId, defenderId) {
   const defenderObj = [...gameState.opponentCreatures, ...gameState.opponentTerrains, ...gameState.opponentDominion ? [gameState.opponentDominion] : []]
     .find(c => c.instanceId === defenderId);
 
-  if (!attacker || !defender) return;
+  if (!attackerObj || !defenderObj) return;
 
   const attackerZone = findZoneIdForCard(attackerObj);
   const defenderZone = findZoneIdForCard(defenderObj);
 
   // BEFORE DAMAGE: decide First Strike / Invulnerability based on speed difference
-  const speedDiff = getSpeedDifference(attacker, defender); // positive means attacker faster
-  if (speedDiff >= 2) applyStatus(attacker, 'Quickstrike', 1);
-  if (speedDiff >= 3) applyStatus(attacker, 'InvulnerableAtk', 1);
-  if (-speedDiff >= 2) applyStatus(defender, 'Quickstrike', 1);
-  if (-speedDiff >= 3) applyStatus(defender, 'InvulnerableAtk', 1);
+  // FIX: use attackerObj/defenderObj (your snippet uses attacker/defender which are undefined)
+  const speedDiff = getSpeedDifference(attackerObj, defenderObj);
+  if (speedDiff >= 2) applyStatus(attackerObj, 'Quickstrike', 1);
+  if (speedDiff >= 3) applyStatus(attackerObj, 'InvulnerableAtk', 1);
+  if (-speedDiff >= 2) applyStatus(defenderObj, 'Quickstrike', 1);
+  if (-speedDiff >= 3) applyStatus(defenderObj, 'InvulnerableAtk', 1);
 
   // Step 1: Animate attacker attacking
   animateAttack(attackerObj, attackerZone, () => {
@@ -5591,13 +5592,25 @@ function resolveAttack(attackerId, defenderId) {
         dealDamage(defenderObj, attackerObj, attackerDamage);
       }
 
-      // **NEW: Disable the attacker after attack (set to horizontal)**
-      const previousOrientation = attackerObj.orientation || 'vertical';
-      attackerObj.orientation = 'horizontal';
-      
-      // Animate the disable
-      animateCardDisable(attackerObj, attackerZone, previousOrientation, 'horizontal', () => {
-        // Log the attack
+      // NEW: Disable the attacker AFTER damage has been applied (so it can't attack again)
+      // Put it HERE (after dealDamage, before final render/log), exactly like you did.
+      if (attackerObj && attackerObj.currentHP > 0 && attackerObj.orientation === 'vertical') {
+        const previousOrientation = 'vertical';
+        attackerObj.orientation = 'horizontal';
+
+        animateCardDisable(attackerObj, attackerZone, previousOrientation, 'horizontal', () => {
+          appendAttackLog({
+            attacker: attackerObj,
+            defender: defenderObj,
+            defenderOrientation: defenderObj.orientation || 'vertical',
+            who: 'player'
+          });
+
+          renderGameState();
+          checkEndGame();
+        });
+      } else {
+        // attacker died or already horizontal; just finish normally
         appendAttackLog({
           attacker: attackerObj,
           defender: defenderObj,
@@ -5605,10 +5618,9 @@ function resolveAttack(attackerId, defenderId) {
           who: 'player'
         });
 
-        // Render final state
         renderGameState();
         checkEndGame();
-      });
+      }
     });
   });
 }
