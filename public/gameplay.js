@@ -1348,8 +1348,8 @@ Destroy: {
   icon: 'Icons/Skill/Destroy.png',
   name: 'Destroy',
   description: 'Destroy a valid target according to skill condition.',
-  handler: function(sourceCardObj, skillObj) {
-    // Collect all field zones: creatures and terrains (both sides)
+  handler: function(sourceCardObj, skillObj, step = {}) {
+    // Collect all field zones (both sides)
     const fieldArrays = [
       gameState.playerCreatures,
       gameState.opponentCreatures,
@@ -1358,12 +1358,19 @@ Destroy: {
     ];
     const allTargets = fieldArrays.flat();
 
-    // Use skillObj.condition
-    const validTargets = getValidTargetsByCondition(allTargets, skillObj.condition || []);
+    // 1) Old system: condition-based filtering
+    let validTargets = getValidTargetsByCondition(allTargets, skillObj.condition || []);
+
+    // 2) New system: target* filtering (or legacy category/color/type/trait keys)
+    // Allow defining filters either in `step` (preferred) or on the skillObj itself.
+    const filterStep = (step && Object.keys(step).length) ? step : skillObj;
+    validTargets = filterCardInstancesByTarget(validTargets, filterStep);
+
     if (validTargets.length === 0) {
       showToast("No valid targets to destroy");
       return;
     }
+
     startSkillTarget(validTargets, selectedTarget => {
       // Determine correct void array based on owner
       const isPlayerCard =
@@ -1371,48 +1378,38 @@ Destroy: {
         gameState.playerTerrains.includes(selectedTarget);
       const voidArr = isPlayerCard ? gameState.playerVoid : gameState.opponentVoid;
 
+      // Move from its current zone to the appropriate void
       moveCard(selectedTarget.instanceId, getZoneArrayForCard(selectedTarget), voidArr);
       renderGameState();
     });
   }
 },
-  Search: {
-    icon: 'Icons/Skill/Search.png',
-    name: 'Search',
-    description: 'Search your deck for a card matching criteria and add it to your hand.',
-    // Now using (sourceCardObj, skillObj, step, nextEffect)
-    handler: function(sourceCardObj, skillObj, step, nextEffect) {
-      // Always use deck as source, hand as destination
-      const deckArr = gameState.playerDeck;
-      // Filtering logic (archetype, type, color, etc) from this step only
-      const filterKeys = Object.keys(step).filter(k => !['zone', 'type', 'effect'].includes(k));
-      const matches = deckArr.filter(cardObj => { 
-        const cardData = dummyCards.find(c => c.id === cardObj.cardId);
-        if (!cardData) return false;
-        return filterKeys.every(key => {
-          if (typeof cardData[key] === 'string')
-            return cardData[key].toLowerCase() === String(step[key]).toLowerCase();
-          if (Array.isArray(cardData[key]))
-            return cardData[key].map(v => v.toLowerCase()).includes(String(step[key]).toLowerCase());
-          return cardData[key] === step[key];
-        });
-      });
+Search: {
+  icon: 'Icons/Skill/Search.png',
+  name: 'Search',
+  description: 'Search your deck for a card matching criteria and add it to your hand.',
+  handler: function(sourceCardObj, skillObj, step, nextEffect) {
+    const deckArr = gameState.playerDeck || [];
 
-      if (matches.length === 0) {
-        showToast("No matching cards found in your deck.");
-        if (nextEffect) nextEffect();
-        return;
-      }
-      showFilteredCardSelectionModal(matches, selectedCardObj => {
-        moveCard(selectedCardObj.instanceId, gameState.playerDeck, gameState.playerHand);
-        gameState.playerDeck = shuffle(gameState.playerDeck);
-        closeAllModals();
-        renderGameState();
-        showToast(`${dummyCards.find(c=>c.id===selectedCardObj.cardId)?.name || "Card"} added to your hand!`);
-        if (nextEffect) nextEffect();
-      }, { title: "Search Deck - Choose a card" });
+    // Reusable target filter (supports targetCategory/targetColor/... + legacy category/color/...)
+    const matches = filterCardInstancesByTarget(deckArr, step);
+
+    if (matches.length === 0) {
+      showToast("No matching cards found in your deck.");
+      if (nextEffect) nextEffect();
+      return;
     }
-  },
+
+    showFilteredCardSelectionModal(matches, selectedCardObj => {
+      moveCard(selectedCardObj.instanceId, gameState.playerDeck, gameState.playerHand);
+      gameState.playerDeck = shuffle(gameState.playerDeck);
+      closeAllModals();
+      renderGameState();
+      showToast(`${dummyCards.find(c => c.id === selectedCardObj.cardId)?.name || "Card"} added to your hand!`);
+      if (nextEffect) nextEffect();
+    }, { title: "Search Deck - Choose a card" });
+  }
+},
   // --- Moves another player card from void to field ---
   Revive: {
     icon: 'Icons/skillEffect/Revive.png',
@@ -2881,15 +2878,30 @@ function setCardAnimatableClass(div, cardObj, cardData, gameState, zone) {
       gameState.turn === 'player' &&
       gameState.phase === 'action';
 
-    const actionable =
-      isPlayerActionPhase &&
-      (typeof isCardActionable === 'function') &&
-      isCardActionable(cardObj, cardData, gameState, zone);
+    let actionable = false;
+
+    if (isPlayerActionPhase) {
+      if (zone === 'hand') {
+        // Hand: only animate if at least one hand-usable skill is actually activatable now (cost included)
+        const def = cardData || dummyCards.find(c => c.id === cardObj.cardId);
+        const skills = Array.isArray(def?.skill) ? def.skill : [];
+
+        actionable = skills.some(skillObj => {
+          // Only consider skills that are meant to be used from hand (Summon/Cast/Terraform/etc.)
+          // We can just ask the engine; canActivateSkill will return false if zone not allowed or cost not payable.
+          return canActivateSkill(cardObj, skillObj, 'hand', gameState);
+        });
+      } else {
+        // Non-hand zones: keep existing logic
+        actionable =
+          (typeof isCardActionable === 'function') &&
+          isCardActionable(cardObj, cardData, gameState, zone);
+      }
+    }
 
     if (actionable) div.classList.add('card-animatable');
     else div.classList.remove('card-animatable');
   } catch (err) {
-    // Never break rendering because of a pulse/glow check
     div.classList.remove('card-animatable');
     console.warn('setCardAnimatableClass failed:', err);
   }
@@ -5632,32 +5644,53 @@ function disableAfterCombat(cardObj, done) {
 function damageCalculation(attacker, defender) {
   const attackerDef = dummyCards.find(c => c.id === attacker.cardId);
   const defenderDef = dummyCards.find(c => c.id === defender.cardId);
+
+  // normalize category once (your current code computes these but doesn't use them)
+  const attackerCategory = String(attackerDef?.category || '').toLowerCase();
+  const defenderCategory = String(defenderDef?.category || '').toLowerCase();
+
+  // Zone info is OK to keep for convenience, but DON'T use defenderInfo.arr for KO removal
+  // because it can be stale/wrong for opponent cards.
   const attackerInfo = getZoneInfoForCard(attacker);
   const defenderInfo = getZoneInfoForCard(defender);
-  // Read temporary status flags here, where attacker/defender are defined
+
   const attackerQuickstrike = hasStatus(attacker, 'Quickstrike');
   const attackerInvulnerable = hasStatus(attacker, 'InvulnerableAtk');
-
   const defenderQuickstrike = hasStatus(defender, 'Quickstrike');
   const defenderInvulnerable = hasStatus(defender, 'InvulnerableAtk');
 
-  // ATK VS ATK -- Creature vs Creature in ATK (vertical)
-  if (defenderDef.category === "creature" && defender.orientation === "vertical") {
+  // helper: send a dead card to the correct void, removing it from the actual zone array
+  function sendToVoidIfDead(cardObj) {
+    if (!cardObj || (cardObj.currentHP || 0) > 0) return;
+
+    // Determine the actual array containing this instance right now
+    const fromArr = getZoneArrayForCard(cardObj);
+
+    // Determine owner by membership (robust and cheap)
+    const isPlayerCard =
+      gameState.playerCreatures.includes(cardObj) ||
+      gameState.playerTerrains.includes(cardObj) ||
+      gameState.playerHand.includes(cardObj) ||
+      gameState.playerDeck.includes(cardObj);
+
+    const voidArr = isPlayerCard ? gameState.playerVoid : gameState.opponentVoid;
+
+    moveCard(cardObj.instanceId, fromArr, voidArr);
+  }
+
+  // === ATK VS ATK (enabled creature battles) ===
+  if (defenderCategory === "creature" && defender.orientation === "vertical") {
     const attackerDmg = computeCardStat(attacker, "atk");
     const defenderDmg = computeCardStat(defender, "atk");
 
-    // If either side has Quickstrike (first strike), resolve in order
     if ((attackerQuickstrike && !defenderQuickstrike) || (!attackerQuickstrike && defenderQuickstrike)) {
       if (attackerQuickstrike && !defenderQuickstrike) {
-        // Attacker hits first
         defender.currentHP = Math.max(0, (defender.currentHP || getBaseHp(defender.cardId)) - attackerDmg);
         if (defender.currentHP > 0) {
-          // Defender retaliates only if still alive and attacker not invulnerable while attacking
           const retaliate = attackerInvulnerable ? 0 : defenderDmg;
           attacker.currentHP = Math.max(0, (attacker.currentHP || getBaseHp(attacker.cardId)) - retaliate);
         }
       } else {
-        // Defender has Quickstrike
         attacker.currentHP = Math.max(0, (attacker.currentHP || getBaseHp(attacker.cardId)) - defenderDmg);
         if (attacker.currentHP > 0) {
           const retaliate = defenderInvulnerable ? 0 : attackerDmg;
@@ -5665,7 +5698,6 @@ function damageCalculation(attacker, defender) {
         }
       }
     } else {
-      // Neither or both have Quickstrike: simultaneous damage (but respect invulnerability flags)
       let defenderIncoming = attackerDmg;
       let attackerIncoming = defenderDmg;
 
@@ -5676,20 +5708,15 @@ function damageCalculation(attacker, defender) {
       attacker.currentHP = Math.max(0, (attacker.currentHP || getBaseHp(attacker.cardId)) - attackerIncoming);
     }
 
-    // KO handling: move to void if dead
-    if (defender.currentHP <= 0) moveCard(defender.instanceId, defenderInfo.arr, gameState.playerVoid);
-    if (attacker.currentHP <= 0) moveCard(attacker.instanceId, attackerInfo.arr, gameState.playerVoid);
+    // KO handling (correct owner + correct from array)
+    sendToVoidIfDead(defender);
+    sendToVoidIfDead(attacker);
 
-    // Apply abilities' status effects if defender is still on field after resolution
-    if (
-      defenderDef?.category === "creature" &&
-      defenderInfo.arr?.includes(defender)
-    ) {
-      const attackerAbilities = attackerDef.ability || [];
+    // Apply status only if defender is still alive on field
+    if (defenderCategory === "creature" && defenderInfo.arr?.includes(defender) && (defender.currentHP || 0) > 0) {
+      const attackerAbilities = attackerDef?.ability || [];
       attackerAbilities.forEach(abilityName => {
-        if (STATUS_EFFECTS[abilityName]) {
-          applyStatus(defender, abilityName);
-        }
+        if (STATUS_EFFECTS[abilityName]) applyStatus(defender, abilityName);
       });
     }
 
@@ -5698,36 +5725,37 @@ function damageCalculation(attacker, defender) {
     return;
   }
 
-  // ATK VS DEF (defender horizontal)
-  if (defenderDef.category === "creature" && defender.orientation === "horizontal") {
+  // === ATK VS DEF (defender disabled creature does not deal battle damage) ===
+  if (defenderCategory === "creature" && defender.orientation === "horizontal") {
     const damage = Math.max(0, computeCardStat(attacker, "atk") - computeCardStat(defender, "def"));
     dealDamage(attacker, defender, damage);
+
+    // If dealDamage doesn't already move to void, ensure KO cleanup here too:
+    sendToVoidIfDead(defender);
+
     renderGameState();
     setupDropZones();
     return;
   }
 
-  // ATK VS DOMAIN OR ARTIFACT
+  // === ATK VS DOMAIN OR ARTIFACT (or non-creature targets) ===
   dealDamage(attacker, defender, computeCardStat(attacker, "atk"));
-  renderGameState();
-  setupDropZones();
-  
-  // Only apply status if defender is still alive on field
-  if (
-    defenderDef?.category === "creature" &&
-    defenderInfo.arr?.includes(defender)
-  ) {
-    const attackerAbilities = attackerDef.ability || [];
+
+  // If dealDamage doesn't already move to void, ensure KO cleanup here too:
+  sendToVoidIfDead(defender);
+
+  // Apply status only if defender is still alive on field and is a creature
+  if (defenderCategory === "creature" && defenderInfo.arr?.includes(defender) && (defender.currentHP || 0) > 0) {
+    const attackerAbilities = attackerDef?.ability || [];
     attackerAbilities.forEach(abilityName => {
-      if (STATUS_EFFECTS[abilityName]) {
-        applyStatus(defender, abilityName);
-      }
+      if (STATUS_EFFECTS[abilityName]) applyStatus(defender, abilityName);
     });
   }
 
   renderGameState();
   setupDropZones();
 }
+
 function dealDamage(cardObj, targetObj, damage) {
   const cardDef = dummyCards.find(c => c.id === targetObj.cardId);
 
@@ -6276,7 +6304,68 @@ function closeWaitingForOpponentModal() {
   let modal = document.getElementById('waiting-modal');
   if (modal) modal.remove();
 }
+function normalizeTargetFilter(step = {}) {
+  // Accept both new (targetX) and legacy (x) keys
+  const get = (tKey, legacyKey) =>
+    step[tKey] !== undefined ? step[tKey] : step[legacyKey];
 
+  const filter = {
+    category: get('targetCategory', 'category'),
+    color: get('targetColor', 'color'),
+    type: get('targetType', 'type'),
+    archetype: get('targetArchetype', 'archetype'),
+    trait: get('targetTrait', 'trait'),
+    ability: get('targetAbility', 'ability'),
+    // you can extend: rarity, set, hpMin, atkMin, etc.
+  };
+
+  // Remove undefined/empty
+  Object.keys(filter).forEach(k => {
+    if (filter[k] === undefined || filter[k] === null || filter[k] === '') delete filter[k];
+  });
+
+  return filter;
+}
+function cardMatchesTargetFilter(cardObj, filter = {}) {
+  const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+  if (!cardData) return false;
+
+  const matchesField = (fieldVal, wanted) => {
+    if (wanted === undefined) return true;
+
+    // wanted can be string or array
+    const wantedArr = Array.isArray(wanted) ? wanted : [wanted];
+
+    if (Array.isArray(fieldVal)) {
+      const hay = fieldVal.map(v => String(v).toLowerCase());
+      return wantedArr.every(w => hay.includes(String(w).toLowerCase()));
+    }
+
+    const hay = String(fieldVal || '').toLowerCase();
+    return wantedArr.every(w => hay === String(w).toLowerCase());
+  };
+
+  // ability special-case: abilities are usually arrays
+  if (filter.ability !== undefined) {
+    const abilities = Array.isArray(cardData.ability) ? cardData.ability : (cardData.ability ? [cardData.ability] : []);
+    const wanted = Array.isArray(filter.ability) ? filter.ability : [filter.ability];
+    const hay = abilities.map(a => String(a).toLowerCase());
+    if (!wanted.every(w => hay.includes(String(w).toLowerCase()))) return false;
+  }
+
+  if (!matchesField(cardData.category, filter.category)) return false;
+  if (!matchesField(cardData.color, filter.color)) return false;
+  if (!matchesField(cardData.type, filter.type)) return false;
+  if (!matchesField(cardData.archetype, filter.archetype)) return false;
+  if (!matchesField(cardData.trait, filter.trait)) return false;
+
+  return true;
+}
+
+function filterCardInstancesByTarget(instances = [], step = {}) {
+  const filter = normalizeTargetFilter(step);
+  return instances.filter(cardObj => cardMatchesTargetFilter(cardObj, filter));
+}
 function normalizeEssence(str) {
   // Uppercase whatever is inside {...} so {g} -> {G}, {b}->{B}, while {1} stays {1}
   return String(str || '').replace(/\{([^}]+)\}/g, (_, tok) => `{${String(tok).toUpperCase()}}`);
