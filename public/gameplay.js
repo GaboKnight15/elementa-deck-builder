@@ -4163,20 +4163,11 @@ function renderEssencePool(cardObj) {
 
   // Color codes and their image sources
   const ESSENCE_IMAGE_MAP = {
-    green: "Icons/Essence/Green.png",
-    red: "Icons/Essence/Red.png",
-    blue: "Icons/Essence/Blue.png",
-    yellow: "Icons/Essence/Yellow.png",
-    gray: "Icons/Essence/Gray.png",
-    purple: "Icons/Essence/Purple.png",
-    black: "Icons/Essence/Black.png",
-    white: "Icons/Essence/White.png"
+    green: "Icons/Essence/Green.png", red: "Icons/Essence/Red.png", blue: "Icons/Essence/Blue.png", yellow: "Icons/Essence/Yellow.png",
+    gray: "Icons/Essence/Gray.png", purple: "Icons/Essence/Purple.png", black: "Icons/Essence/Black.png", white: "Icons/Essence/White.png"
   };
   // Map from code to color name
-  const colorCodes = {
-    G: "green", R: "red", U: "blue", Y: "yellow", C: "gray",
-    P: "purple", B: "black", W: "white"
-  };
+  const colorCodes = {G: "green", R: "red", U: "blue", Y: "yellow", C: "gray", P: "purple", B: "black", W: "white"};
 
   // Render colored essence
   for (const code in colorCodes) {
@@ -4195,22 +4186,6 @@ function renderEssencePool(cardObj) {
     }
     cardObj._prevEssence[color] = amount;
   }
-
-  // Render colorless essence (e.g. {1}, {2}, ...)
-  const colorlessAmount = countColorlessEssence(cardObj.essence);
-  const prevColorless = cardObj._prevEssence.colorless || 0;
-  if (colorlessAmount > 0) {
-    const icon = document.createElement('div');
-    icon.className = 'essence-icon essence-colorless';
-    icon.title = `Colorless Essence: ${colorlessAmount}`;
-    icon.innerHTML = `<img src="${COST_IMAGE_MAP.X0}" class="essence-img"><span class="essence-amount">${colorlessAmount}</span>`;
-    if (colorlessAmount > prevColorless) {
-      setTimeout(() => animateEssencePop(icon), 20);
-    }
-    poolDiv.appendChild(icon);
-  }
-  cardObj._prevEssence.colorless = colorlessAmount;
-
   return poolDiv;
 }
 // --- Helper: render small essence summary icons into an existing container ---
@@ -4231,8 +4206,6 @@ function renderEssenceSummaryInto(container, pool = {}, opts = {}) {
     gray: "Icons/Essence/Gray.png",
     black: "Icons/Essence/Black.png",
     white: "Icons/Essence/White.png",
-    X0: "Icons/Essence/Zero.png",
-    X1: "Icons/Essence/One.png"
   };
   const imageMap = (typeof ESSENCE_IMAGE_MAP !== 'undefined') ? ESSENCE_IMAGE_MAP : fallbackMap;
 
@@ -4266,36 +4239,8 @@ function renderEssenceSummaryInto(container, pool = {}, opts = {}) {
       span.style.fontSize = `${Math.max(10, Math.floor(size * 0.8))}px`;
       wrap.appendChild(span);
     }
-
     container.appendChild(wrap);
   });
-
-  // Colorless / numeric pool
-  const colorless = Number(pool?.colorless || 0);
-  if (colorless > 0) {
-    const wrap = document.createElement('div');
-    wrap.style.display = 'inline-flex';
-    wrap.style.alignItems = 'center';
-    wrap.style.gap = '6px';
-    wrap.style.margin = '0 6px 0 0';
-
-    // Show a small X1 icon (fallback to X0 if not found) and the count
-    const img = document.createElement('img');
-    img.src = imageMap['X1'] || imageMap['X0'] || fallbackMap['X1'] || fallbackMap['X0'] || '';
-    img.alt = 'colorless essence';
-    img.style.width = `${size}px`;
-    img.style.height = `${size}px`;
-    wrap.appendChild(img);
-
-    const span = document.createElement('span');
-    span.textContent = String(colorless);
-    span.style.color = '#ffe066';
-    span.style.fontWeight = '700';
-    span.style.fontSize = `${Math.max(10, Math.floor(size * 0.8))}px`;
-    wrap.appendChild(span);
-
-    container.appendChild(wrap);
-  }
 }
 function addEssence(cardObj, type, amount) {
   let addStr = "";
@@ -4504,7 +4449,6 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
 const isCreatureCategory = String(cardData?.category || '').toLowerCase() === 'creature';
 if (cardObj && isCreatureCategory) {
   const attackOk = canAttack(cardObj, gameState);
-
   buttons.splice(1, 0, {
     text: "Attack",
     disabled: !attackOk,
@@ -5298,12 +5242,16 @@ function showEssencePaymentModal(opts = {}) {
           paymentPlan.push({ poolOwner, color, amount: 1 });
           assignedFromPool[color] = (assignedFromPool[color] || 0) + 1;
           count.textContent = `${Math.max(0, (curPool[color] - assignedFromPool[color]))}`;
-        } else if (parsedCost && parsedCost.colorless && (reqPaid.colorless || 0) < parsedCost.colorless) {
-          // assign to colorless need
-          reqPaid.colorless = (reqPaid.colorless || 0) + 1;
-          paymentPlan.push({ poolOwner, color: 'colorless', amount: 1 });
-          assignedFromPool.colorless = (assignedFromPool.colorless || 0) + 1;
-        } else {
+} else if (parsedCost && parsedCost.colorless && (reqPaid.colorless || 0) < parsedCost.colorless) {
+  // In this game, "colorless" = generic, payable by ANY colored essence.
+  reqPaid.colorless = (reqPaid.colorless || 0) + 1;
+
+  // Record the ACTUAL color used, so confirm consumes that color from the pool.
+  paymentPlan.push({ poolOwner, color: color, amount: 1 });
+
+  assignedFromPool[color] = (assignedFromPool[color] || 0) + 1;
+  count.textContent = `${Math.max(0, (curPool[color] - assignedFromPool[color]))}`;
+} else {
           showToast && showToast('No matching requirement for this token.', { type: 'info' });
           return;
         }
@@ -5563,7 +5511,12 @@ function canAttack(cardObj, gameState) {
 
   // Must be action phase
   if (gameState.phase !== 'action') return false;
-  
+
+  // Only cards with category "Creature" can attack (definition-based)
+  const def = dummyCards.find(c => c.id === cardObj.cardId);
+  const isCreatureCategory = String(def?.category || '').toLowerCase() === 'creature';
+  if (!isCreatureCategory) return false;  
+
   // Check summoning sickness
   const currentTurn = gameState.turnNumber || 0;
   const summonedTurn = cardObj.summonedOnTurn !== undefined ? cardObj.summonedOnTurn : -1;
@@ -5581,9 +5534,7 @@ function canAttack(cardObj, gameState) {
   
   // Must be in ATK (vertical) orientation
   if (cardObj.orientation !== "vertical") return false;
-  
-  // Only creatures can attack
-  if (!isCreature(cardObj)) return false;
+
   // Add any other restrictions (e.g. tapped, stunned)
   // Check if there are any valid targets
   const targets = getAttackTargets(cardObj);
