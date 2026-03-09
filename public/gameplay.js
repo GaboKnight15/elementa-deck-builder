@@ -4500,17 +4500,24 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
       }
     }
   ];
-if (cardObj && typeof isCreature === 'function' && isCreature(cardObj)) {
+// Always show Attack in the field menu if this card's category is Creature
+const isCreatureCategory = String(cardData?.category || '').toLowerCase() === 'creature';
+if (cardObj && isCreatureCategory) {
+  const attackOk = canAttack(cardObj, gameState);
+
   buttons.splice(1, 0, {
     text: "Attack",
-    disabled: !canAttack(cardObj, gameState),
-    title: !canAttack(cardObj, gameState)
-      ? (cardObj.orientation !== "vertical" ? "Card is not enabled." : "No valid targets to attack.")
+    disabled: !attackOk,
+    title: !attackOk
+      ? (cardObj.orientation !== "vertical"
+          ? "Card is not enabled."
+          : "No valid targets to attack.")
       : "",
     onClick: function(e) {
       e.stopPropagation();
+      if (!canAttack(cardObj, gameState)) return;
       startAttackTargeting(instanceId, zoneId, cardDiv);
-      emitPublicState();
+      emitPublicState && emitPublicState();
       closeAllMenus();
     }
   });
@@ -5295,8 +5302,7 @@ function showEssencePaymentModal(opts = {}) {
           // assign to colorless need
           reqPaid.colorless = (reqPaid.colorless || 0) + 1;
           paymentPlan.push({ poolOwner, color: 'colorless', amount: 1 });
-          assignedFromPool[color] = (assignedFromPool[color] || 0) + 1;
-          count.textContent = `${Math.max(0, (curPool[color] - assignedFromPool[color]))}`;
+          assignedFromPool.colorless = (assignedFromPool.colorless || 0) + 1;
         } else {
           showToast && showToast('No matching requirement for this token.', { type: 'info' });
           return;
@@ -5305,7 +5311,6 @@ function showEssencePaymentModal(opts = {}) {
         else reqDiv.textContent = JSON.stringify(reqPaid);
         updateConfirmBtn();
       };
-
       poolTokensDiv.appendChild(tokenWrap);
     });
 
