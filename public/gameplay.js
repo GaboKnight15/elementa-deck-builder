@@ -795,7 +795,27 @@ Retreat: {
     return validZones.includes(currentZone);
   }
 },
+Channel: {
+  icon: 'Icons/Skill/Channel.png', // optional; use an existing icon if you don't have one
+  name: 'Channel',
+  description: 'Can only be activated while this card is in the void.',
+  canActivate: function(cardObj, skillObj, currentZone, gameState) {
+    // Be tolerant of naming: allow currentZone "void" OR membership in void array.
+    // Use owner-based void array so opponent cards work too.
+    const owner = (typeof getCardOwner === 'function') ? getCardOwner(cardObj) : 'player';
+    const voidArr = owner === 'opponent' ? gameState.opponentVoid : gameState.playerVoid;
 
+    // Some parts of the code pass currentZone as "void", others might pass array names.
+    const zoneOk = currentZone === 'void' || currentZone === 'playerVoid' || currentZone === 'opponentVoid';
+    const inVoid = Array.isArray(voidArr) && voidArr.includes(cardObj);
+
+    return zoneOk || inVoid;
+  },
+  handler: function(cardObj, skillObj, next) {
+    // Requirement has no interactive step; just continue.
+    if (typeof next === 'function') next();
+  }
+},
 };
 
 const SKILL_EFFECT_MAP = {
@@ -2004,7 +2024,42 @@ Evolution: {
     if (nextEffect) nextEffect();
   }
 },
+Spawn: {
+  name: 'Spawn',
+  description: 'Creates token(s) and summons them to the field.',
+  handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
+    const targetId = step.targetId;
+    const amount = Math.max(1, Number(step.amount || 1));
 
+    if (!targetId) { nextEffect && nextEffect(); return; }
+
+    const owner = getCardOwner(sourceCardObj) === 'opponent' ? 'opponent' : 'player';
+
+    for (let i = 0; i < amount; i++) {
+      const token = createTokenInstance({
+        tokenCardId: targetId,
+        owner,
+        sourceCardObj,
+        sourceSkillObj: skillObj
+      });
+
+      if (!token) {
+        showToast && showToast(`Spawn failed: unknown token id "${targetId}".`, { type: 'error' });
+        break;
+      }
+
+      const ok = placeInstanceOnField(token);
+      if (!ok) {
+        showToast && showToast(`Spawn failed: token "${targetId}" cannot be placed on field.`, { type: 'error' });
+        break;
+      }
+    }
+
+    renderGameState && renderGameState();
+    setupDropZones && setupDropZones();
+    nextEffect && nextEffect();
+  }
+},
 Token: {
   icon: "Icons/skillEffect/Token.png",
   name: "Token",
@@ -4414,20 +4469,22 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
         }
       }
     },
-    {
+  // Add Attack only for creatures
+  if (cardObj && typeof isCreature === 'function' && isCreature(cardObj)) {
+    buttons.splice(1, 0, { // insert right after Set HP (optional)
       text: "Attack",
       disabled: !canAttack(cardObj, gameState),
-      title: !canAttack(cardObj, gameState) ? 
-        (cardObj.orientation !== "vertical"
-          ? "Card is not enabled."
-          : "No valid targets to attack.") : "",
+      title: !canAttack(cardObj, gameState)
+        ? (cardObj.orientation !== "vertical" ? "Card is not enabled." : "No valid targets to attack.")
+        : "",
       onClick: function(e) {
         e.stopPropagation();
         startAttackTargeting(instanceId, zoneId, cardDiv);
         emitPublicState();
         closeAllMenus();
       }
-    },
+    });
+  }
     {
       text: "Return to Hand",
       onClick: function(e) {
@@ -7453,26 +7510,41 @@ function isCardStillPresent(cardObj) {
 }
 
 function parseCost(costStr) {
-  // Converts "{2}{B}{G}" → { colorless: 2, black: 1, green: 1 }
-  const cost = {};
-  if (typeof costStr !== "string") return cost;
-  const regex = /\{([0-9]+|[GRUYCPBW])\}/g;
-  let match;
-  while ((match = regex.exec(costStr))) {
-    const val = match[1];
-    if (!isNaN(val)) {
-      cost.colorless = (cost.colorless || 0) + Number(val);
-    } else {
-      // Map letter to color name
-      const colorMap = {
-        G: "green", R: "red", U: "blue", Y: "yellow", C: "gray",
-        P: "purple", B: "black", W: "white",
-      };
-      const color = colorMap[val];
-      if (color) cost[color] = (cost[color] || 0) + 1;
+  const out = {
+    green:0, red:0, blue:0, yellow:0, purple:0, gray:0, black:0, white:0,
+    colorless:0
+  };
+
+  const s = String(costStr || '');
+  const matches = s.match(/\{([^}]+)\}/g) || [];
+  for (const m of matches) {
+    const tok = m.replace(/[{}]/g, '').trim().toLowerCase();
+
+    // numbers => colorless
+    if (/^\d+$/.test(tok)) {
+      out.colorless += Number(tok);
+      continue;
     }
+
+    // letters => colors (support both upper/lower in input)
+    const map = {
+      g: 'green',
+      r: 'red',
+      u: 'blue',
+      y: 'yellow',
+      p: 'purple',
+      c: 'gray',
+      b: 'black',
+      w: 'white',
+    };
+    const key = map[tok];
+    if (key) out[key] += 1;
   }
-  return cost;
+
+  // optional: strip zeros to keep objects small
+  Object.keys(out).forEach(k => { if (!out[k]) delete out[k]; });
+
+  return out;
 }
 
 /*------------------
@@ -7632,6 +7704,60 @@ window.skillTitle = skillTitle; // optional global for console/tests
 // ----------------------------------- //
 // --- Card Field Helper Functions --- //
 // ----------------------------------- //
+function getCardDefinition(cardId) {
+  return dummyCards.find(c => c.id === cardId) || null;
+}
+
+function createTokenInstance({ tokenCardId, owner = 'player', sourceCardObj = null, sourceSkillObj = null, meta = {} } = {}) {
+  const def = getCardDefinition(tokenCardId);
+  if (!def) return null;
+
+  const idRand = Math.random().toString(36).slice(2, 10);
+  const instance = {
+    cardId: def.id,
+    instanceId: `token_${def.id}_${idRand}`,
+    owner: owner === 'opponent' ? 'opponent' : 'player',
+    isToken: true,
+    isTemporary: true,            // optional
+    currentHP: def.hp ?? 1,
+    orientation: (String(def.category || '').toLowerCase() === 'creature') ? 'vertical' : null,
+
+    // common runtime fields used elsewhere in your engine
+    statuses: [],
+    attachedCards: [],
+
+    // optional metadata (helpful for logs/debug)
+    tokenMeta: {
+      createdAt: Date.now(),
+      sourceCardId: sourceCardObj?.cardId || null,
+      sourceInstanceId: sourceCardObj?.instanceId || null,
+      sourceSkillName: sourceSkillObj?.name || null,
+      ...meta
+    }
+  };
+
+  return instance;
+}
+function placeInstanceOnField(instance) {
+  if (!instance) return false;
+  const def = getCardDefinition(instance.cardId);
+  const cat = String(def?.category || '').toLowerCase();
+  const owner = instance.owner === 'opponent' ? 'opponent' : 'player';
+
+  if (cat === 'creature') {
+    (owner === 'player' ? gameState.playerCreatures : gameState.opponentCreatures).push(instance);
+    return true;
+  }
+  if (cat === 'terrain') {
+    (owner === 'player' ? gameState.playerTerrains : gameState.opponentTerrains).push(instance);
+    return true;
+  }
+
+  // If later you add artifacts, etc.
+  // if (cat === 'artifact') ...
+
+  return false;
+}
 function summonTokenInstance(tokenDef, ownerCardObj) {
   const tokenInstance = {
     ...tokenDef,
