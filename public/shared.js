@@ -80,6 +80,9 @@ const dummyCards = [
  category: 'Spell', color: 'Green', type: '', cost: '{1}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{1}', effect: [{class: 'Essence', amount: 2, color: 'Green'}, {class: 'Cast'}]}]},
 
+{id: 'VerdantRebirth', name: 'Verdant Rebirth', rarity: 'Rare', image: 'Cards/egg/VerdantRebirth.png', flavor: '', 
+ category: 'Spell', color: 'Green', trait: 'Nature', cost: '{2}{G}', effect: 'Gain {G}{G}', set: 'ElementaGenesis'},
+
 {id: 'Fairy', name: 'Fairy', rarity: 'Common', image: 'Cards/egg/Fairy.png', flavor: '', 
  category: 'Creature', color: 'Green', type: 'Fairy', archetype: '', hp: 2, atk: 1, def: 0,
  cost: '{0}', ability: 'Flying', set: 'ElementaGenesis',
@@ -131,7 +134,7 @@ const dummyCards = [
  category: 'Spell', color: 'Green', type: '', cost: '{2}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{2}', effect: [{class: 'Essence', color: 'Green', amount: 3}, {class: 'Cast'}]}]},
 	
-
+/*
 // --- EG RED --- //
 {id: 'KaelenBlazebornHuntress', name: 'Kaelen, Blazeborn Huntress', rarity: 'Legend', image: 'Cards/egr/KaelenBlazebornHuntress.png', flavor: '', 
  category: 'Creature', color: 'Red', type: 'Human', archetype: '', trait: 'Ranger', hp: 3, atk: 1, def: 0,
@@ -2128,12 +2131,6 @@ skill: [{name: 'Summon', cost: '{1}{r}', effect: {class: 'Summon'}},
    requirement: {class: 'ccw'},
    effect: {class: 'Strike', amount: 2, target: 2}},
  ]},
- 
-// SPELLS //
-
-{id: 'VerdantRebirth', name: 'Verdant Rebirth', rarity: 'Common', image: 'Cards/egg/VerdantRebirth.png', flavor: '', 
- category: 'Spell', color: 'Green', trait: 'Nature', cost: '{2}{G}', effect: 'Gain {G}{G}', set: 'ElementaGenesis'},
-
 
 // Dragon Terrains //
 {id: 'DragonsGrove', name: "Dragon's Grove", rarity: 'Rare', image: 'Cards/fog/DragonsGrove.png', flavor: '', 
