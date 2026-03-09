@@ -823,78 +823,41 @@ const SKILL_EFFECT_MAP = {
 // step: { cardId, amount, owner, orientation, cost, targetCategory }
 Summon: {
   name: 'Summon',
-  description: 'Summons a card from the hand to the player creature zone, after handling essence payment.',
-  handler: function (sourceCardObj, skillObj, step = {}, nextEffect) {
-    try {
-      // Resolve the card object and ensure it's valid
-      const instance = sourceCardObj; // Source card instance in the hand
-      if (!instance) {
-        console.warn('No card instance found for summoning.');
-        if (typeof nextEffect === 'function') nextEffect();
-        return;
-      }
-
-      // Check if the card is in the player's hand
-const cardZone = getZoneNameForCard(instance); // use the same naming used by activateSkill
-if (cardZone !== 'playerHand') {
-  showToast('Card can only be summoned from your hand.', { type: 'error' });
-  if (typeof nextEffect === 'function') nextEffect();
-  return;
-}
-
-      // Parse summon cost
-      const cardDef = getCardDefinition(instance.cardId);
-      const rawCost = cardDef.cost;
-      const parsedCost = rawCost ? parseCost(rawCost) : null;
-
-      const performSummon = function () {
-        const targetZone = gameState.playerCreatures;
-        const summonedOrientation = hasAbility(instance, 'Dormant') ? 'horizontal' : 'vertical';
-        // Move the card from the player's hand to their creature zone
-moveCard(
-  instance.instanceId,
-  gameState.playerHand,
-  gameState.playerCreatures,
-  { orientation: summonedOrientation }
-);
-        sourceCardObj.summonedOnTurn = gameState.turnNumber || 0;
-        // Display visual log and refresh game state
-        appendVisualLog({ action: 'summon', text: `You summoned ${cardDef.name} to the field.` });
-        renderGameState();
-
-        // Continue with the next effect, if specified
-        if (typeof nextEffect === 'function') nextEffect();
-      };
-
-      // If the card has no cost or the cost is free, summon directly
-      const isFree = !rawCost || (parsedCost && Object.values(parsedCost).reduce((a, b) => a + b, 0) === 0) || (rawCost === '{0}');
-      if (isFree) {
-        performSummon();
-        return;
-      }
-
-      // Otherwise, open the essence payment modal
-      showEssencePaymentModal({
-        card: cardDef,
-        cost: parsedCost,
-        eligibleCards: getAllEssenceSources(),
-        onPaid: function () {
-          performSummon();
-        },
-        onCancel: function () {
-          // If payment is canceled, proceed to the next effect (if any)
-          if (typeof nextEffect === 'function') nextEffect();
-        }
-      });
-    } catch (err) {
-      console.error('Error in Summon handler:', err);
-      if (typeof nextEffect === 'function') nextEffect();
-    }
+  description: 'Move this card from hand to the field.',
+  canActivate(cardObj, skillObj, currentZone, gameState) {
+    // Accept common zone spellings; normalize if you can
+    return currentZone === 'playerHand' || currentZone === 'hand';
   },
-  // Check if Summon can be activated (only valid if card is in the hand)
-  canActivate: function (sourceCardObj, skillObj, currentZone) {
-    // Summon can only be activated from the player's hand
-  return currentZone === 'playerHand' || currentZone === 'opponentHand' || currentZone === 'player-hand' || currentZone === 'opponent-hand';
+  handler(sourceCardObj, skillObj, step = {}, nextEffect) {
+    const owner = getCardOwner(sourceCardObj) === 'opponent' ? 'opponent' : 'player';
+    const handArr = owner === 'player' ? gameState.playerHand : gameState.opponentHand;
+
+    if (!handArr.includes(sourceCardObj)) {
+      showToast && showToast('Summon can only be used from hand.', { type: 'error' });
+      nextEffect && nextEffect();
+      return;
+    }
+
+    const def = dummyCards.find(c => c.id === sourceCardObj.cardId);
+    const cat = String(def?.category || '').toLowerCase();
+
+    let toArr = null;
+    if (cat === 'creature') toArr = owner === 'player' ? gameState.playerCreatures : gameState.opponentCreatures;
+    else if (cat === 'terrain') toArr = owner === 'player' ? gameState.playerTerrains : gameState.opponentTerrains;
+    else {
+      showToast && showToast('This card cannot be summoned.', { type: 'error' });
+      nextEffect && nextEffect();
+      return;
+    }
+
+    const orientation = hasAbility(sourceCardObj, 'Dormant') ? 'horizontal' : 'vertical';
+
+    moveCard(sourceCardObj.instanceId, handArr, toArr, { orientation }, () => {
+      // Summoning sickness tracking
+      sourceCardObj.summonedOnTurn = gameState.turnNumber || 0;
+      renderGameState && renderGameState();
+      nextEffect && nextEffect();
+    });
   }
 },
 
@@ -6830,32 +6793,53 @@ if (skillObj.cost) {
   
   return true;
 }
-
+function isZeroParsedCost(parsedCost) {
+  if (!parsedCost) return true;
+  // parsedCost is an object like { green: 1 } or { colorless: 2 }
+  const vals = Object.values(parsedCost).map(v => Number(v || 0));
+  return vals.length === 0 || vals.reduce((a, b) => a + b, 0) === 0;
+}
 // Update activateSkill to use the animation before requirements/effects
 function activateSkill(cardObj, skillObj, options = {}) {
   const zoneId = findZoneIdForCard(cardObj);
   const owner = getCardOwner(cardObj); // 'player' | 'opponent'
   const cardData = dummyCards.find(c => c.id === cardObj.cardId) || {};
 
-  // IMPORTANT: use skillObj.cost (not cardData.cost)
-  const parsedCost = skillObj.cost ? parseCost(skillObj.cost) : null;
+  // Always use the SKILL cost (not cardData.cost)
+  const rawCost = skillObj.cost || '{0}';
+  const parsedCost = rawCost ? parseCost(rawCost) : null;
 
-  const doOpenPayment = () => {
+  const runAfterPayment = () => {
+    // Payment already satisfied (or cost was free) -> resolve
+    proceedSkillActivation(cardObj, skillObj, options);
+  };
+
+  // Free / zero-cost: skip payment modal entirely
+  if (!skillObj.cost || rawCost === '{0}' || isZeroParsedCost(parsedCost)) {
+    // keep animation behavior consistent
+    if (skillObj.activation && skillObj.activation.handler) {
+      skillObj.activation.handler(cardObj, skillObj, runAfterPayment);
+    } else {
+      animateSkillActivation(cardObj, zoneId, runAfterPayment);
+    }
+    return;
+  }
+
+  // Paid skill: open essence modal
+  const openPaymentModal = () => {
     showEssencePaymentModal({
       card: cardData,
       cost: parsedCost,
       owner,
-      onPaid: () => {
-        // After essence is consumed, actually resolve the skill
-        proceedSkillActivation(cardObj, skillObj, options);
-      }
+      onPaid: runAfterPayment,
+      onCancel: () => {} // optional
     });
   };
 
   if (skillObj.activation && skillObj.activation.handler) {
-    skillObj.activation.handler(cardObj, skillObj, doOpenPayment);
+    skillObj.activation.handler(cardObj, skillObj, openPaymentModal);
   } else {
-    animateSkillActivation(cardObj, zoneId, doOpenPayment);
+    animateSkillActivation(cardObj, zoneId, openPaymentModal);
   }
 }
 
