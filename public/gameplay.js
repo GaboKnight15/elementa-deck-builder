@@ -5628,15 +5628,19 @@ disableAfterCombat(attackerObj, () => {
 function disableAfterCombat(cardObj, done) {
   if (!cardObj) return done && done();
 
-  // If it already got removed/killed, or already disabled, just continue.
-  // (You can tighten this later if you want.)
-  if ((cardObj.currentHP || 0) <= 0) return done && done();
-  if (cardObj.orientation === 'horizontal') return done && done();
-
   // Only creatures should be disabled by combat
   const def = dummyCards.find(c => c.id === cardObj.cardId);
   const isCreature = String(def?.category || '').toLowerCase() === 'creature';
   if (!isCreature) return done && done();
+
+  // If it got removed/killed, don't disable
+  const hp = (cardObj.currentHP !== undefined && cardObj.currentHP !== null)
+    ? Number(cardObj.currentHP)
+    : getBaseHp(cardObj.cardId);
+
+  if (hp <= 0) return done && done();
+
+  if (cardObj.orientation === 'horizontal') return done && done();
 
   changeCardPosition(cardObj, 'horizontal', done);
 }
