@@ -32,7 +32,7 @@ const dummyCards = [
 	
 {id: 'Verdara', name: 'Verdara', rarity: 'Legend', image: 'Cards/egg/Verdara.png', flavor: '', 
  category: 'Terrain', color: 'Green', type: '', hp: 20, cost: '{0}', essence: '{G}', trait: 'Dominion', set: 'ElementaGenesis',
- skill: [{name: 'Flourish', cost: '{g}', requirement: {class: 'CW'}, effect: {class: 'Search', trait: 'Terrain'}}]},
+ skill: [{name: 'Flourish', cost: '{g}', requirement: {class: 'CW'}, effect: {class: 'Search', category: 'Terrain'}}]},
 
 {id: 'SylvanAnima', name: 'Sylvan Anima', rarity: 'Legend', image: 'Cards/egg/SylvanAnima.png', flavor: '', 
  category: 'Spell', color: 'Green', type: 'Aura', trait: 'Nature', cost: '{1}{g}', set: 'ElementaGenesis',
@@ -78,7 +78,7 @@ const dummyCards = [
 
 {id: 'LifesGrowth', name: "Life's Growth", rarity: 'Rare', image: 'Cards/egg/LifesGrowth.png', flavor: '', 
  category: 'Spell', color: 'Green', type: '', cost: '{1}', set: 'ElementaGenesis',
- skill: [{name: 'Cast', cost: '{1}', effect: [{class: 'Essence', amount: 2, color: 'Green'}, {class: 'Cast'}]}]},
+ skill: [{name: 'Cast', cost: '{g}', effect: [{class: 'Essence', amount: 2, color: 'Green'}, {class: 'Cast'}]}]},
 
 {id: 'VerdantRebirth', name: 'Verdant Rebirth', rarity: 'Rare', image: 'Cards/egg/VerdantRebirth.png', flavor: '', 
  category: 'Spell', color: 'Green', trait: 'Nature', cost: '{2}{G}', effect: 'Gain {G}{G}', set: 'ElementaGenesis'},
