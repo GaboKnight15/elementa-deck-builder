@@ -6736,7 +6736,7 @@ function canActivateSkill(cardObj, skillObj, currentZone, gameState, targetObj =
 if (skillObj.cost) {
   const owner = getCardOwner(cardObj);
   if (owner === 'player') {
-    const pool = getEssencePool('player');
+    const pool = getEssencePool('player') || {};
 
     // Convert pool to essence string format for canPayEssence
     let poolEssenceStr = '';
