@@ -5430,9 +5430,12 @@ function startAttackTargeting(attackerId, attackerZone, cardDiv) {
     if (targetDiv) {
       targetDiv.classList.add('attack-target-highlight');
       targetDiv.onclick = function(e) {
+        e.preventDefault();
         e.stopPropagation();
+        e.stopImmediatePropagation();
         endAttackTarget();
         resolveAttack(attackerId, cardObj.instanceId);
+        return false;
       };
     }
   });
@@ -5591,40 +5594,41 @@ function resolveAttack(attackerId, defenderId) {
       if (attackerDamage > 0) {
         dealDamage(defenderObj, attackerObj, attackerDamage);
       }
+      
+// At the end of resolveAttack(), after dealDamage(...)
+disableAfterCombat(attackerObj, () => {
+  disableAfterCombat(defenderObj, () => {
+    appendAttackLog({
+      attacker: attackerObj,
+      defender: defenderObj,
+      defenderOrientation: defenderObj.orientation || 'vertical',
+      who: 'player'
+    });
 
-      // NEW: Disable the attacker AFTER damage has been applied (so it can't attack again)
-      // Put it HERE (after dealDamage, before final render/log), exactly like you did.
-      if (attackerObj && attackerObj.currentHP > 0 && attackerObj.orientation === 'vertical') {
-        const previousOrientation = 'vertical';
-        attackerObj.orientation = 'horizontal';
-
-        animateCardDisable(attackerObj, attackerZone, previousOrientation, 'horizontal', () => {
-          appendAttackLog({
-            attacker: attackerObj,
-            defender: defenderObj,
-            defenderOrientation: defenderObj.orientation || 'vertical',
-            who: 'player'
-          });
-
-          renderGameState();
-          checkEndGame();
-        });
-      } else {
-        // attacker died or already horizontal; just finish normally
-        appendAttackLog({
-          attacker: attackerObj,
-          defender: defenderObj,
-          defenderOrientation: defenderObj.orientation || 'vertical',
-          who: 'player'
-        });
-
-        renderGameState();
-        checkEndGame();
-      }
+    renderGameState();
+    checkEndGame();
+  });
+});
     });
   });
 }
+// Disable a combatant after battle (tap to horizontal)
+// Use the canonical orientation pipeline used elsewhere.
+function disableAfterCombat(cardObj, done) {
+  if (!cardObj) return done && done();
 
+  // If it already got removed/killed, or already disabled, just continue.
+  // (You can tighten this later if you want.)
+  if ((cardObj.currentHP || 0) <= 0) return done && done();
+  if (cardObj.orientation === 'horizontal') return done && done();
+
+  // Only creatures should be disabled by combat
+  const def = dummyCards.find(c => c.id === cardObj.cardId);
+  const isCreature = String(def?.category || '').toLowerCase() === 'creature';
+  if (!isCreature) return done && done();
+
+  changeCardPosition(cardObj, 'horizontal', done);
+}
 
 function damageCalculation(attacker, defender) {
   const attackerDef = dummyCards.find(c => c.id === attacker.cardId);
@@ -6662,37 +6666,41 @@ function canActivateSkill(cardObj, skillObj, currentZone, gameState, targetObj =
   if (cardObj._paralyzed || cardObj._frozen) return false;
   if (cardObj.canActivateSkill === false) return false;
 
-// 4. Cost - CHECK THE PLAYER'S ESSENCE POOL (FIXED)
-if (skillObj.cost) {
-  const owner = getCardOwner(cardObj);
-  if (owner === 'player') {
-    const pool = getEssencePool('player') || {};
+// 4. Cost - CHECK THE PLAYER'S ESSENCE POOL
+if (skillObj.cost && skillObj.cost !== '{0}') {
+  // Determine whose pool should be used.
+  // For hand activations, infer owner from which hand contains the card.
+  const inPlayerHand = gameState.playerHand && gameState.playerHand.includes(cardObj);
+  const inOpponentHand = gameState.opponentHand && gameState.opponentHand.includes(cardObj);
 
-    // Convert pool to essence string format for canPayEssence
-    let poolEssenceStr = '';
-    for (const [type, amount] of Object.entries(pool)) {
-      const n = Number(amount || 0);
-      if (n <= 0) continue;
+  let poolOwner = 'player';
+  if (inOpponentHand) poolOwner = 'opponent';
+  else if (inPlayerHand) poolOwner = 'player';
+  else {
+    // Field/other zones: fall back to owner resolver
+    const owner = getCardOwner(cardObj);
+    if (owner === 'opponent') poolOwner = 'opponent';
+  }
 
-      if (type === 'colorless') {
-        // IMPORTANT: represent generic essence as numeric tokens so `{1}` works.
-        // Each `{1}` counts as 1 unit in getTotalEssence().
-        for (let i = 0; i < n; i++) poolEssenceStr += `{1}`;
-      } else {
-        // Map pool keys -> cost letters used by canPayEssence (GRUYCPBW)
-        const map = {
-          green: 'G', red: 'R', blue: 'U', yellow: 'Y',
-          purple: 'P', gray: 'C', black: 'B', white: 'W'
-        };
-        const code = map[type];
-        if (!code) continue;
-        for (let i = 0; i < n; i++) poolEssenceStr += `{${code}}`;
-      }
-    }
+  const pool = getEssencePool(poolOwner) || {};
 
-    if (!canPayEssence({ essence: poolEssenceStr }, skillObj.cost)) {
-      return false;
-    }
+  // Convert pool -> essence string for canPayEssence (colored only)
+  let poolEssenceStr = '';
+  const map = {
+    green: 'G', red: 'R', blue: 'U', yellow: 'Y',
+    purple: 'P', gray: 'C', black: 'B', white: 'W'
+  };
+
+  for (const [type, amount] of Object.entries(pool)) {
+    const n = Number(amount || 0);
+    if (n <= 0) continue;
+    const code = map[type];
+    if (!code) continue;
+    for (let i = 0; i < n; i++) poolEssenceStr += `{${code}}`;
+  }
+
+  if (!canPayEssence({ essence: poolEssenceStr }, skillObj.cost)) {
+    return false;
   }
 }
 
