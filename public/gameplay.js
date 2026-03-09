@@ -4469,22 +4469,6 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
         }
       }
     },
-  // Add Attack only for creatures
-  if (cardObj && typeof isCreature === 'function' && isCreature(cardObj)) {
-    buttons.splice(1, 0, { // insert right after Set HP (optional)
-      text: "Attack",
-      disabled: !canAttack(cardObj, gameState),
-      title: !canAttack(cardObj, gameState)
-        ? (cardObj.orientation !== "vertical" ? "Card is not enabled." : "No valid targets to attack.")
-        : "",
-      onClick: function(e) {
-        e.stopPropagation();
-        startAttackTargeting(instanceId, zoneId, cardDiv);
-        emitPublicState();
-        closeAllMenus();
-      }
-    });
-  }
     {
       text: "Return to Hand",
       onClick: function(e) {
@@ -4553,7 +4537,22 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
       }
     }
   ];
-  if (cardData.skill && Array.isArray(cardData.skill)) {
+if (cardObj && typeof isCreature === 'function' && isCreature(cardObj)) {
+  buttons.splice(1, 0, {
+    text: "Attack",
+    disabled: !canAttack(cardObj, gameState),
+    title: !canAttack(cardObj, gameState)
+      ? (cardObj.orientation !== "vertical" ? "Card is not enabled." : "No valid targets to attack.")
+      : "",
+    onClick: function(e) {
+      e.stopPropagation();
+      startAttackTargeting(instanceId, zoneId, cardDiv);
+      emitPublicState();
+      closeAllMenus();
+    }
+  });
+}
+if (cardData.skill && Array.isArray(cardData.skill)) {
     const currentZone = getZoneNameForArray(arr);
 // In showCardActionMenu: replace the skill push with this
 cardData.skill
