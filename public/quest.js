@@ -69,7 +69,7 @@ const ACHIEVEMENTS = [
   { id: 'white3', group: 'Color', tier: 3, goal: 100,  description: "Collect 100 {white} cards", reward: 100, image: 'Images/Blank/White.png' },
   { id: 'white4', group: 'Color', tier: 4, goal: 200,  description: "Collect 200 {white} cards", reward: 100, image: 'Images/Blank/White.png' },
   { id: 'white5', group: 'Color', tier: 5, goal: 400,  description: "Collect 400 {white} cards", reward: 100, image: 'Images/Blank/White.png' },
-
+/*
   { id: 'Avian', label: 'Avian', icon: 'Icons/Type/Avian.png', colorHex: '#a47c3b' },
   { id: 'human', label: 'Human', icon: 'Icons/Type/Human.png', colorHex: '#a47c3b' },
 
@@ -128,66 +128,8 @@ const ACHIEVEMENTS = [
   { id: 'avatar1', group: 'Avatar', tier: 1, goal: 25,  description: "Collect 25 Avatars", reward: 100, image: 'Images/Blank/Green.png' },
   { id: 'banner1', group: 'Banner', tier: 1, goal: 25,  description: "Collect 25 Banners", reward: 100, image: 'Images/Blank/Green.png' },
   { id: 'cardback1', group: 'Cardback', tier: 1, goal: 25,  description: "Collect 25 Cardbacks", reward: 100, image: 'Images/Blank/Green.png' },
-
+*/
 ];
-
-// -------------------- //
-// --- ACHIEVEMENTS --- //
-// -------------------- //
-const LEGACY_ACHIEVEMENTS = [ // this was the legacy code, now we are switching to one single source of truth in const ACHIEVEMENTS, with all the objects and caracteristics above //
-...generateAchievements(COLOR_ACHIEVEMENTS, COLOR_ACHIEVEMENT_TIERS, 'color'),
-  // ...add more colors as needed
-  {
-  id: 'collect_20_unique_cards',
-  description: 'Collect 20 different cards',
-  goal: 20,
-  reward: { type: 'currency', amount: 500 },
-  image: 'Icons/Other/Rewards.png'
-  },
-  {
-    id: 'collect_avatars',
-    label: 'Unlock Avatars',
-    category: 'cosmetic',
-    target: { property: 'cosmetic', value: 'avatar' }, // for logic use
-    icon: 'Icons/Other/Avatar.png', // use your own icon
-    color: '#70b0fd',
-    tiers: AVATAR_ACHIEVEMENT_TIERS.map(tier => ({
-      ...tier,
-      description: `Unlock ${tier.goal} Avatars`
-    })),
-    hidden: false,
-    sortOrder: 201,
-  },
-  {
-    id: 'collect_banners',
-    label: 'Unlock Banners',
-    category: 'cosmetic',
-    target: { property: 'cosmetic', value: 'banner' },
-    icon: 'Icons/Other/Banner.png',
-    color: '#ffe066',
-    tiers: BANNER_ACHIEVEMENT_TIERS.map(tier => ({
-      ...tier,
-      description: `Unlock ${tier.goal} Banners`
-    })),
-    hidden: false,
-    sortOrder: 202,
-  },
-  {
-    id: 'collect_cardbacks',
-    label: 'Unlock Cardbacks',
-    category: 'cosmetic',
-    target: { property: 'cosmetic', value: 'cardback' },
-    icon: 'Icons/Other/Cardback.png',
-    color: '#bdbdbd',
-    tiers: CARDBACK_ACHIEVEMENT_TIERS.map(tier => ({
-      ...tier,
-      description: `Unlock ${tier.goal} Cardbacks`
-    })),
-    hidden: false,
-    sortOrder: 203,
-  },
-];
-
 
 // ----------------- //
 // --- FUNCTIONS --- //
