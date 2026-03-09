@@ -8304,54 +8304,34 @@ function renderGameLogInModal() {
 
 // Hook up the game log icon button
 function insertGameLogIcon() {
-  const profileRow = document.getElementById('profile-display-row');
-  if (!profileRow) return;
-  
-  // Check if icon already exists
+  // OLD: const profileRow = document.getElementById('profile-display-row');
+  const anchor = document.getElementById('game-log-row') || document.getElementById('game-log');
+  if (!anchor) return;
+
   if (document.getElementById('game-log-icon-btn')) return;
-  
+
   const iconBtn = document.createElement('div');
   iconBtn.id = 'game-log-icon-btn';
-  iconBtn.style.cssText = `
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px;
-    transition: transform 0.2s;
-  `;
-  
-  const img = document.createElement('img');
-  img.src = 'Icons/Other/GameLog.png'; // Use your game log icon
-  img.alt = 'Game Log';
-  img.title = 'View Game Log';
-  img.style.width = '32px';
-  img.style.height = '32px';
-  img.style.filter = 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))';
-  
-  iconBtn.appendChild(img);
-  
-  // Add hover effect
-  iconBtn.onmouseenter = () => {
-    iconBtn.style.transform = 'scale(1.1)';
-  };
-  iconBtn.onmouseleave = () => {
-    iconBtn.style.transform = 'scale(1)';
-  };
-  
-  // Click handler
+  iconBtn.title = 'Game Log';
+  iconBtn.style.cursor = 'pointer';
+  iconBtn.style.display = 'flex';
+  iconBtn.style.alignItems = 'center';
+  iconBtn.style.justifyContent = 'center';
+
+  // Use an icon you already ship (pick whichever you prefer)
+  iconBtn.innerHTML = `<img src="Icons/Other/View.png" style="width:28px;height:28px;">`;
+
   iconBtn.onclick = function(e) {
     e.stopPropagation();
     toggleGameLogModal();
   };
-  
-  // Insert between the two profile panels
-  const opponentProfile = profileRow.querySelector('#opponent-profile-panel');
-  if (opponentProfile) {
-    profileRow.insertBefore(iconBtn, opponentProfile);
-  } else {
-    profileRow.appendChild(iconBtn);
-  }
+
+  // Put it at the start of the row
+  anchor.prepend(iconBtn);
+
+  // Also wire the close button in the modal (currently missing in the snippet you showed)
+  const closeBtn = document.getElementById('close-game-log-modal');
+  if (closeBtn) closeBtn.onclick = () => closeGameLogModal();
 }
 
 // Close modal button handler
