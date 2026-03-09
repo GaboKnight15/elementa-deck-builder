@@ -795,26 +795,7 @@ Retreat: {
     return validZones.includes(currentZone);
   }
 },
-Reforge: {
-  icon: 'Icons/Skill/Reforge.png',
-  name: 'Reforge',
-  description: 'Returns a card from the void to the deck.',
-  zones: ["playerVoid"],
-  handler: function(sourceCardObj, skillObj) {
-    const isVoid = gameState.playerVoid.includes(sourceCardObj);
-    if (!isVoid) {
-      showToast("Reforge can only be activated from the void.");
-      return;
-    }
-    moveCard(sourceCardObj.instanceId, gameState.playerVoid, gameState.playerDeck);
-    gameState.playerDeck = shuffle(gameState.playerDeck);
-    renderGameState();
-  },
-  canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
-    return currentZone === "playerVoid";
-  }
-},
-"": { handler: function() {} }
+
 };
 
 const SKILL_EFFECT_MAP = {
@@ -950,10 +931,9 @@ Cast: {
   }
 },
 
-// EQUIP handler: attach an equipment card to a target creature
 Equip: {
   name: 'Equip',
-  description: 'Equip an Artifact onto a target unit.',
+  description: 'Attach an Equipment to a creature.',
   handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
     try {
       const instance = sourceCardObj;
