@@ -5618,14 +5618,12 @@ function resolveAttack(attackerId, defenderId) {
     // Step 4: Animate defender getting hit
     animateDefenderHit(defenderObj, defenderZone, () => {
       // Step 5: Calculate and apply damage
-      const { attackerDamage, defenderDamage } = damageCalculation(attackerObj, defenderObj);
+const result = damageCalculation(attackerObj, defenderObj) || { attackerDamage: 0, defenderDamage: 0 };
+const { attackerDamage, defenderDamage } = result;
 
-      if (defenderDamage > 0) {
-        dealDamage(attackerObj, defenderObj, defenderDamage);
-      }
-      if (attackerDamage > 0) {
-        dealDamage(defenderObj, attackerObj, attackerDamage);
-      }
+// Apply damage here (ONLY here)
+if (attackerDamage > 0) dealDamage(attackerObj, defenderObj, attackerDamage);
+if (defenderDamage > 0) dealDamage(defenderObj, attackerObj, defenderDamage);
       
 // At the end of resolveAttack(), after dealDamage(...)
 disableAfterCombat(attackerObj, () => {
