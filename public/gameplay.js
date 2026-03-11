@@ -5713,28 +5713,22 @@ function resolveAttack(attackerId, defenderId) {
       });
     });
   });
-  renderGameState();
 }
 // Disable a combatant after battle (tap to horizontal)
 // Use the canonical orientation pipeline used elsewhere.
 function disableAfterCombat(cardObj, done) {
   if (!cardObj) return done && done();
-
   // Only creatures should be disabled by combat
   const def = dummyCards.find(c => c.id === cardObj.cardId);
   const isCreature = String(def?.category || '').toLowerCase() === 'creature';
   if (!isCreature) return done && done();
-
   // If it got removed/killed, don't disable
   const hp = (cardObj.currentHP !== undefined && cardObj.currentHP !== null)
     ? Number(cardObj.currentHP)
     : getBaseHp(cardObj.cardId);
-
   if (hp <= 0) return done && done();
-
   if (cardObj.orientation === 'horizontal') return done && done();
   changeCardPosition(cardObj, 'horizontal', done);
-  renderGameState();
 }
 
 function damageCalculation(attacker, defender) {
@@ -5771,7 +5765,6 @@ function damageCalculation(attacker, defender) {
 
     const voidArr = isPlayerCard ? gameState.playerVoid : gameState.opponentVoid;
     moveCard(cardObj.instanceId, fromArr, voidArr);
-    renderGameState();
   }
 
   // === ATK VS ATK (enabled creature battles) ===
@@ -5815,7 +5808,6 @@ function damageCalculation(attacker, defender) {
         if (STATUS_EFFECTS[abilityName]) applyStatus(defender, abilityName);
       });
     }
-
     renderGameState();
     setupDropZones();
     return;
@@ -5890,7 +5882,6 @@ function dealDamage(cardObj, targetObj, damage) {
       });
     }
   }
-  renderGameState();
 }
 function triggerOnAttackSkills(attacker, defender) {
   const attackerDef = dummyCards.find(c => c.id === attacker.cardId);
