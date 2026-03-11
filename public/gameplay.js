@@ -3956,13 +3956,9 @@ if (typeof cardData.hp === "number" && typeof currentHP === "number" && cardData
 if (typeof cardData.armor === "number" && cardData.armor > 0) {
   const currentArmor = typeof cardObj.armor === "number" ? cardObj.armor : cardData.armor;
   if (currentArmor > 0) {
-    const armorDiv = document.createElement('div');
-    armorDiv.className = 'card-armor-icon-badge';
-    armorDiv.innerHTML = `
-      <img src="Icons/Stat/Armor.png" alt="Armor" class="card-armor-icon">
-      <span class="card-armor-value">${currentArmor}</span>
-    `;
-    hpUiRow.appendChild(armorDiv);
+    const armorBadge = makeStatBadge("Icons/Stat/Armor.png", currentArmor, "#fff", "Armor");
+    armorBadge.classList.add("armor-badge-right");
+    hpUiRow.appendChild(armorBadge);
   }
 }
 
