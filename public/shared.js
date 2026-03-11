@@ -31,7 +31,7 @@ const dummyCards = [
  ]},
 	
 {id: 'Verdara', name: 'Verdara', rarity: 'Legend', image: 'Cards/egg/Verdara.png', flavor: '', 
- category: 'Terrain', color: 'Green', type: '', hp: 20, cost: '{0}', essence: '{G}', trait: 'Dominion', set: 'ElementaGenesis',
+ category: 'Terrain', color: 'Green', type: '', ability: 'Flying', hp: 20, atk: 1, def: 1, armor: 1, cost: '{0}', essence: '{G}', trait: 'Dominion', set: 'ElementaGenesis',
  skill: [{name: 'Flourish', cost: '{g}', requirement: {class: 'CW'}, effect: {class: 'Search', category: 'Terrain'}}]},
 
 {id: 'SylvanAnima', name: 'Sylvan Anima', rarity: 'Legend', image: 'Cards/egg/SylvanAnima.png', flavor: '', 
