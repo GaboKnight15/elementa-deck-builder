@@ -2883,7 +2883,6 @@ function renderHandCostBadge(cardDiv, cardData) {
       img.style.width = '14px';
       img.style.height = '14px';
       img.style.verticalAlign = 'middle';
-      img.style.marginRight = '2px';
     });
 
     cardDiv.appendChild(badge);
@@ -3892,7 +3891,7 @@ const hpUiRow = document.createElement('div');
 hpUiRow.className = 'card-hp-ui-row';
 hpUiRow.style.position = 'absolute';
 hpUiRow.style.left = '0';
-hpUiRow.style.bottom = '0';
+hpUiRow.style.bottom = '-10%';
 hpUiRow.style.width = '100%';
 hpUiRow.style.display = 'flex';
 hpUiRow.style.alignItems = 'center';
@@ -3929,6 +3928,7 @@ if (typeof cardData.hp === "number" && typeof currentHP === "number" && cardData
   barWrap.style.overflow = 'hidden';
   barWrap.style.position = 'relative';
   barWrap.style.marginLeft = '-10px';
+  barWrap.style.marginRight = '-10px';
   
   const bar = document.createElement('div');
   bar.className = 'hp-bar';
