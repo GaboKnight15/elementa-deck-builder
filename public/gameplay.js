@@ -1655,13 +1655,13 @@ Inspire: {
       if (typeof step.speed === 'number' && step.speed !== 0) {
         target.modifiers.push({ effect: 'Inspire', stat: 'speed', value: Number(step.speed), source: sourceCardObj.instanceId });
       }
-      // Grant ability strings into _grantedAbilities
+      // Grant ability strings into grantedAbilities
       if (step.ability) {
-        target._grantedAbilities = target._grantedAbilities || [];
+        target.grantedAbilities = target.grantedAbilities || [];
         const abilities = Array.isArray(step.ability) ? step.ability : [step.ability];
         abilities.forEach(ab => {
-          if (!target._grantedAbilities.some(x => JSON.stringify(x) === JSON.stringify(ab))) {
-            target._grantedAbilities.push(ab);
+          if (!target.grantedAbilities.some(x => JSON.stringify(x) === JSON.stringify(ab))) {
+            target.grantedAbilities.push(ab);
           }
         });
       }
@@ -6281,18 +6281,7 @@ function appendVisualLog(obj, fromSocket = false, isMe = true) {
     renderGameLogInModal();
   }
 }
-function showWaitingForOpponentModal() {
-  // Show loading spinner/modal
-  let modal = document.createElement('div');
-  modal.id = 'waiting-modal';
-  modal.className = 'modal';
-  modal.innerHTML = `<div class="modal-content" style="text-align:center;"><h3>Waiting for opponent...</h3><div class="spinner"></div></div>`;
-  document.body.appendChild(modal);
-}
-function closeWaitingForOpponentModal() {
-  let modal = document.getElementById('waiting-modal');
-  if (modal) modal.remove();
-}
+
 function normalizeTargetFilter(step = {}) {
   // Accept both new (targetX) and legacy (x) keys
   const get = (tKey, legacyKey) =>
@@ -6527,8 +6516,6 @@ function resolveTriggerEffect(cardObj, skillObj, context, onComplete) {
   }
 }
 
-
-
 /*-------------------
 // ANIMATION LOGIC //
 -------------------*/
@@ -6589,28 +6576,31 @@ function animateCardRotation(cardObj, zoneId, prevOrientation, newOrientation, c
   const cardDiv = findCardDivInZone(zoneId, cardObj.instanceId);
   if (!cardDiv) { if (callback) callback(); return; }
 
-  // Remove both orientation classes just in case
   cardDiv.classList.remove("vertical", "horizontal");
-  // Add previous orientation
   cardDiv.classList.add(prevOrientation);
-
-  // Force reflow for reliable transition start
   void cardDiv.offsetWidth;
 
-  // Switch to new orientation (triggers CSS transition)
   setTimeout(() => {
     cardDiv.classList.remove(prevOrientation);
     cardDiv.classList.add(newOrientation);
   }, 10);
 
-  // Listen for transition end (one time)
-  cardDiv.addEventListener("transitionend", function handler(e) {
-    // Only care about the transform transition
-    if (e.propertyName === "transform") {
-      cardDiv.removeEventListener("transitionend", handler);
-      if (callback) callback();
-    }
-  });
+  let done = false;
+  const finish = () => {
+    if (done) return;
+    done = true;
+    cardDiv.removeEventListener("transitionend", handler);
+    callback && callback();
+  };
+
+  function handler(e) {
+    if (e.propertyName === "transform") finish();
+  }
+
+  cardDiv.addEventListener("transitionend", handler);
+
+  // Fallback in case transitionend doesn't fire
+  setTimeout(finish, 450);
 }
 function animateSkillActivation(cardObj, zoneId, callback) {
   const cardDiv = findCardDivInZone(zoneId, cardObj.instanceId);
@@ -8254,9 +8244,9 @@ function getCardAbilities(cardObj) {
     if (Array.isArray(card.ability)) abilities = abilities.concat(card.ability);
     else if (typeof card.ability === "string" && card.ability) abilities.push(card.ability);
   }
-  if (cardObj && Array.isArray(cardObj._grantedAbilities)) {
-    // Merge unique entries; _grantedAbilities elements may be strings or objects
-    cardObj._grantedAbilities.forEach(ab => {
+  if (cardObj && Array.isArray(cardObj.grantedAbilities)) {
+    // Merge unique entries; grantedAbilities elements may be strings or objects
+    cardObj.grantedAbilities.forEach(ab => {
       // Avoid duplicates (string compare for primitives, JSON compare for objects)
       const exists = abilities.some(existing => {
         if (typeof existing === 'string' && typeof ab === 'string') return existing === ab;
@@ -8313,7 +8303,7 @@ function isAnyVoidCardActionable(gameState, dummyCards) {
 
 (function() {
   // State for moving the log node back when the modal closes
-  let __gameLog_state = {
+  let gameLogstate = {
     originalParent: null,
     nextSibling: null
   };
@@ -8555,8 +8545,6 @@ socket.on('casual-match-found', function(matchData) {
   socket.emit('profile', playerProfile);
 });
 
-// After local selection:
-showWaitingForOpponentModal();
 socket.on('opponent profile', function(profileObj) {
   const oppProfileDiv = document.getElementById('opponent-profile');
   oppProfileDiv.innerHTML = "";
