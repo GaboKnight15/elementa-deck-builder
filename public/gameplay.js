@@ -2319,6 +2319,27 @@ function getZoneArray(zoneId) {
   }
   return null;
 }
+function getZoneArrayForCard(cardObj) {
+  if (!cardObj) return null;
+
+  const id = cardObj.instanceId;
+
+  // Player zones
+  if (Array.isArray(gameState.playerCreatures) && gameState.playerCreatures.some(c => c.instanceId === id)) return gameState.playerCreatures;
+  if (Array.isArray(gameState.playerDomains)   && gameState.playerDomains.some(c => c.instanceId === id))   return gameState.playerDomains;
+  if (Array.isArray(gameState.playerHand)      && gameState.playerHand.some(c => c.instanceId === id))      return gameState.playerHand;
+  if (Array.isArray(gameState.playerVoid)      && gameState.playerVoid.some(c => c.instanceId === id))      return gameState.playerVoid;
+  if (Array.isArray(gameState.playerDeck)      && gameState.playerDeck.some(c => c.instanceId === id))      return gameState.playerDeck;
+
+  // Opponent zones
+  if (Array.isArray(gameState.opponentCreatures) && gameState.opponentCreatures.some(c => c.instanceId === id)) return gameState.opponentCreatures;
+  if (Array.isArray(gameState.opponentDomains)   && gameState.opponentDomains.some(c => c.instanceId === id))   return gameState.opponentDomains;
+  if (Array.isArray(gameState.opponentHand)      && gameState.opponentHand.some(c => c.instanceId === id))      return gameState.opponentHand;
+  if (Array.isArray(gameState.opponentVoid)      && gameState.opponentVoid.some(c => c.instanceId === id))      return gameState.opponentVoid;
+  if (Array.isArray(gameState.opponentDeck)      && gameState.opponentDeck.some(c => c.instanceId === id))      return gameState.opponentDeck;
+
+  return null;
+}
 // Helper to get zone name for an array reference
 function getZoneNameForArray(arr) {
   for (const zoneName in ZONE_MAP) {
