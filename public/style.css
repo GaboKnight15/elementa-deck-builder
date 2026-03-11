@@ -3412,7 +3412,8 @@ button[disabled], .btn-disabled {
   100% { opacity:0; }
 }
 .card-fade-out {
-  animation: fadeOutCard 0.3s forwards;
+  opacity: 0;
+  transition: opacity 220ms ease-in-out;
 }
 @keyframes fadeOutCard {
   to { opacity: 0; transform: scale(0.8); }
