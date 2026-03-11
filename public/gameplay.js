@@ -2756,6 +2756,7 @@ function moveCard(instanceId, fromArr, toArr, extra = {}, callback) {
     animateDefeat(instanceId, fromZoneId, doMove);
     return;
   }
+  doMove();
 }
 
 // CREATE CARD MENUS
