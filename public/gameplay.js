@@ -3806,7 +3806,6 @@ function renderCardOnField(cardObj, zoneId) {
   img.alt = cardData.name || "Card";
   img.style.width = "100%";
   img.style.height = "100%";
-  if (cardObj.orientation === "horizontal") img.style.transform = "rotate(90deg)";
   cardDiv.appendChild(img);
 
   // Cardback (player or opponent)
@@ -5692,29 +5691,29 @@ function resolveAttack(attackerId, defenderId) {
     // Step 4: Animate defender getting hit
     animateDefenderHit(defenderObj, defenderZone, () => {
       // Step 5: Calculate and apply damage
-const result = damageCalculation(attackerObj, defenderObj) || { attackerDamage: 0, defenderDamage: 0 };
-const { attackerDamage, defenderDamage } = result;
+      const result = damageCalculation(attackerObj, defenderObj) || { attackerDamage: 0, defenderDamage: 0 };
+      const { attackerDamage, defenderDamage } = result;
 
-// Apply damage here (ONLY here)
-if (attackerDamage > 0) dealDamage(attackerObj, defenderObj, attackerDamage);
-if (defenderDamage > 0) dealDamage(defenderObj, attackerObj, defenderDamage);
+      // Apply damage here (ONLY here)
+      if (attackerDamage > 0) dealDamage(attackerObj, defenderObj, attackerDamage);
+      if (defenderDamage > 0) dealDamage(defenderObj, attackerObj, defenderDamage);
       
-// At the end of resolveAttack(), after dealDamage(...)
-disableAfterCombat(attackerObj, () => {
-  disableAfterCombat(defenderObj, () => {
-    appendAttackLog({
-      attacker: attackerObj,
-      defender: defenderObj,
-      defenderOrientation: defenderObj.orientation || 'vertical',
-      who: 'player'
+      // At the end of resolveAttack(), after dealDamage(...)
+      disableAfterCombat(attackerObj, () => {
+        disableAfterCombat(defenderObj, () => {
+          appendAttackLog({
+            attacker: attackerObj,
+            defender: defenderObj,
+            defenderOrientation: defenderObj.orientation || 'vertical',
+            who: 'player'
+          });
+          renderGameState();
+          checkEndGame();
+        });
+      });
     });
-
-    renderGameState();
-    checkEndGame();
   });
-});
-    });
-  });
+  renderGameState();
 }
 // Disable a combatant after battle (tap to horizontal)
 // Use the canonical orientation pipeline used elsewhere.
@@ -5734,8 +5733,8 @@ function disableAfterCombat(cardObj, done) {
   if (hp <= 0) return done && done();
 
   if (cardObj.orientation === 'horizontal') return done && done();
-
   changeCardPosition(cardObj, 'horizontal', done);
+  renderGameState();
 }
 
 function damageCalculation(attacker, defender) {
@@ -5771,8 +5770,8 @@ function damageCalculation(attacker, defender) {
       gameState.playerDeck.includes(cardObj);
 
     const voidArr = isPlayerCard ? gameState.playerVoid : gameState.opponentVoid;
-
     moveCard(cardObj.instanceId, fromArr, voidArr);
+    renderGameState();
   }
 
   // === ATK VS ATK (enabled creature battles) ===
@@ -5848,7 +5847,6 @@ function damageCalculation(attacker, defender) {
       if (STATUS_EFFECTS[abilityName]) applyStatus(defender, abilityName);
     });
   }
-
   renderGameState();
   setupDropZones();
 }
@@ -5892,6 +5890,7 @@ function dealDamage(cardObj, targetObj, damage) {
       });
     }
   }
+  renderGameState();
 }
 function triggerOnAttackSkills(attacker, defender) {
   const attackerDef = dummyCards.find(c => c.id === attacker.cardId);
