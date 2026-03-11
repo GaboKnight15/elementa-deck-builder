@@ -3204,7 +3204,7 @@ button[disabled], .btn-disabled {
 /* Special hover for DEF cards (scale and highlight parent) */
 .card-battlefield.horizontal:hover,
 .card-battlefield.horizontal:focus {
-  transform: rotate(90deg) scale(1.12) translateY(-8px);
+  transform: rotate(-90deg) scale(1.12) translateY(-8px);
   z-index: 15;
   box-shadow: 0 8px 28px #ffe06655;
   filter: brightness(1.15) drop-shadow(0 0 7px #ffe066bb);
