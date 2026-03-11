@@ -2503,13 +2503,6 @@ function resetTurnFlags(turn) {
       card.attacksRemaining = allowed;
       // Keep legacy flag for compatibility
       card.hasAttacked = card.attacksRemaining <= 0;
-
-      // Grant tier-based evasion counters at start of turn:
-      // Speed 2, 3,4,5 grant +1 Evasion (passive)
-      if (tier >= 2) {
-        // Use addEvasion so render/state updates and any other logic are consistent
-        addEvasion(card, 1);
-      }
     });
   } else if (turn === "opponent") {
     const arrs = [...gameState.opponentCreatures, ...gameState.opponentTerrains];
@@ -2523,10 +2516,6 @@ function resetTurnFlags(turn) {
       if (tier >= 5) allowed = 3;
       card.attacksRemaining = allowed;
       card.hasAttacked = card.attacksRemaining <= 0;
-
-      if (tier >= 2) {
-        addEvasion(card, 1);
-      }
     });
   }
 }
@@ -3668,8 +3657,6 @@ function getSpeedValue(cardObj) {
   // (Dive/Leap helpers may or may not exist yet; check defensively)
   if (typeof hasFlying === "function" && hasFlying(cardObj)) speed += 1;
   if (typeof hasRush === "function" && hasRush(cardObj)) speed += 1;
-
-  // If you have these helpers later, they'll automatically start working:
   if (typeof hasDive === "function" && hasDive(cardObj)) speed += 1;
   if (typeof hasLeap === "function" && hasLeap(cardObj)) speed += 1;
 
@@ -3677,23 +3664,18 @@ function getSpeedValue(cardObj) {
   // +1 for Mage, +2 for Ranger
   if (typeof isMage === "function" && isMage(cardObj)) speed += 1;
   if (typeof isRanger === "function" && isRanger(cardObj)) speed += 2;
-
-  // --- Apply modifiers/overrides already supported by computeCardStat ---
-  // We want existing effects that call addSpeed()/setSpeed() to still work.
-  // So we add our base+bonus to whatever computeCardStat contributes *as modifiers*.
-  //
-  // The simplest way without refactoring computeCardStat:
-  // - Temporarily treat our calculated base as an override modifier.
-  //
-  // If computeCardStat already includes base speed (it likely doesn't), this could double count.
-  // But per your note: dummyCards don't include speed, so base speed is probably 0 right now.
-  const computed = computeCardStat(cardObj, "speed");
-
-  // If computed already returns something meaningful (>0), it likely includes modifiers/overrides.
-  // So add (speed - 0) only when computed looks like "missing base" (0).
-  if (typeof computed === "number" && computed > 0) return computed;
-
-  return speed;
+  
+  // Add explicit speed modifiers (from addSpeed / setSpeed and future debuffs)
+  if (Array.isArray(cardObj.modifiers)) {
+    for (const m of cardObj.modifiers) {
+      if (m && m.stat === "speed" && typeof m.value === "number") {
+        speed += m.value;
+      }
+    }
+  }
+  // Clamp to 0..5 (your tiers)
+  speed = Math.round(speed);
+  return Math.max(0, Math.min(5, speed));
 }
 function getSpeedTier(cardObj) {
   const val = getSpeedValue(cardObj) || 0;
@@ -3732,45 +3714,6 @@ function setSpeed(cardObj, value) {
   cardObj.modifiers = cardObj.modifiers.filter(m => !(m.source === "speed-override"));
   cardObj.modifiers.push({ effect: "SpeedOverride", stat: "speed", value: cardObj._overrideSpeed, source: "speed-override" });
   renderGameState && renderGameState();
-}
-
-// EVASION helpers
-function getEvasionCount(cardObj) {
-  // store counters on cardObj.evasion or cardObj.evasionCounters
-  if (typeof cardObj.evasion === "number") return cardObj.evasion;
-  if (typeof cardObj.evasionCounters === "number") return cardObj.evasionCounters;
-  return 0;
-}
-function addEvasion(cardObj, amount = 1) {
-  cardObj.evasion = (cardObj.evasion || 0) + Number(amount || 1);
-  renderGameState && renderGameState();
-}
-function consumeEvasion(cardObj, amount = 1) {
-  const before = getEvasionCount(cardObj);
-  const toConsume = Math.min(before, Number(amount || 1));
-  if (toConsume <= 0) return 0;
-  // Prefer cardObj.evasion if present
-  if (typeof cardObj.evasion === "number") cardObj.evasion = Math.max(0, cardObj.evasion - toConsume);
-  else cardObj.evasionCounters = Math.max(0, (cardObj.evasionCounters || 0) - toConsume);
-  renderGameState && renderGameState();
-  return toConsume;
-}
-function handleEvasionOnTarget(targetCardObj, sourceCardObj) {
-  // Only consume if the source and target are opposing owners
-  const sourceOwner = getCardOwner(sourceCardObj);
-  const targetOwner = getCardOwner(targetCardObj);
-  if (!sourceOwner || !targetOwner) {
-    // If owner unknown, still consume as fallback
-    const consumed = consumeEvasion(targetCardObj, 1);
-    if (consumed > 0) showToast(`${targetCardObj.name || "Target"}'s Evasion -1`, { type: "info" });
-    return consumed;
-  }
-  if (sourceOwner !== targetOwner) {
-    const consumed = consumeEvasion(targetCardObj, 1);
-    if (consumed > 0) showToast(`${targetCardObj.name || "Target"}'s Evasion -1`, { type: "info" });
-    return consumed;
-  }
-  return 0;
 }
 
 function renderCardOnField(cardObj, zoneId) {
@@ -3977,6 +3920,8 @@ if (typeof cardData.hp === "number" && typeof currentHP === "number" && cardData
   barWrap.style.borderRadius = '7px';
   barWrap.style.overflow = 'hidden';
   barWrap.style.position = 'relative';
+  barWrap.style.marginLeft = '-6px';
+  barWrap.style.paddingLeft = '6px';
   
   const bar = document.createElement('div');
   bar.className = 'hp-bar';
@@ -4089,7 +4034,7 @@ statsAndIconsOverlay.appendChild(hpUiRow);
     });
     cardDiv.appendChild(stackDiv);
   }
-// --- Badges row (Seal / Evasion) ---
+//  Badges Row //
 const badgesRow = document.createElement('div');
 badgesRow.className = 'card-badges-row';
 badgesRow.style.position = 'absolute';
@@ -4115,23 +4060,6 @@ try {
   }
 } catch (err) {
   console.warn("Failed to render Seal badge", err);
-}
-
-// Evasion badge (only if > 0)
-try {
-  const evCount = getEvasionCount(cardObj);
-  if (evCount > 0) {
-    const evBadge = document.createElement('div');
-    evBadge.className = 'card-evasion-badge';
-    evBadge.title = `Evasion: ${evCount} (consumed when targeted by opponent)`;
-    evBadge.innerHTML = `
-      <img src="Icons/FieldIcons/Evasion.png" style="width:18px;height:18px;vertical-align:middle;margin-right:6px;">
-      <span style="font-weight:bold;color:#ffd700;">${evCount}</span>
-    `;
-    badgesRow.appendChild(evBadge);
-  }
-} catch (err) {
-  console.warn("Failed to render Evasion badge", err);
 }
 
 // Attach badges into overlay once
@@ -4809,12 +4737,7 @@ function handleEndPhase(turn) {
  // triggerEndPhaseEffects(turn);
   // Tick all statuses generically based on phase
   tickStatusDurations({ turn, phase: "end" });
-  // Grant Evasion to all qualifying creatures at end of each player's End Phase
-  try {
-    grantEvasionAtEndPhase();
-  } catch (e) {
-    console.error("Error granting end-phase Evasion:", e);
-  }
+
   // Handle weather effects durations etc.
   handleWeatherEffectsEndPhase();
   // Optionally do day/night cycle counting if you track end-phase counters
@@ -5911,30 +5834,6 @@ function triggerOnDefenseSkills(defender, attacker) {
   });
 }
 
-// Grant Evasion counters at each End Phase for creatures with Speed tier >= 3
-function grantEvasionAtEndPhase() {
-  // All on-field creatures: player + opponent
-  const allCreatures = [...gameState.playerCreatures, ...gameState.opponentCreatures];
-  let grantedCount = 0;
-  allCreatures.forEach(card => {
-    try {
-      if (getSpeedTier(card) >= 2) {
-        addEvasion(card, 1);
-        grantedCount++;
-      }
-    } catch (e) {
-      // safe fallback: if something goes wrong for a card, skip it
-      console.error("grantEvasionAtEndPhase error for", card, e);
-    }
-  });
-
-  if (grantedCount > 0) {
-    // Inform the player(s) and refresh UI
-    showToast(`${grantedCount} creature${grantedCount === 1 ? "" : "s"} gained +1 Evasion`, { type: "info" });
-    renderGameState && renderGameState();
-    setupDropZones && setupDropZones();
-  }
-}
 // ------------------------ //
 // --- GAME START LOGIC --- //
 // ------------------------ //
