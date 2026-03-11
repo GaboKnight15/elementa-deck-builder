@@ -456,70 +456,220 @@ function getNextUtcMidnightMs() {
   return next - now;
 }
 
+// ----------------- //
 // ACHIVEMENTS LOGIC //
+// ----------------- //
+// Ensure playerAchievements exists in the new format.
+function ensureAchievementState() {
+  if (!playerAchievements || typeof playerAchievements !== 'object') playerAchievements = {};
 
-function getCosmeticAchievementProgress(achievement) {
-  if (achievement.target.value === "avatar") {
-    return (window.playerUnlockedAvatars || []).length;
+  // Backward compatibility: if legacy was a flat map, preserve it under playerAchievements.legacy
+  // and initialize v2 container.
+  if (!playerAchievements.groups) {
+    const legacy = playerAchievements;
+    playerAchievements = { version: 2, groups: {}, legacy };
   }
-  if (achievement.target.value === "banner") {
-    return (window.playerUnlockedBanners || []).length;
-  }
-  if (achievement.target.value === "cardback") {
-    return (window.playerUnlockedCardbacks || []).length;
-  }
-  return 0;
-}
-function getAchievementProgress(ach) {
-  let data = getAchievementData();
-  if (!data[ach.id]) {
-    data[ach.id] = { progress: 0, completed: false, claimed: false };
-    setAchievementData(data);
-  }
-  return data[ach.id];
-}
-function incrementAchievementProgress(achievementId, amount = 1) {
-  let data = getAchievementData();
-  const ach = ACHIEVEMENTS.find(a => a.id === achievementId);
-  if (!ach) return;
-  if (!data[achievementId]) data[achievementId] = { progress: 0, completed: false, claimed: false };
-  if (data[achievementId].completed) return;
 
-  data[achievementId].progress = Math.min(ach.goal, (data[achievementId].progress || 0) + amount);
-  if (data[achievementId].progress >= ach.goal) data[achievementId].completed = true;
-  setAchievementData(data, false);
-  renderAchievements();
-  updateAchievementsNotificationDot();
+  if (typeof playerAchievements.version !== 'number') playerAchievements.version = 2;
+  if (!playerAchievements.groups || typeof playerAchievements.groups !== 'object') playerAchievements.groups = {};
+
+  return playerAchievements;
 }
 
-// 5. Set achievement progress directly (for things like "collect X cards")
-function setAchievementProgress(achievementId, value) {
-  let data = getAchievementData();
-  const ach = ACHIEVEMENTS.find(a => a.id === achievementId);
-  if (!ach) return;
-  data[achievementId] = data[achievementId] || { progress: 0, completed: false, claimed: false };
-  data[achievementId].progress = Math.min(ach.goal, value);
-  data[achievementId].completed = data[achievementId].progress >= ach.goal;
-  setAchievementData(data, false);
-  renderAchievements();
+// You need a stable group key per "achievement group" across all sections.
+// If your ACHIEVEMENTS already has group.id, use that.
+// Fallback: derive from sectionKey + groupKey.
+function getAchievementGroupKey(sectionKey, group) {
+  return group.id || group.key || group.name || `${sectionKey}::${group.title || 'group'}`;
 }
 
-// 6. Claim achievement reward
-function claimAchievementReward(ach, cb) {
-  let data = getAchievementData();
-  if (!data[ach.id] || !data[ach.id].completed || data[ach.id].claimed) {
-    if (typeof cb === "function") cb(false);
-    return false;
+// Return the array of tiers for a group.
+// Adapt this depending on your ACHIEVEMENTS shape.
+function getGroupTiers(group) {
+  // Common shapes:
+  // group.tiers = [{...}, {...}]
+  // group[1], group[2] ... (not recommended)
+  return Array.isArray(group.tiers) ? group.tiers : [];
+}
+
+// Clamp and sanitize progress
+function clampProgress(val) {
+  const n = Number(val || 0);
+  return Number.isFinite(n) ? Math.max(0, n) : 0;
+}
+
+// Find the "goal" / required amount for a tier.
+// Adjust property names to match your tiers.
+function getTierGoal(tier) {
+  // Common: tier.goal, tier.required, tier.target, tier.amount
+  return Number(tier.goal ?? tier.required ?? tier.target ?? tier.amount ?? 0) || 0;
+}
+
+function getTierReward(tier) {
+  // Optional: tier.reward (coins/essence/cosmetic/etc)
+  return tier.reward ?? null;
+}
+
+// Get or create a user's group state
+function getOrCreateGroupState(groupKey) {
+  const st = ensureAchievementState();
+  if (!st.groups[groupKey]) {
+    st.groups[groupKey] = {
+      tierIndex: 0,
+      progress: 0,
+      completed: {}, // { [tierIndex]: true }
+      claimed: {}    // { [tierIndex]: true }
+    };
   }
-  setCurrency(getCurrency() + ach.reward.amount);
-  data[ach.id].claimed = true;
-  setAchievementData(data);
-  updateAchievementsNotificationDot();
-  renderPlayerPower();
-  if (typeof cb === "function") cb(true);
+  // sanitize
+  st.groups[groupKey].tierIndex = Math.max(0, Number(st.groups[groupKey].tierIndex || 0));
+  st.groups[groupKey].progress = clampProgress(st.groups[groupKey].progress);
+  st.groups[groupKey].completed = st.groups[groupKey].completed || {};
+  st.groups[groupKey].claimed = st.groups[groupKey].claimed || {};
+  return st.groups[groupKey];
+}
+
+// Determine current tier object for a group
+function getCurrentTierForGroup(sectionKey, group) {
+  const groupKey = getAchievementGroupKey(sectionKey, group);
+  const gState = getOrCreateGroupState(groupKey);
+  const tiers = getGroupTiers(group);
+  const idx = Math.min(gState.tierIndex, Math.max(0, tiers.length - 1));
+  return { groupKey, gState, tiers, tierIndex: idx, tier: tiers[idx] || null };
+}
+
+// Marks current tier completed, advances to next tier if available
+function completeTierAndAdvance(groupKey, gState, tiers) {
+  const idx = Math.min(gState.tierIndex, Math.max(0, tiers.length - 1));
+  gState.completed[idx] = true;
+
+  const nextIdx = idx + 1;
+  if (tiers[nextIdx]) {
+    gState.tierIndex = nextIdx;
+    gState.progress = 0; // reset for next tier
+  } else {
+    // No more tiers: keep at last tier index and clamp progress
+    gState.tierIndex = idx;
+    const goal = getTierGoal(tiers[idx] || {});
+    gState.progress = goal; // stay completed
+  }
+}
+// Return progress for a group (current tier only)
+function getAchievementProgress(groupKey) {
+  const gState = getOrCreateGroupState(groupKey);
+  return { tierIndex: gState.tierIndex, progress: clampProgress(gState.progress) };
+}
+// Increment current tier progress for a group.
+// When reaching goal, mark completed and advance.
+function incrementAchievementProgress(sectionKey, group, amount = 1, { autoSave = true } = {}) {
+  const { groupKey, gState, tiers, tierIndex, tier } = getCurrentTierForGroup(sectionKey, group);
+  if (!tier) return;
+
+  const goal = getTierGoal(tier);
+  if (goal <= 0) return;
+
+  // If already completed and at max tier, do nothing
+  if (gState.completed[tierIndex] && !tiers[tierIndex + 1]) return;
+
+  gState.progress = clampProgress(gState.progress + Number(amount || 1));
+  if (gState.progress >= goal) {
+    gState.progress = goal;
+    completeTierAndAdvance(groupKey, gState, tiers);
+  }
+
+  if (autoSave) saveProgress && saveProgress();
+}
+
+// Set progress directly (used by "setAchievementProgress")
+function setAchievementProgress(sectionKey, group, value, { autoSave = true } = {}) {
+  const { groupKey, gState, tiers, tierIndex, tier } = getCurrentTierForGroup(sectionKey, group);
+  if (!tier) return;
+
+  const goal = getTierGoal(tier);
+  if (goal <= 0) return;
+
+  gState.progress = clampProgress(value);
+  if (gState.progress >= goal) {
+    gState.progress = goal;
+    completeTierAndAdvance(groupKey, gState, tiers);
+  }
+
+  if (autoSave) saveProgress && saveProgress();
+}
+
+// Claim reward for the CURRENT tier (or a specific tier index if you want)
+function claimAchievementReward(sectionKey, group, { tierToClaim = null, autoSave = true } = {}) {
+  const groupKey = getAchievementGroupKey(sectionKey, group);
+  const gState = getOrCreateGroupState(groupKey);
+  const tiers = getGroupTiers(group);
+
+  const claimIdx = (tierToClaim === null) ? (gState.tierIndex - 1) : Number(tierToClaim);
+  if (!Number.isFinite(claimIdx) || claimIdx < 0 || !tiers[claimIdx]) return false;
+
+  // Only claim if completed
+  if (!gState.completed[claimIdx]) return false;
+  if (gState.claimed[claimIdx]) return false;
+
+  gState.claimed[claimIdx] = true;
+
+  // Apply reward if exists
+  const reward = getTierReward(tiers[claimIdx]);
+  if (reward) {
+    // Implement your reward application here
+    // Example:
+    // if (reward.coins) addCoins(reward.coins);
+    // if (reward.essence) addEssenceCurrency(reward.essence);
+  }
+
+  if (autoSave) saveProgress && saveProgress();
   return true;
 }
+function getVisibleAchievementEntriesForSection(sectionKey, sectionDef) {
+  // sectionDef.groups should be an array of groups in that tab
+  const groups = Array.isArray(sectionDef.groups) ? sectionDef.groups : (Array.isArray(sectionDef) ? sectionDef : []);
+  const visible = [];
 
+  groups.forEach(group => {
+    const { groupKey, gState, tiers, tierIndex, tier } = getCurrentTierForGroup(sectionKey, group);
+    if (!tier) return;
+
+    const goal = getTierGoal(tier);
+    const progress = clampProgress(gState.progress);
+    const completed = !!gState.completed[tierIndex] && !tiers[tierIndex + 1]; // if last tier completed
+    // But usually current tier should not be "completed" because you'd advance away on completion.
+    // So visible entry is almost always "in progress" unless you're at final tier and finished.
+
+    visible.push({
+      sectionKey,
+      groupKey,
+      group,
+      tierIndex,
+      tier,
+      progress,
+      goal,
+      isFinalTier: !tiers[tierIndex + 1],
+      isCompleted: completed
+    });
+  });
+
+  return visible;
+}
+function countCollectedCardsByColor(colorName) {
+  const collection = (typeof getCollection === 'function') ? getCollection() : {};
+  const want = String(colorName || '').toLowerCase();
+
+  let count = 0;
+  (window.dummyCards || []).forEach(card => {
+    const cardColor = String(card?.color || '').toLowerCase();
+    if (cardColor !== want) return;
+
+    // "Unlocked/collected": owned >= 1
+    const owned = Number(collection[card.id] || 0);
+    if (owned > 0) count += 1;
+  });
+
+  return count;
+}
 function renderAchievements() {
   // Find the currently active tab/category
   const activeTab = document.querySelector('.achievements-tab.active');
@@ -727,124 +877,114 @@ function renderPlayerLevel() {
   }
   if (expNum) expNum.textContent = exp + " / " + needed;
 }
+function getAchievementTiers(section, group) {
+  // Assumes ACHIEVEMENTS is a flat array OR object; adapt as needed
+  // If ACHIEVEMENTS is an array of entries:
+  const all = Array.isArray(window.ACHIEVEMENTS) ? window.ACHIEVEMENTS : [];
 
-function getVisibleColorAchievements() {
-  // Group all color achievements by color, sorted by tier
-  const achievementsByColor = {};
-  ACHIEVEMENTS.filter(a => a.color).forEach(a => {
-    if (!achievementsByColor[a.color]) achievementsByColor[a.color] = [];
-    achievementsByColor[a.color].push(a);
-  });
-  // Sort by tier for each color
-  Object.values(achievementsByColor).forEach(arr => arr.sort((a, b) => a.tier - b.tier));
+  const sec = String(section || '');
+  const grp = String(group || '');
 
-  const achievementData = getAchievementData();
-  const visible = [];
-  for (const color in achievementsByColor) {
-    const tiers = achievementsByColor[color];
-    // Find first incomplete or unclaimed tier
-    let found = false;
-    for (let i = 0; i < tiers.length; i++) {
-      const ach = tiers[i];
-      const prog = achievementData[ach.id] || { progress: 0, completed: false, claimed: false };
-      if (!prog.claimed) {
-        visible.push(ach);
-        found = true;
-        break;
-      }
-    }
-    // If all tiers claimed, show the highest (completed)
-    if (!found && tiers.length > 0) {
-      visible.push(tiers[tiers.length - 1]);
-    }
-  }
-  return visible;
+  return all
+    .filter(a => a && a.section === sec && a.group === grp)
+    .slice()
+    .sort((a, b) => Number(a.tier || 0) - Number(b.tier || 0));
 }
-// Render achievements for category
-function renderAchievementsCategory(category) {
-  const list = document.getElementById('achievements-list');
-  if (!list) return;
-  list.innerHTML = '';
-
-  let achievementsToShow = [];
-  if (category === 'general') {
-    achievementsToShow = ACHIEVEMENTS.filter(a =>
-      (!a.color && a.category !== 'color' && a.category !== 'type' && a.category !== 'archetype' && a.category !== 'cosmetic')
-    );
-  } else if (category === 'color') {
-    achievementsToShow = getVisibleColorAchievements();
-  } else if (category === 'type') {
-    achievementsToShow = ACHIEVEMENTS.filter(a => a.category === 'type');
-  } else if (category === 'archetype') {
-    achievementsToShow = ACHIEVEMENTS.filter(a => a.category === 'archetype');
-  } else if (category === 'cosmetic') {
-    achievementsToShow = ACHIEVEMENTS.filter(a => a.category === 'cosmetic');
-  } else if (category === 'progression') {
-    achievementsToShow = ACHIEVEMENTS.filter(a => a.id && a.id.indexOf('progress') !== -1 );
+function ensureAchievementState() {
+  if (!window.playerAchievements || typeof playerAchievements !== 'object') {
+    window.playerAchievements = {};
   }
+  if (!playerAchievements.groups || typeof playerAchievements.groups !== 'object') {
+    playerAchievements.groups = {};
+  }
+  return playerAchievements;
+}
 
-  // Sort: unclaimed first, claimed at bottom
-  const unclaimed = [];
-  const claimed = [];
-  achievementsToShow.forEach(ach => {
-    if (!ach || !ach.id || !ach.description) return;
-    const progress = getAchievementProgress(ach);
-    if (progress.claimed) {
-      claimed.push({ ach, progress });
-    } else {
-      unclaimed.push({ ach, progress });
+function getOrCreateAchievementGroupState(groupKey) {
+  ensureAchievementState();
+  if (!playerAchievements.groups[groupKey]) {
+    playerAchievements.groups[groupKey] = { completed: {}, claimed: {} };
+  }
+  const gs = playerAchievements.groups[groupKey];
+  gs.completed = gs.completed || {};
+  gs.claimed = gs.claimed || {};
+  return gs;
+}
+function getAchievementGroupKeyFromEntry(entry) {
+  return `${entry.section}::${entry.group}`;
+}
+function getTieredAchievementView(section, group, progressValue) {
+  const tiers = getAchievementTiers(section, group);
+  const groupKey = `${section}::${group}`;
+  const gs = getOrCreateAchievementGroupState(groupKey);
+
+  // Determine completion from progress, and persist "completed" flags (monotonic)
+  tiers.forEach(t => {
+    const tierNum = Number(t.tier || 0);
+    const goal = Number(t.goal || 0);
+    if (tierNum > 0 && goal > 0 && progressValue >= goal) {
+      gs.completed[tierNum] = true;
     }
   });
 
-  function createEntry(ach, progress, category) {
-    const percent = Math.min(100, Math.round((progress.progress / ach.goal) * 100));
-    const entry = document.createElement('div');
-    entry.className = 'quest-entry';
+  // Determine the next tier to display: first not completed
+  let current = null;
+  for (const t of tiers) {
+    const tierNum = Number(t.tier || 0);
+    if (!gs.completed[tierNum]) {
+      current = t;
+      break;
+    }
+  }
+  // If all completed, show the last tier as "completed"
+  if (!current && tiers.length) current = tiers[tiers.length - 1];
 
-    entry.innerHTML = `
-      <div style="display:flex;align-items:center;">
-        <img src="${ach.image || 'images/achievements/placeholder.png'}" alt="Achievement" class="achievement-image" style="width:40px;height:40px;object-fit:contain;margin-right:12px;">
-        <div style="flex:1;">
-          <div class="quest-desc" style="font-weight:bold;color:#ffe066;">${ach.description}</div>
-          <div style="display:flex;align-items:center;">
-            <div style="flex:1;">
-              <div class="quest-progress-bar-wrap" style="margin-bottom:2px;">
-                <div class="quest-progress-bar" style="width:${percent}%;"></div>
-              </div>
-              <div style="font-size:0.96em;color:#fff;text-align:left;">${progress.progress} / ${ach.goal}</div>
-            </div>
-            <div class="quest-reward" style="display:flex;align-items:center;gap:4px;min-width:70px;justify-content:flex-end;">
-              <img class="currency-icon" src="OtherImages/Currency/Coins.png" alt="Coins">
-              <span style="font-weight:bold;font-size:1.1em;color:#ffe066;">+${ach.reward.amount}</span>
-            </div>
-          </div>
-        </div>
-      </div>
+  return { tiers, current, state: gs, groupKey };
+}
+function buildAchievementIndex() {
+  const idx = {};
+  for (const [sectionKey, sectionDef] of Object.entries(ACHIEVEMENTS || {})) {
+    const groups = Array.isArray(sectionDef.groups) ? sectionDef.groups : [];
+    groups.forEach(group => {
+      const key = getAchievementGroupKey(sectionKey, group);
+      // Prefer explicit group.id for external references:
+      const externalId = group.id || key;
+      idx[externalId] = { sectionKey, group };
+    });
+  }
+  return idx;
+}
+window._ACHIEVEMENT_INDEX = window._ACHIEVEMENT_INDEX || buildAchievementIndex();
+function renderAchievementsCategory(sectionKey) {
+  ensureAchievementState();
+
+  const sectionDef = ACHIEVEMENTS[sectionKey];
+  const panel = document.getElementById('achievements-list'); // adjust to your container
+  if (!panel || !sectionDef) return;
+
+  panel.innerHTML = '';
+
+  const entries = getVisibleAchievementEntriesForSection(sectionKey, sectionDef);
+
+  entries.forEach(entry => {
+    const row = document.createElement('div');
+    row.className = 'achievement-entry';
+
+    // Title: use group title + tier label
+    const title = entry.tier.title || entry.group.title || entry.group.name || 'Achievement';
+    const desc  = entry.tier.desc  || entry.tier.description || '';
+
+    row.innerHTML = `
+      <div class="ach-title">${title} (Tier ${entry.tierIndex + 1})</div>
+      <div class="ach-desc">${desc}</div>
+      <div class="ach-progress">${entry.progress} / ${entry.goal}</div>
     `;
-    if (progress.completed && !progress.claimed) {
-      entry.classList.add('quest-claimable');
-      entry.style.cursor = 'pointer';
-      entry.onclick = function() {
-        claimAchievementReward(ach, function() {
-          renderAchievementsCategory(category);
-        });
-      };
-    } else if (progress.claimed) {
-      entry.classList.add('achievement-claimed');
-      entry.style.opacity = '0.7';
-      entry.onclick = null;
-    } else {
-      entry.onclick = null;
-    }
-    return entry;
-  }
 
-  // Unclaimed achievements first (including claimable), then claimed at the bottom
-  unclaimed.forEach(({ ach, progress }) => {
-    list.appendChild(createEntry(ach, progress, category));
-  });
-  claimed.forEach(({ ach, progress }) => {
-    list.appendChild(createEntry(ach, progress, category));
+    // Claim logic (claim last completed tier, or claim button only when tier completed)
+    // If you want a claim button when user completes the FINAL tier:
+    // if (entry.isCompleted && !getOrCreateGroupState(entry.groupKey).claimed[entry.tierIndex]) { ... }
+
+    panel.appendChild(row);
   });
 }
 function openAchievementsModalDefault() {
