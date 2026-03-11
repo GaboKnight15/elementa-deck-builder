@@ -3788,12 +3788,11 @@ const topStatsRow = document.createElement('div');
 topStatsRow.className = 'card-top-stats-row';
 topStatsRow.style.position = 'absolute';
 topStatsRow.style.left = '0';
-topStatsRow.style.top = '2px';
+topStatsRow.style.top = '-10%';
 topStatsRow.style.width = '100%';
 topStatsRow.style.display = 'flex';
 topStatsRow.style.justifyContent = 'center';
 topStatsRow.style.alignItems = 'center';
-topStatsRow.style.gap = '8px';
 topStatsRow.style.zIndex = 45;
 topStatsRow.style.pointerEvents = 'none';
 
@@ -3895,8 +3894,6 @@ hpUiRow.style.bottom = '0';
 hpUiRow.style.width = '100%';
 hpUiRow.style.display = 'flex';
 hpUiRow.style.alignItems = 'center';
-hpUiRow.style.gap = '0px';
-hpUiRow.style.padding = '4px 6px';
 hpUiRow.style.boxSizing = 'border-box';
 hpUiRow.style.zIndex = 50;
 hpUiRow.style.pointerEvents = 'none';
@@ -3929,8 +3926,7 @@ if (typeof cardData.hp === "number" && typeof currentHP === "number" && cardData
   barWrap.style.borderRadius = '7px';
   barWrap.style.overflow = 'hidden';
   barWrap.style.position = 'relative';
-  barWrap.style.marginLeft = '-6px';
-  barWrap.style.paddingLeft = '6px';
+  barWrap.style.marginLeft = '-10px';
   
   const bar = document.createElement('div');
   bar.className = 'hp-bar';
