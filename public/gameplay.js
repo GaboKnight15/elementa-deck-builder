@@ -3735,6 +3735,7 @@ function renderCardOnField(cardObj, zoneId) {
   const cardDiv = document.createElement('div');
   cardDiv.className = 'card-battlefield';
   cardDiv.dataset.instanceId = cardObj.instanceId;
+  cardDiv.classList.add(cardObj.orientation === "horizontal" ? "horizontal" : "vertical");
 
   // Visual indicator for summoning sickness
   const currentTurn = gameState.turnNumber || 0;
