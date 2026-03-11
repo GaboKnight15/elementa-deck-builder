@@ -2618,14 +2618,14 @@ button[disabled], .btn-disabled {
   pointer-events: auto;
 }
 
-.stat-badge-img {
+.armor-badge-right .stat-badge-img {
   width: 34px;
   height: 34px;
   display: block;
   border-radius: 7px;
 }
 
-.stat-badge-value {
+.stat-badge-value .armor-badge-right {
   position: absolute;
   top: 0;
   left: 0;
