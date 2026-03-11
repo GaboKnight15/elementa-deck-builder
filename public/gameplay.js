@@ -2665,8 +2665,9 @@ function moveCard(instanceId, fromArr, toArr, extra = {}, callback) {
   const fromZoneId = ZONE_MAP[fromZoneName]?.id;
   const toZoneId = ZONE_MAP[toZoneName]?.id;
 
-  // Animate move (fade out/in)
-  animateCardMove(instanceId, fromZoneId, toZoneId, () => {
+  const isToVoid = (toZoneName === "playerVoid" || toZoneName === "opponentVoid");
+
+  const doMove = () => {
     const idx = fromArr.findIndex(card => card.instanceId === instanceId);
     if (idx !== -1) {
       let cardObj = { ...fromArr[idx], ...extra };
@@ -2694,8 +2695,7 @@ function moveCard(instanceId, fromArr, toArr, extra = {}, callback) {
       // If moving into Void, ensure correct owner
       if (toZoneName === 'playerVoid') {
         toArr = gameState.playerVoid;
-      }
-      else if (toZoneName === 'opponentVoid') {
+      } else if (toZoneName === 'opponentVoid') {
         toArr = gameState.opponentVoid;
       }
 
@@ -2706,6 +2706,7 @@ function moveCard(instanceId, fromArr, toArr, extra = {}, callback) {
       ) || (
         fromZoneName === "opponentDeck" && toZoneName === "opponentHand"
       );
+
       if (isDrawToHand) {
         logObj = {
           sourceCard: {
@@ -2729,6 +2730,7 @@ function moveCard(instanceId, fromArr, toArr, extra = {}, callback) {
           sender: gameState.playerProfile?.username || "me"
         };
       }
+
       appendVisualLog(logObj, false, logObj.who === "player");
       if (window.socket && window.currentRoomId) {
         window.socket.emit('game action log', window.currentRoomId, logObj);
@@ -2738,15 +2740,22 @@ function moveCard(instanceId, fromArr, toArr, extra = {}, callback) {
       fromArr.splice(idx, 1);
       toArr.push(cardObj);
     }
-    // === Trigger onSummon event if moving to a field zone ===
-    if (["playerCreatures", "playerTerrains", "opponentCreatures", "opponentTerrains"].includes(getZoneNameForArray(toArr))) {
+
+    // Trigger onSummon only if destination is a field zone
+    if (["playerCreatures", "playerTerrains", "opponentCreatures", "opponentTerrains"].includes(toZoneName)) {
       const cardObj = toArr[toArr.length - 1];
       queueEvent("onSummon", { summonedCard: cardObj });
-    }    
+    }
     setupDropZones();
     emitPublicState();
     if (callback) callback();
-  });
+  };
+
+  // Void/defeat: fade out only, then move
+  if (isToVoid) {
+    animateDefeat(instanceId, fromZoneId, doMove);
+    return;
+  }
 }
 
 // CREATE CARD MENUS
@@ -6530,34 +6539,28 @@ function resolveTriggerEffect(cardObj, skillObj, context, onComplete) {
 // ANIMATION LOGIC //
 -------------------*/
 
-// --- MOVING ANIMATION --- //
-function animateCardMove(instanceId, fromZoneId, toZoneId, afterAnim) {
-  if (!fromZoneId || !toZoneId) { afterAnim && afterAnim(); return; }
+// --- DEFEAT (KO) ANIMATION --- //
+// Fades a card out in-place (from its current zone) then calls afterAnim.
+// No destination zone required.
+function animateDefeat(instanceId, fromZoneId, afterAnim) {
+  if (!fromZoneId) { afterAnim && afterAnim(); return; }
+
   const fromZone = document.getElementById(fromZoneId);
   if (!fromZone) { afterAnim && afterAnim(); return; }
+
   const cardDiv = Array.from(fromZone.querySelectorAll('.card-battlefield')).find(div =>
     div.dataset.instanceId === instanceId
   );
   if (!cardDiv) { afterAnim && afterAnim(); return; }
 
-  // Fade out
-  cardDiv.classList.add('card-fade-out');
-  setTimeout(() => {
-    cardDiv.classList.remove('card-fade-out');
-    afterAnim && afterAnim();
+  // Restart animation reliably
+  cardDiv.classList.remove('card-fade-out');
+  void cardDiv.offsetWidth;
 
-    // Fade in at destination after render
-    setTimeout(() => {
-      const toZone = document.getElementById(toZoneId);
-      if (!toZone) return;
-      const newCardDiv = Array.from(toZone.querySelectorAll('.card-battlefield')).find(div =>
-        div.dataset.instanceId === instanceId);
-      if (newCardDiv) {
-        newCardDiv.classList.add('card-fade-in');
-        setTimeout(() => newCardDiv.classList.remove('card-fade-in'), 250);
-      }
-    }, 35);
-  }, 220);
+  cardDiv.classList.add('card-fade-out');
+
+  // Match your CSS animation/transition duration for fade-out
+  setTimeout(() => afterAnim && afterAnim(), 220);
 }
 // --- ATTACK ANIMATION LOGIC ---
 function animateAttack(cardObj, zoneId, callback) {
