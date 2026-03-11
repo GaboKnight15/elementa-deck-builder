@@ -2616,16 +2616,17 @@ button[disabled], .btn-disabled {
   align-items: center;
   justify-content: center;
   pointer-events: auto;
+  z-index: 1;
 }
 
-.armor-badge-right .stat-badge-img {
+.stat-badge-img {
   width: 34px;
   height: 34px;
   display: block;
   border-radius: 7px;
 }
 
-.stat-badge-value .armor-badge-right {
+.stat-badge-value {
   position: absolute;
   top: 0;
   left: 0;
