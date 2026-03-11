@@ -22,112 +22,157 @@ const QUEST_POOL = [
 // -------------------- //
 
 const ACHIEVEMENTS = [
-  { id: 'green1', group: 'Color', tier: 1, goal: 25,  description: "Collect 25 {green} cards", reward: 100, image: 'Images/Blank/Green.png' },
-  { id: 'green2', group: 'Color', tier: 2, goal: 50,  description: "Collect 50 {green} cards", reward: 100, image: 'Images/Blank/Green.png' },
-  { id: 'green3', group: 'Color', tier: 3, goal: 100,  description: "Collect 100 {green} cards", reward: 100, image: 'Images/Blank/Green.png' },
-  { id: 'green4', group: 'Color', tier: 4, goal: 200,  description: "Collect 200 {green} cards", reward: 100, image: 'Images/Blank/Green.png' },
-  { id: 'green5', group: 'Color', tier: 5, goal: 400,  description: "Collect 400 {green} cards", reward: 100, image: 'Images/Blank/Green.png' },
+// GENERIC ACHIEVEMENTS //
+  { id: 'level2', section: 'Color', group: 'Level', tier: 1, goal: 2,  description: "Increase your hero level", reward: 100, image: 'Images/Blank/Green.png' },
+  { id: 'level3', section: 'Color', group: 'Level', tier: 2, goal: 3,  description: "Increase your hero level", reward: 100, image: 'Images/Blank/Green.png' },
+  { id: 'level4', section: 'Color', group: 'Level', tier: 3, goal: 4,  description: "Increase your hero level", reward: 100, image: 'Images/Blank/Green.png' },
+  { id: 'level5', section: 'Color', group: 'Level', tier: 4, goal: 5,  description: "Increase your hero level", reward: 100, image: 'Images/Blank/Green.png' },
+  { id: 'level6', section: 'Color', group: 'Level', tier: 5, goal: 6,  description: "Increase your hero level", reward: 100, image: 'Images/Blank/Green.png' },
+  { id: 'level7', section: 'Color', group: 'Level', tier: 6, goal: 7,  description: "Increase your hero level", reward: 100, image: 'Images/Blank/Green.png' },
+  { id: 'level8', section: 'Color', group: 'Level', tier: 7, goal: 8,  description: "Increase your hero level", reward: 100, image: 'Images/Blank/Green.png' },
+  { id: 'level9', section: 'Color', group: 'Level', tier: 8, goal: 9,  description: "Increase your hero level", reward: 100, image: 'Images/Blank/Green.png' },
+  { id: 'level10', section: 'Color', group: 'Level', tier: 9, goal: 10,  description: "Increase your hero level", reward: 100, image: 'Images/Blank/Green.png' },
+  { id: 'level11', section: 'Color', group: 'Level', tier: 10, goal: 12,  description: "Increase your hero level", reward: 100, image: 'Images/Blank/Green.png' },
+  { id: 'level12', section: 'Color', group: 'Level', tier: 11, goal: 13,  description: "Increase your hero level", reward: 100, image: 'Images/Blank/Green.png' },
+  { id: 'level13', section: 'Color', group: 'Level', tier: 12, goal: 14,  description: "Increase your hero level", reward: 100, image: 'Images/Blank/Green.png' },
+  { id: 'level14', section: 'Color', group: 'Level', tier: 13, goal: 15,  description: "Increase your hero level", reward: 100, image: 'Images/Blank/Green.png' },
+  { id: 'level15', section: 'Color', group: 'Level', tier: 14, goal: 16,  description: "Increase your hero level", reward: 100, image: 'Images/Blank/Green.png' },
+  { id: 'level16', section: 'Color', group: 'Level', tier: 15, goal: 17,  description: "Increase your hero level", reward: 100, image: 'Images/Blank/Green.png' },
+  { id: 'level17', section: 'Color', group: 'Level', tier: 16, goal: 18,  description: "Increase your hero level", reward: 100, image: 'Images/Blank/Green.png' },
+
+// COLORS //
+  { id: 'green1', section: 'Color', group: 'Green', tier: 1, goal: 25,  description: "Collect 25 {green} cards", reward: 100, image: 'Images/Blank/Green.png' },
+  { id: 'green2', section: 'Color', group: 'Green', tier: 2, goal: 50,  description: "Collect 50 {green} cards", reward: 100, image: 'Images/Blank/Green.png' },
+  { id: 'green3', section: 'Color', group: 'Green', tier: 3, goal: 100,  description: "Collect 100 {green} cards", reward: 100, image: 'Images/Blank/Green.png' },
+  { id: 'green4', section: 'Color', group: 'Green', tier: 4, goal: 200,  description: "Collect 200 {green} cards", reward: 100, image: 'Images/Blank/Green.png' },
+  { id: 'green5', section: 'Color', group: 'Green', tier: 5, goal: 400,  description: "Collect 400 {green} cards", reward: 100, image: 'Images/Blank/Green.png' },
   
-  { id: 'red1', group: 'Color', tier: 1, goal: 25,  description: "Collect 25 {red} cards", reward: 100, image: 'Images/Blank/Red.png' },
-  { id: 'red2', group: 'Color', tier: 2, goal: 50,  description: "Collect 50 {red} cards", reward: 100, image: 'Images/Blank/Red.png' },
-  { id: 'red3', group: 'Color', tier: 3, goal: 100,  description: "Collect 100 {red} cards", reward: 100, image: 'Images/Blank/Red.png' },
-  { id: 'red4', group: 'Color', tier: 4, goal: 200,  description: "Collect 200 {red} cards", reward: 100, image: 'Images/Blank/Red.png' },
-  { id: 'red5', group: 'Color', tier: 5, goal: 400,  description: "Collect 400 {red} cards", reward: 100, image: 'Images/Blank/Red.png' },
+  { id: 'red1', section: 'Color', group: 'Red', tier: 1, goal: 25,  description: "Collect 25 {red} cards", reward: 100, image: 'Images/Blank/Red.png' },
+  { id: 'red2', section: 'Color', group: 'Red', tier: 2, goal: 50,  description: "Collect 50 {red} cards", reward: 100, image: 'Images/Blank/Red.png' },
+  { id: 'red3', section: 'Color', group: 'Red', tier: 3, goal: 100,  description: "Collect 100 {red} cards", reward: 100, image: 'Images/Blank/Red.png' },
+  { id: 'red4', section: 'Color', group: 'Red', tier: 4, goal: 200,  description: "Collect 200 {red} cards", reward: 100, image: 'Images/Blank/Red.png' },
+  { id: 'red5', section: 'Color', group: 'Red', tier: 5, goal: 400,  description: "Collect 400 {red} cards", reward: 100, image: 'Images/Blank/Red.png' },
 
-  { id: 'blue1', group: 'Color', tier: 1, goal: 25,  description: "Collect 25 {blue} cards", reward: 100, image: 'Images/Blank/Blue.png' },
-  { id: 'blue2', group: 'Color', tier: 2, goal: 50,  description: "Collect 50 {blue} cards", reward: 100, image: 'Images/Blank/Blue.png' },
-  { id: 'blue3', group: 'Color', tier: 3, goal: 100,  description: "Collect 100 {blue} cards", reward: 100, image: 'Images/Blank/Blue.png' },
-  { id: 'blue4', group: 'Color', tier: 4, goal: 200,  description: "Collect 200 {blue} cards", reward: 100, image: 'Images/Blank/Blue.png' },
-  { id: 'blue5', group: 'Color', tier: 5, goal: 400,  description: "Collect 400 {blue} cards", reward: 100, image: 'Images/Blank/Blue.png' },
+  { id: 'blue1', section: 'Color', group: 'Blue', tier: 1, goal: 25,  description: "Collect 25 {blue} cards", reward: 100, image: 'Images/Blank/Blue.png' },
+  { id: 'blue2', section: 'Color', group: 'Blue', tier: 2, goal: 50,  description: "Collect 50 {blue} cards", reward: 100, image: 'Images/Blank/Blue.png' },
+  { id: 'blue3', section: 'Color', group: 'Blue', tier: 3, goal: 100,  description: "Collect 100 {blue} cards", reward: 100, image: 'Images/Blank/Blue.png' },
+  { id: 'blue4', section: 'Color', group: 'Blue', tier: 4, goal: 200,  description: "Collect 200 {blue} cards", reward: 100, image: 'Images/Blank/Blue.png' },
+  { id: 'blue5', section: 'Color', group: 'Blue', tier: 5, goal: 400,  description: "Collect 400 {blue} cards", reward: 100, image: 'Images/Blank/Blue.png' },
 
-  { id: 'yellow1', group: 'Color', tier: 1, goal: 25,  description: "Collect 25 {yellow} cards", reward: 100, image: 'Images/Blank/Yellow.png' },
-  { id: 'yellow2', group: 'Color', tier: 2, goal: 50,  description: "Collect 50 {yellow} cards", reward: 100, image: 'Images/Blank/Yellow.png' },
-  { id: 'yellow3', group: 'Color', tier: 3, goal: 100,  description: "Collect 100 {yellow} cards", reward: 100, image: 'Images/Blank/Yellow.png' },
-  { id: 'yellow4', group: 'Color', tier: 4, goal: 200,  description: "Collect 200 {yellow} cards", reward: 100, image: 'Images/Blank/Yellow.png' },
-  { id: 'yellow5', group: 'Color', tier: 5, goal: 400,  description: "Collect 400 {yellow} cards", reward: 100, image: 'Images/Blank/Yellow.png' },
+  { id: 'yellow1', section: 'Color', group: 'Yellow', tier: 1, goal: 25,  description: "Collect 25 {yellow} cards", reward: 100, image: 'Images/Blank/Yellow.png' },
+  { id: 'yellow2', section: 'Color', group: 'Yellow', tier: 2, goal: 50,  description: "Collect 50 {yellow} cards", reward: 100, image: 'Images/Blank/Yellow.png' },
+  { id: 'yellow3', section: 'Color', group: 'Yellow', tier: 3, goal: 100,  description: "Collect 100 {yellow} cards", reward: 100, image: 'Images/Blank/Yellow.png' },
+  { id: 'yellow4', section: 'Color', group: 'Yellow', tier: 4, goal: 200,  description: "Collect 200 {yellow} cards", reward: 100, image: 'Images/Blank/Yellow.png' },
+  { id: 'yellow5', section: 'Color', group: 'Yellow', tier: 5, goal: 400,  description: "Collect 400 {yellow} cards", reward: 100, image: 'Images/Blank/Yellow.png' },
 
-  { id: 'purple1', group: 'Color', tier: 1, goal: 25,  description: "Collect 25 {purple} cards", reward: 100, image: 'Images/Blank/Purple.png' },
-  { id: 'purple2', group: 'Color', tier: 2, goal: 50,  description: "Collect 500 {purple} cards", reward: 100, image: 'Images/Blank/Purple.png' },
-  { id: 'purple3', group: 'Color', tier: 3, goal: 100,  description: "Collect 100 {purple} cards", reward: 100, image: 'Images/Blank/Purple.png' },
-  { id: 'purple4', group: 'Color', tier: 4, goal: 200,  description: "Collect 200 {purple} cards", reward: 100, image: 'Images/Blank/Purple.png' },
-  { id: 'purple5', group: 'Color', tier: 5, goal: 400,  description: "Collect 400 {purple} cards", reward: 100, image: 'Images/Blank/Purple.png' },
+  { id: 'purple1', section: 'Color', group: 'Purple', tier: 1, goal: 25,  description: "Collect 25 {purple} cards", reward: 100, image: 'Images/Blank/Purple.png' },
+  { id: 'purple2', section: 'Color', group: 'Purple', tier: 2, goal: 50,  description: "Collect 500 {purple} cards", reward: 100, image: 'Images/Blank/Purple.png' },
+  { id: 'purple3', section: 'Color', group: 'Purple', tier: 3, goal: 100,  description: "Collect 100 {purple} cards", reward: 100, image: 'Images/Blank/Purple.png' },
+  { id: 'purple4', section: 'Color', group: 'Purple', tier: 4, goal: 200,  description: "Collect 200 {purple} cards", reward: 100, image: 'Images/Blank/Purple.png' },
+  { id: 'purple5', section: 'Color', group: 'Purple', tier: 5, goal: 400,  description: "Collect 400 {purple} cards", reward: 100, image: 'Images/Blank/Purple.png' },
 
-  { id: 'gray1', group: 'Color', tier: 1, goal: 25,  description: "Collect 25 {gray} cards", reward: 100, image: 'Images/Blank/Gray.png' },
-  { id: 'gray2', group: 'Color', tier: 2, goal: 50,  description: "Collect 50 {gray} cards", reward: 100, image: 'Images/Blank/Gray.png' },
-  { id: 'gray3', group: 'Color', tier: 3, goal: 100,  description: "Collect 100 {gray} cards", reward: 100, image: 'Images/Blank/Gray.png' },
-  { id: 'gray4', group: 'Color', tier: 4, goal: 200,  description: "Collect 200 {gray} cards", reward: 100, image: 'Images/Blank/Gray.png' },
-  { id: 'gray5', group: 'Color', tier: 5, goal: 400,  description: "Collect 400 {gray} cards", reward: 100, image: 'Images/Blank/Gray.png' },
+  { id: 'gray1', section: 'Color', group: 'Gray', tier: 1, goal: 25,  description: "Collect 25 {gray} cards", reward: 100, image: 'Images/Blank/Gray.png' },
+  { id: 'gray2', section: 'Color', group: 'Gray', tier: 2, goal: 50,  description: "Collect 50 {gray} cards", reward: 100, image: 'Images/Blank/Gray.png' },
+  { id: 'gray3', section: 'Color', group: 'Gray', tier: 3, goal: 100,  description: "Collect 100 {gray} cards", reward: 100, image: 'Images/Blank/Gray.png' },
+  { id: 'gray4', section: 'Color', group: 'Gray', tier: 4, goal: 200,  description: "Collect 200 {gray} cards", reward: 100, image: 'Images/Blank/Gray.png' },
+  { id: 'gray5', section: 'Color', group: 'Gray', tier: 5, goal: 400,  description: "Collect 400 {gray} cards", reward: 100, image: 'Images/Blank/Gray.png' },
 
-  { id: 'black1', group: 'Color', tier: 1, goal: 25,  description: "Collect 25 {black} cards", reward: 100, image: 'Images/Blank/Black.png' },
-  { id: 'black2', group: 'Color', tier: 2, goal: 50,  description: "Collect 50 {black} cards", reward: 100, image: 'Images/Blank/Black.png' },
-  { id: 'black3', group: 'Color', tier: 3, goal: 100,  description: "Collect 100 {black} cards", reward: 100, image: 'Images/Blank/Black.png' },
-  { id: 'black4', group: 'Color', tier: 4, goal: 200,  description: "Collect 200 {black} cards", reward: 100, image: 'Images/Blank/Black.png' },
-  { id: 'black5', group: 'Color', tier: 5, goal: 400,  description: "Collect 400 {black} cards", reward: 100, image: 'Images/Blank/Black.png' },
+  { id: 'black1', section: 'Color', group: 'Black', tier: 1, goal: 25,  description: "Collect 25 {black} cards", reward: 100, image: 'Images/Blank/Black.png' },
+  { id: 'black2', section: 'Color', group: 'Black', tier: 2, goal: 50,  description: "Collect 50 {black} cards", reward: 100, image: 'Images/Blank/Black.png' },
+  { id: 'black3', section: 'Color', group: 'Black', tier: 3, goal: 100,  description: "Collect 100 {black} cards", reward: 100, image: 'Images/Blank/Black.png' },
+  { id: 'black4', section: 'Color', group: 'Black', tier: 4, goal: 200,  description: "Collect 200 {black} cards", reward: 100, image: 'Images/Blank/Black.png' },
+  { id: 'black5', section: 'Color', group: 'Black', tier: 5, goal: 400,  description: "Collect 400 {black} cards", reward: 100, image: 'Images/Blank/Black.png' },
 
-  { id: 'white1', group: 'Color', tier: 1, goal: 25,  description: "Collect 25 {white} cards", reward: 100, image: 'Images/Blank/White.png' },
-  { id: 'white2', group: 'Color', tier: 2, goal: 50,  description: "Collect 50 {white} cards", reward: 100, image: 'Images/Blank/White.png' },
-  { id: 'white3', group: 'Color', tier: 3, goal: 100,  description: "Collect 100 {white} cards", reward: 100, image: 'Images/Blank/White.png' },
-  { id: 'white4', group: 'Color', tier: 4, goal: 200,  description: "Collect 200 {white} cards", reward: 100, image: 'Images/Blank/White.png' },
-  { id: 'white5', group: 'Color', tier: 5, goal: 400,  description: "Collect 400 {white} cards", reward: 100, image: 'Images/Blank/White.png' },
+  { id: 'white1', section: 'Color', group: 'White', tier: 1, goal: 25,  description: "Collect 25 {white} cards", reward: 100, image: 'Images/Blank/White.png' },
+  { id: 'white2', section: 'Color', group: 'White', tier: 2, goal: 50,  description: "Collect 50 {white} cards", reward: 100, image: 'Images/Blank/White.png' },
+  { id: 'white3', section: 'Color', group: 'White', tier: 3, goal: 100,  description: "Collect 100 {white} cards", reward: 100, image: 'Images/Blank/White.png' },
+  { id: 'white4', section: 'Color', group: 'White', tier: 4, goal: 200,  description: "Collect 200 {white} cards", reward: 100, image: 'Images/Blank/White.png' },
+  { id: 'white5', section: 'Color', group: 'White', tier: 5, goal: 400,  description: "Collect 400 {white} cards", reward: 100, image: 'Images/Blank/White.png' },
 
-  { id: 'avian1', label: 'Avian', group: 'Type', tier: 1, goal: 25,  description: "Collect 25 {black} cards", reward: 100, icon: 'Icons/Type/Avian.png', colorHex: '#a47c3b' },
-  { id: 'human1', label: 'Human', group: 'Type', tier: 1, goal: 25,  description: "Collect 25 {black} cards", reward: 100, icon: 'Icons/Type/Human.png', colorHex: '#a47c3b' },
+// TYPES //
+  { id: 'avian1', label: 'Avian', section: 'Color', group: 'Avian', tier: 1, goal: 25,  description: "Collect 25 {black} cards", reward: 100, icon: 'Icons/Type/Avian.png', colorHex: '#a47c3b' },
+  { id: 'human1', label: 'Human', section: 'Color', group: 'Human', tier: 1, goal: 25,  description: "Collect 25 {black} cards", reward: 100, icon: 'Icons/Type/Human.png', colorHex: '#a47c3b' },
 
-  { id: 'beast1', label: 'Beast', group: 'Type', tier: 1, goal: 25,  description: "Collect 25 {beast} cards", reward: 100, icon: 'Icons/Type/Beast.png', colorHex: '#a47c3b' },
-  { id: 'brute1', label: 'Brute', group: 'Trait', tier: 1, goal: 25,  description: "Collect 25 {brute} cards", reward: 100, icon: 'Icons/Type/Brute.png', colorHex: '#a47c3b' },
-  { id: 'construct1', label: 'Construct', group: 'Type', tier: 1, goal: 25,  description: "Collect 25 {construct} cards", reward: 100, icon: 'Icons/Type/Construct.png', colorHex: '#a47c3b' },
-  { id: 'demon1', label: 'Demon', group: 'Type', tier: 1, goal: 25,  description: "Collect 25 {demon} cards", reward: 100, icon: 'Icons/Type/Demon.png', colorHex: '#e0801c' },
-  { id: 'dragon1', label: 'Dragon', group: 'Type', tier: 1, goal: 25,  description: "Collect 25 {dragon} cards", reward: 100, icon: 'Icons/Type/Dragon.png', colorHex: '#e0801c' },
-  { id: 'elemental1', label: 'Elemental', group: 'Type', tier: 1, goal: 25,  description: "Collect 25 {elemental} cards", reward: 100, icon: 'Icons/Type/Elemental.png', colorHex: '#e0801c' },
-  { id: 'fairy1', label: 'Faefolk', group: 'Type', tier: 1, goal: 25,  description: "Collect 25 {fairy} cards", reward: 100, icon: 'Icons/Type/Fairy.png', colorHex: '#e0801c' },
-  { id: 'undead1', label: 'Undead', group: 'Type', tier: 1, goal: 25,  description: "Collect 25 {undead} cards", reward: 100, icon: 'Icons/Type/Undead.png', colorHex: '#a47c3b' },
-  { id: 'warrior1', label: 'Warrior', group: 'Trait', tier: 1, goal: 25,  description: "Collect 25 {warrior} cards", reward: 100, icon: 'Icons/Type/Warrior.png', colorHex: '#e0801c' },
+  { id: 'beast1', label: 'Beast', section: 'Color', group: 'Beast', tier: 1, goal: 25,  description: "Collect 25 {beast} cards", reward: 100, icon: 'Icons/Type/Beast.png', colorHex: '#a47c3b' },
+  { id: 'construct1', label: 'Construct', section: 'Color', group: 'Construct', tier: 1, goal: 25,  description: "Collect 25 {construct} cards", reward: 100, icon: 'Icons/Type/Construct.png', colorHex: '#a47c3b' },
+  { id: 'demon1', label: 'Demon', section: 'Color', group: 'Demon', tier: 1, goal: 25,  description: "Collect 25 {demon} cards", reward: 100, icon: 'Icons/Type/Demon.png', colorHex: '#e0801c' },
+  { id: 'dragon1', label: 'Dragon', section: 'Color', group: 'Dragon', tier: 1, goal: 25,  description: "Collect 25 {dragon} cards", reward: 100, icon: 'Icons/Type/Dragon.png', colorHex: '#e0801c' },
+  { id: 'elemental1', label: 'Elemental', section: 'Color', group: 'Elemental', tier: 1, goal: 25,  description: "Collect 25 {elemental} cards", reward: 100, icon: 'Icons/Type/Elemental.png', colorHex: '#e0801c' },
+  { id: 'fairy1', label: 'Faefolk', section: 'Color', group: 'Fairy', tier: 1, goal: 25,  description: "Collect 25 {fairy} cards", reward: 100, icon: 'Icons/Type/Fairy.png', colorHex: '#e0801c' },
+  { id: 'undead1', label: 'Undead', section: 'Color', group: 'Undead', tier: 1, goal: 25,  description: "Collect 25 {undead} cards", reward: 100, icon: 'Icons/Type/Undead.png', colorHex: '#a47c3b' },
 
-  { id: 'satyr1', label: 'Satyr', group: 'Type', tier: 1, goal: 25,  description: "Collect 25 {satyr} cards", reward: 100, icon: 'Icons/Archetype/Satyr.png', colorHex: '#888888' },
-  { id: 'goblin1', label: 'Goblin', group: 'Type', tier: 1, goal: 25,  description: "Collect 25 {goblin} cards", reward: 100, icon: 'Icons/Archetype/Goblin.png', colorHex: '#888888' },
-  { id: 'duskwing1', label: 'Duskwing', group: 'Color', tier: 1, goal: 25,  description: "Collect 25 {duskwing} cards", reward: 100, icon: 'Icons/Archetype/Duskwing.png', colorHex: '#888888' },
-  { id: 'fireland1', label: 'Fireland', group: 'Color', tier: 1, goal: 25,  description: "Collect 25 {fireland} cards", reward: 100, icon: 'Icons/Archetype/Fireland.png', colorHex: '#888888' },
-  { id: 'frostland1', label: 'Frostland', group: 'Color', tier: 1, goal: 25,  description: "Collect 25 {frostland} cards", reward: 100, icon: 'Icons/Archetype/Frostland.png', colorHex: '#888888' },
-  { id: 'golemheart1', label: 'Golemheart', group: 'Color', tier: 1, goal: 25,  description: "Collect 25 {golemheart} cards", reward: 100, icon: 'Icons/Archetype/Golem.png', colorHex: '#888888' },
+  { id: 'satyr1', label: 'Satyr', section: 'Color', group: 'Satyr', tier: 1, goal: 25,  description: "Collect 25 {satyr} cards", reward: 100, icon: 'Icons/Archetype/Satyr.png', colorHex: '#888888' },
+  { id: 'goblin1', label: 'Goblin', section: 'Color', group: 'Goblin', tier: 1, goal: 25,  description: "Collect 25 {goblin} cards", reward: 100, icon: 'Icons/Archetype/Goblin.png', colorHex: '#888888' },
+/*
+// ARCHETYPES //  
+  { id: 'duskwing1', label: 'Duskwing', section: 'Color', group: 'Color', tier: 1, goal: 25,  description: "Collect 25 {duskwing} cards", reward: 100, icon: 'Icons/Archetype/Duskwing.png', colorHex: '#888888' },
+  { id: 'fireland1', label: 'Fireland', section: 'Color', group: 'Color', tier: 1, goal: 25,  description: "Collect 25 {fireland} cards", reward: 100, icon: 'Icons/Archetype/Fireland.png', colorHex: '#888888' },
+  { id: 'frostland1', label: 'Frostland', section: 'Color', group: 'Color', tier: 1, goal: 25,  description: "Collect 25 {frostland} cards", reward: 100, icon: 'Icons/Archetype/Frostland.png', colorHex: '#888888' },
+  { id: 'golemheart1', label: 'Golemheart', section: 'Color', group: 'Color', tier: 1, goal: 25,  description: "Collect 25 {golemheart} cards", reward: 100, icon: 'Icons/Archetype/Golem.png', colorHex: '#888888' },
 
   // --- Dragons --- //
-  { id: 'thornwing1', label: 'Thornwing', group: 'Archetype', tier: 1, goal: 25,  description: "Collect 25 {thornwing} cards", reward: 100, icon: 'Icons/Archetype/Thornwing.png', colorHex: '#888888' },
-  { id: 'blazingscale1', label: 'Blazingscale', group: 'Archetype', tier: 1, goal: 25,  description: "Collect 25 {blazingscale} cards", reward: 100, icon: 'Icons/Archetype/Blazingscale.png', colorHex: '#888888' },
-  { id: 'abyssdrake1', label: 'Abyssdrake', group: 'Archetype', tier: 1, goal: 25,  description: "Collect 25 {abyssdrake} cards", reward: 100, icon: 'Icons/Archetype/Abyssdrake.png', colorHex: '#888888' },
-  { id: 'stormrazor1', label: 'Stormrazor', group: 'Archetype', tier: 1, goal: 25,  description: "Collect 25 {stormrazor} cards", reward: 100, icon: 'Icons/Archetype/Stormrazor.png', colorHex: '#888888' },
-  { id: 'ironclaw1', label: 'Ironclaw', group: 'Archetype', tier: 1, goal: 25,  description: "Collect 25 {ironclaw } cards", reward: 100, icon: 'Icons/Archetype/TerraIronclaw.png', colorHex: '#888888' },
-  { id: 'dreadspine1', label: 'Dreadspine', group: 'Archetype', tier: 1, goal: 25,  description: "Collect 25 {dreadspine} cards", reward: 100, icon: 'Icons/Archetype/Dreadspine.png', colorHex: '#888888' },
-  { id: 'solarwyrm1', label: 'Solarwyrm', group: 'Archetype', tier: 1, goal: 25,  description: "Collect 25 {solarwyrm} cards", reward: 100, icon: 'Icons/Archetype/Solarwyrm.png', colorHex: '#888888' },
-  { id: 'nightshroud1', label: 'Nightshroud', group: 'Archetype', tier: 1, goal: 25,  description: "Collect 25 {nightshroud} cards", reward: 100, icon: 'Icons/Archetype/Nightshroud.png', colorHex: '#888888' },
+  { id: 'thornwing1', label: 'Thornwing', section: 'Color', group: 'Archetype', tier: 1, goal: 25,  description: "Collect 25 {thornwing} cards", reward: 100, icon: 'Icons/Archetype/Thornwing.png', colorHex: '#888888' },
+  { id: 'blazingscale1', label: 'Blazingscale', section: 'Color', group: 'Archetype', tier: 1, goal: 25,  description: "Collect 25 {blazingscale} cards", reward: 100, icon: 'Icons/Archetype/Blazingscale.png', colorHex: '#888888' },
+  { id: 'abyssdrake1', label: 'Abyssdrake', section: 'Color', group: 'Archetype', tier: 1, goal: 25,  description: "Collect 25 {abyssdrake} cards", reward: 100, icon: 'Icons/Archetype/Abyssdrake.png', colorHex: '#888888' },
+  { id: 'stormrazor1', label: 'Stormrazor', section: 'Color', group: 'Archetype', tier: 1, goal: 25,  description: "Collect 25 {stormrazor} cards", reward: 100, icon: 'Icons/Archetype/Stormrazor.png', colorHex: '#888888' },
+  { id: 'ironclaw1', label: 'Ironclaw', section: 'Color', group: 'Archetype', tier: 1, goal: 25,  description: "Collect 25 {ironclaw } cards", reward: 100, icon: 'Icons/Archetype/TerraIronclaw.png', colorHex: '#888888' },
+  { id: 'dreadspine1', label: 'Dreadspine', section: 'Color', group: 'Archetype', tier: 1, goal: 25,  description: "Collect 25 {dreadspine} cards", reward: 100, icon: 'Icons/Archetype/Dreadspine.png', colorHex: '#888888' },
+  { id: 'solarwyrm1', label: 'Solarwyrm', section: 'Color', group: 'Archetype', tier: 1, goal: 25,  description: "Collect 25 {solarwyrm} cards", reward: 100, icon: 'Icons/Archetype/Solarwyrm.png', colorHex: '#888888' },
+  { id: 'nightshroud1', label: 'Nightshroud', section: 'Color', group: 'Archetype', tier: 1, goal: 25,  description: "Collect 25 {nightshroud} cards", reward: 100, icon: 'Icons/Archetype/Nightshroud.png', colorHex: '#888888' },
 
   // --- Constructs --- //
-  { id: 'grovehusk1', label: 'Grovehusk', group: 'Archetype', tier: 1, goal: 25,  description: "Collect 25 {grovehusk} cards", reward: 100, icon: 'Icons/Archetype/Grovehusk.png', colorHex: '#888888' },
-  { id: 'cindercore1', label: 'Cindercore', group: 'Archetype', tier: 1, goal: 25,  description: "Collect 25 {cindercore} cards", reward: 100, icon: 'Icons/Archetype/Cindercore.png', colorHex: '#888888' },
-  { id: 'coralbound1', label: 'Coralbound', group: 'Archetype', tier: 1, goal: 25,  description: "Collect 25 {coralbound} cards", reward: 100, icon: 'Icons/Archetype/Coralbound.png', colorHex: '#888888' },
-  { id: 'stormdrive1', label: 'Stormdrive', group: 'Archetype', tier: 1, goal: 25,  description: "Collect 25 {stormdrive} cards", reward: 100, icon: 'Icons/Archetype/Stormdrive.png', colorHex: '#888888' },
-  { id: 'ironwrought1', label: 'Ironwrought', group: 'Archetype', tier: 1, goal: 25,  description: "Collect 25 {ironwrought} cards", reward: 100, icon: 'Icons/Archetype/Ironwrought.png', colorHex: '#888888' },
-  { id: 'plagueaxis1', label: 'Plagueaxis', group: 'Archetype', tier: 1, goal: 25,  description: "Collect 25 {plagueaxis} cards", reward: 100, icon: 'Icons/Archetype/Plagueaxis.png', colorHex: '#888888' },
-  { id: 'solarforge1', label: 'Solarforge', group: 'Archetype', tier: 1, goal: 25,  description: "Collect 25 {solarforge} cards", reward: 100, icon: 'Icons/Archetype/Solarforge.png', colorHex: '#888888' },
-  { id: 'shadowgear1', label: 'Shadowgear', group: 'Archetype', tier: 1, goal: 25,  description: "Collect 25 {shadowgear} cards", reward: 100, icon: 'Icons/Archetype/Shadowgear.png', colorHex: '#888888' },
+  { id: 'grovehusk1', label: 'Grovehusk', section: 'Color', group: 'Archetype', tier: 1, goal: 25,  description: "Collect 25 {grovehusk} cards", reward: 100, icon: 'Icons/Archetype/Grovehusk.png', colorHex: '#888888' },
+  { id: 'cindercore1', label: 'Cindercore', section: 'Color', group: 'Archetype', tier: 1, goal: 25,  description: "Collect 25 {cindercore} cards", reward: 100, icon: 'Icons/Archetype/Cindercore.png', colorHex: '#888888' },
+  { id: 'coralbound1', label: 'Coralbound', section: 'Color', group: 'Archetype', tier: 1, goal: 25,  description: "Collect 25 {coralbound} cards", reward: 100, icon: 'Icons/Archetype/Coralbound.png', colorHex: '#888888' },
+  { id: 'stormdrive1', label: 'Stormdrive', section: 'Color', group: 'Archetype', tier: 1, goal: 25,  description: "Collect 25 {stormdrive} cards", reward: 100, icon: 'Icons/Archetype/Stormdrive.png', colorHex: '#888888' },
+  { id: 'ironwrought1', label: 'Ironwrought', section: 'Color', group: 'Archetype', tier: 1, goal: 25,  description: "Collect 25 {ironwrought} cards", reward: 100, icon: 'Icons/Archetype/Ironwrought.png', colorHex: '#888888' },
+  { id: 'plagueaxis1', label: 'Plagueaxis', section: 'Color', group: 'Archetype', tier: 1, goal: 25,  description: "Collect 25 {plagueaxis} cards", reward: 100, icon: 'Icons/Archetype/Plagueaxis.png', colorHex: '#888888' },
+  { id: 'solarforge1', label: 'Solarforge', section: 'Color', group: 'Archetype', tier: 1, goal: 25,  description: "Collect 25 {solarforge} cards", reward: 100, icon: 'Icons/Archetype/Solarforge.png', colorHex: '#888888' },
+  { id: 'shadowgear1', label: 'Shadowgear', section: 'Color', group: 'Archetype', tier: 1, goal: 25,  description: "Collect 25 {shadowgear} cards", reward: 100, icon: 'Icons/Archetype/Shadowgear.png', colorHex: '#888888' },
 
-  { id: 'hybrid1', label: 'Hybrid', group: 'Archetype', tier: 1, goal: 25,  description: "Collect 25 {hybrid} cards", reward: 100, icon: 'Icons/Archetype/Hybrid.png', colorHex: '#888888' },
-  { id: 'webcursed1', label: 'Webcursed', group: 'Archetype', tier: 1, goal: 25,  description: "Collect 25 {webcursed} cards", reward: 100, icon: 'Icons/Archetype/Webcursed.png', colorHex: '#888888' },
-  { id: 'seraph1', label: 'Seraph', group: 'Archetype', tier: 1, goal: 25,  description: "Collect 25 {seraph} cards", reward: 100, icon: 'Icons/Archetype/Seraph.png', colorHex: '#888888' },
-  { id: 'zephyra1', label: 'Zephyra', group: 'Archetype', tier: 1, goal: 25,  description: "Collect 25 {zephyra} cards", reward: 100, icon: 'Icons/Archetype/Zephyra.png', colorHex: '#888888' },
+  { id: 'hybrid1', label: 'Hybrid', section: 'Color', group: 'Archetype', tier: 1, goal: 25,  description: "Collect 25 {hybrid} cards", reward: 100, icon: 'Icons/Archetype/Hybrid.png', colorHex: '#888888' },
+  { id: 'webcursed1', label: 'Webcursed', section: 'Color', group: 'Archetype', tier: 1, goal: 25,  description: "Collect 25 {webcursed} cards", reward: 100, icon: 'Icons/Archetype/Webcursed.png', colorHex: '#888888' },
+  { id: 'seraph1', label: 'Seraph', section: 'Color', group: 'Archetype', tier: 1, goal: 25,  description: "Collect 25 {seraph} cards", reward: 100, icon: 'Icons/Archetype/Seraph.png', colorHex: '#888888' },
+  { id: 'zephyra1', label: 'Zephyra', section: 'Color', group: 'Archetype', tier: 1, goal: 25,  description: "Collect 25 {zephyra} cards", reward: 100, icon: 'Icons/Archetype/Zephyra.png', colorHex: '#888888' },
+*/
+// TRAITS //
+  { id: 'evolution1', label: 'Evolution', section: 'Trait', group: 'Evolution', tier: 1, goal: 3,  description: "Collect 3 {evolution} cards", reward: 100, icon: 'Icons/Trait/Evolution.png', colorHex: '#a47c3b' },
+  { id: 'evolution2', label: 'Evolution', section: 'Trait', group: 'Evolution', tier: 2, goal: 8,  description: "Collect 8 {evolution} cards", reward: 100, icon: 'Icons/Trait/Evolution.png', colorHex: '#a47c3b' },
+  { id: 'evolution3', label: 'Evolution', section: 'Trait', group: 'Evolution', tier: 3, goal: 15,  description: "Collect 15 {evolution} cards", reward: 100, icon: 'Icons/Trait/Evolution.png', colorHex: '#a47c3b' },
 
-  { id: 'evolution1', label: 'Evolution', group: 'Trait', tier: 1, goal: 25,  description: "Collect 25 {evolution} cards", reward: 100, icon: 'Icons/Trait/Evolution.png', colorHex: '#a47c3b' },
-  { id: 'assembly1', label: 'Assembly', group: 'Trait', tier: 1, goal: 25,  description: "Collect 25 {assembly} cards", reward: 100, icon: 'Icons/Trait/Assembly.png', colorHex: '#a47c3b' },
-  { id: 'fusion1', label: 'Fusion', group: 'Trait', tier: 1, goal: 25,  description: "Collect 25 {fusion } cards", reward: 100, icon: 'Icons/Trait/Fusion.png', colorHex: '#a47c3b' },
-  { id: 'relic1', label: 'Relic', group: 'Type', tier: 1, goal: 25,  description: "Collect 25 {relic} cards", reward: 100, icon: 'Icons/Trait/Relic.png', colorHex: '#e0801c' },
-  { id: 'equipment1', label: 'Equipment', group: 'Type', tier: 1, goal: 25,  description: "Collect 25 {equipment} cards", reward: 100, icon: 'Icons/Trait/Equipment.png', colorHex: '#e0801c' },
-  { id: 'enchantment1', label: 'Enchantment', group: 'Type', tier: 1, goal: 25,  description: "Collect 25 {enchantment} cards", reward: 100, icon: 'Icons/Trait/Enchantment.png', colorHex: '#a47c3b' },
-  { id: 'mage1', label: 'Mage', group: 'Trait', tier: 1, goal: 25,  description: "Collect 25 {mage} cards", reward: 100, icon: 'Icons/Trait/Mage.png', colorHex: '#a47c3b' },
-  { id: 'ranger1', label: 'Ranger', group: 'Trait', tier: 1, goal: 25,  description: "Collect 25 {nightshroud} cards", reward: 100, icon: 'Icons/Trait/Ranger.png', colorHex: '#a47c3b' },
+  { id: 'warrior1', label: 'Warrior', section: 'Trait', group: 'Warrior', tier: 1, goal: 5,  description: "Collect 5 {warrior} cards", reward: 100, icon: 'Icons/Type/Warrior.png', colorHex: '#e0801c' },
+  { id: 'warrior2', label: 'Warrior', section: 'Trait', group: 'Warrior', tier: 2, goal: 10,  description: "Collect 10 {warrior} cards", reward: 100, icon: 'Icons/Type/Warrior.png', colorHex: '#e0801c' },
+  { id: 'warrior3', label: 'Warrior', section: 'Trait', group: 'Warrior', tier: 3, goal: 15,  description: "Collect 15 {warrior} cards", reward: 100, icon: 'Icons/Type/Warrior.png', colorHex: '#e0801c' },
+  { id: 'warrior4', label: 'Warrior', section: 'Trait', group: 'Warrior', tier: 4, goal: 20,  description: "Collect 20 {warrior} cards", reward: 100, icon: 'Icons/Type/Warrior.png', colorHex: '#e0801c' },
+  { id: 'warrior5', label: 'Warrior', section: 'Trait', group: 'Warrior', tier: 5, goal: 25,  description: "Collect 25 {warrior} cards", reward: 100, icon: 'Icons/Type/Warrior.png', colorHex: '#e0801c' },
 
-// --- COSMETICS --- //
-  { id: 'avatar1', group: 'Avatar', tier: 1, goal: 25,  description: "Collect 25 Avatars", reward: 100, image: 'Images/Blank/Green.png' },
-  { id: 'banner1', group: 'Banner', tier: 1, goal: 25,  description: "Collect 25 Banners", reward: 100, image: 'Images/Blank/Green.png' },
-  { id: 'cardback1', group: 'Cardback', tier: 1, goal: 25,  description: "Collect 25 Cardbacks", reward: 100, image: 'Images/Blank/Green.png' },
+  { id: 'brute1', label: 'Brute', section: 'Trait', group: 'Brute', tier: 1, goal: 4,  description: "Collect 4 {brute} cards", reward: 100, icon: 'Icons/Type/Brute.png', colorHex: '#a47c3b' },
+  { id: 'brute2', label: 'Brute', section: 'Trait', group: 'Brute', tier: 2, goal: 10,  description: "Collect 10 {brute} cards", reward: 100, icon: 'Icons/Type/Brute.png', colorHex: '#a47c3b' },
+  { id: 'brute3', label: 'Brute', section: 'Trait', group: 'Brute', tier: 3, goal: 25,  description: "Collect 25 {brute} cards", reward: 100, icon: 'Icons/Type/Brute.png', colorHex: '#a47c3b' },
+
+  { id: 'assembly1', label: 'Assembly', section: 'Trait', group: 'Assembly', tier: 1, goal: 3,  description: "Collect 3 {assembly} cards", reward: 100, icon: 'Icons/Trait/Assembly.png', colorHex: '#a47c3b' },
+  { id: 'assembly2', label: 'Assembly', section: 'Trait', group: 'Assembly', tier: 2, goal: 8,  description: "Collect 8 {assembly} cards", reward: 100, icon: 'Icons/Trait/Assembly.png', colorHex: '#a47c3b' },
+  { id: 'assembly3', label: 'Assembly', section: 'Trait', group: 'Assembly', tier: 3, goal: 15,  description: "Collect 15 {assembly} cards", reward: 100, icon: 'Icons/Trait/Assembly.png', colorHex: '#a47c3b' },
+
+  { id: 'fusion1', label: 'Fusion', section: 'Trait', group: 'Fusion', tier: 1, goal: 25,  description: "Collect 25 {fusion } cards", reward: 100, icon: 'Icons/Trait/Fusion.png', colorHex: '#a47c3b' },
+  { id: 'relic1', label: 'Relic', section: 'Trait', group: 'Relic', tier: 1, goal: 25,  description: "Collect 25 {relic} cards", reward: 100, icon: 'Icons/Trait/Relic.png', colorHex: '#e0801c' },
+  { id: 'equipment1', label: 'Equipment', section: 'Trait', group: 'Equipment', tier: 1, goal: 25,  description: "Collect 25 {equipment} cards", reward: 100, icon: 'Icons/Trait/Equipment.png', colorHex: '#e0801c' },
+  { id: 'enchantment1', label: 'Enchantment', section: 'Trait', group: 'Enchantment', tier: 1, goal: 25,  description: "Collect 25 {enchantment} cards", reward: 100, icon: 'Icons/Trait/Enchantment.png', colorHex: '#a47c3b' },
+  { id: 'mage1', label: 'Mage', section: 'Trait', group: 'Mage', tier: 1, goal: 25,  description: "Collect 25 {mage} cards", reward: 100, icon: 'Icons/Trait/Mage.png', colorHex: '#a47c3b' },
+  { id: 'ranger1', label: 'Ranger', section: 'Trait', group: 'Ranger', tier: 1, goal: 25,  description: "Collect 25 {nightshroud} cards", reward: 100, icon: 'Icons/Trait/Ranger.png', colorHex: '#a47c3b' },
+
+// COSMETICS //
+  { id: 'avatar1', section: 'Cosmetic', group: 'Avatar', tier: 1, goal: 25,  description: "Collect 5 Avatars", reward: 100, image: 'Images/Blank/Green.png' },
+  { id: 'avatar2', section: 'Cosmetic', group: 'Avatar', tier: 1, goal: 25,  description: "Collect 10 Avatars", reward: 100, image: 'Images/Blank/Green.png' },
+  { id: 'avatar3', section: 'Cosmetic', group: 'Avatar', tier: 1, goal: 25,  description: "Collect 15 Avatars", reward: 100, image: 'Images/Blank/Green.png' },
+  { id: 'avatar4', section: 'Cosmetic', group: 'Avatar', tier: 1, goal: 25,  description: "Collect 20 Avatars", reward: 100, image: 'Images/Blank/Green.png' },
+  { id: 'avatar5', section: 'Cosmetic', group: 'Avatar', tier: 1, goal: 25,  description: "Collect 25 Avatars", reward: 100, image: 'Images/Blank/Green.png' },
+  { id: 'avatar6', section: 'Cosmetic', group: 'Avatar', tier: 1, goal: 25,  description: "Collect 30 Avatars", reward: 100, image: 'Images/Blank/Green.png' },
+  { id: 'avatar7', section: 'Cosmetic', group: 'Avatar', tier: 1, goal: 25,  description: "Collect 35 Avatars", reward: 100, image: 'Images/Blank/Green.png' },
+  { id: 'avatar8', section: 'Cosmetic', group: 'Avatar', tier: 1, goal: 25,  description: "Collect 40 Avatars", reward: 100, image: 'Images/Blank/Green.png' },
+
+  { id: 'banner1', section: 'Cosmetic', group: 'Banner', tier: 1, goal: 25,  description: "Collect 25 Banners", reward: 100, image: 'Images/Blank/Green.png' },
+  { id: 'cardback1', section: 'Cosmetic', group: 'Cardback', tier: 1, goal: 25,  description: "Collect 25 Cardbacks", reward: 100, image: 'Images/Blank/Green.png' },
 ];
 
 // ----------------- //
@@ -410,31 +455,9 @@ function getNextUtcMidnightMs() {
   const next = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1, 0, 0, 0));
   return next - now;
 }
-/**
- * Generic achievement generator for any property (color, type, archetype, etc)
- * @param {Object[]} items - Array of { value, label, icon, colorHex }
- * @param {Object[]} tiers - Array of { tier, goal, reward }
- * @param {string} property - The property to match on a card (e.g. 'color', 'type', 'archetype')
- * @param {string} [category='collection'] - Achievement category
- * @returns {Object[]} Array of achievement objects (one per item)
- */
-// ACHIVEMENTS LOGIC
-function generateAchievements(items, tiers, property, category = 'collection') {
-  return items.map(item => ({
-    id: `collect_${item.value}_cards`,
-    label: `Collect ${item.label} Cards`,
-    category,
-    target: { property, id: item.value },
-    icon: item.icon,
-    color: item.colorHex,
-    tiers: tiers.map(tierObj => ({
-      ...tierObj,
-      description: `Collect ${tierObj.goal} ${item.label} cards`
-    })),
-    hidden: false,
-    sortOrder: 10, // or dynamic if you want
-  }));
-}
+
+// ACHIVEMENTS LOGIC //
+
 function getCosmeticAchievementProgress(achievement) {
   if (achievement.target.value === "avatar") {
     return (window.playerUnlockedAvatars || []).length;
