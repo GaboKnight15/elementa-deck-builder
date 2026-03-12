@@ -4349,7 +4349,6 @@ function showSetHpModal(cardObj, onSet) {
 }
 
 function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
-  closeAllMenus();
   if (attackMode && attackMode.attackerId) return;
   currentCardMenuState = { instanceId, zoneId, orientation };
   const arr = getZoneArray(zoneId);
