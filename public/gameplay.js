@@ -2207,17 +2207,15 @@ function setBattlefieldBackgrounds(playerBannerUrl, opponentBannerUrl) {
   }
 }
 // Unified game start function for all modes (solo/cpu, casual, private, etc)
-function startGame(opts) {
-  resetGameState(); 
-  const {
-    mode = "solo",
-    playerDeck,
-    opponentDeck,
-    playerProfile,
-    opponentProfile,
-    isCpuGame = false,
-    matchData = null
-  } = opts || {};
+function startGame({
+  mode = "solo",              // "solo", "casual", "private", etc
+  playerDeck,                 // deckObj for player
+  opponentDeck,               // deckObj for opponent/CPU
+  playerProfile,              // {username, avatar, banner}
+  opponentProfile,            // {username, avatar, banner}
+  isCpuGame = false,          // true for CPU
+  matchData = null            // full matchData for casual/private modes
+}) {
 
   // now build decks into the fresh state
   gameState.playerDeck = shuffle(buildDeck(playerDeck));
