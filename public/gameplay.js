@@ -483,39 +483,6 @@ Conceal: {
   },
   // ...add more targeting abilities here!
 };
-const ABILITY_EFFECTS = {
-  Inspire: {
-    apply: function(cardObj, gameState, abilityObj) {
-      // Use fields from abilityObj
-      const filter = { archetype: abilityObj.archetype }; // or use all fields you want
-      const atkBoost = abilityObj.atk ?? 0;
-      const defBoost = abilityObj.def ?? 0;
-
-      // Apply boosts to matching cards
-      const allCreatures = [...gameState.playerCreatures, ...gameState.opponentCreatures];
-      allCreatures.forEach(target => {
-        if (matchesFilter(target, filter)) {
-          target.modifiers = target.modifiers || [];
-          target.modifiers = target.modifiers.filter(
-            mod => !(mod.source === cardObj.instanceId && mod.effect === "Inspire")
-          );
-          if (atkBoost) target.modifiers.push({effect: "Inspire", source: cardObj.instanceId, stat: "atk", value: atkBoost});
-          if (defBoost) target.modifiers.push({effect: "Inspire", source: cardObj.instanceId, stat: "def", value: defBoost});
-        }
-      });
-    },
-    remove: function(cardObj, gameState) {
-      const allCreatures = [...gameState.playerCreatures, ...gameState.opponentCreatures];
-      allCreatures.forEach(target => {
-        if (target.modifiers) {
-          target.modifiers = target.modifiers.filter(
-            mod => !(mod.source === cardObj.instanceId && mod.effect === "Inspire")
-          );
-        }
-      });
-    }
-  }
-};
 
 // --- SKILL TRIGGER MAP ---
 // Maps skill activation triggers to their event handlers
@@ -580,6 +547,7 @@ const REQUIREMENT_MAP = {
   Special: {
     icon: 'Icons/Ability/Special.png',
     name: 'Special',
+    zone: 'allPlayerField', 
     description: 'Description of the skill.',
     zones: ['playerCreatures', 'playerTerrains'], // field
     canActivate: (cardObj, skillObj, currentZone) =>
@@ -589,6 +557,7 @@ const REQUIREMENT_MAP = {
   Ultimate: {
     icon: 'Icons/Ability/Ultimate.png',
     name: 'Ultimate',
+    zone: 'allPlayerField', 
     description: 'Description of the skill.',
     zones: ['playerCreatures', 'playerTerrains'], // field
     canActivate: (cardObj, skillObj, currentZone) =>
@@ -600,6 +569,7 @@ const REQUIREMENT_MAP = {
     icon: 'Icons/Essence/Tap.png',
     name: 'Disable',
     description: 'Disable card.',
+    zone: 'allPlayerField', 
     zones: ['playerCreatures', 'playerTerrains'],
     handler: function(sourceCardObj, skillObj, next) {
       // If already in DEF (horizontal), just proceed with skill activation
@@ -623,6 +593,7 @@ const REQUIREMENT_MAP = {
     icon: 'Icons/Essence/Untap.png',
     name: 'Enable',
     description: 'Enable card.',
+    zone: 'allPlayerField', 
     zones: ['playerCreatures', 'playerTerrains'],
     handler: function(sourceCardObj, skillObj, next) {
       // If already in ATK (vertical), just proceed with skill activation
@@ -646,10 +617,10 @@ const REQUIREMENT_MAP = {
     icon: 'Icons/Skill/Stash.png',
     name: 'Stash',
     description: 'Returns a card from the hand to the deck.',
-    zones: ['hand'],
+    zones: 'playerHand',
     handler: function(sourceCardObj, skillObj) {
       const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
-      if (!validZones.some(zone => zone === 'hand')) {
+      if (!validZones.some(zone => zone === 'playerHand')) {
         showToast("Stash can only be activated from your hand.");
         return;
       }
@@ -666,11 +637,11 @@ const REQUIREMENT_MAP = {
     icon: 'Icons/Skill/Discard.png',
     name: 'Discard',
     description: 'Sends a card from the hand to the void.',
-    zones: ['hand'],
+    zones: 'playerHand',
     handler: function(sourceCardObj, skillObj) {
       runHandSkillWithAnimation(sourceCardObj, skillObj, gameState.playerVoid);
       const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
-      if (!validZones.some(zone => zone === 'hand')) {
+      if (!validZones.some(zone => zone === 'playerHand')) {
         showToast("Discard can only be activated from your hand.");
         return;
       }
@@ -820,10 +791,11 @@ const SKILL_EFFECT_MAP = {
 // step: { cardId, amount, owner, orientation, cost, targetCategory }
 Summon: {
   name: 'Summon',
+  zone: 'playerHand', 
   description: 'Move this card from hand to the field.',
   canActivate(cardObj, skillObj, currentZone, gameState) {
     // Accept common zone spellings; normalize if you can
-    return currentZone === 'playerHand' || currentZone === 'hand';
+    return currentZone === 'playerHand' || currentZone === 'playerHand';
   },
   handler(sourceCardObj, skillObj, step = {}, nextEffect) {
     const owner = getCardOwner(sourceCardObj) === 'opponent' ? 'opponent' : 'player';
@@ -857,14 +829,82 @@ Summon: {
     });
   }
 },
+Draw: {
+  name: 'Draw',
+  description: 'Move the top card(s) of your deck to your hand.',
+  canActivate(sourceCardObj, skillObj, currentZone, gameState, step = {}) {
+    const owner = (typeof getCardOwner === 'function' && getCardOwner(sourceCardObj) === 'opponent')
+      ? 'opponent'
+      : 'player';
 
+    const deckArr = owner === 'opponent' ? gameState.opponentDeck : gameState.playerDeck;
+
+    const amount = Math.max(1, Number(step.amount || 1));
+    return Array.isArray(deckArr) && deckArr.length >= 1 && deckArr.length >= Math.min(amount, deckArr.length);
+  },
+  handler(sourceCardObj, skillObj, step = {}, nextEffect) {
+    const owner = (typeof getCardOwner === 'function' && getCardOwner(sourceCardObj) === 'opponent')
+      ? 'opponent'
+      : 'player';
+
+    const deckArr = owner === 'opponent' ? gameState.opponentDeck : gameState.playerDeck;
+    const handArr = owner === 'opponent' ? gameState.opponentHand : gameState.playerHand;
+
+    if (!Array.isArray(deckArr) || !Array.isArray(handArr)) {
+      nextEffect && nextEffect();
+      return;
+    }
+
+    let amount = Number(step.amount || 1);
+    if (!Number.isFinite(amount) || amount < 1) amount = 1;
+
+    // Draw up to amount, but not more than deck size
+    const n = Math.min(amount, deckArr.length);
+
+    if (n <= 0) {
+      showToast && showToast('No cards left in deck.', { type: 'info' });
+      nextEffect && nextEffect();
+      return;
+    }
+
+    // Move cards one-by-one so moveCard animation/callback chain stays correct
+    let i = 0;
+    const drawOne = () => {
+      if (i >= n) {
+        // Update UI + sync once at end
+        if (typeof renderGameState === 'function') renderGameState();
+        if (typeof setupDropZones === 'function') setupDropZones();
+        if (typeof emitPublicState === 'function') emitPublicState();
+        nextEffect && nextEffect();
+        return;
+      }
+
+      const topCardObj = deckArr[0];
+      if (!topCardObj) {
+        // defensive
+        i = n;
+        drawOne();
+        return;
+      }
+
+      // top of deck is index 0 in your UI logic; change to pop() if you treat end as top
+      moveCard(topCardObj.instanceId, deckArr, handArr, {}, () => {
+        i++;
+        drawOne();
+      });
+    };
+
+    drawOne();
+  }
+},
 // CAST handler: plays a spell/ability from hand (resolves immediately and typically goes to void)
 Cast: {
   name: 'Cast',
+  zone: 'playerHand', 
   description: 'Cast a spell from hand: resolve, then send to void.',
   canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
     // Accept common spellings used across your code
-    return currentZone === 'playerHand' || currentZone === 'hand' || currentZone === 'player-hand';
+    return currentZone === 'playerHand' || currentZone === 'playerHand' || currentZone === 'player-hand';
   },
   handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
     try {
@@ -905,6 +945,7 @@ Cast: {
 
 Equip: {
   name: 'Equip',
+  zone: 'playerHand', 
   description: 'Attach an Equipment to a creature.',
   handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
     try {
@@ -964,10 +1005,11 @@ Equip: {
 // TERRAFORM handler: place a terrain/terrain under player's terrains
 Terraform: {
   name: 'Terraform',
+  zone: 'playerHand', 
   description: 'Play a terrain from hand to terrain zone. Once per turn.',
   canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
     // Must be in hand (tolerant naming), and terraform not used this turn by current player
-    const inHand = (currentZone === 'playerHand' || currentZone === 'hand' || currentZone === 'player-hand');
+    const inHand = (currentZone === 'playerHand' || currentZone === 'playerHand' || currentZone === 'player-hand');
     const activePlayer = gameState.turn;
     return inHand && !gameState.hasTerraformed?.[activePlayer];
   },
@@ -1159,6 +1201,7 @@ Disable: {
 Dash: {
   icon: 'Icons/Skill/Dash.png',
   name: 'Dash',
+  zone: 'playerHand', 
   description: 'Summon this card from your hand with half HP (rounded up).',
   // Updated signature: accepts (sourceCardObj, skillObj, step, nextEffect)
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
@@ -1195,6 +1238,7 @@ Dash: {
 Reanimate: {
   icon: 'Icons/Skill/Reanimate.png',
   name: 'Reanimate',
+  zone: 'void',
   description: 'Summon this card from the void.',
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
     // Only resolve if card is in void
@@ -1228,6 +1272,7 @@ Reanimate: {
 Awaken: {
   icon: 'Icons/Skill/Awaken.png',
   name: 'Awaken',
+  zone: 'allPlayerField',
   description: 'Summon this card from your deck.',
   handler: function(sourceCardObj, skillObj) {
     // Only activate if in deck
@@ -1552,6 +1597,7 @@ Banish: {
   Intimidate: {
     icon: 'Icons/Ability/Intimidate.png',
     name: 'Intimidate',
+    zone: 'allPlayerField', 
     description: 'When attacking, disables defending creature.',
     handler: function(attacker, defender, next) {
       // Only trigger Intimidate if defender is in ATK (vertical)
@@ -1577,6 +1623,7 @@ Banish: {
   Provoke: {
     icon: 'Icons/Ability/Provoke.png',
     name: 'Provoke',
+    zone: 'allPlayerField', 
     description: 'When attacking, changes defending creature to ATK.',
     handler: function(attacker, defender, next) {
       // Only trigger Provoke if defender is in DEF (horizontal)
@@ -1738,14 +1785,14 @@ Fusion: {
   icon: 'Icons/Skill/Fusion.png',
   name: 'Fusion',
   description: 'Consumes a Fuse Sigil to attach two fused cards from your field.',
-  zones: ['hand'],
+  zones: ['playerHand'],
   canActivate(cardObj, skillObj, currentZone, gameState) {
     // Only allow from hand if source card has a FuseSigil (caller must have granted it earlier)
     // Note: Fusion is the effect consumed by the evolved FuseSigil on the source card (if design differs adjust accordingly)
     // Here, cardObj is the card being fused (from hand), but the fuse sigil applies to the card that activated Fuse earlier (source).
     // If you intend fusion to be performed by a field card with a fuse sigil, adjust checks accordingly.
     // For now require the card performing the Fusion (cardObj) to have the FuseSigil.
-    return currentZone === 'hand' && hasFuseSigil(cardObj);
+    return currentZone === 'playerHand' && hasFuseSigil(cardObj);
   },
   handler(cardObj, skillObj, effectStep, nextEffect) {
     // Ensure sigil present
@@ -2833,7 +2880,7 @@ function renderGameState() {
       closeAllMenus();
       showHandCardMenu(cardObj.instanceId, div);
     });
-    setCardAnimatableClass(div, cardObj, card, gameState, 'hand');
+    setCardAnimatableClass(div, cardObj, card, gameState, 'playerHand');
     playerHandDiv.appendChild(div);
   }
 
@@ -2917,7 +2964,7 @@ function setCardAnimatableClass(div, cardObj, cardData, gameState, zone) {
     let actionable = false;
 
     if (isPlayerActionPhase) {
-      if (zone === 'hand') {
+      if (zone === 'playerHand') {
         // Hand: only animate if at least one hand-usable skill is actually activatable now (cost included)
         const def = cardData || dummyCards.find(c => c.id === cardObj.cardId);
         const skills = Array.isArray(def?.skill) ? def.skill : [];
@@ -2925,7 +2972,7 @@ function setCardAnimatableClass(div, cardObj, cardData, gameState, zone) {
         actionable = skills.some(skillObj => {
           // Only consider skills that are meant to be used from hand (Summon/Cast/Terraform/etc.)
           // We can just ask the engine; canActivateSkill will return false if zone not allowed or cost not payable.
-          return canActivateSkill(cardObj, skillObj, 'hand', gameState);
+          return canActivateSkill(cardObj, skillObj, 'playerHand', gameState);
         });
       } else {
         // Non-hand zones: keep existing logic
@@ -3069,7 +3116,7 @@ function showHandCardMenu(instanceId, cardDiv) {
     .forEach(skillObj => {
         // Compute sealed/enabled/title the same way showCardActionMenu does to avoid undefined vars
         const sealed = typeof isSealed === 'function' ? isSealed(cardObj) : (cardObj._sealed === true);
-        const canAct = canActivateSkill(cardObj, skillObj, 'hand', gameState);
+        const canAct = canActivateSkill(cardObj, skillObj, 'playerHand', gameState);
         const isEnabled = canAct && !sealed;
       
         let disabledReason = "";
@@ -3093,8 +3140,8 @@ function showHandCardMenu(instanceId, cardDiv) {
         disabled: !isEnabled,
         onClick: function(e) {
           e.stopPropagation();
-          if (!canActivateSkill(cardObj, skillObj, 'hand', gameState)) return;
-          activateSkill(cardObj, skillObj, { currentZone: 'hand' });
+          if (!canActivateSkill(cardObj, skillObj, 'playerHand', gameState)) return;
+          activateSkill(cardObj, skillObj, { currentZone: 'playerHand' });
           closeAllMenus();
         }
       });
@@ -8328,7 +8375,7 @@ function haveSharedTypeOrArchetype(cardA, cardB) {
 // ------------------------------------- //
 function isCardActionable(cardObj, cardData, gameState, zone) {
   // 1. Playable from hand
-  if (zone === 'hand') {
+  if (zone === 'playerHand') {
     if (canPayEssence(cardData.cost, getAllEssenceSources())) return true;
   }
 
