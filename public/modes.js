@@ -25,7 +25,7 @@ const DEFAULT_DECKS = [
 ]},
 { id: 'Sylvan3', name: 'Ancient Wilds', color: 'green', difficulty: '⭐⭐⭐',
   image: 'Images/Avatar/Green/DeepwoodUrsan.png', bannerArt: 'Images/Banner/Forest.png', cardbackArt: 'Images/Cardback/Fairy.png',
-  cards: [ { id: 'Verdara', amount: 1 }, { id: 'VeyaEmeraldDruidess', amount: 1 }, { id: 'SylvanAnima', amount: 1 },
+  cards: [ { id: 'Verdara', amount: 1 }, { id: 'VeyaVerdaraDruidess', amount: 1 }, { id: 'SylvanAnima', amount: 1 },
     { id: 'DeepwoodUrsan', amount: 2 },
     { id: 'SylvanElf', amount: 3 },      
     { id: 'ForestFairy', amount: 3 },
