@@ -4097,7 +4097,7 @@ cardDiv.appendChild(statsAndIconsOverlay);
 
   // MANUAL HP UPDATE
   holdClickToView(cardDiv, cardObj, (e) => {
-    // Short click - show card action menu
+    e.stopPropagation();    
     const orientation = cardObj.orientation || 'vertical';
     showCardActionMenu(cardObj.instanceId, zoneId, orientation, cardDiv);
   }, {
