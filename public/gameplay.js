@@ -63,6 +63,7 @@ let gameState = {
     player: { green:0, red:0, blue:0, yellow:0, purple:0, gray:0, black:0, white:0 },
     opponent: { green:0, red:0, blue:0, yellow:0, purple:0, gray:0, black:0, white:0 }
   },
+  gameState.chatLog = [];
 };
 const ZONE_MAP = {
   // Player zones
@@ -2834,6 +2835,7 @@ function renderGameState() {
     div.appendChild(img);
     if (typeof renderHandCostBadge === 'function') renderHandCostBadge(div, card);
     holdClickToView(div, cardObj, (e) => {
+      e.stopPropagation(); 
       // Short click shows hand menu
       showHandCardMenu(cardObj.instanceId, div);
     });
@@ -4586,6 +4588,7 @@ function openVoidModal(isOpponent = false) {
       if (isOpponent) {
         // For opponent's void, only allow viewing on both hold and click
         holdClickToView(img, cardObj, (e) => {
+          e.stopPropagation(); 
           showFullCardModal(cardObj);
         }, {
           enableDragDetection: false
@@ -4811,10 +4814,24 @@ if(nextPhaseBtn) nextPhaseBtn.onclick = goToNextPhase;
 // ----------- //
 // --- LOG --- //
 // ----------- //
+function renderChatLog() {
+  const el = document.getElementById('chat-log'); // use your actual element id
+  if (!el) return;
 
+  el.innerHTML = '';
+  (gameState.chatLog || []).forEach(entry => {
+    const row = document.createElement('div');
+    row.className = `chat-line chat-${entry.type}`;
+    row.textContent = entry.text;
+    el.appendChild(row);
+  });
+}
 // --- Append action log ---
 function appendChatLog(type, text) {
-  // Store in game state
+  
+  if (!gameState.chatLog) gameState.chatLog = [];
+  gameState.chatLog.push({ type, text, ts: Date.now() });
+  
   if (!gameState.gameLog) {
     gameState.gameLog = [];
   }
@@ -4836,6 +4853,7 @@ function appendChatLog(type, text) {
   if (modal && modal.style.display === 'flex') {
     renderGameLogInModal();
   }
+  renderChatLog();
 }
 
 function logAction(text) {
@@ -6142,30 +6160,29 @@ let entryHtml = `
 
 // ATTACK LOG
 function appendAttackLog({ attacker, defender, defenderOrientation, who = "player" }, fromSocket = false, isMe = true) {
-  const logDiv = document.getElementById('game-log');
-  if (!logDiv) return;
   // Get card data
   const attackerDef = dummyCards.find(c => c.id === attacker.cardId);
   const defenderDef = dummyCards.find(c => c.id === defender.cardId);
 
-  // Compose the log HTML
+  // Compose the log HTML (same as before)
   let logHtml = `<div class="log-action attack ${who}" style="background:${who === 'player' ? '#232' : '#322'}11;border-radius:7px;display:inline-flex;align-items:center;">`;
-
-  // Attacker image
   logHtml += cardImgLog(attackerDef, { width: 38, who });
-
-  // Attack icon
   logHtml += `<img src="Icons/Other/Attack.png" alt="Attack" style="width:32px;height:32px;vertical-align:middle;margin:0 9px;">`;
-
-  // Defender image
-  logHtml += cardImgLog(defenderDef, {width: 38, marginLeft: "8px", who, rotate: defenderOrientation === "horizontal" ? 90 : 0 });
+  logHtml += cardImgLog(defenderDef, { width: 38, marginLeft: "8px", who, rotate: defenderOrientation === "horizontal" ? 90 : 0 });
   logHtml += `</div>`;
-  logDiv.insertAdjacentHTML('beforeend', logHtml);
-  logDiv.scrollTop = logDiv.scrollHeight;
+
+  // NEW: write to state
+  addGameLogEntry({
+    type: "attack",
+    who,
+    html: logHtml,
+    attacker,
+    defender,
+    defenderOrientation
+  });
 
   // Only emit if not from socket
   if (!fromSocket && window.socket && window.currentRoomId) {
-    // Add sender
     const obj = {
       attacker,
       defender,
@@ -6236,69 +6253,81 @@ function filterCardsByCriteria(cardArr, criteria) {
   });
 }
 
-// APPEND TO LOG
+// APPEND TO LOG (state-driven; modal renders from gameState.gameLog)
 function appendVisualLog(obj, fromSocket = false, isMe = true) {
   if (!obj) return;
-  
-  let logHtml = '';
-  
-  // Build the log HTML based on the object type
-  if (obj.type === 'move') {
-    const cardData = dummyCards.find(c => c.id === obj.card?.cardId);
+
+  // If attack events have a dedicated renderer, use it and exit.
+  // This prevents inconsistent formatting / duplicate entries.
+  if (obj.type === "attack" && typeof appendAttackLog === "function") {
+    appendAttackLog(obj, fromSocket, isMe);
+    return;
+  }
+
+  const type = obj.type || "action";
+  const who = obj.who || (isMe ? "player" : "opponent");
+
+  let logHtml = "";
+
+  if (type === "move") {
+    const cardDef = dummyCards.find(c => c.id === obj.card?.cardId) || null;
+    const cardName = cardDef?.name || "Card";
+
     logHtml = `
-      <div style="display: flex; align-items: center; gap: 8px;">
-        ${cardImgLog(cardData, { size: 32 })}
-        <span>${cardData?.name || 'Card'} moved from ${zoneImgLog(obj.from)} to ${zoneImgLog(obj.to)}</span>
+      <div class="log-action move ${who}" style="display:flex;align-items:center;gap:8px;">
+        ${cardImgLog(cardDef, { size: 32, who })}
+        <span>${cardName} moved from ${zoneImgLog(obj.from)} to ${zoneImgLog(obj.to)}</span>
       </div>
     `;
-  } else if (obj.type === 'attack') {
-    const attackerData = dummyCards.find(c => c.id === obj.attacker?.cardId);
-    const defenderData = dummyCards.find(c => c.id === obj.defender?.cardId);
+  } else if (type === "damage") {
+    const cardDef = dummyCards.find(c => c.id === obj.card?.cardId) || null;
+    const amt = Number(obj.amount || 0);
+
     logHtml = `
-      <div style="display: flex; align-items: center; gap: 8px;">
-        ${cardImgLog(attackerData, { size: 32 })}
-        <span>⚔️</span>
-        ${cardImgLog(defenderData, { size: 32 })}
+      <div class="log-action damage ${who}" style="display:flex;align-items:center;gap:8px;">
+        ${cardImgLog(cardDef, { size: 32, who })}
+        <span>took ${amt} damage</span>
       </div>
     `;
-  } else if (obj.type === 'damage') {
-    const cardData = dummyCards.find(c => c.id === obj.card?.cardId);
+  } else if (type === "skill") {
+    const cardDef = dummyCards.find(c => c.id === obj.card?.cardId) || null;
+    const skillName = obj.skillName || "skill";
+
     logHtml = `
-      <div style="display: flex; align-items: center; gap: 8px;">
-        ${cardImgLog(cardData, { size: 32 })}
-        <span>took ${obj.amount || 0} damage</span>
+      <div class="log-action skill ${who}" style="display:flex;align-items:center;gap:8px;">
+        ${cardImgLog(cardDef, { size: 32, who })}
+        <span>activated ${skillName}</span>
       </div>
     `;
-  } else if (obj.type === 'skill') {
-    const cardData = dummyCards.find(c => c.id === obj.card?.cardId);
+  } else {
+    // Generic fallback (prevents empty entries)
     logHtml = `
-      <div style="display: flex; align-items: center; gap: 8px;">
-        ${cardImgLog(cardData, { size: 32 })}
-        <span>activated ${obj.skillName || 'skill'}</span>
+      <div class="log-action ${type} ${who}" style="display:flex;align-items:center;gap:8px;">
+        <span>${type}</span>
       </div>
     `;
   }
-  
-  // Store in game state
-  if (!gameState.gameLog) {
-    gameState.gameLog = [];
-  }
-  
+
+  // Store in game state (source of truth)
+  if (!Array.isArray(gameState.gameLog)) gameState.gameLog = [];
+
   gameState.gameLog.push({
-    type: obj.type || 'action',
+    type,
+    who,
     html: logHtml,
     timestamp: Date.now(),
     data: obj
   });
-  
+
   // Limit log size
-  if (gameState.gameLog.length > 100) {
-    gameState.gameLog = gameState.gameLog.slice(-100);
+  const MAX_LOG = 100;
+  if (gameState.gameLog.length > MAX_LOG) {
+    gameState.gameLog = gameState.gameLog.slice(-MAX_LOG);
   }
-  
+
   // If modal is open, re-render it
-  const modal = document.getElementById('game-log-modal');
-  if (modal && modal.style.display === 'flex') {
+  const modal = document.getElementById("game-log-modal");
+  if (modal && modal.style.display === "flex") {
     renderGameLogInModal();
   }
 }
@@ -8337,9 +8366,7 @@ function isAnyVoidCardActionable(gameState, dummyCards) {
   });
 }
 
-// --- Game Log modal + clickable icon (inserted between profiles) ---
-// Moves existing #game-log or #chat-log into a modal for a focused view.
-// When modal closes, the log element is re-attached to its original location.
+// --- Game Log modal + clickable icon ---
 
 (function() {
   // State for moving the log node back when the modal closes
@@ -8441,7 +8468,19 @@ function renderGameLogInModal() {
   // Auto-scroll to bottom (most recent)
   container.scrollTop = container.scrollHeight;
 }
+function addGameLogEntry(entry) {
+  if (!Array.isArray(gameState.gameLog)) gameState.gameLog = [];
+  gameState.gameLog.push({
+    timestamp: Date.now(),
+    ...entry
+  });
 
+  // If the modal is open, refresh it
+  const modal = document.getElementById('game-log-modal');
+  if (modal && modal.style.display === 'flex') {
+    renderGameLogInModal();
+  }
+}
 // Hook up the game log icon button
 function insertGameLogIcon() {
   // OLD: const profileRow = document.getElementById('profile-display-row');
