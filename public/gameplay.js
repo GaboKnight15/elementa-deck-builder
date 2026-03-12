@@ -2207,16 +2207,19 @@ function setBattlefieldBackgrounds(playerBannerUrl, opponentBannerUrl) {
   }
 }
 // Unified game start function for all modes (solo/cpu, casual, private, etc)
-function startGame({
-  mode = "solo",              // "solo", "casual", "private", etc
-  playerDeck,                 // deckObj for player
-  opponentDeck,               // deckObj for opponent/CPU
-  playerProfile,              // {username, avatar, banner}
-  opponentProfile,            // {username, avatar, banner}
-  isCpuGame = false,          // true for CPU
-  matchData = null            // full matchData for casual/private modes
-}) {
-  // --- Deck/State setup ---
+function startGame(opts) {
+  resetGameState(); 
+  const {
+    mode = "solo",
+    playerDeck,
+    opponentDeck,
+    playerProfile,
+    opponentProfile,
+    isCpuGame = false,
+    matchData = null
+  } = opts || {};
+
+  // now build decks into the fresh state
   gameState.playerDeck = shuffle(buildDeck(playerDeck));
   // For opponent: if it's an array of cards, use directly; otherwise, build it
   if (Array.isArray(opponentDeck) && opponentDeck.length && opponentDeck[0].cardId) {
@@ -2234,11 +2237,8 @@ function startGame({
   gameState.opponentCreatures = [];
   gameState.opponentTerrains = [];
   gameState.opponentVoid = [];
-  
-  gameState.turn = gameState.turn || "player";
+
   gameState.phase = "start";
-  gameState.timeOfDay = gameState.timeOfDay || "dawn";
-  gameState.pendingDayNightTransition = gameState.pendingDayNightTransition || "day";
   gameState.dayNightCycleCounter = 0;
   
   gameState.playerSigils = [];
