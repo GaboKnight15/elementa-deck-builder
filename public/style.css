@@ -3245,10 +3245,10 @@ button[disabled], .btn-disabled {
 }
 /* CARD SKILL ACTIVATION ANIMATIONS */
 .card-battlefield.skill-activation-anim {
-  transition: transform 0.25s cubic-bezier(.22,1.14,.32,1), box-shadow 0.25s, border 0.25s;
-  transform: scale(1.13);
-  box-shadow: 0 0 24px #ffe066bb, 0 2px 16px #2228;
-  border: 3px solid #ffe066;
+  box-shadow: 0 0 24px rgba(255, 224, 102, 0.65), 0 6px 18px rgba(0,0,0,0.25);
+  filter: brightness(1.12) saturate(1.1);
+  outline: 2px solid rgba(255, 224, 102, 0.55);
+  transition: box-shadow 0.2s, filter 0.2s, outline 0.2s;
 }
 /* Shared hover/focus effects for child elements (ATK and DEF) */
 .card-battlefield:hover > img {
@@ -3319,6 +3319,25 @@ button[disabled], .btn-disabled {
 
 .card-bg-black-purple, .card-bg-purple-black {
   background: linear-gradient(135deg, #ececec 60%, #f3e6fa 100%);
+}
+/* Hand -> Field landing animation */
+.card-battlefield.field-land {
+  animation: fieldLand 320ms cubic-bezier(.2, .9, .2, 1) both;
+}
+
+@keyframes fieldLand {
+  0% {
+    transform: translateY(10px) scale(0.92);
+    filter: brightness(1.05) drop-shadow(0 0 0 rgba(255, 224, 102, 0));
+  }
+  60% {
+    transform: translateY(-2px) scale(1.06);
+    filter: brightness(1.15) drop-shadow(0 0 10px rgba(255, 224, 102, 0.55));
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    filter: brightness(1) drop-shadow(0 0 0 rgba(255, 224, 102, 0));
+  }
 }
 /* Gameplay CSS */
 .zone.drag-over {
