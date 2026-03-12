@@ -2666,6 +2666,10 @@ function moveCard(instanceId, fromArr, toArr, extra = {}, callback) {
   const toZoneId = ZONE_MAP[toZoneName]?.id;
 
   const isToVoid = (toZoneName === "playerVoid" || toZoneName === "opponentVoid");
+  const isHandToField =
+    (fromZoneName === "playerHand" || fromZoneName === "opponentHand") &&
+    (toZoneName === "playerCreatures" || toZoneName === "playerTerrains" ||
+     toZoneName === "opponentCreatures" || toZoneName === "opponentTerrains");
 
   const doMove = () => {
     const idx = fromArr.findIndex(card => card.instanceId === instanceId);
@@ -2756,6 +2760,23 @@ function moveCard(instanceId, fromArr, toArr, extra = {}, callback) {
     animateDefeat(instanceId, fromZoneId, doMove);
     return;
   }
+if (isHandToField) {
+  // Move state first
+  doMove();
+
+  // Render so the card exists on the battlefield
+  renderGameState && renderGameState();
+
+  // Animate landing on destination
+  const movedCardObj = toArr[toArr.length - 1]; // last pushed in doMove
+  const destZoneId = ZONE_MAP[toZoneName]?.id;
+
+  animateFieldLanding(movedCardObj, destZoneId, () => {
+    if (callback) callback();
+  });
+
+  return;
+}
   doMove();
 }
 
@@ -6523,6 +6544,22 @@ function resolveTriggerEffect(cardObj, skillObj, context, onComplete) {
 // --- DEFEAT (KO) ANIMATION --- //
 // Fades a card out in-place (from its current zone) then calls afterAnim.
 // No destination zone required.
+// --- FIELD LANDING ANIMATION (hand -> field) --- //
+function animateFieldLanding(cardObj, zoneId, callback) {
+  const cardDiv = findCardDivInZone(zoneId, cardObj.instanceId);
+  if (!cardDiv) { callback && callback(); return; }
+
+  cardDiv.classList.remove('field-land');
+  void cardDiv.offsetWidth;
+
+  cardDiv.classList.add('field-land');
+
+  // Match CSS duration
+  setTimeout(() => {
+    cardDiv.classList.remove('field-land');
+    callback && callback();
+  }, 320);
+}
 function animateDefeat(instanceId, fromZoneId, afterAnim) {
   if (!fromZoneId) { afterAnim && afterAnim(); return; }
 
@@ -6621,17 +6658,20 @@ function animateSkillActivation(cardObj, zoneId, callback) {
 }
 
 // Add this helper if not already present
-function animateHandCardAction(cardObj, callback) {
-  const handDiv = document.getElementById('player-hand');
+function animateHandCardAction(cardObj, handZoneId = 'player-hand', callback) {
+  const handDiv = document.getElementById(handZoneId);
+  if (!handDiv) { callback && callback(); return; }
+
   const cardDiv = Array.from(handDiv.querySelectorAll('.card-battlefield')).find(div =>
     div.dataset.instanceId === cardObj.instanceId
   );
-  if (!cardDiv) { if (callback) callback(); return; }
+  if (!cardDiv) { callback && callback(); return; }
+
   cardDiv.classList.add('card-fade-out');
   setTimeout(() => {
     cardDiv.classList.remove('card-fade-out');
-    if (callback) callback();
-  }, 300);
+    callback && callback();
+  }, 220); // match CSS
 }
 
 // HAND SKILLS //
