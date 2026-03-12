@@ -1,10 +1,6 @@
 // ========================== 
 // === GAMEPLAY LOGIC ===
 // ==========================
-// ==========================
-// === CONSTANTS & STATE ===
-// ==========================
-
 // -------------- //
 // --- PHASES --- //
 // -------------- //
@@ -8524,10 +8520,15 @@ document.addEventListener('DOMContentLoaded', () => {
   window.closeGameLogModal = closeGameLogModal;
   window.toggleGameLogModal = toggleGameLogModal;
 })();
-document.getElementById('game-log').addEventListener('click', function(e) {
-  if (e.target.classList.contains('log-card-img')) {
-    const instanceId = e.target.getAttribute('data-instanceid');
-    const cardId = e.target.getAttribute('data-cardid');
+const gameLogContainer = document.getElementById('game-log-container');
+if (gameLogContainer) {
+  gameLogContainer.addEventListener('click', function(e) {
+    const img = e.target.closest('.log-card-img');
+    if (!img) return;
+
+    const instanceId = img.getAttribute('data-instanceid');
+    const cardId = img.getAttribute('data-cardid');
+
     let cardObj = null;
     const allArrays = [
       gameState.playerHand,
@@ -8541,19 +8542,19 @@ document.getElementById('game-log').addEventListener('click', function(e) {
       gameState.playerDeck,
       gameState.opponentDeck,
     ];
+
     if (instanceId) {
       for (const arr of allArrays) {
         cardObj = arr.find(c => c.instanceId === instanceId);
         if (cardObj) break;
       }
     }
-    // If not found, fallback to dummyCards for static info
     if (!cardObj && cardId) {
       cardObj = dummyCards.find(c => c.id === cardId);
     }
     if (cardObj) showFullCardModal(cardObj);
-  }
-});
+  });
+}
 
 // Gameplay (menu) header
 document.getElementById('gameplay-settings-btn').onclick = function() {
