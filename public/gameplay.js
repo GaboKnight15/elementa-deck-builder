@@ -2834,7 +2834,7 @@ function renderGameState() {
     if (typeof renderHandCostBadge === 'function') renderHandCostBadge(div, card);
     holdClickToView(div, cardObj, (e) => {
       e.stopPropagation(); 
-      // Short click shows hand menu
+      closeAllMenus();
       showHandCardMenu(cardObj.instanceId, div);
     });
     setCardAnimatableClass(div, cardObj, card, gameState, 'hand');
@@ -2969,7 +2969,6 @@ function drawCards(who, n) {
 
 // HAND OPTIONS MENU
 function showHandCardMenu(instanceId, cardDiv) {
-  closeAllMenus();
   const cardObj = gameState.playerHand.find(c => c.instanceId === instanceId);
   const cardData = dummyCards.find(c => c.id === cardObj.cardId);
   const parsed = parseCost(cardData.cost || "{0}");
@@ -4097,7 +4096,8 @@ cardDiv.appendChild(statsAndIconsOverlay);
 
   // MANUAL HP UPDATE
   holdClickToView(cardDiv, cardObj, (e) => {
-    e.stopPropagation();    
+    e.stopPropagation();
+    closeAllMenus();
     const orientation = cardObj.orientation || 'vertical';
     showCardActionMenu(cardObj.instanceId, zoneId, orientation, cardDiv);
   }, {
@@ -4586,7 +4586,8 @@ function openVoidModal(isOpponent = false) {
       if (isOpponent) {
         // For opponent's void, only allow viewing on both hold and click
         holdClickToView(img, cardObj, (e) => {
-          e.stopPropagation(); 
+          e.stopPropagation();
+          closeAllMenus();
           showFullCardModal(cardObj);
         }, {
           enableDragDetection: false
