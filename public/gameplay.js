@@ -63,7 +63,7 @@ let gameState = {
     player: { green:0, red:0, blue:0, yellow:0, purple:0, gray:0, black:0, white:0 },
     opponent: { green:0, red:0, blue:0, yellow:0, purple:0, gray:0, black:0, white:0 }
   },
-  gameState.chatLog = [];
+  chatLog: []
 };
 const ZONE_MAP = {
   // Player zones
@@ -6011,8 +6011,8 @@ function getInitialGameState() {
 
     // Essence pools (keep as map of colors)
     essencePools: {
-      player: { green:0, red:0, blue:0, yellow:0, purple:0, gray:0, black:0, white:0, colorless:0 },
-      opponent: { green:0, red:0, blue:0, yellow:0, purple:0, gray:0, black:0, white:0, colorless:0 }
+      player: { green:0, red:0, blue:0, yellow:0, purple:0, gray:0, black:0, white:0 },
+      opponent: { green:0, red:0, blue:0, yellow:0, purple:0, gray:0, black:0, white:0 }
     },
 
     // Weather / global effects
@@ -6026,9 +6026,6 @@ function getInitialGameState() {
     timeOfDay: "dawn",
     pendingDayNightTransition: "day",
     dayNightCycleCounter: 0,
-
-    // Other runtime flags you may have — include them here if you use them
-    // e.g. currentCasting: null, eventQueue: [], etc.
   };
 }
 
