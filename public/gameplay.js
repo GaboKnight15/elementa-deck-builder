@@ -1973,69 +1973,121 @@ Evolution: {
 },
 Spawn: {
   name: 'Spawn',
-  description: 'Creates token(s) and summons them to the field.',
+  description: 'Summon up to N copies of a card from deck (priority), else hand, else void.',
+  canActivate: function(sourceCardObj, skillObj, currentZone, gameState, step = {}) {
+    const targetId = step.targetId;
+    if (!targetId) return false;
+
+    const owner = (typeof getCardOwner === 'function' && getCardOwner(sourceCardObj) === 'opponent')
+      ? 'opponent'
+      : 'player';
+
+    const deckArr = owner === 'opponent' ? gameState.opponentDeck : gameState.playerDeck;
+    const handArr = owner === 'opponent' ? gameState.opponentHand : gameState.playerHand;
+    const voidArr = owner === 'opponent' ? gameState.opponentVoid : gameState.playerVoid;
+
+    // Decide amount (default 1 if not provided)
+    let amount = step.amount == null ? 1 : Number(step.amount);
+    if (!Number.isFinite(amount) || amount < 1) amount = 1;
+
+    const countIn = (arr) =>
+      Array.isArray(arr) ? arr.reduce((n, c) => n + (c && c.cardId === targetId ? 1 : 0), 0) : 0;
+
+    const deckCount = countIn(deckArr);
+    const handCount = countIn(handArr);
+    const voidCount = countIn(voidArr);
+
+    // Priority: Deck > Hand > Void (only the first zone with any copies is eligible)
+    const available = deckCount > 0 ? deckCount : (handCount > 0 ? handCount : voidCount);
+
+    return available > 0;
+  },
+
   handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
     const targetId = step.targetId;
-    const amount = Math.max(1, Number(step.amount || 1));
-
     if (!targetId) { nextEffect && nextEffect(); return; }
 
-    const owner = getCardOwner(sourceCardObj) === 'opponent' ? 'opponent' : 'player';
+    const owner = (typeof getCardOwner === 'function' && getCardOwner(sourceCardObj) === 'opponent')
+      ? 'opponent'
+      : 'player';
 
-    for (let i = 0; i < amount; i++) {
-      const token = createTokenInstance({
-        tokenCardId: targetId,
-        owner,
-        sourceCardObj,
-        sourceSkillObj: skillObj
-      });
+    const deckArr = owner === 'opponent' ? gameState.opponentDeck : gameState.playerDeck;
+    const handArr = owner === 'opponent' ? gameState.opponentHand : gameState.playerHand;
+    const voidArr = owner === 'opponent' ? gameState.opponentVoid : gameState.playerVoid;
 
-      if (!token) {
-        showToast && showToast(`Spawn failed: unknown token id "${targetId}".`, { type: 'error' });
-        break;
-      }
+    // Decide destination (creature vs terrain) from the spawned card definition
+    const def = dummyCards.find(c => c.id === targetId);
+    const cat = String(def?.category || '').toLowerCase();
 
-      const ok = placeInstanceOnField(token);
-      if (!ok) {
-        showToast && showToast(`Spawn failed: token "${targetId}" cannot be placed on field.`, { type: 'error' });
-        break;
-      }
-    }
-
-    renderGameState && renderGameState();
-    setupDropZones && setupDropZones();
-    nextEffect && nextEffect();
-  }
-},
-Token: {
-  icon: "Icons/skillEffect/Token.png",
-  name: "Token",
-  description: "Summon tokens to the battlefield.",
-  handler: function(sourceCardObj, skillObj, effectStep, nextEffect) {
-    let choices = effectStep.tokenChoices || effectStep.tokens || effectStep.choices;
-    let amount = Number(effectStep.amount) || 1;
-    if (!choices) choices = [effectStep.tokenId || effectStep.token];
-    if (!Array.isArray(choices)) choices = [choices];
-    const tokenDefs = choices
-      .map(tokenId => dummyCards.find(c => c.id === tokenId && c.isToken))
-      .filter(Boolean);
-
-    // Auto-summon if only one choice and amount > 1
-    if (tokenDefs.length === 1) {
-      for (let i = 0; i < amount; i++) {
-        summonTokenInstance(tokenDefs[0], sourceCardObj);
-      }
+    let toArr = null;
+    if (cat === 'creature') {
+      toArr = owner === 'opponent' ? gameState.opponentCreatures : gameState.playerCreatures;
+    } else if (cat === 'terrain') {
+      toArr = owner === 'opponent' ? gameState.opponentTerrains : gameState.playerTerrains;
+    } else {
+      showToast && showToast(`Spawn failed: "${targetId}" is not a creature/terrain.`, { type: 'error' });
       nextEffect && nextEffect();
       return;
     }
 
-    // Modal for multiple token choices or for amount > 1 with multiple options
-    showTokenSelectionModal(tokenDefs, amount, selectedDefs => {
-      selectedDefs.forEach(tokenDef => summonTokenInstance(tokenDef, sourceCardObj));
+    // Decide amount (default 1 if not provided)
+    let amount = step.amount == null ? 1 : Number(step.amount);
+    if (!Number.isFinite(amount) || amount < 1) amount = 1;
+
+    const countIn = (arr) =>
+      Array.isArray(arr) ? arr.reduce((n, c) => n + (c && c.cardId === targetId ? 1 : 0), 0) : 0;
+
+    const deckCount = countIn(deckArr);
+    const handCount = countIn(handArr);
+    const voidCount = countIn(voidArr);
+
+    // Priority: Deck > Hand > Void
+    let fromArr = null;
+    if (deckCount > 0) fromArr = deckArr;
+    else if (handCount > 0) fromArr = handArr;
+    else if (voidCount > 0) fromArr = voidArr;
+
+    if (!fromArr) {
+      showToast && showToast(`No "${targetId}" available in deck, hand, or void.`, { type: 'info' });
       nextEffect && nextEffect();
+      return;
+    }
+
+    // Pull up to N matches from the chosen zone
+    const pulled = [];
+    for (let i = 0; i < fromArr.length && pulled.length < amount; ) {
+      const c = fromArr[i];
+      if (c && c.cardId === targetId) {
+        pulled.push(c);
+        fromArr.splice(i, 1);
+      } else {
+        i++;
+      }
+    }
+
+    if (pulled.length === 0) {
+      // Defensive (should not happen given the counts above)
+      showToast && showToast(`No "${targetId}" could be spawned.`, { type: 'info' });
+      nextEffect && nextEffect();
+      return;
+    }
+    // Place onto field; set orientation if you use it
+    pulled.forEach(cardObj => {
+      const orientation = (typeof hasAbility === 'function' && hasAbility(cardObj, 'Dormant'))
+        ? 'horizontal'
+        : 'vertical';
+      cardObj.orientation = orientation;
+      toArr.push(cardObj);
     });
+
+    renderGameState && renderGameState();
+    setupDropZones && setupDropZones();
+    emitPublicState && emitPublicState();
+
+    nextEffect && nextEffect();
   }
 },
+  
   Drought:      { handler: weatherSetter("Drought") },
   Rain:         { handler: weatherSetter("Rain") },
   Thunderstorm: { handler: weatherSetter("Thunderstorm") },
