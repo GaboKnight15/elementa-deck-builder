@@ -47,17 +47,13 @@ let gameState = {
   opponentSigils: [],
   turn: "player",
   phase: "start",
-  hasTerraformed: {
-    player: false,
-    opponent: false,
-  },
   timeOfDay: "dawn", // Initial state
   dayNightCycleCounter: 0, // Counts end phases
   pendingDayNightTransition: "day",
   weatherEffects: [],
   essencePools: {
-    player: { green:0, red:0, blue:0, yellow:0, purple:0, gray:0, black:0, white:0 },
-    opponent: { green:0, red:0, blue:0, yellow:0, purple:0, gray:0, black:0, white:0 }
+    opponent: { green:0, red:0, blue:0, yellow:0, purple:0, gray:0, black:0, white:0 },
+    player: { green:0, red:0, blue:0, yellow:0, purple:0, gray:0, black:0, white:0 }
   },
   chatLog: []
 };
@@ -424,7 +420,7 @@ const TARGET_FILTER_ABILITY = {
   Flying: {
     icon: 'Icons/Ability/Flying.png',
     name: 'Flying',
-    description: 'Ignores color protection, but only Flying or Ranger can block/attack Flying. Speed {1}',
+    description: 'Ignores color protection, but only Flying or Ranger can block/attack Flying. Speed +{1}',
     filter: (attacker, targets) => {
       // Flying ignores color protection (handled outside), so here: allow all
       return targets;
@@ -445,7 +441,7 @@ const TARGET_FILTER_ABILITY = {
 Conceal: {
   icon: 'Icons/Ability/Conceal.png',
   name: 'Conceal',
-  description: 'Makes this card harder to be targeted — Concealed cards are targeted after other valid targets (targeted last).',
+  description: 'Makes it harder to be targeted. Concealed cards are targeted after other valid targets (targeted last).',
   filter: (attacker, targets) => {
     // Reorder targets so that any target with Conceal is placed at the end.
     // Preserve the relative order within each group (non-conceal first, then conceal).
@@ -470,7 +466,7 @@ Conceal: {
   Veil: {
     icon: 'Icons/Ability/Veil.png',
     name: 'Veil',
-    description: 'Grants protection from debuffs for a duration.',
+    description: 'Cannot be targeted by spells and skills.',
     handler: function(sourceCardObj, skillObj) {
       startSkillTarget(
         [...gameState.allyCreatures, ...gameState.allyTerrains],
@@ -553,17 +549,6 @@ const REQUIREMENT_MAP = {
     canActivate: (cardObj, skillObj, currentZone) =>
       ['playerCreatures', 'playerTerrains'].includes(currentZone),
     handler: (cardObj, skillObj, next) => next && next()
-  },
-  Ultimate: {
-    icon: 'Icons/Ability/Ultimate.png',
-    name: 'Ultimate',
-    zone: 'allPlayerField', 
-    description: 'Description of the skill.',
-    zones: ['playerCreatures', 'playerTerrains'], // field
-    canActivate: (cardObj, skillObj, currentZone) =>
-      ['playerCreatures', 'playerTerrains'].includes(currentZone),
-    handler: (cardObj, skillObj, next) => next && next()
-    // Later you could add more restrictions for "Ultimate" here
   },
   CW: {
     icon: 'Icons/Essence/Tap.png',
@@ -1011,17 +996,10 @@ Terraform: {
     // Must be in hand (tolerant naming), and terraform not used this turn by current player
     const inHand = (currentZone === 'playerHand' || currentZone === 'playerHand' || currentZone === 'player-hand');
     const activePlayer = gameState.turn;
-    return inHand && !gameState.hasTerraformed?.[activePlayer];
   },
   handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
     try {
       const activePlayer = gameState.turn;
-
-      if (gameState.hasTerraformed?.[activePlayer]) {
-        showToast && showToast("You can only Terraform once per turn!", { type: "error" });
-        nextEffect && nextEffect();
-        return;
-      }
 
       const owner = (getCardOwner(sourceCardObj) === 'opponent') ? 'opponent' : 'player';
       const handArr = owner === 'player' ? gameState.playerHand : gameState.opponentHand;
@@ -1044,7 +1022,6 @@ Terraform: {
       }
 
       moveCard(sourceCardObj.instanceId, handArr, terrainsArr, { orientation: "vertical" }, () => {
-        gameState.hasTerraformed[activePlayer] = true;
         renderGameState && renderGameState();
         nextEffect && nextEffect();
       });
@@ -3919,8 +3896,6 @@ try {
     const atkColor = getStatColor(cardObj, "atk");
     topStatsRow.appendChild(makeStatBadge("Icons/Stat/ATK.png", currentATK, atkColor, "ATK"));
   }
-} catch (err) {
-  console.warn("Failed to render ATK in top stats row", err);
 }
 
 // DEF (only if > 0)
@@ -3932,8 +3907,6 @@ try {
       topStatsRow.appendChild(makeStatBadge("Icons/Stat/DEF.png", currentDEF, defColor, "DEF"));
     }
   }
-} catch (err) {
-  console.warn("Failed to render DEF in top stats row", err);
 }
 
 // SPD (image-only; only if tier !== 2)
@@ -3951,8 +3924,6 @@ try {
       topStatsRow.appendChild(spdBadge);
     }
   }
-} catch (err) {
-  console.warn("Failed to render SPD in top stats row", err);
 }
 
 statsAndIconsOverlay.appendChild(topStatsRow);
@@ -4065,7 +4036,6 @@ if (typeof cardData.hp === "number" && typeof currentHP === "number" && cardData
     }
   }
   cardObj._prevHP = currentHP;
-
   hpUiRow.appendChild(barWrap);
 }
 
@@ -4176,8 +4146,6 @@ try {
     sealBadge.innerHTML = `<img src="${STATUS_EFFECTS['Seal']?.icon || 'Icons/Status/seal.png'}" alt="Sealed" style="width:18px;height:18px;filter:drop-shadow(0 2px 6px #0007);opacity:0.95">`;
     badgesRow.appendChild(sealBadge);
   }
-} catch (err) {
-  console.warn("Failed to render Seal badge", err);
 }
 
 // Attach badges into overlay once
@@ -4225,7 +4193,7 @@ function getEssenceCostDisplay(cost) {
     }
     return '';
   }
-  const colorOrder = ['colorless', 'green', 'red', 'blue', 'white', 'black', 'yellow', 'purple', 'gray'];
+  const colorOrder = ['colorless', 'green', 'red', 'blue', 'yellow', 'gray', 'purple', 'white', 'black'];
   let html = '';
   let total = 0;
 
@@ -4263,7 +4231,7 @@ function renderEssencePool(cardObj) {
     gray: "Icons/Essence/Gray.png", purple: "Icons/Essence/Purple.png", black: "Icons/Essence/Black.png", white: "Icons/Essence/White.png"
   };
   // Map from code to color name
-  const colorCodes = {G: "green", R: "red", U: "blue", Y: "yellow", C: "gray", P: "purple", B: "black", W: "white"};
+  const colorCodes = {G: "green", R: "red", U: "blue", Y: "yellow", C: "gray", P: "purple", W: "white", B: "black"};
 
   // Render colored essence
   for (const code in colorCodes) {
@@ -4835,12 +4803,6 @@ function handleStartPhase(turn) {
     action: "startPhase",
     who: turn
   }, false, turn === "player");
-  // Reset Terraform flag for current player
-  if (gameState.turn === "player") {
-    gameState.hasTerraformed.player = false;
-  } else {
-    gameState.hasTerraformed.opponent = false;
-  }
   renderGameState();
 }
 
@@ -8297,7 +8259,7 @@ if (typeof window !== 'undefined') {
 // Add more as needed...
 function weatherSetter(weatherName) {return (cardObj, skillObj, context) => {if (context.setWeather) context.setWeather(weatherName, cardObj);};}
 // --- Sigil helpers (owner = 'player' | 'opponent') ---
-function _getSigilArrayForOwner(owner) {
+function getSigilArrayForOwner(owner) {
   return owner === 'opponent' ? gameState.opponentSigils : gameState.playerSigils;
 }
 
@@ -8305,7 +8267,7 @@ function _getSigilArrayForOwner(owner) {
 function applySigil(owner = 'player', sigilName, opts = {}) {
   if (!sigilName) return;
   owner = owner === 'opponent' ? 'opponent' : 'player';
-  const sigils = _getSigilArrayForOwner(owner);
+  const sigils = getSigilArrayForOwner(owner);
   // push a sigil entry (allow duplicates)
   sigils.push({
     name: sigilName,
@@ -8325,7 +8287,7 @@ window.applySigil = applySigil;
 function removeSigil(owner = 'player', sigilName, opts = {}) {
   if (!sigilName) return;
   owner = owner === 'opponent' ? 'opponent' : 'player';
-  const sigils = _getSigilArrayForOwner(owner);
+  const sigils = getSigilArrayForOwner(owner);
   const removeAll = Boolean(opts.removeAll);
   const amount = Number(opts.amount || 1);
 
@@ -8356,7 +8318,7 @@ window.removeSigil = removeSigil;
 
 // Query helpers
 function getSigils(owner = 'player') {
-  return Array.isArray(_getSigilArrayForOwner(owner)) ? _getSigilArrayForOwner(owner).slice() : [];
+  return Array.isArray(getSigilArrayForOwner(owner)) ? getSigilArrayForOwner(owner).slice() : [];
 }
 window.getSigils = getSigils;
 
