@@ -4,7 +4,7 @@ const dummyCards = [
 // ------------------------ //
 
 {id: 'VeyaVerdaraDruidess', name: 'Veya, Verdara Druidess', rarity: 'Legend', image: 'Cards/egg/VeyaVerdaraDruidess.png', flavor: '', 
- category: 'Creature', color: 'Green', type: 'Human', archetype: '', trait: 'Mage', hp: 5, atk: 1, def: 0,
+ category: 'Creature', color: 'Green', type: 'Human', trait: 'Mage', hp: 5, atk: 1, def: 0,
  cost: '{1}{g}', ability: '', set: 'ElementaGenesis', imageFullArt: 'Cards/egg/VeyaVerdaraDruidessFA.png',
  skill: [{name: 'Summon', cost: '{1}{g}', effect: {class: 'Summon'}},
   {name: 'Verdant Invocation', cost: '{cw}', requirement: [{class:'Special'}, {class: 'CW'}], 
@@ -14,9 +14,9 @@ const dummyCards = [
   ]},
 
 {id: 'FaelyraWildhornEmpress', name: 'Faelyra, Wildhorn Empress', rarity: 'Legend', image: 'Cards/egg/FaelyraWildhornEmpress.png', flavor: '',
- category: 'Creature', color: 'Green', type: 'Satyr', archetype: '', trait: 'Mage', hp: 5, atk: 1, def: 0,
- cost: '{1}{g}', ability: '', set: 'ElementaGenesis', imageFullArt: 'Cards/egg/FaelyraWildhornEmpressFA.png',
- skill: [{name: 'Summon', cost: '{1}{g}', effect: {class: 'Summon'}},
+ category: 'Creature', color: 'Green', type: 'Satyr', trait: 'Mage', hp: 5, atk: 2, def: 0,
+ cost: '{g}{g}', ability: '', set: 'ElementaGenesis', imageFullArt: 'Cards/egg/FaelyraWildhornEmpressFA.png',
+ skill: [{name: 'Summon', cost: '{g}{g}', effect: {class: 'Summon'}},
   {name: 'Rhythmic Conjure', cost: '{g}{g}', requirement: {class: 'Special'},
    effect: {class: 'Spawn', targetId: 'Satyr', amount: 1}},
   {name: 'Chorus of the Wild', cost: '{g}{g}', requirement: [{class: 'Special'}, {class: 'CW'}],
@@ -35,19 +35,19 @@ const dummyCards = [
 		{name: 'Awaken', activation: {class: 'Awaken'}, effect: [{class: 'Recover', amount: 1}, {class : 'Essence', color: 'Green', amount: 1}]}]},
 
 {id: 'VerdaraSoldier', name: 'Verdara Soldier', rarity: 'Rare', image: 'Cards/egg/VerdaraSoldier.png', flavor: '', 
- category: 'Creature', color: 'Green', type: 'Human', trait: 'Warrior', hp: 5, atk: 2, def: 1, cost: '{2}', 
+ category: 'Creature', color: 'Green', type: 'Human', trait: 'Warrior', hp: 5, atk: 2, def: 1, cost: '{1}{g}{g}', 
  ability: '', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{2}', effect: {class: 'Summon'}}]},
 
 {id: 'ElementalofFoliages', name: 'Elemental of Foliages', rarity: 'Rare', image: 'Cards/egg/ElementalofFoliages.png', flavor: '', 
- category: 'Creature', color: 'Green', type: 'Elemental', trait: 'Arbor', hp: 8, atk: 2, def: 0,
- cost: '{2}{g}',  ability: ['Protect','Regenerate'], set: 'ElementaGenesis',
- skill: [{name: 'Sylvan Discovery', cost: '{2}{g}', effect: [{class: 'Summon'}, {class: 'Search', targetColor: 'Green', targetTrait: 'Terrain'}]},
+ category: 'Creature', color: 'Green', type: 'Elemental', trait: 'Verdant', hp: 8, atk: 3, def: 0,
+ cost: '{g}{g}',  ability: ['Protect','Regenerate'], set: 'ElementaGenesis',
+ skill: [{name: 'Sylvan Discovery', cost: '{g}{g}', effect: [{class: 'Summon'}, {class: 'Search', targetColor: 'Green', targetTrait: 'Terrain'}]},
  ]},
 
 {id: 'WildhornSongreaver', name: 'Wildhorn Songreaver', rarity: 'Rare', image: 'Cards/egg/WildhornSongreaver.png', flavor: '', 
  category: 'Creature', color: 'Green', type: 'Satyr', hp: 6, atk: 2, def: 0,
- cost: '{2}{g}', ability: '', set: 'ElementaGenesis',
+ cost: '{1}{g}', ability: '', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{1}{g}', effect: {class: 'Summon'}},
   {name: 'Hidden Overture', cost: '{g}', requirement: {class: 'Stash'},
    effect: {class: 'Enable', targetColor: 'green', amount: 1}},
@@ -62,7 +62,7 @@ const dummyCards = [
   ]},
 
 {id: 'EarthrootTitan', name: 'Earthroot Titan', rarity: 'Rare', image: 'Cards/egg/EarthrootTitan.png', flavor: '', 
- category: 'Creature', color: 'Green', type: 'Beast', trait: 'Giant', hp: 9, atk: 5, def: 1,
+ category: 'Creature', color: 'Green', type: 'Beast', trait: 'Arbor', hp: 9, atk: 5, def: 1,
  cost: '{4}{g}', ability: '', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{4}{g}', effect: {class: 'Summon'}},
   {name: 'Barkhide', cost: '{0}', requirement: [{class:'Special'}, {class: 'CW'}], 
@@ -104,8 +104,8 @@ const dummyCards = [
 
 {id: 'WildHuntress', name: 'Wild Huntress', rarity: 'Common', image: 'Cards/egg/WildHuntress.png', flavor: '', 
  category: 'Creature', color: 'Green', type: 'Satyr', trait: 'Warrior', hp: 4, atk: 2, def: 1,
- cost: '{1}{g}', ability: 'Rush', set: 'ElementaGenesis',
- skill: [{name: 'Summon', cost: '{1}{g}', effect: {class: 'Summon'}}]},
+ cost: '{2}', ability: 'Rush', set: 'ElementaGenesis',
+ skill: [{name: 'Summon', cost: '{2}', effect: {class: 'Summon'}}]},
  
 {id: 'FaunRanger', name: 'Faun Ranger', rarity: 'Common', image: 'Cards/egg/FaunRanger.png', flavor: 'Each arrow is a promise kept. No trespasser leaves the forest unmarked.', 
  category: 'Creature', color: 'Green', type: 'Satyr', trait: 'Ranger', hp: 3, atk: 2, def: 0,
@@ -114,8 +114,8 @@ const dummyCards = [
  
 {id: 'FaunDiviner', name: 'Faun Diviner', rarity: 'Common', image: 'Cards/egg/FaunDiviner.png', flavor: '', 
  category: 'Creature', color: 'Green', type: 'Satyr', trait: 'Mage', hp: 4, atk: 1, def: 0,
- cost: '{1}{g}', ability: '', set: 'ElementaGenesis',
- skill: [{name: 'Summon', cost: '{1}{g}', effect: {class: 'Summon'}},
+ cost: '{g}', ability: '', set: 'ElementaGenesis',
+ skill: [{name: 'Summon', cost: '{g}', effect: {class: 'Summon'}},
   {name: 'Horncall Ritual', cost: '{g}', requirement: {class: 'Special'},
    effect: {class: 'Spawn', targetId: 'Satyr', amount: 1}},
   {name: "Grove's Requiem", activation: {class: 'Echo'},
