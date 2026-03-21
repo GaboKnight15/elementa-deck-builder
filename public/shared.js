@@ -2733,6 +2733,9 @@ const allCardbackOptions = [
 ];
 
 const packPrices = [
+  { id: "HeroesAwaken", name: "Heroes Awaken", price: 100,
+    image: 'Images/Pack/HeroesAwaken.png'
+  },
   { id: "ElementaGenesis", name: "Elementa Genesis", price: 100,
     image: 'Images/Pack/ElementaGenesis.png'
   },
