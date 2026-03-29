@@ -682,11 +682,16 @@ const dummyCards = [
    effect: {class: 'Token', token: 'Imp'}}]},
 
 {id: 'GraveweaverWarlock', name: 'Graveweaver Warlock', rarity: 'Rare', image: 'Cards/egb/GraveweaverWarlock.png', flavor: '', 
- category: 'Creature', color: 'Black', type: ['Orc','Mage'], hp: 6, atk: 3, 
- cost: '{2}{b}', ability: '', set: 'ElementaGenesis',
+ category: 'Creature', color: 'Black', type: ['Orc','Mage'], hp: 6, atk: 3, cost: '{2}{b}', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{2}{b}', effect: {class: 'Summon'}},
   {name:'Lifetithe', cost: '{B}', requirement: {class:'CW'}, 
    effect: {class: 'Token', token: 'Imp'}}]},
+
+{id: 'ConquerorDeathknight', name: 'Conqueror Deathknight', rarity: 'Rare', image: 'Cards/egb/ConquerorDeathknight.png', flavor: '', 
+ category: 'Creature', color: 'Black', type: ['Zombie','Warrior'], hp: 6, atk: 3, cost: '{2}{b}', set: 'ElementaGenesis',
+ skill: [{name: 'Summon', cost: '{2}{b}', effect: {class: 'Summon'}},
+  {name:'Unending Siege', cost: '{b}{b}', requirement: {class: 'Discard', amount: 1}, 
+   effect: {class: 'Reanimate'}}]},
 
 {id: 'ElementalofShadows', name: 'Elemental of Shadows', rarity: 'Rare', image: 'Cards/ecb/ElementalofShadows.png', flavor: '', 
  category: 'Creature', color: 'Black', type: ['Shadow','Elemental'], hp: 5, atk: 3, cost: '{2}{b}', ability: ['Ambush','Elusive'], set: 'ElementaGenesis',
@@ -695,8 +700,11 @@ const dummyCards = [
 
 {id: 'GraveveilFields', name: 'Graveveil Fields', rarity: 'Rare', image: 'Cards/egb/GraveveilFields.png', flavor: '', 
  category: 'Terrain', color: 'Black', type: 'Undead', hp: 8, cost: '{1}{b}', essence: '{b}', set: 'ElementaGenesis',
- skill: [{name: 'Silent Quarry', requirement: {class:'CW'},
-		  effect: {class: 'Search', amount: 1, targetCategory: 'Creature', targetAbility: 'Ambush'}}]},
+ skill: [{name: 'Terraform', cost: '{1}{b}', effect: {class: 'Terraform'}}
+ {name: 'Stagnant Mist Shackle', requirement: {class:'Passive'},
+		  effect: {class: 'Inspire', target: allCreatures, targetType: 'Undead', inspire: 'Veil'}},
+ {name: 'Soul Drain Seepage', activation: {class: 'Strike', targetType: 'Undead'}, requirement: {class:'cw'},
+		  effect: {class: 'Recover', amount: 2}}]},
          
 {id: 'ElementalofShades', name: 'Elemental of Shades', rarity: 'Common', image: 'Cards/ecb/ElementalofShades.png', flavor: '', 
  category: 'Creature', color: 'Black', type: ['Shadow','Elemental'], hp: 3, atk: 2, 
@@ -709,8 +717,7 @@ const dummyCards = [
  	{name: 'Reanimate', cost: '{1}', effect: {class: 'Reanimate'}}]},
 
 {id: 'Zombie', name: 'Zombie', rarity: 'Common', image: 'Cards/egb/Zombie.png', flavor: '', 
- category: 'Creature', color: 'Black', type: 'Undead', hp: 3, atk: 2, 
- cost: '{1}', ability: ['Curse','Immunity'], set: 'ElementaGenesis',
+ category: 'Creature', color: 'Black', type: 'Undead', hp: 3, atk: 2, cost: '{1}', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{1}', effect: {class: 'Summon'}},
   {name: 'Reanimate', cost: '{b}', effect: {class: 'Reanimate'}}]},
 
