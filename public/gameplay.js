@@ -50,10 +50,9 @@ let gameState = {
   timeOfDay: "dawn", // Initial state
   dayNightCycleCounter: 0, // Counts end phases
   pendingDayNightTransition: "day",
-  weatherEffects: [],
   essencePools: {
-    opponent: { green:0, red:0, blue:0, yellow:0, purple:0, gray:0, black:0, white:0 },
-    player: { green:0, red:0, blue:0, yellow:0, purple:0, gray:0, black:0, white:0 }
+    opponent: { colorless:0, green:0, red:0, blue:0, yellow:0, gray:0, purple:0, white:0, black:0, multicolor:0 },
+    player: { colorless:0, green:0, red:0, blue:0, yellow:0, gray:0, purple:0, white:0, black:0, multicolor:0 }
   },
   chatLog: []
 };
@@ -113,6 +112,7 @@ let attackMode = {attackerId: null, attackerZone: null, cancelHandler: null};
 const INITIAL_HAND_SIZE = 5;
 
 const ESSENCE_IMAGE_MAP = {
+  multi: "Icons/Essence/Multi.png",
   red: "Icons/Essence/Red.png",
   blue: "Icons/Essence/Blue.png",
   green: "Icons/Essence/Green.png",
@@ -1380,7 +1380,7 @@ Destroy: {
     // 1) Old system: condition-based filtering
     let validTargets = getValidTargetsByCondition(allTargets, skillObj.condition || []);
 
-    // 2) New system: target* filtering (or legacy category/color/type/trait keys)
+    // 2) New system: target* filtering (or legacy category/color/type keys)
     // Allow defining filters either in `step` (preferred) or on the skillObj itself.
     const filterStep = (step && Object.keys(step).length) ? step : skillObj;
     validTargets = filterCardInstancesByTarget(validTargets, filterStep);
@@ -2065,16 +2065,6 @@ Spawn: {
   }
 },
   
-  Drought:      { handler: weatherSetter("Drought") },
-  Rain:         { handler: weatherSetter("Rain") },
-  Thunderstorm: { handler: weatherSetter("Thunderstorm") },
-  Snowfall:     { handler: weatherSetter("Snowfall") },
-  GaleWinds:    { handler: weatherSetter("GaleWinds") },
-  BloodMoon:    { handler: weatherSetter("BloodMoon") },
-  Ashfall:      { handler: weatherSetter("Ashfall") },
-  ToxicMiasma:  { handler: weatherSetter("ToxicMiasma") },
-  Mystveil:     { handler: weatherSetter("Mystveil") },
-  
 Sigil: {
   icon: 'Icons/Skill/Sigil.png',
   name: 'Sigil',
@@ -2131,89 +2121,7 @@ Sigil: {
   }
 },
 };
-const WEATHER_EFFECTS = {
-  Sunlight: {
-    icon: 'Icons/Status/Sunlight.png',
-    color: "Red",
-    description: "Red{r} creatures gain {1}/{0}.",
-    passive: (cardObj) => isRed(cardObj) ? { atk: 1 } : null
-  },
-  Sunburst: {
-    icon: 'Icons/Status/Sunburst.png',
-    name: 'Sunburst',
-    description: '{r} & {w} creatures gain {2}/{1}.',
-    passive: (cardObj) => (isWhite(cardObj) || isRed(cardObj) ? { atk: 1 } : null)
-  },
-  Rain: {
-    icon: 'Icons/Status/Rain.png',
-    color: "Blue",
-    description: "{u} creatures gain {0}/{1}.",
-    passive: (cardObj) => isBlue(cardObj) ? { def: 1 } : null
-  },
-  Downpour: {
-    icon: 'Icons/Status/Downpour.png',
-    name: 'Downpour',
-    description: '{u} creatures gain {1}/{2}.',
-    passive: (cardObj) => (isBlue(cardObj) ? { def: 2 } : null)
-  },
-  Storm: {
-    icon: 'Icons/Status/Storm.png',
-    name: 'Storm',
-    description: '{u} & {y} creatures gain {1}/{0}.',
-    passive: (cardObj) => (isBlue(cardObj) || isYellow(cardObj) ? { atk: 1 } : null)
-  },
-  Thunderstorm: {
-    icon: 'Icons/Status/Thunderstorm.png',
-    colors: ["Blue", "Yellow"], archetype: "Stormcore",
-    description: "{u} & {y} creatures gain {1}/{0}.",
-    passive: (cardObj) =>
-      (isBlue(cardObj) || isYellow(cardObj) || isArchetype(cardObj, "Stormcore")) ? { atk: 1 } : null
-  },
-  Snowfall: {
-    icon: 'Icons/Status/Snowfall.png',
-    archetype: "Frostland",
-    description: "Frostland {frostland} creatures gain {0}/{1}.",
-    passive: (cardObj) => isArchetype(cardObj, "Frostlands") ? { def: 1 } : null
-  },
-  GaleWinds: {
-    ability: "Flying",
-    description: "Flying {flying} creatures gain {0}/{1} and {1} Spd.",
-    passive: (cardObj) => (isArchetype(cardObj, "Zephyra") || hasFlying(cardObj)) ? { def: 1 } : null
-  },
-BloodMoon: {
-  archetype: "Moonfang",
-  type: "Beast",
-  description: "Moonfang {moonfang} and Beast {beast} creatures gain {1}/{0}.",
-  passive: (cardObj) => {
-    if (!cardObj) return null;
-    const mods = {};
-    // grant +1 ATK for being Moonfang
-    if (isArchetype(cardObj, "Moonfang")) {mods.atk = (mods.atk || 0) + 1;}
-    // grant +1 ATK for being a Beast type
-    if (isBeast(cardObj)) {mods.atk = (mods.atk || 0) + 1;}
-    return Object.keys(mods).length ? mods : null;
-  }
-},
-  Ashfall: {
-    icon: 'Icons/Status/Ashfall.png',
-    colors: ["Red", "Gray"], archetype: "Golem",
-    description: "Red{r}/Gray{c} and Golem {golem} creatures gain {0}/{1}.",
-    passive: (cardObj) =>
-      (isRed(cardObj) || isGray(cardObj) || isArchetype(cardObj, "Golemheart")) ? { def: 1 } : null
-  },
-  Decay: {
-    icon: 'Icons/Status/Decay.png',
-    color: "Purple",
-    description: "{p} creatures gain {1}/{0}.",
-    passive: (cardObj) => isPurple(cardObj) ? { atk: 1 } : null
-  },
-  Myst: {
-    icon: 'Icons/Status/Myst.png',
-    color: "Green", type: "Faefolk",
-    description: "Green {g} and Fairy {fairy} creatures gain +1 DEF {0}/{1}.",
-    passive: (cardObj) => (isGreen(cardObj) || isFairy(cardObj)) ? { def: 1 } : null
-  }
-};
+
 const SIGIL_EFFECTS = {
   // 'Null' sigil: integrates with your existing null-counter utilities for compatibility.
   // Applying this sigil to an owner increments their "null" counter (via addNullSigil(owner))
@@ -2460,7 +2368,7 @@ function getZoneNameForCard(cardObj) {
 function getRequirementFilter(requirement) {
   const filter = {};
   if (!requirement) return filter;
-  for (const key of ['type', 'archetype', 'color', 'trait', 'category']) {
+  for (const key of ['type', 'archetype', 'color', 'category']) {
     if (requirement[key]) filter[key] = requirement[key];
   }
   return filter;
@@ -2492,7 +2400,7 @@ function handleActivationTriggers(eventType, contextCard, extraContext = {}) {
       if (skill.activation && skill.activation.class === eventType) {
         // Build filterFields from skill.activation
         const filterFields = {};
-        for (const key of ["type", "archetype", "color", "category", "trait"]) {
+        for (const key of ["type", "archetype", "color", "category"]) {
           if (skill.activation[key]) filterFields[key] = skill.activation[key];
         }
         // If no filters, apply to self (e.g. Echo), only if cardObj === contextCard
@@ -2658,26 +2566,7 @@ function handleDayNightCycle() {
 function capitalize(s) {
   return String(s || '').charAt(0).toUpperCase() + String(s || '').slice(1);
 }
-// --- WEATHER --- //
-function handleWeatherEffectsEndPhase() {
-  if (!Array.isArray(gameState.weatherEffects)) return;
-  gameState.weatherEffects.forEach(e => e.duration--);
-  gameState.weatherEffects = gameState.weatherEffects.filter(e => e.duration > 0);
-  renderGameState(); // show update if needed
-}
 
-function renderWeatherEffects() {
-  const div = document.getElementById('weather-effects-row');
-  if (!div) return;
-  div.innerHTML = gameState.weatherEffects.map(e => {
-    const w = WEATHER_EFFECTS[e.name];
-    return `<span style="margin-right:10px;">
-      <img src="Icons/Weather/${e.name.replace(/\s+/g, '')}.png" style="height:26px;vertical-align:middle;">
-      <span style="color:#ffe066;font-weight:bold">${e.name}</span>
-      <span style="color:#fff">(${e.duration})</span>
-    </span>`;
-  }).join('');
-}
 // ===================================
 // ========== ACTIONS LOGIC ==========
 // ===================================
@@ -3687,20 +3576,7 @@ function computeCardStat(cardObj, statName) {
     // If any armor is present, apply -1 speed penalty (single step, not per-armor point)
     if (currentArmor > 0) mods -= 1;
   }
-  if ((statName === "atk" || statName === "def") && typeof isWarriorTrait === "function" && isWarriorTrait(cardObj)) {
-  try {
-    // Only apply for creatures (optional - remove isCreature check if you want trait to apply to terrains too)
-    if (isCreature(cardObj)) {
-      const baseHp = getBaseHp(cardObj.cardId) || 1;
-      // Only apply when we have currentHP information and it's below 1/3 of base HP
-      if (typeof cardObj.currentHP === "number" && cardObj.currentHP < (baseHp / 3)) {
-        mods += 1;
-      }
-    }
-  } catch (e) {
-    console.warn("Warrior low-HP buff check failed for", cardObj, e);
-  }
-}
+
   // === Per-tier passive effects (Speed tiers 0..5) ===
   // Compute effective speed now so we can apply tier-dependent stat buffs.
   // Note: we only apply these passive stat bonuses here (so other code reading atk/def uses them).
@@ -3727,18 +3603,6 @@ function computeCardStat(cardObj, statName) {
   if (gameState.timeOfDay === "night" && statName === "atk" && isBlack(cardObj)) {
     mods += 1;
   }
-  // Apply all active weather effects
-  if (Array.isArray(gameState.weatherEffects)) {
-    gameState.weatherEffects.forEach(effectObj => {
-      const effect = WEATHER_EFFECTS[effectObj.name];
-      if (effect && effect.passive) {
-        const buff = effect.passive(cardObj);
-        if (buff && typeof buff[statName] === "number") {
-          mods += buff[statName];
-        }
-      }
-    });
-  }  
   // Final rounding/clamping
   if (statName === "speed") {
     // speed should be integer and at least 0
@@ -3761,7 +3625,7 @@ function getSpeedValue(cardObj) {
   if (typeof hasDive === "function" && hasDive(cardObj)) speed += 1;
   if (typeof hasLeap === "function" && hasLeap(cardObj)) speed += 1;
 
-  // --- Trait-based bonuses ---
+  // --- Type-based bonuses ---
   // +1 for Mage, +2 for Ranger
   if (typeof isMage === "function" && isMage(cardObj)) speed += 1;
   if (typeof isRanger === "function" && isRanger(cardObj)) speed += 2;
@@ -4820,8 +4684,6 @@ function handleEndPhase(turn) {
   // Tick all statuses generically based on phase
   tickStatusDurations({ turn, phase: "end" });
 
-  // Handle weather effects durations etc.
-  handleWeatherEffectsEndPhase();
   // Optionally do day/night cycle counting if you track end-phase counters
   // (unchanged) - if you have a day/night counter elsewhere, that logic remains
   // Example incrementing dayNightCycleCounter was in earlier code; keep it if required.
@@ -5077,8 +4939,7 @@ function extractDominionFromDeck(deckArr) {
     if (!card) return false;
     // Prefer the shared helper if present
     if (typeof isDominion === 'function') return isDominion(card);
-    // Fallback: support trait as string or array
-    const t = card.trait;
+    const t = card.type;
     if (Array.isArray(t)) return t.map(x => String(x).toLowerCase()).includes('dominion');
     return String(t || '').toLowerCase() === 'dominion';
   });
@@ -6070,9 +5931,6 @@ function getInitialGameState() {
       opponent: { green:0, red:0, blue:0, yellow:0, purple:0, gray:0, black:0, white:0 }
     },
 
-    // Weather / global effects
-    weatherEffects: [],
-
     // Turn/phase/time-of-day defaults
     gameLog: [],
     turnNumber: 0,
@@ -6394,7 +6252,6 @@ function normalizeTargetFilter(step = {}) {
     color: get('targetColor', 'color'),
     type: get('targetType', 'type'),
     archetype: get('targetArchetype', 'archetype'),
-    trait: get('targetTrait', 'trait'),
     ability: get('targetAbility', 'ability'),
     // you can extend: rarity, set, hpMin, atkMin, etc.
   };
@@ -6432,13 +6289,10 @@ function cardMatchesTargetFilter(cardObj, filter = {}) {
     const hay = abilities.map(a => String(a).toLowerCase());
     if (!wanted.every(w => hay.includes(String(w).toLowerCase()))) return false;
   }
-
   if (!matchesField(cardData.category, filter.category)) return false;
   if (!matchesField(cardData.color, filter.color)) return false;
   if (!matchesField(cardData.type, filter.type)) return false;
   if (!matchesField(cardData.archetype, filter.archetype)) return false;
-  if (!matchesField(cardData.trait, filter.trait)) return false;
-
   return true;
 }
 
@@ -7150,7 +7004,6 @@ function effectTargetFilter(step = {}) {
   // Shorthand -> canonical keys used by matchesFilter/fieldIncludes
   if (step.targetType != null)      f.type = step.targetType;
   if (step.targetColor != null)     f.color = step.targetColor;
-  if (step.targetTrait != null)     f.trait = step.targetTrait;
   if (step.targetArchetype != null) f.archetype = step.targetArchetype;
   if (step.targetAbility != null)   f.ability = step.targetAbility;
   if (step.targetCategory != null)  f.category = step.targetCategory;
@@ -8060,16 +7913,9 @@ if (typeof renderGameState === 'function') {
     updatePlayerBadges();
   };
 }
-// --- GAME STATUS UI (Day/Night + Weather) ---
-// Renders a compact row showing current time-of-day and active weather effects.
-// Call updateGameStatusRow() from renderGameState() or whenever gameState.timeOfDay/gameState.weatherEffects change.
-function formatWeatherTitle(effectObj) {
-  // effectObj: { name: "Rain", duration: 2 } - adapt as needed
-  const effectDef = WEATHER_EFFECTS && WEATHER_EFFECTS[effectObj.name];
-  const desc = effectDef && effectDef.description ? effectDef.description : "";
-  return `${effectObj.name}${effectObj.duration ? ` (${effectObj.duration})` : ""}${desc ? ` — ${desc}` : ""}`;
-}
-// --- REPLACEMENT: updateGameStatusRow (renders day/night and weather icons)
+// --- GAME STATUS UI (Day/Night ) ---
+// Renders a compact row showing current time-of-day
+// --- REPLACEMENT: updateGameStatusRow (renders day/night icons)
 // Updated updateGameStatusRow - ensures pooled essence and casting preview are shown
 function updateGameStatusRow() {
   const container = document.getElementById('game-status-inline');
@@ -8079,10 +7925,10 @@ function updateGameStatusRow() {
   // Day / Night icon (supports all four)
   const tod = gameState.timeOfDay || 'day';
   const todMap = {
-    day: 'Icons/Weather/Day.png',
-    dusk: 'Icons/Weather/Dusk.png',
-    night: 'Icons/Weather/Night.png',
-    dawn: 'Icons/Weather/Dawn.png'
+    day: 'Icons/Time/Day.png',
+    dusk: 'Icons/Time/Dusk.png',
+    night: 'Icons/Time/Night.png',
+    dawn: 'Icons/Time/Dawn.png'
   };
   const todWrap = document.createElement('div');
   todWrap.style.display = 'flex';
@@ -8166,24 +8012,6 @@ function updateGameStatusRow() {
     }
   }
 
-  // Weather icons stack (kept minimal)
-  const weatherWrap = document.createElement('div');
-  weatherWrap.style.display = 'flex';
-  weatherWrap.style.flexDirection = 'column';
-  weatherWrap.style.alignItems = 'center';
-  weatherWrap.style.gap = '6px';
-  if (Array.isArray(gameState.weatherEffects) && gameState.weatherEffects.length) {
-    gameState.weatherEffects.forEach(e => {
-      const def = WEATHER_EFFECTS[e.name] || {};
-      const icon = document.createElement('img');
-      icon.src = def.icon || `Icons/Weather/${String(e.name).replace(/\s+/g,'')}.png`;
-      icon.alt = e.name;
-      icon.title = `${e.name}${e.duration ? ' ('+e.duration+')' : ''}`;
-      icon.style.width = '18px';
-      icon.style.height = '18px';
-      weatherWrap.appendChild(icon);
-    });
-  }
 // --- inside updateGameStatusRow() where you build status UI ---
 // Render opponent sigils
 const opponentSigArr = getSigils('opponent');
@@ -8229,7 +8057,6 @@ if (playerSigArr && playerSigArr.length) {
   container.appendChild(pWrap);
   if (castWrap.children.length) container.appendChild(castWrap);
   container.appendChild(oWrap);
-  container.appendChild(weatherWrap);
 }
 
 // Hook into renderGameState so updates happen automatically
@@ -8257,7 +8084,6 @@ if (typeof window !== 'undefined') {
   window.isDawn = isDawn;
 }
 // Add more as needed...
-function weatherSetter(weatherName) {return (cardObj, skillObj, context) => {if (context.setWeather) context.setWeather(weatherName, cardObj);};}
 // --- Sigil helpers (owner = 'player' | 'opponent') ---
 function getSigilArrayForOwner(owner) {
   return owner === 'opponent' ? gameState.opponentSigils : gameState.playerSigils;
@@ -8328,7 +8154,7 @@ function hasSigil(owner = 'player', name) {
   return sigils.some(s => s.name === name);
 }
 window.hasSigil = hasSigil;
-// --- Utility: get all colors/types/archetypes/traits/abilities (for filters, etc.) ---
+// --- Utility: get all colors/types/archetypes/abilities (for filters, etc.) ---
 function getCardColors(cardObj) {
   const card = getCardDef(cardObj);
   if (!card) return [];
@@ -8348,13 +8174,6 @@ function getCardArchetypes(cardObj) {
   if (!card) return [];
   if (Array.isArray(card.archetype)) return card.archetype;
   if (typeof card.archetype === "string") return [card.archetype];
-  return [];
-}
-function getCardTraits(cardObj) {
-  const card = getCardDef(cardObj);
-  if (!card) return [];
-  if (Array.isArray(card.trait)) return card.trait;
-  if (typeof card.trait === "string") return [card.trait];
   return [];
 }
 function getCardAbilities(cardObj) {
