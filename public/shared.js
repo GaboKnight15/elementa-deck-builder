@@ -87,7 +87,7 @@ const dummyCards = [
  skill: [{name: 'Summon', cost: '{g}', effect: {class: 'Summon'}}]},
 
 {id: 'Satyr', name: 'Satyr', rarity: 'Common', image: 'Cards/egg/Satyr.png', flavor: '', 
- category: 'Creature', color: 'Green', type: 'Satyr', hp: 5, atk: 2,  cost: '{1}', ability: '', set: 'ElementaGenesis', 
+ category: 'Creature', color: 'Green', type: 'Satyr', hp: 5, atk: 2, cost: '{1}', ability: '', set: 'ElementaGenesis', 
  skill: [{name: 'Summon', cost: '{1}', effect: {class: 'Summon'}}]},
 
 {id: 'WildwoodGoblin', name: 'Wildwood Goblin', rarity: 'Common', image: 'Cards/egg/WildwoodGoblin.png', flavor: '',
@@ -2137,6 +2137,7 @@ purple: {name: "Purple", description: "", icon: "Icons/Color/Purple.png" },
 white: {name: "White", description: "", icon: "Icons/Color/White.png" },
 black: {name: "Black", description: "", icon: "Icons/Color/Black.png" },
 colorless: {name: "Colorless", description: "", icon: "Icons/Color/Colorless.png" },
+
 // ----------------- //
 // --- ABILITIES --- //
 // ----------------- //
@@ -2244,8 +2245,8 @@ poisoned: {name: "Poisoned", description: "Lose 1 HP during each end step."},
 bound: {name: "Bound", description: "Gets disabled. Does not enable during Start Step."},
 burned: {name: "Burned", description: "Receives 1 more damage."},
 frozen: {name: "Frozen", description: "Cannot do any action. Does not receive damage. If damaged, reduce the countdown by 1."},
-paralysis: {name: "Paralysis", description: "Cannot attack. Lasts 2 turns per stack"},
-soaked: {name: "Soaked", description: "Loses -{1} {atk}."},
+paralysis: {name: "Paralized", description: "Cannot attack. Lasts 2 turns per stack"},
+drenched: {name: "Drenched", description: "Loses -{1} {atk}."},
 withered: {name: "Withered", description: "Cannot be healed."},
 
 // --- WEATHER EFFECTS --- //
@@ -2264,7 +2265,7 @@ decay: {name: "decay", description: "Corrupted +{1}/+{1}.", icon: "Icons/Weather
 mystveil: {name: "Mystveil", description: "Sylvan +{1}/+{1}.", icon: "Icons/Weather/Mystveil.png" },
 
 // -------------------- //
-// --- TRAIT SKILLS --- //
+// --- TRAITs --- //
 // -------------------- //
 assembly: {name: "Assembly", description: "Summon from the hand | Attach selected spare parts.", icon: "Icons/Trait/Assembly.png" },
 evolve: {name: "Evolve", description: "Get an 'Evolve' counter.", icon: "Icons/Trait/Evolve.png" },
@@ -2274,50 +2275,52 @@ fuse: {name: "Fuse", description: "Get a 'Fuse' counter.", icon: "Icons/Trait/Fu
 fusion: {name: "Fusion", description: "Summon from the hand | Attach 2 units of the same archetype that have a 'Fuse' counter on it.", icon: "Icons/Trait/Fusion.png" },
 voidFusion: {name: "Void Fusion", description: "Summon from the hand/void | Attach 2 units of the same type/archetype that have a 'Fuse' counter on it.", icon: "Icons/Trait/VoidFusion.png" },
 transform: {name: "Transform", description: "Transforms unit by certain conditions | Attach it to the summoned unit", icon: "Icons/Trait/Transform.png" },
-warrior: {name: "Warrior", description: "Close combat units. If HP is below 1/3, gain {1}/{1}.", icon: "Icons/Trait/Warrior.png" },
+warrior: {name: "Warrior", description: "Close combat units. If HP is below 1/3, gain {1}/{1}.", icon: "Icons/Trait/Warrior.png", ability: 'Protect',  },
 mage: {name: "Mage", description: "Can target flying and elusive creatures for attacks. Gain {1} Spd", icon: "Icons/Trait/Mage.png" },
 ranger: {name: "Ranger", description: "Can target flying creatures for attacks. Gain {2} Spd", icon: "Icons/Trait/Ranger.png" },
+// ARTIFACTS //
 relic: {name: "Relic", description: "Attach to Terrains of the same Color.", icon: "Icons/Trait/Relic.png" },
 equipment: {name: "Equipment", description: "Attach to Creatures of the same Color/Type/Archetype.", icon: "Icons/Trait/Equipment.png" },
+// SPELLS //
 aura: {name: "Aura", description: "Attach to creatures.", icon: "Icons/Trait/Aura.png" },
 enchantment: {name: "Enchantment", description: "Attach to lands.", icon: "Icons/Trait/Enchantment.png" },
 
 // ----- //
 // TYPES //
 // ----- //
-avian: {name: "Construct", icon: "Icons/Type/Avian.png" , description: "Graceful and fierce, the avians rule the skies with wisdom born of the wind. From mountaintop sanctuaries they watch the shifting lands below, their keen eyes ever wary, their hearts bound to the endless horizon. Whether messengers of dawn or harbingers of storm, the Avians embody freedom itself — swift, untouchable, and guided by the breath of the heavens."},
-beast: {name: "Beast", icon: "Icons/Type/Beast.png" , description: "Untamed and primal, beasts embody the raw pulse of nature unshaped by reason or restraint. From the silent hunter stalking through shadowed woods to the thunderous titan that shakes the earth, each creature moves with instinctive purpose. Though driven by hunger and survival, beasts are more than mere savagery — they are the heartbeat of the wild, the first language of a world that remembers no masters."},
-brute: {name: "Brute", icon: "Icons/Type/Brute.png" , description: "Savage and unyielding, the Brute are forged in struggle and bound by blood. They thrive where strength is law and survival the only creed, their lives shaped by war, hunger, and the will to endure. Though scorned as beasts by softer races, they bear a primal honor — a truth carved in scars and fire. To face the Brute is to meet the raw, untamed spirit of the world before it learned mercy."},
-construct: {name: "Construct", icon: "Icons/Type/Construct.png" , description: "Forged by mortal hands yet animated by unnatural will, constructs stand as monuments to creation without life. Some serve with perfect obedience, others wander seeking the purpose their makers abandoned. Whether wrought from steel, stone, or enchanted coral, each construct bears the echo of its creator’s intent — a silent testament to the line between genius and hubris."},
-demon: {name: "Demon", icon: "Icons/Type/Demon.png" , description: "Born from malice, ambition, and the echoes of forsaken gods, demons are the chaos that festers beneath creation. They thrive in conflict, feeding on desire, fear, and despair — yet each is bound by its own cunning will. To mortals they appear as nightmares made flesh, but to themselves they are architects of freedom, tearing down the fragile order that cages the world. Their power is corruption, and their truth — liberation through ruin."},
-dragon: {name: "Dragon", icon: "Icons/Type/Dragon.png" , description: "Majestic, ancient, and unmatched in power, dragons embody the primal forces of creation and destruction. Each scale glimmers with the legacy of ages, and each breath reshapes the world itself. Though their temperaments vary—from wise guardians to wrathful tyrants—all dragons command awe and fear in equal measure, their presence a living reminder that the elements themselves can take form and will."},
-elemental: {name: "Elemental", icon: "Icons/Type/Elemental.png" , description: "Primordial and eternal, elementals are the living essence of the world’s raw forces. They are not born, but awakened; the whisper of wind given voice, the heartbeat of stone given motion. Neither good nor evil, they embody balance, shaping creation with every surge of flame, wave, or storm."},
+avian: {name: "Construct", icon: "Icons/Type/Avian.png" , ability: 'Flying', description: "Graceful and fierce, the avians rule the skies with wisdom born of the wind. From mountaintop sanctuaries they watch the shifting lands below, their keen eyes ever wary, their hearts bound to the endless horizon. Whether messengers of dawn or harbingers of storm, the Avians embody freedom itself — swift, untouchable, and guided by the breath of the heavens."},
+beast: {name: "Beast", icon: "Icons/Type/Beast.png", ability: 'Rush', description: "Untamed and primal, beasts embody the raw pulse of nature unshaped by reason or restraint. From the silent hunter stalking through shadowed woods to the thunderous titan that shakes the earth, each creature moves with instinctive purpose. Though driven by hunger and survival, beasts are more than mere savagery — they are the heartbeat of the wild, the first language of a world that remembers no masters."},
+brute: {name: "Brute", icon: "Icons/Type/Brute.png", description: "Savage and unyielding, the Brute are forged in struggle and bound by blood. They thrive where strength is law and survival the only creed, their lives shaped by war, hunger, and the will to endure. Though scorned as beasts by softer races, they bear a primal honor — a truth carved in scars and fire. To face the Brute is to meet the raw, untamed spirit of the world before it learned mercy."},
+construct: {name: "Construct", icon: "Icons/Type/Construct.png", ability: 'Armor', description: "Forged by mortal hands yet animated by unnatural will, constructs stand as monuments to creation without life. Some serve with perfect obedience, others wander seeking the purpose their makers abandoned. Whether wrought from steel, stone, or enchanted coral, each construct bears the echo of its creator’s intent — a silent testament to the line between genius and hubris."},
+demon: {name: "Demon", icon: "Icons/Type/Demon.png", description: "Born from malice, ambition, and the echoes of forsaken gods, demons are the chaos that festers beneath creation. They thrive in conflict, feeding on desire, fear, and despair — yet each is bound by its own cunning will. To mortals they appear as nightmares made flesh, but to themselves they are architects of freedom, tearing down the fragile order that cages the world. Their power is corruption, and their truth — liberation through ruin."},
+dragon: {name: "Dragon", icon: "Icons/Type/Dragon.png", description: "Majestic, ancient, and unmatched in power, dragons embody the primal forces of creation and destruction. Each scale glimmers with the legacy of ages, and each breath reshapes the world itself. Though their temperaments vary—from wise guardians to wrathful tyrants—all dragons command awe and fear in equal measure, their presence a living reminder that the elements themselves can take form and will."},
+elemental: {name: "Elemental", icon: "Icons/Type/Elemental.png", description: "Primordial and eternal, elementals are the living essence of the world’s raw forces. They are not born, but awakened; the whisper of wind given voice, the heartbeat of stone given motion. Neither good nor evil, they embody balance, shaping creation with every surge of flame, wave, or storm."},
 faefolk: {name: "Faefolk", icon: "Icons/Type/Faefolk.png" , description: "Enigmatic and timeless, the Faefolk dwell where wonder and deceit intertwine. They are the laughter in moonlit groves, the whispers between leaves, and the shimmer at the edge of mortal sight. Guided by whim as much as wisdom, their magic bends nature’s laws with effortless grace — nurturing or destroying with the same delicate hand. To bargain with the Faefolk is to dance with beauty and peril alike."},
-human: {name: "Human", icon: "Icons/Type/Human.png" , description: ""},
-undead: {name: "Undead", icon: "Icons/Type/Human.png" , description: "" },
-celestial: {name: "Celestial", icon: "Icons/Type/Celestial.png" , description: "Beacons of divinity and order, the celestials are born of pure light and cosmic harmony. Their presence bends the heavens and stills the storms, for they are the will of creation made radiant. Guided by purpose beyond mortal grasp, they bring both mercy and judgment — for in their eyes, salvation and destruction are but reflections of balance restored."},
+human: {name: "Human", icon: "Icons/Type/Human.png", description: ""},
+undead: {name: "Undead", icon: "Icons/Type/Human.png", description: "" },
+celestial: {name: "Celestial", icon: "Icons/Type/Celestial.png", description: "Beacons of divinity and order, the celestials are born of pure light and cosmic harmony. Their presence bends the heavens and stills the storms, for they are the will of creation made radiant. Guided by purpose beyond mortal grasp, they bring both mercy and judgment — for in their eyes, salvation and destruction are but reflections of balance restored."},
 
-golem: {name: "Golem", profile: { hp: 4, atk: 10, def: 2, spd: 9, hc: 3, ep: 8 }, icon: "Icons/Archetype/Golem.png" , description: "Forged from stone, metal, and elemental essence, golems are unstoppable engines of brute force. Their armored bodies shrug off attacks, while their immense strength allows them to exploit every weakness in their foes. Patient yet relentless, golems dominate the battlefield, their elemental fury leaving devastation in their calculated, crushing path."},
+golem: {name: "Golem", profile: { hp: 4, atk: 10, def: 2, spd: 9, hc: 3, ep: 8 }, icon: "Icons/Archetype/Golem.png" , ability: 'Armor', description: "Forged from stone, metal, and elemental essence, golems are unstoppable engines of brute force. Their armored bodies shrug off attacks, while their immense strength allows them to exploit every weakness in their foes. Patient yet relentless, golems dominate the battlefield, their elemental fury leaving devastation in their calculated, crushing path."},
 
 // --- Undead --- //
 skullframe: {name: "Skullframe", profile: { hp: 4, atk: 10, def: 2, spd: 9, hc: 3, ep: 5 }, icon: "Icons/Archetype/Skullframe.png" , description: "Clad in bone and bound by forbidden sorcery, the Skullframe march as deathless engines of war. When shattered, dark magic stitches marrow and spirit back together, raising them anew. Masters of necrotic arts and relentless persistence, the Skullframe are an archetype of inevitability, overwhelming foes with grim magic and unending reanimation until nothing living remains to resist."},
 
 // --- Celestial --- //
-seraph: {name: "Seraph", profile: { hp: 9, atk: 4, def: 8, spd: 4, hc: 3, ep: 4 }, icon: "Icons/Archetype/Seraph.png" , description: "Born of radiant light and celestial grace, the Seraph soar above the battlefield as guardians and warriors. Their wings gleam with divine energy, and their presence purifies and inspires those around them. Majestic and unwavering, they strike with the justice of the heavens, defending the innocent and smiting darkness wherever it dwells."},
+seraph: {name: "Seraph", profile: { hp: 9, atk: 4, def: 8, spd: 4, hc: 3, ep: 4 }, icon: "Icons/Archetype/Seraph.png" , ability: 'Flying', description: "Born of radiant light and celestial grace, the Seraph soar above the battlefield as guardians and warriors. Their wings gleam with divine energy, and their presence purifies and inspires those around them. Majestic and unwavering, they strike with the justice of the heavens, defending the innocent and smiting darkness wherever it dwells."},
 
 // --- Beast --- //
 mythical: {name: "Mythic", profile: { hp: 8, atk: 7, def: 4, spd: 5, hc: 2, ep: 3 }, icon: "Icons/Archetype/mythic.png" , description: "Ferocious and untamed, Hybrids roam the wilds with bodies forged from multiple forms. With the strength of a bull, the speed of a stag, or the cunning of a fox, each beast strikes fear into those who cross their path. Raw instincts and primal power guide them, making every encounter with a Hybrid a savage test of survival."},
 
 // --- Faefolk --- //
-fairy: {name: "Fairy", profile: { hp: 1, atk: 8, def: 2, spd: 8, hc: 2, ep: 10 }, icon: "Icons/Type/Fairy.png" , description: "Delicate yet mischievous, fairies flit through forests and meadows, their presence leaving trails of sparkling light. Though small, they wield surprising magic, weaving illusions and enchantments to protect their homes or play tricks on unwary travelers. Their beauty belies a cunning and spirited nature, always dancing between wonder and mischief."},
-elf: {name: "Elf", profile: { hp: 6, atk: 6, def: 4, spd: 6, hc: 2, ep: 7 }, icon: "Icons/Type/Elf.png" , description: "Graceful and eternal, elves move with the harmony of the forests they protect. Skilled in both magic and archery, they strike with precision and wisdom, blending into nature as if part of it. Their keen senses and ancient knowledge make them formidable guardians, defending their realms with elegance, patience, and unwavering resolve."},
-satyr: {name: "Satyr", profile: { hp: 7, atk: 5, def: 5, spd: 5, hc: 3, ep: 8 }, icon: "Icons/Type/Satyr.png" , description: "Wild-hearted and cunning, Satyrs embody the untamed spirit of nature. Their laughter echoes through moonlit groves as they dance between mischief and wisdom, balancing chaos and creation. Though their revels seem carefree, Satyrs are fierce protectors of their forests—striking swiftly with wit, charm, and primal magic when their woodland sanctuaries are threatened."},
+fairy: {name: "Fairy", profile: { hp: 1, atk: 8, def: 2, spd: 8, hc: 2, ep: 10 }, icon: "Icons/Type/Fairy.png", ability: 'Flying', description: "Delicate yet mischievous, fairies flit through forests and meadows, their presence leaving trails of sparkling light. Though small, they wield surprising magic, weaving illusions and enchantments to protect their homes or play tricks on unwary travelers. Their beauty belies a cunning and spirited nature, always dancing between wonder and mischief."},
+elf: {name: "Elf", profile: { hp: 6, atk: 6, def: 4, spd: 6, hc: 2, ep: 7 }, icon: "Icons/Type/Elf.png", description: "Graceful and eternal, elves move with the harmony of the forests they protect. Skilled in both magic and archery, they strike with precision and wisdom, blending into nature as if part of it. Their keen senses and ancient knowledge make them formidable guardians, defending their realms with elegance, patience, and unwavering resolve."},
+satyr: {name: "Satyr", profile: { hp: 7, atk: 5, def: 5, spd: 5, hc: 3, ep: 8 }, icon: "Icons/Type/Satyr.png", description: "Wild-hearted and cunning, Satyrs embody the untamed spirit of nature. Their laughter echoes through moonlit groves as they dance between mischief and wisdom, balancing chaos and creation. Though their revels seem carefree, Satyrs are fierce protectors of their forests—striking swiftly with wit, charm, and primal magic when their woodland sanctuaries are threatened."},
 
 // --- Brute --- // 
-goblin: {name: "Goblin", profile: { hp: 2, atk: 7, def: 2, spd: 5, hc: 2, ep: 7 }, icon: "Icons/Type/Goblin.png" , description: "Small, cunning, and endlessly resourceful, goblins thrive in hidden warrens and shadowed corners. They scurry with mischievous intent, ambushing foes and exploiting every weakness. Though individually weak, they strike in numbers, their chaotic energy turning even the simplest skirmish into unpredictable mayhem."},
-orc: {name: "Orcs", profile: { hp: 9, atk: 6, def: 8, spd: 3, hc: 1, ep: 1 }, icon: "Icons/Type/Orc.png" , description: "Brutal, relentless, and fiercely proud, orcs thrive on the chaos of battle. Their strength and endurance make them formidable warriors, while their tribal bonds and warlike culture drive them to conquer and dominate. Though often feared for their ferocity, orcs are bound by honor within their clans, turning raw power into disciplined, devastating force."},
-dwarf: {name: "Dwarf", profile: { hp: 8, atk: 5, def: 9, spd: 1, hc: 3, ep: 3 }, icon: "Icons/Type/Dwarf.png" , description: "Stout and steadfast, dwarves are master smiths and artisans, shaping stone and metal with unmatched skill. Their halls echo with hammer strikes and the roar of furnaces, as they craft weapons, armor, and treasures of legend quality. Fierce in defense and meticulous in craft, dwarves embody endurance, precision, and the enduring strength of their mountain homes."},
-arbor: {name: "Arbor", profile: { hp: 9, atk: 1, def: 6, spd: 3, hc: 7, ep: 10 }, icon: "Icons/Archetype/Arbor.png" , description: "Born of roots, bark, and the living green of forests, the Arbor are guardians of nature’s heart. Their limbs weave and grow with unstoppable force, entangling foes and protecting the land. Patient yet relentless, they draw strength from the earth, turning forests into living battlegrounds where every vine and branch is a weapon."},
+goblin: {name: "Goblin", profile: { hp: 2, atk: 7, def: 2, spd: 5, hc: 2, ep: 7 }, icon: "Icons/Type/Goblin.png", description: "Small, cunning, and endlessly resourceful, goblins thrive in hidden warrens and shadowed corners. They scurry with mischievous intent, ambushing foes and exploiting every weakness. Though individually weak, they strike in numbers, their chaotic energy turning even the simplest skirmish into unpredictable mayhem."},
+orc: {name: "Orcs", profile: { hp: 9, atk: 6, def: 8, spd: 3, hc: 1, ep: 1 }, icon: "Icons/Type/Orc.png", description: "Brutal, relentless, and fiercely proud, orcs thrive on the chaos of battle. Their strength and endurance make them formidable warriors, while their tribal bonds and warlike culture drive them to conquer and dominate. Though often feared for their ferocity, orcs are bound by honor within their clans, turning raw power into disciplined, devastating force."},
+dwarf: {name: "Dwarf", profile: { hp: 8, atk: 5, def: 9, spd: 1, hc: 3, ep: 3 }, icon: "Icons/Type/Dwarf.png", description: "Stout and steadfast, dwarves are master smiths and artisans, shaping stone and metal with unmatched skill. Their halls echo with hammer strikes and the roar of furnaces, as they craft weapons, armor, and treasures of legend quality. Fierce in defense and meticulous in craft, dwarves embody endurance, precision, and the enduring strength of their mountain homes."},
+arbor: {name: "Arbor", profile: { hp: 9, atk: 1, def: 6, spd: 3, hc: 7, ep: 10 }, icon: "Icons/Archetype/Arbor.png", description: "Born of roots, bark, and the living green of forests, the Arbor are guardians of nature’s heart. Their limbs weave and grow with unstoppable force, entangling foes and protecting the land. Patient yet relentless, they draw strength from the earth, turning forests into living battlegrounds where every vine and branch is a weapon."},
 
 // ---------- //
 // ARCHETYPES //
@@ -2390,146 +2393,145 @@ const defaultIcon = "Images/Avatar/Default.png";
 const defaultBanner = "Images/Banner/Default.png";
 const allAvatarOptions = [
 // --- COMMON GREEN AVATARS --- //
-  { name: 'Elemental of Leaves', src: 'Images/Avatar/Green/ElementalofLeaves.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Fairy', src: 'Images/Avatar/Green/Fairy.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Wildwood Goblin', src: 'Images/Avatar/Green/WildwoodGoblin.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Satyr', src: 'Images/Avatar/Green/Satyr.png', rarity: 'Common', price: 10, obtain: 'shop' },
+{ name: 'Fairy', src: 'Images/Avatar/Green/Fairy.png', rarity: 'Common', price: 10, obtain: 'shop' },
+{ name: 'Wildwood Goblin', src: 'Images/Avatar/Green/WildwoodGoblin.png', rarity: 'Common', price: 10, obtain: 'shop' },
   /*{ name: 'Verdant Serpent', src: 'Images/Avatar/VerdantSerpent.png', rarity: 'Common', price: 10, obtain: 'shop' },*/
-// --- COMMON RED AVATARS --- //
-  { name: 'Elemental of Embers', src: 'Images/Avatar/Red/ElementalofEmbers.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Emberling', src: 'Images/Avatar/Red/Emberling.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Fire Golem', src: 'Images/Avatar/Red/FireGolem.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Kobold', src: 'Images/Avatar/Red/Kobold.png', rarity: 'Common', price: 10, obtain: 'shop' },
-// --- COMMON BLUE AVATARS --- //
-  { name: 'Elemental of Droplets', src: 'Images/Avatar/Blue/ElementalofDroplets.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Mermaid', src: 'Images/Avatar/Blue/Mermaid.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Dolphin', src: 'Images/Avatar/Blue/Dolphin.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Runebound Shark', src: 'Images/Avatar/Blue/RuneboundShark.png', rarity: 'Common', price: 10, obtain: 'shop' },
-// --- COMMON YELLOW AVATARS --- //
-  { name: 'Birdfolk', src: 'Images/Avatar/Yellow/Birdfolk.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Elemental of Sparks', src: 'Images/Avatar/Yellow/ElementalofSparks.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Zephyr Sprite', src: 'Images/Avatar/Yellow/ZephyrSprite.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Thunderspawn', src: 'Images/Avatar/Yellow/Thunderspawn.png', rarity: 'Common', price: 10, obtain: 'shop' },
-// --- COMMON GRAY AVATARS --- //
-  { name: 'Elemental of Pebbles', src: 'Images/Avatar/Gray/ElementalofPebbles.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Orc', src: 'Images/Avatar/Gray/Orc.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Rockshell Armadillo', src: 'Images/Avatar/Gray/RockshellArmadillo.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Summit Watcher', src: 'Images/Avatar/Gray/SummitWatcher.png', rarity: 'Common', price: 10, obtain: 'shop' },
-// --- COMMON PURPLE AVATARS --- //
-  { name: 'Elemental of Toxins', src: 'Images/Avatar/Purple/ElementalofToxins.png', rarity: 'Common', price: 10, obtain: 'shop' },
-/*  { name: 'Fen Goblin', src: 'Images/Avatar/Purple/FenGoblin.png', rarity: 'Common', price: 10, obtain: 'shop' },
-*/  { name: 'Giant Hornet', src: 'Images/Avatar/Purple/GiantHornet.png', rarity: 'Common', price: 10, obtain: 'shop' },
+// ECHOES OF CREATION COMMON ELEMENTALS //
+{ name: 'Elemental of Leaves', src: 'Images/Avatar/Green/ElementalofLeaves.png', rarity: 'Common', price: 10, obtain: 'shop' },
+{ name: 'Elemental of Embers', src: 'Images/Avatar/Red/ElementalofEmbers.png', rarity: 'Common', price: 10, obtain: 'shop' },
+{ name: 'Elemental of Droplets', src: 'Images/Avatar/Blue/ElementalofDroplets.png', rarity: 'Common', price: 10, obtain: 'shop' },
+{ name: 'Elemental of Sparks', src: 'Images/Avatar/Yellow/ElementalofSparks.png', rarity: 'Common', price: 10, obtain: 'shop' },
+{ name: 'Elemental of Pebbles', src: 'Images/Avatar/Gray/ElementalofPebbles.png', rarity: 'Common', price: 10, obtain: 'shop' },
+{ name: 'Elemental of Toxins', src: 'Images/Avatar/Purple/ElementalofToxins.png', rarity: 'Common', price: 10, obtain: 'shop' },
+{ name: 'Elemental of Gleams', src: 'Images/Avatar/White/ElementalofGleams.png', rarity: 'Common', price: 10, obtain: 'shop' },
+{ name: 'Elemental of Shades', src: 'Images/Avatar/Black/ElementalofShades.png', rarity: 'Common', price: 10, obtain: 'shop' },
+
+{ name: 'Fire Golem', src: 'Images/Avatar/Red/FireGolem.png', rarity: 'Common', price: 10, obtain: 'shop' },
+{ name: 'Kobold', src: 'Images/Avatar/Red/Kobold.png', rarity: 'Common', price: 10, obtain: 'shop' },
+// --- ELEMENTA GENESIS COMMON CREATURES --- //
+{ name: 'Satyr', src: 'Images/Avatar/Green/Satyr.png', rarity: 'Common', price: 10, obtain: 'shop' },
+{ name: 'Emberling', src: 'Images/Avatar/Red/Emberling.png', rarity: 'Common', price: 10, obtain: 'shop' },
+{ name: 'Mermaid', src: 'Images/Avatar/Blue/Mermaid.png', rarity: 'Common', price: 10, obtain: 'shop' },
+{ name: 'Dolphin', src: 'Images/Avatar/Blue/Dolphin.png', rarity: 'Common', price: 10, obtain: 'shop' },
+{ name: 'Runebound Shark', src: 'Images/Avatar/Blue/RuneboundShark.png', rarity: 'Common', price: 10, obtain: 'shop' },
+
+{ name: 'Birdfolk', src: 'Images/Avatar/Yellow/Birdfolk.png', rarity: 'Common', price: 10, obtain: 'shop' },
+{ name: 'Zephyr Sprite', src: 'Images/Avatar/Yellow/ZephyrSprite.png', rarity: 'Common', price: 10, obtain: 'shop' },
+{ name: 'Thunderspawn', src: 'Images/Avatar/Yellow/Thunderspawn.png', rarity: 'Common', price: 10, obtain: 'shop' },
+
+{ name: 'Orc', src: 'Images/Avatar/Gray/Orc.png', rarity: 'Common', price: 10, obtain: 'shop' },
+{ name: 'Rockshell Armadillo', src: 'Images/Avatar/Gray/RockshellArmadillo.png', rarity: 'Common', price: 10, obtain: 'shop' },
+{ name: 'Summit Watcher', src: 'Images/Avatar/Gray/SummitWatcher.png', rarity: 'Common', price: 10, obtain: 'shop' },
+
 
 // --- COMMON WHITE AVATARS --- //
-  { name: 'Elemental of Gleams', src: 'Images/Avatar/White/ElementalofGleams.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Angel', src: 'Images/Avatar/White/Angel.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Valkyrie', src: 'Images/Avatar/White/Valkyrie.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Angelic Warrior', src: 'Images/Avatar/White/AngelicWarrior.png', rarity: 'Common', price: 10, obtain: 'shop' },
+{ name: 'Angel', src: 'Images/Avatar/White/Angel.png', rarity: 'Common', price: 10, obtain: 'shop' },
+{ name: 'Valkyrie', src: 'Images/Avatar/White/Valkyrie.png', rarity: 'Common', price: 10, obtain: 'shop' },
+{ name: 'Angelic Warrior', src: 'Images/Avatar/White/AngelicWarrior.png', rarity: 'Common', price: 10, obtain: 'shop' },
 // --- COMMON BLACK AVATARS --- //
-  { name: 'Elemental of Shades', src: 'Images/Avatar/Black/ElementalofShades.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Skeleton', src: 'Images/Avatar/Black/Skeleton.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Zombie', src: 'Images/Avatar/Black/Zombie.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  { name: 'Wolf', src: 'Images/Avatar/Black/Wolf.png', rarity: 'Common', price: 10, obtain: 'shop' },
+{ name: 'Skeleton', src: 'Images/Avatar/Black/Skeleton.png', rarity: 'Common', price: 10, obtain: 'shop' },
+{ name: 'Zombie', src: 'Images/Avatar/Black/Zombie.png', rarity: 'Common', price: 10, obtain: 'shop' },
+{ name: 'Wolf', src: 'Images/Avatar/Black/Wolf.png', rarity: 'Common', price: 10, obtain: 'shop' },
 
-// --- RARE GREEN AVATARS --- //
-  { name: 'Elemental of Foliages', src: 'Images/Avatar/Green/ElementalofFoliages.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-  { name: 'Verdara Soldier', src: 'Images/Avatar/Green/VerdaraSoldier.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-  { name: 'Verdarok, Mosslet Guardian', src: 'Images/Avatar/Green/VerdarokMossletGuardian.png', rarity: 'Rare', price: 50, obtain: 'shop' },
 
-// --- RARE RED AVATARS --- //
-  { name: 'Elemental of Flames', src: 'Images/Avatar/Red/ElementalofFlames.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-  { name: 'Magmaris Mercenary', src: 'Images/Avatar/Red/MagmarisMercenary.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-  { name: 'Pyronyx, Ember Breeze', src: 'Images/Avatar/Red/PyronyxEmberBreeze.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+// ECHOES OF CREATIONS RARE ELEMENTALS //
+{ name: 'Elemental of Foliages', src: 'Images/Avatar/Green/ElementalofFoliages.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+{ name: 'Elemental of Flames', src: 'Images/Avatar/Red/ElementalofFlames.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+{ name: 'Elemental of Torrents', src: 'Images/Avatar/Blue/ElementalofTorrents.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+{ name: 'Elemental of Gales', src: 'Images/Avatar/Yellow/ElementalofGales.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+{ name: 'Elemental of Lightning', src: 'Images/Avatar/Yellow/ElementalofLightning.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+{ name: 'Elemental of Boulders', src: 'Images/Avatar/Gray/ElementalofBoulders.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+{ name: 'Elemental of Miasmas', src: 'Images/Avatar/Purple/ElementalofMiasmas.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+{ name: 'Elemental of Lusters', src: 'Images/Avatar/White/ElementalofLusters.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+{ name: 'Elemental of Shadows', src: 'Images/Avatar/Black/ElementalofShadows.png', rarity: 'Rare', price: 50, obtain: 'shop' },
 
-// --- RARE BLUE AVATARS --- //
-  { name: 'Elemental of Torrents', src: 'Images/Avatar/Blue/ElementalofTorrents.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-  { name: 'Umarion Paladin', src: 'Images/Avatar/Blue/UmarionPaladin.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-  { name: 'Abyndra, Foamscale Wyrmling', src: 'Images/Avatar/Blue/AbyndraFoamscaleWyrmling.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+// ELEMENTA GENESIS RARE HEROES  //
+{ name: 'Verdara Soldier', src: 'Images/Avatar/Green/VerdaraSoldier.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+{ name: 'Magmaris Mercenary', src: 'Images/Avatar/Red/MagmarisMercenary.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+{ name: 'Umarion Paladin', src: 'Images/Avatar/Blue/UmarionPaladin.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+{ name: 'Aetherion Electromancer', src: 'Images/Avatar/Yellow/AetherionElectromancer.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+{ name: 'Drakzul Warmonger', src: 'Images/Avatar/Gray/DrakzulWarmonger.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+{ name: 'Virkul Assassin', src: 'Images/Avatar/Purple/VirkulAssassin.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+{ name: 'Solmara Archpriest', src: 'Images/Avatar/White/SolmaraArchpriest.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+{ name: 'NoctyraEnforcer', src: 'Images/Avatar/Black/NoctyraEnforcer.png', rarity: 'Rare', price: 50, obtain: 'shop' },
 
-// --- RARE YELLOW AVATARS --- //
-  { name: 'Elemental of Gales', src: 'Images/Avatar/Yellow/ElementalofGales.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-  { name: 'Aetherion Electromancer', src: 'Images/Avatar/Yellow/AetherionElectromancer.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-  { name: 'Elemental of Lightning', src: 'Images/Avatar/Yellow/ElementalofLightning.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-  { name: 'Voltrazek, Boltling Skyrend', src: 'Images/Avatar/Yellow/VoltrazekBoltlingSkyrend.png', rarity: 'Rare', price: 50, obtain: 'shop' },
 
-// --- RARE GRAY AVATARS --- //
-  { name: 'Elemental of Boulders', src: 'Images/Avatar/Gray/ElementalofBoulders.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-  { name: 'Rockmaul Rhino', src: 'Images/Avatar/Gray/RockmaulRhino.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-  { name: 'Drakzul Warmonger', src: 'Images/Avatar/Gray/DrakzulWarmonger.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-  { name: 'Ferronyx, Ironhide Stonelet', src: 'Images/Avatar/Gray/FerronyxIronhideStonelet.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+{ name: 'Rockmaul Rhino', src: 'Images/Avatar/Gray/RockmaulRhino.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+{ name: 'Corrupted Dragon', src: 'Images/Avatar/Purple/CorruptedDragon.png', rarity: 'Rare', price: 50, obtain: 'shop' },
 
-// --- RARE PURPLE AVATARS --- //
-  { name: 'Elemental of Miasmas', src: 'Images/Avatar/Purple/ElementalofMiasmas.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-  { name: 'Virkul Assassin', src: 'Images/Avatar/Purple/VirkulAssassin.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-  { name: 'Corrupted Dragon', src: 'Images/Avatar/Purple/CorruptedDragon.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-  { name: 'Myxaroth, Mirefang Broodling', src: 'Images/Avatar/Purple/MyxarothMirefangBroodling.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+// ELEMENTA GENESIS LEGENDARY HEROES //
+{ name: 'Veya, Verdara Druidess', src: 'Images/Avatar/Green/Veya.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+{ name: 'Kaelen, Blazeborn Huntress', src: 'Images/Avatar/Red/Kaelen.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+{ name: 'Serenya, Tidebound Enchantress', src: 'Images/Avatar/Blue/Serenya.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+{ name: 'Zyra, Thunderblade Duelist', src: 'Images/Avatar/Yellow/Zyra.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+{ name: 'Rudgar, Ironfist Mauler', src: 'Images/Avatar/Gray/Rudgar.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+{ name: 'Selgor, Corrupted Warlord', src: 'Images/Avatar/Purple/Selgor.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+{ name: 'Elyndra, Dawnblade of Heavens', src: 'Images/Avatar/White/Elyndra.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+{ name: 'Velmira, Mistress of Silence', src: 'Images/Avatar/Black/Velmira.png', rarity: 'Legend', price: 100, obtain: 'shop' },
 
-// --- RARE WHITE AVATARS --- //
-  { name: 'Elemental of Lusters', src: 'Images/Avatar/White/ElementalofLusters.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-  { name: 'Solmara Archpriest', src: 'Images/Avatar/White/SolmaraArchpriest.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-  { name: 'Solaryth, Dawngleam Whelp', src: 'Images/Avatar/White/SolarythDawngleamWhelp.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+// ELEMENTA GENESIS HEROES 2 //
+{ name: 'Faelyra, Wildhorn Empress', src: 'Images/Avatar/Green/Faelyra.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+{ name: 'Kaelyra, Magmaris Heiress', src: 'Images/Avatar/Red/Kaelyra.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+{ name: 'Zaryon, Umarion Commander', src: 'Images/Avatar/Blue/Zaryon.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+{ name: 'Garuda, Aetherion Wings', src: 'Images/Avatar/Yellow/Garuda.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+{ name: 'Gravok, Drakzul Tyrant', src: 'Images/Avatar/Gray/Gravok.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+{ name: 'Mordrath, Virkul Phantom', src: 'Images/Avatar/Purple/Mordrath.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+{ name: 'Seraphiel, Solmara Paragon', src: 'Images/Avatar/White/Seraphiel.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+{ name: 'Morvane, Noctyra Oathbreaker', src: 'Images/Avatar/Black/Morvane.png', rarity: 'Legend', price: 100, obtain: 'shop' },
 
-// --- RARE BLACK AVATARS --- //
-  { name: 'Elemental of Shadows', src: 'Images/Avatar/Black/ElementalofShadows.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-  { name: 'NoctyraEnforcer', src: 'Images/Avatar/Black/NoctyraEnforcer.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-  { name: 'Noctyros, Dusk Whisper', src: 'Images/Avatar/Black/NoctyrosDuskWhisper.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+
+// FRACTURED ORIGINS HEROES //
+{ name: 'Sylvania, Thornvale Queen', src: 'Images/Avatar/Green/Sylvania.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+
+{ name: 'Tydros, Coralbound Tidebreaker', src: 'Images/Avatar/Blue/Tydros.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+{ name: 'Astranyra, Thunderbane', src: 'Images/Avatar/Yellow/Astranyra.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+
+
+  
+{ name: 'Nyzariel, Archdemon Duchess', src: 'Images/Avatar/Black/Nyzariel.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+
+// DRAGONLINGS //
+{ name: 'Verdarok, Mosslet Guardian', src: 'Images/Avatar/Green/VerdarokMossletGuardian.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+{ name: 'Pyronyx, Ember Breeze', src: 'Images/Avatar/Red/PyronyxEmberBreeze.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+{ name: 'Abyndra, Foamscale Wyrmling', src: 'Images/Avatar/Blue/AbyndraFoamscaleWyrmling.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+{ name: 'Voltrazek, Boltling Skyrend', src: 'Images/Avatar/Yellow/VoltrazekBoltlingSkyrend.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+{ name: 'Ferronyx, Ironhide Stonelet', src: 'Images/Avatar/Gray/FerronyxIronhideStonelet.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+{ name: 'Myxaroth, Mirefang Broodling', src: 'Images/Avatar/Purple/MyxarothMirefangBroodling.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+{ name: 'Solaryth, Dawngleam Whelp', src: 'Images/Avatar/White/SolarythDawngleamWhelp.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+{ name: 'Noctyros, Dusk Whisper', src: 'Images/Avatar/Black/NoctyrosDuskWhisper.png', rarity: 'Rare', price: 50, obtain: 'shop' },
 
 // --- LEGENDARY GREEN AVATARS --- //
-  { name: 'Sylvania, Thornvale Queen', src: 'Images/Avatar/Green/Sylvania.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-  { name: 'Veya, Verdara Druidess', src: 'Images/Avatar/Green/Veya.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-  { name: 'Faelyra, Wildhorn Empress', src: 'Images/Avatar/Green/Faelyra.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-  { name: 'Verdarok, Sylvan Thornwing', src: 'Images/Avatar/Green/VerdarokSylvanThornwing.png', rarity: 'Legend', price: 100, obtain: 'shop' },
 
-// --- LEGENDARY RED AVATARS --- //
-  { name: 'Kaelen, Blazeborn Huntress', src: 'Images/Avatar/Red/Kaelen.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-/*  { name: 'Kaelyra, Magmaris Heiress', src: 'Images/Avatar/Red/Kaelyra.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-*/  { name: 'Pyronyx, Inferno Blazingscale', src: 'Images/Avatar/Red/PyronyxInfernoBlazingscale.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-  { name: 'Ignavaryn, Cindercore Automaton', src: 'Images/Avatar/Red/Ignavaryn.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-  { name: 'Ephoros, Hellfire Behemoth', src: 'Images/Avatar/Red/Ephoros.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-  { name: 'Pyrokrag, Golemheart Titan', src: 'Images/Avatar/Red/Pyrokrag.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-  { name: 'Ashara, Hellfire Matriarch', src: 'Images/Avatar/Red/Ashara.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+// ELDER DRAGONS //
+{ name: 'Verdarok, Sylvan Thornwing', src: 'Images/Avatar/Green/VerdarokSylvanThornwing.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+{ name: 'Pyronyx, Inferno Blazingscale', src: 'Images/Avatar/Red/PyronyxInfernoBlazingscale.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+{ name: 'Abyndra, Tidal Abyssdrake', src: 'Images/Avatar/Blue/AbyndraTidalAbyssdrake.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+{ name: 'Voltrazek, Tempest Stormrazor', src: 'Images/Avatar/Yellow/VoltrazekTempestStormrazor.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+{ name: 'Ferronyx, Terra Ironclaw', src: 'Images/Avatar/Gray/FerronyxTerraIronclaw.png', rarity: 'Legend', price: 100, obtain: 'shop' },	
+{ name: 'Myxaroth, Cursed Dreadspine', src: 'Images/Avatar/Purple/MyxarothCursedDreadspine.png', rarity: 'Legend', price: 100, obtain: 'shop' },	
+{ name: 'Solaryth, Radiant Solarwyrm', src: 'Images/Avatar/White/SolarythRadiantSolarwyrm.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+{ name: 'Noctyros, Umbral Nightshroud', src: 'Images/Avatar/Black/NoctyrosUmbralNightshroud.png', rarity: 'Legend', price: 100, obtain: 'shop' },
 
-// --- LEGENDARY BLUE AVATARS --- //
-  { name: 'Serenya, Tidebound Enchantress', src: 'Images/Avatar/Blue/Serenya.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-  { name: 'Zaryon, Umarion Commander', src: 'Images/Avatar/Blue/Zaryon.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-  { name: 'Tydros, Coralbound Tidebreaker', src: 'Images/Avatar/Blue/Tydros.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-  { name: 'Abyndra, Tidal Abyssdrake', src: 'Images/Avatar/Blue/AbyndraTidalAbyssdrake.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-  { name: 'Hydrion, Primeval Floodbringer', src: 'Images/Avatar/Blue/Hydrion.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-  { name: 'Maelvyrn, Coralbound Leviathan', src: 'Images/Avatar/Blue/Maelvyrn.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-  { name: 'Eirawen, Frostland Queen', src: 'Images/Avatar/Blue/Eirawen.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+// LEGENDARY ELEMENTALS //
 
-// --- LEGENDARY YELLOW AVATARS --- //
-  { name: 'Zyra, Thunderblade Duelist', src: 'Images/Avatar/Yellow/Zyra.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-  { name: 'Garuda, Aetherion Wings', src: 'Images/Avatar/Yellow/Garuda.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-  { name: 'Voltrazek, Tempest Stormrazor', src: 'Images/Avatar/Yellow/VoltrazekTempestStormrazor.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-  { name: 'Astranyra, Thunderbane', src: 'Images/Avatar/Yellow/Astranyra.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+{ name: 'Pyrokrag, Golemheart Titan', src: 'Images/Avatar/Red/Pyrokrag.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+{ name: 'Hydrion, Primeval Floodbringer', src: 'Images/Avatar/Blue/Hydrion.png', rarity: 'Legend', price: 100, obtain: 'shop' },
 
-// --- LEGENDARY GRAY AVATARS --- //
-  { name: 'Gravok, Drakzul Tyrant', src: 'Images/Avatar/Gray/Gravok.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-  { name: 'Rudgar, Ironfist Mauler', src: 'Images/Avatar/Gray/Rudgar.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-/*  { name: 'Ferronyx, Terra Ironclaw', src: 'Images/Avatar/Gray/FerronyxTerraIronclaw.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-  { name: 'Lyssara, Scarlet Vindicator', src: 'Images/Avatar/Gray/Lyssara.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-*/  { name: 'Draven, Adamant Emperor', src: 'Images/Avatar/Gray/Draven.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+// LEGENDARY CONSTRUCTS //
+{ name: 'Ignavaryn, Cindercore Automaton', src: 'Images/Avatar/Red/Ignavaryn.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+{ name: 'Maelvyrn, Coralbound Leviathan', src: 'Images/Avatar/Blue/Maelvyrn.png', rarity: 'Legend', price: 100, obtain: 'shop' },
 
-// --- LEGENDARY PURPLE AVATARS --- //
-  { name: 'Selgor, Corrupted Warlord', src: 'Images/Avatar/Purple/Selgor.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-/*  { name: 'Mordrath, Virkul Phantom', src: 'Images/Avatar/Purple/Mordrath.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-*/  { name: 'Myxaroth, Cursed Dreadspine', src: 'Images/Avatar/Purple/MyxarothCursedDreadspine.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-  { name: 'Veniryss, Spider Princess', src: 'Images/Avatar/Purple/Veniryss.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+{ name: 'Ephoros, Hellfire Behemoth', src: 'Images/Avatar/Red/Ephoros.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+{ name: 'Ashara, Hellfire Matriarch', src: 'Images/Avatar/Red/Ashara.png', rarity: 'Legend', price: 100, obtain: 'shop' },
 
-// --- LEGENDARY WHITE AVATARS --- //
-  { name: 'Elyndra, Dawnblade of Heavens', src: 'Images/Avatar/White/Elyndra.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-  { name: 'Seraphiel, Solmara Paragon', src: 'Images/Avatar/White/Seraphiel.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-  { name: 'Solaryth, Radiant Solarwyrm', src: 'Images/Avatar/White/SolarythRadiantSolarwyrm.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+{ name: 'Eirawen, Frostland Queen', src: 'Images/Avatar/Blue/Eirawen.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+{ name: 'Draven, Adamant Emperor', src: 'Images/Avatar/Gray/Draven.png', rarity: 'Legend', price: 100, obtain: 'shop' },
 
-// --- LEGENDARY BLACK AVATARS --- //
-  { name: 'Morvane, Noctyra Oathbreaker', src: 'Images/Avatar/Black/Morvane.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-  { name: 'Velmira, Mistress of Silence', src: 'Images/Avatar/Black/Velmira.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-  { name: 'Maldryss, Skullframe Archmage', src: 'Images/Avatar/Black/Maldryss.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-  { name: 'Nyzariel, Archdemon Duchess', src: 'Images/Avatar/Black/Nyzariel.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-  { name: 'Raukhar, Duskwing Knight', src: 'Images/Avatar/Black/Raukhar.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-  { name: 'Noctyros, Umbral Nightshroud', src: 'Images/Avatar/Black/NoctyrosUmbralNightshroud.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-  { name: 'Vorganna, Crimson Blade', src: 'Images/Avatar/Black/Vorganna.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+{ name: 'Veniryss, Spider Princess', src: 'Images/Avatar/Purple/Veniryss.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+
+{ name: 'Maldryss, Skullframe Archmage', src: 'Images/Avatar/Black/Maldryss.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+{ name: 'Raukhar, Duskwing Knight', src: 'Images/Avatar/Black/Raukhar.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+{ name: 'Vorganna, Crimson Blade', src: 'Images/Avatar/Black/Vorganna.png', rarity: 'Legend', price: 100, obtain: 'shop' },
 
 ];
 
