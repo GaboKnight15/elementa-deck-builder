@@ -28,12 +28,12 @@ const dummyCards = [
  skill: [{name: 'Flourish', cost: '{g}', requirement: {class: 'CW'}, effect: {class: 'Search', category: 'Terrain'}}]},
 
 {id: 'VerdaraSoldier', name: 'Verdara Soldier', rarity: 'Rare', image: 'Cards/egg/VerdaraSoldier.png', flavor: '', 
- category: 'Creature', color: 'Green', type: ['Sylvan','Spirit','Warrior'], hp: 5, atk: 2, def: 1, cost: '{3}', 
+ category: 'Creature', color: 'Green', type: ['Sylvan','Spirit','Warrior'], hp: 5, atk: 2, cost: '{3}', 
  ability: '', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{2}', effect: {class: 'Summon'}}]},
 
 {id: 'ElementalofFoliages', name: 'Elemental of Foliages', rarity: 'Rare', image: 'Cards/ecg/ElementalofFoliages.png', flavor: '', 
- category: 'Creature', color: 'Green', type: ['Verdant','Elemental'], hp: 8, atk: 3, cost: '{2}',  ability: ['Protect','Regenerate'], set: 'EchoesofCreation',
+ category: 'Creature', color: 'Green', type: ['Verdant','Spirit'], hp: 8, atk: 3, cost: '{2}',  ability: ['Protect','Regenerate'], set: 'EchoesofCreation',
  skill: [{name: 'Sylvan Discovery', cost: '{g}{g}', effect: [{class: 'Summon'}, {class: 'Search', targetColor: 'Green', targetCategory: 'Terrain'}]},
  ]},
 
@@ -46,7 +46,7 @@ const dummyCards = [
    effect: {class: 'Rally', amount: 1, targetType: 'Satyr'}}]},
 
 {id: 'EarthrootTitan', name: 'Earthroot Titan', rarity: 'Rare', image: 'Cards/egg/EarthrootTitan.png', flavor: '', 
- category: 'Creature', color: 'Green', type: ['Arbor','Beast'], hp: 9, atk: 5, cost: '{2}', ability: '', set: 'ElementaGenesis',
+ category: 'Creature', color: 'Green', type: ['Arbor','Beast'], hp: 9, atk: 5, cost: '{2}', ability: 'Rush', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{4}{g}', effect: {class: 'Summon'}},
   {name: 'Barkhide', cost: '{0}', requirement: [{class:'Special'}, {class: 'CW'}], 
    effect: {class: 'essenceGreen', amount: 1}},
@@ -64,7 +64,7 @@ const dummyCards = [
  skill: [{name: 'Enchant', cost: '{g}{g}', effect: {class: 'Enchant'}},
 		{name: 'Awaken', activation: {class: 'Awaken'}, effect: [{class: 'Recover', amount: 1}, {class : 'Essence', color: 'Green', amount: 1}]}]},
 
-{id: 'LifesGrowth', name: "Life's Growth", rarity: 'Rare', image: 'Cards/egg/LifesGrowth.png', flavor: '', 
+{id: 'LifesGrowth', name: "Life's Growth", rarity: 'Common', image: 'Cards/egg/LifesGrowth.png', flavor: '', 
  category: 'Spell', color: 'Green', type: ['Nature','Enchantment'], cost: '{g}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{g}', effect: [{class: 'Essence', amount: 2, color: 'Green'}, {class: 'Cast'}]}]},
 
@@ -76,7 +76,7 @@ const dummyCards = [
  skill: [{name: 'Summon', cost: '{0}', effect: {class: 'Summon'}}]},
 
 {id: 'ElementalofLeaves', name: 'Elemental of Leaves', rarity: 'Common', image: 'Cards/egg/ElementalofLeaves.png', flavor: '', 
- category: 'Creature', color: 'Green', type: ['Verdant','Elemental'], hp: 5, atk: 1, cost: '{1}', ability: 'Regenerate', set: 'ElementaGenesis',
+ category: 'Creature', color: 'Green', type: ['Verdant','Spirit'], hp: 5, atk: 1, cost: '{1}', ability: 'Regenerate', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{g}', effect: {class: 'Summon'}}]},
 
 {id: 'Satyr', name: 'Satyr', rarity: 'Common', image: 'Cards/egg/Satyr.png', flavor: '', 
@@ -84,7 +84,7 @@ const dummyCards = [
  skill: [{name: 'Summon', cost: '{1}', effect: {class: 'Summon'}}]},
 
 {id: 'WildHuntress', name: 'Wild Huntress', rarity: 'Common', image: 'Cards/egg/WildHuntress.png', flavor: '', 
- category: 'Creature', color: 'Green', type: ['Satyr','Warrior'], hp: 4, atk: 2, def: 1, cost: '{2}', ability: 'Rush', set: 'ElementaGenesis',
+ category: 'Creature', color: 'Green', type: ['Satyr','Warrior'], hp: 4, atk: 2, cost: '{2}', ability: '', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{2}', effect: {class: 'Summon'}}]},
  
 {id: 'FaunRanger', name: 'Faun Ranger', rarity: 'Common', image: 'Cards/egg/FaunRanger.png', flavor: 'Each arrow is a promise kept. No trespasser leaves the forest unmarked.', 
