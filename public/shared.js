@@ -54,10 +54,10 @@ const dummyCards = [
    effect: {class: 'essenceGreen', amount: 1}}
   ]},
 
-{id: 'SatyrOrchard', name: 'Satyr Orchard', rarity: 'Rare', image: 'Cards/egg/SatyrOrchard.png', flavor: '', 
- category: 'Terrain', color: 'Green', type: 'Satyr', hp: 8, cost: '{1}', essence: '{g}', set: 'ElementaGenesis',
- skill: [{name: 'Terraform', cost: '{g}', effect: {class: 'Terraform'}},
-  {name: '', cost: '{g}', requirement: {class: 'CW'}, effect: {class: 'Rally', amount: 1, targetType: 'Satyr', targetCategory: 'Creature'}}]},
+{id: 'SatyrOrchard', name: 'Satyr Orchard', rarity: 'Rare', image: 'Cards/egg/SatyrOrchard.png', flavor: 'The air thickens with the scent of fermented nectar and the echoes of mocking laughter. Here, every fallen fruit is a catalyst for a riotous surge of primal power.', 
+ category: 'Terrain', color: 'Green', type: 'Satyr', hp: 8, cost: '{1}{g}', essence: '{g}', set: 'ElementaGenesis',
+ skill: [{name: 'Terraform', cost: '{1}{g}', effect: {class: 'Terraform'}},
+  {name: 'Wild Revelry', activation: {class: 'onSummon', targetType: 'Satyr'}, requirement: {class: 'CW'}, effect: {class: 'Rally', amount: 1, targetType: 'Satyr', targetCategory: 'Creature'}}]},
 
 {id: 'SylvanAnima', name: 'Sylvan Anima', rarity: 'Rare', image: 'Cards/egg/SylvanAnima.png', flavor: '', 
  category: 'Spell', color: 'Green', type: ['Nature','Enchantment'], cost: '{2}', set: 'ElementaGenesis',
@@ -120,7 +120,7 @@ const dummyCards = [
 	
 /*
 // --- EG RED --- //
-{id: 'KaelenBlazebornHuntress', name: 'Kaelen, Blazeborn Huntress', rarity: 'Legend', image: 'Cards/egr/KaelenBlazebornHuntress.png', flavor: '', 
+{id: 'KaelenBlazebornHuntress', name: 'Kaelen, Blazeborn Huntress', rarity: 'Legend', image: 'Cards/egr/KaelenBlazebornHuntress.png', flavor: 'Born from fire, she hunts with the sky ablaze, and the horizon burns where her arrows fall. Every shot she looses carries the fury of a thousand sunsets.', 
  category: 'Creature', color: 'Red', type: ['Fire','Ranger'], hp: 3, atk: 1, cost: '{1}', ability: 'Burn', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{r}', effect: {class: 'Summon'}},
   {name: 'Flameshot', cost: '{r}', requirement: {class:'Special'}, 
@@ -445,7 +445,7 @@ const dummyCards = [
   {name: 'Inspire', cost: '{1}', effect: {class: 'Strike', amount: 3}}]},
 
 // --- EG PURPLE --- //
-{id: 'MordrathVirkulPhantom', name: 'Mordrath, Virkul Phantom', rarity: 'Legend', image: 'Cards/egp/MordrathVirkulPhantom.png', flavor: '', 
+{id: 'MordrathVirkulPhantom', name: 'Mordrath, Virkul Phantom', rarity: 'Legend', image: 'Cards/egp/MordrathVirkulPhantom.png', flavor: 'With every step, the earth blackens, flowers wither, and the air grows thick with despair — a knight cursed to rot all he touches.', 
  category: 'Creature', color: 'Purple', type: ['Armored','Spirit'], hp: 4, atk: 2, def: 1, cost: '{2}{p}', ability: ['Armor','Immunity'], set: 'ElementaGenesis', imageFullArt: 'Cards/egp/MordrathVirkulPhantomFA.png',
  skill: [{name: 'Summon', cost: '{2}{p}', effect: {class: 'Summon'}},
   {name: 'Blightfall Slash', cost: '{p}{p}', requirement: [{class: 'Special'}, {class: 'CCW'}],
@@ -841,7 +841,7 @@ const dummyCards = [
    effect: {class: 'Toxic Miasma'}}
  ]},
 
-{id: 'FerronyxTerraIronclaw', name: 'Ferronyx, Terra Ironclaw', rarity: 'Legend', image: 'Cards/foc/FerronyxTerraIronclaw.png', flavor: '', 
+{id: 'FerronyxTerraIronclaw', name: 'Ferronyx, Terra Ironclaw', rarity: 'Legend', image: 'Cards/foc/FerronyxTerraIronclaw.png', flavor: 'Forged in the bones of the earth, its scales of stone and iron ring like shields in battle.', 
  category: 'Creature', color: 'Gray', type: ['Steel','Dragon'], hp: 6, atk: 4, cost: '{4}{c}', ability: ['Armor','Flying'], set: 'FracturedOrigins',
  skill: [{name: 'Evolution', cost: '{c}{c}{c}', effect: {class: 'Evolution'}},
   {name: 'Reveal', cost: '{c}', requirement: {class: 'Reveal'},
@@ -1654,7 +1654,7 @@ skill: [{name: 'Cast', cost: '{1}{b}', description: 'Destroy a creature afflicte
  category: 'Artifact', color: 'Purple', type: ['Toxic','Relic'], hp: 5, cost: '{2}{P}', set: 'ElementaGenesis',
  skill: [{name: 'Equip', cost: '{0}', effect: {class: 'Equip'}}]},
  
-{id: 'TitansAnvil', name: 'Titans Anvil', rarity: 'Rare', image: 'Cards/foc/TitansAnvil.png', flavor: '', 
+{id: 'TitansAnvil', name: 'Titans Anvil', rarity: 'Rare', image: 'Cards/foc/TitansAnvil.png', flavor: 'Upon this colossal anvil, mountains are broken and reforged into weapons of legend. Each strike rings with the echo of gods.', 
  category: 'Relic', color: 'Gray', type: 'Relic', hp: 5, cost: '{1}{c}{c}', set: 'FracturedOrigins',
  skill: [{name: 'Deploy', cost: '{1}{c}{c}', effect: {class: 'Deploy'}}]},
  
