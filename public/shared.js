@@ -3,16 +3,21 @@ const dummyCards = [
 // --- ELEMENTA GENESIS --- //
 // ------------------------ //
 
-{id: 'VeyaVerdaraDruidess', name: 'Veya, Verdara Druidess', rarity: 'Legend', image: 'Cards/egg/VeyaVerdaraDruidess.png', flavor: '', 
- category: 'Creature', color: 'Green', type: ['Verdant','Mage'], hp: 5, atk: 1, cost: '{2}', ability: '', set: 'ElementaGenesis', imageFullArt: 'Cards/egg/VeyaVerdaraDruidessFA.png',
- skill: [{name: 'Summon', cost: '{1}{g}', effect: {class: 'Summon'}},
-  {name: 'Verdant Invocation', cost: '{cw}', requirement: [{class:'Special'}, {class: 'CW'}], 
-   effect: {class: 'essenceGreen', amount: 1}},
-  {name: "Lifebloom Grace", cost: '{G}', requirement: {class:'Special'}, 
-   effect: {class: 'Heal', amount: 2, target: 2}},
+// EGG //
+{id: 'Verdara', name: 'Verdara', rarity: 'Legend', image: 'Cards/egg/Verdara.png', flavor: '', 
+ category: 'Terrain', color: 'Green', type: ['Sylvan','Domain'], hp: 20, essence: '{G}', set: 'ElementaGenesis',
+ skill: [{name: 'Flourish', cost: '{g}', requirement: {class: 'CW'}, effect: {class: 'Search', category: 'Terrain'}}]},
+
+{id: 'EryndorVerdaraKing', name: 'Eryndor, Verdara King', rarity: 'Legend', image: 'Cards/egg/EryndorVerdaraKing.png', flavor: '', 
+ category: 'Creature', color: 'Green', type: ['Sylvan','Elf','Mage'], hp: 5, atk: 2, cost: '{2}', ability: '', set: 'ElementaGenesis', imageFullArt: 'Cards/egg/VeyaVerdaraDruidessFA.png',
+ skill: [{name: 'Summon', cost: '{g}{g}', effect: {class: 'Summon'}},
+  {name: 'Ancient Sylvan Decree', cost: '{g}', requirement: [{class:'Special'}, {class: 'CW'}], 
+   effect: {class: 'Disable', target: 'opponentCreatures', cost: '>=3'}},
+  {name: "Timeless Zenith Blessing", cost: '{g}', activation: {class:'Awaken'}, 
+   effect: {class: 'Buff', target: 'playerField', type: 'Sylvan', atkQ: 1, hpQ: 2}},
   ]},
 
-{id: 'FaelyraWildhornEmpress', name: 'Faelyra, Wildhorn Empress', rarity: 'Legend', image: 'Cards/egg/FaelyraWildhornEmpress.png', flavor: '',
+{id: 'FaelyraWildhornEmpress', name: 'Faelyra, Wildhorn Empress', rarity: 'Legend', image: 'Cards/egg/FaelyraWildhornEmpress.png', flavor: 'Beneath a crown of entwined blossoms, she dances through the forest while singing weaving spells of mirth. Satyrs, woodland creatures, and even the shyest spirits follow her lead, enchanted by her boundless charm.',
  category: 'Creature', color: 'Green', type: ['Satyr','Mage'], hp: 5, atk: 2, cost: '{g}{g}', ability: '', set: 'ElementaGenesis', imageFullArt: 'Cards/egg/FaelyraWildhornEmpressFA.png',
  skill: [{name: 'Summon', cost: '{g}{g}', effect: {class: 'Summon'}},
   {name: 'Rhythmic Conjure', cost: '{g}{g}', requirement: {class: 'Special'},
@@ -22,20 +27,12 @@ const dummyCards = [
   {name: 'Spirit of the Grove', cost: '{g}', requirement: {class: 'Channel'},
    effect: {class: 'Spawn', targetId: 'Satyr', amount: 1}},
  ]},
-	
-{id: 'Verdara', name: 'Verdara', rarity: 'Legend', image: 'Cards/egg/Verdara.png', flavor: '', 
- category: 'Terrain', color: 'Green', type: ['Sylvan','Domain'], hp: 20, essence: '{G}', set: 'ElementaGenesis',
- skill: [{name: 'Flourish', cost: '{g}', requirement: {class: 'CW'}, effect: {class: 'Search', category: 'Terrain'}}]},
 
+// EGG RARE //
 {id: 'VerdaraSoldier', name: 'Verdara Soldier', rarity: 'Rare', image: 'Cards/egg/VerdaraSoldier.png', flavor: '', 
  category: 'Creature', color: 'Green', type: ['Sylvan','Spirit','Warrior'], hp: 5, atk: 2, cost: '{3}', 
  ability: '', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{2}', effect: {class: 'Summon'}}]},
-
-{id: 'ElementalofFoliages', name: 'Elemental of Foliages', rarity: 'Rare', image: 'Cards/ecg/ElementalofFoliages.png', flavor: '', 
- category: 'Creature', color: 'Green', type: ['Verdant','Spirit'], hp: 8, atk: 3, cost: '{2}',  ability: ['Protect','Regenerate'], set: 'EchoesofCreation',
- skill: [{name: 'Sylvan Discovery', cost: '{g}{g}', effect: [{class: 'Summon'}, {class: 'Search', targetColor: 'Green', targetCategory: 'Terrain'}]},
- ]},
 
 {id: 'WildhornSongreaver', name: 'Wildhorn Songreaver', rarity: 'Rare', image: 'Cards/egg/WildhornSongreaver.png', flavor: '', 
  category: 'Creature', color: 'Green', type: 'Satyr', hp: 6, atk: 2, cost: '{2}', ability: '', set: 'ElementaGenesis',
@@ -54,8 +51,8 @@ const dummyCards = [
    effect: {class: 'essenceGreen', amount: 1}}
   ]},
 
-{id: 'SatyrOrchard', name: 'Satyr Orchard', rarity: 'Rare', image: 'Cards/egg/SatyrOrchard.png', flavor: 'The air thickens with the scent of fermented nectar and the echoes of mocking laughter. Here, every fallen fruit is a catalyst for a riotous surge of primal power.', 
- category: 'Terrain', color: 'Green', type: 'Satyr', hp: 8, cost: '{1}{g}', essence: '{g}', set: 'ElementaGenesis',
+{id: 'VigorousSatiricOrchard', name: 'Vigorous, Satiric Orchard', rarity: 'Rare', image: 'Cards/egg/VigorousSatiricOrchard.png', flavor: 'The air thickens with the scent of fermented nectar and the echoes of mocking laughter. Here, every fallen fruit is a catalyst for a riotous surge of primal power.', 
+ category: 'Terrain', color: 'Green', type: 'Satyr', hp: 4, cost: '{g}', essence: '{g}', set: 'ElementaGenesis',
  skill: [{name: 'Terraform', cost: '{1}{g}', effect: {class: 'Terraform'}},
   {name: 'Wild Revelry', activation: {class: 'onSummon', targetType: 'Satyr'}, requirement: {class: 'CW'}, effect: {class: 'Rally', amount: 1, targetType: 'Satyr', targetCategory: 'Creature'}}]},
 
@@ -64,6 +61,7 @@ const dummyCards = [
  skill: [{name: 'Enchant', cost: '{g}{g}', effect: {class: 'Enchant'}},
 		{name: 'Awaken', activation: {class: 'Awaken'}, effect: [{class: 'Recover', amount: 1}, {class : 'Essence', color: 'Green', amount: 1}]}]},
 
+// EGG COMMON //
 {id: 'LifesGrowth', name: "Life's Growth", rarity: 'Common', image: 'Cards/egg/LifesGrowth.png', flavor: '', 
  category: 'Spell', color: 'Green', type: ['Nature','Enchantment'], cost: '{g}', set: 'ElementaGenesis',
  skill: [{name: 'Cast', cost: '{g}', effect: [{class: 'Essence', amount: 2, color: 'Green'}, {class: 'Cast'}]}]},
@@ -116,10 +114,15 @@ const dummyCards = [
  
 {id: 'EssenceSurge', name: 'Essence Surge', rarity: 'Common', image: 'Cards/egg/EssenceSurge.png', flavor: '', 
  category: 'Spell', color: 'Green', type: 'Enchantment', cost: '{2}', set: 'ElementaGenesis',
- skill: [{name: 'Cast', cost: '{2}', effect: [{class: 'Essence', color: 'Green', amount: 3}, {class: 'Cast'}]}]},
+ skill: [{name: 'Cast', cost: '{2}', effect: [{class: 'Essence', color: 'Green', amount: 3}, {class: 'Cast'}]}]}, 
 	
 /*
-// --- EG RED --- //
+// EGR //
+// EGR LEGEND //
+{id: 'Magmaris', name: 'Magmaris', rarity: 'Legend', image: 'Cards/egr/Magmaris.png', flavor: '', 
+ category: 'Terrain', color: 'Red', type: ['Inferno','Domain'], hp: 20, essence: '{r}', set: 'ElementaGenesis',
+ skill: [{name: 'Ignite', cost: '{r}', requirement: {class: 'CW'}, effect: {class: 'Burn', amount: 1}}]},
+
 {id: 'KaelenBlazebornHuntress', name: 'Kaelen, Blazeborn Huntress', rarity: 'Legend', image: 'Cards/egr/KaelenBlazebornHuntress.png', flavor: 'Born from fire, she hunts with the sky ablaze, and the horizon burns where her arrows fall. Every shot she looses carries the fury of a thousand sunsets.', 
  category: 'Creature', color: 'Red', type: ['Fire','Ranger'], hp: 3, atk: 1, cost: '{1}', ability: 'Burn', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{r}', effect: {class: 'Summon'}},
@@ -128,10 +131,6 @@ const dummyCards = [
   {name: 'Scorching Arrowcall', requirement: [{class:'Special'}, {class: 'CW'}], 
    effect: {class: 'Rally', amount: 1}}
   ]},
- 
-{id: 'Magmaris', name: 'Magmaris', rarity: 'Legend', image: 'Cards/egr/Magmaris.png', flavor: '', 
- category: 'Terrain', color: 'Red', type: ['Inferno','Domain'], hp: 20, essence: '{r}', set: 'ElementaGenesis',
- skill: [{name: 'Ignite', cost: '{r}', requirement: {class: 'CW'}, effect: {class: 'Burn', amount: 1}}]},
  
 {id: 'InfernoEruption', name: 'Inferno Eruption', rarity: 'Legend', image: 'Cards/egr/InfernoEruption.png', flavor: '', 
  category: 'Spell', color: 'Red', type: 'Fire', cost: '{2}{r}', set: 'ElementaGenesis',
@@ -165,10 +164,6 @@ const dummyCards = [
  category: 'Terrain', color: 'Red', type: ['Fire,'Beast'], hp: 7, cost: ' {1}{r}', essence: '{r}', set: 'ElementaGenesis',
  skill: [{name: 'Terraform', cost: '{1}{r}', effect: {class: 'Terraform'}},
   {name: 'Inferno Booster', cost: '{g}', requirement: {class: 'CW'}, effect: {class: 'Rally', amount: 1, targetColor: 'Red', targetCategory: 'Creature'}}]},
-
-{id: 'EmberstormCyclone', name: 'Emberstorm Cyclone', rarity: 'Rare', image: 'Cards/egr/EmberstormCyclone.png', flavor: '', 
- category: 'Spell', color: 'Red', type: 'Fire', cost: '{1}{r}', set: 'ElementaGenesis',
- skill: [{name: 'Cast', cost: '{r}{r}', effect: [{class: 'Burn', amount: 2, target:3}, {class: 'Bind', amount: 0, target:3}, {class: 'Cast'}]}]},
 
 {id: 'Emberling', name: 'Emberling', rarity: 'Common', image: 'Cards/egr/Emberling.png', flavor: '',
  category: 'Creature', color: 'Red', type: ['Fire','Beast'], hp: 2, atk: 1, cost: '{0}', ability: ['Burn','Rush'], set: 'ElementaGenesis',
@@ -1767,6 +1762,11 @@ skill: [{name: 'Cast', cost: '{1}{b}', description: 'Destroy a creature afflicte
                    {class: 'Inspire', ability: 'Immunity'}, {class: 'Inspire', def: 1}]},
  ]},
 
+{id: 'ElementalofFoliages', name: 'Elemental of Foliages', rarity: 'Rare', image: 'Cards/ecg/ElementalofFoliages.png', flavor: '', 
+ category: 'Creature', color: 'Green', type: ['Verdant','Spirit'], hp: 8, atk: 3, cost: '{2}',  ability: ['Protect','Regenerate'], set: 'EchoesofCreation',
+ skill: [{name: 'Sylvan Discovery', cost: '{g}{g}', effect: [{class: 'Summon'}, {class: 'Search', targetColor: 'Green', targetCategory: 'Terrain'}]},
+ ]},
+ 
 {id: 'WildwoodGoblin', name: 'Wildwood Goblin', rarity: 'Common', image: 'Cards/egg/WildwoodGoblin.png', flavor: '',
  category: 'Creature', color: 'Green', type: 'Goblin', hp: 3, atk: 1, cost: '{0}', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{0}', effect: {class: 'Summon'}}]},
