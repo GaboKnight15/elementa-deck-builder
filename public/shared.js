@@ -265,6 +265,10 @@ const dummyCards = [
  skill: [{name: 'Cast', cost: '{1}', effect: [{class: 'Draw', amount: 2}, {class: 'Cast'}]}]},
 
 // --- EG YELLOW --- //
+{id: 'Aetherion', name: 'Aetherion', rarity: 'Legend', image: 'Cards/egy/Aetherion.png', flavor: '', 
+ category: 'Terrain', color: 'Yellow', hp: 20, essence: '{y}', type: ['Tempest','Domain'], set: 'ElementaGenesis',
+ skill: [{name: 'Shock', cost: '{y}', requirement: {class: 'CW'}, effect: {class: 'Strike', amount: 2}}]},
+ 
 {id: 'GarudaAetherionWings', name: 'Garuda, AetherionWings', rarity: 'Legend', image: 'Cards/Zephyra/GarudaAetherionWings.png', flavor: '', 
  category: 'Creature', color: 'Yellow', type: ['Avian','Warrior'], hp: 5, atk: 2, cost: '{2}{y}', ability: 'Flying', set: 'ElementaGenesis', imageFullArt: 'Cards/Zephyra/GarudaAetherionWingsFA.png', 
  skill: [{name: 'Summon', cost: '{2}{y}', effect: {class: 'Summon'}},
@@ -280,10 +284,6 @@ const dummyCards = [
   {name: 'Thunderclap Tempo', cost: '{y}', requirement: {class:'Special'}, effect: {class: 'Flurry', amount: 1}},
   {name: 'Blade Tempest', cost: '{Y}{Y}', requirement: {class: 'Special'}, effect: {class: 'Strike', target: 3, amount: 2}}
  ]},
-         
-{id: 'Aetherion', name: 'Aetherion', rarity: 'Legend', image: 'Cards/egy/Aetherion.png', flavor: '', 
- category: 'Terrain', color: 'Yellow', hp: 20, essence: '{y}', type: ['Tempest','Domain'], set: 'ElementaGenesis',
- skill: [{name: 'Shock', cost: '{y}', requirement: {class: 'CW'}, effect: {class: 'Strike', amount: 2}}]},
          
 {id: 'GalestrikeRoc', name: 'Galestrike Roc', rarity: 'Rare', image: 'Cards/egy/GalestrikeRoc.png', flavor: '', 
  category: 'Creature', color: 'Yellow', type: 'Avian', hp: 5, atk: 3, cost: '{2}{y}', ability: 'Flying', set: 'ElementaGenesis',
