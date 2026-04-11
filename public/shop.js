@@ -552,24 +552,49 @@ function renderShopCosmetics({
 }) {
   const grid = document.getElementById(gridId);
   if (!grid) return;
+	
   let unlocked = (typeof getUnlocked === "function" ? getUnlocked() : []);
-  if (!Array.isArray(unlocked)) unlocked = [];     
+  if (!Array.isArray(unlocked)) unlocked = [];
+	
   grid.innerHTML = '';
 
-  options.forEach(opt => {
+  // Sort so NOT owned first, owned last
+  const sorted = options.slice().sort((a, b) => {
+    const aOwned = unlocked.includes(a.src);
+    const bOwned = unlocked.includes(b.src);
+    return Number(aOwned) - Number(bOwned); // false(0) first, true(1) last
+  });
+
+  sorted.forEach(opt => {
     const src = opt.src;
     const price = opt.price;
-    if (unlocked.includes(src)) return;
-	  
+    const owned = unlocked.includes(src);
+
     const wrapper = document.createElement('div');
     wrapper.className = wrapperClass;
-	  
+
     const img = document.createElement('img');
     img.src = src;
     img.className = imgClass;
-    img.style.cursor = 'pointer';
-	img.title = opt.name;
-	  
+    img.style.cursor = owned ? 'default' : 'pointer';
+    img.title = opt.name;
+
+    // Gray out owned cosmetics
+    if (owned) {
+      img.style.filter = 'grayscale(1) brightness(0.65)';
+      img.style.opacity = '0.85';
+
+      // Optional “Owned” badge (purely visual)
+      const ownedBadge = document.createElement('div');
+      ownedBadge.textContent = 'Owned';
+      ownedBadge.style.marginTop = '6px';
+      ownedBadge.style.fontSize = '0.95em';
+      ownedBadge.style.fontWeight = 'bold';
+      ownedBadge.style.color = '#9aa4b2';
+      ownedBadge.style.textAlign = 'center';
+      wrapper.appendChild(ownedBadge);
+    }
+
     const priceTag = document.createElement('span');
     priceTag.className = 'currency-display';
     priceTag.style.display = 'flex';
@@ -580,28 +605,42 @@ function renderShopCosmetics({
       <img class="currency-icon" src='Icons/Other/Coins.png' alt="Coins">
       <span>${price}</span>
     `;
-    img.onclick = function() {
-      showCosmeticConfirmModal({
-        imgSrc: src,
-		name: opt.name,
-        type: wrapperClass.replace('shop-','').replace('-option',''), // e.g. 'avatar'
-        price,
-        onConfirm: function(cb) {
-          purchaseCosmetic(price, function(done) {
-            if (!unlocked.includes(src)) {
-              unlocked.push(src);
-              setUnlocked(unlocked);
-            }
-            renderShopCosmetics({
-              gridId, options, getUnlocked, setUnlocked, unlockMsg, wrapperClass, imgClass
-            });
-            showToast(unlockMsg);
-            if (typeof window.renderPlayerPower === "function") window.renderPlayerPower();
-            if (typeof done === "function") done();
-          }, cb);
-        }
-      });
-    };
+
+    // Optional: hide price for owned items
+    if (owned) {
+      priceTag.style.opacity = '0.5';
+    }
+
+    if (!owned) {
+      img.onclick = function() {
+        showCosmeticConfirmModal({
+          imgSrc: src,
+          name: opt.name,
+          type: wrapperClass.replace('shop-','').replace('-option',''),
+          price,
+          onConfirm: function(cb) {
+            purchaseCosmetic(price, function(done) {
+              if (!unlocked.includes(src)) {
+                unlocked.push(src);
+                setUnlocked(unlocked);
+              }
+              renderShopCosmetics({
+                gridId, options, getUnlocked, setUnlocked, unlockMsg, wrapperClass, imgClass
+              });
+              showToast(unlockMsg);
+              if (typeof window.renderPlayerPower === "function") window.renderPlayerPower();
+              if (typeof done === "function") done();
+            }, cb);
+          }
+        });
+      };
+    } else {
+      // Optional: click owned item to preview only
+      img.onclick = function() {
+        if (typeof window.showToast === "function") showToast("Already owned.", { type: "info" });
+      };
+    }
+
     wrapper.appendChild(img);
     wrapper.appendChild(priceTag);
     grid.appendChild(wrapper);
@@ -616,7 +655,7 @@ function renderShopAvatars() {
       || (Array.isArray(opt.obtain) && opt.obtain.includes("shop"))),
     getUnlocked: getUnlockedAvatars,
     setUnlocked: setUnlockedAvatars,
-    unlockMsg: 'Avatar unlocked! Now available in your profile.',
+    unlockMsg: 'Avatar unlocked!',
     wrapperClass: 'shop-avatar-option',
     imgClass: 'shop-avatar-img'
   });
@@ -628,7 +667,7 @@ function renderShopBanners() {
 		|| (Array.isArray(opt.obtain) && opt.obtain.includes("shop"))),
     getUnlocked: getUnlockedBanners,
     setUnlocked: setUnlockedBanners,
-    unlockMsg: 'Banner unlocked! Now available in your profile.',
+    unlockMsg: 'Banner unlocked!',
     wrapperClass: 'shop-banner-option',
     imgClass: 'shop-banner-img'
   });
@@ -640,7 +679,7 @@ function renderShopCardbacks() {
 		|| (Array.isArray(opt.obtain) && opt.obtain.includes("shop"))),
     getUnlocked: getUnlockedCardbacks,
     setUnlocked: setUnlockedCardbacks,
-    unlockMsg: 'Cardback unlocked! Now available in your deck options.',
+    unlockMsg: 'Cardback unlocked!',
     wrapperClass: 'shop-cardback-option',
     imgClass: 'shop-cardback-img'
   });
