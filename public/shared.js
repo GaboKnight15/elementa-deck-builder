@@ -2521,6 +2521,11 @@ const allCardbackOptions = [
   { name: 'Grovehusk', src: 'Images/Cardback/Woodframe.png', rarity: 'Legend', price: 100, obtain: 'shop' }
 ];
 
+const allCardStyles = [
+	{ cardId: 'FaelyraWildhornEmpress', key: "fullArt", label: "Faelyra", rarity: 'Legend', price: 100, obtain: 'shop' },
+	{ cardId: 'Forest', key: "fullArt", label: "Forest", rarity: 'Common', price: 10, obtain: 'shop' },	
+];
+
 const packPrices = [
   { id: "HeroesAwaken", name: "Heroes Awaken", price: 100,
     image: 'Images/Pack/HeroesAwaken.png'
