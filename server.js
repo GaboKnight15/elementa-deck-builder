@@ -91,7 +91,20 @@ socket.on('profile', (profileObj) => {
     socket.to(socket.roomId).emit('opponent profile', profileObj);
   }
 });
+socket.on('opponent joined', (opponentId) => {
+  submitDeckToServer();
+  socket.emit('profile', getMyProfileInfo());
 
+  // NEW: send cosmetic selections
+  socket.emit('card styles', currentRoomId, window.playerCardStyles || {});
+});
+socket.on('opponent card styles', (styles) => {
+  window.opponentCardStyles = styles || {};
+});
+socket.on('card styles', (roomId, styles) => {
+  // Send to everyone else in the room (the opponent + spectators if you want)
+  socket.to(roomId).emit('opponent card styles', styles || {});
+});  
 socket.on('game message', (roomId, msg) => {
   io.to(roomId).emit('game message', {
     sender: socket.username,
