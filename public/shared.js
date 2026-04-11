@@ -2186,84 +2186,12 @@ paralysis: {name: "Paralized", description: "Cannot attack. Lasts 2 turns per st
 drenched: {name: "Drenched", description: "Loses -{1} {atk}."},
 withered: {name: "Withered", description: "Cannot be healed."},
 
-// --- WEATHER EFFECTS --- //
-sunlight: {name: "Sunlight", description: "Inferno +{1}/{0}. Radiance {0}/+{1}.", icon: "Icons/Weather/Sunlight.png" },
-sunburst: {name: "Sunburst", description: "Inferno +{2}/{0}. Radiance +{1}/+{1}.", icon: "Icons/Weather/Sunburst.png" },
-rain: {name: "Rain", description: "Tidal +{1}/{0}. Sylvan {0}/+{1}.", icon: "Icons/Weather/Rain.png" },
-downpour: {name: "Downpour", description: "Tidal +{1}/+{1}. Sylvan {0}/+{1}.", icon: "Icons/Weather/Downpour.png" },
-storm: {name: "Storm", description: "Tempest +{1}/{0}. Tidal {0}/+{1}.", icon: "Icons/Weather/Storm.png" },
-thunderstorm: {name: "Thunderstorm", description: "Tempest +{2}/{0}. Tidal {0}/+{1}.", icon: "Icons/Weather/Thunderstorm.png" },
-snowfall: {name: "Snowfall", description: "Frozen units lose 1 HP during the end step. Inspire {u} → Freeze.", icon: "Icons/Weather/Snowfall.png" },
-blizzard: {name: "Blizzard", description: "Non-{u} units lose 1 HP during the end step. Inspire {u} → Freeze.", icon: "Icons/Weather/Blizzard.png" },
-gale: {name: "Gale", description: "Tempest +{1}/{0}.", icon: "Icons/Weather/Gale.png" },
-hurricane: {name: "Hurricane", description: "Tempest +{2}/{0}.", icon: "Icons/Weather/Hurricane.png" },
-eruption: {name: "Eruption", description: "Inferno +{1}/{0}. Terra {0}/+{1}.", icon: "Icons/Weather/Eruption.png" },
-decay: {name: "decay", description: "Corrupted +{1}/+{1}.", icon: "Icons/Weather/Decay.png" },
-mystveil: {name: "Mystveil", description: "Sylvan +{1}/+{1}.", icon: "Icons/Weather/Mystveil.png" },
-
-// -------------------- //
-// --- TRAITs --- //
-// -------------------- //
-assembly: {name: "Assembly", description: "Summon from the hand | Attach selected spare parts.", icon: "Icons/Trait/Assembly.png" },
-evolve: {name: "Evolve", description: "Get an 'Evolve' counter.", icon: "Icons/Trait/Evolve.png" },
-evolution: {name: "Evolution", description: "Summon from the hand | Attach 1 unit of the same archetype that have an 'Evolve' counter on it.", icon: "Icons/Trait/Evolution.png" },
-voidEvolution: {name: "Void Evolution", description: "Summon from the hand/void | Attach 1 unit of the same type/archetype that have an 'Evolve' counter on it.", icon: "Icons/Trait/VoidEvolution.png" },
-fuse: {name: "Fuse", description: "Get a 'Fuse' counter.", icon: "Icons/Trait/Fuse.png" },
-fusion: {name: "Fusion", description: "Summon from the hand | Attach 2 units of the same archetype that have a 'Fuse' counter on it.", icon: "Icons/Trait/Fusion.png" },
-voidFusion: {name: "Void Fusion", description: "Summon from the hand/void | Attach 2 units of the same type/archetype that have a 'Fuse' counter on it.", icon: "Icons/Trait/VoidFusion.png" },
-transform: {name: "Transform", description: "Transforms unit by certain conditions | Attach it to the summoned unit", icon: "Icons/Trait/Transform.png" },
-warrior: {name: "Warrior", description: "Close combat units. If HP is below 1/3, gain {1}/{1}.", icon: "Icons/Trait/Warrior.png", ability: 'Protect',  },
-mage: {name: "Mage", description: "Can target flying and elusive creatures for attacks. Gain {1} Spd", icon: "Icons/Trait/Mage.png" },
-ranger: {name: "Ranger", description: "Can target flying creatures for attacks. Gain {2} Spd", icon: "Icons/Trait/Ranger.png" },
-// ARTIFACTS //
-relic: {name: "Relic", description: "Attach to Terrains of the same Color.", icon: "Icons/Trait/Relic.png" },
-equipment: {name: "Equipment", description: "Attach to Creatures of the same Color/Type/Archetype.", icon: "Icons/Trait/Equipment.png" },
-// SPELLS //
-aura: {name: "Aura", description: "Attach to creatures.", icon: "Icons/Trait/Aura.png" },
-enchantment: {name: "Enchantment", description: "Attach to lands.", icon: "Icons/Trait/Enchantment.png" },
-
-// ----- //
-// TYPES //
-// ----- //
-avian: {name: "Construct", icon: "Icons/Type/Avian.png" , ability: 'Flying', description: "Graceful and fierce, the avians rule the skies with wisdom born of the wind. From mountaintop sanctuaries they watch the shifting lands below, their keen eyes ever wary, their hearts bound to the endless horizon. Whether messengers of dawn or harbingers of storm, the Avians embody freedom itself — swift, untouchable, and guided by the breath of the heavens."},
-beast: {name: "Beast", icon: "Icons/Type/Beast.png", ability: 'Rush', description: "Untamed and primal, beasts embody the raw pulse of nature unshaped by reason or restraint. From the silent hunter stalking through shadowed woods to the thunderous titan that shakes the earth, each creature moves with instinctive purpose. Though driven by hunger and survival, beasts are more than mere savagery — they are the heartbeat of the wild, the first language of a world that remembers no masters."},
-brute: {name: "Brute", icon: "Icons/Type/Brute.png", description: "Savage and unyielding, the Brute are forged in struggle and bound by blood. They thrive where strength is law and survival the only creed, their lives shaped by war, hunger, and the will to endure. Though scorned as beasts by softer races, they bear a primal honor — a truth carved in scars and fire. To face the Brute is to meet the raw, untamed spirit of the world before it learned mercy."},
-construct: {name: "Construct", icon: "Icons/Type/Construct.png", ability: 'Armor', description: "Forged by mortal hands yet animated by unnatural will, constructs stand as monuments to creation without life. Some serve with perfect obedience, others wander seeking the purpose their makers abandoned. Whether wrought from steel, stone, or enchanted coral, each construct bears the echo of its creator’s intent — a silent testament to the line between genius and hubris."},
-demon: {name: "Demon", icon: "Icons/Type/Demon.png", description: "Born from malice, ambition, and the echoes of forsaken gods, demons are the chaos that festers beneath creation. They thrive in conflict, feeding on desire, fear, and despair — yet each is bound by its own cunning will. To mortals they appear as nightmares made flesh, but to themselves they are architects of freedom, tearing down the fragile order that cages the world. Their power is corruption, and their truth — liberation through ruin."},
-dragon: {name: "Dragon", icon: "Icons/Type/Dragon.png", description: "Majestic, ancient, and unmatched in power, dragons embody the primal forces of creation and destruction. Each scale glimmers with the legacy of ages, and each breath reshapes the world itself. Though their temperaments vary—from wise guardians to wrathful tyrants—all dragons command awe and fear in equal measure, their presence a living reminder that the elements themselves can take form and will."},
-elemental: {name: "Elemental", icon: "Icons/Type/Elemental.png", description: "Primordial and eternal, elementals are the living essence of the world’s raw forces. They are not born, but awakened; the whisper of wind given voice, the heartbeat of stone given motion. Neither good nor evil, they embody balance, shaping creation with every surge of flame, wave, or storm."},
-faefolk: {name: "Faefolk", icon: "Icons/Type/Faefolk.png" , description: "Enigmatic and timeless, the Faefolk dwell where wonder and deceit intertwine. They are the laughter in moonlit groves, the whispers between leaves, and the shimmer at the edge of mortal sight. Guided by whim as much as wisdom, their magic bends nature’s laws with effortless grace — nurturing or destroying with the same delicate hand. To bargain with the Faefolk is to dance with beauty and peril alike."},
-human: {name: "Human", icon: "Icons/Type/Human.png", description: ""},
-undead: {name: "Undead", icon: "Icons/Type/Human.png", description: "" },
-celestial: {name: "Celestial", icon: "Icons/Type/Celestial.png", description: "Beacons of divinity and order, the celestials are born of pure light and cosmic harmony. Their presence bends the heavens and stills the storms, for they are the will of creation made radiant. Guided by purpose beyond mortal grasp, they bring both mercy and judgment — for in their eyes, salvation and destruction are but reflections of balance restored."},
-
-golem: {name: "Golem", profile: { hp: 4, atk: 10, def: 2, spd: 9, hc: 3, ep: 8 }, icon: "Icons/Archetype/Golem.png" , ability: 'Armor', description: "Forged from stone, metal, and elemental essence, golems are unstoppable engines of brute force. Their armored bodies shrug off attacks, while their immense strength allows them to exploit every weakness in their foes. Patient yet relentless, golems dominate the battlefield, their elemental fury leaving devastation in their calculated, crushing path."},
-
 // --- Undead --- //
 skullframe: {name: "Skullframe", profile: { hp: 4, atk: 10, def: 2, spd: 9, hc: 3, ep: 5 }, icon: "Icons/Archetype/Skullframe.png" , description: "Clad in bone and bound by forbidden sorcery, the Skullframe march as deathless engines of war. When shattered, dark magic stitches marrow and spirit back together, raising them anew. Masters of necrotic arts and relentless persistence, the Skullframe are an archetype of inevitability, overwhelming foes with grim magic and unending reanimation until nothing living remains to resist."},
 
 // --- Celestial --- //
 seraph: {name: "Seraph", profile: { hp: 9, atk: 4, def: 8, spd: 4, hc: 3, ep: 4 }, icon: "Icons/Archetype/Seraph.png" , ability: 'Flying', description: "Born of radiant light and celestial grace, the Seraph soar above the battlefield as guardians and warriors. Their wings gleam with divine energy, and their presence purifies and inspires those around them. Majestic and unwavering, they strike with the justice of the heavens, defending the innocent and smiting darkness wherever it dwells."},
 
-// --- Beast --- //
-mythical: {name: "Mythic", profile: { hp: 8, atk: 7, def: 4, spd: 5, hc: 2, ep: 3 }, icon: "Icons/Archetype/mythic.png" , description: "Ferocious and untamed, Hybrids roam the wilds with bodies forged from multiple forms. With the strength of a bull, the speed of a stag, or the cunning of a fox, each beast strikes fear into those who cross their path. Raw instincts and primal power guide them, making every encounter with a Hybrid a savage test of survival."},
-
-// --- Faefolk --- //
-fairy: {name: "Fairy", profile: { hp: 1, atk: 8, def: 2, spd: 8, hc: 2, ep: 10 }, icon: "Icons/Type/Fairy.png", ability: 'Flying', description: "Delicate yet mischievous, fairies flit through forests and meadows, their presence leaving trails of sparkling light. Though small, they wield surprising magic, weaving illusions and enchantments to protect their homes or play tricks on unwary travelers. Their beauty belies a cunning and spirited nature, always dancing between wonder and mischief."},
-elf: {name: "Elf", profile: { hp: 6, atk: 6, def: 4, spd: 6, hc: 2, ep: 7 }, icon: "Icons/Type/Elf.png", description: "Graceful and eternal, elves move with the harmony of the forests they protect. Skilled in both magic and archery, they strike with precision and wisdom, blending into nature as if part of it. Their keen senses and ancient knowledge make them formidable guardians, defending their realms with elegance, patience, and unwavering resolve."},
-satyr: {name: "Satyr", profile: { hp: 7, atk: 5, def: 5, spd: 5, hc: 3, ep: 8 }, icon: "Icons/Type/Satyr.png", description: "Wild-hearted and cunning, Satyrs embody the untamed spirit of nature. Their laughter echoes through moonlit groves as they dance between mischief and wisdom, balancing chaos and creation. Though their revels seem carefree, Satyrs are fierce protectors of their forests—striking swiftly with wit, charm, and primal magic when their woodland sanctuaries are threatened."},
-
-// --- Brute --- // 
-goblin: {name: "Goblin", profile: { hp: 2, atk: 7, def: 2, spd: 5, hc: 2, ep: 7 }, icon: "Icons/Type/Goblin.png", description: "Small, cunning, and endlessly resourceful, goblins thrive in hidden warrens and shadowed corners. They scurry with mischievous intent, ambushing foes and exploiting every weakness. Though individually weak, they strike in numbers, their chaotic energy turning even the simplest skirmish into unpredictable mayhem."},
-orc: {name: "Orcs", profile: { hp: 9, atk: 6, def: 8, spd: 3, hc: 1, ep: 1 }, icon: "Icons/Type/Orc.png", description: "Brutal, relentless, and fiercely proud, orcs thrive on the chaos of battle. Their strength and endurance make them formidable warriors, while their tribal bonds and warlike culture drive them to conquer and dominate. Though often feared for their ferocity, orcs are bound by honor within their clans, turning raw power into disciplined, devastating force."},
-dwarf: {name: "Dwarf", profile: { hp: 8, atk: 5, def: 9, spd: 1, hc: 3, ep: 3 }, icon: "Icons/Type/Dwarf.png", description: "Stout and steadfast, dwarves are master smiths and artisans, shaping stone and metal with unmatched skill. Their halls echo with hammer strikes and the roar of furnaces, as they craft weapons, armor, and treasures of legend quality. Fierce in defense and meticulous in craft, dwarves embody endurance, precision, and the enduring strength of their mountain homes."},
-arbor: {name: "Arbor", profile: { hp: 9, atk: 1, def: 6, spd: 3, hc: 7, ep: 10 }, icon: "Icons/Archetype/Arbor.png", description: "Born of roots, bark, and the living green of forests, the Arbor are guardians of nature’s heart. Their limbs weave and grow with unstoppable force, entangling foes and protecting the land. Patient yet relentless, they draw strength from the earth, turning forests into living battlegrounds where every vine and branch is a weapon."},
-
-// ---------- //
-// ARCHETYPES //
-// ---------- //
-	
-// --- Avian --- //
 /*pyreclad: {name: "Pyreclad", profile: { hp: 1, atk: 8, def: 2, spd: 8, hc: 2, ep: 8 }, icon: "Icons/Archetype/Pyreclad.png" , description: "Born from blazing skies and molten embers, the Pyreclad are fierce avians wreathed in fire. Some bear armor forged in volcanic heat, turning them into flying fortresses of flame. Swift and relentless, they scorch the battlefield with fiery talons and blazing wings, leaving nothing but ash in their wake."},
 voltwing: {name: "Voltwing", profile: { hp: 1, atk: 8, def: 1, spd: 10, hc: 3, ep: 10 }, icon: "Icons/Archetype/Voltwing.png" , description: "Born of storm and sky, the Voltwings are avians whose wings crackle with raw electricity. They dive with blinding speed, striking with piercing thunder that rends the air and scorches the battlefield. Agile and relentless, Voltwings are living lightning, their attacks swift, precise, and impossible to evade."},
 zephyra: {name: "Zephyra", profile: { hp: 5, atk: 6, def: 5, spd: 9, hc: 1, ep: 8 }, icon: "Icons/Archetype/Voltwing.png" , description: "Born of storm and sky, the Voltwings are avians whose wings crackle with raw electricity. They dive with blinding speed, striking with piercing thunder that rends the air and scorches the battlefield. Agile and relentless, Voltwings are living lightning, their attacks swift, precise, and impossible to evade."},
@@ -2306,6 +2234,80 @@ solarwyrm: {name: "Solarwyrm", profile: { hp: 8, atk: 5, def: 6, spd: 6, hc: 5, 
 nightshroud: {name: "Nightshroud", profile: { hp: 6, atk: 7, def: 3, spd: 6, hc: 4, ep: 6 }, icon: "Icons/Archetype/Nightshroud.png" , description: "Born from the abyss of endless night, the Nightshrouds are dragons wreathed in shadow and silence. Their scales absorb the faintest light, and their movements are whispers across the battlefield. Masters of stealth and dread, they strike from darkness, leaving fear and uncertainty in their wake, as if the night had taken form to hunt."},
 glimmerscale: {name: "Glimmerscale", profile: { hp: 4, atk: 10, def: 2, spd: 9, hc: 3, ep: 8 }, icon: "Icons/Archetype/Glimmerscale.png" , description: "Born of starlight and shimmering wings, the Glimmerscale are fairy-dragons whose radiant power is as enchanting as it is devastating. They weave between grace and fury, purifying corruption with gleaming light before unleashing searing, luminous strikes. Defined by their dual nature of elegance and ferocity, they are an archetype that blinds foes with brilliance, striking down darkness in a cascade of radiant fire."},  
 */};
+
+const TYPES = {
+	// CREATURE //
+	angel: {name: "Angel", icon: "Icons/Type/Angel.png", description: "Beacons of divinity and order, the celestials are born of pure light and cosmic harmony. Their presence bends the heavens and stills the storms, for they are the will of creation made radiant. Guided by purpose beyond mortal grasp, they bring both mercy and judgment — for in their eyes, salvation and destruction are but reflections of balance restored."},
+	avian: {name: "Construct", icon: "Icons/Type/Avian.png" , ability: 'Flying', description: "Graceful and fierce, the avians rule the skies with wisdom born of the wind. From mountaintop sanctuaries they watch the shifting lands below, their keen eyes ever wary, their hearts bound to the endless horizon. Whether messengers of dawn or harbingers of storm, the Avians embody freedom itself — swift, untouchable, and guided by the breath of the heavens."},
+	beast: {name: "Beast", icon: "Icons/Type/Beast.png", ability: 'Rush', description: "Untamed and primal, beasts embody the raw pulse of nature unshaped by reason or restraint. From the silent hunter stalking through shadowed woods to the thunderous titan that shakes the earth, each creature moves with instinctive purpose. Though driven by hunger and survival, beasts are more than mere savagery — they are the heartbeat of the wild, the first language of a world that remembers no masters."},
+	bone: {name: "Bone", profile: { hp: 0, atk: 0, def: 0, spd: 0, hc: 0, ep: 0 }, icon: "Icons/Type/Bone.png" , description: ""},
+	demon: {name: "Demon", icon: "Icons/Type/Demon.png", description: "Born from malice, ambition, and the echoes of forsaken gods, demons are the chaos that festers beneath creation. They thrive in conflict, feeding on desire, fear, and despair — yet each is bound by its own cunning will. To mortals they appear as nightmares made flesh, but to themselves they are architects of freedom, tearing down the fragile order that cages the world. Their power is corruption, and their truth — liberation through ruin."},
+	dragon: {name: "Dragon", icon: "Icons/Type/Dragon.png", description: "Majestic, ancient, and unmatched in power, dragons embody the primal forces of creation and destruction. Each scale glimmers with the legacy of ages, and each breath reshapes the world itself. Though their temperaments vary—from wise guardians to wrathful tyrants—all dragons command awe and fear in equal measure, their presence a living reminder that the elements themselves can take form and will."},
+	ghost: {name: "Ghost", profile: { hp: 0, atk: 0, def: 0, spd: 0, hc: 0, ep: 0 }, icon: "Icons/Type/Ghost.png" , description: ""},
+	harpy: {name: "Harpy", profile: { hp: 0, atk: 0, def: 0, spd: 0, hc: 0, ep: 0 }, icon: "Icons/Type/Harpy.png" , description: ""},
+	marine: {name: "Marine", profile: { hp: 0, atk: 0, def: 0, spd: 0, hc: 0, ep: 0 }, icon: "Icons/Type/Marine.png" , description: ""},
+	merfolk: {name: "Merfolk", profile: { hp: 0, atk: 0, def: 0, spd: 0, hc: 0, ep: 0 }, icon: "Icons/Type/Merfolk.png" , description: ""},
+	spirit: {name: "Spirit", profile: { hp: 0, atk: 0, def: 0, spd: 0, hc: 0, ep: 0 }, icon: "Icons/Type/Spirit.png" , description: ""},
+	zombie: {name: "Zombie", profile: { hp: 0, atk: 0, def: 0, spd: 0, hc: 0, ep: 0 }, icon: "Icons/Type/Zombie.png" , description: ""},
+
+	// AFFINITY - ATTRIBUTE //
+	corrupted: {name: "Corrupted", profile: { hp: 0, atk: 0, def: 0, spd: 0, hc: 0, ep: 0 }, icon: "Icons/Type/Corrupted.png" , description: ""},
+	dark: {name: "Dark", profile: { hp: 0, atk: 0, def: 0, spd: 0, hc: 0, ep: 0 }, icon: "Icons/Type/Dark.png" , description: ""},
+	fire: {name: "Fire", profile: { hp: 0, atk: 0, def: 0, spd: 0, hc: 0, ep: 0 }, icon: "Icons/Type/Fire.png" , description: ""},
+	ice: {name: "Ice", profile: { hp: 0, atk: 0, def: 0, spd: 0, hc: 0, ep: 0 }, icon: "Icons/Type/Ice.png" , description: ""},
+	light: {name: "Light", profile: { hp: 0, atk: 0, def: 0, spd: 0, hc: 0, ep: 0 }, icon: "Icons/Type/Light.png" , description: ""},
+	nature: {name: "Nature", profile: { hp: 0, atk: 0, def: 0, spd: 0, hc: 0, ep: 0 }, icon: "Icons/Type/Nature.png" , description: ""},
+	mythical: {name: "Mythic", profile: { hp: 8, atk: 7, def: 4, spd: 5, hc: 2, ep: 3 }, icon: "Icons/Type/Mythical.png" , description: "Ferocious and untamed, Hybrids roam the wilds with bodies forged from multiple forms. With the strength of a bull, the speed of a stag, or the cunning of a fox, each beast strikes fear into those who cross their path. Raw instincts and primal power guide them, making every encounter with a Hybrid a savage test of survival."},
+	rock: {name: "Rock", profile: { hp: 0, atk: 0, def: 0, spd: 0, hc: 0, ep: 0 }, icon: "Icons/Type/Rock.png" , description: ""},
+	sand: {name: "Sand", profile: { hp: 0, atk: 0, def: 0, spd: 0, hc: 0, ep: 0 }, icon: "Icons/Type/Sand.png" , description: ""},
+	steel: {name: "Steel", profile: { hp: 0, atk: 0, def: 0, spd: 0, hc: 0, ep: 0 }, icon: "Icons/Type/Steel.png" , description: ""},
+	shadow: {name: "Shadow", profile: { hp: 0, atk: 0, def: 0, spd: 0, hc: 0, ep: 0 }, icon: "Icons/Type/Shadow.png" , description: ""},
+	thunder: {name: "Thunder", profile: { hp: 0, atk: 0, def: 0, spd: 0, hc: 0, ep: 0 }, icon: "Icons/Type/Thunder.png" , description: ""},
+	toxic: {name: "Toxic", profile: { hp: 0, atk: 0, def: 0, spd: 0, hc: 0, ep: 0 }, icon: "Icons/Type/Toxic.png" , description: ""},
+	verdant: {name: "Verdant", profile: { hp: 0, atk: 0, def: 0, spd: 0, hc: 0, ep: 0 }, icon: "Icons/Type/Verdant.png" , description: ""},
+	water: {name: "Water", profile: { hp: 0, atk: 0, def: 0, spd: 0, hc: 0, ep: 0 }, icon: "Icons/Type/Water.png" , description: ""},
+	wind: {name: "Wind", profile: { hp: 0, atk: 0, def: 0, spd: 0, hc: 0, ep: 0 }, icon: "Icons/Type/Wind.png" , description: ""},
+
+	// FAEFOLK //
+	fairy: {name: "Fairy", profile: { hp: 1, atk: 8, def: 2, spd: 8, hc: 2, ep: 10 }, icon: "Icons/Type/Fairy.png", ability: 'Flying', description: "Delicate yet mischievous, fairies flit through forests and meadows, their presence leaving trails of sparkling light. Though small, they wield surprising magic, weaving illusions and enchantments to protect their homes or play tricks on unwary travelers. Their beauty belies a cunning and spirited nature, always dancing between wonder and mischief."},
+	elf: {name: "Elf", profile: { hp: 6, atk: 6, def: 4, spd: 6, hc: 2, ep: 7 }, icon: "Icons/Type/Elf.png", description: "Graceful and eternal, elves move with the harmony of the forests they protect. Skilled in both magic and archery, they strike with precision and wisdom, blending into nature as if part of it. Their keen senses and ancient knowledge make them formidable guardians, defending their realms with elegance, patience, and unwavering resolve."},
+	satyr: {name: "Satyr", profile: { hp: 7, atk: 5, def: 5, spd: 5, hc: 3, ep: 8 }, icon: "Icons/Type/Satyr.png", description: "Wild-hearted and cunning, Satyrs embody the untamed spirit of nature. Their laughter echoes through moonlit groves as they dance between mischief and wisdom, balancing chaos and creation. Though their revels seem carefree, Satyrs are fierce protectors of their forests—striking swiftly with wit, charm, and primal magic when their woodland sanctuaries are threatened."},
+
+	// BRUTE // 
+	goblin: {name: "Goblin", profile: { hp: 2, atk: 7, def: 2, spd: 5, hc: 2, ep: 7 }, icon: "Icons/Type/Goblin.png", description: "Small, cunning, and endlessly resourceful, goblins thrive in hidden warrens and shadowed corners. They scurry with mischievous intent, ambushing foes and exploiting every weakness. Though individually weak, they strike in numbers, their chaotic energy turning even the simplest skirmish into unpredictable mayhem."},
+	orc: {name: "Orcs", profile: { hp: 9, atk: 6, def: 8, spd: 3, hc: 1, ep: 1 }, icon: "Icons/Type/Orc.png", description: "Brutal, relentless, and fiercely proud, orcs thrive on the chaos of battle. Their strength and endurance make them formidable warriors, while their tribal bonds and warlike culture drive them to conquer and dominate. Though often feared for their ferocity, orcs are bound by honor within their clans, turning raw power into disciplined, devastating force."},
+	dwarf: {name: "Dwarf", profile: { hp: 8, atk: 5, def: 9, spd: 1, hc: 3, ep: 3 }, icon: "Icons/Type/Dwarf.png", description: "Stout and steadfast, dwarves are master smiths and artisans, shaping stone and metal with unmatched skill. Their halls echo with hammer strikes and the roar of furnaces, as they craft weapons, armor, and treasures of legend quality. Fierce in defense and meticulous in craft, dwarves embody endurance, precision, and the enduring strength of their mountain homes."},
+	arbor: {name: "Arbor", profile: { hp: 9, atk: 1, def: 6, spd: 3, hc: 7, ep: 10 }, icon: "Icons/Type/Arbor.png", description: "Born of roots, bark, and the living green of forests, the Arbor are guardians of nature’s heart. Their limbs weave and grow with unstoppable force, entangling foes and protecting the land. Patient yet relentless, they draw strength from the earth, turning forests into living battlegrounds where every vine and branch is a weapon."},
+
+	// VESSEL //
+	golem: {name: "Golem", profile: { hp: 4, atk: 10, def: 2, spd: 9, hc: 3, ep: 8 }, icon: "Icons/Type/Golem.png" , ability: 'Armor', description: "Forged from stone, metal, and elemental essence, golems are unstoppable engines of brute force. Their armored bodies shrug off attacks, while their immense strength allows them to exploit every weakness in their foes. Patient yet relentless, golems dominate the battlefield, their elemental fury leaving devastation in their calculated, crushing path."},
+	construct: {name: "Construct", icon: "Icons/Type/Construct.png", ability: 'Armor', description: "Forged by mortal hands yet animated by unnatural will, constructs stand as monuments to creation without life. Some serve with perfect obedience, others wander seeking the purpose their makers abandoned. Whether wrought from steel, stone, or enchanted coral, each construct bears the echo of its creator’s intent — a silent testament to the line between genius and hubris."},
+	elemental: {name: "Elemental", icon: "Icons/Type/Elemental.png", description: "Primordial and eternal, elementals are the living essence of the world’s raw forces. They are not born, but awakened; the whisper of wind given voice, the heartbeat of stone given motion. Neither good nor evil, they embody balance, shaping creation with every surge of flame, wave, or storm."},
+
+	// TRAITS //
+	armored: {name: "Armored", profile: { hp: 0, atk: 0, def: 0, spd: 0, hc: 0, ep: 0 }, icon: "Icons/Type/Armored.png" , description: ""},
+	assembly: {name: "Assembly", description: "Summon from the hand | Attach selected spare parts.", icon: "Icons/Trait/Assembly.png" },
+	domain: {name: "Domain", profile: { hp: 0, atk: 0, def: 0, spd: 0, hc: 0, ep: 0 }, icon: "Icons/Type/Domain.png" , description: ""},
+	evolve: {name: "Evolve", description: "Get an 'Evolve' counter.", icon: "Icons/Trait/Evolve.png" },
+	evolution: {name: "Evolution", description: "Summon from the hand | Attach 1 unit of the same archetype that have an 'Evolve' counter on it.", icon: "Icons/Trait/Evolution.png" },
+	fuse: {name: "Fuse", description: "Get a 'Fuse' counter.", icon: "Icons/Trait/Fuse.png" },
+	fusion: {name: "Fusion", description: "Summon from the hand | Attach 2 units of the same archetype that have a 'Fuse' counter on it.", icon: "Icons/Trait/Fusion.png" },
+	transform: {name: "Transform", description: "Transforms unit by certain conditions | Attach it to the summoned unit", icon: "Icons/Trait/Transform.png" },
+	warrior: {name: "Warrior", description: "Close combat units. If HP is below 1/3, gain {1}/{1}.", icon: "Icons/Trait/Warrior.png", ability: 'Protect',  },
+	mage: {name: "Mage", description: "Can target flying and elusive creatures for attacks. Gain {1} Spd", icon: "Icons/Trait/Mage.png" },
+	rogue: {name: "Rogue", profile: { hp: 0, atk: 0, def: 0, spd: 0, hc: 0, ep: 0 }, icon: "Icons/Type/Rogue.png" , description: ""},
+	ranger: {name: "Ranger", description: "Can target flying creatures for attacks. Gain {2} Spd", icon: "Icons/Trait/Ranger.png" },
+	token: {name: "Token", profile: { hp: 0, atk: 0, def: 0, spd: 0, hc: 0, ep: 0 }, icon: "Icons/Type/Token.png" , description: ""},
+	// ARTIFACTS //
+	relic: {name: "Relic", description: "Attach to Terrains of the same Color.", icon: "Icons/Trait/Relic.png" },
+	equipment: {name: "Equipment", description: "Attach to Creatures of the same Color/Type/Archetype.", icon: "Icons/Trait/Equipment.png" },
+	weather: {name: "Weather", profile: { hp: 0, atk: 0, def: 0, spd: 0, hc: 0, ep: 0 }, icon: "Icons/Type/Weather.png" , description: ""},
+	// SPELLS //
+	aura: {name: "Aura", description: "Attach to creatures.", icon: "Icons/Trait/Aura.png" },
+	enchantment: {name: "Enchantment", description: "Attach to lands.", icon: "Icons/Trait/Enchantment.png" },
+  // ...
+};
+
 const profileArea            = document.getElementById('profile-area'); 
 const profileMenu            = document.getElementById('profile-menu');
 const profilePic             = document.getElementById('profile-pic');
@@ -2791,7 +2793,19 @@ function normalizeKey(s) {
   if (!s && s !== 0) return '';
   return String(s).toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/g, '');
 }
+function getTypeId(typeName) {
+  return normalizeKey(typeName); // "Dragon" -> "dragon"
+}
 
+function getTypeDef(typeNameOrId) {
+  const id = CARD_TYPES[typeNameOrId] ? typeNameOrId : getTypeId(typeNameOrId);
+  return CARD_TYPES[id] || null;
+}
+
+function getAllTypeNamesInOrder() {
+  const ids = CARD_TYPE_ORDER.length ? CARD_TYPE_ORDER : Object.keys(CARD_TYPES);
+  return ids.map(id => CARD_TYPES[id].name);
+}
 // Return icon URL for a keyword (type/ability/archetype/trait/etc.)
 function getKeywordIcon(name) {
   if (!name) return null;
@@ -2815,6 +2829,8 @@ function getKeywordIconPath(token) {
   const key = normalizeKey(token);
   let entry = map[key];
 
+  const typeDef = getTypeDef(token);
+  if (typeDef?.icon) return typeDef.icon;
   // fallback attempts: sometimes callers pass already-normalized keys or different casing
   if (!entry) {
     const lower = String(token).toLowerCase();
