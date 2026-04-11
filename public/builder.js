@@ -44,33 +44,15 @@ const deckCardbackImg = document.getElementById('deck-cardback-img');
 const deckCardbackModal = document.getElementById('deck-cardback-modal');
 const deckCardbackArtList = document.getElementById('deck-cardback-art-list');
 const closeDeckCardbackModalBtn = document.getElementById('close-deck-cardback-modal');
-// DOMINION MODAL
-const dominionModal = document.getElementById('dominion-selection-modal');
-const dominionGrid = document.getElementById('dominion-grid');
-const closeDominionModalBtn = document.getElementById('close-dominion-modal-btn');
+// DOMAIN MODAL
+const domainModal = document.getElementById('domain-selection-modal');
+const domainGrid = document.getElementById('domain-grid');
+const closeDomainModalBtn = document.getElementById('close-domain-modal-btn');
 let deckBuilderDraft = null;   // null = not currently editing; object = current draft mapping cardId->count
 let deckBuilderDirty = false;  // true when draft differs from saved deck
 let showFavoritesOnlyBuilder = false;
 
-const AUTOFILL_COLORS = [
-  { name: "Green", icon: 'Icons/Essence/Green.png' },
-  { name: "Red", icon: 'Icons/Essence/Red.png' },
-  { name: "Blue", icon: 'Icons/Essence/Blue.png' },
-  { name: "White", icon: 'Icons/Essence/White.png' },
-  { name: "Black", icon: 'Icons/Essence/Black.png' },
-  { name: "Yellow", icon: 'Icons/Essence/Yellow.png' },
-  { name: "Gray", icon: 'Icons/Essence/Gray.png' },
-  { name: "Purple", icon: 'Icons/Essence/Purple.png' },
-];
-const AUTOFILL_TYPES = [
-  "Beast", "Brute", "Construct", "Demon", "Dragon", "Elemental", "Faefolk", "Undead"
-];
-const AUTOFILL_ARCHETYPES = [
-  "Abyssdrake","Blazefeather","Blazingscale","Cindercore","Coralbound","Corruptor","Duskwing","Dwarf","Elf","Fireland",
-  "Frostland","Goblin","Hydral","Golemheart","Moonfang","Orc","Plagueaxis","Pyroclast","Satyr","Skullframe","Stormrazor",
-  "Thornwing","Voltwing","Zephyra"
-];
-const DOMINION_CARDS = [
+const DOMAIN_CARDS = [
   'Verdara',
   'Magmaris', 
   'Umarion',
@@ -80,7 +62,6 @@ const DOMINION_CARDS = [
   'Solmara',
   'Noctyra'
 ];
-// Show modal when autofill icon clicked
 
 document.getElementById('filter-name-builder').addEventListener('input', renderBuilder);
 document.getElementById("builder-filter-btn").onclick = () => {
@@ -89,9 +70,7 @@ document.getElementById("builder-filter-btn").onclick = () => {
     renderBuilder(filteredCards);
   });
 };
-document.getElementById('builder-autofill-btn').onclick = function() {
-  showAutofillModal();
-};
+
 document.getElementById('builder-settings-btn').onclick = function() {
   document.getElementById('settings-modal').style.display = 'flex';
 };
@@ -137,14 +116,14 @@ function deckBuilderHasUnsavedChanges() {
 const saveDeckImg = document.getElementById('save-deck-img') || document.getElementById('save-deck-btn');
 if (saveDeckImg) {
   saveDeckImg.onclick = function() {
-    // Validate dominion count on the draft (if editing) or the saved deck if not
+    // Validate domain count on the draft (if editing) or the saved deck if not
     const deckToCheck = deckBuilderDraft !== null ? deckBuilderDraft : (getCurrentDeck() || {});
-    const dominionCount = Object.entries(deckToCheck).reduce((sum, [cardId, count]) => {
+    const domainCount = Object.entries(deckToCheck).reduce((sum, [cardId, count]) => {
       const card = dummyCards.find(c => c.id === cardId);
-      return sum + ((card && card.trait && String(card.trait).toLowerCase() === 'dominion') ? Number(count) : 0);
+      return sum + ((card && card.trait && String(card.trait).toLowerCase() === 'domain') ? Number(count) : 0);
     }, 0);
-    if (dominionCount !== 1) {
-      showToast("Deck must have exactly one Dominion card.", { type: "error" });
+    if (domainCount !== 1) {
+      showToast("Deck must have exactly one domain card.", { type: "error" });
       return;
     }
 
@@ -844,19 +823,19 @@ document.addEventListener('drop', function(e) {
     renderBuilder();
   }
 });
-// --- DOMINION SELECTION MODAL --- //
-function showDominionSelectionModal() {
-  dominionModal.style.display = 'flex';
-  dominionGrid.innerHTML = '';
+// --- DOMAIN SELECTION MODAL --- //
+function showDomainSelectionModal() {
+  domainModal.style.display = 'flex';
+  domainGrid.innerHTML = '';
 
   const deck = getCurrentDeck();
-  const currentDominion = Object.keys(deck).find(cardId => {
+  const currentDomain = Object.keys(deck).find(cardId => {
     const card = dummyCards.find(c => c.id === cardId);
-    return card && isDominion(card);
+    return card && isDomain(card);
   });
 
-  DOMINION_CARDS.forEach(dominionId => {
-    const card = dummyCards.find(c => c.id === dominionId);
+  DOMAIN_CARDS.forEach(domainId => {
+    const card = dummyCards.find(c => c.id === domainId);
     if (!card) return;
 
     const wrapper = document.createElement('div');
@@ -866,16 +845,16 @@ function showDominionSelectionModal() {
     img.src = card.image;
     img.alt = card.name;
     img.title = card.name;
-    img.className = 'dominion-card-choice';
+    img.className = 'domain-card-choice';
     
-    // Highlight if this is the current dominion
-    if (currentDominion === dominionId) {
+    // Highlight if this is the current domain
+    if (currentDomain === domainId) {
       img.classList.add('selected');
     }
 
     img.onclick = () => {
-      selectDominion(dominionId);
-      dominionModal.style.display = 'none';
+      selectDomain(domainId);
+      domainModal.style.display = 'none';
     };
 
     img.onerror = function() {
@@ -884,23 +863,23 @@ function showDominionSelectionModal() {
     };
 
     wrapper.appendChild(img);
-    dominionGrid.appendChild(wrapper);
+    domainGrid.appendChild(wrapper);
   });
 }
 
-function selectDominion(dominionId) {
+function selectDomain(domainId) {
   const deck = getCurrentDeck();
   
-  // Remove any existing dominion from deck
+  // Remove any existing domain from deck
   Object.keys(deck).forEach(cardId => {
     const card = dummyCards.find(c => c.id === cardId);
-    if (card && isDominion(card)) {
+    if (card && isDomain(card)) {
       delete deck[cardId];
     }
   });
   
-  // Add the selected dominion
-  deck[dominionId] = 1;
+  // Add the selected domain
+  deck[domainId] = 1;
   
   setCurrentDeck(deck);
   updateDeckDisplay();
@@ -908,15 +887,15 @@ function selectDominion(dominionId) {
 }
 
 // Close modal handlers
-if (closeDominionModalBtn) {
-  closeDominionModalBtn.onclick = () => {
-    dominionModal.style.display = 'none';
+if (closeDomainModalBtn) {
+  closeDomainModalBtn.onclick = () => {
+    domainModal.style.display = 'none';
   };
 }
 
-dominionModal.addEventListener('click', function(e) {
-  if (e.target === dominionModal) {
-    dominionModal.style.display = 'none';
+domainModal.addEventListener('click', function(e) {
+  if (e.target === domainModal) {
+    domainModal.style.display = 'none';
   }
 });
 function startDeckEditing(slotName) {
@@ -965,7 +944,7 @@ function updateDeckDisplay() {
 
   // Group cards by category
   const sections = {
-    dominion: [],
+    domain: [],
     creature: [],
     artifact: [],
     spell: [],
@@ -976,8 +955,8 @@ function updateDeckDisplay() {
     const card = dummyCards.find(c => c.id === id);
     if (!card) continue;
     const trait = card.trait ? String(card.trait).toLowerCase() : '';
-    if (trait === "dominion") {
-      sections.dominion.push({ card, count });
+    if (trait === "domain") {
+      sections.domain.push({ card, count });
     } else {
       const cat = getCardCategory(card);
       if (sections.hasOwnProperty(cat)) {
@@ -989,13 +968,13 @@ function updateDeckDisplay() {
     }
     total += count;
   }
-  // --- ADD DEDICATED DOMINION SLOT AT TOP --- //
-  const dominionSlot = document.createElement('div');
-  dominionSlot.className = 'deck-list-dominion-slot';
+  // --- ADD DEDICATED DOMAIN SLOT AT TOP --- //
+  const domainSlot = document.createElement('div');
+  domainSlot.className = 'deck-list-domain-slot';
   
-  if (sections.dominion.length > 0) {
-    // Display current dominion
-    const { card } = sections.dominion[0];
+  if (sections.domain.length > 0) {
+    // Display current domain
+    const { card } = sections.domain[0];
     const img = document.createElement('img');
     img.src = card.image;
     img.alt = card.name;
@@ -1004,25 +983,25 @@ function updateDeckDisplay() {
       this.onerror = null;
       this.src = 'Images/Banner/Default.png';
     };
-    img.onclick = () => showDominionSelectionModal();
-    dominionSlot.appendChild(img);
+    img.onclick = () => showDomainSelectionModal();
+    domainSlot.appendChild(img);
   } else {
-    // Show placeholder to select dominion
+    // Show placeholder to select domain
     const placeholder = document.createElement('div');
-    placeholder.className = 'dominion-placeholder';
-    placeholder.onclick = () => showDominionSelectionModal();
+    placeholder.className = 'domain-placeholder';
+    placeholder.onclick = () => showDomainSelectionModal();
     
     const placeholderText = document.createElement('div');
-    placeholderText.className = 'dominion-placeholder-text';
-    placeholderText.textContent = '+ Select Dominion';
+    placeholderText.className = 'domain-placeholder-text';
+    placeholderText.textContent = '+ Select domain';
     placeholder.appendChild(placeholderText);
     
-    dominionSlot.appendChild(placeholder);
+    domainSlot.appendChild(placeholder);
   }
   
-  deckList.appendChild(dominionSlot);
+  deckList.appendChild(domainSlot);
 
-  // Add divider after dominion slot
+  // Add divider after domain slot
   const divLi = document.createElement('li');
   divLi.className = 'deck-list-divider';
   divLi.setAttribute('aria-hidden', 'true');
@@ -1094,7 +1073,7 @@ function updateDeckDisplay() {
   
   // Section display order
   const sectionNames = [
-    { key: "dominion", label: "Dominion" },
+    { key: "domain", label: "domain" },
     { key: "creature", label: "Creatures" },
     { key: "artifact", label: "Artifacts" },
     { key: "spell", label: "Spells" },
@@ -1172,10 +1151,10 @@ function canAddCard(card, currentInDeck, ownedCount) {
   if (card.rarity && card.rarity.toLowerCase() === 'legendary' && count >= 1) return false;
   if (card.rarity && card.rarity.toLowerCase() === 'rare' && count >= 2) return false;
   if (card.rarity && card.rarity.toLowerCase() === 'common' && count >= 3) return false;
-  if (typeof isDominion === 'function' && isDominion(card)) {
+  if (typeof isDomain === 'function' && isDomain(card)) {
     for (const cardId in deck) {
       const c = dummyCards.find(dc => dc.id === cardId);
-      if (c && typeof isDominion === 'function' && isDominion(c)) return false;
+      if (c && typeof isDomain === 'function' && isDomain(c)) return false;
     }
     if (count >= 1) return false;
   }
@@ -1276,166 +1255,6 @@ document.addEventListener('DOMContentLoaded', function() {
     updateFavoriteFilterIconBuilder();
   }
 });
-// --- AUTOFILL FUNCTION ---
-function showAutofillModal() {
-  const modal = document.getElementById('autofill-modal');
-  // Clear old
-  modal.querySelector('.autofill-color-row').innerHTML = '';
-  modal.querySelector('.autofill-type-row').innerHTML = '';
-  modal.querySelector('.autofill-archetype-row').innerHTML = '';
-
-  // Color icons
-  AUTOFILL_COLORS.forEach(color => {
-    const icon = document.createElement('img');
-    icon.src = color.icon;
-    icon.alt = color.name;
-    icon.title = color.name;
-    icon.className = 'autofill-color-icon';
-    icon.dataset.color = color.name;
-    icon.onclick = function() {
-      icon.classList.toggle('selected');
-    };
-    modal.querySelector('.autofill-color-row').appendChild(icon);
-  });
-
-  // Type buttons
-  AUTOFILL_TYPES.forEach(type => {
-    const btn = document.createElement('button');
-    btn.textContent = type;
-    btn.className = 'autofill-type-btn';
-    btn.dataset.type = type;
-    btn.onclick = function() {
-      btn.classList.toggle('selected');
-    };
-    modal.querySelector('.autofill-type-row').appendChild(btn);
-  });
-
-  // Archetype buttons
-  AUTOFILL_ARCHETYPES.forEach(arch => {
-    const btn = document.createElement('button');
-    btn.textContent = arch;
-    btn.className = 'autofill-archetype-btn';
-    btn.dataset.archetype = arch;
-    btn.onclick = function() {
-      btn.classList.toggle('selected');
-    };
-    modal.querySelector('.autofill-archetype-row').appendChild(btn);
-  });
-
-  // Confirm
-  document.getElementById('autofill-confirm-btn').onclick = function() {
-    // Gather selected
-    const selectedColors = Array.from(modal.querySelectorAll('.autofill-color-icon.selected')).map(img => img.dataset.color);
-    const selectedTypes = Array.from(modal.querySelectorAll('.autofill-type-btn.selected')).map(btn => btn.dataset.type);
-    const selectedArchetypes = Array.from(modal.querySelectorAll('.autofill-archetype-btn.selected')).map(btn => btn.dataset.archetype);
-
-    modal.style.display = 'none';
-    autofillDeck({colors: selectedColors, types: selectedTypes, archetypes: selectedArchetypes});
-    updateDeckDisplay();
-    renderBuilder();
-  };
-  document.getElementById('autofill-cancel-btn').onclick = function() {
-    modal.style.display = 'none';
-  };
-
-  modal.style.display = 'flex';
-}
-
-// Themed autofill logic
-function autofillDeck({colors, types, archetypes}) {
-  const MAX_DECK_SIZE = 30;
-  const MAX_COPIES = 3;
-  setCurrentDeck({});
-  let deck = {};
-  let total = 0;
-
-  // Filtering helpers
-  function cardMatchesTheme(card) {
-    // Color match (if any selected)
-    if (colors.length) {
-      const cardColors = getCardColors(card).map(c => c.toLowerCase());
-      if (!colors.some(sel => cardColors.includes(sel.toLowerCase()))) return false;
-    }
-    // Type match (if any selected)
-    if (types.length) {
-      const cardTypes = getCardTypes(card).map(c => c.toLowerCase());
-      if (!types.some(sel => cardTypes.includes(sel.toLowerCase()))) return false;
-    }
-    // Archetype match (if any selected)
-    if (archetypes.length) {
-      const cardArchetypes = getCardArchetypes(card).map(c => c.toLowerCase());
-      if (!archetypes.some(sel => cardArchetypes.includes(sel.toLowerCase()))) return false;
-    }
-    return true;
-  }
-
-  // Get all cards from collection (or dummyCards for demo)
-  const dominions = dummyCards.filter(
-    c => c.trait && c.trait.toLowerCase() === 'dominion' && cardMatchesTheme(c)
-  );
-  const creatures = dummyCards.filter(
-    c => getCardCategory(c) === 'creature' && cardMatchesTheme(c)
-  );
-  const spells = dummyCards.filter(
-    c => getCardCategory(c) === 'spell' && cardMatchesTheme(c)
-  );
-  const artifacts = dummyCards.filter(
-    c => getCardCategory(c) === 'artifact' && cardMatchesTheme(c)
-  );
-  const terrains = dummyCards.filter(
-    c => getCardCategory(c) === 'terrain' && !(c.trait && c.trait.toLowerCase() === 'dominion') && cardMatchesTheme(c)
-  );
-
-  // Shuffle helper
-  function shuffle(arr) {
-    for (let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    return arr;
-  }
-
-  // 1 Dominion
-  if (dominions.length > 0) {
-    const dom = shuffle([...dominions])[0];
-    deck[dom.id] = 1;
-    total++;
-  }
-
-  // Fill order and counts
-  const fillOrder = [
-    { arr: creatures, max: 27 },
-    { arr: spells, max: 10 },
-    { arr: artifacts, max: 5 },
-    { arr: terrains, max: 5 }
-  ];
-
-  for (const { arr, max } of fillOrder) {
-    shuffle(arr).forEach(card => {
-      if (total >= MAX_DECK_SIZE) return;
-      if (deck[card.id] && deck[card.id] >= MAX_COPIES) return;
-      let count = Math.min(MAX_COPIES, max, MAX_DECK_SIZE - total);
-      if (deck[card.id]) count = Math.min(count, MAX_COPIES - deck[card.id]);
-      if (count > 0) {
-        deck[card.id] = (deck[card.id] || 0) + count;
-        total += count;
-      }
-    });
-  }
-
-  // If not full, fill with more creatures
-  let i = 0;
-  while (total < MAX_DECK_SIZE && i < creatures.length) {
-    const card = creatures[i++];
-    const already = deck[card.id] || 0;
-    if (already < MAX_COPIES) {
-      deck[card.id] = already + 1;
-      total++;
-    }
-  }
-
-  setCurrentDeck(deck);
-}
 
 // ==========================
 // === EVENT LISTENERS ===
