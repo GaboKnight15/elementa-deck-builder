@@ -3838,6 +3838,32 @@ function getCurrentPlayerBadgeImage() {
   return "Icons/Level/One.png";
 }
 
+window.getCardArt = function(card, owner = "player") {
+  const selected = (owner === "player")
+    ? (window.playerCardStyles?.[card.id] || "default")
+    : (window.opponentCardStyles?.[card.id] || "default");
+
+  if (selected === "fullArt" && card.imageFullArt) return card.imageFullArt;
+  if (selected === "foil" && card.imageFoil) return card.imageFoil;
+  return card.image;
+};
+
+window.getCardArtForOwner = function(card, owner) {
+  // owner: "player" | "opponent"
+  const styles =
+    owner === "opponent"
+      ? (window.opponentCardStyles || {})
+      : (window.playerCardStyles || {});
+
+  const selected = styles[card.id] || "default";
+
+  // Map style keys to your card object fields:
+  if (selected === "fullArt" && card.imageFullArt) return card.imageFullArt;
+  if (selected === "default" && card.image) return card.image;
+
+  // fallback
+  return card.image;
+};
 // PROFILE PANEL POP-UP
 document.addEventListener('DOMContentLoaded', function() {
   const badgeImg = document.getElementById('player-badge-img');
