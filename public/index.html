@@ -234,7 +234,6 @@
     style="width:32px;height:32px;cursor:pointer;filter:grayscale(1);opacity:0.6;transition:filter 0.2s,opacity 0.2s;">
   <img id="builder-filter-btn" src="Icons/Other/Filter.png" alt="Filters"
     title="Advanced Filters" style="width:36px;height:36px;cursor:pointer;vertical-align:middle;margin-left:8px;">
-  <img id="builder-autofill-btn" src="Icons/Other/Autofill.png" alt="Autofill" title="Autofill Deck" style="cursor:pointer;margin-left:8px;" />
   <img id="save-deck-img" src="Icons/Other/Save.png" alt="Save Deck" title="Save Deck"
     style="cursor:pointer;margin-left:8px;width:40px;height:40px;vertical-align:middle;">
 </div>
@@ -541,34 +540,7 @@
     <button id="close-deck-view-modal-btn" class="btn-secondary">Close</button>
   </div>
 </div>
-<!-- AUTOFILL MODAL -->
-<div id="autofill-modal" class="modal" style="display:none;">
-  <div class="modal-content autofill-modal-content">
-    <h2 style="text-align:center;">Autofill Deck: Choose Theme</h2>
-    <div>
-      <div class="autofill-section-label">Colors</div>
-      <div class="autofill-color-row">
-        <!-- Color icons will be inserted by JS -->
-      </div>
-    </div>
-    <div>
-      <div class="autofill-section-label">Types</div>
-      <div class="autofill-type-row">
-        <!-- Type buttons will be inserted by JS -->
-      </div>
-    </div>
-    <div>
-      <div class="autofill-section-label">Archetypes</div>
-      <div class="autofill-archetype-row">
-        <!-- Archetype buttons will be inserted by JS -->
-      </div>
-    </div>
-    <div style="margin-top:20px;display:flex;justify-content:center;gap:18px;">
-      <button id="autofill-confirm-btn" class="btn-primary">Autofill Deck</button>
-      <button id="autofill-cancel-btn" class="btn-negative-secondary">Cancel</button>
-    </div>
-  </div>
-</div>
+
 <!-- BANNER MODAL DECK -->
 <div id="deck-banner-modal" class="modal">
   <div class="modal-content">
@@ -624,14 +596,14 @@
     <button id="close-highlight-art-btn" class="btn-negative-secondary">Close</button>
   </div>
 </div>
-<!-- Dominion Selection Modal -->
-<div id="dominion-selection-modal" class="modal" style="display:none;">
+<!-- domain Selection Modal -->
+<div id="domain-selection-modal" class="modal" style="display:none;">
   <div class="modal-content" style="max-width: 800px;">
     <div class="modal-header">
-      <h2>Select Dominion</h2>
-      <button id="close-dominion-modal-btn" class="btn-close">×</button>
+      <h2>Select Domain</h2>
+      <button id="close-domain-modal-btn" class="btn-close">×</button>
     </div>
-    <div id="dominion-grid" class="dominion-selection-grid"></div>
+    <div id="domain-grid" class="domain-selection-grid"></div>
   </div>
 </div>
 <!-- PACK OPENING MODAL -->
