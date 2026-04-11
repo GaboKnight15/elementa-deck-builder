@@ -135,13 +135,15 @@ function createCardGallery(card) {
 
     const div = document.createElement('div');
     div.className = 'card-gallery';
-    if (card.rarity) {
-      div.setAttribute('data-rarity', card.rarity);
-    }
+    if (card.rarity) div.setAttribute('data-rarity', card.rarity);
+  
     div.classList.add(getRarityBgClass(card));
 
     const img = document.createElement('img');
-    img.src = card.image;
+    img.src = (typeof window.getCardArtForOwner === "function")
+      ? window.getCardArtForOwner(card, "player")
+      : card.image;
+  
     img.onerror = function() {
       this.onerror = null;
       this.src = "Icons/Other/Placeholder.png";
