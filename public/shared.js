@@ -2238,7 +2238,7 @@ glimmerscale: {name: "Glimmerscale", profile: { hp: 4, atk: 10, def: 2, spd: 9, 
 const TYPES = {
 	// CREATURE //
 	angel: {name: "Angel", icon: "Icons/Type/Angel.png", description: "Beacons of divinity and order, the celestials are born of pure light and cosmic harmony. Their presence bends the heavens and stills the storms, for they are the will of creation made radiant. Guided by purpose beyond mortal grasp, they bring both mercy and judgment — for in their eyes, salvation and destruction are but reflections of balance restored."},
-	avian: {name: "Construct", icon: "Icons/Type/Avian.png" , ability: 'Flying', description: "Graceful and fierce, the avians rule the skies with wisdom born of the wind. From mountaintop sanctuaries they watch the shifting lands below, their keen eyes ever wary, their hearts bound to the endless horizon. Whether messengers of dawn or harbingers of storm, the Avians embody freedom itself — swift, untouchable, and guided by the breath of the heavens."},
+	avian: {name: "Avian", icon: "Icons/Type/Avian.png" , ability: 'Flying', description: "Graceful and fierce, the avians rule the skies with wisdom born of the wind. From mountaintop sanctuaries they watch the shifting lands below, their keen eyes ever wary, their hearts bound to the endless horizon. Whether messengers of dawn or harbingers of storm, the Avians embody freedom itself — swift, untouchable, and guided by the breath of the heavens."},
 	beast: {name: "Beast", icon: "Icons/Type/Beast.png", ability: 'Rush', description: "Untamed and primal, beasts embody the raw pulse of nature unshaped by reason or restraint. From the silent hunter stalking through shadowed woods to the thunderous titan that shakes the earth, each creature moves with instinctive purpose. Though driven by hunger and survival, beasts are more than mere savagery — they are the heartbeat of the wild, the first language of a world that remembers no masters."},
 	bone: {name: "Bone", profile: { hp: 0, atk: 0, def: 0, spd: 0, hc: 0, ep: 0 }, icon: "Icons/Type/Bone.png" , description: ""},
 	demon: {name: "Demon", icon: "Icons/Type/Demon.png", description: "Born from malice, ambition, and the echoes of forsaken gods, demons are the chaos that festers beneath creation. They thrive in conflict, feeding on desire, fear, and despair — yet each is bound by its own cunning will. To mortals they appear as nightmares made flesh, but to themselves they are architects of freedom, tearing down the fragile order that cages the world. Their power is corruption, and their truth — liberation through ruin."},
@@ -2361,7 +2361,6 @@ const allAvatarOptions = [
 { name: 'Orc', src: 'Images/Avatar/Gray/Orc.png', rarity: 'Common', price: 10, obtain: 'shop' },
 { name: 'Rockshell Armadillo', src: 'Images/Avatar/Gray/RockshellArmadillo.png', rarity: 'Common', price: 10, obtain: 'shop' },
 { name: 'Summit Watcher', src: 'Images/Avatar/Gray/SummitWatcher.png', rarity: 'Common', price: 10, obtain: 'shop' },
-
 
 // --- COMMON WHITE AVATARS --- //
 { name: 'Angel', src: 'Images/Avatar/White/Angel.png', rarity: 'Common', price: 10, obtain: 'shop' },
@@ -2541,67 +2540,6 @@ const packPrices = [
 ];
 const allPackOptions = packPrices;
 
-const PROFILE_METRICS = [
-  { key: 'offense', label: 'Offense', color: '#ff6b4a' },
-  { key: 'defense', label: 'Defense', color: '#44e055' },
-  { key: 'utility', label: 'Utility', color: '#ffd166' },
-  { key: 'tempo', label: 'Tempo', color: '#66d1ff' }
-];
-// Default profile used when none provided
-const DEFAULT_KEYWORD_PROFILE = { offense: 5, defense: 5, utility: 5, tempo: 5 };
-// Return the profile object for a single keyword (type/archetype/ability), or default if none
-function getKeywordProfile(name) {
-  if (!name && name !== 0) return DEFAULT_KEYWORD_PROFILE;
-  const key = normalizeKey(name);
-  if (!key) return DEFAULT_KEYWORD_PROFILE;
-  if (typeof CARD_KEYWORD === 'object' && CARD_KEYWORD[key] && CARD_KEYWORD[key].profile) {
-    return Object.assign({}, DEFAULT_KEYWORD_PROFILE, CARD_KEYWORD[key].profile);
-  }
-  // no explicit profile, return default
-  return DEFAULT_KEYWORD_PROFILE;
-}
-
-// Merge multiple keyword names into one combined profile (average)
-function mergeKeywordProfiles(values) {
-  if (!values) return DEFAULT_KEYWORD_PROFILE;
-  const arr = Array.isArray(values) ? values : [values];
-  const sum = PROFILE_METRICS.reduce((acc, m) => { acc[m.key] = 0; return acc; }, {});
-  let count = 0;
-  for (const v of arr) {
-    if (v === null || v === undefined) continue;
-    const prof = getKeywordProfile(v);
-    PROFILE_METRICS.forEach(m => { sum[m.key] += (typeof prof[m.key] === 'number' ? prof[m.key] : DEFAULT_KEYWORD_PROFILE[m.key]); });
-    count++;
-  }
-  if (count === 0) return DEFAULT_KEYWORD_PROFILE;
-  const avg = {};
-  PROFILE_METRICS.forEach(m => { avg[m.key] = Math.round((sum[m.key] / count) * 10) / 10; }); // keep one decimal if desired
-  return avg;
-}
-
-// Render profile bars HTML (profile: object with metric keys). widthPctScale scales values 0..10 to 0..100%.
-// returns HTML string
-function renderProfileBars(profile, opts = {}) {
-  if (!profile) profile = DEFAULT_KEYWORD_PROFILE;
-  const scaleMax = opts.scaleMax || 10; // expected max value
-  const containerClass = opts.containerClass || 'keyword-profile';
-  let html = `<div class="${containerClass}">`;
-  PROFILE_METRICS.forEach(m => {
-    const val = Math.max(0, Math.min(scaleMax, Number(profile[m.key] || 0)));
-    const pct = Math.round((val / scaleMax) * 100);
-    html += `
-      <div class="kp-row">
-        <div class="kp-label">${m.label}</div>
-        <div class="kp-bar" role="img" aria-label="${m.label}: ${val}/${scaleMax}">
-          <div class="kp-bar-fill" style="width:${pct}%; background:${m.color}"></div>
-        </div>
-        <div class="kp-value">${val}</div>
-      </div>
-    `;
-  });
-  html += `</div>`;
-  return html;
-}
 const DAILY_LOGIN_REWARDS = [
  /* Example
 {
@@ -2797,15 +2735,6 @@ function getTypeId(typeName) {
   return normalizeKey(typeName); // "Dragon" -> "dragon"
 }
 
-function getTypeDef(typeNameOrId) {
-  const id = CARD_TYPES[typeNameOrId] ? typeNameOrId : getTypeId(typeNameOrId);
-  return CARD_TYPES[id] || null;
-}
-
-function getAllTypeNamesInOrder() {
-  const ids = CARD_TYPE_ORDER.length ? CARD_TYPE_ORDER : Object.keys(CARD_TYPES);
-  return ids.map(id => CARD_TYPES[id].name);
-}
 // Return icon URL for a keyword (type/ability/archetype/trait/etc.)
 function getKeywordIcon(name) {
   if (!name) return null;
@@ -2848,7 +2777,7 @@ function getKeywordIconPath(token) {
 }
 
 // Escape HTML for safe HTML generation
-function _escapeHtmlInline(s) {
+function escapeHtmlInline(s) {
   return String(s || '').replace(/[&<>"']/g, function (m) {
     return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m];
   });
@@ -2904,18 +2833,18 @@ function parseInlineIconsToHtml(text, options = {}) {
   let m;
   while ((m = re.exec(str)) !== null) {
     if (m.index > lastIndex) {
-      out += _escapeHtmlInline(str.slice(lastIndex, m.index));
+      out += escapeHtmlInline(str.slice(lastIndex, m.index));
     }
     lastIndex = m.index + m[0].length;
     const token = m[1];
     const path = getKeywordIconPath(token);
     if (path) {
-      out += `<img src="${_escapeHtmlInline(path)}" class="${_escapeHtmlInline(className)}" alt="${_escapeHtmlInline((altPrefix ? altPrefix + ' ' : '') + token)}" style="width:${size}px;height:${size}px;vertical-align:middle;margin:0 6px;">`;
+      out += `<img src="${escapeHtmlInline(path)}" class="${escapeHtmlInline(className)}" alt="${escapeHtmlInline((altPrefix ? altPrefix + ' ' : '') + token)}" style="width:${size}px;height:${size}px;vertical-align:middle;margin:0 6px;">`;
     } else {
-      out += _escapeHtmlInline('{' + token + '}');
+      out += escapeHtmlInline('{' + token + '}');
     }
   }
-  if (lastIndex < str.length) out += _escapeHtmlInline(str.slice(lastIndex));
+  if (lastIndex < str.length) out += escapeHtmlInline(str.slice(lastIndex));
   return out;
 }
 function replaceTokensInElement(rootEl, options = {}) {
@@ -2984,7 +2913,7 @@ function parseEffectText(effect) {
   effect = effect.replace(/\{([0-9]|1[0-9]|20)\}/g, (match, num) => {
     const imgSrc = typeof COST_IMAGE_MAP !== 'undefined' ? COST_IMAGE_MAP['X'+num] : null;
     if (imgSrc) {
-      return `<img src="${_escapeHtmlInline(imgSrc)}" style="height:1.3em;vertical-align:middle;margin-right:2px;">`;
+      return `<img src="${escapeHtmlInline(imgSrc)}" style="height:1.3em;vertical-align:middle;margin-right:2px;">`;
     }
     return `<span style="font-weight:bold;color:#ffe066;font-size:1.12em;vertical-align:middle;margin-right: 2px;">${num}</span>`;
   });
@@ -2999,13 +2928,13 @@ function parseEffectText(effect) {
     const path = getKeywordIconPath(token);
     if (path) {
       // Use escaped path and include alt/title for accessibility
-      const alt = _escapeHtmlInline(String(token));
-      const title = _escapeHtmlInline(String(token));
-      return `<img src="${_escapeHtmlInline(path)}" alt="${alt}" title="${title}" style="height:1.3em;vertical-align:middle;margin-right:2px;">`;
+      const alt = escapeHtmlInline(String(token));
+      const title = escapeHtmlInline(String(token));
+      return `<img src="${escapeHtmlInline(path)}" alt="${alt}" title="${title}" style="height:1.3em;vertical-align:middle;margin-right:2px;">`;
     }
     // No icon found for the token: keep the literal token text (or remove braces, depending on preference)
     // Here we return the token text without braces to be friendly in UI.
-    return _escapeHtmlInline(token);
+    return escapeHtmlInline(token);
   });
   return effect;
 }
