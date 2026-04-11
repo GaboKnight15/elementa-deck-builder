@@ -147,12 +147,12 @@ const dummyCards = [
  skill: [{name: 'Summon', cost: '{3}{r}', effect: {class: 'Summon'}}]},
 
 {id: 'ElementalofFlames', name: 'Elemental of Flames', rarity: 'Rare', image: 'Cards/egr/ElementalofFlames.png', flavor: '', 
- category: 'Creature', color: 'Red', type: ['Fire','Elemental'], hp: 5, atk: 4, cost: '{1}{r}{r}', ability: ['Elusive','Scorch'], set: 'ElementaGenesis',
+ category: 'Creature', color: 'Red', type: ['Fire','Elemental'], hp: 4, atk: 3, cost: '{1}{r}{r}', ability: ['Elusive','Scorch'], set: 'ElementaGenesis',
  skill: [{name: 'Inferno Discovery', cost: '{1}{r}{r}',
 		  effect: [{class:'Summon'}, {class:'Search', amount: 1, targetColor: 'Red', targetCategory: 'Terrain'}]}]},
 
 {id: 'MagmarisMercenary', name: 'Magmaris Mercenary', rarity: 'Rare', image: 'Cards/egr/MagmarisMercenary.png', flavor: '', 
- category: 'Creature', color: 'Red', type: ['Inferno','Human','Warrior'], hp: 5, atk: 2, def: 1, cost: '{1}{r}', ability: 'Defiant', set: 'ElementaGenesis',
+ category: 'Creature', color: 'Red', type: ['Fire','Warrior'], hp: 5, atk: 2, cost: '{1}{r}', ability: 'Defiant', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{1}{r}', effect: {class: 'Summon'}},
  {name: 'Flaming Slash', cost: '{r}', requirement: [{class:'Special'}, {class: 'CW'}], 
   effect: {class: 'Burn', amount: 4}},
@@ -543,7 +543,7 @@ const dummyCards = [
  skill: [{name: 'Cast', cost: '{2}{w}', effect: {class: 'Cast'}}]},
 
 {id: 'SolmaraArchpriest', name: 'Solmara Archpriest', rarity: 'Rare', image: 'Cards/egw/SolmaraArchpriest.png', flavor: '', 
- category: 'Creature', color: 'White', type: ['Human','Mage'], hp: 5, atk: 2, cost: '{2}{w}', ability: '', set: 'ElementaGenesis',
+ category: 'Creature', color: 'White', type: ['Holy','Mage'], hp: 5, atk: 2, cost: '{2}{w}', ability: '', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{2}{w}', effect: {class: 'Summon'}}]},
 
 {id: 'Pegasus', name: 'Pegasus', rarity: 'Common', image: 'Cards/egw/Pegasus.png', flavor: '', 
@@ -910,8 +910,7 @@ const dummyCards = [
   ]},
   
 {id: 'KaelyraFirelandHeiress', name: 'Kaelyra, Fireland Heiress', rarity: 'Legend', image: 'Cards/egr/KaelyraFirelandHeiress.png', flavor: '', imageFullArt: 'Cards/Fireland/KaelyraFirelandHeiressFA.png', flavor: '',
- category: 'Creature', color: 'Red', type: ['Human','Fire','Mage'], hp: 4, atk: 2, 
- cost: '{r}{r}', ability: 'Burn', set: 'ElementaGenesis',
+ category: 'Creature', color: 'Red', type: ['Fire','Mage'], hp: 4, atk: 2, cost: '{r}{r}', ability: 'Burn', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{r}', effect: {class: 'Summon'}},
   {name: 'Manifest', cost: '{r}',
    effect: {class: 'Token', name: 'Emberling'}},
@@ -2041,9 +2040,9 @@ let lastPlayerPower = null;
 const FILTERS = {
   ownership: { key: 'ownership', label: 'Ownership', options: ['All','Owned','Undiscovered','Locked'] },
   color: { key: 'color', label: 'Color', options: ['All', 'Green', 'Red', 'Blue', 'Yellow', 'Gray', 'Purple', 'White', 'Black'] },
-  category: { key: 'category', label: 'Category', options: ['All', 'Creature', 'Terrain', 'Artifact', 'Spell'] },
-  type: { key: 'type', label: 'Type', options: ['All', 'Beast', 'Brute', 'Construct', 'Demon', 'Dragon', 'Dwarf', 'Elemental',
-	'Elf', 'Faefolk', 'Fairy', 'Goblin', 'Human', 'Orc', 'Satyr', 'Spirit', 'Undead'] },
+  category: { key: 'category', label: 'Category', options: ['All','Creature','Terrain','Artifact','Spell'] },
+  type: { key: 'type', label: 'Type', options: ['All','Beast','Brute','Construct','Demon','Dragon','Dwarf','Elemental',
+	'Elf','Fairy','Fire','Goblin','Orc','Satyr','Spirit','Water','Zombie'] },
   rarity: { key: 'rarity', label: 'Rarity', options: ['All','Common','Rare','Legend'] },
   /*archetype: { key: 'archetype', label: 'Archetype', options: ['All','Blazefeather','Cindercore','Coralbound','Fireland','Frostland','Golemheart','Moonfang','Skullframe','Voltwing','Zephyra'] },
 */ability: { key: 'ability', label: 'Ability', options: ['All','Aegis','Ambush','Blightstrike','Burn','Conceal','Crush','Curse',
