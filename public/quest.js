@@ -512,12 +512,35 @@ function getAchievementProgress(groupKey) {
   
 }
 
-// Set progress directly (used by "setAchievementProgress")
-function setAchievementProgress(sectionKey, group, value, { autoSave = true } = {}) {
-  if (autoSave) saveProgress && saveProgress();
+function ensureAchievementState() {
+  window.playerAchievements = window.playerAchievements || {};
+  if (!window.playerAchievements.progress || typeof window.playerAchievements.progress !== "object") {
+    window.playerAchievements.progress = {};
+  }
+  if (!window.playerAchievements.claimed || typeof window.playerAchievements.claimed !== "object") {
+    window.playerAchievements.claimed = {};
+  }
+  return window.playerAchievements;
 }
 
-function countCollectedCardsByColor(colorName) {
+function setAchievementProgress(sectionKey, groupId, value, { autoSave = true } = {}) {
+  const st = ensureAchievementState();
+  st.progress[groupId] = Math.max(0, Number(value || 0));
+
+  if (autoSave && typeof saveProgress === "function") saveProgress();
+}
+
+function getAchievementProgress(groupId) {
+  const st = ensureAchievementState();
+  return Number(st.progress[groupId] || 0);
+}
+
+function isAchievementTierClaimed(groupId, tierNumber) {
+  const st = ensureAchievementState();
+  return !!(st.claimed[groupId] && st.claimed[groupId][tierNumber]);
+}
+
+function countCardsColor(colorName) {
   const collection = (typeof getCollection === 'function') ? getCollection() : {};
   const want = String(colorName || '').toLowerCase();
 
@@ -526,12 +549,53 @@ function countCollectedCardsByColor(colorName) {
     const cardColor = String(card?.color || '').toLowerCase();
     if (cardColor !== want) return;
 
-    // "Unlocked/collected": owned >= 1
+    const owned = Number(collection[card.id] || 0);
+    if (owned > 0) count += 1;
+  });
+  return count;
+}
+
+function countCardsType(typeName) {
+  const collection = (typeof getCollection === 'function') ? getCollection() : {};
+  const want = String(typeName || '').toLowerCase();
+
+  let count = 0;
+  (window.dummyCards || []).forEach(card => {
+    const t = card?.type;
+
+    const matches =
+      Array.isArray(t)
+        ? t.map(x => String(x).toLowerCase()).includes(want)
+        : String(t || '').toLowerCase() === want;
+
+    if (!matches) return;
+
     const owned = Number(collection[card.id] || 0);
     if (owned > 0) count += 1;
   });
 
   return count;
+}
+function countOwnedCosmetics(kind) {
+  // Change these keys to match your real saved variables
+  const st = window.playerCosmetics || {};
+  const arr =
+    kind === "avatar"   ? (st.avatars   || window.ownedAvatars   || []) :
+    kind === "banner"   ? (st.banners   || window.ownedBanners   || []) :
+    kind === "cardback" ? (st.cardbacks || window.ownedCardbacks || []) :
+    [];
+
+  if (!Array.isArray(arr)) return 0;
+
+  // unique IDs
+  return new Set(arr.map(x => String(x))).size;
+}
+
+function updateCosmeticAchievements({ autoSave = true } = {}) {
+
+  setAchievementProgress("cosmetic", "cosmetic_avatar", countOwnedCosmetics("avatar"), { autoSave: false });
+
+  if (autoSave && typeof saveProgress === "function") saveProgress();
 }
 function renderAchievements() {
   // Find the currently active tab/category
@@ -814,59 +878,69 @@ function renderAchievementsCategory(sectionKey) {
 
   panel.innerHTML = '';
 
-  // Pick achievements for this tab/section
-  const sectionAchievements = (window.ACHIEVEMENTS || []).filter(a =>
-    String(a.section || '').toLowerCase() === String(sectionKey || '').toLowerCase()
-  );
+  const sectionDef = (window.ACHIEVEMENTS || {})[sectionKey];
+  if (!sectionDef || !Array.isArray(sectionDef.groups)) {
+    panel.innerHTML = `<div style="opacity:.8">No achievements found for "${sectionKey}".</div>`;
+    return;
+  }
 
-  // Group by group name
-  const groups = {};
-  sectionAchievements.forEach(a => {
-    const g = a.group || 'Other';
-    (groups[g] = groups[g] || []).push(a);
-  });
+  sectionDef.groups.forEach(group => {
+    if (!group || !group.id || !Array.isArray(group.tiers)) return;
 
-  // Render each group
-  Object.entries(groups).forEach(([groupName, tiers]) => {
-    tiers.sort((a, b) => Number(a.tier || 0) - Number(b.tier || 0));
+    const groupId = group.id;
+    const progressValue = getAchievementProgress(groupId);
 
+    // Group header
     const groupHeader = document.createElement('div');
     groupHeader.className = 'achievement-group-header';
-    groupHeader.textContent = groupName;
+    groupHeader.textContent = group.title || groupId;
     panel.appendChild(groupHeader);
 
-    // You need ONE progress value per group (not per tier)
-    // Replace this with whatever your real progress source is.
-    const progressValue = getProgressValueForGroup(sectionKey, groupName);
+    // Build tier view models first so we can sort (claimed at bottom)
+    const tierModels = group.tiers
+      .slice()
+      .sort((a, b) => Number(a.tier || 0) - Number(b.tier || 0))
+      .map(t => {
+        const tierNumber = Number(t.tier || 0);
+        const goal = Number(t.goal || 0);
+        const completed = goal > 0 && progressValue >= goal;
+        const claimed = isAchievementTierClaimed(groupId, tierNumber);
 
-    tiers.forEach(tier => {
-      const goal = Number(tier.goal || 0);
-      const done = goal > 0 && progressValue >= goal;
+        return { t, tierNumber, goal, completed, claimed };
+      })
+      .sort((a, b) => Number(a.claimed) - Number(b.claimed)); // false first, true last
 
+    tierModels.forEach(({ t, tierNumber, goal, completed, claimed }) => {
       const row = document.createElement('div');
       row.className = 'achievement-entry';
-      if (done) row.classList.add('completed');
+      if (completed) row.classList.add('completed');
+      if (claimed) row.classList.add('claimed'); // you can style .claimed in CSS to gray out
+
+      // If you want: make it clickable only when completed && !claimed
+      const claimable = completed && !claimed;
+      if (claimable) {
+        row.classList.add('claimable');
+        row.style.cursor = 'pointer';
+        row.onclick = () => {
+          // You will implement claimAchievementTierReward(groupId, tierNumber)
+          // then re-render
+          if (typeof claimAchievementTierReward === "function") {
+            claimAchievementTierReward(sectionKey, groupId, tierNumber);
+            renderAchievementsCategory(sectionKey);
+            updateAchievementsNotificationDot && updateAchievementsNotificationDot();
+          }
+        };
+      }
 
       row.innerHTML = `
-        <div class="ach-title">${tier.description || 'Achievement'} (Tier ${tier.tier})</div>
+        <div class="ach-title">${t.description || 'Achievement'} (Tier ${tierNumber})</div>
         <div class="ach-progress">${Math.min(progressValue, goal)} / ${goal}</div>
-        <div class="ach-reward">Reward: ${tier.reward || 0}</div>
+        <div class="ach-reward">Reward: ${t.reward ?? 0}</div>
       `;
+
       panel.appendChild(row);
     });
   });
-}
-
-// Example stub: you must connect this to your real progress tracking
-function getProgressValueForGroup(sectionKey, groupName) {
-  // Option A (simple): store progress per groupKey
-  // e.g. playerAchievements.groupProgress["Color::Green"] = 42
-  const key = `${sectionKey}::${groupName}`;
-  const st = window.playerAchievements || {};
-  if (st.groupProgress && typeof st.groupProgress[key] === "number") return st.groupProgress[key];
-
-  // fallback
-  return 0;
 }
 
 function openAchievementsModalDefault() {
@@ -877,6 +951,44 @@ function openAchievementsModalDefault() {
   renderAchievementsCategory('general');
 }
 
+function computeAchievementsProgress({ autoSave = true } = {}) {
+  // ACCOUNT: Level
+  setAchievementProgress("account", "account_level", Number(window.playerLevel || 1), { autoSave: false });
+
+  // COLOR: each group maps to a color name
+  const colorMap = {
+    color_green: "green",
+    color_red: "red",
+    color_blue: "blue",
+    color_yellow: "yellow",
+    color_purple: "purple",
+    color_gray: "gray",
+    color_white: "white",
+    color_black: "black",
+  };
+
+  Object.entries(colorMap).forEach(([groupId, colorName]) => {
+    const v = countCardsColor(colorName); // your existing unique-id counter
+    setAchievementProgress("color", groupId, v, { autoSave: false });
+  });
+
+  // TYPE: examples you currently have
+  const typeMap = {
+    type_avian: "avian",
+    type_beast: "beast",
+  };
+
+  Object.entries(typeMap).forEach(([groupId, typeName]) => {
+    const v = countCollectedCardsByType(typeName);
+    setAchievementProgress("type", groupId, v, { autoSave: false });
+  });
+
+  // COSMETIC: avatars
+  setAchievementProgress("cosmetic", "cosmetic_avatar", countUnlockedAvatars(), { autoSave: false });
+
+  if (autoSave && typeof saveProgress === "function") saveProgress();
+}
+window.recomputeAchievementsProgress = recomputeAchievementsProgress;
 // --- ENSURE QUESTS RESET AT 00:00 UTC ON PAGE LOAD ---
 document.addEventListener('DOMContentLoaded', function() {
   resetQuestsIfNeeded(); // Ensure daily reset logic runs
