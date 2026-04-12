@@ -9,7 +9,7 @@ const dummyCards = [
  skill: [{name: 'Flourish', cost: '{g}', requirement: {class: 'CW'}, effect: {class: 'Search', category: 'Terrain'}}]},
 
 {id: 'EryndorVerdaraKing', name: 'Eryndor, Verdara King', rarity: 'Legend', image: 'Cards/egg/EryndorVerdaraKing.png', flavor: '', 
- category: 'Creature', color: 'Green', type: ['Sylvan','Elf','Mage'], hp: 5, atk: 2, cost: '{2}', ability: '', set: 'ElementaGenesis', imageFullArt: 'Cards/egg/VeyaVerdaraDruidessFA.png',
+ category: 'Creature', color: 'Green', type: ['Sylvan','Elf','Mage'], hp: 5, atk: 2, cost: '{2}', ability: '', set: 'ElementaGenesis', fullArt: 'Cards/egg/VeyaVerdaraDruidessFA.png',
  skill: [{name: 'Summon', cost: '{g}{g}', effect: {class: 'Summon'}},
   {name: 'Ancient Sylvan Decree', cost: '{g}', requirement: [{class:'Special'}, {class: 'CW'}], 
    effect: {class: 'Disable', target: 'opponentCreatures', cost: '>=3'}},
@@ -18,7 +18,7 @@ const dummyCards = [
   ]},
 
 {id: 'FaelyraWildhornEmpress', name: 'Faelyra, Wildhorn Empress', rarity: 'Legend', image: 'Cards/egg/FaelyraWildhornEmpress.png', flavor: 'Beneath a crown of entwined blossoms, she dances through the forest while singing weaving spells of mirth. Satyrs, woodland creatures, and even the shyest spirits follow her lead, enchanted by her boundless charm.',
- category: 'Creature', color: 'Green', type: ['Satyr','Mage'], hp: 5, atk: 2, cost: '{g}{g}', ability: '', set: 'ElementaGenesis', imageFullArt: 'Cards/egg/FaelyraWildhornEmpressFA.png',
+ category: 'Creature', color: 'Green', type: ['Satyr','Mage'], hp: 5, atk: 2, cost: '{g}{g}', ability: '', set: 'ElementaGenesis', fullArt: 'Cards/egg/FaelyraWildhornEmpressFA.png',
  skill: [{name: 'Summon', cost: '{g}{g}', effect: {class: 'Summon'}},
   {name: 'Rhythmic Conjure', cost: '{g}{g}', requirement: {class: 'Special'},
    effect: {class: 'Spawn', targetId: 'Satyr', amount: 1}},
@@ -196,7 +196,7 @@ const dummyCards = [
  
 // --- EG BLUE --- //
 {id: 'ZaryonUmarionCommander', name: 'Zaryon, Umarion Commander', rarity: 'Legend', image: 'Cards/egu/ZaryonUmarionCommander.png', flavor: '', 
- category: 'Creature', color: 'Blue', type: ['Merfolk','Warrior'], hp: 6, atk: 2, cost: '{1}{u}', ability: ['Dive','Protect'], set: 'ElementaGenesis', imageFullArt: 'Cards/egu/ZaryonUmarionCommanderFA.png',
+ category: 'Creature', color: 'Blue', type: ['Merfolk','Warrior'], hp: 6, atk: 2, cost: '{1}{u}', ability: ['Dive','Protect'], set: 'ElementaGenesis', fullArt: 'Cards/egu/ZaryonUmarionCommanderFA.png',
  skill: [{name: 'Summon', cost: '{u}', effect: {class: 'Summon'}},
   {name: 'Deepkin Rally', cost: '{u}', requirement: {class:'Special'},
    effect: {class: 'Token', tokenChoices: ['MerfolkWarrior', 'MerfolkMermaid'], amount: 1}},
@@ -205,7 +205,7 @@ const dummyCards = [
  ]},
 
 {id: 'SerenyaTideboundEnchantress', name: 'Serenya, Tidebound Enchantress', rarity: 'Legend', image: 'Cards/egu/SerenyaTideboundEnchantress.png', flavor: '', 
- category: 'Creature', color: 'Blue', type: ['Water','Mage'], hp: 5, atk: 1, cost: '{1}{u}', ability: 'Soak', set: 'ElementaGenesis', imageFullArt: 'Cards/egu/SerenyaTideboundEnchantressFA.png',
+ category: 'Creature', color: 'Blue', type: ['Water','Mage'], hp: 5, atk: 1, cost: '{1}{u}', ability: 'Soak', set: 'ElementaGenesis', fullArt: 'Cards/egu/SerenyaTideboundEnchantressFA.png',
  skill: [{name: 'Summon', cost: '{1}{u}', effect: {class: 'Summon'}},
   {name: 'Tidecall Ascendance', cost: '{u}', requirement: {class: 'Special'}, effect: {class: 'Draw', amount: 1}},
   {name: 'Riptide Command', cost: '{u}{u}', requirement: [{class: 'Special'}, {class: 'CW'}],
@@ -270,7 +270,7 @@ const dummyCards = [
  skill: [{name: 'Shock', cost: '{y}', requirement: {class: 'CW'}, effect: {class: 'Strike', amount: 2}}]},
  
 {id: 'GarudaAetherionWings', name: 'Garuda, AetherionWings', rarity: 'Legend', image: 'Cards/Zephyra/GarudaAetherionWings.png', flavor: '', 
- category: 'Creature', color: 'Yellow', type: ['Avian','Warrior'], hp: 5, atk: 2, cost: '{2}{y}', ability: 'Flying', set: 'ElementaGenesis', imageFullArt: 'Cards/Zephyra/GarudaAetherionWingsFA.png', 
+ category: 'Creature', color: 'Yellow', type: ['Avian','Warrior'], hp: 5, atk: 2, cost: '{2}{y}', ability: 'Flying', set: 'ElementaGenesis', fullArt: 'Cards/Zephyra/GarudaAetherionWingsFA.png', 
  skill: [{name: 'Summon', cost: '{2}{y}', effect: {class: 'Summon'}},
   {name:'Dash', cost: '{y}{y}', effect: {class: 'Dash'}},
   {name: 'Featherfall Tempest', cost: '{y}{y}', requirement: [{class: 'Special'}, {class: 'CW'}],
@@ -341,7 +341,7 @@ const dummyCards = [
 
 // --- EG GRAY --- //
 {id: 'GravokDrakzulTyrant', name: 'Gravok, Drakzul Tyrant', rarity: 'Legend', image: 'Cards/egc/GravokDrakzulTyrant.png', flavor: '', 
- category: 'Creature', color: 'Gray', type: ['Orc','Brute'], hp: 5, atk: 2, def: 1, cost: '{2}{c}', ability: 'Crush', set: 'ElementaGenesis', imageFullArt: 'Cards/egc/GravokDrakzulTyrantFA.png',
+ category: 'Creature', color: 'Gray', type: ['Orc','Brute'], hp: 5, atk: 2, def: 1, cost: '{2}{c}', ability: 'Crush', set: 'ElementaGenesis', fullArt: 'Cards/egc/GravokDrakzulTyrantFA.png',
  skill: [{name: 'Summon', cost: '{2}{c}', effect: {class: 'Summon'}},
   {name: 'Twin Impact', cost: '{c}', requirement: [{class:'Special'}, {class: 'CCW'}], 
    effect: {class: 'Strike', target: 2, amount: 2}},
@@ -350,7 +350,7 @@ const dummyCards = [
  ]},
 
 {id: 'RudgarIronfistMauler', name: 'Rudgar, Ironfist Mauler', rarity: 'Legend', image: 'Cards/egc/RudgarIronfistMauler.png', flavor: '', 
- category: 'Creature', color: 'Gray', type: ['Rock','Warrior'], hp: 5, atk: 2, def: 1, cost: '{1}{c}', ability: 'Crush', set: 'ElementaGenesis', imageFullArt: 'Cards/egc/RudgarIronfistMaulerFA.png',
+ category: 'Creature', color: 'Gray', type: ['Rock','Warrior'], hp: 5, atk: 2, def: 1, cost: '{1}{c}', ability: 'Crush', set: 'ElementaGenesis', fullArt: 'Cards/egc/RudgarIronfistMaulerFA.png',
  skill: [{name: 'Summon', cost: '{1}{c}', effect: {class: 'Summon'}},
   {name: 'Stonebreaker Punch', cost: '{c}', requirement: [{class:'Special'}, {class: 'CW'}], 
    effect: {class: 'Strike', target: 1, amount: 5}},
@@ -441,7 +441,7 @@ const dummyCards = [
 
 // --- EG PURPLE --- //
 {id: 'MordrathVirkulPhantom', name: 'Mordrath, Virkul Phantom', rarity: 'Legend', image: 'Cards/egp/MordrathVirkulPhantom.png', flavor: 'With every step, the earth blackens, flowers wither, and the air grows thick with despair — a knight cursed to rot all he touches.', 
- category: 'Creature', color: 'Purple', type: ['Armored','Spirit'], hp: 4, atk: 2, def: 1, cost: '{2}{p}', ability: ['Armor','Immunity'], set: 'ElementaGenesis', imageFullArt: 'Cards/egp/MordrathVirkulPhantomFA.png',
+ category: 'Creature', color: 'Purple', type: ['Armored','Spirit'], hp: 4, atk: 2, def: 1, cost: '{2}{p}', ability: ['Armor','Immunity'], set: 'ElementaGenesis', fullArt: 'Cards/egp/MordrathVirkulPhantomFA.png',
  skill: [{name: 'Summon', cost: '{2}{p}', effect: {class: 'Summon'}},
   {name: 'Blightfall Slash', cost: '{p}{p}', requirement: [{class: 'Special'}, {class: 'CCW'}],
    effect: {class: 'Strike', amount: 1}},
@@ -450,7 +450,7 @@ const dummyCards = [
  ]},
 	
 {id: 'SelgorCorruptedWarlock', name: 'Selgor, Corrupted Warlock', rarity: 'Legend', image: 'Cards/egp/SelgorCorruptedWarlock.png', flavor: '', 
- category: 'Creature', color: 'Purple', type: ['Cursed','Mage'], hp: 5, atk: 2, cost: '{1}{p}', ability: 'Wither', set: 'ElementaGenesis', imageFullArt: 'Cards/egp/SelgorCorruptedWarlockFA.png',
+ category: 'Creature', color: 'Purple', type: ['Cursed','Mage'], hp: 5, atk: 2, cost: '{1}{p}', ability: 'Wither', set: 'ElementaGenesis', fullArt: 'Cards/egp/SelgorCorruptedWarlockFA.png',
  skill: [{name: 'Summon', cost: '{1}{p}', effect: {class: 'Summon'}},
   {name: 'Soul Reap', requirement: [{class: 'Special'}, {class: 'Sacrifice', target: 1, targetCategory: 'Creature'}],
    effect: {class: 'Rally', amount: 2}},
@@ -518,7 +518,7 @@ const dummyCards = [
 
 // --- EG WHITE --- //
 {id: 'SeraphielSolmaraParagon', name: 'Seraphiel, Solmara Paragon', rarity: 'Legend', image: 'Cards/egw/SeraphielSolmaraParagon.png', flavor: '', 
- category: 'Creature', color: 'White', type: ['Angel','Warrior'], hp: 5, atk: 2, cost: '{w}{w}{w}', ability: ['Flying','Protec], set: 'ElementaGenesis', imageFullArt: 'Cards/egw/SeraphielSolmaraParagonFA.png',
+ category: 'Creature', color: 'White', type: ['Angel','Warrior'], hp: 5, atk: 2, cost: '{w}{w}{w}', ability: ['Flying','Protec], set: 'ElementaGenesis', fullArt: 'Cards/egw/SeraphielSolmaraParagonFA.png',
  skill: [{name: 'Summon', cost: '{w}{w}{w}', effect: {class: 'Summon'}},
   {name: 'Divine Ascendance', cost: '{1}{w}', requirement: [{class: 'Special'}, {class: 'CCW'}],
    effect: [{class: 'Bolster', atk: 1, def: 1}, {class: 'Summon'}, {class: 'Aegis'}]},
@@ -527,7 +527,7 @@ const dummyCards = [
  ]},
 	 
 {id: 'ElyndraDawnbladeofHeavens', name: 'Elyndra, Dawnblade of Heavens', rarity: 'Legend', image: 'Cards/egw/ElyndraDawnbladeofHeavens.png', flavor: '', 
- category: 'Creature', color: 'White', type: ['Radiant','Warrior'], hp: 5, atk: 2, cost: '{w}{w}', ability: 'Aegis', set: 'ElementaGenesis', imageFullArt: 'Cards/egw/ElyndraDawnbladeofHeavensFA.png',
+ category: 'Creature', color: 'White', type: ['Radiant','Warrior'], hp: 5, atk: 2, cost: '{w}{w}', ability: 'Aegis', set: 'ElementaGenesis', fullArt: 'Cards/egw/ElyndraDawnbladeofHeavensFA.png',
  skill: [{name: 'Summon', cost: '{w}{w}', effect: {class: 'Summon'}},
   {name: 'Dawnbreak', cost: '{w}', requirement: {class:'Special'}, effect: {class: 'Bolster', amount: 1}},
   {name: 'Radiant Severance', cost: '{w}{w}',
@@ -619,7 +619,7 @@ const dummyCards = [
          
 // --- EG BLACK --- //
 {id: 'MorvaneNoctyraOathbreaker', name: 'Morvane, Noctyra Oathbreaker', rarity: 'Legend', image: 'Cards/egb/MorvaneNoctyraOathbreaker.png', flavor: '', 
- category: 'Creature', color: 'Black', type: ['Dark','Mage'], hp: 5, atk: 2, cost: '{1}{b}', ability: '', set: 'ElementaGenesis', imageFullArt: 'Cards/egb/MorvaneNoctyraOathbreakerFA.png',
+ category: 'Creature', color: 'Black', type: ['Dark','Mage'], hp: 5, atk: 2, cost: '{1}{b}', ability: '', set: 'ElementaGenesis', fullArt: 'Cards/egb/MorvaneNoctyraOathbreakerFA.png',
  skill: [{name: 'Summon', cost: '{1}{b}', effect: {class: 'Summon'}},
   {name:'Shadowseal Vigor', activation: {class:'Sealed'}, 
    effect: {class: 'Rally', amount: 1}},
@@ -629,7 +629,7 @@ const dummyCards = [
    effect: {class: 'Seal', amount: 2, target: 2}}]},
 
 {id: 'VelmiraMistressofSilence', name: 'Velmira, Mistress of Silence', rarity: 'Legend', image: 'Cards/egb/VelmiraMistressofSilence.png', flavor: '', 
- category: 'Creature', color: 'Black', type: ['Dark','Mage'], hp: 3, atk: 1, cost: '{b}', ability: 'Veil', set: 'ElementaGenesis', imageFullArt: 'Cards/egb/VelmiraMistressofSilenceFA.png',
+ category: 'Creature', color: 'Black', type: ['Dark','Mage'], hp: 3, atk: 1, cost: '{b}', ability: 'Veil', set: 'ElementaGenesis', fullArt: 'Cards/egb/VelmiraMistressofSilenceFA.png',
  skill: [{name: 'Summon', cost: '{1}{b}', effect: {class: 'Summon'}},
   {name:'Shadowseal Vigor', activation: {class:'Sealed'}, 
    effect: {class: 'Rally', amount: 1}},
@@ -909,7 +909,7 @@ const dummyCards = [
    effect: {class: 'Bind', amount: 1, target: 2}},
   ]},
   
-{id: 'KaelyraFirelandHeiress', name: 'Kaelyra, Fireland Heiress', rarity: 'Legend', image: 'Cards/egr/KaelyraFirelandHeiress.png', flavor: '', imageFullArt: 'Cards/Fireland/KaelyraFirelandHeiressFA.png', flavor: '',
+{id: 'KaelyraFirelandHeiress', name: 'Kaelyra, Fireland Heiress', rarity: 'Legend', image: 'Cards/egr/KaelyraFirelandHeiress.png', flavor: '', fullArt: 'Cards/Fireland/KaelyraFirelandHeiressFA.png', flavor: '',
  category: 'Creature', color: 'Red', type: ['Fire','Mage'], hp: 4, atk: 2, cost: '{r}{r}', ability: 'Burn', set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{r}', effect: {class: 'Summon'}},
   {name: 'Manifest', cost: '{r}',
@@ -1257,7 +1257,7 @@ const dummyCards = [
    effect: {class: 'Evolve'}}
  ]},
  
-{id: 'EphorosFirelandBehemoth', name: 'Ephoros, Fireland Behemoth', rarity: 'Legend', image: 'Cards/dfr/EphorosFirelandBehemoth.png', flavor: '', imageFullArt: 'Cards/Fireland/EphorosFirelandBehemothFA.png', flavor: '',
+{id: 'EphorosFirelandBehemoth', name: 'Ephoros, Fireland Behemoth', rarity: 'Legend', image: 'Cards/dfr/EphorosFirelandBehemoth.png', flavor: '', fullArt: 'Cards/Fireland/EphorosFirelandBehemothFA.png', flavor: '',
  category: 'Creature', color: ['Red','Black'], type: ['Fire','Beast','Demon'], hp: 7, atk: 5, cost: '{5}{r}', ability: ['Burn','Crush'], set: 'EchoesofCreation',
  skill: [{name: 'Summon', cost: '{5}{r}', effect: {class: 'Summon'}},
   {name: 'Infernal Volley', cost: '{r}', requirement: {class: 'Discard'}, description: 'Discard to burn {3}',
@@ -1312,7 +1312,7 @@ const dummyCards = [
    effect: {class: 'Strike', status: 'Burn', amount: 3}}
  ]},
 
-{id: 'KaelgorranElementalPrimordial', name: 'Kaelgorran, Elemental Primordial', rarity: 'Legend', image: 'Cards/ecn/KaelgorranElementalPrimordial.png', flavor: '', imageFullArt: 'Cards/Golems/KaelgorranElementalPrimordialFA.png', flavor: '',
+{id: 'KaelgorranElementalPrimordial', name: 'Kaelgorran, Elemental Primordial', rarity: 'Legend', image: 'Cards/ecn/KaelgorranElementalPrimordial.png', flavor: '', fullArt: 'Cards/Golems/KaelgorranElementalPrimordialFA.png', flavor: '',
  category: 'Creature', color: ['Gray'], type: ['Golem','Fusion'], hp: 7, atk: 4, def: 2, cost: '{5}{c}', set: 'EchoesofCreation',
  skill: [{name: 'Summon', cost: '{5}{c}', effect: {class: 'Summon'}},
   {name: 'Discard', cost: '{c}', requirement: {class: 'Discard'},
@@ -1409,7 +1409,7 @@ const dummyCards = [
    effect: {class: 'Fuse'}},
  ]},
  
-{id: 'MaelvyrnCoralboundAutomaton', name: 'Maelvyrn, Coralbound Automaton', rarity: 'Legend', image: 'Cards/ihu/MaelvyrnCoralboundAutomaton.png', flavor: '', imageFullArt: 'Cards/Coralbound/MaelvyrnCoralboundAutomatonFA.png', flavor: '',
+{id: 'MaelvyrnCoralboundAutomaton', name: 'Maelvyrn, Coralbound Automaton', rarity: 'Legend', image: 'Cards/ihu/MaelvyrnCoralboundAutomaton.png', flavor: '', fullArt: 'Cards/Coralbound/MaelvyrnCoralboundAutomatonFA.png', flavor: '',
  category: 'Creature', color: 'Blue', type: ['Water','Construct','Assembly'], hp: 6, atk: 5, def: 2, cost: '{6}{u}',
  ability: ['Exploit', 'Unbreakable'], set: 'InfiniteHorizons',
  skill: [{name: 'Summon', cost: '{r}{r}', effect: {class: 'Summon'}},
@@ -1429,7 +1429,7 @@ const dummyCards = [
  ]},
 
 // --- HYDRAL CARDS ---//
-{id: 'HydrionPrimevalFloodbringer', name: 'Hydrion, Primeval Floodbringer', rarity: 'Legend', image: 'Cards/fou/HydrionPrimevalFloodbringer.png', flavor: '', imageFullArt: 'Cards/Coralbound/MaelvyrnCoralboundAutomatonFA.png', flavor: '',
+{id: 'HydrionPrimevalFloodbringer', name: 'Hydrion, Primeval Floodbringer', rarity: 'Legend', image: 'Cards/fou/HydrionPrimevalFloodbringer.png', flavor: '', fullArt: 'Cards/Coralbound/MaelvyrnCoralboundAutomatonFA.png', flavor: '',
  category: 'Creature', color: 'Blue', type: ['Water','Elemental','Fusion'], hp: 10, atk: 0, ability: ['Elusive', 'Soak'], set: 'PrimordialAscension',
  skill: [{name: 'Summon', cost: '{5}{u}', effect: {class: 'Summon'}},
 	{name: 'Fusion', cost: '{u}{u}', effect: {class: 'Summon'}},
@@ -1567,7 +1567,7 @@ const dummyCards = [
    effect: {class:'Reanimate'}}
  ]},
 
-{id: 'MaldryssSkullframeArchmage', name: 'Maldryss, Skullframe Archmage', rarity: 'Legend', image: 'Cards/fob/MaldryssSkullframeArchmage.png', flavor: '', imageFullArt: 'Cards/Skullframe/MaldryssSkullframeArchmageFA.png', flavor: '',
+{id: 'MaldryssSkullframeArchmage', name: 'Maldryss, Skullframe Archmage', rarity: 'Legend', image: 'Cards/fob/MaldryssSkullframeArchmage.png', flavor: '', fullArt: 'Cards/Skullframe/MaldryssSkullframeArchmageFA.png', flavor: '',
  category: 'Creature', color: ['Black', 'Purple'], type: ['Undead','Mage'], hp: 4, atk: 2, 
  cost: '{b}{b}{p}', ability: ['Drain','Immunity'], set: 'ElementaGenesis',
  skill: [{name: 'Summon', cost: '{b}{b}{p}', effect: {class: 'Summon'}},
@@ -2522,8 +2522,30 @@ const allCardbackOptions = [
 ];
 
 const allCardStyles = [
+	{ cardId: 'EryndorVerdaraKing', key: "fullArt", label: "Eryndor", rarity: 'Legend', price: 100, obtain: 'shop' },
 	{ cardId: 'FaelyraWildhornEmpress', key: "fullArt", label: "Faelyra", rarity: 'Legend', price: 100, obtain: 'shop' },
-	{ cardId: 'Forest', key: "fullArt", label: "Forest", rarity: 'Common', price: 10, obtain: 'shop' },	
+	{ cardId: 'KaelyraMagmarisHeiress', key: "fullArt", label: "Kaelyra", rarity: 'Legend', price: 100, obtain: 'shop' },
+	{ cardId: 'KaelenFirelandHuntress', key: "fullArt", label: "Kaelen", rarity: 'Legend', price: 100, obtain: 'shop' },
+	{ cardId: 'SerenyaTideboundEnchantress', key: "fullArt", label: "Serenya", rarity: 'Legend', price: 100, obtain: 'shop' },
+	{ cardId: 'ZaryonUmarionCommander', key: "fullArt", label: "Zaryon", rarity: 'Legend', price: 100, obtain: 'shop' },
+	{ cardId: 'ZyraThunderbladeDuelist', key: "fullArt", label: "Zyra", rarity: 'Legend', price: 100, obtain: 'shop' },
+	{ cardId: 'GarudaAetherion Wings', key: "fullArt", label: "Garuda", rarity: 'Legend', price: 100, obtain: 'shop' },
+	{ cardId: 'RudgarIronfistMauler', key: "fullArt", label: "Rudgar", rarity: 'Legend', price: 100, obtain: 'shop' },
+	{ cardId: 'GravokDrakzulTyrant', key: "fullArt", label: "Gravok", rarity: 'Legend', price: 100, obtain: 'shop' },
+	{ cardId: 'SelgorCorruptedWarlock', key: "fullArt", label: "Selgor", rarity: 'Legend', price: 100, obtain: 'shop' },
+	{ cardId: 'MordrathVirkulPhantom', key: "fullArt", label: "Mordrath", rarity: 'Legend', price: 100, obtain: 'shop' },
+	{ cardId: 'ElyndraDawnbladeofHeavens', key: "fullArt", label: "Elyndra", rarity: 'Legend', price: 100, obtain: 'shop' },
+	{ cardId: 'SeraphielSolmaraParagon', key: "fullArt", label: "Seraphiel", rarity: 'Legend', price: 100, obtain: 'shop' },
+	{ cardId: 'VelmiraMistressofSilence', key: "fullArt", label: "Faelyra", rarity: 'Legend', price: 100, obtain: 'shop' },
+	{ cardId: 'MorvaneNoctyraOathbreaker', key: "fullArt", label: "Morvane", rarity: 'Legend', price: 100, obtain: 'shop' },
+	{ cardId: 'Forest', key: "fullArt", label: "Forest", rarity: 'Common', price: 10, obtain: 'shop' },
+	{ cardId: 'Volcano', key: "fullArt", label: "Volcano", rarity: 'Common', price: 10, obtain: 'shop' },	
+	{ cardId: 'Ocean', key: "fullArt", label: "Ocean", rarity: 'Common', price: 10, obtain: 'shop' },
+	{ cardId: 'Peaks', key: "fullArt", label: "Peaks", rarity: 'Common', price: 10, obtain: 'shop' },
+	{ cardId: 'Mountain', key: "fullArt", label: "Mountain", rarity: 'Common', price: 10, obtain: 'shop' },
+	{ cardId: 'Swamp', key: "fullArt", label: "Swamp", rarity: 'Common', price: 10, obtain: 'shop' },	
+	{ cardId: 'Plains', key: "fullArt", label: "Plains", rarity: 'Common', price: 10, obtain: 'shop' },
+	{ cardId: 'Wasteland', key: "fullArt", label: "Wasteland", rarity: 'Common', price: 10, obtain: 'shop' },	
 ];
 
 const packPrices = [
@@ -3708,8 +3730,7 @@ function getCardImage(card, preferredStyle = null) {
   // Map style names to card properties
   const styleMap = {
     'default': card.image,
-    'fullArt': card.imageFullArt,
-    'altered': card.imageAltered,
+    'fullArt': card.fullArt,
   };
   
   // Get the requested style, fallback to default if not available
@@ -3730,7 +3751,6 @@ function isCardStyleUnlocked(cardId, styleType) {
   if (styleType === 'default') return true; // Default is always unlocked
   switch (styleType) {
     case 'fullArt': return window.playerUnlockedFullArt?.[cardId] === true;
-    case 'altered': return window.playerUnlockedAltered?.[cardId] === true;
 	default:
     return false;
   }
@@ -3746,21 +3766,12 @@ function getAvailableCardStyles(card, onlyUnlocked = false) {
     unlocked: true
   });
   // Full Art
-  if (card.imageFullArt) {
+  if (card.fullArt) {
     allStyles.push({
       key: 'fullArt',
       name: 'Full Art',
-      image: card.imageFullArt,
+      image: card.fullArt,
       unlocked: isCardStyleUnlocked(card.id, 'fullArt')
-    });
-  }
-  // Altered Art
-  if (card.imageAltered) {
-    allStyles.push({
-      key: 'altered',
-      name: 'Alternate Art',
-      image: card.imageAltered,
-      unlocked: isCardStyleUnlocked(card.id, 'altered')
     });
   }
   // Filter to only unlocked if requested
@@ -3775,10 +3786,6 @@ function unlockCardStyle(cardId, styleType) {
     case 'fullArt':
       if (!window.playerUnlockedFullArt) window.playerUnlockedFullArt = {};
       window.playerUnlockedFullArt[cardId] = true;
-      break;    
-    case 'altered':
-      if (!window.playerUnlockedAltered) window.playerUnlockedAltered = {};
-      window.playerUnlockedAltered[cardId] = true;
       break;
   }
   saveProgress();
@@ -3848,7 +3855,7 @@ window.getCardArt = function(card, owner = "player") {
     ? (window.playerCardStyles?.[card.id] || "default")
     : (window.opponentCardStyles?.[card.id] || "default");
 
-  if (selected === "fullArt" && card.imageFullArt) return card.imageFullArt;
+  if (selected === "fullArt" && card.fullArt) return card.fullArt;
   if (selected === "foil" && card.imageFoil) return card.imageFoil;
   return card.image;
 };
@@ -3863,7 +3870,7 @@ window.getCardArtForOwner = function(card, owner) {
   const selected = styles[card.id] || "default";
 
   // Map style keys to your card object fields:
-  if (selected === "fullArt" && card.imageFullArt) return card.imageFullArt;
+  if (selected === "fullArt" && card.fullArt) return card.fullArt;
   if (selected === "default" && card.image) return card.image;
 
   // fallback
@@ -4270,7 +4277,6 @@ function filterCards({
         return false; // Card doesn't match the filter
       }
     }
-
     return true; // Card matches all filters
   });
 }
