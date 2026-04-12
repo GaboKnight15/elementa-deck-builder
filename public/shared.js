@@ -2163,16 +2163,6 @@ manifest: {name: "Manifest", description: "Summon from the deck after meeting ce
 awaken: {name: "Awaken", description: "Activates during the draw step."},
 aftermath: {name: "Aftermath", description: "Activates during the end step."},
 
-// --- WEATHER SKILLS --- //
-drought: {name: "Drought", description: "Summons Sunlight{sunlight} and Sunburst{sunburst}.", icon: "Icons/Weather/Drought.png" },
-drizzle: {name: "Drizzle", description: "Summons Rain{rain} and Downpour{downpour}.", icon: "Icons/Weather/Drizzle.png" },
-stormcall: {name: "Stormcall", description: "Summons Storm{storm} and Thunderstorm{thunderstorm}.", icon: "Icons/Weather/Stormcall.png" },
-frostcall: {name: "Frostcall", description: "Summons Snowfall and Blizzard.", icon: "Icons/Weather/Frostcall.png" },
-strongwinds: {name: "Strongwinds", description: "Summons Gale and Hurricane.", icon: "Icons/Weather/Strongwinds.png" },
-eruption: {name: "Eruption", description: "Summons Ashfall.", icon: "Icons/Weather/Eruption.png" },
-decay: {name: "Decay", description: "Summons Miasma.", icon: "Icons/Weather/Decay.png" },
-mystveil: {name: "Mystveil", description: "Summons Mist", icon: "Icons/Weather/Mist.png" },
-
 // ---------------------------------- //
 // --- STATUS AND WEATHER EFFECTS --- //
 // ---------------------------------- //
