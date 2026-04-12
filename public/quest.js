@@ -489,15 +489,6 @@ function getAchievementGroupKey(sectionKey, group) {
   return group.id || group.key || group.name || `${sectionKey}::${group.title || 'group'}`;
 }
 
-// Return the array of tiers for a group.
-// Adapt this depending on your ACHIEVEMENTS shape.
-function getGroupTiers(group) {
-  // Common shapes:
-  // group.tiers = [{...}, {...}]
-  // group[1], group[2] ... (not recommended)
-  return Array.isArray(group.tiers) ? group.tiers : [];
-}
-
 // Clamp and sanitize progress
 function clampProgress(val) {
   const n = Number(val || 0);
@@ -516,150 +507,16 @@ function getTierReward(tier) {
   return tier.reward ?? null;
 }
 
-// Get or create a user's group state
-function getOrCreateGroupState(groupKey) {
-  const st = ensureAchievementState();
-  if (!st.groups[groupKey]) {
-    st.groups[groupKey] = {
-      tierIndex: 0,
-      progress: 0,
-      completed: {}, // { [tierIndex]: true }
-      claimed: {}    // { [tierIndex]: true }
-    };
-  }
-  // sanitize
-  st.groups[groupKey].tierIndex = Math.max(0, Number(st.groups[groupKey].tierIndex || 0));
-  st.groups[groupKey].progress = clampProgress(st.groups[groupKey].progress);
-  st.groups[groupKey].completed = st.groups[groupKey].completed || {};
-  st.groups[groupKey].claimed = st.groups[groupKey].claimed || {};
-  return st.groups[groupKey];
-}
-
-// Determine current tier object for a group
-function getCurrentTierForGroup(sectionKey, group) {
-  const groupKey = getAchievementGroupKey(sectionKey, group);
-  const gState = getOrCreateGroupState(groupKey);
-  const tiers = getGroupTiers(group);
-  const idx = Math.min(gState.tierIndex, Math.max(0, tiers.length - 1));
-  return { groupKey, gState, tiers, tierIndex: idx, tier: tiers[idx] || null };
-}
-
-// Marks current tier completed, advances to next tier if available
-function completeTierAndAdvance(groupKey, gState, tiers) {
-  const idx = Math.min(gState.tierIndex, Math.max(0, tiers.length - 1));
-  gState.completed[idx] = true;
-
-  const nextIdx = idx + 1;
-  if (tiers[nextIdx]) {
-    gState.tierIndex = nextIdx;
-    gState.progress = 0; // reset for next tier
-  } else {
-    // No more tiers: keep at last tier index and clamp progress
-    gState.tierIndex = idx;
-    const goal = getTierGoal(tiers[idx] || {});
-    gState.progress = goal; // stay completed
-  }
-}
 // Return progress for a group (current tier only)
 function getAchievementProgress(groupKey) {
-  const gState = getOrCreateGroupState(groupKey);
-  return { tierIndex: gState.tierIndex, progress: clampProgress(gState.progress) };
-}
-// Increment current tier progress for a group.
-// When reaching goal, mark completed and advance.
-function incrementAchievementProgress(sectionKey, group, amount = 1, { autoSave = true } = {}) {
-  const { groupKey, gState, tiers, tierIndex, tier } = getCurrentTierForGroup(sectionKey, group);
-  if (!tier) return;
-
-  const goal = getTierGoal(tier);
-  if (goal <= 0) return;
-
-  // If already completed and at max tier, do nothing
-  if (gState.completed[tierIndex] && !tiers[tierIndex + 1]) return;
-
-  gState.progress = clampProgress(gState.progress + Number(amount || 1));
-  if (gState.progress >= goal) {
-    gState.progress = goal;
-    completeTierAndAdvance(groupKey, gState, tiers);
-  }
-
-  if (autoSave) saveProgress && saveProgress();
+  
 }
 
 // Set progress directly (used by "setAchievementProgress")
 function setAchievementProgress(sectionKey, group, value, { autoSave = true } = {}) {
-  const { groupKey, gState, tiers, tierIndex, tier } = getCurrentTierForGroup(sectionKey, group);
-  if (!tier) return;
-
-  const goal = getTierGoal(tier);
-  if (goal <= 0) return;
-
-  gState.progress = clampProgress(value);
-  if (gState.progress >= goal) {
-    gState.progress = goal;
-    completeTierAndAdvance(groupKey, gState, tiers);
-  }
-
   if (autoSave) saveProgress && saveProgress();
 }
 
-// Claim reward for the CURRENT tier (or a specific tier index if you want)
-function claimAchievementReward(sectionKey, group, { tierToClaim = null, autoSave = true } = {}) {
-  const groupKey = getAchievementGroupKey(sectionKey, group);
-  const gState = getOrCreateGroupState(groupKey);
-  const tiers = getGroupTiers(group);
-
-  const claimIdx = (tierToClaim === null) ? (gState.tierIndex - 1) : Number(tierToClaim);
-  if (!Number.isFinite(claimIdx) || claimIdx < 0 || !tiers[claimIdx]) return false;
-
-  // Only claim if completed
-  if (!gState.completed[claimIdx]) return false;
-  if (gState.claimed[claimIdx]) return false;
-
-  gState.claimed[claimIdx] = true;
-
-  // Apply reward if exists
-  const reward = getTierReward(tiers[claimIdx]);
-  if (reward) {
-    // Implement your reward application here
-    // Example:
-    // if (reward.coins) addCoins(reward.coins);
-    // if (reward.essence) addEssenceCurrency(reward.essence);
-  }
-
-  if (autoSave) saveProgress && saveProgress();
-  return true;
-}
-function getVisibleAchievementEntriesForSection(sectionKey, sectionDef) {
-  // sectionDef.groups should be an array of groups in that tab
-  const groups = Array.isArray(sectionDef.groups) ? sectionDef.groups : (Array.isArray(sectionDef) ? sectionDef : []);
-  const visible = [];
-
-  groups.forEach(group => {
-    const { groupKey, gState, tiers, tierIndex, tier } = getCurrentTierForGroup(sectionKey, group);
-    if (!tier) return;
-
-    const goal = getTierGoal(tier);
-    const progress = clampProgress(gState.progress);
-    const completed = !!gState.completed[tierIndex] && !tiers[tierIndex + 1]; // if last tier completed
-    // But usually current tier should not be "completed" because you'd advance away on completion.
-    // So visible entry is almost always "in progress" unless you're at final tier and finished.
-
-    visible.push({
-      sectionKey,
-      groupKey,
-      group,
-      tierIndex,
-      tier,
-      progress,
-      goal,
-      isFinalTier: !tiers[tierIndex + 1],
-      isCompleted: completed
-    });
-  });
-
-  return visible;
-}
 function countCollectedCardsByColor(colorName) {
   const collection = (typeof getCollection === 'function') ? getCollection() : {};
   const want = String(colorName || '').toLowerCase();
@@ -906,23 +763,12 @@ function ensureAchievementState() {
   return playerAchievements;
 }
 
-function getOrCreateAchievementGroupState(groupKey) {
-  ensureAchievementState();
-  if (!playerAchievements.groups[groupKey]) {
-    playerAchievements.groups[groupKey] = { completed: {}, claimed: {} };
-  }
-  const gs = playerAchievements.groups[groupKey];
-  gs.completed = gs.completed || {};
-  gs.claimed = gs.claimed || {};
-  return gs;
-}
 function getAchievementGroupKeyFromEntry(entry) {
   return `${entry.section}::${entry.group}`;
 }
 function getTieredAchievementView(section, group, progressValue) {
   const tiers = getAchievementTiers(section, group);
   const groupKey = `${section}::${group}`;
-  const gs = getOrCreateAchievementGroupState(groupKey);
 
   // Determine completion from progress, and persist "completed" flags (monotonic)
   tiers.forEach(t => {
