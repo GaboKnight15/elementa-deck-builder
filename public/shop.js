@@ -13,7 +13,6 @@ window.unlockedCosmetics = window.unlockedCosmetics || [];
 const shopSection = document.getElementById('shop-section');
 const shopContainer = document.getElementById('shop-container');
 const packOpeningModal = document.getElementById('pack-opening-modal');
-const packOpeningModalContent = document.getElementById('pack-opening-modal-content');
 const openedPackRowModal = document.getElementById('opened-pack-row-modal');
 const closePackOpeningModalBtn = document.getElementById('close-pack-opening-modal');
 const PACK_SIZE = 6;
@@ -247,10 +246,6 @@ function rollFromOdds(oddsObj) {
 
 function pickRandom(pool) {
   if (!pool || pool.length === 0) return null;
-  return pool[Math.floor(Math.random() * pool.length)];
-}
-function pickRandomFromPool(pool) {
-  if (!pool.length) return null;
   return pool[Math.floor(Math.random() * pool.length)];
 }
 
@@ -728,15 +723,7 @@ function renderShopCardbacks() {
     imgClass: 'shop-cardback-img'
   });
 }
-function getRandomCardsByRarity(rarity, count, excludeIds=[]) {
-  const pool = dummyCards.filter(card => card.rarity === rarity && !excludeIds.includes(card.id));
-  const selected = [];
-  while (selected.length < count && pool.length > 0) {
-    const idx = Math.floor(Math.random() * pool.length);
-    selected.push(pool.splice(idx, 1)[0]);
-  }
-  return selected;
-}
+
 // FLIP ANIMATION //
 function animateCardFlipSequence(cardDivs, onAfterFlip) {
   cardDivs.forEach((div, i) => {
