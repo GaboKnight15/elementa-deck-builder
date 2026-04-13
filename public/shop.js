@@ -243,27 +243,11 @@ function showCosmeticConfirmModal({imgSrc, name, type, price, onConfirm, packId,
     }
   };
 }
-// RNG
-function getRandomCards(n, setName) {
-  const available = dummyCards.filter(card => Array.isArray(card.set) ? card.set.includes(setName) : card.set === setName);
-  const result = [];
-  for (let i = 0; i < n; i++) {
-    if (available.length === 0) break;
-    const idx = Math.floor(Math.random() * available.length);
-    result.push(available[idx]);
-  }
-  return result;
-}
+
 function getPackPool(packId) {
   // Optional special case if you add EssenceLegacy
   if (packId === "EssenceLegacy") return (window.dummyCards || []).slice();
 
-  return (window.dummyCards || []).filter(card =>
-    Array.isArray(card.set) ? card.set.includes(packId) : card.set === packId
-  );
-}
-function getPackPool(packId) {
-  // if later you add EssenceLegacy as “all cards”, special-case it here
   return (window.dummyCards || []).filter(card =>
     Array.isArray(card.set) ? card.set.includes(packId) : card.set === packId
   );
@@ -289,16 +273,7 @@ function pickRandomFromPool(pool) {
   if (!pool.length) return null;
   return pool[Math.floor(Math.random() * pool.length)];
 }
-function rollWeighted(table) {
-  // table = [{ value: "Common", weight: 80 }, ...]
-  const total = table.reduce((s, x) => s + Number(x.weight || 0), 0);
-  let r = Math.random() * total;
-  for (const x of table) {
-    r -= Number(x.weight || 0);
-    if (r <= 0) return x.value;
-  }
-  return table[table.length - 1]?.value;
-}
+
 function generatePackCards(packId, slotTable = PACK_SLOT_ODDS_DEFAULT) {
   const pool = getPackPool(packId);
 
@@ -369,13 +344,14 @@ let lastPackCards = [];
 let lastPackNewIds = [];
 // Open pack logic
 function openPack(type, count = 1, done) {
-	const packCards = generatePackCards(type);
   const collection = getCollection();
   let cards = [];
   let allNewIds = [];
+
   for (let i = 0; i < count; i++) {
-    const packCards = getRandomCards(10, type);
+    const packCards = generatePackCards(type); // <-- 6-card pack with slots
     cards = cards.concat(packCards);
+
     packCards.forEach(card => {
       if (!collection[card.id]) allNewIds.push(card.id);
     });
