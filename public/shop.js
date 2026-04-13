@@ -16,7 +16,16 @@ const packOpeningModal = document.getElementById('pack-opening-modal');
 const packOpeningModalContent = document.getElementById('pack-opening-modal-content');
 const openedPackRowModal = document.getElementById('opened-pack-row-modal');
 const closePackOpeningModalBtn = document.getElementById('close-pack-opening-modal');
+const PACK_SIZE = 6;
 
+const PACK_SLOT_ODDS_DEFAULT = [
+  { slot: 1, kind: "token" }, // guaranteed token
+  { slot: 2, odds: { Common: 92, Rare: 7, Legendary: 1 } },
+  { slot: 3, odds: { Common: 85, Rare: 13, Legendary: 2 } },
+  { slot: 4, odds: { Common: 75, Rare: 22, Legendary: 3 } },
+  { slot: 5, odds: { Common: 60, Rare: 35, Legendary: 5 } },
+  { slot: 6, odds: { Rare: 90, Legendary: 10 } }, // guaranteed rare+ slot
+];
 // --- Shop Key Bases for localStorage ---
 const INDIVIDUAL_CARDS_SHOP_KEY_BASE = "shopIndividualCards";
 const INDIVIDUAL_CARDS_RESET_KEY_BASE = "shopIndividualCardsReset";
@@ -245,6 +254,84 @@ function getRandomCards(n, setName) {
   }
   return result;
 }
+function getPackPool(packId) {
+  // Optional special case if you add EssenceLegacy
+  if (packId === "EssenceLegacy") return (window.dummyCards || []).slice();
+
+  return (window.dummyCards || []).filter(card =>
+    Array.isArray(card.set) ? card.set.includes(packId) : card.set === packId
+  );
+}
+function getPackPool(packId) {
+  // if later you add EssenceLegacy as “all cards”, special-case it here
+  return (window.dummyCards || []).filter(card =>
+    Array.isArray(card.set) ? card.set.includes(packId) : card.set === packId
+  );
+}
+
+function rollFromOdds(oddsObj) {
+  const entries = Object.entries(oddsObj).map(([value, weight]) => ({ value, weight }));
+  const total = entries.reduce((s, x) => s + Number(x.weight || 0), 0);
+  let r = Math.random() * total;
+
+  for (const e of entries) {
+    r -= Number(e.weight || 0);
+    if (r <= 0) return e.value;
+  }
+  return entries[entries.length - 1]?.value;
+}
+
+function pickRandom(pool) {
+  if (!pool || pool.length === 0) return null;
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+function pickRandomFromPool(pool) {
+  if (!pool.length) return null;
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+function rollWeighted(table) {
+  // table = [{ value: "Common", weight: 80 }, ...]
+  const total = table.reduce((s, x) => s + Number(x.weight || 0), 0);
+  let r = Math.random() * total;
+  for (const x of table) {
+    r -= Number(x.weight || 0);
+    if (r <= 0) return x.value;
+  }
+  return table[table.length - 1]?.value;
+}
+function generatePackCards(packId, slotTable = PACK_SLOT_ODDS_DEFAULT) {
+  const pool = getPackPool(packId);
+
+  const tokenPool = pool.filter(c => String(c?.type || "").toLowerCase() === "token");
+  const nonTokenPool = pool.filter(c => String(c?.type || "").toLowerCase() !== "token");
+
+  const result = [];
+
+  for (const slotDef of slotTable) {
+    // Slot 1: guaranteed token
+    if (slotDef.kind === "token") {
+      const token = pickRandom(tokenPool);
+      // Fallback: if pack has no tokens, pick anything (or you can throw)
+      result.push(token || pickRandom(pool));
+      continue;
+    }
+
+    // Other slots: roll rarity then pick from that rarity pool
+    const rarity = rollFromOdds(slotDef.odds);
+    const rarityPool = nonTokenPool.filter(c =>
+      String(c?.rarity || "").toLowerCase() === String(rarity).toLowerCase()
+    );
+
+    // Fallbacks so the pack always fills even if the pool is missing a rarity
+    result.push(
+      pickRandom(rarityPool) ||
+      pickRandom(nonTokenPool) ||
+      pickRandom(pool)
+    );
+  }
+
+  return result.slice(0, PACK_SIZE);
+}
 // CURRENCY DEDUCTION
 function purchaseCosmetic(cost, purchaseCallback, done) {
   let balance = getCurrency();
@@ -282,6 +369,7 @@ let lastPackCards = [];
 let lastPackNewIds = [];
 // Open pack logic
 function openPack(type, count = 1, done) {
+	const packCards = generatePackCards(type);
   const collection = getCollection();
   let cards = [];
   let allNewIds = [];
