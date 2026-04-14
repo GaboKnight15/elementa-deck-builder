@@ -91,13 +91,6 @@ socket.on('profile', (profileObj) => {
     socket.to(socket.roomId).emit('opponent profile', profileObj);
   }
 });
-socket.on('opponent joined', (opponentId) => {
-  submitDeckToServer();
-  socket.emit('profile', getMyProfileInfo());
-
-  // NEW: send cosmetic selections
-  socket.emit('card styles', currentRoomId, window.playerCardStyles || {});
-});
 socket.on('opponent card styles', (styles) => {
   window.opponentCardStyles = styles || {};
 });
