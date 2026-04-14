@@ -142,12 +142,8 @@ const ESSENCE_IMAGE_MAP = {
 };
 // STATUS EFFECTS
 const BLIGHTS = {
-  Burned: {
-    icon: 'Icons/Status/Burned.png',
-    name: 'Burned',
+  Burned: { name: 'Burned', icon: 'Icons/Status/Burned.png', duration: 2, tick: "opponentEnd",
     description: 'DEF -1.',
-    duration: 2,
-    tick: "opponentEnd", // Only decrement at opponent's End Phase!
     apply: function(cardObj) {
       // Lower DEF by 1 if not already applied
       if (!cardObj._burnedDEF) {
@@ -181,12 +177,8 @@ const BLIGHTS = {
       cardObj.canAttack = true;
     },
   },
-Poisoned: {
-  icon: 'Icons/Status/Poisoned.png',
-  name: 'Poisoned',
+Poisoned: { name: 'Poisoned', duration: 3, tick: "allEnd", icon: 'Icons/Status/Poisoned.png',
   description: 'Takes 1 damage during each End Phase.',
-  duration: 3,
-  tick: "allEnd",
   apply: function(cardObj) {
     try {
       // mark instance as poisoned for quick checks / UI
@@ -233,11 +225,8 @@ Poisoned: {
     // Optionally, you can add a visual tick at each turn start or end
     // For now, logic is purely duration-based
   },
-  Soaked: {
-    icon: 'Icons/Status/Soaked.png',
-    name: 'Soaked',
+  Drenched: { name: 'Drenched', duration: 1, icon: 'Icons/Status/Drenched.png',
     description: 'Decreases {atk} by {1}.',
-    duration: 1,
     apply: function(cardObj) {
       cardObj._soak = true;
       cardObj.soakAmount = 2; // for example, if you want to track the value
@@ -248,10 +237,8 @@ Poisoned: {
     }
     // Optionally add logic for duration ticks
   },
-Bound: {
-  icon: 'Icons/Status/Bound.png',
-  name: 'Bound',
-  description: 'Cannot attack or activate skills (removed at next opponent End Phase).',
+Bound: { name: 'Bound', icon: 'Icons/Status/Bound.png', duration: 1,
+  description: 'Disabled and cannot activate skills.',
   // Don't set duration here, handle it in your end phase check!
   apply: function(cardObj) {
     cardObj._bound = true;
@@ -266,10 +253,8 @@ Bound: {
     delete cardObj._bindPendingRemoval;
   }
 },
-Sealed: {
-  name: "Sealed",
-  icon: "Icons/Status/Sealed.png",
-  description: "This card's skills cannot be activated.",
+Sealed: { name: "Sealed", duration: 1, icon: "Icons/Status/Sealed.png",
+  description: "Skills cannot be activated.",
   // apply/remove set an instance-level flag so checks are cheap and reliable
   apply: function(cardObj) {
     try {
@@ -292,12 +277,8 @@ Sealed: {
     }
   }
 },
-Cursed: {
-  icon: 'Icons/Status/Cursed.png',
-  name: 'Cursed',
+Cursed: { name: 'Cursed', duration: 3, icon: 'Icons/Status/Cursed.png',
   description: 'Reduces max HP by 1 during each End Phase.',
-  duration: 3,
-  tick: "allEnd",
   apply: function(cardObj) {
     try {
       // mark instance as cursed (for quick checks / UI)
@@ -354,50 +335,6 @@ InvulnerableAtk: {
     cardObj._invulnerableWhileAttacking = false;
   }
 },
-// --- Add these two new sigil statuses to BLIGHTS ---
-EvolveSigil: {
-  icon: 'Icons/Status/EvolveSigil.png', // add an icon at this path (or reuse an existing one)
-  name: 'Evolve Sigil',
-  description: 'This card is marked to Evolve. Use Evolution to consume this sigil and evolve.',
-  // Sigils are usually short-lived markers; no duration here means explicit removal on consume
-  apply: function(cardObj) {
-    try {
-      cardObj._hasEvolveSigil = true;
-      // Keep canonical presence in statuses array so UI shows icon
-    } catch (err) {
-      console.warn('EvolveSigil.apply failed', err);
-    }
-  },
-  remove: function(cardObj) {
-    try {
-      cardObj._hasEvolveSigil = false;
-      delete cardObj._hasEvolveSigil;
-    } catch (err) {
-      console.warn('EvolveSigil.remove failed', err);
-    }
-  }
-},
-
-FuseSigil: {
-  icon: 'Icons/Status/FuseSigil.png', // add an icon at this path (or reuse an existing asset)
-  name: 'Fuse Sigil',
-  description: 'This card is marked to Fuse. Use Fusion to consume this sigil and perform Fusion.',
-  apply: function(cardObj) {
-    try {
-      cardObj._hasFuseSigil = true;
-    } catch (err) {
-      console.warn('FuseSigil.apply failed', err);
-    }
-  },
-  remove: function(cardObj) {
-    try {
-      cardObj._hasFuseSigil = false;
-      delete cardObj._hasFuseSigil;
-    } catch (err) {
-      console.warn('FuseSigil.remove failed', err);
-    }
-  }
-},
   // ... add more statuses
 };
 
@@ -405,28 +342,22 @@ FuseSigil: {
 // ATTACK TARGETING ABILITIES //
 ------------------------------*/
 const TARGET_FILTER_ABILITY = {
-  Ambush: {
-    icon: 'Icons/Ability/Ambush.png',
-    name: 'Ambush',
+  Ambush: { name: 'Ambush', icon: 'Icons/Ability/Ambush.png',
     description: 'Cannot be targeted. Removed if this creature attacks or uses a skill.',
     filter: (attacker, targets) => {
       // Remove all targets with Ambush ability
       return targets.filter(target => !defenderHasAbility(target, 'Ambush'));
     }
   },
-  Flying: {
-    icon: 'Icons/Ability/Flying.png',
-    name: 'Flying',
-    description: 'Ignores color protection, but only Flying or Ranger can block/attack Flying. Speed +{1}',
+  Flying: { name: 'Flying', icon: 'Icons/Ability/Flying.png',
+    description: 'Target priority -1. Speed +{1}',
     filter: (attacker, targets) => {
       // Flying ignores color protection (handled outside), so here: allow all
       return targets;
     }
   },
-  Protect: {
-    icon: 'Icons/Ability/Protect.png',
-    name: 'Protect',
-    description: 'If any opponent creature has Protect, only those can be attacked (unless attacker is Flying).',
+  Protect: { name: 'Protect', icon: 'Icons/Ability/Protect.png',
+    description: 'Target priority +1.',
     filter: (attacker, targets) => {
       const protectTargets = targets.filter(target => defenderHasAbility(target, 'Protect'));
       if (protectTargets.length > 0 && !attackerHasAbility(attacker, 'Flying')) {
@@ -435,14 +366,9 @@ const TARGET_FILTER_ABILITY = {
       return targets;
     }
   },
-Conceal: {
-  icon: 'Icons/Ability/Conceal.png',
-  name: 'Conceal',
-  description: '-1 target priority.',
+Conceal: { name: 'Conceal', icon: 'Icons/Ability/Conceal.png',
+  description: 'Target priority -1.',
   filter: (attacker, targets) => {
-    // Reorder targets so that any target with Conceal is placed at the end.
-    // Preserve the relative order within each group (non-conceal first, then conceal).
-    // Use the existing defenderHasAbility helper (used by Ambush) if available.
     try {
       const normal = [];
       const concealed = [];
@@ -460,9 +386,7 @@ Conceal: {
     }
   }
 },
-  Veil: {
-    icon: 'Icons/Ability/Veil.png',
-    name: 'Veil',
+  Veil: { name: 'Veil', icon: 'Icons/Ability/Veil.png',
     description: 'Cannot be targeted by spells and skills.',
     handler: function(sourceCardObj, skillObj) {
       startSkillTarget(
@@ -537,22 +461,14 @@ const SKILL_ACTIVATION_MAP = {
 ------------------------------*/
 // Helper for requirements //
 const REQUIREMENT_MAP = {
-  Special: {
-    icon: 'Icons/Ability/Special.png',
-    name: 'Special',
-    zone: 'playerField', 
+  Special: { name: 'Special', zone: ['playerField'], icon: 'Icons/Ability/Special.png',
     description: 'Activates in the field.',
-    zones: ['playerCreatures', 'playerTerrains'], // field
     canActivate: (cardObj, skillObj, currentZone) =>
       ['playerCreatures', 'playerTerrains'].includes(currentZone),
     handler: (cardObj, skillObj, next) => next && next()
   },
-  CW: {
-    icon: 'Icons/Essence/Tap.png',
-    name: 'Disable',
+  CW: { name: 'Disable', zone: ['playerField'], icon: 'Icons/Essence/Tap.png',
     description: 'Disable card.',
-    zone: 'playerField', 
-    zones: ['playerCreatures', 'playerTerrains'],
     handler: function(sourceCardObj, skillObj, next) {
       // If already in DEF (horizontal), just proceed with skill activation
       if (sourceCardObj.orientation === "horizontal") {
@@ -571,12 +487,8 @@ const REQUIREMENT_MAP = {
         (sourceCardObj.orientation === "vertical" || sourceCardObj.orientation === "horizontal");
     }
   },
-  CCW: {
-    icon: 'Icons/Essence/Untap.png',
-    name: 'Enable',
+  CCW: { name: 'Enable', zone: ['playerField'], icon: 'Icons/Essence/Untap.png',
     description: 'Enable card.',
-    zone: 'playerField', 
-    zones: ['playerCreatures', 'playerTerrains'],
     handler: function(sourceCardObj, skillObj, next) {
       // If already in ATK (vertical), just proceed with skill activation
       if (sourceCardObj.orientation === "vertical") {
@@ -595,11 +507,8 @@ const REQUIREMENT_MAP = {
         (sourceCardObj.orientation === "vertical" || sourceCardObj.orientation === "horizontal");
     }
   },
-  Stash: {
-    icon: 'Icons/Skill/Stash.png',
-    name: 'Stash',
+  Stash: { name: 'Stash', zone: 'playerHand', icon: 'Icons/Requirement/Stash.png',
     description: 'Returns itself from the hand to the deck.',
-    zones: 'playerHand',
     handler: function(sourceCardObj, skillObj) {
       const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
       if (!validZones.some(zone => zone === 'playerHand')) {
@@ -632,11 +541,8 @@ const REQUIREMENT_MAP = {
       renderGameState();
     },
   },
-Sacrifice: {
-  icon: 'Icons/Skill/Sacrifice.png',
-  name: 'Sacrifice',
+Sacrifice: { name: 'Sacrifice', zone: ['playerField'], icon: 'Icons/Requirement/Sacrifice.png',
   description: 'Tributes itself from the field.',
-  zones: ['playerCreatures', 'playerTerrains'],
   handler: function(sourceCardObj, skillObj, next, requirement) {
     const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
     const isField = validZones.some(zone =>
@@ -689,11 +595,8 @@ Sacrifice: {
     return pool.length >= amount;
   }
 },
-Return: {
-  icon: 'Icons/Skill/Return.png',
-  name: 'Return',
+Return: { name: 'Return', zone: ['playerField'], icon: 'Icons/Skill/Return.png',
   description: 'Returns a card from the field to the hand.',
-    zones: ['playerCreatures', 'playerTerrains'],
     handler: function(sourceCardObj, skillObj) {
       const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
       const isField = validZones.some(zone =>
@@ -715,7 +618,7 @@ Return: {
       return validZones.includes(currentZone);
     }
   },
-Retreat: { icon: 'Icons/Skill/Retreat.png', name: 'Retreat', zones: ['playerCreatures', 'playerTerrains'],
+Retreat: { icon: 'Icons/Skill/Retreat.png', name: 'Retreat', zone: ['playerField'],
   description: 'Returns a card from the field to the deck.',
   handler: function(sourceCardObj, skillObj) {
     const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
@@ -739,9 +642,7 @@ Retreat: { icon: 'Icons/Skill/Retreat.png', name: 'Retreat', zones: ['playerCrea
     return validZones.includes(currentZone);
   }
 },
-Channel: {
-  icon: 'Icons/Skill/Channel.png', // optional; use an existing icon if you don't have one
-  name: 'Channel',
+Channel: { name: 'Channel', zone: 'playerVoid', icon: 'Icons/Skill/Channel.png', 
   description: 'Activates in the void.',
   canActivate: function(cardObj, skillObj, currentZone, gameState) {
     // Be tolerant of naming: allow currentZone "void" OR membership in void array.
@@ -763,9 +664,7 @@ Channel: {
 };
 
 const SKILL_EFFECT_MAP = {
-Summon: {
-  name: 'Summon',
-  zone: 'playerHand', 
+Summon: { name: 'Summon', zone: 'playerHand', 
   description: 'Move this card from hand to the field.',
   canActivate(cardObj, skillObj, currentZone, gameState) {
     // Accept common zone spellings; normalize if you can
@@ -803,9 +702,8 @@ Summon: {
     });
   }
 },
-Draw: {
-  name: 'Draw',
-  description: 'Move the top card(s) of your deck to your hand.',
+Draw: { name: 'Draw',
+  description: 'Draw from the your deck.',
   canActivate(sourceCardObj, skillObj, currentZone, gameState, step = {}) {
     const owner = (typeof getCardOwner === 'function' && getCardOwner(sourceCardObj) === 'opponent')
       ? 'opponent'
@@ -871,10 +769,7 @@ Draw: {
     drawOne();
   }
 },
-// CAST handler: plays a spell/ability from hand (resolves immediately and typically goes to void)
-Cast: {
-  name: 'Cast',
-  zone: 'playerHand', 
+Cast: { name: 'Cast', zone: 'playerHand', 
   description: 'Cast a spell from hand: resolve, then send to void.',
   canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
     // Accept common spellings used across your code
@@ -917,9 +812,7 @@ Cast: {
   }
 },
 
-Equip: {
-  name: 'Equip',
-  zone: 'playerHand', 
+Equip: { name: 'Equip', zone: 'playerHand', 
   description: 'Grants effects to creatures.',
   handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
     try {
@@ -976,11 +869,8 @@ Equip: {
   }
 },
 
-// TERRAFORM handler: place a terrain/terrain under player's terrains
-Terraform: {
-  name: 'Terraform',
-  zone: 'playerHand', 
-  description: 'Play a terrain from hand to terrain zone. Once per turn.',
+Terraform: { name: 'Terraform', zone: 'playerHand', 
+  description: 'Play a terrain from hand to terrain zone.',
   canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
     // Must be in hand (tolerant naming), and terraform not used this turn by current player
     const inHand = (currentZone === 'playerHand' || currentZone === 'playerHand' || currentZone === 'player-hand');
@@ -1022,11 +912,8 @@ Terraform: {
   }
 },
 
-Strike: {
-  icon: 'Icons/Skill/Strike.png',
-  name: 'Strike',
+Strike: { name: 'Strike', icon: 'Icons/Skill/Strike.png',
   description: 'Deals damage.',
-  // Now using (sourceCardObj, skillObj, step, nextEffect)
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
     // For your rule: any card on the field can be a target (player+opponent, creatures+terrains)
     const opponentField = [...gameState.opponentCreatures, ...gameState.opponentTerrains];
@@ -1040,47 +927,32 @@ Strike: {
     );
   }
 },
-Burn: {
-  icon: 'Icons/Skill/Burn.png',
-  name: 'Burn',
+Scorch: { name: 'Burn', icon: 'Icons/Skill/Burn.png',
   description: 'Deals damage and burns.',
   handler: effectStatusHandler('Burn')
 },
-Venom: {
-  icon: 'Icons/Skill/Poison.png',
-  name: 'Poison',
+Toxic: { name: 'Poison', icon: 'Icons/Skill/Poison.png',
   description: 'Deals damage and poisons.',
   handler: effectStatusHandler('Poison')
 },
-Freeze: {
-  icon: 'Icons/Skill/Freeze.png',
-  name: 'Freeze',
+Freeze: { name: 'Freeze', icon: 'Icons/Skill/Freeze.png',
   description: 'Deals damage and freezes.',
   handler: effectStatusHandler('Freeze')
 },
-Paralysis: {
-  icon: 'Icons/Skill/Paralysis.png',
-  name: 'Paralysis',
+Static: { name: 'Paralysis', icon: 'Icons/Skill/Paralysis.png',
   description: 'Deals damage and paralyzes.',
   handler: effectStatusHandler('Paralysis')
 },
-Bind: {
-  icon: 'Icons/Skill/Bind.png',
-  name: 'Bind',
+Bind: { name: 'Bind', icon: 'Icons/Skill/Bind.png',
   description: 'Deals damage and binds.',
   handler: effectStatusHandler('Bind')
 },
-Curse: {
-  icon: 'Icons/Skill/Curse.png',
-  name: 'Curse',
+Curse: { name: 'Curse', icon: 'Icons/Skill/Curse.png',
   description: 'Deals damage and curses.',
   handler: effectStatusHandler('Curse')
-},
-  
-Enable: {
-  icon: 'Icons/Essence/Untap.png',
-  name: 'Enable',
-  description: 'Rotate a card to vertical (enabled).',
+}, 
+Enable: { name: 'Enable', icon: 'Icons/Essence/Untap.png',
+  description: 'Rotate a card vertically.',
   handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
     try {
       // Determine target(s):
@@ -1123,10 +995,7 @@ Enable: {
     return sourceCardObj && sourceCardObj.orientation !== "vertical";
   }
 },
-
-Disable: {
-  icon: 'Icons/Essence/Tap.png',
-  name: 'Disable',
+Disable: { name: 'Disable', icon: 'Icons/Essence/Tap.png',
   description: 'Rotate a card to horizontal (disabled).',
   handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
     try {
@@ -1164,10 +1033,7 @@ Disable: {
   }
 },
 // --- SELF SUMMONING SKILLS --- //
-Dash: {
-  icon: 'Icons/Skill/Dash.png',
-  name: 'Dash',
-  zone: 'playerHand', 
+Dash: { name: 'Dash', zone: 'playerHand', icon: 'Icons/Skill/Dash.png',
   description: 'Summon this card from your hand with half HP (rounded up).',
   // Updated signature: accepts (sourceCardObj, skillObj, step, nextEffect)
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
@@ -1201,10 +1067,7 @@ Dash: {
     return currentZone === "hand" && gameState.playerHand.includes(cardObj);
   }
 },
-Reanimate: {
-  icon: 'Icons/Skill/Reanimate.png',
-  name: 'Reanimate',
-  zone: 'void',
+Reanimate: { name: 'Reanimate', zone: 'void', icon: 'Icons/Skill/Reanimate.png',
   description: 'Summon this card from the void.',
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
     // Only resolve if card is in void
@@ -1235,42 +1098,8 @@ Reanimate: {
     return currentZone === "void" && gameState.playerVoid.includes(cardObj);
   }
 },
-Awaken: {
-  icon: 'Icons/Skill/Awaken.png',
-  name: 'Awaken',
-  zone: 'playerField',
-  description: 'Summon this card from your deck.',
-  handler: function(sourceCardObj, skillObj) {
-    // Only activate if in deck
-    const isDeck = gameState.playerDeck.includes(sourceCardObj);
-    if (!isDeck) {
-      showToast("Awaken can only be activated from your deck.");
-      return;
-    }
-    const cardData = dummyCards.find(c => c.id === sourceCardObj.cardId);
-    const category = Array.isArray(cardData.category)
-      ? cardData.category.map(c => c.toLowerCase())
-      : [String(cardData.category).toLowerCase()];
-    let targetArr;
-    if (category.includes("creature")) {
-      targetArr = gameState.playerCreatures;
-    } else if (category.includes("terrain")) {
-      targetArr = gameState.playerTerrains;
-    } else {
-      showToast("Awaken can only be used for creatures or terrains.");
-      return;
-    }
-    // Animation (optional)
-    runDeckSkillWithAnimation && runDeckSkillWithAnimation(sourceCardObj, skillObj, targetArr, () => {
-    });
-  },
-  canActivate: function(cardObj, skillObj, currentZone, gameState) {
-    return currentZone === "deck" && gameState.playerDeck.includes(cardObj);
-  }
-},
-Heal: {
-  icon: 'Icons/Skill/Heal.png',
-  name: 'Heal',
+
+Heal: { name: 'Heal', icon: 'Icons/Skill/Heal.png',
   description: 'Heals an ally.',
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
     const playerField = [...gameState.playerCreatures, ...gameState.playerTerrains];
@@ -1303,9 +1132,7 @@ Heal: {
       );
     }
   },
-Armor: {
-  icon: 'Icons/Skill/Armor.png',
-  name: 'Armor',
+Armor: { name: 'Armor', icon: 'Icons/Skill/Armor.png',
   description: 'Grants armor to an ally.',
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
     const playerField = [...gameState.playerCreatures, ...gameState.playerTerrains];
@@ -1336,9 +1163,7 @@ Armor: {
       );
     }
   },
-  Recall: {
-    icon: 'Icons/Skill/Recall.png',
-    name: 'Recall',
+  Recall: { name: 'Recall', icon: 'Icons/Skill/Recall.png',
     description: 'Return this card from the void to your hand.',
     handler: function(sourceCardObj, skillObj) {
       const isVoid = gameState.playerVoid.includes(sourceCardObj);
@@ -1704,38 +1529,8 @@ Essence: { icon: 'Icons/skillEffect/Essence.png', name: 'Essence', description: 
     nextEffect && nextEffect();
   }
 },
-// --- FUSION --- //
-Fuse: {
-  icon: 'Icons/Skill/Fuse.png',
-  name: 'Fuse',
-  description: 'Gains a Fuse Sigil which can be consumed by Fusion.',
-  zones: ['playerCreatures', 'playerTerrains'], // Only from field
-  canActivate(cardObj, skillObj, currentZone, gameState) {
-    // Only on the field, and not already fused.
-    return ['playerCreatures', 'playerTerrains'].includes(currentZone) && !cardObj._fused;
-  },
-  handler(cardObj, skillObj, effectStep, nextEffect) {
-    // If already has a fuse sigil, notify
-    if (hasFuseSigil(cardObj)) {
-      showToast && showToast(`${cardObj.name || cardObj.cardId} already has a Fuse Sigil. Use Fusion to consume it.`, { type: 'info' });
-      if (nextEffect) nextEffect();
-      return;
-    }
-    // Grant the fuse sigil as a status
-    cardObj.statuses = cardObj.statuses || [];
-    cardObj.statuses.push({ name: 'FuseSigil', duration: null });
-    if (typeof BLIGHTS['FuseSigil'] !== 'undefined') {
-      try { BLIGHTS['FuseSigil'].apply(cardObj); } catch (e) {}
-    }
-    showToast && showToast(`${cardObj.name || cardObj.cardId} gained a Fuse Sigil. Use Fusion to consume it.`, { type: 'info' });
-    renderGameState && renderGameState();
-    if (nextEffect) nextEffect();
-  }
-},
-Fusion: {
-  icon: 'Icons/Skill/Fusion.png',
-  name: 'Fusion',
-  description: 'Consumes a Fuse Sigil to attach two fused cards from your field.',
+Fusion: { name: 'Fusion', icon: 'Icons/Skill/Fusion.png',
+  description: 'Sacrifices creatures or artifacts to summon it.',
   zones: ['playerHand'],
   canActivate(cardObj, skillObj, currentZone, gameState) {
     // Only allow from hand if source card has a FuseSigil (caller must have granted it earlier)
@@ -1817,46 +1612,8 @@ Fusion: {
     if (nextEffect) nextEffect();
   }
 },
-// --- EVOLUTION --- //
-Evolve: {
-  icon: 'Icons/Skill/Evolve.png',
-  name: 'Evolve',
-  description: 'Gains an Evolve Sigil which can be consumed by Evolution.',
-  handler: function(sourceCardObj, skillObj, step, nextEffect) {
-    if (!sourceCardObj) {
-      if (nextEffect) nextEffect();
-      return;
-    }
-    // If card already has EvolveSigil, inform the player and let Evolution resolve (do not re-grant)
-    if (hasEvolveSigil(sourceCardObj)) {
-      showToast && showToast(`${sourceCardObj.name || sourceCardObj.cardId} already has an Evolve Sigil. Use Evolution to evolve.`, { type: 'info' });
-      if (nextEffect) nextEffect();
-      return;
-    }
-    // Grant the EvolveSigil status to the source card
-    sourceCardObj.statuses = sourceCardObj.statuses || [];
-    // Add status entry so UI picks up icon and status array logic
-    sourceCardObj.statuses.push({ name: 'EvolveSigil', duration: null });
-    // Call BLIGHTS apply for consistent instance flags and side effects
-    if (typeof BLIGHTS['EvolveSigil'] !== 'undefined') {
-      try { BLIGHTS['EvolveSigil'].apply(sourceCardObj); } catch (e) { /* ignore */ }
-    }
-    showToast && showToast(`${sourceCardObj.name || sourceCardObj.cardId} gained an Evolve Sigil. Use Evolution to consume it.`, { type: 'info' });
-    renderGameState && renderGameState();
-    if (nextEffect) nextEffect();
-  },
-  // Optional: only available on field (if you want it restricted)
-  canActivate: function(cardObj, skillObj, currentZone, gameState) {
-    // Allow granting the sigil only from the field
-    return ['playerCreatures', 'playerTerrains'].includes(currentZone) || ['opponentCreatures','opponentTerrains'].includes(currentZone);
-  }
-},
-
-Evolution: {
-  // keep existing icon/name/description as before
-  icon: 'Icons/Skill/Evolution.png',
-  name: 'Evolution',
-  description: 'Consumes an Evolve Sigil to evolve this card.',
+Evolution: { name: 'Evolution', icon: 'Icons/Skill/Evolution.png',
+  description: 'Sacrifices 1 creature to summon.',
   canActivate: function(cardObj, skillObj, currentZone, gameState) {
     // Require that the card has the Evolve sigil and be on field
     const onField = ['playerCreatures','playerTerrains','opponentCreatures','opponentTerrains'].includes(currentZone);
@@ -1922,9 +1679,8 @@ Evolution: {
     if (nextEffect) nextEffect();
   }
 },
-Spawn: {
-  name: 'Spawn',
-  description: 'Summon up to N copies of a card from deck (priority), else hand, else void.',
+Spawn: { name: 'Spawn',
+  description: 'Summons from the token deck.',
   canActivate: function(sourceCardObj, skillObj, currentZone, gameState, step = {}) {
     const targetId = step.targetId;
     if (!targetId) return false;
@@ -2038,7 +1794,6 @@ Spawn: {
     nextEffect && nextEffect();
   }
 },
-  
 Sigil: {
   icon: 'Icons/Skill/Sigil.png',
   name: 'Sigil',
@@ -2095,41 +1850,6 @@ Sigil: {
   }
 },
 };
-
-const SIGIL_EFFECTS = {
-  // 'Null' sigil: integrates with your existing null-counter utilities for compatibility.
-  // Applying this sigil to an owner increments their "null" counter (via addNullSigil(owner))
-  // Removing it consumes/decrements the null counter (via consumeNullSigil(owner)).
-Null: {
-  key: 'Null',
-  name: 'Null',
-  icon: 'Icons/Sigils/null.png',
-  description: 'Nullifies certain skill/effect interactions when consumed. Behavior implemented by SIGIL_EFFECTS hooks and resolution logic.',
-  // called when a Null sigil entry is created (applySigil will call this)
-  apply(owner, opts = {}) {
-    // Prefer to be lightweight. If you must keep the legacy numeric counters for backward compatibility,
-    // update them here. Do NOT call addSigil/applySigil again (would double-add).
-    try {
-      // optional legacy sync (remove later)
-      if (owner === 'opponent') gameState.opponentNullSigil = (Number(gameState.opponentNullSigil) || 0) + Number(opts.amount || 1);
-      else gameState.playerNullSigil = (Number(gameState.playerNullSigil) || 0) + Number(opts.amount || 1);
-    } catch (e) {
-      console.warn('SIGIL_EFFECTS.Null.apply error', e);
-    }
-  },
-  // called when a Null sigil entry is removed (removeSigil will call this)
-  remove(owner, opts = {}) {
-    try {
-      const amount = Number(opts.amount || 1);
-      if (owner === 'opponent') gameState.opponentNullSigil = Math.max(0, (Number(gameState.opponentNullSigil) || 0) - amount);
-      else gameState.playerNullSigil = Math.max(0, (Number(gameState.playerNullSigil) || 0) - amount);
-    } catch (e) {
-      console.warn('SIGIL_EFFECTS.Null.remove error', e);
-    }
-  }
-},
-  // Example placeholder for other sigils:
-  // ExampleSigil: { key: 'ExampleSigil', name:'Example', icon:'Icons/Sigils/example.png', description:'...', apply(owner, opts){}, remove(owner, opts){} }
 };
 // ==========================
 // === DOM REFERENCES ===
