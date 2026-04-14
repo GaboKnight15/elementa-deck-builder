@@ -47,9 +47,6 @@ let gameState = {
   opponentSigils: [],
   turn: "player",
   phase: "start",
-  timeOfDay: "dawn", // Initial state
-  dayNightCycleCounter: 0, // Counts end phases
-  pendingDayNightTransition: "day",
   essencePools: {
     opponent: { colorless:0, green:0, red:0, blue:0, yellow:0, gray:0, purple:0, white:0, black:0, multicolor:0 },
     player: { colorless:0, green:0, red:0, blue:0, yellow:0, gray:0, purple:0, white:0, black:0, multicolor:0 }
@@ -79,13 +76,13 @@ const ZONE_MAP = {
   allHands:          { id: null, arr: () => [...gameState.playerHand, ...gameState.opponentHand] },
 
   // NEW: All player-side field (creatures + terrains)
-  allPlayerField:    { id: null, arr: () => [
+  playerField:    { id: null, arr: () => [
     ...gameState.playerCreatures,
     ...gameState.playerTerrains
   ] },
 
   // NEW: All opponent-side field (creatures + terrains)
-  allOpponentField:  { id: null, arr: () => [
+  opponentField:  { id: null, arr: () => [
     ...gameState.opponentCreatures,
     ...gameState.opponentTerrains
   ] },
@@ -144,11 +141,11 @@ const ESSENCE_IMAGE_MAP = {
   X20: "Icons/Essence/Twenty.png"
 };
 // STATUS EFFECTS
-const STATUS_EFFECTS = {
+const BLIGHTS = {
   Burned: {
     icon: 'Icons/Status/Burned.png',
     name: 'Burned',
-    description: 'Lowers DEF by 1.',
+    description: 'DEF -1.',
     duration: 2,
     tick: "opponentEnd", // Only decrement at opponent's End Phase!
     apply: function(cardObj) {
@@ -357,7 +354,7 @@ InvulnerableAtk: {
     cardObj._invulnerableWhileAttacking = false;
   }
 },
-// --- Add these two new sigil statuses to STATUS_EFFECTS ---
+// --- Add these two new sigil statuses to BLIGHTS ---
 EvolveSigil: {
   icon: 'Icons/Status/EvolveSigil.png', // add an icon at this path (or reuse an existing one)
   name: 'Evolve Sigil',
@@ -441,7 +438,7 @@ const TARGET_FILTER_ABILITY = {
 Conceal: {
   icon: 'Icons/Ability/Conceal.png',
   name: 'Conceal',
-  description: 'Makes it harder to be targeted. Concealed cards are targeted after other valid targets (targeted last).',
+  description: '-1 target priority.',
   filter: (attacker, targets) => {
     // Reorder targets so that any target with Conceal is placed at the end.
     // Preserve the relative order within each group (non-conceal first, then conceal).
@@ -543,8 +540,8 @@ const REQUIREMENT_MAP = {
   Special: {
     icon: 'Icons/Ability/Special.png',
     name: 'Special',
-    zone: 'allPlayerField', 
-    description: 'Description of the skill.',
+    zone: 'playerField', 
+    description: 'Activates in the field.',
     zones: ['playerCreatures', 'playerTerrains'], // field
     canActivate: (cardObj, skillObj, currentZone) =>
       ['playerCreatures', 'playerTerrains'].includes(currentZone),
@@ -554,7 +551,7 @@ const REQUIREMENT_MAP = {
     icon: 'Icons/Essence/Tap.png',
     name: 'Disable',
     description: 'Disable card.',
-    zone: 'allPlayerField', 
+    zone: 'playerField', 
     zones: ['playerCreatures', 'playerTerrains'],
     handler: function(sourceCardObj, skillObj, next) {
       // If already in DEF (horizontal), just proceed with skill activation
@@ -578,7 +575,7 @@ const REQUIREMENT_MAP = {
     icon: 'Icons/Essence/Untap.png',
     name: 'Enable',
     description: 'Enable card.',
-    zone: 'allPlayerField', 
+    zone: 'playerField', 
     zones: ['playerCreatures', 'playerTerrains'],
     handler: function(sourceCardObj, skillObj, next) {
       // If already in ATK (vertical), just proceed with skill activation
@@ -601,7 +598,7 @@ const REQUIREMENT_MAP = {
   Stash: {
     icon: 'Icons/Skill/Stash.png',
     name: 'Stash',
-    description: 'Returns a card from the hand to the deck.',
+    description: 'Returns itself from the hand to the deck.',
     zones: 'playerHand',
     handler: function(sourceCardObj, skillObj) {
       const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
@@ -618,11 +615,12 @@ const REQUIREMENT_MAP = {
       return validZones.includes(currentZone);
     }
   },
-  Discard: {
-    icon: 'Icons/Skill/Discard.png',
-    name: 'Discard',
+  Discard: { icon: 'Icons/Skill/Discard.png', name: 'Discard', zones: 'playerHand',
     description: 'Sends a card from the hand to the void.',
-    zones: 'playerHand',
+    canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
+      const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
+      return validZones.includes(currentZone);
+    },
     handler: function(sourceCardObj, skillObj) {
       runHandSkillWithAnimation(sourceCardObj, skillObj, gameState.playerVoid);
       const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
@@ -633,15 +631,11 @@ const REQUIREMENT_MAP = {
       moveCard(sourceCardObj.instanceId, gameState.playerHand, gameState.playerVoid);
       renderGameState();
     },
-    canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
-      const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
-      return validZones.includes(currentZone);
-    }
   },
 Sacrifice: {
   icon: 'Icons/Skill/Sacrifice.png',
   name: 'Sacrifice',
-  description: 'Sends a card from the field to the void.',
+  description: 'Tributes itself from the field.',
   zones: ['playerCreatures', 'playerTerrains'],
   handler: function(sourceCardObj, skillObj, next, requirement) {
     const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
@@ -721,11 +715,8 @@ Return: {
       return validZones.includes(currentZone);
     }
   },
-Retreat: {
-  icon: 'Icons/Skill/Retreat.png',
-  name: 'Retreat',
+Retreat: { icon: 'Icons/Skill/Retreat.png', name: 'Retreat', zones: ['playerCreatures', 'playerTerrains'],
   description: 'Returns a card from the field to the deck.',
-  zones: ['playerCreatures', 'playerTerrains'],
   handler: function(sourceCardObj, skillObj) {
     const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
     const isField = validZones.some(zone =>
@@ -751,7 +742,7 @@ Retreat: {
 Channel: {
   icon: 'Icons/Skill/Channel.png', // optional; use an existing icon if you don't have one
   name: 'Channel',
-  description: 'Can only be activated while this card is in the void.',
+  description: 'Activates in the void.',
   canActivate: function(cardObj, skillObj, currentZone, gameState) {
     // Be tolerant of naming: allow currentZone "void" OR membership in void array.
     // Use owner-based void array so opponent cards work too.
@@ -772,8 +763,6 @@ Channel: {
 };
 
 const SKILL_EFFECT_MAP = {
-// SUMMON handler: moves a card from hand (sourceCardObj) to player's field (or specified owner)
-// step: { cardId, amount, owner, orientation, cost, targetCategory }
 Summon: {
   name: 'Summon',
   zone: 'playerHand', 
@@ -931,7 +920,7 @@ Cast: {
 Equip: {
   name: 'Equip',
   zone: 'playerHand', 
-  description: 'Attach an Equipment to a creature.',
+  description: 'Grants effects to creatures.',
   handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
     try {
       const instance = sourceCardObj;
@@ -1040,9 +1029,9 @@ Strike: {
   // Now using (sourceCardObj, skillObj, step, nextEffect)
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
     // For your rule: any card on the field can be a target (player+opponent, creatures+terrains)
-    const allOpponentField = [...gameState.opponentCreatures, ...gameState.opponentTerrains];
+    const opponentField = [...gameState.opponentCreatures, ...gameState.opponentTerrains];
     startSkillTarget(
-      allOpponentField,
+      opponentField,
       selectedTarget => {
         const damage = (typeof step.amount === "number") ? step.amount : 0;
         if (damage > 0) dealDamage(sourceCardObj, selectedTarget, damage);
@@ -1249,7 +1238,7 @@ Reanimate: {
 Awaken: {
   icon: 'Icons/Skill/Awaken.png',
   name: 'Awaken',
-  zone: 'allPlayerField',
+  zone: 'playerField',
   description: 'Summon this card from your deck.',
   handler: function(sourceCardObj, skillObj) {
     // Only activate if in deck
@@ -1284,9 +1273,9 @@ Heal: {
   name: 'Heal',
   description: 'Heals an ally.',
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
-    const allPlayerField = [...gameState.playerCreatures, ...gameState.playerTerrains];
+    const playerField = [...gameState.playerCreatures, ...gameState.playerTerrains];
     startSkillTarget(
-      allPlayerField,
+      playerField,
       selectedTargets => {
         const targets = Array.isArray(selectedTargets) ? selectedTargets : [selectedTargets];
         const healAmount = (typeof step.amount === "number") ? step.amount : 0;
@@ -1319,9 +1308,9 @@ Armor: {
   name: 'Armor',
   description: 'Grants armor to an ally.',
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
-    const allPlayerField = [...gameState.playerCreatures, ...gameState.playerTerrains];
+    const playerField = [...gameState.playerCreatures, ...gameState.playerTerrains];
     startSkillTarget(
-      allPlayerField,
+      playerField,
       selectedTargets => {
         const targets = Array.isArray(selectedTargets) ? selectedTargets : [selectedTargets];
         const armorAmount = (typeof step.amount === "number") ? step.amount : 0;
@@ -1335,10 +1324,8 @@ Armor: {
     );
   }
 },
-  Aegis: {
-    icon: 'Icons/Skill/Aegis.png',
-    name: 'Aegis',
-    description: 'Grants a shield that blocks the next incoming damage.',
+  Aegis: { icon: 'Icons/Skill/Aegis.png', name: 'Aegis',
+    description: 'Grants a badge that blocks the next incoming damage.',
     handler: function(sourceCardObj, skillObj) {
       startSkillTarget(
         [...gameState.allyCreatures, ...gameState.allyTerrains],
@@ -1363,10 +1350,8 @@ Armor: {
       renderGameState();
     }
   },
-Destroy: {
-  icon: 'Icons/Skill/Destroy.png',
-  name: 'Destroy',
-  description: 'Destroy a valid target according to skill condition.',
+Destroy: { icon: 'Icons/Skill/Destroy.png', name: 'Destroy',
+  description: 'Send a card to the void.',
   handler: function(sourceCardObj, skillObj, step = {}) {
     // Collect all field zones (both sides)
     const fieldArrays = [
@@ -1403,9 +1388,7 @@ Destroy: {
     });
   }
 },
-Search: {
-  icon: 'Icons/Skill/Search.png',
-  name: 'Search',
+Search: { icon: 'Icons/Skill/Search.png', name: 'Search',
   description: 'Search your deck for a card matching criteria and add it to your hand.',
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
     const deckArr = gameState.playerDeck || [];
@@ -1449,7 +1432,7 @@ Search: {
         });
       });
       if (matches.length === 0) {
-        showToast("No matching cards found in your void.");
+        showToast("No valid targets found in your void.");
         return;
       }
       showFilteredCardSelectionModal(matches, selectedCardObj => {
@@ -1574,7 +1557,7 @@ Banish: {
   Intimidate: {
     icon: 'Icons/Ability/Intimidate.png',
     name: 'Intimidate',
-    zone: 'allPlayerField', 
+    zone: 'playerField', 
     description: 'When attacking, disables defending creature.',
     handler: function(attacker, defender, next) {
       // Only trigger Intimidate if defender is in ATK (vertical)
@@ -1597,10 +1580,7 @@ Banish: {
       }
     }
   },
-  Provoke: {
-    icon: 'Icons/Ability/Provoke.png',
-    name: 'Provoke',
-    zone: 'allPlayerField', 
+  Provoke: { icon: 'Icons/Ability/Provoke.png', name: 'Provoke', zone: 'playerField', 
     description: 'When attacking, changes defending creature to ATK.',
     handler: function(attacker, defender, next) {
       // Only trigger Provoke if defender is in DEF (horizontal)
@@ -1622,10 +1602,8 @@ Banish: {
       }
     }
   },
-Seal: {
-  icon: "Icons/Skill/Seal.png",
-  name: "Seal",
-  description: "Disables all skills on the target until Seal is removed.",
+Seal: { icon: "Icons/Skill/Seal.png", name: "Seal",
+  description: "Cannot activate skills.",
   handler: function(sourceCardObj, skillObj, effectStep, nextEffect) {
     // Assume effectStep.target is the target cardObj or its instanceId
     let target = effectStep.target;
@@ -1642,8 +1620,7 @@ Seal: {
     nextEffect && nextEffect();
   }
 },
-Inspire: {
-  name: 'Inspire',
+Inspire: { name: 'Inspire',
   description: 'Apply modifier or grant an ability to a target.',
   handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
     try {
@@ -1698,10 +1675,7 @@ Inspire: {
     }
   }
 },
-Essence: {
-  icon: 'Icons/skillEffect/Essence.png',
-  name: 'Essence',
-  description: 'Gain Essence.',
+Essence: { icon: 'Icons/skillEffect/Essence.png', name: 'Essence', description: 'Gain Essence.',
   // step should have: { color: "{g}{g}{r}" } or similar
   handler: function(cardObj, skillObj, effectStep, nextEffect) {
     let colorStr = effectStep.color || effectStep.colors || effectStep.essence || "";
@@ -1750,8 +1724,8 @@ Fuse: {
     // Grant the fuse sigil as a status
     cardObj.statuses = cardObj.statuses || [];
     cardObj.statuses.push({ name: 'FuseSigil', duration: null });
-    if (typeof STATUS_EFFECTS['FuseSigil'] !== 'undefined') {
-      try { STATUS_EFFECTS['FuseSigil'].apply(cardObj); } catch (e) {}
+    if (typeof BLIGHTS['FuseSigil'] !== 'undefined') {
+      try { BLIGHTS['FuseSigil'].apply(cardObj); } catch (e) {}
     }
     showToast && showToast(`${cardObj.name || cardObj.cardId} gained a Fuse Sigil. Use Fusion to consume it.`, { type: 'info' });
     renderGameState && renderGameState();
@@ -1863,9 +1837,9 @@ Evolve: {
     sourceCardObj.statuses = sourceCardObj.statuses || [];
     // Add status entry so UI picks up icon and status array logic
     sourceCardObj.statuses.push({ name: 'EvolveSigil', duration: null });
-    // Call STATUS_EFFECTS apply for consistent instance flags and side effects
-    if (typeof STATUS_EFFECTS['EvolveSigil'] !== 'undefined') {
-      try { STATUS_EFFECTS['EvolveSigil'].apply(sourceCardObj); } catch (e) { /* ignore */ }
+    // Call BLIGHTS apply for consistent instance flags and side effects
+    if (typeof BLIGHTS['EvolveSigil'] !== 'undefined') {
+      try { BLIGHTS['EvolveSigil'].apply(sourceCardObj); } catch (e) { /* ignore */ }
     }
     showToast && showToast(`${sourceCardObj.name || sourceCardObj.cardId} gained an Evolve Sigil. Use Evolution to consume it.`, { type: 'info' });
     renderGameState && renderGameState();
@@ -1895,9 +1869,9 @@ Evolution: {
       if (nextEffect) nextEffect();
       return;
     }
-    // Consume the sigil (remove status entry + call STATUS_EFFECTS.remove)
+    // Consume the sigil (remove status entry + call BLIGHTS.remove)
     try {
-      removeStatus(cardObj, 'EvolveSigil'); // calls STATUS_EFFECTS.remove if defined
+      removeStatus(cardObj, 'EvolveSigil'); // calls BLIGHTS.remove if defined
     } catch (e) { /* ignore */ }
 
     // EXISTING evolution logic starts here (your current Evolution handler body)
@@ -2217,7 +2191,6 @@ function startGame({
   gameState.opponentVoid = [];
 
   gameState.phase = "start";
-  gameState.dayNightCycleCounter = 0;
   
   gameState.playerSigils = [];
   gameState.opponentSigils = []; 
@@ -2508,60 +2481,7 @@ function matchesFilter(cardObj, filter) {
   }
   return true;
 }
-// Advance / manage the Day-Night cycle including Dusk/Dawn intermediate states.
-//
-// Behavior:
-//  - gameState.timeOfDay ∈ {"day","dusk","night","dawn"}
-//  - dayNightCycleCounter counts End Phases (resets on major transitions)
-//  - When counter reaches CYCLE_LENGTH we enter the intermediate state:
-//      if current === "day"  => set "dusk" for 1 End Phase, pending => "night"
-//      if current === "night"=> set "dawn" for 1 End Phase, pending => "day"
-//  - The intermediate state ("dusk" or "dawn") lasts exactly one End Phase; at the next End Phase
-//    we advance to the pendingDayNightTransition and clear the pending flag.
-function handleDayNightCycle() {
-  // number of end-phases per main Day/Night period (keeps previous behavior)
-  const CYCLE_LENGTH = 4;
 
-  // Ensure fields exist
-  gameState.dayNightCycleCounter = Number(gameState.dayNightCycleCounter || 0);
-  gameState.pendingDayNightTransition = gameState.pendingDayNightTransition || null;
-  gameState.timeOfDay = gameState.timeOfDay || 'day';
-
-  // If we're currently in an intermediate period (dusk/dawn), it only lasts one End Phase.
-  if (gameState.timeOfDay === 'dusk' || gameState.timeOfDay === 'dawn') {
-    // Move to the pending main state (if set). If not set, fallback to 'night' for dusk and 'day' for dawn.
-    const next = gameState.pendingDayNightTransition
-      || (gameState.timeOfDay === 'dusk' ? 'night' : 'day');
-    gameState.timeOfDay = next;
-    gameState.pendingDayNightTransition = null;
-    gameState.dayNightCycleCounter = 0;
-    renderGameState && renderGameState();
-    showToast && showToast(`${capitalize(next)} begins!`, { type: 'info' });
-    return;
-  }
-
-  // If we're in a main period (day or night), increment the counter and check for scheduled major transition.
-  gameState.dayNightCycleCounter++;
-
-  if (gameState.dayNightCycleCounter >= CYCLE_LENGTH) {
-    // schedule a short intermediate state before the major switch
-    if (gameState.timeOfDay === 'day') {
-      gameState.timeOfDay = 'dusk';
-      gameState.pendingDayNightTransition = 'night';
-      showToast && showToast('Dusk falls...', { type: 'info' });
-    } else if (gameState.timeOfDay === 'night') {
-      gameState.timeOfDay = 'dawn';
-      gameState.pendingDayNightTransition = 'day';
-      showToast && showToast('Dawn breaks...', { type: 'info' });
-    } else {
-      // fallback safety
-      gameState.timeOfDay = 'day';
-      gameState.pendingDayNightTransition = null;
-    }
-    gameState.dayNightCycleCounter = 0;
-    renderGameState && renderGameState();
-  }
-}
 // small helper used above
 function capitalize(s) {
   return String(s || '').charAt(0).toUpperCase() + String(s || '').slice(1);
@@ -3596,13 +3516,6 @@ function computeCardStat(cardObj, statName) {
     }
   }
   
-  // === Passive Day/Night Buffs ===
-  if (gameState.timeOfDay === "day" && statName === "def" && isWhite(cardObj)) {
-    mods += 1;
-  }
-  if (gameState.timeOfDay === "night" && statName === "atk" && isBlack(cardObj)) {
-    mods += 1;
-  }
   // Final rounding/clamping
   if (statName === "speed") {
     // speed should be integer and at least 0
@@ -3797,7 +3710,7 @@ statsAndIconsOverlay.appendChild(topStatsRow);
   iconRow.style.marginTop = '22px';
   // Status Icons
   (cardObj.statuses || []).forEach(status => {
-    const statusDef = STATUS_EFFECTS[status.name];
+    const statusDef = BLIGHTS[status.name];
     if (!statusDef) return;
     const icon = document.createElement('img');
     icon.src = statusDef.icon;
@@ -4002,12 +3915,12 @@ try {
   if (hasStatus(cardObj, 'Seal')) {
     const sealBadge = document.createElement('div');
     sealBadge.className = 'card-seal-badge';
-    sealBadge.title = STATUS_EFFECTS['Seal']?.description || 'Sealed';
+    sealBadge.title = BLIGHTS['Seal']?.description || 'Sealed';
     sealBadge.style.display = 'flex';
     sealBadge.style.alignItems = 'center';
     sealBadge.style.justifyContent = 'center';
     sealBadge.style.cursor = 'default';
-    sealBadge.innerHTML = `<img src="${STATUS_EFFECTS['Seal']?.icon || 'Icons/Status/seal.png'}" alt="Sealed" style="width:18px;height:18px;filter:drop-shadow(0 2px 6px #0007);opacity:0.95">`;
+    sealBadge.innerHTML = `<img src="${BLIGHTS['Seal']?.icon || 'Icons/Status/seal.png'}" alt="Sealed" style="width:18px;height:18px;filter:drop-shadow(0 2px 6px #0007);opacity:0.95">`;
     badgesRow.appendChild(sealBadge);
   }
 }
@@ -4683,10 +4596,6 @@ function handleEndPhase(turn) {
  // triggerEndPhaseEffects(turn);
   // Tick all statuses generically based on phase
   tickStatusDurations({ turn, phase: "end" });
-
-  // Optionally do day/night cycle counting if you track end-phase counters
-  // (unchanged) - if you have a day/night counter elsewhere, that logic remains
-  // Example incrementing dayNightCycleCounter was in earlier code; keep it if required.
   // Optionally log phase end
   appendVisualLog({
     action: "endPhase",
@@ -5478,7 +5387,7 @@ function getAttackTargets(attackerObj = null) {
   const creatures = gameState.opponentCreatures;
   const terrains = gameState.opponentTerrains;
   const artifacts = gameState.opponentArtifacts || [];
-  const allOpponentField = [...creatures, ...terrains, ...artifacts];
+  const opponentField = [...creatures, ...terrains, ...artifacts];
 
   // Build map of colors to opponent creatures
   const colorToCreatures = {};
@@ -5686,7 +5595,7 @@ function damageCalculation(attacker, defender) {
     if (defenderCategory === "creature" && defenderInfo.arr?.includes(defender) && (defender.currentHP || 0) > 0) {
       const attackerAbilities = attackerDef?.ability || [];
       attackerAbilities.forEach(abilityName => {
-        if (STATUS_EFFECTS[abilityName]) applyStatus(defender, abilityName);
+        if (BLIGHTS[abilityName]) applyStatus(defender, abilityName);
       });
     }
     renderGameState();
@@ -5717,7 +5626,7 @@ function damageCalculation(attacker, defender) {
   if (defenderCategory === "creature" && defenderInfo.arr?.includes(defender) && (defender.currentHP || 0) > 0) {
     const attackerAbilities = attackerDef?.ability || [];
     attackerAbilities.forEach(abilityName => {
-      if (STATUS_EFFECTS[abilityName]) applyStatus(defender, abilityName);
+      if (BLIGHTS[abilityName]) applyStatus(defender, abilityName);
     });
   }
   renderGameState();
@@ -5757,7 +5666,7 @@ function dealDamage(cardObj, targetObj, damage) {
     if (sourceDef && sourceDef.ability) {
       const abilities = Array.isArray(sourceDef.ability) ? sourceDef.ability : [sourceDef.ability];
       abilities.forEach(abilityName => {
-        if (STATUS_EFFECTS[abilityName]) {
+        if (BLIGHTS[abilityName]) {
           applyStatus(targetObj, abilityName);
         }
       });
@@ -5936,9 +5845,6 @@ function getInitialGameState() {
     turnNumber: 0,
     turn: "player",
     phase: "start",
-    timeOfDay: "dawn",
-    pendingDayNightTransition: "day",
-    dayNightCycleCounter: 0,
   };
 }
 
@@ -7417,9 +7323,9 @@ function runSkillEffect(sourceCardObj, skillObj) {
 
 function effectStatusHandler(statusName) {
   return function(sourceCardObj, skillObj, step, nextEffect) {
-    const allOpponentField = [...gameState.opponentCreatures, ...gameState.opponentTerrains];
+    const opponentField = [...gameState.opponentCreatures, ...gameState.opponentTerrains];
     startSkillTarget(
-      allOpponentField,
+      opponentField,
       selectedTargets => {
         const targets = Array.isArray(selectedTargets) ? selectedTargets : [selectedTargets];
         const damage = (typeof step.amount === "number") ? step.amount : 0;
@@ -7518,7 +7424,7 @@ function parseCost(costStr) {
 /*------------------
 // STATUS EFFECTS //
 ------------------*/
-function applyStatus(cardObj, statusName, duration = (STATUS_EFFECTS[statusName] && STATUS_EFFECTS[statusName].duration)) {
+function applyStatus(cardObj, statusName, duration = (BLIGHTS[statusName] && BLIGHTS[statusName].duration)) {
   if (!cardObj || !statusName) return;
   cardObj.statuses = cardObj.statuses || [];
   if (!cardObj.statuses.some(s => s.name === statusName)) {
@@ -7527,21 +7433,21 @@ function applyStatus(cardObj, statusName, duration = (STATUS_EFFECTS[statusName]
 
     // call the status-specific apply callback if present (preserve existing behavior)
     try {
-      if (STATUS_EFFECTS[statusName] && typeof STATUS_EFFECTS[statusName].apply === 'function') {
-        STATUS_EFFECTS[statusName].apply(cardObj);
+      if (BLIGHTS[statusName] && typeof BLIGHTS[statusName].apply === 'function') {
+        BLIGHTS[statusName].apply(cardObj);
       }
     } catch (err) {
-      console.warn(`STATUS_EFFECTS.${statusName}.apply failed`, err);
+      console.warn(`BLIGHTS.${statusName}.apply failed`, err);
     }
 
     // Notify any JS listeners registered via onSoaked/onBurned/...
-    // Use case-insensitive matching against STATUS_EFFECTS keys (single source of truth)
+    // Use case-insensitive matching against BLIGHTS keys (single source of truth)
     try {
       const normalized = String(statusName).trim().toLowerCase();
       let canonical = null;
 
-      if (typeof STATUS_EFFECTS === 'object' && STATUS_EFFECTS !== null) {
-        canonical = Object.keys(STATUS_EFFECTS).find(k => String(k).toLowerCase() === normalized);
+      if (typeof BLIGHTS === 'object' && BLIGHTS !== null) {
+        canonical = Object.keys(BLIGHTS).find(k => String(k).toLowerCase() === normalized);
       }
 
       if (canonical) {
@@ -7572,14 +7478,14 @@ function applyStatus(cardObj, statusName, duration = (STATUS_EFFECTS[statusName]
 function removeStatus(cardObj, statusName) {
   if (!cardObj.statuses) return;
   cardObj.statuses = cardObj.statuses.filter(s => s.name !== statusName);
-  if (STATUS_EFFECTS[statusName]) STATUS_EFFECTS[statusName].remove(cardObj);
+  if (BLIGHTS[statusName]) BLIGHTS[statusName].remove(cardObj);
 }
 
 function handleStatusEffects(cardObj) {
   if (!cardObj.statuses) return;
   cardObj.statuses.forEach(status => {
-    if (STATUS_EFFECTS[status.name].onTurnStart) {
-      STATUS_EFFECTS[status.name].onTurnStart(cardObj);
+    if (BLIGHTS[status.name].onTurnStart) {
+      BLIGHTS[status.name].onTurnStart(cardObj);
     }
     status.duration -= 1;
   });
@@ -7593,8 +7499,8 @@ function handleEndPhaseStatuses() {
   [...gameState.playerCreatures, ...gameState.opponentCreatures].forEach(cardObj => {
     if (cardObj.statuses) {
       cardObj.statuses.forEach(status => {
-        if (STATUS_EFFECTS[status.name]?.onEndPhase) {
-          STATUS_EFFECTS[status.name].onEndPhase(cardObj);
+        if (BLIGHTS[status.name]?.onEndPhase) {
+          BLIGHTS[status.name].onEndPhase(cardObj);
         }
         // Reduce duration for statuses that only tick on End Phase
         status.duration -= 1;
@@ -7615,7 +7521,7 @@ function tickStatusDurations(phaseObj) {
   allCards.forEach(cardObj => {
     if (!cardObj.statuses) return;
     cardObj.statuses.forEach(status => {
-      const statusDef = STATUS_EFFECTS[status.name];
+      const statusDef = BLIGHTS[status.name];
       if (!statusDef) return;
       // Determine if this status should tick in this phase
       if (
@@ -7922,14 +7828,6 @@ function updateGameStatusRow() {
   if (!container) return;
   container.innerHTML = '';
 
-  // Day / Night icon (supports all four)
-  const tod = gameState.timeOfDay || 'day';
-  const todMap = {
-    day: 'Icons/Time/Day.png',
-    dusk: 'Icons/Time/Dusk.png',
-    night: 'Icons/Time/Night.png',
-    dawn: 'Icons/Time/Dawn.png'
-  };
   const todWrap = document.createElement('div');
   todWrap.style.display = 'flex';
   todWrap.style.flexDirection = 'column';
@@ -8075,15 +7973,6 @@ if (typeof renderGameState === 'function') {
   document.addEventListener('DOMContentLoaded', () => updateGameStatusRow());
 }
 
-// Expose to window in case other modules (shop, UI) want to read them directly
-if (typeof window !== 'undefined') {
-  window.getTimeOfDay = getTimeOfDay;
-  window.isDay = isDay;
-  window.isNight = isNight;
-  window.isDusk = isDusk;
-  window.isDawn = isDawn;
-}
-// Add more as needed...
 // --- Sigil helpers (owner = 'player' | 'opponent') ---
 function getSigilArrayForOwner(owner) {
   return owner === 'opponent' ? gameState.opponentSigils : gameState.playerSigils;
