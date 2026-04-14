@@ -64,9 +64,9 @@ if (joinLobbyBtn) {
 }
 
 socket.on('opponent joined', (opponentId) => {
-  // Now emit deck and profile, room is ready
   submitDeckToServer();
   socket.emit('profile', getMyProfileInfo());
+  socket.emit('card styles', currentRoomId, window.playerCardStyles || {});
 });
 
 function startMultiplayerGameIfReady() {
