@@ -2688,7 +2688,7 @@ function showHandCardMenu(instanceId, cardDiv) {
         : (activation.requirement ? [activation.requirement] : []);
       const reqIcons = getRequirementIcons(requirements);
       
-      const titleText = _escapeHtmlInline((disabledReason || skillTitle(skillObj) || skillObj.name || '').trim());
+      const titleText = escapeHtmlInline((disabledReason || skillTitle(skillObj) || skillObj.name || '').trim());
 
       buttons.push({
         text: `${skillObj.name} ${parseEffectText(skillObj.cost)}${reqIcons}`,
@@ -3451,7 +3451,7 @@ statsAndIconsOverlay.appendChild(topStatsRow);
       const icon = document.createElement('img');
       icon.src = skill.icon;
       icon.alt = skill.name || "Skill";
-      icon.title = _escapeHtmlInline(skill.title || skillTitle(skill) || skill.name || "Skill");
+      icon.title = escapeHtmlInline(skill.title || skillTitle(skill) || skill.name || "Skill");
       icon.className = 'card-skill-icon';
       iconRow.appendChild(icon);
     });
@@ -4039,7 +4039,7 @@ cardData.skill
       : (activation.requirement ? [activation.requirement] : []);
     const reqIcons = getRequirementIcons(requirements);
 
-    const titleText = _escapeHtmlInline((disabledReason || skillTitle(skillObj) || skillObj.name || '').trim());
+    const titleText = escapeHtmlInline((disabledReason || skillTitle(skillObj) || skillObj.name || '').trim());
 
     buttons.push({
       text: `${skillObj.name} ${parseEffectText(skillObj.cost)}${reqIcons}`,
@@ -4283,7 +4283,6 @@ function handleStartPhase(turn) {
   });
   
   drawCards(turn, 1);
-  handleDayNightCycle();
   // Log action
   appendVisualLog({
     action: "startPhase",
