@@ -251,7 +251,10 @@ function pickRandom(pool) {
 
 function generatePackCards(packId, slotTable = PACK_SLOT_ODDS_DEFAULT) {
   const pool = getPackPool(packId);
-
+	if (!Array.isArray(pool) || pool.length === 0) {
+	  console.error(`[generatePackCards] Empty pool for packId="${packId}". Check card.set values.`);
+		return [];
+	}
   const tokenPool = pool.filter(c => String(c?.type || "").toLowerCase() === "token");
   const nonTokenPool = pool.filter(c => String(c?.type || "").toLowerCase() !== "token");
 
@@ -324,12 +327,12 @@ function openPack(type, count = 1, done) {
   let allNewIds = [];
 
   for (let i = 0; i < count; i++) {
-    const packCards = generatePackCards(type); // <-- 6-card pack with slots
-    cards = cards.concat(packCards);
-
-    packCards.forEach(card => {
-      if (!collection[card.id]) allNewIds.push(card.id);
-    });
+		const packCards = generatePackCards(type);
+		if (!packCards || packCards.length === 0) {
+ 		 showToast(`No cards found for pack "${type}".`, { type: "error" });
+ 		 if (typeof done === "function") done(false);
+ 		 return;
+		}
   }
   // Remove duplicates from allNewIds (for the "New!" badge)
   allNewIds = [...new Set(allNewIds)];
