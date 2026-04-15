@@ -652,7 +652,7 @@ function updateQuestResetTimer() {
   const timerDiv = document.getElementById('quest-reset-timer');
   if (!timerDiv) return;
   const ms = getNextUtcMidnightMs();
-  timerDiv.textContent = `Next quests reset in ${formatTimerMs(ms)}`;
+  timerDiv.textContent = `Next quests reset in ${formatTimer(ms)}`;
   // When timer reaches zero, reset quests and update UI
   if (ms <= 0) {
     resetQuestsIfNeeded();
