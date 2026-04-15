@@ -762,12 +762,43 @@ function updateQuestsNotificationDot() {
 
 function updateAchievementsNotificationDot() {
   const achievementData = getAchievementData();
-  const hasClaimable = ACHIEVEMENTS.some(a => {
-    const p = achievementData[a.id];
-    return p && p.completed && !p.claimed;
-  });
   const dot = document.getElementById('achievements-notification-dot');
-  if (dot) dot.style.display = hasClaimable ? 'block' : 'none';
+  if (!dot) return;
+
+  let hasClaimable = false;
+
+  for (const sectionDef of Object.values(ACHIEVEMENTS || {})) {
+    const groups = Array.isArray(sectionDef?.groups) ? sectionDef.groups : [];
+
+    for (const group of groups) {
+      const groupId = group?.id;
+      const tiers = Array.isArray(group?.tiers) ? group.tiers : [];
+      if (!groupId) continue;
+
+      const progressValue = Number(achievementData?.progress?.[groupId] || 0);
+      const claimedMap = achievementData?.claimed?.[groupId] || {};
+
+      for (const t of tiers) {
+        const tierNum = Number(t?.tier || 0);
+        const goal = Number(t?.goal || 0);
+        if (!tierNum || !goal) continue;
+
+        const completed = progressValue >= goal;
+        const claimed = !!claimedMap[tierNum];
+
+        if (completed && !claimed) {
+          hasClaimable = true;
+          break;
+        }
+      }
+
+      if (hasClaimable) break;
+    }
+
+    if (hasClaimable) break;
+  }
+
+  dot.style.display = hasClaimable ? 'block' : 'none';
 }
 
 // PLAYER LEVEL
