@@ -2542,11 +2542,12 @@ const packPrices = [
   { id: "EssenceLegacy", name: "Essence Legacy", price: 90,
     image: 'Images/Pack/EssenceLegacy.png'
   },
-  { id: "HeroesAwaken", name: "Heroes Awaken", price: 100,
-    image: 'Images/Pack/HeroesAwaken.png'
-  },
   { id: "ElementaGenesis", name: "Elementa Genesis", price: 100,
     image: 'Images/Pack/ElementaGenesis.png'
+  },
+/*
+  { id: "HeroesAwaken", name: "Heroes Awaken", price: 100,
+    image: 'Images/Pack/HeroesAwaken.png'
   },
   {
     id: "ScalesofRuin",
@@ -2555,7 +2556,7 @@ const packPrices = [
     image: 'Images/Pack/ScalesofRuin.png',
 	pack: ['CardImages/Pack/ScalesofRuinPyronyx.png', 'CardImages/Pack/ScalesofRuinVoltrazek.png',
 		   'CardImages/Pack/ScalesofRuinMyxaroth.png', 'CardImages/Pack/ScalesofRuinNoctyros.png']
-  },
+  },*/
   // "ScalesofRuin": 100,"WyrmheartAwakening": 100,"MischiefUnbound": 100,"PrimordialAscension": 100,"IronbornProtocol": 100,"SavageTerritory": 100,"FeatheredOmen": 100,
 ];
 const allPackOptions = packPrices;
