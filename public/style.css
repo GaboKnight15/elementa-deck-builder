@@ -137,7 +137,6 @@ button {}
   box-sizing: border-box;
   background: #1a2533;
   overflow-y: auto;
-  padding-bottom: 40px;
 }
 #gameplay-container {
   display: flex;
@@ -152,7 +151,6 @@ button {}
   align-items: center;
   justify-content: space-between;
   padding: 0.8em 1em 0.8em 1em;
-  height: 100%;
   width: 100%;
   box-sizing: border-box;
   z-index: 20;
@@ -850,11 +848,11 @@ button {}
   justify-content: center;
   align-items: start;
   width: 100%;
+  height: 100%;
   box-sizing: border-box;
   overflow-x: auto;
-  max-height: 100%;
   overflow-y: auto;
-  max-width: 100%;
+  width: 100%;
   gap: 5px;
   position: relative;
   z-index: 2;
@@ -1269,7 +1267,6 @@ button {}
   width: 100%;
   box-sizing: border-box;
   overflow-x: auto;
-  max-width: 100%;
 }
 .card-gallery, .card-library {
   background: none;
@@ -2206,12 +2203,11 @@ button[disabled], .btn-disabled {
 #deck-selection-grid {
   display: flex;
   flex-wrap: wrap;
-  width: auto;
-  height: auto;
+  width: 100%;
+  height: 100%;
   gap: 18px 18px; 
   justify-content: center;
   align-items: center;
-  margin: 10px auto 30px auto;
   box-sizing: border-box;
 }
 .deck-slot-tile {
@@ -2800,9 +2796,11 @@ button[disabled], .btn-disabled {
 /* Modal column layout for deck selection modals */
 #cpu-deck-modal,
 #player-deck-modal {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
   gap: 0;
   padding: 24px 0 16px 0;
 }
@@ -2844,13 +2842,6 @@ button[disabled], .btn-disabled {
 .player-deck-option,
 .default-player-deck-option {
   box-sizing: border-box;
-}
-
-/* Make modal content not overflow vertically */
-#cpu-deck-modal,
-#player-deck-modal {
-  max-height: 90vh;
-  overflow-y: auto;
 }
 .cpu-deck-option, .default-player-deck-option {
   box-sizing: border-box;
