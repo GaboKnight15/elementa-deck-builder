@@ -988,7 +988,7 @@ function computeAchievementsProgress({ autoSave = true } = {}) {
 
   if (autoSave && typeof saveProgress === "function") saveProgress();
 }
-window.recomputeAchievementsProgress = recomputeAchievementsProgress;
+window.computeAchievementsProgress = computeAchievementsProgress;
 // --- ENSURE QUESTS RESET AT 00:00 UTC ON PAGE LOAD ---
 document.addEventListener('DOMContentLoaded', function() {
   resetQuestsIfNeeded(); // Ensure daily reset logic runs
