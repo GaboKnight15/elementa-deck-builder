@@ -4058,14 +4058,31 @@ function showProfileModal(profile) {
   // --- BADGE SECTIONS ---
   // You may already have ACHIEVEMENTS and BADGE_IMAGES in your code.
   // For this example, we'll use ACHIEVEMENTS as all badges.
-  const allBadges = (typeof ACHIEVEMENTS !== "undefined") ? ACHIEVEMENTS : [];
-  const ownedBadges = (profile.achievements || []).concat(profile.badges || []);
-  const badgeImageMap = {}; // {badgeId: imageUrl}
-  if (allBadges.length) {
-    for (const badge of allBadges) {
-      badgeImageMap[badge.id] = badge.image || badge.img || "";
+let allBadges = [];
+if (typeof ACHIEVEMENTS !== "undefined" && ACHIEVEMENTS) {
+  if (Array.isArray(ACHIEVEMENTS)) {
+    allBadges = ACHIEVEMENTS;
+  } else {
+    // Object form: { general: { groups: [...] }, color: { groups: [...] }, ... }
+    for (const section of Object.values(ACHIEVEMENTS)) {
+      const groups = Array.isArray(section?.groups) ? section.groups : [];
+      for (const g of groups) {
+        const id = g?.id || g?.key || g?.name;
+        if (!id) continue;
+        allBadges.push({
+          id,
+          name: g?.title || g?.name || id,
+          image: g?.image || g?.icon || g?.img || ""
+        });
+      }
     }
   }
+}
+  const ownedBadges = (profile.achievements || []).concat(profile.badges || []);
+  const badgeImageMap = {};
+for (const badge of allBadges) {
+  badgeImageMap[badge.id] = badge.image || badge.img || "";
+}
 
   // Render all badges, grayed-out if not owned
   let badgeSection = `
