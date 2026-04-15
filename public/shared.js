@@ -3874,17 +3874,25 @@ document.addEventListener('DOMContentLoaded', function() {
   const badgeImg = document.getElementById('player-badge-img');
   if (badgeImg) {
     badgeImg.onclick = function() {
-      // Build playerData for showProfileModal
+      const achievementData =
+        (typeof getAchievementData === "function") ? (getAchievementData() || {}) : {};
+
+      const achievements =
+        Array.isArray(window.ACHIEVEMENTS)
+          ? window.ACHIEVEMENTS
+              .filter(a => achievementData?.[a?.id]?.claimed)
+              .map(a => a.id)
+          : [];
+
       const playerData = {
         username: window.playerUsername || (window.auth && window.auth.currentUser && window.auth.currentUser.displayName) || "Player",
         profilePic: window.playerProfilePic || badgeImg.src,
         profileBanner: window.playerProfileBanner || "Images/Banner/Default.png",
         power: typeof calculatePlayerPower === "function" ? calculatePlayerPower() : 0,
-        achievements: (typeof getAchievementData === "function" && typeof ACHIEVEMENTS !== "undefined")
-          ? ACHIEVEMENTS.filter(a => getAchievementData()[a.id]?.claimed).map(a => a.id)
-          : [],
-        badges: [] // Add badge ids as needed
+        achievements,
+        badges: []
       };
+
       showProfileModal(playerData);
     };
   }
@@ -3924,16 +3932,18 @@ function calculatePlayerPower() {
   power += (new Set(banners)).size * 5;
   power += (new Set(cardbacks)).size * 5;
 
- // Achievements: +10 for each claimed achievement
-  if (typeof getAchievementData === "function" && typeof ACHIEVEMENTS !== "undefined") {
-    const achievementData = getAchievementData();
-    let achievementsClaimed = 0;
-    ACHIEVEMENTS.forEach(ach => {
-      const progress = achievementData[ach.id];
-      if (progress && progress.claimed) achievementsClaimed++;
-    });
-    power += achievementsClaimed * 10;
-  }
+// Achievements: +10 for each claimed achievement
+if (typeof getAchievementData === "function" && Array.isArray(window.ACHIEVEMENTS)) {
+  const achievementData = getAchievementData();
+  let achievementsClaimed = 0;
+
+  window.ACHIEVEMENTS.forEach(ach => {
+    const progress = achievementData?.[ach.id];
+    if (progress && progress.claimed) achievementsClaimed++;
+  });
+
+  power += achievementsClaimed * 10;
+}
   return power;
 }
 function renderPlayerPower() {
