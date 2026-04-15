@@ -2636,26 +2636,24 @@ function setDailyLoginInfo(day, date) {
   }
 }
 function showDailyLoginModal(dayIdx) {
-  // Remove existing modal
-  let modal = document.getElementById('daily-login-modal');
-  if (modal) modal.remove();
-  const { lastClaimedDay, lastLoginDate } = getDailyLoginInfo();
+  const modal = document.getElementById('daily-login-modal');
+  const daysRoot = document.getElementById('daily-login-days');
+  const closeBtn = document.getElementById('daily-login-close-btn');
 
-  modal = document.createElement('div');
-  modal.id = 'daily-login-modal';
-  modal.className = 'modal';
-  modal.style.display = 'flex';
-  modal.style.alignItems = 'center';
-  modal.style.justifyContent = 'center';
+  if (!modal || !daysRoot || !closeBtn) {
+    console.warn('[DailyLogin] Missing modal DOM elements. Did you add #daily-login-modal to index.html?');
+    return;
+  }
 
+  const { lastClaimedDay } = getDailyLoginInfo();
+
+  // Build rewards HTML
   let rewardsHtml = '';
   DAILY_LOGIN_REWARDS.forEach((reward, i) => {
-    // Calculate state
     const isToday = i === dayIdx;
     const isClaimed = i < lastClaimedDay;
     const isFuture = i > dayIdx;
 
-    // Styles for each state
     let borderColor = isToday ? '#ffe066' : isClaimed ? '#44e055' : '#333';
     let bgColor = isToday ? '#ffe06622' : isClaimed ? '#232f1c' : '#222';
     let opacity = isFuture ? 0.55 : 1;
@@ -2664,7 +2662,7 @@ function showDailyLoginModal(dayIdx) {
     let cursor = isToday && !isClaimed ? 'pointer' : 'default';
 
     rewardsHtml += `
-      <div class="daily-login-reward${isToday ? ' today' : ''}${isClaimed ? ' claimed' : ''}${isFuture ? ' future' : ''}" 
+      <div class="daily-login-reward${isToday ? ' today' : ''}${isClaimed ? ' claimed' : ''}${isFuture ? ' future' : ''}"
            data-day="${i}"
            style="border-radius:8px;padding:9px;
             background:${bgColor};
@@ -2691,62 +2689,56 @@ function showDailyLoginModal(dayIdx) {
     `;
   });
 
-  modal.innerHTML = `
-    <div class="modal-content" style="max-width:750px;padding:22px 18px;background:#232a3a;border-radius:16px;">
-      <h2 style="text-align:center;color:#ffe066;margin-bottom:12px;">Daily Login Rewards</h2>
-      <div style="display:flex;flex-wrap:wrap;justify-content:center;align-items:center;">${rewardsHtml}</div>
-      <div style="text-align:center;margin-top:18px;">
-        <button id="daily-login-close-btn" class="btn-negative-secondary" style="margin-left:12px;">Close</button>
-      </div>
-    </div>
-  `;
-  document.body.appendChild(modal);
+  // Inject into the existing modal container
+  daysRoot.innerHTML = rewardsHtml;
 
-  // Add click logic for each reward slot
-  modal.querySelectorAll('.daily-login-reward').forEach((el, i) => {
+  // Show modal
+  modal.style.display = 'flex';
+
+  // Click logic for each reward slot
+  daysRoot.querySelectorAll('.daily-login-reward').forEach((el) => {
+    const i = parseInt(el.getAttribute('data-day'), 10);
     const isToday = i === dayIdx;
+    const { lastClaimedDay } = getDailyLoginInfo();
     const isClaimed = i < lastClaimedDay;
-    const isFuture = i > dayIdx;
-    el.onclick = function(e) {
-      // Only today's reward is claimable and not already claimed
+
+    el.onclick = function (e) {
+      e.stopPropagation();
+
       if (!isToday || isClaimed) {
         showToast(isClaimed ? "Already claimed this reward!" : "You can only claim today's reward.", { type: "info" });
         return;
       }
-      // Check if already claimed today
+
       const { lastLoginDate } = getDailyLoginInfo();
       const today = getUtcDateString();
       if (lastLoginDate === today) {
         showToast("Already claimed today's reward!", { type: "info" });
         return;
       }
-      // Claim today's reward
+
       const reward = DAILY_LOGIN_REWARDS[i];
       addCoins(reward.coins);
       setEssence(getEssence() + reward.essence);
       setDailyLoginInfo(i + 1, today);
+
       showToast(`Claimed: ${reward.coins} Coins & ${reward.essence} Essence for ${reward.title}!`, { type: "success" });
-      modal.remove();
+
+      // Hide modal (don't remove)
+      modal.style.display = 'none';
     };
   });
 
-  document.getElementById('daily-login-close-btn').onclick = function() {
-    modal.remove();
+  // Close button
+  closeBtn.onclick = function () {
+    modal.style.display = 'none';
   };
-  modal.onclick = function(e) {
-    if (e.target === modal) modal.remove();
+
+  // Click outside closes
+  modal.onclick = function (e) {
+    if (e.target === modal) modal.style.display = 'none';
   };
 }
-document.getElementById('daily-login-icon').onclick = function() {
-  const { lastClaimedDay, lastLoginDate } = getDailyLoginInfo();
-  const today = getUtcDateString();
-  let dayIdx = lastClaimedDay % DAILY_LOGIN_REWARDS.length;
-  if (lastLoginDate === today) {
-    showToast("You have already claimed today's reward!", { type: "info" });
-    return;
-  }
-  showDailyLoginModal(dayIdx);
-};
 
 function normalizeKey(s) {
   if (!s && s !== 0) return '';
