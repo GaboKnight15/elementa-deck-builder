@@ -3386,39 +3386,31 @@ topStatsRow.style.zIndex = 45;
 topStatsRow.style.pointerEvents = 'none';
 
 // ATK
-try {
-  if (typeof cardData.atk === "number") {
-    const currentATK = computeCardStat(cardObj, "atk");
-    const atkColor = getStatColor(cardObj, "atk");
-    topStatsRow.appendChild(makeStatBadge("Icons/Stat/ATK.png", currentATK, atkColor, "ATK"));
-  }
+if (typeof cardData.atk === "number") {
+  const currentATK = computeCardStat(cardObj, "atk");
+  const atkColor = getStatColor(cardObj, "atk");
+  topStatsRow.appendChild(makeStatBadge("Icons/Stat/ATK.png", currentATK, atkColor, "ATK"));
 }
 
 // DEF (only if > 0)
-try {
-  if (typeof cardData.def === "number") {
-    const currentDEF = computeCardStat(cardObj, "def");
-    if (currentDEF > 0) {
-      const defColor = getStatColor(cardObj, "def");
-      topStatsRow.appendChild(makeStatBadge("Icons/Stat/DEF.png", currentDEF, defColor, "DEF"));
-    }
+if (typeof cardData.def === "number") {
+  const currentDEF = computeCardStat(cardObj, "def");
+  if (currentDEF > 0) {
+    const defColor = getStatColor(cardObj, "def");
+    topStatsRow.appendChild(makeStatBadge("Icons/Stat/DEF.png", currentDEF, defColor, "DEF"));
   }
 }
 
 // SPD (image-only; only if tier !== 2)
-try {
-  const tier = getSpeedTier(cardObj);
-  if (tier !== 2) {
-    const iconSrc = getSpeedTierIcon(tier);
-    if (iconSrc) {
-      const spdBadge = document.createElement('div');
-      spdBadge.className = 'stat-badge-centered';
-      spdBadge.innerHTML = `
-        <img src="${iconSrc}" alt="SPD" class="stat-badge-img">
-      `;
-      spdBadge.title = `Speed Tier ${tier}`;
-      topStatsRow.appendChild(spdBadge);
-    }
+const tier = getSpeedTier(cardObj);
+if (tier !== 2) {
+  const iconSrc = getSpeedTierIcon(tier);
+  if (iconSrc) {
+    const spdBadge = document.createElement('div');
+    spdBadge.className = 'stat-badge-centered';
+    spdBadge.innerHTML = `<img src="${iconSrc}" alt="SPD" class="stat-badge-img">`;
+    spdBadge.title = `Speed Tier ${tier}`;
+    topStatsRow.appendChild(spdBadge);
   }
 }
 
@@ -3630,18 +3622,16 @@ badgesRow.style.flexDirection = 'column';
 badgesRow.style.gap = '6px';
 
 // Seal badge
-try {
-  if (hasStatus(cardObj, 'Seal')) {
-    const sealBadge = document.createElement('div');
-    sealBadge.className = 'card-seal-badge';
-    sealBadge.title = BLIGHTS['Seal']?.description || 'Sealed';
-    sealBadge.style.display = 'flex';
-    sealBadge.style.alignItems = 'center';
-    sealBadge.style.justifyContent = 'center';
-    sealBadge.style.cursor = 'default';
-    sealBadge.innerHTML = `<img src="${BLIGHTS['Seal']?.icon || 'Icons/Status/seal.png'}" alt="Sealed" style="width:18px;height:18px;filter:drop-shadow(0 2px 6px #0007);opacity:0.95">`;
-    badgesRow.appendChild(sealBadge);
-  }
+if (hasStatus(cardObj, 'Seal')) {
+  const sealBadge = document.createElement('div');
+  sealBadge.className = 'card-seal-badge';
+  sealBadge.title = BLIGHTS['Seal']?.description || 'Sealed';
+  sealBadge.style.display = 'flex';
+  sealBadge.style.alignItems = 'center';
+  sealBadge.style.justifyContent = 'center';
+  sealBadge.style.cursor = 'default';
+  sealBadge.innerHTML = `<img src="${BLIGHTS['Seal']?.icon || 'Icons/Status/seal.png'}" alt="Sealed" style="width:18px;height:18px;filter:drop-shadow(0 2px 6px #0007);opacity:0.95">`;
+  badgesRow.appendChild(sealBadge);
 }
 
 // Attach badges into overlay once
