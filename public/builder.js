@@ -899,12 +899,13 @@ domainModal.addEventListener('click', function(e) {
   }
 });
 // TOKEN DECK //
+const TOKEN_DECK_MAX_COPIES = 15;
+
 function getTokenDeck(deck) {
   const obj = deck && typeof deck.__tokenDeck === "object" && deck.__tokenDeck !== null
     ? deck.__tokenDeck
     : {};
 
-  // sanitize { id: positive integer }
   const clean = {};
   for (const [id, v] of Object.entries(obj)) {
     const n = Math.floor(Number(v));
@@ -931,6 +932,12 @@ function getTokenCount(deck, cardId) {
   const td = getTokenDeck(deck);
   return Number(td[cardId] || 0) || 0;
 }
+
+function getTokenDeckTotalCopies(deck) {
+  const td = getTokenDeck(deck);
+  return Object.values(td).reduce((sum, n) => sum + (Number(n) || 0), 0);
+}
+
 function isTokenCard(card) {
   if (!card) return false;
   // If your cards store type as array:
@@ -952,6 +959,7 @@ function getCombinedCopies(deck, cardId) {
   const token = getTokenCount(deck || {}, cardId);
   return main + token;
 }
+
 const tokenSlotTile = document.getElementById('token-slot');
 const tokenSlotCount = document.getElementById('token-slot-count');
 const tokenModal = document.getElementById('token-selection-modal');
@@ -1361,10 +1369,16 @@ function canAddTokenToTokenDeck(card) {
   if (!isTokenCard(card)) return false;
 
   const deck = getCurrentDeck();
+
+  // Token-section total cap (15)
+  if (getTokenDeckTotalCopies(deck) >= TOKEN_DECK_MAX_COPIES) return false;
+
+  // Rarity cap across main + token
   const cap = getRarityCap(card);
   const combined = getCombinedCopies(deck, card.id);
+  if (combined >= cap) return false;
 
-  return combined < cap;
+  return true;
 }
 
 function addTokenToTokenDeck(cardId) {
@@ -1372,8 +1386,17 @@ function addTokenToTokenDeck(cardId) {
   const card = dummyCards.find(c => c.id === cardId);
   if (!card || !isTokenCard(card)) return;
 
-  if (!canAddTokenToTokenDeck(card)) {
-    const cap = getRarityCap(card);
+  // Token-section total cap check with message
+  const totalTokenCopies = getTokenDeckTotalCopies(deck);
+  if (totalTokenCopies >= TOKEN_DECK_MAX_COPIES) {
+    showToast(`Token deck is full (max ${TOKEN_DECK_MAX_COPIES} copies).`, { type: "info" });
+    return;
+  }
+
+  // Rarity cap check with message
+  const cap = getRarityCap(card);
+  const combined = getCombinedCopies(deck, card.id);
+  if (combined >= cap) {
     showToast(`Max ${cap} copies for this Token (${card.rarity}) across Main + Token deck.`, { type: "info" });
     return;
   }
