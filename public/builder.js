@@ -902,8 +902,8 @@ domainModal.addEventListener('click', function(e) {
 const TOKEN_DECK_MAX_COPIES = 15;
 
 function getTokenDeck(deck) {
-  const obj = deck && typeof deck.__tokenDeck === "object" && deck.__tokenDeck !== null
-    ? deck.__tokenDeck
+  const obj = deck && typeof deck.tokenDeck === "object" && deck.tokenDeck !== null
+    ? deck.tokenDeck
     : {};
 
   const clean = {};
@@ -924,7 +924,7 @@ function setTokenDeck(deck, tokenDeckObj) {
     if (!Number.isFinite(n) || n <= 0) continue;
     clean[id] = n;
   }
-  deck.__tokenDeck = clean;
+  deck.tokenDeck = clean;
   setCurrentDeck(deck);
 }
 
