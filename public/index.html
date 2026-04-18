@@ -242,6 +242,18 @@
     <div id="deck-panel">
       <div id="deck-title"></div>
       <div>Total <span id="card-count">0</span>/30</div>
+    <div id="token-slot" class="domain-slot-tile" title="Select Token Cards">
+      <div style="color:#ffe066;font-weight:bold;">Tokens</div>
+      <div id="token-slot-count" style="color:#fff;opacity:0.9;">0 / 4</div>
+    </div>
+
+    <div id="token-selection-modal" class="modal" style="display:none;">
+      <div class="modal-content" style="max-width:900px;">
+        <div class="modal-title">Select Token Cards (max 4)</div>
+    <div id="token-selection-list" style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;"></div>
+        <button id="close-token-selection-modal" class="btn-negative-secondary">Close</button>
+      </div>
+    </div>
       <ul id="deck-list"></ul>
     </div>      
     <div id="gallery-builder-cards"></div>
