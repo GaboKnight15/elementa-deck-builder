@@ -898,6 +898,130 @@ domainModal.addEventListener('click', function(e) {
     domainModal.style.display = 'none';
   }
 });
+// TOKEN DECK //
+function getTokenDeck(deck) {
+  const obj = deck && typeof deck.__tokenDeck === "object" && deck.__tokenDeck !== null
+    ? deck.__tokenDeck
+    : {};
+
+  // sanitize { id: positive integer }
+  const clean = {};
+  for (const [id, v] of Object.entries(obj)) {
+    const n = Math.floor(Number(v));
+    if (!id) continue;
+    if (!Number.isFinite(n) || n <= 0) continue;
+    clean[id] = n;
+  }
+  return clean;
+}
+
+function setTokenDeck(deck, tokenDeckObj) {
+  const clean = {};
+  for (const [id, v] of Object.entries(tokenDeckObj || {})) {
+    const n = Math.floor(Number(v));
+    if (!id) continue;
+    if (!Number.isFinite(n) || n <= 0) continue;
+    clean[id] = n;
+  }
+  deck.__tokenDeck = clean;
+  setCurrentDeck(deck);
+}
+
+function getTokenCount(deck, cardId) {
+  const td = getTokenDeck(deck);
+  return Number(td[cardId] || 0) || 0;
+}
+function isTokenCard(card) {
+  if (!card) return false;
+  // If your cards store type as array:
+  if (Array.isArray(card.type)) return card.type.includes("Token");
+  // If stored as string:
+  if (typeof card.type === "string") return card.type === "Token";
+  return false;
+}
+function getRarityCap(card) {
+  const r = (card?.rarity || "").toLowerCase();
+  if (r === "legendary") return 1;
+  if (r === "rare") return 2;
+  if (r === "common") return 3;
+  // If you ever have non-rarity cards, decide policy:
+  return Infinity;
+}
+function getCombinedCopies(deck, cardId) {
+  const main = Number(deck?.[cardId] || 0) || 0;
+  const token = getTokenCount(deck || {}, cardId);
+  return main + token;
+}
+const tokenSlotTile = document.getElementById('token-slot');
+const tokenSlotCount = document.getElementById('token-slot-count');
+const tokenModal = document.getElementById('token-selection-modal');
+const tokenList = document.getElementById('token-selection-list');
+const closeTokenBtn = document.getElementById('close-token-selection-modal');
+
+function showTokenSelectionModal() {
+  if (!tokenModal || !tokenList) return;
+
+  const deck = getCurrentDeck();
+  const selected = getTokenSlots(deck);
+
+  tokenList.innerHTML = '';
+
+  // Build a pool of token cards from dummyCards
+  const tokenCards = (window.dummyCards || []).filter(isTokenCard);
+
+  tokenCards.forEach(card => {
+    const isSelected = selected.includes(card.id);
+
+    const btn = document.createElement('div');
+    btn.className = 'domain-tile'; // reuse a tile style if you want
+    btn.style.cursor = 'pointer';
+    btn.style.opacity = isSelected ? '1' : '0.85';
+    btn.style.border = isSelected ? '2px solid #ffe066' : '2px solid #314175';
+    btn.style.borderRadius = '12px';
+    btn.style.padding = '8px';
+    btn.style.background = '#232a3c';
+    btn.style.width = '140px';
+    btn.style.textAlign = 'center';
+
+    btn.innerHTML = `
+      <img src="${card.image}" style="width:100%;height:80px;object-fit:cover;border-radius:10px;">
+      <div style="margin-top:6px;color:#ffe066;font-weight:bold;font-size:0.95em;">${card.name || card.id}</div>
+      <div style="margin-top:4px;color:#fff;opacity:0.9;font-size:0.85em;">
+        ${isSelected ? 'Selected' : 'Click to select'}
+      </div>
+    `;
+
+    btn.onclick = () => {
+      const deck2 = getCurrentDeck();
+      const current = getTokenSlots(deck2);
+
+      // Toggle
+      let next = current.includes(card.id)
+        ? current.filter(id => id !== card.id)
+        : current.concat(card.id);
+
+      if (next.length > 4) {
+        showToast("You can only select up to 4 token cards.", { type: "info" });
+        return;
+      }
+
+      setTokenSlots(deck2, next);
+      updateDeckDisplay();
+      renderBuilder();
+
+      // re-render modal to update selection styles
+      showTokenSelectionModal();
+    };
+
+    tokenList.appendChild(btn);
+  });
+
+  tokenModal.style.display = 'flex';
+}
+
+if (tokenSlotTile) tokenSlotTile.onclick = () => showTokenSelectionModal();
+if (closeTokenBtn) closeTokenBtn.onclick = () => (tokenModal.style.display = 'none');
+if (tokenModal) tokenModal.onclick = (e) => { if (e.target === tokenModal) tokenModal.style.display = 'none'; };
 function startDeckEditing(slotName) {
   // Start editing the given deck slot by cloning the saved deck into the draft.
   deckBuilderDraft = JSON.parse(JSON.stringify(decks[slotName] || {}));
@@ -1000,7 +1124,55 @@ function updateDeckDisplay() {
   }
   
   deckList.appendChild(domainSlot);
+  
+const deck = getCurrentDeck();
+const tokenIds = getTokenSlots(deck);
 
+if (tokenSlotCount) tokenSlotCount.textContent = `${tokenIds.length} / 4`;
+
+if (tokenIds.length) {
+  // Divider
+  const divider = document.createElement('li');
+  divider.className = 'deck-list-divider';
+  deckList.appendChild(divider);
+
+  tokenIds.forEach(tokenId => {
+    const card = (window.dummyCards || []).find(c => c.id === tokenId);
+    if (!card) return;
+
+    // Show as a tile (count shown from main deck if present)
+    const count = typeof deck[tokenId] === "number" ? deck[tokenId] : 0;
+    const li = makeTileLI(card, count);
+    li.title = `Token slot. Copies in main deck: ${count}. Click-hold to view; click to remove from main deck.`;
+
+    // Add a small remove-from-token-slot button
+    const rm = document.createElement('div');
+    rm.textContent = "✕";
+    rm.style.position = 'absolute';
+    rm.style.top = '4px';
+    rm.style.right = '4px';
+    rm.style.width = '18px';
+    rm.style.height = '18px';
+    rm.style.borderRadius = '50%';
+    rm.style.background = '#e25555';
+    rm.style.color = '#fff';
+    rm.style.fontWeight = 'bold';
+    rm.style.display = 'flex';
+    rm.style.alignItems = 'center';
+    rm.style.justifyContent = 'center';
+    rm.style.cursor = 'pointer';
+    rm.onclick = (e) => {
+      e.stopPropagation();
+      const d2 = getCurrentDeck();
+      setTokenSlots(d2, getTokenSlots(d2).filter(id => id !== tokenId));
+      updateDeckDisplay();
+      renderBuilder();
+    };
+    li.appendChild(rm);
+
+    deckList.appendChild(li);
+  });
+}
   // Add divider after domain slot
   const divLi = document.createElement('li');
   divLi.className = 'deck-list-divider';
@@ -1142,22 +1314,37 @@ function buildDeck(deckObj) {
 }
 function canAddCard(card, currentInDeck, ownedCount) {
   const deck = getCurrentDeck();
-  const count = currentInDeck || 0;
-  const total = Object.values(deck).reduce((a, b) => a + b, 0);
+  const mainCount = currentInDeck || 0;
 
-  if (total >= 30) return false;
-  if (count >= ownedCount) return false;
-  // Rarity limits
-  if (card.rarity && card.rarity.toLowerCase() === 'legendary' && count >= 1) return false;
-  if (card.rarity && card.rarity.toLowerCase() === 'rare' && count >= 2) return false;
-  if (card.rarity && card.rarity.toLowerCase() === 'common' && count >= 3) return false;
-  if (typeof isDomain === 'function' && isDomain(card)) {
+  // main deck 30-card limit (token section does NOT count here)
+  const totalMain = Object.values(deck).reduce((a, b) => a + b, 0);
+  if (totalMain >= 30) return false;
+
+  // ownership check only applies to main deck adds (as you currently do)
+  if (mainCount >= ownedCount) return false;
+
+  // domain rules unchanged
+  if (typeof isDomain === "function" && isDomain(card)) {
     for (const cardId in deck) {
       const c = dummyCards.find(dc => dc.id === cardId);
-      if (c && typeof isDomain === 'function' && isDomain(c)) return false;
+      if (c && typeof isDomain === "function" && isDomain(c)) return false;
     }
-    if (count >= 1) return false;
+    if (mainCount >= 1) return false;
+    return true;
   }
+
+  // rarity cap
+  const cap = getRarityCap(card);
+
+  if (isTokenCard(card)) {
+    // enforce across main + token section
+    const combined = getCombinedCopies(deck, card.id);
+    if (combined >= cap) return false;
+  } else {
+    // enforce as before (main-only)
+    if (cap !== Infinity && mainCount >= cap) return false;
+  }
+
   return true;
 }
 function addCardToDeck(cardId) {
@@ -1170,7 +1357,42 @@ function addCardToDeck(cardId) {
   deck[cardId] = (deck[cardId] || 0) + 1;
   setCurrentDeck(deck);
 }
+function canAddTokenToTokenDeck(card) {
+  if (!isTokenCard(card)) return false;
 
+  const deck = getCurrentDeck();
+  const cap = getRarityCap(card);
+  const combined = getCombinedCopies(deck, card.id);
+
+  return combined < cap;
+}
+
+function addTokenToTokenDeck(cardId) {
+  const deck = getCurrentDeck();
+  const card = dummyCards.find(c => c.id === cardId);
+  if (!card || !isTokenCard(card)) return;
+
+  if (!canAddTokenToTokenDeck(card)) {
+    const cap = getRarityCap(card);
+    showToast(`Max ${cap} copies for this Token (${card.rarity}) across Main + Token deck.`, { type: "info" });
+    return;
+  }
+
+  const td = getTokenDeck(deck);
+  td[cardId] = (Number(td[cardId] || 0) || 0) + 1;
+  setTokenDeck(deck, td);
+}
+
+function removeTokenFromTokenDeck(cardId) {
+  const deck = getCurrentDeck();
+  const td = getTokenDeck(deck);
+  if (!td[cardId]) return;
+
+  td[cardId]--;
+  if (td[cardId] <= 0) delete td[cardId];
+
+  setTokenDeck(deck, td);
+}
 function renderBuilder() {
   // Clear the builder gallery
   builderGallery.innerHTML = '';
