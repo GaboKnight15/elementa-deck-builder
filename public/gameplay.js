@@ -1879,6 +1879,59 @@ function setBattlefieldBackgrounds(playerBannerUrl, opponentBannerUrl) {
     opponentBg.style.backgroundRepeat = "no-repeat";
   }
 }
+function getTokenCountFromDeckObj(deckObj) {
+  const td = deckObj && typeof deckObj.__tokenDeck === "object" && deckObj.__tokenDeck
+    ? deckObj.__tokenDeck
+    : {};
+  return Object.values(td).reduce((sum, n) => sum + (Number(n) || 0), 0);
+}
+function splitMainAndTokenDeckObj(deckObj) {
+  const obj = deckObj && typeof deckObj === "object" ? deckObj : {};
+
+  const tokenRaw =
+    obj.__tokenDeck && typeof obj.__tokenDeck === "object" && obj.__tokenDeck !== null
+      ? obj.__tokenDeck
+      : {};
+
+  const mainDeckObj = {};
+  for (const [k, v] of Object.entries(obj)) {
+    if (k === "__tokenDeck") continue;
+    mainDeckObj[k] = v;
+  }
+
+  // sanitize token counts
+  const tokenDeckObj = {};
+  for (const [id, count] of Object.entries(tokenRaw)) {
+    const n = Math.floor(Number(count));
+    if (!id) continue;
+    if (!Number.isFinite(n) || n <= 0) continue;
+    tokenDeckObj[id] = n;
+  }
+
+  return { mainDeckObj, tokenDeckObj };
+}
+
+// Build + shuffle main & token parts separately, then combine (tokens at bottom).
+// Options:
+// - shuffleMain: default true
+// - shuffleTokens: default false (tokens "stay the same" / fixed ordering)
+function createDeck(deckObj, { shuffleMain = true, shuffleTokens = false } = {}) {
+  const { mainDeckObj, tokenDeckObj } = splitMainAndTokenDeckObj(deckObj);
+
+  const mainArr = buildDeck(mainDeckObj);
+  const tokenArr = buildDeck(tokenDeckObj);
+
+  if (shuffleMain) shuffleInPlace(mainArr);
+  if (shuffleTokens) shuffleInPlace(tokenArr);
+
+  // tokens beneath main deck
+  const combined = mainArr.concat(tokenArr);
+
+  // Helpful metadata for later shuffles (if you want):
+  combined.tokenCount = tokenArr.length;
+
+  return combined;
+}
 // Unified game start function for all modes (solo/cpu, casual, private, etc)
 function startGame({
   mode = "solo",              // "solo", "casual", "private", etc
@@ -1890,16 +1943,19 @@ function startGame({
   matchData = null            // full matchData for casual/private modes
 }) {
 
-  // now build decks into the fresh state
-  gameState.playerDeck = shuffle(buildDeck(playerDeck));
-  // For opponent: if it's an array of cards, use directly; otherwise, build it
-  if (Array.isArray(opponentDeck) && opponentDeck.length && opponentDeck[0].cardId) {
-    // Solo/CPU - deck is already built
-    gameState.opponentDeck = shuffle([...opponentDeck]);
-  } else {
-    // Multiplayer - build deck from definition
-    gameState.opponentDeck = shuffle(buildDeck(opponentDeck));
-  }
+// Player deck: shuffle main, keep tokens fixed at bottom
+gameState.playerDeck = createDeck(playerDeck, { shuffleMain: true, shuffleTokens: false });
+gameState.playerTokenDeckCount = gameState.playerDeck.tokenCount || 0;
+
+// Opponent deck:
+// If it's already built (array), keep existing behavior (no token separation possible here).
+if (Array.isArray(opponentDeck) && opponentDeck.length && opponentDeck[0].cardId) {
+  gameState.opponentDeck = shuffleInPlace([...opponentDeck]);
+  gameState.opponentTokenDeckCount = 0;
+} else {
+  gameState.opponentDeck = createDeck(opponentDeck, { shuffleMain: true, shuffleTokens: false });
+  gameState.opponentTokenDeckCount = gameState.opponentDeck.tokenCount || 0;
+}
   gameState.playerHand = [];
   gameState.playerCreatures = [];
   gameState.playerTerrains = [];
@@ -2154,7 +2210,35 @@ function showActivationConfirmModal(cardObj, skillObj, onConfirm) {
     modal.remove();
   };
 }
+function splitMainAndTokenDeck(deckObj) {
+  const obj = deckObj && typeof deckObj === "object" ? deckObj : {};
 
+  // token counts stored by builder in __tokenDeck
+  const tokenDeck = (obj.__tokenDeck && typeof obj.__tokenDeck === "object") ? obj.__tokenDeck : {};
+
+  // main deck: everything except reserved keys
+  const mainDeck = {};
+  for (const [k, v] of Object.entries(obj)) {
+    if (k === "__tokenDeck") continue;     // reserved
+    mainDeck[k] = v;
+  }
+
+  // sanitize tokenDeck counts into a normal deckObj form (cardId -> count)
+  const tokenDeckDef = {};
+  for (const [id, count] of Object.entries(tokenDeck)) {
+    const n = Math.floor(Number(count));
+    if (!id) continue;
+    if (!Number.isFinite(n) || n <= 0) continue;
+    tokenDeckDef[id] = n;
+  }
+
+  return { mainDeck, tokenDeck: tokenDeckDef };
+}
+
+// Count how many cards in token deck array (built from tokenDeckDef)
+function countTokenDeckCards(tokenDeckDef) {
+  return Object.values(tokenDeckDef || {}).reduce((sum, n) => sum + (Number(n) || 0), 0);
+}
 // --- TURN FLAGS --- //
 function resetTurnFlags(turn) {
   if (turn === "player") {
@@ -2547,15 +2631,52 @@ function setCardAnimatableClass(div, cardObj, cardData, gameState, zone) {
   }
 }
 
-function shuffle(array) {
-  for (let i = array.length - 1; i > 0; i--) {
+// Fisher-Yates in-place shuffle for any array
+function shuffleInPlace(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
+    [arr[i], arr[j]] = [arr[j], arr[i]];
   }
-  return array;
-  emitPublicState();
+  return arr;
 }
 
+// Shuffle ONLY the main deck portion (top), leaving the last `tokenCount` cards untouched.
+function shuffleDeck(deckArr, tokenCount = 0) {
+  if (!Array.isArray(deckArr) || deckArr.length <= 1) return deckArr;
+
+  const tc = Math.max(0, Math.min(Number(tokenCount) || 0, deckArr.length));
+  const mainLen = deckArr.length - tc;
+
+  if (mainLen <= 1) return deckArr;
+
+  const main = deckArr.slice(0, mainLen);
+  const tokens = tc > 0 ? deckArr.slice(mainLen) : [];
+
+  shuffleInPlace(main);
+
+  deckArr.length = 0;
+  deckArr.push(...main, ...tokens);
+  return deckArr;
+}
+
+// Shuffle ONLY the token portion (bottom), leaving the main deck untouched.
+function shuffleTokens(deckArr, tokenCount = 0) {
+  if (!Array.isArray(deckArr) || deckArr.length <= 1) return deckArr;
+
+  const tc = Math.max(0, Math.min(Number(tokenCount) || 0, deckArr.length));
+  if (tc <= 1) return deckArr;
+
+  const mainLen = deckArr.length - tc;
+
+  const main = deckArr.slice(0, mainLen);
+  const tokens = deckArr.slice(mainLen);
+
+  shuffleInPlace(tokens);
+
+  deckArr.length = 0;
+  deckArr.push(...main, ...tokens);
+  return deckArr;
+}
 function drawCards(who, n) {
   let deck = who === "player" ? gameState.playerDeck : gameState.opponentDeck;
   let hand = who === "player" ? gameState.playerHand : gameState.opponentHand;
