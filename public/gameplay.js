@@ -9,11 +9,7 @@ const PHASE_META = [
   { key: "action", display: "Action Phase", class: "phase-action" },
   { key: "end",    display: "End Phase",    class: "phase-end"    }
 ];
-const PHASE_HANDLERS = {
-  start: handleStartPhase,
-  action: handleActionPhase,
-  end: handleEndPhase
-};
+const PHASE_HANDLERS = { start: handleStartPhase, action: handleActionPhase, end: handleEndPhase };
 // Generate phase display and class maps from PHASE_META
 const PHASE_DISPLAY_NAMES = Object.fromEntries(PHASE_META.map(p => [p.key, p.display]));
 const PHASE_CLASS = Object.fromEntries(PHASE_META.map(p => [p.key, p.class]));
@@ -31,22 +27,10 @@ TURNS.forEach(turn =>
 // --- ZONES --- //
 // ------------- //
 let gameState = {
-  playerDeck: [],
-  playerHand: [],
-  playerCreatures: [],
-  playerTerrains: [],
-  playerVoid: [],
-  playerDeparture: [],
-  opponentDeck: [],
-  opponentHand: [],
-  opponentCreatures: [],
-  opponentTerrains: [],
-  opponentVoid: [],
-  opponentDeparture: [],
-  playerDominion: null,
-  opponentDominion: null,
-  playerSigils: [],
-  opponentSigils: [],
+  playerDeck: [], playerHand: [], playerCreatures: [], playerTerrains: [], playerVoid: [], playerDeparture: [],
+  opponentDeck: [], opponentHand: [], opponentCreatures: [], opponentTerrains: [], opponentVoid: [], opponentDeparture: [],
+  playerDominion: null, opponentDominion: null,
+  playerSigils: [], opponentSigils: [],
   turn: "player",
   phase: "start",
   essencePools: {
@@ -78,13 +62,12 @@ const ZONE_MAP = {
   allDecks:          { id: null, arr: () => [...gameState.playerDeck, ...gameState.opponentDeck] },
   allHands:          { id: null, arr: () => [...gameState.playerHand, ...gameState.opponentHand] },
   allDepartures:     { id: null, arr: () => [...gameState.playerDeparture, ...gameState.opponentDeparture] },
-  // NEW: All player-side field (creatures + terrains)
+
   playerField:    { id: null, arr: () => [
     ...gameState.playerCreatures,
     ...gameState.playerTerrains
   ] },
 
-  // NEW: All opponent-side field (creatures + terrains)
   opponentField:  { id: null, arr: () => [
     ...gameState.opponentCreatures,
     ...gameState.opponentTerrains
@@ -145,20 +128,20 @@ const ESSENCE_IMAGE_MAP = {
 };
 // STATUS EFFECTS
 const BLIGHTS = {
-  Burned: { name: 'Burned', icon: 'Icons/Status/Burned.png', duration: 2, tick: "opponentEnd",
+  burned: { name: 'Burned', icon: 'Icons/Status/Burned.png', duration: 2, tick: "opponentEnd",
     description: 'DEF -1.',
     apply: function(cardObj) {
       // Lower DEF by 1 if not already applied
-      if (!cardObj._burnedDEF) {
+      if (!cardObj.burned) {
         cardObj.def = (cardObj.def || 0) - 1;
-        cardObj._burnedDEF = true;
+        cardObj.burned = true;
       }
     },
     remove: function(cardObj) {
       // Restore DEF when Burn is removed
-      if (cardObj._burnedDEF) {
+      if (cardObj.burned) {
         cardObj.def = (cardObj.def || 0) + 1;
-        cardObj._burnedDEF = false;
+        cardObj.burned = false;
       }
     },
     onEndPhase: function(cardObj) {
@@ -172,11 +155,11 @@ const BLIGHTS = {
     duration: 1,
     tick: "allEnd", // Decrement on every End Phase
     apply: (cardObj) => {
-      cardObj._frozen = true;
+      cardObj.frozen = true;
       cardObj.canAttack = false;
     },
     remove: (cardObj) => {
-      cardObj._frozen = false;
+      cardObj.frozen = false;
       cardObj.canAttack = true;
     },
   },
@@ -185,17 +168,17 @@ Poisoned: { name: 'Poisoned', duration: 3, tick: "allEnd", icon: 'Icons/Status/P
   apply: function(cardObj) {
     try {
       // mark instance as poisoned for quick checks / UI
-      cardObj._poisoned = true;
+      cardObj.poisoned = true;
       // store original max HP if needed by other effects (no maxHP change at apply)
-      if (typeof cardObj._originalMaxHP === 'undefined') {
-        cardObj._originalMaxHP = (typeof cardObj.maxHP === 'number' ? cardObj.maxHP : getBaseHp(cardObj.cardId));
+      if (typeof cardObj.originalMaxHP === 'undefined') {
+        cardObj.originalMaxHP = (typeof cardObj.maxHP === 'number' ? cardObj.maxHP : getBaseHp(cardObj.cardId));
       }
     } catch (err) { console.warn('Poisoned.apply failed', err); }
   },
   remove: function(cardObj) {
     try {
-      cardObj._poisoned = false;
-      delete cardObj._poisoned;
+      cardObj.poisoned = false;
+      delete cardObj.poisoned;
       // Do not restore HP here; Poison deals damage each End Phase while present.
     } catch (err) { console.warn('Poisoned.remove failed', err); }
   },
@@ -211,31 +194,27 @@ Poisoned: { name: 'Poisoned', duration: 3, tick: "allEnd", icon: 'Icons/Status/P
   }
 },
   Paralized: {
-    icon: 'Icons/Status/Paralized.png',
-    name: 'Paralized',
+    icon: 'Icons/Status/Paralized.png', name: 'Paralized', duration: 2,
     description: 'Cannot attack or activate skills.',
-    duration: 2,
     apply: function(cardObj) {
-      cardObj._paralyzed = true;
+      cardObj.paralyzed = true;
       cardObj.canAttack = false;
       cardObj.canActivateSkill = false;
     },
     remove: function(cardObj) {
-      cardObj._paralyzed = false;
+      cardObj.paralyzed = false;
       cardObj.canAttack = true;
       cardObj.canActivateSkill = true;
     },
-    // Optionally, you can add a visual tick at each turn start or end
-    // For now, logic is purely duration-based
   },
   Drenched: { name: 'Drenched', duration: 1, icon: 'Icons/Status/Drenched.png',
     description: 'Decreases {atk} by {1}.',
     apply: function(cardObj) {
-      cardObj._soak = true;
+      cardObj.soak = true;
       cardObj.soakAmount = 2; // for example, if you want to track the value
     },
     remove: function(cardObj) {
-      cardObj._soak = false;
+      cardObj.soak = false;
       delete cardObj.soakAmount;
     }
     // Optionally add logic for duration ticks
@@ -244,16 +223,16 @@ Bound: { name: 'Bound', icon: 'Icons/Status/Bound.png', duration: 1,
   description: 'Disabled and cannot activate skills.',
   // Don't set duration here, handle it in your end phase check!
   apply: function(cardObj) {
-    cardObj._bound = true;
+    cardObj.bound = true;
     cardObj.canAttack = false;
     cardObj.canActivateSkill = false;
-    cardObj._bindPendingRemoval = true; // Flag that Bind is active and waiting for Opponent End Phase
+    cardObj.bindPendingRemoval = true; // Flag that Bind is active and waiting for Opponent End Phase
   },
   remove: function(cardObj) {
-    cardObj._bound = false;
+    cardObj.bound = false;
     cardObj.canAttack = true;
     cardObj.canActivateSkill = true;
-    delete cardObj._bindPendingRemoval;
+    delete cardObj.bindPendingRemoval;
   }
 },
 Sealed: { name: "Sealed", duration: 1, icon: "Icons/Status/Sealed.png",
@@ -261,7 +240,7 @@ Sealed: { name: "Sealed", duration: 1, icon: "Icons/Status/Sealed.png",
   // apply/remove set an instance-level flag so checks are cheap and reliable
   apply: function(cardObj) {
     try {
-      cardObj._sealed = true;
+      cardObj.sealed = true;
       // Prevent activation via the generic flag checked by canActivateSkill()
       cardObj.canActivateSkill = false;
     } catch (err) {
@@ -270,7 +249,7 @@ Sealed: { name: "Sealed", duration: 1, icon: "Icons/Status/Sealed.png",
   },
   remove: function(cardObj) {
     try {
-      cardObj._sealed = false;
+      cardObj.sealed = false;
       // restore ability to activate skills unless another effect forbids it
       // (we don't blindly set canActivateSkill = true because other statuses may also block)
       // so only clear the explicit flag, keep other logic to decide final state.
@@ -285,19 +264,17 @@ Cursed: { name: 'Cursed', duration: 3, icon: 'Icons/Status/Cursed.png',
   apply: function(cardObj) {
     try {
       // mark instance as cursed (for quick checks / UI)
-      cardObj._cursed = true;
+      cardObj.cursed = true;
       // persist original max HP once so we know the base if needed elsewhere
-      if (typeof cardObj._originalMaxHP === 'undefined') {
-        cardObj._originalMaxHP = (typeof cardObj.maxHP === 'number' ? cardObj.maxHP : getBaseHp(cardObj.cardId));
+      if (typeof cardObj.originalMaxHP === 'undefined') {
+        cardObj.originalMaxHP = (typeof cardObj.maxHP === 'number' ? cardObj.maxHP : getBaseHp(cardObj.cardId));
       }
     } catch (err) { console.warn('Cursed.apply failed', err); }
   },
   remove: function(cardObj) {
     try {
-      cardObj._cursed = false;
-      // NOTE: we intentionally do NOT restore reduced maxHP on remove, because Cursed reduces maxHP each End Phase while active.
-      // If you prefer restoring at removal, restore here using cardObj._originalMaxHP and subtracting applied reductions.
-      delete cardObj._cursed;
+      cardObj.cursed = false;
+      delete cardObj.cursed;
     } catch (err) { console.warn('Cursed.remove failed', err); }
   },
   onEndPhase: function(cardObj) {
@@ -316,26 +293,24 @@ Cursed: { name: 'Cursed', duration: 3, icon: 'Icons/Status/Cursed.png',
   }
 },
 Quickstrike: {
-  icon: 'Icons/Status/Quickstrike.png',
-  name: 'Quickstrike',
-  description: 'This creature deals damage before an enemy it attacks.',
-  // short duration used only for a single attack resolution; apply/remove toggle the flag
+  icon: 'Icons/Status/Quickstrike.png', name: 'Quickstrike',
+  description: 'Deals damage before the enemy.',
   apply: function(cardObj) {
-    cardObj._quickstrike = true;
+    cardObj.quickstrike = true;
   },
   remove: function(cardObj) {
-    cardObj._quickstrike = false;
+    cardObj.quickstrike = false;
   }
 },
 InvulnerableAtk: {
   icon: 'Icons/Status/Invulnerable.png',
   name: 'Invulnerable (attacking)',
-  description: "This creature takes no retaliation damage when it attacks.",
+  description: "Receives no damage from battles.",
   apply: function(cardObj) {
-    cardObj._invulnerableWhileAttacking = true;
+    cardObj.invulnerableWhileAttacking = true;
   },
   remove: function(cardObj) {
-    cardObj._invulnerableWhileAttacking = false;
+    cardObj.invulnerableWhileAttacking = false;
   }
 },
   // ... add more statuses
@@ -838,15 +813,6 @@ Equip: { name: 'Equip', zone: 'playerHand',
         }
         // Payment logic as above
         const parsedCost = step.cost ? parseCost(step.cost) : (cardDef.cost ? parseCost(cardDef.cost) : null);
-        const doEquip = function() {
-          // Move equipment from hand to attachment on chosen target
-          const target = selectedTargets[0];
-          // Attach using existing attachCard helper
-          attachCard(target, instance);
-          appendVisualLog && appendVisualLog({ action: 'equip', text: `${getCardOwner(instance) === 'player' ? 'You' : 'Opponent'} equipped ${cardDef.name}` });
-          renderGameState && renderGameState();
-          if (typeof nextEffect === 'function') nextEffect();
-        };
 
         const isFree = !cardDef.cost || (parsedCost && Object.values(parsedCost).reduce((a,b)=>a+b,0) === 0) || cardDef.cost === '{0}';
         if (isFree) doEquip();
@@ -1453,7 +1419,6 @@ Inspire: { name: 'Inspire',
   handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
     try {
       // Determine intended target:
-      // Prefer the host the source was just attached to (set by Equip handler)
       let target = null;
       if (sourceCardObj && sourceCardObj._lastEquippedTarget) {
         target = sourceCardObj._lastEquippedTarget;
@@ -1594,22 +1559,6 @@ Fusion: { name: 'Fusion', icon: 'Icons/Skill/Fusion.png',
     // Remove from hand, add to field
     moveCard(cardObj.instanceId, gameState.playerHand, targetArr);
 
-    // Attach the fused cards to the new card
-    for (const fusedCard of pairToUse) {
-      // Remove from their zone
-      let fromArr = gameState.playerCreatures.includes(fusedCard)
-        ? gameState.playerCreatures
-        : gameState.playerTerrains;
-      const idx = fromArr.indexOf(fusedCard);
-      if (idx !== -1) fromArr.splice(idx, 1);
-
-      // Remove "Fused" status and flag
-      fusedCard._fused = false;
-      if (fusedCard.statuses) fusedCard.statuses = fusedCard.statuses.filter(s => s.name !== 'Fused');
-
-      // Attach to the newly summoned card
-      attachCard(cardObj, fusedCard);
-    }
     renderGameState && renderGameState();
     setupDropZones && setupDropZones();
     if (nextEffect) nextEffect();
@@ -1665,7 +1614,6 @@ Evolution: { name: 'Evolution', icon: 'Icons/Skill/Evolution.png',
 
     moveCard(cardObj.instanceId, gameState.playerHand, targetArr);
 
-    // Remove from field and attach to the new card
     let fromArr = gameState.playerCreatures.includes(target)
       ? gameState.playerCreatures
       : gameState.playerTerrains;
@@ -1674,8 +1622,6 @@ Evolution: { name: 'Evolution', icon: 'Icons/Skill/Evolution.png',
 
     target._evolved = false;
     if (target.statuses) target.statuses = target.statuses.filter(s => s.name !== 'Evolved');
-
-    attachCard(cardObj, target);
 
     renderGameState && renderGameState();
     setupDropZones && setupDropZones();
@@ -1967,7 +1913,10 @@ if (Array.isArray(opponentDeck) && opponentDeck.length && opponentDeck[0].cardId
   gameState.opponentCreatures = [];
   gameState.opponentTerrains = [];
   gameState.opponentVoid = [];
-
+  
+  gameState.playerDeparture = [];
+  gameState.opponentDeparture = [];
+  
   gameState.phase = "start";
   
   gameState.playerSigils = [];
@@ -2352,6 +2301,8 @@ function moveCard(instanceId, fromArr, toArr, extra = {}, callback) {
   const toZoneId = ZONE_MAP[toZoneName]?.id;
 
   const isToVoid = (toZoneName === "playerVoid" || toZoneName === "opponentVoid");
+  const isToDeparture = (toZoneName === "playerDeparture" || toZoneName === "opponentDeparture");
+
   const isHandToField =
     (fromZoneName === "playerHand" || fromZoneName === "opponentHand") &&
     (toZoneName === "playerCreatures" || toZoneName === "playerTerrains" ||
@@ -2363,16 +2314,6 @@ function moveCard(instanceId, fromArr, toArr, extra = {}, callback) {
       let cardObj = { ...fromArr[idx], ...extra };
       let cardDef = dummyCards.find(c => c.id === cardObj.cardId);
 
-      // Handle attachments (detach if leaving battlefield)
-      if (cardObj.attachedCards && cardObj.attachedCards.length > 0) {
-        let destinationArr = ZONE_MAP[toZoneName]?.arr();
-        if (!destinationArr || toZoneName === "playerVoid" || toZoneName === "opponentVoid") {
-          destinationArr = cardObj.owner === "player" ? gameState.playerVoid : gameState.opponentVoid;
-        }
-        cardObj.attachedCards.forEach(att => destinationArr.push(att));
-        cardObj.attachedCards = [];
-      }
-
       // If moving OUT of field, remove combat props
       const fieldZones = ["playerCreatures", "playerTerrains", "opponentCreatures", "opponentTerrains"];
       const fromField = fieldZones.includes(fromZoneName);
@@ -2382,12 +2323,16 @@ function moveCard(instanceId, fromArr, toArr, extra = {}, callback) {
         delete cardObj.orientation;
       }
 
-      // If moving into Void, ensure correct owner
-      if (toZoneName === 'playerVoid') {
-        toArr = gameState.playerVoid;
-      } else if (toZoneName === 'opponentVoid') {
-        toArr = gameState.opponentVoid;
-      }
+// If moving into Void/Departure, ensure correct owner
+if (toZoneName === 'playerVoid') {
+  toArr = gameState.playerVoid;
+} else if (toZoneName === 'opponentVoid') {
+  toArr = gameState.opponentVoid;
+} else if (toZoneName === 'playerDeparture') {
+  toArr = gameState.playerDeparture;
+} else if (toZoneName === 'opponentDeparture') {
+  toArr = gameState.opponentDeparture;
+}
 
       // Logging
       let logObj;
@@ -2442,7 +2387,8 @@ function moveCard(instanceId, fromArr, toArr, extra = {}, callback) {
   };
 
   // Void/defeat: fade out only, then move
-  if (isToVoid) {
+  // Void/Departure: fade out only, then move
+  if (isToVoid || isToDeparture) {
     animateDefeat(instanceId, fromZoneId, doMove);
     return;
   }
@@ -2912,17 +2858,6 @@ function renderRowZone(zoneId, cardArray, category) {
         e.preventDefault();
         cardDiv.classList.remove('drag-over-attach');
         const instanceId = e.dataTransfer.getData('text/plain');
-        const attachmentIdx = gameState.playerHand.findIndex(c => c.instanceId === instanceId);
-        if (attachmentIdx === -1) return;
-        const attachmentCardObj = gameState.playerHand[attachmentIdx];
-
-        // Only allow if attachmentCardObj is valid (equipment/aura/etc.)
-        // For now, allow any card for testing.
-        if (attachCard(cardObj, attachmentCardObj)) {
-          gameState.playerHand.splice(attachmentIdx, 1);
-          renderGameState();
-          setupDropZones();
-        }
       };
     }
     zoneDiv.appendChild(cardEl);
@@ -3120,7 +3055,6 @@ function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
 // OPEN DECK MODAL
 function openDeckModal(filteredCards) {
   const modal = document.getElementById('deck-modal');
-  // Always attach the close-on-backdrop handler
   modal.onclick = function(e) {if (e.target === modal) modal.style.display = 'none';};
   // Prevent modal-content clicks from closing the modal
   const modalContent = modal.querySelector('.modal-content');
@@ -3256,19 +3190,6 @@ function computeCardStat(cardObj, statName) {
     }
   }
 
-  // Attachments (if attachments affect stats)
-  if (Array.isArray(cardObj.attachedCards)) {
-    for (const attachObj of cardObj.attachedCards) {
-      // If attachment directly gives stat
-      if (typeof attachObj[statName] === "number") mods += attachObj[statName];
-      // Or via modifiers array
-      if (Array.isArray(attachObj.modifiers)) {
-        mods += attachObj.modifiers
-          .filter(mod => mod.stat === statName)
-          .reduce((sum, mod) => sum + mod.value, 0);
-      }
-    }
-  }
   // Get all field cards using ZONE_MAP
   const fieldZoneNames = Object.keys(ZONE_MAP).filter(name =>
     name.endsWith("Creatures") || name.endsWith("Terrains") || name.endsWith("Artifacts")
@@ -3313,22 +3234,10 @@ function computeCardStat(cardObj, statName) {
   }
 
     // === Armor penalty: any Armor on the instance lowers Speed by 1 ===
-    // Determine current armor (consider instance value, definition, attachments, and modifiers)
     let currentArmor = 0;
     if (typeof cardObj.armor === "number") currentArmor += cardObj.armor;
     else if (typeof cardDef?.armor === "number") currentArmor += cardDef.armor;
 
-    // Add attachment-provided armor
-    if (Array.isArray(cardObj.attachedCards)) {
-      for (const att of cardObj.attachedCards) {
-        if (typeof att.armor === "number") currentArmor += att.armor;
-        if (Array.isArray(att.modifiers)) {
-          currentArmor += att.modifiers
-            .filter(m => m.stat === "armor")
-            .reduce((s,m) => s + (m.value || 0), 0);
-        }
-      }
-    }
     // Count armor modifiers on the cardObj
     if (Array.isArray(cardObj.modifiers)) {
       currentArmor += cardObj.modifiers
@@ -3581,7 +3490,6 @@ statsAndIconsOverlay.appendChild(topStatsRow);
     });
   }
 
-// Attach icon row to overlay
   statsAndIconsOverlay.appendChild(iconRow);
 
 // --- Bottom HP UI Row (HP badge left, bar between, armor badge right) ---
@@ -3663,77 +3571,7 @@ if (typeof cardData.armor === "number" && cardData.armor > 0) {
 
 // Put HP UI row into the overlay (recommended for consistent layering)
 statsAndIconsOverlay.appendChild(hpUiRow);
-  // --- Attached Cards (right side, absolute) ---
-  if (cardObj.attachedCards && cardObj.attachedCards.length > 0) {
-    const stackDiv = document.createElement('div');
-    stackDiv.className = 'attached-cards-stack';
-    stackDiv.style.position = 'absolute';
-    stackDiv.style.right = '0px'; // Hug the right side, inside the card
-    stackDiv.style.top = '0px';
-    stackDiv.style.zIndex = '30';
-    cardObj.attachedCards.forEach((attachObj, i) => {
-      const attachData = dummyCards.find(c => c.id === attachObj.cardId);
-      if (!attachData) return;
-      const attDiv = document.createElement('div');
-      attDiv.className = 'card attached-on-top';
-      attDiv.style.width = '60px';
-      attDiv.style.height = '85px';
-      attDiv.style.position = 'absolute';
-      attDiv.style.right = '0px';
-      attDiv.style.top = `${i * 18}px`;
-      attDiv.style.pointerEvents = 'auto';
-      attDiv.title = attachData.name;
 
-      // ATTACHMENT MENU
-      attDiv.onclick = (e) => {
-        e.stopPropagation();
-        closeAllMenus();
-        attDiv.querySelectorAll('.card-menu').forEach(m => m.remove());
-        const buttons = [
-          {
-            text: "View",
-            onClick: function(ev) {
-              ev.stopPropagation();
-              showFullCardModal(attachObj);
-              closeAllMenus();
-              this.closest('.card-menu').remove();
-            }
-          },
-          {
-            text: "Detach",
-            onClick: function(ev) {
-              ev.stopPropagation();
-              cardObj.attachedCards.splice(i, 1);
-              gameState.playerVoid.push(attachObj);
-              renderGameState();
-              closeAllMenus();
-              setupDropZones();
-              this.closest('.card-menu').remove();
-            }
-          }
-        ];
-        const menu = createCardMenu(buttons);
-        attDiv.appendChild(menu);
-
-        setTimeout(() => {
-          document.body.addEventListener('click', function handler() {
-            menu.remove();
-            document.body.removeEventListener('click', handler);
-          }, { once: true });
-        }, 10);
-      };
-
-      const img = document.createElement('img');
-      img.src = attachData.image;
-      img.alt = attachData.name;
-      img.style.width = '100%';
-      img.style.height = '100%';
-      attDiv.appendChild(img);
-
-      stackDiv.appendChild(attDiv);
-    });
-    cardDiv.appendChild(stackDiv);
-  }
 //  Badges Row //
 const badgesRow = document.createElement('div');
 badgesRow.className = 'card-badges-row';
@@ -3758,10 +3596,8 @@ if (hasStatus(cardObj, 'Seal')) {
   badgesRow.appendChild(sealBadge);
 }
 
-// Attach badges into overlay once
 statsAndIconsOverlay.appendChild(badgesRow);
 
-// Finally attach overlay to the card
 cardDiv.appendChild(statsAndIconsOverlay);
 
   // Add cardDiv to wrapper
@@ -4209,7 +4045,6 @@ function openVoidModal(isOpponent = false) {
     document.body.appendChild(modal);
   }
   
-  // Always attach (overwrite) close-on-backdrop handler
   modal.onclick = function(e) {
     if (e.target === modal) modal.style.display = 'none';
   };
@@ -4230,6 +4065,7 @@ function openVoidModal(isOpponent = false) {
   
   // === FIX: Show correct void cards ===
   const voidCards = isOpponent ? gameState.opponentVoid : gameState.playerVoid;
+  const departureCards = isOpponent ? (gameState.opponentDeparture || []) : (gameState.playerDeparture || []);
   if (voidCards.length === 0) {
     list.innerHTML = '<div style="color:#999;">Void is empty.</div>';
   } else {
@@ -4351,7 +4187,56 @@ function openVoidModal(isOpponent = false) {
       list.appendChild(wrapper);
     });
   }
-  
+
+//  DEPARTURE SECTION //
+const depHeader = document.createElement('div');
+depHeader.style.marginTop = '16px';
+depHeader.style.paddingTop = '10px';
+depHeader.style.borderTop = '1px solid rgba(255,255,255,0.12)';
+depHeader.style.color = '#ffe066';
+depHeader.style.fontWeight = '800';
+depHeader.style.letterSpacing = '0.04em';
+depHeader.textContent = 'Departure';
+list.appendChild(depHeader);
+
+if (!departureCards || departureCards.length === 0) {
+  const empty = document.createElement('div');
+  empty.style.color = '#999';
+  empty.style.marginTop = '8px';
+  empty.textContent = 'Departure is empty.';
+  list.appendChild(empty);
+} else {
+  departureCards.forEach((cardObj, idx) => {
+    const card = dummyCards.find(c => c.id === cardObj.cardId);
+    if (!card) return;
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'modal-card-wrapper';
+
+    const cardDiv = document.createElement('div');
+    cardDiv.className = 'card-battlefield';
+
+    // Optional: pulse if actionable in "departure"
+    // (Only do this if you WANT skills to be usable from departure)
+    // setCardAnimatableClass(cardDiv, cardObj, card, gameState, 'departure');
+
+    const img = document.createElement('img');
+    img.src = card.image;
+    img.alt = card.name;
+    img.className = "modal-card-img";
+    cardDiv.appendChild(img);
+
+    // For now: allow viewing only (no Return to Hand/Deck menu)
+    holdClickToView(img, cardObj, (e) => {
+      e.stopPropagation();
+      closeAllMenus();
+      showFullCardModal(cardObj);
+    }, { enableDragDetection: false });
+
+    wrapper.appendChild(cardDiv);
+    list.appendChild(wrapper);
+  });
+}
   modal.style.display = 'block';
 }
 
@@ -4466,7 +4351,6 @@ function goToNextPhase() {
   setupDropZones && setupDropZones();
 }
 
-// Attach to button if not already attached
 if(nextPhaseBtn) nextPhaseBtn.onclick = goToNextPhase;
 
 // ----------- //
@@ -5128,13 +5012,7 @@ function updateReqDiv(requirements, reqPaid, reqDiv) {
 function getAllEssenceSources() {
   return [...gameState.playerTerrains, ...gameState.playerCreatures /* add more if needed */];
 }
-// ATTACHMENTS LOGIC
-function attachCard(targetCardObj, attachmentCardObj) {
-  if (!targetCardObj || !attachmentCardObj) return false;
-  targetCardObj.attachedCards = targetCardObj.attachedCards || [];
-  targetCardObj.attachedCards.push(attachmentCardObj);
-  return true;
-}
+
 // ATTACK LOGIC
 function startAttackTargeting(attackerId, attackerZone, cardDiv) {
   attackMode.attackerId = attackerId;
@@ -5653,7 +5531,9 @@ function getInitialGameState() {
     opponentCreatures: [],
     opponentTerrains: [],
     opponentVoid: [],
-
+    playerDeparture = [],
+    opponentDeparture = [],
+  
     // Dominion / meta
     playerDominion: null,
     opponentDominion: null,
@@ -7372,7 +7252,7 @@ function tickStatusDurations(phaseObj) {
   });
 }
 // --- Skill title helper (add near other shared helpers) ---
-function _skillTitleFromEffect(effect) {
+function skillTitleFromEffect(effect) {
   if (!effect) return '';
   const effects = Array.isArray(effect) ? effect : [effect];
   const parts = effects.map(e => {
@@ -7401,7 +7281,7 @@ function skillTitle(skill) {
   if (!skill) return '';
   if (skill.title && String(skill.title).trim()) return String(skill.title).trim();
   const costPart = skill.cost ? `${String(skill.cost)} ` : '';
-  const effectText = _skillTitleFromEffect(skill.effect || skill.effects || skill.resolution || skill.effectText);
+  const effectText = skillTitleFromEffect(skill.effect || skill.effects || skill.resolution || skill.effectText);
   if (effectText) return (costPart + effectText).trim();
   if (skill.name) return skill.name;
   return '';
@@ -7430,7 +7310,6 @@ function createTokenInstance({ tokenCardId, owner = 'player', sourceCardObj = nu
 
     // common runtime fields used elsewhere in your engine
     statuses: [],
-    attachedCards: [],
 
     // optional metadata (helpful for logs/debug)
     tokenMeta: {
