@@ -36,11 +36,13 @@ let gameState = {
   playerCreatures: [],
   playerTerrains: [],
   playerVoid: [],
+  playerDeparture: [],
   opponentDeck: [],
   opponentHand: [],
   opponentCreatures: [],
   opponentTerrains: [],
   opponentVoid: [],
+  opponentDeparture: [],
   playerDominion: null,
   opponentDominion: null,
   playerSigils: [],
@@ -56,25 +58,26 @@ let gameState = {
 const ZONE_MAP = {
   // Player zones
   playerCreatures:   { id: "player-creatures-zone",   arr: () => gameState.playerCreatures },
-  playerTerrains:     { id: "player-terrains-zone",     arr: () => gameState.playerTerrains },
+  playerTerrains:    { id: "player-terrains-zone",    arr: () => gameState.playerTerrains },
   playerVoid:        { id: "player-void-zone",        arr: () => gameState.playerVoid },
   playerDeck:        { id: "player-deck-zone",        arr: () => gameState.playerDeck },
   playerHand:        { id: "player-hand",             arr: () => gameState.playerHand },
-
+  playerDeparture:   { id: "player-departure",        arr: () => gameState.playerDeparture },
   // Opponent zones
   opponentCreatures: { id: "opponent-creatures-zone", arr: () => gameState.opponentCreatures },
   opponentTerrains:   { id: "opponent-terrains-zone",   arr: () => gameState.opponentTerrains },
   opponentVoid:      { id: "opponent-void-zone",      arr: () => gameState.opponentVoid },
   opponentDeck:      { id: "opponent-deck-zone",      arr: () => gameState.opponentDeck },
   opponentHand:      { id: "opponent-hand",           arr: () => gameState.opponentHand },
+  opponentDeparture: { id: "opponent-departure",     arr: () => gameState.opponentDeparture },
 
   // Combined/mass zones for flexible targeting
   allCreatures:      { id: null, arr: () => [...gameState.playerCreatures, ...gameState.opponentCreatures] },
-  allTerrains:        { id: null, arr: () => [...gameState.playerTerrains, ...gameState.opponentTerrains] },
+  allTerrains:       { id: null, arr: () => [...gameState.playerTerrains, ...gameState.opponentTerrains] },
   allVoids:          { id: null, arr: () => [...gameState.playerVoid, ...gameState.opponentVoid] },
   allDecks:          { id: null, arr: () => [...gameState.playerDeck, ...gameState.opponentDeck] },
   allHands:          { id: null, arr: () => [...gameState.playerHand, ...gameState.opponentHand] },
-
+  allDepartures:     { id: null, arr: () => [...gameState.playerDeparture, ...gameState.opponentDeparture] },
   // NEW: All player-side field (creatures + terrains)
   playerField:    { id: null, arr: () => [
     ...gameState.playerCreatures,
