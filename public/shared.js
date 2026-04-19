@@ -6,13 +6,13 @@ const dummyCards = [
 // EGG //
 {id: 'Verdara', name: 'Verdara', rarity: 'Legend', image: 'Cards/egg/Verdara.png', flavor: '', 
  category: 'Terrain', color: 'Green', type: ['Sylvan','Domain'], hp: 20, essence: '{G}', set: ['ElementaGenesis','EssenceLegacy'],
- skill: [{name: 'Flourish', cost: '{g}', requirement: {class: 'CW'}, effect: {class: 'Search', category: 'Terrain'}}]},
+ skill: [{name: 'Flourish', cost: '{g}', tap: true, effect: {class: 'Search', category: 'Terrain'}}]},
 
 {id: 'EryndorVerdaraKing', name: 'Eryndor, Verdara King', rarity: 'Legend', image: 'Cards/egg/EryndorVerdaraKing.png', flavor: '', 
  category: 'Creature', color: 'Green', type: ['Sylvan','Elf','Mage'], hp: 5, atk: 2, cost: '{2}', ability: '', set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/egg/VeyaVerdaraDruidessFA.png',
  skill: [{name: 'Summon', cost: '{g}{g}', effect: {class: 'Summon'}},
   {name: 'Ancient Sylvan Decree', cost: '{g}', requirement: [{class:'Special'}, {class: 'CW'}], 
-   effect: {class: 'Disable', target: 'opponentCreatures', cost: '>=3'}},
+   effect: {class: 'Disable', target: 'opponentCreatures', cost: ''}},
   {name: "Timeless Zenith Blessing", cost: '{g}', activation: {class:'Awaken'}, 
    effect: {class: 'Buff', target: 'playerField', type: 'Sylvan', atkQ: 1, hpQ: 2}},
   ]},
@@ -22,8 +22,7 @@ const dummyCards = [
  skill: [{name: 'Summon', cost: '{g}{g}', effect: {class: 'Summon'}},
   {name: 'Rhythmic Conjure', cost: '{g}{g}', requirement: {class: 'Special'},
    effect: {class: 'Spawn', targetId: 'Satyr', amount: 1}},
-  {name: 'Chorus of the Wild', cost: '{g}{g}', requirement: [{class: 'Special'}, {class: 'CW'}],
-   effect: {class: 'Heal', amount: 2, target: 3}},
+  {name: 'Chorus of the Wild', cost: '{g}{g}', tap: true, effect: {class: 'Heal', amount: 2, target: 3}},
  ]},
 
 // EGG RARE //
@@ -33,11 +32,11 @@ const dummyCards = [
  skill: [{name: 'Summon', cost: '{2}', effect: {class: 'Summon'}}]},
 
 {id: 'WildhornSongreaver', name: 'Wildhorn Songreaver', rarity: 'Rare', image: 'Cards/egg/WildhornSongreaver.png', flavor: '', 
- category: 'Creature', color: 'Green', type: 'Satyr', hp: 6, atk: 2, cost: '{2}', ability: '', set: ['ElementaGenesis','EssenceLegacy'],
- skill: [{name: 'Summon', cost: '{1}{g}', effect: {class: 'Summon'}},
-  {name: 'Hidden Overture', cost: '{g}', requirement: {class: 'Stash'},
-   effect: {class: 'Enable', targetColor: 'green', amount: 1}},
-  {name: 'Horncall Crescendo', cost: '{g}{g}', requirement: {class: 'Special'},
+ category: 'Creature', color: 'Green', type: 'Satyr', hp: 6, atk: 2, cost: '{2}', ability: 'Vigor', set: ['ElementaGenesis','EssenceLegacy'],
+ skill: [{name: 'Summon', cost: '{1}{g}', effect: {class: 'summon'}},
+  {name: 'Hidden Overture', cost: '{g}', zone: 'hand', requirement: {class: 'Stash'},
+   effect: {class: 'enable', targetColor: 'green', amount: 1}},
+  {name: 'Horncall Crescendo', cost: '{g}{g}', zone: 'field',
    effect: {class: 'Rally', amount: 1, targetType: 'Satyr'}}]},
 
 {id: 'EarthrootTitan', name: 'Earthroot Titan', rarity: 'Rare', image: 'Cards/egg/EarthrootTitan.png', flavor: '', 
@@ -82,7 +81,7 @@ const dummyCards = [
  skill: [{name: 'Summon', cost: '{1}', effect: {class: 'Summon'}}]},
 
 {id: 'WildHuntress', name: 'Wild Huntress', rarity: 'Common', image: 'Cards/egg/WildHuntress.png', flavor: '', 
- category: 'Creature', color: 'Green', type: ['Satyr','Warrior'], hp: 4, atk: 2, cost: '{2}', ability: '', set: ['ElementaGenesis','EssenceLegacy'],
+ category: 'Creature', color: 'Green', type: ['Satyr','Warrior'], hp: 4, atk: 2, cost: '{2}', ability: ['Rush'', set: ['ElementaGenesis','EssenceLegacy'],
  skill: [{name: 'Summon', cost: '{2}', effect: {class: 'Summon'}}]},
  
 {id: 'FaunRanger', name: 'Faun Ranger', rarity: 'Common', image: 'Cards/egg/FaunRanger.png', flavor: 'Each arrow is a promise kept. No trespasser leaves the forest unmarked.', 
