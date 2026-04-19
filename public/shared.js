@@ -18,20 +18,18 @@ const dummyCards = [
   ]},
 
 {id: 'FaelyraWildhornEmpress', name: 'Faelyra, Wildhorn Empress', rarity: 'Legend', image: 'Cards/egg/FaelyraWildhornEmpress.png', flavor: 'Beneath a crown of entwined blossoms, she dances through the forest while singing weaving spells of mirth. Satyrs, woodland creatures, and even the shyest spirits follow her lead, enchanted by her boundless charm.',
- category: 'Creature', color: 'Green', type: ['Satyr','Mage'], hp: 5, atk: 2, cost: '{g}{g}', ability: '', set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/egg/FaelyraWildhornEmpressFA.png',
+ category: 'Creature', color: 'Green', type: ['Satyr','Mage'], hp: 5, atk: 2, cost: '{g}{g}', ability: 'Vigor', set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/egg/FaelyraWildhornEmpressFA.png',
  skill: [{name: 'Summon', cost: '{g}{g}', effect: {class: 'Summon'}},
   {name: 'Rhythmic Conjure', cost: '{g}{g}', requirement: {class: 'Special'},
    effect: {class: 'Spawn', targetId: 'Satyr', amount: 1}},
   {name: 'Chorus of the Wild', cost: '{g}{g}', requirement: [{class: 'Special'}, {class: 'CW'}],
    effect: {class: 'Heal', amount: 2, target: 3}},
-  {name: 'Spirit of the Grove', cost: '{g}', requirement: {class: 'Channel'},
-   effect: {class: 'Spawn', targetId: 'Satyr', amount: 1}},
  ]},
 
 // EGG RARE //
 {id: 'VerdaraSoldier', name: 'Verdara Soldier', rarity: 'Rare', image: 'Cards/egg/VerdaraSoldier.png', flavor: '', 
- category: 'Creature', color: 'Green', type: ['Sylvan','Spirit','Warrior'], hp: 5, atk: 2, cost: '{3}', 
- ability: '', set: ['ElementaGenesis','EssenceLegacy'],
+ category: 'Creature', color: 'Green', type: ['Verdant','Spirit','Warrior'], hp: 5, atk: 2, cost: '{3}', 
+ ability: 'Regenerate', set: ['ElementaGenesis','EssenceLegacy'],
  skill: [{name: 'Summon', cost: '{2}', effect: {class: 'Summon'}}]},
 
 {id: 'WildhornSongreaver', name: 'Wildhorn Songreaver', rarity: 'Rare', image: 'Cards/egg/WildhornSongreaver.png', flavor: '', 
@@ -63,11 +61,13 @@ const dummyCards = [
 
 // EGG COMMON //
 {id: 'LifesGrowth', name: "Life's Growth", rarity: 'Common', image: 'Cards/egg/LifesGrowth.png', flavor: '', 
- category: 'Spell', color: 'Green', type: ['Nature','Enchantment'], cost: '{g}', set: ['ElementaGenesis','EssenceLegacy'],
- skill: [{name: 'Cast', cost: '{g}', effect: [{class: 'Essence', amount: 2, color: 'Green'}, {class: 'Cast'}]}]},
+ category: 'Spell', color: 'Green', type: ['Nature','Enchantment'], cost: '{g}{g}', hp: 3, set: ['ElementaGenesis','EssenceLegacy'],
+ skill: [{name: 'Cast', cost: '{g}{g}', effect: {class: 'Enchant'}},
+		{name: 'Overgrowth', cost: '{1}', disable: true, effect: {class: 'Essence', amount: 2, color: 'Green'}}]},
 
 {id: 'VerdantRebirth', name: 'Verdant Rebirth', rarity: 'Rare', image: 'Cards/egg/VerdantRebirth.png', flavor: '', 
- category: 'Spell', color: 'Green', type: 'Nature', cost: '{2}{G}', set: ['ElementaGenesis','EssenceLegacy']},
+ category: 'Spell', color: 'Green', type: 'Nature', cost: '{2}{G}', set: ['ElementaGenesis','EssenceLegacy'],
+ skill: [{name: 'Verdant Rebirth', cost: '{1}', requirement: {class: 'cw'}, effect: {class: 'Revive', targetCategory: 'Creature'}}]},
 
 {id: 'Fairy', name: 'Fairy', rarity: 'Common', image: 'Cards/egg/Fairy.png', flavor: '', 
  category: 'Creature', color: 'Green', type: ['Fairy','Token'], hp: 2, atk: 1, cost: '{0}', ability: 'Flying', set: ['ElementaGenesis','EssenceLegacy'],
