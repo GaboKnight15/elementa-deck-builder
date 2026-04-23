@@ -500,7 +500,7 @@ function renderShopPacks() {
   const packOptionsDiv = document.getElementById('pack-options');
   if (!packOptionsDiv) return;
   packOptionsDiv.innerHTML = '';
-  allPackOptions.forEach(pack => {
+  packOptions.forEach(pack => {
     const wrapper = document.createElement('div');
     wrapper.className = 'shop-pack-option';
 
