@@ -81,7 +81,7 @@ const dummyCards = [
  skill: [{name: 'Summon', cost: '{1}', effect: {class: 'Summon'}}]},
 
 {id: 'WildHuntress', name: 'Wild Huntress', rarity: 'Common', image: 'Cards/egg/WildHuntress.png', flavor: '', 
- category: 'Creature', color: 'Green', type: ['Satyr','Warrior'], hp: 4, atk: 2, cost: '{2}', ability: ['Rush'', set: ['ElementaGenesis','EssenceLegacy'],
+ category: 'Creature', color: 'Green', type: ['Satyr','Warrior'], hp: 4, atk: 2, cost: '{2}', ability: ['Rush'], set: ['ElementaGenesis','EssenceLegacy'],
  skill: [{name: 'Summon', cost: '{2}', effect: {class: 'Summon'}}]},
  
 {id: 'FaunRanger', name: 'Faun Ranger', rarity: 'Common', image: 'Cards/egg/FaunRanger.png', flavor: 'Each arrow is a promise kept. No trespasser leaves the forest unmarked.', 
@@ -2319,7 +2319,7 @@ const closeProfileBannerModalBtn = document.getElementById('close-profile-banner
 
 const defaultIcon = "Images/Avatar/Default.png";
 const defaultBanner = "Images/Banner/Default.png";
-const allAvatarOptions = [
+const avatarOptions = [
 // --- COMMON GREEN AVATARS --- //
 { name: 'Fairy', src: 'Images/Avatar/Green/Fairy.png', rarity: 'Common', price: 10, obtain: 'shop' },
 { name: 'Wildwood Goblin', src: 'Images/Avatar/Green/WildwoodGoblin.png', rarity: 'Common', price: 10, obtain: 'shop' },
@@ -2462,7 +2462,7 @@ const allAvatarOptions = [
 
 ];
 
-const allBannerOptions = [
+const bannerOptions = [
   { name: 'Forest', src: 'Images/Banner/Forest.png', price: 100, obtain: 'shop' },
   { name: 'Volcano', src: 'Images/Banner/Volcano.png', price: 100, obtain: 'shop' },
   { name: 'Ocean', src: 'Images/Banner/Ocean.png', price: 100, obtain: 'shop' },
@@ -2492,7 +2492,7 @@ const allBannerOptions = [
   { name: 'Dragons Moonhold', src: 'Images/Banner/DragonsMoonhold.png', price: 100, obtain: 'shop' },
 ];
 
-const allCardbackOptions = [
+const cardbackOptions = [
   { name: 'Fairy', src: 'Images/Cardback/Fairy.png', rarity: 'Common', price: 100, obtain: 'shop' },
   { name: 'Cindercore', src: 'Images/Cardback/Cindercore.png', rarity: 'Legend', price: 100, obtain: 'shop' },
   { name: 'Construct', src: 'Images/Cardback/Construct.png', rarity: 'Legend', price: 100, obtain: 'shop' },
@@ -2510,7 +2510,7 @@ const allCardbackOptions = [
   { name: 'Grovehusk', src: 'Images/Cardback/Woodframe.png', rarity: 'Legend', price: 100, obtain: 'shop' }
 ];
 
-const allCardStyles = [
+const cardStyles = [
 	{ cardId: 'EryndorVerdaraKing', key: "fullArt", label: "Eryndor", rarity: 'Legend', price: 100, obtain: 'shop' },
 	{ cardId: 'FaelyraWildhornEmpress', key: "fullArt", label: "Faelyra", rarity: 'Legend', price: 100, obtain: 'shop' },
 	{ cardId: 'KaelyraMagmarisHeiress', key: "fullArt", label: "Kaelyra", rarity: 'Legend', price: 100, obtain: 'shop' },
@@ -2558,7 +2558,7 @@ const packPrices = [
   },*/
   // "ScalesofRuin": 100,"WyrmheartAwakening": 100,"MischiefUnbound": 100,"PrimordialAscension": 100,"IronbornProtocol": 100,"SavageTerritory": 100,"FeatheredOmen": 100,
 ];
-const allPackOptions = packPrices;
+const packOptions = packPrices;
 
 const DAILY_LOGIN_REWARDS = [
  /* Example
