@@ -611,8 +611,33 @@ function renderShopCosmetics({
     const src = opt.src;
     const price = opt.price;
     const owned = unlocked.includes(src);
+	const isLocked = !!opt.unlock && !(window.isCosmeticUnlockedByRequirement && window.isCosmeticUnlockedByRequirement(opt.unlock));
+if (isLocked) {
+  img.style.filter = 'grayscale(1) brightness(0.4)';
+  img.style.opacity = '0.6';
+  img.style.cursor = 'not-allowed';
 
-    const wrapper = document.createElement('div');
+  const lockedBadge = document.createElement('div');
+  lockedBadge.textContent = 'Locked';
+  lockedBadge.style.marginTop = '6px';
+  lockedBadge.style.fontSize = '0.95em';
+  lockedBadge.style.fontWeight = 'bold';
+  lockedBadge.style.color = '#ff6b6b';
+  lockedBadge.style.textAlign = 'center';
+  wrapper.appendChild(lockedBadge);
+
+  // Prevent purchase click
+  img.onclick = function() {
+    if (typeof showToast === "function") {
+      showToast("Locked: complete the required achievement to unlock this cosmetic.", { type: "info" });
+    }
+  };
+
+  // Optionally hide/disable priceTag too
+  priceTag.style.opacity = '0.35';
+}
+	if (typeof window.renderShop === "function") window.renderShop();
+	const wrapper = document.createElement('div');
     wrapper.className = wrapperClass;
 
     const img = document.createElement('img');
