@@ -2135,16 +2135,7 @@ const avatarOptions = [
 // --- COMMON GREEN AVATARS --- //
 { name: 'Fairy', src: 'Images/Avatar/Green/Fairy.png', rarity: 'Common', price: 10, obtain: 'shop' },
 { name: 'Wildwood Goblin', src: 'Images/Avatar/Green/WildwoodGoblin.png', rarity: 'Common', price: 10, obtain: 'shop' },
-  /*{ name: 'Verdant Serpent', src: 'Images/Avatar/VerdantSerpent.png', rarity: 'Common', price: 10, obtain: 'shop' },*/
-// ECHOES OF CREATION COMMON ELEMENTALS //
-{ name: 'Elemental of Leaves', src: 'Images/Avatar/Green/ElementalofLeaves.png', rarity: 'Common', price: 10, obtain: 'shop' },
-{ name: 'Elemental of Embers', src: 'Images/Avatar/Red/ElementalofEmbers.png', rarity: 'Common', price: 10, obtain: 'shop' },
-{ name: 'Elemental of Droplets', src: 'Images/Avatar/Blue/ElementalofDroplets.png', rarity: 'Common', price: 10, obtain: 'shop' },
-{ name: 'Elemental of Sparks', src: 'Images/Avatar/Yellow/ElementalofSparks.png', rarity: 'Common', price: 10, obtain: 'shop' },
-{ name: 'Elemental of Pebbles', src: 'Images/Avatar/Gray/ElementalofPebbles.png', rarity: 'Common', price: 10, obtain: 'shop' },
-{ name: 'Elemental of Toxins', src: 'Images/Avatar/Purple/ElementalofToxins.png', rarity: 'Common', price: 10, obtain: 'shop' },
-{ name: 'Elemental of Gleams', src: 'Images/Avatar/White/ElementalofGleams.png', rarity: 'Common', price: 10, obtain: 'shop' },
-{ name: 'Elemental of Shades', src: 'Images/Avatar/Black/ElementalofShades.png', rarity: 'Common', price: 10, obtain: 'shop' },
+{ name: 'Verdant Serpent', src: 'Images/Avatar/VerdantSerpent.png', rarity: 'Common', price: 10, obtain: 'shop' },
 
 { name: 'Fire Golem', src: 'Images/Avatar/Red/FireGolem.png', rarity: 'Common', price: 10, obtain: 'shop' },
 { name: 'Kobold', src: 'Images/Avatar/Red/Kobold.png', rarity: 'Common', price: 10, obtain: 'shop' },
@@ -2252,9 +2243,19 @@ const avatarOptions = [
 { name: 'Noctyros, Umbral Nightshroud', src: 'Images/Avatar/Black/NoctyrosUmbralNightshroud.png', rarity: 'Legend', price: 100, obtain: 'shop' },
 
 // LEGENDARY ELEMENTALS //
+// ECHOES OF CREATION COMMON ELEMENTALS //
+{ name: 'Elemental of Leaves', src: 'Images/Avatar/Green/ElementalofLeaves.png', rarity: 'Common', price: 10, obtain: 'shop' },
+{ name: 'Elemental of Embers', src: 'Images/Avatar/Red/ElementalofEmbers.png', rarity: 'Common', price: 10, obtain: 'shop' },
+{ name: 'Elemental of Droplets', src: 'Images/Avatar/Blue/ElementalofDroplets.png', rarity: 'Common', price: 10, obtain: 'shop' },
+{ name: 'Elemental of Sparks', src: 'Images/Avatar/Yellow/ElementalofSparks.png', rarity: 'Common', price: 10, obtain: 'shop' },
+{ name: 'Elemental of Pebbles', src: 'Images/Avatar/Gray/ElementalofPebbles.png', rarity: 'Common', price: 10, obtain: 'shop' },
+{ name: 'Elemental of Toxins', src: 'Images/Avatar/Purple/ElementalofToxins.png', rarity: 'Common', price: 10, obtain: 'shop' },
+{ name: 'Elemental of Gleams', src: 'Images/Avatar/White/ElementalofGleams.png', rarity: 'Common', price: 10, obtain: 'shop' },
+{ name: 'Elemental of Shades', src: 'Images/Avatar/Black/ElementalofShades.png', rarity: 'Common', price: 10, obtain: 'shop' },
 
 { name: 'Pyrokrag, Golemheart Titan', src: 'Images/Avatar/Red/Pyrokrag.png', rarity: 'Legend', price: 100, obtain: 'shop' },
 { name: 'Hydrion, Primeval Floodbringer', src: 'Images/Avatar/Blue/Hydrion.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+
 
 // LEGENDARY CONSTRUCTS //
 { name: 'Ignavaryn, Cindercore Automaton', src: 'Images/Avatar/Red/Ignavaryn.png', rarity: 'Legend', price: 100, obtain: 'shop' },
@@ -2275,7 +2276,7 @@ const avatarOptions = [
 ];
 
 const bannerOptions = [
-  { name: 'Forest', src: 'Images/Banner/Forest.png', price: 100, obtain: 'shop' },
+  { name: 'Forest', src: 'Images/Banner/Forest.png', price: 100, obtain: 'shop', unlock: { type: "achievementTierClaimed", groupId: "color_green", tier: 1 } },
   { name: 'Volcano', src: 'Images/Banner/Volcano.png', price: 100, obtain: 'shop' },
   { name: 'Ocean', src: 'Images/Banner/Ocean.png', price: 100, obtain: 'shop' },
   { name: 'Peaks', src: 'Images/Banner/Peaks.png', price: 100, obtain: 'shop' },
@@ -2550,7 +2551,31 @@ function showDailyLoginModal(dayIdx) {
     if (e.target === modal) modal.style.display = 'none';
   };
 }
+window.isCosmeticUnlockedByRequirement = function(unlockReq) {
+  if (!unlockReq) return true;
 
+  if (unlockReq.type === "achievementTierClaimed") {
+    const st = window.playerAchievements || {};
+    const claimed = st.claimed || {};
+    return !!(claimed[unlockReq.groupId] && claimed[unlockReq.groupId][unlockReq.tier]);
+  }
+
+  if (unlockReq.type === "achievementTierCompleted") {
+    const st = window.playerAchievements || {};
+    const progress = st.progress || {};
+    const v = Number(progress[unlockReq.groupId] || 0);
+
+    // We need the goal number for that tier:
+    const idx = window._ACHIEVEMENT_INDEX || {}; // you already build this in quest.js
+    const entry = idx[unlockReq.groupId];
+    const tierDef = entry?.group?.tiers?.find(t => Number(t.tier) === Number(unlockReq.tier));
+    const goal = Number(tierDef?.goal || 0);
+
+    return goal > 0 && v >= goal;
+  }
+
+  return true; // fail-open for unknown types (or false if you prefer strict)
+};
 function normalizeKey(s) {
   if (!s && s !== 0) return '';
   return String(s).toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/g, '');
