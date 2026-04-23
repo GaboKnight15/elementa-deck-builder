@@ -693,7 +693,7 @@ function renderShopCosmetics({
 function renderShopAvatars() {
   renderShopCosmetics({
     gridId: 'shop-avatars-grid',
-    options: allAvatarOptions.filter(opt => !opt.obtain || opt.obtain === "shop" 
+    options: avatarOptions.filter(opt => !opt.obtain || opt.obtain === "shop" 
       || (Array.isArray(opt.obtain) && opt.obtain.includes("shop"))),
     getUnlocked: getUnlockedAvatars,
     setUnlocked: setUnlockedAvatars,
@@ -705,7 +705,7 @@ function renderShopAvatars() {
 function renderShopBanners() {
   renderShopCosmetics({
     gridId: 'shop-banners-grid',
-    options: allBannerOptions.filter(opt => !opt.obtain || opt.obtain === "shop" 
+    options: bannerOptions.filter(opt => !opt.obtain || opt.obtain === "shop" 
 		|| (Array.isArray(opt.obtain) && opt.obtain.includes("shop"))),
     getUnlocked: getUnlockedBanners,
     setUnlocked: setUnlockedBanners,
@@ -717,7 +717,7 @@ function renderShopBanners() {
 function renderShopCardbacks() {
   renderShopCosmetics({
     gridId: 'shop-cardbacks-grid',
-    options: allCardbackOptions.filter(opt => !opt.obtain || opt.obtain === "shop" 
+    options: cardbackOptions.filter(opt => !opt.obtain || opt.obtain === "shop" 
 		|| (Array.isArray(opt.obtain) && opt.obtain.includes("shop"))),
     getUnlocked: getUnlockedCardbacks,
     setUnlocked: setUnlockedCardbacks,
