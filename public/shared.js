@@ -436,7 +436,7 @@ const dummyCards = [
  skill: [{name: 'Terraform', cost: '{c}', effect: {class: 'Terraform'}}]},
 
 {id: 'StoneFist', name: 'Stone Fist', rarity: 'Common', image: 'Cards/egc/StoneFist.png', flavor: '', 
- category: 'Spell', color: 'Gray', type: ['Rock,'Aura'], cost: '{c}', set: ['ElementaGenesis','EssenceLegacy'],
+ category: 'Spell', color: 'Gray', type: ['Rock','Aura'], cost: '{c}', set: ['ElementaGenesis','EssenceLegacy'],
  skill: [{name: 'Cast', cost: '{c}', effect: {class: 'Cast'}}]},
          
 {id: 'EssenceBarrier', name: 'Essence Barrier', rarity: 'Common', image: 'Cards/egc/EssenceBarrier.png', flavor: '', 
@@ -592,8 +592,7 @@ const dummyCards = [
 {id: 'DawnbladeSeraph', name: 'Dawnblade Seraph', rarity: 'Common', image: 'Cards/egw/DawnbladeSeraph.png', flavor: '', 
  category: 'Creature', color:'White', type: ['Angel','Warrior'], hp: 4, atk: 2, cost: '{1}{w}', ability: ['Flying','Protect'], set: ['ElementaGenesis','EssenceLegacy'],
  skill: [{name: 'Summon', cost: '{1}{w}', effect: {class: 'Summon'}},
-  {name:'Dash', cost: '{w}',
-   effect: {class: 'Dash'}}
+  {name:'Dash', cost: '{w}', effect: {class: 'Dash'}}
  ]},
 
 {id: 'ElementalofGleams', name: 'Elemental of Gleams', rarity: 'Common', image: 'Cards/ecw/ElementalofGleams.png', flavor: '', 
@@ -631,16 +630,13 @@ const dummyCards = [
 // --- EG BLACK --- //
 {id: 'MorvaneNoctyraOathbreaker', name: 'Morvane, Noctyra Oathbreaker', rarity: 'Legend', image: 'Cards/egb/MorvaneNoctyraOathbreaker.png', flavor: '', 
  category: 'Creature', color: 'Black', type: ['Dark','Mage'], hp: 5, atk: 2, cost: '{1}{b}', ability: '', set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/egb/MorvaneNoctyraOathbreakerFA.png',
- skill: [{name: 'Summon', cost: '{1}{b}', effect: {class: 'Summon'}},
-  {name:'Shadowseal Vigor', activation: {class:'Sealed'}, 
-   effect: {class: 'Rally', amount: 1}},
-  {name: 'Eternal Silence', requirement: [{class:'Special'}, {class: 'CW'}], 
-   effect: {class: 'Seal', amount: 0, target: 1}},
-  {name: 'Eternal Silence', cost: '{b}', requirement: [{class:'Special'}, {class: 'CW'}], 
-   effect: {class: 'Seal', amount: 2, target: 2}}]},
+ skill: [{name: 'Summon', cost: '{1}{b}', effect: {class: 'Summon'}}, {name: 'Reanimate', cost: '{1}{b}', effect: {class: 'Reanimate'}},
+  {name:'Shadowseal Vigor', activation: {class:'Sealed'}, effect: {class: 'Rally', amount: 1}},
+  {name: 'Eternal Silence', requirement: [{class:'Special'}, {class: 'CW'}], effect: {class: 'Seal', amount: 0, target: 1}},
+  {name: 'Eternal Silence', cost: '{b}', requirement: [{class:'Special'}, {class: 'CW'}], effect: {class: 'Seal', amount: 2, target: 2}}]},
 
 {id: 'VelmiraMistressofSilence', name: 'Velmira, Mistress of Silence', rarity: 'Legend', image: 'Cards/egb/VelmiraMistressofSilence.png', flavor: '', 
- category: 'Creature', color: 'Black', type: ['Dark','Mage'], hp: 3, atk: 1, cost: '{b}', ability: 'Veil', set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/egb/VelmiraMistressofSilenceFA.png',
+ category: 'Creature', color: 'Black', type: ['Umbral','Mage'], hp: 3, atk: 1, cost: '{b}', ability: 'Veil', set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/egb/VelmiraMistressofSilenceFA.png',
  skill: [{name: 'Summon', cost: '{1}{b}', effect: {class: 'Summon'}},
   {name:'Shadowseal Vigor', activation: {class:'Sealed'}, 
    effect: {class: 'Rally', amount: 1}},
@@ -658,7 +654,7 @@ const dummyCards = [
  skill: [{name: 'Cast', cost: '{3}{b}', effect: [{class: 'Destroy', target: 2}, {class: 'Cast'}]}]},
 
 {id: 'NoctyraEnforcer', name: 'Noctyra Enforcer', rarity: 'Rare', image: 'Cards/egb/NoctyraEnforcer.png', flavor: '', 
- category: 'Creature', color: 'Black', type: ['Dark','Rogue'], hp: 4, atk: 3, cost: '{2}{b}', ability: '', set: ['ElementaGenesis','EssenceLegacy'],
+ category: 'Creature', color: 'Black', type: ['Umbral','Rogue'], hp: 4, atk: 3, cost: '{2}{b}', ability: '', set: ['ElementaGenesis','EssenceLegacy'],
  skill: [{name: 'Summon', cost: '{2}{b}', effect: {class: 'Summon'}},
   {name:'Lifetithe', cost: '{b}', requirement: {class:'CW'}, 
    effect: {class: 'Token', token: 'Imp'}}]},
@@ -694,13 +690,11 @@ const dummyCards = [
          
 {id: 'Skeleton', name: 'Skeleton', rarity: 'Common', image: 'Cards/egb/Skeleton.png', flavor: '', 
  category: 'Creature', color: 'Black', type: 'Undead', hp: 1, atk: 1, cost: '{0}', ability: 'Immunity', set: ['ElementaGenesis','EssenceLegacy'],
- skill: [{name: 'Summon', cost: '{0}', effect: {class: 'Summon'}},
- 	{name: 'Reanimate', cost: '{1}', effect: {class: 'Reanimate'}}]},
+ skill: [{name: 'Summon', cost: '{0}', effect: {class: 'Summon'}}, {name: 'Reanimate', cost: '{1}', effect: {class: 'Reanimate'}}]},
 
 {id: 'Zombie', name: 'Zombie', rarity: 'Common', image: 'Cards/egb/Zombie.png', flavor: '', 
- category: 'Creature', color: 'Black', type: 'Undead', hp: 3, atk: 2, cost: '{1}', set: ['ElementaGenesis','EssenceLegacy'],
- skill: [{name: 'Summon', cost: '{1}', effect: {class: 'Summon'}},
-  {name: 'Reanimate', cost: '{b}', effect: {class: 'Reanimate'}}]},
+ category: 'Creature', color: 'Black', type: 'Zombie', hp: 3, atk: 2, cost: '{1}', set: ['ElementaGenesis','EssenceLegacy'],
+ skill: [{name: 'Summon', cost: '{1}', effect: {class: 'Summon'}}, {name: 'Reanimate', cost: '{b}', effect: {class: 'Reanimate'}}]},
 
 {id: 'Ghost', name: 'Ghost', rarity: 'Common', image: 'Cards/egb/Ghost.png', flavor: '', 
  category: 'Creature', color: 'Black', type: ['Spirit', 'Undead'], hp: 1, atk: 1, cost: '{0}', ability: ['Elusive','Intimidate'], set: ['ElementaGenesis','EssenceLegacy'],
