@@ -6,36 +6,36 @@ const dummyCards = [
 // EGG //
 {id: 'Verdara', name: 'Verdara', rarity: 'Legend', image: 'Cards/egg/Verdara.png', flavor: '', 
  category: 'Terrain', color: 'Green', type: ['Sylvan','Domain'], hp: 20, essence: '{g}{g}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
-	{name: 'Sylvan Essence', tap: true, effect: {class: 'essence', color: 'green'}},
+  {name: 'Sylvan Essence', tap: true, effect: {class: 'essence', color: 'green'}},
 	{name: 'Flourish', tap: true, effect: {class: 'bolster', hp: 1 }}]},
 
 {id: 'EryndorVerdaraKing', name: 'Eryndor, Verdara King', rarity: 'Legend', image: 'Cards/egg/EryndorVerdaraKing.png', flavor: '', 
- category: 'Creature', fight: '', color: 'Green', type: ['Sylvan','Elf','Mage'], hp: 5, atk: 2, cost: '{2}', ability: '', set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/egg/VeyaVerdaraDruidessFA.png',
- skill: [{name: 'Summon', cost: '{g}{g}', effect: {class: 'Summon'}},
+ category: 'Creature', fight: '', color: 'Green', type: ['Sylvan','Elf','Mage'], hp: 5, atk: 2, cost: '{2}', ability: '', set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/egg/VeyaVerdaraDruidessFA.png', skill: [
+	{name: 'Summon', cost: '{g}{g}', effect: {class: 'Summon'}},
   {name: 'Ancient Sylvan Decree', cost: '{g}', requirement: [{class:'Special'}, {class: 'CW'}], 
    effect: {class: 'Disable', target: 'opponentCreatures', cost: ''}},
   {name: "Timeless Zenith Blessing", cost: '{g}', activation: {class:'Awaken'}, 
-   effect: {class: 'Buff', target: 'playerField', type: 'Sylvan', atkQ: 1, hpQ: 2}},
-  ]},
+   effect: {class: 'Buff', target: 'playerField', type: 'Sylvan', atkQ: 1, hpQ: 2}}]},
 
 {id: 'FaelyraWildhornEmpress', name: 'Faelyra, Wildhorn Empress', rarity: 'Legend', image: 'Cards/egg/FaelyraWildhornEmpress.png', flavor: 'Beneath a crown of entwined blossoms, she dances through the forest while singing weaving spells of mirth. Satyrs, woodland creatures, and even the shyest spirits follow her lead, enchanted by her boundless charm.',
- category: 'Creature', fight: '', color: 'Green', type: ['Satyr','Mage'], hp: 5, atk: 2, cost: '{g}{g}', ability: 'Vigor', set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/egg/FaelyraWildhornEmpressFA.png', skill: [
+ category: 'Creature', fight: '', color: 'Green', type: ['Satyr','Mage'], hp: 4, atk: 1, cost: '{g}{g}', ability: 'Vigor', set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/egg/FaelyraWildhornEmpressFA.png', skill: [
 	{name: 'Summon', cost: '{g}{g}', effect: {class: 'Summon'}},
-  {name: 'Rhythmic Conjure', cost: '{g}{g}', requirement: {class: 'Special'}, effect: {class: 'Spawn', targetId: 'Satyr', amount: 1}},
-  {name: 'Chorus of the Wild', cost: '{g}{g}', tap: true, effect: {class: 'Heal', amount: 2, target: 3}},
- ]},
+  {name: 'Rhythmic Conjure', activation: {class: 'onSummon'}, effect: {class: 'spawn', targetId: 'Satyr'}},
+  {name: 'Chorus of the Wild', cost: '{g}{x}', activation: {class: 'assault'}, effect: {class: 'bolster', atk: 1, hp: '{x}', targetType: 'Satyr', target: 'playerCreatures'}}]},
 
 // EGG RARE //
 {id: 'VerdaraSoldier', name: 'Verdara Soldier', rarity: 'Rare', image: 'Cards/egg/VerdaraSoldier.png', flavor: '', 
- category: 'Creature', fight: '', color: 'Green', type: ['Verdant','Spirit','Warrior'], hp: 5, atk: 2, cost: '{3}', 
- ability: 'Regenerate', set: ['ElementaGenesis','EssenceLegacy'],
- skill: [{name: 'Summon', cost: '{2}', effect: {class: 'Summon'}}]},
+ category: 'Creature', fight: '', color: 'Green', type: ['Verdant','Spirit','Warrior'], hp: 4, atk: 2, cost: '{3}{g}', 
+ ability: ['Drain','Protect'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
+	{name: 'Summon', cost: '{2}', effect: {class: 'Summon'}},
+	{name: 'Nature Prowess', cost: '{g}', activation: {class: 'onSummon'}, effect: {class: 'bolster', atk: 1, hp: 2}},
+  {name: 'Forest Phalanx', activation: {class: 'assault'}, effect: {class: 'add', targetType: ['Sylvan','Terrain']}}]},
 
 {id: 'WildhornSongreaver', name: 'Wildhorn Songreaver', rarity: 'Rare', image: 'Cards/egg/WildhornSongreaver.png', flavor: '', 
- category: 'Creature', fight: '', color: 'Green', type: 'Satyr', hp: 6, atk: 2, cost: '{2}', ability: 'Vigor', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Creature', fight: 'Horncall Crescendo', color: 'Green', type: 'Satyr', hp: 6, atk: 2, cost: '{2}', ability: 'Vigor', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{1}{g}', effect: {class: 'summon'}},
-  {name: 'Hidden Overture', cost: '{g}', zone: 'hand', requirement: {class: 'Stash'}, effect: {class: 'enable', targetColor: 'green', amount: 1}},
-  {name: 'Horncall Crescendo', cost: '{g}{g}', effect: {class: 'bolster', amount: 1, targetType: 'Satyr'}}]},
+  {name: 'Hidden Overture', discard: 1, effect: {class: 'enable', amount: 1}},
+  {name: 'Horncall Crescendo', cost: '{g}', attack: true, discard: 1, effect: {class: 'bolster', atk: 1, targetType: 'Satyr', target: 'playerCreatures'}}]},
 
 {id: 'EarthrootTitan', name: 'Earthroot Titan', rarity: 'Rare', image: 'Cards/egg/EarthrootTitan.png', flavor: '', 
  category: 'Creature', fight: '', color: 'Green', type: ['Arbor','Beast'], hp: 9, atk: 5, cost: '{2}', ability: 'Rush', set: ['ElementaGenesis','EssenceLegacy'],
