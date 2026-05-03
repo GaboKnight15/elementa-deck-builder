@@ -47,13 +47,17 @@ const ZONE_MAP = {
   playerDeck:        { id: "player-deck-zone",        arr: () => gameState.playerDeck },
   playerHand:        { id: "player-hand",             arr: () => gameState.playerHand },
   playerDeparture:   { id: "player-departure",        arr: () => gameState.playerDeparture },
+  playerArtifacts:   { id: null,                      arr: () => gameState.playerArtifacts },
+  playerSpells:      { id: null,                      arr: () => gameState.playerSpells },
   // enemy zones
   enemyCreatures: { id: "enemy-creatures-zone", arr: () => gameState.enemyCreatures },
-  enemyTerrains:   { id: "enemy-terrains-zone",   arr: () => gameState.enemyTerrains },
+  enemyTerrains:  { id: "enemy-terrains-zone",  arr: () => gameState.enemyTerrains },
   enemyVoid:      { id: "enemy-void-zone",      arr: () => gameState.enemyVoid },
   enemyDeck:      { id: "enemy-deck-zone",      arr: () => gameState.enemyDeck },
   enemyHand:      { id: "enemy-hand",           arr: () => gameState.enemyHand },
-  enemyDeparture: { id: "enemy-departure",     arr: () => gameState.enemyDeparture },
+  enemyDeparture: { id: "enemy-departure",      arr: () => gameState.enemyDeparture },
+  enemyArtifacts: { id: null,                   arr: () => gameState.enemyArtifacts },
+  enemySpells:    { id: null,                   arr: () => gameState.enemySpells },
 
   // Combined/mass zones for flexible targeting
   allCreatures:      { id: null, arr: () => [...gameState.playerCreatures, ...gameState.enemyCreatures] },
@@ -148,7 +152,7 @@ const BLIGHTS = {
       cardObj.currentHP = Math.max(0, (cardObj.currentHP || getBaseHp(cardObj.cardId)) - 1);
     }
   },
-  Frozen: {
+  frozen: {
     icon: 'Icons/Status/Frozen.png',
     name: 'Frozen',
     description: 'Cannot attack, use skills and receive damage.',
@@ -163,7 +167,7 @@ const BLIGHTS = {
       cardObj.canAttack = true;
     },
   },
-Poisoned: { name: 'Poisoned', duration: 3, tick: "allEnd", icon: 'Icons/Status/Poisoned.png',
+poisoned: { name: 'Poisoned', duration: 3, tick: "allEnd", icon: 'Icons/Status/Poisoned.png',
   description: 'Takes 1 damage during each End Phase.',
   apply: function(cardObj) {
     try {
@@ -193,7 +197,7 @@ Poisoned: { name: 'Poisoned', duration: 3, tick: "allEnd", icon: 'Icons/Status/P
     }
   }
 },
-  Paralized: {
+  paralized: {
     icon: 'Icons/Status/Paralized.png', name: 'Paralized', duration: 2,
     description: 'Cannot attack or activate skills.',
     apply: function(cardObj) {
@@ -207,7 +211,7 @@ Poisoned: { name: 'Poisoned', duration: 3, tick: "allEnd", icon: 'Icons/Status/P
       cardObj.canActivateSkill = true;
     },
   },
-  Drenched: { name: 'Drenched', duration: 1, icon: 'Icons/Status/Drenched.png',
+  drenched: { name: 'Drenched', duration: 1, icon: 'Icons/Status/Drenched.png',
     description: 'Decreases {atk} by {1}.',
     apply: function(cardObj) {
       cardObj.soak = true;
@@ -219,7 +223,7 @@ Poisoned: { name: 'Poisoned', duration: 3, tick: "allEnd", icon: 'Icons/Status/P
     }
     // Optionally add logic for duration ticks
   },
-Bound: { name: 'Bound', icon: 'Icons/Status/Bound.png', duration: 1,
+bound: { name: 'Bound', icon: 'Icons/Status/Bound.png', duration: 1,
   description: 'Disabled and cannot activate skills.',
   // Don't set duration here, handle it in your end phase check!
   apply: function(cardObj) {
@@ -235,7 +239,7 @@ Bound: { name: 'Bound', icon: 'Icons/Status/Bound.png', duration: 1,
     delete cardObj.bindPendingRemoval;
   }
 },
-Sealed: { name: "Sealed", duration: 1, icon: "Icons/Status/Sealed.png",
+sealed: { name: "Sealed", duration: 1, icon: "Icons/Status/Sealed.png",
   description: "Skills cannot be activated.",
   // apply/remove set an instance-level flag so checks are cheap and reliable
   apply: function(cardObj) {
@@ -259,7 +263,7 @@ Sealed: { name: "Sealed", duration: 1, icon: "Icons/Status/Sealed.png",
     }
   }
 },
-Cursed: { name: 'Cursed', duration: 3, icon: 'Icons/Status/Cursed.png',
+cursed: { name: 'Cursed', duration: 3, icon: 'Icons/Status/Cursed.png',
   description: 'Reduces max HP by 1 during each End Phase.',
   apply: function(cardObj) {
     try {
@@ -292,7 +296,7 @@ Cursed: { name: 'Cursed', duration: 3, icon: 'Icons/Status/Cursed.png',
     }
   }
 },
-Quickstrike: {
+quickstrike: {
   icon: 'Icons/Status/Quickstrike.png', name: 'Quickstrike',
   description: 'Deals damage before the enemy.',
   apply: function(cardObj) {
@@ -302,7 +306,7 @@ Quickstrike: {
     cardObj.quickstrike = false;
   }
 },
-InvulnerableAtk: {
+invulnerableAtk: {
   icon: 'Icons/Status/Invulnerable.png',
   name: 'Invulnerable (attacking)',
   description: "Receives no damage from battles.",
@@ -320,21 +324,21 @@ InvulnerableAtk: {
 // ATTACK TARGETING ABILITIES //
 ------------------------------*/
 const TARGET_FILTER_ABILITY = {
-  Ambush: { name: 'Ambush', icon: 'Icons/Ability/Ambush.png',
+  ambush: { name: 'Ambush', icon: 'Icons/Ability/Ambush.png',
     description: 'Cannot be targeted. Removed if this creature attacks or uses a skill.',
     filter: (attacker, targets) => {
       // Remove all targets with Ambush ability
       return targets.filter(target => !defenderHasAbility(target, 'Ambush'));
     }
   },
-  Flying: { name: 'Flying', icon: 'Icons/Ability/Flying.png',
+  flying: { name: 'Flying', icon: 'Icons/Ability/Flying.png',
     description: 'Target priority -1. Speed +{1}',
     filter: (attacker, targets) => {
       // Flying ignores color protection (handled outside), so here: allow all
       return targets;
     }
   },
-  Protect: { name: 'Protect', icon: 'Icons/Ability/Protect.png',
+  protect: { name: 'Protect', icon: 'Icons/Ability/Protect.png',
     description: 'Target priority +1.',
     filter: (attacker, targets) => {
       const protectTargets = targets.filter(target => defenderHasAbility(target, 'Protect'));
@@ -344,7 +348,7 @@ const TARGET_FILTER_ABILITY = {
       return targets;
     }
   },
-Conceal: { name: 'Conceal', icon: 'Icons/Ability/Conceal.png',
+conceal: { name: 'Conceal', icon: 'Icons/Ability/Conceal.png',
   description: 'Target priority -1.',
   filter: (attacker, targets) => {
     try {
@@ -364,7 +368,7 @@ Conceal: { name: 'Conceal', icon: 'Icons/Ability/Conceal.png',
     }
   }
 },
-  Veil: { name: 'Veil', icon: 'Icons/Ability/Veil.png',
+  veil: { name: 'Veil', icon: 'Icons/Ability/Veil.png',
     description: 'Cannot be targeted by spells and skills.',
     handler: function(sourceCardObj, skillObj) {
       startSkillTarget(
@@ -383,49 +387,49 @@ Conceal: { name: 'Conceal', icon: 'Icons/Ability/Conceal.png',
 // Maps skill activation triggers to their event handlers
 const SKILL_ACTIVATION_MAP = {
   // When this card enters the field (a.k.a. onSummon, "Arrival" in card text)
-  Arrival: {
+  arrival: {
     name: "onSummon", // (Arrival)
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
   },
   // When this card is drawn (a.k.a. onDraw, "Insight" in card text)
-  Draw: {
+  draw: {
     name: "onDraw", // (Insight)
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
   },
   // When this card enters the void //
-  Echo: {
+  echo: {
     name: "onVoid",
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
   },
   // When this card deals damage //
-  Frenzy: {
+  frenzy: {
     name: "onDealDamage",
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
   },
   // When this card receives damage //
-  Brace: {
+  brace: {
     name: "onReceiveDamage",
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
   },
   // When this card attacks //
-  Assault: {
+  assault: {
     name: "onAttack",
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
   },
   // When this card is attacked //
-  Defender: {
+  defender: {
     name: "onDefense",
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
@@ -439,52 +443,13 @@ const SKILL_ACTIVATION_MAP = {
 ------------------------------*/
 // Helper for requirements //
 const REQUIREMENT_MAP = {
-  Special: { name: 'Special', zone: ['playerField'], icon: 'Icons/Ability/Special.png',
+  special: { name: 'Special', zone: ['playerField'], icon: 'Icons/Ability/Special.png',
     description: 'Activates in the field.',
     canActivate: (cardObj, skillObj, currentZone) =>
       ['playerCreatures', 'playerTerrains'].includes(currentZone),
     handler: (cardObj, skillObj, next) => next && next()
   },
-  CW: { name: 'Disable', zone: ['playerField'], icon: 'Icons/Essence/Tap.png',
-    description: 'Disable card.',
-    handler: function(sourceCardObj, skillObj, next) {
-      // If already in DEF (horizontal), just proceed with skill activation
-      if (sourceCardObj.orientation === "horizontal") {
-        return;
-      }
-      // If in ATK (vertical), rotate to DEF before proceeding
-      if (sourceCardObj.orientation === "vertical") {
-        changeCardPosition(sourceCardObj, "horizontal", next);
-        return;
-      }
-      showToast("Card must be enabled to activate this skill.");
-    },
-    canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
-      const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
-      return validZones.includes(currentZone) &&
-        (sourceCardObj.orientation === "vertical" || sourceCardObj.orientation === "horizontal");
-    }
-  },
-  CCW: { name: 'Enable', zone: ['playerField'], icon: 'Icons/Essence/Untap.png',
-    description: 'Enable card.',
-    handler: function(sourceCardObj, skillObj, next) {
-      // If already in ATK (vertical), just proceed with skill activation
-      if (sourceCardObj.orientation === "vertical") {
-        return;
-      }
-      // If in DEF (horizontal), rotate to ATK before proceeding
-      if (sourceCardObj.orientation === "horizontal") {
-        changeCardPosition(sourceCardObj, "vertical", next);
-        return;
-      }
-      showToast("Card must be disabled to activate this skill.");
-    },
-    canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
-      const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
-      return validZones.includes(currentZone) &&
-        (sourceCardObj.orientation === "vertical" || sourceCardObj.orientation === "horizontal");
-    }
-  },
+
   Stash: { name: 'Stash', zone: 'playerHand', icon: 'Icons/Requirement/Stash.png',
     description: 'Returns itself from the hand to the deck.',
     handler: function(sourceCardObj, skillObj) {
@@ -502,7 +467,7 @@ const REQUIREMENT_MAP = {
       return validZones.includes(currentZone);
     }
   },
-  Discard: { icon: 'Icons/Skill/Discard.png', name: 'Discard', zones: 'playerHand',
+  discard: { icon: 'Icons/Skill/Discard.png', name: 'Discard', zones: 'playerHand',
     description: 'Sends a card from the hand to the void.',
     canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
       const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
@@ -519,7 +484,7 @@ const REQUIREMENT_MAP = {
       renderGameState();
     },
   },
-Sacrifice: { name: 'Sacrifice', zone: ['playerField'], icon: 'Icons/Requirement/Sacrifice.png',
+sacrifice: { name: 'Sacrifice', zone: ['playerField'], icon: 'Icons/Requirement/Sacrifice.png',
   description: 'Tributes itself from the field.',
   handler: function(sourceCardObj, skillObj, next, requirement) {
     const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
@@ -573,7 +538,7 @@ Sacrifice: { name: 'Sacrifice', zone: ['playerField'], icon: 'Icons/Requirement/
     return pool.length >= amount;
   }
 },
-Return: { name: 'Return', zone: ['playerField'], icon: 'Icons/Skill/Return.png',
+return: { name: 'Return', zone: ['playerField'], icon: 'Icons/Skill/Return.png',
   description: 'Returns a card from the field to the hand.',
     handler: function(sourceCardObj, skillObj) {
       const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
@@ -596,7 +561,7 @@ Return: { name: 'Return', zone: ['playerField'], icon: 'Icons/Skill/Return.png',
       return validZones.includes(currentZone);
     }
   },
-Retreat: { icon: 'Icons/Skill/Retreat.png', name: 'Retreat', zone: ['playerField'],
+retreat: { icon: 'Icons/Skill/Retreat.png', name: 'Retreat', zone: ['playerField'],
   description: 'Returns a card from the field to the deck.',
   handler: function(sourceCardObj, skillObj) {
     const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
@@ -620,7 +585,7 @@ Retreat: { icon: 'Icons/Skill/Retreat.png', name: 'Retreat', zone: ['playerField
     return validZones.includes(currentZone);
   }
 },
-Channel: { name: 'Channel', zone: 'playerVoid', icon: 'Icons/Skill/Channel.png', 
+channel: { name: 'Channel', zone: 'playerVoid', icon: 'Icons/Skill/Channel.png', 
   description: 'Activates in the void.',
   canActivate: function(cardObj, skillObj, currentZone, gameState) {
     // Be tolerant of naming: allow currentZone "void" OR membership in void array.
@@ -642,7 +607,7 @@ Channel: { name: 'Channel', zone: 'playerVoid', icon: 'Icons/Skill/Channel.png',
 };
 
 const SKILL_EFFECT_MAP = {
-Summon: { name: 'Summon', zone: 'playerHand', 
+summon: { name: 'Summon', zone: 'playerHand', 
   description: 'Move this card from hand to the field.',
   canActivate(cardObj, skillObj, currentZone, gameState) {
     // Accept common zone spellings; normalize if you can
@@ -680,7 +645,7 @@ Summon: { name: 'Summon', zone: 'playerHand',
     });
   }
 },
-Draw: { name: 'Draw',
+draw: { name: 'Draw',
   description: 'Draw from the your deck.',
   canActivate(sourceCardObj, skillObj, currentZone, gameState, step = {}) {
     const owner = (typeof getCardOwner === 'function' && getCardOwner(sourceCardObj) === 'enemy')
@@ -747,7 +712,7 @@ Draw: { name: 'Draw',
     drawOne();
   }
 },
-Cast: { name: 'Cast', zone: 'playerHand', 
+cast: { name: 'Cast', zone: 'playerHand', 
   description: 'Cast a spell from hand: resolve, then send to void.',
   canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
     // Accept common spellings used across your code
@@ -790,55 +755,7 @@ Cast: { name: 'Cast', zone: 'playerHand',
   }
 },
 
-Equip: { name: 'Equip', zone: 'playerHand', 
-  description: 'Grants effects to creatures.',
-  handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
-    try {
-      const instance = sourceCardObj;
-      const cardId = step.cardId || (instance && instance.cardId);
-      const cardDef = dummyCards.find(c => c.id === cardId);
-      if (!cardDef) { if (typeof nextEffect === 'function') nextEffect(); return; }
-
-      // find valid targets: you can pass a targetFilter in step or default to friendly creatures
-      const owner = getCardOwner(instance) || (instance && instance.owner) || 'player';
-      const targets = step.target === 'friendly' ? (owner === 'player' ? gameState.playerCreatures : gameState.enemyCreatures)
-                     : (step.target === 'enemy' ? (owner === 'player' ? gameState.enemyCreatures : gameState.playerCreatures)
-                     : getTargets(step.target || { zone: 'allCreatures' }, instance) );
-
-      // Launch target selection UI
-      startSkillTarget(targets, function(selectedTargets) {
-        if (!selectedTargets || !selectedTargets.length) {
-          if (typeof nextEffect === 'function') nextEffect();
-          return;
-        }
-        // Payment logic as above
-        const parsedCost = step.cost ? parseCost(step.cost) : (cardDef.cost ? parseCost(cardDef.cost) : null);
-
-        const isFree = !cardDef.cost || (parsedCost && Object.values(parsedCost).reduce((a,b)=>a+b,0) === 0) || cardDef.cost === '{0}';
-        if (isFree) doEquip();
-        else {
-          showEssencePaymentModal({
-            card: cardDef,
-            cost: parsedCost,
-            eligibleCards: getAllEssenceSources(),
-            onPaid: doEquip,
-            onCancel: function() { if (typeof nextEffect === 'function') nextEffect(); }
-          });
-        }
-      }, { multi: false, confirm: true });
-
-    } catch (err) {
-      console.warn('Equip handler error', err);
-      if (typeof nextEffect === 'function') nextEffect();
-    }
-  },
-  canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
-    // Only equip from hand (or modify to allow equipping from field if you wish)
-    return currentZone === 'playerHand' || currentZone === 'enemyHand';
-  }
-},
-
-Terraform: { name: 'Terraform', zone: 'playerHand', 
+terraform: { name: 'Terraform', zone: 'playerHand', 
   description: 'Play a terrain from hand to terrain zone.',
   canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
     // Must be in hand (tolerant naming), and terraform not used this turn by current player
@@ -881,7 +798,7 @@ Terraform: { name: 'Terraform', zone: 'playerHand',
   }
 },
 
-Strike: { name: 'Strike', icon: 'Icons/Skill/Strike.png',
+strike: { name: 'Strike', icon: 'Icons/Skill/Strike.png',
   description: 'Deals damage.',
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
     // For your rule: any card on the field can be a target (player+enemy, creatures+terrains)
@@ -896,31 +813,31 @@ Strike: { name: 'Strike', icon: 'Icons/Skill/Strike.png',
     );
   }
 },
-Scorch: { name: 'Burn', icon: 'Icons/Skill/Burn.png',
+scorch: { name: 'Burn', icon: 'Icons/Skill/Burn.png',
   description: 'Deals damage and burns.',
   handler: effectStatusHandler('Burn')
 },
-Toxic: { name: 'Poison', icon: 'Icons/Skill/Poison.png',
+toxic: { name: 'Poison', icon: 'Icons/Skill/Poison.png',
   description: 'Deals damage and poisons.',
   handler: effectStatusHandler('Poison')
 },
-Freeze: { name: 'Freeze', icon: 'Icons/Skill/Freeze.png',
+freeze: { name: 'Freeze', icon: 'Icons/Skill/Freeze.png',
   description: 'Deals damage and freezes.',
   handler: effectStatusHandler('Freeze')
 },
-Static: { name: 'Paralysis', icon: 'Icons/Skill/Paralysis.png',
+static: { name: 'Paralysis', icon: 'Icons/Skill/Paralysis.png',
   description: 'Deals damage and paralyzes.',
   handler: effectStatusHandler('Paralysis')
 },
-Bind: { name: 'Bind', icon: 'Icons/Skill/Bind.png',
+bind: { name: 'Bind', icon: 'Icons/Skill/Bind.png',
   description: 'Deals damage and binds.',
   handler: effectStatusHandler('Bind')
 },
-Curse: { name: 'Curse', icon: 'Icons/Skill/Curse.png',
+curse: { name: 'Curse', icon: 'Icons/Skill/Curse.png',
   description: 'Deals damage and curses.',
   handler: effectStatusHandler('Curse')
 }, 
-Enable: { name: 'Enable', icon: 'Icons/Essence/Untap.png',
+enable: { name: 'Enable', icon: 'Icons/Essence/Untap.png',
   description: 'Rotate a card vertically.',
   handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
     try {
@@ -964,7 +881,7 @@ Enable: { name: 'Enable', icon: 'Icons/Essence/Untap.png',
     return sourceCardObj && sourceCardObj.orientation !== "vertical";
   }
 },
-Disable: { name: 'Disable', icon: 'Icons/Essence/Tap.png',
+disable: { name: 'Disable', icon: 'Icons/Essence/Tap.png',
   description: 'Rotate a card to horizontal (disabled).',
   handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
     try {
@@ -1002,7 +919,7 @@ Disable: { name: 'Disable', icon: 'Icons/Essence/Tap.png',
   }
 },
 // --- SELF SUMMONING SKILLS --- //
-Dash: { name: 'Dash', zone: 'playerHand', icon: 'Icons/Skill/Dash.png',
+dash: { name: 'Dash', zone: 'playerHand', icon: 'Icons/Skill/Dash.png',
   description: 'Summon this card from your hand with half HP (rounded up).',
   // Updated signature: accepts (sourceCardObj, skillObj, step, nextEffect)
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
@@ -1036,7 +953,7 @@ Dash: { name: 'Dash', zone: 'playerHand', icon: 'Icons/Skill/Dash.png',
     return currentZone === "hand" && gameState.playerHand.includes(cardObj);
   }
 },
-Reanimate: { name: 'Reanimate', zone: 'void', icon: 'Icons/Skill/Reanimate.png',
+reanimate: { name: 'Reanimate', zone: 'void', icon: 'Icons/Skill/Reanimate.png',
   description: 'Summon this card from the void.',
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
     // Only resolve if card is in void
@@ -1068,7 +985,7 @@ Reanimate: { name: 'Reanimate', zone: 'void', icon: 'Icons/Skill/Reanimate.png',
   }
 },
 
-Heal: { name: 'Heal', icon: 'Icons/Skill/Heal.png',
+heal: { name: 'Heal', icon: 'Icons/Skill/Heal.png',
   description: 'Heals an ally.',
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
     const playerField = [...gameState.playerCreatures, ...gameState.playerTerrains];
@@ -1087,7 +1004,7 @@ Heal: { name: 'Heal', icon: 'Icons/Skill/Heal.png',
     );
   }
 },
-  Cleanse: {
+  cleanse: {
     icon: 'Icons/Skill/Cleanse.png',
     name: 'Cleanse',
     description: 'Removes debuffs/status effects from an allied target.',
@@ -1101,7 +1018,7 @@ Heal: { name: 'Heal', icon: 'Icons/Skill/Heal.png',
       );
     }
   },
-Armor: { name: 'Armor', icon: 'Icons/Skill/Armor.png',
+armor: { name: 'Armor', icon: 'Icons/Skill/Armor.png',
   description: 'Grants armor to an ally.',
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
     const playerField = [...gameState.playerCreatures, ...gameState.playerTerrains];
@@ -1120,7 +1037,7 @@ Armor: { name: 'Armor', icon: 'Icons/Skill/Armor.png',
     );
   }
 },
-  Aegis: { icon: 'Icons/Skill/Aegis.png', name: 'Aegis',
+  aegis: { icon: 'Icons/Skill/Aegis.png', name: 'Aegis',
     description: 'Grants a badge that blocks the next incoming damage.',
     handler: function(sourceCardObj, skillObj) {
       startSkillTarget(
@@ -1132,7 +1049,7 @@ Armor: { name: 'Armor', icon: 'Icons/Skill/Armor.png',
       );
     }
   },
-  Recall: { name: 'Recall', icon: 'Icons/Skill/Recall.png',
+  recall: { name: 'Recall', icon: 'Icons/Skill/Recall.png',
     description: 'Return this card from the void to your hand.',
     handler: function(sourceCardObj, skillObj) {
       const isVoid = gameState.playerVoid.includes(sourceCardObj);
@@ -1144,7 +1061,7 @@ Armor: { name: 'Armor', icon: 'Icons/Skill/Armor.png',
       renderGameState();
     }
   },
-Destroy: { icon: 'Icons/Skill/Destroy.png', name: 'Destroy',
+destroy: { icon: 'Icons/Skill/Destroy.png', name: 'Destroy',
   description: 'Send a card to the void.',
   handler: function(sourceCardObj, skillObj, step = {}) {
     // Collect all field zones (both sides)
@@ -1182,7 +1099,7 @@ Destroy: { icon: 'Icons/Skill/Destroy.png', name: 'Destroy',
     });
   }
 },
-Search: { icon: 'Icons/Skill/Search.png', name: 'Search',
+add: { icon: 'Icons/Skill/Search.png', name: 'Search',
   description: 'Search your deck for a card matching criteria and add it to your hand.',
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
     const deckArr = gameState.playerDeck || [];
@@ -1207,7 +1124,7 @@ Search: { icon: 'Icons/Skill/Search.png', name: 'Search',
   }
 },
   // --- Moves another player card from void to field ---
-  Revive: {
+  revive: {
     icon: 'Icons/skillEffect/Revive.png',
     name: 'Revive',
     description: 'Revive a card from your void.',
@@ -1248,7 +1165,7 @@ Search: { icon: 'Icons/Skill/Search.png', name: 'Search',
     }
   },
   // --- Moves another enemy card from field to hand ---
-Bounce: {
+bounce: {
   icon: 'Icons/skillEffect/Bounce.png',
   name: 'Bounce',
   description: 'Return any card from the field to the hand.',
@@ -1296,7 +1213,7 @@ Bounce: {
 },
 
   // --- Moves another enemy card from field to deck ---
-Banish: {
+banish: {
   icon: 'Icons/skillEffect/Banish.png',
   name: 'Banish',
   description: 'Return any card from the field to the deck.',
@@ -1348,7 +1265,7 @@ Banish: {
     }, { title: "Banish - Choose a card", count: 1 });
   }
 },
-  Intimidate: {
+  intimidate: {
     icon: 'Icons/Ability/Intimidate.png',
     name: 'Intimidate',
     zone: 'playerField', 
@@ -1374,7 +1291,7 @@ Banish: {
       }
     }
   },
-  Provoke: { icon: 'Icons/Ability/Provoke.png', name: 'Provoke', zone: 'playerField', 
+  provoke: { icon: 'Icons/Ability/Provoke.png', name: 'Provoke', zone: 'playerField', 
     description: 'When attacking, changes defending creature to ATK.',
     handler: function(attacker, defender, next) {
       // Only trigger Provoke if defender is in DEF (horizontal)
@@ -1396,7 +1313,7 @@ Banish: {
       }
     }
   },
-Seal: { icon: "Icons/Skill/Seal.png", name: "Seal",
+seal: { icon: "Icons/Skill/Seal.png", name: "Seal",
   description: "Cannot activate skills.",
   handler: function(sourceCardObj, skillObj, effectStep, nextEffect) {
     // Assume effectStep.target is the target cardObj or its instanceId
@@ -1414,7 +1331,7 @@ Seal: { icon: "Icons/Skill/Seal.png", name: "Seal",
     nextEffect && nextEffect();
   }
 },
-Inspire: { name: 'Inspire',
+inspire: { name: 'Inspire',
   description: 'Apply modifier or grant an ability to a target.',
   handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
     try {
@@ -1468,7 +1385,7 @@ Inspire: { name: 'Inspire',
     }
   }
 },
-Essence: { icon: 'Icons/skillEffect/Essence.png', name: 'Essence', description: 'Gain Essence.',
+essence: { icon: 'Icons/skillEffect/Essence.png', name: 'Essence', description: 'Gain Essence.',
   // step should have: { color: "{g}{g}{r}" } or similar
   handler: function(cardObj, skillObj, effectStep, nextEffect) {
     let colorStr = effectStep.color || effectStep.colors || effectStep.essence || "";
@@ -1497,7 +1414,7 @@ Essence: { icon: 'Icons/skillEffect/Essence.png', name: 'Essence', description: 
     nextEffect && nextEffect();
   }
 },
-Fusion: { name: 'Fusion', icon: 'Icons/Skill/Fusion.png',
+fusion: { name: 'Fusion', icon: 'Icons/Skill/Fusion.png',
   description: 'Sacrifices creatures or artifacts to summon it.',
   zones: ['playerHand'],
   canActivate(cardObj, skillObj, currentZone, gameState) {
@@ -1564,7 +1481,7 @@ Fusion: { name: 'Fusion', icon: 'Icons/Skill/Fusion.png',
     if (nextEffect) nextEffect();
   }
 },
-Evolution: { name: 'Evolution', icon: 'Icons/Skill/Evolution.png',
+evolution: { name: 'Evolution', icon: 'Icons/Skill/Evolution.png',
   description: 'Sacrifices 1 creature to summon.',
   canActivate: function(cardObj, skillObj, currentZone, gameState) {
     // Require that the card has the Evolve sigil and be on field
@@ -1628,7 +1545,7 @@ Evolution: { name: 'Evolution', icon: 'Icons/Skill/Evolution.png',
     if (nextEffect) nextEffect();
   }
 },
-Spawn: { name: 'Spawn',
+spawn: { name: 'Spawn',
   description: 'Summons from the token deck.',
   canActivate: function(sourceCardObj, skillObj, currentZone, gameState, step = {}) {
     const targetId = step.targetId;
@@ -1743,7 +1660,7 @@ Spawn: { name: 'Spawn',
     nextEffect && nextEffect();
   }
 },
-Sigil: {
+sigil: {
   icon: 'Icons/Skill/Sigil.png',
   name: 'Sigil',
   description: 'Grants one or more sigils to a player or enemy. Step fields: sigil (string), amount (number), duration (number|null), owner ("source"|"player"|"enemy"|"enemyOfSource"|"all").',
