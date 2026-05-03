@@ -274,7 +274,7 @@ const dummyCards = [
 // EG YELLOW //
 // EG YELLOW LEGEND //
 {id: 'Aetherion', name: 'Aetherion', rarity: 'Legend', image: 'Cards/egy/Aetherion.png', flavor: '', 
- category: 'Terrain', color: 'Yellow', hp: 20, essence: '{y}{y}', type: ['Tempest','Domain'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Terrain', color: 'Yellow', hp: 20, essence: '{y}{y}', type: ['Storm','Domain'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Storm Essence', tap: true, effect: {class: 'essence', color: 'yellow'}},
 	{name: 'Shock', tap: true, effect: {class: 'strike', amount: 2 }}]},
  
@@ -303,14 +303,14 @@ const dummyCards = [
 
 {id: 'ElementalofLightning', name: 'Elemental of Lightning', rarity: 'Rare', image: 'Cards/egy/ElementalofLightning.png', flavor: '', 
  category: 'Creature', fight: '', color: 'Yellow', type: ['Thunder','Elemental'], hp: 4, atk: 3, cost: '{2}{y}', ability: ['Elusive','Static'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
-	{name: 'Tempest Discovery', cost: '{2}{y}', effect: [{class: 'summon'}, {class: 'Search', amount: 1, targetColor: 'Yellow', targetTrait: 'Terrain'}]}]},
+	{name: 'Storm Discovery', cost: '{2}{y}', effect: [{class: 'summon'}, {class: 'Search', amount: 1, targetColor: 'Yellow', targetTrait: 'Terrain'}]}]},
          
 {id: 'StormspirePinnacle', name: 'Stormspire Pinnacle', rarity: 'Rare', image: 'Cards/egy/StormspirePinnacle.png', flavor: '', 
  category: 'Terrain', color: 'Yellow', type: 'Thunder', hp: 8, cost: '{y}', ability: 'Static', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Terraform', cost: '{y}', effect: {class: 'terraform'}},
   {name: 'Fulmination Field', requirement: {class: 'Passive'}, effect: {class: 'Potency', source: 'Thunder', amount: 1}}]},
 
-{id: 'TempestDevastation', name: 'Tempest Devastation', rarity: 'Rare', image: 'Cards/egy/TempestDevastation.png', flavor: '', 
+{id: 'StormDevastation', name: 'Storm Devastation', rarity: 'Rare', image: 'Cards/egy/StormDevastation.png', flavor: '', 
  category: 'Spell', color: 'Yellow', type: 'Thunder', cost: '{2}{y}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Cast', cost: '{2}{y}', effect: [{class: 'strike', amount: 3}, {class: 'cast'}]}]},
 
