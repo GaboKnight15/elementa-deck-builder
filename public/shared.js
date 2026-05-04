@@ -4,29 +4,35 @@ const dummyCards = [
 // ---------------- //
 
 // EGG //
+{id: 'MightoftheValiant', name: 'Might of the Valiant', rarity: 'Rare', image: 'Cards/egr/MightoftheValiant.png', flavor: '', 
+ category: 'Spell', color: 'Colorless', type: 'Aura', cost: '{2}', mana: 3, set: ['ElementaGenesis','EssenceLegacy'], skill: [
+	{name: 'Cast', cost: '{2}', effect: {class: 'cast'}},
+	{name: 'Might of the Valiant', mana: 1, effect: {class: 'bolster', atk: 1, hp: 1}},
+  {name: 'Might of the Valiant', mana: 3, effect: {class: 'bolster', atk: 2, hp: 3}}]},
+	
 {id: 'Verdara', name: 'Verdara', rarity: 'Legend', image: 'Cards/egg/Verdara.png', flavor: '', 
  category: 'Terrain', color: 'Green', type: ['Sylvan','Domain'], hp: 20, essence: '{g}{g}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
   {name: 'Sylvan Essence', tap: true, effect: {class: 'essence', color: 'green'}},
-  {name: 'Flourish', tap: true, effect: {class: 'bolster', hp: 1 }}]},
+  {name: 'Flourish', tap: true, effect: {class: 'bolster', hp: 2}}]},
 
 {id: 'EryndorVerdaraKing', name: 'Eryndor, Verdara King', rarity: 'Legend', image: 'Cards/egg/EryndorVerdaraKing.png', flavor: '', 
  category: 'Creature', fight: '', color: 'Green', type: ['Sylvan','Elf','Mage'], hp: 5, atk: 2, cost: '{2}', ability: '', set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/egg/VeyaVerdaraDruidessFA.png', skill: [
-	{name: 'Summon', cost: '{g}{g}', effect: {class: 'summon'}},
-	{name: 'Ancient Sylvan Decree', cost: '{g}', requirement: {class:'Special'}, effect: {class: 'Disable', target: 'opponentCreatures', cost: ''}},
+  {name: 'Summon', cost: '{g}{g}', effect: {class: 'summon'}},
+  {name: 'Ancient Sylvan Decree', cost: '{g}', requirement: {class:'Special'}, effect: {class: 'Disable', target: 'opponentCreatures', cost: ''}},
   {name: "Timeless Zenith Blessing", cost: '{g}', activation: {class:'Awaken'}, effect: {class: 'Buff', target: 'playerField', type: 'Sylvan', atkQ: 1, hpQ: 2}}]},
 
 {id: 'FaelyraWildhornEmpress', name: 'Faelyra, Wildhorn Empress', rarity: 'Legend', image: 'Cards/egg/FaelyraWildhornEmpress.png', flavor: 'Beneath a crown of entwined blossoms, she dances through the forest while singing weaving spells of mirth. Satyrs, woodland creatures, and even the shyest spirits follow her lead, enchanted by her boundless charm.',
- category: 'Creature', fight: '', color: 'Green', type: ['Satyr','Mage'], hp: 4, atk: 1, cost: '{g}{g}', ability: 'Vigor', set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/egg/FaelyraWildhornEmpressFA.png', skill: [
-	{name: 'Summon', cost: '{g}{g}', effect: {class: 'summon'}},
-	{name: 'Rhythmic Conjure', activation: {class: 'onSummon'}, effect: {class: 'spawn', targetId: 'Satyr'}},
+ category: 'Creature', fight: '', color: 'Green', type: ['Satyr','Mage'], hp: 3, atk: 1, cost: '{g}{g}', ability: 'Vigor', set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/egg/FaelyraWildhornEmpressFA.png', skill: [
+  {name: 'Summon', cost: '{g}{g}', effect: {class: 'summon'}},
+  {name: 'Rhythmic Conjure', activation: {class: 'onSummon'}, effect: {class: 'spawn', targetId: 'Satyr'}},
   {name: 'Chorus of the Wild', cost: '{g}{x}', activation: {class: 'assault'}, effect: {class: 'bolster', atk: 1, hp: '{x}', targetType: 'Satyr', target: 'playerCreatures'}}]},
 
 // EGG RARE //
 {id: 'VerdaraSoldier', name: 'Verdara Soldier', rarity: 'Rare', image: 'Cards/egg/VerdaraSoldier.png', flavor: '', 
  category: 'Creature', fight: '', color: 'Green', type: ['Verdant','Spirit','Warrior'], hp: 4, atk: 2, cost: '{3}{g}', 
  ability: ['Drain','Protect'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
-	{name: 'Summon', cost: '{2}', effect: {class: 'summon'}},
-	{name: 'Nature Prowess', cost: '{g}', activation: {class: 'onSummon'}, effect: {class: 'bolster', atk: 1, hp: 2}},
+  {name: 'Summon', cost: '{2}', effect: {class: 'summon'}},
+  {name: 'Nature Prowess', cost: '{g}', activation: {class: 'onSummon'}, effect: {class: 'bolster', atk: 1, hp: 2}},
   {name: 'Forest Phalanx', activation: {class: 'assault'}, effect: {class: 'add', targetType: ['Sylvan','Terrain']}}]},
 
 {id: 'WildhornSongreaver', name: 'Wildhorn Songreaver', rarity: 'Rare', image: 'Cards/egg/WildhornSongreaver.png', flavor: '', 
@@ -36,13 +42,10 @@ const dummyCards = [
   {name: 'Horncall Crescendo', cost: '{g}', attack: true, discard: 1, effect: {class: 'bolster', atk: 1, targetType: 'Satyr', target: 'playerCreatures'}}]},
 
 {id: 'EarthrootTitan', name: 'Earthroot Titan', rarity: 'Rare', image: 'Cards/egg/EarthrootTitan.png', flavor: '', 
- category: 'Creature', fight: '', color: 'Green', type: ['Arbor','Beast'], hp: 9, atk: 5, cost: '{2}', ability: 'Rush', set: ['ElementaGenesis','EssenceLegacy'],
- skill: [{name: 'Summon', cost: '{4}{g}', effect: {class: 'summon'}},
-  {name: 'Barkhide', cost: '{0}', requirement: [{class:'Special'}, {class: 'CW'}], 
-   effect: {class: 'essenceGreen', amount: 1}},
-  {name: 'Overgrowth', cost: '{0}', requirement: [{class:'Special'}, {class: 'CW'}], 
-   effect: {class: 'essenceGreen', amount: 1}}
-  ]},
+ category: 'Creature', fight: '', color: 'Green', type: ['Arbor','Beast'], hp: 6, atk: 3, cost: '{2}', ability: 'Rush', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+	{name: 'Summon', cost: '{4}{g}', effect: {class: 'summon'}},
+  {name: 'Barkhide', strike: true, effect: {class: 'bolster', hp: 1}},
+  {name: 'Overgrowth', cost: '{0}', awaken: true, effect: {class: 'bolster', atk: 1, hp: 1}}]},
 
 {id: 'VigorousSatiricOrchard', name: 'Vigorous, Satiric Orchard', rarity: 'Rare', image: 'Cards/egg/VigorousSatiricOrchard.png', flavor: 'The air thickens with the scent of fermented nectar and the echoes of mocking laughter. Here, every fallen fruit is a catalyst for a riotous surge of primal power.', 
  category: 'Terrain', color: 'Green', type: 'Satyr', hp: 4, cost: '{1}{g}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
@@ -51,9 +54,9 @@ const dummyCards = [
 	{name: 'Wild Revelry', activation: {class: 'onSummon', targetType: 'Satyr'}, effect: {class: 'bolster', hp: 1 }}]},
 
 {id: 'SylvanAnima', name: 'Sylvan Anima', rarity: 'Rare', image: 'Cards/egg/SylvanAnima.png', flavor: '', 
- category: 'Spell', color: 'Green', type: ['Nature','Enchantment'], cost: '{2}', set: ['ElementaGenesis','EssenceLegacy'],
- skill: [{name: 'Enchant', cost: '{g}{g}', effect: {class: 'Enchant'}},
-	{name: 'Awaken', activation: {class: 'Awaken'}, effect: [{class: 'Recover', amount: 1}, {class : 'Essence', color: 'Green', amount: 1}]}]},
+ category: 'Spell', color: 'Green', type: ['Nature','Enchantment'], cost: '{2}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+	{name: 'Cast', cost: '{g}{g}', effect: {class: 'cast'}},
+	{name: 'Awaken', awaken: true, effect: [{class: 'Recover', amount: 1}, {class : 'Essence', color: 'Green', amount: 1}]}]},
 
 // EGG COMMON //
 {id: 'LifesGrowth', name: "Life's Growth", rarity: 'Common', image: 'Cards/egg/LifesGrowth.png', flavor: '', 
@@ -70,36 +73,38 @@ const dummyCards = [
 	{name: 'Summon', cost: '{0}', effect: {class: 'summon'}}]},
 
 {id: 'ElementalofLeaves', name: 'Elemental of Leaves', rarity: 'Common', image: 'Cards/egg/ElementalofLeaves.png', flavor: '', 
- category: 'Creature', fight: '', color: 'Green', type: ['Verdant','Spirit'], hp: 5, atk: 1, cost: '{1}', ability: 'Regenerate', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Creature', fight: '', color: 'Green', type: ['Verdant','Spirit'], hp: 3, atk: 1, cost: '{1}', ability: 'Regenerate', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{g}', effect: {class: 'summon'}}]},
 
 {id: 'Satyr', name: 'Satyr', rarity: 'Common', image: 'Cards/egg/Satyr.png', flavor: '', 
- category: 'Creature', fight: '', color: 'Green', type: ['Basic','Satyr'], hp: 5, atk: 2, cost: '{1}', ability: 'Vigor', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Creature', fight: '', color: 'Green', type: ['Basic','Satyr'], hp: 4, atk: 1, cost: '{1}', ability: 'Vigor', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{1}', effect: {class: 'summon'}}]},
 
 {id: 'WildHuntress', name: 'Wild Huntress', rarity: 'Common', image: 'Cards/egg/WildHuntress.png', flavor: '', 
- category: 'Creature', fight: '', color: 'Green', type: ['Satyr','Warrior'], hp: 4, atk: 2, cost: '{2}', ability: ['Rush'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
-	{name: 'Summon', cost: '{2}', effect: {class: 'summon'}}]},
+ category: 'Creature', fight: '', color: 'Green', type: ['Satyr','Warrior'], hp: 4, atk: 1, cost: '{2}', ability: ['Rush','Vigor'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
+	{name: 'Summon', cost: '{2}', effect: {class: 'summon'}},
+  {name: 'Vigorous Haste', cost: '{g}', strike: true, effect: [{class: 'spawn', targetId: 'Satyr'}, {class: 'bolster', atk: 1, hp: 1}]},
  
 {id: 'FaunRanger', name: 'Faun Ranger', rarity: 'Common', image: 'Cards/egg/FaunRanger.png', flavor: 'Each arrow is a promise kept. No trespasser leaves the forest unmarked.', 
- category: 'Creature', fight: '', color: 'Green', type: ['Satyr','Ranger'], hp: 3, atk: 2, cost: '{1}{g}', ability: 'Conceil', set: ['ElementaGenesis','EssenceLegacy'], skill: [
-	{name: 'Summon', cost: '{1}{g}', effect: {class: 'summon'}}]},
+ category: 'Creature', fight: '', color: 'Green', type: ['Satyr','Ranger'], hp: 3, atk: 1, cost: '{1}{g}', ability: ['Conceil','Vigor'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
+	{name: 'Summon', cost: '{1}{g}', effect: {class: 'summon'}},
+  {name: 'Feral Empowerment', attack: true, discard: 1, effect: {class: 'destroy', targetCost: 'lessthan3'}}]},
  
 {id: 'FaunDiviner', name: 'Faun Diviner', rarity: 'Common', image: 'Cards/egg/FaunDiviner.png', flavor: '', 
- category: 'Creature', fight: '', color: 'Green', type: ['Satyr','Mage'], hp: 4, atk: 1, cost: '{1}', ability: '', set: ['ElementaGenesis','EssenceLegacy'], skill: [
-	{name: 'Summon', cost: '{g}', effect: {class: 'summon'}},
-  {name: 'Horncall Ritual', cost: '{g}', requirement: {class: 'Special'}, effect: {class: 'Spawn', targetId: 'Satyr', amount: 1}},
-  {name: "Grove's Requiem", activation: {class: 'Echo'}, effect: {class: 'Search', amount: 1, targetType: 'Satyr'}}]},
+ category: 'Creature', fight: '', color: 'Green', type: ['Satyr','Mage'], hp: 3, atk: 1, cost: '{1}{g}', ability: ['Purify','Vigor'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
+	{name: 'Summon', cost: '{1}{g}', effect: {class: 'summon'}},
+  {name: 'Horncall Ritual', summon: true, effect: {class: 'spawn', targetId: 'Satyr'}},
+  {name: "Grove's Requiem", attack: true, effect: {class: 'add', targetType: 'Satyr'}}]},
 	
 {id: 'DeepwoodUrsan', name: 'Deepwood Ursan', rarity: 'Common', image: 'Cards/egg/DeepwoodUrsan.png', flavor: '', 
- category: 'Creature', fight: 'Apex Feast', color: 'Green', type: ['Sylvan','Beast'], hp: 8, atk: 4, cost: '{4}', ability: 'Rush', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Creature', fight: 'Apex Feast', color: 'Green', type: ['Sylvan','Beast'], hp: 6, atk: 3, cost: '{4}', ability: 'Rush', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{3}{g}', effect: {class: 'summon'}},
-  {name: 'Apex Feast', activation: {class: 'Frenzy'}, effect: {class: 'Bolster', amount: 1}}]},
+  {name: 'Apex Feast', strike: true, effect: {class: 'bolster', atk: 1, hp: 1}}]},
 	
 {id: 'WoodlandAntler', name: 'Woodland Antler', rarity: 'Common', image: 'Cards/egg/WoodlandAntler.png', flavor: '', 
  category: 'Creature', fight: 'Forest Freight', color: 'Green', type: ['Sylvan','Beast'], hp: 4, atk: 2, cost: '{4}', ability: 'Rush', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{1}{g}', effect: {class: 'summon'}},
-  {name: 'Forest Freight', activation: {class: 'Assault'}, effect: {class: 'Search', targetCategory: 'Terrain', targetType: 'Sylvan' }}]},
+  {name: 'Forest Freight', attack: true, effect: {class: 'add', targetCategory: 'Terrain', targetType: 'Sylvan' }}]},
 	
 {id: 'Forest', name: 'Forest', rarity: 'Common', image: 'Cards/egg/Forest.png', flavor: '', 
  category: 'Terrain', color: 'Green', type: 'Basic', hp: 5, cost: '{2}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
@@ -133,30 +138,30 @@ const dummyCards = [
 	{name: 'Cast', cost: '{2}{r}', effect: [{class: 'Burn', amount: 1, target: 'allOpponentField'}, {class: 'Search', amount: 1, targetColor: 'Red', targetTrait: 'Terrain'}, {class: 'cast'}]}]},
 
 {id: 'CinderpeakTyrant', name: 'Cinderpeak Tyrant', rarity: 'Rare', image: 'Cards/egr/CinderpeakTyrant.png', flavor: '', 
- category: 'Creature', fight: '', color: 'Red', type: ['Giant','Orc'], hp: 9, atk: 5, cost: '{4}{r}', ability: 'Crush', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Creature', fight: '', color: 'Red', type: ['Giant','Orc'], hp: 9, atk: 4, cost: '{4}{r}', ability: 'Crush', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{4}{r}', effect: {class: 'summon'}},
- 	{name: 'Orckish Warcry', cost: '{r}', effect: {class: 'Rally', amount: 1, targetType: 'Orc', target: 'allPlayerCreatures'}},
-	{name: 'Final War Spoils', cost: '{4}{r}', requirement: {class: 'Echo'}, effect: {class: 'summon'}}]},
+ 	{name: 'Orckish Warcry', attack: true, effect: {class: 'rally', amount: 1, targetType: 'Orc', target: 'playerCreatures'}},
+	{name: 'Final War Spoils', echo: true, effect: {class: 'draw'}}]},
 
 {id: 'BlazescaleWarDrake', name: 'Blazescale War-Drake', rarity: 'Rare', image: 'Cards/egr/BlazescaleWarDrake.png', flavor: '', 
- category: 'Creature', fight: '', color: 'Red', type: 'Dragon', hp: 7, atk: 4, cost: '{3}{r}', ability: 'Rush', set: ['ElementaGenesis','EssenceLegacy'],
- skill: [{name: 'Summon', cost: '{3}{r}', effect: {class: 'summon'}}]},
+ category: 'Creature', fight: '', color: 'Red', type: 'Dragon', hp: 5, atk: 3, cost: '{3}{r}', ability: 'Rush', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+	{name: 'Summon', cost: '{3}{r}', effect: {class: 'summon'}}]},
 
 {id: 'ElementalofFlames', name: 'Elemental of Flames', rarity: 'Rare', image: 'Cards/egr/ElementalofFlames.png', flavor: '', 
- category: 'Creature', fight: 'Fire Strike', color: 'Red', type: ['Fire','Elemental'], hp: 4, atk: 3, cost: '{r}{r}', ability: ['Elusive','Scorch'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
-	{name: 'Inferno Discovery', effect: [{class:'Summon'}, {class: 'add', targetColor: 'Red', targetCategory: 'Terrain'}]}]},
+ category: 'Creature', fight: 'Fire Strike', color: 'Red', type: ['Fire','Elemental'], hp: 3, atk: 2, cost: '{r}{r}', ability: ['Elusive','Scorch'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
+	{name: 'Summon', cost: '{r}{r}', effect: {class: 'summon'}},
+  {name: 'Inferno Discovery', summon: true, effect: {class: 'burn'}}]},
 
 {id: 'MagmarisMercenary', name: 'Magmaris Mercenary', rarity: 'Rare', image: 'Cards/egr/MagmarisMercenary.png', flavor: '', 
- category: 'Creature', fight: 'Flaming Slash', color: 'Red', type: ['Fire','Rogue'], hp: 4, atk: 2, cost: '{2}{r}', ability: {'Defiant','Scorch'}, set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Creature', fight: 'Flaming Slash', color: 'Red', type: ['Fire','Rogue'], hp: 3, atk: 2, cost: '{2}{r}', ability: {'Defiant','Scorch'}, set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{2}{r}', effect: {class: 'summon'}},
-  {name: 'Flaming Slash', cost: '{x}', activation: {class: 'assault'}, effect: {class: 'Burn', amount: 'x', targets: 'enemy}},
-  {name: 'Scorching Contract', activation: {class: 'onSummon'}, requirement: {class:'discard', amount: 1}, effect: {class: 'bolster', atk: 2, hp: 1}}]},
+  {name: 'Flaming Slash', cost: '{x}', activation: {class: 'assault'}, effect: {class: 'burn', amount: 'x', targets: 'enemy}},
+  {name: 'Scorching Contract', summon: true, effect: {class: 'draw', atk: 2, hp: 1}}]},
 
 {id: 'FlamingDirebeast', name: 'Flaming Direbeast', rarity: 'Rare', image: 'Cards/egr/FlamingDirebeast.png', flavor: '',
  category: 'Creature', fight: 'Searing Haste', color: 'Red', type: ['Fire','Beast'], hp: 6, atk: 3, cost: '{2}{r}', ability: ['Scorch','Rush'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{2}{r}', effect: {class: 'summon'}},
-	{name: 'Searing Haste', activation: {class: 'onSummon'}, effect: {class: 'add', targetType: {'Beast','Fire'}}},
-	{name: 'Searing Haste', activation: {class: 'assault'}, effect: {class: 'add', targetType: {'Beast','Fire'}}},
+	{name: 'Searing Haste', attack: true, effect: {class: 'add', targetType: ['Beast','Fire']}}},
 	{name: 'Spirit Stoke', cost: '{r}{r}', effect: {class: 'destroy', targetBlight: 'burned'}}]},
 
 {id: 'BestialScorchedBarrens', name: 'Bestial Scorched Barrens', rarity: 'Rare', image: 'Cards/egr/BestialScorchedBarrens.png', flavor: '', 
@@ -176,7 +181,7 @@ const dummyCards = [
 	{name: 'Summon', cost: '{0}', effect: {class: 'summon'}}]},
  
 {id: 'ElementalofEmbers', name: 'Elemental of Embers', rarity: 'Common', image: 'Cards/egr/ElementalofEmbers.png', flavor: '', 
- category: 'Creature', fight: 'Fire Strike', color: 'Red', type: ['Fire','Elemental','Basic'], hp: 3, atk: 2, cost: '{r}', ability: ['Elusive','Scorch'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Creature', fight: 'Fire Strike', color: 'Red', type: ['Fire','Elemental','Basic'], hp: 2, atk: 1, cost: '{r}', ability: ['Elusive','Scorch'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{r}', effect: {class: 'summon'}}]},
 
 {id: 'Kobold', name: 'Kobold', rarity: 'Common', image: 'Cards/egr/Kobold.png', flavor: '',
