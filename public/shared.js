@@ -153,10 +153,10 @@ const dummyCards = [
   {name: 'Inferno Discovery', summon: true, effect: {class: 'burn'}}]},
 
 {id: 'MagmarisMercenary', name: 'Magmaris Mercenary', rarity: 'Rare', image: 'Cards/egr/MagmarisMercenary.png', flavor: '', 
- category: 'Creature', fight: 'Flaming Slash', color: 'Red', type: ['Fire','Rogue'], hp: 3, atk: 2, cost: '{2}{r}', ability: {'Defiant','Scorch'}, set: ['ElementaGenesis','EssenceLegacy'], skill: [
-	{name: 'Summon', cost: '{2}{r}', effect: {class: 'summon'}},
-  {name: 'Flaming Slash', cost: '{x}', activation: {class: 'assault'}, effect: {class: 'burn', amount: 'x', targets: 'enemy}},
-  {name: 'Scorching Contract', summon: true, effect: {class: 'draw', atk: 2, hp: 1}}]},
+ category: 'Creature', fight: 'Flaming Slash', color: 'Red', type: ['Fire','Rogue'], hp: 3, atk: 2, cost: '{1}{r}{r}', ability: {'Defiant','Scorch'}, set: ['ElementaGenesis','EssenceLegacy'], skill: [
+	{name: 'Summon', cost: '{1}{r}{r}', effect: {class: 'summon'}},
+  {name: 'Flaming Slash', activation: {class: 'assault'}, effect: {class: 'burn', amount: 1, target: 'enemyUnits'}},
+  {name: 'Scorching Contract', summon: true, discard: 1, effect: {class: 'bolster', atk: 2, hp: 1}}]},
 
 {id: 'FlamingDirebeast', name: 'Flaming Direbeast', rarity: 'Rare', image: 'Cards/egr/FlamingDirebeast.png', flavor: '',
  category: 'Creature', fight: 'Searing Haste', color: 'Red', type: ['Fire','Beast'], hp: 6, atk: 3, cost: '{2}{r}', ability: ['Scorch','Rush'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
@@ -173,7 +173,8 @@ const dummyCards = [
 {id: 'CinderfoxKitsune', name: 'Cinderfox Kitsune', rarity: 'Common', image: 'Cards/egr/CinderfoxKitsune.png', flavor: '',
  category: 'Creature', fight: 'Searing Haste', color: 'Red', type: ['Fire','Beast'], hp: 3, atk: 0, cost: '{1}{r}', ability: ['Scorch','Rush'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{1}{r}', effect: {class: 'summon'}},
-	{name: 'Searing Haste', activation: {class: 'assault'}, effect: {class: 'add', targetCategory: 'Creature', targetType: 'Fire'}},
+	{name: 'Searing Haste', activation: {class: 'assault'}, effect: {class: 'add', targetCategory: 'Creature', targetType: ['Beast','Fire']}},
+	{name: 'Searing Haste', void: true, effect: {class: 'add', targetType: ['Basic','Fire','Beast']}},	
 	{name: 'Spirit Stoke', passive: true, effect: {class: 'bolster', amount: 1, count: 'typePlayer', targetType: 'Fire'}}]},
 
 {id: 'Emberling', name: 'Emberling', rarity: 'Common', image: 'Cards/egr/Emberling.png', flavor: '',
@@ -721,16 +722,17 @@ const dummyCards = [
  category: 'Creature', fight: 'Sylvan Strike', color: 'Green', type: ['Verdant','Dragon'], hp: 7, atk: 3,
  cost: '', ability: ['Flying','Regenerate'], set: 'FracturedOrigins', skill: [
  	{name: 'Evolution', cost: '{g}{g}{g}', effect: {class: 'Evolution'}},
-  {name: 'Warden Scutes', cost: '{g}', discard: 1, effect: {class: 'Inspire', def: 1, spd: 1}},
+  {name: 'Warden Scutes', summon: true, effect: {class: 'inspire', def: 1, targetColor: 'green'}},
+  {name: 'Warden Scutes', cost: '{g}', discard: 1, effect: {class: 'inspire', def: 1, targetColor: 'green'}},
   {name: 'Defender', activation: {class: 'Defender'}, effect: {class: 'Search', archetype: 'Thornwing'}},
   {name: "Guardian's Rampart", cost: '{g}{g}', requirement: [{class: 'Special'}, {class:'CW'}], effect: {class: 'Inspire', def: 1, target: 'PlayerCreatures', targetType: 'Dragon'}}]},
 
-{id: 'VerdarokMossletFlutterwing', name: 'Verdarok, Mosslet Flutterwing', rarity: 'Rare', image: 'Cards/fog/VerdarokMossletFlutterwing.png', flavor: '', 
+{id: 'VerdarokMossletGuardian', name: 'Verdarok, Mosslet Guardian', rarity: 'Rare', image: 'Cards/fog/VerdarokMossletGuardian.png', flavor: '', 
  category: 'Creature', fight: 'Sylvan Strike', color: 'Green', type: ['Verdant','Dragon'], hp: 3, atk: 1, cost: '{g}{g}', ability: ['Flying','Regenerate'], set: 'FracturedOrigins', skill: [
  	{name: 'Summon', cost: '{g}{g}', effect: {class: 'summon'}},
-  {name: 'Rootwyrm Rising', cost: '{g}', requirement: {class: 'Reveal'}, effect: {class: 'Inspire', ability: 'Protect', def: 1}},
-  {name: 'Warden Scutes',  activation: {class: 'Defender'}, effect: {class: 'Search', archetype: 'Thornwing', amount: 1}},
-  {name: 'Groveguard', cost: '{g}{g}', effect: {class: 'Mossbound Terrain'}}]},
+  {name: 'Warden Scutes', summon: true, effect: {class: 'inspire', def: 1, targetColor: 'green'}},
+  {name: 'Warden Scutes', cost: '{g}', discard: 1, effect: {class: 'inspire', def: 1, targetColor: 'green'}},
+	{name: 'Rootwyrm Rising',  attack: true, effect: {class: 'strike', amount: 'sourceHp'}}]},
  
 {id: 'ThicketmistDrakeling', name: 'Thicketmist Drakeling', rarity: 'Legend', image: 'Cards/fog/ThicketmistDrakeling.png', flavor: '', 
  category: 'Creature', fight: '', color: 'Green', type: ['Verdant','Dragon'], hp: 4, atk: 2, cost: '{1}{g}', ability: ['Flying','Regenerate'], set: 'FracturedOrigins', skill: [
