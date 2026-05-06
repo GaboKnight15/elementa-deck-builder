@@ -290,7 +290,7 @@ const dummyCards = [
 	
 {id: 'ZyraThunderbladeDuelist', name: 'Zyra, Thunderblade Duelist', rarity: 'Legend', image: 'Cards/egy/ZyraThunderbladeDuelist.png', flavor: '', 
  category: 'Creature', fight: 'Blade Tempest', color: 'Yellow', type: ['Thunder','Rogue'], hp: 5, atk: 2, cost: '{1}{y}', ability: ['Dash'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
-	{name: 'Summon', cost: '{1}{y}', effect: {class: 'summon'}},
+  {name: 'Summon', cost: '{1}{y}', effect: {class: 'summon'}},
   {name: 'Dash', cost: '{y}', effect: {class: 'Dash'}},
   {name: 'Thunderclap Tempo', cost: '{y}', requirement: {class:'Special'}, effect: {class: 'Flurry', amount: 1}},
   {name: 'Blade Tempest', cost: '{Y}{Y}', requirement: {class: 'Special'}, effect: {class: 'strike', target: 3, amount: 2}}]},
@@ -298,6 +298,11 @@ const dummyCards = [
 // EG YELLOW RARE //
 {id: 'GalestrikeRoc', name: 'Galestrike Roc', rarity: 'Rare', image: 'Cards/egy/GalestrikeRoc.png', flavor: '', 
  category: 'Creature', fight: '', color: 'Yellow', type: 'Avian', hp: 5, atk: 3, cost: '{2}{y}', ability: 'Flying', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+  {name: 'Skyline Scouting', cost: '{2}{y}', effect: [{class: 'summon'}, {class: 'Search', amount:1, targetAbility: 'Flying'}]},
+  {name: 'Tailwind', requirement: {class: 'Passive'}, effect: {class: 'Inspire', ability: 'Accel', amount: 1, targetAbility: 'Flying'}}]},
+
+{id: 'AetherionElectromancer', name: 'Aetherion Electromancer', rarity: 'Rare', image: 'Cards/egy/AetherionElectromancer.png', flavor: '', 
+ category: 'Creature', fight: '', color: 'Yellow', type: ['Thunder','Rogue'], hp: 3, atk: 1, cost: '{1}{y}{y}', ability: 'Flying', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Skyline Scouting', cost: '{2}{y}', effect: [{class: 'summon'}, {class: 'Search', amount:1, targetAbility: 'Flying'}]},
 	{name: 'Tailwind', requirement: {class: 'Passive'}, effect: {class: 'Inspire', ability: 'Accel', amount: 1, targetAbility: 'Flying'}}]},
 
