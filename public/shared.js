@@ -8,7 +8,7 @@ const dummyCards = [
  category: 'Spell', color: 'Colorless', type: 'Aura', cost: '{2}', mana: 3, set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Cast', cost: '{2}', effect: {class: 'cast'}},
 	{name: 'Might of the Valiant', mana: 1, effect: {class: 'bolster', atk: 1, hp: 1}},
-  {name: 'Might of the Valiant', mana: 3, effect: {class: 'bolster', atk: 2, hp: 3}}]},
+	{name: 'Might of the Valiant', mana: 3, effect: {class: 'bolster', atk: 2, hp: 3}}]},
 	
 {id: 'Verdara', name: 'Verdara', rarity: 'Legend', image: 'Cards/egg/Verdara.png', flavor: '', 
  category: 'Terrain', color: 'Green', type: ['Sylvan','Domain'], hp: 20, essence: '{g}{g}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
