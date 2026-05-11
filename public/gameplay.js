@@ -6333,7 +6333,20 @@ function activateSkill(cardObj, skillObj, options = {}) {
   }
 }
 
-
+function getSkillActivation(skillObj = {}) {
+  const a = skillObj.activation || {};
+  return {
+    zone: Array.isArray(a.zone) ? a.zone : (a.zone ? [a.zone] : []),
+    summon: !!a.summon,
+    attack: !!a.attack,
+    tap: !!a.tap,
+    discard: Number(a.discard || 0),
+    sacrifice: Number(a.sacrifice || 0),
+    stash: !!a.stash,
+    channel: !!a.channel,
+    filter: a.filter || {}
+  };
+}
 // Helper to get requirement(s) for a skill
 function getSkillRequirements(skillObj) {
   if (skillObj.requirement) {
