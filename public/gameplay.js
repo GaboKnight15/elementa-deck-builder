@@ -385,7 +385,7 @@ conceal: { name: 'Conceal', icon: 'Icons/Ability/Conceal.png',
 
 // --- SKILL TRIGGER MAP ---
 // Maps skill activation triggers to their event handlers
-const SKILL_ACTIVATION_MAP = {
+const ACTIVATION_MAP = {
   // When this card enters the field (a.k.a. onSummon, "Arrival" in card text)
   arrival: {
     name: "onSummon", // (Arrival)
