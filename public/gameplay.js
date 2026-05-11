@@ -606,7 +606,7 @@ channel: { name: 'Channel', zone: 'playerVoid', icon: 'Icons/Skill/Channel.png',
 },
 };
 
-const SKILL_EFFECT_MAP = {
+const EFFECT_MAP = {
 summon: { name: 'Summon', zone: 'playerHand', 
   description: 'Move this card from hand to the field.',
   canActivate(cardObj, skillObj, currentZone, gameState) {
@@ -879,6 +879,25 @@ enable: { name: 'Enable', icon: 'Icons/Essence/Untap.png',
 
     // Self default
     return sourceCardObj && sourceCardObj.orientation !== "vertical";
+  }
+},
+bolster: {
+  handler(sourceCardObj, skillObj, step, nextEffect, context = {}) {
+    let targets = [];
+
+    if (step.target === 'self') {
+      targets = [sourceCardObj];
+    } else if (step.target === 'triggerCard' && context.triggerCard) {
+      targets = [context.triggerCard];
+    }
+
+    targets.forEach(t => {
+      if (typeof step.hp === 'number') {
+        t.currentHP = (t.currentHP || getBaseHp(t.cardId)) + step.hp;
+      }
+    });
+
+    if (typeof nextEffect === 'function') nextEffect();
   }
 },
 disable: { name: 'Disable', icon: 'Icons/Essence/Tap.png',
@@ -6227,7 +6246,7 @@ function canActivateSkill(cardObj, skillObj, currentZone, gameState, targetObj =
   }
   for (const effect of effectObjs) {
     const effectKey = typeof effect === 'object' && effect.class ? effect.class : effect;
-    const effectDef = SKILL_EFFECT_MAP[effectKey];
+    const effectDef = EFFECT_MAP[effectKey];
     if (effectDef && typeof effectDef.canActivate === 'function') {
       if (!effectDef.canActivate(cardObj, skillObj, currentZone, gameState, effect)) return false;
     }
@@ -6445,7 +6464,7 @@ function resolveSkill(cardObj, skillObj, context = {}, onComplete) {
     } catch(e) { step.availableTargets = []; }
 
     const className = step.class;
-    const handler = SKILL_EFFECT_MAP[className];
+    const handler = EFFECT_MAP[className];
     if (!handler || !handler.handler) {
       nextEffect();
       return;
@@ -6950,7 +6969,7 @@ function runSkillEffect(sourceCardObj, skillObj) {
   // --- TYPES ---
   let types = Array.isArray(skillObj.type) ? skillObj.type : (skillObj.type ? [skillObj.type] : []);
   for (let type of types) {
-    const skillType = SKILL_EFFECT_MAP[type];
+    const skillType = EFFECT_MAP[type];
     if (skillType && skillType.handler) {
       // Optionally, validate card location or status if needed
       // For example, skip effect if sourceCardObj was moved to deck/void by a requirement
