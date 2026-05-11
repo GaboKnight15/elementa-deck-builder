@@ -81,20 +81,21 @@ const dummyCards = [
 	{name: 'Summon', cost: '{1}', eff: {class: 'summon'}}]},
 
 {id: 'WildHuntress', name: 'Wild Huntress', rarity: 'Common', image: 'Cards/egg/WildHuntress.png', flavor: '', 
- category: 'Creature', fight: '', color: 'Green', type: ['Satyr','Warrior'], hp: 4, atk: 1, cost: '{2}', ability: ['Rush','Vigor'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Creature', fight: '', color: 'Green', type: ['Satyr','Warrior'], hp: 4, atk: 2, cost: '{2}{g}', ability: ['Rush','Vigor'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{2}', eff: {class: 'summon'}},
-	{name: 'Vigorous Haste', cost: '{g}', strike: true, eff: [{class: 'spawn', targetId: 'Satyr'}, {class: 'bolster', atk: 1, hp: 1}]},
+	{name: 'Vigorous Haste', attack: true, eff: {class: 'spawn', targetId: 'Satyr'}},
+	{name: 'Vigorous Haste', cost: '{g}', strike: true, eff: {class: 'bolster', atk: 1, hp: 1}}]},
  
 {id: 'FaunRanger', name: 'Faun Ranger', rarity: 'Common', image: 'Cards/egg/FaunRanger.png', flavor: 'Each arrow is a promise kept. No trespasser leaves the forest unmarked.', 
  category: 'Creature', fight: '', color: 'Green', type: ['Satyr','Ranger'], hp: 3, atk: 1, cost: '{1}{g}', ability: ['Conceil','Vigor'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{1}{g}', eff: {class: 'summon'}},
-	{name: 'Feral Empowerment', attack: true, discard: 1, eff: {class: 'destroy', targetCost: 'lessthan3'}}]},
+	{name: 'Feral Empowerment', attack: true, req: {class: 'discard', q: 1}, eff: [{class: 'destroy', targetCost: 'lessthan3'}, {class: 'bolster', atk: 1, target: 'self'}]} ]},
  
 {id: 'FaunDiviner', name: 'Faun Diviner', rarity: 'Common', image: 'Cards/egg/FaunDiviner.png', flavor: '', 
  category: 'Creature', fight: '', color: 'Green', type: ['Satyr','Mage'], hp: 3, atk: 1, cost: '{1}{g}', ability: ['Purify','Vigor'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{1}{g}', eff: {class: 'summon'}},
 	{name: 'Horncall Ritual', summon: true, eff: {class: 'spawn', targetId: 'Satyr'}},
-	{name: "Grove's Requiem", act: {trigger: 'attack'}, eff: {class: 'add', targetType: 'Satyr'}}]},
+	{name: "Grove's Requiem", attack: true, eff: {class: 'bolster', targetType: 'Satyr', target: 'playerCreatures', hp: 1}}]},
 	
 {id: 'DeepwoodUrsan', name: 'Deepwood Ursan', rarity: 'Common', image: 'Cards/egg/DeepwoodUrsan.png', flavor: '', 
  category: 'Creature', fight: 'Apex Feast', color: 'Green', type: ['Sylvan','Beast'], hp: 6, atk: 3, cost: '{4}', ability: 'Rush', set: ['ElementaGenesis','EssenceLegacy'], skill: [
@@ -363,11 +364,11 @@ const dummyCards = [
 // EG GRAY //
 // EG GRAY LEGEND //
 {id: 'GravokDrakzulTyrant', name: 'Gravok, Drakzul Tyrant', rarity: 'Legend', image: 'Cards/egc/GravokDrakzulTyrant.png', flavor: '', 
- category: 'Creature', fight: 'Seismic Shatter', color: 'Gray', type: ['Orc','Brute'], hp: 4, atk: 2, cost: '{2}{c}', 
- ability: ['Armor','Fury'], set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/egc/GravokDrakzulTyrantFA.png', skill: [
+ category: 'Creature', fight: 'Seismic Shatter', color: 'Gray', type: ['Orc','Brute'], hp: 3, atk: 2, cost: '{c}{c}{c}',
+ ability: 'Armor', set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/egc/GravokDrakzulTyrantFA.png', skill: [
 	{name: 'Summon', cost: '{2}{c}', eff: {class: 'summon'}},
-	{name: 'Stone Mantle', cost: '{x}', act: {trigger: 'summon'}, eff: {class: 'bolster', hp:'x'}},
-	{name: 'Seismic Smite', cost: '{c}{C}', act: {trigger: 'attack'}, eff: {class: 'Destroy', status: 'disabled', amount: 1}}]},
+	{name: 'Stone Mantle', summon: true, eff: {class: 'bolster', hp: 'x'}},
+	{name: 'Seismic Smite', attack: true, eff: {class: 'destroy', status: 'disabled', amount: 1}}]},
 
 {id: 'RudgarIronfistMauler', name: 'Rudgar, Ironfist Mauler', rarity: 'Legend', image: 'Cards/egc/RudgarIronfistMauler.png', flavor: '', 
  category: 'Creature', fight: 'Stonebreaker Punch', color: 'Gray', type: ['Rock','Warrior'], hp: 5, atk: 2, cost: '{1}{c}', ability: 'Crush', set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/egc/RudgarIronfistMaulerFA.png', skill: [
@@ -452,10 +453,10 @@ const dummyCards = [
 // EG PURPLE //
 // EG PURPLE LEGEND //
 {id: 'MordrathVirkulPhantom', name: 'Mordrath, Virkul Phantom', rarity: 'Legend', image: 'Cards/egp/MordrathVirkulPhantom.png', flavor: 'With every step, the earth blackens, flowers wither, and the air grows thick with despair — a knight cursed to rot all he touches.', 
- category: 'Creature', fight: '', color: 'Purple', type: ['Spirit','Warrior'], hp: 4, atk: 2, cost: '{2}{p}', ability: ['Armor','Immunity'], set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/egp/MordrathVirkulPhantomFA.png', skill: [
+ category: 'Creature', fight: '', color: 'Purple', type: ['Spirit','Warrior'], hp: 3, atk: 2, cost: '{2}{p}', ability: ['Armor','Exploit','Immunity'], set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/egp/MordrathVirkulPhantomFA.png', skill: [
 	{name: 'Summon', cost: '{2}{p}', eff: {class: 'summon'}},
 	{name: 'Blightfall Slash', cost: '{p}{p}', eff: {class: 'strike', amount: 1}},
-	{name: 'Toxic Miasma', cost: '{p}{p}', eff: {class: 'Miasma'}}]},
+	{name: 'Hallowed Plate', echo: true, eff: {class: 'spawn', id: 'Spirit'}}]},
 	
 {id: 'SelgorCorruptedWarlock', name: 'Selgor, Corrupted Warlock', rarity: 'Legend', image: 'Cards/egp/SelgorCorruptedWarlock.png', flavor: '', 
  category: 'Creature', fight: 'Corruptive Surge', color: 'Purple', type: ['Mystic','Mage'], hp: 4, atk: 1, cost: '{p}{p}', ability: ['Curse','Drain'], set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/egp/SelgorCorruptedWarlockFA.png', skill: [
