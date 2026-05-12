@@ -6358,6 +6358,8 @@ function getSkillActivation(skillObj = {}) {
     zone: Array.isArray(a.zone) ? a.zone : (a.zone ? [a.zone] : []),
     summon: !!a.summon,
     attack: !!a.attack,
+    echo: !!a.echo,
+    void: !!a.void,
     tap: !!a.tap,
     discard: Number(a.discard || 0),
     sacrifice: Number(a.sacrifice || 0),
@@ -6367,15 +6369,50 @@ function getSkillActivation(skillObj = {}) {
   };
 }
 // Helper to get requirement(s) for a skill
-function getSkillRequirements(skillObj) {
-  if (skillObj.requirement) {
-    return Array.isArray(skillObj.requirement) ? skillObj.requirement : [skillObj.requirement];
+function getSkillRequirements(skillObj = {}) {
+  const out = [];
+
+  // 1) Already an array (canonical)
+  if (Array.isArray(skillObj.requirements)) {
+    out.push(...skillObj.requirements);
   }
-  const activation = skillObj.activation || {};
-  if (activation.requirement) {
-    return Array.isArray(activation.requirement) ? activation.requirement : [activation.requirement];
+
+  // 2) Object form: requirements: { discard: 1, tap: true, ... }
+  if (skillObj.requirements && typeof skillObj.requirements === "object" && !Array.isArray(skillObj.requirements)) {
+    const r = skillObj.requirements;
+
+    if (r.tap) out.push({ class: "tap" });
+    if (r.attack) out.push({ class: "attack" });
+    if (r.summon) out.push({ class: "summon" });
+    if (r.echo) out.push({ class: "echo" });
+    if (r.void) out.push({ class: "void" });
+
+    if (r.discard) out.push({ class: "discard", amount: Number(r.discard) || 1, type: r.type, category: r.category, color: r.color });
+    if (r.sacrifice) out.push({ class: "sacrifice", amount: Number(r.sacrifice) || 1, type: r.type, category: r.category, color: r.color });
+    if (r.stash) out.push({ class: "stash" });
+    if (r.channel) out.push({ class: "channel" });
+
+    // You can add more keys here as needed
   }
-  return [];
+
+  // 3) Top-level shorthand flags on the skill itself
+  // (Only add if NOT already present via requirements object/array)
+  const hasClass = (c) => out.some(x => String(x?.class || "").toLowerCase() === c);
+
+  if (skillObj.tap && !hasClass("tap")) out.push({ class: "tap" });
+  if (skillObj.attack && !hasClass("attack")) out.push({ class: "attack" });
+  if (skillObj.summon && !hasClass("summon")) out.push({ class: "summon" });
+
+  if (skillObj.discard && !hasClass("discard")) out.push({ class: "discard", amount: Number(skillObj.discard) || 1, type: skillObj.type });
+  if (skillObj.sacrifice && !hasClass("sacrifice")) out.push({ class: "sacrifice", amount: Number(skillObj.sacrifice) || 1, type: skillObj.type });
+
+  if (skillObj.channel && !hasClass("channel")) out.push({ class: "channel" });
+  if (skillObj.stash && !hasClass("stash")) out.push({ class: "stash" });
+
+  // Normalize class casing
+  return out
+    .filter(Boolean)
+    .map(req => ({ ...req, class: String(req.class || "").toLowerCase() }));
 }
 
   function runResolution() {
