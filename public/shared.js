@@ -162,7 +162,7 @@ const dummyCards = [
 {id: 'FlamingDirebeast', name: 'Flaming Direbeast', rarity: 'Rare', image: 'Cards/egr/FlamingDirebeast.png', flavor: '',
  category: 'Creature', fight: 'Searing Haste', color: 'Red', type: ['Fire','Beast'], hp: 6, atk: 3, cost: '{2}{r}', ability: ['Scorch','Rush'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{2}{r}', eff: {class: 'summon'}},
-	{name: 'Searing Haste', attack: true, eff: {class: 'add', targetType: ['Beast','Fire']}}},
+	{name: 'Searing Haste', attack: true, eff: {class: 'add', targetType: ['Beast','Fire']}},
 	{name: 'Spirit Stoke', cost: '{r}', void: true, eff: {class: 'destroy', targetBlight: 'burned'}}]},
 
 {id: 'BestialScorchedBarrens', name: 'Bestial Scorched Barrens', rarity: 'Rare', image: 'Cards/egr/BestialScorchedBarrens.png', flavor: '', 
