@@ -719,13 +719,13 @@ const dummyCards = [
 // FRACTURED ORIGINS //
 
 {id: 'SylvaniaThornvaleQueen', name: 'Sylvania, Thornvale Queen', rarity: 'Legend', image: 'Cards/Elf/SylvaniaThornvaleQueen.png', flavor: '', 
- category: 'Creature', fight: '', color: 'Green', type: ['Elf','Mage'], hp: 4, atk: 1, cost: '{g}', ability: '', set: 'FracturedOrigins', skill: [
+ category: 'Creature', fight: 'Sylvan Strike', color: 'Green', type: ['Elf','Mage'], hp: 3, atk: 1, cost: '{g}', ability: '', set: 'FracturedOrigins', skill: [
  	{name: 'Summon', cost: '{g}', eff: {class: 'summon'}},
 	{name: 'Bloomchant', cost: '{g}', tap: true, eff: {class: 'essenceGreen', amount: 2}},
 	{name: "Briar Queen's Grasp", cost: '{G}', tap: true, eff: {class: 'Bind', amount: 1, target: 2}}]},
   
 {id: 'VerdarokSylvanThornwing', name: 'Verdarok, Sylvan Thornwing', rarity: 'Legend', image: 'Cards/fog/VerdarokSylvanThornwing.png', flavor: '', 
- category: 'Creature', fight: 'Sylvan Strike', color: 'Green', type: ['Verdant','Dragon'], hp: 7, atk: 3,
+ category: 'Creature', fight: 'Sylvan Burst', color: 'Green', type: ['Verdant','Dragon'], hp: 7, atk: 3,
  cost: '', ability: ['Flying','Regenerate'], set: 'FracturedOrigins', skill: [
  	{name: 'Evolution', cost: '{g}{g}{g}', eff: {class: 'Evolution'}},
 	{name: 'Warden Scutes', act: {trigger: 'summon'}, eff: {class: 'inspire', def: 1, targetColor: 'green'}},
@@ -734,7 +734,7 @@ const dummyCards = [
 	{name: "Guardian's Rampart", cost: '{g}{g}', req: [{class: 'Special'}, {class:'CW'}], eff: {class: 'Inspire', def: 1, target: 'PlayerCreatures', targetType: 'Dragon'}}]},
 
 {id: 'VerdarokMossletGuardian', name: 'Verdarok, Mosslet Guardian', rarity: 'Rare', image: 'Cards/fog/VerdarokMossletGuardian.png', flavor: '', 
- category: 'Creature', fight: 'Sylvan Strike', color: 'Green', type: ['Verdant','Dragon'], hp: 3, atk: 1, cost: '{g}{g}', ability: ['Flying','Regenerate'], set: 'FracturedOrigins', skill: [
+ category: 'Creature', fight: 'Verdant Strike', color: 'Green', type: ['Verdant','Dragon'], hp: 3, atk: 1, cost: '{g}{g}', ability: ['Flying','Regenerate'], set: 'FracturedOrigins', skill: [
  	{name: 'Summon', cost: '{g}{g}', eff: {class: 'summon'}},
 	{name: 'Warden Scutes', act: {trigger: 'summon'}, eff: {class: 'inspire', def: 1, targetColor: 'green'}},
 	{name: 'Warden Scutes', cost: '{g}', discard: 1, eff: {class: 'inspire', def: 1, targetColor: 'green'}},
@@ -753,26 +753,26 @@ const dummyCards = [
 	{name: 'Defender', act: {class: 'Defender'}, eff: {class: 'Search', archetype: 'Thornwing', amount: 1}}]},
 
 {id: 'PyronyxInfernoBlazingscale', name: 'Pyronyx, Inferno Blazingscale', rarity: 'Legend', image: 'Cards/for/PyronyxInfernoBlazingscale.png', flavor: '', 
- category: 'Creature', fight: '', color: 'Red', type: ['Fire','Dragon'], hp: 6, atk: 3, cost: '{3}{r}', ability: ['Burn','Flying'], set: 'FracturedOrigins', skill: [
+ category: 'Creature', fight: 'Inferno Burst', color: 'Red', type: ['Fire','Dragon'], hp: 6, atk: 3, cost: '{3}{r}', ability: ['Burn','Flying'], set: 'FracturedOrigins', skill: [
 	{name: 'Evolution', cost: '{r}{r}', eff: {class: 'Evolution'}},
 	{name: 'Searing Outbreak', cost: '{r}', req: {class: 'Reveal'}, eff: {class: 'Burn', amount: 3}},
 	{name: 'Cataclysmic Blaze', cost: '{r}{r}',  eff: {class: 'Burn', amount: 3, target: 3}}]},
 
 {id: 'PyronyxEmberBreeze', name: 'Pyronyx, Ember Breeze', rarity: 'Rare', image: 'Cards/for/PyronyxEmberBreeze.png', flavor: '', 
- category: 'Creature', fight: '', color: 'Red', type: ['Fire','Dragon'], hp: 3, atk: 2, cost: '{r}{r}', ability: ['Scorch','Flying'], set: 'FracturedOrigins', skill: [
+ category: 'Creature', fight: 'Fire Strike', color: 'Red', type: ['Fire','Dragon'], hp: 3, atk: 2, cost: '{r}{r}', ability: ['Scorch','Flying'], set: 'FracturedOrigins', skill: [
  	{name: 'Summon', cost: '{r}{r}', eff: {class: 'summon'}},
 	{name: 'Ignis Flutter', cost: '{R}', req: {class: 'Special'}, eff: {class: 'Dash'}},
 	{name: 'Searing Outbreak', cost: '{r}{r}{r}', eff: {class: 'Burn', amount: 3, target: 2}}]},
 
 {id: 'AbyndraTidalAbyssdrake', name: 'Abyndra, Tidal Abyssdrake', rarity: 'Legend', image: 'Cards/fou/AbyndraTidalAbyssdrake.png', flavor: '', 
- category: 'Creature', fight: '', color: 'Blue', type: [Water','Dragon'], hp: 8, atk: 4, cost: '', ability: ['Dive','Flying','Soak'], set: 'FracturedOrigins', skill: [
+ category: 'Creature', fight: 'Tidal Burst', color: 'Blue', type: [Water','Dragon'], hp: 8, atk: 4, cost: '', ability: ['Dive','Flying','Soak'], set: 'FracturedOrigins', skill: [
 	{name: 'Evolution', cost: '{u}{u}{u}', eff: {class: 'Evolution'}},
 	{name: 'Reveal', cost: '{u}', eff: {class: 'Search', targetCategory: 'Terrain', targetColor: 'Blue'}},
 	{name: "Ocean's Requiem", cost: '{u}{u}', eff: {class: '', amount: 3, status: 'Burn'}},
 	{name: 'Maelstrom Oblivion', cost: '{u}{u}', act: {trigger: 'attack'}, eff: [{class: 'Soak', amount: 2, target: 3}, {class: 'Rain'}]}]},
 
 {id: 'AbyndraRipplefinGloomlet', name: 'Abyndra, Ripplefin Gloomlet', rarity: 'Rare', image: 'Cards/fou/AbyndraRipplefinGloomlet.png', flavor: '', 
- category: 'Creature', fight: '', color: 'Blue', type: [Water','Dragon'], hp: 4, atk: 1, cost: '{1}{u}', ability: ['Dive','Soak'], set: 'FracturedOrigins', skill: [
+ category: 'Creature', fight: 'Water Strike', color: 'Blue', type: [Water','Dragon'], hp: 4, atk: 1, cost: '{1}{u}', ability: ['Dive','Soak'], set: 'FracturedOrigins', skill: [
  	{name: 'Summon', cost: '{u}{u}', eff: {class: 'summon'}},
 	{name: 'Reveal', cost: '{u}', eff: {eff: 'Search', category: 'Terrain', color: 'Blue'}},
 	{name: 'Mirror of the Deep', cost: '{u}{u}', eff: {class: '', amount: 3, status: 'Burn'}}]},
@@ -783,14 +783,14 @@ const dummyCards = [
 	{name: '', cost: '{b}', req: {class: 'CCW'}, eff: {class: 'Burn', amount: 3}}]},
 
 {id: 'VoltrazekTempestStormrazor', name: 'Voltrazek, Tempest Stormrazor', rarity: 'Legend', image: 'Cards/foy/VoltrazekTempestStormrazor.png', flavor: '', 
- category: 'Creature', fight: '', color: 'Yellow', type: ['Thunder','Dragon'], hp: 5, atk: 3, cost: '', ability: ['Static','Flying'], set: 'FracturedOrigins', skill: [
+ category: 'Creature', fight: 'Storm Burst', color: 'Yellow', type: ['Thunder','Dragon'], hp: 5, atk: 3, cost: '', ability: ['Static','Flying'], set: 'FracturedOrigins', skill: [
  	{name: 'Summon', cost: '{y}{y}', eff: {class: 'summon'}},
 	{name: 'Reveal', cost: '{y}', eff: {class: 'Search', category: 'Spell', color: 'Yellow'}},
 	{name: 'Evolution', cost: '{y}{y}{y}', eff: {class: 'Evolution'}},
 	{name: 'Electro Burst', cost: '{y}', eff: {class: 'strike', amount: 1, target: 3}}]},
 
 {id: 'VoltrazekSparkletStormling', name: 'Voltrazek, Sparklet Stormling', rarity: 'Rare', image: 'Cards/foy/VoltrazekSparkletStormling.png', flavor: '', 
- category: 'Creature', fight: '', color: 'Yellow', type: ['Thunder','Dragon'], hp: 2, atk: 2, cost: '{1}{y}', ability: 'Flying', set: 'FracturedOrigins', skill: [
+ category: 'Creature', fight: 'Thunder Strike', color: 'Yellow', type: ['Thunder','Dragon'], hp: 2, atk: 2, cost: '{1}{y}', ability: 'Flying', set: 'FracturedOrigins', skill: [
  	{name: 'Summon', cost: '{y}{y}', eff: {class: 'summon'}},
   {name: 'Overcharge', cost: '{y}{y}{y}', eff: [{class: 'Overcharge'}, {class: 'Inspire', ability: 'Rush'}]},
   {name: 'Gigavolt Prance', cost: '{y}', act: {trigger: 'attack'}, eff: {class: '', amount: 1}}]},
@@ -802,19 +802,19 @@ const dummyCards = [
   {name: 'Toxic Miasma', cost: '{p}', eff: {class: 'Toxic Miasma'}}]},
 
 {id: 'MyxarothToxletMireling', name: 'Myxaroth, Toxlet Mireling', rarity: 'Rare', image: 'Cards/fop/MyxarothToxletMireling.png', flavor: '', 
- category: 'Creature', fight: '', color: 'Purple', type: ['Cursed','Dragon'], hp: 3, atk: 2, cost: '{p}{p}', ability: ['Flying','Curse'], set: 'FracturedOrigins', skill: [
+ category: 'Creature', fight: 'Toxic Strike', color: 'Purple', type: ['Cursed','Dragon'], hp: 3, atk: 2, cost: '{p}{p}', ability: ['Flying','Curse'], set: 'FracturedOrigins', skill: [
  	{name: 'Summon', cost: '{p}{p}', eff: {class: 'summon'}},
   {name: 'Discard', cost: '{p}', eff: {class: 'Decay'}},
   {name: 'Acidblight Swell', cost: '{p}{p}', eff: {class: 'Toxic Miasma'}}]},
 
 {id: 'FerronyxTerraIronclaw', name: 'Ferronyx, Terra Ironclaw', rarity: 'Legend', image: 'Cards/foc/FerronyxTerraIronclaw.png', flavor: 'Forged in the bones of the earth, its scales of stone and iron ring like shields in battle.', 
- category: 'Creature', fight: '', color: 'Gray', type: ['Steel','Dragon'], hp: 6, atk: 4, cost: '{4}{c}', ability: ['Armor','Flying'], set: 'FracturedOrigins', skill: [
+ category: 'Creature', fight: 'Terra Burst', color: 'Gray', type: ['Steel','Dragon'], hp: 6, atk: 4, cost: '{4}{c}', ability: ['Armor','Flying'], set: 'FracturedOrigins', skill: [
  	{name: 'Evolution', cost: '{c}{c}{c}', eff: {class: 'Evolution'}},
   {name: 'Reveal', cost: '{c}', eff: {class: 'Armor'}},
   {name: 'Unbreakable Adamant', cost: '{c}{c}', eff: {class: 'Armor', target: 'playerCreatures'}}]},
  
 {id: 'FerronyxIronhideStonelet', name: 'Ferronyx, Ironhide Stonelet', rarity: 'Rare', image: 'Cards/foc/FerronyxIronhideStonelet.png', flavor: '', 
- category: 'Creature', fight: '', color: 'Gray', type: ['Steel','Dragon'], hp: 3, atk: 2, cost: '{c}{c}', ability: ['Armor','Flying'], set: 'FracturedOrigins', skill: [
+ category: 'Creature', fight: 'Steel Strike', color: 'Gray', type: ['Steel','Dragon'], hp: 3, atk: 2, cost: '{c}{c}', ability: ['Armor','Flying'], set: 'FracturedOrigins', skill: [
  	{name: 'Summon', cost: '{1}{c}', eff: {class: 'summon'}},
   {name: 'Reveal', cost: '{c}', req: {class: 'Reveal'}, eff: {class: 'Armor'}},
   {name: 'Forgelight Mantle', cost: '{c}{c}', eff: {class: 'Armor', target: 'playerCreatures'}}]},
@@ -826,7 +826,7 @@ const dummyCards = [
   {name: 'Forgelight Mantle', cost: '{c}{c}', eff: {class: 'Armor', target: 'playerCreatures'}}]},
 
 {id: 'SolarythRadiantSolarwyrm', name: 'Solaryth, Radiant Solarwyrm', rarity: 'Legend', image: 'Cards/fow/SolarythRadiantSolarwyrm.png', flavor: '', 
- category: 'Creature', fight: '', color: 'White', type: ['Light','Dragon'], hp: 8, atk: 4,
+ category: 'Creature', fight: 'Radiant Burst', color: 'White', type: ['Light','Dragon'], hp: 8, atk: 4,
  cost: '', ability: ['Flying','Aegis'], set: 'FracturedOrigins', skill: [
  	{name: 'Evolution', cost: '{w}{w}{w}', eff: {class: 'Evolution'}},
   {name: 'Seal', cost: '{W}{W}', eff: {class: 'Seal'}},
@@ -834,31 +834,31 @@ const dummyCards = [
  ]},
  
 {id: 'SolarythGlintletDawnbloom', name: 'Solaryth, Glintlet Dawnbloom', rarity: 'Rare', image: 'Cards/fow/SolarythGlintletDawnbloom.png', flavor: '', 
- category: 'Creature', fight: '', color: 'White', type: ['Light','Dragon'], hp: 4, atk: 2, cost: '{w}{w}', ability: ['Flying','Aegis'], set: 'WyrmheartAwakening', skill: [
+ category: 'Creature', fight: 'Light Strike', color: 'White', type: ['Light','Dragon'], hp: 4, atk: 2, cost: '{w}{w}', ability: ['Flying','Aegis'], set: 'WyrmheartAwakening', skill: [
  	{name: 'Summon', cost: '{w}{w}', eff: {class: 'summon'}},
   {name: 'Seal', cost: '{w}{w}', eff: {class: 'Seal'}},
   {name: 'Dawnveil Benediction', cost: '{w}', eff: {class: 'Daybreak Field'}}]},
 
 {id: 'NyzarielArchdemonDuchess', name: 'Nyzariel, Archdemon Duchess', rarity: 'Legend', image: 'Cards/fob/NyzarielArchdemonDuchess.png', flavor: '', 
- category: 'Creature', fight: '', color: 'Black', type: ['Demon','Mage'], hp: 4, atk: 2, cost: '{1}{b}', ability: 'Conceal', set: 'FracturedOrigins', skill: [
+ category: 'Creature', fight: 'Archdemon Burst', color: 'Black', type: ['Demon','Mage'], hp: 4, atk: 2, cost: '{1}{b}', ability: 'Conceal', set: 'FracturedOrigins', skill: [
  	{name: 'Summon', cost: '{b}', eff: {class: 'summon'}},
   {name: '', cost: '{1}{b}', req: {class: 'CCW'}, eff: {class: 'Burn', amount: 3}},
   {name: 'Soulrend Sovereignty', cost: '{b}{b}', eff: {class: 'Destroy', target: 1 }}]},
 
 {id: 'NoctyrosUmbralNightshroud', name: 'Noctyros, Umbral Nightshroud', rarity: 'Legend', image: 'Cards/fob/NoctyrosUmbralNightshroud.png', flavor: '', 
- category: 'Creature', fight: '', color: 'Black', type: ['Dark','Dragon'], hp: 7, atk: 4, cost: '{4}{b}', ability: 'Flying', set: 'FracturedOrigins', skill: [
+ category: 'Creature', fight: 'Umbral Burst', color: 'Black', type: ['Dark','Dragon'], hp: 7, atk: 4, cost: '{4}{b}', ability: 'Flying', set: 'FracturedOrigins', skill: [
   {name: 'Evolution', cost: '{b}{b}', eff: {class: 'Evolution'}},
   {name: 'Discard', cost: '{b}', req: {class:'Discard'}, eff: {class: 'Mill', type: 'Dragon'}},
   {name: 'Nightfall Surge', cost: '{b}', eff: {class: ''}}]},
  
 {id: 'NoctyrosDuskWhisper', name: 'Noctyros, Dusk Whisper', rarity: 'Rare', image: 'Cards/fob/NoctyrosDuskWhisper.png', flavor: '', 
- category: 'Creature', fight: '', color: 'Black', type: ['Dark','Dragon'], hp: 3, atk: 2, cost: '{b}{b}', ability: 'Flying', set: 'FracturedOrigins', skill: [
+ category: 'Creature', fight: 'Dark Strike', color: 'Black', type: ['Dark','Dragon'], hp: 3, atk: 2, cost: '{b}{b}', ability: 'Flying', set: 'FracturedOrigins', skill: [
  	{name: 'Summon', cost: '{b}{b}', eff: {class: 'summon'}},
   {name: 'Discard', cost: '{b}', eff: {class: 'Mill', type: 'Dragon'}},
   {name: 'Nightfall Surge', cost: '{b}', req: [{class: 'Special'}, {class: 'CCW'}], eff: {class: ''}}]},
 
 {id: 'Imp', name: 'Imp', rarity: 'Common', image: 'Cards/fob/Imp.png', flavor: '', 
- category: 'Creature', fight: '', color: 'Black', type: 'Demon', hp: 3, atk: 2, cost: '{b}', ability: ['Ambush','Flying'], set: 'FracturedOrigins', skill: [
+ category: 'Creature', fight: 'Demonic Strike', color: 'Black', type: 'Demon', hp: 3, atk: 2, cost: '{b}', ability: ['Ambush','Flying'], set: 'FracturedOrigins', skill: [
  	{name: 'Summon', cost: '{b}', eff: {class: 'summon'}}]},
 
 {id: 'KaelyraFirelandHeiress', name: 'Kaelyra, Fireland Heiress', rarity: 'Legend', image: 'Cards/egr/KaelyraFirelandHeiress.png', flavor: '', fullArt: 'Cards/Fireland/KaelyraFirelandHeiressFA.png', flavor: '',
