@@ -12,34 +12,34 @@ const dummyCards = [
 	
 {id: 'Verdara', name: 'Verdara', rarity: 'Legend', image: 'Cards/egg/Verdara.png', flavor: '', 
  category: 'Terrain', color: 'Green', type: ['Sylvan','Domain'], hp: 20, essence: '{g}{g}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
-  {name: 'Sylvan Essence', tap: true, eff: {class: 'essence', color: 'green'}},
-  {name: 'Flourish', tap: true, eff: {class: 'bolster', hp: 2}}]},
+	{name: 'Sylvan Essence', tap: true, eff: {class: 'essence', color: 'green'}},
+	{name: 'Flourish', tap: true, eff: {class: 'bolster', hp: 2}}]},
 
 {id: 'EryndorVerdaraKing', name: 'Eryndor, Verdara King', rarity: 'Legend', image: 'Cards/egg/EryndorVerdaraKing.png', flavor: '', 
  category: 'Creature', fight: '', color: 'Green', type: ['Sylvan','Elf','Mage'], hp: 5, atk: 2, cost: '{2}', ability: '', set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/egg/VeyaVerdaraDruidessFA.png', skill: [
-  {name: 'Summon', cost: '{g}{g}', eff: {class: 'summon'}},
-  {name: 'Ancient Sylvan Decree', cost: '{g}', req: {class:'Special'}, eff: {class: 'Disable', target: 'opponentCreatures', cost: ''}},
-  {name: "Timeless Zenith Blessing", cost: '{g}', awaken: true, eff: {class: 'Buff', target: 'playerField', type: 'Sylvan', atkQ: 1, hpQ: 2}}]},
+	{name: 'Summon', cost: '{g}{g}', eff: {class: 'summon'}},
+	{name: 'Ancient Sylvan Decree', cost: '{g}', req: {class:'Special'}, eff: {class: 'Disable', target: 'opponentCreatures', cost: ''}},
+	{name: "Timeless Zenith Blessing", cost: '{g}', awaken: true, eff: {class: 'Buff', target: 'playerField', type: 'Sylvan', atkQ: 1, hpQ: 2}}]},
 
 {id: 'FaelyraWildhornEmpress', name: 'Faelyra, Wildhorn Empress', rarity: 'Legend', image: 'Cards/egg/FaelyraWildhornEmpress.png', flavor: 'Beneath a crown of entwined blossoms, she dances through the forest while singing weaving spells of mirth. Satyrs, woodland creatures, and even the shyest spirits follow her lead, enchanted by her boundless charm.',
  category: 'Creature', fight: '', color: 'Green', type: ['Satyr','Mage'], hp: 3, atk: 1, cost: '{g}{g}', ability: 'Vigor', set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/egg/FaelyraWildhornEmpressFA.png', skill: [
-  {name: 'Summon', cost: '{g}{g}', eff: {class: 'summon'}},
-  {name: 'Rhythmic Conjure', act: {trigger: 'summon'}, eff: {class: 'spawn', targetId: 'Satyr'}},
-  {name: 'Chorus of the Wild', cost: '{g}{x}', act: {trigger: 'attack'}, eff: {class: 'bolster', atk: 1, hp: '{x}', targetType: 'Satyr', target: 'playerCreatures'}}]},
+	{name: 'Summon', cost: '{g}{g}', eff: {class: 'summon'}},
+	{name: 'Rhythmic Conjure', act: {trigger: 'summon'}, eff: {class: 'spawn', targetId: 'Satyr'}},
+	{name: 'Chorus of the Wild', cost: '{g}{x}', act: {trigger: 'attack'}, eff: {class: 'bolster', atk: 1, hp: '{x}', targetType: 'Satyr', target: 'playerCreatures'}}]},
 
 // EGG RARE //
 {id: 'VerdaraSoldier', name: 'Verdara Soldier', rarity: 'Rare', image: 'Cards/egg/VerdaraSoldier.png', flavor: '', 
  category: 'Creature', fight: '', color: 'Green', type: ['Verdant','Spirit','Warrior'], hp: 4, atk: 2, cost: '{3}{g}', 
  ability: ['Drain','Protect'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
-  {name: 'Summon', cost: '{2}', eff: {class: 'summon'}},
-  {name: 'Nature Prowess', cost: '{g}', act: {trigger: 'summon'}, eff: {class: 'bolster', atk: 1, hp: 2}},
-  {name: 'Forest Phalanx', act: {trigger: 'attack'}, eff: {class: 'add', targetType: ['Sylvan','Terrain']}}]},
+	{name: 'Summon', cost: '{2}', eff: {class: 'summon'}},
+	{name: 'Nature Prowess', cost: '{g}', act: {trigger: 'summon'}, eff: {class: 'bolster', atk: 1, hp: 2}},
+	{name: 'Forest Phalanx', act: {trigger: 'attack'}, eff: {class: 'add', targetType: ['Sylvan','Terrain']}}]},
 
 {id: 'WildhornSongreaver', name: 'Wildhorn Songreaver', rarity: 'Rare', image: 'Cards/egg/WildhornSongreaver.png', flavor: '', 
  category: 'Creature', fight: 'Horncall Crescendo', color: 'Green', type: 'Satyr', hp: 6, atk: 2, cost: '{2}', ability: 'Vigor', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{1}{g}', eff: {class: 'summon'}},
-  {name: 'Hidden Overture', discard: 1, eff: {class: 'enable', amount: 1}},
-  {name: 'Horncall Crescendo', cost: '{g}', act: {trigger: 'attack'}, discard: 1, eff: {class: 'bolster', atk: 1, targetType: 'Satyr', target: 'playerCreatures'}}]},
+	{name: 'Hidden Overture', discard: 1, eff: {class: 'enable', amount: 1}},
+	{name: 'Horncall Crescendo', cost: '{g}', act: {trigger: 'attack'}, discard: 1, eff: {class: 'bolster', atk: 1, targetType: 'Satyr', target: 'playerCreatures'}}]},
 
 {id: 'EarthrootTitan', name: 'Earthroot Titan', rarity: 'Rare', image: 'Cards/egg/EarthrootTitan.png', flavor: '', 
  category: 'Creature', fight: '', color: 'Green', type: ['Arbor','Beast'], hp: 6, atk: 3, cost: '{2}', ability: 'Rush', set: ['ElementaGenesis','EssenceLegacy'], skill: [
@@ -1038,22 +1038,17 @@ const dummyCards = [
 {id: 'Jackalope', name: 'Jackalope', rarity: 'Common', image: 'Cards/dfg/Jackalope.png', flavor: '', 
  category: 'Creature', fight: '', color: ['Green','Black'], type: ['Mythical','Beast'], hp: 4, atk: 2, cost: '{g}{b}', ability: '', set: 'DesolateFrontiers', skill: [
  	{name: 'Summon', cost: '{g}{b}', eff: {class: 'summon'}}
-  {name: 'Echo', cost: '{0}', req: {class: 'Echo', archetype: 'Hybrid'}, eff: {class: 'Search', archetype: 'Hybrid'}}]},
+	{name: 'Echo', cost: '{0}', req: {class: 'Echo', archetype: 'Hybrid'}, eff: {class: 'Search', archetype: 'Hybrid'}}]},
 
 {id: 'DarkHarpy', name: 'Dark Harpy', rarity: 'Common', image: 'Cards/Zephyra/DarkHarpy.png', flavor: '', 
  category: 'Creature', fight: '', color: ['Yellow','Black'], type: ['Dark','Avian'], hp: 5, atk: 3, cost: '{2}{y}', ability: 'Flying', set: 'FeatheredOmen', skill: [
  	{name: 'Summon', cost: '{y}{b}', eff: {class: 'summon'}},
-  {name: 'Dash', cost: '{y}{b}', eff: {class: 'Dash'}}]},
+	{name: 'Dash', cost: '{y}{b}', eff: {class: 'Dash'}}]},
  
 {id: 'GildedBladedancer', name: 'Gilded Bladedancer', rarity: 'Common', image: 'Cards/ecg/GildedBladedancer.png', flavor: '', 
  category: 'Creature', fight: '', color: 'Green', type: ['Fairy','Warrior'], hp: 4, atk: 2, cost: '{g}', ability: ['Flying','Rush'], set: 'EchoesofCreation', skill: [
  	{name: 'Summon', cost: '{1}{g}', eff: {class: 'summon'}},
-  {name: 'Dash', cost: '{g}', eff: {class: 'Dash'}}]},
-
-{id: 'DreadbloomFaerie', name: 'Dreadbloom Faerie', rarity: 'Rare', image: 'Cards/Fairy/DreadbloomFaerie.png', flavor: '', 
- category: 'Creature', fight: '', color: ['Green','Purple'], type: ['Cursed','Fairy'], hp: 3, atk: 1,  cost: '{g}{p}', ability: ['Flying','Rush'], set: 'EchoesofCreation', skill: [
- 	{name: 'Summon', cost: '{g}{p}', eff: {class: 'summon'}},
-  {name: 'Dash', cost: '{G}', eff: {class: 'Dash'}}]},
+	{name: 'Dash', cost: '{g}', eff: {class: 'Dash'}}]},
 
 // Fireland //
 {id: 'FirelandScamperling', name: 'Fireland Scamperling', rarity: 'Common', image: 'Cards/egr/FirelandScamperling.png', flavor: '', 
@@ -1063,75 +1058,55 @@ const dummyCards = [
 {id: 'FirelandLynx', name: 'Fireland Lynx', rarity: 'Common', image: 'Cards/egr/FirelandLynx.png', flavor: '', 
  category: 'Creature', fight: '', color: 'Red', type: ['Fire','Beast'], hp: 3, atk: 2, cost: '{r}', ability: ['Burn','Leap','Rush'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
  	{name: 'Summon', cost: '{r}', eff: {class: 'summon'}},
-  {name: 'Evolve', cost: '{r}', description: 'Gain a {firelandEvolveSigil}', eff: {class: 'Evolve'}}]},
+	{name: 'Evolve', cost: '{r}', description: 'Gain a {firelandEvolveSigil}', eff: {class: 'Evolve'}}]},
  
 {id: 'FirelandKitsune', name: 'Fireland Kitsune', rarity: 'Common', image: 'Cards/egr/FirelandKitsune.png', flavor: '', 
  category: 'Creature', fight: '', color: 'Red', type: ['Fire','Beast'], hp: 4, atk: 2, cost: '{1}{r}', ability: ['Burn','Leap','Rush'], set: 'SavageTerritory', skill: [
  	{name: 'Summon', cost: '{0}', eff: {class: 'summon'}},
-  {name: 'Beast Arrival', cost: '{r}{r}', act: {class: 'Arrival', type: 'Beast'}, eff: {class: 'add', archetype: 'Fireland'}}]},
+	{name: 'Beast Arrival', cost: '{r}{r}', act: {class: 'Arrival', type: 'Beast'}, eff: {class: 'add', archetype: 'Fireland'}}]},
  
 {id: 'FirelandDirebeast', name: 'Fireland Direbeast', rarity: 'Rare', image: 'Cards/egr/FirelandDirebeast.png', flavor: '', 
  category: 'Creature', fight: '', color: 'Red', type: ['Fire','Beast'], hp: 6, atk: 3, cost: '{2}{r}', ability: ['Burn','Rush'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
  	{name: 'Summon', cost: '{2}{r}', eff: {class: 'summon'}},
-  {name: 'Evolution', cost: '{2}{r}',  eff: {class: 'Evolution'}}]},
- 
-{id: 'FirelandHellhound', name: 'Fireland Hellhound', rarity: 'Common', image: 'Cards/dfr/FirelandHellhound.png', flavor: '', 
- category: 'Creature', fight: '', color: ['Red','Black'], type: ['Fire','Beast','Demon'], hp: 6, atk: 3, cost: '{2}{r}', ability: ['Burn','Rush'], set: 'SavageTerritory', skill: [
- 	{name: 'Summon', cost: '{0}', eff: {class: 'summon'}},
-  {name: 'Evolve', cost: '{r}', 
-   eff: {class: 'Evolve'}}]},
- 
-{id: 'FirelandHellmaw', name: 'Fireland Hellmaw', rarity: 'Rare', image: 'Cards/dfr/Fireland Hellmaw.png', flavor: '', 
- category: 'Creature', fight: '', color: ['Red','Black'], type: ['Fire','Dragon','Demon'], hp: 6, atk: 4, cost: '{3}{r}', ability: ['Burn','Flying','Rush'], set: 'SavageTerritory', skill: [
- 	{name: 'Summon', cost: '{0}', eff: {class: 'summon'}},
-  {name: 'Evolve', cost: '{r}', 
-   eff: {class: 'Evolve'}}]},
+	{name: 'Evolution', cost: '{2}{r}',  eff: {class: 'Evolution'}}]},
  
 {id: 'EphorosFirelandBehemoth', name: 'Ephoros, Fireland Behemoth', rarity: 'Legend', image: 'Cards/dfr/EphorosFirelandBehemoth.png', flavor: '', fullArt: 'Cards/Fireland/EphorosFirelandBehemothFA.png', flavor: '',
- category: 'Creature', fight: '', color: ['Red','Black'], type: ['Fire','Beast','Demon'], hp: 7, atk: 5, cost: '{5}{r}', ability: ['Burn','Crush'], set: 'EchoesofCreation',
- skill: [{name: 'Summon', cost: '{5}{r}', eff: {class: 'summon'}},
-  {name: 'Infernal Volley', cost: '{r}', req: {class: 'Discard'}, description: 'Discard to burn {3}',
-   eff: {class: 'Burn', amount: 3}},
-  {name: 'Hellflame Onslaught', cost: '{r}{b}', req: {class: 'Special'}, description: 'Rally {1} to allied fire beasts and demons',
-   eff: {class: 'Rally', amount: 1, targetType: ['Beast', 'Demon'], targetTrait: 'Fire'}},
-  {name: 'Void Evolution', cost: '{r}{r}', description: 'Fusion summon from the void',
-   eff: {class: 'VoidEvolution'}}]},
+ category: 'Creature', fight: 'Hellflame Onslaught', color: ['Red','Black'], type: ['Fire','Beast','Demon'], hp: 7, atk: 4, cost: '{5}{r}', ability: ['Burn','Rush','Reanimate'], set: 'EchoesofCreation', skill: [
+	{name: 'Summon', cost: '{5}{r}', eff: {class: 'summon'}},
+	{name: 'Infernal Volley', cost: '{r}', discard: true, eff: {class: 'Burn', amount: 3}, description: 'Discard to burn {3}'},
+	{name: 'Hellflame Onslaught', summont: true, eff: {class: 'inspire', atk: 1, target: 'playerCreatures', targetType: ['Fire','Demon']}, description: 'Rally {1} to allied fire demons'}]},
 
 // GOLEMHEART //
 {id: 'PyrokragGolemheartTitan', name: 'Pyrokrag, Golemheart Titan', rarity: 'Legend', image: 'Cards/ecr/PyrokragGolemheartTitan.png', flavor: '', 
- category: 'Creature', fight: '', color: ['Red', 'Gray'], type: ['Fire','Golem','Fusion'], hp: 5, atk: 5, def: 2, cost: '{5}{r}', ability: 'Scorch', set: 'FracturedOrigins', skill: [
- {name: 'Fusion', cost: '{5}{r}', eff: {class: 'Fusion'}},
-  {name: 'Stash', cost: '{r}', description: 'Return from your hand to the deck and burn {1}', eff: {class: 'Burn', amount: 1}},
-  {name: 'Mill', req: {class: 'Mill', type: 'Golem'}, eff: {class: 'Armor', amount: 4}},
-  {name: 'Moltern Aegis Nova', cost: '{r}{r}{c}', eff: {class: 'Burn', amount: 3, target: 3}}]},
+ category: 'Creature', fight: '', color: ['Red', 'Gray'], type: ['Fire','Golem','Fusion'], hp: 5, atk: 5, cost: '{5}{r}', ability: 'Scorch', set: 'FracturedOrigins', skill: [
+	{name: 'Fusion', cost: '{5}{r}', eff: {class: 'Fusion'}},
+	{name: 'Stash', cost: '{r}', description: 'Return from your hand to the deck and burn {1}', eff: {class: 'Burn', amount: 1}},
+	{name: 'Mill', req: {class: 'Mill', type: 'Golem'}, eff: {class: 'Armor', amount: 4}},
+	{name: 'Moltern Aegis Nova', cost: '{r}{r}{c}', eff: {class: 'Burn', amount: 3, target: 3}}]},
  
 {id: 'GolemheartGiant', name: 'Golemheart Giant', rarity: 'Rare', image: 'Cards/ecr/GolemheartGiant.png', flavor: '', 
  category: 'Creature', fight: '', color: ['Red', 'Gray'], type: ['Fire','Golem'], hp: 5, atk: 4, def: 2, cost: '{4}{r}', ability: 'Scorch', set: 'EchoesofCreation', skill: [
  	{name: 'Summon', cost: '{0}', eff: {class: 'summon'}},
-  {name: 'Echo', echo: true, eff: {class: 'Inpire', armor: 2}}]},
+	{name: 'Echo', echo: true, eff: {class: 'Inpire', armor: 2}}]},
  
 {id: 'SmolderingGolem', name: 'Smoldering Golemheart', rarity: 'Rare', image: 'Cards/ecr/SmolderingGolemheart.png', flavor: '', 
  category: 'Creature', fight: '', color: ['Red', 'Gray'], type: ['Fire','Golem'], hp: 5, atk: 4, def: 2, cost: '{8}{r}', ability: 'Scorch', set: 'PrimordialAscension', skill: [
  	{name: 'Summon', cost: '{0}', eff: {class: 'summon'}},
-  {name: 'Golem Echo', act: {class: 'Echo', type: 'Golem'}, eff: {class: 'Armor', armor: 3}},
-  {name: 'Emberplate Detonation', cost: '{r}', eff: {class: 'Burn', amount: 2, target: 3}},
-  {name: 'Fuse', cost: '{r}', eff: {class: 'Fuse'}}]},
-
-{id: 'GolemheartSentinel', name: 'Golemheart Sentinel', rarity: 'Rare', image: 'Cards/for/GolemheartSentinel.png', flavor: '', 
- category: 'Creature', fight: '', color: ['Red', 'Gray'], type: ['Fire','Golem'], hp: 4, atk: 3,
- cost: '{2}{r}', ability: 'Protect', set: 'EchoesofCreation'},
+	{name: 'Golem Echo', act: {class: 'Echo', type: 'Golem'}, eff: {class: 'Armor', armor: 3}},
+	{name: 'Emberplate Detonation', cost: '{r}', eff: {class: 'Burn', amount: 2, target: 3}},
+	{name: 'Fuse', cost: '{r}', eff: {class: 'Fuse'}}]},
 
 {id: 'FireGolem', name: 'Fire Golem', rarity: 'Common', image: 'Cards/ecr/FireGolem.png', flavor: '', 
  category: 'Creature', fight: '', color: ['Red', 'Gray'], type: 'Elemental', trait: ['Golem', 'Fire'], hp: 3, atk: 2, def: 2, cost: '{1}{r}', ability: ['Burn', 'Scorch'], set: 'EchoesofCreation', skill: [
  	{name: 'Summon', cost: '{1}{r}', eff: {class: 'summon'}},
-  {name: 'Discard', cost: '{c}', req: {class: 'Discard'}, eff: {class: 'Search', type: 'Golem'}},
-  {name: 'Echo', cost: '{r}', act: {class: 'Echo'}, eff: {class: 'strike', status: 'Burn', amount: 3}}]},
+	{name: 'Discard', cost: '{c}', req: {class: 'Discard'}, eff: {class: 'Search', type: 'Golem'}},
+	{name: 'Echo', cost: '{r}', act: {class: 'Echo'}, eff: {class: 'strike', status: 'Burn', amount: 3}}]},
 
 {id: 'KaelgorranElementalPrimordial', name: 'Kaelgorran, Elemental Primordial', rarity: 'Legend', image: 'Cards/ecn/KaelgorranElementalPrimordial.png', flavor: '', fullArt: 'Cards/Golems/KaelgorranElementalPrimordialFA.png', flavor: '',
  category: 'Creature', fight: '', color: ['Gray'], type: ['Golem','Fusion'], hp: 7, atk: 4, cost: '{5}{c}', set: 'EchoesofCreation', skill: [
  	{name: 'Summon', cost: '{5}{c}', eff: {class: 'summon'}},
-  {name: 'Discard', cost: '{c}', req: {class: 'Discard'}, eff: {class: 'Search', type: 'Golem'}},
-  {name: 'Echo', act: {class: 'Echo'}, eff: {class: 'spawn', targetId: 'Golemite', amount: 2}},]},
+	{name: 'Discard', cost: '{c}', req: {class: 'Discard'}, eff: {class: 'Search', type: 'Golem'}},
+	{name: 'Echo', act: {class: 'Echo'}, eff: {class: 'spawn', targetId: 'Golemite', amount: 2}},]},
 
 {id: 'AcidicGolem', name: 'Acidic Golem', rarity: 'Rare', image: 'Cards/ecp/AcidicGolem.png', flavor: '', 
  category: 'Creature', fight: '', color: ['Purple', 'Gray'], type: ['Toxic','Golem'], hp: 5, atk: 3, cost: '{3}{p}', ability: 'Poisonous', set: 'PrimordialAscension', skill: [
@@ -1141,81 +1116,81 @@ const dummyCards = [
 {id: 'CinderScout', name: 'Cinder Scout', rarity: 'Common', image: 'Cards/ihr/CinderScout.png', flavor: '', 
  category: 'Creature', fight: '', color: 'Red', type: ['Fire','Construct'], hp: 1, atk: 1, cost: '{0}', ability: 'Exploit', set: 'InfiniteHorizons', skill: [
  	{name: 'Summon', cost: '{0}', eff: {class: 'summon'}},
-  {name: 'Discard', cost: '{R}', req: {class: 'Discard'}, eff: [{class: 'Search', archetype: 'Cindercore'}, {class: 'Burn', amount: 0}]}]},
+	{name: 'Discard', cost: '{R}', req: {class: 'Discard'}, eff: [{class: 'Search', archetype: 'Cindercore'}, {class: 'Burn', amount: 0}]}]},
 
 {id: 'CindercoreSentry', name: 'Cindercore Sentry', rarity: 'Common', image: 'Cards/ihr/CindercoreSentry.png', flavor: '', 
  category: 'Creature', fight: '', color: 'Red', type: ['Fire','Construct'], hp: 2, atk: 1, cost: '{r}', ability: ['Exploit'], set: 'InfiniteHorizons', skill: [
  	{name: 'Summon', cost: '{r}', eff: {class: 'summon'}},
-  {name: 'Scorch Protocol', cost: '{1}{r}', eff: [{class: 'Search', archetype: 'Cindercore'}, {class: 'Burn', amount: 0}]}]},
+	{name: 'Scorch Protocol', cost: '{1}{r}', eff: [{class: 'Search', archetype: 'Cindercore'}, {class: 'Burn', amount: 0}]}]},
 
 {id: 'CindercoreProtector', name: 'Cindercore Protector', rarity: 'Rare', image: 'Cards/ihr/CindercoreProtector.png', flavor: '', 
  category: 'Creature', fight: '', color: 'Red', type: ['Fire','Construct'], hp: 3, atk: 2, cost: '{3}{r}', ability: ['Exploit','Protect'], set: 'InfiniteHorizons', skill: [
  	{name: 'Summon', cost: '{3}{r}', eff: {class: 'summon'}},
-  {name: 'Volcanic Vortex', cost: '{1}{R}', eff: {class: 'strike', amount: 3, status: ['Burn','Bind']}}]},
+	{name: 'Volcanic Vortex', cost: '{1}{R}', eff: {class: 'strike', amount: 3, status: ['Burn','Bind']}}]},
 
 {id: 'CindercoreVanguard', name: 'Cindercore Vanguard', rarity: 'Common', image: 'Cards/ihr/CindercoreVanguard.png', flavor: '', 
  category: 'Creature', fight: '', color: 'Red', type: ['Fire','Construct'], hp: 3, atk: 2, cost: '{1}{r}', ability: ['Exploit', 'Rush'], set: 'InfiniteHorizons', skill: [
  	{name: 'Summon', cost: '{1}{r}', eff: {class: 'summon'}},
-  {name: 'Fire Pulse', cost: '{r}', eff: {class: 'Burn', amount: 1, target: 2}}]},
+	{name: 'Fire Pulse', cost: '{r}', eff: {class: 'Burn', amount: 1, target: 2}}]},
 
 {id: 'CinderGolem', name: 'Cinder Golem', rarity: 'Common', image: 'Cards/ecr/CinderGolem.png', flavor: '', 
  category: 'Creature', fight: '', color: ['Red', 'Gray'], type: ['Fire','Golem'], hp: 5, atk: 4, cost: '{3}{R}', ability: '', set: 'IronbornProtocol', skill: [
  	{name: 'Summon', cost: '{0}', eff: {class: 'summon'}},
-  {name: 'Volcanic Vortex', cost: '{1}{R}', req: [{class: 'Special'}, {class: 'CCW'}],
+	{name: 'Volcanic Vortex', cost: '{1}{R}', req: [{class: 'Special'}, {class: 'CCW'}],
    eff: {class: 'strike', amount: 3, status: ['Burn','Bind']}}]},
 
 {id: 'IgnavarynCindercoreAutomaton', name: 'Ignavaryn, Cindercore Automaton', rarity: 'Legend', image: 'Cards/ihr/IgnavarynCindercoreAutomaton.png', flavor: '', 
- category: 'Creature', fight: '', color: 'Red', type: ['Fire','Construct','Assembly'], hp: 5, atk: 4, ability: 'Exploit', set: 'InfiniteHorizons', skill: [
+ category: 'Creature', fight: '', color: 'Red', type: ['Fire','Construct','Assembly'], hp: 5, atk: 4, ability: ['Armor','Exploit'], set: 'InfiniteHorizons', skill: [
  	{name: 'Assemble', cost: '{r}{r}', eff: {class: 'Assemble'}},
-  {name: 'Stash', cost: '{5}{r}', req: {class: 'Stash'}, description: 'Return from your hand to your deck and burn {2}', eff: {class: 'Burn', amount: 2}},
-  {name: 'Thermal Overdrive', cost: '{r}{r}{r}', eff: {class: 'Burn', amount: 3, target: 3}},
-  {name: 'Recycle', cost: '{r}', req: {class: 'Recycle'}, eff: {class: 'Burn', amount: 2}}]},
+	{name: 'Stash', cost: '{5}{r}', req: {class: 'Stash'}, description: 'Return from your hand to your deck and burn {2}', eff: {class: 'Burn', amount: 2}},
+	{name: 'Thermal Overdrive', cost: '{r}{r}{r}', eff: {class: 'Burn', amount: 3, target: 3}},
+	{name: 'Recycle', cost: '{r}', req: {class: 'Recycle'}, eff: {class: 'Burn', amount: 2}}]},
  
 // CORALBOUND //
 {id: 'CoralDrone', name: 'Coral Drone', rarity: 'Common', image: 'Cards/ihu/CoralDrone.png', flavor: '', 
  category: 'Creature', fight: '', color: 'Blue', type: ['Water','Construct'], hp: 1, atk: 1, cost: '{0}', ability: 'Exploit', set: 'InfiniteHorizons', skill: [
- {name: 'Summon', cost: '{0}', eff: {class: 'summon'}},
-  {name: 'Recycle', cost: '{U}', req: {class: 'Recycle'}, eff: {class: 'Soak', amount: 0, target: 1}}]},
+	{name: 'Summon', cost: '{0}', eff: {class: 'summon'}},
+	{name: 'Recycle', cost: '{U}', req: {class: 'Recycle'}, eff: {class: 'Soak', amount: 0, target: 1}}]},
  
 {id: 'CoralboundSentry', name: 'Coralbound Sentry', rarity: 'Common', image: 'Cards/ihu/CoralboundSentry.png', flavor: '', 
  category: 'Creature', fight: '', color: 'Blue', type: ['Water','Construct'], hp: 4, atk: 1, cost: '{u}', ability: 'Exploit', set: 'InfiniteHorizons', skill: [
  	{name: 'Summon', cost: '{u}', eff: {class: 'summon'}},
-  {name: 'Hydrosurge Protocol', cost: '{u}', eff: [{class: 'Search', archetype: 'Coralbound'}, {class: 'Soak', amount: 1, target: 1}]}]},
+	{name: 'Hydrosurge Protocol', cost: '{u}', eff: [{class: 'Search', archetype: 'Coralbound'}, {class: 'Soak', amount: 1, target: 1}]}]},
  
 {id: 'CoralboundProtector', name: 'Coralbound Protector', rarity: 'Rare', image: 'Cards/ihu/CoralboundProtector.png', flavor: '', 
  category: 'Creature', fight: '', color: 'Blue', type: ['Water','Construct'], hp: 4, atk: 3,
  cost: '{3}{u}', ability: ['Armor','Exploit','Protect'], set: 'InfiniteHorizons', skill: [
-  {name: 'Summon', cost: '{3}{u}', eff: {class: 'summon'}},
-  {name: 'Echo', cost: '{U}',  eff: {class: 'Token', name: 'Coral Drone'}},
-  {name: 'Fuse', cost: '{u}{u}', module: 2, eff: {class: 'Fuse'}}]},
+	{name: 'Summon', cost: '{3}{u}', eff: {class: 'summon'}},
+	{name: 'Echo', cost: '{U}',  eff: {class: 'Token', name: 'Coral Drone'}},
+	{name: 'Fuse', cost: '{u}{u}', module: 2, eff: {class: 'Fuse'}}]},
  
 {id: 'CoralboundVanguard', name: 'Coralbound Vanguard', rarity: 'Common', image: 'Cards/ihu/CoralboundVanguard.png', flavor: '', 
  category: 'Creature', fight: '', color: 'Blue', type: ['Water','Construct'], hp: 3, atk: 3,
  cost: '{1}{u}', ability: ['Explot','Rush'], set: 'InfiniteHorizons', skill: [
  	{name: 'Summon', cost: '{1}{u}', eff: {class: 'summon'}},
-  {name: 'Fuse', cost: '{u}',  eff: {class: 'Fuse'}}]},
+	{name: 'Fuse', cost: '{u}',  eff: {class: 'Fuse'}}]},
  
 {id: 'MaelvyrnCoralboundAutomaton', name: 'Maelvyrn, Coralbound Automaton', rarity: 'Legend', image: 'Cards/ihu/MaelvyrnCoralboundAutomaton.png', flavor: '', fullArt: 'Cards/Coralbound/MaelvyrnCoralboundAutomatonFA.png', flavor: '',
  category: 'Creature', fight: '', color: 'Blue', type: ['Water','Construct','Assembly'], hp: 6, atk: 5, cost: '{6}{u}',
  ability: ['Armor','Exploit','Unbreakable'], set: 'InfiniteHorizons', skill: [
  	{name: 'Summon', cost: '{r}{r}', eff: {class: 'summon'}},
 	{name: 'Assemble', cost: '{u}{u}', eff: {class: 'assemble'}},
-  {name: 'Blueprint Retrieval', cost: '{u}', stash: 1, eff: {class: 'add', targetCategory: 'Spell', targetType: 'Construct'}},
-  {name: 'Hydroburst Cannon', cost: '{u}{u}', act: {trigger: 'attack'}, eff: {class: 'soak', target: 'allEnemies'}}]},
+	{name: 'Blueprint Retrieval', cost: '{u}', stash: 1, eff: {class: 'add', targetCategory: 'Spell', targetType: 'Construct'}},
+	{name: 'Hydroburst Cannon', cost: '{u}{u}', act: {trigger: 'attack'}, eff: {class: 'soak', target: 'allEnemies'}}]},
  
 {id: 'HydrosurgeProtocol', name: 'Hydrosurge Protocol', rarity: 'Common', image: 'Cards/Construct/HydrosurgeProtocol.png', flavor: '', 
  category: 'Spell', color: 'Blue', type: ['Water','Construct','Aura'], cost: '{1}{U}', set: 'InfiniteHorizons', skill: [
  	{name: 'Cast', cost: '{1}{u}', eff: [{class: 'Soak', amount: 1, target: 3}, {class: 'cast'}]},
-  {name: 'Recycle', cost: '{u}', eff: {class: 'Soak', amount: 0, target: 2}}]},
+	{name: 'Recycle', cost: '{u}', eff: {class: 'Soak', amount: 0, target: 2}}]},
 
 // --- HYDRAL CARDS ---//
 {id: 'HydrionPrimevalFloodbringer', name: 'Hydrion, Primeval Floodbringer', rarity: 'Legend', image: 'Cards/fou/HydrionPrimevalFloodbringer.png', flavor: '', fullArt: 'Cards/Coralbound/MaelvyrnCoralboundAutomatonFA.png', flavor: '',
- category: 'Creature', fight: '', color: 'Blue', type: ['Water','Elemental','Fusion'], hp: 10, atk: 'x', ability: ['Elusive', 'Soak'], set: 'PrimordialAscension', skill: [
+ category: 'Creature', fight: '', color: 'Blue', type: ['Water','Elemental','Fusion'], hp: 10, atk: 0, ability: ['Elusive', 'Soak'], set: 'PrimordialAscension', skill: [
  	{name: 'Summon', cost: '{5}{u}', eff: {class: 'summon'}},
 	{name: 'Fusion', cost: '{u}{u}', eff: {class: 'summon'}},
-  {name: 'Stash', cost: '{U}',  req: {class: 'Stash'}, eff: {class: 'Search', archetype: 'Coralbound'}},
-  {name: 'Deluge Incarnate',act: {class: 'Echo'}, eff: {class: 'Token', name: 'Coral Drone', amount: 2}},
-  {name: 'Tide of Oblivion', cost: '{U}{U}', eff: {class: 'Soak', amount: 8}}]},
+	{name: 'Stash', cost: '{U}',  req: {class: 'Stash'}, eff: {class: 'Search', archetype: 'Coralbound'}},
+	{name: 'Deluge Incarnate',act: {class: 'Echo'}, eff: {class: 'Token', name: 'Coral Drone', amount: 2}},
+	{name: 'Tide of Oblivion', cost: '{U}{U}', eff: {class: 'Soak', amount: 8}}]},
 
 // SKULLFRAME //
 {id: 'SkullframeDefector', name: 'Skullframe Defector', rarity: 'Common', image: 'Cards/fob/SkullframeDefector.png', flavor: '', 
@@ -1224,47 +1199,52 @@ const dummyCards = [
   {name: 'Reanimate', cost: '{b}{b}', eff: {class: 'Reanimate'}}]},
 
 {id: 'UnyieldingSoul', name: 'Unyielding Soul', rarity: 'Common', image: 'Cards/fob/UnyieldingSoul.png', flavor: '', 
- category: 'Creature', fight: '', color: 'Black', type: 'Undead', hp: 3, atk: 1, cost: '{b}', ability: ['Immunity','Rush'], set: 'DesolateFrontiers', skill: [
+ category: 'Creature', fight: 'Bone Strike', color: 'Black', type: 'Undead', hp: 3, atk: 1, cost: '{b}', ability: ['Immunity','Rush'], set: 'DesolateFrontiers', skill: [
  	{name: 'Summon', cost: '{b}', eff: {class: 'summon'}},
-  {name: 'Reanimate', cost: '{b}{b}', eff: {class: 'Reanimate'}}]},
+	{name: 'Reanimate', cost: '{b}{b}', eff: {class: 'Reanimate'}}]},
 
 {id: 'SkullframeAcolyte', name: 'Skullframe Acolyte', rarity: 'Common', image: 'Cards/fob/SkullframeAcolyte.png', flavor: '', 
- category: 'Creature', fight: '', color: ['Black', 'Purple'], type: ['Undead','Mage'], hp: 4, atk: 3, cost: '{2}{b}', ability: 'Immunity', set: 'FracturedOrigins', skill: [
- 	{name: 'Summon', cost: '{0}', eff: {class: 'summon'}},
-  {name: 'Revive', cost: '{2}{b}', eff: {class: 'Revive', archetype: 'Skullframe'}},
-  {name: 'Reanimate', cost: '{b}{b}{p}', eff: {class: 'Reanimate'}}]},
+ category: 'Creature', fight: 'Bonestrike', color: ['Black', 'Purple'], type: ['Bone','Mage'], hp: 3, atk: 2, cost: '{b}{p}', ability: 'Immunity', set: 'FracturedOrigins', skill: [
+ 	{name: 'Summon', cost: '{b}{p}', eff: {class: 'summon'}},
+	{name: 'Reanimate', cost: '{1}{b}{p}', eff: {class: 'reanimate'}}
+	{name: 'Bonestrike', void: true, cost: '{p}', eff: {class: 'strike', q: 3}},
+]},
 
 {id: 'Cryptwinds', name: 'Cryptwinds', rarity: 'Common', image: 'Cards/fob/Cryptwinds.png', flavor: '', 
- category: 'Creature', fight: '', color: 'Black', type: ['Dragon','Undead'], hp: 4, atk: 2, cost: '{1}{b}', ability: ['Flying', 'Immunity'], set: 'FracturedOrigins', skill: [
- 	{name: 'Summon', cost: '{1}{b}', eff: {class: 'summon'}},
-  {name: 'Discard', cost: '{b}', req: {class: 'Discard'}, eff: {class: 'Search', amount: 1, type: ['Dragon','Undead']}},
-  {name: 'Reanimate', cost: '{b}{b}', req: {class: 'Sacrifice', amount: 1}, eff: {class: 'Reanimate'}}]},
+ category: 'Creature', fight: 'Bone Claw Strike', color: 'Black', type: ['Dragon','Undead'], hp: 4, atk: 2, cost: '{b}', ability: ['Flying', 'Immunity'], set: 'FracturedOrigins', skill: [
+ 	{name: 'Summon', cost: '{b}', eff: {class: 'summon'}},
+	{name: 'Reanimate', cost: '{1}{b}', eff: {class: 'reanimate'}}
+	{name: 'Revenant Scales', summon: true, eff: {class: 'destroy', q: 1, target: 'playerField'}},
+ 	{name: 'Draconic Bonecall', discard: true, cost: '{b}', eff: [{class: 'add', q: 1, targetType: 'Dragon'}, {class: 'spawn', id: 'Skeleton'}]}]},
  
 {id: 'XulZulSkullframeEternal', name: "Xul'Zul, Skullframe Eternal", rarity: 'Legend', image: 'Cards/fop/XulZulSkullframeEternal.png', flavor: '', 
  category: 'Creature', fight: '', color: ['Black', 'Purple'], type: ['Dragon','Undead'], hp: 6, atk: 4, cost: '{3}{p}{b}', ability: ['Flying', 'Immunity'], set: 'DesolateFrontiers', skill: [
  	{name: 'Summon', cost: '{3}{p}{b}', eff: {class: 'summon'}},
-  {name: 'Curseflame Inferno', cost: '{p}{p}{b}', act: {trigger: 'attack'}, eff: {class: 'Burn', amount: 2, target: 3}},
-  {name: 'Reanimate', cost: '{p}{b}{b}', req: {class: 'Sacrifice', amount: 2}, eff: {class: 'Reanimate'}}]},
+	{name: 'Curseflame Inferno', cost: '{p}{p}{b}', act: {trigger: 'attack'}, eff: {class: 'Burn', amount: 2, target: 3}},
+	{name: 'Reanimate', cost: '{p}{b}{b}', req: {class: 'Sacrifice', amount: 2}, eff: {class: 'Reanimate'}}]},
 
 {id: 'SkullframeArmoredDragon', name: 'Skullframe Armored Dragon', rarity: 'Rare', image: 'Cards/fob/SkullframeArmoredDragon.png', flavor: '', 
- category: 'Creature', fight: '', color: 'Black', type: ['Dragon','Undead'], hp: 4, atk: 4, cost: '{2}{b}', ability: ['Flying','Immunity'], set: 'DesolateFrontiers', skill: [
- 	{name: 'Summon', cost: '{2}{b}', eff: {class: 'summon'}},
-  {name: 'Reanimate', cost: '{b}{b}', req: {class: 'Sacrifice'}, amount: 1, eff: {class: 'Reanimate'}}]},
+ category: 'Creature', fight: 'Draconic Bonestrike', color: 'Black', type: ['Bone','Dragon'], hp: 4, atk: 3, cost: '{1}{b}', ability: ['Armor','Flying','Immunity'], set: 'DesolateFrontiers', skill: [
+ 	{name: 'Summon', cost: '{1}{b}', eff: {class: 'summon'}},
+	{name: 'Reanimate', cost: '{2}{b}', eff: {class: 'reanimate'}}
+ 	{name: 'Revenant Scales', summon: true, eff: {class: 'destroy', q: 2, target: 'playerCreatures'}},
+ 	{name: 'Draconic Bonestrike', discard: true, cost: '{b}{b}{b}', eff: [{class: 'destroy', q: 1, target: 'allField'}, {class: 'spawn', target: 'Skeleton'}]}]},
 
 {id: 'SkullframeHexmistress', name: 'Skullframe Hexmistress', rarity: 'Rare', image: 'Cards/fob/SkullframeHexmistress.png', flavor: '', 
  category: 'Creature', fight: '', color: ['Black', 'Purple'], type: ['Undead','Mage'], hp: 3, atk: 2, cost: '{b}{p}', ability: 'Immunity', set: 'DesolateFrontiers', skill: [
  	{name: 'Summon', cost: '{b}{p}', eff: {class: 'summon'}},
-  {name: 'Bonecall', cost: '{b}', act: {trigger: 'summon'}, eff: {class: 'Token', token: 'Skeleton', amount: 1}},
-  {name: 'Ebonhex Flare', cost: '{p}{p}', act: {trigger: 'attack'},  eff: {class: 'strike', amount: 3, status:'Burn'}},
-  {name: 'Reanimate', cost: '{1}{b}{p}', eff: {class:'Reanimate'}}]},
+	{name: 'Reanimate', cost: '{1}{b}{p}', eff: {class:'reanimate'}}
+	{name: 'Bonecall', summon: true, eff: {class: 'spawn', id: 'Skeleton'}},
+	{name: 'Bonecall', echo: true, eff: {class: 'spawn', id: 'Skeleton'}},
+	{name: 'Ebonhex Flare', cost: '{p}{p}', act: {trigger: 'attack'},  eff: {class: 'strike', amount: 3, status:'Burn'}},]},
 
 {id: 'MaldryssSkullframeArchmage', name: 'Maldryss, Skullframe Archmage', rarity: 'Legend', image: 'Cards/fob/MaldryssSkullframeArchmage.png', flavor: '', fullArt: 'Cards/Skullframe/MaldryssSkullframeArchmageFA.png', flavor: '',
  category: 'Creature', fight: '', color: ['Black', 'Purple'], type: ['Undead','Mage'], hp: 4, atk: 2, 
- cost: '{b}{b}{p}', ability: ['Scorch','Immunity'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
- 	{name: 'Summon', cost: '{b}{b}{p}', eff: {class: 'summon'}},
-  {name: 'Hexbind', cost: '{p}{p}', eff: {class: 'Bind', amount: 4}},
-  {name: 'Ebonhex Crush', cost: '{p}{p}', act: {trigger: 'attack'}, eff: {class: 'Exploit', amount: 5}},
-  {name: 'Reanimate', cost: '{1}{b}{b}{p}', eff: {class: 'Reanimate'}}]},
+ cost: '{b}{p}', ability: ['Scorch','Immunity'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ 	{name: 'Summon', cost: '{b}{p}', eff: {class: 'summon'}},
+	{name: 'Reanimate', cost: '{1}{b}{p}', eff: {class: 'reanimate'}}
+	{name: 'Hexbind', cost: '{p}{p}', eff: {class: 'Bind', amount: 4}},
+	{name: 'Ebonhex Crush', attack: true, eff: {class: 'destroy', targetBlight: 'burned'}}]},
 
 {id: 'Soulhexing', name: 'Soulhexing', rarity: 'Common', image: 'Cards/fob/Soulhexing.png', flavor: '', 
  category: 'Spell', color: 'Black', type: 'Undead', cost: '{1}{b}', set: 'DesolateFrontiers', skill: [
@@ -1273,7 +1253,7 @@ const dummyCards = [
 {id: 'Witherwake', name: 'Witherwake', rarity: 'Common', image: 'Cards/dfb/Witherwake.png', flavor: '', 
  category: 'Spell', color: ['Black','Purple'], type: ['Dragon','Undead'], cost: '{1}{p}{b}', set: 'DesolateFrontiers', skill: [
  	{name: 'Cast', cost: '{1}{p}{b}', eff: {class: 'cast'}},
-  {name: 'Hexbind', cost: '{P}{B}', eff: {class: 'Bind', amount: 4}}]},
+	{name: 'Hexbind', cost: '{P}{B}', eff: {class: 'Bind', amount: 4}}]},
 
 // ARTIFACTS //
 {id: 'GolemheartInfusor', name: 'Golemheart Infusor', rarity: 'Common', image: 'Cards/ecc/GolemheartInfusor.png', flavor: '', 
@@ -1303,61 +1283,61 @@ const dummyCards = [
 {id: 'DrakzulTwinHammers', name: 'Drakzul Twin Hammers', rarity: 'Rare', image: 'Cards/Artifact/DrakzulTwinHammers.png', flavor: '', 
  category: 'Artifact', color: 'Gray', type: 'Equipment', hp: 5, cost: '{c}{c}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
  	{name: 'Equip', cost: '{c}{c}', eff: {class: 'Inspire', ability: 'Crush'}},
-  {name: 'Twin Impact', cost: '{c}{c}', req: {class: 'Special'}, eff: {class: 'strike', amount: 2, target: 2}}]},
+	{name: 'Twin Impact', cost: '{c}{c}', req: {class: 'Special'}, eff: {class: 'strike', amount: 2, target: 2}}]},
 
 {id: 'DragonsGrove', name: "Dragon's Grove", rarity: 'Rare', image: 'Cards/fog/DragonsGrove.png', flavor: '', 
- category: 'Terrain', color: 'Green', type: ['Verdant','Dragon'], hp: 13, cost: '{2}{g}', set: 'FracturedOrigins', skill: [
+ category: 'Terrain', color: 'Green', type: ['Verdant','Dragon','Terrain'], hp: 7, cost: '{1}{g}{g}', set: 'FracturedOrigins', skill: [
  	{name: 'Terraform', cost: '{2}{g}', eff: {class: 'terraform'}},
-  {name: 'Draconic Pulse', cost: '{g}{g}', eff: {class: 'Heal', amount: 2, target: 2}},
-  {name: 'Dragon Summon', eff: {class: 'Burn', amount: 1}}]},
+	{name: 'Draconic Pulse', cost: '{g}{g}', eff: {class: 'Heal', amount: 2, target: 2}},
+	{name: 'Sylvan Scales', req: {class: 'summon', type: ['Sylvan','Dragon'], eff: {class: 'inspire', hp: 1}}]},
  
 {id: 'DragonsSpire', name: "Dragon's Spire", rarity: 'Rare', image: 'Cards/for/DragonsSpire.png', flavor: '', 
  category: 'Terrain', color: 'Red', type: ['Fire','Dragon','Terrain'], hp: 6, cost: '{r}{r}', set: 'FracturedOrigins', skill: [
  	{name: 'Terraform', cost: '{r}{r}', eff: {class: 'terraform'}},
-  {name: 'Dragon Summon', act: {'Draw', archetype: 'Dragon'}, eff: {class: 'Burn', amount: 1}},
-  {name: 'Draconic Blaze', cost: '{r}{r}', eff: {class: 'Burn', amount: 2, target: 2}}]},
+	{name: 'Inferno Scales', act: {'Draw', archetype: 'Dragon'}, eff: {class: 'Burn', amount: 1}},
+	{name: 'Draconic Blaze', cost: '{r}{r}', eff: {class: 'Burn', amount: 2, target: 2}}]},
  
 {id: 'DragonsAtoll', name: "Dragon's Atoll", rarity: 'Rare', image: 'Cards/fou/DragonsAtoll.png', flavor: '', 
  category: 'Terrain', color: 'Blue', type: ['Water','Dragon','Terrain'], hp: 11, cost: '{2}{u}{u}', set: 'FracturedOrigins', skill: [
 	{name: 'Terraform', cost: '{2}{u}{u}', eff: {class: 'terraform'}},
-  {name: 'Awaken', cost: '{u}{u}', act: {class: 'Awaken'}, eff: {class: 'Heal', amount: 2}},
-  {name: 'Dragon Echo', echo: true, targetType: 'Dragon', eff: {class: 'Recall', targetType: 'Dragon'}},
-  {name: 'Draconic Abyss', cost: '{u}{u}', act: {'Echo', archetype: 'Dragon'}, eff: {class: 'NullSigil'}}]},
+	{name: 'Tidal Scales', cost: '{u}{u}', act: {class: 'Awaken'}, eff: {class: 'Heal', amount: 2}},
+	{name: 'Slumbering Shroud', echo: true, targetType: 'Dragon', eff: {class: 'Recall', targetType: 'Dragon'}},
+	{name: 'Draconic Inheritance', cost: '{u}{u}', act: {'Echo', archetype: 'Dragon'}, eff: {class: 'NullSigil'}}]},
  
 {id: 'DragonsSkyreach', name: "Dragon's Skyreach", rarity: 'Rare', image: 'Cards/foy/DragonsSkyreach.png', flavor: '', 
  category: 'Terrain', color: 'Yellow', type: ['Thunder','Dragon','Terrain'], ability: 'Flying', hp: 9, cost: '{y}{y}', set: 'FracturedOrigins', skill: [
  	{name: 'Terraform', cost: '{y}{y}', eff: {class: 'terraform'}},
-  {name: 'Awaken', cost: '{u}{u}', act: {class: 'Awaken'}, eff: {class: 'Heal', amount: 2}},
-  {name: 'Dragon Echo', cost: '{u}', act: {'Echo', archetype: 'Dragon'}, eff: {class: 'NullSigil'}},
-  {name: 'Draconic Storm', cost: '{u}{u}', eff: {class: 'Thunderstorm'}}]},
+	{name: 'Awaken', cost: '{u}{u}', act: {class: 'Awaken'}, eff: {class: 'Heal', amount: 2}},
+	{name: 'Dragon Echo', cost: '{u}', act: {'Echo', archetype: 'Dragon'}, eff: {class: 'NullSigil'}},
+	{name: 'Draconic Storm', cost: '{u}{u}', eff: {class: 'Thunderstorm'}}]},
 
 {id: 'DragonsBastion', name: "Dragon's Bastion", rarity: 'Rare', image: 'Cards/foc/DragonsBastion.png', flavor: '', 
  category: 'Terrain', color: 'Gray', type: ['Steel','Dragon','Terrain'], ability: 'Armor', hp: 12, cost: '{1}{c}{c}', essence: '{c}', set: 'FracturedOrigins', skill: [
  	{name: 'Terraform', cost: '{1}{c}{c}', eff: {class: 'terraform'}},
-  {name: 'Awaken', cost: '{1}{c}{c}', act: {class: 'Awaken'}, eff: {class: 'Heal', amount: 2}},
-  {name: 'Dragon Echo', cost: '{u}', act: {'Echo', archetype: 'Dragon'}, eff: {class: 'NullSigil'}},
-  {name: 'Draconic Ironwall', cost: '{c}{c}', eff: {class: 'Curse'}},]},
+	{name: 'Awaken', cost: '{1}{c}{c}', act: {class: 'Awaken'}, eff: {class: 'Heal', amount: 2}},
+	{name: 'Dragon Echo', cost: '{u}', act: {'Echo', archetype: 'Dragon'}, eff: {class: 'NullSigil'}},
+	{name: 'Draconic Ironwall', cost: '{c}{c}', eff: {class: 'Curse'}},]},
  
 {id: 'DragonsHollow', name: "Dragon's Hollow", rarity: 'Rare', image: 'Cards/fop/DragonsHollow.png', flavor: '', 
  category: 'Terrain', color: 'Purple', type: ['Cursed','Dragon','Terrain'], hp: 7, cost: '{1}{p}{p}', set: 'FracturedOrigins', skill: [
  	{name: 'Terraform', cost: '{1}{p}{p}', eff: {class: 'terraform'}},
-  {name: 'Awaken', cost: '{u}{u}', act: {class: 'Awaken'}, eff: {class: 'Heal', amount: 2}},
-  {name: 'Dragon Echo', cost: '{u}', act: {'Echo', archetype: 'Dragon'}, eff: {class: 'NullSigil'}},
-  {name: 'Draconic Curse', cost: '{p}{p}', eff: {class: 'Curse'}}]}, 
+	{name: 'Awaken', cost: '{u}{u}', act: {class: 'Awaken'}, eff: {class: 'Heal', amount: 2}},
+	{name: 'Dragon Echo', cost: '{u}', act: {'Echo', archetype: 'Dragon'}, eff: {class: 'NullSigil'}},
+	{name: 'Draconic Curse', cost: '{p}{p}', eff: {class: 'Curse'}}]}, 
  
 {id: 'DragonsHaven', name: "Dragon's Haven", rarity: 'Rare', image: 'Cards/fow/DragonsHaven.png', flavor: '', 
  category: 'Terrain', color: 'White', type: ['Light','Dragon','Terrain'], ability: ['Aegis','Flying'], hp: 10, cost: '{2}{w}{w}', set: 'FracturedOrigins', skill: [
 	{name: 'Terraform', cost: '{2}{w}{w}', eff: {class: 'terraform'}},
-  {name: 'Awaken', cost: '{1}{u}', act: {class: 'Awaken'}, eff: {class: 'Heal', amount: 2}},
-  {name: 'Dragon Draw', cost: '{u}', act: {'Echo', archetype: 'Dragon'}, eff: {class: 'NullSigil'}},
-  {name: 'Draconic Solarflare', cost: '{w}{w}', eff: {class: 'Night'}}]},
+	{name: 'Awaken', cost: '{1}{u}', act: {class: 'Awaken'}, eff: {class: 'Heal', amount: 2}},
+	{name: 'Dragon Draw', cost: '{u}', act: {'Echo', archetype: 'Dragon'}, eff: {class: 'NullSigil'}},
+	{name: 'Draconic Solarflare', cost: '{w}{w}', eff: {class: 'Night'}}]},
  
 {id: 'DragonsMoonhold', name: "Dragon's Moonhold", rarity: 'Rare', image: 'Cards/fob/DragonsMoonhold.png', flavor: '', 
  category: 'Terrain', color: 'Black', type: ['Dark','Dragon','Terrain'], ability: 'Seal', hp: 6, cost: '{b}{b}', set: 'FracturedOrigins', skill: [
  	{name: 'Terraform', cost: '{b}{b}', eff: {class: 'terraform'}},
-  {name: 'Awaken', cost: '{b}{b}', act: {class: 'Awaken'}, eff: {class: 'Heal', amount: 2}},
-  {name: 'Dragon Echo', cost: '{u}', act: {'Echo', archetype: 'Dragon'}, eff: {class: 'NullSigil'}},
-  {name: 'Draconic Nightfall', cost: '{b}{b}', eff: {class: 'Night'}}]},
+	{name: 'Awaken', cost: '{b}{b}', act: {class: 'Awaken'}, eff: {class: 'Heal', amount: 2}},
+	{name: 'Dragon Echo', cost: '{u}', act: {'Echo', archetype: 'Dragon'}, eff: {class: 'NullSigil'}},
+	{name: 'Draconic Nightfall', cost: '{b}{b}', eff: {class: 'Night'}}]},
  
 {id: 'HardenedScales', name: 'Hardened Scales', rarity: 'Common', image: 'Cards/fog/HardenedScales.png', flavor: '', 
  category: 'Spell', color: 'Colorless', type: ['Dragon','Aura'], cost: '{2}', mana: 3, set: 'FracturedOrigins', skill: [
@@ -1366,7 +1346,7 @@ const dummyCards = [
 	{name: 'Hardened Scales', mana: 2, tap: true, eff: {class: 'give', atk: 2, hp: 3, targetType: 'Dragon'}}]},
 
 {id: 'ElementalofFoliages', name: 'Elemental of Foliages', rarity: 'Rare', image: 'Cards/ecg/ElementalofFoliages.png', flavor: '', 
- category: 'Creature', fight: '', color: 'Green', type: ['Verdant','Spirit'], hp: 8, atk: 3, cost: '{2}',  ability: ['Protect','Regenerate'], set: 'EchoesofCreation', skill: [
+ category: 'Creature', fight: 'Verdant Strike', color: 'Green', type: ['Verdant','Spirit'], hp: 6, atk: 2, cost: '{2}',  ability: ['Protect','Regenerate'], set: 'EchoesofCreation', skill: [
 	{name: 'Sylvan Discovery', cost: '{g}{g}', act: {trigger: 'summon'}, {class: 'add', targetColor: 'Green', targetCategory: 'Terrain'}}]},
  
 {id: 'WildwoodGoblin', name: 'Wildwood Goblin', rarity: 'Common', image: 'Cards/egg/WildwoodGoblin.png', flavor: '',
@@ -1455,7 +1435,7 @@ const dummyCards = [
  category: 'Terrain', color: 'Black', type: '', hp: 5, cost: '{0}', essence: '{B}', set: 'DesolateFrontiers'},
  
 {id: 'Graveyard', name: 'Graveyard', rarity: 'Common', image: 'Cards/fob/Graveyard.png', flavor: '', 
- category: 'Terrain', color: 'Black', type: ['Basic','Umbral,'Terrain'], hp: 5, cost: '{0}', set: 'FracturedOrigins'},
+ category: 'Terrain', color: 'Black', type: ['Basic','Umbral','Terrain'], hp: 5, cost: '{0}', set: 'FracturedOrigins'},
  
 {id: 'ShadelornWastes', name: 'Shadelorn Wastes', rarity: 'Rare', image: 'Cards/ecb/ShadelornWastes.png', flavor: '', 
  category: 'Terrain', color: 'Black', type: 'Elemental', trait: 'Shadow', hp: 8, cost: '{2}', essence: '{B}', set: 'EchoesofCreation'},
@@ -1475,12 +1455,11 @@ const dummyCards = [
 {id: 'LumenlowFields', name: 'Lumenlow Fields', rarity: 'Rare', image: 'Cards/egw/LumenlowFields.png', flavor: '', 
  category: 'Terrain', color: 'White', type: 'Terrain', hp: 6, cost: '{2}{w}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
  	{name: 'Terraform', cost: '{1}', eff: {class: 'terraform'}},
-	{name: 'Terraform', cost: '{1}', eff: {class: 'terraform'}}]},
+	{name: 'Luminous Descent', cost: '{1}', eff: {class: 'terraform'}}]},
  
 {id: 'SunbatheHills', name: 'Sunbathe Hills', rarity: 'Common', image: 'Cards/egw/SunbatheHills.png', flavor: '', 
  category: 'Terrain', color: 'White', hp: 8, cost: '{1}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
  	{name: 'Terraform', cost: '{1}', eff: {class: 'terraform'}}]},
-
 ];
 
 // Cost mapping and renderer (returns HTML string)
