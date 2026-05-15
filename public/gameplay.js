@@ -387,29 +387,29 @@ conceal: { name: 'Conceal', icon: 'Icons/Ability/Conceal.png',
 // Maps skill activation triggers to their event handlers
 const ACTIVATION_MAP = {
   // When this card enters the field (a.k.a. onSummon, "Arrival" in card text)
-  arrival: {
-    name: "onSummon", // (Arrival)
+  summon: {
+    name: "Summon", // (Arrival)
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
   },
   // When this card is drawn (a.k.a. onDraw, "Insight" in card text)
   draw: {
-    name: "onDraw", // (Insight)
+    name: "Draw", // (Insight)
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
   },
   // When this card enters the void //
   echo: {
-    name: "onVoid",
+    name: "Echo",
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
   },
   // When this card deals damage //
   frenzy: {
-    name: "onDealDamage",
+    name: "Frenzy",
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
@@ -422,15 +422,15 @@ const ACTIVATION_MAP = {
     }
   },
   // When this card attacks //
-  assault: {
-    name: "onAttack",
+  attack: {
+    name: "Attack",
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
   },
   // When this card is attacked //
-  defender: {
-    name: "onDefense",
+  defend: {
+    name: "Defend",
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
@@ -443,14 +443,7 @@ const ACTIVATION_MAP = {
 ------------------------------*/
 // Helper for requirements //
 const REQUIREMENT_MAP = {
-  special: { name: 'Special', zone: ['playerField'], icon: 'Icons/Ability/Special.png',
-    description: 'Activates in the field.',
-    canActivate: (cardObj, skillObj, currentZone) =>
-      ['playerCreatures', 'playerTerrains'].includes(currentZone),
-    handler: (cardObj, skillObj, next) => next && next()
-  },
-
-  Stash: { name: 'Stash', zone: 'playerHand', icon: 'Icons/Requirement/Stash.png',
+  stash: { name: 'Stash', zone: 'playerHand', icon: 'Icons/Requirement/Stash.png',
     description: 'Returns itself from the hand to the deck.',
     handler: function(sourceCardObj, skillObj) {
       const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
@@ -813,11 +806,11 @@ strike: { name: 'Strike', icon: 'Icons/Skill/Strike.png',
     );
   }
 },
-scorch: { name: 'Burn', icon: 'Icons/Skill/Burn.png',
+burn: { name: 'Burn', icon: 'Icons/Skill/Burn.png',
   description: 'Deals damage and burns.',
   handler: effectStatusHandler('Burn')
 },
-toxic: { name: 'Poison', icon: 'Icons/Skill/Poison.png',
+poison: { name: 'Poison', icon: 'Icons/Skill/Poison.png',
   description: 'Deals damage and poisons.',
   handler: effectStatusHandler('Poison')
 },
