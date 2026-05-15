@@ -30,7 +30,6 @@ let gameState = {
   playerDeck: [], playerHand: [], playerCreatures: [], playerTerrains: [], playerVoid: [], playerDeparture: [],
   enemyDeck: [], enemyHand: [], enemyCreatures: [], enemyTerrains: [], enemyVoid: [], enemyDeparture: [],
   playerDominion: null, enemyDominion: null,
-  playerSigils: [], enemySigils: [],
   turn: "player",
   phase: "start",
   essencePools: {
@@ -131,7 +130,7 @@ const ESSENCE_IMAGE_MAP = {
   X20: "Icons/Essence/Twenty.png"
 };
 // STATUS EFFECTS
-const BLIGHTS = {
+const STATUS_MAP = {
   burned: { name: 'Burned', icon: 'Icons/Status/Burned.png', duration: 2, tick: "enemyEnd",
     description: 'DEF -1.',
     apply: function(cardObj) {
@@ -1426,137 +1425,7 @@ essence: { icon: 'Icons/skillEffect/Essence.png', name: 'Essence', description: 
     nextEffect && nextEffect();
   }
 },
-fusion: { name: 'Fusion', icon: 'Icons/Skill/Fusion.png',
-  description: 'Sacrifices creatures or artifacts to summon it.',
-  zones: ['playerHand'],
-  canActivate(cardObj, skillObj, currentZone, gameState) {
-    // Only allow from hand if source card has a FuseSigil (caller must have granted it earlier)
-    // Note: Fusion is the effect consumed by the evolved FuseSigil on the source card (if design differs adjust accordingly)
-    // Here, cardObj is the card being fused (from hand), but the fuse sigil applies to the card that activated Fuse earlier (source).
-    // If you intend fusion to be performed by a field card with a fuse sigil, adjust checks accordingly.
-    // For now require the card performing the Fusion (cardObj) to have the FuseSigil.
-    return currentZone === 'playerHand' && hasFuseSigil(cardObj);
-  },
-  handler(cardObj, skillObj, effectStep, nextEffect) {
-    // Ensure sigil present
-    if (!hasFuseSigil(cardObj)) {
-      showToast && showToast('Cannot fuse: Fuse Sigil is required.', { type: 'error' });
-      if (nextEffect) nextEffect();
-      return;
-    }
-    // Consume sigil
-    try { removeStatus(cardObj, 'FuseSigil'); } catch (e) {}
 
-    // Existing Fusion logic follows (keeps original behavior)
-    const fieldCards = [...gameState.playerCreatures, ...gameState.playerTerrains];
-    const fusedCards = fieldCards.filter(c => c._fused);
-
-    // Find valid pairs
-    let validPairs = [];
-    for (let i = 0; i < fusedCards.length; i++) {
-      for (let j = i + 1; j < fusedCards.length; j++) {
-        if (haveSharedTypeOrArchetype(fusedCards[i], fusedCards[j])) {
-          validPairs.push([fusedCards[i], fusedCards[j]]);
-        }
-      }
-    }
-    if (validPairs.length === 0) {
-      showToast && showToast("No valid Fusion pair found.");
-      if (nextEffect) nextEffect();
-      return;
-    }
-
-    // Pick first valid pair for simplicity (expand to UI selection if needed)
-    const pairToUse = validPairs[0];
-
-    // Summon this card to the field
-    const cardData = dummyCards.find(c => c.id === cardObj.cardId);
-    let targetArr;
-    const category = Array.isArray(cardData.category)
-      ? cardData.category.map(c => c.toLowerCase())
-      : [String(cardData.category).toLowerCase()];
-    if (category.includes("creature")) {
-      targetArr = gameState.playerCreatures;
-    } else if (category.includes("terrain")) {
-      targetArr = gameState.playerTerrains;
-    } else {
-      showToast && showToast("Fusion can only be used for creatures or terrains.");
-      if (nextEffect) nextEffect();
-      return;
-    }
-
-    // Remove from hand, add to field
-    moveCard(cardObj.instanceId, gameState.playerHand, targetArr);
-
-    renderGameState && renderGameState();
-    setupDropZones && setupDropZones();
-    if (nextEffect) nextEffect();
-  }
-},
-evolution: { name: 'Evolution', icon: 'Icons/Skill/Evolution.png',
-  description: 'Sacrifices 1 creature to summon.',
-  canActivate: function(cardObj, skillObj, currentZone, gameState) {
-    // Require that the card has the Evolve sigil and be on field
-    const onField = ['playerCreatures','playerTerrains','enemyCreatures','enemyTerrains'].includes(currentZone);
-    return onField && hasEvolveSigil(cardObj);
-  },
-  handler: function(cardObj, skillObj, effectStep, nextEffect) {
-    // Ensure we still guard at runtime (in case canActivate not used)
-    if (!hasEvolveSigil(cardObj)) {
-      showToast && showToast('Cannot evolve: Evolve Sigil is required.', { type: 'error' });
-      if (nextEffect) nextEffect();
-      return;
-    }
-    // Consume the sigil (remove status entry + call BLIGHTS.remove)
-    try {
-      removeStatus(cardObj, 'EvolveSigil'); // calls BLIGHTS.remove if defined
-    } catch (e) { /* ignore */ }
-
-    // EXISTING evolution logic starts here (your current Evolution handler body)
-    // --- Find all evolved cards on field (or whatever your Evolution does) ---
-    const evolvedCards = [
-      ...gameState.playerCreatures,
-      ...gameState.playerTerrains
-    ].filter(c => c._evolved);
-
-    if (evolvedCards.length === 0) {
-      showToast && showToast("No evolved card available for Evolution.");
-      if (nextEffect) nextEffect();
-      return;
-    }
-
-    const target = evolvedCards[0]; // Or let player pick
-
-    // Summon this card from hand to field
-    const cardData = dummyCards.find(c => c.id === cardObj.cardId);
-    let targetArr;
-    const category = Array.isArray(cardData.category)
-      ? cardData.category.map(c => c.toLowerCase())
-      : [String(cardData.category).toLowerCase()];
-    if (category.includes("creature")) targetArr = gameState.playerCreatures;
-    else if (category.includes("terrain")) targetArr = gameState.playerTerrains;
-    else {
-      showToast && showToast("Evolution can only be used for creatures or terrains.");
-      if (nextEffect) nextEffect();
-      return;
-    }
-
-    moveCard(cardObj.instanceId, gameState.playerHand, targetArr);
-
-    let fromArr = gameState.playerCreatures.includes(target)
-      ? gameState.playerCreatures
-      : gameState.playerTerrains;
-    const idx = fromArr.indexOf(target);
-    if (idx !== -1) fromArr.splice(idx, 1);
-
-    target._evolved = false;
-    if (target.statuses) target.statuses = target.statuses.filter(s => s.name !== 'Evolved');
-
-    renderGameState && renderGameState();
-    setupDropZones && setupDropZones();
-    if (nextEffect) nextEffect();
-  }
-},
 spawn: { name: 'Spawn',
   description: 'Summons from the token deck.',
   canActivate: function(sourceCardObj, skillObj, currentZone, gameState, step = {}) {
@@ -1670,61 +1539,6 @@ spawn: { name: 'Spawn',
     emitPublicState && emitPublicState();
 
     nextEffect && nextEffect();
-  }
-},
-sigil: {
-  icon: 'Icons/Skill/Sigil.png',
-  name: 'Sigil',
-  description: 'Grants one or more sigils to a player or enemy. Step fields: sigil (string), amount (number), duration (number|null), owner ("source"|"player"|"enemy"|"enemyOfSource"|"all").',
-  handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
-    if (!step || !step.sigil) {
-      if (typeof nextEffect === 'function') nextEffect();
-      return;
-    }
-
-    const sigilName = String(step.sigil);
-    const amount = Math.max(0, Number(step.amount) || 1);
-    const duration = (typeof step.duration === 'number') ? Number(step.duration) : null;
-
-    // Resolve recipient(s)
-    const sourceOwner = getCardOwner(sourceCardObj) || (sourceCardObj && sourceCardObj.owner) || 'player';
-    const enemyOwner = sourceOwner === 'player' ? 'enemy' : 'player';
-    let targets = [];
-
-    const ownerToken = String(step.owner || 'source').toLowerCase();
-    if (ownerToken === 'player') targets = ['player'];
-    else if (ownerToken === 'enemy') targets = ['enemy'];
-    else if (ownerToken === 'enemyofsource' || ownerToken === 'enemy_of_source' || ownerToken === 'enemyofsource') targets = [enemyOwner];
-    else if (ownerToken === 'source') targets = [sourceOwner];
-    else if (ownerToken === 'all' || ownerToken === 'both') targets = ['player','enemy'];
-    else targets = [sourceOwner];
-
-    // Apply: use addSigil which will call applySigil for each instance and keep legacy sync
-    for (const tgt of targets) {
-      if (amount <= 0) continue;
-      // addSigil accepts amount and will loop internally; pass duration via meta
-      addSigil(tgt, sigilName, amount);
-      // If you want duration stored per entry, call applySigil repeatedly with opts including duration:
-      if (duration !== null && typeof applySigil === 'function') {
-        // replace last-added entries' durations — simpler approach: add individually with duration
-        for (let i = 0; i < amount; i++) {
-          applySigil(tgt, sigilName, { duration, meta: step.meta || {} });
-        }
-      }
-    }
-
-    // Visual/log
-    appendVisualLog && appendVisualLog({
-      action: 'grantSigil',
-      text: `${sourceOwner === 'player' ? 'You' : 'enemy'} granted ${amount} ${sigilName} Sigil${amount === 1 ? '' : 's'} to ${targets.join(', ')}.`
-    });
-
-    renderGameState && renderGameState();
-    if (typeof nextEffect === 'function') nextEffect();
-  },
-  canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
-    // optional: restrict activation zones or conditions if needed
-    return true;
   }
 },
 };
@@ -1847,9 +1661,6 @@ if (Array.isArray(enemyDeck) && enemyDeck.length && enemyDeck[0].cardId) {
   gameState.enemyDeparture = [];
   
   gameState.phase = "start";
-  
-  gameState.playerSigils = [];
-  gameState.enemySigils = []; 
   
   gameState.playerDominion = null;
   gameState.enemyDominion = null;
@@ -3383,7 +3194,7 @@ statsAndIconsOverlay.appendChild(topStatsRow);
   iconRow.style.marginTop = '22px';
   // Status Icons
   (cardObj.statuses || []).forEach(status => {
-    const statusDef = BLIGHTS[status.name];
+    const statusDef = STATUS_MAP[status.name];
     if (!statusDef) return;
     const icon = document.createElement('img');
     icon.src = statusDef.icon;
@@ -3516,12 +3327,12 @@ badgesRow.style.gap = '6px';
 if (hasStatus(cardObj, 'Seal')) {
   const sealBadge = document.createElement('div');
   sealBadge.className = 'card-seal-badge';
-  sealBadge.title = BLIGHTS['Seal']?.description || 'Sealed';
+  sealBadge.title = STATUS_MAP['Seal']?.description || 'Sealed';
   sealBadge.style.display = 'flex';
   sealBadge.style.alignItems = 'center';
   sealBadge.style.justifyContent = 'center';
   sealBadge.style.cursor = 'default';
-  sealBadge.innerHTML = `<img src="${BLIGHTS['Seal']?.icon || 'Icons/Status/seal.png'}" alt="Sealed" style="width:18px;height:18px;filter:drop-shadow(0 2px 6px #0007);opacity:0.95">`;
+  sealBadge.innerHTML = `<img src="${STATUS_MAP['Seal']?.icon || 'Icons/Status/seal.png'}" alt="Sealed" style="width:18px;height:18px;filter:drop-shadow(0 2px 6px #0007);opacity:0.95">`;
   badgesRow.appendChild(sealBadge);
 }
 
@@ -5234,7 +5045,7 @@ function damageCalculation(attacker, defender) {
     if (defenderCategory === "creature" && defenderInfo.arr?.includes(defender) && (defender.currentHP || 0) > 0) {
       const attackerAbilities = attackerDef?.ability || [];
       attackerAbilities.forEach(abilityName => {
-        if (BLIGHTS[abilityName]) applyStatus(defender, abilityName);
+        if (STATUS_MAP[abilityName]) applyStatus(defender, abilityName);
       });
     }
     renderGameState();
@@ -5265,7 +5076,7 @@ function damageCalculation(attacker, defender) {
   if (defenderCategory === "creature" && defenderInfo.arr?.includes(defender) && (defender.currentHP || 0) > 0) {
     const attackerAbilities = attackerDef?.ability || [];
     attackerAbilities.forEach(abilityName => {
-      if (BLIGHTS[abilityName]) applyStatus(defender, abilityName);
+      if (STATUS_MAP[abilityName]) applyStatus(defender, abilityName);
     });
   }
   renderGameState();
@@ -5305,7 +5116,7 @@ function dealDamage(cardObj, targetObj, damage) {
     if (sourceDef && sourceDef.ability) {
       const abilities = Array.isArray(sourceDef.ability) ? sourceDef.ability : [sourceDef.ability];
       abilities.forEach(abilityName => {
-        if (BLIGHTS[abilityName]) {
+        if (STATUS_MAP[abilityName]) {
           applyStatus(targetObj, abilityName);
         }
       });
@@ -5466,14 +5277,6 @@ function getInitialGameState() {
     // Dominion / meta
     playerDominion: null,
     enemyDominion: null,
-
-    // Counters and flags
-    playerNullCounters: 0,
-    enemyNullCounters: 0,
-
-    // Sigils (owner-scoped arrays, per recent changes)
-    playerSigils: [],
-    enemySigils: [],
 
     // Essence pools (keep as map of colors)
     essencePools: {
@@ -6408,35 +6211,6 @@ function getSkillRequirements(skillObj = {}) {
     .map(req => ({ ...req, class: String(req.class || "").toLowerCase() }));
 }
 
-  function runResolution() {
-    // NULL COUNTER CHECK:
-    // If the enemy has any Null Counters they consume one to counter this skill.
-    try {
-      const consumedBy = tryConsumeenemyNullSigilForSkill(cardObj);
-      if (consumedBy) {
-        // Notify players and stop resolution
-        const whoText = consumedBy === 'player' ? 'Player' : 'enemy';
-        showToast && showToast(`Null Counter consumed by ${whoText}! Skill was countered.`, { type: "info" });
-        // Optional: append to the game log for clarity
-        appendVisualLog && appendVisualLog({
-          action: "nullSigil",
-          text: `${whoText} consumed a Null Counter and countered ${cardObj.name || cardObj.cardId}'s skill: ${skillObj.name || ''}`,
-          who: getCardOwner(cardObj) === "player" ? "enemy" : "player"
-        });
-        // Re-render state and stop (do not resolve skill)
-        renderGameState && renderGameState();
-        return;
-      }
-    } catch (err) {
-      console.warn("Null Counter check error:", err);
-      // Continue to resolve skill even if null counter check failed unexpectedly
-    }
-
-    // No Null Counter consumed — proceed to resolve the skill
-    resolveSkill(cardObj, skillObj);
-    renderGameState && renderGameState();
-  }
-
 function proceedSkillActivation(cardObj, skillObj, options = {}) {
   const activation = skillObj.activation || {};
   let requirements = Array.isArray(activation.requirement)
@@ -7115,7 +6889,7 @@ function parseCost(costStr) {
 /*------------------
 // STATUS EFFECTS //
 ------------------*/
-function applyStatus(cardObj, statusName, duration = (BLIGHTS[statusName] && BLIGHTS[statusName].duration)) {
+function applyStatus(cardObj, statusName, duration = (STATUS_MAP[statusName] && STATUS_MAP[statusName].duration)) {
   if (!cardObj || !statusName) return;
   cardObj.statuses = cardObj.statuses || [];
   if (!cardObj.statuses.some(s => s.name === statusName)) {
@@ -7124,21 +6898,21 @@ function applyStatus(cardObj, statusName, duration = (BLIGHTS[statusName] && BLI
 
     // call the status-specific apply callback if present (preserve existing behavior)
     try {
-      if (BLIGHTS[statusName] && typeof BLIGHTS[statusName].apply === 'function') {
-        BLIGHTS[statusName].apply(cardObj);
+      if (STATUS_MAP[statusName] && typeof STATUS_MAP[statusName].apply === 'function') {
+        STATUS_MAP[statusName].apply(cardObj);
       }
     } catch (err) {
-      console.warn(`BLIGHTS.${statusName}.apply failed`, err);
+      console.warn(`STATUS_MAP.${statusName}.apply failed`, err);
     }
 
     // Notify any JS listeners registered via onSoaked/onBurned/...
-    // Use case-insensitive matching against BLIGHTS keys (single source of truth)
+    // Use case-insensitive matching against STATUS_MAP keys (single source of truth)
     try {
       const normalized = String(statusName).trim().toLowerCase();
       let canonical = null;
 
-      if (typeof BLIGHTS === 'object' && BLIGHTS !== null) {
-        canonical = Object.keys(BLIGHTS).find(k => String(k).toLowerCase() === normalized);
+      if (typeof STATUS_MAP === 'object' && STATUS_MAP !== null) {
+        canonical = Object.keys(STATUS_MAP).find(k => String(k).toLowerCase() === normalized);
       }
 
       if (canonical) {
@@ -7169,14 +6943,14 @@ function applyStatus(cardObj, statusName, duration = (BLIGHTS[statusName] && BLI
 function removeStatus(cardObj, statusName) {
   if (!cardObj.statuses) return;
   cardObj.statuses = cardObj.statuses.filter(s => s.name !== statusName);
-  if (BLIGHTS[statusName]) BLIGHTS[statusName].remove(cardObj);
+  if (STATUS_MAP[statusName]) STATUS_MAP[statusName].remove(cardObj);
 }
 
 function handleStatusEffects(cardObj) {
   if (!cardObj.statuses) return;
   cardObj.statuses.forEach(status => {
-    if (BLIGHTS[status.name].onTurnStart) {
-      BLIGHTS[status.name].onTurnStart(cardObj);
+    if (STATUS_MAP[status.name].onTurnStart) {
+      STATUS_MAP[status.name].onTurnStart(cardObj);
     }
     status.duration -= 1;
   });
@@ -7190,8 +6964,8 @@ function handleEndPhaseStatuses() {
   [...gameState.playerCreatures, ...gameState.enemyCreatures].forEach(cardObj => {
     if (cardObj.statuses) {
       cardObj.statuses.forEach(status => {
-        if (BLIGHTS[status.name]?.onEndPhase) {
-          BLIGHTS[status.name].onEndPhase(cardObj);
+        if (STATUS_MAP[status.name]?.onEndPhase) {
+          STATUS_MAP[status.name].onEndPhase(cardObj);
         }
         // Reduce duration for statuses that only tick on End Phase
         status.duration -= 1;
@@ -7212,7 +6986,7 @@ function tickStatusDurations(phaseObj) {
   allCards.forEach(cardObj => {
     if (!cardObj.statuses) return;
     cardObj.statuses.forEach(status => {
-      const statusDef = BLIGHTS[status.name];
+      const statusDef = STATUS_MAP[status.name];
       if (!statusDef) return;
       // Determine if this status should tick in this phase
       if (
@@ -7431,85 +7205,8 @@ function getStatColor(cardObj, statName) {
   if (current < base) return "#e53935";   // red
   return "#fff";                          // default/neutral
 }
-// --- BADGES / COUNTERS UI HELPERS ---
-// Renders a row of simple icon+count badges into containerId
-function renderBadgeRow(containerId, badges) {
-  const container = document.getElementById(containerId);
-  if (!container) return;
-  container.innerHTML = '';
-  badges.forEach(b => {
-    const el = document.createElement('div');
-    el.className = 'badge-counter';
-    el.style.display = 'inline-flex';
-    el.style.alignItems = 'center';
-    el.style.gap = '6px';
-    el.style.padding = '6px 8px';
-    el.style.borderRadius = '8px';
-    el.style.background = b.background || '#1b2430';
-    el.style.color = b.color || '#fff';
-    el.title = b.title || '';
-    el.innerHTML = `
-      ${b.icon ? `<img src="${b.icon}" alt="${b.key || ''}" style="width:18px;height:18px;display:inline-block;">` : ''}
-      <span class="badge-count" style="font-weight:700;color:${b.countColor||'#ffe066'};min-width:18px;text-align:right;">${b.count}</span>
-      ${b.label ? `<span style="font-size:0.85em;color:#d0d6df;margin-left:6px;">${b.label}</span>` : ''}
-    `;
-    container.appendChild(el);
-  });
-}
 
-function updateenemyBadges() {
-  const nullCount = (typeof getNullSigil === 'function') ? Number(getNullSigil('enemy') || 0) : Number(gameState.enemyNullSigil || 0);
-
-  const badges = [];
-  // Only add null counter badge when we actually have > 0 counters
-  if (nullCount > 0) {
-    badges.push({
-      key: 'nullSigilOpp',
-      icon: 'Icons/Sigil/Null.png',
-      count: nullCount,
-      label: '',
-      title: `Null Counters: ${nullCount}`
-    });
-  }
-
-  renderBadgeRow('enemy-badges-row', badges);
-}
-
-function updatePlayerBadges() {
-  const nullCount = (typeof getNullSigil === 'function') ? Number(getNullSigil('player') || 0) : Number(gameState.playerNullSigil || 0);
-
-  const badges = [];
-  // Only show the player's null-counter badge when there is at least one counter
-  if (nullCount > 0) {
-    badges.push({
-      key: 'nullSigilPlayer',
-      icon: 'Icons/Sigil/Null.png',
-      count: nullCount,
-      label: '',
-      title: `Null Counters: ${nullCount}`
-    });
-  }
-
-  renderBadgeRow('player-badges-row', badges);
-}
-
-// Hook into UI refresh: call these from your renderGameState (or after relevant state updates)
-const _origRenderGameState = typeof renderGameState === 'function' ? renderGameState : null;
-function renderGameStateWithBadges() {
-  if (typeof _origRenderGameState === 'function') _origRenderGameState();
-  updateenemyBadges();
-  updatePlayerBadges();
-}
-// If renderGameState already exists, override it to ensure badges update automatically
-if (typeof renderGameState === 'function') {
-  const orig = renderGameState;
-  renderGameState = function() {
-    orig.apply(this, arguments);
-    updateenemyBadges();
-    updatePlayerBadges();
-  };
-}
-// --- GAME STATUS UI (Day/Night ) ---
+// GAME STATUS UI
 // Renders a compact row showing current time-of-day
 // --- REPLACEMENT: updateGameStatusRow (renders day/night icons)
 // Updated updateGameStatusRow - ensures pooled essence and casting preview are shown
@@ -7600,46 +7297,6 @@ function updateGameStatusRow() {
     }
   }
 
-// --- inside updateGameStatusRow() where you build status UI ---
-// Render enemy sigils
-const enemySigArr = getSigils('enemy');
-if (enemySigArr && enemySigArr.length) {
-  const oSigWrap = document.createElement('div');
-  oSigWrap.style.display = 'flex';
-  oSigWrap.style.gap = '6px';
-  oSigWrap.style.alignItems = 'center';
-  enemySigArr.forEach(s => {
-    const eff = SIGIL_EFFECTS[s.name] || {};
-    const img = document.createElement('img');
-    img.src = eff.icon || 'Icons/Sigils/default.png';
-    img.alt = s.name;
-    img.title = `${eff.name || s.name}${s.duration ? ` (${s.duration})` : ''}`;
-    img.style.width = '22px';
-    img.style.height = '22px';
-    oSigWrap.appendChild(img);
-  });
-  container.appendChild(oSigWrap);
-}
-// Render player's sigils (if any)
-const playerSigArr = getSigils('player');
-if (playerSigArr && playerSigArr.length) {
-  const pSigWrap = document.createElement('div');
-  pSigWrap.style.display = 'flex';
-  pSigWrap.style.gap = '6px';
-  pSigWrap.style.alignItems = 'center';
-  playerSigArr.forEach(s => {
-    const eff = SIGIL_EFFECTS[s.name] || {};
-    const img = document.createElement('img');
-    img.src = eff.icon || 'Icons/Sigils/default.png';
-    img.alt = s.name;
-    img.title = `${eff.name || s.name}${s.duration ? ` (${s.duration})` : ''}`;
-    img.style.width = '22px';
-    img.style.height = '22px';
-    pSigWrap.appendChild(img);
-  });
-  container.appendChild(pSigWrap); // or append to the player column you use
-}
-
   // assemble
   container.appendChild(todWrap);
   container.appendChild(pWrap);
@@ -7663,76 +7320,6 @@ if (typeof renderGameState === 'function') {
   document.addEventListener('DOMContentLoaded', () => updateGameStatusRow());
 }
 
-// --- Sigil helpers (owner = 'player' | 'enemy') ---
-function getSigilArrayForOwner(owner) {
-  return owner === 'enemy' ? gameState.enemySigils : gameState.playerSigils;
-}
-
-// Apply a sigil to an owner. opts: { amount, duration, meta }
-function applySigil(owner = 'player', sigilName, opts = {}) {
-  if (!sigilName) return;
-  owner = owner === 'enemy' ? 'enemy' : 'player';
-  const sigils = getSigilArrayForOwner(owner);
-  // push a sigil entry (allow duplicates)
-  sigils.push({
-    name: sigilName,
-    appliedAt: getCurrentPhaseObj ? getCurrentPhaseObj() : { turn: gameState.turn, phase: gameState.phase },
-    duration: opts.duration || null,
-    meta: opts.meta || {}
-  });
-  // call SIGIL_EFFECTS apply if present
-  if (SIGIL_EFFECTS && SIGIL_EFFECTS[sigilName] && typeof SIGIL_EFFECTS[sigilName].apply === 'function') {
-    try { SIGIL_EFFECTS[sigilName].apply(owner, opts); } catch (e) { console.warn('applySigil: handler threw', e); }
-  }
-  renderGameState && renderGameState();
-}
-window.applySigil = applySigil;
-
-// Remove one or all matching sigils for owner. opts: { amount, removeAll }
-function removeSigil(owner = 'player', sigilName, opts = {}) {
-  if (!sigilName) return;
-  owner = owner === 'enemy' ? 'enemy' : 'player';
-  const sigils = getSigilArrayForOwner(owner);
-  const removeAll = Boolean(opts.removeAll);
-  const amount = Number(opts.amount || 1);
-
-  if (removeAll) {
-    // remove all occurrences
-    const removed = sigils.filter(s => s.name === sigilName);
-    gameState[owner === 'enemy' ? 'enemySigils' : 'playerSigils'] = sigils.filter(s => s.name !== sigilName);
-    // call handler to remove same number
-    if (SIGIL_EFFECTS && SIGIL_EFFECTS[sigilName] && typeof SIGIL_EFFECTS[sigilName].remove === 'function') {
-      try { SIGIL_EFFECTS[sigilName].remove(owner, { amount: removed.length }); } catch (e) {}
-    }
-  } else {
-    // remove up to amount from earliest applied
-    let removedCount = 0;
-    for (let i = 0; i < sigils.length && removedCount < amount; ) {
-      if (sigils[i].name === sigilName) {
-        sigils.splice(i, 1);
-        removedCount++;
-      } else i++;
-    }
-    if (SIGIL_EFFECTS && SIGIL_EFFECTS[sigilName] && typeof SIGIL_EFFECTS[sigilName].remove === 'function') {
-      try { SIGIL_EFFECTS[sigilName].remove(owner, { amount: removedCount }); } catch (e) {}
-    }
-  }
-  renderGameState && renderGameState();
-}
-window.removeSigil = removeSigil;
-
-// Query helpers
-function getSigils(owner = 'player') {
-  return Array.isArray(getSigilArrayForOwner(owner)) ? getSigilArrayForOwner(owner).slice() : [];
-}
-window.getSigils = getSigils;
-
-function hasSigil(owner = 'player', name) {
-  if (!name) return false;
-  const sigils = getSigils(owner);
-  return sigils.some(s => s.name === name);
-}
-window.hasSigil = hasSigil;
 // --- Utility: get all colors/types/archetypes/abilities (for filters, etc.) ---
 function getCardColors(cardObj) {
   const card = getCardDef(cardObj);
