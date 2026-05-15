@@ -725,7 +725,7 @@ const dummyCards = [
  category: 'Spell', color: 'Colorless', cost: '{1}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Cast', cost: '{1}', eff: {class: 'cast'}},
 	{name: 'Essence Purge', mana: 1, eff: {class: 'destroy'}}]},
-
+/*
 // FRACTURED ORIGINS //
 
 {id: 'SylvaniaThornvaleQueen', name: 'Sylvania, Thornvale Queen', rarity: 'Legend', image: 'Cards/Elf/SylvaniaThornvaleQueen.png', flavor: '', 
@@ -1460,6 +1460,7 @@ const dummyCards = [
 {id: 'SunbatheHills', name: 'Sunbathe Hills', rarity: 'Common', image: 'Cards/egw/SunbatheHills.png', flavor: '', 
  category: 'Terrain', color: 'White', hp: 8, cost: '{1}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
  	{name: 'Terraform', cost: '{1}', eff: {class: 'terraform'}}]},
+*/
 ];
 
 // Cost mapping and renderer (returns HTML string)
