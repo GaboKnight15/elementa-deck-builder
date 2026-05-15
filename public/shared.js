@@ -237,7 +237,7 @@ const dummyCards = [
 	{name: 'Riptide Rush', req: {class: 'Passive'}, eff: {class: 'Inspire', target: 'playerCreatures', targetType: 'Oceanic', accel: 1}}]},
 
 {id: 'ElementalofTorrents', name: 'Elemental of Torrents', rarity: 'Rare', image: 'Cards/egu/ElementalofTorrents.png', flavor: '', 
- category: 'Creature', fight: 'Water Strike', color: 'Blue', type: ['Water','Elemental'], hp: 6, atk: 2, cost: '{u}{u}', ability: ['Drench''Elusive'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Creature', fight: 'Water Strike', color: 'Blue', type: ['Water','Elemental'], hp: 6, atk: 2, cost: '{u}{u}', ability: ['Drench','Elusive'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{u}{u}', eff: {class: 'summon'}},
 	{name: 'Tidal Discovery', summon: true, eff: {class: 'Search', amount: 1, targetColor: 'Blue', targetCategory: 'Terrain'}]}]},
  
@@ -262,7 +262,7 @@ const dummyCards = [
 {id: 'Dolphin', name: 'Dolphin', rarity: 'Common', image: 'Cards/egu/Dolphin.png', flavor: '', 
  category: 'Creature', fight: 'Diving Strike', color: 'Blue', type: 'Marine', hp: 5, atk: 1, cost: '{u}', ability: 'Dive', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{u}', eff: {class: 'summon'}},
-	{name: 'Oceanic Companion', summon: true, eff: {class: 'bolster', target: 'playerCreatures', targetType: 'marine', atk: 1}},
+	{name: 'Oceanic Companion', summon: true, eff: {class: 'bolster', target: 'playerCreatures', targetType: 'Marine', atk: 1}},
 	{name: 'Oceanic Companion', echo: true, eff: {class: 'wither', hp: 1, atk: 1}}]},
 
 {id: 'RuneboundShark', name: 'Runebound Shark', rarity: 'Common', image: 'Cards/egu/RuneboundShark.png', flavor: '', 
@@ -292,7 +292,7 @@ const dummyCards = [
  category: 'Creature', fight: '', color: 'Yellow', type: ['Avian','Warrior'], hp: 5, atk: 2, cost: '{2}{y}', ability: 'Flying', set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/Zephyra/GarudaAetherionWingsFA.png', skill: [
 	{name: 'Summon', cost: '{2}{y}', eff: {class: 'summon'}},
 	{name: 'Dash', cost: '{y}{y}', eff: {class: 'Dash'}},
-	{name: 'Featherfall Tempest', cost: '{y}{y}', req: [{class: 'Special'}, {class: 'CW'}], eff: {class: 'strike', amount: 1, target: 3}}]},
+	{name: 'Featherfall Tempest', cost: '{y}{y}', eff: {class: 'strike', amount: 1, target: 3}}]},
 	
 {id: 'ZyraThunderbladeDuelist', name: 'Zyra, Thunderblade Duelist', rarity: 'Legend', image: 'Cards/egy/ZyraThunderbladeDuelist.png', flavor: '', 
  category: 'Creature', fight: 'Blade Tempest', color: 'Yellow', type: ['Thunder','Rogue'], hp: 5, atk: 2, cost: '{1}{y}', ability: ['Dash'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
@@ -310,8 +310,9 @@ const dummyCards = [
 
 {id: 'AetherionElectromancer', name: 'Aetherion Electromancer', rarity: 'Rare', image: 'Cards/egy/AetherionElectromancer.png', flavor: '', 
  category: 'Creature', fight: '', color: 'Yellow', type: ['Thunder','Rogue'], hp: 3, atk: 1, cost: '{1}{y}{y}', ability: 'Flying', set: ['ElementaGenesis','EssenceLegacy'], skill: [
-	{name: 'Skyline Scouting', cost: '{2}{y}', eff: [{class: 'summon'}, {class: 'Search', amount:1, targetAbility: 'Flying'}]},
-	{name: 'Tailwind', req: {class: 'Passive'}, eff: {class: 'Inspire', ability: 'Accel', amount: 1, targetAbility: 'Flying'}}]},
+	{name: 'Summon', cost: '{1}{y}{y}', eff: {class: 'summon'}},
+	{name: 'Skyline Scouting', cost: '{2}{y}', eff: {class: 'Search', amount:1, targetAbility: 'Flying'}},
+	{name: 'Tailwind', eff: {class: 'Inspire', ability: 'Accel', amount: 1, targetAbility: 'Flying'}}]},
 
 {id: 'ElementalofGales', name: 'Elemental of Gales', rarity: 'Rare', image: 'Cards/egy/ElementalofGales.png', flavor: '', 
  category: 'Creature', fight: 'Wind Strike', color: 'Yellow', type: ['Wind','Elemental'], hp: 4, atk: 3, cost: '{2}{y}', ability: ['Elusive','Flying'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
@@ -319,6 +320,7 @@ const dummyCards = [
 
 {id: 'ElementalofLightning', name: 'Elemental of Lightning', rarity: 'Rare', image: 'Cards/egy/ElementalofLightning.png', flavor: '', 
  category: 'Creature', fight: 'Thunder Strike', color: 'Yellow', type: ['Thunder','Elemental'], hp: 4, atk: 3, cost: '{2}{y}', ability: ['Elusive','Static'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
+	{name: 'Summon', cost: '{y}{y}', eff: {class: 'summon'}},
 	{name: 'Storm Discovery', cost: '{2}{y}', eff: [{class: 'summon'}, {class: 'Search', amount: 1, targetColor: 'Yellow', targetTrait: 'Terrain'}]}]},
          
 {id: 'StormspirePinnacle', name: 'Stormspire Pinnacle', rarity: 'Rare', image: 'Cards/egy/StormspirePinnacle.png', flavor: '', 
@@ -334,10 +336,10 @@ const dummyCards = [
 // EG YELLOW COMMON //
 {id: 'PiercingLightning', name: 'Piercing Lightning', rarity: 'Common', image: 'Cards/foy/PiercingLightning.png', flavor: '', 
  category: 'Spell', color: 'Yellow', type: 'Thunder', cost: '{1}{y}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
-	{name: 'Cast', cost: '{1}{y}', eff: [{class: 'strike', amount: 3}, {class: 'cast'}]}]},
+	{name: 'Cast', cost: '{1}{y}', eff: {class: 'cast'}}]},
 
 {id: 'Birdfolk', name: 'Birdfolk', rarity: 'Common', image: 'Cards/egy/Birdfolk.png', flavor: '', 
- category: 'Creature', fight: 'Flying Strike', color: 'Yellow', type: ['Avian','Token'], hp: 3, atk: 2, cost: '{1}', ability: 'Flying', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Creature', fight: 'Flying Strike', color: 'Yellow', type: ['Basic','Avian'], hp: 3, atk: 2, cost: '{1}', ability: 'Flying', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{1}', eff: {class: 'summon'}}]},
 
 {id: 'SuncrestFalcon', name: 'Suncrest Falcon', rarity: 'Common', image: 'Cards/egy/SuncrestFalcon.png', flavor: '', 
@@ -353,13 +355,13 @@ const dummyCards = [
 	{name: 'Summon', cost: '{y}', eff: {class: 'summon'}}]},
 
 {id: 'Peaks', name: 'Peaks', rarity: 'Common', image: 'Cards/egy/Peaks.png', flavor: '', 
- category: 'Terrain', color: 'Yellow', hp: 5, cost: '{2}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Terrain', color: 'Yellow', type: ['Basic','Storm','Terrain'], hp: 5, cost: '{2}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Terraform', cost: '{2}', eff: {class: 'terraform'}},
 	{name: 'Storm Essence', tap: true, eff: {class: 'essence', color: 'yellow'}}]},
 
 {id: 'Thunderlash', name: 'Thunderlash', rarity: 'Common', image: 'Cards/egy/Thunderlash.png', flavor: '', 
  category: 'Spell', color: 'Yellow', type: 'Thunder', cost: '{y}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
-	{name: 'Cast', cost: '{y}', eff: [{class: 'strike', amount: 3}, {class: 'cast'}]}]},
+	{name: 'Cast', cost: '{y}', eff: {class: 'cast'}}]},
 
 {id: 'EssenceRay', name: 'Essence Ray', rarity: 'Common', image: 'Cards/egy/EssenceRay.png', flavor: '', 
  category: 'Spell', color: 'Yellow', cost: '{1}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
