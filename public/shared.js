@@ -169,7 +169,7 @@ const dummyCards = [
 {id: 'BestialScorchedBarrens', name: 'Bestial Scorched Barrens', rarity: 'Rare', image: 'Cards/egr/BestialScorchedBarrens.png', flavor: '', 
  category: 'Terrain', color: 'Red', type: ['Fire','Beast'], hp: 3, cost: '{r}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Terraform', cost: '{r}', eff: {class: 'terraform'}},
-	{name: 'Inferno Essence', tap: true, discard: 1, eff: {class: 'essence', color: 'red'}}
+	{name: 'Inferno Essence', tap: true, discard: 1, eff: {class: 'essence', color: 'red'}},
 	{name: 'Frenzied Fervor', tap: true, eff: {class: 'bolster', atk: 1, targetType: 'Beast', targets: 'playerCreatures'}}]},
 
 {id: 'CinderfoxKitsune', name: 'Cinderfox Kitsune', rarity: 'Common', image: 'Cards/egr/CinderfoxKitsune.png', flavor: '',
