@@ -69,11 +69,11 @@ const dummyCards = [
 	{name: 'Verdant Rebirth', cost: '{1}', req: {class: 'cw'}, eff: {class: 'Revive', targetCategory: 'Creature'}}]},
 
 {id: 'Fairy', name: 'Fairy', rarity: 'Common', image: 'Cards/egg/Fairy.png', flavor: '', 
- category: 'Creature', fight: '', color: 'Green', type: ['Fairy','Token'], hp: 2, atk: 1, cost: '{0}', ability: 'Flying', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Creature', fight: '', color: 'Green', type: ['Basic','Fairy'], hp: 1, atk: 1, cost: '{0}', ability: 'Flying', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{0}', eff: {class: 'summon'}}]},
 
 {id: 'ElementalofLeaves', name: 'Elemental of Leaves', rarity: 'Common', image: 'Cards/egg/ElementalofLeaves.png', flavor: '', 
- category: 'Creature', fight: 'Sylvan Strike', color: 'Green', type: ['Verdant','Spirit'], hp: 3, atk: 1, cost: '{1}', ability: 'Regenerate', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Creature', fight: 'Sylvan Strike', color: 'Green', type: ['Basic','Verdant','Spirit'], hp: 3, atk: 1, cost: '{1}', ability: 'Regenerate', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{g}', eff: {class: 'summon'}}]},
 
 {id: 'Satyr', name: 'Satyr', rarity: 'Common', image: 'Cards/egg/Satyr.png', flavor: '', 
@@ -108,7 +108,7 @@ const dummyCards = [
 	{name: 'Forest Freight', act: {trigger: 'attack'}, eff: {class: 'add', targetCategory: 'Terrain', targetType: 'Sylvan' }}]},
 	
 {id: 'Forest', name: 'Forest', rarity: 'Common', image: 'Cards/egg/Forest.png', flavor: '', 
- category: 'Terrain', color: 'Green', type: 'Basic', hp: 5, cost: '{2}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Terrain', color: 'Green', type: ['Basic','Terrain'], hp: 5, cost: '{2}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Terraform', cost: '{2}', eff: {class: 'terraform'}},
 	{name: 'Sylvan Essence', tap: true, eff: {class: 'essence', color: 'green'}},]},
 
@@ -184,7 +184,7 @@ const dummyCards = [
 	{name: 'Summon', cost: '{0}', eff: {class: 'summon'}}]},
  
 {id: 'ElementalofEmbers', name: 'Elemental of Embers', rarity: 'Common', image: 'Cards/egr/ElementalofEmbers.png', flavor: '', 
- category: 'Creature', fight: 'Fire Strike', color: 'Red', type: ['Fire','Elemental','Basic'], hp: 2, atk: 1, cost: '{r}', ability: ['Elusive','Scorch'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Creature', fight: 'Fire Strike', color: 'Red', type: ['Basic','Fire','Elemental'], hp: 2, atk: 1, cost: '{r}', ability: ['Elusive','Scorch'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{r}', eff: {class: 'summon'}}]},
 
 {id: 'Kobold', name: 'Kobold', rarity: 'Common', image: 'Cards/egr/Kobold.png', flavor: '',
@@ -198,17 +198,17 @@ const dummyCards = [
 	{name: 'Inferno Booster', tap: true, requirement: {class: 'discard', q: 1}, eff: {class: 'essence', color: 'red', amount: 2}}]},
 
 {id: 'Volcano', name: 'Volcano', rarity: 'Common', image: 'Cards/egr/Volcano.png', flavor: '', 
- category: 'Terrain', color: 'Red', type: ['Basic','Inferno'], hp: 5, cost: '{2}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Terrain', color: 'Red', type: ['Basic','Inferno','Terrain'], hp: 5, cost: '{2}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Terraform', cost: '{2}', eff: {class: 'terraform'}},
 	{name: 'Inferno Essence', tap: true, eff: {class: 'essence', color: 'red'}}]},
 
 {id: 'FlameBlast', name: 'Flame Blast', rarity: 'Common', image: 'Cards/egr/FlameBlast.png', flavor: '', 
- category: 'Spell', color: 'Red', type: 'Fire', cost: '{r}', mana: 1, set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Spell', color: 'Red', type: ['Fire','Spell'], cost: '{r}', mana: 1, set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Cast', cost: '{r}', eff: {class: 'cast'}},
 	{name: 'Flame Blast', mana: 1, eff: {class: 'burn', amount: 4}}]},
 
 {id: 'EssenceAssault', name: 'Essence Assault', rarity: 'Common', image: 'Cards/egr/EssenceAssault.png', flavor: '', 
- category: 'Spell', color: 'Red', cost: '{1}', mana: 2, set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Spell', color: 'Red', cost: '{1}', Type: 'Aura', mana: 2, set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Cast', cost: '{1}', eff: {class: 'cast'}},
 	{name: 'Essence Assault', mana: 1, eff: {class: 'bolster', atk: 1}}]},
  
@@ -242,7 +242,7 @@ const dummyCards = [
 	{name: 'Tidal Discovery', summon: true, eff: {class: 'Search', amount: 1, targetColor: 'Blue', targetCategory: 'Terrain'}]}]},
  
 {id: 'MermaidsSanctuary', name: "Mermaid's Sanctuary", rarity: 'Rare', image: 'Cards/egr/MermaidsSanctuary.png', flavor: '', 
- category: 'Terrain', color: 'Blue', type: 'Merfolk', hp: 6, cost: '{u}{u}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Terrain', color: 'Blue', type: ['Merfolk','Terrain'], hp: 6, cost: '{u}{u}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Terraform', cost: '{u}{u}', eff: {class: 'terraform'}},
 	{name: 'Deep Surging Rest', tap: true, eff: [{class: 'essence', color: 'Blue', amount: 1}, {class: 'heal', target: 'playerCreatures', targetType: 'Merfolk', amount: 3]}]},
 
