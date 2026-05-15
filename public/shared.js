@@ -155,7 +155,7 @@ const dummyCards = [
 	{name: 'Inferno Discovery', summon: true, eff: {class: 'burn'}}]},
 
 {id: 'MagmarisMercenary', name: 'Magmaris Mercenary', rarity: 'Rare', image: 'Cards/egr/MagmarisMercenary.png', flavor: '', 
- category: 'Creature', fight: 'Flaming Slash', color: 'Red', type: ['Fire','Rogue'], hp: 3, atk: 2, cost: '{1}{r}{r}', ability: {'Defiant','Scorch'}, set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Creature', fight: 'Flaming Slash', color: 'Red', type: ['Fire','Rogue'], hp: 3, atk: 2, cost: '{1}{r}{r}', ability: ['Defiant','Scorch'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{1}{r}{r}', eff: {class: 'summon'}},
 	{name: 'Flaming Slash', attack, true, eff: {class: 'burn', amount: 1, target: 'enemyUnits'}},
 	{name: 'Scorching Contract', summon: true, req: {class: 'discard', qty: 1}, eff: {class: 'bolster', atk: 2, hp: 1, target: 'self' }}]},
