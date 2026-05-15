@@ -612,7 +612,6 @@ function renderShopCosmetics({
     const price = opt.price;
     const owned = unlocked.includes(src);
 
-	if (typeof window.renderShop === "function") window.renderShop();
 	const wrapper = document.createElement('div');
     wrapper.className = wrapperClass;
 
