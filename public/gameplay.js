@@ -5271,8 +5271,8 @@ function getInitialGameState() {
     enemyCreatures: [],
     enemyTerrains: [],
     enemyVoid: [],
-    playerDeparture = [],
-    enemyDeparture = [],
+    playerDeparture: [],
+    enemyDeparture: [],
   
     // Dominion / meta
     playerDominion: null,
