@@ -18,12 +18,11 @@ const closePackOpeningModalBtn = document.getElementById('close-pack-opening-mod
 const PACK_SIZE = 6;
 
 const PACK_SLOT_ODDS_DEFAULT = [
-  { slot: 1, kind: "token" }, // guaranteed token
-  { slot: 2, odds: { Common: 92, Rare: 7, Legendary: 1 } },
-  { slot: 3, odds: { Common: 85, Rare: 13, Legendary: 2 } },
-  { slot: 4, odds: { Common: 75, Rare: 22, Legendary: 3 } },
-  { slot: 5, odds: { Common: 60, Rare: 35, Legendary: 5 } },
-  { slot: 6, odds: { Rare: 90, Legendary: 10 } }, // guaranteed rare+ slot
+  { slot: 1, odds: { Common: 92, Rare: 7, Legendary: 1 } },
+  { slot: 2, odds: { Common: 85, Rare: 13, Legendary: 2 } },
+  { slot: 3, odds: { Common: 75, Rare: 22, Legendary: 3 } },
+  { slot: 4, odds: { Common: 60, Rare: 35, Legendary: 5 } },
+  { slot: 5, odds: { Rare: 90, Legendary: 10 } },
 ];
 
 let cosmeticConfirmModal = null;
@@ -255,30 +254,13 @@ function generatePackCards(packId, slotTable = PACK_SLOT_ODDS_DEFAULT) {
 	  console.error(`[generatePackCards] Empty pool for packId="${packId}". Check card.set values.`);
 		return [];
 	}
-  const tokenPool = pool.filter(c => String(c?.type || "").toLowerCase() === "token");
-  const nonTokenPool = pool.filter(c => String(c?.type || "").toLowerCase() !== "token");
 
   const result = [];
-
   for (const slotDef of slotTable) {
-    // Slot 1: guaranteed token
-    if (slotDef.kind === "token") {
-      const token = pickRandom(tokenPool);
-      // Fallback: if pack has no tokens, pick anything (or you can throw)
-      result.push(token || pickRandom(pool));
-      continue;
-    }
-
-    // Other slots: roll rarity then pick from that rarity pool
     const rarity = rollFromOdds(slotDef.odds);
-    const rarityPool = nonTokenPool.filter(c =>
-      String(c?.rarity || "").toLowerCase() === String(rarity).toLowerCase()
-    );
-
     // Fallbacks so the pack always fills even if the pool is missing a rarity
     result.push(
       pickRandom(rarityPool) ||
-      pickRandom(nonTokenPool) ||
       pickRandom(pool)
     );
   }
@@ -299,7 +281,7 @@ function purchaseCosmetic(cost, purchaseCallback, done) {
   showToast("Purchase successful!", { type: "success" });
 // EXP FROM COSMETICS   
   if (typeof grantExp === "function") {
-    const exp = Math.max(1, Math.floor(cost / 10)); // tweak divisor for balance
+    const exp = Math.max(1, Math.floor(cost / 10)); 
     grantExp(exp);
     showToast(`You gained ${exp} EXP!`, { type: "success", duration: 1800 });
   }
