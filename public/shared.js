@@ -1283,7 +1283,7 @@ const dummyCards = [
 	{name: 'Twin Impact', cost: '{c}{c}', req: {class: 'Special'}, eff: {class: 'strike', amount: 2, target: 2}}]},
 
 {id: 'DragonsGrove', name: "Dragon's Grove", rarity: 'Rare', image: 'Cards/fog/DragonsGrove.png', flavor: '', 
- category: 'Terrain', color: 'Green', type: ['Verdant','Dragon','Terrain'], hp: 7, cost: '{1}{g}{g}', set: 'FracturedOrigins', skill: [
+ category: 'Terrain', color: 'Green', type: ['Verdant','Dragon','Terrain'], ability: 'Regenerate', hp: 7, cost: '{1}{g}{g}', set: 'FracturedOrigins', skill: [
  	{name: 'Terraform', cost: '{2}{g}', eff: {class: 'terraform'}},
 	{name: 'Draconic Pulse', cost: '{g}{g}', eff: {class: 'Heal', amount: 2, target: 2}},
 	{name: 'Sylvan Scales', req: {class: 'summon', type: ['Sylvan','Dragon'], eff: {class: 'inspire', hp: 1}}]},
