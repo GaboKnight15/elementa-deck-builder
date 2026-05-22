@@ -946,6 +946,10 @@ function removeCardFromDeck(cardId) {
 // DECK CREATION LOGIC
 function updateDeckDisplay() {
   const deck = getCurrentDeck();
+  if (!deck || typeof deck !== 'object') {
+    console.warn('updateDeckDisplay called with invalid deck object.');
+    return;
+  }
   if (!deckList) return;
   deckList.innerHTML = '';
   let total = 0;
@@ -959,7 +963,7 @@ function updateDeckDisplay() {
     terrain: []
   };
 
-  for (const [id, count] of Object.entries(deck || {})) {
+  for (const [id, count] of Object.entries(deck)) {
     const card = dummyCards.find(c => c.id === id);
     if (!card) continue;
     const trait = card.trait ? String(card.trait).toLowerCase() : '';
@@ -1136,9 +1140,13 @@ function getCardCategory(card) {
   return card.category ? card.category.toLowerCase() : '';
 }
 function buildDeck(deckObj) {
+  if (!deckObj || typeof deckObj !== 'object') {
+    console.warn('buildDeck called with invalid deck object.');
+    return [];
+  }
   let deck = [];
   let uid = 1;
-  for (let [cardId, count] of Object.entries(deckObj || {})) {
+  for (let [cardId, count] of Object.entries(deckObj)) {
     for (let i = 0; i < count; i++) {
       deck.push({
         cardId: cardId,
