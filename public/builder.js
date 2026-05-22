@@ -947,7 +947,8 @@ function removeCardFromDeck(cardId) {
 function updateDeckDisplay() {
   const deck = getCurrentDeck();
   if (!deck || typeof deck !== 'object') {
-    console.warn('updateDeckDisplay called with invalid deck object.');
+    const gotType = deck === null ? 'null' : typeof deck;
+    console.warn(`updateDeckDisplay called with invalid deck object: expected object, got ${gotType}.`);
     return;
   }
   if (!deckList) return;
@@ -1141,7 +1142,8 @@ function getCardCategory(card) {
 }
 function buildDeck(deckObj) {
   if (!deckObj || typeof deckObj !== 'object') {
-    console.warn('buildDeck called with invalid deck object.');
+    const gotType = deckObj === null ? 'null' : typeof deckObj;
+    console.warn(`buildDeck called with invalid deck object: expected object, got ${gotType}.`);
     return [];
   }
   let deck = [];
