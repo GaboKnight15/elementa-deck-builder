@@ -331,7 +331,7 @@ const TARGET_FILTER_ABILITY = {
     }
   },
   flying: { name: 'Flying', icon: 'Icons/Ability/Flying.png',
-    description: 'Target priority -1. Speed +{1}',
+    description: 'Target priority -1.',
     filter: (attacker, targets) => {
       // Flying ignores color protection (handled outside), so here: allow all
       return targets;
@@ -1363,17 +1363,11 @@ inspire: { name: 'Inspire',
       if (typeof step.armor === 'number' && step.armor !== 0) {
         target.armor = (target.armor || 0) + Number(step.armor);
       }
-      // Apply stat modifiers (atk, def, speed)
       target.modifiers = target.modifiers || [];
       if (typeof step.atk === 'number' && step.atk !== 0) {
         target.modifiers.push({ effect: 'Inspire', stat: 'atk', value: Number(step.atk), source: sourceCardObj.instanceId });
       }
-      if (typeof step.def === 'number' && step.def !== 0) {
-        target.modifiers.push({ effect: 'Inspire', stat: 'def', value: Number(step.def), source: sourceCardObj.instanceId });
-      }
-      if (typeof step.speed === 'number' && step.speed !== 0) {
-        target.modifiers.push({ effect: 'Inspire', stat: 'speed', value: Number(step.speed), source: sourceCardObj.instanceId });
-      }
+
       // Grant ability strings into grantedAbilities
       if (step.ability) {
         target.grantedAbilities = target.grantedAbilities || [];
@@ -1427,7 +1421,7 @@ essence: { icon: 'Icons/skillEffect/Essence.png', name: 'Essence', description: 
 },
 
 spawn: { name: 'Spawn',
-  description: 'Summons from the token deck.',
+  description: '',
   canActivate: function(sourceCardObj, skillObj, currentZone, gameState, step = {}) {
     const targetId = step.targetId;
     if (!targetId) return false;
@@ -1571,59 +1565,13 @@ function setBattlefieldBackgrounds(playerBannerUrl, enemyBannerUrl) {
     enemyBg.style.backgroundRepeat = "no-repeat";
   }
 }
-function getTokenCountFromDeckObj(deckObj) {
-  const td = deckObj && typeof deckObj.__tokenDeck === "object" && deckObj.__tokenDeck
-    ? deckObj.__tokenDeck
-    : {};
-  return Object.values(td).reduce((sum, n) => sum + (Number(n) || 0), 0);
-}
-function splitMainAndTokenDeckObj(deckObj) {
-  const obj = deckObj && typeof deckObj === "object" ? deckObj : {};
 
-  const tokenRaw =
-    obj.__tokenDeck && typeof obj.__tokenDeck === "object" && obj.__tokenDeck !== null
-      ? obj.__tokenDeck
-      : {};
-
-  const mainDeckObj = {};
-  for (const [k, v] of Object.entries(obj)) {
-    if (k === "__tokenDeck") continue;
-    mainDeckObj[k] = v;
-  }
-
-  // sanitize token counts
-  const tokenDeckObj = {};
-  for (const [id, count] of Object.entries(tokenRaw)) {
-    const n = Math.floor(Number(count));
-    if (!id) continue;
-    if (!Number.isFinite(n) || n <= 0) continue;
-    tokenDeckObj[id] = n;
-  }
-
-  return { mainDeckObj, tokenDeckObj };
+function createDeck(deckObj) {
+  const arr = buildDeck(deckObj);
+  shuffleInPlace(arr);
+  return arr;
 }
 
-// Build + shuffle main & token parts separately, then combine (tokens at bottom).
-// Options:
-// - shuffleMain: default true
-// - shuffleTokens: default false (tokens "stay the same" / fixed ordering)
-function createDeck(deckObj, { shuffleMain = true, shuffleTokens = false } = {}) {
-  const { mainDeckObj, tokenDeckObj } = splitMainAndTokenDeckObj(deckObj);
-
-  const mainArr = buildDeck(mainDeckObj);
-  const tokenArr = buildDeck(tokenDeckObj);
-
-  if (shuffleMain) shuffleInPlace(mainArr);
-  if (shuffleTokens) shuffleInPlace(tokenArr);
-
-  // tokens beneath main deck
-  const combined = mainArr.concat(tokenArr);
-
-  // Helpful metadata for later shuffles (if you want):
-  combined.tokenCount = tokenArr.length;
-
-  return combined;
-}
 // Unified game start function for all modes (solo/cpu, casual, private, etc)
 function startGame({
   mode = "solo",              // "solo", "casual", "private", etc
@@ -1635,18 +1583,11 @@ function startGame({
   matchData = null            // full matchData for casual/private modes
 }) {
 
-// Player deck: shuffle main, keep tokens fixed at bottom
-gameState.playerDeck = createDeck(playerDeck, { shuffleMain: true, shuffleTokens: false });
-gameState.playerTokenDeckCount = gameState.playerDeck.tokenCount || 0;
-
-// enemy deck:
-// If it's already built (array), keep existing behavior (no token separation possible here).
+gameState.playerDeck = createDeck(playerDeck);
 if (Array.isArray(enemyDeck) && enemyDeck.length && enemyDeck[0].cardId) {
   gameState.enemyDeck = shuffleInPlace([...enemyDeck]);
-  gameState.enemyTokenDeckCount = 0;
 } else {
-  gameState.enemyDeck = createDeck(enemyDeck, { shuffleMain: true, shuffleTokens: false });
-  gameState.enemyTokenDeckCount = gameState.enemyDeck.tokenCount || 0;
+  gameState.enemyDeck = createDeck(enemyDeck);
 }
   gameState.playerHand = [];
   gameState.playerCreatures = [];
@@ -1902,35 +1843,7 @@ function showActivationConfirmModal(cardObj, skillObj, onConfirm) {
     modal.remove();
   };
 }
-function splitMainAndTokenDeck(deckObj) {
-  const obj = deckObj && typeof deckObj === "object" ? deckObj : {};
 
-  // token counts stored by builder in __tokenDeck
-  const tokenDeck = (obj.__tokenDeck && typeof obj.__tokenDeck === "object") ? obj.__tokenDeck : {};
-
-  // main deck: everything except reserved keys
-  const mainDeck = {};
-  for (const [k, v] of Object.entries(obj)) {
-    if (k === "__tokenDeck") continue;     // reserved
-    mainDeck[k] = v;
-  }
-
-  // sanitize tokenDeck counts into a normal deckObj form (cardId -> count)
-  const tokenDeckDef = {};
-  for (const [id, count] of Object.entries(tokenDeck)) {
-    const n = Math.floor(Number(count));
-    if (!id) continue;
-    if (!Number.isFinite(n) || n <= 0) continue;
-    tokenDeckDef[id] = n;
-  }
-
-  return { mainDeck, tokenDeck: tokenDeckDef };
-}
-
-// Count how many cards in token deck array (built from tokenDeckDef)
-function countTokenDeckCards(tokenDeckDef) {
-  return Object.values(tokenDeckDef || {}).reduce((sum, n) => sum + (Number(n) || 0), 0);
-}
 // --- TURN FLAGS --- //
 function resetTurnFlags(turn) {
   if (turn === "player") {
@@ -1939,30 +1852,12 @@ function resetTurnFlags(turn) {
       // Clear previous per-turn flags
       card.hasChangedPositionThisTurn = false;
       card.hasSummonedThisTurn = false;
-
-      // Compute allowed attacks based on Speed tier:
-      const tier = getSpeedTier(card);
-      // default allowed attacks = 1
-      let allowed = 1;
-      if (tier >= 4) allowed = 2;
-      if (tier >= 5) allowed = 3;
-      // Save remaining attacks for the new turn
-      card.attacksRemaining = allowed;
-      // Keep legacy flag for compatibility
-      card.hasAttacked = card.attacksRemaining <= 0;
     });
   } else if (turn === "enemy") {
     const arrs = [...gameState.enemyCreatures, ...gameState.enemyTerrains];
     arrs.forEach(card => {
       card.hasChangedPositionThisTurn = false;
       card.hasSummonedThisTurn = false;
-
-      const tier = getSpeedTier(card);
-      let allowed = 1;
-      if (tier >= 4) allowed = 2;
-      if (tier >= 5) allowed = 3;
-      card.attacksRemaining = allowed;
-      card.hasAttacked = card.attacksRemaining <= 0;
     });
   }
 }
@@ -2329,43 +2224,12 @@ function shuffleInPlace(arr) {
   return arr;
 }
 
-// Shuffle ONLY the main deck portion (top), leaving the last `tokenCount` cards untouched.
-function shuffleDeck(deckArr, tokenCount = 0) {
+function shuffleDeck(deckArr) {
   if (!Array.isArray(deckArr) || deckArr.length <= 1) return deckArr;
-
-  const tc = Math.max(0, Math.min(Number(tokenCount) || 0, deckArr.length));
-  const mainLen = deckArr.length - tc;
-
-  if (mainLen <= 1) return deckArr;
-
-  const main = deckArr.slice(0, mainLen);
-  const tokens = tc > 0 ? deckArr.slice(mainLen) : [];
-
-  shuffleInPlace(main);
-
-  deckArr.length = 0;
-  deckArr.push(...main, ...tokens);
+  shuffleInPlace(deckArr);
   return deckArr;
 }
 
-// Shuffle ONLY the token portion (bottom), leaving the main deck untouched.
-function shuffleTokens(deckArr, tokenCount = 0) {
-  if (!Array.isArray(deckArr) || deckArr.length <= 1) return deckArr;
-
-  const tc = Math.max(0, Math.min(Number(tokenCount) || 0, deckArr.length));
-  if (tc <= 1) return deckArr;
-
-  const mainLen = deckArr.length - tc;
-
-  const main = deckArr.slice(0, mainLen);
-  const tokens = deckArr.slice(mainLen);
-
-  shuffleInPlace(tokens);
-
-  deckArr.length = 0;
-  deckArr.push(...main, ...tokens);
-  return deckArr;
-}
 function drawCards(who, n) {
   let deck = who === "player" ? gameState.playerDeck : gameState.enemyDeck;
   let hand = who === "player" ? gameState.playerHand : gameState.enemyHand;
@@ -2899,29 +2763,13 @@ function computeCardStat(cardObj, statName) {
   const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
   
   let base;
-  if (statName === "speed") {
-    if (cardDef && typeof cardDef.speed === "number") {
-      base = cardDef.speed;
-    } else {
-      // If card has category creature (or category includes "creature"), default to 1
-      const category = cardDef?.category;
-      const isCreature = (typeof category === "string" && category.toLowerCase() === "creature")
-        || (Array.isArray(category) && category.map(c => String(c).toLowerCase()).includes("creature"));
-      base = isCreature ? 1 : 0;
-    }
-  } else {
-    base = cardDef?.[statName] ?? 0;
-  }
-  
   let mods = 0;
-
   // Modifiers array (for skills, effects, etc)
   if (Array.isArray(cardObj.modifiers)) {
     mods += cardObj.modifiers
       .filter(mod => mod.stat === statName)
       .reduce((sum, mod) => sum + mod.value, 0);
   }
-
   // Statuses (e.g. Poison, Burn), if you want to support stat impacts here
   if (Array.isArray(cardObj.statuses)) {
     for (const status of cardObj.statuses) {
@@ -2948,142 +2796,11 @@ function computeCardStat(cardObj, statName) {
       if (typeof ab === "object" && ab.effect === "Inspire") {
         if (matchesFilter(cardObj, ab)) {
           if (statName === "atk" && ab.atk) mods += ab.atk;
-          if (statName === "def" && ab.def) mods += ab.def;
-          if (statName === "speed" && ab.speed) mods += ab.speed; // allow Inspire to modify speed if defined
         }
       }
     });
   });
-
-  // Abilities that grant +1 Speed: Dash, Dive, Flying, Leap, Rush, Mage and Ranger
-  if (statName === "speed") {
-    // getCardAbilities helper exists elsewhere in file; use it to read ability list
-    const abilityList = getCardAbilities(cardObj) || [];
-    const speedGranting = new Set(["Dash", "Dive", "Flying", "Leap", "Rush"]);
-    abilityList.forEach(a => {
-      if (typeof a === "string" && speedGranting.has(a)) {
-        mods += 1;
-      }
-    });
-    
-  if (typeof isMage === "function" && isMage(cardObj)) {
-    mods += 1;
-  }
-  if (typeof isRanger === "function" && isRanger(cardObj)) {
-    mods += 2;
-  }
-
-    // === Armor penalty: any Armor on the instance lowers Speed by 1 ===
-    let currentArmor = 0;
-    if (typeof cardObj.armor === "number") currentArmor += cardObj.armor;
-    else if (typeof cardDef?.armor === "number") currentArmor += cardDef.armor;
-
-    // Count armor modifiers on the cardObj
-    if (Array.isArray(cardObj.modifiers)) {
-      currentArmor += cardObj.modifiers
-        .filter(m => m.stat === "armor")
-        .reduce((s, m) => s + (m.value || 0), 0);
-    }
-
-    // If any armor is present, apply -1 speed penalty (single step, not per-armor point)
-    if (currentArmor > 0) mods -= 1;
-  }
-
-  // === Per-tier passive effects (Speed tiers 0..5) ===
-  // Compute effective speed now so we can apply tier-dependent stat buffs.
-  // Note: we only apply these passive stat bonuses here (so other code reading atk/def uses them).
-  if (statName === "atk" || statName === "def") {
-    // We need an approximate speedTier: compute current provisional speed = base + modsBeforeTier
-    // To avoid recursive computeCardStat calls, compute provisional speed: base + mods_so_far (only statName 'speed' affects final speed via other modifiers)
-    // But here we can call computeCardStat(cardObj, "speed") safely because computeCardStat for 'speed' will not look at atk/def.
-    const tier = Math.max(0, Math.round(computeCardStat(cardObj, "speed")));
-
-    // Speed 0 => DEF +1
-    if (tier === 0 && statName === "def") {
-      mods += 1;
-    }
-    // Speed >= 3 => ATK +1 (applies for tiers 3,4,5)
-    if (tier >= 3 && statName === "atk") {
-      mods += 1;
-    }
-  }
-  
-  // Final rounding/clamping
-  if (statName === "speed") {
-    // speed should be integer and at least 0
-    return Math.max(0, Math.round(base + mods));
-  }
-  // Clamp to minimum 0
   return Math.max(0, base + mods);
-}
-// Speed specific helpers
-// Speed specific helpers
-function getSpeedValue(cardObj) {
-  // Base speed: default 2 for most creatures
-  let speed = 2;
-
-  // --- Ability-based bonuses ---
-  // +1 for Dive, Flying, Leap, Rush
-  // (Dive/Leap helpers may or may not exist yet; check defensively)
-  if (typeof hasFlying === "function" && hasFlying(cardObj)) speed += 1;
-  if (typeof hasRush === "function" && hasRush(cardObj)) speed += 1;
-  if (typeof hasDive === "function" && hasDive(cardObj)) speed += 1;
-  if (typeof hasLeap === "function" && hasLeap(cardObj)) speed += 1;
-
-  // --- Type-based bonuses ---
-  // +1 for Mage, +2 for Ranger
-  if (typeof isMage === "function" && isMage(cardObj)) speed += 1;
-  if (typeof isRanger === "function" && isRanger(cardObj)) speed += 2;
-  
-  // Add explicit speed modifiers (from addSpeed / setSpeed and future debuffs)
-  if (Array.isArray(cardObj.modifiers)) {
-    for (const m of cardObj.modifiers) {
-      if (m && m.stat === "speed" && typeof m.value === "number") {
-        speed += m.value;
-      }
-    }
-  }
-  // Clamp to 0..5 (your tiers)
-  speed = Math.round(speed);
-  return Math.max(0, Math.min(5, speed));
-}
-function getSpeedTier(cardObj) {
-  const val = getSpeedValue(cardObj) || 0;
-  return Math.max(0, Math.round(val));
-}
-function getSpeedTierIcon(tier) {
-  // Only special tiers have an icon (2 = default => no badge)
-  switch (Number(tier)) {
-    case 0: return "Icons/Stat/SpeedImmobile.png";
-    case 1: return "Icons/Stat/SpeedSlow.png";
-    case 3: return "Icons/Stat/SpeedFast.png";
-    case 4: return "Icons/Stat/SpeedVeryFast.png";
-    case 5: return "Icons/Stat/SpeedSuperFast.png";
-    default: return ""; // tier 2 or any unsupported tier => no icon
-  }
-}
-function getSpeedDifference(a, b) {
-  // positive means a is faster than b
-  const aSpeed = getSpeedValue(a) || 0;
-  const bSpeed = getSpeedValue(b) || 0;
-  return aSpeed - bSpeed;
-}
-function addSpeed(cardObj, amount) {
-  amount = Number(amount) || 0;
-  cardObj.modifiers = cardObj.modifiers || [];
-  // push a speed modifier entry (sourceless)
-  cardObj.modifiers.push({ effect: "TempSpeed", stat: "speed", value: amount, source: "effect" });
-  renderGameState && renderGameState();
-}
-function setSpeed(cardObj, value) {
-  // Sets a persistent speed value on the instance overriding computed base
-  cardObj._overrideSpeed = Number(value) || 0;
-  // We cheat by pushing a permanent modifier (or you can add custom property handling)
-  cardObj.modifiers = cardObj.modifiers || [];
-  // remove existing override modifier
-  cardObj.modifiers = cardObj.modifiers.filter(m => !(m.source === "speed-override"));
-  cardObj.modifiers.push({ effect: "SpeedOverride", stat: "speed", value: cardObj._overrideSpeed, source: "speed-override" });
-  renderGameState && renderGameState();
 }
 
 function renderCardOnField(cardObj, zoneId) {
@@ -3171,19 +2888,6 @@ if (typeof cardData.def === "number") {
   if (currentDEF > 0) {
     const defColor = getStatColor(cardObj, "def");
     topStatsRow.appendChild(makeStatBadge("Icons/Stat/DEF.png", currentDEF, defColor, "DEF"));
-  }
-}
-
-// SPD (image-only; only if tier !== 2)
-const tier = getSpeedTier(cardObj);
-if (tier !== 2) {
-  const iconSrc = getSpeedTierIcon(tier);
-  if (iconSrc) {
-    const spdBadge = document.createElement('div');
-    spdBadge.className = 'stat-badge-centered';
-    spdBadge.innerHTML = `<img src="${iconSrc}" alt="SPD" class="stat-badge-img">`;
-    spdBadge.title = `Speed Tier ${tier}`;
-    topStatsRow.appendChild(spdBadge);
   }
 }
 
@@ -4356,7 +4060,6 @@ function generateEssence(cardObj) {
   matches.forEach(m => {
     const inner = m.replace(/[{}]/g, '').toUpperCase();
     if (/^[0-9]+$/.test(inner)) {
-      // treat numeric token as that many colorless units
       gameState.essencePools[owner].colorless += Number(inner);
     } else if (letters[inner]) {
       gameState.essencePools[owner][letters[inner]] += 1;
@@ -4478,7 +4181,6 @@ function showEssencePaymentModal(opts = {}) {
     return true;
   }
 
-  // POOLED ESSENCE UI: render clickable tokens from the pool (player or enemy)
   const poolOwner = owner;
   const pool = (typeof getEssencePool === 'function') ? getEssencePool(poolOwner) : { green:0, red:0, blue:0, yellow:0, purple:0, gray:0, black:0, white:0, colorless:0 };
   const poolTokensDiv = document.createElement('div');
@@ -4911,14 +4613,6 @@ function resolveAttack(attackerId, defenderId) {
 
   const attackerZone = findZoneIdForCard(attackerObj);
   const defenderZone = findZoneIdForCard(defenderObj);
-
-  // BEFORE DAMAGE: decide First Strike / Invulnerability based on speed difference
-  // FIX: use attackerObj/defenderObj (your snippet uses attacker/defender which are undefined)
-  const speedDiff = getSpeedDifference(attackerObj, defenderObj);
-  if (speedDiff >= 2) applyStatus(attackerObj, 'Quickstrike', 1);
-  if (speedDiff >= 3) applyStatus(attackerObj, 'InvulnerableAtk', 1);
-  if (-speedDiff >= 2) applyStatus(defenderObj, 'Quickstrike', 1);
-  if (-speedDiff >= 3) applyStatus(defenderObj, 'InvulnerableAtk', 1);
 
   // Step 1: Animate attacker attacking
   animateAttack(attackerObj, attackerZone, () => {
@@ -7047,35 +6741,6 @@ function getCardDefinition(cardId) {
   return dummyCards.find(c => c.id === cardId) || null;
 }
 
-function createTokenInstance({ tokenCardId, owner = 'player', sourceCardObj = null, sourceSkillObj = null, meta = {} } = {}) {
-  const def = getCardDefinition(tokenCardId);
-  if (!def) return null;
-
-  const idRand = Math.random().toString(36).slice(2, 10);
-  const instance = {
-    cardId: def.id,
-    instanceId: `token_${def.id}_${idRand}`,
-    owner: owner === 'enemy' ? 'enemy' : 'player',
-    isToken: true,
-    isTemporary: true,            // optional
-    currentHP: def.hp ?? 1,
-    orientation: (String(def.category || '').toLowerCase() === 'creature') ? 'vertical' : null,
-
-    // common runtime fields used elsewhere in your engine
-    statuses: [],
-
-    // optional metadata (helpful for logs/debug)
-    tokenMeta: {
-      createdAt: Date.now(),
-      sourceCardId: sourceCardObj?.cardId || null,
-      sourceInstanceId: sourceCardObj?.instanceId || null,
-      sourceSkillName: sourceSkillObj?.name || null,
-      ...meta
-    }
-  };
-
-  return instance;
-}
 function placeInstanceOnField(instance) {
   if (!instance) return false;
   const def = getCardDefinition(instance.cardId);
@@ -7096,101 +6761,7 @@ function placeInstanceOnField(instance) {
 
   return false;
 }
-function summonTokenInstance(tokenDef, ownerCardObj) {
-  const tokenInstance = {
-    ...tokenDef,
-    instanceId: "token_" + tokenDef.id + "_" + Math.random().toString(36).slice(2, 10),
-    isToken: true,
-    owner: getCardOwner(ownerCardObj),
-    currentHP: tokenDef.hp
-  };
-  // Place in correct battlefield array
-  if (tokenDef.category && tokenDef.category.toLowerCase() === "creature") {
-    if (tokenInstance.owner === "player") gameState.playerCreatures.push(tokenInstance);
-    else gameState.enemyCreatures.push(tokenInstance);
-  } else if (tokenDef.category && tokenDef.category.toLowerCase() === "terrain") {
-    if (tokenInstance.owner === "player") gameState.playerTerrains.push(tokenInstance);
-    else gameState.enemyTerrains.push(tokenInstance);
-  }
-  renderGameState();
-  setupDropZones && setupDropZones();
-}
 
-function showTokenSelectionModal(tokenDefs, amount, onComplete) {
-  // Remove any existing modal
-  let modal = document.getElementById('token-selection-modal');
-  if (modal) modal.remove();
-
-  modal = document.createElement('div');
-  modal.id = 'token-selection-modal';
-  modal.className = 'modal';
-  modal.style.display = 'flex';
-  modal.style.alignItems = 'center';
-  modal.style.justifyContent = 'center';
-  modal.style.zIndex = 99999;
-  modal.onclick = function(e) { if (e.target === modal) modal.remove(); };
-
-  const content = document.createElement('div');
-  content.className = 'modal-content';
-  content.style.display = 'flex';
-  content.style.flexDirection = 'column';
-  content.style.alignItems = 'center';
-  content.style.gap = '18px';
-  content.onclick = e => e.stopPropagation();
-
-  content.innerHTML = `<h3>Choose ${amount} Token${amount > 1 ? "s" : ""} to Summon</h3>
-    <div style="display:flex;gap:24px;justify-content:center;" id="token-choice-row"></div>
-    <button class="btn-negative-secondary" id="token-cancel-btn" style="margin-top:16px;">Cancel</button>`;
-  modal.appendChild(content);
-  document.body.appendChild(modal);
-
-  // Add token options
-  const row = content.querySelector('#token-choice-row');
-  tokenDefs.forEach((tokenDef, idx) => {
-    const div = document.createElement('div');
-    div.className = 'token-choice';
-    div.style.cursor = "pointer";
-    div.style.display = "flex";
-    div.style.flexDirection = "column";
-    div.style.alignItems = "center";
-    div.style.transition = "box-shadow 0.13s, border 0.13s";
-    div.innerHTML = `
-      <img src="${tokenDef.image}" alt="${tokenDef.name}" style="width:80px;height:auto;border-radius:8px;box-shadow:0 2px 8px #000b;">
-      <div style="margin-top:6px;font-weight:bold;color:#ffe066;">${tokenDef.name}</div>
-    `;
-    row.appendChild(div);
-  });
-
-  // Multi-select logic
-  let selected = [];
-  Array.from(row.children).forEach((div, idx) => {
-    div.onclick = function() {
-      // If already selected, deselect
-      const selIdx = selected.indexOf(idx);
-      if (selIdx !== -1) {
-        selected.splice(selIdx, 1);
-        div.style.boxShadow = "";
-        div.style.border = "";
-      } else if (selected.length < amount) {
-        selected.push(idx);
-        div.style.boxShadow = "0 0 0 4px #ffe066aa";
-        div.style.border = "2px solid #ffe066";
-      }
-      // If selection is full, auto-complete
-      if (selected.length === amount) {
-        setTimeout(() => {
-          modal.remove();
-          onComplete(selected.map(i => tokenDefs[i]));
-        }, 250);
-      }
-    };
-  });
-
-  // Deselect on cancel
-  content.querySelector('#token-cancel-btn').onclick = function() {
-    modal.remove();
-  };
-}
 // Insert this right after the end of computeCardStat(...) and before functions that render stats/icons
 function getStatColor(cardObj, statName) {
   // Prefer instance-original base if present (keeps comparisons accurate if base was permanently changed)
