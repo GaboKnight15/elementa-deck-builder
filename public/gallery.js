@@ -567,7 +567,7 @@ function updateGalleryCollectionProgress(filteredCards) {
   const ownershipSingle = ownershipFilters.length === 1 ? ownershipFilters[0] : null;
 
   // Gather all modal-applied filters
-  let filterInfoArray = Object.entries(selectedFilters)
+  let filterInfoArray = Object.entries(selectedFilters || {})
     .filter(([key, values]) => values && values.length > 0) // Remove empty filters
     .flatMap(([key, values]) => values);
 

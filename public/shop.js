@@ -232,7 +232,7 @@ function getPackPool(packId) {
 }
 
 function rollFromOdds(oddsObj) {
-  const entries = Object.entries(oddsObj).map(([value, weight]) => ({ value, weight }));
+  const entries = Object.entries(oddsObj || {}).map(([value, weight]) => ({ value, weight }));
   const total = entries.reduce((s, x) => s + Number(x.weight || 0), 0);
   let r = Math.random() * total;
 

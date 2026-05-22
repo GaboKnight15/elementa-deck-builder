@@ -959,7 +959,7 @@ function updateDeckDisplay() {
     terrain: []
   };
 
-  for (const [id, count] of Object.entries(deck)) {
+  for (const [id, count] of Object.entries(deck || {})) {
     const card = dummyCards.find(c => c.id === id);
     if (!card) continue;
     const trait = card.trait ? String(card.trait).toLowerCase() : '';
@@ -1138,7 +1138,7 @@ function getCardCategory(card) {
 function buildDeck(deckObj) {
   let deck = [];
   let uid = 1;
-  for (let [cardId, count] of Object.entries(deckObj)) {
+  for (let [cardId, count] of Object.entries(deckObj || {})) {
     for (let i = 0; i < count; i++) {
       deck.push({
         cardId: cardId,
