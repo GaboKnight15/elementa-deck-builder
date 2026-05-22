@@ -300,8 +300,8 @@
   
   <!-- BATTLEFIELD LEFTBAR -->
   <div id="battlefield-leftbar">
-    <!-- OPPONENT PROFILE (BATTLEFIELD) -->
-    <div id="opponent-profile" class="profile-panel">
+    <!-- ENEMY PROFILE (BATTLEFIELD) -->
+    <div id="enemy-profile" class="profile-panel">
       <div class="profile-banner-container">
         <img class="profile-banner" />
       </div>
@@ -310,7 +310,7 @@
         <span class="profile-username"></span>
       </div>
     </div>
-<div id="opponent-badges-row" class="badges-row"
+<div id="enemy-badges-row" class="badges-row"
      style="display:flex;gap:8px;align-items:center;margin:8px 6px 12px 6px;">
   <!-- Example badge template (JS will populate dynamically)
        <div class="badge-counter" data-key="nullCounterOpp" style="display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:8px;background:#1e2938;">
@@ -339,9 +339,9 @@
   
 <!-- BATTLEFIELD CENTER -->  
 <div id="battlefield" style="position:relative;">
-  <div id="opponent-hand"           class="hand-area"></div>
-  <div id="opponent-terrains-zone"   class="zone-row"></div>
-  <div id="opponent-creatures-zone" class="zone-row"></div>
+  <div id="enemy-hand"           class="hand-area"></div>
+  <div id="enemy-terrains-zone"   class="zone-row"></div>
+  <div id="enemy-creatures-zone" class="zone-row"></div>
   <div id="player-creatures-zone"   class="zone-row"></div>
   <div id="player-terrains-zone"     class="zone-row"></div>
   <div id="player-hand"             class="hand-area"></div>
@@ -349,10 +349,10 @@
     
 <!-- BATTLEFIELD RIGHTBAR -->
   <div id="battlefield-rightbar">
-    <!-- BATTLEFIELD OPPONENT DECK/VOID -->
-    <div id="opponent-count-row" class="deck-void-row"></div>
-    <div id="opponent-deck-zone"></div>
-    <div id="opponent-void-zone"></div>
+    <!-- BATTLEFIELD ENEMY DECK/VOID -->
+    <div id="enemy-count-row" class="deck-void-row"></div>
+    <div id="enemy-deck-zone"></div>
+    <div id="enemy-void-zone"></div>
     <!-- PHASES -->
     <div id="phase-badge"><button id="next-phase-btn" class="btn-primary"></button></div>
     <!-- BATTLEFIELD PLAYER DECK/VOID -->
