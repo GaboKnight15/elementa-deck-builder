@@ -4755,25 +4755,25 @@ function getAllEssenceSources() {
 
 // ATTACK LOGIC
 function startAttackTargeting(attackerId, attackerZone, cardDiv) {
-  attackMode.attackerId = attackerId;
-  attackMode.attackerZone = attackerZone;
-  battlefield.classList.add('attack-mode-backdrop');
-
   // Find attacker object
   let attacker =
     gameState.playerCreatures.find(c => c.instanceId === attackerId) ||
     gameState.enemyCreatures.find(c => c.instanceId === attackerId);
   
   if (!canAttack(attacker, gameState)) {
-    showToast("Cannot attack the turn it's summoned.");
+    showToast("This card cannot declare an attack.");
     return;
   }
+  attackMode.attackerId = attackerId;
+  attackMode.attackerZone = attackerZone;
+  battlefield.classList.add('attack-mode-backdrop');
   const targets = getAttackTargets(attacker);
 
   targets.forEach(cardObj => {
     // Try both rows for finding the DOM element
     let targetDiv = findCardDivInZone('enemy-creatures-zone', cardObj.instanceId)
-      || findCardDivInZone('enemy-terrains-zone', cardObj.instanceId);
+      || findCardDivInZone('enemy-terrains-zone', cardObj.instanceId)
+      || findCardDivInZone('enemy-artifacts-zone', cardObj.instanceId);
     if (targetDiv) {
       targetDiv.classList.add('attack-target-highlight');
       targetDiv.onclick = function(e) {
@@ -4808,21 +4808,6 @@ function canAttack(cardObj, gameState) {
   const isCreatureCategory = String(def?.category || '').toLowerCase() === 'creature';
   if (!isCreatureCategory) return false;  
 
-  // Check summoning sickness
-  const currentTurn = gameState.turnNumber || 0;
-  const summonedTurn = cardObj.summonedOnTurn !== undefined ? cardObj.summonedOnTurn : -1;
-  
-  // If creature was summoned this turn, it can't attack (unless it has Rush)
-  if (summonedTurn === currentTurn && !hasRush(cardObj)) {
-    return false;
-  } 
-  
-  // Summoning sickness: if it was summoned this turn and doesn't have Rush, cannot attack
-  if (cardObj.hasSummonedThisTurn && !hasRush(cardObj)) return false;
-
-  // Can't attack if paralyzed, frozen, or bound
-  if (cardObj._paralyzed || cardObj._frozen || cardObj._bound) return false;
-  
   // Must be in ATK (vertical) orientation
   if (cardObj.orientation !== "vertical") return false;
 
@@ -4883,12 +4868,16 @@ function getAttackTargets(attackerObj = null) {
 }
 function endAttackTarget() {
   // Remove highlights and listeners
-  gameState.enemyCreatures.forEach(cardObj => {
+  [...gameState.enemyCreatures, ...gameState.enemyTerrains, ...(gameState.enemyArtifacts || [])].forEach(cardObj => {
     const targetDiv = findCardDivInZone('enemy-creatures-zone', cardObj.instanceId);
-    if (targetDiv) {
-      targetDiv.classList.remove('attack-target-highlight');
-      targetDiv.onclick = null; // Remove attack targeting handler
-    }
+    const targetTerrainDiv = findCardDivInZone('enemy-terrains-zone', cardObj.instanceId);
+    const targetArtifactDiv = findCardDivInZone('enemy-artifacts-zone', cardObj.instanceId);
+    [targetDiv, targetTerrainDiv, targetArtifactDiv].forEach(div => {
+      if (div) {
+        div.classList.remove('attack-target-highlight');
+        div.onclick = null; // Remove attack targeting handler
+      }
+    });
   });
   battlefield.classList.remove('attack-mode-backdrop');
   if (attackMode.cancelHandler) {
@@ -4904,7 +4893,7 @@ function resolveAttack(attackerId, defenderId) {
   // Find attacker/defender objects
   const attackerObj = [...gameState.playerCreatures, ...gameState.playerTerrains]
     .find(c => c.instanceId === attackerId);
-  const defenderObj = [...gameState.enemyCreatures, ...gameState.enemyTerrains, ...gameState.enemyDominion ? [gameState.enemyDominion] : []]
+  const defenderObj = [...gameState.enemyCreatures, ...gameState.enemyTerrains, ...(gameState.enemyArtifacts || []), ...(gameState.enemyDominion ? [gameState.enemyDominion] : [])]
     .find(c => c.instanceId === defenderId);
 
   if (!attackerObj || !defenderObj) return;
@@ -4912,34 +4901,34 @@ function resolveAttack(attackerId, defenderId) {
   const attackerZone = findZoneIdForCard(attackerObj);
   const defenderZone = findZoneIdForCard(defenderObj);
 
-  // BEFORE DAMAGE: decide First Strike / Invulnerability based on speed difference
-  // FIX: use attackerObj/defenderObj (your snippet uses attacker/defender which are undefined)
-  const speedDiff = getSpeedDifference(attackerObj, defenderObj);
-  if (speedDiff >= 2) applyStatus(attackerObj, 'Quickstrike', 1);
-  if (speedDiff >= 3) applyStatus(attackerObj, 'InvulnerableAtk', 1);
-  if (-speedDiff >= 2) applyStatus(defenderObj, 'Quickstrike', 1);
-  if (-speedDiff >= 3) applyStatus(defenderObj, 'InvulnerableAtk', 1);
+  // Attacker is always disabled first when attack is declared.
+  disableAfterCombat(attackerObj, () => {
+    // BEFORE DAMAGE: decide First Strike / Invulnerability based on speed difference
+    const speedDiff = getSpeedDifference(attackerObj, defenderObj);
+    if (speedDiff >= 2) applyStatus(attackerObj, 'Quickstrike', 1);
+    if (speedDiff >= 3) applyStatus(attackerObj, 'InvulnerableAtk', 1);
+    if (-speedDiff >= 2) applyStatus(defenderObj, 'Quickstrike', 1);
+    if (-speedDiff >= 3) applyStatus(defenderObj, 'InvulnerableAtk', 1);
 
-  // Step 1: Animate attacker attacking
-  animateAttack(attackerObj, attackerZone, () => {
-    // Step 2: Trigger OnAttack skills
-    triggerOnAttackSkills(attackerObj, defenderObj);
+    // Step 1: Animate attacker attacking
+    animateAttack(attackerObj, attackerZone, () => {
+      // Step 2: Trigger OnAttack skills
+      triggerOnAttackSkills(attackerObj, defenderObj);
 
-    // Step 3: Trigger OnDefense skills
-    triggerOnDefenseSkills(defenderObj, attackerObj);
+      // Step 3: Trigger OnDefense skills
+      triggerOnDefenseSkills(defenderObj, attackerObj);
 
-    // Step 4: Animate defender getting hit
-    animateDefenderHit(defenderObj, defenderZone, () => {
-      // Step 5: Calculate and apply damage
-      const result = damageCalculation(attackerObj, defenderObj) || { attackerDamage: 0, defenderDamage: 0 };
-      const { attackerDamage, defenderDamage } = result;
+      // Step 4: Animate defender getting hit
+      animateDefenderHit(defenderObj, defenderZone, () => {
+        // Step 5: Calculate and apply damage
+        const result = damageCalculation(attackerObj, defenderObj) || { attackerDamage: 0, defenderDamage: 0 };
+        const { attackerDamage, defenderDamage } = result;
 
-      // Apply damage here (ONLY here)
-      if (attackerDamage > 0) dealDamage(attackerObj, defenderObj, attackerDamage);
-      if (defenderDamage > 0) dealDamage(defenderObj, attackerObj, defenderDamage);
-      
-      // At the end of resolveAttack(), after dealDamage(...)
-      disableAfterCombat(attackerObj, () => {
+        // Apply damage here (ONLY here)
+        if (attackerDamage > 0) dealDamage(attackerObj, defenderObj, attackerDamage);
+        if (defenderDamage > 0) dealDamage(defenderObj, attackerObj, defenderDamage);
+        
+        // Defender is disabled at the end of battle regardless of category, if still on field.
         disableAfterCombat(defenderObj, () => {
           appendAttackLog({
             attacker: attackerObj,
@@ -4949,24 +4938,32 @@ function resolveAttack(attackerId, defenderId) {
           });
           renderGameState();
           checkEndGame();
-        });
+        }, { allowAnyCategory: true });
       });
     });
   });
 }
 // Disable a combatant after battle (tap to horizontal)
 // Use the canonical orientation pipeline used elsewhere.
-function disableAfterCombat(cardObj, done) {
+function disableAfterCombat(cardObj, done, options = {}) {
+  const { allowAnyCategory = false } = options;
   if (!cardObj) return done && done();
-  // Only creatures should be disabled by combat
-  const def = dummyCards.find(c => c.id === cardObj.cardId);
-  const isCreature = String(def?.category || '').toLowerCase() === 'creature';
-  if (!isCreature) return done && done();
-  // If it got removed/killed, don't disable
-  const hp = (cardObj.currentHP !== undefined && cardObj.currentHP !== null)
-    ? Number(cardObj.currentHP)
-    : getBaseHp(cardObj.cardId);
-  if (hp <= 0) return done && done();
+  // Default combat behavior: only creatures are disabled unless explicitly overridden.
+  if (!allowAnyCategory) {
+    const def = dummyCards.find(c => c.id === cardObj.cardId);
+    const isCreature = String(def?.category || '').toLowerCase() === 'creature';
+    if (!isCreature) return done && done();
+  }
+  // If card left the field (e.g., destroyed), skip disabling.
+  const fieldCards = [
+    ...gameState.playerCreatures,
+    ...gameState.playerTerrains,
+    ...(gameState.playerArtifacts || []),
+    ...gameState.enemyCreatures,
+    ...gameState.enemyTerrains,
+    ...(gameState.enemyArtifacts || [])
+  ];
+  if (!fieldCards.includes(cardObj)) return done && done();
   if (cardObj.orientation === 'horizontal') return done && done();
   changeCardPosition(cardObj, 'horizontal', done);
 }
