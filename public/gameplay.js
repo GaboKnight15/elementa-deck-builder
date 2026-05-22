@@ -1317,7 +1317,7 @@ inspire: { name: 'Inspire',
         const targets = getTargets(step.target, sourceCardObj);
         target = Array.isArray(targets) && targets.length ? targets[0] : null;
       }
-      if (!target) target = sourceCardObj; // fallback: apply to source
+      if (!target) target = sourceCardObj;
 
       // Apply armor if present
       if (typeof step.armor === 'number' && step.armor !== 0) {
@@ -2074,7 +2074,7 @@ function renderGameState() {
   enemyHandDiv.innerHTML = '';
   let enemyCardback = (window.selectedCpuDeck && window.selectedCpuDeck.cardbackArt)
     ? window.selectedCpuDeck.cardbackArt
-    : "Images/Cardback/Default.png"; // fallback
+    : "Images/Cardback/Default.png";
 
   for (let i = 0; i < gameState.enemyHand.length; i++) {
     const div = document.createElement('div');
@@ -2122,7 +2122,6 @@ function renderHandCostBadge(cardDiv, cardData) {
     if (typeof getEssenceCostDisplay === 'function') {
       html = getEssenceCostDisplay(parsed);
     } else {
-      // fallback: render colorless number if parseCost not available
       if (parsed.colorless) html = `<span>${parsed.colorless}</span>`;
     }
     badge.innerHTML = html;
@@ -2478,11 +2477,9 @@ function appendDeckZone(parentDiv, deckArray, who) {
     if (window.selectedenemyDeck && window.selectedenemyDeck.cardbackArt) {
       deckCardback = window.selectedenemyDeck.cardbackArt;
     }
-    // Fallback: enemy profile
     else if (gameState.enemyProfile && gameState.enemyProfile.cardbackArt) {
       deckCardback = gameState.enemyProfile.cardbackArt;
     }
-    // Fallback: enemy deck object
     else if (gameState.enemyDeck && gameState.enemyDeck.cardbackArt) {
       deckCardback = gameState.enemyDeck.cardbackArt;
     }
@@ -2715,7 +2712,7 @@ gameState.playerDeck.forEach((cardObj, idx) => {
 // CARD STATS DETECTION
 function getBaseHp(cardId) {
   const card = dummyCards.find(c => c.id === cardId);
-  return card ? card.hp : 1; // fallback to 1 if not found
+  return card ? card.hp : 1;
 }
 
 function computeCardStat(cardObj, statName) {
@@ -3097,18 +3094,15 @@ function renderEssencePool(cardObj) {
   }
   return poolDiv;
 }
-// --- Helper: render small essence summary icons into an existing container ---
-// Insert this function somewhere before updateGameStatusRow() (for example, just above it).
-// It fixes the ReferenceError by providing the missing renderEssenceSummaryInto used in updateGameStatusRow.
+
 function renderEssenceSummaryInto(container, pool = {}, opts = {}) {
   if (!container) return;
   container.innerHTML = '';
 
   const size = Number(opts.size || 16);
-  const imageMap = (typeof ESSENCE_IMAGE_MAP !== 'undefined') ? ESSENCE_IMAGE_MAP;
-
+  const imageMap = typeof ESSENCE_IMAGE_MAP !== 'undefined' ? ESSENCE_IMAGE_MAP : {};
   // Color order to show
-  const colors = ['green','red','blue','yellow','purple','gray','black','white'];
+  const colors = ['g','r','u','y','p','c','b','w'];
 
   // For each color, show icon + count (compact)
   colors.forEach(color => {
@@ -3122,7 +3116,7 @@ function renderEssenceSummaryInto(container, pool = {}, opts = {}) {
     wrap.style.margin = '0 6px 0 0';
 
     const img = document.createElement('img');
-    img.src = imageMap[color] || fallbackMap[color] || '';
+    img.src = imageMap[color] || '';
     img.alt = color + " essence";
     img.style.width = `${size}px`;
     img.style.height = `${size}px`;
@@ -4242,7 +4236,6 @@ function showEssencePaymentModal(opts = {}) {
           assignedFromPool.colorless = (assignedFromPool.colorless || 0) + 1;
           clCnt.textContent = `${Math.max(0, clAmt - assignedFromPool.colorless)}`;
         } else {
-          // fallback: if no explicit colorless need, try to fill any remaining color requirements (not implemented here)
           showToast && showToast('No colorless requirement to fill.', { type: 'info' });
         }
         if (typeof updateReqDiv === 'function') updateReqDiv(requirements, reqPaid, reqDiv);
@@ -5195,7 +5188,6 @@ function appendVisualLog(obj, fromSocket = false, isMe = true) {
       </div>
     `;
   } else {
-    // Generic fallback (prevents empty entries)
     logHtml = `
       <div class="log-action ${type} ${who}" style="display:flex;align-items:center;gap:8px;">
         <span>${type}</span>
@@ -5451,7 +5443,6 @@ function resolveTriggerEffect(cardObj, skillObj, context, onComplete) {
       if (onComplete) onComplete();
     }
   } else {
-    // Fallback: resolve effect as in your normal skill resolution
     resolveSkill(cardObj, skillObj, context);
     if (onComplete) onComplete();
   }
@@ -5555,8 +5546,6 @@ function animateCardRotation(cardObj, zoneId, prevOrientation, newOrientation, c
   }
 
   cardDiv.addEventListener("transitionend", handler);
-
-  // Fallback in case transitionend doesn't fire
   setTimeout(finish, 450);
 }
 function animateSkillActivation(cardObj, zoneId, callback) {
@@ -6056,7 +6045,6 @@ function getTargetsFromEffect(step = {}, sourceCardObj = null, context = {}) {
         arr = applyEffectTargetFilter(arr, step);
         return arr.slice();
       }
-      // fallback to generic getTargets
       try {
         let arr = getTargets(step.zone, sourceCardObj, context);
         return applyEffectTargetFilter(arr, step);
@@ -6200,7 +6188,6 @@ function chooseTargetsForEffect(step = {}, sourceCardObj = null, onSelect = () =
     return;
   }
 
-  // If we reach here, fallback to a simple field selection using getTargetsFromEffect
   const fallback = getTargetsFromEffect(step, sourceCardObj);
   startSkillTarget(fallback, selected => {
     onSelect(Array.isArray(selected) ? selected : [selected]);
