@@ -1599,9 +1599,9 @@ if (Array.isArray(enemyDeck) && enemyDeck.length && enemyDeck[0].cardId) {
   myProfileDiv.appendChild(renderProfilePanel(playerProfile));
 
   // enemy profile
-  const oppProfileDiv = document.getElementById('enemy-profile');
-  oppProfileDiv.innerHTML = "";
-  oppProfileDiv.appendChild(renderProfilePanel(enemyProfile));
+  const enemyProfileDiv = document.getElementById('enemy-profile');
+  enemyProfileDiv.innerHTML = "";
+  enemyProfileDiv.appendChild(renderProfilePanel(enemyProfile));
 
   // --- Battlefield zones ---
   renderGameState();
@@ -7171,10 +7171,10 @@ socket.on('casual-match-found', function(matchData) {
 });
 
 socket.on('enemy profile', function(profileObj) {
-  const oppProfileDiv = document.getElementById('enemy-profile');
-  oppProfileDiv.innerHTML = "";
-  oppProfileDiv.appendChild(renderProfilePanel(profileObj));
-  oppProfileDiv.style.display = '';
+  const enemyProfileDiv = document.getElementById('enemy-profile');
+  enemyProfileDiv.innerHTML = "";
+  enemyProfileDiv.appendChild(renderProfilePanel(profileObj));
+  enemyProfileDiv.style.display = '';
 });
 
 // Make available globally if called from client.js:
