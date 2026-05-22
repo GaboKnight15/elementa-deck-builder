@@ -95,47 +95,32 @@ let isProcessingEvents = false;
 
 let attackMode = {attackerId: null, attackerZone: null, cancelHandler: null};
 
-const INITIAL_HAND_SIZE = 5;
+const INITIAL_HAND_SIZE = 4;
 
 const ESSENCE_IMAGE_MAP = {
   multi: "Icons/Essence/Multi.png",
-  red: "Icons/Essence/Red.png", red2: "Icons/Essence/Red2.png",
-  red3: "Icons/Essence/Red3.png",
-  red4: "Icons/Essence/Red4.png",
-  red5: "Icons/Essence/Red5.png",
-  blue: "Icons/Essence/Blue.png",
-  green: "Icons/Essence/Green.png",
-  yellow: "Icons/Essence/Yellow.png",
+  red: "Icons/Essence/Red.png", red2: "Icons/Essence/Red2.png", red3: "Icons/Essence/Red3.png", red4: "Icons/Essence/Red4.png", red5: "Icons/Essence/Red5.png",
+  blue: "Icons/Essence/Blue.png", blue2: "Icons/Essence/Blue2.png", blue3: "Icons/Essence/Blue3.png", blue4: "Icons/Essence/Blue4.png", blue5: "Icons/Essence/Blue5.png",
+  green: "Icons/Essence/Green.png", green2: "Icons/Essence/Green2.png", green3: "Icons/Essence/Green3.png", green4: "Icons/Essence/Green4.png", green5: "Icons/Essence/Green5.png",
+  yellow: "Icons/Essence/Yellow.png", yellow2: "Icons/Essence/Yellow2.png", yellow3: "Icons/Essence/Yellow3.png", yellow4: "Icons/Essence/Yellow4.png", yellow5: "Icons/Essence/Yellow5.png",
   purple: "Icons/Essence/Purple.png",
-  gray: "Icons/Essence/Gray.png",
-  black: "Icons/Essence/Black.png",
-  white: "Icons/Essence/White.png",
-  X0: "Icons/Essence/Zero.png",
-  X1: "Icons/Essence/One.png",
-  X2: "Icons/Essence/Two.png",
-  X3: "Icons/Essence/Three.png",
-  X4: "Icons/Essence/Four.png",
-  X5: "Icons/Essence/Five.png",
-  X6: "Icons/Essence/Six.png",
-  X7: "Icons/Essence/Seven.png",
-  X8: "Icons/Essence/Eight.png",
-  X9: "Icons/Essence/Nine.png",
-  X10: "Icons/Essence/Ten.png",
-  X11: "Icons/Essence/Eleven.png",
-  X12: "Icons/Essence/Twelve.png",
-  X13: "Icons/Essence/Thirteen.png",
-  X14: "Icons/Essence/Fourteen.png",
-  X15: "Icons/Essence/Fifteen.png",
-  X16: "Icons/Essence/Sixteen.png",
-  X17: "Icons/Essence/Seventeen.png",
-  X18: "Icons/Essence/Eighteen.png",
-  X19: "Icons/Essence/Nineteen.png",
-  X20: "Icons/Essence/Twenty.png"
+  purple2: "Icons/Essence/Purple2.png",
+  purple3: "Icons/Essence/Purple3.png",
+  purple4: "Icons/Essence/Purple4.png",
+  purple5: "Icons/Essence/Purple5.png",
+  gray: "Icons/Essence/Gray.png", gray2: "Icons/Essence/Gray2.png", gray3: "Icons/Essence/Gray3.png", gray4: "Icons/Essence/Gray4.png", gray5: "Icons/Essence/Gray5.png",
+  black: "Icons/Essence/Black.png", black2: "Icons/Essence/Black2.png", black3: "Icons/Essence/Black3.png", black4: "Icons/Essence/Black4.png", black5: "Icons/Essence/Black5.png",
+  white: "Icons/Essence/White.png", white2: "Icons/Essence/White2.png", white3: "Icons/Essence/White3.png", white4: "Icons/Essence/White4.png", white5: "Icons/Essence/White5.png",
+  X0: "Icons/Essence/Zero.png", X1: "Icons/Essence/One.png", X2: "Icons/Essence/Two.png", X3: "Icons/Essence/Three.png",
+  X4: "Icons/Essence/Four.png", X5: "Icons/Essence/Five.png", X6: "Icons/Essence/Six.png", X7: "Icons/Essence/Seven.png",
+  X8: "Icons/Essence/Eight.png", X9: "Icons/Essence/Nine.png", X10: "Icons/Essence/Ten.png", X11: "Icons/Essence/Eleven.png",
+  X12: "Icons/Essence/Twelve.png", X13: "Icons/Essence/Thirteen.png", X14: "Icons/Essence/Fourteen.png", X15: "Icons/Essence/Fifteen.png",
+  X16: "Icons/Essence/Sixteen.png", X17: "Icons/Essence/Seventeen.png", X18: "Icons/Essence/Eighteen.png", X19: "Icons/Essence/Nineteen.png", X20: "Icons/Essence/Twenty.png"
 };
 // STATUS EFFECTS
 const STATUS_MAP = {
   burned: { name: 'Burned', icon: 'Icons/Status/Burned.png', duration: 2, tick: "enemyEnd",
-    description: 'DEF -1.',
+    description: 'Receives 1 more damage.',
     apply: function(cardObj) {
       // Lower DEF by 1 if not already applied
       if (!cardObj.burned) {
@@ -157,7 +142,7 @@ const STATUS_MAP = {
   frozen: {
     icon: 'Icons/Status/Frozen.png',
     name: 'Frozen',
-    description: 'Cannot attack, use skills and receive damage.',
+    description: 'Disabled and sealed.',
     duration: 1,
     tick: "allEnd", // Decrement on every End Phase
     apply: (cardObj) => {
@@ -200,28 +185,26 @@ poisoned: { name: 'Poisoned', duration: 3, tick: "allEnd", icon: 'Icons/Status/P
   }
 },
   paralized: {
-    icon: 'Icons/Status/Paralized.png', name: 'Paralized', duration: 2,
-    description: 'Cannot attack or activate skills.',
+    icon: 'Icons/Status/Paralized.png', name: 'Paralized', 
+    description: 'Disabled.',
     apply: function(cardObj) {
       cardObj.paralyzed = true;
-      cardObj.canAttack = false;
-      cardObj.canActivateSkill = false;
+      cardObj.disabled = true;
     },
     remove: function(cardObj) {
       cardObj.paralyzed = false;
-      cardObj.canAttack = true;
-      cardObj.canActivateSkill = true;
+      cardObj.disabled = false;
+      delete cardObj.paralyzed;
     },
   },
   drenched: { name: 'Drenched', duration: 1, icon: 'Icons/Status/Drenched.png',
-    description: 'Decreases {atk} by {1}.',
+    description: 'Reduces ATK by {1}.',
     apply: function(cardObj) {
-      cardObj.soak = true;
-      cardObj.soakAmount = 2; // for example, if you want to track the value
+      cardObj.drenched = true;
     },
     remove: function(cardObj) {
-      cardObj.soak = false;
-      delete cardObj.soakAmount;
+      cardObj.drenched = false;
+      delete cardObj.drenched;
     }
     // Optionally add logic for duration ticks
   },
@@ -230,15 +213,14 @@ bound: { name: 'Bound', icon: 'Icons/Status/Bound.png', duration: 1,
   // Don't set duration here, handle it in your end phase check!
   apply: function(cardObj) {
     cardObj.bound = true;
-    cardObj.canAttack = false;
+    cardObj.disabled = true;
     cardObj.canActivateSkill = false;
-    cardObj.bindPendingRemoval = true; // Flag that Bind is active and waiting for enemy End Phase
   },
   remove: function(cardObj) {
     cardObj.bound = false;
-    cardObj.canAttack = true;
+    cardObj.disabled = false;
     cardObj.canActivateSkill = true;
-    delete cardObj.bindPendingRemoval;
+    delete cardObj.bound;
   }
 },
 sealed: { name: "Sealed", duration: 1, icon: "Icons/Status/Sealed.png",
@@ -247,7 +229,6 @@ sealed: { name: "Sealed", duration: 1, icon: "Icons/Status/Sealed.png",
   apply: function(cardObj) {
     try {
       cardObj.sealed = true;
-      // Prevent activation via the generic flag checked by canActivateSkill()
       cardObj.canActivateSkill = false;
     } catch (err) {
       console.warn('Seal.apply failed', err);
@@ -256,9 +237,6 @@ sealed: { name: "Sealed", duration: 1, icon: "Icons/Status/Sealed.png",
   remove: function(cardObj) {
     try {
       cardObj.sealed = false;
-      // restore ability to activate skills unless another effect forbids it
-      // (we don't blindly set canActivateSkill = true because other statuses may also block)
-      // so only clear the explicit flag, keep other logic to decide final state.
       delete cardObj.canActivateSkill;
     } catch (err) {
       console.warn('Seal.remove failed', err);
