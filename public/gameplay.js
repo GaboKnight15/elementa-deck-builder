@@ -1526,8 +1526,13 @@ function setBattlefieldBackgrounds(playerBannerUrl, enemyBannerUrl) {
   }
 }
 
-function createDeck(deckObj) {
-  const arr = buildDeck(deckObj);
+function createDeck(deckInput) {
+  const normalizedDeck =
+    deckInput?.deckObj && typeof deckInput.deckObj === "object"
+      ? deckInput.deckObj
+      : (deckInput && typeof deckInput === "object" ? deckInput : {});
+
+  const arr = buildDeck(normalizedDeck);
   shuffleInPlace(arr);
   return arr;
 }
