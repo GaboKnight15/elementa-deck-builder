@@ -27,8 +27,8 @@ TURNS.forEach(turn =>
 // --- ZONES --- //
 // ------------- //
 let gameState = {
-  playerDeck: [], playerHand: [], playerCreatures: [], playerTerrains: [], playerVoid: [], playerDeparture: [],
-  enemyDeck: [], enemyHand: [], enemyCreatures: [], enemyTerrains: [], enemyVoid: [], enemyDeparture: [],
+  playerDeck: [], playerHand: [], playerCreatures: [], playerTerrains: [], playerVoid: [], playerDeparture: [], playerArtifacts: [], playerSpells: [],
+  enemyDeck: [], enemyHand: [], enemyCreatures: [], enemyTerrains: [], enemyVoid: [], enemyDeparture: [], enemyArtifacts: [], enemySpells: [],
   playerDominion: null, enemyDominion: null,
   turn: "player",
   phase: "start",
@@ -1558,11 +1558,15 @@ if (Array.isArray(enemyDeck) && enemyDeck.length && enemyDeck[0].cardId) {
   gameState.playerCreatures = [];
   gameState.playerTerrains = [];
   gameState.playerVoid = [];
+  gameState.playerArtifacts = [];
+  gameState.playerSpells = [];
+  
   gameState.enemyHand = [];
   gameState.enemyCreatures = [];
   gameState.enemyTerrains = [];
   gameState.enemyVoid = [];
-  
+  gameState.enemyArtifacts = [];
+  gameState.enemySpells = [];
   gameState.playerDeparture = [];
   gameState.enemyDeparture = [];
   
@@ -2722,9 +2726,11 @@ function getBaseHp(cardId) {
 
 function computeCardStat(cardObj, statName) {
   // Get base stat from dummyCards
-  const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
+  const cardDef = dummyCards.find(c => c.id === cardObj.cardId) || {};
+  const instanceStat = cardObj?.[statName];
+  const definedStat = cardDef[statName];
   
-  let base;
+  const base = typeof instanceStat === "number" ? instanceStat : (definedStat ?? 0);
   let mods = 0;
   // Modifiers array (for skills, effects, etc)
   if (Array.isArray(cardObj.modifiers)) {
@@ -2745,8 +2751,8 @@ function computeCardStat(cardObj, statName) {
     name.endsWith("Creatures") || name.endsWith("Terrains") || name.endsWith("Artifacts")
   );
   const allFieldCards = fieldZoneNames
-    .map(name => ZONE_MAP[name].arr())
-    .flat();
+    .flatMap(name => ZONE_MAP[name]?.arr() || [])
+    .filter(sourceCard => sourceCard?.cardId);
 
   // Apply Inspire and similar abilities dynamically
   allFieldCards.forEach(sourceCard => {
