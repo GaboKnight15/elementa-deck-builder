@@ -99,7 +99,10 @@ const INITIAL_HAND_SIZE = 5;
 
 const ESSENCE_IMAGE_MAP = {
   multi: "Icons/Essence/Multi.png",
-  red: "Icons/Essence/Red.png",
+  red: "Icons/Essence/Red.png", red2: "Icons/Essence/Red2.png",
+  red3: "Icons/Essence/Red3.png",
+  red4: "Icons/Essence/Red4.png",
+  red5: "Icons/Essence/Red5.png",
   blue: "Icons/Essence/Blue.png",
   green: "Icons/Essence/Green.png",
   yellow: "Icons/Essence/Yellow.png",
