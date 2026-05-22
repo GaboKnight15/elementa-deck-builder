@@ -96,27 +96,6 @@ let isProcessingEvents = false;
 let attackMode = {attackerId: null, attackerZone: null, cancelHandler: null};
 
 const INITIAL_HAND_SIZE = 4;
-
-const ESSENCE_IMAGE_MAP = {
-  multi: "Icons/Essence/Multi.png",
-  red: "Icons/Essence/Red.png", red2: "Icons/Essence/Red2.png", red3: "Icons/Essence/Red3.png", red4: "Icons/Essence/Red4.png", red5: "Icons/Essence/Red5.png",
-  blue: "Icons/Essence/Blue.png", blue2: "Icons/Essence/Blue2.png", blue3: "Icons/Essence/Blue3.png", blue4: "Icons/Essence/Blue4.png", blue5: "Icons/Essence/Blue5.png",
-  green: "Icons/Essence/Green.png", green2: "Icons/Essence/Green2.png", green3: "Icons/Essence/Green3.png", green4: "Icons/Essence/Green4.png", green5: "Icons/Essence/Green5.png",
-  yellow: "Icons/Essence/Yellow.png", yellow2: "Icons/Essence/Yellow2.png", yellow3: "Icons/Essence/Yellow3.png", yellow4: "Icons/Essence/Yellow4.png", yellow5: "Icons/Essence/Yellow5.png",
-  purple: "Icons/Essence/Purple.png",
-  purple2: "Icons/Essence/Purple2.png",
-  purple3: "Icons/Essence/Purple3.png",
-  purple4: "Icons/Essence/Purple4.png",
-  purple5: "Icons/Essence/Purple5.png",
-  gray: "Icons/Essence/Gray.png", gray2: "Icons/Essence/Gray2.png", gray3: "Icons/Essence/Gray3.png", gray4: "Icons/Essence/Gray4.png", gray5: "Icons/Essence/Gray5.png",
-  black: "Icons/Essence/Black.png", black2: "Icons/Essence/Black2.png", black3: "Icons/Essence/Black3.png", black4: "Icons/Essence/Black4.png", black5: "Icons/Essence/Black5.png",
-  white: "Icons/Essence/White.png", white2: "Icons/Essence/White2.png", white3: "Icons/Essence/White3.png", white4: "Icons/Essence/White4.png", white5: "Icons/Essence/White5.png",
-  X0: "Icons/Essence/Zero.png", X1: "Icons/Essence/One.png", X2: "Icons/Essence/Two.png", X3: "Icons/Essence/Three.png",
-  X4: "Icons/Essence/Four.png", X5: "Icons/Essence/Five.png", X6: "Icons/Essence/Six.png", X7: "Icons/Essence/Seven.png",
-  X8: "Icons/Essence/Eight.png", X9: "Icons/Essence/Nine.png", X10: "Icons/Essence/Ten.png", X11: "Icons/Essence/Eleven.png",
-  X12: "Icons/Essence/Twelve.png", X13: "Icons/Essence/Thirteen.png", X14: "Icons/Essence/Fourteen.png", X15: "Icons/Essence/Fifteen.png",
-  X16: "Icons/Essence/Sixteen.png", X17: "Icons/Essence/Seventeen.png", X18: "Icons/Essence/Eighteen.png", X19: "Icons/Essence/Nineteen.png", X20: "Icons/Essence/Twenty.png"
-};
 // STATUS EFFECTS
 const STATUS_MAP = {
   burned: { name: 'Burned', icon: 'Icons/Status/Burned.png', duration: 2, tick: "enemyEnd",
@@ -3060,11 +3039,11 @@ function getEssenceCostDisplay(cost) {
   }
   if (!cost || typeof cost !== 'object') {
     if (cost === 0) {
-      return `<img src="${ESSENCE_IMAGE_MAP['X0']}" style="width:22px;height:22px;vertical-align:middle;" alt="Colorless: 0">`;
+      return `<img src="${ESSENCE_IMAGE_MAP['x0']}" style="width:22px;height:22px;vertical-align:middle;" alt="Colorless: 0">`;
     }
     return '';
   }
-  const colorOrder = ['colorless', 'green', 'red', 'blue', 'yellow', 'gray', 'purple', 'white', 'black'];
+  const colorOrder = ['colorless', 'multi', 'g', 'r', 'u', 'y', 'c', 'p', 'w', 'b'];
   let html = '';
   let total = 0;
 
@@ -3074,7 +3053,7 @@ function getEssenceCostDisplay(cost) {
       total += amt;
       if (color === 'colorless') {
         // Show the exact number as Xn image
-        html += `<img src="${ESSENCE_IMAGE_MAP['X'+amt]}" style="width:22px;height:22px;vertical-align:middle;" alt="Colorless: ${amt}">`;
+        html += `<img src="${ESSENCE_IMAGE_MAP['x'+amt]}" style="width:22px;height:22px;vertical-align:middle;" alt="Colorless: ${amt}">`;
       } else {
         html += `<img src="${ESSENCE_IMAGE_MAP[color]}" style="width:22px;height:22px;vertical-align:middle;margin:0 2px;" alt="${color} Essence">`.repeat(amt);
       }
@@ -3082,7 +3061,7 @@ function getEssenceCostDisplay(cost) {
   });
   // If total cost is zero, show the zero image
   if (total === 0) {
-    html = `<img src="${ESSENCE_IMAGE_MAP['X0']}" style="width:22px;height:22px;vertical-align:middle;" alt="Colorless: 0">`;
+    html = `<img src="${ESSENCE_IMAGE_MAP['x0']}" style="width:22px;height:22px;vertical-align:middle;" alt="Colorless: 0">`;
   }
   return html;
 }
@@ -3096,11 +3075,6 @@ function renderEssencePool(cardObj) {
   const poolDiv = document.createElement('div');
   poolDiv.className = 'essence-pool';
 
-  // Color codes and their image sources
-  const ESSENCE_IMAGE_MAP = {
-    green: "Icons/Essence/Green.png", red: "Icons/Essence/Red.png", blue: "Icons/Essence/Blue.png", yellow: "Icons/Essence/Yellow.png",
-    gray: "Icons/Essence/Gray.png", purple: "Icons/Essence/Purple.png", black: "Icons/Essence/Black.png", white: "Icons/Essence/White.png"
-  };
   // Map from code to color name
   const colorCodes = {G: "green", R: "red", U: "blue", Y: "yellow", C: "gray", P: "purple", W: "white", B: "black"};
 
@@ -3131,18 +3105,7 @@ function renderEssenceSummaryInto(container, pool = {}, opts = {}) {
   container.innerHTML = '';
 
   const size = Number(opts.size || 16);
-  // Fallback mapping if global ESSENCE_IMAGE_MAP is not present for some reason
-  const fallbackMap = {
-    green: "Icons/Essence/Green.png",
-    red: "Icons/Essence/Red.png",
-    blue: "Icons/Essence/Blue.png",
-    yellow: "Icons/Essence/Yellow.png",
-    purple: "Icons/Essence/Purple.png",
-    gray: "Icons/Essence/Gray.png",
-    black: "Icons/Essence/Black.png",
-    white: "Icons/Essence/White.png",
-  };
-  const imageMap = (typeof ESSENCE_IMAGE_MAP !== 'undefined') ? ESSENCE_IMAGE_MAP : fallbackMap;
+  const imageMap = (typeof ESSENCE_IMAGE_MAP !== 'undefined') ? ESSENCE_IMAGE_MAP;
 
   // Color order to show
   const colors = ['green','red','blue','yellow','purple','gray','black','white'];
@@ -4407,7 +4370,7 @@ function updateReqDiv(requirements, reqPaid, reqDiv) {
       // Colorless: use the X1 image for each unit
       if (r.color === "colorless") {
         for (let i = 0; i < r.needed; i++) {
-          const imgSrc = ESSENCE_IMAGE_MAP['X1'];
+          const imgSrc = ESSENCE_IMAGE_MAP['x1'];
           const isPaid = i < (reqPaid[r.color] || 0);
           icons += `<img src="${imgSrc}" 
             style="width:24px;height:24px;vertical-align:middle;margin: 0 3px;
@@ -4416,8 +4379,7 @@ function updateReqDiv(requirements, reqPaid, reqDiv) {
             transition:filter 0.2s,opacity 0.2s;">`;
         }
       } else {
-        // Colored essence: use its color image
-        const imgSrc = ESSENCE_IMAGE_MAP[r.color] || ESSENCE_IMAGE_MAP.gray;
+        const imgSrc = ESSENCE_IMAGE_MAP[r.color];
         for (let i = 0; i < r.needed; i++) {
           const isPaid = i < (reqPaid[r.color] || 0);
           icons += `<img src="${imgSrc}" 
