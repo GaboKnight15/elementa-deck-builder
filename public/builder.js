@@ -1136,6 +1136,8 @@ function getCardCategory(card) {
   return card.category ? card.category.toLowerCase() : '';
 }
 function buildDeck(deckObj) {
+  if (!deckObj || typeof deckObj !== 'object') return [];
+
   let deck = [];
   let uid = 1;
   for (let [cardId, count] of Object.entries(deckObj)) {
