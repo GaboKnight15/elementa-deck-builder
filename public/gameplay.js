@@ -4903,13 +4903,6 @@ function resolveAttack(attackerId, defenderId) {
 
   // Attacker is always disabled first when attack is declared.
   disableAfterCombat(attackerObj, () => {
-    // BEFORE DAMAGE: decide First Strike / Invulnerability based on speed difference
-    const speedDiff = getSpeedDifference(attackerObj, defenderObj);
-    if (speedDiff >= 2) applyStatus(attackerObj, 'Quickstrike', 1);
-    if (speedDiff >= 3) applyStatus(attackerObj, 'InvulnerableAtk', 1);
-    if (-speedDiff >= 2) applyStatus(defenderObj, 'Quickstrike', 1);
-    if (-speedDiff >= 3) applyStatus(defenderObj, 'InvulnerableAtk', 1);
-
     // Step 1: Animate attacker attacking
     animateAttack(attackerObj, attackerZone, () => {
       // Step 2: Trigger OnAttack skills
