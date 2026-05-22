@@ -29,6 +29,8 @@ TURNS.forEach(turn =>
 let gameState = {
   playerDeck: [], playerHand: [], playerCreatures: [], playerTerrains: [], playerVoid: [], playerDeparture: [],
   enemyDeck: [], enemyHand: [], enemyCreatures: [], enemyTerrains: [], enemyVoid: [], enemyDeparture: [],
+  playerArtifacts: [], playerSpells: [],
+  enemyArtifacts: [], enemySpells: [],
   playerDominion: null, enemyDominion: null,
   turn: "player",
   phase: "start",
@@ -1562,6 +1564,10 @@ if (Array.isArray(enemyDeck) && enemyDeck.length && enemyDeck[0].cardId) {
   gameState.enemyCreatures = [];
   gameState.enemyTerrains = [];
   gameState.enemyVoid = [];
+  gameState.playerArtifacts = [];
+  gameState.playerSpells = [];
+  gameState.enemyArtifacts = [];
+  gameState.enemySpells = [];
   
   gameState.playerDeparture = [];
   gameState.enemyDeparture = [];
@@ -2722,9 +2728,9 @@ function getBaseHp(cardId) {
 
 function computeCardStat(cardObj, statName) {
   // Get base stat from dummyCards
-  const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
+  const cardDef = dummyCards.find(c => c.id === cardObj.cardId) || {};
   
-  let base;
+  const base = typeof cardObj?.[statName] === "number" ? cardObj[statName] : (cardDef[statName] ?? 0);
   let mods = 0;
   // Modifiers array (for skills, effects, etc)
   if (Array.isArray(cardObj.modifiers)) {
@@ -2745,8 +2751,8 @@ function computeCardStat(cardObj, statName) {
     name.endsWith("Creatures") || name.endsWith("Terrains") || name.endsWith("Artifacts")
   );
   const allFieldCards = fieldZoneNames
-    .map(name => ZONE_MAP[name].arr())
-    .flat();
+    .flatMap(name => ZONE_MAP[name].arr() || [])
+    .filter(sourceCard => sourceCard?.cardId);
 
   // Apply Inspire and similar abilities dynamically
   allFieldCards.forEach(sourceCard => {
