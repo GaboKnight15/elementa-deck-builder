@@ -4917,7 +4917,6 @@ function getInitialGameState() {
       enemy: { green:0, red:0, blue:0, yellow:0, purple:0, gray:0, black:0, white:0 }
     },
 
-    // Turn/phase/time-of-day defaults
     gameLog: [],
     turnNumber: 0,
     turn: "player",
@@ -6711,34 +6710,11 @@ function getStatColor(cardObj, statName) {
 }
 
 // GAME STATUS UI
-// Renders a compact row showing current time-of-day
-// --- REPLACEMENT: updateGameStatusRow (renders day/night icons)
-// Updated updateGameStatusRow - ensures pooled essence and casting preview are shown
+// updateGameStatusRow - ensures pooled essence and casting preview are shown
 function updateGameStatusRow() {
   const container = document.getElementById('game-status-inline');
   if (!container) return;
   container.innerHTML = '';
-
-  const todWrap = document.createElement('div');
-  todWrap.style.display = 'flex';
-  todWrap.style.flexDirection = 'column';
-  todWrap.style.alignItems = 'center';
-  todWrap.style.gap = '6px';
-
-  const todImg = document.createElement('img');
-  todImg.src = todMap[tod] || todMap.day;
-  todImg.alt = tod;
-  todImg.title = `Time: ${tod}`;
-  todImg.style.width = '28px';
-  todImg.style.height = '28px';
-  todWrap.appendChild(todImg);
-
-  const todLbl = document.createElement('div');
-  todLbl.textContent = tod.charAt(0).toUpperCase() + tod.slice(1);
-  todLbl.style.fontSize = '0.75em';
-  todLbl.style.color = '#ffe066';
-  todLbl.style.fontWeight = '700';
-  todWrap.appendChild(todLbl);
 
   // enemy essence block
   const oWrap = document.createElement('div');
@@ -6778,41 +6754,15 @@ function updateGameStatusRow() {
   renderEssenceSummaryInto(pIcons, getEssencePool('player'), { size: 16 });
   pWrap.appendChild(pIcons);
 
-  // Casting preview (if payment modal is open)
-  const casting = window.currentCasting || null;
-  const castWrap = document.createElement('div');
-  castWrap.style.display = 'flex';
-  castWrap.style.flexDirection = 'column';
-  castWrap.style.alignItems = 'center';
-  castWrap.style.gap = '6px';
-  if (casting && casting.card) {
-    const img = document.createElement('img');
-    img.src = casting.card.image || '';
-    img.alt = casting.card.name || 'Casting';
-    img.style.width = '36px';
-    img.style.height = '36px';
-    img.style.borderRadius = '6px';
-    img.style.boxShadow = '0 2px 10px rgba(0,0,0,0.45)';
-    castWrap.appendChild(img);
-    if (casting.cost) {
-      const costDiv = document.createElement('div');
-      costDiv.innerHTML = getEssenceCostDisplay(casting.cost);
-      castWrap.appendChild(costDiv);
-    }
-  }
-
-  // assemble
-  container.appendChild(todWrap);
   container.appendChild(pWrap);
-  if (castWrap.children.length) container.appendChild(castWrap);
   container.appendChild(oWrap);
 }
 
 // Hook into renderGameState so updates happen automatically
 if (typeof renderGameState === 'function') {
-  const _origRenderGameState = renderGameState;
+  const origRenderGameState = renderGameState;
   renderGameState = function() {
-    _origRenderGameState.apply(this, arguments);
+    origRenderGameState.apply(this, arguments);
     try {
       updateGameStatusRow();
     } catch (err) {
