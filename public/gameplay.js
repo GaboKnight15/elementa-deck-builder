@@ -2729,8 +2729,10 @@ function getBaseHp(cardId) {
 function computeCardStat(cardObj, statName) {
   // Get base stat from dummyCards
   const cardDef = dummyCards.find(c => c.id === cardObj.cardId) || {};
+  const instanceStat = cardObj?.[statName];
+  const definedStat = cardDef[statName];
   
-  const base = typeof cardObj?.[statName] === "number" ? cardObj[statName] : (cardDef[statName] ?? 0);
+  const base = typeof instanceStat === "number" ? instanceStat : (definedStat ?? 0);
   let mods = 0;
   // Modifiers array (for skills, effects, etc)
   if (Array.isArray(cardObj.modifiers)) {
@@ -2751,7 +2753,7 @@ function computeCardStat(cardObj, statName) {
     name.endsWith("Creatures") || name.endsWith("Terrains") || name.endsWith("Artifacts")
   );
   const allFieldCards = fieldZoneNames
-    .flatMap(name => ZONE_MAP[name].arr() || [])
+    .flatMap(name => ZONE_MAP[name]?.arr() || [])
     .filter(sourceCard => sourceCard?.cardId);
 
   // Apply Inspire and similar abilities dynamically
