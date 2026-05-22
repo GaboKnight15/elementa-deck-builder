@@ -895,8 +895,8 @@ function renderDeckOptions() {
         power: playerDeckObj?.power || 0
       };
 
-      // Build opponentProfile from CPU deck
-      const opponentProfile = {
+      // Build enemyProfile from CPU deck
+      const enemyProfile = {
         username: deck?.name,
         avatar: deck?.image,
         banner: deck?.bannerArt,
@@ -906,9 +906,9 @@ function renderDeckOptions() {
       window.startGame({
         mode: "solo",
         playerDeck: playerDeckObj,
-        opponentDeck: buildCpuDeck(deck),
+        enemyDeck: buildCpuDeck(deck),
         playerProfile: playerProfile,
-        opponentProfile: opponentProfile,
+        enemyProfile: enemyProfile,
         isCpuGame: true
       });
     };
@@ -1151,7 +1151,7 @@ function generateLobbyCode() {
 // Placeholder: fill these in with your socket logic
 function createPrivateLobby(code) {
   // Example: socket.emit('create-lobby', { code });
-  // Wait for opponent, then call onPrivateLobbyReady()
+  // Wait for enemy, then call onPrivateLobbyReady()
 }
 function joinPrivateLobby(code) {
   // Example: socket.emit('join-lobby', { code });
@@ -1164,7 +1164,7 @@ function cancelPrivateLobby() {
 // Called when both players are in the lobby and ready to select decks
 function onPrivateLobbyReady() {
   document.getElementById('private-lobby-modal').style.display = 'none';
-  showPlayerDeckModal('private'); // or showOpponentDeckModal for the other player
+  showPlayerDeckModal('private'); // or showenemyDeckModal for the other player
   // After deck chosen, sync and then call startPrivateGame()
 }
 
