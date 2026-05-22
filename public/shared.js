@@ -1011,8 +1011,8 @@ const dummyCards = [
 {id: 'TreantWitch', name: 'Treant Witch', rarity: 'Rare', image: 'Cards/ecg/TreantWitch.png', flavor: '', 
  category: 'Creature', fight: '', color: ['Green','Black'], type: ['Arbor','Spirit','Mage'], hp: 6, atk: 3, cost: '{g}{b}', ability: '', set: 'DesolateFrontiers', skill: [
  	{name: 'Summon', cost: '{g}{b}', eff: {class: 'summon'}},
-	{name: 'Manifest', cost: '{g}{b}', req: {class: 'Special'}, eff: {class: 'Token', tokenChoices: 'TreantToken', amount: 1}},
-	{name: 'Recycle', cost: '{g}{b}', req: {class: 'Recycle'}, eff: {class: 'Token', name: 'Treant'}}]},
+	{name: 'Manifest', cost: '{g}{b}', req: {class: 'Special'}, eff: {class: 'spawn', id: 'Treant'}},
+	{name: 'Recycle', cost: '{g}{b}', req: {class: 'Recycle'}, eff: {class: 'spawn', id: 'Treant'}}]},
 
 {id: 'AngelicWarrior', name: 'Angelic Warrior', rarity: 'Common', image: 'Cards/Seraph/AngelicWarrior.png', flavor: '', 
  category: 'Creature', fight: '', color: 'White', type: ['Angel','Warrior'], hp: 5, atk: 2, cost: '{1}{W}', ability: 'Flying', set: 'FracturedOrigins'},
@@ -1147,7 +1147,6 @@ const dummyCards = [
  category: 'Creature', fight: '', color: 'Blue', type: ['Water','Construct'], hp: 4, atk: 3,
  cost: '{3}{u}', ability: ['Armor','Exploit','Protect'], set: 'InfiniteHorizons', skill: [
 	{name: 'Summon', cost: '{3}{u}', eff: {class: 'summon'}},
-	{name: 'Echo', cost: '{U}',  eff: {class: 'Token', name: 'Coral Drone'}},
 	{name: 'Fuse', cost: '{u}{u}', module: 2, eff: {class: 'Fuse'}}]},
  
 {id: 'CoralboundVanguard', name: 'Coralbound Vanguard', rarity: 'Common', image: 'Cards/ihu/CoralboundVanguard.png', flavor: '', 
@@ -1175,7 +1174,6 @@ const dummyCards = [
  	{name: 'Summon', cost: '{5}{u}', eff: {class: 'summon'}},
 	{name: 'Fusion', cost: '{u}{u}', eff: {class: 'summon'}},
 	{name: 'Stash', cost: '{U}',  req: {class: 'Stash'}, eff: {class: 'Search', archetype: 'Coralbound'}},
-	{name: 'Deluge Incarnate',act: {class: 'Echo'}, eff: {class: 'Token', name: 'Coral Drone', amount: 2}},
 	{name: 'Tide of Oblivion', cost: '{U}{U}', eff: {class: 'Soak', amount: 8}}]},
 
 // SKULLFRAME //
@@ -1735,7 +1733,6 @@ const TYPES = {
 	mage: {name: "Mage", description: "Can target flying and elusive creatures for attacks. Gain {1} Spd", icon: "Icons/Trait/Mage.png" },
 	rogue: {name: "Rogue", profile: { hp: 0, atk: 0, def: 0, spd: 0, hc: 0, ep: 0 }, icon: "Icons/Type/Rogue.png" , description: ""},
 	ranger: {name: "Ranger", description: "Can target flying creatures for attacks. Gain {2} Spd", icon: "Icons/Trait/Ranger.png" },
-	token: {name: "Token", profile: { hp: 0, atk: 0, def: 0, spd: 0, hc: 0, ep: 0 }, icon: "Icons/Type/Token.png" , description: ""},
 	// ARTIFACTS //
 	relic: {name: "Relic", description: "Attach to Terrains of the same Color.", icon: "Icons/Trait/Relic.png" },
 	equipment: {name: "Equipment", description: "Attach to Creatures of the same Color/Type/Archetype.", icon: "Icons/Trait/Equipment.png" },
@@ -2232,7 +2229,6 @@ function getKeywordIcon(name) {
   return null;
 }
 // --- Inline icon parsing helpers (use CARD_KEYWORD map from shared.js) ---
-// Looks up the token in CARD_KEYWORD (supports string value or object with .icon/.image path)
 function getKeywordIconPath(token) {
   if (!token) return null;
   // prefer the CARD_KEYWORD map if available
@@ -2269,7 +2265,6 @@ function escapeHtmlInline(s) {
   });
 }
 
-// Replace tokens like {fireIcon} with <img> nodes inside a DocumentFragment.
 // options: { size: number (px), className: string, altPrefix: string }
 function parseInlineIconsToFragment(text, options = {}) {
   const { size = 18, className = 'inline-icon', altPrefix = '' } = options;
