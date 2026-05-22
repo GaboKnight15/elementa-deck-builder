@@ -207,7 +207,7 @@ const dummyCards = [
  category: 'Spell', color: 'Red', cost: '{1}', Type: 'Aura', mana: 2, set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Cast', cost: '{1}', eff: {class: 'cast'}},
 	{name: 'Essence Assault', mana: 1, eff: {class: 'bolster', atk: 1}}]},
-
+/*
 // --- EG BLUE --- //
 {id: 'ZaryonUmarionCommander', name: 'Zaryon, Umarion Commander', rarity: 'Legend', image: 'Cards/egu/ZaryonUmarionCommander.png', flavor: '', 
  category: 'Creature', fight: 'Tidepiercer Vortex', color: 'Blue', type: ['Merfolk','Warrior'], hp: 6, atk: 2, cost: '{2}{u}', ability: ['Dive','Protect'], set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/egu/ZaryonUmarionCommanderFA.png', skill: [
@@ -1448,36 +1448,21 @@ const dummyCards = [
 ];
 
 // Cost mapping and renderer (returns HTML string)
-const COST_IMAGE_MAP = {
-  g: "Icons/Essence/Green.png",
-  r: "Icons/Essence/Red.png",
-  u: "Icons/Essence/Blue.png",
-  y: "Icons/Essence/Yellow.png",
-  c: "Icons/Essence/Gray.png",
-  p: "Icons/Essence/Purple.png",
-  b: "Icons/Essence/Black.png",
-  w: "Icons/Essence/White.png",
-  x0: "Icons/Essence/Zero.png",
-  x1: "Icons/Essence/One.png",
-  x2: "Icons/Essence/Two.png",
-  x3: "Icons/Essence/Three.png",
-  x4: "Icons/Essence/Four.png",
-  x5: "Icons/Essence/Five.png",
-  x6: "Icons/Essence/Six.png",
-  x7: "Icons/Essence/Seven.png",
-  x8: "Icons/Essence/Eight.png",
-  x9: "Icons/Essence/Nine.png",
-  x10: "Icons/Essence/Ten.png",
-  x11: "Icons/Essence/Eleven.png",
-  x12: "Icons/Essence/Twelve.png",
-  x13: "Icons/Essence/Thirteen.png",
-  x14: "Icons/Essence/Fourteen.png",
-  x15: "Icons/Essence/Fifteen.png",
-  x16: "Icons/Essence/Sixteen.png",
-  x17: "Icons/Essence/Seventeen.png",
-  x18: "Icons/Essence/Eighteen.png",
-  x19: "Icons/Essence/Nineteen.png",
-  x20: "Icons/Essence/Twenty.png"
+const ESSENCE_IMAGE_MAP = {
+  multi: "Icons/Essence/Multi.png",
+  r: "Icons/Essence/Red.png", r2: "Icons/Essence/Red2.png", r3: "Icons/Essence/Red3.png", r4: "Icons/Essence/Red4.png", r5: "Icons/Essence/Red5.png",
+  u: "Icons/Essence/Blue.png", u2: "Icons/Essence/Blue2.png", u3: "Icons/Essence/Blue3.png", u4: "Icons/Essence/Blue4.png", u5: "Icons/Essence/Blue5.png",
+  g: "Icons/Essence/Green.png", g2: "Icons/Essence/Green2.png", g3: "Icons/Essence/Green3.png", g4: "Icons/Essence/Green4.png", g5: "Icons/Essence/Green5.png",
+  y: "Icons/Essence/Yellow.png", y2: "Icons/Essence/Yellow2.png", y3: "Icons/Essence/Yellow3.png", y4: "Icons/Essence/Yellow4.png", y5: "Icons/Essence/Yellow5.png",
+  p: "Icons/Essence/Purple.png", p2: "Icons/Essence/Purple2.png", p3: "Icons/Essence/Purple3.png", p4: "Icons/Essence/Purple4.png", p5: "Icons/Essence/Purple5.png",
+  c: "Icons/Essence/Gray.png", c2: "Icons/Essence/Gray2.png", c3: "Icons/Essence/Gray3.png", c4: "Icons/Essence/Gray4.png", c5: "Icons/Essence/Gray5.png",
+  b: "Icons/Essence/Black.png", b2: "Icons/Essence/Black2.png", b3: "Icons/Essence/Black3.png", b4: "Icons/Essence/Black4.png", b5: "Icons/Essence/Black5.png",
+  w: "Icons/Essence/White.png", w2: "Icons/Essence/White2.png", w3: "Icons/Essence/White3.png", w4: "Icons/Essence/White4.png", w5: "Icons/Essence/White5.png",
+  x0: "Icons/Essence/Zero.png", x1: "Icons/Essence/One.png", x2: "Icons/Essence/Two.png", x3: "Icons/Essence/Three.png",
+  x4: "Icons/Essence/Four.png", x5: "Icons/Essence/Five.png", x6: "Icons/Essence/Six.png", x7: "Icons/Essence/Seven.png",
+  x8: "Icons/Essence/Eight.png", x9: "Icons/Essence/Nine.png", x10: "Icons/Essence/Ten.png", x11: "Icons/Essence/Eleven.png",
+  x12: "Icons/Essence/Twelve.png", x13: "Icons/Essence/Thirteen.png", x14: "Icons/Essence/Fourteen.png", x15: "Icons/Essence/Fifteen.png",
+  x16: "Icons/Essence/Sixteen.png", x17: "Icons/Essence/Seventeen.png", x18: "Icons/Essence/Eighteen.png", x19: "Icons/Essence/Nineteen.png", x20: "Icons/Essence/Twenty.png"
 };
 const addCoinsBtn = document.getElementById('add-coins-btn');
 const LEVEL_THRESHOLDS = [0, 100, 250, 500, 1000, 2000, 4000, 8000];
@@ -1506,7 +1491,6 @@ const CARD_KEYWORD = {
 attack: {name: "Attack", description: "Attack value.", icon: "Icons/Stat/Atk.png" },
 defense: {name: "Defense", description: "Defense value.", icon: "Icons/Stat/Def.png" },
 armor: {name: "Armor", description: "Secondary sustain stat. Cards lose armor first before HP. When the armor breaks, nullifies remaining damage. Losses {1} Speed.", icon: "Icons/Stat/Armor.png" },
-speed: {name: "Speed", description: "Speed value. Dash, Dive, Flying, Leap, and Rush +1 Spd. Mage +1 Spd. Ranger +2 Spd. Armor -1 Spd. Spd dif is  =>2 gain Quickstrike. Spd dif is => 3 gain Superstrike.", icon: "Icons/Stat/Spd.png" },
 
 // -------------- //
 // --- COLORS --- //
@@ -2378,7 +2362,7 @@ function parseEffectText(effect) {
 
  // Replace color icons {G},{R}, etc.
  effect = effect.replace(/\{([GRUYCPBW])\}/gi, (match, code) =>
-   `<img src="${COST_IMAGE_MAP[code.toUpperCase()]}" style="height:1.3em;vertical-align:middle;margin-right:2px;">`
+   `<img src="${ESSENCE_IMAGE_MAP[code.toUpperCase()]}" style="height:1.3em;vertical-align:middle;margin-right:2px;">`
  );
 
   // Replace tapped/untapped icons
@@ -2392,7 +2376,7 @@ function parseEffectText(effect) {
   // Replace numbers {0}..{20} with bold numbers or custom spans
  // Replace numbers {0}..{20} with colorless essence images!
   effect = effect.replace(/\{([0-9]|1[0-9]|20)\}/g, (match, num) => {
-    const imgSrc = typeof COST_IMAGE_MAP !== 'undefined' ? COST_IMAGE_MAP['X'+num] : null;
+    const imgSrc = typeof ESSENCE_IMAGE_MAP !== 'undefined' ? ESSENCE_IMAGE_MAP['x'+num] : null;
     if (imgSrc) {
       return `<img src="${escapeHtmlInline(imgSrc)}" style="height:1.3em;vertical-align:middle;margin-right:2px;">`;
     }
@@ -2439,11 +2423,8 @@ function getPlayerLevelFromPower(power) {
 }
 
 function renderStatIcon(statType, value) {
-  // statType: "hp", "atk", "def", "cost"
-  // value: number
-  // Use COST_IMAGE_MAP["X" + value]
   const key = "X" + value;
-  const imgSrc = COST_IMAGE_MAP[key];
+  const imgSrc = ESSENCE_IMAGE_MAP[key];
   if (imgSrc) {
     // Tooltip for accessibility
     return `<img src="${imgSrc}" alt="${statType.charAt(0).toUpperCase() + statType.slice(1)}: ${value}" class="stat-img stat-${statType}" style="width:22px;height:22px;vertical-align:middle;margin-right:2px;">`;
@@ -2987,15 +2968,15 @@ document.getElementById('image-modal').onclick = (e) => {
 function renderCardCost(costData) {
   let html = '';
   if (!costData) {
-    return `<img src="${COST_IMAGE_MAP.X0}" alt="Cost: 0" style="width:22px;height:22px;vertical-align:middle;">`;
+    return `<img src="${ESSENCE_IMAGE_MAP.x0}" alt="Cost: 0" style="width:22px;height:22px;vertical-align:middle;">`;
   }
   if (typeof costData === "string") {
     // Use parseEffectText for cost string, but limit to icons only
     html = costData.replace(/\{([GRUYCPBW])\}/gi, (match, code) =>
-     `<img src="${COST_IMAGE_MAP[code.toUpperCase()]}" style="width:22px;height:22px;vertical-align:middle;">`
+     `<img src="${ESSENCE_IMAGE_MAP[code.toUpperCase()]}" style="width:22px;height:22px;vertical-align:middle;">`
     );
     html = html.replace(/\{([0-9]|1[0-9]|20)\}/g, (match, num) => {
-      const imgSrc = COST_IMAGE_MAP['X'+num];
+      const imgSrc = ESSENCE_IMAGE_MAP['x'+num];
       if (imgSrc) {
         return `<img src="${imgSrc}" style="width:22px;height:22px;vertical-align:middle;">`;
       }
@@ -3011,7 +2992,7 @@ function renderCardCost(costData) {
     return html;
   }
   // Fallback
-  return `<img src="${COST_IMAGE_MAP.X0}" alt="Cost: 0" style="width:22px;height:22px;vertical-align:middle;">`;
+  return `<img src="${ESSENCE_IMAGE_MAP.x0}" alt="Cost: 0" style="width:22px;height:22px;vertical-align:middle;">`;
 }
 
 const COLLECTION_KEY = "cardCollection";
