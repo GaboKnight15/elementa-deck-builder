@@ -6718,6 +6718,13 @@ function updateGameStatusRow() {
   const container = document.getElementById('game-status-inline');
   if (!container) return;
   container.innerHTML = '';
+  const tod = (typeof getTimeOfDay === 'function' ? getTimeOfDay() : gameState?.timeOfDay || 'day');
+  const todMap = {
+    day: 'Icons/Weather/Day.png',
+    night: 'Icons/Weather/Night.png',
+    dawn: 'Icons/Weather/Dawn.png',
+    dusk: 'Icons/Weather/Dusk.png'
+  };
 
   const todWrap = document.createElement('div');
   todWrap.style.display = 'flex';
