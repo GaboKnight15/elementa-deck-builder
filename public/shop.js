@@ -15,7 +15,7 @@ const shopContainer = document.getElementById('shop-container');
 const packOpeningModal = document.getElementById('pack-opening-modal');
 const openedPackRowModal = document.getElementById('opened-pack-row-modal');
 const closePackOpeningModalBtn = document.getElementById('close-pack-opening-modal');
-const PACK_SIZE = 6;
+const PACK_SIZE = 5;
 
 const PACK_SLOT_ODDS_DEFAULT = [
   { slot: 1, odds: { Common: 92, Rare: 7, Legendary: 1 } },
