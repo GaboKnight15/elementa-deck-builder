@@ -32,7 +32,7 @@ const dummyCards = [
  category: 'Creature', fight: 'Sylvan Slash', color: 'Green', type: ['Verdant','Spirit','Warrior'], hp: 4, atk: 2, cost: '{3}{g}', 
  ability: ['Drain','Protect'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{2}', eff: {class: 'summon'}},
-	{name: 'Nature Prowess', cost: '{g}', act: {trigger: 'summon'}, eff: {class: 'bolster', atk: 1, hp: 2}},
+	{name: 'Nature Prowess', summon: true, eff: {class: 'bolster', atk: 1, countColor: 'Green'}},
 	{name: 'Forest Phalanx', act: {trigger: 'attack'}, eff: {class: 'add', targetType: ['Sylvan','Terrain']}}]},
 
 {id: 'WildhornSongreaver', name: 'Wildhorn Songreaver', rarity: 'Rare', image: 'Cards/egg/WildhornSongreaver.png', flavor: '', 
