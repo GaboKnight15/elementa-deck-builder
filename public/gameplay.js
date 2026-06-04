@@ -27,8 +27,8 @@ TURNS.forEach(turn =>
 // --- ZONES --- //
 // ------------- //
 let gameState = {
-  playerDeck: [], playerHand: [], playerCreatures: [], playerTerrains: [], playerVoid: [], playerDeparture: [], playerArtifacts: [], playerSpells: [],
-  enemyDeck: [], enemyHand: [], enemyCreatures: [], enemyTerrains: [], enemyVoid: [], enemyDeparture: [], enemyArtifacts: [], enemySpells: [],
+  playerDeck: [], playerHand: [], playerCreatures: [], playerTerrains: [], playerVoid: [], playerFallen: [], playerArtifacts: [], playerSpells: [],
+  enemyDeck: [], enemyHand: [], enemyCreatures: [], enemyTerrains: [], enemyVoid: [], enemyfallen: [], enemyArtifacts: [], enemySpells: [],
   playerDominion: null, enemyDominion: null,
   turn: "player",
   phase: "start",
@@ -45,7 +45,7 @@ const ZONE_MAP = {
   playerVoid:        { id: "player-void-zone",        arr: () => gameState.playerVoid },
   playerDeck:        { id: "player-deck-zone",        arr: () => gameState.playerDeck },
   playerHand:        { id: "player-hand",             arr: () => gameState.playerHand },
-  playerDeparture:   { id: "player-departure",        arr: () => gameState.playerDeparture },
+  playerFallen:      { id: "player-fallen",           arr: () => gameState.playerFallen },
   playerArtifacts:   { id: null,                      arr: () => gameState.playerArtifacts },
   playerSpells:      { id: null,                      arr: () => gameState.playerSpells },
   // enemy zones
@@ -54,7 +54,7 @@ const ZONE_MAP = {
   enemyVoid:      { id: "enemy-void-zone",      arr: () => gameState.enemyVoid },
   enemyDeck:      { id: "enemy-deck-zone",      arr: () => gameState.enemyDeck },
   enemyHand:      { id: "enemy-hand",           arr: () => gameState.enemyHand },
-  enemyDeparture: { id: "enemy-departure",      arr: () => gameState.enemyDeparture },
+  enemyfallen:    { id: "enemy-fallen",         arr: () => gameState.enemyfallen },
   enemyArtifacts: { id: null,                   arr: () => gameState.enemyArtifacts },
   enemySpells:    { id: null,                   arr: () => gameState.enemySpells },
 
@@ -64,7 +64,7 @@ const ZONE_MAP = {
   allVoids:          { id: null, arr: () => [...gameState.playerVoid, ...gameState.enemyVoid] },
   allDecks:          { id: null, arr: () => [...gameState.playerDeck, ...gameState.enemyDeck] },
   allHands:          { id: null, arr: () => [...gameState.playerHand, ...gameState.enemyHand] },
-  allDepartures:     { id: null, arr: () => [...gameState.playerDeparture, ...gameState.enemyDeparture] },
+  allfallens:     { id: null, arr: () => [...gameState.playerFallen, ...gameState.enemyfallen] },
 
   playerField:    { id: null, arr: () => [
     ...gameState.playerCreatures,
@@ -84,8 +84,8 @@ const ZONE_MAP = {
 
   // All cards everywhere (for global effects, etc.)
   allCards:          { id: null, arr: () => [
-    ...gameState.playerCreatures, ...gameState.playerTerrains, ...gameState.playerVoid, ...gameState.playerDeck, ...gameState.playerHand,
-    ...gameState.enemyCreatures, ...gameState.enemyTerrains, ...gameState.enemyVoid, ...gameState.enemyDeck, ...gameState.enemyHand
+    ...gameState.playerCreatures, ...gameState.playerTerrains, ...gameState.playerVoid, ...gameState.playerDeck, ...gameState.playerHand, ...gameState.playerFallen,
+    ...gameState.enemyCreatures, ...gameState.enemyTerrains, ...gameState.enemyVoid, ...gameState.enemyDeck, ...gameState.enemyHand, ...gameState.enemyFallen,
   ] }
 };
 
@@ -1567,8 +1567,8 @@ if (Array.isArray(enemyDeck) && enemyDeck.length && enemyDeck[0].cardId) {
   gameState.enemyVoid = [];
   gameState.enemyArtifacts = [];
   gameState.enemySpells = [];
-  gameState.playerDeparture = [];
-  gameState.enemyDeparture = [];
+  gameState.playerFallen = [];
+  gameState.enemyfallen = [];
   
   gameState.phase = "start";
   
@@ -1905,7 +1905,7 @@ function moveCard(instanceId, fromArr, toArr, extra = {}, callback) {
   const toZoneId = ZONE_MAP[toZoneName]?.id;
 
   const isToVoid = (toZoneName === "playerVoid" || toZoneName === "enemyVoid");
-  const isToDeparture = (toZoneName === "playerDeparture" || toZoneName === "enemyDeparture");
+  const isTofallen = (toZoneName === "playerFallen" || toZoneName === "enemyfallen");
 
   const isHandToField =
     (fromZoneName === "playerHand" || fromZoneName === "enemyHand") &&
@@ -1927,15 +1927,15 @@ function moveCard(instanceId, fromArr, toArr, extra = {}, callback) {
         delete cardObj.orientation;
       }
 
-// If moving into Void/Departure, ensure correct owner
+// If moving into Void/fallen, ensure correct owner
 if (toZoneName === 'playerVoid') {
   toArr = gameState.playerVoid;
 } else if (toZoneName === 'enemyVoid') {
   toArr = gameState.enemyVoid;
-} else if (toZoneName === 'playerDeparture') {
-  toArr = gameState.playerDeparture;
-} else if (toZoneName === 'enemyDeparture') {
-  toArr = gameState.enemyDeparture;
+} else if (toZoneName === 'playerFallen') {
+  toArr = gameState.playerFallen;
+} else if (toZoneName === 'enemyfallen') {
+  toArr = gameState.enemyfallen;
 }
 
       // Logging
@@ -1991,8 +1991,8 @@ if (toZoneName === 'playerVoid') {
   };
 
   // Void/defeat: fade out only, then move
-  // Void/Departure: fade out only, then move
-  if (isToVoid || isToDeparture) {
+  // Void/fallen: fade out only, then move
+  if (isToVoid || isTofallen) {
     animateDefeat(instanceId, fromZoneId, doMove);
     return;
   }
@@ -2958,8 +2958,8 @@ if (typeof cardData.hp === "number" && typeof currentHP === "number" && cardData
   barWrap.appendChild(bar);
 
   // HP change animation (reuse your existing logic)
-  if (typeof cardObj._prevHP === "number" && cardObj._prevHP !== currentHP) {
-    if (currentHP < cardObj._prevHP) {
+  if (typeof cardObj.prevHP === "number" && cardObj.prevHP !== currentHP) {
+    if (currentHP < cardObj.prevHP) {
       bar.classList.add("hp-bar-damage");
       setTimeout(() => bar.classList.remove("hp-bar-damage"), 300);
     } else {
@@ -2967,7 +2967,7 @@ if (typeof cardData.hp === "number" && typeof currentHP === "number" && cardData
       setTimeout(() => bar.classList.remove("hp-bar-heal"), 300);
     }
   }
-  cardObj._prevHP = currentHP;
+  cardObj.prevHP = currentHP;
   hpUiRow.appendChild(barWrap);
 }
 
@@ -3078,7 +3078,7 @@ function getEssenceCostDisplay(cost) {
 ----------------*/
 function renderEssencePool(cardObj) {
   if (!cardObj.essence) return null;
-  if (!cardObj._prevEssence) cardObj._prevEssence = {};
+  if (!cardObj.prevEssence) cardObj.prevEssence = {};
 
   const poolDiv = document.createElement('div');
   poolDiv.className = 'essence-pool';
@@ -3090,7 +3090,7 @@ function renderEssencePool(cardObj) {
   for (const code in colorCodes) {
     const color = colorCodes[code];
     const amount = countEssenceType(cardObj.essence, code);
-    const prevAmount = cardObj._prevEssence[color] || 0;
+    const prevAmount = cardObj.prevEssence[color] || 0;
     if (amount > 0) {
       const icon = document.createElement('div');
       icon.className = `essence-icon essence-${color}`;
@@ -3101,7 +3101,7 @@ function renderEssencePool(cardObj) {
       }
       poolDiv.appendChild(icon);
     }
-    cardObj._prevEssence[color] = amount;
+    cardObj.prevEssence[color] = amount;
   }
   return poolDiv;
 }
@@ -3458,7 +3458,7 @@ function openVoidModal(isenemy = false) {
   
   // === FIX: Show correct void cards ===
   const voidCards = isenemy ? gameState.enemyVoid : gameState.playerVoid;
-  const departureCards = isenemy ? (gameState.enemyDeparture || []) : (gameState.playerDeparture || []);
+  const fallenCards = isenemy ? (gameState.enemyfallen || []) : (gameState.playerFallen || []);
   if (voidCards.length === 0) {
     list.innerHTML = '<div style="color:#999;">Void is empty.</div>';
   } else {
@@ -3581,7 +3581,7 @@ function openVoidModal(isenemy = false) {
     });
   }
 
-//  DEPARTURE SECTION //
+//  fallen SECTION //
 const depHeader = document.createElement('div');
 depHeader.style.marginTop = '16px';
 depHeader.style.paddingTop = '10px';
@@ -3589,17 +3589,17 @@ depHeader.style.borderTop = '1px solid rgba(255,255,255,0.12)';
 depHeader.style.color = '#ffe066';
 depHeader.style.fontWeight = '800';
 depHeader.style.letterSpacing = '0.04em';
-depHeader.textContent = 'Departure';
+depHeader.textContent = 'fallen';
 list.appendChild(depHeader);
 
-if (!departureCards || departureCards.length === 0) {
+if (!fallenCards || fallenCards.length === 0) {
   const empty = document.createElement('div');
   empty.style.color = '#999';
   empty.style.marginTop = '8px';
-  empty.textContent = 'Departure is empty.';
+  empty.textContent = 'fallen is empty.';
   list.appendChild(empty);
 } else {
-  departureCards.forEach((cardObj, idx) => {
+  fallenCards.forEach((cardObj, idx) => {
     const card = dummyCards.find(c => c.id === cardObj.cardId);
     if (!card) return;
 
@@ -3608,10 +3608,6 @@ if (!departureCards || departureCards.length === 0) {
 
     const cardDiv = document.createElement('div');
     cardDiv.className = 'card-battlefield';
-
-    // Optional: pulse if actionable in "departure"
-    // (Only do this if you WANT skills to be usable from departure)
-    // setCardAnimatableClass(cardDiv, cardObj, card, gameState, 'departure');
 
     const img = document.createElement('img');
     img.src = card.image;
@@ -4910,8 +4906,8 @@ function getInitialGameState() {
     enemyCreatures: [],
     enemyTerrains: [],
     enemyVoid: [],
-    playerDeparture: [],
-    enemyDeparture: [],
+    playerFallen: [],
+    enemyfallen: [],
   
     // Dominion / meta
     playerDominion: null,
