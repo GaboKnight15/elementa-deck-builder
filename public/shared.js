@@ -440,7 +440,7 @@ const dummyCards = [
 
 {id: 'Mountain', name: 'Mountain', rarity: 'Common', image: 'Cards/egc/Mountain.png', flavor: '', 
  category: 'Terrain', color: 'Gray', hp: 5, cost: '{2}', essence: '{c}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
-	{name: 'Terraform', cost: '{2}', eff: {class: 'terraform'}},
+	{name: 'Terraform', cost: '{1}', eff: {class: 'terraform'}},
 	{name: 'Terra Essence', tap: true, eff: {class: 'essence', color: 'gray'}}]},
 
 {id: 'StoneFist', name: 'Stone Fist', rarity: 'Common', image: 'Cards/egc/StoneFist.png', flavor: '', 
@@ -456,19 +456,19 @@ const dummyCards = [
 // EG PURPLE //
 // EG PURPLE LEGEND //
 {id: 'MordrathVirkulPhantom', name: 'Mordrath, Virkul Phantom', rarity: 'Legend', image: 'Cards/egp/MordrathVirkulPhantom.png', flavor: 'With every step, the earth blackens, flowers wither, and the air grows thick with despair — a knight cursed to rot all he touches.', 
- category: 'Creature', fight: 'Blighted Strike', color: 'Purple', type: ['Spirit','Warrior'], hp: 3, atk: 3, cost: '{2}{p}', ability: ['Armor','Exploit','Immunity'], set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/egp/MordrathVirkulPhantomFA.png', skill: [
-	{name: 'Summon', cost: '{2}{p}', eff: {class: 'summon'}},
-	{name: 'Blightfall Slash', cost: '{p}{p}', eff: {class: 'strike', amount: 1}},
+ category: 'Creature', fight: 'Blighted Strike', color: 'Purple', type: ['Spirit','Warrior'], hp: 3, atk: 3, cost: '{p3}', ability: ['Armor','Exploit','Immunity'], set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/egp/MordrathVirkulPhantomFA.png', skill: [
+	{name: 'Summon', cost: '{p3}', eff: {class: 'summon'}},
+	{name: 'Blightfall Slash', tap: true, eff: {class: 'strike', amount: 1}},
 	{name: 'Hallowed Plate', echo: true, eff: {class: 'spawn', id: 'Spirit'}}]},
 	
 {id: 'SelgorCorruptedWarlock', name: 'Selgor, Corrupted Warlock', rarity: 'Legend', image: 'Cards/egp/SelgorCorruptedWarlock.png', flavor: '', 
- category: 'Creature', fight: 'Corruptive Surge', color: 'Purple', type: ['Mystic','Mage'], hp: 4, atk: 1, cost: '{p}{p}', ability: ['Curse','Drain'], set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/egp/SelgorCorruptedWarlockFA.png', skill: [
-	{name: 'Summon', cost: '{p}{p}', eff: {class: 'summon'}},
+ category: 'Creature', fight: 'Corruptive Surge', color: 'Purple', type: ['Mystic','Mage'], hp: 4, atk: 1, cost: '{p4}', ability: ['Curse','Drain'], set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/egp/SelgorCorruptedWarlockFA.png', skill: [
+	{name: 'Summon', cost: '{p2}', eff: {class: 'summon'}},
 	{name: 'Soul Reap', tribute: 1, eff: {class: 'Rally', amount: 2}},
 	{name: 'Corruptive Surge', cost: '{p}{p}', act: {trigger: 'attack'}, eff: {class: 'curse', target: 'enemyCreatures', amount: 1}}]},
 
 {id: 'Virkul', name: 'Virkul', rarity: 'Legend', image: 'Cards/egp/Virkul.png', flavor: '', 
- category: 'Terrain', color: 'Purple', hp: 20, essence: '{p}{p}', type: ['Mystic','Dominion'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Terrain', color: 'Purple', hp: 20, essence: '{p2}', type: ['Mystic','Domain'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Mystic Essence', tap: true, eff: {class: 'essence', color: 'purple'}},
 	{name: 'Distort', tap: true, eff: {class: 'curse', amount: 1}}]},
 
@@ -2764,7 +2764,7 @@ if (card.color) {
     infoHtml += labeled("Ability", abilityHtml);
   }
 
-  // Trait / special (dominion/etc)
+  // Trait
   if (card.trait) {
     const traitHtml = renderKeywordChips(card.trait) || (Array.isArray(card.trait) ? card.trait.join(', ') : card.trait);
     infoHtml += labeled("Trait", traitHtml);
