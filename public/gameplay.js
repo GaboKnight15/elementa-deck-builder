@@ -29,7 +29,7 @@ TURNS.forEach(turn =>
 let gameState = {
   playerDeck: [], playerHand: [], playerCreatures: [], playerTerrains: [], playerVoid: [], playerFallen: [], playerArtifacts: [], playerSpells: [],
   enemyDeck: [], enemyHand: [], enemyCreatures: [], enemyTerrains: [], enemyVoid: [], enemyfallen: [], enemyArtifacts: [], enemySpells: [],
-  playerDominion: null, enemyDominion: null,
+  playerDomain: null, enemyDomain: null,
   turn: "player",
   phase: "start",
   essencePools: {
@@ -185,11 +185,9 @@ poisoned: { name: 'Poisoned', duration: 3, tick: "allEnd", icon: 'Icons/Status/P
       cardObj.drenched = false;
       delete cardObj.drenched;
     }
-    // Optionally add logic for duration ticks
   },
 bound: { name: 'Bound', icon: 'Icons/Status/Bound.png', duration: 1,
   description: 'Disabled and cannot activate skills.',
-  // Don't set duration here, handle it in your end phase check!
   apply: function(cardObj) {
     cardObj.bound = true;
     cardObj.disabled = true;
@@ -206,42 +204,27 @@ sealed: { name: "Sealed", duration: 1, icon: "Icons/Status/Sealed.png",
   description: "Skills cannot be activated.",
   // apply/remove set an instance-level flag so checks are cheap and reliable
   apply: function(cardObj) {
-    try {
-      cardObj.sealed = true;
-      cardObj.canActivateSkill = false;
-    } catch (err) {
-      console.warn('Seal.apply failed', err);
-    }
+    cardObj.sealed = true;
+    cardObj.canActivateSkill = false;
   },
   remove: function(cardObj) {
-    try {
-      cardObj.sealed = false;
-      delete cardObj.canActivateSkill;
-    } catch (err) {
-      console.warn('Seal.remove failed', err);
-    }
+    cardObj.sealed = false;
+    delete cardObj.canActivateSkill;
   }
 },
 cursed: { name: 'Cursed', duration: 3, icon: 'Icons/Status/Cursed.png',
   description: 'Reduces max HP by 1 during each End Phase.',
   apply: function(cardObj) {
-    try {
-      // mark instance as cursed (for quick checks / UI)
       cardObj.cursed = true;
-      // persist original max HP once so we know the base if needed elsewhere
       if (typeof cardObj.originalMaxHP === 'undefined') {
         cardObj.originalMaxHP = (typeof cardObj.maxHP === 'number' ? cardObj.maxHP : getBaseHp(cardObj.cardId));
       }
-    } catch (err) { console.warn('Cursed.apply failed', err); }
   },
   remove: function(cardObj) {
-    try {
       cardObj.cursed = false;
       delete cardObj.cursed;
-    } catch (err) { console.warn('Cursed.remove failed', err); }
   },
   onEndPhase: function(cardObj) {
-    try {
       // Ensure maxHP exists
       const base = (typeof cardObj.maxHP === 'number') ? cardObj.maxHP : (cardObj._originalMaxHP || getBaseHp(cardObj.cardId));
       // Lower maxHP by 1 (but never below 1)
@@ -250,9 +233,6 @@ cursed: { name: 'Cursed', duration: 3, icon: 'Icons/Status/Cursed.png',
       if (typeof cardObj.currentHP === 'number' && cardObj.currentHP > cardObj.maxHP) {
         cardObj.currentHP = cardObj.maxHP;
       }
-    } catch (err) {
-      console.warn('Cursed.onEndPhase error', err);
-    }
   }
 },
 quickstrike: {
@@ -310,7 +290,6 @@ const TARGET_FILTER_ABILITY = {
 conceal: { name: 'Conceal', icon: 'Icons/Ability/Conceal.png',
   description: 'Target priority -1.',
   filter: (attacker, targets) => {
-    try {
       const normal = [];
       const concealed = [];
       targets.forEach(t => {
@@ -321,10 +300,8 @@ conceal: { name: 'Conceal', icon: 'Icons/Ability/Conceal.png',
         else normal.push(t);
       });
       return [...normal, ...concealed];
-    } catch (err) {
       console.warn('Conceal filter failed, returning original targets', err);
       return targets;
-    }
   }
 },
   veil: { name: 'Veil', icon: 'Icons/Ability/Veil.png',
@@ -436,60 +413,6 @@ const REQUIREMENT_MAP = {
       renderGameState();
     },
   },
-sacrifice: { name: 'Sacrifice', zone: ['playerField'], icon: 'Icons/Requirement/Sacrifice.png',
-  description: 'Tributes itself from the field.',
-  handler: function(sourceCardObj, skillObj, next, requirement) {
-    const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
-    const isField = validZones.some(zone =>
-      (zone === 'playerCreatures' && gameState.playerCreatures.includes(sourceCardObj)) ||
-      (zone === 'playerTerrains' && gameState.playerTerrains.includes(sourceCardObj))
-    );
-    if (!isField) {
-      showToast("Sacrifice can only be activated from the field.");
-      if (next) next();
-      return;
-    }
-
-    const amount = requirement?.amount || 1;
-    const filter = getRequirementFilter(requirement);
-
-    // Exclude self from pool
-    let pool = [...gameState.playerCreatures, ...gameState.playerTerrains].filter(card => card !== sourceCardObj);
-    if (Object.keys(filter).length) pool = pool.filter(card => matchesFilter(card, filter));
-
-    if (pool.length < amount) {
-      showToast(`You need ${amount} other matching card(s) to sacrifice.`);
-      if (next) next();
-      return;
-    }
-
-    startSkillTarget(pool, selectedCards => {
-      selectedCards.forEach(card => {
-        const arr = gameState.playerCreatures.includes(card) ? gameState.playerCreatures : gameState.playerTerrains;
-        moveCard(card.instanceId, arr, gameState.playerVoid);
-      });
-      // Sacrifice self, too
-      const fromArr = gameState.playerCreatures.includes(sourceCardObj)
-        ? gameState.playerCreatures
-        : gameState.playerTerrains;
-      moveCard(sourceCardObj.instanceId, fromArr, gameState.playerVoid);
-      renderGameState();
-      if (next) next();
-    }, { title: `Choose ${amount} card(s) to sacrifice`, count: amount });
-  },
-
-  canActivate: function(sourceCardObj, skillObj, currentZone, gameState, requirement) {
-    const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
-    if (!validZones.includes(currentZone)) return false;
-
-    const amount = requirement?.amount || 1;
-    const filter = getRequirementFilter(requirement);
-
-    let pool = [...gameState.playerCreatures, ...gameState.playerTerrains].filter(card => card !== sourceCardObj);
-    if (Object.keys(filter).length) pool = pool.filter(card => matchesFilter(card, filter));
-    return pool.length >= amount;
-  }
-},
 return: { name: 'Return', zone: ['playerField'], icon: 'Icons/Skill/Return.png',
   description: 'Returns a card from the field to the hand.',
     handler: function(sourceCardObj, skillObj) {
@@ -535,25 +458,6 @@ retreat: { icon: 'Icons/Skill/Retreat.png', name: 'Retreat', zone: ['playerField
   canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
     const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
     return validZones.includes(currentZone);
-  }
-},
-channel: { name: 'Channel', zone: 'playerVoid', icon: 'Icons/Skill/Channel.png', 
-  description: 'Activates in the void.',
-  canActivate: function(cardObj, skillObj, currentZone, gameState) {
-    // Be tolerant of naming: allow currentZone "void" OR membership in void array.
-    // Use owner-based void array so enemy cards work too.
-    const owner = (typeof getCardOwner === 'function') ? getCardOwner(cardObj) : 'player';
-    const voidArr = owner === 'enemy' ? gameState.enemyVoid : gameState.playerVoid;
-
-    // Some parts of the code pass currentZone as "void", others might pass array names.
-    const zoneOk = currentZone === 'void' || currentZone === 'playerVoid' || currentZone === 'enemyVoid';
-    const inVoid = Array.isArray(voidArr) && voidArr.includes(cardObj);
-
-    return zoneOk || inVoid;
-  },
-  handler: function(cardObj, skillObj, next) {
-    // Requirement has no interactive step; just continue.
-    if (typeof next === 'function') next();
   }
 },
 };
@@ -645,7 +549,6 @@ draw: { name: 'Draw',
         nextEffect && nextEffect();
         return;
       }
-
       const topCardObj = deckArr[0];
       if (!topCardObj) {
         // defensive
@@ -653,36 +556,31 @@ draw: { name: 'Draw',
         drawOne();
         return;
       }
-
       // top of deck is index 0 in your UI logic; change to pop() if you treat end as top
       moveCard(topCardObj.instanceId, deckArr, handArr, {}, () => {
         i++;
         drawOne();
       });
     };
-
     drawOne();
   }
 },
-cast: { name: 'Cast', zone: 'playerHand', 
+cast: { name: 'Cast', zone: 'playerHand',
   description: 'Cast a spell from hand: resolve, then send to void.',
   canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
     // Accept common spellings used across your code
     return currentZone === 'playerHand' || currentZone === 'playerHand' || currentZone === 'player-hand';
   },
   handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
-    try {
       const owner = (getCardOwner(sourceCardObj) === 'enemy') ? 'enemy' : 'player';
       const handArr = owner === 'player' ? gameState.playerHand : gameState.enemyHand;
       const voidArr = owner === 'player' ? gameState.playerVoid : gameState.enemyVoid;
-
       // Must be in hand
       if (!handArr.includes(sourceCardObj)) {
         showToast && showToast('Cast can only be used from hand.', { type: 'error' });
         nextEffect && nextEffect();
         return;
       }
-
       // Must be a Spell by definition
       const def = dummyCards.find(c => c.id === sourceCardObj.cardId);
       const isSpell = String(def?.category || '').toLowerCase() === 'spell';
@@ -691,19 +589,9 @@ cast: { name: 'Cast', zone: 'playerHand',
         nextEffect && nextEffect();
         return;
       }
-
-      // Resolve the spell's skill effects (do NOT move yet)
-      // If you want an animation, keep using your existing helper.
       runHandSkillWithAnimation(sourceCardObj, skillObj, voidArr, () => {
-        // runHandSkillWithAnimation already moves hand->destinationArray (voidArr)
-        // so just finish
         nextEffect && nextEffect();
       });
-
-    } catch (err) {
-      console.warn('Cast handler error', err);
-      nextEffect && nextEffect();
-    }
   }
 },
 
@@ -715,7 +603,6 @@ terraform: { name: 'Terraform', zone: 'playerHand',
     const activePlayer = gameState.turn;
   },
   handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
-    try {
       const activePlayer = gameState.turn;
 
       const owner = (getCardOwner(sourceCardObj) === 'enemy') ? 'enemy' : 'player';
@@ -742,11 +629,6 @@ terraform: { name: 'Terraform', zone: 'playerHand',
         renderGameState && renderGameState();
         nextEffect && nextEffect();
       });
-
-    } catch (err) {
-      console.error("Terraform handler error:", err);
-      nextEffect && nextEffect();
-    }
   }
 },
 
@@ -792,10 +674,6 @@ curse: { name: 'Curse', icon: 'Icons/Skill/Curse.png',
 enable: { name: 'Enable', icon: 'Icons/Essence/Untap.png',
   description: 'Rotate a card vertically.',
   handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
-    try {
-      // Determine target(s):
-      // - If step.target is provided, use it (supports your targeting system)
-      // - Otherwise default to self
       const targets = step.target ? getTargets(step.target, sourceCardObj) : [sourceCardObj];
       const arrTargets = Array.isArray(targets) ? targets : [targets];
 
@@ -811,9 +689,7 @@ enable: { name: 'Enable', icon: 'Icons/Essence/Untap.png',
 
       renderGameState && renderGameState();
       setupDropZones && setupDropZones();
-    } catch (err) {
-      console.warn("Enable effect failed:", err);
-    } finally {
+      finally {
       if (typeof nextEffect === "function") nextEffect();
     }
   },
@@ -822,8 +698,6 @@ enable: { name: 'Enable', icon: 'Icons/Essence/Untap.png',
     // If you want hand/void use too, expand this list.
     const fieldZones = ['playerCreatures','playerTerrains','enemyCreatures','enemyTerrains'];
     if (!fieldZones.includes(currentZone)) return false;
-
-    // If targeting is used, ensure at least one valid target exists
     if (step && step.target) {
       const targets = getTargets(step.target, sourceCardObj);
       return Array.isArray(targets) && targets.some(t => t && t.orientation !== "vertical");
@@ -855,7 +729,6 @@ bolster: {
 disable: { name: 'Disable', icon: 'Icons/Essence/Tap.png',
   description: 'Rotate a card to horizontal (disabled).',
   handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
-    try {
       const targets = step.target ? getTargets(step.target, sourceCardObj) : [sourceCardObj];
       const arrTargets = Array.isArray(targets) ? targets : [targets];
 
@@ -871,21 +744,17 @@ disable: { name: 'Disable', icon: 'Icons/Essence/Tap.png',
 
       renderGameState && renderGameState();
       setupDropZones && setupDropZones();
-    } catch (err) {
-      console.warn("Disable effect failed:", err);
-    } finally {
+      finally {
       if (typeof nextEffect === "function") nextEffect();
     }
   },
   canActivate: function(sourceCardObj, skillObj, currentZone, gameState, step = {}) {
     const fieldZones = ['playerCreatures','playerTerrains','enemyCreatures','enemyTerrains'];
     if (!fieldZones.includes(currentZone)) return false;
-
     if (step && step.target) {
       const targets = getTargets(step.target, sourceCardObj);
       return Array.isArray(targets) && targets.some(t => t && t.orientation !== "horizontal");
     }
-
     return sourceCardObj && sourceCardObj.orientation !== "horizontal";
   }
 },
@@ -971,7 +840,7 @@ heal: { name: 'Heal', icon: 'Icons/Skill/Heal.png',
         if (typeof nextEffect === "function") nextEffect();
         renderGameState();
       },
-      step.target // how many targets to select
+      step.target
     );
   }
 },
@@ -1004,7 +873,7 @@ armor: { name: 'Armor', icon: 'Icons/Skill/Armor.png',
         if (typeof nextEffect === "function") nextEffect();
         renderGameState();
       },
-      step.target // how many targets to select
+      step.target
     );
   }
 },
@@ -1043,12 +912,8 @@ destroy: { icon: 'Icons/Skill/Destroy.png', name: 'Destroy',
       gameState.enemyTerrains
     ];
     const allTargets = fieldArrays.flat();
-
-    // 1) Old system: condition-based filtering
     let validTargets = getValidTargetsByCondition(allTargets, skillObj.condition || []);
 
-    // 2) New system: target* filtering (or legacy category/color/type keys)
-    // Allow defining filters either in `step` (preferred) or on the skillObj itself.
     const filterStep = (step && Object.keys(step).length) ? step : skillObj;
     validTargets = filterCardInstancesByTarget(validTargets, filterStep);
 
@@ -1135,7 +1000,6 @@ add: { icon: 'Icons/Skill/Search.png', name: 'Search',
       }, { title: "Revive from Void - Choose a card" });
     }
   },
-  // --- Moves another enemy card from field to hand ---
 bounce: {
   icon: 'Icons/skillEffect/Bounce.png',
   name: 'Bounce',
@@ -1237,14 +1101,10 @@ banish: {
   }
 },
   intimidate: {
-    icon: 'Icons/Ability/Intimidate.png',
-    name: 'Intimidate',
-    zone: 'playerField', 
-    description: 'When attacking, disables defending creature.',
+    icon: 'Icons/Ability/Intimidate.png', name: 'Intimidate', zone: 'playerField',  description: 'When attacking an enemy creature, disable it.',
     handler: function(attacker, defender, next) {
       // Only trigger Intimidate if defender is in ATK (vertical)
       if (defender.orientation === "vertical") {
-        // Optionally, use activateSkill for animation and effect logic:
         const skillObj = {
           name: "Intimidate",
           activation: {},
@@ -1305,24 +1165,16 @@ seal: { icon: "Icons/Skill/Seal.png", name: "Seal",
 inspire: { name: 'Inspire',
   description: 'Apply modifier or grant an ability to a target.',
   handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
-    try {
-      // Determine intended target:
       let target = null;
       if (sourceCardObj && sourceCardObj._lastEquippedTarget) {
         target = sourceCardObj._lastEquippedTarget;
       }
-      // Or the resolution context could include a triggered target (some pipelines pass context)
-      // If there's no equipped target, try step.target (selection) or default to self
       if (!target && step.target) {
         const targets = getTargets(step.target, sourceCardObj);
         target = Array.isArray(targets) && targets.length ? targets[0] : null;
       }
       if (!target) target = sourceCardObj;
 
-      // Apply armor if present
-      if (typeof step.armor === 'number' && step.armor !== 0) {
-        target.armor = (target.armor || 0) + Number(step.armor);
-      }
       target.modifiers = target.modifiers || [];
       if (typeof step.atk === 'number' && step.atk !== 0) {
         target.modifiers.push({ effect: 'Inspire', stat: 'atk', value: Number(step.atk), source: sourceCardObj.instanceId });
@@ -1343,9 +1195,7 @@ inspire: { name: 'Inspire',
       if (sourceCardObj && sourceCardObj._lastEquippedTarget) delete sourceCardObj._lastEquippedTarget;
 
       renderGameState && renderGameState();
-    } catch (err) {
-      console.warn('Inspire effect handler error', err);
-    } finally {
+      finally {
       if (typeof nextEffect === 'function') nextEffect();
     }
   }
@@ -1560,6 +1410,7 @@ if (Array.isArray(enemyDeck) && enemyDeck.length && enemyDeck[0].cardId) {
   gameState.playerVoid = [];
   gameState.playerArtifacts = [];
   gameState.playerSpells = [];
+  gameState.playerFallen = [];
   
   gameState.enemyHand = [];
   gameState.enemyCreatures = [];
@@ -1567,13 +1418,12 @@ if (Array.isArray(enemyDeck) && enemyDeck.length && enemyDeck[0].cardId) {
   gameState.enemyVoid = [];
   gameState.enemyArtifacts = [];
   gameState.enemySpells = [];
-  gameState.playerFallen = [];
   gameState.enemyfallen = [];
   
   gameState.phase = "start";
   
-  gameState.playerDominion = null;
-  gameState.enemyDominion = null;
+  gameState.playerDomain = null;
+  gameState.enemyDomain = null;
   // --- Battlefield backgrounds ---
   setBattlefieldBackgrounds(
     playerDeck?.bannerArt || "Images/Banner/Default.png",
@@ -1617,7 +1467,7 @@ if (Array.isArray(enemyDeck) && enemyDeck.length && enemyDeck[0].cardId) {
     showCoinFlipModal(function(whoStarts) {
       gameState.turn = whoStarts;
       gameState.phase = "start";
-      initiateDominionSelection(gameState.playerDeck, () => {
+      initiateDomainSelection(gameState.playerDeck, () => {
         drawOpeningHands();
         renderGameState();
         setupDropZones();
@@ -1731,11 +1581,6 @@ function getCardOwner(cardObj) {
 }
 // --- Robust Activation Trigger Handler ---
 function handleActivationTriggers(eventType, contextCard, extraContext = {}) {
-  // eventType: e.g. "Echo", "Draw", "Arrival"
-  // contextCard: the card that triggered the event (e.g. the card that entered the void)
-  // extraContext: any other info to pass to the effect
-
-  // Get all cards in all relevant zones
   const allCards = [
     ...gameState.playerCreatures, ...gameState.playerTerrains,
     ...gameState.playerVoid, ...gameState.playerHand, ...gameState.playerDeck,
@@ -1759,58 +1604,12 @@ function handleActivationTriggers(eventType, contextCard, extraContext = {}) {
         const appliesByFilter = Object.keys(filterFields).length > 0 && matchesFilter(contextCard, filterFields);
 
         if (appliesToSelf || appliesByFilter) {
-          showActivationConfirmModal(cardObj, skill, () => {
             resolveSkill(cardObj, skill, { triggerCard: contextCard, ...extraContext });
-          });
+
         }
       }
     });
   });
-}
-// --- Helper: Show modal to confirm skill activation ---
-function showActivationConfirmModal(cardObj, skillObj, onConfirm) {
-  // Remove any existing modal
-  let modal = document.getElementById('activation-confirm-modal');
-  if (modal) modal.remove();
-
-  modal = document.createElement('div');
-  modal.id = 'activation-confirm-modal';
-  modal.className = 'modal';
-  modal.style.display = 'flex';
-  modal.style.alignItems = 'center';
-  modal.style.justifyContent = 'center';
-  modal.style.zIndex = 99999;
-  modal.onclick = function(e) {
-    if (e.target === modal) modal.remove();
-  };
-
-  const content = document.createElement('div');
-  content.className = 'modal-content';
-  content.onclick = e => e.stopPropagation();
-
-  // You can customize this as needed for better skill info
-  content.innerHTML = `
-    <h3>Activate Skill?</h3>
-    <div style="margin-bottom:12px;">
-      <b>${skillObj.name || "Skill"}</b>
-      <div style="font-size:0.95em;color:#aaa;margin:8px 0;">
-        Are you sure you want to activate this skill${cardObj.name ? ` on <b>${cardObj.name}</b>` : ""}?
-      </div>
-    </div>
-    <button id="activation-confirm-btn" class="btn-primary" style="margin-right:14px;">Activate</button>
-    <button id="activation-cancel-btn" class="btn-negative-secondary">Cancel</button>
-  `;
-
-  modal.appendChild(content);
-  document.body.appendChild(modal);
-
-  document.getElementById('activation-confirm-btn').onclick = function() {
-    modal.remove();
-    if (typeof onConfirm === "function") onConfirm();
-  };
-  document.getElementById('activation-cancel-btn').onclick = function() {
-    modal.remove();
-  };
 }
 
 // --- TURN FLAGS --- //
@@ -1888,8 +1687,8 @@ function getTargets(target, sourceCardObj, context = {}) {
       case "enemyTerrains": arr = gameState.enemyTerrains; break;
       case "enemyHand": arr = gameState.enemyHand; break;
       case "enemyVoid": arr = gameState.enemyVoid; break;
-      case "playerDominion": arr = gameState.playerDominion ? [gameState.playerDominion] : []; break;
-      case "enemyDominion": arr = gameState.enemyDominion ? [gameState.enemyDominion] : []; break;
+      case "playerDomain": arr = gameState.playerDomain ? [gameState.playerDomain] : []; break;
+      case "enemyDomain": arr = gameState.enemyDomain ? [gameState.enemyDomain] : []; break;
       case "allCreatures": arr = [...gameState.playerCreatures, ...gameState.enemyCreatures]; break;
       case "allTerrains": arr = [...gameState.playerTerrains, ...gameState.enemyTerrains]; break;
       case "any": arr = Object.values(gameState).flat().filter(card => card && card.cardId); break;
@@ -3935,27 +3734,27 @@ function showEndGameAnimation(message, color = '#ffe066', callback = null) {
   }, 1700); // show for 1.7 seconds
 }
 function checkEndGame() {
-  if (gameState.playerDominion && gameState.playerDominion.currentHP <= 0) {
+  if (gameState.playerDomain && gameState.playerDomain.currentHP <= 0) {
     showEndGameAnimation("Defeat", "#e25555");
     // disable actions, offer rematch, etc.
     return true;
   }
-  if (gameState.enemyDominion && gameState.enemyDominion.currentHP <= 0) {
+  if (gameState.enemyDomain && gameState.enemyDomain.currentHP <= 0) {
     showEndGameAnimation("Victory", "#ffe066");
     // disable actions, offer rematch, etc.
     return true;
   }
   return false;
 }
-function extractDominionFromDeck(deckArr) {
+function extractDomainFromDeck(deckArr) {
   const idx = deckArr.findIndex(cardObj => {
     const card = dummyCards.find(c => c.id === cardObj.cardId);
     if (!card) return false;
     // Prefer the shared helper if present
-    if (typeof isDominion === 'function') return isDominion(card);
+    if (typeof isDomain === 'function') return isDomain(card);
     const t = card.type;
-    if (Array.isArray(t)) return t.map(x => String(x).toLowerCase()).includes('dominion');
-    return String(t || '').toLowerCase() === 'dominion';
+    if (Array.isArray(t)) return t.map(x => String(x).toLowerCase()).includes('Domain');
+    return String(t || '').toLowerCase() === 'Domain';
   });
   if (idx !== -1) {
     return deckArr.splice(idx, 1)[0];
@@ -3963,23 +3762,23 @@ function extractDominionFromDeck(deckArr) {
   return null;
 }
 
-if (gameState.playerDominion && gameState.playerDominion.currentHP <= 0) {
+if (gameState.playerDomain && gameState.playerDomain.currentHP <= 0) {
   showEndGameAnimation("Defeat", "#e25555");
   // Optionally: disable further actions, or trigger a reset
 }
-if (gameState.enemyDominion && gameState.enemyDominion.currentHP <= 0) {
+if (gameState.enemyDomain && gameState.enemyDomain.currentHP <= 0) {
   showEndGameAnimation("Victory", "#ffe066");
   // Optionally: disable further actions, or trigger a reset
 }
 
-function initiateDominionSelection(deckArr, afterSelection) {
-  // DOMINION SETUP
-  const dominionObj = extractDominionFromDeck(deckArr);
-  if (dominionObj) {
-    dominionObj.currentHP = getBaseHp(dominionObj.cardId);
-    gameState.playerDominion = dominionObj;
-    gameState.playerTerrains.unshift(dominionObj);
-    const idx = deckArr.findIndex(c => c.instanceId === dominionObj.instanceId);
+function initiateDomainSelection(deckArr, afterSelection) {
+  // Domain SETUP
+  const DomainObj = extractDomainFromDeck(deckArr);
+  if (DomainObj) {
+    DomainObj.currentHP = getBaseHp(DomainObj.cardId);
+    gameState.playerDomain = DomainObj;
+    gameState.playerTerrains.unshift(DomainObj);
+    const idx = deckArr.findIndex(c => c.instanceId === DomainObj.instanceId);
     if (idx !== -1) deckArr.splice(idx, 1);
     renderGameState();
   }
@@ -4437,22 +4236,14 @@ function startAttackTargeting(attackerId, attackerZone, cardDiv) {
 }
 
 function canAttack(cardObj, gameState) {
-
-  // Must exist, be a creature, and be on the field
   if (!cardObj) return false;
-  
-  // Must be player's turn
   if (gameState.turn !== 'player') return false;
-
-  // Must be action phase
   if (gameState.phase !== 'action') return false;
 
   // Only cards with category "Creature" can attack (definition-based)
   const def = dummyCards.find(c => c.id === cardObj.cardId);
   const isCreatureCategory = String(def?.category || '').toLowerCase() === 'creature';
   if (!isCreatureCategory) return false;  
-  
-  // Must be in ATK (vertical) orientation
   if (cardObj.orientation !== "vertical") return false;
 
   // Add any other restrictions (e.g. tapped, stunned)
@@ -4479,13 +4270,6 @@ function getAttackTargets(attackerObj = null) {
 
   // Terrains and artifacts to filter
   const terrainsAndArtifacts = [...terrains, ...artifacts];
-
-  // Filter out protected terrains/artifacts
-  const protectedTerrainsArtifacts = terrainsAndArtifacts.filter(cardObj => {
-    const cardColors = getCardColors(cardObj);
-    // If ANY color of the terrain/artifact has a protecting creature, it's protected
-    return cardColors.some(color => colorToCreatures[color] && colorToCreatures[color].length > 0);
-  });
 
   // Only allow attack on protected terrains/artifacts if no creature of that color exists
   const attackableTerrainsArtifacts = terrainsAndArtifacts.filter(cardObj => !protectedTerrainsArtifacts.includes(cardObj));
@@ -4537,7 +4321,7 @@ function resolveAttack(attackerId, defenderId) {
   // Find attacker/defender objects
   const attackerObj = [...gameState.playerCreatures, ...gameState.playerTerrains]
     .find(c => c.instanceId === attackerId);
-    const defenderObj = [...gameState.enemyCreatures, ...gameState.enemyTerrains, ...(gameState.enemyArtifacts || []), ...(gameState.enemyDominion ? [gameState.enemyDominion] : [])]
+    const defenderObj = [...gameState.enemyCreatures, ...gameState.enemyTerrains, ...(gameState.enemyArtifacts || []), ...(gameState.enemyDomain ? [gameState.enemyDomain] : [])]
     .find(c => c.instanceId === defenderId);
 
   if (!attackerObj || !defenderObj) return;
@@ -4909,9 +4693,9 @@ function getInitialGameState() {
     playerFallen: [],
     enemyfallen: [],
   
-    // Dominion / meta
-    playerDominion: null,
-    enemyDominion: null,
+    // Domain / meta
+    playerDomain: null,
+    enemyDomain: null,
 
     // Essence pools (keep as map of colors)
     essencePools: {
@@ -7169,7 +6953,7 @@ if (window.socket) {
       gameState.turn = whoStarts;
       gameState.phase = "draw";
       // ...continue with setup...
-      initiateDominionSelection(gameState.playerDeck, () => {
+      initiateDomainSelection(gameState.playerDeck, () => {
         // Draw opening hand, setup, etc.
       });
     }, result);
