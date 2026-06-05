@@ -4254,10 +4254,10 @@ function canAttack(cardObj, gameState) {
 }
 function getAttackTargets(attackerObj = null) {
   // Gather all enemy cards
-  const creatures = gameState.enemyCreatures;
-  const terrains = gameState.enemyTerrains;
-  const artifacts = gameState.enemyArtifacts || [];
-  const enemyField = [...creatures, ...terrains, ...artifacts];
+ const creatures = (gameState.enemyCreatures || []).filter(Boolean);
+  const terrains = (gameState.enemyTerrains || []).filter(Boolean);
+  const artifacts = (gameState.enemyArtifacts || []).filter(Boolean);
+  const enabledEnemyCreatures = creatures.filter(creature => creature.orientation === "vertical");
 
   // Build map of colors to enemy creatures
   const colorToCreatures = {};
@@ -4275,10 +4275,11 @@ function getAttackTargets(attackerObj = null) {
   const attackableTerrainsArtifacts = terrainsAndArtifacts.filter(cardObj => !protectedTerrainsArtifacts.includes(cardObj));
 
   // Build initial target list applying color protection rule
-  let targets = [
-    ...creatures,
-    ...attackableTerrainsArtifacts
-  ];
+  let targets = [...creatures];
+  // Guard rule: terrains/artifacts can only be attacked if no enabled enemy creature is on field.
+  if (enabledEnemyCreatures.length === 0) {
+    targets = [...targets, ...attackableTerrainsArtifacts];
+  }
 
   // If no attackerObj provided, just return targets after color protection
   if (!attackerObj) return targets;
