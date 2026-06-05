@@ -2212,83 +2212,120 @@ function getKeywordIcon(name) {
   if (!name) return null;
   const key = normalizeKey(name);
   if (!key) return null;
-  if (CARD_KEYWORD && CARD_KEYWORD[key] && CARD_KEYWORD[key].icon) {
-    return CARD_KEYWORD[key].icon;
-  }
+
+  if (CARD_KEYWORD?.[key]?.icon) return CARD_KEYWORD[key].icon;
+  if (TYPES?.[key]?.icon) return TYPES[key].icon;
+
   return null;
 }
 // --- Inline icon parsing helpers (use CARD_KEYWORD map from shared.js) ---
+function getEssenceIconPath(token) {
+  if (!token) return null;
+  const key = String(token).toLowerCase().trim();
+  return ESSENCE_IMAGE_MAP?.[key] || null;
+}
+
 function getKeywordIconPath(token) {
   if (!token) return null;
-  // prefer the CARD_KEYWORD map if available
-  const map = (typeof CARD_KEYWORD !== 'undefined') ? CARD_KEYWORD : (window.CARD_KEYWORD || {});
-  if (!map) return null;
 
-  // Normalize the token into the same canonical key shape used across the file
-  // (remove spaces, punctuation, lowercase). Uses the existing normalizeKey helper.
   const key = normalizeKey(token);
-  let entry = map[key];
 
-  const typeDef = getTypeDef(token);
-  if (typeDef?.icon) return typeDef.icon;
-  // fallback attempts: sometimes callers pass already-normalized keys or different casing
-  if (!entry) {
-    const lower = String(token).toLowerCase();
-    entry = map[lower] || map[token] || map[token.toLowerCase()] || map[token.toUpperCase()];
+  // 1. Essence icons first: {g}, {g2}, {x1}, etc.
+  const essenceIcon = getEssenceIconPath(key);
+  if (essenceIcon) return essenceIcon;
+
+  // 2. Type definitions if available
+  if (typeof getTypeDef === 'function') {
+    const typeDef = getTypeDef(token);
+    if (typeDef?.icon) return typeDef.icon;
   }
 
-  if (!entry) return null;
+  // 3. CARD_KEYWORD / TYPES fallback
+  const keywordEntry = CARD_KEYWORD?.[key] || TYPES?.[key];
+  if (!keywordEntry) return null;
 
-  // Support shapes: string -> path, object -> { icon, image, path }
-  if (typeof entry === 'string') return entry;
-  if (typeof entry === 'object') {
-    return entry.icon || entry.image || entry.path || null;
+  if (typeof keywordEntry === 'string') return keywordEntry;
+  if (typeof keywordEntry === 'object') {
+    return keywordEntry.icon || keywordEntry.image || keywordEntry.path || null;
   }
+
   return null;
 }
 
 // Escape HTML for safe HTML generation
 function escapeHtmlInline(s) {
   return String(s || '').replace(/[&<>"']/g, function (m) {
-    return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m];
+    return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m];
   });
 }
+// Generic renderer for a token like "g2", "flying", "cw", etc.
+function renderTokenToHtml(token, options = {}) {
+  const {
+    size = 18,
+    className = 'inline-icon',
+    altPrefix = ''
+  } = options;
 
+  if (!token) return '';
+
+  const raw = String(token).trim();
+  const lower = raw.toLowerCase();
+
+  // Tap / untap special cases
+  if (lower === 'cw') {
+    return `<img src="Icons/Essence/Tap.png" class="${escapeHtmlInline(className)}" alt="Tapped" title="Tapped" style="width:${size}px;height:${size}px;vertical-align:middle;margin:0 6px;">`;
+  }
+  if (lower === 'ccw') {
+    return `<img src="Icons/Essence/Untap.png" class="${escapeHtmlInline(className)}" alt="Untapped" title="Untapped" style="width:${size}px;height:${size}px;vertical-align:middle;margin:0 6px;">`;
+  }
+
+  // Essence icons: {g}, {g2}, {x1}, etc.
+  const essencePath = getEssenceIconPath(lower);
+  if (essencePath) {
+    return `<img src="${escapeHtmlInline(essencePath)}" class="${escapeHtmlInline(className)}" alt="${escapeHtmlInline((altPrefix ? altPrefix + ' ' : '') + raw)}" title="${escapeHtmlInline(raw)}" style="width:${size}px;height:${size}px;vertical-align:middle;margin:0 6px;">`;
+  }
+
+  // Keyword/type/ability icons
+  const path = getKeywordIconPath(raw);
+  if (path) {
+    return `<img src="${escapeHtmlInline(path)}" class="${escapeHtmlInline(className)}" alt="${escapeHtmlInline((altPrefix ? altPrefix + ' ' : '') + raw)}" title="${escapeHtmlInline(raw)}" style="width:${size}px;height:${size}px;vertical-align:middle;margin:0 6px;">`;
+  }
+
+  return '';
+}
 // options: { size: number (px), className: string, altPrefix: string }
 function parseInlineIconsToFragment(text, options = {}) {
   const { size = 18, className = 'inline-icon', altPrefix = '' } = options;
   const frag = document.createDocumentFragment();
   if (text === undefined || text === null) return frag;
+
   const str = String(text);
-  // Match tokens like {tokenName}
-  const re = /\{([a-zA-Z0-9_\-]+)\}/g;
+  const re = /\{([^}]+)\}/g;
   let lastIndex = 0;
   let m;
+
   while ((m = re.exec(str)) !== null) {
-    // push plain text before token
     if (m.index > lastIndex) {
       frag.appendChild(document.createTextNode(str.slice(lastIndex, m.index)));
     }
+
     lastIndex = re.lastIndex;
-    const token = m[1];
-    const path = getKeywordIconPath(token);
-    if (path) {
-      const img = document.createElement('img');
-      img.src = path;
-      img.alt = (altPrefix ? altPrefix + ' ' : '') + token;
-      img.className = className;
-      img.style.width = size + 'px';
-      img.style.height = size + 'px';
-      img.style.verticalAlign = 'middle';
-      img.style.margin = '0 6px';
-      frag.appendChild(img);
+    const token = m[1].trim();
+    const html = renderTokenToHtml(token, { size, className, altPrefix });
+
+    if (html) {
+      const wrapper = document.createElement('span');
+      wrapper.innerHTML = html;
+      while (wrapper.firstChild) frag.appendChild(wrapper.firstChild);
     } else {
-      // unknown token: keep literal text
       frag.appendChild(document.createTextNode('{' + token + '}'));
     }
   }
-  // remaining text
-  if (lastIndex < str.length) frag.appendChild(document.createTextNode(str.slice(lastIndex)));
+
+  if (lastIndex < str.length) {
+    frag.appendChild(document.createTextNode(str.slice(lastIndex)));
+  }
+
   return frag;
 }
 
@@ -2296,43 +2333,50 @@ function parseInlineIconsToFragment(text, options = {}) {
 function parseInlineIconsToHtml(text, options = {}) {
   const { size = 18, className = 'inline-icon', altPrefix = '' } = options;
   if (text === undefined || text === null) return '';
+
   const str = String(text);
-  const re = /\{([a-zA-Z0-9_\-]+)\}/g;
+  const re = /\{([^}]+)\}/g;
   let lastIndex = 0;
   let out = '';
   let m;
+
   while ((m = re.exec(str)) !== null) {
     if (m.index > lastIndex) {
       out += escapeHtmlInline(str.slice(lastIndex, m.index));
     }
-    lastIndex = m.index + m[0].length;
-    const token = m[1];
-    const path = getKeywordIconPath(token);
-    if (path) {
-      out += `<img src="${escapeHtmlInline(path)}" class="${escapeHtmlInline(className)}" alt="${escapeHtmlInline((altPrefix ? altPrefix + ' ' : '') + token)}" style="width:${size}px;height:${size}px;vertical-align:middle;margin:0 6px;">`;
-    } else {
-      out += escapeHtmlInline('{' + token + '}');
-    }
+
+    lastIndex = re.lastIndex;
+    const token = m[1].trim();
+    const html = renderTokenToHtml(token, { size, className, altPrefix });
+
+    out += html || escapeHtmlInline('{' + token + '}');
   }
-  if (lastIndex < str.length) out += escapeHtmlInline(str.slice(lastIndex));
+
+  if (lastIndex < str.length) {
+    out += escapeHtmlInline(str.slice(lastIndex));
+  }
+
   return out;
 }
+
 function replaceTokensInElement(rootEl, options = {}) {
   const walker = document.createTreeWalker(rootEl, NodeFilter.SHOW_TEXT, null, false);
   const textNodes = [];
   let node;
+
   while ((node = walker.nextNode())) {
-    if (node.nodeValue && node.nodeValue.indexOf('{') !== -1) {
+    if (node.nodeValue && node.nodeValue.includes('{')) {
       textNodes.push(node);
     }
   }
-  // Replace in reverse order (though order doesn't strictly matter, this avoids problems with live NodeList)
+
   for (let i = textNodes.length - 1; i >= 0; i--) {
     const txt = textNodes[i].nodeValue;
     const frag = parseInlineIconsToFragment(txt, options);
     textNodes[i].parentNode.replaceChild(frag, textNodes[i]);
   }
 }
+
 // Render one or multiple keywords as small chips with optional icon.
 // values may be string, array, or undefined. Returns an HTML string.
 function renderKeywordChips(values, opts = {}) {
@@ -2376,71 +2420,46 @@ function renderKeywordChips(values, opts = {}) {
 
   return `<div class="kw-chip-row">${chips.join('')}</div>`;
 }
+
 // Use this to parse effect text with tokens into HTML with images/icons
 function parseEffectText(effect) {
   if (!effect) return "";
-  // If effect is not a string, attempt to serialize (for objects/arrays)
+
   if (typeof effect !== "string") {
     if (Array.isArray(effect)) {
-      // Join array elements as strings
       effect = effect.map(e => typeof e === "string" ? e : JSON.stringify(e)).join(", ");
     } else {
       effect = JSON.stringify(effect);
     }
   }
 
- // Replace color icons {G},{R}, etc.
- effect = effect.replace(/\{([GRUYCPBW])\}/gi, (match, code) =>
-   `<img src="${ESSENCE_IMAGE_MAP[code.toUpperCase()]}" style="height:1.3em;vertical-align:middle;margin-right:2px;">`
- );
-
-  // Replace tapped/untapped icons
-  effect = effect.replace(/\{CW\}/gi,
-    '<img src="Icons/Essence/Tap.png" style="height:1.3em;vertical-align:middle;margin-right: 2px;" title="Tapped">'
-  );
-  effect = effect.replace(/\{CCW\}/gi,
-    '<img src="Icons/Essence/Untap.png" style="height:1.3em;vertical-align:middle;margin-right: 2px;" title="Untapped">'
-  );
-
-  // Replace numbers {0}..{20} with bold numbers or custom spans
- // Replace numbers {0}..{20} with colorless essence images!
-  effect = effect.replace(/\{([0-9]|1[0-9]|20)\}/g, (match, num) => {
-    const imgSrc = typeof ESSENCE_IMAGE_MAP !== 'undefined' ? ESSENCE_IMAGE_MAP['x'+num] : null;
-    if (imgSrc) {
-      return `<img src="${escapeHtmlInline(imgSrc)}" style="height:1.3em;vertical-align:middle;margin-right:2px;">`;
-    }
-    return `<span style="font-weight:bold;color:#ffe066;font-size:1.12em;vertical-align:middle;margin-right: 2px;">${num}</span>`;
+  return parseInlineIconsToHtml(effect, {
+    size: 20,
+    className: 'effect-inline-icon'
   });
-  // --- NEW: replace keyword tokens like {flying}, {ambush}, {zephyra}, {golem} etc. ---
-  // This regex intentionally selects tokens that start with a letter (to avoid colliding with
-  // the single-letter cost tokens and the numeric tokens already handled above).
-  effect = effect.replace(/\{([a-zA-Z][a-zA-Z0-9_\-\s]*)\}/g, (match, token) => {
-    // Skip tokens that are single-letter upper-case or pure numbers (already handled)
-    if (/^[GRUYCPBW]$/.test(token)) return match;
-    if (/^[0-9]+$/.test(token)) return match;
-
-    const path = getKeywordIconPath(token);
-    if (path) {
-      // Use escaped path and include alt/title for accessibility
-      const alt = escapeHtmlInline(String(token));
-      const title = escapeHtmlInline(String(token));
-      return `<img src="${escapeHtmlInline(path)}" alt="${alt}" title="${title}" style="height:1.3em;vertical-align:middle;margin-right:2px;">`;
-    }
-    // No icon found for the token: keep the literal token text (or remove braces, depending on preference)
-    // Here we return the token text without braces to be friendly in UI.
-    return escapeHtmlInline(token);
-  });
-  return effect;
 }
+
 function countEssenceType(essenceStr, typeCode) {
-  if (typeof essenceStr !== "string") return 0;
-  const matches = essenceStr.match(new RegExp(`\\{${typeCode}\\}`, "gi"));
-  return matches ? matches.length : 0;
+  if (typeof essenceStr !== "string" || !typeCode) return 0;
+
+  const normalized = String(typeCode).toLowerCase();
+
+  // Matches both {g} and {g2}, {g3}, etc.
+  const regex = new RegExp(`\\{${normalized}(\\d+)?\\}`, "gi");
+  const matches = [...essenceStr.matchAll(regex)];
+
+  let total = 0;
+  for (const match of matches) {
+    total += match[1] ? Number(match[1]) : 1;
+  }
+  return total;
 }
+
 function countColorlessEssence(essenceStr) {
   if (typeof essenceStr !== "string") return 0;
-  const matches = essenceStr.match(/\{([1-9]|1[0-9]|20)\}/g);
-  return matches ? matches.map(m => Number(m.replace(/[{}]/g, ""))).reduce((a, b) => a + b, 0) : 0;
+
+  const matches = [...essenceStr.matchAll(/\{x(\d+)\}/gi)];
+  return matches.reduce((sum, m) => sum + Number(m[1] || 0), 0);
 }
 
 // POWER
