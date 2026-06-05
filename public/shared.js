@@ -2197,6 +2197,8 @@ window.isCosmeticUnlockedByRequirement = function(unlockReq) {
 
   return true; // fail-open for unknown types (or false if you prefer strict)
 };
+
+// Icons logic
 function normalizeKey(s) {
   if (!s && s !== 0) return '';
   return String(s).toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/g, '');
@@ -2336,18 +2338,42 @@ function replaceTokensInElement(rootEl, options = {}) {
 function renderKeywordChips(values, opts = {}) {
   if (!values && values !== 0) return '';
   const arr = Array.isArray(values) ? values : [values];
+
   const chips = arr.map(v => {
     if (v === null || v === undefined) return '';
+
     const text = typeof v === 'string' ? v : String(v);
-    const icon = getKeywordIcon(text);
-    // escape text a bit
-    const escText = text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const key = normalizeKey(text);
+    const keywordEntry = CARD_KEYWORD?.[key] || TYPES?.[key] || null;
+
+    const icon = keywordEntry?.icon || getKeywordIcon(text);
+    const displayName = keywordEntry?.name || text;
+    const description = keywordEntry?.description || displayName;
+
+    const escText = displayName.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const escDescription = description.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
     if (icon) {
-      return `<div class="kw-chip"><img src="${icon}" alt="${escText}" title="${escText}" class="kw-chip-icon"><span class="kw-chip-text">${escText}</span></div>`;
+      return `
+        <div class="kw-chip" title="${escDescription}">
+          <img
+            src="${icon}"
+            alt="${escText}"
+            title="${escDescription}"
+            class="kw-chip-icon"
+          >
+          <span class="kw-chip-text" title="${escDescription}">${escText}</span>
+        </div>
+      `;
     } else {
-      return `<div class="kw-chip"><span class="kw-chip-text">${escText}</span></div>`;
+      return `
+        <div class="kw-chip" title="${escDescription}">
+          <span class="kw-chip-text" title="${escDescription}">${escText}</span>
+        </div>
+      `;
     }
   }).filter(Boolean);
+
   return `<div class="kw-chip-row">${chips.join('')}</div>`;
 }
 // Use this to parse effect text with tokens into HTML with images/icons
