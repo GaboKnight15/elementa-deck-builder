@@ -1468,8 +1468,8 @@ const ESSENCE_IMAGE_MAP = {
 };
 function getEssenceImageSrc(key) {
   if (!key) return null;
-  const normalizedKey = String(key).trim();
-  return ESSENCE_IMAGE_MAP[normalizedKey] || ESSENCE_IMAGE_MAP[normalizedKey.toLowerCase()] || null;
+  const normalizedKey = String(key).trim().toLowerCase();
+  return ESSENCE_IMAGE_MAP[normalizedKey] || null;
 }
 function renderEssenceToken(token, style) {
   const normalizedToken = String(token || '').trim().toLowerCase();
