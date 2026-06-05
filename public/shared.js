@@ -2705,83 +2705,7 @@ function renderStatGraphHtml(statsObj, opts = {}) {
   html += '</div>';
   return html;
 }
-// --- INFO MODAL LOGIC ---
-function showInfoModal(cardObj) {
-  const card = dummyCards.find(c => c.id === (cardObj.cardId || cardObj.id));
-  if (!card) return;
-  const infoModal = document.getElementById('card-info-modal');
-  const infoContent = document.getElementById('card-info-modal-content');
-  if (!infoModal || !infoContent) return;
 
-  // Gather keywords
-  let keywordSections = [];
-  function addKeywordSection(type, value) {
-    if (!value) return;
-    let values = Array.isArray(value) ? value : [value];
-    for (const v of values) {
-      const key = String(v).toLowerCase().replace(/\s+/g, ''); // Lowercase and remove all spaces
-      if (CARD_KEYWORD[key]) {
-        keywordSections.push({
-          type,
-          name: CARD_KEYWORD[key].name || v,
-          desc: CARD_KEYWORD[key].description
-        });
-      }
-    }
-  }
-  addKeywordSection("Trait", card.trait);
-  addKeywordSection("Type", card.type);
-  addKeywordSection("Ability", card.ability);
-  addKeywordSection("Skill", card.skill);
-  addKeywordSection("Archetype", card.archetype);
-
-  let html = `<div style="font-weight:bold;font-size:1.3em;color:#ffe066;margin-bottom:10px;">Keywords & Abilities </div>`;
-  if (keywordSections.length) {
-    keywordSections.forEach((sec, i) => {
-      html += `
-        <div style="font-size:1.14em;color:#ffe066;font-weight:bold;">${sec.name}</div>
-        <div style="font-size:1em;color:#fff;">${parseEffectText(sec.desc)}</div>
-      `;
-
-      // If this section is the Archetype block, insert the stat graph below it
-      if (sec.type && String(sec.type).toLowerCase() === 'archetype') {
-        // Prefer archetype stats, fall back to type, then trait
-        let combinedStats = null;
-        if (card.archetype) {
-          combinedStats = getCombinedKeywordStats(card.archetype);
-        } else if (card.type) {
-          combinedStats = getCombinedKeywordStats(card.type);
-        } else if (card.trait) {
-          combinedStats = getCombinedKeywordStats(card.trait);
-        } else {
-          combinedStats = Object.assign({}, DEFAULT_STAT_PROFILE);
-        }
-
-        // Render stat graph HTML (helper: renderStatGraphHtml)
-        html += `<div style="margin-top:8px;margin-bottom:12px;">`;
-        html += renderStatGraphHtml(combinedStats, { containerClass: 'stat-graph' });
-        html += `</div>`;
-      }
-
-      // Add divider after each section except the last
-      if (i < keywordSections.length - 1) {
-        html += `<div class="card-modal-divider"></div>`;
-      }
-    });
-  } else {
-    html += `<div style="color:#eee;">No special keywords or abilities found for this card.</div>`;
-  }
-  html += `<button id="close-card-info-modal" class="btn-negative-secondary" style="margin-top:16px;">Close</button>`;
-
-  infoContent.innerHTML = html;
-  infoModal.style.display = 'flex';
-  document.getElementById('close-card-info-modal').onclick = function() {
-    infoModal.style.display = 'none';
-  };
-  infoModal.onclick = function(e) {
-    if (e.target === infoModal) infoModal.style.display = 'none';
-  };
-}
 // VIEW CARDS
 function showFullCardModal(cardObj) {
   const card = dummyCards.find(c => c.id === (cardObj.cardId || cardObj.id));
@@ -2901,9 +2825,9 @@ if (card.skill) {
   let statsRow = '';
   if (card.hp !== undefined || card.atk !== undefined || card.def !== undefined || card.cost !== undefined) {
    statsRow = '<div class="full-card-info-row">' +
-   (card.hp !== undefined ? `<span class="full-card-info-label">HP:</span> ${renderStatIcon('hp', card.hp)} ` : '') +
-   (card.atk !== undefined ? `<span class="full-card-info-label">ATK:</span> ${renderStatIcon('atk', card.atk)} ` : '') +
-   (card.def !== undefined ? `<span class="full-card-info-label">DEF:</span> ${renderStatIcon('def', card.def)} ` : '') +
+	(card.atk !== undefined ? `<span class="full-card-info-label">ATK:</span> ${renderStatIcon('atk', card.atk)} ` : '') +
+	(card.hp !== undefined ? `<span class="full-card-info-label">HP:</span> ${renderStatIcon('hp', card.hp)} ` : '') +
+
    `<span class="full-card-info-label">Cost:</span> ${renderCardCost(card.cost)}` +
    '</div>';
   }
@@ -2918,12 +2842,9 @@ if (card.skill) {
     infoHtml += `<div class="full-card-info-section" style="font-size:1.08em;color:#ffe066;margin-top:10px;">${card.text}</div>`;
   }
 
-   // --- INFO BUTTON ---
-  let infoButtonHtml = `<img id="card-info-btn" src="Icons/Other/Info.png" alt="Info" title="Keyword & Ability Info">`;
   // Compose modal content (side-by-side)
   modalContent.innerHTML = `
     <div class="full-card-modal-flex" style="position:relative;">
-      ${infoButtonHtml}
       <div class="full-card-image-container">
         <img src="${card.image}" alt="${card.name}" class="full-card-modal-img ${owned === 0 ? 'card-image-locked' : ''}">
       </div>
@@ -2932,15 +2853,6 @@ if (card.skill) {
       </div>
     </div>
   `;
-
-  // Attach Info Button Handler
-  const infoBtn = document.getElementById('card-info-btn');
-  if (infoBtn) {
-    infoBtn.onclick = function(e) {
-      e.stopPropagation();
-      showInfoModal(cardObj);
-    };
-  }
   modal.style.display = 'flex';
 }
 
@@ -2951,21 +2863,6 @@ document.getElementById('image-modal').onclick = (e) => {
     document.getElementById('image-modal').style.display = "none";
   }
 };
-
-// --- ADD INFO MODAL HTML TO PAGE IF NOT PRESENT ---
-(function ensureInfoModal() {
-  if (!document.getElementById('card-info-modal')) {
-    const infoModal = document.createElement('div');
-    infoModal.id = 'card-info-modal';
-    infoModal.className = 'modal';
-    infoModal.style.display = 'none';
-    infoModal.innerHTML = `
-      <div id="card-info-modal-content" class="modal-content" style="max-width:480px;min-width:320px;padding:32px 26px 18px 26px;background:#212a3b;border-radius:18px;margin:auto;box-shadow:0 4px 32px #000a;">
-      </div>
-    `;
-    document.body.appendChild(infoModal);
-  }
-})();
 
 function renderCardCost(costData) {
   let html = '';
