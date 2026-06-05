@@ -1037,17 +1037,7 @@ button {}
   margin: 18px 0;
   border-radius: 2px;
 }
-#card-info-btn {
-  position: absolute;
-  border-radius: 50%;
-  top: 18px;
-  right: 18px;
-  width: 38px;
-  height: 38px;
-  cursor: pointer;
-  z-index: 10;
-  filter: drop-shadow(0 2px 6px #0009);
-}
+
 .full-card-info-panel {
   color: #ffe066;
   font-family: inherit;
@@ -3609,9 +3599,7 @@ button[disabled], .btn-disabled {
   transition: background 0.2s;
   overflow: auto;
 }
-#card-info-modal {
-  z-index: 10000 !important;
-}
+
 #modal-img-content {
   background: #212a3b;
   border-radius: 24px;
@@ -3629,17 +3617,7 @@ button[disabled], .btn-disabled {
   height: auto;
   box-shadow: 0 8px 40px #0008;
 }
-#card-info-btn {
-  position: absolute;
-  border-radius: 50%;
-  top: 0;
-  right: 0;
-  width: 5%;
-  height: auto; /* allows aspect ratio to be preserved */
-  cursor: pointer;
-  z-index: 10;
-  filter: drop-shadow(0 2px 6px #0009);
-}
+
 .card-cost-images img {
   width: 26px;
   height: 26px;
