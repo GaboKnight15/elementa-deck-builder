@@ -11,7 +11,7 @@ const dummyCards = [
 	{name: 'Might of the Valiant', mana: 3, eff: {class: 'bolster', atk: 2, hp: 3}}]},
 	
 {id: 'Verdara', name: 'Verdara', rarity: 'Legend', image: 'Cards/egg/Verdara.png', flavor: '', 
- category: 'Terrain', color: 'Green', type: ['Sylvan','Domain'], hp: 20, essence: '{g}{g}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Terrain', color: 'Green', type: ['Sylvan','Domain'], hp: 20, essence: '{g2}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Sylvan Essence', tap: true, eff: {class: 'essence', color: 'green'}},
 	{name: 'Flourish', tap: true, eff: {class: 'bolster', hp: 2}}]},
 
@@ -22,8 +22,8 @@ const dummyCards = [
 	{name: "Timeless Zenith Blessing", cost: '{g}', awaken: true, eff: {class: 'Buff', target: 'playerField', type: 'Sylvan', atkQ: 1, hpQ: 2}}]},
 
 {id: 'FaelyraWildhornEmpress', name: 'Faelyra, Wildhorn Empress', rarity: 'Legend', image: 'Cards/egg/FaelyraWildhornEmpress.png', flavor: 'Beneath a crown of entwined blossoms, she dances through the forest while singing weaving spells of mirth. Satyrs, woodland creatures, and even the shyest spirits follow her lead, enchanted by her boundless charm.',
- category: 'Creature', fight: 'Satiric Pulse', color: 'Green', type: ['Satyr','Mage'], hp: 3, atk: 1, cost: '{g}{g}', ability: 'Vigor', set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/egg/FaelyraWildhornEmpressFA.png', skill: [
-	{name: 'Summon', cost: '{g}{g}', eff: {class: 'summon'}},
+ category: 'Creature', fight: 'Satiric Pulse', color: 'Green', type: ['Satyr','Mage'], hp: 3, atk: 1, cost: '{g2}', ability: 'Vigor', set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/egg/FaelyraWildhornEmpressFA.png', skill: [
+	{name: 'Summon', cost: '{g2}', eff: {class: 'summon'}},
 	{name: 'Rhythmic Conjure', act: {trigger: 'summon'}, eff: {class: 'spawn', targetId: 'Satyr'}},
 	{name: 'Chorus of the Wild', cost: '{g}{x}', act: {trigger: 'attack'}, eff: {class: 'bolster', atk: 1, hp: '{x}', targetType: 'Satyr', target: 'playerCreatures'}}]},
 
@@ -31,12 +31,12 @@ const dummyCards = [
 {id: 'VerdaraSoldier', name: 'Verdara Soldier', rarity: 'Rare', image: 'Cards/egg/VerdaraSoldier.png', flavor: '', 
  category: 'Creature', fight: 'Sylvan Slash', color: 'Green', type: ['Verdant','Spirit','Warrior'], hp: 4, atk: 2, cost: '{g4}', 
  ability: ['Drain','Protect'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
-	{name: 'Summon', cost: '{2}', eff: {class: 'summon'}},
+	{name: 'Summon', cost: '{g4}', eff: {class: 'summon'}},
 	{name: 'Nature Prowess', summon: true, eff: {class: 'bolster', atk: 1, countColor: 'Green'}},
 	{name: 'Forest Phalanx', act: {trigger: 'attack'}, eff: {class: 'add', targetType: ['Sylvan','Terrain']}}]},
 
 {id: 'WildhornSongreaver', name: 'Wildhorn Songreaver', rarity: 'Rare', image: 'Cards/egg/WildhornSongreaver.png', flavor: '', 
- category: 'Creature', fight: 'Horncall Crescendo', color: 'Green', type: 'Satyr', hp: 6, atk: 2, cost: '{2}', ability: 'Vigor', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Creature', fight: 'Horncall Crescendo', color: 'Green', type: 'Satyr', hp: 6, atk: 2, cost: '{g2}', ability: 'Vigor', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{g2}', eff: {class: 'summon'}},
 	{name: 'Hidden Overture', discard: 1, eff: {class: 'enable', amount: 1}},
 	{name: 'Horncall Crescendo', cost: '{g}', act: {trigger: 'attack'}, discard: 1, eff: {class: 'bolster', atk: 1, targetType: 'Satyr', target: 'playerCreatures'}}]},
@@ -48,8 +48,8 @@ const dummyCards = [
 	{name: 'Overgrowth', cost: '{0}', awaken: true, eff: {class: 'bolster', atk: 1, hp: 1}}]},
 
 {id: 'VigorousSatiricOrchard', name: 'Vigorous, Satiric Orchard', rarity: 'Rare', image: 'Cards/egg/VigorousSatiricOrchard.png', flavor: 'The air thickens with the scent of fermented nectar and the echoes of mocking laughter. Here, every fallen fruit is a catalyst for a riotous surge of primal power.', 
- category: 'Terrain', color: 'Green', type: 'Satyr', hp: 4, cost: '{1}{g}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
-	{name: 'Terraform', cost: '{1}{g}', eff: {class: 'terraform'}},
+ category: 'Terrain', color: 'Green', type: 'Satyr', hp: 4, cost: '{g2}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+	{name: 'Terraform', cost: '{g2}', eff: {class: 'terraform'}},
 	{name: 'Sylvan Essence', tap: true, eff: {class: 'essence', color: 'green'}},
 	{name: 'Wild Revelry', act: {trigger: 'summon', type: 'Satyr'}, eff: {class: 'bolster', hp: 1, target: 'triggerCard' }}]},
 
@@ -61,7 +61,7 @@ const dummyCards = [
 // EGG COMMON //
 {id: 'LifesGrowth', name: "Life's Growth", rarity: 'Common', image: 'Cards/egg/LifesGrowth.png', flavor: '', 
  category: 'Spell', color: 'Green', type: ['Sylvan','Enchantment'], cost: '{g3}', mana: 3, set: ['ElementaGenesis','EssenceLegacy'], skill: [
-	{name: 'Cast', cost: '{g}{g}', eff: {class: 'enchant'}},
+	{name: 'Cast', cost: '{g3}', eff: {class: 'enchant'}},
 	{name: "Life's Growth", mana: 1, tap: true, eff: {class: 'essence', amount: 2, color: 'Green'}}]},
 
 {id: 'VerdantRebirth', name: 'Verdant Rebirth', rarity: 'Rare', image: 'Cards/egg/VerdantRebirth.png', flavor: '', 
@@ -70,11 +70,11 @@ const dummyCards = [
 	{name: 'Verdant Rebirth', tap: true, eff: {class: 'revive', targetCategory: 'Creature'}}]},
 
 {id: 'Fairy', name: 'Fairy', rarity: 'Common', image: 'Cards/egg/Fairy.png', flavor: '', 
- category: 'Creature', fight: '', color: 'Green', type: 'Fairy', hp: 1, atk: 1, cost: '{0}', ability: 'Flying', set: ['ElementaGenesis','EssenceLegacy'], skill: [
-	{name: 'Summon', cost: '{0}', eff: {class: 'summon'}}]},
+ category: 'Creature', fight: '', color: 'Green', type: 'Fairy', hp: 1, atk: 1, cost: '{g}', ability: 'Flying', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+	{name: 'Summon', cost: '{g}', eff: {class: 'summon'}}]},
 
 {id: 'ElementalofLeaves', name: 'Elemental of Leaves', rarity: 'Common', image: 'Cards/egg/ElementalofLeaves.png', flavor: '', 
- category: 'Creature', fight: 'Sylvan Strike', color: 'Green', type: ['Verdant','Spirit'], hp: 3, atk: 1, cost: '{1}', ability: 'Regenerate', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Creature', fight: 'Sylvan Strike', color: 'Green', type: ['Verdant','Spirit'], hp: 3, atk: 1, cost: '{g}', ability: 'Regenerate', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{g}', eff: {class: 'summon'}}]},
 
 {id: 'Satyr', name: 'Satyr', rarity: 'Common', image: 'Cards/egg/Satyr.png', flavor: '', 
@@ -109,8 +109,8 @@ const dummyCards = [
 	{name: 'Forest Freight', act: {trigger: 'attack'}, eff: {class: 'add', targetCategory: 'Terrain', targetType: 'Sylvan' }}]},
 	
 {id: 'Forest', name: 'Forest', rarity: 'Common', image: 'Cards/egg/Forest.png', flavor: '', 
- category: 'Terrain', color: 'Green', type: ['Sylvan','Terrain'], essence: '{g}', hp: 5, cost: '{2}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
-	{name: 'Terraform', cost: '{2}', eff: {class: 'terraform'}},
+ category: 'Terrain', color: 'Green', type: ['Sylvan','Terrain'], essence: '{g}', hp: 5, cost: '{x2}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+	{name: 'Terraform', cost: '{x2}', eff: {class: 'terraform'}},
 	{name: 'Sylvan Essence', tap: true, eff: {class: 'essence', color: 'green'}},]},
 
 {id: 'FlourishingVitality', name: 'Flourishing Vitality', rarity: 'Common', image: 'Cards/egg/FlourishingVitality.png', flavor: '', 
@@ -119,14 +119,14 @@ const dummyCards = [
 	{name: 'Flourishing Vitality', tap: true, mana: 1, eff: [{class: 'Heal', amount: 5}, {class: 'Draw', amount: 1}]}]},
  
 {id: 'EssenceSurge', name: 'Essence Surge', rarity: 'Common', image: 'Cards/egg/EssenceSurge.png', flavor: '', 
- category: 'Spell', color: 'Green', type: 'Spell', cost: '{2}', mana: 3, set: ['ElementaGenesis','EssenceLegacy'], skill: [
-	{name: 'Cast', cost: '{2}', eff: {class: 'cast'}},
+ category: 'Spell', color: 'Green', type: 'Spell', cost: '{x2}', mana: 3, set: ['ElementaGenesis','EssenceLegacy'], skill: [
+	{name: 'Cast', cost: '{x2}', eff: {class: 'cast'}},
 	{name: 'Essence Surge', tap: true, mana: 1, eff: {class: 'essence', color: 'colorless'}}]},
 /*
 // EGR //
 // EGR LEGEND //
 {id: 'Magmaris', name: 'Magmaris', rarity: 'Legend', image: 'Cards/egr/Magmaris.png', flavor: '', 
- category: 'Terrain', color: 'Red', type: ['Inferno','Domain'], hp: 20, essence: '{r}{r}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Terrain', color: 'Red', type: ['Inferno','Domain'], hp: 20, essence: '{r2}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Inferno Essence', tap: true, eff: {class: 'essence', color: 'green'}},
 	{name: 'Ignite', tap: true, eff: {class: 'bolster', atk: 1 }}]},
 
@@ -1600,12 +1600,13 @@ aftermath: {name: "Aftermath", description: "Activates during the end step."},
 // ---------------------------------- //
 
 // --- STATUS EFFECTS --- //
-poisoned: {name: "Poisoned", description: "Lose 1 HP during each end step."},
-bound: {name: "Bound", description: "Gets disabled. Does not enable during Start Step."},
+poisoned: {name: "Poisoned", description: "Lose 1 HP during each end step per stack."},
+cursed: {name: "Cursed", description: "Lose -{1}/-{1} during each end step per stack."},
+bound: {name: "Bound", description: "Gets disabled. Does not enable."},
 burned: {name: "Burned", description: "Receives 1 more damage."},
-frozen: {name: "Frozen", description: "Cannot do any action. Does not receive damage. If damaged, reduce the countdown by 1."},
-paralysis: {name: "Paralized", description: "Cannot attack. Lasts 2 turns per stack"},
-drenched: {name: "Drenched", description: "Loses -{1} {atk}."},
+frozen: {name: "Frozen", description: "Gets disabled. Does not enable. Cannot activate skills."},
+paralysis: {name: "Paralized", description: "Cannot attack."},
+drenched: {name: "Drenched", description: "Loses -{1} {atk} per stack."},
 withered: {name: "Withered", description: "Cannot be healed."},
 
 // --- Undead --- //
