@@ -1466,6 +1466,27 @@ const ESSENCE_IMAGE_MAP = {
   x12: "Icons/Essence/Twelve.png", x13: "Icons/Essence/Thirteen.png", x14: "Icons/Essence/Fourteen.png", x15: "Icons/Essence/Fifteen.png",
   x16: "Icons/Essence/Sixteen.png", x17: "Icons/Essence/Seventeen.png", x18: "Icons/Essence/Eighteen.png", x19: "Icons/Essence/Nineteen.png", x20: "Icons/Essence/Twenty.png"
 };
+function getEssenceImageSrc(key) {
+  if (!key) return null;
+  const normalizedKey = String(key).trim();
+  return ESSENCE_IMAGE_MAP[normalizedKey] || ESSENCE_IMAGE_MAP[normalizedKey.toLowerCase()] || null;
+}
+function renderEssenceToken(token, style) {
+  const normalizedToken = String(token || '').trim().toLowerCase();
+  if (!normalizedToken) return '';
+
+  const combinedToken = normalizedToken.match(/^([gruycpbw])(\d+)$/);
+  if (combinedToken) {
+    const colorImg = getEssenceImageSrc(combinedToken[1]);
+    const colorlessImg = getEssenceImageSrc(`x${combinedToken[2]}`);
+    if (colorImg && colorlessImg) {
+      return `<img src="${colorImg}" style="${style}"><img src="${colorlessImg}" style="${style}">`;
+    }
+  }
+
+  const imgSrc = getEssenceImageSrc(normalizedToken);
+  return imgSrc ? `<img src="${imgSrc}" style="${style}">` : '';
+}
 const addCoinsBtn = document.getElementById('add-coins-btn');
 const LEVEL_THRESHOLDS = [0, 100, 250, 500, 1000, 2000, 4000, 8000];
 let lastPlayerPower = null;
@@ -2362,9 +2383,9 @@ function parseEffectText(effect) {
     }
   }
 
- // Replace color icons {G},{R}, etc.
- effect = effect.replace(/\{([GRUYCPBW])\}/gi, (match, code) =>
-   `<img src="${ESSENCE_IMAGE_MAP[code.toUpperCase()]}" style="height:1.3em;vertical-align:middle;margin-right:2px;">`
+ // Replace color icons {G},{R}, {G3}, etc.
+ effect = effect.replace(/\{([GRUYCPBW](?:[0-9]+)?)\}/gi, (match, token) =>
+   renderEssenceToken(token, "height:1.3em;vertical-align:middle;margin-right:2px;") || match
  );
 
   // Replace tapped/untapped icons
@@ -2425,8 +2446,7 @@ function getPlayerLevelFromPower(power) {
 }
 
 function renderStatIcon(statType, value) {
-  const key = "X" + value;
-  const imgSrc = ESSENCE_IMAGE_MAP[key];
+  const imgSrc = getEssenceImageSrc(`x${value}`);
   if (imgSrc) {
     // Tooltip for accessibility
     return `<img src="${imgSrc}" alt="${statType.charAt(0).toUpperCase() + statType.slice(1)}: ${value}" class="stat-img stat-${statType}" style="width:22px;height:22px;vertical-align:middle;margin-right:2px;">`;
@@ -2974,8 +2994,8 @@ function renderCardCost(costData) {
   }
   if (typeof costData === "string") {
     // Use parseEffectText for cost string, but limit to icons only
-    html = costData.replace(/\{([GRUYCPBW])\}/gi, (match, code) =>
-     `<img src="${ESSENCE_IMAGE_MAP[code.toUpperCase()]}" style="width:22px;height:22px;vertical-align:middle;">`
+    html = costData.replace(/\{([GRUYCPBW](?:[0-9]+)?)\}/gi, (match, token) =>
+      renderEssenceToken(token, "width:22px;height:22px;vertical-align:middle;") || match
     );
     html = html.replace(/\{([0-9]|1[0-9]|20)\}/g, (match, num) => {
       const imgSrc = ESSENCE_IMAGE_MAP['x'+num];
