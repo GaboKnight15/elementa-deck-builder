@@ -27,6 +27,13 @@ const dummyCards = [
 	{name: 'Rhythmic Conjure', act: {trigger: 'summon'}, eff: {class: 'spawn', targetId: 'Satyr'}},
 	{name: 'Chorus of the Wild', cost: '{g}{x}', act: {trigger: 'attack'}, eff: {class: 'bolster', atk: 1, hp: '{x}', targetType: 'Satyr', target: 'playerCreatures'}}]},
 
+{id: 'ThistleFaeStarlight', name: 'Thistle, Fae Starlight', rarity: 'Legend', image: 'Cards/egg/ThistleFaeStarlight.png', flavor: 'Beneath a crown of entwined blossoms, she dances through the forest while singing weaving spells of mirth. Satyrs, woodland creatures, and even the shyest spirits follow her lead, enchanted by her boundless charm.',
+ category: 'Creature', fight: 'Faefolk Pulse', color: 'Green', type: ['Fairy','Mage'], hp: 2, atk: 1, cost: '{g3}', ability: 'Flying', set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/egg/FaelyraWildhornEmpressFA.png', skill: [
+	{name: 'Summon', cost: '{g3}', eff: {class: 'summon'}},
+	{name: 'Stardust Veil', act: {trigger: 'summon'}, eff: {class: 'spawn', targetId: 'Satyr'}},
+	{name: 'Luminescent Grace', cost: '{g}{x}', act: {trigger: 'attack'}, eff: {class: 'bolster', atk: 1, hp: '{x}', targetType: 'Satyr', target: 'playerCreatures'}}]},
+
+
 // EGG RARE //
 {id: 'VerdaraSoldier', name: 'Verdara Soldier', rarity: 'Rare', image: 'Cards/egg/VerdaraSoldier.png', flavor: '', 
  category: 'Creature', fight: 'Sylvan Slash', color: 'Green', type: ['Verdant','Spirit','Warrior'], hp: 4, atk: 2, cost: '{g4}', 
@@ -46,6 +53,27 @@ const dummyCards = [
 	{name: 'Summon', cost: '{4}{g}', eff: {class: 'summon'}},
 	{name: 'Barkhide', strike: true, eff: {class: 'bolster', hp: 1}},
 	{name: 'Overgrowth', cost: '{0}', awaken: true, eff: {class: 'bolster', atk: 1, hp: 1}}]},
+
+{id: 'NuminousWandererTanuki', name: 'Numinous Wanderer Tanuki', rarity: 'Rare', image: 'Cards/egg/NuminousWandererTanuki.png', flavor: '', 
+ category: 'Creature', fight: '', color: 'Green', type: ['Sylvan','Beast','Rogue'], hp: 3, atk: 1, cost: '{g4}', 
+ ability: ['Dispel','Stealth'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
+	{name: 'Summon', cost: '{g4}', eff: {class: 'summon'}},
+	{name: 'Gilded Leaf Deception', summon: true, eff: {class: 'bolster', atk: 1, countColor: 'Green'}},
+	{name: 'Boundless Path', summon: true, eff: {class: 'add', targetType: ['Sylvan','Terrain']}}]},
+
+{id: 'EnchantedBranchesLeshy', name: 'Enchanted Branches Leshy', rarity: 'Rare', image: 'Cards/egg/EnchantedBranchesLeshy.png', flavor: '', 
+ category: 'Creature', fight: '', color: 'Green', type: ['Verdant','Spirit'], hp: 6, atk: 2, cost: '{g4}', 
+ ability: ['Bind','Vigor'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
+	{name: 'Summon', cost: '{g4}', eff: {class: 'summon'}},
+	{name: 'Shifting Bark Facade', echo: true, eff: {class: 'summon', targetCategory: 'Creature', targetType: 'Verdant', cost: '<3'}},
+	{name: 'Primal Forest Pulse', summon: true, eff: {class: 'recover', q: 2, targetType: 'Verdant'}}]},
+
+{id: 'StreamVagrantKappa', name: 'Stream Vagrant Kappa', rarity: 'Rare', image: 'Cards/egg/StreamVagrantKappa.png', flavor: '', 
+ category: 'Creature', fight: '', color: ['Green','Blue'], type: ['Sylvan','Merfolk'], hp: 3, atk: 2, cost: '{g2}{u}', 
+ ability: ['Bind','Vigor'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
+	{name: 'Summon', cost: '{g2}{u}', eff: {class: 'summon'}},
+	{name: 'Riverbed Flotsam Glean', echo: true, eff: {class: 'summon', targetCategory: 'Creature', targetType: 'Verdant', cost: '<3'}},
+	{name: 'Drifting Foam Escape', return: true, eff: {class: 'recover', q: 2, targetType: 'Verdant'}}]},
 
 {id: 'VigorousSatiricOrchard', name: 'Vigorous, Satiric Orchard', rarity: 'Rare', image: 'Cards/egg/VigorousSatiricOrchard.png', flavor: 'The air thickens with the scent of fermented nectar and the echoes of mocking laughter. Here, every fallen fruit is a catalyst for a riotous surge of primal power.', 
  category: 'Terrain', color: 'Green', type: 'Satyr', hp: 4, cost: '{g2}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
@@ -107,7 +135,14 @@ const dummyCards = [
  category: 'Creature', fight: 'Forest Freight', color: 'Green', type: ['Sylvan','Beast'], hp: 4, atk: 2, cost: '{g3}', ability: 'Rush', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{g3}', eff: {class: 'summon'}},
 	{name: 'Forest Freight', act: {trigger: 'attack'}, eff: {class: 'add', targetCategory: 'Terrain', targetType: 'Sylvan' }}]},
-	
+
+{id: 'WoodlandSpriteKodama', name: 'Woodland Sprite Kodama', rarity: 'Rare', image: 'Cards/egg/WoodlandSpriteKodama.png', flavor: '', 
+ category: 'Creature', fight: '', color: 'Green', type: ['Verdant','Spirit'], hp: 2, atk: 1, cost: '{g2}', 
+ ability: 'Curse', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+	{name: 'Summon', cost: '{g2}', eff: {class: 'summon'}},
+	{name: 'Curse of the Woodsman', echo: true, eff: {class: 'summon', targetCategory: 'Creature', targetType: 'Verdant', cost: '<3'}},
+	{name: 'Primal Forest Pulse', summon: true, eff: {class: 'recover', q: 2, targetType: 'Verdant'}}]},
+
 {id: 'Forest', name: 'Forest', rarity: 'Common', image: 'Cards/egg/Forest.png', flavor: '', 
  category: 'Terrain', color: 'Green', type: ['Sylvan','Terrain'], essence: '{g}', hp: 5, cost: '{x2}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Terraform', cost: '{x2}', eff: {class: 'terraform'}},
@@ -150,6 +185,12 @@ const dummyCards = [
 {id: 'BlazescaleWarDrake', name: 'Blazescale War-Drake', rarity: 'Rare', image: 'Cards/egr/BlazescaleWarDrake.png', flavor: '', 
  category: 'Creature', fight: '', color: 'Red', type: 'Dragon', hp: 5, atk: 3, cost: '{3}{r}', ability: 'Rush', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{3}{r}', eff: {class: 'summon'}}]},
+
+{id: 'MoonlitVixenKumiho', name: 'Moonlit Vixen Kumiho', rarity: 'Rare', image: 'Cards/egr/MoonlitVixenKumiho.png', flavor: '', 
+ category: 'Creature', fight: 'Orckish Warcry', color: 'Red', type: ['Fire','Beast','Rogue'], hp: 9, atk: 2, cost: '{r5}', ability: ['ambush','Dissolve','Pilfer'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
+	{name: 'Summon', cost: '{r5}', eff: {class: 'summon'}},
+ 	{name: 'Lunar Glow Guise', discard: true, eff: {class: 'inspire', atk: 1, targetType: 'Orc', target: 'playerCreatures'}},
+	{name: 'Fox Fire Burst', echo: true, eff: {class: 'add', targetType: 'Equipment'}}]},
 
 {id: 'ElementalofFlames', name: 'Elemental of Flames', rarity: 'Rare', image: 'Cards/egr/ElementalofFlames.png', flavor: '', 
  category: 'Creature', fight: 'Fire Strike', color: 'Red', type: ['Fire','Spirit'], hp: 3, atk: 2, cost: '{r3}', ability: ['Elusive','Burn'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
@@ -238,6 +279,12 @@ const dummyCards = [
  category: 'Creature', fight: 'Water Strike', color: 'Blue', type: ['Water','Elemental'], hp: 6, atk: 2, cost: '{u}{u}', ability: ['Drench','Elusive'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{u}{u}', eff: {class: 'summon'}},
 	{name: 'Tidal Discovery', summon: true, eff: {class: 'Search', amount: 1, targetColor: 'Blue', targetCategory: 'Terrain'}}]},
+
+{id: 'HoarfrostSorceressYukionna', name: 'Hoarfrost Sorceress Yuki-onna', rarity: 'Rare', image: 'Cards/egu/HoarfrostSorceressYukionna.png', flavor: '', 
+ category: 'Creature', fight: 'Water Strike', color: ['Blue','Gray'], type: ['Ice','Spirit','Mage'], hp: 2, atk: 1, cost: '{u}{c}', ability: ['Drench','Elusive'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
+	{name: 'Summon', cost: '{u}{c}', eff: {class: 'summon'}},
+	{name: 'Rime Coated Glare', attack: true, eff: {class: 'Paralyze', target: 'enemyCreatures'}},
+	{name: 'Whiteout Frostbane', echo: true, eff: {class: 'Destroy', targetCategory: 'Creature', targetBlight: 'frozen'}}]},
  
 {id: 'MermaidSanctuary', name: "Mermaid Sanctuary", rarity: 'Rare', image: 'Cards/egr/MermaidSanctuary.png', flavor: '', 
  category: 'Terrain', color: 'Blue', type: ['Merfolk','Terrain'], hp: 4, cost: '{u}{u}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
@@ -320,7 +367,13 @@ const dummyCards = [
  category: 'Creature', fight: 'Thunder Burst', color: 'Yellow', type: ['Thunder','Spirit'], hp: 4, atk: 3, cost: '{2}{y}', ability: ['Elusive','Static'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{y}{y}', eff: {class: 'summon'}},
 	{name: 'Storm Discovery', cost: '{2}{y}', eff: [{class: 'summon'}, {class: 'Search', amount: 1, targetColor: 'Yellow', targetTrait: 'Terrain'}]}]},
-         
+
+{id: 'VoltwingImpundulu', name: 'Voltwing Impundulu', rarity: 'Rare', image: 'Cards/egy/VoltwingImpundulu.png', flavor: '', 
+ category: 'Creature', fight: 'Flying Strike', color: 'Yellow', type: ['Thunder','Avian'], hp: 5, atk: 3, cost: '{y4}', ability: 'Flying', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+	{name: 'Summon', cost: '{y4}', eff: {class: 'summon'}},
+	{name: 'Fulminant Descent', summon: true, eff: {class: 'destroy', targetBlight: 'paralized'}},
+	{name: 'Supercharged Feathers', cost: '{y2}, eff: {class: 'bolster', atk: 'x', targetType: ['Thunder','Avian']}}]},
+
 {id: 'StormspirePinnacle', name: 'Stormspire Pinnacle', rarity: 'Rare', image: 'Cards/egy/StormspirePinnacle.png', flavor: '', 
  category: 'Terrain', color: 'Yellow', type: 'Thunder', hp: 8, cost: '{y}', ability: 'Static', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Terraform', cost: '{y}', eff: {class: 'terraform'}},
