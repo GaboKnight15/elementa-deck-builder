@@ -2769,33 +2769,32 @@ document.getElementById('image-modal').onclick = (e) => {
 };
 
 function renderCardCost(costData) {
-  let html = '';
   if (!costData) {
     return `<img src="${ESSENCE_IMAGE_MAP.x0}" alt="Cost: 0" style="width:22px;height:22px;vertical-align:middle;">`;
   }
-  if (typeof costData === "string") {
-    // Use parseEffectText for cost string, but limit to icons only
-    html = costData.replace(/\{([GRUYCPBW])\}/gi, (match, code) =>
-     `<img src="${ESSENCE_IMAGE_MAP[code.toUpperCase()]}" style="width:22px;height:22px;vertical-align:middle;">`
-    );
-    html = html.replace(/\{([0-9]|1[0-9]|20)\}/g, (match, num) => {
-      const imgSrc = ESSENCE_IMAGE_MAP['x'+num];
-      if (imgSrc) {
-        return `<img src="${imgSrc}" style="width:22px;height:22px;vertical-align:middle;">`;
-      }
-      return `<span style="font-weight:bold;color:#ffe066;font-size:1.12em;vertical-align:middle;margin-right: 2px;">${num}</span>`;
-    });
-     // Tap/untap (case-insensitive)
-    html = html.replace(/\{CW\}/gi,
-      `<img src="Icons/Essence/Tap.png" style="width:22px;height:22px;vertical-align:middle;">`
-    );
-    html = html.replace(/\{CCW\}/gi,
-      `<img src="Icons/Essence/Untap.png" style="width:22px;height:22px;vertical-align:middle;">`
-    );
-    return html;
+
+  if (typeof costData !== "string") {
+    return `<img src="${ESSENCE_IMAGE_MAP.x0}" alt="Cost: 0" style="width:22px;height:22px;vertical-align:middle;">`;
   }
-  // Fallback
-  return `<img src="${ESSENCE_IMAGE_MAP.x0}" alt="Cost: 0" style="width:22px;height:22px;vertical-align:middle;">`;
+
+  return costData.replace(/\{([^}]+)\}/g, (match, token) => {
+    const key = String(token).trim().toLowerCase();
+
+    if (key === "cw") {
+      return `<img src="Icons/Essence/Tap.png" style="width:22px;height:22px;vertical-align:middle;">`;
+    }
+
+    if (key === "ccw") {
+      return `<img src="Icons/Essence/Untap.png" style="width:22px;height:22px;vertical-align:middle;">`;
+    }
+
+    const imgSrc = ESSENCE_IMAGE_MAP[key];
+    if (imgSrc) {
+      return `<img src="${imgSrc}" alt="${key}" style="width:22px;height:22px;vertical-align:middle;">`;
+    }
+
+    return `<span style="font-weight:bold;color:#ffe066;font-size:1.12em;vertical-align:middle;margin-right:2px;">{${token}}</span>`;
+  });
 }
 
 const COLLECTION_KEY = "cardCollection";
