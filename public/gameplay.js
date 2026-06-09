@@ -296,7 +296,6 @@ conceal: { name: 'Conceal', icon: 'Icons/Ability/Conceal.png',
         else normal.push(t);
       });
       return [...normal, ...concealed];
-      console.warn('Conceal filter failed, returning original targets', err);
       return targets;
   }
 },
@@ -685,9 +684,7 @@ enable: { name: 'Enable', icon: 'Icons/Essence/Untap.png',
 
       renderGameState && renderGameState();
       setupDropZones && setupDropZones();
-      finally {
       if (typeof nextEffect === "function") nextEffect();
-    }
   },
   canActivate: function(sourceCardObj, skillObj, currentZone, gameState, step = {}) {
     // Allow from field by default (match your other rotation logic)
@@ -718,7 +715,6 @@ bolster: {
         t.currentHP = (t.currentHP || getBaseHp(t.cardId)) + step.hp;
       }
     });
-
     if (typeof nextEffect === 'function') nextEffect();
   }
 },
@@ -740,9 +736,7 @@ disable: { name: 'Disable', icon: 'Icons/Essence/Tap.png',
 
       renderGameState && renderGameState();
       setupDropZones && setupDropZones();
-      finally {
       if (typeof nextEffect === "function") nextEffect();
-    }
   },
   canActivate: function(sourceCardObj, skillObj, currentZone, gameState, step = {}) {
     const fieldZones = ['playerCreatures','playerTerrains','enemyCreatures','enemyTerrains'];
@@ -1186,14 +1180,10 @@ inspire: { name: 'Inspire',
           }
         });
       }
-
       // Clean the temporary marker so later unrelated effects don't reuse it
       if (sourceCardObj && sourceCardObj._lastEquippedTarget) delete sourceCardObj._lastEquippedTarget;
-
       renderGameState && renderGameState();
-      finally {
       if (typeof nextEffect === 'function') nextEffect();
-    }
   }
 },
 essence: { icon: 'Icons/skillEffect/Essence.png', name: 'Essence', description: 'Gain Essence.',
