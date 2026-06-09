@@ -28,7 +28,7 @@ TURNS.forEach(turn =>
 // ------------- //
 let gameState = {
   playerDeck: [], playerHand: [], playerCreatures: [], playerTerrains: [], playerVoid: [], playerFallen: [], playerArtifacts: [], playerSpells: [],
-  enemyDeck: [], enemyHand: [], enemyCreatures: [], enemyTerrains: [], enemyVoid: [], enemyfallen: [], enemyArtifacts: [], enemySpells: [],
+  enemyDeck: [], enemyHand: [], enemyCreatures: [], enemyTerrains: [], enemyVoid: [], enemyFallen: [], enemyArtifacts: [], enemySpells: [],
   playerDomain: null, enemyDomain: null,
   turn: "player",
   phase: "start",
@@ -48,15 +48,17 @@ const ZONE_MAP = {
   playerFallen:      { id: "player-fallen",           arr: () => gameState.playerFallen },
   playerArtifacts:   { id: null,                      arr: () => gameState.playerArtifacts },
   playerSpells:      { id: null,                      arr: () => gameState.playerSpells },
+  playerUnits:       { id: null,                      arr: () => [...gameState.playerCreatures, ...gameState.playerArtifacts] },
   // enemy zones
   enemyCreatures: { id: "enemy-creatures-zone", arr: () => gameState.enemyCreatures },
   enemyTerrains:  { id: "enemy-terrains-zone",  arr: () => gameState.enemyTerrains },
   enemyVoid:      { id: "enemy-void-zone",      arr: () => gameState.enemyVoid },
   enemyDeck:      { id: "enemy-deck-zone",      arr: () => gameState.enemyDeck },
   enemyHand:      { id: "enemy-hand",           arr: () => gameState.enemyHand },
-  enemyfallen:    { id: "enemy-fallen",         arr: () => gameState.enemyfallen },
+  enemyFallen:    { id: "enemy-fallen",         arr: () => gameState.enemyFallen },
   enemyArtifacts: { id: null,                   arr: () => gameState.enemyArtifacts },
   enemySpells:    { id: null,                   arr: () => gameState.enemySpells },
+  enemyUnits:     { id: null,                   arr: () => [...gameState.enemyCreatures, ...gameState.enemyArtifacts] },
 
   // Combined/mass zones for flexible targeting
   allCreatures:      { id: null, arr: () => [...gameState.playerCreatures, ...gameState.enemyCreatures] },
@@ -64,23 +66,17 @@ const ZONE_MAP = {
   allVoids:          { id: null, arr: () => [...gameState.playerVoid, ...gameState.enemyVoid] },
   allDecks:          { id: null, arr: () => [...gameState.playerDeck, ...gameState.enemyDeck] },
   allHands:          { id: null, arr: () => [...gameState.playerHand, ...gameState.enemyHand] },
-  allfallens:     { id: null, arr: () => [...gameState.playerFallen, ...gameState.enemyfallen] },
-
-  playerField:    { id: null, arr: () => [
-    ...gameState.playerCreatures,
-    ...gameState.playerTerrains
+  allFallens:        { id: null, arr: () => [...gameState.playerFallen, ...gameState.enemyFallen] },
+  allUnits:          { id: null, arr: () => [
+    ...gameState.playerCreatures, ...gameState.playerArtifacts,
+    ...gameState.enemyCreatures, ...gameState.enemyArtifacts
   ] },
 
-  enemyField:  { id: null, arr: () => [
-    ...gameState.enemyCreatures,
-    ...gameState.enemyTerrains
-  ] },
+  playerField: { id: null, arr: () => [...gameState.playerCreatures, ...gameState.playerTerrains] },
+  enemyField:  { id: null, arr: () => [...gameState.enemyCreatures, ...gameState.enemyTerrains] },
   
   // Whole field (creatures + terrains both sides)
-  allField:          { id: null, arr: () => [
-    ...gameState.playerCreatures, ...gameState.playerTerrains,
-    ...gameState.enemyCreatures, ...gameState.enemyTerrains
-  ] },
+  allField:    { id: null, arr: () => [...gameState.playerCreatures, ...gameState.playerTerrains, ...gameState.enemyCreatures, ...gameState.enemyTerrains] },
 
   // All cards everywhere (for global effects, etc.)
   allCards:          { id: null, arr: () => [
@@ -1692,6 +1688,9 @@ function getTargets(target, sourceCardObj, context = {}) {
       case "allCreatures": arr = [...gameState.playerCreatures, ...gameState.enemyCreatures]; break;
       case "allTerrains": arr = [...gameState.playerTerrains, ...gameState.enemyTerrains]; break;
       case "any": arr = Object.values(gameState).flat().filter(card => card && card.cardId); break;
+      case "playerUnits": arr = [...gameState.playerCreatures, ...gameState.playerArtifacts]; break;
+      case "enemyUnits": arr = [...gameState.enemyCreatures, ...gameState.enemyArtifacts]; break;
+      case "allUnits": arr = [...gameState.playerCreatures, ...gameState.playerArtifacts, ...gameState.enemyCreatures, ...gameState.enemyArtifacts]; break;
       default: arr = [];
     }
   }
