@@ -1206,19 +1206,36 @@ essence: { icon: 'Icons/skillEffect/Essence.png', name: 'Essence', description: 
       return;
     }
     // Match all {x} or {X}
-    const matches = colorStr.match(/\{([gruypbwc0-9]+)\}/gi);
+    const matches = colorStr.match(/\{([^}]+)\}/g);
     if (!matches) {
       showToast && showToast("No valid Essence found in string.");
       nextEffect && nextEffect();
       return;
     }
-    // Add each essence symbol to the cardObj
+
     matches.forEach(m => {
-      const type = m.replace(/[{}]/g, '').toUpperCase();
-      if ("GRUYCPBW".includes(type)) {
-        addEssence(cardObj, type, 1);
-      } else if (!isNaN(type)) {
-        addEssence(cardObj, "colorless", Number(type));
+      const token = m.replace(/[{}]/g, '').trim().toLowerCase();
+
+      const colored = token.match(/^([gruypcbw])(\d+)?$/i);
+      if (colored) {
+        const typeMap = {
+          g: "G", r: "R", u: "U", y: "Y",
+          p: "P", c: "C", b: "B", w: "W"
+        };
+        const code = typeMap[colored[1].toLowerCase()];
+        const amount = colored[2] ? Number(colored[2]) : 1;
+        addEssence(cardObj, code, amount);
+        return;
+      }
+
+      const generic = token.match(/^x(\d+)$/i);
+      if (generic) {
+        addEssence(cardObj, "colorless", Number(generic[1]));
+        return;
+      }
+
+      if (/^\d+$/.test(token)) {
+        addEssence(cardObj, "colorless", Number(token));
       }
     });
     renderGameState && renderGameState();
@@ -2839,36 +2856,62 @@ cardDiv.appendChild(statsAndIconsOverlay);
 
 // COST DISPLAY IN HAND
 function getEssenceCostDisplay(cost) {
-  // PATCH: parse string cost if needed
   if (typeof cost === "string") {
-    cost = parseCost(cost);
+    return cost.replace(/\{([^}]+)\}/g, (match, token) => {
+      const key = String(token).trim().toLowerCase();
+
+      // {2} -> x2 icon key
+      const normalizedKey = /^\d+$/.test(key) ? `x${key}` : key;
+
+      const imgSrc = ESSENCE_IMAGE_MAP[normalizedKey];
+      if (imgSrc) {
+        return `<img src="${imgSrc}" style="width:22px;height:22px;vertical-align:middle;margin:0 2px;" alt="${key}">`;
+      }
+
+      return match;
+    });
   }
+
   if (!cost || typeof cost !== 'object') {
-    if (cost === 0) {
-      return `<img src="${ESSENCE_IMAGE_MAP['x0']}" style="width:22px;height:22px;vertical-align:middle;" alt="Colorless: 0">`;
-    }
-    return '';
+    return `<img src="${ESSENCE_IMAGE_MAP['x0']}" style="width:22px;height:22px;vertical-align:middle;" alt="Colorless: 0">`;
   }
-  const colorOrder = ['colorless', 'multi', 'g', 'r', 'u', 'y', 'c', 'p', 'w', 'b'];
+
+  const iconOrder = [
+    ['green', 'g'],
+    ['red', 'r'],
+    ['blue', 'u'],
+    ['yellow', 'y'],
+    ['purple', 'p'],
+    ['gray', 'c'],
+    ['black', 'b'],
+    ['white', 'w'],
+    ['colorless', 'x']
+  ];
+
   let html = '';
   let total = 0;
 
-  colorOrder.forEach(color => {
-    const amt = cost[color];
-    if (amt && amt > 0) {
-      total += amt;
-      if (color === 'colorless') {
-        // Show the exact number as Xn image
-        html += `<img src="${ESSENCE_IMAGE_MAP['x'+amt]}" style="width:22px;height:22px;vertical-align:middle;" alt="Colorless: ${amt}">`;
-      } else {
-        html += `<img src="${ESSENCE_IMAGE_MAP[color]}" style="width:22px;height:22px;vertical-align:middle;margin:0 2px;" alt="${color} Essence">`.repeat(amt);
-      }
+  iconOrder.forEach(([prop, key]) => {
+    const amt = Number(cost[prop] || 0);
+    if (amt <= 0) return;
+    total += amt;
+
+    const iconKey = key === 'x' ? `x${amt}` : (amt === 1 ? key : `${key}${amt}`);
+    const imgSrc = ESSENCE_IMAGE_MAP[iconKey];
+
+    if (imgSrc) {
+      html += `<img src="${imgSrc}" style="width:22px;height:22px;vertical-align:middle;margin:0 2px;" alt="${prop}:${amt}">`;
+    } else if (key === 'x') {
+      html += `<img src="${ESSENCE_IMAGE_MAP[`x${amt}`] || ESSENCE_IMAGE_MAP.x1}" style="width:22px;height:22px;vertical-align:middle;margin:0 2px;" alt="${prop}:${amt}">`;
+    } else {
+      html += `<img src="${ESSENCE_IMAGE_MAP[key]}" style="width:22px;height:22px;vertical-align:middle;margin:0 2px;" alt="${prop}">`.repeat(amt);
     }
   });
-  // If total cost is zero, show the zero image
+
   if (total === 0) {
     html = `<img src="${ESSENCE_IMAGE_MAP['x0']}" style="width:22px;height:22px;vertical-align:middle;" alt="Colorless: 0">`;
   }
+
   return html;
 }
 /* ---------------
@@ -3797,15 +3840,31 @@ function generateEssence(cardObj) {
 
   // Parse the essence string like "{g}{g}{r}{2}" and add to pool counts
   const essStr = cardDef.essence || '';
-  // color letters map
-  const letters = { G: 'green', R: 'red', U: 'blue', Y: 'yellow', C: 'gray', P: 'purple', B: 'black', W: 'white' };
-  const matches = essStr.match(/\{([GRUYCPBW]|[0-9]+)\}/gi) || [];
+  const matches = essStr.match(/\{([^}]+)\}/g) || [];
+
   matches.forEach(m => {
-    const inner = m.replace(/[{}]/g, '').toUpperCase();
-    if (/^[0-9]+$/.test(inner)) {
+    const inner = m.replace(/[{}]/g, '').trim().toLowerCase();
+
+    const colored = inner.match(/^([gruypcbw])(\d+)?$/i);
+    if (colored) {
+      const keyMap = {
+        g: 'green', r: 'red', u: 'blue', y: 'yellow',
+        p: 'purple', c: 'gray', b: 'black', w: 'white'
+      };
+      const color = keyMap[colored[1].toLowerCase()];
+      const amount = colored[2] ? Number(colored[2]) : 1;
+      gameState.essencePools[owner][color] += amount;
+      return;
+    }
+
+    const generic = inner.match(/^x(\d+)$/i);
+    if (generic) {
+      gameState.essencePools[owner].colorless += Number(generic[1]);
+      return;
+    }
+
+    if (/^\d+$/.test(inner)) {
       gameState.essencePools[owner].colorless += Number(inner);
-    } else if (letters[inner]) {
-      gameState.essencePools[owner][letters[inner]] += 1;
     }
   });
 
@@ -5068,8 +5127,35 @@ function filterCardInstancesByTarget(instances = [], step = {}) {
   return instances.filter(cardObj => cardMatchesTargetFilter(cardObj, filter));
 }
 function normalizeEssence(str) {
-  // Uppercase whatever is inside {...} so {g} -> {G}, {b}->{B}, while {1} stays {1}
-  return String(str || '').replace(/\{([^}]+)\}/g, (_, tok) => `{${String(tok).toUpperCase()}}`);
+  return String(str || '').replace(/\{([^}]+)\}/g, (_, rawTok) => {
+    const tok = String(rawTok).trim();
+
+    // {g2} => {G}{G}
+    const colored = tok.match(/^([gruypcbw])(\d+)$/i);
+    if (colored) {
+      const code = colored[1].toUpperCase();
+      const amount = Number(colored[2]);
+      return Array.from({ length: amount }, () => `{${code}}`).join('');
+    }
+
+    // {x2} => {2}
+    const generic = tok.match(/^x(\d+)$/i);
+    if (generic) {
+      return `{${Number(generic[1])}}`;
+    }
+
+    // plain single essence like {g}
+    if (/^[gruypcbw]$/i.test(tok)) {
+      return `{${tok.toUpperCase()}}`;
+    }
+
+    // leave plain numbers as-is
+    if (/^\d+$/.test(tok)) {
+      return `{${tok}}`;
+    }
+
+    return `{${tok.toUpperCase()}}`;
+  });
 }
 function canPayEssence(cardObj, costStr) {
   if (!costStr) return true;
@@ -6262,38 +6348,53 @@ function isCardStillPresent(cardObj) {
 
 function parseCost(costStr) {
   const out = {
-    green:0, red:0, blue:0, yellow:0, purple:0, gray:0, black:0, white:0,
-    colorless:0
+    green: 0, red: 0, blue: 0, yellow: 0,
+    purple: 0, gray: 0, black: 0, white: 0,
+    colorless: 0
   };
 
   const s = String(costStr || '');
   const matches = s.match(/\{([^}]+)\}/g) || [];
+
+  const colorMap = {
+    g: 'green',
+    r: 'red',
+    u: 'blue',
+    y: 'yellow',
+    p: 'purple',
+    c: 'gray',
+    b: 'black',
+    w: 'white'
+  };
+
   for (const m of matches) {
     const tok = m.replace(/[{}]/g, '').trim().toLowerCase();
 
-    // numbers => colorless
+    // {x2} => 2 colorless
+    const genericMatch = tok.match(/^x(\d+)$/i);
+    if (genericMatch) {
+      out.colorless += Number(genericMatch[1]);
+      continue;
+    }
+
+    // {2} => 2 colorless
     if (/^\d+$/.test(tok)) {
       out.colorless += Number(tok);
       continue;
     }
 
-    // letters => colors (support both upper/lower in input)
-    const map = {
-      g: 'green',
-      r: 'red',
-      u: 'blue',
-      y: 'yellow',
-      p: 'purple',
-      c: 'gray',
-      b: 'black',
-      w: 'white',
-    };
-    const key = map[tok];
-    if (key) out[key] += 1;
+    // {g2}, {u3}, etc.
+    const coloredMatch = tok.match(/^([gruypcbw])(\d+)?$/i);
+    if (coloredMatch) {
+      const colorKey = colorMap[coloredMatch[1].toLowerCase()];
+      const amount = coloredMatch[2] ? Number(coloredMatch[2]) : 1;
+      out[colorKey] += amount;
+    }
   }
 
-  // optional: strip zeros to keep objects small
-  Object.keys(out).forEach(k => { if (!out[k]) delete out[k]; });
+  Object.keys(out).forEach(k => {
+    if (!out[k]) delete out[k];
+  });
 
   return out;
 }
