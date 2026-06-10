@@ -1497,20 +1497,20 @@ const dummyCards = [
 
 // Cost mapping and renderer (returns HTML string)
 const ESSENCE_IMAGE_MAP = {
-  multi: "Icons/Essence/Multi.png",
-  r: "Icons/Essence/Red.png", r2: "Icons/Essence/Red2.png", r3: "Icons/Essence/Red3.png", r4: "Icons/Essence/Red4.png", r5: "Icons/Essence/Red5.png",
-  u: "Icons/Essence/Blue.png", u2: "Icons/Essence/Blue2.png", u3: "Icons/Essence/Blue3.png", u4: "Icons/Essence/Blue4.png", u5: "Icons/Essence/Blue5.png",
-  g: "Icons/Essence/Green.png", g2: "Icons/Essence/Green2.png", g3: "Icons/Essence/Green3.png", g4: "Icons/Essence/Green4.png", g5: "Icons/Essence/Green5.png",
-  y: "Icons/Essence/Yellow.png", y2: "Icons/Essence/Yellow2.png", y3: "Icons/Essence/Yellow3.png", y4: "Icons/Essence/Yellow4.png", y5: "Icons/Essence/Yellow5.png",
-  p: "Icons/Essence/Purple.png", p2: "Icons/Essence/Purple2.png", p3: "Icons/Essence/Purple3.png", p4: "Icons/Essence/Purple4.png", p5: "Icons/Essence/Purple5.png",
-  c: "Icons/Essence/Gray.png", c2: "Icons/Essence/Gray2.png", c3: "Icons/Essence/Gray3.png", c4: "Icons/Essence/Gray4.png", c5: "Icons/Essence/Gray5.png",
-  b: "Icons/Essence/Black.png", b2: "Icons/Essence/Black2.png", b3: "Icons/Essence/Black3.png", b4: "Icons/Essence/Black4.png", b5: "Icons/Essence/Black5.png",
-  w: "Icons/Essence/White.png", w2: "Icons/Essence/White2.png", w3: "Icons/Essence/White3.png", w4: "Icons/Essence/White4.png", w5: "Icons/Essence/White5.png",
-  x0: "Icons/Essence/Zero.png", x1: "Icons/Essence/One.png", x2: "Icons/Essence/Two.png", x3: "Icons/Essence/Three.png",
-  x4: "Icons/Essence/Four.png", x5: "Icons/Essence/Five.png", x6: "Icons/Essence/Six.png", x7: "Icons/Essence/Seven.png",
-  x8: "Icons/Essence/Eight.png", x9: "Icons/Essence/Nine.png", x10: "Icons/Essence/Ten.png", x11: "Icons/Essence/Eleven.png",
-  x12: "Icons/Essence/Twelve.png", x13: "Icons/Essence/Thirteen.png", x14: "Icons/Essence/Fourteen.png", x15: "Icons/Essence/Fifteen.png",
-  x16: "Icons/Essence/Sixteen.png", x17: "Icons/Essence/Seventeen.png", x18: "Icons/Essence/Eighteen.png", x19: "Icons/Essence/Nineteen.png", x20: "Icons/Essence/Twenty.png"
+  multi: "Icons/Essence/multi.png",
+  r: "Icons/Essence/red.png", r2: "Icons/Essence/red2.png", r3: "Icons/Essence/red3.png", r4: "Icons/Essence/red4.png", r5: "Icons/Essence/red5.png", r6: "Icons/Essence/red6.png", r7: "Icons/Essence/red7.png",
+  u: "Icons/Essence/blue.png", u2: "Icons/Essence/blue2.png", u3: "Icons/Essence/blue3.png", u4: "Icons/Essence/blue4.png", u5: "Icons/Essence/blue5.png", u6: "Icons/Essence/blue6.png", u7: "Icons/Essence/blue7.png",
+  g: "Icons/Essence/green.png", g2: "Icons/Essence/green2.png", g3: "Icons/Essence/green3.png", g4: "Icons/Essence/green4.png", g5: "Icons/Essence/green5.png", g6: "Icons/Essence/green6.png", g7: "Icons/Essence/green7.png",
+  y: "Icons/Essence/yellow.png", y2: "Icons/Essence/yellow2.png", y3: "Icons/Essence/yellow3.png", y4: "Icons/Essence/yellow4.png", y5: "Icons/Essence/yellow5.png", y6: "Icons/Essence/yellow6.png", y7: "Icons/Essence/yellow7.png",
+  p: "Icons/Essence/purple.png", p2: "Icons/Essence/purple2.png", p3: "Icons/Essence/purple3.png", p4: "Icons/Essence/purple4.png", p5: "Icons/Essence/purple5.png", p6: "Icons/Essence/purple6.png", p7: "Icons/Essence/purple7.png",
+  c: "Icons/Essence/gray.png", c2: "Icons/Essence/gray2.png", c3: "Icons/Essence/gray3.png", c4: "Icons/Essence/gray4.png", c5: "Icons/Essence/gray5.png", c6: "Icons/Essence/gray6.png", c7: "Icons/Essence/gray7.png",
+  b: "Icons/Essence/black.png", b2: "Icons/Essence/black2.png", b3: "Icons/Essence/black3.png", b4: "Icons/Essence/black4.png", b5: "Icons/Essence/black5.png", b6: "Icons/Essence/black6.png", b7: "Icons/Essence/black7.png",
+  w: "Icons/Essence/white.png", w2: "Icons/Essence/white2.png", w3: "Icons/Essence/white3.png", w4: "Icons/Essence/white4.png", w5: "Icons/Essence/white5.png", w6: "Icons/Essence/white6.png", w7: "Icons/Essence/white7.png",
+  x0: "Icons/Essence/x0.png", x1: "Icons/Essence/x1.png", x2: "Icons/Essence/x2.png", x3: "Icons/Essence/x3.png",
+  x4: "Icons/Essence/x4.png", x5: "Icons/Essence/x5.png", x6: "Icons/Essence/x6.png", x7: "Icons/Essence/x7.png",
+  x8: "Icons/Essence/x8.png", x9: "Icons/Essence/x9.png", x10: "Icons/Essence/x10.png", x11: "Icons/Essence/x11.png",
+  x12: "Icons/Essence/x12.png", x13: "Icons/Essence/x13.png", x14: "Icons/Essence/x14.png", x15: "Icons/Essence/x15.png",
+  x16: "Icons/Essence/x16.png", x17: "Icons/Essence/x17.png", x18: "Icons/Essence/x18.png", x19: "Icons/Essence/x19.png", x20: "Icons/Essence/x20.png"
 };
 const addCoinsBtn = document.getElementById('add-coins-btn');
 const LEVEL_THRESHOLDS = [0, 100, 250, 500, 1000, 2000, 4000, 8000];
