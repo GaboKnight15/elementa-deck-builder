@@ -486,11 +486,12 @@ summon: { name: 'Summon', zone: 'playerHand',
       return;
     }
 
-    const orientation = hasAbility(sourceCardObj, 'Dormant') ? 'horizontal' : 'vertical';
+    // New rule:
+    // - creatures enter disabled/horizontal
+    // - terrains enter enabled/vertical
+    const orientation = cat === 'creature' ? 'horizontal' : 'vertical';
 
     moveCard(sourceCardObj.instanceId, handArr, toArr, { orientation }, () => {
-      // Summoning sickness tracking
-      sourceCardObj.summonedOnTurn = gameState.turnNumber || 0;
       renderGameState && renderGameState();
       nextEffect && nextEffect();
     });
@@ -2587,15 +2588,6 @@ function renderCardOnField(cardObj, zoneId) {
   cardDiv.dataset.instanceId = cardObj.instanceId;
   cardDiv.classList.add(cardObj.orientation === "horizontal" ? "horizontal" : "vertical");
 
-  // Visual indicator for summoning sickness
-  const currentTurn = gameState.turnNumber || 0;
-  const summonedTurn = cardObj.summonedOnTurn !== undefined ? cardObj.summonedOnTurn : -1;
-  const hasSummoningSickness = (summonedTurn === currentTurn) && !hasRush(cardObj);
-  
-  if (hasSummoningSickness) {
-    cardDiv.classList.add('summoning-sickness'); // Add a CSS class for visual feedback
-    cardDiv.title = 'This creature has summoning sickness and cannot attack this turn';
-  }
   const isActionable = isCardActionable(cardObj, cardData, gameState, getZoneNameForCard(cardObj));
   if (isActionable) {
     if (cardObj.orientation === "horizontal") {
@@ -2611,19 +2603,6 @@ function renderCardOnField(cardObj, zoneId) {
   img.style.width = "100%";
   img.style.height = "100%";
   cardDiv.appendChild(img);
-
-  // Cardback (player or enemy)
-  let cardbackUrl = window.selectedPlayerDeck?.deckObj?.cardbackArt || "Images/Cardback/Default.png";
-  if (zoneId && zoneId.startsWith("enemy")) {
-    cardbackUrl =
-      window.selectedenemyDeck?.cardbackArt ||
-      gameState.enemyProfile?.cardbackArt ||
-      "Images/Cardback/Default.png";
-  }
-  const backDiv = document.createElement('div');
-  backDiv.className = 'card-back';
-  backDiv.innerHTML = `<img src="${cardbackUrl}" alt="Card Back" style="width:100%;height:100%;">`;
-  cardDiv.appendChild(backDiv);
 
   // --- Overlay for icons and stats ---
   const statsAndIconsOverlay = document.createElement('div');
