@@ -607,16 +607,6 @@ function renderShopCosmetics({
     if (owned) {
       img.style.filter = 'grayscale(1) brightness(0.65)';
       img.style.opacity = '0.85';
-
-      // Optional “Owned” badge (purely visual)
-      const ownedBadge = document.createElement('div');
-      ownedBadge.textContent = 'Owned';
-      ownedBadge.style.marginTop = '6px';
-      ownedBadge.style.fontSize = '0.95em';
-      ownedBadge.style.fontWeight = 'bold';
-      ownedBadge.style.color = '#9aa4b2';
-      ownedBadge.style.textAlign = 'center';
-      wrapper.appendChild(ownedBadge);
     }
 
     const priceTag = document.createElement('span');
