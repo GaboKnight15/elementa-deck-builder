@@ -1711,7 +1711,7 @@ function moveCard(instanceId, fromArr, toArr, extra = {}, callback) {
   const toZoneId = ZONE_MAP[toZoneName]?.id;
 
   const isToVoid = (toZoneName === "playerVoid" || toZoneName === "enemyVoid");
-  const isTofallen = (toZoneName === "playerFallen" || toZoneName === "enemyfallen");
+  const isToFallen = (toZoneName === "playerFallen" || toZoneName === "enemyfallen");
 
   const isHandToField =
     (fromZoneName === "playerHand" || fromZoneName === "enemyHand") &&
@@ -1733,15 +1733,15 @@ function moveCard(instanceId, fromArr, toArr, extra = {}, callback) {
         delete cardObj.orientation;
       }
 
-// If moving into Void/fallen, ensure correct owner
+// Ensure correct owner
 if (toZoneName === 'playerVoid') {
   toArr = gameState.playerVoid;
 } else if (toZoneName === 'enemyVoid') {
   toArr = gameState.enemyVoid;
 } else if (toZoneName === 'playerFallen') {
   toArr = gameState.playerFallen;
-} else if (toZoneName === 'enemyfallen') {
-  toArr = gameState.enemyfallen;
+} else if (toZoneName === 'enemyFallen') {
+  toArr = gameState.enemyFallen;
 }
 
       // Logging
@@ -1796,9 +1796,8 @@ if (toZoneName === 'playerVoid') {
     if (callback) callback();
   };
 
-  // Void/defeat: fade out only, then move
-  // Void/fallen: fade out only, then move
-  if (isToVoid || isTofallen) {
+  // Void/Fallen: fade out only, then move
+  if (isToVoid || isToFallen) {
     animateDefeat(instanceId, fromZoneId, doMove);
     return;
   }
@@ -2037,54 +2036,6 @@ function showHandCardMenu(instanceId, cardDiv) {
   }
   // Define actions
   const buttons = [
-/*    {
-      text: `<span>${playLabel}</span> <span >${costHtml}</span>`,
-      html: true,
-      disabled: !canPay,
-      onClick: function(e) {
-        e.stopPropagation();
-        if (!canPay) return;
-        closeAllMenus();
-        const cardObj = gameState.playerHand.find(c => c.instanceId === instanceId);
-        const cardData = dummyCards.find(c => c.id === cardObj.cardId);
-
-        // Determine allowed target zone
-        let targetArr, toZoneId;
-        const category = Array.isArray(cardData.category)
-          ? cardData.category.map(c => c.toLowerCase())
-          : [String(cardData.category).toLowerCase()];
-
-        if (category.includes("creature")) {
-          targetArr = gameState.playerCreatures;
-          toZoneId = "player-creatures-zone";
-        } else if (category.includes("terrain")) {
-          targetArr = gameState.playerTerrains;
-          toZoneId = "player-terrains-zone";
-        } else {
-          alert("Card cannot be played.");
-          return;
-        }
-        const parsedCost = parseCost(cardData.cost);
-        
-        // No cost, play immediately
-        if (
-          !cardData.cost ||
-          Object.values(parsedCost).reduce((a, b) => a + b, 0) === 0 ||
-          (typeof cardData.cost === "string" && cardData.cost === "{0}")
-        ) {
-          return;
-        }
-
-        // Otherwise, show payment modal and move after payment
-        showEssencePaymentModal({
-          card: cardData,
-          cost: parsedCost,
-          eligibleCards: getAllEssenceSources(),
-          onPaid: function() {
-          }
-        });
-      }
-    }, */
     {
       text: "Send to Void",
       onClick: function(e) {
@@ -2105,14 +2056,6 @@ function showHandCardMenu(instanceId, cardDiv) {
         closeAllMenus();
       }
     },
-    {
-      text: "View",
-      onClick: function(e) {
-        e.stopPropagation();
-        showFullCardModal(cardObj);
-        closeAllMenus();
-      }
-    }
   ];
   // Skill buttons
   if (cardData.skill && Array.isArray(cardData.skill)) {
@@ -2491,14 +2434,6 @@ gameState.playerDeck.forEach((cardObj, idx) => {
             openDeckModal();
           }
         },
-      {
-        text: "View",
-        onClick: function(ev) {
-          ev.stopPropagation();
-          showFullCardModal(cardObj);
-          closeAllMenus();
-        }
-      }
     ];
       const menu = createCardMenu(buttons);
       document.body.appendChild(menu);
@@ -3143,20 +3078,6 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
         closeAllMenus();
       }
     },
-    {
-      text: "View",
-      onClick: function(e) {
-        e.stopPropagation();
-        let arr = getZoneArray(zoneId);
-        if (arr) {
-          const cardObj = arr.find(card => card.instanceId === instanceId);
-          if (cardObj) {
-            showFullCardModal(cardObj);
-          }
-        }
-        closeAllMenus();
-      }
-    }
   ];
 // Always show Attack in the field menu if this card's category is Creature
 const isCreatureCategory = String(cardData?.category || '').toLowerCase() === 'creature';
@@ -3268,7 +3189,7 @@ function openVoidModal(isenemy = false) {
   
   // === FIX: Show correct void cards ===
   const voidCards = isenemy ? gameState.enemyVoid : gameState.playerVoid;
-  const fallenCards = isenemy ? (gameState.enemyfallen || []) : (gameState.playerFallen || []);
+  const fallenCards = isenemy ? (gameState.enemyFallen || []) : (gameState.playerFallen || []);
   if (voidCards.length === 0) {
     list.innerHTML = '<div style="color:#999;">Void is empty.</div>';
   } else {
@@ -3290,12 +3211,9 @@ function openVoidModal(isenemy = false) {
       img.alt = card.name;
       img.className = "modal-card-img";
       cardDiv.appendChild(img);
-
-      // **REPLACE img.onclick WITH HOLD-TO-VIEW HANDLER**
       img.style.cursor = "pointer";
       
       if (isenemy) {
-        // For enemy's void, only allow viewing on both hold and click
         holdClickToView(img, cardObj, (e) => {
           e.stopPropagation();
           closeAllMenus();
@@ -3391,7 +3309,7 @@ function openVoidModal(isenemy = false) {
     });
   }
 
-//  fallen SECTION //
+//  FALLEN SECTION //
 const depHeader = document.createElement('div');
 depHeader.style.marginTop = '16px';
 depHeader.style.paddingTop = '10px';
@@ -3399,14 +3317,14 @@ depHeader.style.borderTop = '1px solid rgba(255,255,255,0.12)';
 depHeader.style.color = '#ffe066';
 depHeader.style.fontWeight = '800';
 depHeader.style.letterSpacing = '0.04em';
-depHeader.textContent = 'fallen';
+depHeader.textContent = 'Fallen';
 list.appendChild(depHeader);
 
 if (!fallenCards || fallenCards.length === 0) {
   const empty = document.createElement('div');
   empty.style.color = '#999';
   empty.style.marginTop = '8px';
-  empty.textContent = 'fallen is empty.';
+  empty.textContent = 'Fallen is empty.';
   list.appendChild(empty);
 } else {
   fallenCards.forEach((cardObj, idx) => {
@@ -4719,7 +4637,7 @@ function getInitialGameState() {
     enemyTerrains: [],
     enemyVoid: [],
     playerFallen: [],
-    enemyfallen: [],
+    enemyFallen: [],
   
     // Domain / meta
     playerDomain: null,
