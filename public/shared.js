@@ -112,8 +112,7 @@ const dummyCards = [
 {id: 'WildHuntress', name: 'Wild Huntress', rarity: 'Common', image: 'Cards/egg/WildHuntress.png', flavor: '', 
  category: 'Creature', fight: '', color: 'Green', type: ['Satyr','Warrior'], hp: 4, atk: 2, cost: '{g3}', ability: ['Rush','Vigor'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{g3}', eff: {class: 'summon'}},
-	{name: 'Vigorous Haste', attack: true, eff: {class: 'spawn', targetId: 'Satyr'}},
-	{name: 'Vigorous Haste', cost: '{g}', strike: true, eff: {class: 'bolster', atk: 1, hp: 1}}]},
+	{name: 'Vigorous Haste', attack: true, eff: {class: 'spawn', targetId: 'Satyr'}}]},
  
 {id: 'FaunRanger', name: 'Faun Ranger', rarity: 'Common', image: 'Cards/egg/FaunRanger.png', flavor: 'Each arrow is a promise kept. No trespasser leaves the forest unmarked.', 
  category: 'Creature', fight: 'Satiric Shot', color: 'Green', type: ['Satyr','Ranger'], hp: 3, atk: 1, cost: '{g2}', ability: ['Conceil','Vigor'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
