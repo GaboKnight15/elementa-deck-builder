@@ -49,8 +49,8 @@ const dummyCards = [
 	{name: 'Horncall Crescendo', cost: '{g}', act: {trigger: 'attack'}, discard: 1, eff: {class: 'bolster', atk: 1, targetType: 'Satyr', target: 'playerCreatures'}}]},
 
 {id: 'EarthrootTitan', name: 'Earthroot Titan', rarity: 'Rare', image: 'Cards/egg/EarthrootTitan.png', flavor: '', 
- category: 'Creature', fight: '', color: 'Green', type: ['Verdant','Beast'], hp: 6, atk: 3, cost: '{2}', ability: 'Rush', set: ['ElementaGenesis','EssenceLegacy'], skill: [
-	{name: 'Summon', cost: '{4}{g}', eff: {class: 'summon'}},
+ category: 'Creature', fight: '', color: 'Green', type: ['Verdant','Beast'], hp: 6, atk: 3, cost: '{g5}', ability: 'Rush', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+	{name: 'Summon', cost: '{g5}', eff: {class: 'summon'}},
 	{name: 'Barkhide', strike: true, eff: {class: 'bolster', hp: 1}},
 	{name: 'Overgrowth', cost: '{0}', awaken: true, eff: {class: 'bolster', atk: 1, hp: 1}}]},
 
