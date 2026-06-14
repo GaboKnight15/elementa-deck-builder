@@ -316,10 +316,10 @@ conceal: { name: 'Conceal', icon: 'Icons/Ability/Conceal.png',
 
 // --- SKILL TRIGGER MAP ---
 // Maps skill activation triggers to their event handlers
-const ACTIVATION_MAP = {
+const TRIGGER_MAP = {
   // When this card enters the field (a.k.a. onSummon, "Arrival" in card text)
   summon: {
-    name: "Summon", // (Arrival)
+    name: "Summon",
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
@@ -369,11 +369,7 @@ const ACTIVATION_MAP = {
   // Add more triggers as needed!
 };
 
-/*------------------------------
-//---- SKILL TARGET TYPE ---- //
-------------------------------*/
-// Helper for requirements //
-const REQUIREMENT_MAP = {
+const REQ_MAP = {
   stash: { name: 'Stash', zone: 'playerHand', icon: 'Icons/Requirement/Stash.png',
     description: 'Returns itself from the hand to the deck.',
     handler: function(sourceCardObj, skillObj) {
@@ -457,7 +453,7 @@ retreat: { icon: 'Icons/Skill/Retreat.png', name: 'Retreat', zone: ['playerField
 },
 };
 
-const EFFECT_MAP = {
+const EFF_MAP = {
 summon: { name: 'Summon', zone: 'playerHand', 
   description: 'Move this card from hand to the field.',
   canActivate(cardObj, skillObj, currentZone, gameState) {
@@ -5412,7 +5408,7 @@ function canActivateSkill(cardObj, skillObj, currentZone, gameState, targetObj =
   }
   for (const req of requirements) {
     const reqKey = typeof req === 'object' && req.class ? req.class : req;
-    const reqDef = REQUIREMENT_MAP[reqKey];
+    const reqDef = REQ_MAP[reqKey];
     if (reqDef && typeof reqDef.canActivate === 'function') {
       if (!reqDef.canActivate(cardObj, skillObj, currentZone, gameState, req)) return false;
     }
@@ -5429,7 +5425,7 @@ function canActivateSkill(cardObj, skillObj, currentZone, gameState, targetObj =
   }
   for (const effect of effectObjs) {
     const effectKey = typeof effect === 'object' && effect.class ? effect.class : effect;
-    const effectDef = EFFECT_MAP[effectKey];
+    const effectDef = EFF_MAP[effectKey];
     if (effectDef && typeof effectDef.canActivate === 'function') {
       if (!effectDef.canActivate(cardObj, skillObj, currentZone, gameState, effect)) return false;
     }
@@ -5611,12 +5607,12 @@ function proceedSkillActivation(cardObj, skillObj, options = {}) {
       return;
     }
     const req = requirements[i];
-    if (REQUIREMENT_MAP[req] && REQUIREMENT_MAP[req].handler) {
+    if (REQ_MAP[req] && REQ_MAP[req].handler) {
       // Support async requirements
-      if (REQUIREMENT_MAP[req].handler.length >= 3) {
-        REQUIREMENT_MAP[req].handler(cardObj, skillObj, () => runRequirements(i + 1));
+      if (REQ_MAP[req].handler.length >= 3) {
+        REQ_MAP[req].handler(cardObj, skillObj, () => runRequirements(i + 1));
       } else {
-        REQUIREMENT_MAP[req].handler(cardObj, skillObj);
+        REQ_MAP[req].handler(cardObj, skillObj);
         runRequirements(i + 1);
       }
     } else {
@@ -5655,7 +5651,7 @@ function resolveSkill(cardObj, skillObj, context = {}, onComplete) {
     } catch(e) { step.availableTargets = []; }
 
     const className = step.class;
-    const handler = EFFECT_MAP[className];
+    const handler = EFF_MAP[className];
     if (!handler || !handler.handler) {
       nextEffect();
       return;
@@ -6158,7 +6154,7 @@ function runSkillEffect(sourceCardObj, skillObj) {
   // --- TYPES ---
   let types = Array.isArray(skillObj.type) ? skillObj.type : (skillObj.type ? [skillObj.type] : []);
   for (let type of types) {
-    const skillType = EFFECT_MAP[type];
+    const skillType = EFF_MAP[type];
     if (skillType && skillType.handler) {
       // Optionally, validate card location or status if needed
       // For example, skip effect if sourceCardObj was moved to deck/void by a requirement
