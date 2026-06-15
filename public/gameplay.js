@@ -4354,7 +4354,8 @@ function resolveAttack(attackerId, defenderId) {
   // Find attacker/defender objects
   const attackerObj = [...gameState.playerCreatures, ...gameState.playerTerrains]
     .find(c => c.instanceId === attackerId);
-    const defenderObj = [...gameState.enemyCreatures, ...gameState.enemyTerrains, ...(gameState.enemyArtifacts || []), ...(gameState.enemyDomain ? [gameState.enemyDomain] : [])]
+    
+  const defenderObj = [...gameState.enemyCreatures, ...gameState.enemyTerrains, ...(gameState.enemyArtifacts || []), ...(gameState.enemyDomain ? [gameState.enemyDomain] : [])]
     .find(c => c.instanceId === defenderId);
 
   if (!attackerObj || !defenderObj) return;
@@ -4362,36 +4363,42 @@ function resolveAttack(attackerId, defenderId) {
   const attackerZone = findZoneIdForCard(attackerObj);
   const defenderZone = findZoneIdForCard(defenderObj);
 
- // Attacker is always disabled first when attack is declared.
+  // Attacker is always disabled first when attack is declared.
   disableAfterCombat(attackerObj, () => {
     // Step 1: Animate attacker attacking
     animateAttack(attackerObj, attackerZone, () => {
       // Step 2: Trigger OnAttack skills
       triggerOnAttackSkills(attackerObj, defenderObj, () => {
+        // Step 3: Trigger OnDefense skills
         triggerOnDefenseSkills(defenderObj, attackerObj, () => {
+          // Step 4: Animate defender getting hit
           animateDefenderHit(defenderObj, defenderZone, () => {
-        // Step 5: Calculate and apply damage
-        const result = damageCalculation(attackerObj, defenderObj) || { attackerDamage: 0, defenderDamage: 0 };
-        const { attackerDamage, defenderDamage } = result;
+            
+            // Step 5: Calculate and apply damage
+            const result = damageCalculation(attackerObj, defenderObj) || { attackerDamage: 0, defenderDamage: 0 };
+            const { attackerDamage, defenderDamage } = result;
 
-        // Apply damage here (ONLY here)
-        if (attackerDamage > 0) dealDamage(attackerObj, defenderObj, attackerDamage);
-        if (defenderDamage > 0) dealDamage(defenderObj, attackerObj, defenderDamage);
-        
-        // Defender is disabled at the end of battle regardless of category, if still on field.
-        disableAfterCombat(defenderObj, () => {
-          appendAttackLog({
-            attacker: attackerObj,
-            defender: defenderObj,
-            defenderOrientation: defenderObj.orientation || 'vertical',
-            who: 'player'
-          });
-          renderGameState();
-          checkEndGame();
-      }, { allowAnyCategory: true });
-      });
-    });
-  });
+            // Apply damage here (ONLY here)
+            if (attackerDamage > 0) dealDamage(attackerObj, defenderObj, attackerDamage);
+            if (defenderDamage > 0) dealDamage(defenderObj, attackerObj, defenderDamage);
+            
+            // Defender is disabled at the end of battle regardless of category, if still on field.
+            disableAfterCombat(defenderObj, () => {
+              appendAttackLog({
+                attacker: attackerObj,
+                defender: defenderObj,
+                defenderOrientation: defenderObj.orientation || 'vertical',
+                who: 'player'
+              });
+              renderGameState();
+              checkEndGame();
+            }, { allowAnyCategory: true }); // Properly paired with defender disable
+
+          }); // Closes animateDefenderHit
+        }); // Closes triggerOnDefenseSkills
+      }); // Closes triggerOnAttackSkills
+    }); // Closes animateAttack
+  }); // Closes attacker disableAfterCombat
 }
 // Disable a combatant after battle (tap to horizontal)
 // Use the canonical orientation pipeline used elsewhere.
