@@ -370,85 +370,202 @@ const TRIGGER_MAP = {
 };
 
 const REQ_MAP = {
-  stash: { name: 'Stash', zone: 'playerHand', icon: 'Icons/Requirement/Stash.png',
-    description: 'Returns itself from the hand to the deck.',
-    handler: function(sourceCardObj, skillObj) {
-      const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
-      if (!validZones.some(zone => zone === 'playerHand')) {
-        showToast("Stash can only be activated from your hand.");
-        return;
-      }
-      moveCard(sourceCardObj.instanceId, gameState.playerHand, gameState.playerDeck);
-      gameState.playerDeck = shuffle(gameState.playerDeck);
-      renderGameState();
-    },
-    canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
-      const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
-      return validZones.includes(currentZone);
-    }
-  },
-  discard: { icon: 'Icons/Skill/Discard.png', name: 'Discard', zones: 'playerHand',
-    description: 'Sends a card from the hand to the void.',
-    canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
-      const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
-      return validZones.includes(currentZone);
-    },
-    handler: function(sourceCardObj, skillObj) {
-      runHandSkillWithAnimation(sourceCardObj, skillObj, gameState.playerVoid);
-      const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
-      if (!validZones.some(zone => zone === 'playerHand')) {
-        showToast("Discard can only be activated from your hand.");
-        return;
-      }
-      moveCard(sourceCardObj.instanceId, gameState.playerHand, gameState.playerVoid);
-      renderGameState();
-    },
-  },
-return: { name: 'Return', zone: ['playerField'], icon: 'Icons/Skill/Return.png',
-  description: 'Returns a card from the field to the hand.',
-    handler: function(sourceCardObj, skillObj) {
-      const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
-      const isField = validZones.some(zone =>
-        (zone === 'playerCreatures' && gameState.playerCreatures.includes(sourceCardObj)) ||
-        (zone === 'playerTerrains' && gameState.playerTerrains.includes(sourceCardObj))
-      );
-      if (!isField) {
-        showToast("Return can only be activated from the field.");
-        return;
-      }
-      const fromArr = gameState.playerCreatures.includes(sourceCardObj)
-        ? gameState.playerCreatures
-        : gameState.playerTerrains;
-      moveCard(sourceCardObj.instanceId, fromArr, gameState.playerHand);
-      renderGameState();
-    },
-    canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
-      const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
-      return validZones.includes(currentZone);
-    }
-  },
-retreat: { icon: 'Icons/Skill/Retreat.png', name: 'Retreat', zone: ['playerField'],
-  description: 'Returns a card from the field to the deck.',
-  handler: function(sourceCardObj, skillObj) {
+tap: {
+  name: 'Tap',
+  icon: 'Icons/Essence/Tap.png',
+  zones: ['playerCreatures', 'playerTerrains', 'enemyCreatures', 'enemyTerrains'],
+  description: 'Changes itself to horizontal.',
+  canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
     const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
-    const isField = validZones.some(zone =>
-      (zone === 'playerCreatures' && gameState.playerCreatures.includes(sourceCardObj)) ||
-      (zone === 'playerTerrains' && gameState.playerTerrains.includes(sourceCardObj))
-    );
-    if (!isField) {
-      showToast("Retreat can only be activated from the field.");
+    if (!validZones.includes(currentZone)) return false;
+    return sourceCardObj && sourceCardObj.orientation !== 'horizontal';
+  },
+  handler: function(sourceCardObj, skillObj, next) {
+    const currentZone = getZoneNameForCard(sourceCardObj);
+    const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
+
+    if (!validZones.includes(currentZone)) {
+      showToast("Tap can only be activated from the field.");
+      next && next();
       return;
     }
-    const fromArr = gameState.playerCreatures.includes(sourceCardObj)
-      ? gameState.playerCreatures
-      : gameState.playerTerrains;
-    moveCard(sourceCardObj.instanceId, fromArr, gameState.playerDeck);
-    gameState.playerDeck = shuffle(gameState.playerDeck);
-    renderGameState();
+
+    if (sourceCardObj.orientation === 'horizontal') {
+      next && next();
+      return;
+    }
+
+    changeCardPosition(sourceCardObj, 'horizontal', () => {
+      renderGameState && renderGameState();
+      next && next();
+    });
+  }
+},
+
+untap: {
+  name: 'Untap',
+  icon: 'Icons/Essence/Untap.png',
+  zones: ['playerCreatures', 'playerTerrains', 'enemyCreatures', 'enemyTerrains'],
+  description: 'Changes itself to vertical.',
+  canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
+    const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
+    if (!validZones.includes(currentZone)) return false;
+    return sourceCardObj && sourceCardObj.orientation !== 'vertical';
   },
+  handler: function(sourceCardObj, skillObj, next) {
+    const currentZone = getZoneNameForCard(sourceCardObj);
+    const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
+
+    if (!validZones.includes(currentZone)) {
+      showToast("Untap can only be activated from the field.");
+      next && next();
+      return;
+    }
+
+    if (sourceCardObj.orientation === 'vertical') {
+      next && next();
+      return;
+    }
+
+    changeCardPosition(sourceCardObj, 'vertical', () => {
+      renderGameState && renderGameState();
+      next && next();
+    });
+  }
+},
+  stash: {
+    name: 'Stash',
+    icon: 'Icons/Requirement/Stash.png',
+    zones: ['playerHand', 'enemyHand'],
+    description: 'Returns itself from the hand to the deck.',
+    canActivate(sourceCardObj, skillObj, currentZone, gameState) {
+      return this.zones.includes(currentZone);
+    },
+    handler(sourceCardObj, skillObj, next) {
+      const owner = getCardOwner(sourceCardObj) === 'enemy' ? 'enemy' : 'player';
+      const handArr = owner === 'enemy' ? gameState.enemyHand : gameState.playerHand;
+      const deckArr = owner === 'enemy' ? gameState.enemyDeck : gameState.playerDeck;
+
+      if (!handArr.includes(sourceCardObj)) {
+        showToast("Stash can only be activated from hand.");
+        next && next();
+        return;
+      }
+
+      moveCard(sourceCardObj.instanceId, handArr, deckArr);
+      if (owner === 'enemy') gameState.enemyDeck = shuffle(gameState.enemyDeck);
+      else gameState.playerDeck = shuffle(gameState.playerDeck);
+
+      renderGameState();
+      next && next();
+    }
+  },
+
+  discard: {
+    name: 'Discard',
+    icon: 'Icons/Skill/Discard.png',
+    zones: ['playerHand', 'enemyHand'],
+    description: 'Sends itself from the hand to the void.',
+    canActivate(sourceCardObj, skillObj, currentZone, gameState) {
+      return this.zones.includes(currentZone);
+    },
+    handler(sourceCardObj, skillObj, next) {
+      const owner = getCardOwner(sourceCardObj) === 'enemy' ? 'enemy' : 'player';
+      const handArr = owner === 'enemy' ? gameState.enemyHand : gameState.playerHand;
+      const voidArr = owner === 'enemy' ? gameState.enemyVoid : gameState.playerVoid;
+
+      if (!handArr.includes(sourceCardObj)) {
+        showToast("Discard can only be activated from hand.");
+        next && next();
+        return;
+      }
+
+      moveCard(sourceCardObj.instanceId, handArr, voidArr);
+      renderGameState();
+      next && next();
+    }
+  },
+
+  return: {
+    name: 'Return',
+    icon: 'Icons/Skill/Return.png',
+    zones: ['playerCreatures', 'playerTerrains', 'enemyCreatures', 'enemyTerrains'],
+    description: 'Returns itself from the field to the hand.',
+    canActivate(sourceCardObj, skillObj, currentZone, gameState) {
+      return this.zones.includes(currentZone);
+    },
+    handler(sourceCardObj, skillObj, next) {
+      const owner = getCardOwner(sourceCardObj) === 'enemy' ? 'enemy' : 'player';
+      const fromArr = getZoneArrayForCard(sourceCardObj);
+      const handArr = owner === 'enemy' ? gameState.enemyHand : gameState.playerHand;
+
+      if (!fromArr || !this.zones.includes(getZoneNameForCard(sourceCardObj))) {
+        showToast("Return can only be activated from the field.");
+        next && next();
+        return;
+      }
+
+      moveCard(sourceCardObj.instanceId, fromArr, handArr);
+      renderGameState();
+      next && next();
+    }
+  },
+
+  retreat: {
+    name: 'Retreat',
+    icon: 'Icons/Skill/Retreat.png',
+    zones: ['playerCreatures', 'playerTerrains', 'enemyCreatures', 'enemyTerrains'],
+    description: 'Returns itself from the field to the deck.',
+    canActivate(sourceCardObj, skillObj, currentZone, gameState) {
+      return this.zones.includes(currentZone);
+    },
+    handler(sourceCardObj, skillObj, next) {
+      const owner = getCardOwner(sourceCardObj) === 'enemy' ? 'enemy' : 'player';
+      const fromArr = getZoneArrayForCard(sourceCardObj);
+      const deckArr = owner === 'enemy' ? gameState.enemyDeck : gameState.playerDeck;
+
+      if (!fromArr || !this.zones.includes(getZoneNameForCard(sourceCardObj))) {
+        showToast("Retreat can only be activated from the field.");
+        next && next();
+        return;
+      }
+
+      moveCard(sourceCardObj.instanceId, fromArr, deckArr);
+      if (owner === 'enemy') gameState.enemyDeck = shuffle(gameState.enemyDeck);
+      else gameState.playerDeck = shuffle(gameState.playerDeck);
+
+      renderGameState();
+      next && next();
+    }
+  },
+void: {
+  name: 'Void',
+  icon: 'Icons/Skill/Recover.png',
+  zones: ['playerFallen', 'enemyFallen'],
+  description: 'Moves itself from the fallen to the void.',
   canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
     const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
     return validZones.includes(currentZone);
+  },
+  handler: function(sourceCardObj, skillObj, next) {
+    const owner = getCardOwner(sourceCardObj) === 'enemy' ? 'enemy' : 'player';
+
+    const fromArr =
+      gameState.playerFallen.includes(sourceCardObj) ? gameState.playerFallen :
+      gameState.enemyFallen.includes(sourceCardObj) ? gameState.enemyFallen :
+      null;
+
+    const voidArr = owner === 'enemy' ? gameState.enemyVoid : gameState.playerVoid;
+
+    if (!fromArr) {
+      showToast("Recover can only be activated from fallen.");
+      next && next();
+      return;
+    }
+
+    moveCard(sourceCardObj.instanceId, fromArr, voidArr);
+    renderGameState();
+    next && next();
   }
 },
 };
@@ -1430,7 +1547,7 @@ if (Array.isArray(enemyDeck) && enemyDeck.length && enemyDeck[0].cardId) {
     enemyDeck?.bannerArt || "Images/Banner/Default.png"
   );
 
-  // --- UI activation ---
+  // --- UI ---
   document.querySelectorAll('section[id$="-section"]').forEach(section => section.classList.remove('active'));
   document.getElementById('gameplay-section').classList.add('active');
   document.getElementById('my-profile').style.display = '';
@@ -1579,7 +1696,7 @@ function getCardOwner(cardObj) {
   if (gameState.enemyCreatures.includes(cardObj) || gameState.enemyTerrains.includes(cardObj)) return "enemy";
   return null;
 }
-// --- Robust Activation Trigger Handler ---
+// --- Robust Trigger Handler ---
 function handleActivationTriggers(eventType, contextCard, extraContext = {}) {
   const allCards = [
     ...gameState.playerCreatures, ...gameState.playerTerrains,
@@ -5397,7 +5514,11 @@ function animateEssencePop(icon) {
 function canActivateSkill(cardObj, skillObj, currentZone, gameState, targetObj = null) {
   // 1. REQUIREMENTS: All must pass their handler's canActivate
   let requirements = [];
-  if (skillObj.requirement) {
+  if (skillObj.req) {
+    requirements = Array.isArray(skillObj.req)
+      ? skillObj.req
+      : [skillObj.req];
+  } else if (skillObj.requirement) {
     requirements = Array.isArray(skillObj.requirement)
       ? skillObj.requirement
       : [skillObj.requirement];
@@ -5406,11 +5527,12 @@ function canActivateSkill(cardObj, skillObj, currentZone, gameState, targetObj =
       ? skillObj.activation.requirement
       : [skillObj.activation.requirement];
   }
+
   for (const req of requirements) {
     const reqKey = typeof req === 'object' && req.class ? req.class : req;
     const reqDef = REQ_MAP[reqKey];
     if (reqDef && typeof reqDef.canActivate === 'function') {
-      if (!reqDef.canActivate(cardObj, skillObj, currentZone, gameState, req)) return false;
+      if (!reqDef.canActivate.call(reqDef, cardObj, skillObj, currentZone, gameState, req)) return false;
     }
   }
 
@@ -5549,76 +5671,59 @@ function getSkillActivation(skillObj = {}) {
 }
 // Helper to get requirement(s) for a skill
 function getSkillRequirements(skillObj = {}) {
-  const out = [];
+  let reqs = [];
 
-  // 1) Already an array (canonical)
-  if (Array.isArray(skillObj.requirements)) {
-    out.push(...skillObj.requirements);
+  if (skillObj.requirement) {
+    reqs = Array.isArray(skillObj.requirement)
+      ? skillObj.requirement
+      : [skillObj.requirement];
+  } else if (skillObj.activation && skillObj.activation.requirement) {
+    reqs = Array.isArray(skillObj.activation.requirement)
+      ? skillObj.activation.requirement
+      : [skillObj.activation.requirement];
   }
 
-  // 2) Object form: requirements: { discard: 1, tap: true, ... }
-  if (skillObj.requirements && typeof skillObj.requirements === "object" && !Array.isArray(skillObj.requirements)) {
-    const r = skillObj.requirements;
-
-    if (r.tap) out.push({ class: "tap" });
-    if (r.attack) out.push({ class: "attack" });
-    if (r.summon) out.push({ class: "summon" });
-    if (r.echo) out.push({ class: "echo" });
-    if (r.void) out.push({ class: "void" });
-
-    if (r.discard) out.push({ class: "discard", amount: Number(r.discard) || 1, type: r.type, category: r.category, color: r.color });
-    if (r.sacrifice) out.push({ class: "sacrifice", amount: Number(r.sacrifice) || 1, type: r.type, category: r.category, color: r.color });
-    if (r.stash) out.push({ class: "stash" });
-    if (r.channel) out.push({ class: "channel" });
-
-    // You can add more keys here as needed
-  }
-
-  // 3) Top-level shorthand flags on the skill itself
-  // (Only add if NOT already present via requirements object/array)
-  const hasClass = (c) => out.some(x => String(x?.class || "").toLowerCase() === c);
-
-  if (skillObj.tap && !hasClass("tap")) out.push({ class: "tap" });
-  if (skillObj.attack && !hasClass("attack")) out.push({ class: "attack" });
-  if (skillObj.summon && !hasClass("summon")) out.push({ class: "summon" });
-
-  if (skillObj.discard && !hasClass("discard")) out.push({ class: "discard", amount: Number(skillObj.discard) || 1, type: skillObj.type });
-  if (skillObj.sacrifice && !hasClass("sacrifice")) out.push({ class: "sacrifice", amount: Number(skillObj.sacrifice) || 1, type: skillObj.type });
-
-  if (skillObj.channel && !hasClass("channel")) out.push({ class: "channel" });
-  if (skillObj.stash && !hasClass("stash")) out.push({ class: "stash" });
-
-  // Normalize class casing
-  return out
-    .filter(Boolean)
-    .map(req => ({ ...req, class: String(req.class || "").toLowerCase() }));
+  return reqs.map(req =>
+    typeof req === 'string' ? { class: req.toLowerCase() } : { ...req, class: String(req.class || '').toLowerCase() }
+  );
 }
 
 function proceedSkillActivation(cardObj, skillObj, options = {}) {
-  const activation = skillObj.activation || {};
-  let requirements = Array.isArray(activation.requirement)
-    ? activation.requirement
-    : (activation.requirement ? [activation.requirement] : []);
+  let requirements = [];
+
+  if (skillObj.req) {
+    requirements = Array.isArray(skillObj.req)
+      ? skillObj.req
+      : [skillObj.req];
+  } else if (skillObj.requirement) {
+    requirements = Array.isArray(skillObj.requirement)
+      ? skillObj.requirement
+      : [skillObj.requirement];
+  } else if (skillObj.activation && skillObj.activation.requirement) {
+    requirements = Array.isArray(skillObj.activation.requirement)
+      ? skillObj.activation.requirement
+      : [skillObj.activation.requirement];
+  }
+
   function runRequirements(i) {
     if (i >= requirements.length) {
-      // All requirements done, now run effect
-      resolveSkill(cardObj, skillObj);
+      resolveSkill(cardObj, skillObj, options.context || {}, options.onComplete);
       renderGameState();
       return;
     }
+
     const req = requirements[i];
-    if (REQ_MAP[req] && REQ_MAP[req].handler) {
-      // Support async requirements
-      if (REQ_MAP[req].handler.length >= 3) {
-        REQ_MAP[req].handler(cardObj, skillObj, () => runRequirements(i + 1));
-      } else {
-        REQ_MAP[req].handler(cardObj, skillObj);
-        runRequirements(i + 1);
-      }
-    } else {
+    const reqKey = typeof req === 'object' && req.class ? req.class : req;
+    const reqDef = REQ_MAP[reqKey];
+
+    if (!reqDef || typeof reqDef.handler !== 'function') {
       runRequirements(i + 1);
+      return;
     }
+
+    reqDef.handler.call(reqDef, cardObj, skillObj, () => runRequirements(i + 1));
   }
+
   runRequirements(0);
 }
 
