@@ -1106,12 +1106,13 @@ const dummyCards = [
 
 // GOLEMHEART //
 {id: 'PyrokragGolemheartTitan', name: 'Pyrokrag, Golemheart Titan', rarity: 'Legend', image: 'Cards/ecr/PyrokragGolemheartTitan.png', flavor: '', 
- category: 'Creature', fight: '', color: ['Red','Gray'], type: ['Fire','Rock','Spirit','Golem','Fusion'], hp: 8, atk: 5, cost: '{r5}{c3}', ability: ['Armor''Burn','Fusion'], set: 'FracturedOrigins', skill: [
-	{name: 'Summon', cost: '{r5}{c3}', eff: {class: 'summon'}},
-	{name: 'Fusion', cost: '{r5}{c3}', eff: {class: 'fusion', type: ['Fire','Rock','Spirit']}},
-	{name: 'Magma Catalyst', req: discard, eff: [{class: 'bury', q: 1, type: ['Fire','Rock']}, {class: 'burn', amount: 1}], text: 'Return from your hand to the deck and burn {1}.'},
-	{name: 'Mill', req: {class: 'Mill', type: 'Golem'}, eff: {class: 'Armor', amount: 4}},
-	{name: 'Moltern Aegis Nova', cost: '{r}{r}{c}', eff: {class: 'Burn', amount: 3, target: 3}}]},
+ category: 'Creature', fight: '', color: ['Red','Gray'], type: ['Fire','Rock','Spirit','Golem','Fusion'], hp: 8, atk: 5, cost: '{r7}{c3}', ability: ['Armor''Burn','Fusion'], set: 'FracturedOrigins', skill: [
+	{name: 'Summon', cost: '{r7}{c3}', eff: {class: 'summon'}},
+	{name: 'Fusion', cost: '{r7}{c3}', eff: {class: 'fusion', type: ['Fire','Rock','Spirit']}},
+	{name: 'Magma Catalyst', req: discard, eff: [{class: 'bury', q: 2, type: ['Fire','Rock']}, {class: 'burn', q: 'playerFallen', type: 'Fire'}], 
+	 text: 'Discard this ally, bury 2 fire rock allies and burn {1} for each fallen fire ally.'},
+	{name: 'Moltern Aegis Nova', cost: '{r2}{c}', eff: [{class: 'wither', atk:1, hp:3}, {class: 'destroy', blight: 'burned', target: 'allField'}, {class: 'burn', amount: 3, target: 3}],
+	 text: 'Lose -{1}/-{3}, destroy all burned creatures and burn strike 2 to all enemies.'}]},
  
 {id: 'GolemheartGiant', name: 'Golemheart Giant', rarity: 'Rare', image: 'Cards/ecr/GolemheartGiant.png', flavor: '', 
  category: 'Creature', fight: '', color: ['Red', 'Gray'], type: ['Fire','Golem'], hp: 5, atk: 4, cost: '{r4}{c2}', ability: 'Scorch', set: 'EchoesofCreation', skill: [
