@@ -317,49 +317,49 @@ conceal: { name: 'Conceal', icon: 'Icons/Ability/Conceal.png',
 // --- SKILL TRIGGER MAP ---
 // Maps skill activation triggers to their event handlers
 const TRIGGER_MAP = {
-  // When this card enters the field (a.k.a. onSummon, "Arrival" in card text)
+  // When this card enters the field
   summon: {
     name: "Summon",
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
   },
-  // When this card is drawn (a.k.a. onDraw, "Insight" in card text)
+  // When this card is drawn
   draw: {
-    name: "Draw", // (Insight)
+    name: "Draw",
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
   },
-  // When this card enters the void //
+  // When this card enters the fallen
   echo: {
     name: "Echo",
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
   },
-  // When this card deals damage //
+  // When this card deals damage
   frenzy: {
     name: "Frenzy",
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
   },
-  // When this card receives damage //
+  // When this card receives damage
   brace: {
     name: "onReceiveDamage",
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
   },
-  // When this card attacks //
+  // When this card attacks
   attack: {
     name: "Attack",
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
   },
-  // When this card is attacked //
+  // When this card is attacked
   defend: {
     name: "Defend",
     handler: function(cardObj, skillObj, context = {}, onComplete) {
@@ -1696,38 +1696,6 @@ function getCardOwner(cardObj) {
   if (gameState.enemyCreatures.includes(cardObj) || gameState.enemyTerrains.includes(cardObj)) return "enemy";
   return null;
 }
-// --- Robust Trigger Handler ---
-function handleActivationTriggers(eventType, contextCard, extraContext = {}) {
-  const allCards = [
-    ...gameState.playerCreatures, ...gameState.playerTerrains,
-    ...gameState.playerVoid, ...gameState.playerHand, ...gameState.playerDeck,
-    ...gameState.enemyCreatures, ...gameState.enemyTerrains,
-    ...gameState.enemyVoid, ...gameState.enemyHand, ...gameState.enemyDeck
-  ];
-
-  allCards.forEach(cardObj => {
-    if (!cardObj.skill) return;
-    const skills = Array.isArray(cardObj.skill) ? cardObj.skill : [cardObj.skill];
-    skills.forEach(skill => {
-      if (skill.activation && skill.activation.class === eventType) {
-        // Build filterFields from skill.activation
-        const filterFields = {};
-        for (const key of ["type", "archetype", "color", "category"]) {
-          if (skill.activation[key]) filterFields[key] = skill.activation[key];
-        }
-        // If no filters, apply to self (e.g. Echo), only if cardObj === contextCard
-        // If filters, match contextCard against them (e.g. Red Echo, Fairy Echo, etc)
-        const appliesToSelf = Object.keys(filterFields).length === 0 && cardObj === contextCard;
-        const appliesByFilter = Object.keys(filterFields).length > 0 && matchesFilter(contextCard, filterFields);
-
-        if (appliesToSelf || appliesByFilter) {
-            resolveSkill(cardObj, skill, { triggerCard: contextCard, ...extraContext });
-
-        }
-      }
-    });
-  });
-}
 
 // --- TURN FLAGS --- //
 function resetTurnFlags(turn) {
@@ -1902,7 +1870,11 @@ if (toZoneName === 'playerVoid') {
     // Trigger onSummon only if destination is a field zone
     if (["playerCreatures", "playerTerrains", "enemyCreatures", "enemyTerrains"].includes(toZoneName)) {
       const cardObj = toArr[toArr.length - 1];
-      queueEvent("onSummon", { summonedCard: cardObj });
+      triggerSelfSkill(cardObj, "summon", { triggerCard: cardObj });
+    }
+    if (["playerFallen", "enemyFallen"].includes(toZoneName)) {
+      const cardObj = toArr[toArr.length - 1];
+      triggerSelfSkill(cardObj, "echo", { triggerCard: cardObj });
     }
     setupDropZones();
     emitPublicState();
@@ -2120,7 +2092,9 @@ function drawCards(who, n) {
   let deck = who === "player" ? gameState.playerDeck : gameState.enemyDeck;
   let hand = who === "player" ? gameState.playerHand : gameState.enemyHand;
   for (let i = 0; i < n && deck.length > 0; i++) {
-    hand.push(deck.shift());
+    const drawnCard = deck.shift();
+    hand.push(drawnCard);
+    triggerSelfSkill(drawnCard, "draw", { triggerCard: drawnCard });
   }
   renderGameState();
   setupDropZones();
@@ -4393,13 +4367,9 @@ function resolveAttack(attackerId, defenderId) {
     // Step 1: Animate attacker attacking
     animateAttack(attackerObj, attackerZone, () => {
       // Step 2: Trigger OnAttack skills
-      triggerOnAttackSkills(attackerObj, defenderObj);
-
-      // Step 3: Trigger OnDefense skills
-      triggerOnDefenseSkills(defenderObj, attackerObj);
-
-      // Step 4: Animate defender getting hit
-      animateDefenderHit(defenderObj, defenderZone, () => {
+      triggerOnAttackSkills(attackerObj, defenderObj, () => {
+        triggerOnDefenseSkills(defenderObj, attackerObj, () => {
+          animateDefenderHit(defenderObj, defenderZone, () => {
         // Step 5: Calculate and apply damage
         const result = damageCalculation(attackerObj, defenderObj) || { attackerDamage: 0, defenderDamage: 0 };
         const { attackerDamage, defenderDamage } = result;
@@ -4575,7 +4545,11 @@ function dealDamage(cardObj, targetObj, damage) {
 
   targetObj.atk = typeof targetObj.atk === "number" ? targetObj.atk : cardDef?.atk ?? 0;
   targetObj.def = typeof targetObj.def === "number" ? targetObj.def : cardDef?.def ?? 0;
-
+  
+  if (damage > 0) {
+    triggerSelfSkill(cardObj, "frenzy", { trigger: "frenzy", target: targetObj, amount: damage });
+    triggerSelfSkill(targetObj, "brace", { trigger: "brace", source: cardObj, amount: damage });
+  }
   // KO logic: move to void if HP <= 0
   if (targetObj.currentHP <= 0) {
     const fromArr = findCardFieldArray(targetObj);
@@ -4601,32 +4575,12 @@ function dealDamage(cardObj, targetObj, damage) {
     }
   }
 }
-function triggerOnAttackSkills(attacker, defender) {
-  const attackerDef = dummyCards.find(c => c.id === attacker.cardId);
-  if (!attackerDef || !attackerDef.skill) return;
-  const skills = Array.isArray(attackerDef.skill) ? attackerDef.skill : [attackerDef.skill];
-  skills.forEach(skill => {
-    if (skill.activation && skill.activation.class === "onAttack") {
-      // Only trigger if any requirement passes (or none exist)
-      if (!skill.activation.requirement || canActivateSkill(attacker, skill, getZoneNameForCard(attacker), gameState)) {
-        resolveSkill(attacker, skill, { trigger: "onAttack", defender });
-      }
-    }
-  });
+function triggerOnAttackSkills(attacker, defender, onComplete) {
+  triggerSelfSkill(attacker, "attack", { trigger: "attack", defender }, onComplete);
 }
 
-function triggerOnDefenseSkills(defender, attacker) {
-  const defenderDef = dummyCards.find(c => c.id === defender.cardId);
-  if (!defenderDef || !defenderDef.skill) return;
-  const skills = Array.isArray(defenderDef.skill) ? defenderDef.skill : [defenderDef.skill];
-  skills.forEach(skill => {
-    if (skill.activation && skill.activation.class === "onDefense") {
-      // Only trigger if any requirement passes (or none exist)
-      if (!skill.activation.requirement || canActivateSkill(defender, skill, getZoneNameForCard(defender), gameState)) {
-        resolveSkill(defender, skill, { trigger: "onDefense", attacker });
-      }
-    }
-  });
+function triggerOnDefenseSkills(defender, attacker, onComplete) {
+  triggerSelfSkill(defender, "defend", { trigger: "defend", attacker }, onComplete);
 }
 
 // ------------------------ //
@@ -5206,127 +5160,9 @@ function getTotalEssence(essenceStr) {
   return matches ? matches.length : 0;
 }
 
-/**
- * PRIORITY ORDER for trigger collection:
- * 1. Player's cards: field (creatures+terrains), hand, void, deck (by instanceId)
- * 2. enemy's cards: field, hand, void, deck (by instanceId)
- */
-function collectTriggersForEvent(eventType, context) {
-  const turnPlayer = gameState.turn; // "player" or "enemy"
-  // Helper to flatten and sort arrays by instanceId (string compare for determinism)
-  const sortById = arr => arr.slice().sort((a, b) => String(a.instanceId).localeCompare(String(b.instanceId)));
-
-  // Get in priority order
-  const playerZones = [
-    sortById(gameState.playerCreatures),
-    sortById(gameState.playerTerrains),
-    sortById(gameState.playerHand),
-    sortById(gameState.playerVoid),
-    sortById(gameState.playerDeck)
-  ];
-  const oppZones = [
-    sortById(gameState.enemyCreatures),
-    sortById(gameState.enemyTerrains),
-    sortById(gameState.enemyHand),
-    sortById(gameState.enemyVoid),
-    sortById(gameState.enemyDeck)
-  ];
-  // Respect player or enemy first
-  const allZones = turnPlayer === "player"
-    ? [...playerZones, ...oppZones]
-    : [...oppZones, ...playerZones];
-
-  const triggers = [];
-  for (const zone of allZones) {
-    for (const cardObj of zone) {
-      if (!cardObj || !cardObj.skill) continue;
-      const skills = Array.isArray(cardObj.skill) ? cardObj.skill : [cardObj.skill];
-      for (const skillObj of skills) {
-        if (skillObj.activation && skillObj.activation.trigger === eventType) {
-          // Check condition
-          const cond = skillObj.activation.triggerCondition;
-          if (cond) {
-            // e.g. {type: "Dragon"} (matches summonedCard/type/etc)
-            let match = true;
-            for (const [key, val] of Object.entries(cond)) {
-              if (!fieldIncludes(context.summonedCard, key, val)) match = false;
-            }
-            if (!match) continue;
-          } else if (context.summonedCard && context.summonedCard !== cardObj) {
-            // If no condition: only trigger if self was summoned
-            continue;
-          }
-          triggers.push({ cardObj, skillObj, context });
-        }
-      }
-    }
-  }
-  return triggers;
-}
-
-// -------------------- //
-// --- QUEUE SKILLS --- //
-// -------------------- //
-function queueEvent(eventType, context) {
-  const triggers = collectTriggersForEvent(eventType, context);
-  if (triggers.length) eventQueue.push({ eventType, context, triggers });
-  processEventQueue();
-}
-
-function processEventQueue() {
-  if (isProcessingEvents) return;
-  isProcessingEvents = true;
-
-  function nextBatch() {
-    if (eventQueue.length === 0) {
-      isProcessingEvents = false;
-      return;
-    }
-    const { eventType, context, triggers } = eventQueue.shift();
-    // Process each trigger in order, supporting async/manual targeting
-    let i = 0;
-    function processNextTrigger() {
-      if (i >= triggers.length) {
-        // Done with this batch, move to next event
-        nextBatch();
-        return;
-      }
-      const { cardObj, skillObj, context: trigContext } = triggers[i++];
-      // Use your effect resolution logic—handleTriggerEvent, etc
-      // If effect is async/manual, processNextTrigger must be called in its completion callback
-      resolveTriggerEffect(cardObj, skillObj, trigContext || context, processNextTrigger);
-    }
-    processNextTrigger();
-  }
-  nextBatch();
-}
-
-/**
- * Unified effect/trigger resolver.
- * Ensures that if skill requires manual target (startSkillTarget), we pause until the user completes selection.
- * Otherwise, resolves immediately and continues the batch.
- */
-function resolveTriggerEffect(cardObj, skillObj, context, onComplete) {
-  // You may want to merge this logic with your `handleTriggerEvent` and `resolveSkillEffect`
-  const handlerDef = TRIGGER_EVENT_MAP[skillObj.activation.trigger];
-  if (handlerDef && typeof handlerDef.handler === "function") {
-    // Patch: handler must accept onComplete for async/manual effects
-    const maybeAsync = handlerDef.handler.length >= 4; // function(cardObj, skillObj, context, onComplete)
-    if (maybeAsync) {
-      handlerDef.handler(cardObj, skillObj, context, onComplete);
-    } else {
-      handlerDef.handler(cardObj, skillObj, context);
-      if (onComplete) onComplete();
-    }
-  } else {
-    resolveSkill(cardObj, skillObj, context);
-    if (onComplete) onComplete();
-  }
-}
-
-/*-------------------
+// --------------- //
 // ANIMATION LOGIC //
--------------------*/
+// --------------- //
 
 // --- DEFEAT (KO) ANIMATION --- //
 // Fades a card out in-place (from its current zone) then calls afterAnim.
@@ -5511,6 +5347,34 @@ function animateEssencePop(icon) {
 /*------------------------------------
 // SKILL RESOLUTION LOGIC //
 ------------------------------------*/
+function triggerSelfSkill(cardObj, eventType, context = {}, onComplete) {
+  if (!cardObj || !cardObj.skill) {
+    onComplete && onComplete();
+    return;
+  }
+
+  const skills = Array.isArray(cardObj.skill) ? cardObj.skill : [cardObj.skill];
+  const matchingSkills = skills.filter(skill => skill && skill.trig === eventType);
+
+  if (matchingSkills.length === 0) {
+    onComplete && onComplete();
+    return;
+  }
+
+  let i = 0;
+  function next() {
+    if (i >= matchingSkills.length) {
+      onComplete && onComplete();
+      return;
+    }
+
+    const skillObj = matchingSkills[i++];
+    resolveSkill(cardObj, skillObj, context, next);
+  }
+
+  next();
+}
+
 function canActivateSkill(cardObj, skillObj, currentZone, gameState, targetObj = null) {
   // 1. REQUIREMENTS: All must pass their handler's canActivate
   let requirements = [];
