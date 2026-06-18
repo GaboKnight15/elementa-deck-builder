@@ -319,49 +319,49 @@ conceal: { name: 'Conceal', icon: 'Icons/Ability/Conceal.png',
 const TRIGGER_MAP = {
   // When this card enters the field
   summon: {
-    name: "Summon",
+    name: "Summon", icon: 'Icons/Trigger/Summon.png',
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
   },
   // When this card is drawn
   draw: {
-    name: "Draw",
+    name: "Draw", icon: 'Icons/Trigger/Draw.png',
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
   },
   // When this card enters the fallen
   echo: {
-    name: "Echo",
+    name: "Echo", icon: 'Icons/Trigger/Echo.png',
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
   },
   // When this card deals damage
   frenzy: {
-    name: "Frenzy",
+    name: "Frenzy", icon: 'Icons/Trigger/Frenzy.png',
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
   },
   // When this card receives damage
   brace: {
-    name: "onReceiveDamage",
+    name: "brace", icon: 'Icons/Trigger/Brace.png',
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
   },
   // When this card attacks
   attack: {
-    name: "Attack",
+    name: "attack", icon: 'Icons/Trigger/Attack.png',
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
   },
   // When this card is attacked
   defend: {
-    name: "Defend",
+    name: "Defend", icon: 'Icons/Trigger/Defend.png',
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
@@ -370,9 +370,7 @@ const TRIGGER_MAP = {
 };
 
 const REQ_MAP = {
-tap: {
-  name: 'Tap',
-  icon: 'Icons/Essence/Tap.png',
+tap: { name: 'Tap', icon: 'Icons/Skill/Tap.png',
   zones: ['playerCreatures', 'playerTerrains', 'enemyCreatures', 'enemyTerrains'],
   description: 'Changes itself to horizontal.',
   canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
@@ -402,9 +400,7 @@ tap: {
   }
 },
 
-untap: {
-  name: 'Untap',
-  icon: 'Icons/Essence/Untap.png',
+untap: { name: 'Untap', icon: 'Icons/Skill/Untap.png',
   zones: ['playerCreatures', 'playerTerrains', 'enemyCreatures', 'enemyTerrains'],
   description: 'Changes itself to vertical.',
   canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
@@ -433,9 +429,7 @@ untap: {
     });
   }
 },
-  stash: {
-    name: 'Stash',
-    icon: 'Icons/Requirement/Stash.png',
+  stash: { name: 'Stash', icon: 'Icons/Skill/Stash.png',
     zones: ['playerHand', 'enemyHand'],
     description: 'Returns itself from the hand to the deck.',
     canActivate(sourceCardObj, skillObj, currentZone, gameState) {
@@ -540,7 +534,7 @@ untap: {
   },
 void: {
   name: 'Void',
-  icon: 'Icons/Skill/Recover.png',
+  icon: 'Icons/Skill/Void.png',
   zones: ['playerFallen', 'enemyFallen'],
   description: 'Moves itself from the fallen to the void.',
   canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
@@ -558,7 +552,7 @@ void: {
     const voidArr = owner === 'enemy' ? gameState.enemyVoid : gameState.playerVoid;
 
     if (!fromArr) {
-      showToast("Recover can only be activated from fallen.");
+      showToast("Void can only be activated from fallen.");
       next && next();
       return;
     }
@@ -571,7 +565,7 @@ void: {
 };
 
 const EFF_MAP = {
-summon: { name: 'Summon', zone: 'playerHand', 
+summon: { name: 'Summon', zone: 'playerHand', icon: 'Icons/Skill/Summon.png',
   description: 'Move this card from hand to the field.',
   canActivate(cardObj, skillObj, currentZone, gameState) {
     // Accept common zone spellings; normalize if you can
@@ -611,7 +605,7 @@ summon: { name: 'Summon', zone: 'playerHand',
   }
 },
 draw: { name: 'Draw',
-  description: 'Draw from the your deck.',
+  description: 'Draw from the your deck.', icon: 'Icons/Skill/Draw.png',
   canActivate(sourceCardObj, skillObj, currentZone, gameState, step = {}) {
     const owner = (typeof getCardOwner === 'function' && getCardOwner(sourceCardObj) === 'enemy')
       ? 'enemy'
@@ -674,7 +668,7 @@ draw: { name: 'Draw',
     drawOne();
   }
 },
-cast: { name: 'Cast', zone: 'playerHand',
+cast: { name: 'Cast', zone: 'playerHand', icon: 'Icons/Skill/Cast.png',
   description: 'Cast a spell from hand: resolve, then send to void.',
   canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
     // Accept common spellings used across your code
@@ -704,7 +698,7 @@ cast: { name: 'Cast', zone: 'playerHand',
   }
 },
 
-terraform: { name: 'Terraform', zone: 'playerHand', 
+terraform: { name: 'Terraform', zone: 'playerHand', icon: 'Icons/Skill/Terraform.png',
   description: 'Play a terrain from hand to terrain zone.',
   canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
     // Must be in hand (tolerant naming), and terraform not used this turn by current player
@@ -741,8 +735,7 @@ terraform: { name: 'Terraform', zone: 'playerHand',
   }
 },
 
-strike: { name: 'Strike', icon: 'Icons/Skill/Strike.png',
-  description: 'Deals damage.',
+strike: { name: 'Strike', icon: 'Icons/Skill/Strike.png', description: 'Deals damage.',
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
     // For your rule: any card on the field can be a target (player+enemy, creatures+terrains)
     const enemyField = [...gameState.enemyCreatures, ...gameState.enemyTerrains];
@@ -780,7 +773,7 @@ curse: { name: 'Curse', icon: 'Icons/Skill/Curse.png',
   description: 'Deals damage and curses.',
   handler: effectStatusHandler('Curse')
 }, 
-enable: { name: 'Enable', icon: 'Icons/Essence/Untap.png',
+enable: { name: 'Enable', icon: 'Icons/Skill/Untap.png',
   description: 'Rotate a card vertically.',
   handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
       const targets = step.target ? getTargets(step.target, sourceCardObj) : [sourceCardObj];
@@ -814,7 +807,7 @@ enable: { name: 'Enable', icon: 'Icons/Essence/Untap.png',
     return sourceCardObj && sourceCardObj.orientation !== "vertical";
   }
 },
-bolster: {
+bolster: { icon: 'Icons/Skill/Bolster.png',
   handler(sourceCardObj, skillObj, step, nextEffect, context = {}) {
     let targets = [];
 
@@ -832,7 +825,7 @@ bolster: {
     if (typeof nextEffect === 'function') nextEffect();
   }
 },
-disable: { name: 'Disable', icon: 'Icons/Essence/Tap.png',
+disable: { name: 'Disable', icon: 'Icons/Skill/Tap.png',
   description: 'Rotate a card to horizontal (disabled).',
   handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
       const targets = step.target ? getTargets(step.target, sourceCardObj) : [sourceCardObj];
@@ -897,13 +890,13 @@ dash: { name: 'Dash', zone: 'playerHand', icon: 'Icons/Skill/Dash.png',
     return currentZone === "hand" && gameState.playerHand.includes(cardObj);
   }
 },
-reanimate: { name: 'Reanimate', zone: 'void', icon: 'Icons/Skill/Reanimate.png',
-  description: 'Summon this card from the void.',
+reanimate: { name: 'Reanimate', zone: 'fallen', icon: 'Icons/Skill/Reanimate.png',
+  description: 'Summon this card from the fallen zone.',
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
     // Only resolve if card is in void
     const isVoid = gameState.playerVoid.includes(sourceCardObj);
     if (!isVoid) {
-      showToast("Reanimate can only be activated from the void.");
+      showToast("Reanimate can only be activated from the fallen zone.");
       if (nextEffect) nextEffect();
       return;
     }
@@ -994,7 +987,7 @@ armor: { name: 'Armor', icon: 'Icons/Skill/Armor.png',
     }
   },
   recall: { name: 'Recall', icon: 'Icons/Skill/Recall.png',
-    description: 'Return this card from the void to your hand.',
+    description: 'Return an ally from the fallen zone to your hand.',
     handler: function(sourceCardObj, skillObj) {
       const isVoid = gameState.playerVoid.includes(sourceCardObj);
       if (!isVoid) {
@@ -1006,7 +999,7 @@ armor: { name: 'Armor', icon: 'Icons/Skill/Armor.png',
     }
   },
 destroy: { icon: 'Icons/Skill/Destroy.png', name: 'Destroy',
-  description: 'Send a card to the void.',
+  description: 'Send a card from the field to the fallen zone.',
   handler: function(sourceCardObj, skillObj, step = {}) {
     // Collect all field zones (both sides)
     const fieldArrays = [
@@ -1039,12 +1032,10 @@ destroy: { icon: 'Icons/Skill/Destroy.png', name: 'Destroy',
     });
   }
 },
-add: { icon: 'Icons/Skill/Search.png', name: 'Search',
-  description: 'Search your deck for a card matching criteria and add it to your hand.',
+add: { icon: 'Icons/Skill/Add.png', name: 'Search',
+  description: 'Add a designated ally from your deck.',
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
     const deckArr = gameState.playerDeck || [];
-
-    // Reusable target filter (supports targetCategory/targetColor/... + legacy category/color/...)
     const matches = filterCardInstancesByTarget(deckArr, step);
 
     if (matches.length === 0) {
@@ -1065,9 +1056,9 @@ add: { icon: 'Icons/Skill/Search.png', name: 'Search',
 },
   // --- Moves another player card from void to field ---
   revive: {
-    icon: 'Icons/skillEffect/Revive.png',
+    icon: 'Icons/Skill/Revive.png',
     name: 'Revive',
-    description: 'Revive a card from your void.',
+    description: 'Revive an ally from your fallen zone.',
     handler: function(sourceCardObj, skillObj) {
       const res = skillObj.resolution || {};
       const filterKeys = Object.keys(res).filter(k => !['zone', 'type', 'effect'].includes(k));
@@ -1104,9 +1095,7 @@ add: { icon: 'Icons/Skill/Search.png', name: 'Search',
       }, { title: "Revive from Void - Choose a card" });
     }
   },
-bounce: {
-  icon: 'Icons/skillEffect/Bounce.png',
-  name: 'Bounce',
+bounce: { icon: 'Icons/Skill/Bounce.png', name: 'Bounce',
   description: 'Return any card from the field to the hand.',
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
     // All creatures/terrains on both sides
@@ -1152,10 +1141,8 @@ bounce: {
 },
 
   // --- Moves another enemy card from field to deck ---
-banish: {
-  icon: 'Icons/skillEffect/Banish.png',
-  name: 'Banish',
-  description: 'Return any card from the field to the deck.',
+banish: { icon: 'Icons/Skill/Banish.png', name: 'Banish',
+  description: 'Send an enemy from the field to the void.',
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
     // All creatures/terrains on both sides
     const fieldArrs = [
@@ -1226,30 +1213,7 @@ banish: {
       }
     }
   },
-  provoke: { icon: 'Icons/Ability/Provoke.png', name: 'Provoke', zone: 'playerField', 
-    description: 'When attacking, changes defending creature to ATK.',
-    handler: function(attacker, defender, next) {
-      // Only trigger Provoke if defender is in DEF (horizontal)
-      if (defender.orientation === "horizontal") {
-        const skillObj = {
-          name: "Provoke",
-          activation: {},
-          resolution: {
-            effect: "Provoke"
-          }
-        };
-        activateSkill(attacker, skillObj, {
-          target: defender,
-          onComplete: () => changeCardPosition(defender, "vertical", next)
-        });
-      } else {
-        // Already in ATK, skip effect
-        next && next();
-      }
-    }
-  },
-seal: { icon: "Icons/Skill/Seal.png", name: "Seal",
-  description: "Cannot activate skills.",
+seal: { icon: "Icons/Skill/Seal.png", name: "Seal", description: "Cannot activate skills.",
   handler: function(sourceCardObj, skillObj, effectStep, nextEffect) {
     // Assume effectStep.target is the target cardObj or its instanceId
     let target = effectStep.target;
@@ -1300,7 +1264,7 @@ inspire: { name: 'Inspire',
       if (typeof nextEffect === 'function') nextEffect();
   }
 },
-essence: { icon: 'Icons/skillEffect/Essence.png', name: 'Essence', description: 'Gain Essence.',
+essence: { icon: 'Icons/Skill/Essence.png', name: 'Essence', description: 'Gain essence of the designated color.',
   // step should have: { color: "{g}{g}{r}" } or similar
   handler: function(cardObj, skillObj, effectStep, nextEffect) {
     let colorStr = effectStep.color || effectStep.colors || effectStep.essence || "";
@@ -1347,121 +1311,6 @@ essence: { icon: 'Icons/skillEffect/Essence.png', name: 'Essence', description: 
   }
 },
 
-spawn: { name: 'Spawn',
-  description: '',
-  canActivate: function(sourceCardObj, skillObj, currentZone, gameState, step = {}) {
-    const targetId = step.targetId;
-    if (!targetId) return false;
-
-    const owner = (typeof getCardOwner === 'function' && getCardOwner(sourceCardObj) === 'enemy')
-      ? 'enemy'
-      : 'player';
-
-    const deckArr = owner === 'enemy' ? gameState.enemyDeck : gameState.playerDeck;
-    const handArr = owner === 'enemy' ? gameState.enemyHand : gameState.playerHand;
-    const voidArr = owner === 'enemy' ? gameState.enemyVoid : gameState.playerVoid;
-
-    // Decide amount (default 1 if not provided)
-    let amount = step.amount == null ? 1 : Number(step.amount);
-    if (!Number.isFinite(amount) || amount < 1) amount = 1;
-
-    const countIn = (arr) =>
-      Array.isArray(arr) ? arr.reduce((n, c) => n + (c && c.cardId === targetId ? 1 : 0), 0) : 0;
-
-    const deckCount = countIn(deckArr);
-    const handCount = countIn(handArr);
-    const voidCount = countIn(voidArr);
-
-    // Priority: Deck > Hand > Void (only the first zone with any copies is eligible)
-    const available = deckCount > 0 ? deckCount : (handCount > 0 ? handCount : voidCount);
-
-    return available > 0;
-  },
-
-  handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
-    const targetId = step.targetId;
-    if (!targetId) { nextEffect && nextEffect(); return; }
-
-    const owner = (typeof getCardOwner === 'function' && getCardOwner(sourceCardObj) === 'enemy')
-      ? 'enemy'
-      : 'player';
-
-    const deckArr = owner === 'enemy' ? gameState.enemyDeck : gameState.playerDeck;
-    const handArr = owner === 'enemy' ? gameState.enemyHand : gameState.playerHand;
-    const voidArr = owner === 'enemy' ? gameState.enemyVoid : gameState.playerVoid;
-
-    // Decide destination (creature vs terrain) from the spawned card definition
-    const def = dummyCards.find(c => c.id === targetId);
-    const cat = String(def?.category || '').toLowerCase();
-
-    let toArr = null;
-    if (cat === 'creature') {
-      toArr = owner === 'enemy' ? gameState.enemyCreatures : gameState.playerCreatures;
-    } else if (cat === 'terrain') {
-      toArr = owner === 'enemy' ? gameState.enemyTerrains : gameState.playerTerrains;
-    } else {
-      showToast && showToast(`Spawn failed: "${targetId}" is not a creature/terrain.`, { type: 'error' });
-      nextEffect && nextEffect();
-      return;
-    }
-
-    // Decide amount (default 1 if not provided)
-    let amount = step.amount == null ? 1 : Number(step.amount);
-    if (!Number.isFinite(amount) || amount < 1) amount = 1;
-
-    const countIn = (arr) =>
-      Array.isArray(arr) ? arr.reduce((n, c) => n + (c && c.cardId === targetId ? 1 : 0), 0) : 0;
-
-    const deckCount = countIn(deckArr);
-    const handCount = countIn(handArr);
-    const voidCount = countIn(voidArr);
-
-    // Priority: Deck > Hand > Void
-    let fromArr = null;
-    if (deckCount > 0) fromArr = deckArr;
-    else if (handCount > 0) fromArr = handArr;
-    else if (voidCount > 0) fromArr = voidArr;
-
-    if (!fromArr) {
-      showToast && showToast(`No "${targetId}" available in deck, hand, or void.`, { type: 'info' });
-      nextEffect && nextEffect();
-      return;
-    }
-
-    // Pull up to N matches from the chosen zone
-    const pulled = [];
-    for (let i = 0; i < fromArr.length && pulled.length < amount; ) {
-      const c = fromArr[i];
-      if (c && c.cardId === targetId) {
-        pulled.push(c);
-        fromArr.splice(i, 1);
-      } else {
-        i++;
-      }
-    }
-
-    if (pulled.length === 0) {
-      // Defensive (should not happen given the counts above)
-      showToast && showToast(`No "${targetId}" could be spawned.`, { type: 'info' });
-      nextEffect && nextEffect();
-      return;
-    }
-    // Place onto field; set orientation if you use it
-    pulled.forEach(cardObj => {
-      const orientation = (typeof hasAbility === 'function' && hasAbility(cardObj, 'Dormant'))
-        ? 'horizontal'
-        : 'vertical';
-      cardObj.orientation = orientation;
-      toArr.push(cardObj);
-    });
-
-    renderGameState && renderGameState();
-    setupDropZones && setupDropZones();
-    emitPublicState && emitPublicState();
-
-    nextEffect && nextEffect();
-  }
-},
 };
 // ==========================
 // === DOM REFERENCES ===
