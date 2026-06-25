@@ -1541,8 +1541,30 @@ function getRequirementFilter(requirement) {
 }
 // --- Utility: Determine card owner as "player" or "enemy" ---
 function getCardOwner(cardObj) {
-  if (gameState.playerCreatures.includes(cardObj) || gameState.playerTerrains.includes(cardObj)) return "player";
-  if (gameState.enemyCreatures.includes(cardObj) || gameState.enemyTerrains.includes(cardObj)) return "enemy";
+  if (!cardObj) return null;
+
+  // Player zones
+  if (
+    gameState.playerCreatures.includes(cardObj) ||
+    gameState.playerTerrains.includes(cardObj) ||
+    gameState.playerArtifacts?.includes(cardObj) ||
+    gameState.playerHand.includes(cardObj) ||
+    gameState.playerDeck.includes(cardObj) ||
+    gameState.playerVoid.includes(cardObj) ||
+    gameState.playerFallen.includes(cardObj)
+  ) return "player";
+
+  // enemy zones
+  if (
+    gameState.enemyCreatures.includes(cardObj) ||
+    gameState.enemyTerrains.includes(cardObj) ||
+    gameState.enemyArtifacts?.includes(cardObj) ||
+    gameState.enemyHand.includes(cardObj) ||
+    gameState.enemyDeck.includes(cardObj) ||
+    gameState.enemyVoid.includes(cardObj) ||
+    gameState.enemyFallen.includes(cardObj)
+  ) return "enemy";
+
   return null;
 }
 
@@ -1641,7 +1663,7 @@ function moveCard(instanceId, fromArr, toArr, extra = {}, callback) {
   const toZoneId = ZONE_MAP[toZoneName]?.id;
 
   const isToVoid = (toZoneName === "playerVoid" || toZoneName === "enemyVoid");
-  const isToFallen = (toZoneName === "playerFallen" || toZoneName === "enemyfallen");
+  const isToFallen = (toZoneName === "playerFallen" || toZoneName === "enemyFallen");
 
   const isHandToField =
     (fromZoneName === "playerHand" || fromZoneName === "enemyHand") &&
