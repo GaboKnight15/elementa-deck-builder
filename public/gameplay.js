@@ -1384,7 +1384,7 @@ if (Array.isArray(enemyDeck) && enemyDeck.length && enemyDeck[0].cardId) {
   gameState.enemyVoid = [];
   gameState.enemyArtifacts = [];
   gameState.enemySpells = [];
-  gameState.enemyfallen = [];
+  gameState.enemyFallen = [];
   
   gameState.phase = "start";
   
@@ -5449,7 +5449,12 @@ function proceedSkillActivation(cardObj, skillObj, options = {}) {
 
 // EFFECT RESOLUTION LOGIC //
 function resolveSkill(cardObj, skillObj, context = {}, onComplete) {
-  let effect = skillObj.effect;
+  // Support both legacy and new skill schemas
+  const effect =
+    skillObj.effect ??
+    skillObj.resolution?.effect ??
+    skillObj.effects ??
+    null;
 
   // Normalize effect into an array of effect objects
   let effectSteps = [];
@@ -5471,17 +5476,19 @@ function resolveSkill(cardObj, skillObj, context = {}, onComplete) {
       return;
     }
     const step = effectSteps[i++];
-    try { 
-      step.availableTargets = getTargetsFromEffect(step, cardObj, context); 
-    } catch(e) { step.availableTargets = []; }
+    try {
+      step.availableTargets = getTargetsFromEffect(step, cardObj, context);
+    } catch (e) {
+      step.availableTargets = [];
+    }
 
     const className = step.class;
-    const handler = EFF_MAP[className];
+    const handler = EFF_MAP[className?.toLowerCase?.() || className] || EFF_MAP[className];
     if (!handler || !handler.handler) {
       nextEffect();
       return;
     }
-    // Pass the effect step and nextEffect for chaining
+
     if (handler.handler.length >= 4) {
       handler.handler(cardObj, skillObj, step, nextEffect);
     } else if (handler.handler.length === 3) {
