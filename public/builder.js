@@ -21,7 +21,9 @@ const deckPanel         = document.getElementById('deck-panel');
 // NEW DECK HANDLER OPTIONS
 const deckMenu = document.getElementById('deck-menu');
 const deckMenuTitle = document.getElementById('deck-menu-title');
-
+const DECK_SLOTS_PER_PAGE = 10;
+const DECK_TOTAL_PAGES = 3;
+let currentDeckPage = 0; // 0-based: 0,1,2
 
 const closeDeckMenuBtn = document.getElementById('close-deck-menu-btn');
 const deckViewModal = document.getElementById('deck-view-modal');
@@ -179,78 +181,127 @@ function renderDeckSelection() {
   const grid = document.getElementById('deck-selection-grid');
   grid.innerHTML = '';
 
-  // 12 slots //
-  for (let i = 0; i < 12; i++) {
+  // Ensure deckSlots has fixed capacity for 3 pages * 10 slots = 30
+  const totalSlots = DECK_SLOTS_PER_PAGE * DECK_TOTAL_PAGES;
+  while (deckSlots.length < totalSlots) deckSlots.push(null);
+  if (deckSlots.length > totalSlots) deckSlots.length = totalSlots;
+
+  const start = currentDeckPage * DECK_SLOTS_PER_PAGE;
+  const end = start + DECK_SLOTS_PER_PAGE;
+
+  for (let i = start; i < end; i++) {
     const slotName = deckSlots[i];
     const tile = document.createElement('div');
     tile.className = 'deck-slot-tile';
-    tile.style.position = "relative"; // Ensure positioning for the star/button
+    tile.style.position = "relative";
+
     if (slotName) {
       const deck = decks[slotName] || {};
       const count = Object.values(deck)
         .filter(v => typeof v === 'number')
         .reduce((a, b) => a + b, 0);
 
-if (deck.highlightArt) {
-  tile.innerHTML = `
-    <img class="deck-slot-highlight-img" src="${deck.highlightArt}" alt="highlight" />
-    <div class="deck-slot-title-overlay">${slotName}</div>
-    <img class="deck-slot-cardback-img"
-         src="${deck.cardbackArt || 'Images/Cardback/Default.png'}"
-         alt="Cardback"
-         style="position:absolute;right:8px;bottom:8px;width:32px;height:44px;z-index:10;">
-  `;
-} else {
-  tile.textContent = slotName;
-}
-      // --- CARD COUNT WARNING MESSAGE --- //
-// Card count warning message
-let warningDiv = null;
+      if (deck.highlightArt) {
+        tile.innerHTML = `
+          <img class="deck-slot-highlight-img" src="${deck.highlightArt}" alt="highlight" />
+          <div class="deck-slot-title-overlay">${slotName}</div>
+          <img class="deck-slot-cardback-img"
+               src="${deck.cardbackArt || 'Images/Cardback/Default.png'}"
+               alt="Cardback"
+               style="position:absolute;right:8px;bottom:8px;width:32px;height:44px;z-index:10;">
+        `;
+      } else {
+        tile.textContent = slotName;
+      }
 
-if (count < 30) {
-  warningDiv = document.createElement('div');
-  warningDiv.className = 'deck-slot-warning';
-  warningDiv.textContent = "Less than 30 cards"; // Existing message
-} else if (count > 30) {
-  warningDiv = document.createElement('div');
-  warningDiv.className = 'deck-slot-warning deck-slot-error'; // Add a new CSS class if needed
-  warningDiv.textContent = "More than 30 cards";
-}
-      
-if (warningDiv) tile.appendChild(warningDiv);
-tile.onclick = (e) => {
-  showDeckTileMenu(slotName, tile);
-};
+      let warningDiv = null;
+      if (count < 30) {
+        warningDiv = document.createElement('div');
+        warningDiv.className = 'deck-slot-warning';
+        warningDiv.textContent = "Less than 30 cards";
+      } else if (count > 30) {
+        warningDiv = document.createElement('div');
+        warningDiv.className = 'deck-slot-warning deck-slot-error';
+        warningDiv.textContent = "More than 30 cards";
+      }
+      if (warningDiv) tile.appendChild(warningDiv);
+
+      tile.onclick = () => showDeckTileMenu(slotName, tile);
     } else {
       tile.classList.add('empty');
       tile.textContent = '+ New Deck';
-tile.onclick = () => {
-  showInputModal({
-    title: "Create New Deck",
-    label: "Deck name",
-    defaultValue: "",
-    maxLength: 18,
-    placeholder: "Enter deck name",
-    confirmText: "Create",
-    validate: (val) => {
-      if (!val) return "Deck name required.";
-      if (deckSlots.includes(val)) return "Deck name already exists!";
-      return null;
-    },
-    onConfirm: function(newName) {
-      deckSlots[i] = newName;
-      decks[newName] = {};
-      currentDeckSlot = newName;
-      saveProgress();
-      showDeckBuilder();
+      tile.onclick = () => {
+        showInputModal({
+          title: "Create New Deck",
+          label: "Deck name",
+          defaultValue: "",
+          maxLength: 18,
+          placeholder: "Enter deck name",
+          confirmText: "Create",
+          validate: (val) => {
+            if (!val) return "Deck name required.";
+            if (deckSlots.includes(val)) return "Deck name already exists!";
+            return null;
+          },
+          onConfirm: function(newName) {
+            deckSlots[i] = newName;
+            decks[newName] = {};
+            currentDeckSlot = newName;
+            saveProgress();
+            showDeckBuilder();
+          }
+        });
+      };
     }
-  });
-};
-    }
+
     grid.appendChild(tile);
   }
+
+  renderDeckSelectionPagination();
 }
-  
+function renderDeckSelectionPagination() {
+  const containerId = 'deck-selection-pagination';
+  let pager = document.getElementById(containerId);
+
+  if (!pager) {
+    pager = document.createElement('div');
+    pager.id = containerId;
+    pager.className = 'deck-selection-pagination';
+    deckSelectionGrid.parentElement.appendChild(pager);
+  }
+
+  pager.innerHTML = '';
+
+  // Left arrow (only on page 2 or 3)
+  if (currentDeckPage > 0) {
+    const leftBtn = document.createElement('button');
+    leftBtn.className = 'deck-page-arrow left';
+    leftBtn.textContent = '←';
+    leftBtn.onclick = () => {
+      currentDeckPage--;
+      renderDeckSelection();
+    };
+    pager.appendChild(leftBtn);
+  }
+
+  // Page indicator
+  const label = document.createElement('span');
+  label.className = 'deck-page-label';
+  label.textContent = `Page ${currentDeckPage + 1} / ${DECK_TOTAL_PAGES}`;
+  pager.appendChild(label);
+
+  // Right arrow (if not last page)
+  if (currentDeckPage < DECK_TOTAL_PAGES - 1) {
+    const rightBtn = document.createElement('button');
+    rightBtn.className = 'deck-page-arrow right';
+    rightBtn.textContent = '→';
+    rightBtn.onclick = () => {
+      currentDeckPage++;
+      renderDeckSelection();
+    };
+    pager.appendChild(rightBtn);
+  }
+}
 function showDeckTileMenu(deckName, anchorElem) {
   // Set content as before
   deckMenuTitle.textContent = deckName;
