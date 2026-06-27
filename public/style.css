@@ -2190,6 +2190,33 @@ button[disabled], .btn-disabled {
   box-shadow: 0 0 8px 2px #3b82f6;
   border: 2px dashed #3b82f6;
 }
+.deck-selection-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.deck-page-arrow {
+  background: #222;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.deck-page-arrow:hover {
+  background: #333;
+}
+
+.deck-page-label {
+  color: #fff;
+  font-weight: 600;
+}
 #deck-selection-grid {
   display: flex;
   flex-wrap: wrap;
