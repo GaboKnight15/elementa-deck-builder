@@ -2239,8 +2239,8 @@ button[disabled], .btn-disabled {
   box-shadow: 0 2px 12px #0003;
   font-size: 1.2em;
   cursor: pointer;
-  width: 208px;
-  height: 208px; 
+  width: 200px;
+  height: 200px; 
   transition: box-shadow 0.18s, background 0.18s;
 }
 .deck-slot-highlight-img {
