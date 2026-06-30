@@ -3114,11 +3114,14 @@ function showSetHpModal(cardObj, onSet) {
 function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
   if (attackMode && attackMode.attackerId) return;
   currentCardMenuState = { instanceId, zoneId, orientation };
-  const arr = getZoneArray(zoneId);
-  const cardObj = arr ? arr.find(card => card.instanceId === instanceId) : null;
+
+  const cardObj = findCardByInstanceId(instanceId);
+  if (!cardObj) return;
+
   const cardData = dummyCards.find(c => c.id === cardObj.cardId);
-  // Determine zone for actionable logic
-  const zone = getZoneNameForArray(arr);
+  if (!cardData) return;
+
+  const zone = getZoneNameForCard(cardObj) || zoneId || "";
 
   // Define menu options
   const buttons = [
@@ -3128,7 +3131,7 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
         e.stopPropagation();
         let arr = getZoneArray(zoneId);
         if (arr) {
-          let cardObj = arr.find(card => card.instanceId === instanceId);
+          const cardObj = findCardByInstanceId(instanceId);
           if (!cardObj) return;
           showSetHpModal(cardObj, function(newHp) {
             cardObj.currentHP = newHp;
@@ -3149,7 +3152,7 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
     const arr = getZoneArray(zoneId);
     if (!arr) return;
 
-    const cardObj = arr.find(card => card.instanceId === instanceId);
+    const cardObj = findCardByInstanceId(instanceId)
     if (!cardObj) return;
 
     const nextOrientation =
@@ -3172,8 +3175,8 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
         if (arr) {
           const idx = arr.findIndex(card => card.instanceId === instanceId);
           if (idx !== -1) {
-            const [cardObj] = arr.splice(idx, 1);
-            gameState.playerHand.push(cleanCard(cardObj));
+            const removed = removeCardByInstanceId(instanceId);
+            if (removed) gameState.playerHand.push(cleanCard(removed));
           }
         }
         renderGameState();
@@ -3190,8 +3193,8 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
         if (arr) {
           const idx = arr.findIndex(card => card.instanceId === instanceId);
           if (idx !== -1) {
-            const [cardObj] = arr.splice(idx, 1);
-            gameState.playerVoid.push(cleanCard(cardObj));
+            const removed = removeCardByInstanceId(instanceId);
+            if (removed) gameState.playerVoid.push(cleanCard(removed));
           }
         }
         renderGameState();
@@ -3207,8 +3210,8 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
         if (arr) {
           const idx = arr.findIndex(card => card.instanceId === instanceId);
           if (idx !== -1) {
-            const [cardObj] = arr.splice(idx, 1);
-            gameState.playerDeck.push(cleanCard(cardObj));
+            const removed = removeCardByInstanceId(instanceId);
+            if (removed) gameState.playerVoid.push(cleanCard(removed));
           }
         }
         renderGameState();
@@ -6484,11 +6487,70 @@ window.skillTitle = skillTitle; // optional global for console/tests
 function getCardDef(cardObj) {
   return dummyCards.find(c => c.id === cardObj.cardId) || null;
 }
+function getAllCardCollections() {
+  return [
+    gameState.playerHand, gameState.enemyHand,
+    gameState.playerDeck, gameState.enemyDeck,
+    gameState.playerVoid, gameState.enemyVoid,
+    gameState.playerFallen, gameState.enemyFallen,
+    gameState.playerCreatureSlots, gameState.playerSupportSlots,
+    gameState.enemyCreatureSlots, gameState.enemySupportSlots
+  ];
+}
+function getCardByInstanceId(instanceId) {
+  const pools = [
+    gameState.playerHand,
+    gameState.enemyHand,
+    gameState.playerDeck,
+    gameState.enemyDeck,
+    gameState.playerVoid,
+    gameState.enemyVoid,
+    gameState.playerFallen,
+    gameState.enemyFallen,
+    gameState.playerCreatureSlots.filter(Boolean),
+    gameState.playerSupportSlots.filter(Boolean),
+    gameState.enemyCreatureSlots.filter(Boolean),
+    gameState.enemySupportSlots.filter(Boolean),
+  ];
+  for (const arr of pools) {
+    const found = arr.find(c => c && c.instanceId === instanceId);
+    if (found) return found;
+  }
+  return null;
+}
+function findCardByInstanceId(instanceId) {
+  for (const arr of getAllCardCollections()) {
+    const found = arr.find(c => c && c.instanceId === instanceId);
+    if (found) return found;
+  }
+  return null;
+}
+function removeCardByInstanceId(instanceId) {
+  // remove from normal arrays + slot arrays
+  for (const arr of getAllCardCollections()) {
+    const idx = arr.findIndex(c => c && c.instanceId === instanceId);
+    if (idx !== -1) {
+      const removed = arr[idx];
+      // slot arrays store null when empty
+      if (
+        arr === gameState.playerCreatureSlots || arr === gameState.playerSupportSlots ||
+        arr === gameState.enemyCreatureSlots || arr === gameState.enemySupportSlots
+      ) {
+        arr[idx] = null;
+      } else {
+        arr.splice(idx, 1);
+      }
+      return removed;
+    }
+  }
+  return null;
+}
 function getLaneForCard(cardObj) {
   const def = getCardDef(cardObj);
   const t = String(def?.type || def?.category || "").toLowerCase();
   return t === "creature" ? "creature" : "support"; // terrain/artifact/spell -> support
 }
+
 function removeCardFromAllFieldSlots(instanceId) {
   ["player","enemy"].forEach(owner => {
     ["creature","support"].forEach(lane => {
