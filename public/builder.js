@@ -21,7 +21,7 @@ const deckPanel         = document.getElementById('deck-panel');
 // NEW DECK HANDLER OPTIONS
 const deckMenu = document.getElementById('deck-menu');
 const deckMenuTitle = document.getElementById('deck-menu-title');
-const DECK_SLOTS_PER_PAGE = 10;
+const DECK_SLOTS_PER_PAGE = 15;
 const DECK_TOTAL_PAGES = 3;
 let currentDeckPage = 0; // 0-based: 0,1,2
 
@@ -263,12 +263,19 @@ function renderDeckSelectionPagination() {
   const containerId = 'deck-selection-pagination';
   let pager = document.getElementById(containerId);
 
-  if (!pager) {
-    pager = document.createElement('div');
-    pager.id = containerId;
-    pager.className = 'deck-selection-pagination';
-    deckSelectionGrid.parentElement.appendChild(pager);
-  }
+if (!pager) {
+  pager = document.createElement('div');
+  pager.id = containerId;
+  pager.className = 'deck-selection-pagination';
+
+  // Prefer explicit deck-selection container if present
+  const selectionContainer =
+    document.getElementById('deck-selection-container') || // if you have one
+    document.getElementById('deck-selection-header')?.parentElement ||
+    deckSelectionGrid;
+
+  selectionContainer.appendChild(pager);
+}
 
   pager.innerHTML = '';
 
