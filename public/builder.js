@@ -21,7 +21,7 @@ const deckPanel         = document.getElementById('deck-panel');
 // NEW DECK HANDLER OPTIONS
 const deckMenu = document.getElementById('deck-menu');
 const deckMenuTitle = document.getElementById('deck-menu-title');
-const DECK_SLOTS_PER_PAGE = 15;
+const DECK_SLOTS_PER_PAGE = 10;
 const DECK_TOTAL_PAGES = 3;
 let currentDeckPage = 0; // 0-based: 0,1,2
 
