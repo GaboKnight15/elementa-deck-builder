@@ -93,7 +93,7 @@ let attackMode = {attackerId: null, attackerZone: null, cancelHandler: null};
 
 const INITIAL_HAND_SIZE = 4;
 // STATUS EFFECTS
-const STATUS_MAP = {
+const STATUS = {
   burned: { name: 'Burned', icon: 'Icons/Status/Burned.png', duration: 2, tick: "enemyEnd",
     description: 'Receives 1 more damage.',
     apply: function(cardObj) {
@@ -258,7 +258,7 @@ invulnerableAtk: {
 /*------------------------------
 // ATTACK TARGETING ABILITIES //
 ------------------------------*/
-const TARGET_FILTER_ABILITY = {
+const TARGET_ABILITY = {
   ambush: { name: 'Ambush', icon: 'Icons/Ability/Ambush.png',
     description: 'Cannot be targeted. Removed if this creature attacks or uses a skill.',
     filter: (attacker, targets) => {
@@ -317,23 +317,19 @@ conceal: { name: 'Conceal', icon: 'Icons/Ability/Conceal.png',
 // --- SKILL TRIGGER MAP ---
 // Maps skill activation triggers to their event handlers
 const TRIGGER_MAP = {
-  // When this card enters the field
-  summon: {
-    name: "Summon", icon: 'Icons/Trigger/Summon.png',
+  summon: { name: "Summon", icon: 'Icons/Trigger/Summon.png',
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
   },
   // When this card is drawn
-  draw: {
-    name: "Draw", icon: 'Icons/Trigger/Draw.png',
+  draw: { name: "Draw", icon: 'Icons/Trigger/Draw.png',
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
   },
   // When this card enters the fallen
-  echo: {
-    name: "Echo", icon: 'Icons/Trigger/Echo.png',
+  echo: { name: "Echo", icon: 'Icons/Trigger/Echo.png',
     handler: function(cardObj, skillObj, context = {}, onComplete) {
       resolveSkillEffect(cardObj, skillObj, context, onComplete);
     }
@@ -532,6 +528,7 @@ untap: { name: 'Untap', icon: 'Icons/Skill/Untap.png',
       next && next();
     }
   },
+  
 void: {
   name: 'Void',
   icon: 'Icons/Skill/Void.png',
@@ -604,6 +601,7 @@ summon: { name: 'Summon', zone: 'playerHand', icon: 'Icons/Skill/Summon.png',
     });
   }
 },
+  
 draw: { name: 'Draw',
   description: 'Draw from the your deck.', icon: 'Icons/Skill/Draw.png',
   canActivate(sourceCardObj, skillObj, currentZone, gameState, step = {}) {
@@ -668,6 +666,7 @@ draw: { name: 'Draw',
     drawOne();
   }
 },
+  
 cast: { name: 'Cast', zone: 'playerHand', icon: 'Icons/Skill/Cast.png',
   description: 'Cast a spell from hand: resolve, then send to void.',
   canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
@@ -2543,7 +2542,7 @@ statsAndIconsOverlay.appendChild(topStatsRow);
   iconRow.style.marginTop = '22px';
   // Status Icons
   (cardObj.statuses || []).forEach(status => {
-    const statusDef = STATUS_MAP[status.name];
+    const statusDef = STATUS[status.name];
     if (!statusDef) return;
     const icon = document.createElement('img');
     icon.src = statusDef.icon;
@@ -2556,7 +2555,7 @@ statsAndIconsOverlay.appendChild(topStatsRow);
   // Ability Icons
   const abilityArr = Array.isArray(cardData.ability) ? cardData.ability : (cardData.ability ? [cardData.ability] : []);
   abilityArr.forEach(abilityName => {
-    const abilityDef = TARGET_FILTER_ABILITY[abilityName];
+    const abilityDef = TARGET_ABILITY[abilityName];
     if (!abilityDef) return;
     const icon = document.createElement('img');
     icon.src = abilityDef.icon;
@@ -2676,12 +2675,12 @@ badgesRow.style.gap = '6px';
 if (hasStatus(cardObj, 'Seal')) {
   const sealBadge = document.createElement('div');
   sealBadge.className = 'card-seal-badge';
-  sealBadge.title = STATUS_MAP['Seal']?.description || 'Sealed';
+  sealBadge.title = STATUS['Seal']?.description || 'Sealed';
   sealBadge.style.display = 'flex';
   sealBadge.style.alignItems = 'center';
   sealBadge.style.justifyContent = 'center';
   sealBadge.style.cursor = 'default';
-  sealBadge.innerHTML = `<img src="${STATUS_MAP['Seal']?.icon || 'Icons/Status/seal.png'}" alt="Sealed" style="width:18px;height:18px;filter:drop-shadow(0 2px 6px #0007);opacity:0.95">`;
+  sealBadge.innerHTML = `<img src="${STATUS['Seal']?.icon || 'Icons/Status/seal.png'}" alt="Sealed" style="width:18px;height:18px;filter:drop-shadow(0 2px 6px #0007);opacity:0.95">`;
   badgesRow.appendChild(sealBadge);
 }
 
@@ -4191,9 +4190,9 @@ function getAttackTargets(attackerObj = null) {
   const attackerDef = dummyCards.find(c => c.id === attackerObj.cardId);
   if (!attackerDef || !attackerDef.ability) return targets;
   let filtered = targets;
-  Object.keys(TARGET_FILTER_ABILITY).forEach(abilityName => {
+  Object.keys(TARGET_ABILITY).forEach(abilityName => {
     if (attackerDef.ability.includes(abilityName)) {
-      filtered = TARGET_FILTER_ABILITY[abilityName].filter(attackerObj, filtered);
+      filtered = TARGET_ABILITY[abilityName].filter(attackerObj, filtered);
     }
   });
   return filtered;
@@ -4371,7 +4370,7 @@ function damageCalculation(attacker, defender) {
     if (defenderCategory === "creature" && defenderInfo.arr?.includes(defender) && (defender.currentHP || 0) > 0) {
       const attackerAbilities = attackerDef?.ability || [];
       attackerAbilities.forEach(abilityName => {
-        if (STATUS_MAP[abilityName]) applyStatus(defender, abilityName);
+        if (STATUS[abilityName]) applyStatus(defender, abilityName);
       });
     }
     renderGameState();
@@ -4402,7 +4401,7 @@ function damageCalculation(attacker, defender) {
   if (defenderCategory === "creature" && defenderInfo.arr?.includes(defender) && (defender.currentHP || 0) > 0) {
     const attackerAbilities = attackerDef?.ability || [];
     attackerAbilities.forEach(abilityName => {
-      if (STATUS_MAP[abilityName]) applyStatus(defender, abilityName);
+      if (STATUS[abilityName]) applyStatus(defender, abilityName);
     });
   }
   renderGameState();
@@ -4446,7 +4445,7 @@ function dealDamage(cardObj, targetObj, damage) {
     if (sourceDef && sourceDef.ability) {
       const abilities = Array.isArray(sourceDef.ability) ? sourceDef.ability : [sourceDef.ability];
       abilities.forEach(abilityName => {
-        if (STATUS_MAP[abilityName]) {
+        if (STATUS[abilityName]) {
           applyStatus(targetObj, abilityName);
         }
       });
@@ -6139,7 +6138,7 @@ function parseCost(costStr) {
 /*------------------
 // STATUS EFFECTS //
 ------------------*/
-function applyStatus(cardObj, statusName, duration = (STATUS_MAP[statusName] && STATUS_MAP[statusName].duration)) {
+function applyStatus(cardObj, statusName, duration = (STATUS[statusName] && STATUS[statusName].duration)) {
   if (!cardObj || !statusName) return;
   cardObj.statuses = cardObj.statuses || [];
   if (!cardObj.statuses.some(s => s.name === statusName)) {
@@ -6148,21 +6147,21 @@ function applyStatus(cardObj, statusName, duration = (STATUS_MAP[statusName] && 
 
     // call the status-specific apply callback if present (preserve existing behavior)
     try {
-      if (STATUS_MAP[statusName] && typeof STATUS_MAP[statusName].apply === 'function') {
-        STATUS_MAP[statusName].apply(cardObj);
+      if (STATUS[statusName] && typeof STATUS[statusName].apply === 'function') {
+        STATUS[statusName].apply(cardObj);
       }
     } catch (err) {
-      console.warn(`STATUS_MAP.${statusName}.apply failed`, err);
+      console.warn(`STATUS.${statusName}.apply failed`, err);
     }
 
     // Notify any JS listeners registered via onSoaked/onBurned/...
-    // Use case-insensitive matching against STATUS_MAP keys (single source of truth)
+    // Use case-insensitive matching against STATUS keys (single source of truth)
     try {
       const normalized = String(statusName).trim().toLowerCase();
       let canonical = null;
 
-      if (typeof STATUS_MAP === 'object' && STATUS_MAP !== null) {
-        canonical = Object.keys(STATUS_MAP).find(k => String(k).toLowerCase() === normalized);
+      if (typeof STATUS === 'object' && STATUS !== null) {
+        canonical = Object.keys(STATUS).find(k => String(k).toLowerCase() === normalized);
       }
 
       if (canonical) {
@@ -6193,14 +6192,14 @@ function applyStatus(cardObj, statusName, duration = (STATUS_MAP[statusName] && 
 function removeStatus(cardObj, statusName) {
   if (!cardObj.statuses) return;
   cardObj.statuses = cardObj.statuses.filter(s => s.name !== statusName);
-  if (STATUS_MAP[statusName]) STATUS_MAP[statusName].remove(cardObj);
+  if (STATUS[statusName]) STATUS[statusName].remove(cardObj);
 }
 
 function handleStatusEffects(cardObj) {
   if (!cardObj.statuses) return;
   cardObj.statuses.forEach(status => {
-    if (STATUS_MAP[status.name].onTurnStart) {
-      STATUS_MAP[status.name].onTurnStart(cardObj);
+    if (STATUS[status.name].onTurnStart) {
+      STATUS[status.name].onTurnStart(cardObj);
     }
     status.duration -= 1;
   });
@@ -6214,8 +6213,8 @@ function handleEndPhaseStatuses() {
   [...gameState.playerCreatures, ...gameState.enemyCreatures].forEach(cardObj => {
     if (cardObj.statuses) {
       cardObj.statuses.forEach(status => {
-        if (STATUS_MAP[status.name]?.onEndPhase) {
-          STATUS_MAP[status.name].onEndPhase(cardObj);
+        if (STATUS[status.name]?.onEndPhase) {
+          STATUS[status.name].onEndPhase(cardObj);
         }
         // Reduce duration for statuses that only tick on End Phase
         status.duration -= 1;
@@ -6236,7 +6235,7 @@ function tickStatusDurations(phaseObj) {
   allCards.forEach(cardObj => {
     if (!cardObj.statuses) return;
     cardObj.statuses.forEach(status => {
-      const statusDef = STATUS_MAP[status.name];
+      const statusDef = STATUS[status.name];
       if (!statusDef) return;
       // Determine if this status should tick in this phase
       if (
