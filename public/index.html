@@ -333,12 +333,45 @@
   
 <!-- BATTLEFIELD CENTER -->  
 <div id="battlefield" style="position:relative;">
-  <div id="enemy-hand"           class="hand-area"></div>
-  <div id="enemy-terrains-zone"   class="zone-row"></div>
-  <div id="enemy-creatures-zone" class="zone-row"></div>
-  <div id="player-creatures-zone"   class="zone-row"></div>
-  <div id="player-terrains-zone"     class="zone-row"></div>
-  <div id="player-hand"             class="hand-area"></div>
+  <div id="enemy-hand" class="hand-area"></div>
+
+  <!-- Enemy support row (5 slots) -->
+  <div id="enemy-support-zone" class="zone-row slot-row support-row" data-owner="enemy" data-lane="support">
+    <div id="enemy-support-slot-0" class="field-slot support-slot" data-owner="enemy" data-lane="support" data-slot-index="0"></div>
+    <div id="enemy-support-slot-1" class="field-slot support-slot" data-owner="enemy" data-lane="support" data-slot-index="1"></div>
+    <div id="enemy-support-slot-2" class="field-slot support-slot" data-owner="enemy" data-lane="support" data-slot-index="2"></div>
+    <div id="enemy-support-slot-3" class="field-slot support-slot" data-owner="enemy" data-lane="support" data-slot-index="3"></div>
+    <div id="enemy-support-slot-4" class="field-slot support-slot" data-owner="enemy" data-lane="support" data-slot-index="4"></div>
+  </div>
+
+  <!-- Enemy creature row (5 slots) -->
+  <div id="enemy-creature-zone" class="zone-row slot-row creature-row" data-owner="enemy" data-lane="creature">
+    <div id="enemy-creature-slot-0" class="field-slot creature-slot" data-owner="enemy" data-lane="creature" data-slot-index="0"></div>
+    <div id="enemy-creature-slot-1" class="field-slot creature-slot" data-owner="enemy" data-lane="creature" data-slot-index="1"></div>
+    <div id="enemy-creature-slot-2" class="field-slot creature-slot" data-owner="enemy" data-lane="creature" data-slot-index="2"></div>
+    <div id="enemy-creature-slot-3" class="field-slot creature-slot" data-owner="enemy" data-lane="creature" data-slot-index="3"></div>
+    <div id="enemy-creature-slot-4" class="field-slot creature-slot" data-owner="enemy" data-lane="creature" data-slot-index="4"></div>
+  </div>
+
+  <!-- Player creature row (5 slots) -->
+  <div id="player-creature-zone" class="zone-row slot-row creature-row" data-owner="player" data-lane="creature">
+    <div id="player-creature-slot-0" class="field-slot creature-slot" data-owner="player" data-lane="creature" data-slot-index="0"></div>
+    <div id="player-creature-slot-1" class="field-slot creature-slot" data-owner="player" data-lane="creature" data-slot-index="1"></div>
+    <div id="player-creature-slot-2" class="field-slot creature-slot" data-owner="player" data-lane="creature" data-slot-index="2"></div>
+    <div id="player-creature-slot-3" class="field-slot creature-slot" data-owner="player" data-lane="creature" data-slot-index="3"></div>
+    <div id="player-creature-slot-4" class="field-slot creature-slot" data-owner="player" data-lane="creature" data-slot-index="4"></div>
+  </div>
+
+  <!-- Player support row (5 slots) -->
+  <div id="player-support-zone" class="zone-row slot-row support-row" data-owner="player" data-lane="support">
+    <div id="player-support-slot-0" class="field-slot support-slot" data-owner="player" data-lane="support" data-slot-index="0"></div>
+    <div id="player-support-slot-1" class="field-slot support-slot" data-owner="player" data-lane="support" data-slot-index="1"></div>
+    <div id="player-support-slot-2" class="field-slot support-slot" data-owner="player" data-lane="support" data-slot-index="2"></div>
+    <div id="player-support-slot-3" class="field-slot support-slot" data-owner="player" data-lane="support" data-slot-index="3"></div>
+    <div id="player-support-slot-4" class="field-slot support-slot" data-owner="player" data-lane="support" data-slot-index="4"></div>
+  </div>
+
+  <div id="player-hand" class="hand-area"></div>
 </div>
     
 <!-- BATTLEFIELD RIGHTBAR -->
