@@ -29,6 +29,13 @@ TURNS.forEach(turn =>
 let gameState = {
   playerDeck: [], playerHand: [], playerCreatures: [], playerTerrains: [], playerVoid: [], playerFallen: [], playerArtifacts: [], playerSpells: [],
   enemyDeck: [], enemyHand: [], enemyCreatures: [], enemyTerrains: [], enemyVoid: [], enemyFallen: [], enemyArtifacts: [], enemySpells: [],
+
+  // New slot layout (5 creature + 5 support per side)
+  playerCreatureSlots: Array(5).fill(null),
+  playerSupportSlots: Array(5).fill(null),
+  enemyCreatureSlots: Array(5).fill(null),
+  enemySupportSlots: Array(5).fill(null),
+
   playerDomain: null, enemyDomain: null,
   turn: "player",
   phase: "start",
@@ -38,27 +45,39 @@ let gameState = {
   },
   chatLog: []
 };
+
 const ZONE_MAP = {
-  // Player zones
-  playerCreatures:   { id: "player-creatures-zone",   arr: () => gameState.playerCreatures },
-  playerTerrains:    { id: "player-terrains-zone",    arr: () => gameState.playerTerrains },
-  playerVoid:        { id: "player-void-zone",        arr: () => gameState.playerVoid },
-  playerDeck:        { id: "player-deck-zone",        arr: () => gameState.playerDeck },
-  playerHand:        { id: "player-hand",             arr: () => gameState.playerHand },
-  playerFallen:      { id: "player-fallen",           arr: () => gameState.playerFallen },
-  playerArtifacts:   { id: null,                      arr: () => gameState.playerArtifacts },
-  playerSpells:      { id: null,                      arr: () => gameState.playerSpells },
-  playerUnits:       { id: null,                      arr: () => [...gameState.playerCreatures, ...gameState.playerArtifacts] },
-  // enemy zones
-  enemyCreatures: { id: "enemy-creatures-zone", arr: () => gameState.enemyCreatures },
-  enemyTerrains:  { id: "enemy-terrains-zone",  arr: () => gameState.enemyTerrains },
-  enemyVoid:      { id: "enemy-void-zone",      arr: () => gameState.enemyVoid },
-  enemyDeck:      { id: "enemy-deck-zone",      arr: () => gameState.enemyDeck },
-  enemyHand:      { id: "enemy-hand",           arr: () => gameState.enemyHand },
-  enemyFallen:    { id: "enemy-fallen",         arr: () => gameState.enemyFallen },
-  enemyArtifacts: { id: null,                   arr: () => gameState.enemyArtifacts },
-  enemySpells:    { id: null,                   arr: () => gameState.enemySpells },
-  enemyUnits:     { id: null,                   arr: () => [...gameState.enemyCreatures, ...gameState.enemyArtifacts] },
+  // Player zones (updated IDs)
+  playerCreatures:   { id: "player-creature-zone",  arr: () => gameState.playerCreatures },
+  playerTerrains:    { id: "player-support-zone",   arr: () => gameState.playerTerrains },
+  playerVoid:        { id: "player-void-zone",      arr: () => gameState.playerVoid },
+  playerDeck:        { id: "player-deck-zone",      arr: () => gameState.playerDeck },
+  playerHand:        { id: "player-hand",           arr: () => gameState.playerHand },
+  playerFallen:      { id: "player-fallen",         arr: () => gameState.playerFallen },
+  playerArtifacts:   { id: "player-support-zone",   arr: () => gameState.playerArtifacts },
+  playerSpells:      { id: "player-support-zone",   arr: () => gameState.playerSpells },
+
+  // New slot collections
+  playerCreatureSlots: { id: "player-creature-zone", arr: () => gameState.playerCreatureSlots },
+  playerSupportSlots:  { id: "player-support-zone",  arr: () => gameState.playerSupportSlots },
+
+  playerUnits:       { id: null, arr: () => [...gameState.playerCreatures, ...gameState.playerArtifacts] },
+
+  // Enemy zones (updated IDs)
+  enemyCreatures:    { id: "enemy-creature-zone",   arr: () => gameState.enemyCreatures },
+  enemyTerrains:     { id: "enemy-support-zone",    arr: () => gameState.enemyTerrains },
+  enemyVoid:         { id: "enemy-void-zone",       arr: () => gameState.enemyVoid },
+  enemyDeck:         { id: "enemy-deck-zone",       arr: () => gameState.enemyDeck },
+  enemyHand:         { id: "enemy-hand",            arr: () => gameState.enemyHand },
+  enemyFallen:       { id: "enemy-fallen",          arr: () => gameState.enemyFallen },
+  enemyArtifacts:    { id: "enemy-support-zone",    arr: () => gameState.enemyArtifacts },
+  enemySpells:       { id: "enemy-support-zone",    arr: () => gameState.enemySpells },
+
+  // New slot collections
+  enemyCreatureSlots: { id: "enemy-creature-zone", arr: () => gameState.enemyCreatureSlots },
+  enemySupportSlots:  { id: "enemy-support-zone",  arr: () => gameState.enemySupportSlots },
+
+  enemyUnits:        { id: null, arr: () => [...gameState.enemyCreatures, ...gameState.enemyArtifacts] },
 
   // Combined/mass zones for flexible targeting
   allCreatures:      { id: null, arr: () => [...gameState.playerCreatures, ...gameState.enemyCreatures] },
@@ -67,22 +86,38 @@ const ZONE_MAP = {
   allDecks:          { id: null, arr: () => [...gameState.playerDeck, ...gameState.enemyDeck] },
   allHands:          { id: null, arr: () => [...gameState.playerHand, ...gameState.enemyHand] },
   allFallens:        { id: null, arr: () => [...gameState.playerFallen, ...gameState.enemyFallen] },
+
+  // Includes supports from both terrain+artifact collections
+  allSupports:       { id: null, arr: () => [
+    ...gameState.playerTerrains, ...gameState.playerArtifacts, ...gameState.playerSpells,
+    ...gameState.enemyTerrains, ...gameState.enemyArtifacts, ...gameState.enemySpells
+  ] },
+
   allUnits:          { id: null, arr: () => [
     ...gameState.playerCreatures, ...gameState.playerArtifacts,
     ...gameState.enemyCreatures, ...gameState.enemyArtifacts
   ] },
 
-  playerField: { id: null, arr: () => [...gameState.playerCreatures, ...gameState.playerTerrains] },
-  enemyField:  { id: null, arr: () => [...gameState.enemyCreatures, ...gameState.enemyTerrains] },
-  
-  // Whole field (creatures + terrains both sides)
-  allField:    { id: null, arr: () => [...gameState.playerCreatures, ...gameState.playerTerrains, ...gameState.enemyCreatures, ...gameState.enemyTerrains] },
+  playerField:       { id: null, arr: () => [
+    ...gameState.playerCreatures, ...gameState.playerTerrains, ...gameState.playerArtifacts, ...gameState.playerSpells
+  ]},
+  enemyField:        { id: null, arr: () => [
+    ...gameState.enemyCreatures, ...gameState.enemyTerrains, ...gameState.enemyArtifacts, ...gameState.enemySpells
+  ]},
+
+  // Whole field (creatures + supports both sides)
+  allField:          { id: null, arr: () => [
+    ...gameState.playerCreatures, ...gameState.playerTerrains, ...gameState.playerArtifacts, ...gameState.playerSpells,
+    ...gameState.enemyCreatures, ...gameState.enemyTerrains, ...gameState.enemyArtifacts, ...gameState.enemySpells
+  ]},
 
   // All cards everywhere (for global effects, etc.)
   allCards:          { id: null, arr: () => [
-    ...gameState.playerCreatures, ...gameState.playerTerrains, ...gameState.playerVoid, ...gameState.playerDeck, ...gameState.playerHand, ...gameState.playerFallen,
-    ...gameState.enemyCreatures, ...gameState.enemyTerrains, ...gameState.enemyVoid, ...gameState.enemyDeck, ...gameState.enemyHand, ...gameState.enemyFallen,
-  ] }
+    ...gameState.playerCreatures, ...gameState.playerTerrains, ...gameState.playerArtifacts, ...gameState.playerSpells,
+    ...gameState.playerVoid, ...gameState.playerDeck, ...gameState.playerHand, ...gameState.playerFallen,
+    ...gameState.enemyCreatures, ...gameState.enemyTerrains, ...gameState.enemyArtifacts, ...gameState.enemySpells,
+    ...gameState.enemyVoid, ...gameState.enemyDeck, ...gameState.enemyHand, ...gameState.enemyFallen,
+  ]}
 };
 
 // --- EVENT QUEUE --- //
@@ -1463,6 +1498,54 @@ function getZoneArray(zoneId) {
   }
   return null;
 }
+function getSlotArray(owner, lane) {
+  if (owner === "player" && lane === "creature") return gameState.playerCreatureSlots;
+  if (owner === "player" && lane === "support") return gameState.playerSupportSlots;
+  if (owner === "enemy" && lane === "creature") return gameState.enemyCreatureSlots;
+  if (owner === "enemy" && lane === "support") return gameState.enemySupportSlots;
+  return null;
+}
+
+function getCardLane(cardObj) {
+  const def = dummyCards.find(c => c.id === cardObj.cardId);
+  if (!def) return null;
+  const cat = (def.category || "").toLowerCase();
+  return cat === "creature" ? "creature" : "support"; // terrain/artifact/spell -> support
+}
+
+function findCardSlot(cardObj) {
+  const lanes = [
+    ["player", "creature"], ["player", "support"],
+    ["enemy", "creature"], ["enemy", "support"]
+  ];
+  for (const [owner, lane] of lanes) {
+    const arr = getSlotArray(owner, lane);
+    const idx = arr.findIndex(c => c && c.instanceId === cardObj.instanceId);
+    if (idx !== -1) return { owner, lane, index: idx };
+  }
+  return null;
+}
+
+function syncLegacyFieldArraysFromSlots() {
+  gameState.playerCreatures = gameState.playerCreatureSlots.filter(Boolean);
+  gameState.enemyCreatures = gameState.enemyCreatureSlots.filter(Boolean);
+
+  const pSupport = gameState.playerSupportSlots.filter(Boolean);
+  const eSupport = gameState.enemySupportSlots.filter(Boolean);
+
+  const byType = (arr, type) => arr.filter(c => {
+    const def = dummyCards.find(d => d.id === c.cardId);
+    return (def?.type || "").toLowerCase() === type;
+  });
+
+  gameState.playerTerrains = byType(pSupport, "terrain");
+  gameState.playerArtifacts = byType(pSupport, "artifact");
+  gameState.playerSpells = byType(pSupport, "spell");
+
+  gameState.enemyTerrains = byType(eSupport, "terrain");
+  gameState.enemyArtifacts = byType(eSupport, "artifact");
+  gameState.enemySpells = byType(eSupport, "spell");
+}
 function getZoneArrayForCard(cardObj) {
   if (!cardObj) return null;
 
@@ -1493,10 +1576,33 @@ function getZoneNameForArray(arr) {
 }
 // Helper: find zoneId for a cardObj
 function findZoneIdForCard(cardObj) {
-  for (const zoneName in ZONE_MAP) {
-    if (ZONE_MAP[zoneName].arr().includes(cardObj)) return ZONE_MAP[zoneName].id;
-  }
-  return '';
+  if (!cardObj) return null;
+  const id = cardObj.instanceId;
+
+  // Hand / deck / void / fallen first
+  if (gameState.playerHand.some(c => c.instanceId === id)) return "player-hand";
+  if (gameState.enemyHand.some(c => c.instanceId === id)) return "enemy-hand";
+  if (gameState.playerDeck.some(c => c.instanceId === id)) return "player-deck-zone";
+  if (gameState.enemyDeck.some(c => c.instanceId === id)) return "enemy-deck-zone";
+  if (gameState.playerVoid.some(c => c.instanceId === id)) return "player-void-zone";
+  if (gameState.enemyVoid.some(c => c.instanceId === id)) return "enemy-void-zone";
+  if (gameState.playerFallen.some(c => c.instanceId === id)) return "player-fallen";
+  if (gameState.enemyFallen.some(c => c.instanceId === id)) return "enemy-fallen";
+
+  // Slot-based battlefield
+  const pC = gameState.playerCreatureSlots.findIndex(c => c && c.instanceId === id);
+  if (pC !== -1) return `player-creature-slot-${pC}`;
+
+  const pS = gameState.playerSupportSlots.findIndex(c => c && c.instanceId === id);
+  if (pS !== -1) return `player-support-slot-${pS}`;
+
+  const eC = gameState.enemyCreatureSlots.findIndex(c => c && c.instanceId === id);
+  if (eC !== -1) return `enemy-creature-slot-${eC}`;
+
+  const eS = gameState.enemySupportSlots.findIndex(c => c && c.instanceId === id);
+  if (eS !== -1) return `enemy-support-slot-${eS}`;
+
+  return null;
 }
 function findCardFieldArray(cardObj) {
   for (const zoneName in ZONE_MAP) {
@@ -1540,33 +1646,49 @@ function getRequirementFilter(requirement) {
 }
 // --- Utility: Determine card owner as "player" or "enemy" ---
 function getCardOwner(cardObj) {
-  if (!cardObj) return null;
+  if (!cardObj || !cardObj.instanceId) return null;
+  const id = cardObj.instanceId;
+
+  // Explicit owner wins
+  if (cardObj.owner === "player" || cardObj.owner === "enemy") return cardObj.owner;
 
   // Player zones
-  if (
-    gameState.playerCreatures.includes(cardObj) ||
-    gameState.playerTerrains.includes(cardObj) ||
-    gameState.playerArtifacts?.includes(cardObj) ||
-    gameState.playerHand.includes(cardObj) ||
-    gameState.playerDeck.includes(cardObj) ||
-    gameState.playerVoid.includes(cardObj) ||
-    gameState.playerFallen.includes(cardObj)
-  ) return "player";
+  if (gameState.playerHand.some(c => c.instanceId === id)) return "player";
+  if (gameState.playerDeck.some(c => c.instanceId === id)) return "player";
+  if (gameState.playerVoid.some(c => c.instanceId === id)) return "player";
+  if (gameState.playerFallen.some(c => c.instanceId === id)) return "player";
+  if (gameState.playerCreatureSlots.some(c => c && c.instanceId === id)) return "player";
+  if (gameState.playerSupportSlots.some(c => c && c.instanceId === id)) return "player";
 
-  // enemy zones
-  if (
-    gameState.enemyCreatures.includes(cardObj) ||
-    gameState.enemyTerrains.includes(cardObj) ||
-    gameState.enemyArtifacts?.includes(cardObj) ||
-    gameState.enemyHand.includes(cardObj) ||
-    gameState.enemyDeck.includes(cardObj) ||
-    gameState.enemyVoid.includes(cardObj) ||
-    gameState.enemyFallen.includes(cardObj)
-  ) return "enemy";
+  // Enemy zones
+  if (gameState.enemyHand.some(c => c.instanceId === id)) return "enemy";
+  if (gameState.enemyDeck.some(c => c.instanceId === id)) return "enemy";
+  if (gameState.enemyVoid.some(c => c.instanceId === id)) return "enemy";
+  if (gameState.enemyFallen.some(c => c.instanceId === id)) return "enemy";
+  if (gameState.enemyCreatureSlots.some(c => c && c.instanceId === id)) return "enemy";
+  if (gameState.enemySupportSlots.some(c => c && c.instanceId === id)) return "enemy";
 
   return null;
 }
+function isTargetStillPresent(targetObj) {
+  if (!targetObj || !targetObj.instanceId) return false;
+  const id = targetObj.instanceId;
 
+  return (
+    gameState.playerHand.some(c => c.instanceId === id) ||
+    gameState.enemyHand.some(c => c.instanceId === id) ||
+    gameState.playerDeck.some(c => c.instanceId === id) ||
+    gameState.enemyDeck.some(c => c.instanceId === id) ||
+    gameState.playerVoid.some(c => c.instanceId === id) ||
+    gameState.enemyVoid.some(c => c.instanceId === id) ||
+    gameState.playerFallen.some(c => c.instanceId === id) ||
+    gameState.enemyFallen.some(c => c.instanceId === id) ||
+    gameState.playerCreatureSlots.some(c => c && c.instanceId === id) ||
+    gameState.playerSupportSlots.some(c => c && c.instanceId === id) ||
+    gameState.enemyCreatureSlots.some(c => c && c.instanceId === id) ||
+    gameState.enemySupportSlots.some(c => c && c.instanceId === id)
+  );
+}
 // --- TURN FLAGS --- //
 function resetTurnFlags(turn) {
   if (turn === "player") {
@@ -1605,175 +1727,153 @@ function capitalize(s) {
 // ===================================
 // --- MOVE OBJECT --- //
 function getTargets(target, sourceCardObj, context = {}) {
-  // Accepts string, array, or object for advanced targeting/filtering
-  let arr = [];
+  if (!target) return [];
+
+  // Frequently used slot collections
+  const playerCreatures = gameState.playerCreatureSlots.filter(Boolean);
+  const enemyCreatures = gameState.enemyCreatureSlots.filter(Boolean);
+  const playerSupports  = gameState.playerSupportSlots.filter(Boolean);
+  const enemySupports   = gameState.enemySupportSlots.filter(Boolean);
+
+  const allCreatures = [...playerCreatures, ...enemyCreatures];
+  const allSupports  = [...playerSupports, ...enemySupports];
+  const playerField  = [...playerCreatures, ...playerSupports];
+  const enemyField   = [...enemyCreatures, ...enemySupports];
+  const allField     = [...playerField, ...enemyField];
+
+  const map = {
+    // battlefield by lane
+    playerCreatures,
+    enemyCreatures,
+    allCreatures,
+
+    playerSupports,
+    enemySupports,
+    allSupports,
+
+    playerField,
+    enemyField,
+    allField,
+
+    // non-field zones
+    playerHand: gameState.playerHand,
+    enemyHand: gameState.enemyHand,
+    allHands: [...gameState.playerHand, ...gameState.enemyHand],
+
+    playerDeck: gameState.playerDeck,
+    enemyDeck: gameState.enemyDeck,
+    allDecks: [...gameState.playerDeck, ...gameState.enemyDeck],
+
+    playerVoid: gameState.playerVoid,
+    enemyVoid: gameState.enemyVoid,
+    allVoids: [...gameState.playerVoid, ...gameState.enemyVoid],
+
+    playerFallen: gameState.playerFallen,
+    enemyFallen: gameState.enemyFallen,
+    allFallens: [...gameState.playerFallen, ...gameState.enemyFallen],
+
+    allCards: [
+      ...allField,
+      ...gameState.playerHand, ...gameState.enemyHand,
+      ...gameState.playerDeck, ...gameState.enemyDeck,
+      ...gameState.playerVoid, ...gameState.enemyVoid,
+      ...gameState.playerFallen, ...gameState.enemyFallen
+    ],
+
+    self: sourceCardObj ? [sourceCardObj] : [],
+    source: sourceCardObj ? [sourceCardObj] : [],
+    attacker: context.attacker ? [context.attacker] : [],
+    defender: context.defender ? [context.defender] : [],
+  };
+
+  // string target key
+  if (typeof target === "string") {
+    return map[target] ? [...map[target]] : [];
+  }
+
+  // array of target keys => merge unique
   if (Array.isArray(target)) {
-    // Array of instanceIds or card objects
-    arr = target.map(t =>
-      typeof t === "object" ? t :
-      Object.values(gameState).flat().find(card => card.instanceId === t)
-    ).filter(Boolean);
-  } else if (typeof target === "object" && target.zone) {
-    // Advanced: zone + filter
-    arr = gameState[target.zone] || [];
-    if (target.filter) {
-      // filter by card property from dummyCards
-      arr = arr.filter(cardObj => {
-        const cardData = dummyCards.find(c => c.id === cardObj.cardId);
-        if (!cardData) return false;
-        return Object.entries(target.filter).every(([key, val]) => {
-          if (typeof cardData[key] === "string")
-            return cardData[key].toLowerCase() === String(val).toLowerCase();
-          if (Array.isArray(cardData[key]))
-            return cardData[key].map(v => v.toLowerCase()).includes(String(val).toLowerCase());
-          return cardData[key] === val;
-        });
-      });
-    }
-  } else if (typeof target === "string") {
-    switch (target) {
-      case "self": arr = [sourceCardObj]; break;
-      case "player": arr = [gameState.player]; break;
-      case "playerCreatures": arr = gameState.playerCreatures; break;
-      case "playerTerrains": arr = gameState.playerTerrains; break;
-      case "playerHand": arr = gameState.playerHand; break;
-      case "playerVoid": arr = gameState.playerVoid; break;
-      case "enemyCreatures": arr = gameState.enemyCreatures; break;
-      case "enemyTerrains": arr = gameState.enemyTerrains; break;
-      case "enemyHand": arr = gameState.enemyHand; break;
-      case "enemyVoid": arr = gameState.enemyVoid; break;
-      case "playerDomain": arr = gameState.playerDomain ? [gameState.playerDomain] : []; break;
-      case "enemyDomain": arr = gameState.enemyDomain ? [gameState.enemyDomain] : []; break;
-      case "allCreatures": arr = [...gameState.playerCreatures, ...gameState.enemyCreatures]; break;
-      case "allTerrains": arr = [...gameState.playerTerrains, ...gameState.enemyTerrains]; break;
-      case "any": arr = Object.values(gameState).flat().filter(card => card && card.cardId); break;
-      case "playerUnits": arr = [...gameState.playerCreatures, ...gameState.playerArtifacts]; break;
-      case "enemyUnits": arr = [...gameState.enemyCreatures, ...gameState.enemyArtifacts]; break;
-      case "allUnits": arr = [...gameState.playerCreatures, ...gameState.playerArtifacts, ...gameState.enemyCreatures, ...gameState.enemyArtifacts]; break;
-      default: arr = [];
+    const merged = target.flatMap(t => (typeof t === "string" && map[t]) ? map[t] : []);
+    const seen = new Set();
+    return merged.filter(c => {
+      if (!c || !c.instanceId || seen.has(c.instanceId)) return false;
+      seen.add(c.instanceId);
+      return true;
+    });
+  }
+
+  // object target style (if your effects pass { zone: "...", owner: "...", lane: "..." })
+  if (typeof target === "object") {
+    const zone = target.zone || target.key || "";
+    if (zone && map[zone]) return [...map[zone]];
+
+    // owner/lane fallback
+    if (target.owner && target.lane) {
+      if (target.owner === "player" && target.lane === "creature") return [...playerCreatures];
+      if (target.owner === "enemy" && target.lane === "creature") return [...enemyCreatures];
+      if (target.owner === "player" && target.lane === "support") return [...playerSupports];
+      if (target.owner === "enemy" && target.lane === "support") return [...enemySupports];
     }
   }
-  return arr.filter(Boolean);
+
+  return [];
 }
 function moveCard(instanceId, fromArr, toArr, extra = {}, callback) {
-  const fromZoneName = getZoneNameForArray(fromArr);
-  const toZoneName = getZoneNameForArray(toArr);
-  const fromZoneId = ZONE_MAP[fromZoneName]?.id;
-  const toZoneId = ZONE_MAP[toZoneName]?.id;
+  const fromIdx = fromArr.findIndex(c => c.instanceId === instanceId);
+  if (fromIdx === -1) return callback && callback();
 
-  const isToVoid = (toZoneName === "playerVoid" || toZoneName === "enemyVoid");
-  const isToFallen = (toZoneName === "playerFallen" || toZoneName === "enemyFallen");
+  const cardObj = fromArr[fromIdx];
 
-  const isHandToField =
-    (fromZoneName === "playerHand" || fromZoneName === "enemyHand") &&
-    (toZoneName === "playerCreatures" || toZoneName === "playerTerrains" ||
-     toZoneName === "enemyCreatures" || toZoneName === "enemyTerrains");
+  // detect if destination is player/enemy field by explicit extra
+  const owner = extra.owner || "player";
+  const toField = extra.toField === true; // pass this when playing/summoning to board
 
-  const doMove = () => {
-    const idx = fromArr.findIndex(card => card.instanceId === instanceId);
-    if (idx !== -1) {
-      let cardObj = { ...fromArr[idx], ...extra };
-      let cardDef = dummyCards.find(c => c.id === cardObj.cardId);
-
-      // If moving OUT of field, remove combat props
-      const fieldZones = ["playerCreatures", "playerTerrains", "enemyCreatures", "enemyTerrains"];
-      const fromField = fieldZones.includes(fromZoneName);
-      const toField = fieldZones.includes(toZoneName);
-      if (fromField && !toField) {
-        delete cardObj.currentHP;
-        delete cardObj.orientation;
-      }
-
-// Ensure correct owner
-if (toZoneName === 'playerVoid') {
-  toArr = gameState.playerVoid;
-} else if (toZoneName === 'enemyVoid') {
-  toArr = gameState.enemyVoid;
-} else if (toZoneName === 'playerFallen') {
-  toArr = gameState.playerFallen;
-} else if (toZoneName === 'enemyFallen') {
-  toArr = gameState.enemyFallen;
-}
-
-      // Logging
-      let logObj;
-      const isDrawToHand = (
-        fromZoneName === "playerDeck" && toZoneName === "playerHand"
-      ) || (
-        fromZoneName === "enemyDeck" && toZoneName === "enemyHand"
-      );
-
-      if (isDrawToHand) {
-        logObj = {
-          sourceCard: {
-            image: cardDef?.image,
-            name: cardDef?.name,
-            cardId: cardDef?.id,
-            isDraw: true
-          },
-          action: "draw",
-          dest: "Hand",
-          who: fromZoneName === "playerDeck" ? "player" : "enemy",
-          sender: gameState.playerProfile?.username || "me"
-        };
-      } else {
-        logObj = {
-          sourceCard: { image: cardDef?.image, name: cardDef?.name, cardId: cardDef?.id },
-          action: "move",
-          dest: toZoneName.replace(/([A-Z])/g, ' $1').trim(),
-          from: fromZoneName,
-          who: ["playerHand","playerDeck","playerTerrains","playerCreatures"].includes(fromZoneName) ? "player" : "enemy",
-          sender: gameState.playerProfile?.username || "me"
-        };
-      }
-
-      appendVisualLog(logObj, false, logObj.who === "player");
-      if (window.socket && window.currentRoomId) {
-        window.socket.emit('game action log', window.currentRoomId, logObj);
-      }
-
-      // Final move
-      fromArr.splice(idx, 1);
-      toArr.push(cardObj);
-    }
-
-    // Trigger onSummon only if destination is a field zone
-    if (["playerCreatures", "playerTerrains", "enemyCreatures", "enemyTerrains"].includes(toZoneName)) {
-      const cardObj = toArr[toArr.length - 1];
-      triggerSelfSkill(cardObj, "summon", { triggerCard: cardObj });
-    }
-    if (["playerFallen", "enemyFallen"].includes(toZoneName)) {
-      const cardObj = toArr[toArr.length - 1];
-      triggerSelfSkill(cardObj, "echo", { triggerCard: cardObj });
-    }
-    setupDropZones();
-    emitPublicState();
+  const finalize = () => {
+    renderGameState();
     if (callback) callback();
   };
 
-  // Void/Fallen: fade out only, then move
-  if (isToVoid || isToFallen) {
-    animateDefeat(instanceId, fromZoneId, doMove);
+  if (toField) {
+    const lane = getLaneForCard(cardObj); // creature or support
+    const slots = getSlotArray(owner, lane);
+    const hasFree = slots.some(s => !s);
+
+    if (!hasFree) {
+      logSystem(`No free ${lane} slots.`);
+      return finalize();
+    }
+
+    showSlotPickerModal({
+      owner,
+      lane,
+      onSelect: (slotIndex) => {
+        // validate still free
+        if (slots[slotIndex]) {
+          logSystem("That slot is occupied.");
+          return finalize();
+        }
+
+        // remove from source
+        fromArr.splice(fromIdx, 1);
+
+        // ensure card not duplicated
+        removeCardFromAllFieldSlots(cardObj.instanceId);
+
+        // place
+        slots[slotIndex] = { ...cardObj, slotOwner: owner, slotLane: lane, slotIndex, ...extra };
+
+        finalize();
+      },
+      onCancel: finalize
+    });
+
     return;
   }
-if (isHandToField) {
-  // Move state first
-  doMove();
 
-  // Render so the card exists on the battlefield
-  renderGameState && renderGameState();
-
-  // Animate landing on destination
-  const movedCardObj = toArr[toArr.length - 1]; // last pushed in doMove
-  const destZoneId = ZONE_MAP[toZoneName]?.id;
-
-  animateFieldLanding(movedCardObj, destZoneId, () => {
-    if (callback) callback();
-  });
-
-  return;
-}
-  doMove();
+  // non-field move (default old behavior)
+  fromArr.splice(fromIdx, 1);
+  toArr.push({ ...cardObj, ...extra });
+  finalize();
 }
 
 // CREATE CARD MENUS
@@ -1856,13 +1956,30 @@ function renderGameState() {
     enemyHandDiv.appendChild(div);
   }
   // RENDER FIELD ZONES
-  renderRowZone('enemy-creatures-zone', gameState.enemyCreatures, "creature");
-  renderRowZone('enemy-terrains-zone', gameState.enemyTerrains, "terrain");
-  renderRowZone('player-creatures-zone', gameState.playerCreatures, "creature");
-  renderRowZone('player-terrains-zone', gameState.playerTerrains, "terrain");
+  renderSlotRow("enemy", "support");
+  renderSlotRow("enemy", "creature");
+  renderSlotRow("player", "creature");
+  renderSlotRow("player", "support");
   renderRightbarZones();
 }
+function renderSlotRow(owner, lane) {
+  const zoneId = `${owner}-${lane}-zone`;
+  const zone = document.getElementById(zoneId);
+  if (!zone) return;
 
+  const slots = getSlotArray(owner, lane);
+  for (let i = 0; i < 5; i++) {
+    const slotDiv = document.getElementById(`${owner}-${lane}-slot-${i}`);
+    if (!slotDiv) continue;
+    slotDiv.innerHTML = "";
+
+    const cardObj = slots[i];
+    if (!cardObj) continue;
+
+    const cardDiv = renderCardOnField(cardObj, zoneId); // reuse your current renderer
+    if (cardDiv) slotDiv.appendChild(cardDiv);
+  }
+}
 // --- RENDER CARD COST IN HAND --- //
 function renderHandCostBadge(cardDiv, cardData) {
   try {
@@ -2071,45 +2188,73 @@ function showHandCardMenu(instanceId, cardDiv) {
 }
 // DROP ZONES
 function setupDropZones() {
-  [
-    'player-creatures-zone', 
-    'player-terrains-zone', 
-    'enemy-creatures-zone', 
-    'enemy-terrains-zone'
-  ].forEach(zoneId => {
-    const zone = document.getElementById(zoneId);
-    if (!zone) return;
-    zone.ondragover = (e) => {
+  const slots = document.querySelectorAll('.field-slot');
+
+  slots.forEach(slot => {
+    slot.ondragover = (e) => {
       e.preventDefault();
-      zone.classList.add('drag-over');
+      slot.classList.add('drag-over');
     };
-    zone.ondragleave = () => zone.classList.remove('drag-over');
-    zone.ondrop = (e) => {
+
+    slot.ondragleave = () => {
+      slot.classList.remove('drag-over');
+    };
+
+    slot.ondrop = (e) => {
       e.preventDefault();
-      zone.classList.remove('drag-over');
+      slot.classList.remove('drag-over');
+
       const instanceId = e.dataTransfer.getData('text/plain');
-      const cardIdx = gameState.playerHand.findIndex(c => c.instanceId === instanceId);
-      if (cardIdx === -1) return;
+      if (!instanceId) return;
 
-      let targetArr;
-      let orientation = "vertical"; // Default orientation
+      const handIdx = gameState.playerHand.findIndex(c => c.instanceId === instanceId);
+      if (handIdx === -1) return; // only allow player hand -> field drag for now
 
-      // Decide target array based on zoneId
-      if (zoneId === "player-creatures-zone") {
-        targetArr = gameState.playerCreatures;
-      } else if (zoneId === "player-terrains-zone") {
-        targetArr = gameState.playerTerrains;
-      } else if (zoneId === "enemy-creatures-zone") {
-        targetArr = gameState.enemyCreatures;
-      } else if (zoneId === "enemy-terrains-zone") {
-        targetArr = gameState.enemyTerrains;
-      } else {
+      const cardObj = gameState.playerHand[handIdx];
+      const def = dummyCards.find(c => c.id === cardObj.cardId);
+      if (!def) return;
+
+      const owner = slot.dataset.owner;               // "player" | "enemy"
+      const lane = slot.dataset.lane;                 // "creature" | "support"
+      const slotIndex = Number(slot.dataset.slotIndex);
+
+      // Optional safety: only allow player to drop onto player board by drag
+      if (owner !== 'player') return;
+
+      // Card lane validation
+      const cardType = String(def.type || def.category || '').toLowerCase();
+      const requiredLane = cardType === 'creature' ? 'creature' : 'support';
+      if (lane !== requiredLane) {
+        logSystem?.(`Invalid lane. ${def.name || 'Card'} must be played in ${requiredLane} lane.`);
         return;
       }
 
-      moveCard(instanceId, gameState.playerHand, targetArr, {orientation});
+      // Resolve destination slot array
+      let targetSlots = null;
+      if (owner === 'player' && lane === 'creature') targetSlots = gameState.playerCreatureSlots;
+      else if (owner === 'player' && lane === 'support') targetSlots = gameState.playerSupportSlots;
+      else if (owner === 'enemy' && lane === 'creature') targetSlots = gameState.enemyCreatureSlots;
+      else if (owner === 'enemy' && lane === 'support') targetSlots = gameState.enemySupportSlots;
+      if (!targetSlots) return;
+
+      // Must be empty slot
+      if (targetSlots[slotIndex]) {
+        logSystem?.('That slot is occupied.');
+        return;
+      }
+
+      // Remove from source (player hand)
+      const [moved] = gameState.playerHand.splice(handIdx, 1);
+
+      // Place in slot
+      moved.orientation = moved.orientation || 'vertical';
+      moved.owner = owner;
+      moved.slotLane = lane;
+      moved.slotIndex = slotIndex;
+      targetSlots[slotIndex] = moved;
+
       renderGameState();
-      setupDropZones();
+      setupDropZones(); // safe rebind after render
     };
   });
 }
@@ -4140,8 +4285,8 @@ function startAttackTargeting(attackerId, attackerZone, cardDiv) {
 
   targets.forEach(cardObj => {
     // Try both rows for finding the DOM element
-    let targetDiv = findCardDivInZone('enemy-creatures-zone', cardObj.instanceId)
-    || findCardDivInZone('enemy-terrains-zone', cardObj.instanceId) || findCardDivInZone('enemy-artifacts-zone', cardObj.instanceId);
+    let targetDiv = findCardDivInZone('enemy-creature-zone', cardObj.instanceId)
+    || findCardDivInZone('enemy-support-zone', cardObj.instanceId) || findCardDivInZone('enemy-artifacts-zone', cardObj.instanceId);
     if (targetDiv) {
       targetDiv.classList.add('attack-target-highlight');
       targetDiv.onclick = function(e) {
@@ -4178,53 +4323,27 @@ function canAttack(cardObj, gameState) {
   return true;
 }
 function getAttackTargets(attackerObj = null) {
-  // Gather all enemy cards
- const creatures = (gameState.enemyCreatures || []).filter(Boolean);
-  const terrains = (gameState.enemyTerrains || []).filter(Boolean);
-  const artifacts = (gameState.enemyArtifacts || []).filter(Boolean);
-  const enabledEnemyCreatures = creatures.filter(creature => creature.orientation === "vertical");
+  // If no attacker, default to enemy creatures as "possible generic attack targets"
+  if (!attackerObj) return gameState.enemyCreatureSlots.filter(Boolean);
 
-  // Build map of colors to enemy creatures
-  const colorToCreatures = {};
-  creatures.forEach(creature => {
-    getCardColors(creature).forEach(color => {
-      if (!colorToCreatures[color]) colorToCreatures[color] = [];
-      colorToCreatures[color].push(creature);
-    });
-  });
+  const attackerOwner = getCardOwner(attackerObj); // should return "player" or "enemy"
+  const defenders =
+    attackerOwner === "player"
+      ? gameState.enemyCreatureSlots.filter(Boolean)
+      : gameState.playerCreatureSlots.filter(Boolean);
 
-  // Terrains and artifacts to filter
-  const terrainsAndArtifacts = [...terrains, ...artifacts];
-
-  // Only allow attack on protected terrains/artifacts if no creature of that color exists
-  const attackableTerrainsArtifacts = terrainsAndArtifacts.filter(cardObj => !protectedTerrainsArtifacts.includes(cardObj));
-
-  // Build initial target list applying color protection rule
-  let targets = [...creatures];
-  // Guard rule: terrains/artifacts can only be attacked if no enabled enemy creature is on field.
-  if (enabledEnemyCreatures.length === 0) {
-    targets = [...targets, ...attackableTerrainsArtifacts];
+  // Keep your existing ability filters if present
+  if (typeof applyAttackTargetFilters === "function") {
+    return applyAttackTargetFilters(attackerObj, defenders);
   }
 
-  // If no attackerObj provided, just return targets after color protection
-  if (!attackerObj) return targets;
-
-  // --- INLINE ABILITY FILTERS ---
-  const attackerDef = dummyCards.find(c => c.id === attackerObj.cardId);
-  if (!attackerDef || !attackerDef.ability) return targets;
-  let filtered = targets;
-  Object.keys(TARGET_ABILITY).forEach(abilityName => {
-    if (attackerDef.ability.includes(abilityName)) {
-      filtered = TARGET_ABILITY[abilityName].filter(attackerObj, filtered);
-    }
-  });
-  return filtered;
+  return defenders;
 }
 function endAttackTarget() {
   // Remove highlights and listeners
     [...gameState.enemyCreatures, ...gameState.enemyTerrains, ...(gameState.enemyArtifacts || [])].forEach(cardObj => {
-    const targetDiv = findCardDivInZone('enemy-creatures-zone', cardObj.instanceId);
-    const targetTerrainDiv = findCardDivInZone('enemy-terrains-zone', cardObj.instanceId);
+    const targetDiv = findCardDivInZone('enemy-creature-zone', cardObj.instanceId);
+    const targetTerrainDiv = findCardDivInZone('enemy-support-zone', cardObj.instanceId);
     const targetArtifactDiv = findCardDivInZone('enemy-artifacts-zone', cardObj.instanceId);
     [targetDiv, targetTerrainDiv, targetArtifactDiv].forEach(div => {
       if (div) {
@@ -5557,8 +5676,8 @@ function startSkillTarget(validTargets, onSelect, opts = {}) {
   validTargets.forEach(cardObj => {
     // Find card DOM in all field zones
     const zoneIds = [
-      'player-creatures-zone', 'player-terrains-zone',
-      'enemy-creatures-zone', 'enemy-terrains-zone'
+      'player-creature-zone', 'player-support-zone',
+      'enemy-creature-zone', 'enemy-support-zone'
     ];
     let cardDiv = null;
     for (const zoneId of zoneIds) {
@@ -5926,6 +6045,39 @@ function showBothVoidsModal(playerVoidArr = [], enemyVoidArr = [], onSelect = ()
   modal.appendChild(content);
   document.body.appendChild(modal);
   modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+}
+function showSlotPickerModal({ owner = "player", lane = "creature", onSelect, onCancel }) {
+  const slots = getSlotArray(owner, lane);
+  const modal = document.createElement("div");
+  modal.className = "modal";
+  modal.style.display = "flex";
+  modal.innerHTML = `
+    <div class="modal-content" style="min-width:420px;max-width:520px;">
+      <h3>Select ${owner} ${lane} slot</h3>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:14px 0;">
+        ${slots.map((card, i) => `
+          <button class="btn-secondary slot-pick-btn" data-i="${i}" ${card ? "disabled" : ""}>
+            ${card ? `Occupied ${i+1}` : `Slot ${i+1}`}
+          </button>
+        `).join("")}
+      </div>
+      <button id="slot-picker-cancel" class="btn-negative-secondary">Cancel</button>
+    </div>
+  `;
+  document.body.appendChild(modal);
+
+  modal.querySelectorAll(".slot-pick-btn").forEach(btn => {
+    btn.onclick = (e) => {
+      e.stopPropagation();
+      const i = Number(btn.dataset.i);
+      modal.remove();
+      onSelect && onSelect(i);
+    };
+  });
+
+  const cancel = () => { modal.remove(); onCancel && onCancel(); };
+  modal.querySelector("#slot-picker-cancel").onclick = cancel;
+  modal.onclick = (e) => { if (e.target === modal) cancel(); };
 }
 function showFilteredCardSelectionModal(cards, onSelect, opts = {}) {
   // Remove any previous modal
@@ -6315,13 +6467,39 @@ window.skillTitle = skillTitle; // optional global for console/tests
 // ----------------------------------- //
 // --- Card Field Helper Functions --- //
 // ----------------------------------- //
-function getCardDefinition(cardId) {
-  return dummyCards.find(c => c.id === cardId) || null;
+function getCardDef(cardObj) {
+  return dummyCards.find(c => c.id === cardObj.cardId) || null;
 }
-
+function getLaneForCard(cardObj) {
+  const def = getCardDef(cardObj);
+  const t = String(def?.type || def?.category || "").toLowerCase();
+  return t === "creature" ? "creature" : "support"; // terrain/artifact/spell -> support
+}
+function removeCardFromAllFieldSlots(instanceId) {
+  ["player","enemy"].forEach(owner => {
+    ["creature","support"].forEach(lane => {
+      const arr = getSlotArray(owner, lane);
+      const idx = arr.findIndex(c => c && c.instanceId === instanceId);
+      if (idx !== -1) arr[idx] = null;
+    });
+  });
+}
+function findCardAnywhere(instanceId) {
+  const all = [
+    ...gameState.playerHand, ...gameState.enemyHand,
+    ...gameState.playerDeck, ...gameState.enemyDeck,
+    ...gameState.playerVoid, ...gameState.enemyVoid,
+    ...gameState.playerFallen, ...gameState.enemyFallen,
+    ...gameState.playerCreatureSlots.filter(Boolean),
+    ...gameState.playerSupportSlots.filter(Boolean),
+    ...gameState.enemyCreatureSlots.filter(Boolean),
+    ...gameState.enemySupportSlots.filter(Boolean),
+  ];
+  return all.find(c => c.instanceId === instanceId) || null;
+}
 function placeInstanceOnField(instance) {
   if (!instance) return false;
-  const def = getCardDefinition(instance.cardId);
+  const def = getCardDef(instance.cardId);
   const cat = String(def?.category || '').toLowerCase();
   const owner = instance.owner === 'enemy' ? 'enemy' : 'player';
 
@@ -6479,7 +6657,7 @@ function isCardActionable(cardObj, cardData, gameState, zone) {
   }
 
   // 2. Can attack (for creatures on field)
-  if (zone === 'player-creatures-zone' && typeof canAttack === "function") {
+  if (zone === 'player-creature-zone' && typeof canAttack === "function") {
     if (canAttack(cardObj, gameState)) return true;
   }
 
