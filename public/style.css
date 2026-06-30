@@ -2686,6 +2686,47 @@ button[disabled], .btn-disabled {
   text-shadow: 0 1px 6px #232, 0 1px 1px #ffe06633;
   pointer-events: none;
 }
+/* ==========
+   SLOT-ROWS
+   ======= */
+.slot-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  justify-items: center;
+  align-items: center;
+  margin: 6px 0;
+}
+
+.field-slot {
+  width: 96px;          /* tune to your card render width */
+  height: 136px;        /* tune to your card render height */
+  border: 2px dashed rgba(255, 224, 102, 0.55);
+  border-radius: 10px;
+  background: rgba(20, 30, 45, 0.28);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: border-color .12s, background .12s, box-shadow .12s;
+}
+
+.field-slot:hover {
+  border-color: rgba(255, 224, 102, 0.9);
+  background: rgba(35, 50, 74, 0.34);
+}
+
+.field-slot.drag-over {
+  border-color: #50eaff;
+  background: rgba(80, 234, 255, 0.16);
+  box-shadow: 0 0 0 2px rgba(80,234,255,0.35);
+}
+
+.field-slot.occupied {
+  border-style: solid;
+  border-color: rgba(255, 224, 102, 0.35);
+}
 /* ==========================================
    HP Row Layout (badge + bar + armor badge)
    ========================================== */
