@@ -2982,6 +2982,29 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
         }
       }
     },
+  {
+  text: "Change Orientation",
+  onClick: function(e) {
+    e.stopPropagation();
+
+    const arr = getZoneArray(zoneId);
+    if (!arr) return;
+
+    const cardObj = arr.find(card => card.instanceId === instanceId);
+    if (!cardObj) return;
+
+    const nextOrientation =
+      cardObj.orientation === "horizontal" ? "vertical" : "horizontal";
+
+    // use existing helper so animation/render stays consistent
+    changeCardPosition(cardObj, nextOrientation, () => {
+      renderGameState();
+      setupDropZones && setupDropZones();
+      emitPublicState && emitPublicState();
+      closeAllMenus();
+    });
+  }
+},
     {
       text: "Return to Hand",
       onClick: function(e) {
