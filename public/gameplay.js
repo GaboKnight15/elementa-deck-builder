@@ -1910,38 +1910,52 @@ function renderGameState() {
   // RENDER PLAYER HAND
   const playerHandDiv = document.getElementById('player-hand');
   playerHandDiv.innerHTML = '';
-  for (let cardObj of gameState.playerHand) {
+
+  for (const cardObj of gameState.playerHand) {
     const card = dummyCards.find(c => c.id === cardObj.cardId);
     if (!card) continue;
+
     const div = document.createElement('div');
     div.className = 'card-battlefield';
     div.draggable = true;
+
     div.ondragstart = (e) => {
-      e.dataTransfer.setData("text/plain", cardObj.instanceId);
-      e.dataTransfer.setData("source", "hand");
+      e.dataTransfer.effectAllowed = "move";
+      e.dataTransfer.setData("text/plain", cardObj.instanceId); // drop reads this
+      e.dataTransfer.setData("source", "playerHand");
       div.classList.add('dragging');
-      e.dataTransfer.setDragImage(div, div.offsetWidth / 2, div.offsetHeight / 2);
+      if (typeof e.dataTransfer.setDragImage === "function") {
+        e.dataTransfer.setDragImage(div, div.offsetWidth / 2, div.offsetHeight / 2);
+      }
     };
-    div.ondragend = () => div.classList.remove('dragging');
+
+    div.ondragend = () => {
+      div.classList.remove('dragging');
+    };
+
     const img = document.createElement('img');
     img.src = card.image;
     img.alt = card.name;
     img.style.width = "80px";
     div.appendChild(img);
+
     if (typeof renderHandCostBadge === 'function') renderHandCostBadge(div, card);
+
     holdClickToView(div, cardObj, (e) => {
-      e.stopPropagation(); 
+      e.stopPropagation();
       closeAllMenus();
       showHandCardMenu(cardObj.instanceId, div);
     });
+
     setCardAnimatableClass(div, cardObj, card, gameState, 'playerHand');
     playerHandDiv.appendChild(div);
   }
 
-  // RENDER enemy HAND FACEDOWN
+  // RENDER ENEMY HAND FACEDOWN
   const enemyHandDiv = document.getElementById('enemy-hand');
   enemyHandDiv.innerHTML = '';
-  let enemyCardback = (window.selectedCpuDeck && window.selectedCpuDeck.cardbackArt)
+
+  const enemyCardback = (window.selectedCpuDeck && window.selectedCpuDeck.cardbackArt)
     ? window.selectedCpuDeck.cardbackArt
     : "Images/Cardback/Default.png";
 
@@ -1950,17 +1964,22 @@ function renderGameState() {
     div.className = 'card-battlefield';
     const img = document.createElement('img');
     img.src = enemyCardback;
-    img.alt = "enemy's card";
+    img.alt = "enemy card";
     img.style.width = "80px";
     div.appendChild(img);
     enemyHandDiv.appendChild(div);
   }
-  // RENDER FIELD ZONES
+
+  // RENDER FIELD SLOT ROWS
   renderSlotRow("enemy", "support");
   renderSlotRow("enemy", "creature");
   renderSlotRow("player", "creature");
   renderSlotRow("player", "support");
+
   renderRightbarZones();
+
+  // IMPORTANT: bind drop listeners AFTER DOM render
+  setupDropZones();
 }
 function renderSlotRow(owner, lane) {
   const zoneId = `${owner}-${lane}-zone`;
@@ -1968,15 +1987,36 @@ function renderSlotRow(owner, lane) {
   if (!zone) return;
 
   const slots = getSlotArray(owner, lane);
+  if (!Array.isArray(slots)) return;
+
   for (let i = 0; i < 5; i++) {
-    const slotDiv = document.getElementById(`${owner}-${lane}-slot-${i}`);
+    const slotId = `${owner}-${lane}-slot-${i}`;
+    const slotDiv = document.getElementById(slotId);
     if (!slotDiv) continue;
+
+    // reset slot visual state
     slotDiv.innerHTML = "";
+    slotDiv.classList.remove("occupied");
+    slotDiv.dataset.owner = owner;
+    slotDiv.dataset.lane = lane;
+    slotDiv.dataset.slotIndex = String(i);
 
     const cardObj = slots[i];
-    if (!cardObj) continue;
+    if (!cardObj) {
+      // Optional test label
+      // slotDiv.textContent = `${i + 1}`;
+      continue;
+    }
 
-    const cardDiv = renderCardOnField(cardObj, zoneId); // reuse your current renderer
+    slotDiv.classList.add("occupied");
+
+    // Keep card metadata in sync
+    cardObj.owner = owner;
+    cardObj.slotLane = lane;
+    cardObj.slotIndex = i;
+
+    // IMPORTANT: use slotId (not row zoneId), so find/animate/menus can target exact slot
+    const cardDiv = renderCardOnField(cardObj, slotId);
     if (cardDiv) slotDiv.appendChild(cardDiv);
   }
 }
@@ -2188,73 +2228,47 @@ function showHandCardMenu(instanceId, cardDiv) {
 }
 // DROP ZONES
 function setupDropZones() {
-  const slots = document.querySelectorAll('.field-slot');
-
-  slots.forEach(slot => {
+  document.querySelectorAll(".field-slot").forEach(slot => {
     slot.ondragover = (e) => {
       e.preventDefault();
-      slot.classList.add('drag-over');
+      slot.classList.add("drag-over");
     };
-
-    slot.ondragleave = () => {
-      slot.classList.remove('drag-over');
-    };
+    slot.ondragleave = () => slot.classList.remove("drag-over");
 
     slot.ondrop = (e) => {
       e.preventDefault();
-      slot.classList.remove('drag-over');
+      slot.classList.remove("drag-over");
 
-      const instanceId = e.dataTransfer.getData('text/plain');
+      const instanceId = e.dataTransfer.getData("text/plain");
       if (!instanceId) return;
 
       const handIdx = gameState.playerHand.findIndex(c => c.instanceId === instanceId);
-      if (handIdx === -1) return; // only allow player hand -> field drag for now
+      if (handIdx === -1) return; // testing: only from player hand
+
+      const owner = slot.dataset.owner;
+      const lane = slot.dataset.lane;
+      const idx = Number(slot.dataset.slotIndex);
+
+      if (owner !== "player") return; // testing guard
 
       const cardObj = gameState.playerHand[handIdx];
       const def = dummyCards.find(c => c.id === cardObj.cardId);
-      if (!def) return;
+      const type = String(def?.type || def?.category || "").toLowerCase();
+      const requiredLane = type === "creature" ? "creature" : "support";
+      if (lane !== requiredLane) return;
 
-      const owner = slot.dataset.owner;               // "player" | "enemy"
-      const lane = slot.dataset.lane;                 // "creature" | "support"
-      const slotIndex = Number(slot.dataset.slotIndex);
+      const slots = lane === "creature" ? gameState.playerCreatureSlots : gameState.playerSupportSlots;
+      if (slots[idx]) return; // occupied
 
-      // Optional safety: only allow player to drop onto player board by drag
-      if (owner !== 'player') return;
-
-      // Card lane validation
-      const cardType = String(def.type || def.category || '').toLowerCase();
-      const requiredLane = cardType === 'creature' ? 'creature' : 'support';
-      if (lane !== requiredLane) {
-        logSystem?.(`Invalid lane. ${def.name || 'Card'} must be played in ${requiredLane} lane.`);
-        return;
-      }
-
-      // Resolve destination slot array
-      let targetSlots = null;
-      if (owner === 'player' && lane === 'creature') targetSlots = gameState.playerCreatureSlots;
-      else if (owner === 'player' && lane === 'support') targetSlots = gameState.playerSupportSlots;
-      else if (owner === 'enemy' && lane === 'creature') targetSlots = gameState.enemyCreatureSlots;
-      else if (owner === 'enemy' && lane === 'support') targetSlots = gameState.enemySupportSlots;
-      if (!targetSlots) return;
-
-      // Must be empty slot
-      if (targetSlots[slotIndex]) {
-        logSystem?.('That slot is occupied.');
-        return;
-      }
-
-      // Remove from source (player hand)
       const [moved] = gameState.playerHand.splice(handIdx, 1);
-
-      // Place in slot
-      moved.orientation = moved.orientation || 'vertical';
-      moved.owner = owner;
+      moved.owner = "player";
       moved.slotLane = lane;
-      moved.slotIndex = slotIndex;
-      targetSlots[slotIndex] = moved;
+      moved.slotIndex = idx;
+      moved.orientation = moved.orientation || "vertical";
+      slots[idx] = moved;
 
       renderGameState();
-      setupDropZones(); // safe rebind after render
+      setupDropZones(); // rebind after rerender
     };
   });
 }
