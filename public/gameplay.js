@@ -3211,7 +3211,7 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
           const idx = arr.findIndex(card => card.instanceId === instanceId);
           if (idx !== -1) {
             const removed = removeCardByInstanceId(instanceId);
-            if (removed) gameState.playerVoid.push(cleanCard(removed));
+            if (removed) gameState.playerDeck.push(cleanCard(removed));
           }
         }
         renderGameState();
@@ -3243,7 +3243,7 @@ if (cardObj && isCreatureCategory) {
   });
 }
 if (cardData.skill && Array.isArray(cardData.skill)) {
-    const currentZone = getZoneNameForArray(arr);
+    const currentZone = zone;
 // In showCardActionMenu: replace the skill push with this
 cardData.skill
   .filter(skillObj => !skillObj.activation) // Only show skills without activation
