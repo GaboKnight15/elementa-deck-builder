@@ -1657,7 +1657,7 @@ li.deck-draggable .card-meta {
   margin: 0 0 16px 0;
 }
 /* RARITY BORDERS */ 
-.card[data-rarity="Legendary"] {
+.card[data-rarity="Legend"] {
   border: 2px solid gold;
   box-shadow: 0 0 10px gold;
 }
@@ -4180,7 +4180,7 @@ button[disabled], .btn-disabled {
   justify-content: center;
   gap: 18px;
 }
-.opened-card-front[data-rarity="Legendary"] {
+.opened-card-front[data-rarity="Legend"] {
   box-shadow: 0 0 24px 8px #ffd700aa, 0 0 48px 12px #ffe06688;
 }
 .opened-card-front[data-rarity="Epic"] {
@@ -4303,7 +4303,7 @@ button[disabled], .btn-disabled {
   60% { transform: scale(1.04); }
   100% { transform: scale(1); }
 }
-@keyframes zoomLegendary {
+@keyframes zoomLegend {
   0% { transform: scale(1); }
   20% { transform: scale(1.26); }
   60% { transform: scale(1.08); }
@@ -4318,8 +4318,8 @@ button[disabled], .btn-disabled {
   animation: zoomEpic 0.7s cubic-bezier(.36,1.6,.7,1) forwards;
   z-index: 3;
 }
-.zoom-legendary {
-  animation: zoomLegendary 0.8s cubic-bezier(.36,1.6,.7,1) forwards;
+.zoom-legend {
+  animation: zoomLegend 0.8s cubic-bezier(.36,1.6,.7,1) forwards;
   z-index: 4;
 }
 
@@ -4743,7 +4743,7 @@ button[disabled], .btn-disabled {
   box-shadow: 0 2px 16px #bfc8d555, 0 2px 7px #0007;
   background: linear-gradient(110deg,#23232c 60%,#bfc8d522 100%);
 }
-.card-gallery.card-rarity-legendary {
+.card-gallery.card-rarity-legend {
   border: 3px solid #ffe066;
   box-shadow: 0 2px 18px #ffe06699, 0 2px 7px #0007;
   background: linear-gradient(110deg,#23232c 60%,#ffe06622 100%);
