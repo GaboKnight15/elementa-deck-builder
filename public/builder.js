@@ -120,7 +120,7 @@ if (saveDeckImg) {
     const deckToCheck = deckBuilderDraft !== null ? deckBuilderDraft : (getCurrentDeck() || {});
     const domainCount = Object.entries(deckToCheck).reduce((sum, [cardId, count]) => {
       const card = dummyCards.find(c => c.id === cardId);
-      return sum + ((card && card.trait && String(card.trait).toLowerCase() === 'domain') ? Number(count) : 0);
+      return sum + ((card && card.type && String(card.type).toLowerCase() === 'domain') ? Number(count) : 0);
     }, 0);
     if (domainCount !== 1) {
       showToast("Deck must have exactly one domain card.", { type: "error" });
@@ -935,11 +935,13 @@ if (closeDomainModalBtn) {
   };
 }
 
-domainModal.addEventListener('click', function(e) {
-  if (e.target === domainModal) {
-    domainModal.style.display = 'none';
-  }
-});
+if (domainModal) {
+  domainModal.addEventListener('click', function(e) {
+    if (e.target === domainModal) {
+      domainModal.style.display = 'none';
+    }
+  });
+}
 
 function getRarityCap(card) {
   const r = (card?.rarity || "").toLowerCase();
@@ -1006,8 +1008,8 @@ function updateDeckDisplay() {
   for (const [id, count] of Object.entries(deck)) {
     const card = dummyCards.find(c => c.id === id);
     if (!card) continue;
-    const trait = card.trait ? String(card.trait).toLowerCase() : '';
-    if (trait === "domain") {
+    const type = card.type ? String(card.type).toLowerCase() : '';
+    if (type === "domain") {
       sections.domain.push({ card, count });
     } else {
       const cat = getCardCategory(card);
@@ -1197,26 +1199,26 @@ function buildDeck(deckObj) {
 function canAddCard(card, currentInDeck, ownedCount) {
   const deck = getCurrentDeck();
   const mainCount = currentInDeck || 0;
+  const cap = getRarityCap(card);
 
-  // main deck 30-card limit
+  // 30-card deck limit
   const totalMain = Object.values(deck).reduce((a, b) => a + b, 0);
   if (totalMain >= 30) return false;
 
-  // ownership check only applies to main deck adds (as you currently do)
+  // ownership limit
   if (mainCount >= ownedCount) return false;
 
-  // domain rules unchanged
+  // rarity limit
+  if (mainCount >= cap) return false;
+
+  // only one domain in deck
   if (typeof isDomain === "function" && isDomain(card)) {
     for (const cardId in deck) {
+      if (cardId === card.id) continue; // ignore same card entry
       const c = dummyCards.find(dc => dc.id === cardId);
       if (c && typeof isDomain === "function" && isDomain(c)) return false;
     }
-    if (mainCount >= cap) return false;
-    return true;
   }
-
-  // rarity cap
-  const cap = getRarityCap(card);
 
   return true;
 }
