@@ -167,7 +167,7 @@ function showPlayerSearchMenu(tile, player) {
 
   // Position menu near tile
   const rect = tile.getBoundingClientRect();
-  placeMenuWithinViewport(menu, rect);
+  placeMenuWithinShell(menu, rect);
 
   // Remove menu if clicking outside
   setTimeout(() => {
@@ -649,7 +649,7 @@ function showProfileMenu(tile, user, context) {
   // Place menu
   document.body.appendChild(menu);
   const rect = tile.getBoundingClientRect();
-  placeMenuWithinViewport(menu, rect);
+  placeMenuWithinShell(menu, rect);
 
   menu.style.zIndex = '99999';
   menu.onclick = function(e) { e.stopPropagation(); };
