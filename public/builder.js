@@ -294,7 +294,7 @@ if (!pager) {
   // Page indicator
   const label = document.createElement('span');
   label.className = 'deck-page-label';
-  label.textContent = `Page ${currentDeckPage + 1} / ${DECK_TOTAL_PAGES}`;
+  label.textContent = `${currentDeckPage + 1} / ${DECK_TOTAL_PAGES}`;
   pager.appendChild(label);
 
   // Right arrow (if not last page)
