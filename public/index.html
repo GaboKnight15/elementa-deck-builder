@@ -87,7 +87,7 @@
           <span id="achievements-notification-dot" class="header-notification-dot" style="display:none;"></span>
         </span>
         <span id="news-icon-wrapper">
-          <img src="Icons/Other/News.png" alt="News" id="news-icon" class="header-action-icon" title="Game News">
+          <img src="Icons/Other/News.png" alt="News" id="news-icon" class="header-action-icon" title="News">
         </span>
         <span id="home-settings-wrapper">
           <img src="Icons/Other/Settings.png" alt="Settings" id="home-settings-btn" class="header-action-icon" title="Settings">
@@ -137,7 +137,7 @@
       <div class="section-header-left">
         <img id="library-back-btn" src="Icons/Other/Back.png" alt="Back" class="section-header-btn" title="Back" />
       </div>
-      <div class="section-header-center">Card Library</div>
+      <div class="section-header-center">Library</div>
       <div class="section-header-right">
         <img id="library-settings-btn" src="Icons/Other/Settings.png" alt="Settings" class="section-header-btn" title="Settings" />
       </div>
@@ -146,10 +146,10 @@
     <!-- FILTER ROW -->
     <div id="filters-library" class="filter-row">
       <input type="text" id="filter-name-library" class="filter-name" placeholder="Search by name..." />
-      <img id="filter-favorites-library" src="Icons/Other/Star.png" alt="Favorites" title="Show only favorites"
+      <img id="filter-favorites-library" src="Icons/Other/Star.png" alt="Favorites" title="Favorites"
         style="width:32px;height:32px;cursor:pointer;filter:grayscale(1);opacity:0.6;transition:filter 0.2s,opacity 0.2s;">
       <img id="library-filter-btn" src="Icons/Other/Filter.png" alt="Filters"
-        title="Advanced Filters" style="width:36px;height:36px;cursor:pointer;vertical-align:middle;margin-left:8px;">
+        title="Filters" style="width:36px;height:36px;cursor:pointer;vertical-align:middle;margin-left:8px;">
       <button id="reset-library-filters-btn" class="btn-secondary" style="margin-left:8px;">Reset Filters</button>
     </div>
     
@@ -164,9 +164,7 @@
 <!-- LIBRARY CARD MENU -->
 <div id="library-card-menu" class="menu" style="display:none;">
   <div class="modal-content">
-    <button id="library-card-view-btn" class="settings-item">
-      <img src="Icons/Other/View.png" alt="View" style="width:20px;vertical-align:middle;margin-right:10px;"> View
-    </button>
+    <button id="library-card-view-btn" class="settings-item"><img src="Icons/Other/View.png" alt="View" style="width:20px;vertical-align:middle;margin-right:10px;">View</button>
     <!-- Favorite button added dynamically -->
   </div>
 </div>  
@@ -178,7 +176,7 @@
       <div class="section-header-left">
         <img id="gallery-back-btn" src="Icons/Other/Back.png" alt="Back" class="section-header-btn" title="Back" />
       </div>
-      <div class="section-header-center">My Collection</div>
+      <div class="section-header-center">Collection</div>
       <div class="section-header-right">
         <span id="gallery-essence-display" class="section-header-essence">
           <img src="Icons/Other/Essence.png" alt="Essence" style="width:22px;height:22px;vertical-align:middle;">
@@ -190,10 +188,10 @@
 <!-- FILTER GALLERY -->
   <div id="filters-gallery" class="filter-row">
     <input type="text" id="filter-name-gallery" class="filter-name" placeholder="Search by name..." />
-    <img id="filter-favorites-gallery" src="Icons/Other/Star.png" alt="Favorites" title="Show only favorites"
+    <img id="filter-favorites-gallery" src="Icons/Other/Star.png" alt="Favorites" title="Favorites"
       style="width:32px;height:32px;cursor:pointer;filter:grayscale(1);opacity:0.6;transition:filter 0.2s,opacity 0.2s;">
     <img id="gallery-filter-btn" src="Icons/Other/Filter.png" alt="Filters"
-      title="Advanced Filters" style="width:36px;height:36px;cursor:pointer;vertical-align:middle;margin-left:8px;">
+      title="Filters" style="width:36px;height:36px;cursor:pointer;vertical-align:middle;margin-left:8px;">
   </div>
   <div id="gallery-collection-progress" style="margin:10px 0; font-size:1.08em; color:#ffe066;"></div>
   <div id="gallery-cards"></div>
@@ -219,7 +217,7 @@
       <div class="section-header-left">
         <img id="builder-back-btn" src="Icons/Other/Back.png" alt="Back" class="section-header-btn" title="Back" />
       </div>
-      <div class="section-header-center">Edit Deck</div>
+      <div class="section-header-center">Deck Editor</div>
       <div class="section-header-right">
         <img id="builder-settings-btn" src="Icons/Other/Settings.png" alt="Settings" class="section-header-btn" title="Settings" />
       </div>
@@ -231,17 +229,17 @@
 <!-- FILTER GALLERY BUILDER (custom dropdowns) -->
 <div id="filters-builder" class="filter-row">
   <input type="text" id="filter-name-builder" class="filter-name" placeholder="Search by name..." />
-  <img id="filter-favorites-builder" src="Icons/Other/Star.png" alt="Favorites" title="Show only favorites"
+  <img id="filter-favorites-builder" src="Icons/Other/Star.png" alt="Favorites" title="Favorites"
     style="width:32px;height:32px;cursor:pointer;filter:grayscale(1);opacity:0.6;transition:filter 0.2s,opacity 0.2s;">
   <img id="builder-filter-btn" src="Icons/Other/Filter.png" alt="Filters"
-    title="Advanced Filters" style="width:36px;height:36px;cursor:pointer;vertical-align:middle;margin-left:8px;">
-  <img id="save-deck-img" src="Icons/Other/Save.png" alt="Save Deck" title="Save Deck"
+    title="Filters" style="width:36px;height:36px;cursor:pointer;vertical-align:middle;margin-left:8px;">
+  <img id="save-deck-img" src="Icons/Other/Save.png" alt="Save Deck" title="Save"
     style="cursor:pointer;margin-left:8px;width:40px;height:40px;vertical-align:middle;">
 </div>
     <div id="builder-filter-summary"></div>
     <div id="deck-panel">
       <div id="deck-title"></div>
-      <div>Total <span id="card-count">0</span>/30</div>
+      <div><span id="card-count">0</span>/30</div>
       <ul id="deck-list"></ul>
     </div>      
     <div id="gallery-builder-cards"></div>
@@ -281,7 +279,7 @@
     </div>
   </div>
     <div id="mode-player-deck-slot" style="margin-top:32px; display:flex; flex-direction:column; align-items:center;">
-    <div id="mode-player-deck-title" style="font-weight:bold; color:#ffe066; margin-bottom:8px;">Current Deck</div>
+    <div id="mode-player-deck-title" style="font-weight:bold; color:#ffe066; margin-bottom:8px;">Active Deck</div>
     <div id="mode-player-deck-tile" class="deck-slot-tile" style="cursor:pointer;"></div>
   </div>
 </div>
@@ -755,13 +753,13 @@
 <div id="gallery-card-menu" class="menu" style="display:none; position:absolute; z-index:1000;">
   <div class="modal-content">
     <button id="gallery-card-view-btn" class="settings-item" style="width:100%;text-align:left;"> 
-      <img src="Icons/Other/View.png" alt="View" style="width:20px;vertical-align:middle;margin-right:10px;"> View
+      <img src="Icons/Other/View.png" alt="View" style="width:20px;vertical-align:middle;margin-right:10px;">View
     </button>
     <button id="gallery-card-create-btn" class="settings-item" style="width:100%;text-align:left;">
-      <img src="Icons/Other/Essence.png" alt="Create" style="width:20px;vertical-align:middle;margin-right:10px;"> Create
+      <img src="Icons/Other/Essence.png" alt="Create" style="width:20px;vertical-align:middle;margin-right:10px;">Create
     </button>
     <button id="gallery-card-void-btn" class="settings-item" style="width:100%;text-align:left;">
-      <img src="Icons/Other/Void.png" alt="Void" style="width:20px;vertical-align:middle;margin-right:10px;"> Void
+      <img src="Icons/Other/Void.png" alt="Void" style="width:20px;vertical-align:middle;margin-right:10px;">Void
     </button>
   </div>
 </div>
