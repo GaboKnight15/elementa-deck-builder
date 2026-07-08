@@ -2552,7 +2552,8 @@ gameState.playerDeck.forEach((cardObj, idx) => {
         },
     ];
       const menu = createCardMenu(buttons);
-      document.body.appendChild(menu);
+      const shell = document.getElementById('game-shell') || document.getElementById('gameplay-section');
+      shell.appendChild(menu);
 
       const rect = img.getBoundingClientRect();
       placeMenuWithinViewport(menu, rect);
@@ -3429,7 +3430,8 @@ function openVoidModal(isenemy = false) {
           }
 
           const menu = createCardMenu(buttons);
-          document.body.appendChild(menu);
+          const shell = document.getElementById('game-shell') || document.getElementById('gameplay-section');
+          shell.appendChild(menu);
 
           const rect = img.getBoundingClientRect();
           placeMenuWithinViewport(menu, rect);
