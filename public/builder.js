@@ -808,12 +808,6 @@ function createCardBuilder(card, ownedCount) {
     if (available <= 0 || !canAddCard(card, currentInDeck, ownedCount)) {
         div.classList.add('card-unavailable');
     }
-  holdClickToView(img, card, (e) => {
-    // Short click adds to deck
-    if (canAddCard(card, currentInDeck, ownedCount)) {
-      addCardToDeck(card.id);
-    }
-  });
   return div;
 }
 // --- DRAG AND DROP FOR DECK BUILDER --- //
@@ -879,48 +873,40 @@ document.addEventListener('drop', function(e) {
     renderBuilder();
   }
 });
-// --- DOMAIN SELECTION MODAL --- //
-function showDomainSelectionModal() {
-  domainModal.style.display = 'flex';
-  domainGrid.innerHTML = '';
-
+// --- DOMAIN SELECTION --- //
+function cycleDomainCard() {
   const deck = getCurrentDeck();
-  const currentDomain = Object.keys(deck).find(cardId => {
-    const card = dummyCards.find(c => c.id === cardId);
-    return card && isDomain(card);
+  const collection = getCollection();
+
+  const ownedDomainIds = DOMAIN_CARDS.filter((domainId) => (collection[domainId] || 0) > 0);
+  if (!ownedDomainIds.length) {
+    showToast("No owned domain cards available.", { type: "error" });
+    return;
+  }
+
+  // Find current domain in deck
+  const currentDomain = Object.keys(deck).find((cardId) => {
+    const c = dummyCards.find(dc => dc.id === cardId);
+    return c && isDomain(c);
   });
 
-  DOMAIN_CARDS.forEach(domainId => {
-    const card = dummyCards.find(c => c.id === domainId);
-    if (!card) return;
-
-    const wrapper = document.createElement('div');
-    wrapper.style.position = 'relative';
-    
-    const img = document.createElement('img');
-    img.src = card.image;
-    img.alt = card.name;
-    img.title = card.name;
-    img.className = 'domain-card-choice';
-    
-    // Highlight if this is the current domain
-    if (currentDomain === domainId) {
-      img.classList.add('selected');
-    }
-
-    img.onclick = () => {
-      selectDomain(domainId);
-      domainModal.style.display = 'none';
-    };
-
-    img.onerror = function() {
-      this.onerror = null;
-      this.src = 'Images/Banner/Default.png';
-    };
-
-    wrapper.appendChild(img);
-    domainGrid.appendChild(wrapper);
+  // Remove existing domain
+  Object.keys(deck).forEach((cardId) => {
+    const c = dummyCards.find(dc => dc.id === cardId);
+    if (c && isDomain(c)) delete deck[cardId];
   });
+
+  // Pick next domain
+  let nextIdx = 0;
+  if (currentDomain) {
+    const idx = ownedDomainIds.indexOf(currentDomain);
+    nextIdx = idx >= 0 ? (idx + 1) % ownedDomainIds.length : 0;
+  }
+
+  deck[ownedDomainIds[nextIdx]] = 1;
+  setCurrentDeck(deck);
+  updateDeckDisplay();
+  renderBuilder();
 }
 
 function selectDomain(domainId) {
@@ -1049,13 +1035,13 @@ function updateDeckDisplay() {
       this.onerror = null;
       this.src = 'Images/Banner/Default.png';
     };
-    img.onclick = () => showDomainSelectionModal();
+    img.onclick = () => cycleDomainCard();
     domainSlot.appendChild(img);
   } else {
     // Show placeholder to select domain
     const placeholder = document.createElement('div');
     placeholder.className = 'domain-placeholder';
-    placeholder.onclick = () => showDomainSelectionModal();
+    placeholder.onclick = () => cycleDomainCard();
     
     const placeholderText = document.createElement('div');
     placeholderText.className = 'domain-placeholder-text';
@@ -1225,7 +1211,7 @@ function canAddCard(card, currentInDeck, ownedCount) {
       const c = dummyCards.find(dc => dc.id === cardId);
       if (c && typeof isDomain === "function" && isDomain(c)) return false;
     }
-    if (mainCount >= 1) return false;
+    if (mainCount >= cap) return false;
     return true;
   }
 
