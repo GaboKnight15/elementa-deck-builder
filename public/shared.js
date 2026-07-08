@@ -2994,46 +2994,63 @@ function unlockCardStyle(cardId, styleType) {
 }
 
 // MENU INSIDE VIEWPORT
-function placeMenuWithinViewport(menu, triggerRect, preferred = "bottom") {
-  // Default position: below the triggering element
-  let top = triggerRect.bottom + window.scrollY + 8;
-  let left = triggerRect.left + window.scrollX;
+function placeMenuWithinShell(menu, triggerRect, preferred = "bottom") {
+  // Pick your shell/root element (adjust selector if needed)
+  const shell =
+    document.getElementById('app-main') ||
+    document.getElementById('game-shell') ||
+    document.querySelector('.game-shell') ||
+    document.body;
 
-  // Temporarily set position to get true size
+  // Ensure shell can anchor absolutely-positioned children
+  const shellStyle = getComputedStyle(shell);
+  if (shellStyle.position === 'static') {
+    shell.style.position = 'relative';
+  }
+
+  // Attach menu to shell (not body)
+  if (menu.parentNode !== shell) {
+    shell.appendChild(menu);
+  }
+
   menu.style.position = 'absolute';
-  menu.style.top = `${top}px`;
-  menu.style.left = `${left}px`;
+  menu.style.zIndex = '3000';
 
-  document.body.appendChild(menu);
+  // Rects
+  const shellRect = shell.getBoundingClientRect();
 
-  // Now check for overflow
+  // Initial preferred position relative to shell
+  let top = (preferred === 'top')
+    ? (triggerRect.top - shellRect.top) - menu.offsetHeight - 8
+    : (triggerRect.bottom - shellRect.top) + 8;
+
+  let left = (triggerRect.left - shellRect.left);
+
+  // Force layout to get size if needed
   const menuRect = menu.getBoundingClientRect();
-  const vw = window.innerWidth;
-  const vh = window.innerHeight;
+  const menuW = menuRect.width;
+  const menuH = menuRect.height;
 
-  // Horizontal: If overflowing right, pull it left to fit
-  if (menuRect.right > vw) {
-    left = Math.max(vw - menuRect.width - 8, 8);
-    menu.style.left = `${left}px`;
-  }
-  // Vertical: If overflowing bottom, show above trigger if fits, otherwise clamp to top
-  if (menuRect.bottom > vh) {
-    // Try above the trigger
-    if (triggerRect.top - menuRect.height - 8 > 0) {
-      top = triggerRect.top + window.scrollY - menuRect.height - 8;
+  const maxLeft = shell.clientWidth - menuW - 8;
+  const maxTop = shell.clientHeight - menuH - 8;
+
+  // Horizontal clamp to shell
+  left = Math.max(8, Math.min(left, maxLeft));
+
+  // Vertical fallback logic
+  if (top > maxTop) {
+    const above = (triggerRect.top - shellRect.top) - menuH - 8;
+    if (above >= 8) {
+      top = above;
     } else {
-      top = Math.max(vh - menuRect.height - 8, 8);
+      top = maxTop;
     }
-    menu.style.top = `${top}px`;
   }
-  // If overflowing left, clamp to left edge
-  if (menuRect.left < 0) {
-    menu.style.left = `8px`;
-  }
-  // If overflowing top, clamp to top edge
-  if (menuRect.top < 0) {
-    menu.style.top = `8px`;
-  }
+
+  top = Math.max(8, Math.min(top, maxTop));
+
+  menu.style.left = `${left}px`;
+  menu.style.top = `${top}px`;
 }
 // Example function to get number of unique collected cards (replace with your real function)
 function getUniqueCollectedCardsCount() {
@@ -4605,8 +4622,8 @@ profilePic.onclick = function(e) {
 
   const anchorEl = profilePic || profileArea;
   const rect = anchorEl.getBoundingClientRect();
-  if (typeof placeMenuWithinViewport === 'function') {
-    placeMenuWithinViewport(profileMenu, rect, 'below');
+  if (typeof placeMenuWithinShell === 'function') {
+    placeMenuWithinShell(profileMenu, rect, 'bottom');
   } else {
     // fallback: position below anchor
     const top = rect.bottom + window.scrollY + 8;
