@@ -25,7 +25,6 @@ html, body {
 
 /* Centering stage for the scaled shell */
 body {
-  display: grid;
   place-items: center;
   /* viewport unit that behaves better on mobile browser UI chrome */
   min-height: 100dvh;
