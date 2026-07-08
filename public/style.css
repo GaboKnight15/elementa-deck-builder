@@ -152,6 +152,9 @@ button {}
   align-items: center;
   box-sizing: border-box;
 }
+#home-section {
+  background: radial-gradient(circle at top, #1f2b3d, #0d111a);
+}
 #home-container {
   display: flex;
   flex-direction: column;
