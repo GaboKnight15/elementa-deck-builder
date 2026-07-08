@@ -2213,7 +2213,7 @@ function showHandCardMenu(instanceId, cardDiv) {
 
   // Position relative to cardDiv
   const rect = cardDiv.getBoundingClientRect();
-  placeMenuWithinViewport(menu, rect);
+  placeMenuWithinShell(menu, rect);
 
   // Prevent menu click from closing (in case outside handler runs)
   menu.onclick = function(e) { e.stopPropagation(); };
@@ -2411,7 +2411,7 @@ function appendDeckZone(parentDiv, deckArray, who) {
       ];
       const menu = createCardMenu(buttons);
       const rect = deckCard.getBoundingClientRect();
-      placeMenuWithinViewport(menu, rect);
+      placeMenuWithinShell(menu, rect);
 
       menu.onclick = function(e) { e.stopPropagation(); };
 
@@ -2556,7 +2556,7 @@ gameState.playerDeck.forEach((cardObj, idx) => {
       shell.appendChild(menu);
 
       const rect = img.getBoundingClientRect();
-      placeMenuWithinViewport(menu, rect);
+      placeMenuWithinShell(menu, rect);
 
       menu.onclick = function(e) { e.stopPropagation(); };
       modal.onclick = function(e) {
@@ -3287,7 +3287,7 @@ cardData.skill
   const menu = createCardMenu(buttons);
   // Position menu absolutely near cardDiv
   const rect = cardDiv.getBoundingClientRect();
-  placeMenuWithinViewport(menu, rect);
+  placeMenuWithinShell(menu, rect);
 
   menu.onclick = function(e) { e.stopPropagation(); };
   // Hide menu when clicking elsewhere
@@ -3434,7 +3434,7 @@ function openVoidModal(isenemy = false) {
           shell.appendChild(menu);
 
           const rect = img.getBoundingClientRect();
-          placeMenuWithinViewport(menu, rect);
+          placeMenuWithinShell(menu, rect);
 
           menu.onclick = function(e) { e.stopPropagation(); };
           modal.onclick = function(e) {
