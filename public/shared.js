@@ -4,12 +4,12 @@ const dummyCards = [
 // ---------------- //
 
 // EGG //
-{id: 'MightoftheValiant', name: 'Might of the Valiant', rarity: 'Rare', image: 'Cards/egr/MightoftheValiant.png', flavor: '', 
+/*{id: 'MightoftheValiant', name: 'Might of the Valiant', rarity: 'Rare', image: 'Cards/egr/MightoftheValiant.png', flavor: '', 
  category: 'Spell', color: ['Green','Gay'], type: 'Aura', cost: '{g}{c}', mana: 2, set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Cast', cost: '{g}{c}', eff: {class: 'cast'}},
 	{name: 'Might of the Valiant', mana: 1, eff: {class: 'bolster', atk: 1, hp: 1}},
 	{name: 'Might of the Valiant', mana: 3, eff: {class: 'bolster', atk: 2, hp: 3}}]},
-	
+	*/
 {id: 'Verdara', name: 'Verdara', rarity: 'Legend', image: 'Cards/egg/Verdara.png', flavor: '', 
  category: 'Terrain', color: 'Green', type: ['Sylvan','Domain'], hp: 20, essence: '{g2}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Flourish', req: 'tap', eff: {class: 'bolster', hp: 2}, text: 'Give +{2} HP to 1 creature.'}]},
@@ -40,12 +40,12 @@ const dummyCards = [
 	{name: 'Nature Prowess', trig: 'summon', eff: {class: 'bolster', atk: 1, countColor: 'Green'}, text: 'If summoned, gain +{1}/{0} for each sylvan creature ally.'},
 	{name: 'Forest Phalanx', trig: 'attack', eff: {class: 'add', type: ['Sylvan','Terrain']}, text: 'If this attacks, add 1 sylvan terrain.'}]},
 
-{id: 'WildhornSongreaver', name: 'Wildhorn Songreaver', rarity: 'Rare', image: 'Cards/egg/WildhornSongreaver.png', flavor: '', 
+/*{id: 'WildhornSongreaver', name: 'Wildhorn Songreaver', rarity: 'Rare', image: 'Cards/egg/WildhornSongreaver.png', flavor: '', 
  category: 'Creature', fight: 'Horncall Crescendo', color: 'Green', type: 'Satyr', hp: 4, atk: 2, cost: '{g2}', ability: 'Vigor', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{g2}', eff: {class: 'summon'}},
 	{name: 'Hidden Overture', discard: 1, eff: {class: 'enable', amount: 1}},
 	{name: 'Horncall Crescendo', cost: '{g}', trig: 'attack', discard: 1, eff: {class: 'bolster', atk: 1, type: 'Satyr', target: 'playerCreatures'}}]},
-
+*/
 {id: 'EarthrootTitan', name: 'Earthroot Titan', rarity: 'Rare', image: 'Cards/egg/EarthrootTitan.png', flavor: '', 
  category: 'Creature', fight: '', color: 'Green', type: ['Verdant','Beast'], hp: 6, atk: 3, cost: '{g5}', ability: 'Rush', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{g5}', eff: {class: 'summon'}}, {trig: 'summon', eff: {class: 'enable'}},
@@ -66,14 +66,14 @@ const dummyCards = [
 	{name: 'Shifting Bark Facade', trig: 'echo', eff: {class: 'summon', category: 'Creature', type: 'Verdant', cost: '<3'}},
 	{name: 'Primal Forest Pulse', trig: 'summon', eff: {class: 'recover', q: 2, type: 'Verdant'}}]},
 
-{id: 'StreamVagrantKappa', name: 'Stream Vagrant Kappa', rarity: 'Rare', image: 'Cards/egg/StreamVagrantKappa.png', flavor: '', 
+/*{id: 'StreamVagrantKappa', name: 'Stream Vagrant Kappa', rarity: 'Rare', image: 'Cards/egg/StreamVagrantKappa.png', flavor: '', 
  category: 'Creature', fight: '', color: ['Green','Blue'], type: ['Sylvan','Merfolk'], hp: 3, atk: 2, cost: '{g2}{u}', 
  ability: ['Bind','Vigor'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{g2}{u}', eff: {class: 'summon'}},
 	{name: 'Riverbed Flotsam Glean', trig: 'summon', eff: {class: 'recover', category: 'Artifact'},
 	 text: 'When this card is summoned, recover 1 fallen artifact.'},
 	{name: 'Drifting Foam Escape', req: 'return', eff: {class: 'drench', target: 'enemyCreatures'}}]},
-
+*/
 {id: 'VigorousSatiricOrchard', name: 'Vigorous, Satiric Orchard', rarity: 'Rare', image: 'Cards/egg/VigorousSatiricOrchard.png', flavor: 'The air thickens with the scent of fermented nectar and the echoes of mocking laughter. Here, every fallen fruit is a catalyst for a riotous surge of primal power.', 
  category: 'Terrain', color: 'Green', type: 'Satyr', hp: 4, cost: '{g2}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Terraform', cost: '{g2}', eff: {class: 'terraform'}}, {trig: 'summon', eff: {class: 'bolster', atk: 1, target: 'playerCreatures', type: 'Satyr'}, text: 'If this is played, give +{1}/{0} to satyr allies.'},
@@ -149,7 +149,7 @@ const dummyCards = [
 	{name: 'Cast', cost: '{g}', eff: {class: 'cast'}},
 	{name: 'Flourishing Vitality', req: 'tap', mana: 1, eff: [{class: 'Heal', amount: 5}, {class: 'Draw', amount: 1}]}]},
  
-{id: 'EssenceSurge', name: 'Essence Surge', rarity: 'Common', image: 'Cards/egg/EssenceSurge.png', flavor: '', 
+/*{id: 'EssenceSurge', name: 'Essence Surge', rarity: 'Common', image: 'Cards/egg/EssenceSurge.png', flavor: '', 
  category: 'Spell', color: 'Green', type: 'Spell', cost: '{g2}', mana: 3, set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Cast', cost: '{g2}', eff: {class: 'cast'}},
 	{name: 'Essence Surge', req: 'tap', mana: 1, eff: {class: 'essence', color: 'colorless'}}]},
