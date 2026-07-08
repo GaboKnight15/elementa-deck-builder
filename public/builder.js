@@ -1045,7 +1045,7 @@ function updateDeckDisplay() {
     
     const placeholderText = document.createElement('div');
     placeholderText.className = 'domain-placeholder-text';
-    placeholderText.textContent = '+ Select domain';
+    placeholderText.textContent = '+ Domain';
     placeholder.appendChild(placeholderText);
     
     domainSlot.appendChild(placeholder);
