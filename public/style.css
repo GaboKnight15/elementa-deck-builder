@@ -1,44 +1,78 @@
-html, body {
-  font-family: sans-serif;
-  height: 100%;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  align-items: center; 
-  background: #1a2533 !important; 
-  overflow-x: hidden;
-}
-body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: radial-gradient(circle at top, #1f2b3d, #0d111a);
-}
-#game-shell {
+:root {
+  /* Virtual game resolution (internal coordinate system) */
   --game-width: 1280;
   --game-height: 720;
-  
+
+  /* Outer spacing around game shell */
+  --shell-gap: 12px;
+
+  /* iOS/Android safe area (works in app webviews too) */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: sans-serif;
+  background: radial-gradient(circle at top, #1f2b3d, #0d111a);
+}
+
+/* Centering stage for the scaled shell */
+body {
+  display: grid;
+  place-items: center;
+  /* viewport unit that behaves better on mobile browser UI chrome */
+  min-height: 100dvh;
+}
+
+/*
+  Fixed virtual-size game surface.
+  We scale this surface down to fit viewport while preserving aspect ratio.
+*/
+#game-shell {
   position: relative;
   width: calc(var(--game-width) * 1px);
   height: calc(var(--game-height) * 1px);
+  transform-origin: center center;
+
+  /* contain scaling, respects safe areas + shell gap */
+  transform: scale(
+    min(
+      (100vw - var(--safe-left) - var(--safe-right) - (var(--shell-gap) * 2)) / (var(--game-width) * 1px),
+      (100dvh - var(--safe-top) - var(--safe-bottom) - (var(--shell-gap) * 2)) / (var(--game-height) * 1px),
+      1
+    )
+  );
 
   background: #1a2533;
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 18px 80px rgba(0,0,0,0.65);
+}
 
-  /* scale down if screen is smaller */
-  transform-origin: center;
-  transform: scale(
-    min(
-      (100vw - 24px) / (var(--game-width) * 1px),
-      (100vh - 24px) / (var(--game-height) * 1px),
-      1
-    )
-  );
+/* Optional: slightly tighter shell on small devices */
+@media (max-width: 700px) {
+  :root { --shell-gap: 8px; }
+
+  #game-shell {
+    border-radius: 10px;
+    box-shadow: 0 10px 36px rgba(0,0,0,0.5);
+  }
+}
+
+/* Touch/app quality-of-life defaults */
+* {
+  -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
+}
+button, [role="button"], .section-header-btn, .home-menu-btn {
+  touch-action: manipulation;
 }
 label {
   color: #f7faff;
