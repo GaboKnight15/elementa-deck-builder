@@ -1532,44 +1532,37 @@ function findCardSlot(cardObj) {
   return null;
 }
 
-function syncLegacyFieldArraysFromSlots() {
-  gameState.playerCreatures = gameState.playerCreatureSlots.filter(Boolean);
-  gameState.enemyCreatures = gameState.enemyCreatureSlots.filter(Boolean);
-
-  const pSupport = gameState.playerSupportSlots.filter(Boolean);
-  const eSupport = gameState.enemySupportSlots.filter(Boolean);
-
-  const byType = (arr, type) => arr.filter(c => {
-    const def = dummyCards.find(d => d.id === c.cardId);
-    return (def?.type || "").toLowerCase() === type;
-  });
-
-  gameState.playerTerrains = byType(pSupport, "terrain");
-  gameState.playerArtifacts = byType(pSupport, "artifact");
-  gameState.playerSpells = byType(pSupport, "spell");
-
-  gameState.enemyTerrains = byType(eSupport, "terrain");
-  gameState.enemyArtifacts = byType(eSupport, "artifact");
-  gameState.enemySpells = byType(eSupport, "spell");
-}
 function getZoneArrayForCard(cardObj) {
-  if (!cardObj) return null;
-
+  if (!cardObj || !cardObj.instanceId) return null;
   const id = cardObj.instanceId;
 
-  // Player zones
-  if (Array.isArray(gameState.playerCreatures) && gameState.playerCreatures.some(c => c.instanceId === id)) return gameState.playerCreatures;
-  if (Array.isArray(gameState.playerDomains)   && gameState.playerDomains.some(c => c.instanceId === id))   return gameState.playerDomains;
-  if (Array.isArray(gameState.playerHand)      && gameState.playerHand.some(c => c.instanceId === id))      return gameState.playerHand;
-  if (Array.isArray(gameState.playerFallen)      && gameState.playerFallen.some(c => c.instanceId === id))      return gameState.playerFallen;
-  if (Array.isArray(gameState.playerDeck)      && gameState.playerDeck.some(c => c.instanceId === id))      return gameState.playerDeck;
+  // --- Hands / Decks / Fallen ---
+  if (Array.isArray(gameState.playerHand) && gameState.playerHand.some(c => c?.instanceId === id)) return gameState.playerHand;
+  if (Array.isArray(gameState.enemyHand) && gameState.enemyHand.some(c => c?.instanceId === id)) return gameState.enemyHand;
 
-  // enemy zones
-  if (Array.isArray(gameState.enemyCreatures) && gameState.enemyCreatures.some(c => c.instanceId === id)) return gameState.enemyCreatures;
-  if (Array.isArray(gameState.enemyDomains)   && gameState.enemyDomains.some(c => c.instanceId === id))   return gameState.enemyDomains;
-  if (Array.isArray(gameState.enemyHand)      && gameState.enemyHand.some(c => c.instanceId === id))      return gameState.enemyHand;
-  if (Array.isArray(gameState.enemyFallen)      && gameState.enemyFallen.some(c => c.instanceId === id))      return gameState.enemyFallen;
-  if (Array.isArray(gameState.enemyDeck)      && gameState.enemyDeck.some(c => c.instanceId === id))      return gameState.enemyDeck;
+  if (Array.isArray(gameState.playerDeck) && gameState.playerDeck.some(c => c?.instanceId === id)) return gameState.playerDeck;
+  if (Array.isArray(gameState.enemyDeck) && gameState.enemyDeck.some(c => c?.instanceId === id)) return gameState.enemyDeck;
+
+  if (Array.isArray(gameState.playerFallen) && gameState.playerFallen.some(c => c?.instanceId === id)) return gameState.playerFallen;
+  if (Array.isArray(gameState.enemyFallen) && gameState.enemyFallen.some(c => c?.instanceId === id)) return gameState.enemyFallen;
+
+  // --- Slot-based battlefield (NEW canonical field storage) ---
+  if (Array.isArray(gameState.playerCreatureSlots) && gameState.playerCreatureSlots.some(c => c && c.instanceId === id)) return gameState.playerCreatureSlots;
+  if (Array.isArray(gameState.playerSupportSlots) && gameState.playerSupportSlots.some(c => c && c.instanceId === id)) return gameState.playerSupportSlots;
+
+  if (Array.isArray(gameState.enemyCreatureSlots) && gameState.enemyCreatureSlots.some(c => c && c.instanceId === id)) return gameState.enemyCreatureSlots;
+  if (Array.isArray(gameState.enemySupportSlots) && gameState.enemySupportSlots.some(c => c && c.instanceId === id)) return gameState.enemySupportSlots;
+
+  // --- Legacy fallback (optional while migrating old code) ---
+  if (Array.isArray(gameState.playerCreatures) && gameState.playerCreatures.some(c => c?.instanceId === id)) return gameState.playerCreatures;
+  if (Array.isArray(gameState.playerTerrains) && gameState.playerTerrains.some(c => c?.instanceId === id)) return gameState.playerTerrains;
+  if (Array.isArray(gameState.playerArtifacts) && gameState.playerArtifacts.some(c => c?.instanceId === id)) return gameState.playerArtifacts;
+  if (Array.isArray(gameState.playerSpells) && gameState.playerSpells.some(c => c?.instanceId === id)) return gameState.playerSpells;
+
+  if (Array.isArray(gameState.enemyCreatures) && gameState.enemyCreatures.some(c => c?.instanceId === id)) return gameState.enemyCreatures;
+  if (Array.isArray(gameState.enemyTerrains) && gameState.enemyTerrains.some(c => c?.instanceId === id)) return gameState.enemyTerrains;
+  if (Array.isArray(gameState.enemyArtifacts) && gameState.enemyArtifacts.some(c => c?.instanceId === id)) return gameState.enemyArtifacts;
+  if (Array.isArray(gameState.enemySpells) && gameState.enemySpells.some(c => c?.instanceId === id)) return gameState.enemySpells;
 
   return null;
 }
@@ -2256,11 +2249,12 @@ function setupDropZones() {
 
       if (owner !== "player") return; // testing guard
 
-      const cardObj = gameState.playerHand[handIdx];
-      const def = dummyCards.find(c => c.id === cardObj.cardId);
-      const type = String(def?.type || def?.category || "").toLowerCase();
-      const requiredLane = type === "creature" ? "creature" : "support";
-      if (lane !== requiredLane) return;
+const cardObj = gameState.playerHand[handIdx];
+const requiredLane = getCardLane(cardObj); // creature | support
+if (lane !== requiredLane) {
+  showToast && showToast(`This card must be played to a ${requiredLane} slot.`);
+  return;
+}
 
       const slots = lane === "creature" ? gameState.playerCreatureSlots : gameState.playerSupportSlots;
       if (slots[idx]) return; // occupied
