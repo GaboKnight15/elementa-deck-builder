@@ -6613,11 +6613,7 @@ function updateGameStatusRow() {
   oWrap.style.flexDirection = 'column';
   oWrap.style.alignItems = 'center';
   oWrap.style.gap = '4px';
-  const oLabel = document.createElement('div');
-  oLabel.textContent = 'Opp';
-  oLabel.style.fontSize = '0.75em';
-  oLabel.style.color = '#d0d6df';
-  oWrap.appendChild(oLabel);
+
   const oIcons = document.createElement('div');
   oIcons.style.display = 'flex';
   oIcons.style.flexWrap = 'wrap';
@@ -6632,11 +6628,7 @@ function updateGameStatusRow() {
   pWrap.style.flexDirection = 'column';
   pWrap.style.alignItems = 'center';
   pWrap.style.gap = '4px';
-  const pLabel = document.createElement('div');
-  pLabel.textContent = 'You';
-  pLabel.style.fontSize = '0.75em';
-  pLabel.style.color = '#d0d6df';
-  pWrap.appendChild(pLabel);
+
   const pIcons = document.createElement('div');
   pIcons.style.display = 'flex';
   pIcons.style.flexWrap = 'wrap';
@@ -6707,11 +6699,6 @@ function getCardAbilities(cardObj) {
     });
   }
   return abilities;
-}
-function haveSharedTypeOrArchetype(cardA, cardB) {
-  const aTypes = getCardTypes(cardA), bTypes = getCardTypes(cardB);
-  const aArchs = getCardArchetypes(cardA), bArchs = getCardArchetypes(cardB);
-  return aTypes.some(t => bTypes.includes(t)) || aArchs.some(a => bArchs.includes(a));
 }
 
 // ------------------------------------- //
