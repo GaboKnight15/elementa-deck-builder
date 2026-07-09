@@ -3303,7 +3303,6 @@ cardData.skill
   }, 10);
 }
 
-// ==== VOID MODAL ====
 function openFallenModal(isenemy = false) {
   let modal = document.getElementById('fallen-modal');
   if (!modal) {
@@ -3315,12 +3314,11 @@ function openFallenModal(isenemy = false) {
     modal.appendChild(content);
     document.body.appendChild(modal);
   }
-  
-  modal.onclick = function(e) {
+
+  modal.onclick = function (e) {
     if (e.target === modal) modal.style.display = 'none';
   };
-  
-  // Always prevent modal-content clicks from closing the modal
+
   const modalContent = modal.querySelector('.modal-content');
   if (modalContent) {
     modalContent.onclick = e => e.stopPropagation();
@@ -3333,166 +3331,153 @@ function openFallenModal(isenemy = false) {
     modal.querySelector('.modal-content').appendChild(list);
   }
   list.innerHTML = '';
-  
-  // === FIX: Show correct void cards ===
-  const voidCards = isenemy ? gameState.enemyVoid : gameState.playerVoid;
+
+  // Use Fallen as your "void" source (you don't have stable playerVoid/enemyVoid arrays)
+  const voidCards = isenemy ? (gameState.enemyFallen || []) : (gameState.playerFallen || []);
   const fallenCards = isenemy ? (gameState.enemyFallen || []) : (gameState.playerFallen || []);
-  
-  voidCards.forEach((cardObj, idx) => {
-      const card = dummyCards.find(c => c.id === cardObj.cardId);
-      if (!card) return;
 
-      const wrapper = document.createElement('div');
-      wrapper.className = 'modal-card-wrapper';
+  // VOID SECTION
+  voidCards.forEach((cardObj) => {
+    const card = dummyCards.find(c => c.id === cardObj.cardId);
+    if (!card) return;
 
-      const cardDiv = document.createElement('div');
-      cardDiv.className = 'card-battlefield';
+    const wrapper = document.createElement('div');
+    wrapper.className = 'modal-card-wrapper';
 
-      // === PULSE EFFECT: Add animation if this card is actionable in the void ===
-      setCardAnimatableClass(cardDiv, cardObj, card, gameState, 'void');
-      
-      const img = document.createElement('img');
-      img.src = card.image;
-      img.alt = card.name;
-      img.className = "modal-card-img";
-      cardDiv.appendChild(img);
-      img.style.cursor = "pointer";
-      
-      if (isenemy) {
-        holdClickToView(img, cardObj, (e) => {
-          e.stopPropagation();
-          closeAllMenus();
-          showFullCardModal(cardObj);
-        }, {
-          enableDragDetection: false
-        });
-      } else {
-        // For player's void, show menu on short click, modal on hold
-        holdClickToView(img, cardObj, (e) => {
-          e.stopPropagation();
-          closeAllMenus();
-          
-          const buttons = [
-            {
-              text: "Return to Hand",
-              onClick: function(e) {
-                e.stopPropagation();
-                moveCard(cardObj.instanceId, gameState.playerFallen, gameState.playerHand);
-                renderGameState();
-                closeAllMenus();
-                openFallenModal();
-              }
-            },
-            {
-              text: "Return to Deck",
-              onClick: function(e) {
-                e.stopPropagation();
-                moveCard(cardObj.instanceId, gameState.playerFallen, gameState.playerDeck);
-                renderGameState();
-                closeAllMenus();
-                openFallenModal();
-              }
-            },
+    const cardDiv = document.createElement('div');
+    cardDiv.className = 'card-battlefield';
+
+    setCardAnimatableClass(cardDiv, cardObj, card, gameState, 'void');
+
+    const img = document.createElement('img');
+    img.src = card.image;
+    img.alt = card.name;
+    img.className = "modal-card-img";
+    img.style.cursor = "pointer";
+    cardDiv.appendChild(img);
+
+    if (isenemy) {
+      holdClickToView(img, cardObj, (e) => {
+        e.stopPropagation();
+        closeAllMenus();
+        showFullCardModal(cardObj);
+      }, { enableDragDetection: false });
+    } else {
+      holdClickToView(img, cardObj, (e) => {
+        e.stopPropagation();
+        closeAllMenus();
+
+        const buttons = [
+          {
+            text: "Return to Hand",
+            onClick: function (ev) {
+              ev.stopPropagation();
+              moveCard(cardObj.instanceId, gameState.playerFallen, gameState.playerHand);
+              renderGameState();
+              closeAllMenus();
+              openFallenModal(false);
+            }
+          },
+          {
+            text: "Return to Deck",
+            onClick: function (ev) {
+              ev.stopPropagation();
+              moveCard(cardObj.instanceId, gameState.playerFallen, gameState.playerDeck);
+              renderGameState();
+              closeAllMenus();
+              openFallenModal(false);
+            }
+          },
           {
             text: "View",
-            onClick: function(e) {
-              e.stopPropagation();
+            onClick: function (ev) {
+              ev.stopPropagation();
               showFullCardModal(cardObj);
               closeAllMenus();
             }
           }
         ];
-          const cardData = dummyCards.find(c => c.id === cardObj.cardId);
-          if (cardData && Array.isArray(cardData.skill)) {
-            cardData.skill
-              .filter(skillObj => !skillObj.activation)
-              .forEach(skillObj => {
-                const activation = skillObj.activation || {};
-                let requirements = Array.isArray(activation.requirement)
-                  ? activation.requirement
-                  : (activation.requirement ? [activation.requirement] : []);
-                const reqIcons = getRequirementIcons(requirements);
 
-                const isEnabled = canActivateSkill(cardObj, skillObj, 'void', gameState);
+        const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+        if (cardData && Array.isArray(cardData.skill)) {
+          cardData.skill
+            .filter(skillObj => !skillObj.activation)
+            .forEach(skillObj => {
+              const activation = skillObj.activation || {};
+              const requirements = Array.isArray(activation.requirement)
+                ? activation.requirement
+                : (activation.requirement ? [activation.requirement] : []);
+              const reqIcons = getRequirementIcons(requirements);
+              const isEnabled = canActivateSkill(cardObj, skillObj, 'void', gameState);
 
-                buttons.push({
-                  text: `${skillObj.name} ${parseEffectText(skillObj.cost)}${reqIcons}`,
-                  html: true,
-                  title: skillTitle(skillObj),
-                  disabled: !isEnabled,
-                  onClick: function(e) {
-                    e.stopPropagation();
-                    if (!canActivateSkill(cardObj, skillObj, 'void', gameState)) return;
-                    activateSkill(cardObj, skillObj);
-                    closeAllMenus();
-                    openFallenModal();
-                  }
-                });
+              buttons.push({
+                text: `${skillObj.name} ${parseEffectText(skillObj.cost)}${reqIcons}`,
+                html: true,
+                title: skillTitle(skillObj),
+                disabled: !isEnabled,
+                onClick: function (ev) {
+                  ev.stopPropagation();
+                  if (!canActivateSkill(cardObj, skillObj, 'void', gameState)) return;
+                  activateSkill(cardObj, skillObj);
+                  closeAllMenus();
+                  openFallenModal(false);
+                }
               });
-          }
+            });
+        }
 
-          const menu = createCardMenu(buttons);
-          const shell = document.getElementById('game-shell') || document.getElementById('gameplay-section');
-          shell.appendChild(menu);
+        const menu = createCardMenu(buttons);
+        const shell = document.getElementById('game-shell') || document.getElementById('gameplay-section');
+        shell.appendChild(menu);
 
-          const rect = img.getBoundingClientRect();
-          placeMenuWithinShell(menu, rect);
+        const rect = img.getBoundingClientRect();
+        placeMenuWithinShell(menu, rect);
 
-          menu.onclick = function(e) { e.stopPropagation(); };
-          modal.onclick = function(e) {
-            if (!e.target.closest('.card-menu')) {
-              closeAllMenus();
-              if (e.target === modal) modal.style.display = 'none';
-            }
-          };
-        }, {
-          enableDragDetection: false
-        });
-      }
+        menu.onclick = function (ev) { ev.stopPropagation(); };
+      }, { enableDragDetection: false });
+    }
 
-      wrapper.appendChild(cardDiv);
-      list.appendChild(wrapper);
-    });
-  }
+    wrapper.appendChild(cardDiv);
+    list.appendChild(wrapper);
+  });
 
-//  FALLEN SECTION //
-const depHeader = document.createElement('div');
-depHeader.style.marginTop = '16px';
-depHeader.style.paddingTop = '10px';
-depHeader.style.borderTop = '1px solid rgba(255,255,255,0.12)';
-depHeader.style.color = '#ffe066';
-depHeader.style.fontWeight = '800';
-depHeader.style.letterSpacing = '0.04em';
-depHeader.textContent = 'Fallen';
-list.appendChild(depHeader);
+  // FALLEN SECTION
+  const depHeader = document.createElement('div');
+  depHeader.style.marginTop = '16px';
+  depHeader.style.paddingTop = '10px';
+  depHeader.style.borderTop = '1px solid rgba(255,255,255,0.12)';
+  depHeader.style.color = '#ffe066';
+  depHeader.style.fontWeight = '800';
+  depHeader.style.letterSpacing = '0.04em';
+  depHeader.textContent = 'Fallen';
+  list.appendChild(depHeader);
 
-fallenCards.forEach((cardObj, idx) => {
-  const card = dummyCards.find(c => c.id === cardObj.cardId);
-  if (!card) return;
+  fallenCards.forEach((cardObj) => {
+    const card = dummyCards.find(c => c.id === cardObj.cardId);
+    if (!card) return;
 
-  const wrapper = document.createElement('div');
-  wrapper.className = 'modal-card-wrapper';
+    const wrapper = document.createElement('div');
+    wrapper.className = 'modal-card-wrapper';
 
-  const cardDiv = document.createElement('div');
-  cardDiv.className = 'card-battlefield';
+    const cardDiv = document.createElement('div');
+    cardDiv.className = 'card-battlefield';
 
-  const img = document.createElement('img');
-  img.src = card.image;
-  img.alt = card.name;
-  img.className = "modal-card-img";
-  cardDiv.appendChild(img);
+    const img = document.createElement('img');
+    img.src = card.image;
+    img.alt = card.name;
+    img.className = "modal-card-img";
+    cardDiv.appendChild(img);
 
-    // For now: allow viewing only (no Return to Hand/Deck menu)
-  holdClickToView(img, cardObj, (e) => {
-    e.stopPropagation();
-    closeAllMenus();
-    showFullCardModal(cardObj);
-  }, { enableDragDetection: false });
+    holdClickToView(img, cardObj, (e) => {
+      e.stopPropagation();
+      closeAllMenus();
+      showFullCardModal(cardObj);
+    }, { enableDragDetection: false });
 
-  wrapper.appendChild(cardDiv);
-  list.appendChild(wrapper);
-});
-}
+    wrapper.appendChild(cardDiv);
+    list.appendChild(wrapper);
+  });
+
   modal.style.display = 'block';
 }
 
