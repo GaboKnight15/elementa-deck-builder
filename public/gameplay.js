@@ -27,7 +27,7 @@ TURNS.forEach(turn =>
 // --- ZONES --- //
 // ------------- //
 let gameState = {
-  playerDeck: [], playerHand: [], playerCreatures: [], playerTerrain: [], playerFallen: [], playerFallen: [], playerArtifacts: [], playerSpells: [],
+  playerDeck: [], playerHand: [], playerCreatures: [], playerTerrains: [], playerFallen: [], playerFallen: [], playerArtifacts: [], playerSpells: [],
   enemyDeck: [], enemyHand: [], enemyCreatures: [], enemyTerrains: [], enemyFallen: [], enemyFallen: [], enemyArtifacts: [], enemySpells: [],
 
   // New slot layout (5 creature + 5 support per side)
@@ -49,11 +49,14 @@ let gameState = {
 const ZONE_MAP = {
   // Player zones (updated IDs)
   playerCreatures:   { id: "player-creature-zone",  arr: () => gameState.playerCreatures },
-  playerTerrains:    { id: "player-support-zone",   arr: () => gameState.playerTerrains },
+  playerSupports:   { id: "player-support-zone",  arr: () => gameState.playerSupports },
+  
   playerFallen:      { id: "player-fallen-zone",      arr: () => gameState.playerFallen },
   playerDeck:        { id: "player-deck-zone",      arr: () => gameState.playerDeck },
   playerHand:        { id: "player-hand",           arr: () => gameState.playerHand },
-  playerVoid:      { id: "player-void",         arr: () => gameState.playerVoid },
+  playerVoid:        { id: "player-void",         arr: () => gameState.playerVoid },
+  
+  playerTerrains:    { id: "player-support-zone",   arr: () => gameState.playerTerrains },
   playerArtifacts:   { id: "player-support-zone",   arr: () => gameState.playerArtifacts },
   playerSpells:      { id: "player-support-zone",   arr: () => gameState.playerSpells },
 
@@ -65,11 +68,14 @@ const ZONE_MAP = {
 
   // Enemy zones (updated IDs)
   enemyCreatures:    { id: "enemy-creature-zone",   arr: () => gameState.enemyCreatures },
-  enemyTerrainss:     { id: "enemy-support-zone",    arr: () => gameState.enemyTerrainss },
+  enemySupports:     { id: "enemy-support-zone",   arr: () => gameState.enemySupports },
+  
   enemyFallen:       { id: "enemy-fallen-zone",       arr: () => gameState.enemyFallen },
   enemyDeck:         { id: "enemy-deck-zone",       arr: () => gameState.enemyDeck },
   enemyHand:         { id: "enemy-hand",            arr: () => gameState.enemyHand },
   enemyVoid:         { id: "enemy-void",          arr: () => gameState.enemyVoid },
+  
+  enemyTerrains:     { id: "enemy-support-zone",    arr: () => gameState.enemyTerrains },
   enemyArtifacts:    { id: "enemy-support-zone",    arr: () => gameState.enemyArtifacts },
   enemySpells:       { id: "enemy-support-zone",    arr: () => gameState.enemySpells },
 
@@ -81,7 +87,7 @@ const ZONE_MAP = {
 
   // Combined/mass zones for flexible targeting
   allCreatures:      { id: null, arr: () => [...gameState.playerCreatures, ...gameState.enemyCreatures] },
-  allTerrains:       { id: null, arr: () => [...gameState.playerTerrains, ...gameState.enemyTerrainss] },
+  allTerrains:       { id: null, arr: () => [...gameState.playerTerrains, ...gameState.enemyTerrains] },
   allFallens:         { id: null, arr: () => [...gameState.playerFallen, ...gameState.enemyFallen] },
   allDecks:          { id: null, arr: () => [...gameState.playerDeck, ...gameState.enemyDeck] },
   allHands:          { id: null, arr: () => [...gameState.playerHand, ...gameState.enemyHand] },
@@ -90,7 +96,7 @@ const ZONE_MAP = {
   // Includes supports from both terrain+artifact collections
   allSupports:       { id: null, arr: () => [
     ...gameState.playerTerrains, ...gameState.playerArtifacts, ...gameState.playerSpells,
-    ...gameState.enemyTerrainss, ...gameState.enemyArtifacts, ...gameState.enemySpells
+    ...gameState.enemyTerrains, ...gameState.enemyArtifacts, ...gameState.enemySpells
   ] },
 
   allUnits:          { id: null, arr: () => [
@@ -102,20 +108,20 @@ const ZONE_MAP = {
     ...gameState.playerCreatures, ...gameState.playerTerrains, ...gameState.playerArtifacts, ...gameState.playerSpells
   ]},
   enemyField:        { id: null, arr: () => [
-    ...gameState.enemyCreatures, ...gameState.enemyTerrainss, ...gameState.enemyArtifacts, ...gameState.enemySpells
+    ...gameState.enemyCreatures, ...gameState.enemyTerrains, ...gameState.enemyArtifacts, ...gameState.enemySpells
   ]},
 
   // Whole field (creatures + supports both sides)
   allField:          { id: null, arr: () => [
     ...gameState.playerCreatures, ...gameState.playerTerrains, ...gameState.playerArtifacts, ...gameState.playerSpells,
-    ...gameState.enemyCreatures, ...gameState.enemyTerrainss, ...gameState.enemyArtifacts, ...gameState.enemySpells
+    ...gameState.enemyCreatures, ...gameState.enemyTerrains, ...gameState.enemyArtifacts, ...gameState.enemySpells
   ]},
 
   // All cards everywhere (for global effects, etc.)
   allCards:          { id: null, arr: () => [
     ...gameState.playerCreatures, ...gameState.playerTerrains, ...gameState.playerArtifacts, ...gameState.playerSpells,
     ...gameState.playerFallen, ...gameState.playerDeck, ...gameState.playerHand, ...gameState.playerFallen,
-    ...gameState.enemyCreatures, ...gameState.enemyTerrainss, ...gameState.enemyArtifacts, ...gameState.enemySpells,
+    ...gameState.enemyCreatures, ...gameState.enemyTerrains, ...gameState.enemyArtifacts, ...gameState.enemySpells,
     ...gameState.enemyFallen, ...gameState.enemyDeck, ...gameState.enemyHand, ...gameState.enemyFallen,
   ]}
 };
@@ -402,7 +408,7 @@ const TRIGGER_MAP = {
 
 const REQ_MAP = {
 tap: { name: 'Tap', icon: 'Icons/Skill/Tap.png',
-  zones: ['playerCreatures', 'playerTerrain', 'enemyCreatures', 'enemyTerrains'],
+  zones: ['playerCreatures', 'playerTerrains', 'enemyCreatures', 'enemyTerrains'],
   description: 'Changes itself to horizontal.',
   canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
     const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
@@ -432,7 +438,7 @@ tap: { name: 'Tap', icon: 'Icons/Skill/Tap.png',
 },
 
 untap: { name: 'Untap', icon: 'Icons/Skill/Untap.png',
-  zones: ['playerCreatures', 'playerTerrain', 'enemyCreatures', 'enemyTerrains'],
+  zones: ['playerCreatures', 'playerTerrains', 'enemyCreatures', 'enemyTerrains'],
   description: 'Changes itself to vertical.',
   canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
     const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
@@ -514,7 +520,7 @@ untap: { name: 'Untap', icon: 'Icons/Skill/Untap.png',
   return: {
     name: 'Return',
     icon: 'Icons/Skill/Return.png',
-    zones: ['playerCreatures', 'playerTerrain', 'enemyCreatures', 'enemyTerrains'],
+    zones: ['playerCreatures', 'playerTerrains', 'enemyCreatures', 'enemyTerrains'],
     description: 'Returns itself from the field to the hand.',
     canActivate(sourceCardObj, skillObj, currentZone, gameState) {
       return this.zones.includes(currentZone);
@@ -539,7 +545,7 @@ untap: { name: 'Untap', icon: 'Icons/Skill/Untap.png',
   retreat: {
     name: 'Retreat',
     icon: 'Icons/Skill/Retreat.png',
-    zones: ['playerCreatures', 'playerTerrain', 'enemyCreatures', 'enemyTerrains'],
+    zones: ['playerCreatures', 'playerTerrains', 'enemyCreatures', 'enemyTerrains'],
     description: 'Returns itself from the field to the deck.',
     canActivate(sourceCardObj, skillObj, currentZone, gameState) {
       return this.zones.includes(currentZone);
@@ -618,7 +624,7 @@ summon: { name: 'Summon', zone: 'playerHand', icon: 'Icons/Skill/Summon.png',
 
     let toArr = null;
     if (cat === 'creature') toArr = owner === 'player' ? gameState.playerCreatures : gameState.enemyCreatures;
-    else if (cat === 'terrain') toArr = owner === 'player' ? gameState.playerTerrain : gameState.enemyTerrains;
+    else if (cat === 'terrain') toArr = owner === 'player' ? gameState.playerTerrains : gameState.enemyTerrains;
     else {
       showToast && showToast('This card cannot be summoned.', { type: 'error' });
       nextEffect && nextEffect();
@@ -744,7 +750,7 @@ terraform: { name: 'Terraform', zone: 'playerHand', icon: 'Icons/Skill/Terraform
 
       const owner = (getCardOwner(sourceCardObj) === 'enemy') ? 'enemy' : 'player';
       const handArr = owner === 'player' ? gameState.playerHand : gameState.enemyHand;
-      const terrainsArr = owner === 'player' ? gameState.playerTerrain : gameState.enemyTerrains;
+      const terrainsArr = owner === 'player' ? gameState.playerTerrains : gameState.enemyTerrains;
 
       // Must be in hand
       if (!handArr.includes(sourceCardObj)) {
@@ -830,7 +836,7 @@ enable: { name: 'Enable', icon: 'Icons/Skill/Untap.png',
   canActivate: function(sourceCardObj, skillObj, currentZone, gameState, step = {}) {
     // Allow from field by default (match your other rotation logic)
     // If you want hand/void use too, expand this list.
-    const fieldZones = ['playerCreatures','playerTerrain','enemyCreatures','enemyTerrains'];
+    const fieldZones = ['playerCreatures','playerTerrains','enemyCreatures','enemyTerrains'];
     if (!fieldZones.includes(currentZone)) return false;
     if (step && step.target) {
       const targets = getTargets(step.target, sourceCardObj);
@@ -880,7 +886,7 @@ disable: { name: 'Disable', icon: 'Icons/Skill/Tap.png',
       if (typeof nextEffect === "function") nextEffect();
   },
   canActivate: function(sourceCardObj, skillObj, currentZone, gameState, step = {}) {
-    const fieldZones = ['playerCreatures','playerTerrain','enemyCreatures','enemyTerrains'];
+    const fieldZones = ['playerCreatures','playerTerrains','enemyCreatures','enemyTerrains'];
     if (!fieldZones.includes(currentZone)) return false;
     if (step && step.target) {
       const targets = getTargets(step.target, sourceCardObj);
@@ -910,7 +916,7 @@ dash: { name: 'Dash', zone: 'playerHand', icon: 'Icons/Skill/Dash.png',
     if (category.includes("creature")) {
       targetArr = gameState.playerCreatures;
     } else if (category.includes("terrain")) {
-      targetArr = gameState.playerTerrain;
+      targetArr = gameState.playerTerrains;
     } else {
       showToast("Dash can only be used for creatures or terrains.");
       if (nextEffect) nextEffect();
@@ -943,7 +949,7 @@ reanimate: { name: 'Reanimate', zone: 'fallen', icon: 'Icons/Skill/Reanimate.png
     if (category.includes("creature")) {
       targetArr = gameState.playerCreatures;
     } else if (category.includes("terrain")) {
-      targetArr = gameState.playerTerrain;
+      targetArr = gameState.playerTerrains;
     } else {
       showToast("Reanimate can only be used for creatures or terrains.");
       if (nextEffect) nextEffect();
@@ -959,7 +965,7 @@ reanimate: { name: 'Reanimate', zone: 'fallen', icon: 'Icons/Skill/Reanimate.png
 heal: { name: 'Heal', icon: 'Icons/Skill/Heal.png',
   description: 'Heals an ally.',
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
-    const playerField = [...gameState.playerCreatures, ...gameState.playerTerrain];
+    const playerField = [...gameState.playerCreatures, ...gameState.playerTerrains];
     startSkillTarget(
       playerField,
       selectedTargets => {
@@ -992,7 +998,7 @@ heal: { name: 'Heal', icon: 'Icons/Skill/Heal.png',
 armor: { name: 'Armor', icon: 'Icons/Skill/Armor.png',
   description: 'Grants armor to an ally.',
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
-    const playerField = [...gameState.playerCreatures, ...gameState.playerTerrain];
+    const playerField = [...gameState.playerCreatures, ...gameState.playerTerrains];
     startSkillTarget(
       playerField,
       selectedTargets => {
@@ -1039,7 +1045,7 @@ destroy: { icon: 'Icons/Skill/Destroy.png', name: 'Destroy',
     const fieldArrays = [
       gameState.playerCreatures,
       gameState.enemyCreatures,
-      gameState.playerTerrain,
+      gameState.playerTerrains,
       gameState.enemyTerrains
     ];
     const allTargets = fieldArrays.flat();
@@ -1057,7 +1063,7 @@ destroy: { icon: 'Icons/Skill/Destroy.png', name: 'Destroy',
       // Determine correct void array based on owner
       const isPlayerCard =
         gameState.playerCreatures.includes(selectedTarget) ||
-        gameState.playerTerrain.includes(selectedTarget);
+        gameState.playerTerrains.includes(selectedTarget);
       const voidArr = isPlayerCard ? gameState.playerFallen : gameState.enemyFallen;
 
       // Move from its current zone to the appropriate void
@@ -1121,7 +1127,7 @@ add: { icon: 'Icons/Skill/Add.png', name: 'Search',
         if (category.includes("creature")) {
           targetArr = gameState.playerCreatures;
         } else if (category.includes("terrain")) {
-          targetArr = gameState.playerTerrain;
+          targetArr = gameState.playerTerrains;
         } else {
           showToast("Revive can only be used for creatures or terrains.");
           return;
@@ -1134,7 +1140,7 @@ bounce: { icon: 'Icons/Skill/Bounce.png', name: 'Bounce',
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
     // All creatures/terrains on both sides
     const fieldArrs = [
-      gameState.playerCreatures, gameState.playerTerrain,
+      gameState.playerCreatures, gameState.playerTerrains,
       gameState.enemyCreatures, gameState.enemyTerrains
     ];
     const allField = fieldArrs.flat();
@@ -1180,7 +1186,7 @@ banish: { icon: 'Icons/Skill/Banish.png', name: 'Banish',
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
     // All creatures/terrains on both sides
     const fieldArrs = [
-      gameState.playerCreatures, gameState.playerTerrain,
+      gameState.playerCreatures, gameState.playerTerrains,
       gameState.enemyCreatures, gameState.enemyTerrains
     ];
     const allField = fieldArrs.flat();
@@ -1406,7 +1412,7 @@ if (Array.isArray(enemyDeck) && enemyDeck.length && enemyDeck[0].cardId) {
 }
   gameState.playerHand = [];
   gameState.playerCreatures = [];
-  gameState.playerTerrain = [];
+  gameState.playerTerrains = [];
   gameState.playerFallen = [];
   gameState.playerArtifacts = [];
   gameState.playerSpells = [];
@@ -1538,7 +1544,7 @@ function syncLegacyFieldArraysFromSlots() {
     return (def?.type || "").toLowerCase() === type;
   });
 
-  gameState.playerTerrain = byType(pSupport, "terrain");
+  gameState.playerTerrains = byType(pSupport, "terrain");
   gameState.playerArtifacts = byType(pSupport, "artifact");
   gameState.playerSpells = byType(pSupport, "spell");
 
@@ -1692,7 +1698,7 @@ function isTargetStillPresent(targetObj) {
 // --- TURN FLAGS --- //
 function resetTurnFlags(turn) {
   if (turn === "player") {
-    const arrs = [...gameState.playerCreatures, ...gameState.playerTerrain];
+    const arrs = [...gameState.playerCreatures, ...gameState.playerTerrains];
     arrs.forEach(card => {
       // Clear previous per-turn flags
       card.hasChangedPositionThisTurn = false;
@@ -1707,7 +1713,7 @@ function resetTurnFlags(turn) {
   }
 }
 function resetTurnResources(turn) {
-  const terrains = turn === "player" ? gameState.playerTerrain : gameState.enemyTerrains;
+  const terrains = turn === "player" ? gameState.playerTerrains : gameState.enemyTerrains;
   terrains.forEach(terrain => generateEssence(terrain));
 }
 function matchesFilter(cardObj, filter) {
@@ -2781,7 +2787,6 @@ if (typeof cardData.hp === "number" && typeof currentHP === "number" && cardData
   barWrap.style.overflow = 'hidden';
   barWrap.style.position = 'relative';
   barWrap.style.marginLeft = '-10px';
-  barWrap.style.marginRight = '-10px';
   
   const bar = document.createElement('div');
   bar.className = 'hp-bar';
@@ -3536,7 +3541,7 @@ function handleStartPhase(turn) {
   resetTurnFlags(turn);
   resetTurnResources(turn);
   const creatures = turn === 'player' ? gameState.playerCreatures : gameState.enemyCreatures;
-  const terrains = turn === 'player' ? gameState.playerTerrain : gameState.enemyTerrains;
+  const terrains = turn === 'player' ? gameState.playerTerrains : gameState.enemyTerrains;
   
   [...creatures, ...terrains].forEach(cardObj => {
     cardObj.orientation = 'vertical';
@@ -3865,7 +3870,7 @@ function initiateDomainSelection(deckArr, afterSelection) {
   if (DomainObj) {
     DomainObj.currentHP = getBaseHp(DomainObj.cardId);
     gameState.playerDomain = DomainObj;
-    gameState.playerTerrain.unshift(DomainObj);
+    gameState.playerTerrains.unshift(DomainObj);
     const idx = deckArr.findIndex(c => c.instanceId === DomainObj.instanceId);
     if (idx !== -1) deckArr.splice(idx, 1);
     renderGameState();
@@ -3880,7 +3885,7 @@ function generateEssence(cardObj) {
   if (!cardDef || !cardDef.essence) return;
 
   // Determine owner by membership in gameState arrays
-  const owner = (gameState.playerTerrain.includes(cardObj) || gameState.playerCreatures.includes(cardObj)) ? 'player'
+  const owner = (gameState.playerTerrains.includes(cardObj) || gameState.playerCreatures.includes(cardObj)) ? 'player'
     : (gameState.enemyTerrains.includes(cardObj) || gameState.enemyCreatures.includes(cardObj)) ? 'enemy'
     : (cardObj.owner ? (cardObj.owner === 'player' ? 'player' : 'enemy') : 'player');
 
@@ -4298,7 +4303,7 @@ function updateReqDiv(requirements, reqPaid, reqDiv) {
 }
   
 function getAllEssenceSources() {
-  return [...gameState.playerTerrain, ...gameState.playerCreatures /* add more if needed */];
+  return [...gameState.playerTerrains, ...gameState.playerCreatures /* add more if needed */];
 }
 
 // ATTACK LOGIC
@@ -4398,7 +4403,7 @@ function endAttackTarget() {
 // --- ATTACK RESOLUTION ANIMATION ---
 function resolveAttack(attackerId, defenderId) {
   // Find attacker/defender objects
-  const attackerObj = [...gameState.playerCreatures, ...gameState.playerTerrain]
+  const attackerObj = [...gameState.playerCreatures, ...gameState.playerTerrains]
     .find(c => c.instanceId === attackerId);
     
   const defenderObj = [...gameState.enemyCreatures, ...gameState.enemyTerrains, ...(gameState.enemyArtifacts || []), ...(gameState.enemyDomain ? [gameState.enemyDomain] : [])]
@@ -4461,7 +4466,7 @@ function disableAfterCombat(cardObj, done, options = {}) {
   // If card left the field (e.g., destroyed), skip disabling.
   const fieldCards = [
     ...gameState.playerCreatures,
-    ...gameState.playerTerrain,
+    ...gameState.playerTerrains,
     ...(gameState.playerArtifacts || []),
     ...gameState.enemyCreatures,
     ...gameState.enemyTerrains,
@@ -4500,7 +4505,7 @@ function damageCalculation(attacker, defender) {
     // Determine owner by membership (robust and cheap)
     const isPlayerCard =
       gameState.playerCreatures.includes(cardObj) ||
-      gameState.playerTerrain.includes(cardObj) ||
+      gameState.playerTerrains.includes(cardObj) ||
       gameState.playerHand.includes(cardObj) ||
       gameState.playerDeck.includes(cardObj);
 
@@ -4716,7 +4721,7 @@ function emitPublicState() {
     deckCount: gameState.playerDeck.length,
     handCount: gameState.playerHand.length,
     creatures: gameState.playerCreatures.map(stripCardForSync),
-    terrains: gameState.playerTerrain.map(stripCardForSync),
+    terrains: gameState.playerTerrains.map(stripCardForSync),
     fallenCards: gameState.playerFallen.map(stripCardForSync),
     phase: gameState.phase,
     turn: gameState.turn
@@ -4749,7 +4754,7 @@ function getInitialGameState() {
     playerDeck: [],
     playerHand: [],
     playerCreatures: [],
-    playerTerrain: [],
+    playerTerrains: [],
     playerFallen: [],
     enemyDeck: [],
     enemyHand: [],
@@ -4960,7 +4965,7 @@ function getValidTargetsByCondition(cardArr, conditionArr) {
       }
       // Owner check
       if (cond.owner) {
-        if (cond.owner === "player" && !(gameState.playerCreatures.includes(cardObj) || gameState.playerTerrain.includes(cardObj))) return false;
+        if (cond.owner === "player" && !(gameState.playerCreatures.includes(cardObj) || gameState.playerTerrains.includes(cardObj))) return false;
         if (cond.owner === "enemy" && !(gameState.enemyCreatures.includes(cardObj) || gameState.enemyTerrains.includes(cardObj))) return false;
       }
       // Category/type check (from dummyCards)
@@ -5802,12 +5807,12 @@ function getTargetsFromEffect(step = {}, sourceCardObj = null, context = {}) {
 
     // If step.target is a number -> any card in the field is valid
     if (typeof step.target === 'number') {
-      return [...gameState.playerCreatures, ...gameState.playerTerrain, ...gameState.enemyCreatures, ...gameState.enemyTerrains];
+      return [...gameState.playerCreatures, ...gameState.playerTerrains, ...gameState.enemyCreatures, ...gameState.enemyTerrains];
     }
 
     // If target is missing -> default to whole field (single target expected elsewhere)
     if (!step.target) {
-      return [...gameState.playerCreatures, ...gameState.playerTerrain, ...gameState.enemyCreatures, ...gameState.enemyTerrains];
+      return [...gameState.playerCreatures, ...gameState.playerTerrains, ...gameState.enemyCreatures, ...gameState.enemyTerrains];
     }
 
     // If step.target is an object describing zone/filter, try using getTargets (existing helper)
@@ -5840,7 +5845,7 @@ function getTargetsFromEffect(step = {}, sourceCardObj = null, context = {}) {
           return [...gameState.enemyCreatures, ...gameState.enemyTerrains];
         case 'targetPlayer':
         case 'player':
-          return [...gameState.playerCreatures, ...gameState.playerTerrain];
+          return [...gameState.playerCreatures, ...gameState.playerTerrains];
         case 'targetHandEnemy':
           return Array.isArray(gameState.enemyHand) ? gameState.enemyHand.slice() : [];
         case 'targetHandPlayer':
@@ -5858,7 +5863,7 @@ function getTargetsFromEffect(step = {}, sourceCardObj = null, context = {}) {
         case 'allCreature':
           return [...gameState.playerCreatures, ...gameState.enemyCreatures];
         case 'allTerrain':
-          return [...gameState.playerTerrain, ...gameState.enemyTerrains];
+          return [...gameState.playerTerrains, ...gameState.enemyTerrains];
         case 'any':
           return Object.values(gameState).flat().filter(card => card && card.cardId);
         default:
@@ -6246,7 +6251,7 @@ function isValidForSkillType(sourceCardObj, skillObj, type) {
     // Only allow if sourceCardObj is still in hand or field
     return gameState.playerHand.includes(sourceCardObj) ||
            gameState.playerCreatures.includes(sourceCardObj) ||
-           gameState.playerTerrain.includes(sourceCardObj);
+           gameState.playerTerrains.includes(sourceCardObj);
   }
   // For other types, add custom logic as needed
   return true;
@@ -6272,7 +6277,7 @@ function isTargetStillPresent(targetObj) {
   // Check all possible arrays/zones
   return (
     gameState.playerCreatures.includes(targetObj) ||
-    gameState.playerTerrain.includes(targetObj) ||
+    gameState.playerTerrains.includes(targetObj) ||
     gameState.enemyCreatures.includes(targetObj) ||
     gameState.enemyTerrains.includes(targetObj)
     // ...add other zones as needed
@@ -6430,7 +6435,7 @@ function handleEndPhaseStatuses() {
 function tickStatusDurations(phaseObj) {
   // Get all relevant cards (creatures, terrains, etc)
   const allCards = [
-    ...gameState.playerCreatures, ...gameState.playerTerrain,
+    ...gameState.playerCreatures, ...gameState.playerTerrains,
     ...gameState.enemyCreatures, ...gameState.enemyTerrains
   ];
   allCards.forEach(cardObj => {
@@ -6593,7 +6598,7 @@ function placeInstanceOnField(instance) {
     return true;
   }
   if (cat === 'terrain') {
-    (owner === 'player' ? gameState.playerTerrain : gameState.enemyTerrains).push(instance);
+    (owner === 'player' ? gameState.playerTerrains : gameState.enemyTerrains).push(instance);
     return true;
   }
 
@@ -6783,7 +6788,7 @@ if (gameLogContainer) {
     const allArrays = [
       gameState.playerHand,
       gameState.playerCreatures,
-      gameState.playerTerrain,
+      gameState.playerTerrains,
       gameState.playerFallen,
       gameState.enemyHand,
       gameState.enemyCreatures,
