@@ -4575,10 +4575,6 @@ button[disabled], .btn-disabled {
 /* --- GAME LOG --- /
 /* --------------- */
 /* Game Log modal and icon styles */
-#game-log-modal .modal-content {
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-  border: 2px solid #ffe066;
-}
 
 #game-log-container {
   background: rgba(0, 0, 0, 0.3);
