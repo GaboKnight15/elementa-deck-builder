@@ -54,17 +54,6 @@ let deckBuilderDraft = null;   // null = not currently editing; object = current
 let deckBuilderDirty = false;  // true when draft differs from saved deck
 let showFavoritesOnlyBuilder = false;
 
-const DOMAIN_CARDS = [
-  'Verdara',
-  'Magmaris', 
-  'Umarion',
-  'Aetherion',
-  'Drakzul',
-  'Virkul',
-  'Solmara',
-  'Noctyra'
-];
-
 document.getElementById('filter-name-builder').addEventListener('input', renderBuilder);
 document.getElementById("builder-filter-btn").onclick = () => {
   showFilterModal((selectedFilters) => {
@@ -118,14 +107,6 @@ if (saveDeckImg) {
   saveDeckImg.onclick = function() {
     // Validate domain count on the draft (if editing) or the saved deck if not
     const deckToCheck = deckBuilderDraft !== null ? deckBuilderDraft : (getCurrentDeck() || {});
-    const domainCount = Object.entries(deckToCheck).reduce((sum, [cardId, count]) => {
-      const card = dummyCards.find(c => c.id === cardId);
-      return sum + ((card && card.type && String(card.type).toLowerCase() === 'domain') ? Number(count) : 0);
-    }, 0);
-    if (domainCount !== 1) {
-      showToast("Deck must have exactly one domain card.", { type: "error" });
-      return;
-    }
 
     // If a draft exists, commit it; otherwise fall back to saving as before
     if (deckBuilderDraft !== null) {
@@ -214,17 +195,36 @@ function renderDeckSelection() {
         tile.textContent = slotName;
       }
 
-      let warningDiv = null;
-      if (count < 30) {
-        warningDiv = document.createElement('div');
-        warningDiv.className = 'deck-slot-warning';
-        warningDiv.textContent = "Less than 30 cards";
-      } else if (count > 30) {
-        warningDiv = document.createElement('div');
-        warningDiv.className = 'deck-slot-warning deck-slot-error';
-        warningDiv.textContent = "More than 30 cards";
-      }
-      if (warningDiv) tile.appendChild(warningDiv);
+const warnings = [];
+if (count < 30) {
+  warnings.push({ text: "Less than 30 cards", className: "deck-slot-warning" });
+}
+if (count > 30) {
+  warnings.push({ text: "More than 30 cards", className: "deck-slot-warning deck-slot-error" });
+}
+
+// Domain warning
+const hasDomain = Object.entries(deck).some(([cardId, qty]) => {
+  if (!Number(qty)) return false;
+  const card = dummyCards.find(c => c.id === cardId);
+  return card && card.type && String(card.type).toLowerCase() === 'domain';
+});
+if (!hasDomain) {
+  warnings.push({ text: "No domain selected", className: "deck-slot-warning deck-slot-error" });
+}
+
+// Render all warnings (supports multiple)
+if (warnings.length) {
+  const warningWrap = document.createElement('div');
+  warningWrap.className = 'deck-slot-warning-wrap';
+  warnings.forEach((w) => {
+    const el = document.createElement('div');
+    el.className = w.className;
+    el.textContent = w.text;
+    warningWrap.appendChild(el);
+  });
+  tile.appendChild(warningWrap);
+}
 
       tile.onclick = () => showDeckTileMenu(slotName, tile);
     } else {
@@ -240,7 +240,7 @@ function renderDeckSelection() {
           confirmText: "Create",
           validate: (val) => {
             if (!val) return "Deck name required.";
-            if (deckSlots.includes(val)) return "Deck name already exists!";
+            if (deckSlots.includes(val)) return "Deck name already exists.";
             return null;
           },
           onConfirm: function(newName) {
@@ -377,7 +377,7 @@ deckMenuTitle.onclick = function() {
     confirmText: "Rename",
     validate: (val) => {
       if (!val) return "Deck name required.";
-      if (deckSlots.includes(val) && val !== deckName) return "Deck name already exists!";
+      if (deckSlots.includes(val) && val !== deckName) return "Deck name already exists.";
       return null;
     },
     onConfirm: function(newName) {
@@ -878,25 +878,31 @@ function cycleDomainCard() {
   const deck = getCurrentDeck();
   const collection = getCollection();
 
-  const ownedDomainIds = DOMAIN_CARDS.filter((domainId) => (collection[domainId] || 0) > 0);
+  const ownedDomainIds = dummyCards
+    .filter(card =>
+      card &&
+      card.id &&
+      card.type &&
+      String(card.type).toLowerCase() === 'domain' &&
+      (collection[card.id] || 0) > 0
+    )
+    .map(card => card.id);
+
   if (!ownedDomainIds.length) {
     showToast("No owned domain cards available.", { type: "error" });
     return;
   }
 
-  // Find current domain in deck
   const currentDomain = Object.keys(deck).find((cardId) => {
     const c = dummyCards.find(dc => dc.id === cardId);
-    return c && isDomain(c);
+    return c && c.type && String(c.type).toLowerCase() === 'domain';
   });
 
-  // Remove existing domain
   Object.keys(deck).forEach((cardId) => {
     const c = dummyCards.find(dc => dc.id === cardId);
-    if (c && isDomain(c)) delete deck[cardId];
+    if (c && c.type && String(c.type).toLowerCase() === 'domain') delete deck[cardId];
   });
 
-  // Pick next domain
   let nextIdx = 0;
   if (currentDomain) {
     const idx = ownedDomainIds.indexOf(currentDomain);
