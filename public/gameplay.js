@@ -2431,7 +2431,7 @@ function appendDeckZone(parentDiv, deckArray, who) {
   parentDiv.appendChild(deckZone);
 }
 // VOID ZONE
-function appendVoidZone(parentDiv, voidArray, who) {
+function appendFallenZone(parentDiv, voidArray, who) {
   const voidZone = document.createElement('div');
   voidZone.className = 'void-zone';
 
