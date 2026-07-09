@@ -2735,7 +2735,7 @@ button[disabled], .btn-disabled {
 
 .field-slot {
   width: 96px;          /* tune to your card render width */
-  height: 136px;        /* tune to your card render height */
+  height: 100%;        /* tune to your card render height */
   border-radius: 10px;
   background: rgba(20, 30, 45, 0.28);
   box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
