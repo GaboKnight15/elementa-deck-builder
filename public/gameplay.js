@@ -3461,7 +3461,6 @@ function openFallenModal(isenemy = false) {
               openFallenModal(false);
             }
           },
-        {
 {
   text: "Send to Void",
   onClick: function(ev) {
