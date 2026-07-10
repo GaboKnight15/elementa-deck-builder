@@ -52,13 +52,13 @@ const ZONE_MAP = {
   playerDeck:   { id: "player-deck-zone",   arr: () => gameState.playerDeck },
   playerHand:   { id: "player-hand",        arr: () => gameState.playerHand },
   playerFallen: { id: "player-fallen-zone", arr: () => gameState.playerFallen },
-  playerVoid:   { id: "player-void-zone", arr: () => gameState.playerVoid },
+  playerVoid:   { id: "player-void-zone",   arr: () => gameState.playerVoid },
 
   // --- Core enemy zones ---
   enemyDeck:   { id: "enemy-deck-zone",   arr: () => gameState.enemyDeck },
   enemyHand:   { id: "enemy-hand",        arr: () => gameState.enemyHand },
   enemyFallen: { id: "enemy-fallen-zone", arr: () => gameState.enemyFallen },
-  enemyVoid:   { id: "enemy-void-zone", arr: () => gameState.enemyVoid },
+  enemyVoid:   { id: "enemy-void-zone",   arr: () => gameState.enemyVoid },
 
   // --- Canonical battlefield storage (ONLY these for board state) ---
   playerCreatureSlots: { id: "player-creature-zone", arr: () => gameState.playerCreatureSlots },
@@ -100,14 +100,14 @@ const ZONE_MAP = {
     ...gameState.enemySupportSlots.filter(Boolean)
   ]},
 
-  allHands:   { id: null, arr: () => [...gameState.playerHand, ...gameState.enemyHand] },
-  allDecks:   { id: null, arr: () => [...gameState.playerDeck, ...gameState.enemyDeck] },
+  allHands:   { id: null, arr: () => [...gameState.playerHand,   ...gameState.enemyHand] },
+  allDecks:   { id: null, arr: () => [...gameState.playerDeck,   ...gameState.enemyDeck] },
   allFallens: { id: null, arr: () => [...gameState.playerFallen, ...gameState.enemyFallen] },
-  allVoids:   { id: null, arr: () => [...gameState.playerVoid, ...gameState.enemyVoid] },
+  allVoids:   { id: null, arr: () => [...gameState.playerVoid,   ...gameState.enemyVoid] },
   
   allCards: { id: null, arr: () => [
     ...gameState.playerDeck, ...gameState.playerHand, ...gameState.playerFallen, ...gameState.playerVoid,
-    ...gameState.enemyDeck, ...gameState.enemyHand, ...gameState.enemyFallen, ...gameState.enemyVoid,
+    ...gameState.enemyDeck,   ...gameState.enemyHand, ...gameState.enemyFallen,  ...gameState.enemyVoid,
     ...gameState.playerCreatureSlots.filter(Boolean), ...gameState.playerSupportSlots.filter(Boolean),
     ...gameState.enemyCreatureSlots.filter(Boolean), ...gameState.enemySupportSlots.filter(Boolean)
   ]}
@@ -483,14 +483,14 @@ untap: { name: 'Untap', icon: 'Icons/Skill/Untap.png',
     name: 'Discard',
     icon: 'Icons/Skill/Discard.png',
     zones: ['playerHand', 'enemyHand'],
-    description: 'Sends itself from the hand to the void.',
+    description: 'Sends itself from the hand to the fallen.',
     canActivate(sourceCardObj, skillObj, currentZone, gameState) {
       return this.zones.includes(currentZone);
     },
     handler(sourceCardObj, skillObj, next) {
       const owner = getCardOwner(sourceCardObj) === 'enemy' ? 'enemy' : 'player';
       const handArr = owner === 'enemy' ? gameState.enemyHand : gameState.playerHand;
-      const voidArr = owner === 'enemy' ? gameState.enemyFallen : gameState.playerFallen;
+      const fallenArr = owner === 'enemy' ? gameState.enemyFallen : gameState.playerFallen;
 
       if (!handArr.includes(sourceCardObj)) {
         showToast("Discard can only be activated from hand.");
@@ -498,7 +498,7 @@ untap: { name: 'Untap', icon: 'Icons/Skill/Untap.png',
         return;
       }
 
-      moveCard(sourceCardObj.instanceId, handArr, voidArr);
+      moveCard(sourceCardObj.instanceId, handArr, fallenArr);
       renderGameState();
       next && next();
     }
@@ -574,15 +574,15 @@ void: {
       gameState.enemyFallen.includes(sourceCardObj) ? gameState.enemyFallen :
       null;
 
-    const voidArr = owner === 'enemy' ? gameState.enemyFallen : gameState.playerFallen;
+    const fallenArr = owner === 'enemy' ? gameState.enemyFallen : gameState.playerFallen;
 
     if (!fromArr) {
-      showToast("Void can only be activated from fallen.");
+      showToast("Void can only be activated from the fallen zone.");
       next && next();
       return;
     }
 
-    moveCard(sourceCardObj.instanceId, fromArr, voidArr);
+    moveCard(sourceCardObj.instanceId, fromArr, fallenArr);
     renderGameState();
     next && next();
   }
@@ -696,7 +696,7 @@ draw: { name: 'Draw',
 },
   
 cast: { name: 'Cast', zone: 'playerHand', icon: 'Icons/Skill/Cast.png',
-  description: 'Cast a spell from hand: resolve, then send to void.',
+  description: 'Cast a spell from hand.',
   canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
     // Accept common spellings used across your code
     return currentZone === 'playerHand' || currentZone === 'playerHand' || currentZone === 'player-hand';
@@ -1384,39 +1384,41 @@ function createDeck(deckInput) {
 function startGame({
   mode = "solo",              // "solo", "casual", "private", etc
   playerDeck,                 // deckObj for player
-  enemyDeck,               // deckObj for enemy/CPU
+  enemyDeck,                  // deckObj for enemy/CPU
   playerProfile,              // {username, avatar, banner}
-  enemyProfile,            // {username, avatar, banner}
+  enemyProfile,               // {username, avatar, banner}
   isCpuGame = false,          // true for CPU
   matchData = null            // full matchData for casual/private modes
 }) {
+  gameState.playerDeck = createDeck(playerDeck);
+  if (Array.isArray(enemyDeck) && enemyDeck.length && enemyDeck[0].cardId) {
+    gameState.enemyDeck = shuffleInPlace([...enemyDeck]);
+  } else {
+    gameState.enemyDeck = createDeck(enemyDeck);
+  }
 
-gameState.playerDeck = createDeck(playerDeck);
-if (Array.isArray(enemyDeck) && enemyDeck.length && enemyDeck[0].cardId) {
-  gameState.enemyDeck = shuffleInPlace([...enemyDeck]);
-} else {
-  gameState.enemyDeck = createDeck(enemyDeck);
-}
+  // Player zones
   gameState.playerHand = [];
   gameState.playerCreatures = [];
   gameState.playerTerrains = [];
-  gameState.playerFallen = [];
   gameState.playerArtifacts = [];
   gameState.playerSpells = [];
-  gameState.playerFallen = [];
-  
+  gameState.playerFallen = []; // primary graveyard
+  gameState.playerVoid = [];   // secondary/banished
+
+  // Enemy zones
   gameState.enemyHand = [];
   gameState.enemyCreatures = [];
   gameState.enemyTerrains = [];
-  gameState.enemyFallen = [];
   gameState.enemyArtifacts = [];
   gameState.enemySpells = [];
-  gameState.enemyFallen = [];
-  
+  gameState.enemyFallen = []; // primary graveyard
+  gameState.enemyVoid = [];   // secondary/banished
+
   gameState.phase = "start";
-  
   gameState.playerDomain = null;
   gameState.enemyDomain = null;
+
   // --- Battlefield backgrounds ---
   setBattlefieldBackgrounds(
     playerDeck?.bannerArt || "Images/Banner/Default.png",
@@ -1428,9 +1430,8 @@ if (Array.isArray(enemyDeck) && enemyDeck.length && enemyDeck[0].cardId) {
   document.getElementById('gameplay-section').classList.add('active');
   document.getElementById('my-profile').style.display = '';
   document.getElementById('enemy-profile').style.display = '';
-  
+
   // --- Profile panels ---
-  // Player profile
   const myProfileDiv = document.getElementById('my-profile');
   myProfileDiv.innerHTML = "";
   const realProfile = {
@@ -1439,13 +1440,9 @@ if (Array.isArray(enemyDeck) && enemyDeck.length && enemyDeck[0].cardId) {
     banner: window.playerProfileBanner || "Images/Banner/Default.png",
     power: typeof calculatePlayerPower === "function" ? calculatePlayerPower() : 0
   };
-  // Use real profile in solo/CPU mode, but not for casual/private modes (where playerProfile is correct)
-  if (isCpuGame || mode === "solo") {
-    playerProfile = realProfile;
-  }
+  if (isCpuGame || mode === "solo") playerProfile = realProfile;
   myProfileDiv.appendChild(renderProfilePanel(playerProfile));
 
-  // enemy profile
   const enemyProfileDiv = document.getElementById('enemy-profile');
   enemyProfileDiv.innerHTML = "";
   enemyProfileDiv.appendChild(renderProfilePanel(enemyProfile));
@@ -1468,14 +1465,10 @@ if (Array.isArray(enemyDeck) && enemyDeck.length && enemyDeck[0].cardId) {
     });
   });
 
-  // --- Multiplayer mode hooks (add if needed) ---
   if (mode === "casual" && matchData) {
-    // e.g. assign gameState.playerProfile/enemyProfile for sync
     gameState.playerProfile = playerProfile;
     gameState.enemyProfile = enemyProfile;
   }
-
-  // Additional mode logic can go here (private, ranked, etc)
 }
 
 // ===================================
@@ -1639,6 +1632,15 @@ function getRequirementFilter(requirement) {
   return filter;
 }
 // --- Utility: Determine card owner as "player" or "enemy" ---
+function getOwnerFromCard(cardObj) {
+  return getCardOwner(cardObj) === 'enemy' ? 'enemy' : 'player';
+}
+function getOwnerZones(owner) {
+  return owner === 'enemy'
+    ? { hand: gameState.enemyHand, deck: gameState.enemyDeck, fallen: gameState.enemyFallen, void: gameState.enemyVoid }
+    : { hand: gameState.playerHand, deck: gameState.playerDeck, fallen: gameState.playerFallen, void: gameState.playerVoid };
+}
+
 function getCardOwner(cardObj) {
   if (!cardObj || !cardObj.instanceId) return null;
   const id = cardObj.instanceId;
@@ -1813,60 +1815,70 @@ function getTargets(target, sourceCardObj, context = {}) {
   return [];
 }
 function moveCard(instanceId, fromArr, toArr, extra = {}, callback) {
-  const fromIdx = fromArr.findIndex(c => c.instanceId === instanceId);
-  if (fromIdx === -1) return callback && callback();
-
-  const cardObj = fromArr[fromIdx];
-
-  // detect if destination is player/enemy field by explicit extra
-  const owner = extra.owner || "player";
-  const toField = extra.toField === true; // pass this when playing/summoning to board
-
-  const finalize = () => {
-    renderGameState();
-    if (callback) callback();
-  };
-
-  if (toField) {
-    const lane = getLaneForCard(cardObj); // creature or support
-    const slots = getFieldSlots(owner, lane);
-    const hasFree = slots.some(s => !s);
-
-    if (!hasFree) {
-      logSystem(`No free ${lane} slots.`);
-      return finalize();
-    }
-
-    showSlotPickerModal({
-      owner,
-      lane,
-      onSelect: (slotIndex) => {
-        // validate still free
-        if (slots[slotIndex]) {
-          logSystem("That slot is occupied.");
-          return finalize();
-        }
-
-        // remove from source
-        fromArr.splice(fromIdx, 1);
-
-        // ensure card not duplicated
-        removeCardFromAllFieldSlots(cardObj.instanceId);
-
-        // place
-        slots[slotIndex] = { ...cardObj, slotOwner: owner, slotLane: lane, slotIndex, ...extra };
-
-        finalize();
-      },
-      onCancel: finalize
-    });
-
+  if (!instanceId || !Array.isArray(fromArr) || !Array.isArray(toArr)) {
+    callback && callback();
     return;
   }
 
-  // non-field move (default old behavior)
-  fromArr.splice(fromIdx, 1);
-  toArr.push({ ...cardObj, ...extra });
+  const fromIdx = fromArr.findIndex(c => c && c.instanceId === instanceId);
+  if (fromIdx === -1) {
+    callback && callback();
+    return;
+  }
+
+  const cardObj = fromArr[fromIdx];
+
+  // Remove from source (slot arrays use null holes)
+  const isFromSlotArray =
+    fromArr === gameState.playerCreatureSlots ||
+    fromArr === gameState.playerSupportSlots ||
+    fromArr === gameState.enemyCreatureSlots ||
+    fromArr === gameState.enemySupportSlots;
+
+  if (isFromSlotArray) fromArr[fromIdx] = null;
+  else fromArr.splice(fromIdx, 1);
+
+  // Optional field-placement flow
+  const owner = extra.owner || getCardOwner(cardObj) || "player";
+  const toField = extra.toField === true;
+
+  const finalize = () => {
+    renderGameState && renderGameState();
+    callback && callback();
+  };
+
+  if (toField) {
+    const lane = getLaneForCard(cardObj); // creature|support
+    const slots = getFieldSlots(owner, lane);
+    const freeIdx = slots.findIndex(s => !s);
+
+    if (freeIdx === -1) {
+      // rollback if no free slot
+      if (isFromSlotArray) fromArr[fromIdx] = cardObj;
+      else fromArr.splice(fromIdx, 0, cardObj);
+      logSystem && logSystem(`No free ${lane} slots.`);
+      return finalize();
+    }
+
+    removeCardFromAllFieldSlots(cardObj.instanceId);
+    slots[freeIdx] = {
+      ...cardObj,
+      ...extra,
+      owner,
+      slotOwner: owner,
+      slotLane: lane,
+      slotIndex: freeIdx
+    };
+    return finalize();
+  }
+
+  // Prevent duplicates in destination
+  const exists = toArr.some(c => c && c.instanceId === cardObj.instanceId);
+  if (!exists) {
+    const moved = { ...cardObj, ...extra };
+    toArr.push(moved);
+  }
+
   finalize();
 }
 
@@ -2537,7 +2549,7 @@ gameState.playerDeck.forEach((cardObj, idx) => {
           }
         },
         {
-          text: "Send to Void",
+          text: "Send to Fallen",
           onClick: function(ev) {
             ev.stopPropagation();
             moveCard(cardObj.instanceId, gameState.playerDeck, gameState.playerFallen);
@@ -2546,6 +2558,16 @@ gameState.playerDeck.forEach((cardObj, idx) => {
             openDeckModal();
           }
         },
+{
+  text: "Send to Void",
+  onClick: function(ev) {
+    ev.stopPropagation();
+    moveCard(cardObj.instanceId, gameState.playerDeck, getOwnerVoidArray(cardObj));
+    renderGameState();
+    closeAllMenus();
+    openDeckModal();
+  }
+}
     ];
       const menu = createCardMenu(buttons);
       const shell = document.getElementById('game-shell') || document.getElementById('gameplay-section');
@@ -3182,7 +3204,7 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
       }
     },
     {
-      text: "Send to Void",
+      text: "Send to Fallen",
       onClick: function(e) {
         e.stopPropagation();
         let arr = getZoneArray(zoneId);
@@ -3198,6 +3220,23 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
         closeAllMenus();
       }
     },
+    {
+  text: "Send to Void",
+  onClick: function(e) {
+    e.stopPropagation();
+    const cardObj = findCardByInstanceId(instanceId);
+    if (!cardObj) return closeAllMenus();
+
+    const fromArr = getZoneArrayForCard(cardObj);
+    const voidArr = getOwnerVoidArray(cardObj);
+    if (fromArr && voidArr) {
+      moveCard(instanceId, fromArr, voidArr);
+      renderGameState();
+      setupDropZones();
+    }
+    closeAllMenus();
+  }
+}
     {
       text: "Return to Deck",
       onClick: function(e) {
@@ -3379,14 +3418,16 @@ function openFallenModal(isenemy = false) {
               openFallenModal(false);
             }
           },
-          {
-            text: "View",
-            onClick: function (ev) {
-              ev.stopPropagation();
-              showFullCardModal(cardObj);
-              closeAllMenus();
-            }
-          }
+        {
+  text: "Send to Void",
+  onClick: function(ev) {
+    ev.stopPropagation();
+    moveCard(cardObj.instanceId, gameState.playerFallen, gameState.playerVoid);
+    renderGameState();
+    closeAllMenus();
+    openFallenModal(false);
+  }
+}
         ];
 
         const cardData = dummyCards.find(c => c.id === cardObj.cardId);
