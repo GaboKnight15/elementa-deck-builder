@@ -1633,12 +1633,24 @@ function getRequirementFilter(requirement) {
 }
 // --- Utility: Determine card owner as "player" or "enemy" ---
 function getOwnerFromCard(cardObj) {
-  return getCardOwner(cardObj) === 'enemy' ? 'enemy' : 'player';
+  // Prefer existing owner resolver first
+  const owner = getCardOwner(cardObj);
+  return owner === "enemy" ? "enemy" : "player";
 }
 function getOwnerZones(owner) {
-  return owner === 'enemy'
-    ? { hand: gameState.enemyHand, deck: gameState.enemyDeck, fallen: gameState.enemyFallen, void: gameState.enemyVoid }
-    : { hand: gameState.playerHand, deck: gameState.playerDeck, fallen: gameState.playerFallen, void: gameState.playerVoid };
+  return owner === "enemy"
+    ? {
+        hand: gameState.enemyHand,
+        deck: gameState.enemyDeck,
+        fallen: gameState.enemyFallen, // primary graveyard
+        void: gameState.enemyVoid      // banished
+      }
+    : {
+        hand: gameState.playerHand,
+        deck: gameState.playerDeck,
+        fallen: gameState.playerFallen,
+        void: gameState.playerVoid
+      };
 }
 
 function getCardOwner(cardObj) {
@@ -1652,7 +1664,7 @@ function getCardOwner(cardObj) {
   if (gameState.playerHand.some(c => c.instanceId === id)) return "player";
   if (gameState.playerDeck.some(c => c.instanceId === id)) return "player";
   if (gameState.playerFallen.some(c => c.instanceId === id)) return "player";
-  if (gameState.playerFallen.some(c => c.instanceId === id)) return "player";
+  if (gameState.playerVoid.some(c => c.instanceId === id)) return "player";
   if (gameState.playerCreatureSlots.some(c => c && c.instanceId === id)) return "player";
   if (gameState.playerSupportSlots.some(c => c && c.instanceId === id)) return "player";
 
@@ -1660,7 +1672,7 @@ function getCardOwner(cardObj) {
   if (gameState.enemyHand.some(c => c.instanceId === id)) return "enemy";
   if (gameState.enemyDeck.some(c => c.instanceId === id)) return "enemy";
   if (gameState.enemyFallen.some(c => c.instanceId === id)) return "enemy";
-  if (gameState.enemyFallen.some(c => c.instanceId === id)) return "enemy";
+  if (gameState.enemyVoid.some(c => c.instanceId === id)) return "enemy";
   if (gameState.enemyCreatureSlots.some(c => c && c.instanceId === id)) return "enemy";
   if (gameState.enemySupportSlots.some(c => c && c.instanceId === id)) return "enemy";
 
@@ -1677,8 +1689,8 @@ function isTargetStillPresent(targetObj) {
     gameState.enemyDeck.some(c => c.instanceId === id) ||
     gameState.playerFallen.some(c => c.instanceId === id) ||
     gameState.enemyFallen.some(c => c.instanceId === id) ||
-    gameState.playerFallen.some(c => c.instanceId === id) ||
-    gameState.enemyFallen.some(c => c.instanceId === id) ||
+    gameState.playerVoid.some(c => c.instanceId === id) ||
+    gameState.enemyVoid.some(c => c.instanceId === id) ||
     gameState.playerCreatureSlots.some(c => c && c.instanceId === id) ||
     gameState.playerSupportSlots.some(c => c && c.instanceId === id) ||
     gameState.enemyCreatureSlots.some(c => c && c.instanceId === id) ||
@@ -1762,18 +1774,18 @@ function getTargets(target, sourceCardObj, context = {}) {
 
     playerFallen: gameState.playerFallen,
     enemyFallen: gameState.enemyFallen,
-    allVoids: [...gameState.playerFallen, ...gameState.enemyFallen],
-
-    playerFallen: gameState.playerFallen,
-    enemyFallen: gameState.enemyFallen,
     allFallens: [...gameState.playerFallen, ...gameState.enemyFallen],
+
+    playerVoid: gameState.playerVoid,
+    enemyVoid: gameState.enemyVoid,
+    allVoids: [...gameState.playerVoid, ...gameState.enemyVoid],
 
     allCards: [
       ...allField,
       ...gameState.playerHand, ...gameState.enemyHand,
       ...gameState.playerDeck, ...gameState.enemyDeck,
       ...gameState.playerFallen, ...gameState.enemyFallen,
-      ...gameState.playerFallen, ...gameState.enemyFallen
+      ...gameState.playerVoid, ...gameState.enemyVoid
     ],
 
     self: sourceCardObj ? [sourceCardObj] : [],
@@ -2155,16 +2167,42 @@ function showHandCardMenu(instanceId, cardDiv) {
   }
   // Define actions
   const buttons = [
-    {
-      text: "Send to Void",
-      onClick: function(e) {
-        e.stopPropagation();
-        moveCard(instanceId, gameState.playerHand, gameState.playerFallen);
-        renderGameState();
-        setupDropZones();
-        closeAllMenus();
-      }
-    },
+{
+  text: "Send to Fallen",
+  onClick: function(e) {
+    e.stopPropagation();
+
+    const cardObj = gameState.playerHand.find(c => c.instanceId === instanceId);
+    if (!cardObj) {
+      closeAllMenus();
+      return;
+    }
+
+    const owner = getOwnerFromCard(cardObj);
+    const zones = getOwnerZones(owner);
+
+    moveCard(instanceId, zones.hand, zones.fallen);
+    renderGameState();
+    setupDropZones();
+    closeAllMenus();
+  }
+},
+{
+  text: "Send to Void",
+  onClick: function(e) {
+    e.stopPropagation();
+    const cardObj = gameState.playerHand.find(c => c.instanceId === instanceId);
+    if (!cardObj) return closeAllMenus();
+
+    const owner = getOwnerFromCard(cardObj);
+    const zones = getOwnerZones(owner);
+
+    moveCard(instanceId, zones.hand, zones.void);
+    renderGameState();
+    setupDropZones();
+    closeAllMenus();
+  }
+},
     {
       text: "Return to Deck",
       onClick: function(e) {
@@ -2562,7 +2600,10 @@ gameState.playerDeck.forEach((cardObj, idx) => {
   text: "Send to Void",
   onClick: function(ev) {
     ev.stopPropagation();
-    moveCard(cardObj.instanceId, gameState.playerDeck, getOwnerVoidArray(cardObj));
+    const owner = getOwnerFromCard(cardObj);
+    const zones = getOwnerZones(owner);
+
+    moveCard(cardObj.instanceId, zones.deck, zones.void);
     renderGameState();
     closeAllMenus();
     openDeckModal();
@@ -3220,19 +3261,22 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
         closeAllMenus();
       }
     },
-    {
+{
   text: "Send to Void",
   onClick: function(e) {
     e.stopPropagation();
     const cardObj = findCardByInstanceId(instanceId);
     if (!cardObj) return closeAllMenus();
 
+    const owner = getOwnerFromCard(cardObj);
+    const zones = getOwnerZones(owner);
     const fromArr = getZoneArrayForCard(cardObj);
-    const voidArr = getOwnerVoidArray(cardObj);
-    if (fromArr && voidArr) {
-      moveCard(instanceId, fromArr, voidArr);
+
+    if (fromArr) {
+      moveCard(instanceId, fromArr, zones.void);
       renderGameState();
       setupDropZones();
+      emitPublicState && emitPublicState();
     }
     closeAllMenus();
   }
@@ -3362,9 +3406,8 @@ function openFallenModal(isenemy = false) {
   }
   list.innerHTML = '';
 
-  // Use Fallen as your "void" source (you don't have stable playerVoid/enemyVoid arrays)
-  const voidCards = isenemy ? (gameState.enemyFallen || []) : (gameState.playerFallen || []);
   const fallenCards = isenemy ? (gameState.enemyFallen || []) : (gameState.playerFallen || []);
+  const voidCards = isenemy ? (gameState.enemyVoid || []) : (gameState.playerVoid || []);
 
   // VOID SECTION
   voidCards.forEach((cardObj) => {
@@ -3419,13 +3462,17 @@ function openFallenModal(isenemy = false) {
             }
           },
         {
+{
   text: "Send to Void",
   onClick: function(ev) {
     ev.stopPropagation();
-    moveCard(cardObj.instanceId, gameState.playerFallen, gameState.playerVoid);
+    const owner = getOwnerFromCard(cardObj);
+    const zones = getOwnerZones(owner);
+
+    moveCard(cardObj.instanceId, zones.fallen, zones.void);
     renderGameState();
     closeAllMenus();
-    openFallenModal(false);
+    openFallenModal(owner === "enemy");
   }
 }
         ];
