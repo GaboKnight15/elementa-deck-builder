@@ -3236,7 +3236,7 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
     }
     closeAllMenus();
   }
-}
+},
     {
       text: "Return to Deck",
       onClick: function(e) {
