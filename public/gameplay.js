@@ -2315,18 +2315,16 @@ function renderRightbarZones() {
   playerDeckDiv.innerHTML = '';
   appendDeckZone(playerDeckDiv, gameState.playerDeck, "player");
 
-  // Update deck/void counters
-  renderDeckFallenCountRow('enemy-count-row', gameState.enemyDeck.length, gameState.enemyFallen.length);
-  renderDeckFallenCountRow('player-count-row', gameState.playerDeck.length, gameState.playerFallen.length);
+  // NEW: set hover title snippets (instead of row images/counters)
+  countDeckFallen('enemy', gameState.enemyDeck.length, gameState.enemyFallen.length);
+  countDeckFallen('player', gameState.playerDeck.length, gameState.playerFallen.length);
 
-  // Append in desired order
-  rightbar.appendChild(document.getElementById('enemy-count-row'));
+  // Append in desired order (without count rows)
   rightbar.appendChild(enemyDeckDiv);
   rightbar.appendChild(enemyFallenDiv);
   rightbar.appendChild(phaseBadge);
   rightbar.appendChild(playerFallenDiv);
   rightbar.appendChild(playerDeckDiv);
-  rightbar.appendChild(document.getElementById('player-count-row'));
 }
 // Helper to create and append the deck zone card at the end
 function appendDeckZone(parentDiv, deckArray, who) {
@@ -2459,17 +2457,21 @@ function appendFallenZone(parentDiv, voidArray, who) {
 
   parentDiv.appendChild(voidZone);
 }
-function renderDeckFallenCountRow(rowId, deckCount, voidCount) {
-  const row = document.getElementById(rowId);
-  if (!row) return;
-  row.innerHTML = `
-    <span style="display:inline-flex;align-items:center;gap:4px;">
-      <img src="Icons/Other/BlueDeckBox.png" alt="Deck" style="width:30px;height:30px;">
-      <span class="deck-count-number">${deckCount}</span>
-      <img src="Icons/Other/Void.png" alt="Void" style="width:30px;height:30px;margin-left:10px;">
-      <span class="deck-count-number">${voidCount}</span>
-    </span>
-  `;
+function countDeckFallen(who, deckCount, fallenCount) {
+  const prefix = who === 'enemy' ? 'Enemy' : 'Your';
+
+  const deckZone = document.getElementById(`${who}-deck-zone`);
+  const fallenZone = document.getElementById(`${who}-fallen-zone`);
+
+  if (deckZone) {
+    deckZone.title = `${prefix} Deck: ${deckCount}`;
+    deckZone.setAttribute('aria-label', `${prefix} Deck: ${deckCount}`);
+  }
+
+  if (fallenZone) {
+    fallenZone.title = `${prefix} Fallen: ${fallenCount}`;
+    fallenZone.setAttribute('aria-label', `${prefix} Fallen: ${fallenCount}`);
+  }
 }
 // REMOVE STAT CHANGES
 function cleanCard(cardObj) {
