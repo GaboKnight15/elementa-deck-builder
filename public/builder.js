@@ -46,10 +46,7 @@ const deckCardbackImg = document.getElementById('deck-cardback-img');
 const deckCardbackModal = document.getElementById('deck-cardback-modal');
 const deckCardbackArtList = document.getElementById('deck-cardback-art-list');
 const closeDeckCardbackModalBtn = document.getElementById('close-deck-cardback-modal');
-// DOMAIN MODAL
-const domainModal = document.getElementById('domain-selection-modal');
-const domainGrid = document.getElementById('domain-grid');
-const closeDomainModalBtn = document.getElementById('close-domain-modal-btn');
+
 let deckBuilderDraft = null;   // null = not currently editing; object = current draft mapping cardId->count
 let deckBuilderDirty = false;  // true when draft differs from saved deck
 let showFavoritesOnlyBuilder = false;
@@ -915,40 +912,6 @@ function cycleDomainCard() {
   renderBuilder();
 }
 
-function selectDomain(domainId) {
-  const deck = getCurrentDeck();
-  
-  // Remove any existing domain from deck
-  Object.keys(deck).forEach(cardId => {
-    const card = dummyCards.find(c => c.id === cardId);
-    if (card && isDomain(card)) {
-      delete deck[cardId];
-    }
-  });
-  
-  // Add the selected domain
-  deck[domainId] = 1;
-  
-  setCurrentDeck(deck);
-  updateDeckDisplay();
-  renderBuilder();
-}
-
-// Close modal handlers
-if (closeDomainModalBtn) {
-  closeDomainModalBtn.onclick = () => {
-    domainModal.style.display = 'none';
-  };
-}
-
-if (domainModal) {
-  domainModal.addEventListener('click', function(e) {
-    if (e.target === domainModal) {
-      domainModal.style.display = 'none';
-    }
-  });
-}
-
 function getRarityCap(card) {
   const r = (card?.rarity || "").toLowerCase();
   if (r === "legendary") return 1;
@@ -1032,32 +995,30 @@ function updateDeckDisplay() {
   const domainSlot = document.createElement('div');
   domainSlot.className = 'deck-list-domain-slot';
   
-  if (sections.domain.length > 0) {
-    // Display current domain
-    const { card } = sections.domain[0];
-    const img = document.createElement('img');
-    img.src = card.image;
-    img.alt = card.name;
-    img.title = `${card.name} (Click to change)`;
-    img.onerror = function() {
-      this.onerror = null;
-      this.src = 'Images/Banner/Default.png';
-    };
-    img.onclick = () => cycleDomainCard();
-    domainSlot.appendChild(img);
-  } else {
-    // Show placeholder to select domain
-    const placeholder = document.createElement('div');
-    placeholder.className = 'domain-placeholder';
-    placeholder.onclick = () => cycleDomainCard();
-    
-    const placeholderText = document.createElement('div');
-    placeholderText.className = 'domain-placeholder-text';
-    placeholderText.textContent = '+ Domain';
-    placeholder.appendChild(placeholderText);
-    
-    domainSlot.appendChild(placeholder);
-  }
+if (sections.domain.length > 0) {
+  const { card } = sections.domain[0];
+  const img = document.createElement('img');
+  img.src = card.image;
+  img.alt = card.name;
+  img.title = card.name;
+  img.onerror = function() {
+    this.onerror = null;
+    this.src = 'Images/Banner/Default.png';
+  };
+  // no onclick: display slot only
+  domainSlot.appendChild(img);
+} else {
+  const placeholder = document.createElement('div');
+  placeholder.className = 'domain-placeholder';
+
+  const placeholderText = document.createElement('div');
+  placeholderText.className = 'domain-placeholder-text';
+  placeholderText.textContent = 'Domain Slot';
+  placeholder.appendChild(placeholderText);
+
+  // no onclick: display slot only
+  domainSlot.appendChild(placeholder);
+}
   
 deckList.appendChild(domainSlot);
 
@@ -1214,16 +1175,22 @@ function canAddCard(card, currentInDeck, ownedCount) {
   // ownership limit
   if (mainCount >= ownedCount) return false;
 
-  // rarity limit
+  // rarity cap (legendary=1, rare=2, common=3)
   if (mainCount >= cap) return false;
 
-  // only one domain in deck
-  if (typeof isDomain === "function" && isDomain(card)) {
-    for (const cardId in deck) {
-      if (cardId === card.id) continue; // ignore same card entry
+  const isDomainCard = String(card?.type || '').toLowerCase() === 'domain';
+
+  // domain-specific rules: max 1 domain total in deck, and only 1 copy
+  if (isDomainCard) {
+    if (mainCount >= 1) return false; // never more than 1 copy
+
+    const hasOtherDomain = Object.keys(deck).some((cardId) => {
+      if (cardId === card.id) return false;
       const c = dummyCards.find(dc => dc.id === cardId);
-      if (c && typeof isDomain === "function" && isDomain(c)) return false;
-    }
+      return c && String(c.type || '').toLowerCase() === 'domain' && Number(deck[cardId]) > 0;
+    });
+
+    if (hasOtherDomain) return false;
   }
 
   return true;
@@ -1232,9 +1199,26 @@ function addCardToDeck(cardId) {
   const deck = getCurrentDeck();
   const card = dummyCards.find(c => c.id === cardId);
   if (!card) return;
+
+  const isDomainCard = String(card.type || '').toLowerCase() === 'domain';
+
+  if (isDomainCard) {
+    // remove any existing domain first (single domain slot)
+    Object.keys(deck).forEach((id) => {
+      const c = dummyCards.find(dc => dc.id === id);
+      if (c && String(c.type || '').toLowerCase() === 'domain') {
+        delete deck[id];
+      }
+    });
+    deck[cardId] = 1; // exactly one
+    setCurrentDeck(deck);
+    return;
+  }
+
   const ownedCount = getCollection()[cardId] || 0;
   const currentInDeck = deck[cardId] || 0;
   if (!canAddCard(card, currentInDeck, ownedCount)) return;
+
   deck[cardId] = (deck[cardId] || 0) + 1;
   setCurrentDeck(deck);
 }
