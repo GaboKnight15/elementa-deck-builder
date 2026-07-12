@@ -3195,12 +3195,37 @@ button[disabled], .btn-disabled {
   position: relative;
   flex-direction: column;
   justify-content: flex-start;
-  height: 90%;     
+  height: 100%;     
   padding: 0.5em 0.5em 0.5em 0.5em;
   z-index: 1100;
   overflow: hidden;
   min-width: 300px;
+  min-height: 0;
   max-width: 300px;
+}
+/* Fixed game log area (chat-like) */
+#battlefield-log-box {
+  flex: 1 1 auto;         /* take middle space */
+  min-height: 0;          /* allow internal scrolling */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;       /* prevent infinite visual growth */
+}
+
+#battlefield-log-title {
+  flex: 0 0 auto;
+}
+
+#battlefield-log-container {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;       /* scroll here */
+  overflow-x: hidden;
+  padding-right: 6px;
+  scroll-behavior: smooth;
+}
+#my-profile {
+  margin-top: auto;   /* pushes it to the bottom */
 }
 #battlefield-rightbar {
   display: flex;
