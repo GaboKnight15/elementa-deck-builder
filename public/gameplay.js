@@ -40,8 +40,8 @@ let gameState = {
   turn: "player",
   phase: "start",
   essencePools: {
-    enemy: { green:0, red:0, blue:0, yellow:0, gray:0, purple:0, white:0, black:0, multicolor:0 },
-    player: { green:0, red:0, blue:0, yellow:0, gray:0, purple:0, white:0, black:0, multicolor:0 }
+    enemy: { green:0, red:0, blue:0, yellow:0, gray:0, purple:0, white:0, black:0 },
+    player: { green:0, red:0, blue:0, yellow:0, gray:0, purple:0, white:0, black:0 }
   },
   gameLog: [],
   chatLog: []
