@@ -556,37 +556,7 @@ untap: { name: 'Untap', icon: 'Icons/Skill/Untap.png',
       next && next();
     }
   },
-  
-void: {
-  name: 'Void',
-  icon: 'Icons/Skill/Void.png',
-  zones: ['playerFallen', 'enemyFallen'],
-  description: 'Moves itself from the fallen to the void.',
-  canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
-    const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
-    return validZones.includes(currentZone);
-  },
-  handler: function(sourceCardObj, skillObj, next) {
-    const owner = getCardOwner(sourceCardObj) === 'enemy' ? 'enemy' : 'player';
 
-    const fromArr =
-      gameState.playerFallen.includes(sourceCardObj) ? gameState.playerFallen :
-      gameState.enemyFallen.includes(sourceCardObj) ? gameState.enemyFallen :
-      null;
-
-    const fallenArr = owner === 'enemy' ? gameState.enemyFallen : gameState.playerFallen;
-
-    if (!fromArr) {
-      showToast("Void can only be activated from the fallen zone.");
-      next && next();
-      return;
-    }
-
-    moveCard(sourceCardObj.instanceId, fromArr, fallenArr);
-    renderGameState();
-    next && next();
-  }
-},
 };
 
 const EFF_MAP = {
@@ -613,14 +583,10 @@ summon: { name: 'Summon', zone: 'playerHand', icon: 'Icons/Skill/Summon.png',
     if (cat === 'creature') toArr = owner === 'player' ? gameState.playerCreatures : gameState.enemyCreatures;
     else if (cat === 'terrain') toArr = owner === 'player' ? gameState.playerTerrains : gameState.enemyTerrains;
     else {
-      showToast && showToast('This card cannot be summoned.', { type: 'error' });
+      showToast && showToast('This card cannot be played.', { type: 'error' });
       nextEffect && nextEffect();
       return;
     }
-
-    // New rule:
-    // - creatures enter disabled/horizontal
-    // - terrains enter enabled/vertical
     const orientation = cat === 'creature' ? 'horizontal' : 'vertical';
 
     moveCard(sourceCardObj.instanceId, handArr, toArr, { orientation }, () => {
@@ -3226,41 +3192,67 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
     });
   }
 },
-    {
-      text: "Return to Hand",
-      onClick: function(e) {
-        e.stopPropagation();
-        let arr = getZoneArray(zoneId);
-        if (arr) {
-          const idx = arr.findIndex(card => card.instanceId === instanceId);
-          if (idx !== -1) {
-            const removed = removeCardByInstanceId(instanceId);
-            if (removed) gameState.playerHand.push(cleanCard(removed));
-          }
-        }
-        renderGameState();
-        setupDropZones();
-        emitPublicState();
-        closeAllMenus();
-      }
-    },
-    {
-      text: "Send to Fallen",
-      onClick: function(e) {
-        e.stopPropagation();
-        let arr = getZoneArray(zoneId);
-        if (arr) {
-          const idx = arr.findIndex(card => card.instanceId === instanceId);
-          if (idx !== -1) {
-            const removed = removeCardByInstanceId(instanceId);
-            if (removed) gameState.playerFallen.push(cleanCard(removed));
-          }
-        }
-        renderGameState();
-        setupDropZones();
-        closeAllMenus();
-      }
-    },
+{
+  text: "Return to Hand",
+  onClick: function(e) {
+    e.stopPropagation();
+    const cardObj = findCardByInstanceId(instanceId);
+    if (!cardObj) return closeAllMenus();
+
+    const owner = getOwnerFromCard(cardObj);
+    const zones = getOwnerZones(owner);
+    const fromArr = getZoneArrayForCard(cardObj);
+
+    if (fromArr) {
+      moveCard(instanceId, fromArr, zones.hand);
+      renderGameState();
+      setupDropZones();
+      emitPublicState && emitPublicState();
+    }
+    closeAllMenus();
+  }
+},
+{
+  text: "Send to Fallen",
+  onClick: function(e) {
+    e.stopPropagation();
+    const cardObj = findCardByInstanceId(instanceId);
+    if (!cardObj) return closeAllMenus();
+
+    const owner = getOwnerFromCard(cardObj);
+    const zones = getOwnerZones(owner);
+    const fromArr = getZoneArrayForCard(cardObj);
+
+    if (fromArr) {
+      moveCard(instanceId, fromArr, zones.fallen);
+      renderGameState();
+      setupDropZones();
+      emitPublicState && emitPublicState();
+    }
+    closeAllMenus();
+  }
+},
+{
+  text: "Return to Deck",
+  onClick: function(e) {
+    e.stopPropagation();
+    const cardObj = findCardByInstanceId(instanceId);
+    if (!cardObj) return closeAllMenus();
+
+    const owner = getOwnerFromCard(cardObj);
+    const zones = getOwnerZones(owner);
+    const fromArr = getZoneArrayForCard(cardObj);
+
+    if (fromArr) {
+      moveCard(instanceId, fromArr, zones.deck);
+      zones.deck = shuffle(zones.deck);
+      renderGameState();
+      setupDropZones();
+      emitPublicState && emitPublicState();
+    }
+    closeAllMenus();
+  }
+},
 {
   text: "Send to Void",
   onClick: function(e) {
@@ -3281,24 +3273,6 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
     closeAllMenus();
   }
 },
-    {
-      text: "Return to Deck",
-      onClick: function(e) {
-        e.stopPropagation();
-        let arr = getZoneArray(zoneId);
-        if (arr) {
-          const idx = arr.findIndex(card => card.instanceId === instanceId);
-          if (idx !== -1) {
-            const removed = removeCardByInstanceId(instanceId);
-            if (removed) gameState.playerDeck.push(cleanCard(removed));
-          }
-        }
-        renderGameState();
-        setupDropZones();
-        emitPublicState();
-        closeAllMenus();
-      }
-    },
   ];
 // Always show Attack in the field menu if this card's category is Creature
 const isCreatureCategory = String(cardData?.category || '').toLowerCase() === 'creature';
@@ -3441,35 +3415,81 @@ function openFallenModal(isenemy = false) {
         closeAllMenus();
 
         const buttons = [
-          {
-            text: "Return to Hand",
-            onClick: function (ev) {
-              ev.stopPropagation();
-              moveCard(cardObj.instanceId, gameState.playerFallen, gameState.playerHand);
-              renderGameState();
-              closeAllMenus();
-              openFallenModal(false);
-            }
-          },
-          {
-            text: "Return to Deck",
-            onClick: function (ev) {
-              ev.stopPropagation();
-              moveCard(cardObj.instanceId, gameState.playerFallen, gameState.playerDeck);
-              renderGameState();
-              closeAllMenus();
-              openFallenModal(false);
-            }
-          },
+{
+  text: "Return to Hand",
+  onClick: function (ev) {
+    ev.stopPropagation();
+
+    const owner = getOwnerFromCard(cardObj);
+    const zones = getOwnerZones(owner);
+    const fromArr = getZoneArrayForCard(cardObj);
+
+    if (!fromArr) {
+      showToast && showToast("Card is no longer in a valid zone.");
+      closeAllMenus();
+      return;
+    }
+
+    moveCard(cardObj.instanceId, fromArr, zones.hand);
+    renderGameState();
+    setupDropZones && setupDropZones();
+    emitPublicState && emitPublicState();
+    closeAllMenus();
+    openFallenModal(owner === "enemy");
+  }
+},
+{
+  text: "Return to Deck",
+  onClick: function (ev) {
+    ev.stopPropagation();
+
+    const owner = getOwnerFromCard(cardObj);
+    const zones = getOwnerZones(owner);
+    const fromArr = getZoneArrayForCard(cardObj);
+
+    if (!fromArr) {
+      showToast && showToast("Card is no longer in a valid zone.");
+      closeAllMenus();
+      return;
+    }
+
+    moveCard(cardObj.instanceId, fromArr, zones.deck);
+    if (owner === "enemy") gameState.enemyDeck = shuffle(gameState.enemyDeck);
+    else gameState.playerDeck = shuffle(gameState.playerDeck);
+
+    renderGameState();
+    setupDropZones && setupDropZones();
+    emitPublicState && emitPublicState();
+    closeAllMenus();
+    openFallenModal(owner === "enemy");
+  }
+},
 {
   text: "Send to Void",
   onClick: function(ev) {
     ev.stopPropagation();
+
     const owner = getOwnerFromCard(cardObj);
     const zones = getOwnerZones(owner);
+    const fromArr = getZoneArrayForCard(cardObj);
 
-    moveCard(cardObj.instanceId, zones.fallen, zones.void);
+    if (!fromArr) {
+      showToast && showToast("Card is no longer in a valid zone.");
+      closeAllMenus();
+      return;
+    }
+
+    // If it's already in void, do nothing
+    if (fromArr === zones.void) {
+      closeAllMenus();
+      openFallenModal(owner === "enemy");
+      return;
+    }
+
+    moveCard(cardObj.instanceId, fromArr, zones.void);
     renderGameState();
+    setupDropZones && setupDropZones();
+    emitPublicState && emitPublicState();
     closeAllMenus();
     openFallenModal(owner === "enemy");
   }
@@ -3694,7 +3714,10 @@ function renderGameLog() {
 
   container.innerHTML = '';
   const entries = gameState.gameLog || [];
-
+  const logEl = document.getElementById('battlefield-log-container');
+  if (logEl) {
+    logEl.scrollTop = logEl.scrollHeight;
+  }
   if (!entries.length) {
     container.innerHTML = '<div style="color:#ffe06699;font-size:.9em;">No actions yet.</div>';
     return;
