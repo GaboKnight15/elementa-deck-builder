@@ -471,8 +471,8 @@ untap: { name: 'Untap', icon: 'Icons/Skill/Untap.png',
       }
 
       moveCard(sourceCardObj.instanceId, handArr, deckArr);
-      if (owner === 'enemy') gameState.enemyDeck = shuffle(gameState.enemyDeck);
-      else gameState.playerDeck = shuffle(gameState.playerDeck);
+      if (owner === 'enemy') gameState.enemyDeck = shuffleDeck(gameState.enemyDeck);
+      else gameState.playerDeck = shuffleDeck(gameState.playerDeck);
 
       renderGameState();
       next && next();
@@ -549,8 +549,8 @@ untap: { name: 'Untap', icon: 'Icons/Skill/Untap.png',
       }
 
       moveCard(sourceCardObj.instanceId, fromArr, deckArr);
-      if (owner === 'enemy') gameState.enemyDeck = shuffle(gameState.enemyDeck);
-      else gameState.playerDeck = shuffle(gameState.playerDeck);
+      if (owner === 'enemy') gameState.enemyDeck = shuffleDeck(gameState.enemyDeck);
+      else gameState.playerDeck = shuffleDeck(gameState.playerDeck);
 
       renderGameState();
       next && next();
@@ -1039,7 +1039,7 @@ add: { icon: 'Icons/Skill/Add.png', name: 'Search',
 
     showFilteredCardSelectionModal(matches, selectedCardObj => {
       moveCard(selectedCardObj.instanceId, gameState.playerDeck, gameState.playerHand);
-      gameState.playerDeck = shuffle(gameState.playerDeck);
+      gameState.playerDeck = shuffleDeck(gameState.playerDeck);
       closeAllModals();
       renderGameState();
       showToast(`${dummyCards.find(c => c.id === selectedCardObj.cardId)?.name || "Card"} added to your hand!`);
@@ -1173,11 +1173,11 @@ banish: { icon: 'Icons/Skill/Banish.png', name: 'Banish',
       const owner = selectedCardObj.owner || getCardOwner(selectedCardObj);
       const deckArr = owner === "enemy" ? gameState.enemyDeck : gameState.playerDeck;
       moveCard(selectedCardObj.instanceId, fromArr, deckArr);
-      // Shuffle that owner's deck
+      // shuffleDeck that owner's deck
       if (owner === "enemy") {
-        gameState.enemyDeck = shuffle(gameState.enemyDeck);
+        gameState.enemyDeck = shuffleDeck(gameState.enemyDeck);
       } else {
-        gameState.playerDeck = shuffle(gameState.playerDeck);
+        gameState.playerDeck = shuffleDeck(gameState.playerDeck);
       }
       renderGameState();
       if (nextEffect) nextEffect();
@@ -1342,7 +1342,7 @@ function createDeck(deckInput) {
       : (deckInput && typeof deckInput === "object" ? deckInput : {});
 
   const arr = buildDeck(normalizedDeck);
-  shuffleInPlace(arr);
+  shuffleDeck(arr);
   return arr;
 }
 
@@ -1358,7 +1358,7 @@ function startGame({
 }) {
   gameState.playerDeck = createDeck(playerDeck);
   if (Array.isArray(enemyDeck) && enemyDeck.length && enemyDeck[0].cardId) {
-    gameState.enemyDeck = shuffleInPlace([...enemyDeck]);
+    gameState.enemyDeck = shuffleDeck([...enemyDeck]);
   } else {
     gameState.enemyDeck = createDeck(enemyDeck);
   }
@@ -2083,19 +2083,14 @@ function setCardAnimatableClass(div, cardObj, cardData, gameState, zone) {
   }
 }
 
-// Fisher-Yates in-place shuffle for any array
-function shuffleInPlace(arr) {
+// Fisher-Yates in-place shuffleDeck for any array
+function shuffleDeck(arr) {
+  if (!Array.isArray(arr) || arr.length <= 1) return arr;
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
   return arr;
-}
-
-function shuffleDeck(deckArr) {
-  if (!Array.isArray(deckArr) || deckArr.length <= 1) return deckArr;
-  shuffleInPlace(deckArr);
-  return deckArr;
 }
 
 function drawCards(who, n) {
@@ -2397,10 +2392,10 @@ function appendDeckZone(parentDiv, deckArray, who) {
           }
         },
         {
-          text: "Shuffle",
+          text: "shuffleDeck",
           onClick: function(ev) {
             ev.stopPropagation();
-            gameState.playerDeck = shuffle(gameState.playerDeck);
+            gameState.playerDeck = shuffleDeck(gameState.playerDeck);
             renderGameState();
             setupDropZones();
             closeAllMenus();
@@ -3245,7 +3240,7 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
 
     if (fromArr) {
       moveCard(instanceId, fromArr, zones.deck);
-      zones.deck = shuffle(zones.deck);
+      zones.deck = shuffleDeck(zones.deck);
       renderGameState();
       setupDropZones();
       emitPublicState && emitPublicState();
@@ -3454,8 +3449,8 @@ function openFallenModal(isenemy = false) {
     }
 
     moveCard(cardObj.instanceId, fromArr, zones.deck);
-    if (owner === "enemy") gameState.enemyDeck = shuffle(gameState.enemyDeck);
-    else gameState.playerDeck = shuffle(gameState.playerDeck);
+    if (owner === "enemy") gameState.enemyDeck = shuffleDeck(gameState.enemyDeck);
+    else gameState.playerDeck = shuffleDeck(gameState.playerDeck);
 
     renderGameState();
     setupDropZones && setupDropZones();
