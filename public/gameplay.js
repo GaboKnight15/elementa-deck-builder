@@ -1363,28 +1363,46 @@ function startGame({
     gameState.enemyDeck = createDeck(enemyDeck);
   }
 
-  // Player zones
+  // --- Reset non-field zones ---
   gameState.playerHand = [];
-  gameState.playerCreatures = [];
-  gameState.playerTerrains = [];
+  gameState.playerFallen = [];
+  gameState.playerVoid = [];
+
+  gameState.enemyHand = [];
+  gameState.enemyFallen = [];
+  gameState.enemyVoid = [];
+
+  // --- Reset canonical slot-based battlefield ---
+  gameState.playerCreatureSlots = Array(5).fill(null);
+  gameState.playerSupportSlots = Array(5).fill(null);
+  gameState.enemyCreatureSlots = Array(5).fill(null);
+  gameState.enemySupportSlots = Array(5).fill(null);
+
+  // --- Keep legacy arrays as derived aliases (compat for old helpers) ---
+  // These should not be treated as source of truth.
+  gameState.playerCreatures = gameState.playerCreatureSlots.filter(Boolean);
+  gameState.playerTerrains  = gameState.playerSupportSlots.filter(Boolean);
+  gameState.enemyCreatures  = gameState.enemyCreatureSlots.filter(Boolean);
+  gameState.enemyTerrains   = gameState.enemySupportSlots.filter(Boolean);
   gameState.playerArtifacts = [];
   gameState.playerSpells = [];
-  gameState.playerFallen = []; // primary graveyard
-  gameState.playerVoid = [];   // secondary/banished
-
-  // Enemy zones
-  gameState.enemyHand = [];
-  gameState.enemyCreatures = [];
-  gameState.enemyTerrains = [];
   gameState.enemyArtifacts = [];
   gameState.enemySpells = [];
-  gameState.enemyFallen = []; // primary graveyard
-  gameState.enemyVoid = [];   // secondary/banished
 
+  // --- Match state meta ---
   gameState.phase = "start";
+  gameState.turn = "player";
   gameState.playerDomain = null;
   gameState.enemyDomain = null;
+  gameState.turnNumber = 0;
+  gameState.gameLog = [];
+  gameState.chatLog = [];
 
+  // --- Reset essence pools ---
+  gameState.essencePools = {
+    player: { green:0, red:0, blue:0, yellow:0, gray:0, purple:0, white:0, black:0, colorless:0 },
+    enemy:  { green:0, red:0, blue:0, yellow:0, gray:0, purple:0, white:0, black:0, colorless:0 }
+  };
   // --- Battlefield backgrounds ---
   setBattlefieldBackgrounds(
     playerDeck?.bannerArt || "Images/Banner/Default.png",
@@ -1424,6 +1442,20 @@ function startGame({
       gameState.turn = whoStarts;
       gameState.phase = "start";
       initiateDomainSelection(gameState.playerDeck, () => {
+        // IMPORTANT: if domain is selected, place it into a support slot (source of truth)
+        if (gameState.playerDomain) {
+          const freeSupport = gameState.playerSupportSlots.findIndex(s => !s);
+          if (freeSupport !== -1) {
+            gameState.playerSupportSlots[freeSupport] = {
+              ...gameState.playerDomain,
+              owner: "player",
+              slotLane: "support",
+              slotIndex: freeSupport,
+              orientation: "vertical"
+            };
+          }
+        }
+
         drawOpeningHands();
         renderGameState();
         setupDropZones();
@@ -1681,8 +1713,18 @@ function resetTurnFlags(turn) {
   }
 }
 function resetTurnResources(turn) {
-  const terrains = turn === "player" ? gameState.playerTerrains : gameState.enemyTerrains;
-  terrains.forEach(terrain => generateEssence(terrain));
+  // Use canonical slot-based field
+  const supports = turn === "player"
+    ? gameState.playerSupportSlots.filter(Boolean)
+    : gameState.enemySupportSlots.filter(Boolean);
+
+  const creatures = turn === "player"
+    ? gameState.playerCreatureSlots.filter(Boolean)
+    : gameState.enemyCreatureSlots.filter(Boolean);
+
+  // If only support cards should generate, keep supports only.
+  // If creatures can also generate, include creatures.
+  [...supports, ...creatures].forEach(cardObj => generateEssence(cardObj));
 }
 function matchesFilter(cardObj, filter) {
   for (let key in filter) {
@@ -2993,10 +3035,13 @@ function renderEssenceSummaryInto(container, pool = {}, opts = {}) {
 
   const size = Number(opts.size || 16);
   const imageMap = typeof ESSENCE_IMAGE_MAP !== 'undefined' ? ESSENCE_IMAGE_MAP : {};
-  // Color order to show
-  const colors = ['g','r','u','y','p','c','b','w'];
 
-  // For each color, show icon + count (compact)
+  const colors = ['green','red','blue','yellow','purple','gray','black','white','colorless'];
+  const keyToIcon = {
+    green:'g', red:'r', blue:'u', yellow:'y', purple:'p',
+    gray:'c', black:'b', white:'w', colorless:'x1'
+  };
+
   colors.forEach(color => {
     const amt = Number(pool?.[color] || 0);
     if (amt <= 0) return;
@@ -3008,11 +3053,10 @@ function renderEssenceSummaryInto(container, pool = {}, opts = {}) {
     wrap.style.margin = '0 6px 0 0';
 
     const img = document.createElement('img');
-    img.src = imageMap[color] || '';
+    img.src = imageMap[keyToIcon[color]] || '';
     img.alt = color + " essence";
     img.style.width = `${size}px`;
     img.style.height = `${size}px`;
-    img.style.verticalAlign = 'middle';
     wrap.appendChild(img);
 
     if (amt !== 1) {
@@ -3023,6 +3067,7 @@ function renderEssenceSummaryInto(container, pool = {}, opts = {}) {
       span.style.fontSize = `${Math.max(10, Math.floor(size * 0.8))}px`;
       wrap.appendChild(span);
     }
+
     container.appendChild(wrap);
   });
 }
@@ -3960,17 +4005,14 @@ function initiateDomainSelection(deckArr, afterSelection) {
 
 // ESSENCE GENERATION //
 function generateEssence(cardObj) {
-  // Add the card's defined essence into the owner's pooled essence
   if (!cardObj) return;
   const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
   if (!cardDef || !cardDef.essence) return;
 
-  // Determine owner by membership in gameState arrays
-  const owner = (gameState.playerTerrains.includes(cardObj) || gameState.playerCreatures.includes(cardObj)) ? 'player'
-    : (gameState.enemyTerrains.includes(cardObj) || gameState.enemyCreatures.includes(cardObj)) ? 'enemy'
-    : (cardObj.owner ? (cardObj.owner === 'player' ? 'player' : 'enemy') : 'player');
+  const owner = getCardOwner(cardObj) === 'enemy' ? 'enemy' : 'player';
+  const pool = getEssencePool(owner);
+  if (!pool) return;
 
-  // Parse the essence string like "{g}{g}{r}{2}" and add to pool counts
   const essStr = cardDef.essence || '';
   const matches = essStr.match(/\{([^}]+)\}/g) || [];
 
@@ -3985,22 +4027,21 @@ function generateEssence(cardObj) {
       };
       const color = keyMap[colored[1].toLowerCase()];
       const amount = colored[2] ? Number(colored[2]) : 1;
-      gameState.essencePools[owner][color] += amount;
+      pool[color] = (pool[color] || 0) + amount;
       return;
     }
 
     const generic = inner.match(/^x(\d+)$/i);
     if (generic) {
-      gameState.essencePools[owner].colorless += Number(generic[1]);
+      pool.colorless = (pool.colorless || 0) + Number(generic[1]);
       return;
     }
 
     if (/^\d+$/.test(inner)) {
-      gameState.essencePools[owner].colorless += Number(inner);
+      pool.colorless = (pool.colorless || 0) + Number(inner);
     }
   });
 
-  // trigger UI update
   renderGameState && renderGameState();
 }
 
