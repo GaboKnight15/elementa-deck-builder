@@ -707,7 +707,7 @@ terraform: { name: 'Terraform', zone: 'playerHand', icon: 'Icons/Skill/Terraform
 
       const owner = (getCardOwner(sourceCardObj) === 'enemy') ? 'enemy' : 'player';
       const handArr = owner === 'player' ? gameState.playerHand : gameState.enemyHand;
-      const terrainsArr = owner === 'player' ? gameState.playerSupportSlots.filter(Boolean) : gameState.enemySupportSlots.filter(Boolean);
+      const terrainsArr = owner === 'player' ? gameState.playerSupportSlots : gameState.enemySupportSlots;
 
       // Must be in hand
       if (!handArr.includes(sourceCardObj)) {
@@ -1804,7 +1804,7 @@ function getTargets(target, sourceCardObj, context = {}) {
   return [];
 }
 function moveCard(instanceId, fromArr, toArr, extra = {}, callback) {
-  if (!instanceId || !Array.isArray(fromArr) || !Array.isArray(toArr)) {
+  if (!instanceId || !Array.isArray(fromArr)) {
     callback && callback();
     return;
   }
@@ -1817,7 +1817,6 @@ function moveCard(instanceId, fromArr, toArr, extra = {}, callback) {
 
   const cardObj = fromArr[fromIdx];
 
-  // Remove from source (slot arrays use null holes)
   const isFromSlotArray =
     fromArr === gameState.playerCreatureSlots ||
     fromArr === gameState.playerSupportSlots ||
@@ -1827,25 +1826,23 @@ function moveCard(instanceId, fromArr, toArr, extra = {}, callback) {
   if (isFromSlotArray) fromArr[fromIdx] = null;
   else fromArr.splice(fromIdx, 1);
 
-  // Optional field-placement flow
-  const owner = extra.owner || getCardOwner(cardObj) || "player";
-  const toField = extra.toField === true;
-
   const finalize = () => {
     renderGameState && renderGameState();
     callback && callback();
   };
 
+  const owner = extra.owner || getCardOwner(cardObj) || "player";
+  const toField = extra.toField === true;
+
   if (toField) {
-    const lane = getLaneForCard(cardObj); // creature|support
+    const lane = getLaneForCard(cardObj);
     const slots = getFieldSlots(owner, lane);
     const freeIdx = slots.findIndex(s => !s);
 
     if (freeIdx === -1) {
-      // rollback if no free slot
       if (isFromSlotArray) fromArr[fromIdx] = cardObj;
       else fromArr.splice(fromIdx, 0, cardObj);
-      logSystem && logSystem(`No free ${lane} slots.`);
+      showToast && showToast(`No free ${lane} slots.`);
       return finalize();
     }
 
@@ -1861,11 +1858,32 @@ function moveCard(instanceId, fromArr, toArr, extra = {}, callback) {
     return finalize();
   }
 
-  // Prevent duplicates in destination
-  const exists = toArr.some(c => c && c.instanceId === cardObj.instanceId);
-  if (!exists) {
-    const moved = { ...cardObj, ...extra };
-    toArr.push(moved);
+  if (!Array.isArray(toArr)) {
+    callback && callback();
+    return;
+  }
+
+  const isToSlotArray =
+    toArr === gameState.playerCreatureSlots ||
+    toArr === gameState.playerSupportSlots ||
+    toArr === gameState.enemyCreatureSlots ||
+    toArr === gameState.enemySupportSlots;
+
+  const moved = { ...cardObj, ...extra };
+
+  if (isToSlotArray) {
+    const freeIdx = toArr.findIndex(s => !s);
+    if (freeIdx === -1) {
+      if (isFromSlotArray) fromArr[fromIdx] = cardObj;
+      else fromArr.splice(fromIdx, 0, cardObj);
+      showToast && showToast("No free slot.");
+      return finalize();
+    }
+    moved.slotIndex = freeIdx;
+    toArr[freeIdx] = moved;
+  } else {
+    const exists = toArr.some(c => c && c.instanceId === cardObj.instanceId);
+    if (!exists) toArr.push(moved);
   }
 
   finalize();
@@ -2257,34 +2275,37 @@ function setupDropZones() {
       const instanceId = e.dataTransfer.getData("text/plain");
       if (!instanceId) return;
 
-      const handIdx = gameState.playerHand.findIndex(c => c.instanceId === instanceId);
-      if (handIdx === -1) return; // testing: only from player hand
-
-      const owner = slot.dataset.owner;
-      const lane = slot.dataset.lane;
+      const owner = slot.dataset.owner; // "player" | "enemy"
+      const lane = slot.dataset.lane;   // "creature" | "support"
       const idx = Number(slot.dataset.slotIndex);
 
-      if (owner !== "player") return; // testing guard
+      // pick correct source hand by owner
+      const handArr = owner === "enemy" ? gameState.enemyHand : gameState.playerHand;
+      const handIdx = handArr.findIndex(c => c?.instanceId === instanceId);
+      if (handIdx === -1) return; // only allow drop from that side's hand
 
-const cardObj = gameState.playerHand[handIdx];
-const requiredLane = getCardLane(cardObj); // creature | support
-if (lane !== requiredLane) {
-  showToast && showToast(`This card must be played to a ${requiredLane} slot.`);
-  return;
-}
+      const cardObj = handArr[handIdx];
+      const requiredLane = getCardLane(cardObj); // creature | support
+      if (lane !== requiredLane) {
+        showToast && showToast(`This card must be played to a ${requiredLane} slot.`);
+        return;
+      }
 
-      const slots = lane === "creature" ? gameState.playerCreatureSlots : gameState.playerSupportSlots;
+      const slots = lane === "creature"
+        ? (owner === "enemy" ? gameState.enemyCreatureSlots : gameState.playerCreatureSlots)
+        : (owner === "enemy" ? gameState.enemySupportSlots : gameState.playerSupportSlots);
+
       if (slots[idx]) return; // occupied
 
-      const [moved] = gameState.playerHand.splice(handIdx, 1);
-      moved.owner = "player";
+      const [moved] = handArr.splice(handIdx, 1);
+      moved.owner = owner;
       moved.slotLane = lane;
       moved.slotIndex = idx;
       moved.orientation = moved.orientation || "vertical";
       slots[idx] = moved;
 
       renderGameState();
-      setupDropZones(); // rebind after rerender
+      setupDropZones();
     };
   });
 }
