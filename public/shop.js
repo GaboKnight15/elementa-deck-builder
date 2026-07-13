@@ -120,6 +120,9 @@ function showCosmeticConfirmModal({imgSrc, name, type, price, onConfirm, packId,
   cosmeticConfirmModal.style.display = 'flex';
   cosmeticConfirmModal.style.alignItems = 'center';
   cosmeticConfirmModal.style.justifyContent = 'center';
+cosmeticConfirmModal.style.position = 'absolute';
+cosmeticConfirmModal.style.inset = '0';
+cosmeticConfirmModal.style.zIndex = '9999';
   // Bulk selector (default 1)
   let bulkSelectorHtml = '';
   if (type === 'pack') {
@@ -149,7 +152,8 @@ function showCosmeticConfirmModal({imgSrc, name, type, price, onConfirm, packId,
       </div>
     </div>
   `;
-  document.body.appendChild(cosmeticConfirmModal);
+  const gameShell = document.getElementById('game-shell');
+(gameShell || document.body).appendChild(cosmeticConfirmModal);
 
   // Bulk price update logic
   if (type === 'pack') {
