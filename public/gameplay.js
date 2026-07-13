@@ -4892,46 +4892,42 @@ document.getElementById('mode-player-deck-tile').onclick = function (e) {
 // Use this wherever you need a clean/new game state (startGame, resetGameState, tests, etc.)
 function getInitialGameState() {
   return {
-    // Zones
-  gameState.playerHand = [];
-  gameState.playerFallen = [];
-  gameState.playerVoid = [];
+    // Core zones
+    playerDeck: [],
+    playerHand: [],
+    playerFallen: [],
+    playerVoid: [],
 
-  gameState.enemyHand = [];
-  gameState.enemyFallen = [];
-  gameState.enemyVoid = [];
+    enemyDeck: [],
+    enemyHand: [],
+    enemyFallen: [],
+    enemyVoid: [],
 
-  // --- Reset canonical slot-based battlefield ---
-  gameState.playerCreatureSlots = Array(5).fill(null);
-  gameState.playerSupportSlots = Array(5).fill(null);
-  gameState.enemyCreatureSlots = Array(5).fill(null);
-  gameState.enemySupportSlots = Array(5).fill(null);
+    // Canonical slot-based battlefield
+    playerCreatureSlots: Array(5).fill(null),
+    playerSupportSlots: Array(5).fill(null),
+    enemyCreatureSlots: Array(5).fill(null),
+    enemySupportSlots: Array(5).fill(null),
 
-  // --- Keep legacy arrays as derived aliases (compat for old helpers) ---
-  // These should not be treated as source of truth.
-  gameState.playerCreatures = gameState.playerCreatureSlots.filter(Boolean);
-  gameState.playerSupports  = gameState.playerSupportSlots.filter(Boolean);
-  gameState.enemyCreatures  = gameState.enemyCreatureSlots.filter(Boolean);
-  gameState.enemySupports   = gameState.enemySupportSlots.filter(Boolean);
+    // Legacy derived aliases (kept for compatibility; should be re-derived after mutations)
+    playerCreatures: [],
+    playerSupports: [],
+    enemyCreatures: [],
+    enemySupports: [],
 
-  // --- Match state meta ---
-  gameState.phase = "start";
-  gameState.turn = "player";
-  gameState.playerDomain = null;
-  gameState.enemyDomain = null;
-  gameState.turnNumber = 0;
-  gameState.gameLog = [];
-
-  // --- Reset essence pools ---
-  gameState.essencePools = {
-    player: { green:0, red:0, blue:0, yellow:0, gray:0, purple:0, white:0, black:0, colorless:0 },
-    enemy:  { green:0, red:0, blue:0, yellow:0, gray:0, purple:0, white:0, black:0, colorless:0 }
-  };
-
-    gameLog: [],
-    turnNumber: 0,
-    turn: "player",
+    // Match state meta
     phase: "start",
+    turn: "player",
+    playerDomain: null,
+    enemyDomain: null,
+    turnNumber: 0,
+    gameLog: [],
+
+    // Essence pools
+    essencePools: {
+      player: { green:0, red:0, blue:0, yellow:0, gray:0, purple:0, white:0, black:0, colorless:0 },
+      enemy:  { green:0, red:0, blue:0, yellow:0, gray:0, purple:0, white:0, black:0, colorless:0 }
+    }
   };
 }
 
@@ -7006,7 +7002,10 @@ if (window.socket) {
     gameState.enemyHand = Array.from({ length: state.handCount }, () => ({}));
     // Battlefield zones: use the real card objects sent from server
     gameState.enemyCreatures = state.creatures || [];
-    gameState.enemySupportSlots.filter(Boolean) = state.terrains || [];
+    gameState.enemySupportSlots = Array(5).fill(null);
+(state.terrains || []).slice(0, 5).forEach((card, i) => {
+  gameState.enemySupportSlots[i] = card;
+});
     gameState.enemyFallen = state.fallenCards || [];
     gameState.enemyPhase = state.phase;
     gameState.enemyTurn = state.turn;
