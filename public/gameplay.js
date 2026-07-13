@@ -562,8 +562,7 @@ const EFF_MAP = {
 summon: { name: 'Summon', zone: 'playerHand', icon: 'Icons/Skill/Summon.png',
   description: 'Move this card from hand to the field.',
   canActivate(cardObj, skillObj, currentZone, gameState) {
-    // Accept common zone spellings; normalize if you can
-    return currentZone === 'playerHand' || currentZone === 'playerHand';
+    return currentZone === 'playerHand' || currentZone === 'player-hand';
   },
   handler(sourceCardObj, skillObj, step = {}, nextEffect) {
     const owner = getCardOwner(sourceCardObj) === 'enemy' ? 'enemy' : 'player';
@@ -578,20 +577,26 @@ summon: { name: 'Summon', zone: 'playerHand', icon: 'Icons/Skill/Summon.png',
     const def = dummyCards.find(c => c.id === sourceCardObj.cardId);
     const cat = String(def?.category || '').toLowerCase();
 
-    let toArr = null;
-    if (cat === 'creature') toArr = owner === 'player' ? gameState.playerCreatures : gameState.enemyCreatures;
-    else if (cat === 'terrain') toArr = owner === 'player' ? gameState.playerTerrains : gameState.enemyTerrains;
-    else {
+    if (cat !== 'creature' && cat !== 'terrain') {
       showToast && showToast('This card cannot be played.', { type: 'error' });
       nextEffect && nextEffect();
       return;
     }
+
     const orientation = cat === 'creature' ? 'horizontal' : 'vertical';
 
-    moveCard(sourceCardObj.instanceId, handArr, toArr, { orientation }, () => {
-      renderGameState && renderGameState();
-      nextEffect && nextEffect();
-    });
+    moveCard(
+      sourceCardObj.instanceId,
+      handArr,
+      handArr, // placeholder, ignored when toField:true
+      { owner, toField: true, orientation },
+      () => {
+        renderGameState && renderGameState();
+        setupDropZones && setupDropZones();
+        emitPublicState && emitPublicState();
+        nextEffect && nextEffect();
+      }
+    );
   }
 },
   
@@ -1380,13 +1385,9 @@ function startGame({
   // --- Keep legacy arrays as derived aliases (compat for old helpers) ---
   // These should not be treated as source of truth.
   gameState.playerCreatures = gameState.playerCreatureSlots.filter(Boolean);
-  gameState.playerTerrains  = gameState.playerSupportSlots.filter(Boolean);
+  gameState.playerSupports  = gameState.playerSupportSlots.filter(Boolean);
   gameState.enemyCreatures  = gameState.enemyCreatureSlots.filter(Boolean);
-  gameState.enemyTerrains   = gameState.enemySupportSlots.filter(Boolean);
-  gameState.playerArtifacts = [];
-  gameState.playerSpells = [];
-  gameState.enemyArtifacts = [];
-  gameState.enemySpells = [];
+  gameState.enemySupports   = gameState.enemySupportSlots.filter(Boolean);
 
   // --- Match state meta ---
   gameState.phase = "start";
@@ -3188,40 +3189,40 @@ function showCardActionMenu(instanceId, zoneId, orientation, cardDiv) {
 
   // Define menu options
   const buttons = [
-    {
-      text: "Set HP",
-      onClick: function(e) {
-        e.stopPropagation();
-        let arr = getZoneArray(zoneId);
-        if (arr) {
-          const cardObj = findCardByInstanceId(instanceId);
-          if (!cardObj) return;
-          showSetHpModal(cardObj, function(newHp) {
-            cardObj.currentHP = newHp;
-            renderGameState();
-            emitPublicState();
-            closeAllMenus();
-          });
-        } else {
-          closeAllMenus();
-        }
-      }
-    },
-  {
+{
+  text: "Set HP",
+  onClick: function(e) {
+    e.stopPropagation();
+
+    const cardObj = findCardByInstanceId(instanceId);
+    if (!cardObj) {
+      closeAllMenus();
+      return;
+    }
+
+    showSetHpModal(cardObj, function(newHp) {
+      cardObj.currentHP = newHp;
+      renderGameState();
+      setupDropZones && setupDropZones();
+      emitPublicState && emitPublicState();
+      closeAllMenus();
+    });
+  }
+},
+{
   text: "Change Orientation",
   onClick: function(e) {
     e.stopPropagation();
 
-    const arr = getZoneArray(zoneId);
-    if (!arr) return;
-
-    const cardObj = findCardByInstanceId(instanceId)
-    if (!cardObj) return;
+    const cardObj = findCardByInstanceId(instanceId);
+    if (!cardObj) {
+      closeAllMenus();
+      return;
+    }
 
     const nextOrientation =
       cardObj.orientation === "horizontal" ? "vertical" : "horizontal";
 
-    // use existing helper so animation/render stays consistent
     changeCardPosition(cardObj, nextOrientation, () => {
       renderGameState();
       setupDropZones && setupDropZones();
