@@ -20,14 +20,14 @@ const dummyCards = [
 	{name: 'Ancient Sylvan Decree', req: 'tap', eff: {class: 'disable', target: 'enemyCreatures', cost: ''}},
 	{name: 'Timeless Zenith Blessing', req: 'void', eff: {class: 'bolster', target: 'playerField', type: 'Sylvan', atk: 1, hp: 2}, text: 'Give +{1}/+{2} to all Sylvan allies.'}]},
 
-{id: 'FaelyraWildhornEmpress', name: 'Faelyra, Wildhorn Empress', rarity: 'Legend', image: 'Cards/egg/FaelyraWildhornEmpress.png', flavor: 'Beneath a crown of entwined blossoms, she dances through the forest while singing weaving spells of mirth. Satyrs, woodland creatures, and even the shyest spirits follow her lead, enchanted by her boundless charm.',
- category: 'Creature', fight: 'Satiric Pulse', color: 'Green', type: ['Sylvan','Satyr','Mage'], hp: 3, atk: 1, cost: '{g2}', ability: 'Vigor', set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/egg/FaelyraWildhornEmpressFA.png', skill: [
+{id: 'GlaistigWildhornEmpress', name: 'Glaistig, Wildhorn Empress', rarity: 'Legend', image: 'Cards/egg/GlaistigWildhornEmpress.png', flavor: 'Beneath a crown of entwined blossoms, she dances through the forest while singing weaving spells of mirth. Satyrs, woodland creatures, and even the shyest spirits follow her lead, enchanted by her boundless charm.',
+ category: 'Creature', fight: 'Satiric Pulse', color: 'Green', type: ['Satyr','Mage'], hp: 3, atk: 1, cost: '{g2}', ability: 'Vigor', set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/egg/FaelyraWildhornEmpressFA.png', skill: [
 	{name: 'Summon', cost: '{g2}', eff: {class: 'summon'}},
 	{name: 'Rhythmic Conjure', trig: 'summon', eff: {class: 'summon', id: 'Satyr'}, text: "When she's summoned, summon 1 Satyr from your hand."},
 	{name: 'Chorus of the Wild', req: 'tap', eff: {class: 'bolster', atk: 1, hp: 2, type: 'Satyr', target: 'playerCreatures'}, text: 'Give +{1}/+{2} to all satyr allies.'}]},
 
-{id: 'ThistleFaeStarlight', name: 'Thistle, Fae Starlight', rarity: 'Legend', image: 'Cards/egg/ThistleFaeStarlight.png', flavor: 'Beneath a crown of entwined blossoms, she dances through the forest while singing weaving spells of mirth. Satyrs, woodland creatures, and even the shyest spirits follow her lead, enchanted by her boundless charm.',
- category: 'Creature', fight: 'Faefolk Pulse', color: 'Green', type: ['Sylvan','Fairy','Mage'], hp: 2, atk: 1, cost: '{g3}', ability: 'Flying', set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/egg/FaelyraWildhornEmpressFA.png', skill: [
+{id: 'ThistlePixieStarlight', name: 'Thistle, Pixie Starlight', rarity: 'Legend', image: 'Cards/egg/ThistlePixieStarlight.png', flavor: 'Beneath a crown of entwined blossoms, she dances through the forest while singing weaving spells of mirth. Satyrs, woodland creatures, and even the shyest spirits follow her lead, enchanted by her boundless charm.',
+ category: 'Creature', fight: 'Faefolk Pulse', color: 'Green', type: ['Fairy','Mage'], hp: 2, atk: 1, cost: '{g3}', ability: 'Flying', set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/egg/FaelyraWildhornEmpressFA.png', skill: [
 	{name: 'Summon', cost: '{g3}', eff: {class: 'summon'}},
 	{name: 'Stardust Veil', trig: 'summon', eff: {class: 'purify', target: 'playerCreatures'}, text: 'On summon, purify all creature allies.'},
 	{name: 'Luminescent Grace', cost: '{g}{x}', trig: 'attack', eff: {class: 'bolster', atk: 1, hp: '{x}', type: 'Satyr', target: 'playerCreatures'}}]},
@@ -68,7 +68,7 @@ const dummyCards = [
 
 /*{id: 'StreamVagrantKappa', name: 'Stream Vagrant Kappa', rarity: 'Rare', image: 'Cards/egg/StreamVagrantKappa.png', flavor: '', 
  category: 'Creature', fight: '', color: ['Green','Blue'], type: ['Sylvan','Merfolk'], hp: 3, atk: 2, cost: '{g2}{u}', 
- ability: ['Bind','Vigor'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ ability: ['Dive','Rush'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{g2}{u}', eff: {class: 'summon'}},
 	{name: 'Riverbed Flotsam Glean', trig: 'summon', eff: {class: 'recover', category: 'Artifact'},
 	 text: 'When this card is summoned, recover 1 fallen artifact.'},
@@ -95,7 +95,7 @@ const dummyCards = [
 	{name: 'Cast', cost: '{g3}', eff: {class: 'cast'}},
 	{name: 'Verdant Rebirth', req: 'tap', mana: 1, eff: {class: 'revive', category: 'Creature', type: 'Sylvan'}}]},
 
-{id: 'Fairy', name: 'Fairy', rarity: 'Common', image: 'Cards/egg/Fairy.png', flavor: '', 
+{id: 'Pixie', name: 'Pixie', rarity: 'Common', image: 'Cards/egg/Pixie.png', flavor: '', 
  category: 'Creature', fight: '', color: 'Green', type: 'Fairy', hp: 1, atk: 1, cost: '{g}', ability: 'Flying', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{g}', eff: {class: 'summon'}}]},
 
@@ -112,13 +112,13 @@ const dummyCards = [
 	{name: 'Summon', cost: '{g3}', eff: {class: 'summon'}}, {trig: 'summon', eff: {class: 'enable'}},
 	{name: 'Vigorous Haste', trig: 'frenzy', eff: {class: 'bolster', atk: 1, hp: 1}}]},
  
-{id: 'FaunSkirmisher', name: 'Faun Skirmisher', rarity: 'Common', image: 'Cards/egg/FaunSkirmisher.png', flavor: 'Each arrow is a promise kept. No trespasser leaves the forest unmarked.', 
- category: 'Creature', fight: 'Vigorous Shot', color: 'Green', type: ['Satyr','Ranger'], hp: 3, atk: 1, cost: '{g2}', ability: ['Conceil','Vigor'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
+{id: 'WildhornSkirmisher', name: 'Wildhorn Skirmisher', rarity: 'Common', image: 'Cards/egg/WildhornSkirmisher.png', flavor: 'Each arrow is a promise kept. No trespasser leaves the forest unmarked.', 
+ category: 'Creature', fight: 'Vigorous Shot', color: 'Green', type: ['Satyr','Ranger'], hp: 3, atk: 1, cost: '{g2}', ability: ['Conceil'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{g2}', eff: {class: 'summon'}},
 	{name: 'Feral Empowerment', req: 'tap', eff: [{class: 'discard', q: 1, target: 'playerHand'}, {class: 'destroy', target: 'enemyCreatures'}, {class: 'bolster', atk: 1}]}]},
  
 {id: 'GrovekeeperDiviner', name: 'Grovekeeper Diviner', rarity: 'Common', image: 'Cards/egg/GrovekeeperDiviner.png', flavor: '', 
- category: 'Creature', fight: 'Vigorous Blessing', color: 'Green', type: ['Satyr','Mage'], hp: 3, atk: 1, cost: '{g2}', ability: ['Purify','Vigor'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Creature', fight: 'Vigorous Blessing', color: 'Green', type: ['Satyr','Mage'], hp: 3, atk: 1, cost: '{g2}', ability: ['Purify'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{g2}', eff: {class: 'summon'}},
 	{name: 'Horncall Requiem', trig: 'summon', eff: {class: 'add', type: 'Satyr'}, text: 'If summoned, add 1 satyr from your deck.'},
 	{name: 'Horncall Requiem', req: 'tap', eff: {class: 'bolster', type: 'Satyr', target: 'playerCreatures', hp: 1}, text: 'Give {0}/+{1} to satyr allies.'}]},
