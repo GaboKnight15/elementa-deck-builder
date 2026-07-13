@@ -44,7 +44,6 @@ let gameState = {
     player: { green:0, red:0, blue:0, yellow:0, gray:0, purple:0, white:0, black:0 }
   },
   gameLog: [],
-  chatLog: []
 };
 
 const ZONE_MAP = {
@@ -1396,7 +1395,6 @@ function startGame({
   gameState.enemyDomain = null;
   gameState.turnNumber = 0;
   gameState.gameLog = [];
-  gameState.chatLog = [];
 
   // --- Reset essence pools ---
   gameState.essencePools = {
@@ -3801,18 +3799,6 @@ if(nextPhaseBtn) nextPhaseBtn.onclick = goToNextPhase;
 // ----------- //
 // --- LOG --- //
 // ----------- //
-function renderChatLog() {
-  const el = document.getElementById('chat-log'); // use your actual element id
-  if (!el) return;
-
-  el.innerHTML = '';
-  (gameState.chatLog || []).forEach(entry => {
-    const row = document.createElement('div');
-    row.className = `chat-line chat-${entry.type}`;
-    row.textContent = entry.text;
-    el.appendChild(row);
-  });
-}
 // --- Append action log ---
 function renderGameLog() {
   const container = document.getElementById('battlefield-log-container');
@@ -3846,10 +3832,10 @@ function renderGameLog() {
     container.appendChild(row);
   });
 }
-function appendChatLog(type, text) {
+function appendGameLog(type, text) {
   
-  if (!gameState.chatLog) gameState.chatLog = [];
-  gameState.chatLog.push({ type, text, ts: Date.now() });
+  if (!gameState.gameLog) gameState.gameLog = [];
+  gameState.gameLog.push({ type, text, ts: Date.now() });
   
   if (!gameState.gameLog) {
     gameState.gameLog = [];
@@ -3868,15 +3854,14 @@ function appendChatLog(type, text) {
   }
   
   renderGameLog();
-  renderChatLog();
 }
 
 function logAction(text) {
-  appendChatLog('action', text);
+  appendGameLog('action', text);
 }
 
 function logSystem(text) {
-  appendChatLog('system', text);
+  appendGameLog('system', text);
 }
 
 function getCpuProfile(deck) {
