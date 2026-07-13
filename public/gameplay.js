@@ -3392,39 +3392,30 @@ cardData.skill
 }
 
 function openFallenModal(isenemy = false) {
-  let modal = document.getElementById('fallen-modal');
-  if (!modal) {
-    modal = document.createElement('div');
-    modal.id = 'fallen-modal';
-    modal.className = 'modal';
-    const content = document.createElement('div');
-    content.className = 'modal-content';
-    modal.appendChild(content);
-    document.body.appendChild(modal);
-  }
+  const modal = document.getElementById('fallen-modal');
+  if (!modal) return;
 
   modal.onclick = function (e) {
     if (e.target === modal) modal.style.display = 'none';
   };
 
   const modalContent = modal.querySelector('.modal-content');
-  if (modalContent) {
-    modalContent.onclick = e => e.stopPropagation();
-  }
+  if (modalContent) modalContent.onclick = e => e.stopPropagation();
 
-  let list = modal.querySelector('.modal-card-list');
-  if (!list) {
-    list = document.createElement('div');
-    list.className = 'modal-card-list';
-    modal.querySelector('.modal-content').appendChild(list);
-  }
-  list.innerHTML = '';
+  const fallenList = document.getElementById('fallen-cards-list');
+  const voidList = document.getElementById('void-cards-list');
+  if (!fallenList || !voidList) return;
+
+  fallenList.innerHTML = '';
+  voidList.innerHTML = '';
 
   const fallenCards = isenemy ? (gameState.enemyFallen || []) : (gameState.playerFallen || []);
   const voidCards = isenemy ? (gameState.enemyVoid || []) : (gameState.playerVoid || []);
 
-  // VOID SECTION
-  voidCards.forEach((cardObj) => {
+  // ----------------
+  // FALLEN (TOP)
+  // ----------------
+  fallenCards.forEach((cardObj) => {
     const card = dummyCards.find(c => c.id === cardObj.cardId);
     if (!card) return;
 
@@ -3434,13 +3425,10 @@ function openFallenModal(isenemy = false) {
     const cardDiv = document.createElement('div');
     cardDiv.className = 'card-battlefield';
 
-    setCardAnimatableClass(cardDiv, cardObj, card, gameState, 'void');
-
     const img = document.createElement('img');
     img.src = card.image;
     img.alt = card.name;
-    img.className = "modal-card-img";
-    img.style.cursor = "pointer";
+    img.className = 'modal-card-img';
     cardDiv.appendChild(img);
 
     if (isenemy) {
@@ -3455,85 +3443,200 @@ function openFallenModal(isenemy = false) {
         closeAllMenus();
 
         const buttons = [
-{
-  text: "Return to Hand",
-  onClick: function (ev) {
-    ev.stopPropagation();
+          {
+            text: "Return to Hand",
+            onClick: function (ev) {
+              ev.stopPropagation();
+              const owner = getOwnerFromCard(cardObj);
+              const zones = getOwnerZones(owner);
+              const fromArr = getZoneArrayForCard(cardObj);
+              if (!fromArr) return closeAllMenus();
 
-    const owner = getOwnerFromCard(cardObj);
-    const zones = getOwnerZones(owner);
-    const fromArr = getZoneArrayForCard(cardObj);
+              moveCard(cardObj.instanceId, fromArr, zones.hand);
+              renderGameState();
+              setupDropZones && setupDropZones();
+              emitPublicState && emitPublicState();
+              closeAllMenus();
+              openFallenModal(owner === "enemy");
+            }
+          },
+          {
+            text: "Return to Deck",
+            onClick: function (ev) {
+              ev.stopPropagation();
+              const owner = getOwnerFromCard(cardObj);
+              const zones = getOwnerZones(owner);
+              const fromArr = getZoneArrayForCard(cardObj);
+              if (!fromArr) return closeAllMenus();
 
-    if (!fromArr) {
-      showToast && showToast("Card is no longer in a valid zone.");
-      closeAllMenus();
-      return;
+              moveCard(cardObj.instanceId, fromArr, zones.deck);
+              if (owner === "enemy") gameState.enemyDeck = shuffleDeck(gameState.enemyDeck);
+              else gameState.playerDeck = shuffleDeck(gameState.playerDeck);
+
+              renderGameState();
+              setupDropZones && setupDropZones();
+              emitPublicState && emitPublicState();
+              closeAllMenus();
+              openFallenModal(owner === "enemy");
+            }
+          },
+          // required change: Fallen -> Void
+          {
+            text: "Send to Void",
+            onClick: function (ev) {
+              ev.stopPropagation();
+              const owner = getOwnerFromCard(cardObj);
+              const zones = getOwnerZones(owner);
+              const fromArr = getZoneArrayForCard(cardObj);
+              if (!fromArr) return closeAllMenus();
+
+              if (fromArr !== zones.void) {
+                moveCard(cardObj.instanceId, fromArr, zones.void);
+              }
+
+              renderGameState();
+              setupDropZones && setupDropZones();
+              emitPublicState && emitPublicState();
+              closeAllMenus();
+              openFallenModal(owner === "enemy");
+            }
+          }
+        ];
+
+        const cardData = dummyCards.find(c => c.id === cardObj.cardId);
+        if (cardData && Array.isArray(cardData.skill)) {
+          cardData.skill
+            .filter(skillObj => !skillObj.activation)
+            .forEach(skillObj => {
+              const activation = skillObj.activation || {};
+              const requirements = Array.isArray(activation.requirement)
+                ? activation.requirement
+                : (activation.requirement ? [activation.requirement] : []);
+              const reqIcons = getRequirementIcons(requirements);
+              const isEnabled = canActivateSkill(cardObj, skillObj, 'fallen', gameState);
+
+              buttons.push({
+                text: `${skillObj.name} ${parseEffectText(skillObj.cost)}${reqIcons}`,
+                html: true,
+                title: skillTitle(skillObj),
+                disabled: !isEnabled,
+                onClick: function (ev) {
+                  ev.stopPropagation();
+                  if (!canActivateSkill(cardObj, skillObj, 'fallen', gameState)) return;
+                  activateSkill(cardObj, skillObj);
+                  closeAllMenus();
+                  openFallenModal(false);
+                }
+              });
+            });
+        }
+
+        const menu = createCardMenu(buttons);
+        const shell = document.getElementById('game-shell') || document.getElementById('gameplay-section');
+        shell.appendChild(menu);
+
+        const rect = img.getBoundingClientRect();
+        placeMenuWithinShell(menu, rect);
+
+        menu.onclick = function (ev) { ev.stopPropagation(); };
+      }, { enableDragDetection: false });
     }
 
-    moveCard(cardObj.instanceId, fromArr, zones.hand);
-    renderGameState();
-    setupDropZones && setupDropZones();
-    emitPublicState && emitPublicState();
-    closeAllMenus();
-    openFallenModal(owner === "enemy");
-  }
-},
-{
-  text: "Return to Deck",
-  onClick: function (ev) {
-    ev.stopPropagation();
+    wrapper.appendChild(cardDiv);
+    fallenList.appendChild(wrapper);
+  });
 
-    const owner = getOwnerFromCard(cardObj);
-    const zones = getOwnerZones(owner);
-    const fromArr = getZoneArrayForCard(cardObj);
+  // ----------------
+  // VOID (BOTTOM)
+  // ----------------
+  voidCards.forEach((cardObj) => {
+    const card = dummyCards.find(c => c.id === cardObj.cardId);
+    if (!card) return;
 
-    if (!fromArr) {
-      showToast && showToast("Card is no longer in a valid zone.");
-      closeAllMenus();
-      return;
-    }
+    const wrapper = document.createElement('div');
+    wrapper.className = 'modal-card-wrapper';
 
-    moveCard(cardObj.instanceId, fromArr, zones.deck);
-    if (owner === "enemy") gameState.enemyDeck = shuffleDeck(gameState.enemyDeck);
-    else gameState.playerDeck = shuffleDeck(gameState.playerDeck);
+    const cardDiv = document.createElement('div');
+    cardDiv.className = 'card-battlefield';
+    setCardAnimatableClass(cardDiv, cardObj, card, gameState, 'void');
 
-    renderGameState();
-    setupDropZones && setupDropZones();
-    emitPublicState && emitPublicState();
-    closeAllMenus();
-    openFallenModal(owner === "enemy");
-  }
-},
-{
-  text: "Send to Void",
-  onClick: function(ev) {
-    ev.stopPropagation();
+    const img = document.createElement('img');
+    img.src = card.image;
+    img.alt = card.name;
+    img.className = 'modal-card-img';
+    img.style.cursor = 'pointer';
+    cardDiv.appendChild(img);
 
-    const owner = getOwnerFromCard(cardObj);
-    const zones = getOwnerZones(owner);
-    const fromArr = getZoneArrayForCard(cardObj);
+    if (isenemy) {
+      holdClickToView(img, cardObj, (e) => {
+        e.stopPropagation();
+        closeAllMenus();
+        showFullCardModal(cardObj);
+      }, { enableDragDetection: false });
+    } else {
+      holdClickToView(img, cardObj, (e) => {
+        e.stopPropagation();
+        closeAllMenus();
 
-    if (!fromArr) {
-      showToast && showToast("Card is no longer in a valid zone.");
-      closeAllMenus();
-      return;
-    }
+        const buttons = [
+          {
+            text: "Return to Hand",
+            onClick: function (ev) {
+              ev.stopPropagation();
+              const owner = getOwnerFromCard(cardObj);
+              const zones = getOwnerZones(owner);
+              const fromArr = getZoneArrayForCard(cardObj);
+              if (!fromArr) return closeAllMenus();
 
-    // If it's already in void, do nothing
-    if (fromArr === zones.void) {
-      closeAllMenus();
-      openFallenModal(owner === "enemy");
-      return;
-    }
+              moveCard(cardObj.instanceId, fromArr, zones.hand);
+              renderGameState();
+              setupDropZones && setupDropZones();
+              emitPublicState && emitPublicState();
+              closeAllMenus();
+              openFallenModal(owner === "enemy");
+            }
+          },
+          {
+            text: "Return to Deck",
+            onClick: function (ev) {
+              ev.stopPropagation();
+              const owner = getOwnerFromCard(cardObj);
+              const zones = getOwnerZones(owner);
+              const fromArr = getZoneArrayForCard(cardObj);
+              if (!fromArr) return closeAllMenus();
 
-    moveCard(cardObj.instanceId, fromArr, zones.void);
-    renderGameState();
-    setupDropZones && setupDropZones();
-    emitPublicState && emitPublicState();
-    closeAllMenus();
-    openFallenModal(owner === "enemy");
-  }
-}
+              moveCard(cardObj.instanceId, fromArr, zones.deck);
+              if (owner === "enemy") gameState.enemyDeck = shuffleDeck(gameState.enemyDeck);
+              else gameState.playerDeck = shuffleDeck(gameState.playerDeck);
+
+              renderGameState();
+              setupDropZones && setupDropZones();
+              emitPublicState && emitPublicState();
+              closeAllMenus();
+              openFallenModal(owner === "enemy");
+            }
+          },
+          // required change: Void -> Fallen
+          {
+            text: "Send to Fallen",
+            onClick: function (ev) {
+              ev.stopPropagation();
+              const owner = getOwnerFromCard(cardObj);
+              const zones = getOwnerZones(owner);
+              const fromArr = getZoneArrayForCard(cardObj);
+              if (!fromArr) return closeAllMenus();
+
+              if (fromArr !== zones.fallen) {
+                moveCard(cardObj.instanceId, fromArr, zones.fallen);
+              }
+
+              renderGameState();
+              setupDropZones && setupDropZones();
+              emitPublicState && emitPublicState();
+              closeAllMenus();
+              openFallenModal(owner === "enemy");
+            }
+          }
         ];
 
         const cardData = dummyCards.find(c => c.id === cardObj.cardId);
@@ -3576,44 +3679,7 @@ function openFallenModal(isenemy = false) {
     }
 
     wrapper.appendChild(cardDiv);
-    list.appendChild(wrapper);
-  });
-
-  // FALLEN SECTION
-  const depHeader = document.createElement('div');
-  depHeader.style.marginTop = '16px';
-  depHeader.style.paddingTop = '10px';
-  depHeader.style.borderTop = '1px solid rgba(255,255,255,0.12)';
-  depHeader.style.color = '#ffe066';
-  depHeader.style.fontWeight = '800';
-  depHeader.style.letterSpacing = '0.04em';
-  depHeader.textContent = 'Fallen';
-  list.appendChild(depHeader);
-
-  fallenCards.forEach((cardObj) => {
-    const card = dummyCards.find(c => c.id === cardObj.cardId);
-    if (!card) return;
-
-    const wrapper = document.createElement('div');
-    wrapper.className = 'modal-card-wrapper';
-
-    const cardDiv = document.createElement('div');
-    cardDiv.className = 'card-battlefield';
-
-    const img = document.createElement('img');
-    img.src = card.image;
-    img.alt = card.name;
-    img.className = "modal-card-img";
-    cardDiv.appendChild(img);
-
-    holdClickToView(img, cardObj, (e) => {
-      e.stopPropagation();
-      closeAllMenus();
-      showFullCardModal(cardObj);
-    }, { enableDragDetection: false });
-
-    wrapper.appendChild(cardDiv);
-    list.appendChild(wrapper);
+    voidList.appendChild(wrapper);
   });
 
   modal.style.display = 'block';
