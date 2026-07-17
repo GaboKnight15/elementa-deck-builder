@@ -2207,7 +2207,7 @@ function showHandCardMenu(instanceId, cardDiv) {
   // Skill buttons
   if (cardData.skill && Array.isArray(cardData.skill)) {
     cardData.skill
-    .filter(skillObj => !skillObj.activation) // Only show skills without activation
+    .filter(skillObj => canRenderManualSkillInMenu(cardObj, skillObj, 'hand', gameState)) // Only show skills without triggers
     .forEach(skillObj => {
         // Compute sealed/enabled/title the same way showCardActionMenu does to avoid undefined vars
         const sealed = typeof isSealed === 'function' ? isSealed(cardObj) : (cardObj._sealed === true);
@@ -3327,6 +3327,7 @@ if (cardObj && isCreatureCategory) {
 }
 if (cardData.skill && Array.isArray(cardData.skill)) {
     const currentZone = zone;
+  if (!canRenderManualSkillInMenu(cardObj, skillObj, currentZone, gameState)) return;
 // In showCardActionMenu: replace the skill push with this
 cardData.skill
   .filter(skillObj => !skillObj.activation) // Only show skills without activation
@@ -3496,7 +3497,7 @@ function openFallenModal(isenemy = false) {
         const cardData = dummyCards.find(c => c.id === cardObj.cardId);
         if (cardData && Array.isArray(cardData.skill)) {
           cardData.skill
-            .filter(skillObj => !skillObj.activation)
+            .filter(skillObj => canRenderManualSkillInMenu(cardObj, skillObj, 'fallen', gameState))
             .forEach(skillObj => {
               const activation = skillObj.activation || {};
               const requirements = Array.isArray(activation.requirement)
@@ -3632,7 +3633,7 @@ function openFallenModal(isenemy = false) {
         const cardData = dummyCards.find(c => c.id === cardObj.cardId);
         if (cardData && Array.isArray(cardData.skill)) {
           cardData.skill
-            .filter(skillObj => !skillObj.activation)
+            .filter(skillObj => canRenderManualSkillInMenu(cardObj, skillObj, 'void', gameState))
             .forEach(skillObj => {
               const activation = skillObj.activation || {};
               const requirements = Array.isArray(activation.requirement)
@@ -5597,8 +5598,76 @@ function triggerSelfSkill(cardObj, eventType, context = {}, onComplete) {
 
   next();
 }
+function normalizeZoneName(zone) {
+  const z = String(zone || '').toLowerCase().trim();
 
+  if (['hand','playerhand','player-hand','enemyhand','enemy-hand'].includes(z)) return 'hand';
+  if (['deck','playerdeck','player-deck-zone','enemydeck','enemy-deck-zone'].includes(z)) return 'deck';
+  if (['fallen','playerfallen','player-fallen-zone','enemyfallen','enemy-fallen-zone'].includes(z)) return 'fallen';
+  if (['void','playervoid','player-void-zone','enemyvoid','enemy-void-zone'].includes(z)) return 'void';
+
+  if (
+    z === 'field' ||
+    z.includes('creature') ||
+    z.includes('support') ||
+    z.includes('artifact') ||
+    z.includes('playerfield') ||
+    z.includes('enemyfield')
+  ) return 'field';
+
+  return z;
+}
+
+function getSkillDeclaredZones(skillObj = {}) {
+  const raw = skillObj.zone ?? skillObj.activation?.zone;
+  if (!raw) return [];
+  const arr = Array.isArray(raw) ? raw : [raw];
+  return arr.map(normalizeZoneName).filter(Boolean);
+}
+
+function canRenderManualSkillInMenu(cardObj, skillObj, currentZone, gameState) {
+  const declared = getSkillDeclaredZones(skillObj);
+
+  // No explicit zone => hide from manual menu (likely triggered/passive)
+  if (declared.length === 0) return false;
+
+  const z = normalizeZoneName(currentZone || getZoneNameForCard(cardObj));
+  if (!declared.includes(z)) return false;
+
+  return canActivateSkill(cardObj, skillObj, currentZone, gameState);
+}
+function getAllowedSkillZones(skillObj = {}) {
+  const direct = skillObj.zone;
+  const legacy = skillObj.activation?.zone;
+  const raw = direct ?? legacy;
+
+  if (!raw) return []; // no zone restriction
+  const arr = Array.isArray(raw) ? raw : [raw];
+  return arr.map(normalizeZoneName).filter(Boolean);
+}
 function canActivateSkill(cardObj, skillObj, currentZone, gameState, targetObj = null) {
+  const normalizedCurrent = normalizeZoneName(currentZone || getZoneNameForCard(cardObj));
+  const allowedZones = getAllowedSkillZones(skillObj);
+  const declared = getSkillDeclaredZones(skillObj);
+  const effects = Array.isArray(skillObj.effect)
+  ? skillObj.effect
+  : (skillObj.effect ? [skillObj.effect] : []);
+
+for (const step of effects) {
+  // Only check when step has explicit targeting semantics
+  if (step && (step.target || step.zone || step.filter || step.targetType || step.targetCategory || step.targetColor || step.targetArchetype)) {
+    const candidates = getTargetsFromEffect(step, cardObj, {});
+    if (!Array.isArray(candidates) || candidates.length === 0) return false;
+  }
+}
+  if (declared.length > 0) {
+    const z = normalizeZoneName(currentZone || getZoneNameForCard(cardObj));
+    if (!declared.includes(z)) return false;
+  }
+  // If skill declares zone restrictions, current zone must match
+  if (allowedZones.length > 0 && !allowedZones.includes(normalizedCurrent)) {
+    return false;
+  }
   // 1. REQUIREMENTS: All must pass their handler's canActivate
   let requirements = [];
   if (skillObj.req) {
