@@ -2056,6 +2056,1037 @@ let lastVisibleUser = null;
 let userSearchPages = [];
 const USERS_PER_PAGE = 10;
 
+// ==========================
+// === LIBRARY SECTION ===
+// ==========================
+
+const libraryGallery = document.getElementById('library-cards');
+const libraryBackBtn = document.getElementById('library-back-btn');
+const librarySettingsBtn = document.getElementById('library-settings-btn');
+const libraryFilterBtn = document.getElementById('library-filter-btn');
+const libraryNameFilter = document.getElementById('filter-name-library');
+const libraryFavIcon = document.getElementById('filter-favorites-library');
+let showFavoritesOnlyLibrary = false;
+
+// Back button
+if (libraryBackBtn) {
+  libraryBackBtn.onclick = function() {
+    document.getElementById('library-section').classList.remove('active');
+    document.getElementById('home-section').classList.add('active');
+  };
+}
+
+// Settings button
+if (librarySettingsBtn) {
+  librarySettingsBtn.onclick = function() {
+    document.getElementById('settings-modal').style.display = 'flex';
+  };
+}
+
+// Filter button
+if (libraryFilterBtn) {
+  libraryFilterBtn.onclick = () => {
+    showFilterModal('library', (selectedFilters) => {
+      renderLibrary();
+    });
+  };
+}
+
+// Name filter
+if (libraryNameFilter) {
+  libraryNameFilter.addEventListener('input', function() {
+    renderLibrary();
+  });
+}
+
+// Favorites filter
+if (libraryFavIcon) {
+  libraryFavIcon.onclick = function() {
+    showFavoritesOnlyLibrary = !showFavoritesOnlyLibrary;
+    updateFavoriteFilterIconLibrary();
+    renderLibrary();
+  };
+}
+
+// Reset filters button
+const resetLibraryBtn = document.getElementById('reset-library-filters-btn');
+if (resetLibraryBtn) {
+  resetLibraryBtn.onclick = function() {
+    // Reset name filter
+    if (libraryNameFilter) libraryNameFilter.value = '';
+    
+    // Reset favorites
+    showFavoritesOnlyLibrary = false;
+    updateFavoriteFilterIconLibrary();
+    
+    // Reset modal filters (if you have a function to do this)
+    if (typeof resetFilterModal === 'function') {
+      resetFilterModal('library');
+    }
+    
+    // Re-render
+    renderLibrary();
+  };
+}
+
+function updateFavoriteFilterIconLibrary() {
+  if (!libraryFavIcon) return;
+  if (showFavoritesOnlyLibrary) {
+    libraryFavIcon.style.filter = 'none';
+    libraryFavIcon.style.opacity = '1';
+    libraryFavIcon.title = 'Showing favorites';
+  } else {
+    libraryFavIcon.style.filter = 'grayscale(1)';
+    libraryFavIcon.style.opacity = '0.6';
+    libraryFavIcon.title = 'Show only favorites';
+  }
+}
+
+function createCardLibrary(card) {
+  const div = document.createElement('div');
+  div.className = 'card-library'; // Changed from 'card-gallery' to 'card-library'
+  
+  if (card.rarity) {
+    div.setAttribute('data-rarity', card.rarity);
+  }
+  div.classList.add(getRarityBgClass(card));
+
+  const img = document.createElement('img');
+  img.src = card.image;
+  img.onerror = function() {
+    this.onerror = null;
+    this.src = "Icons/Other/Placeholder.png";
+  };
+  img.alt = card.name;
+  img.classList.add('card-art-image');
+  img.title = card.name;
+
+  div.appendChild(img);
+
+  // Add star for favorite
+  if (isFavorite(card.id)) {
+    const star = document.createElement('img');
+    star.src = 'Icons/Other/Star.png';
+    star.alt = 'Favorite';
+    star.className = 'library-favorite-star'; // Updated class name
+    star.style.position = 'absolute';
+    star.style.top = '6px';
+    star.style.right = '6px';
+    star.style.width = '28px';
+    star.style.height = '28px';
+    star.style.zIndex = '5';
+    div.appendChild(star);
+  }
+
+  // **ATTACH HOLD-TO-VIEW HANDLER**
+  holdClickToView(div, card, (e) => {
+    e.stopPropagation();
+    showLibraryCardMenu(card, div);
+  });
+
+  return div;
+}
+
+function renderLibrary() {
+  if (!libraryGallery) return;
+  
+  // Clear the library
+  libraryGallery.innerHTML = '';
+
+  const favoriteIds = getFavoriteCards();
+  const selectedFilters = getSelectedFiltersFromModal(); // Fetch modal-selected filters
+  
+  if (!selectedFilters) {
+    console.error('No filters available; rendering aborted.');
+    return;
+  }
+  
+  const nameFilter = libraryNameFilter?.value?.toLowerCase() || '';
+  
+  // Filter all cards from dummyCards (the complete card library)
+  const filteredCards = filterCards({
+    collection: null, // No collection filtering for library
+    favoriteIds,
+    showFavoritesOnly: showFavoritesOnlyLibrary,
+    nameFilter,  
+    ...selectedFilters,
+  });
+
+  // Early return if no cards match the filters
+  if (filteredCards.length === 0) {
+    libraryGallery.innerHTML = "<div>No cards match the selected filters.</div>";
+    return;
+  }
+
+  // Render each card
+  filteredCards.forEach((card) => {
+    const cardDiv = createCardLibrary(card);
+    libraryGallery.appendChild(cardDiv);
+  });
+}
+
+function showLibraryCardMenu(card, anchorDiv) {
+  // Get the menu DOM element
+  const menu = document.getElementById('library-card-menu');
+  if (!menu) return;
+
+  // Remove modal-specific classes/styles
+  menu.className = "menu";
+  menu.style.display = "block";
+  menu.style.position = "absolute";
+  menu.style.zIndex = "1000";
+  menu.style.minWidth = "180px";
+  menu.style.boxShadow = "0 6px 32px #000b";
+  menu.style.borderRadius = "14px";
+  menu.style.background = "#253047";
+  menu.style.padding = "0";
+  menu.style.transition = "opacity 0.2s";
+  menu._activeCard = card;
+
+  // Remove any previous outside click handler
+  if (window._libraryMenuOutsideHandler) {
+    document.body.removeEventListener('mousedown', window._libraryMenuOutsideHandler);
+    window._libraryMenuOutsideHandler = null;
+  }
+  
+  // Add new outside click handler
+  window._libraryMenuOutsideHandler = function(e) {
+    if (!menu.contains(e.target)) {
+      menu.style.display = "none";
+      menu._activeCard = null;
+      document.body.removeEventListener('mousedown', window._libraryMenuOutsideHandler);
+      window._libraryMenuOutsideHandler = null;
+    }
+  };
+  
+  setTimeout(() => {
+    document.body.addEventListener('mousedown', window._libraryMenuOutsideHandler);
+  }, 10);
+
+  // Position the menu near the card
+  const rect = anchorDiv.getBoundingClientRect();
+  const scrollY = window.scrollY || document.documentElement.scrollTop;
+  const scrollX = window.scrollX || document.documentElement.scrollLeft;
+  
+  let top = rect.top + scrollY + 10;
+  let left = rect.right + scrollX + 12;
+
+  // If not enough space to the right, show to the left
+  if (left + menu.offsetWidth > window.innerWidth) {
+    left = rect.left + scrollX - menu.offsetWidth - 12;
+    if (left < 0) left = 10;
+  }
+  
+  // If not enough space below, show above
+  if (top + menu.offsetHeight > window.innerHeight) {
+    top = rect.bottom + scrollY - menu.offsetHeight - 10;
+    if (top < 0) top = 10;
+  }
+
+  menu.style.left = `${left}px`;
+  menu.style.top = `${top}px`;
+
+  // Set up handlers for actions
+  document.getElementById('library-card-view-btn').onclick = function() {
+    showFullCardModal(card);
+    menu.style.display = "none";
+  };
+
+  // === FAVORITE BUTTON ===
+  const modalContent = menu.querySelector('.modal-content');
+  let favoriteBtn = modalContent.querySelector('#library-card-favorite-btn');
+  if (favoriteBtn) favoriteBtn.remove();
+
+  favoriteBtn = document.createElement('button');
+  favoriteBtn.id = "library-card-favorite-btn";
+  favoriteBtn.className = "settings-item";
+  favoriteBtn.style.width = "100%";
+  favoriteBtn.style.textAlign = "left";
+  
+  const isFav = isFavorite(card.id);
+  favoriteBtn.innerHTML = `<img src="Icons/Other/Star.png" alt="Favorite" style="width:20px;vertical-align:middle;margin-right:10px;"> ${isFav ? 'Unfavorite' : 'Favorite'}`;
+  
+  favoriteBtn.onclick = function(e) {
+    e.stopPropagation();
+    toggleFavorite(card.id);
+    menu.style.display = "none";
+    renderLibrary();
+  };
+  
+  modalContent.appendChild(favoriteBtn);
+}
+
+// Initialize on DOM load
+document.addEventListener('DOMContentLoaded', function() {
+  // Render library when section becomes active
+  const librarySection = document.getElementById('library-section');
+  if (librarySection) {
+    const observer = new MutationObserver(function(mutations) {
+      mutations.forEach(function(mutation) {
+        if (mutation.attributeName === 'class') {
+          if (librarySection.classList.contains('active')) {
+            renderLibrary();
+          }
+        }
+      });
+    });
+    observer.observe(librarySection, { attributes: true });
+  }
+});
+
+// ==========================
+// === GALLERY LOGIC ===
+// ==========================
+const gallery = document.getElementById('gallery-cards');
+const CREATE_ESSENCE_COST = {common: 5, rare: 25, legendary: 100};
+const VOID_ESSENCE_REFUND = {common: 1, rare: 5, legendary: 20};
+
+let showFavoritesOnly = false;
+
+// ==========================
+// === RENDERING CARDS ===
+// ==========================
+document.getElementById("gallery-filter-btn").onclick = () => {
+  showFilterModal((selectedFilters) => {
+    // Render the filtered cards
+    renderGallery(filteredCards);
+  });
+};
+// Favorite filter icon logic
+document.addEventListener('DOMContentLoaded', function() {
+  const favIcon = document.getElementById('filter-favorites-gallery');
+  if (favIcon) {
+    favIcon.onclick = function() {
+      showFavoritesOnly = !showFavoritesOnly;
+      updateFavoriteFilterIcon();
+      renderGallery();
+    };
+    updateFavoriteFilterIcon();
+  }
+});
+
+// Add to DOMContentLoaded or after filter setup
+document.addEventListener('DOMContentLoaded', function() {
+  const resetBtn = document.getElementById('reset-gallery-filters-btn');
+  if (resetBtn) {
+resetBtn.onclick = function() {
+  // Reset text input and ownership (if present)
+  const nameInput = document.getElementById('filter-name-gallery');
+  if (nameInput) nameInput.value = "";
+
+  const ownershipInput = document.getElementById('filter-ownership-gallery');
+  if (ownershipInput) ownershipInput.value = "Owned";
+
+  // Reset favorites
+  showFavoritesOnly = false;
+  updateFavoriteFilterIcon();
+
+  renderGallery();
+};
+  }
+});
+document.addEventListener('DOMContentLoaded', function() {
+  // Extend gallery essence display to include Bulk Void button
+  const galleryEl = document.getElementById('gallery-essence-amount');
+  if (galleryEl) {
+    let bulkVoidBtn = document.getElementById('bulk-void-btn');
+    if (!bulkVoidBtn) {
+      bulkVoidBtn = document.createElement('img');
+      bulkVoidBtn.id = 'bulk-void-btn';
+      bulkVoidBtn.src = 'Icons/Other/Void.png';
+      bulkVoidBtn.alt = 'Bulk Void';
+      bulkVoidBtn.title = 'Bulk Void duplicates for essence';
+      bulkVoidBtn.style.width = '28px';
+      bulkVoidBtn.style.height = '28px';
+      bulkVoidBtn.style.cursor = 'pointer';
+      bulkVoidBtn.style.verticalAlign = 'middle';
+      bulkVoidBtn.style.marginLeft = '8px';
+      bulkVoidBtn.onclick = showBulkVoidModal;
+      galleryEl.parentNode.insertBefore(bulkVoidBtn, galleryEl.nextSibling);
+    }
+  }
+});
+// Update the icon appearance
+function updateFavoriteFilterIcon() {
+  const favIcon = document.getElementById('filter-favorites-gallery');
+  if (!favIcon) return;
+  if (showFavoritesOnly) {
+    favIcon.style.filter = 'none';
+    favIcon.style.opacity = '1';
+    favIcon.title = 'Showing favorites';
+  } else {
+    favIcon.style.filter = 'grayscale(1)';
+    favIcon.style.opacity = '0.6';
+    favIcon.title = 'Show only favorites';
+  }
+}
+
+function getMinimumKeptForRarity(card) {
+  if (!card.rarity) return 1; // Default fallback
+  switch (card.rarity.toLowerCase()) {
+    case 'legendary': return 1;
+    case 'rare':      return 2;
+    case 'common':      return 3;
+    default:          return 1;
+  }
+}
+
+function getRarityKey(card) {
+  // Defensive: default to 'common' if missing/unknown
+  return (card.rarity || 'common').toLowerCase();
+}
+document.getElementById('gallery-settings-btn').onclick = function() {
+  document.getElementById('settings-modal').style.display = 'flex';
+};
+document.getElementById('gallery-back-btn').onclick = function() {
+  // For example, return to home or previous section
+  document.getElementById('gallery-section').classList.remove('active');
+  document.getElementById('home-section').classList.add('active');
+};
+function getRarityBgClass(card) {
+  // Returns a CSS class for the rarity wrapper color
+  switch ((card.rarity || '').toLowerCase()) {
+    case 'common':    return 'card-rarity-common';
+    case 'rare':      return 'card-rarity-rare';
+    case 'legendary': return 'card-rarity-legendary';
+    default:          return 'card-rarity-common';
+  }
+}
+function createCardGallery(card) {
+    const collection = getCollection();
+    const owned = collection[card.id] || 0;
+
+    const div = document.createElement('div');
+    div.className = 'card-gallery';
+    if (card.rarity) div.setAttribute('data-rarity', card.rarity);
+  
+    div.classList.add(getRarityBgClass(card));
+
+    const img = document.createElement('img');
+    img.src = (typeof window.getCardArtForOwner === "function")
+      ? window.getCardArtForOwner(card, "player")
+      : card.image;
+  
+    img.onerror = function() {
+      this.onerror = null;
+      this.src = "Icons/Other/Placeholder.png";
+    };
+    img.alt = card.name;
+    img.classList.add('card-art-image');
+    img.title = card.name;
+
+    // GRAY OUT if not owned
+    if (owned === 0) {
+      img.classList.add('card-image-locked');
+      div.classList.add('card-locked');
+    }
+
+    div.appendChild(img);
+
+    // "New!" badge
+    const newCards = getNewlyUnlockedCards();
+    if (newCards.includes(card.id)) {
+      const newBadge = document.createElement('div');
+      newBadge.className = 'new-card-badge';
+      newBadge.textContent = 'New!';
+      div.appendChild(newBadge);
+    }
+
+    // Show count badge
+    const countBadge = document.createElement('div');
+    countBadge.className = 'card-count-badge';
+    countBadge.textContent = owned;
+    div.appendChild(countBadge);
+
+    // Add star for favorite
+    if (isFavorite(card.id)) {
+      const star = document.createElement('img');
+      star.src = 'Icons/Other/Star.png';
+      star.alt = 'Favorite';
+      star.className = 'gallery-favorite-star';
+      star.style.position = 'absolute';
+      star.style.top = '6px';
+      star.style.right = '6px';
+      star.style.width = '28px';
+      star.style.height = '28px';
+      star.style.zIndex = '5';
+      div.appendChild(star);
+    }
+  holdClickToView(div, card, (e) => {
+    e.stopPropagation();
+    showGalleryCardMenu(card, div);
+  });
+  return div;
+}
+
+function renderGallery() {
+  // Clear the gallery before rendering
+  gallery.innerHTML = '';
+
+  // Get the player collection and favorite cards
+  const collection = getCollection();
+  const favoriteIds = getFavoriteCards();
+
+  const selectedFilters = getSelectedFiltersFromModal(); // Fetch modal-selected filters
+  if (!selectedFilters) {
+    console.error('No filters available; rendering aborted.');
+    return;
+  }
+  const nameFilterInput = document.getElementById('filter-name-gallery');
+  const nameFilter = nameFilterInput?.value?.toLowerCase() || '';
+  // Filter cards based on the selections from the modal
+  const filteredCards = filterCards({
+    collection,
+    favoriteIds,
+    showFavoritesOnly,
+    nameFilter,  
+    ...selectedFilters,
+  });
+
+  // Update the collection progress display based on filtered cards
+  updateGalleryCollectionProgress(filteredCards);
+
+  // Early return if no cards match the filters
+  if (filteredCards.length === 0) {
+    gallery.innerHTML = "<div>No cards match the selected filters.</div>";
+    return;
+  }
+
+  // Render each card that matches the filters
+  filteredCards.forEach((card) => {
+    const cardDiv = createCardGallery(card); // Generate the card HTML
+    gallery.appendChild(cardDiv); // Append the card to the gallery
+  });
+
+  // Optionally update the essence display for the UI
+  updateEssenceDisplay();
+}
+
+// FAVORITE CARDS
+function getFavoriteCards() {
+  return Array.isArray(window.favoriteCards) ? window.favoriteCards : [];
+}
+function isFavorite(cardId) {
+  return getFavoriteCards().includes(cardId);
+}
+function toggleFavorite(cardId) {
+  if (!window.favoriteCards) window.favoriteCards = [];
+  const idx = window.favoriteCards.indexOf(cardId);
+  if (idx >= 0) {
+    window.favoriteCards.splice(idx, 1);
+  } else {
+    window.favoriteCards.push(cardId);
+  }
+  saveProgress();
+}
+
+function showGalleryCardMenu(card, anchorDiv) {
+  // Get the menu DOM element
+  const menu = document.getElementById('gallery-card-menu');
+  if (!menu) return;
+
+  // Remove modal-specific classes/styles
+  menu.className = "menu";
+  menu.style.display = "block";
+  menu.style.position = "absolute";
+  menu.style.zIndex = "1000";
+  menu.style.minWidth = "180px";
+  menu.style.boxShadow = "0 6px 32px #000b";
+  menu.style.borderRadius = "14px";
+  menu.style.background = "#253047";
+  menu.style.padding = "0";
+  menu.style.transition = "opacity 0.2s";
+  menu._activeCard = card;
+
+  // Remove any previous outside click handler
+  if (window._galleryMenuOutsideHandler) {
+    document.body.removeEventListener('mousedown', window._galleryMenuOutsideHandler);
+    window._galleryMenuOutsideHandler = null;
+  }
+  // Add new outside click handler
+  window._galleryMenuOutsideHandler = function(e) {
+    if (!menu.contains(e.target)) {
+      menu.style.display = "none";
+      menu._activeCard = null;
+      document.body.removeEventListener('mousedown', window._galleryMenuOutsideHandler);
+      window._galleryMenuOutsideHandler = null;
+    }
+  };
+  setTimeout(() => {
+    document.body.addEventListener('mousedown', window._galleryMenuOutsideHandler);
+  }, 10);
+
+  // Position the menu near the card
+  const rect = anchorDiv.getBoundingClientRect();
+  const scrollY = window.scrollY || document.documentElement.scrollTop;
+  const scrollX = window.scrollX || document.documentElement.scrollLeft;
+  // By default, show to the right and slightly below the card
+  let top = rect.top + scrollY + 10;
+  let left = rect.right + scrollX + 12;
+
+  // If not enough space to the right, show to the left
+  if (left + menu.offsetWidth > window.innerWidth) {
+    left = rect.left + scrollX - menu.offsetWidth - 12;
+    if (left < 0) left = 10;
+  }
+  // If not enough space below, show above
+  if (top + menu.offsetHeight > window.innerHeight) {
+    top = rect.bottom + scrollY - menu.offsetHeight - 10;
+    if (top < 0) top = 10;
+  }
+
+  menu.style.left = `${left}px`;
+  menu.style.top = `${top}px`;
+
+  // Set up handlers for actions
+  document.getElementById('gallery-card-view-btn').onclick = function() {
+    showFullCardModal(card);
+    menu.style.display = "none";
+    const newCards = getNewlyUnlockedCards().filter(id => id !== card.id);
+    setNewlyUnlockedCards(newCards);
+    renderGallery();
+  };
+  document.getElementById('gallery-card-create-btn').onclick = function() {
+    createCreateCardButton(card, renderGallery).onclick(new MouseEvent('click'));
+    menu.style.display = "none";
+  };
+  document.getElementById('gallery-card-void-btn').onclick = function() {
+    createVoidCardButton(card, renderGallery).onclick(new MouseEvent('click'));
+    menu.style.display = "none";
+  };
+  // === FOIL BUTTON ===
+  const modalContent = menu.querySelector('.modal-content');
+  const owned = getCollection()[card.id] || 0;
+
+  // === FAVORITE BUTTON ===
+  let favoriteBtn = modalContent.querySelector('#gallery-card-favorite-btn');
+  if (favoriteBtn) favoriteBtn.remove();
+
+  favoriteBtn = document.createElement('button');
+  favoriteBtn.id = "gallery-card-favorite-btn";
+  favoriteBtn.className = "settings-item";
+  favoriteBtn.style.width = "100%";
+  favoriteBtn.style.textAlign = "left";
+  const isFav = isFavorite(card.id);
+  favoriteBtn.innerHTML = `<img src="Icons/Other/Star.png" alt="Favorite" style="width:20px;vertical-align:middle;margin-right:10px;"> ${isFav ? 'Unfavorite' : 'Favorite'}`;
+  favoriteBtn.onclick = function(e) {
+    e.stopPropagation();
+    toggleFavorite(card.id);
+    menu.style.display = "none";
+    renderGallery();
+  };
+  
+  let styleBtn = modalContent.querySelector('#gallery-card-style-btn');
+  if (styleBtn) styleBtn.remove();
+
+  styleBtn = document.createElement('button');
+  styleBtn.id = "gallery-card-style-btn";
+  styleBtn.className = "settings-item";
+  styleBtn.style.width = "100%";
+  styleBtn.style.textAlign = "left";
+  styleBtn.innerHTML = `<img src="Icons/Other/Style.png" alt="Style" style="width:20px;vertical-align:middle;margin-right:10px;"> Style`;
+
+  // Determine all possible style images for this card
+  const allStyles = [];
+  if (card.image) allStyles.push({key: "default", src: card.image, label: "Default"});
+  if (card.imageFullArt) allStyles.push({key: "fullArt", src: card.imageFullArt, label: "Full Art"});
+  // Add more as you implement more styles
+
+  // Determine which styles are unlocked for this player
+  const unlockedStyles = [];
+  if (card.image) unlockedStyles.push({key: "default", src: card.image, label: "Default"});
+  if (card.imageFullArt && window.playerUnlockedFullArt && window.playerUnlockedFullArt[card.id]) {
+    unlockedStyles.push({key: "fullArt", src: card.imageFullArt, label: "Full Art"});
+  }
+  // Add more unlocks as you implement them
+
+  // If only 1 style OR all styles unlocked, disable the button
+  if (unlockedStyles.length <= 1 || unlockedStyles.length === allStyles.length) {
+    styleBtn.disabled = true;
+    styleBtn.style.opacity = "0.4";
+    styleBtn.title = "No alternate styles available to unlock for this card";
+  } else {
+    styleBtn.onclick = function(e) {
+      e.stopPropagation();
+      menu.style.display = "none";
+      showCardStyleModal(card, unlockedStyles);
+    };
+  }
+}
+
+function showCardStyleModal(card, styleImages) {
+  // Remove existing modal if present
+  let modal = document.getElementById('card-style-modal');
+  if (modal) modal.remove();
+
+  modal = document.createElement('div');
+  modal.id = 'card-style-modal';
+  modal.className = 'modal';
+  modal.style.display = 'flex';
+  modal.style.alignItems = 'center';
+  modal.style.justifyContent = 'center';
+  modal.onclick = function(e) { if (e.target === modal) modal.remove(); };
+
+  // Get current style selection (optional: store in playerCardStyles)
+  const currentStyle = (window.playerCardStyles && window.playerCardStyles[card.id]) || "default";
+
+  // Modal content
+  let content = document.createElement('div');
+  content.className = 'modal-content';
+  content.style.maxWidth = '540px';
+  content.style.background = '#232a3a';
+  content.style.borderRadius = '16px';
+  content.style.padding = '28px 22px';
+
+  content.innerHTML = `<h3 style="color:#ffe066;text-align:center;margin-bottom:18px;">Choose Card Style</h3>
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:16px 14px;margin-bottom:20px;">
+      ${styleImages.map(style => `
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <img src="${style.src}" 
+            alt="${style.label}" 
+            style="width:110px;height:154px;object-fit:cover;cursor:pointer;${currentStyle===style.key?"outline:3px solid #ffe066;":""}border-radius:7px;box-shadow:0 2px 12px #0007;"
+            onclick="selectCardStyle('${card.id}', '${style.key}')" />
+          <div style="font-size:1em;color:#ffe066;">${style.label}</div>
+        </div>
+      `).join('')}
+    </div>
+    <button id="close-card-style-modal" class="btn-negative-secondary">Close</button>
+  `;
+  modal.appendChild(content);
+  document.body.appendChild(modal);
+
+  // Close logic
+  document.getElementById('close-card-style-modal').onclick = function() { modal.remove(); };
+}
+
+function createCreateCardButton(card, onActionDone) {
+  const owned = getCollection()[card.id] || 0;
+  const btn = document.createElement('img');
+  btn.src = 'Icons/Other/Essence.png';
+  btn.alt = 'Create';
+  const rarityKey = getRarityKey(card);
+  const cost = CREATE_ESSENCE_COST[rarityKey] || 5;
+  btn.title = `Create (costs ${cost} Essence)`;
+  btn.className = "gallery-action-btn";
+  btn.style.background = "none";
+  btn.style.cursor = "pointer";
+  btn.style.width = "38px";
+  btn.style.height = "38px";
+  btn.style.maxWidth = "38px";
+  btn.style.maxHeight = "38px";
+  btn.style.objectFit = "contain";
+  btn.style.transition = "transform 0.15s, box-shadow 0.15s";
+  btn.onclick = function(e) {
+    e.stopPropagation();
+    showEssenceConfirmModal({
+      action: "create",
+      card,
+      amount: cost,
+      onConfirm: function() {
+        if (playerEssence < cost) {
+          showToast("Not enough Essence", {type:"error"});
+          return;
+        }
+        const collection = getCollection();
+        const wasOwned = collection[card.id] > 0;
+        collection[card.id] = (collection[card.id] || 0) + 1;
+        playerCollection = collection;
+        playerEssence -= cost;
+        updateEssenceDisplay();
+        saveProgress();
+        if (!wasOwned && collection[card.id] > 0) {
+          const newCards = getNewlyUnlockedCards();
+          if (!newCards.includes(card.id)) {
+            newCards.push(card.id);
+            setNewlyUnlockedCards(newCards);
+          }
+        }
+        if (onActionDone) onActionDone();
+      }
+    });
+  };
+  return btn;
+}
+
+function createVoidCardButton(card, onActionDone) {
+  const owned = getCollection()[card.id] || 0;
+  const btn = document.createElement('img');
+  btn.src = 'Icons/Other/Void.png';
+  btn.alt = 'Void';
+  const rarityKey = getRarityKey(card);
+  const refund = VOID_ESSENCE_REFUND[rarityKey] || 1;
+  btn.title = `Void (refunds ${refund} Essence)`;
+  btn.className = "gallery-action-btn";
+  btn.style.background = "none";
+  btn.style.cursor = "pointer";
+  btn.style.width = "38px";
+  btn.style.height = "38px";
+  btn.style.maxWidth = "38px";
+  btn.style.maxHeight = "38px";
+  btn.style.objectFit = "contain";
+  btn.style.transition = "transform 0.15s, box-shadow 0.15s";
+  const minKept = getMinimumKeptForRarity(card);
+  if (owned <= minKept) {
+    btn.style.opacity = "0.5";
+    btn.style.pointerEvents = "none";
+    btn.title = `You must keep at least ${minKept} copies of this card (${card.rarity || "Unknown rarity"}).`;
+  }
+  btn.onclick = function(e) {
+    e.stopPropagation();
+    showEssenceConfirmModal({
+      action: "void",
+      card,
+      amount: refund,
+      onConfirm: function() {
+        const collection = getCollection();
+        const ownedCount = collection[card.id] || 0;
+        if (ownedCount <= minKept) {
+          showToast(`You must keep at least ${minKept} of this card (${card.rarity || "Unknown rarity"}).`);
+          return;
+        }
+        collection[card.id] -= 1;
+        playerCollection = collection;
+        playerEssence += refund;
+        updateEssenceDisplay();
+        saveProgress();
+        if (onActionDone) onActionDone();
+      }
+    });
+  };
+  return btn;
+}
+// CREATE/VOID CONFIRM MODAL
+function showEssenceConfirmModal({action, card, amount, onConfirm }) {
+  const modal = document.getElementById('essence-confirm-modal');
+  const msgDiv = document.getElementById('essence-confirm-msg');
+  const cardImg = document.getElementById('essence-confirm-card-img');
+  const amtDiv = document.getElementById('essence-confirm-amount');
+  const confirmBtn = document.getElementById('essence-confirm-btn');
+  const cancelBtn = document.getElementById('essence-cancel-btn');
+  // Set message
+  msgDiv.textContent = 
+    action === "create"
+      ? `Create '${card.name}' ? `
+      : `Void '${card.name}' ? `;
+  // Card image
+  cardImg.src = card.image;
+  cardImg.alt = card.name;
+  // Amount with icon
+  amtDiv.innerHTML = `${amount} <img src="Icons/Other/Essence.png" alt="Essence" style="width:24px;height:24px;vertical-align:middle;">`;
+  // Show modal
+  modal.style.display = "flex";
+  // Confirm handler
+  confirmBtn.onclick = function() {
+    modal.style.display = "none";
+    if (typeof onConfirm === "function") onConfirm();
+  };
+  // Cancel handler
+  cancelBtn.onclick = function() {
+    modal.style.display = "none";
+  };
+  // Close on outside click
+  modal.onclick = function(e) {
+    if (e.target === modal) modal.style.display = "none";
+  };
+}
+function updateGalleryCollectionProgress(filteredCards) {
+  const collection = getCollection();
+  const owned = filteredCards.filter((card) => (collection[card.id] || 0) > 0).length;
+  const total = filteredCards.length;
+
+  // Retrieve filters from the modal
+  const selectedFilters = getSelectedFiltersFromModal();
+
+  // Ownership-specific logic
+  const ownershipFilters = selectedFilters.selectedOwnerships || [];
+  const ownershipAll = ownershipFilters.length === 0 || ownershipFilters.includes("All");
+  const ownershipSingle = ownershipFilters.length === 1 ? ownershipFilters[0] : null;
+
+  // Gather all modal-applied filters
+  let filterInfoArray = Object.entries(selectedFilters)
+    .filter(([key, values]) => values && values.length > 0) // Remove empty filters
+    .flatMap(([key, values]) => values);
+
+  // Add the name filter if provided (not part of the modal)
+  const nameInput = document.getElementById('filter-name-gallery');
+  const nameFilter = nameInput ? nameInput.value.toLowerCase() : "";
+  if (nameFilter) {
+    filterInfoArray.push(nameFilter);
+  }
+
+  // Combine filter info into a readable summary
+  const filterInfo = filterInfoArray.length ? filterInfoArray.join(' ') : '';
+
+  // Determine collection progress string
+  let str = '';
+  if (total === 0) {
+    // No matching cards
+    str = filterInfo
+      ? `No cards match the selected filters: <b>${filterInfo}</b>`
+      : 'No cards match the selected filters.';
+  } else if (ownershipAll) {
+    // Display "Collected X/Y"
+    str = `Collected <b>${owned}</b> / <b>${total}</b>`;
+    if (filterInfo) str += ` (${filterInfo})`;
+  } else if (ownershipSingle === 'Undiscovered') {
+    // Display "Undiscovered X"
+    str = `Undiscovered <b>${total}</b>`;
+    if (filterInfo) str += ` (${filterInfo})`;
+  } else if (ownershipSingle === 'Locked') {
+    // Display "Locked X"
+    str = `Locked <b>${total}</b>`;
+    if (filterInfo) str += ` (${filterInfo})`;
+  } else if (ownershipSingle === 'Owned') {
+    // Display "Owned X"
+    str = `Owned <b>${owned}</b>`;
+    if (filterInfo) str += ` (${filterInfo})`;
+  } else {
+    // Default: "Collected X/Y"
+    str = `Collected <b>${owned}</b> / <b>${total}</b>`;
+    if (filterInfo) str += ` (${filterInfo})`;
+  }
+
+  // Update the progress element in the UI
+  const progDiv = document.getElementById('gallery-collection-progress');
+  if (progDiv) progDiv.innerHTML = str;
+}
+
+// --- BULK VOID MODAL --- //
+function showBulkVoidModal() {
+  const collection = getCollection();
+  const cardsToVoid = [];
+
+  dummyCards.forEach(card => {
+    const owned = collection[card.id] || 0;
+    const minKept = getMinimumKeptForRarity(card);
+    const voidable = owned - minKept;
+    if (voidable > 0) {
+      const refund = VOID_ESSENCE_REFUND[getRarityKey(card)] || 1;
+      cardsToVoid.push({
+        card,
+        count: voidable,
+        refund,
+        subtotal: voidable * refund,
+        checked: true
+      });
+    }
+  });
+
+  const modal = document.getElementById('bulk-void-modal');
+  const content = document.getElementById('bulk-void-modal-content');
+
+  if (cardsToVoid.length === 0) {
+    content.innerHTML = `
+      <h3 style="color:#ffe066;margin-bottom:12px;">Bulk Void</h3>
+      <div style="margin-bottom:20px;color:#fff;">
+        You have no voidable duplicates at this time.<br>
+        You must keep at least the minimum for each card's rarity.
+      </div>
+      <div style="display:flex;justify-content:center;gap:12px;">
+        <button class="btn-negative-secondary" id="bulk-void-cancel-btn">Close</button>
+      </div>
+    `;
+    modal.style.display = 'flex';
+    document.getElementById('bulk-void-cancel-btn').onclick = () => { modal.style.display = 'none'; };
+    modal.onclick = function(e) {
+      if (e.target === modal) modal.style.display = "none";
+    };
+    return;
+  }
+
+  // Helper to render the list and recalculate
+  function renderCardRows() {
+    // Recalculate totals
+    let totalEssence = 0;
+    let checkedCount = 0;
+    const essenceImg = `<img src="Icons/Other/Essence.png" alt="Essence" style="width:18px;height:18px;vertical-align:middle;">`;
+
+    let cardRows = cardsToVoid.map((cdata, idx) => {
+      if (cdata.checked) {
+        totalEssence += cdata.subtotal;
+        checkedCount++;
+      }
+      const nameColor = cdata.subtotal > 0 ? "#ffe066" : "#fff";
+      return `
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:7px;">
+          <input type="checkbox" id="bulk-void-checkbox-${idx}" ${cdata.checked ? "checked" : ""} style="width:20px;height:20px;">
+          <img src="${cdata.card.image}" alt="${cdata.card.name}" class="bulk-void-card-img" style="width:38px;height:54px;border-radius:5px;border:2px solid #444;cursor:pointer;"
+            onclick="showFullCardModal(dummyCards.find(c => c.id === '${cdata.card.id}'));">
+          <span style="font-weight:bold;color:${nameColor};">${cdata.card.name}</span>
+          <span style="color:#eee;">
+            (${cdata.refund} ${essenceImg}) 
+            <span style="color:#fff;">×${cdata.count}</span>
+          </span>
+          <span style="color:#6f6;">+${cdata.subtotal}</span>
+        </div>
+      `;
+    }).join('');
+
+    content.innerHTML = `
+      <h3 style="color:#ffe066;margin-bottom:12px;">Bulk Void</h3>
+      <div style="margin-bottom:18px;color:#fff;">
+        Are you sure you want to void these cards for <span style="color:#6f6;font-weight:bold;">${totalEssence} ${essenceImg}</span>?
+      </div>
+      <div style="max-height:270px;overflow-y:auto;margin-bottom:18px;">
+        ${cardRows}
+      </div>
+      <div style="display:flex;justify-content:center;gap:12px;">
+        <button class="btn-secondary" id="bulk-void-confirm-btn" ${checkedCount === 0 ? "disabled style='opacity:0.6;'" : ""}>Void Selected</button>
+        <button class="btn-negative-secondary" id="bulk-void-cancel-btn">Cancel</button>
+      </div>
+    `;
+
+    // Wire up all checkboxes
+    cardsToVoid.forEach((ctv, i) => {
+      const cb = document.getElementById(`bulk-void-checkbox-${i}`);
+      if (cb) {
+        cb.onchange = function() {
+          ctv.checked = cb.checked;
+          renderCardRows();
+        };
+      }
+    });
+
+    // Confirm and cancel handlers
+    document.getElementById('bulk-void-cancel-btn').onclick = () => { modal.style.display = 'none'; };
+    document.getElementById('bulk-void-confirm-btn').onclick = function() {
+      cardsToVoid.forEach(({card, count, checked}) => {
+        if (checked) collection[card.id] -= count;
+      });
+      playerEssence += totalEssence;
+      saveProgress();    
+      updateEssenceDisplay();
+      renderGallery();
+      modal.style.display = 'none';
+      showToast(`Bulk voided ${checkedCount} cards for ${totalEssence} Essence!`, {type: "success"});
+    };
+    modal.onclick = function(e) {
+      if (e.target === modal) modal.style.display = "none";
+    };
+  }
+
+  renderCardRows();
+  modal.style.display = 'flex';
+}
+
+// --- Helper to handle selection & persist choice (add to global scope)
+window.playerCardStyles = window.playerCardStyles || {}; // { cardId: styleKey }
+window.selectCardStyle = function(cardId, styleKey) {
+  window.playerCardStyles[cardId] = styleKey;
+  // Optionally, save to localStorage or backend here
+  showToast("Style selected!", {type: "success"});
+  // Refresh gallery to apply new style
+  if (typeof renderGallery === "function") renderGallery();
+  // Close modal
+  let modal = document.getElementById('card-style-modal');
+  if (modal) modal.remove();
+};
+// ==========================
+// === EVENT LISTENERS ===
+// ==========================
+// GALLERY EVENT FILTERS
+document.getElementById('filter-name-gallery').addEventListener('input', renderGallery);
+window.renderGallery = renderGallery;
 // ========================== 
 // === SHOP LOGIC ===
 // ========================== 
