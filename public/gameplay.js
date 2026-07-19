@@ -7065,11 +7065,26 @@ document.addEventListener('DOMContentLoaded', function() {
   // Back button (top left of battlefield)
   var backBtn = document.getElementById('battlefield-back-btn');
   if (backBtn) {
-    backBtn.onclick = function() {
-      if (confirm("Leave the game and return to menu?")) {
-        endGame();
+backBtn.onclick = function() {
+  showInputModal({
+    title: "Leave Match",
+    message: "Leave the game and return to menu?",
+    mode: "confirm", // if your helper supports it
+    confirmText: "Leave",
+    cancelText: "Stay",
+    onConfirm: function() {
+      if (typeof showToast === "function") {
+        showToast("Leaving match...", { type: "info" });
       }
-    };
+      endGame();
+    },
+    onCancel: function() {
+      if (typeof showToast === "function") {
+        showToast("Stayed in match.", { type: "info" });
+      }
+    }
+  });
+};
   }
 });
 
