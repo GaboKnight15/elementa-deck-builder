@@ -3194,7 +3194,6 @@ button[disabled], .btn-disabled {
 }
 #battlefield-leftbar {
   display: flex;
-  max-height: 100vh;
   position: relative;
   flex-direction: column;
   justify-content: flex-start;
@@ -3202,9 +3201,6 @@ button[disabled], .btn-disabled {
   padding: 0.5em 0.5em 0.5em 0.5em;
   z-index: 1100;
   overflow: hidden;
-  min-width: 300px;
-  min-height: 0;
-  max-width: 300px;
 }
 /* Fixed game log area (chat-like) */
 #battlefield-log-box {
@@ -4536,7 +4532,7 @@ button[disabled], .btn-disabled {
   display: flex;
   flex-wrap: wrap;
   min-height: 120px;
-  min-width: auto;
+  min-width: 240px;
   align-items: center;
   border-radius: 18px;
   gap: 5px;
