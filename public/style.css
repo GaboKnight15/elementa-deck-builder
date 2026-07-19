@@ -3511,7 +3511,7 @@ button[disabled], .btn-disabled {
   box-sizing: border-box;
 }
 
-.deck-zone, .void-zone, #phase-badge {
+.deck-zone, .fallen-zone, #phase-badge {
   width: 60px;
   height: 85px;
   background: transparent;
