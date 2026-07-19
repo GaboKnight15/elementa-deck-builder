@@ -394,19 +394,19 @@ const TRIGGER_MAP = {
 
 const REQ_MAP = {
 tap: { name: 'Tap', icon: 'Icons/Skill/Tap.png',
-  zones: ['playerCreatures', 'playerSupportSlots.filter(Boolean)', 'enemyCreatures', 'enemySupportSlots.filter(Boolean)'],
+  zone: ['playerCreatures', 'playerSupportSlots.filter(Boolean)'],
   description: 'Changes itself to horizontal.',
   canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
-    const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
-    if (!validZones.includes(currentZone)) return false;
+    const validZone = Array.isArray(this.zone) ? this.zone : [this.zone];
+    if (!validZone.includes(currentZone)) return false;
     return sourceCardObj && sourceCardObj.orientation !== 'horizontal';
   },
   handler: function(sourceCardObj, skillObj, next) {
     const currentZone = getZoneNameForCard(sourceCardObj);
-    const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
+    const validZone = Array.isArray(this.zone) ? this.zone : [this.zone];
 
-    if (!validZones.includes(currentZone)) {
-      showToast("Tap can only be activated from the field.");
+    if (!validZone.includes(currentZone)) {
+      showToast("Can only activate effect from the field.");
       next && next();
       return;
     }
@@ -424,19 +424,19 @@ tap: { name: 'Tap', icon: 'Icons/Skill/Tap.png',
 },
 
 untap: { name: 'Untap', icon: 'Icons/Skill/Untap.png',
-  zones: ['playerCreatures', 'playerSupportSlots.filter(Boolean)', 'enemyCreatures', 'enemySupportSlots.filter(Boolean)'],
+  zone: ['playerCreatures', 'playerSupportSlots.filter(Boolean)'],
   description: 'Changes itself to vertical.',
   canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
-    const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
-    if (!validZones.includes(currentZone)) return false;
+    const validZone = Array.isArray(this.zone) ? this.zone : [this.zone];
+    if (!validZone.includes(currentZone)) return false;
     return sourceCardObj && sourceCardObj.orientation !== 'vertical';
   },
   handler: function(sourceCardObj, skillObj, next) {
     const currentZone = getZoneNameForCard(sourceCardObj);
-    const validZones = Array.isArray(this.zones) ? this.zones : [this.zones];
+    const validZone = Array.isArray(this.zone) ? this.zone : [this.zone];
 
-    if (!validZones.includes(currentZone)) {
-      showToast("Untap can only be activated from the field.");
+    if (!validZone.includes(currentZone)) {
+      showToast("Can only activate effect from the field.");
       next && next();
       return;
     }
@@ -453,10 +453,10 @@ untap: { name: 'Untap', icon: 'Icons/Skill/Untap.png',
   }
 },
   stash: { name: 'Stash', icon: 'Icons/Skill/Stash.png',
-    zones: ['playerHand', 'enemyHand'],
+    zone: ['playerHand'],
     description: 'Returns itself from the hand to the deck.',
     canActivate(sourceCardObj, skillObj, currentZone, gameState) {
-      return this.zones.includes(currentZone);
+      return this.zone.includes(currentZone);
     },
     handler(sourceCardObj, skillObj, next) {
       const owner = getCardOwner(sourceCardObj) === 'enemy' ? 'enemy' : 'player';
@@ -481,10 +481,10 @@ untap: { name: 'Untap', icon: 'Icons/Skill/Untap.png',
   discard: {
     name: 'Discard',
     icon: 'Icons/Skill/Discard.png',
-    zones: ['playerHand', 'enemyHand'],
+    zone: ['playerHand'],
     description: 'Sends itself from the hand to the fallen.',
     canActivate(sourceCardObj, skillObj, currentZone, gameState) {
-      return this.zones.includes(currentZone);
+      return this.zone.includes(currentZone);
     },
     handler(sourceCardObj, skillObj, next) {
       const owner = getCardOwner(sourceCardObj) === 'enemy' ? 'enemy' : 'player';
@@ -492,7 +492,7 @@ untap: { name: 'Untap', icon: 'Icons/Skill/Untap.png',
       const fallenArr = owner === 'enemy' ? gameState.enemyFallen : gameState.playerFallen;
 
       if (!handArr.includes(sourceCardObj)) {
-        showToast("Discard can only be activated from hand.");
+        showToast("Can only activate effect from the hand.");
         next && next();
         return;
       }
@@ -506,18 +506,18 @@ untap: { name: 'Untap', icon: 'Icons/Skill/Untap.png',
   return: {
     name: 'Return',
     icon: 'Icons/Skill/Return.png',
-    zones: ['playerCreatures', 'playerSupportSlots.filter(Boolean)', 'enemyCreatures', 'enemySupportSlots.filter(Boolean)'],
+    zone: ['playerCreatures', 'playerSupportSlots.filter(Boolean)'],
     description: 'Returns itself from the field to the hand.',
     canActivate(sourceCardObj, skillObj, currentZone, gameState) {
-      return this.zones.includes(currentZone);
+      return this.zone.includes(currentZone);
     },
     handler(sourceCardObj, skillObj, next) {
       const owner = getCardOwner(sourceCardObj) === 'enemy' ? 'enemy' : 'player';
       const fromArr = getZoneArrayForCard(sourceCardObj);
       const handArr = owner === 'enemy' ? gameState.enemyHand : gameState.playerHand;
 
-      if (!fromArr || !this.zones.includes(getZoneNameForCard(sourceCardObj))) {
-        showToast("Return can only be activated from the field.");
+      if (!fromArr || !this.zone.includes(getZoneNameForCard(sourceCardObj))) {
+        showToast("Can only activate effect from the field.");
         next && next();
         return;
       }
@@ -531,18 +531,18 @@ untap: { name: 'Untap', icon: 'Icons/Skill/Untap.png',
   retreat: {
     name: 'Retreat',
     icon: 'Icons/Skill/Retreat.png',
-    zones: ['playerCreatures', 'playerSupportSlots.filter(Boolean)', 'enemyCreatures', 'enemySupportSlots.filter(Boolean)'],
+    zone: ['playerCreatures', 'playerSupportSlots.filter(Boolean)'],
     description: 'Returns itself from the field to the deck.',
     canActivate(sourceCardObj, skillObj, currentZone, gameState) {
-      return this.zones.includes(currentZone);
+      return this.zone.includes(currentZone);
     },
     handler(sourceCardObj, skillObj, next) {
       const owner = getCardOwner(sourceCardObj) === 'enemy' ? 'enemy' : 'player';
       const fromArr = getZoneArrayForCard(sourceCardObj);
       const deckArr = owner === 'enemy' ? gameState.enemyDeck : gameState.playerDeck;
 
-      if (!fromArr || !this.zones.includes(getZoneNameForCard(sourceCardObj))) {
-        showToast("Retreat can only be activated from the field.");
+      if (!fromArr || !this.zone.includes(getZoneNameForCard(sourceCardObj))) {
+        showToast("Can only activate effect from the field.");
         next && next();
         return;
       }
@@ -569,7 +569,7 @@ summon: { name: 'Summon', zone: 'playerHand', icon: 'Icons/Skill/Summon.png',
     const handArr = owner === 'player' ? gameState.playerHand : gameState.enemyHand;
 
     if (!handArr.includes(sourceCardObj)) {
-      showToast && showToast('Summon can only be used from hand.', { type: 'error' });
+      showToast && showToast('You can only summon from the hand.', { type: 'error' });
       nextEffect && nextEffect();
       return;
     }
@@ -685,7 +685,7 @@ cast: { name: 'Cast', zone: 'playerHand', icon: 'Icons/Skill/Cast.png',
       const def = dummyCards.find(c => c.id === sourceCardObj.cardId);
       const isSpell = String(def?.category || '').toLowerCase() === 'spell';
       if (!isSpell) {
-        showToast && showToast('Only spell cards can be Cast.', { type: 'error' });
+        showToast && showToast('You can only cast spells from the hand.', { type: 'error' });
         nextEffect && nextEffect();
         return;
       }
@@ -696,7 +696,7 @@ cast: { name: 'Cast', zone: 'playerHand', icon: 'Icons/Skill/Cast.png',
 },
 
 terraform: { name: 'Terraform', zone: 'playerHand', icon: 'Icons/Skill/Terraform.png',
-  description: 'Play a terrain from hand to terrain zone.',
+  description: 'You can only play terrains from the hand',
   canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
     // Must be in hand (tolerant naming), and terraform not used this turn by current player
     const inHand = (currentZone === 'playerHand' || currentZone === 'playerHand' || currentZone === 'player-hand');
