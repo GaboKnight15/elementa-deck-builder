@@ -360,7 +360,7 @@ const dummyCards = [
 {id: 'VoltwingImpundulu', name: 'Voltwing Impundulu', rarity: 'Rare', image: 'Cards/egy/VoltwingImpundulu.png', flavor: '', 
  category: 'Creature', fight: 'Flying Strike', color: 'Yellow', type: ['Thunder','Avian'], hp: 5, atk: 3, cost: '{y4}', ability: 'Flying', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{y4}', eff: {class: 'summon'}},
-	{name: 'Fulminant Descent', trig: 'summon', eff: {class: 'destroy', targetBlight: 'paralized'}},
+	{name: 'Fulminant Descent', trig: 'summon', eff: {class: 'destroy', targetBlight: 'Paralyzed'}},
 	{name: 'Supercharged Feathers', cost: '{y2}, eff: {class: 'bolster', atk: 'x', type: ['Thunder','Avian']}}]},
 
 {id: 'StormspirePinnacle', name: 'Stormspire Pinnacle', rarity: 'Rare', image: 'Cards/egy/StormspirePinnacle.png', flavor: '', 
@@ -1616,7 +1616,7 @@ cursed: {name: "Cursed", text: "Lose -{1}/-{1} during each end step per stack."}
 bound: {name: "Bound", text: "Gets disabled. Does not enable."},
 burned: {name: "Burned", text: "Receives 1 more damage."},
 frozen: {name: "Frozen", text: "Gets disabled. Does not enable. Cannot activate skills."},
-paralysis: {name: "Paralized", text: "Cannot attack."},
+paralysis: {name: "Paralyzed", text: "Cannot attack."},
 drenched: {name: "Drenched", text: "Loses -{1} {atk} per stack."},
 withered: {name: "Withered", text: "Cannot be healed."},
 
@@ -2557,22 +2557,6 @@ function getTierGoal(tier) {
 function getTierReward(tier) {
   // Optional: tier.reward (coins/essence/cosmetic/etc)
   return tier.reward ?? null;
-}
-
-// Return progress for a group (current tier only)
-function getAchievementProgress(groupKey) {
-  
-}
-
-function ensureAchievementState() {
-  window.playerAchievements = window.playerAchievements || {};
-  if (!window.playerAchievements.progress || typeof window.playerAchievements.progress !== "object") {
-    window.playerAchievements.progress = {};
-  }
-  if (!window.playerAchievements.claimed || typeof window.playerAchievements.claimed !== "object") {
-    window.playerAchievements.claimed = {};
-  }
-  return window.playerAchievements;
 }
 
 function setAchievementProgress(sectionKey, groupId, value, { autoSave = true } = {}) {
@@ -4453,13 +4437,6 @@ function purchaseCosmetic(cost, purchaseCallback, done) {
     if (typeof done === "function") done(true);
   });
   else if (typeof done === "function") done(true);
-}
-// Helper: Track which cards are "new" when opening a pack
-function getNewlyUnlockedCards() {
-  return JSON.parse(localStorage.getItem("newlyUnlockedCards")) || [];
-}
-function setNewlyUnlockedCards(arr) {
-  localStorage.setItem("newlyUnlockedCards", JSON.stringify(arr));
 }
 
 let lastPackCards = [];
@@ -7680,46 +7657,46 @@ function isWind(cardObj)     { return isType(cardObj, "Wind"); }
 function isZombie(cardObj)   { return isType(cardObj, "Zombie"); }
 
 // --- ARCHETYPE --- //
-function isArchtype(cardObj, archetype) {return fieldIncludes(cardObj, "archetype", archetype);}
+function isArchetype(cardObj, archetype) {return fieldIncludes(cardObj, "archetype", archetype);}
 // --- DRAGON --- //
-function isThornwing(cardObj)    { return isArchtype(cardObj, "Thornwing"); }
-function isBlazingScale(cardObj) { return isArchtype(cardObj, "Blazingscale"); }
-function isAbyssdrake(cardObj)   { return isArchtype(cardObj, "Abyssdrake"); }
-function isStormRazor(cardObj)   { return isArchtype(cardObj, "Stormrazor"); }
-function isIronclaw(cardObj)     { return isArchtype(cardObj, "Ironclaw"); }
-function isDreadspine(cardObj)  { return isArchtype(cardObj, "Dreadspine"); }
-function isSolarwyrm(cardObj)    { return isArchtype(cardObj, "Solarwyrm"); }
-function isNightshroud(cardObj)  { return isArchtype(cardObj, "Nightshroud"); }
-function isGlimmerscale(cardObj) { return isArchtype(cardObj, "Glimmerscale"); }
+function isThornwing(cardObj)    { return isArchetype(cardObj, "Thornwing"); }
+function isBlazingScale(cardObj) { return isArchetype(cardObj, "Blazingscale"); }
+function isAbyssdrake(cardObj)   { return isArchetype(cardObj, "Abyssdrake"); }
+function isStormRazor(cardObj)   { return isArchetype(cardObj, "Stormrazor"); }
+function isIronclaw(cardObj)     { return isArchetype(cardObj, "Ironclaw"); }
+function isDreadspine(cardObj)  { return isArchetype(cardObj, "Dreadspine"); }
+function isSolarwyrm(cardObj)    { return isArchetype(cardObj, "Solarwyrm"); }
+function isNightshroud(cardObj)  { return isArchetype(cardObj, "Nightshroud"); }
+function isGlimmerscale(cardObj) { return isArchetype(cardObj, "Glimmerscale"); }
 
 // --- ELEMENTAL --- //
-function isPyro(cardObj)       { return isArchtype(cardObj, "Pyro"); }
-function isHydral(cardObj)     { return isArchtype(cardObj, "Hydral"); }
-function isVoltkin(cardObj)    { return isArchtype(cardObj, "Voltkin"); }
-function isCorruptor(cardObj)  { return isArchtype(cardObj, "Corruptor"); }
-function isLuminaut(cardObj)   { return isArchtype(cardObj, "Luminaut"); }
-function isObscurid(cardObj)   { return isArchtype(cardObj, "Obscurid"); }
+function isPyro(cardObj)       { return isArchetype(cardObj, "Pyro"); }
+function isHydral(cardObj)     { return isArchetype(cardObj, "Hydral"); }
+function isVoltkin(cardObj)    { return isArchetype(cardObj, "Voltkin"); }
+function isCorruptor(cardObj)  { return isArchetype(cardObj, "Corruptor"); }
+function isLuminaut(cardObj)   { return isArchetype(cardObj, "Luminaut"); }
+function isObscurid(cardObj)   { return isArchetype(cardObj, "Obscurid"); }
 
 // --- CONSTRUCT --- //
-function isGrovehusk(cardObj)   { return isArchtype(cardObj, "Grovehusk"); }
-function isCindercore(cardObj)  { return isArchtype(cardObj, "Cindercore"); }
-function isCoralbound(cardObj)  { return isArchtype(cardObj, "Coralbound"); }
-function isStratosurge(cardObj) { return isArchtype(cardObj, "Stratosurge"); }
-function isIronwrought(cardObj) { return isArchtype(cardObj, "Ironwrought"); }
-function isPlagueaxis(cardObj)  { return isArchtype(cardObj, "Plagueaxis"); }
-function isSolarforge(cardObj)  { return isArchtype(cardObj, "Solarforge"); }
-function isShadowgear(cardObj)  { return isArchtype(cardObj, "Shadowgear"); }
+function isGrovehusk(cardObj)   { return isArchetype(cardObj, "Grovehusk"); }
+function isCindercore(cardObj)  { return isArchetype(cardObj, "Cindercore"); }
+function isCoralbound(cardObj)  { return isArchetype(cardObj, "Coralbound"); }
+function isStratosurge(cardObj) { return isArchetype(cardObj, "Stratosurge"); }
+function isIronwrought(cardObj) { return isArchetype(cardObj, "Ironwrought"); }
+function isPlagueaxis(cardObj)  { return isArchetype(cardObj, "Plagueaxis"); }
+function isSolarforge(cardObj)  { return isArchetype(cardObj, "Solarforge"); }
+function isShadowgear(cardObj)  { return isArchetype(cardObj, "Shadowgear"); }
 
 // --- BEAST --- //
-function isFireland(cardObj)   { return isArchtype(cardObj, "Fireland"); }
-function isFrostland(cardObj)  { return isArchtype(cardObj, "Frostland"); }
+function isFireland(cardObj)   { return isArchetype(cardObj, "Fireland"); }
+function isFrostland(cardObj)  { return isArchetype(cardObj, "Frostland"); }
 
 // --- UNDEAD --- //
-function isSkullframe(cardObj)  { return isArchtype(cardObj, "Skullframe"); }
-function isVampiric(cardObj)  { return isArchtype(cardObj, "Vampiric"); }
+function isSkullframe(cardObj)  { return isArchetype(cardObj, "Skullframe"); }
+function isVampiric(cardObj)  { return isArchetype(cardObj, "Vampiric"); }
 
 // --- Celestial --- //
-function isSeraph(cardObj)      { return isArchtype(cardObj, "Seraph"); }
+function isSeraph(cardObj)      { return isArchetype(cardObj, "Seraph"); }
 // Add more as needed...
 
 // --- ABILITY --- //
@@ -7884,7 +7861,7 @@ function notifyBlight(eventName, cardObj) {
 function onSoaked(cb)     { return addBlightListener('Soaked', cb); }
 function onBurned(cb)     { return addBlightListener('Burned', cb); }
 function onPoisoned(cb)   { return addBlightListener('Poisoned', cb); }
-function onParalyzed(cb)  { return addBlightListener('Paralized', cb); }
+function onParalyzed(cb)  { return addBlightListener('Paralyzed', cb); }
 function onBound(cb)      { return addBlightListener('Bound', cb); }
 function onSealed(cb)     { return addBlightListener('Sealed', cb); }
 function onCursed(cb)     { return addBlightListener('Cursed', cb); }
