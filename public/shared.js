@@ -2255,9 +2255,19 @@ let playerCurrency = 0;
 let playerEssence = 0;
 let playerLevel = 1;
 let playerExp = 0;
+const COLLECTION_KEY = "cardCollection";
+const NEW_CARD_KEY = "newlyUnlockedCards";
 // ----------------- //
 // --- FUNCTIONS --- //
 // ----------------- //
+
+function getNewlyUnlockedCards() {
+  return JSON.parse(localStorage.getItem(NEW_CARD_KEY)) || [];
+}
+
+function setNewlyUnlockedCards(arr) {
+  localStorage.setItem(NEW_CARD_KEY, JSON.stringify(arr));
+}
 function getPlayerLevel() {
   return playerLevel;
 }
@@ -6450,17 +6460,6 @@ function renderCardCost(costData) {
 
     return `<span style="font-weight:bold;color:#ffe066;font-size:1.12em;vertical-align:middle;margin-right:2px;">{${token}}</span>`;
   });
-}
-
-const COLLECTION_KEY = "cardCollection";
-const NEW_CARD_KEY = "newlyUnlockedCards";
-
-function getNewlyUnlockedCards() {
-  return JSON.parse(localStorage.getItem(NEW_CARD_KEY)) || [];
-}
-
-function setNewlyUnlockedCards(arr) {
-  localStorage.setItem(NEW_CARD_KEY, JSON.stringify(arr));
 }
 
 // FIREBASE GALLERY
