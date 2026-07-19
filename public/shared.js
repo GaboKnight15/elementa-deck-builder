@@ -6558,7 +6558,18 @@ function getCurrency() {
 
 // CLOSE MODAL AND MENU HELPERS
 function closeAllModals() {document.querySelectorAll('.modal').forEach(modal => {modal.style.display = 'none';});}
-function closeAllMenus() {document.querySelectorAll('.card-menu').forEach(menu => menu.remove());}
+function closeAllMenus() {
+  document.querySelectorAll('.card-menu').forEach(menu => menu.remove());
+
+  // also clear transient targeting highlights/click handlers
+  document.querySelectorAll('.target-highlight, .selected, .attack-target-highlight').forEach(el => {
+    el.classList.remove('target-highlight', 'selected', 'attack-target-highlight');
+    el.onclick = null;
+  });
+
+  const bf = document.getElementById('battlefield');
+  if (bf) bf.classList.remove('skill-mode-backdrop', 'attack-mode-backdrop');
+}
 
 // NOTIFICATIONS
 function showToast(message, options = {}) {
