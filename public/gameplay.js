@@ -2459,45 +2459,63 @@ function appendDeckZone(parentDiv, deckArray, who) {
   }
   parentDiv.appendChild(deckZone);
 }
-// VOID ZONE
-function appendFallenZone(parentDiv, voidArray, who) {
-  const voidZone = document.createElement('div');
-  voidZone.className = 'void-zone';
+// FALLEN/VOID ZONE
+function appendFallenZone(parentDiv, fallenArray, who) {
+  const fallenZone = document.createElement('div');
+  fallenZone.className = 'fallen-zone';
 
-  // === Add pulse if at least one card in void is actionable ===
-  const actionable = voidArray.some(cardObj => {
+  // === Add pulse if at least one FALLEN card is actionable ===
+  const actionable = (fallenArray || []).some(cardObj => {
     const cardData = dummyCards.find(c => c.id === cardObj.cardId);
-    // Use your generic actionable helper with "void" as the zone
-    return isCardActionable(cardObj, cardData, gameState, 'void');
+    return isCardActionable(cardObj, cardData, gameState, 'fallen');
   });
   if (actionable) {
-    voidZone.classList.add('zone-animatable');
+    fallenZone.classList.add('zone-animatable');
   }
-  
-  const voidCard = document.createElement('div');
-  voidCard.className = 'card-void';
-  // LAST CARD VOID
-  if (voidArray.length > 0) {
-    const lastCardObj = voidArray[voidArray.length - 1];
+
+  const fallenCard = document.createElement('div');
+  fallenCard.className = 'card-fallen';
+
+  const sideVoidArray = (who === 'enemy') ? (gameState.enemyVoid || []) : (gameState.playerVoid || []);
+  const hasFallen = Array.isArray(fallenArray) && fallenArray.length > 0;
+  const hasVoid = Array.isArray(sideVoidArray) && sideVoidArray.length > 0;
+
+  // Priority 1: last Fallen (normal)
+  if (hasFallen) {
+    const lastCardObj = fallenArray[fallenArray.length - 1];
     const card = dummyCards.find(c => c.id === lastCardObj.cardId);
-     if (card && card.image) {
+    if (card && card.image) {
       const img = document.createElement('img');
       img.src = card.image;
       img.alt = card.name;
       img.style.width = "80px";
-      voidCard.appendChild(img);
+      fallenCard.appendChild(img);
+    }
+  }
+  // Priority 2: if no Fallen, show last Void grayed out
+  else if (hasVoid) {
+    const lastVoidObj = sideVoidArray[sideVoidArray.length - 1];
+    const card = dummyCards.find(c => c.id === lastVoidObj.cardId);
+    if (card && card.image) {
+      const img = document.createElement('img');
+      img.src = card.image;
+      img.alt = `${card.name} (voided)`;
+      img.style.width = "80px";
+      img.style.filter = "grayscale(1) brightness(0.75)";
+      img.style.opacity = "0.9";
+      fallenCard.appendChild(img);
     }
   }
 
-  voidZone.appendChild(voidCard);
+  fallenZone.appendChild(fallenCard);
 
-  voidCard.onclick = (e) => {
+  fallenCard.onclick = (e) => {
     e.stopPropagation();
     closeAllMenus();
     openFallenModal(who === 'enemy');
   };
 
-  parentDiv.appendChild(voidZone);
+  parentDiv.appendChild(fallenZone);
 }
 function countDeckFallen(who, deckCount, fallenCount) {
   const prefix = who === 'enemy' ? 'Enemy' : 'Your';
