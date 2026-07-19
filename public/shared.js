@@ -3094,15 +3094,6 @@ document.querySelectorAll('.achievements-tab').forEach(tab => {
     renderAchievementsCategory(category);
   };
 });
-document.getElementById('achievements-modal').onclick = function(e) {
-  if (e.target === this) this.style.display = 'none';
-};
-document.getElementById('close-quests-modal').onclick = function() {
-  document.getElementById('quests-modal').style.display = 'none';
-};
-document.getElementById('quests-modal').onclick = function(e) {
-  if (e.target === this) this.style.display = 'none';
-};
 
 // Expose quest/achievement/level functions globally for use in other scripts or inline HTML
 window.renderQuests = renderQuests;
@@ -3306,23 +3297,23 @@ function showLibraryCardMenu(card, anchorDiv) {
   menu._activeCard = card;
 
   // Remove any previous outside click handler
-  if (window._libraryMenuOutsideHandler) {
-    document.body.removeEventListener('mousedown', window._libraryMenuOutsideHandler);
-    window._libraryMenuOutsideHandler = null;
+  if (window.libraryMenuOutsideHandler) {
+    document.body.removeEventListener('mousedown', window.libraryMenuOutsideHandler);
+    window.libraryMenuOutsideHandler = null;
   }
   
   // Add new outside click handler
-  window._libraryMenuOutsideHandler = function(e) {
+  window.libraryMenuOutsideHandler = function(e) {
     if (!menu.contains(e.target)) {
       menu.style.display = "none";
       menu._activeCard = null;
-      document.body.removeEventListener('mousedown', window._libraryMenuOutsideHandler);
-      window._libraryMenuOutsideHandler = null;
+      document.body.removeEventListener('mousedown', window.libraryMenuOutsideHandler);
+      window.libraryMenuOutsideHandler = null;
     }
   };
   
   setTimeout(() => {
-    document.body.addEventListener('mousedown', window._libraryMenuOutsideHandler);
+    document.body.addEventListener('mousedown', window.libraryMenuOutsideHandler);
   }, 10);
 
   // Position the menu near the card
@@ -3661,21 +3652,21 @@ function showGalleryCardMenu(card, anchorDiv) {
   menu._activeCard = card;
 
   // Remove any previous outside click handler
-  if (window._galleryMenuOutsideHandler) {
-    document.body.removeEventListener('mousedown', window._galleryMenuOutsideHandler);
-    window._galleryMenuOutsideHandler = null;
+  if (window.galleryMenuOutsideHandler) {
+    document.body.removeEventListener('mousedown', window.galleryMenuOutsideHandler);
+    window.galleryMenuOutsideHandler = null;
   }
   // Add new outside click handler
-  window._galleryMenuOutsideHandler = function(e) {
+  window.galleryMenuOutsideHandler = function(e) {
     if (!menu.contains(e.target)) {
       menu.style.display = "none";
       menu._activeCard = null;
-      document.body.removeEventListener('mousedown', window._galleryMenuOutsideHandler);
-      window._galleryMenuOutsideHandler = null;
+      document.body.removeEventListener('mousedown', window.galleryMenuOutsideHandler);
+      window.galleryMenuOutsideHandler = null;
     }
   };
   setTimeout(() => {
-    document.body.addEventListener('mousedown', window._galleryMenuOutsideHandler);
+    document.body.addEventListener('mousedown', window.galleryMenuOutsideHandler);
   }, 10);
 
   // Position the menu near the card
@@ -5744,15 +5735,6 @@ function removeFriend(uid) {
     });
   });
 }
-document.addEventListener('DOMContentLoaded', function() {
-  const friendsIcon = document.getElementById('friends-icon');
-  if (friendsIcon) {
-    friendsIcon.onclick = function() {
-      document.getElementById('friends-modal').style.display = 'flex';
-      selectFriendsTab();
-    };
-  }
-});
 
 function getUtcDateString() {
   const now = new Date();
@@ -8419,9 +8401,6 @@ function renderIssuesPanel() {
 document.getElementById('friends-icon').onclick = function() {
   renderFriendsList();
   document.getElementById('friends-modal').style.display = 'flex';
-};
-document.getElementById('close-friends-modal').onclick = function() {
-  document.getElementById('friends-modal').style.display = 'none';
 };
 document.getElementById('friends-modal').onclick = function(e) {
   if (e.target === this) this.style.display = 'none';
