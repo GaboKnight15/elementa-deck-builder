@@ -2249,7 +2249,12 @@ const ACHIEVEMENTS = {
   ]
   },
 };
-
+// ---- Global player state defaults (must be declared before use) ----
+let playerCollection = {};
+let playerCurrency = 0;
+let playerEssence = 0;
+let playerLevel = 1;
+let playerExp = 0;
 // ----------------- //
 // --- FUNCTIONS --- //
 // ----------------- //
