@@ -103,7 +103,7 @@ const dummyCards = [
  category: 'Creature', fight: 'Verdant Strike', color: 'Green', type: ['Verdant','Spirit'], hp: 2, atk: 1, cost: '{g}', ability: ['Regenerate','Vigor'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{g}', eff: {class: 'summon'}}]},
 
-{id: 'Satyr', name: 'Satyr', rarity: 'Common', image: 'Cards/egg/Satyr.png', flavor: '', 
+{id: 'WildhornFaun', name: 'Wildhorn Faun', rarity: 'Common', image: 'Cards/egg/WildhornFaun.png', flavor: '', 
  category: 'Creature', fight: 'Vigorous Strike', color: 'Green', type: 'Satyr', hp: 3, atk: 1, cost: '{g}', ability: 'Vigor', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{g}', eff: {class: 'summon'}}]},
 
