@@ -81,18 +81,18 @@ const dummyCards = [
 
 {id: 'SylvanAnima', name: 'Sylvan Anima', rarity: 'Rare', image: 'Cards/egg/SylvanAnima.png', flavor: '', 
  category: 'Spell', color: 'Green', type: ['Sylvan','Enchantment'], cost: '{g2}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
-	{name: 'Cast', cost: '{g2}', eff: {class: 'cast'}},
+	{name: 'Cast', cost: '{g2}', eff: {class: 'castEnchantment'}},
 	{name: 'Awaken', awaken: true, eff: [{class: 'Recover', amount: 1}, {class : 'Essence', color: 'Green', amount: 1}]}]},
 
 // EGG COMMON //
 {id: 'LifesGrowth', name: "Life's Growth", rarity: 'Common', image: 'Cards/egg/LifesGrowth.png', flavor: '', 
  category: 'Spell', color: 'Green', type: ['Sylvan','Enchantment'], cost: '{g3}', mana: 3, set: ['ElementaGenesis','EssenceLegacy'], skill: [
-	{name: 'Cast', cost: '{g3}', eff: {class: 'enchant'}},
+	{name: 'Cast', cost: '{g3}', eff: {class: 'castEnchantment'}},
 	{name: "Life's Growth", mana: 1, req: 'tap', eff: {class: 'essence', amount: 2, color: 'Green'}}]},
 
 {id: 'VerdantRebirth', name: 'Verdant Rebirth', rarity: 'Rare', image: 'Cards/egg/VerdantRebirth.png', flavor: '', 
  category: 'Spell', color: 'Green', type: ['Nature','Spell'], cost: '{g3}', mana: 1, set: ['ElementaGenesis','EssenceLegacy'], skill: [
-	{name: 'Cast', cost: '{g3}', eff: {class: 'cast'}},
+	{name: 'Cast', cost: '{g3}', eff: {class: 'castSpell'}},
 	{name: 'Verdant Rebirth', req: 'tap', mana: 1, eff: {class: 'revive', category: 'Creature', type: 'Sylvan'}}]},
 
 {id: 'Pixie', name: 'Pixie', rarity: 'Common', image: 'Cards/egg/Pixie.png', flavor: '', 
