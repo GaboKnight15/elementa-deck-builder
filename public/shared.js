@@ -436,8 +436,10 @@ const dummyCards = [
 	{name: 'Cast', cost: '{1}', eff: {class: 'cast'}},
 	{name: 'Essence Assault', mana: 1, eff: {class: 'bolster', atk: 1}, text: 'Give +{1}/{0} to 1 ally creature.'}]},
 
-
-// RED/GRAY DUAL //
+// RED/GREEN //
+// RED/BLUE //
+// RED/YELLOW //
+// RED/GRAY //
 {id: 'PyrokragGolemheartTitan', name: 'Pyrokrag, Golemheart Titan', rarity: 'Legend', image: 'Cards/ecr/PyrokragGolemheartTitan.png', flavor: '', 
  category: 'Creature', fight: '', color: ['Red','Gray'], type: ['Fire','Rock','Spirit','Golem'], hp: 8, atk: 5, cost: '{r7}{c3}', ability: ['Armor''Burn','Fusion'], set: 'FracturedOrigins', skill: [
 	{name: 'Summon', cost: '{r7}{c3}', eff: {class: 'summon'}},
@@ -465,6 +467,8 @@ const dummyCards = [
 	{name: 'Magma Catalyst', trig: 'summon', eff: {class: 'bury', type: ['Fire','Rock']}},
 	{name: 'Echo', trig: 'echo', eff: {class: 'burn', q: 3}}]},
 
+// RED/PURPLE //
+// RED/WHITE //
 // RED/BLACK //
 {id: 'EphorosFirelandBehemoth', name: 'Ephoros, Fireland Behemoth', rarity: 'Legend', image: 'Cards/dfr/EphorosFirelandBehemoth.png', flavor: '', fullArt: 'Cards/Fireland/EphorosFirelandBehemothFA.png', flavor: '',
  category: 'Creature', fight: 'Hellflame Onslaught', color: ['Red','Black'], type: ['Fire','Beast','Demon'], hp: 7, atk: 4, cost: '{r4}{b2}', ability: ['Burn','Rush','Reanimate'], set: 'EchoesofCreation', skill: [
@@ -611,6 +615,14 @@ const dummyCards = [
 	{name: 'Cast', cost: '{u}', eff: {class: 'cast'}},
 	{name: 'Essence Insight', eff: {class: 'draw'}, text: 'Draw 1 card.'}]},
 
+// BLUE/GREEN //
+// BLUE/RED //
+// BLUE/YELLOW //
+// BLUE/GRAY //
+// BLUE/PURPLE //
+// BLUE/WHITE //
+// BLUE/BLACK //
+	
 // YELLOW //
 // YELLOW LEGEND //
 {id: 'GarudaAetherionWings', name: 'Garuda, AetherionWings', rarity: 'Legend', image: 'Cards/Zephyra/GarudaAetherionWings.png', flavor: '', 
@@ -723,6 +735,14 @@ const dummyCards = [
 	{name: 'Cast', cost: '{y}', eff: {class: 'cast'}},
 	{name: 'Essence Ray', req: 'tap', eff: {class: 'strike', amount: 3}}]},
 
+// YELLOW/GREEN //
+// YELLOW/RED //
+// YELLOW/BLUE //
+// YELLOW/GRAY //
+// YELLOW/PURPLE //
+// YELLOW/WHITE //
+// YELLOW/BLACK //
+
 // GRAY //
 // GRAY LEGEND //
 {id: 'GravokDrakzulTyrant', name: 'Gravok, Drakzul Tyrant', rarity: 'Legend', image: 'Cards/egc/GravokDrakzulTyrant.png', flavor: '', 
@@ -742,6 +762,31 @@ const dummyCards = [
  category: 'Terrain', color: 'Gray', hp: 20, essence: '{c2}', type: ['Terra','Domain'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Fortify', req: 'tap', eff: {class: 'armor', amount: 1}},
 	{name: 'Terra Essence', req: 'tap', eff: {class: 'essence', color: 'gray'}}]},
+
+{id: 'FerronyxTerraIronclaw', name: 'Ferronyx, Terra Ironclaw', rarity: 'Legend', image: 'Cards/foc/FerronyxTerraIronclaw.png', flavor: 'Forged in the bones of the earth, its scales of stone and iron ring like shields in battle.', 
+ category: 'Creature', fight: 'Terra Burst', color: 'Gray', type: ['Steel','Dragon'], hp: 6, atk: 4, cost: '{c7}', ability: ['Armor','Flying'], set: 'FracturedOrigins', skill: [
+ 	{name: 'Summon', cost: '{c7}', eff: {class: 'summon'}},
+	{name: 'Metalwing Command', cost: '{c}', req: 'discard', eff: {class: 'Armor'}},
+	{name: 'Unbreakable Adamant', cost: '{c2}', eff: {class: 'Armor', target: 'playerCreatures'}}]},
+ 
+{id: 'FerronyxIronhideStonelet', name: 'Ferronyx, Ironhide Stonelet', rarity: 'Rare', image: 'Cards/foc/FerronyxIronhideStonelet.png', flavor: '', 
+ category: 'Creature', fight: 'Steel Strike', color: 'Gray', type: ['Steel','Dragon'], hp: 3, atk: 2, cost: '{c2}', ability: ['Armor','Flying'], set: 'FracturedOrigins', skill: [
+ 	{name: 'Summon', cost: '{c2}', eff: {class: 'summon'}},
+	{name: 'Reveal', cost: '{c}', eff: {class: 'Armor'}},
+	{name: 'Ironbound Bash', trig: {attack: true}, check: {armor: 'higher', attacker: true, defender: false}, eff: {class: 'destroy', target: 'enemyDefending'}},
+	{name: 'Forgelight Mantle', cost: '{c2}', eff: {class: 'Armor', target: 'playerCreatures'}}]},
+ 
+{id: 'FerronyxShardletGrindlewyrm', name: 'Ferronyx, Shardlet Grindlewyrm', rarity: 'Rare', image: 'Cards/foc/FerronyxShardletGrindlewyrm.png', flavor: '', 
+ category: 'Creature', fight: '', color: 'Gray', type: ['Steel','Dragon'], hp: 2, atk: 2, cost: '{1}{c}', ability: 'Flying', set: 'FracturedOrigins', skill: [
+ 	{name: 'Summon', cost: '{c2}', eff: {class: 'summon'}},
+	{name: 'Reveal', cost: '{c}', eff: {class: 'Armor'}},
+	{name: 'Forgelight Mantle', cost: '{c}{c}', eff: {class: 'Armor', target: 'playerCreatures'}}]},
+
+{id: 'DragonsBastion', name: "Dragon's Bastion", rarity: 'Rare', image: 'Cards/foc/DragonsBastion.png', flavor: '', 
+ category: 'Terrain', color: 'Gray', type: ['Steel','Dragon','Terrain'], ability: ['Armor','Protect'], hp: 12, cost: '{c4}', essence: '{c}', set: 'FracturedOrigins', skill: [
+ 	{name: 'Terraform', cost: '{c4}', eff: {class: 'terraform'}},
+	{name: 'Dragon Echo', cost: '{u}', act: {'Echo', archetype: 'Dragon'}, eff: {class: 'NullSigil'}},
+	{name: 'Draconic Ironwall', cost: '{c2}', eff: {class: 'Curse'}},]},
 
 // GRAY RARE //
 {id: 'TerraformationEmergence', name: 'Terra Emergence', rarity: 'Legend', image: 'Cards/egc/TerraformationEmergence.png', flavor: '', 
@@ -813,6 +858,14 @@ const dummyCards = [
 	{name: 'Cast', cost: '{c}', eff: {class: 'cast'}},
 	{name: 'Essence Barrier', eff: {class: 'bolster', hp: 2}, text: 'Give aegis to an ally unit.'}]},
 
+// GRAY/GREEN //
+// GRAY/RED //
+// GRAY/BLUE //
+// GRAY/YELLOW //
+// GRAY/PURPLE //
+// GRAY/WHITE //
+// GRAY/BLACK //
+
 // PURPLE //
 // PURPLE LEGEND //
 {id: 'MordrathVirkulPhantom', name: 'Mordrath, Virkul Phantom', rarity: 'Legend', image: 'Cards/egp/MordrathVirkulPhantom.png', flavor: 'With every step, the earth blackens, flowers wither, and the air grows thick with despair — a knight cursed to rot all he touches.', 
@@ -830,6 +883,24 @@ const dummyCards = [
 {id: 'Virkul', name: 'Virkul', rarity: 'Legend', image: 'Cards/egp/Virkul.png', flavor: '', 
  category: 'Terrain', color: 'Purple', hp: 20, essence: '{p2}', type: ['Mystic','Domain'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Distort', req: 'tap', eff: {class: 'curse', amount: 1}}]},
+
+{id: 'MyxarothCursedDreadspine', name: 'Myxaroth, Cursed Dreadspine', rarity: 'Legend', image: 'Cards/fop/MyxarothCursedDreadspine.png', flavor: '', 
+ category: 'Creature', fight: '', color: 'Purple', type: ['Corrupted','Dragon'], hp: 6, atk: 4, cost: '{p7}', ability: ['Flying','Curse'], set: 'FracturedOrigins', skill: [
+ 	{name: 'Summon', cost: '{p7}', eff: {class: 'summon'}}, {name: 'Reanimate', cost: '{p7}', eff: {class: 'reanimate'}},
+	{name: 'Discard', cost: '{p}', req: 'discard', eff: {class: 'poison', amount: 2}},
+	{name: 'Toxic Miasma', cost: '{p}', eff: {class: 'Toxic Miasma'}}]},
+
+{id: 'MyxarothToxletMireling', name: 'Myxaroth, Toxlet Mireling', rarity: 'Rare', image: 'Cards/fop/MyxarothToxletMireling.png', flavor: '', 
+ category: 'Creature', fight: 'Toxic Strike', color: 'Purple', type: ['Cursed','Dragon'], hp: 3, atk: 2, cost: '{p2}', ability: ['Flying','Curse'], set: 'FracturedOrigins', skill: [
+ 	{name: 'Summon', cost: '{p2}', eff: {class: 'summon'}},
+	{name: 'Discard', cost: '{p}', eff: {class: 'Decay'}},
+	{name: 'Acidblight Swell', cost: '{p}{p}', eff: {class: 'Toxic Miasma'}}]},
+
+{id: 'DragonsHollow', name: "Dragon's Hollow", rarity: 'Rare', image: 'Cards/fop/DragonsHollow.png', flavor: '', 
+ category: 'Terrain', color: 'Purple', type: ['Cursed','Dragon','Terrain'], hp: 7, cost: '{p3}', set: 'FracturedOrigins', skill: [
+ 	{name: 'Terraform', cost: '{p3}', eff: {class: 'terraform'}},
+	{name: 'Dragon Echo', cost: '{u}', act: {'Echo', archetype: 'Dragon'}, eff: {class: 'NullSigil'}},
+	{name: 'Draconic Curse', cost: '{p2}', eff: {class: 'Curse'}}]}, 
 
 // PURPLE RARE //
 {id: 'ElementalofMiasmas', name: 'Elemental of Miasmas', rarity: 'Rare', image: 'Cards/egp/ElementalofMiasmas.png', flavor: '', 
@@ -882,6 +953,14 @@ const dummyCards = [
 	{name: 'Cast', cost: '{3}', eff: {class: 'cast', target: 1}},
 	{name: 'Essence Break', mana: 1, eff: {class: 'dissolve'}}]},
 
+// PURPLE/GREEN  //
+// PURPLE/RED  //
+// PURPLE/BLUE  //
+// PURPLE/YELLOW  //
+// PURPLE/GRAY  //
+// PURPLE/WHITE  //
+// PURPLE/BLACK  //
+	
 // WHITE //
 // WHITE LEGEND //
 {id: 'Solmara', name: 'Solmara', rarity: 'Legend', image: 'Cards/egw/Solmara.png', flavor: '', 
@@ -901,6 +980,23 @@ const dummyCards = [
 	{name: 'Summon', cost: '{w2}', eff: {class: 'summon'}},
 	{name: 'Dawnbreak', cost: '{w}', trig: 'summon', eff: {class: 'bolster', amount: 1}},
 	{name: 'Radiant Severance', cost: '{w}', trig: 'attack', eff: [{class: 'strike', amount: 3}, {status: 'Aegis'}]}]},
+
+{id: 'SolarythRadiantSolarwyrm', name: 'Solaryth, Radiant Solarwyrm', rarity: 'Legend', image: 'Cards/fow/SolarythRadiantSolarwyrm.png', flavor: '', 
+ category: 'Creature', fight: 'Radiant Burst', color: 'White', type: ['Light','Dragon'], hp: 8, atk: 4, cost: '{w7}', ability: ['Flying','Aegis'], set: 'FracturedOrigins', skill: [
+ 	{name: 'Summon', cost: '{w7}', eff: {class: 'summon'}},
+	{name: 'Celestial Scales', req: 'discard', eff: {class: 'inspire', ability: 'Aegis'}}]},
+ 
+{id: 'SolarythGlintletDawnbloom', name: 'Solaryth, Glintlet Dawnbloom', rarity: 'Rare', image: 'Cards/fow/SolarythGlintletDawnbloom.png', flavor: '', 
+ category: 'Creature', fight: 'Light Strike', color: 'White', type: ['Light','Dragon'], hp: 3, atk: 2, cost: '{w2}', ability: ['Flying','Aegis'], set: 'WyrmheartAwakening', skill: [
+ 	{name: 'Summon', cost: '{w2}', eff: {class: 'summon'}},
+	{name: 'Seal', cost: '{w}{w}', eff: {class: 'Seal'}},
+	{name: 'Dawnveil Benediction', cost: '{w}', eff: {class: 'Daybreak Field'}}]},
+
+{id: 'DragonsHaven', name: "Dragon's Haven", rarity: 'Rare', image: 'Cards/fow/DragonsHaven.png', flavor: '', 
+ category: 'Terrain', color: 'White', type: ['Light','Dragon','Terrain'], ability: ['Aegis','Flying'], hp: 10, cost: '{w4}', set: 'FracturedOrigins', skill: [
+	{name: 'Terraform', cost: '{w4}', eff: {class: 'terraform'}},
+	{name: 'Dragon Draw', cost: '{u}', act: {'Echo', archetype: 'Dragon'}, eff: {class: 'NullSigil'}},
+	{name: 'Draconic Solarflare', cost: '{w}{w}', eff: {class: 'Night'}}]},
 
 // WHITE RARE //
 {id: 'SolmaraArchpriest', name: 'Solmara Archpriest', rarity: 'Rare', image: 'Cards/egw/SolmaraArchpriest.png', flavor: '', 
@@ -978,7 +1074,15 @@ const dummyCards = [
  category: 'Spell', color: 'Colorless', cost: '{w}', mana: 2, set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Cast', cost: '{w}', eff: {class: 'cast'}},
 	{name: 'Essence Blessing', eff: {class: 'heal', amount: 3}} ]},
-         
+
+// WHITE/GREEN //
+// WHITE/RED //
+// WHITE/BLUE //
+// WHITE/YELLOW //
+// WHITE/GRAY //
+// WHITE/PURPLE //
+// WHITE/BLACK //
+
 // BLACK //
 {id: 'MorvaneNoctyraOathbreaker', name: 'Morvane, Noctyra Oathbreaker', rarity: 'Legend', image: 'Cards/egb/MorvaneNoctyraOathbreaker.png', flavor: '', 
  category: 'Creature', fight: '', color: 'Black', type: ['Zombie','Mage'], hp: 6, atk: 2, cost: '{b3}', ability: ['Immortal','Reanimate'], set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/egb/MorvaneNoctyraOathbreakerFA.png', skill: [
@@ -1134,73 +1238,19 @@ const dummyCards = [
 	{name: 'Cast', cost: '{b}', eff: {class: 'cast'}},
 	{name: 'Essence Purge', mana: 1, eff: {class: 'destroy', category: 'Unit'}, text: 'Destroy 1 enemy unit'}]},
 
+// BLACK/GREEN //
+// BLACK/RED //
+// BLACK/BLUE //
+// BLACK/YELLOW //
+// BLACK/GRAY //
+// BLACK/PURPLE //
+// BLACK/WHITE //
 
 
 
 
 
 
-
-
-{id: 'MyxarothCursedDreadspine', name: 'Myxaroth, Cursed Dreadspine', rarity: 'Legend', image: 'Cards/fop/MyxarothCursedDreadspine.png', flavor: '', 
- category: 'Creature', fight: '', color: 'Purple', type: ['Corrupted','Dragon'], hp: 6, atk: 4, cost: '{p7}', ability: ['Flying','Curse'], set: 'FracturedOrigins', skill: [
- 	{name: 'Summon', cost: '{p7}', eff: {class: 'summon'}}, {name: 'Reanimate', cost: '{p7}', eff: {class: 'reanimate'}},
-	{name: 'Discard', cost: '{p}', req: 'discard', eff: {class: 'poison', amount: 2}},
-	{name: 'Toxic Miasma', cost: '{p}', eff: {class: 'Toxic Miasma'}}]},
-
-{id: 'MyxarothToxletMireling', name: 'Myxaroth, Toxlet Mireling', rarity: 'Rare', image: 'Cards/fop/MyxarothToxletMireling.png', flavor: '', 
- category: 'Creature', fight: 'Toxic Strike', color: 'Purple', type: ['Cursed','Dragon'], hp: 3, atk: 2, cost: '{p2}', ability: ['Flying','Curse'], set: 'FracturedOrigins', skill: [
- 	{name: 'Summon', cost: '{p2}', eff: {class: 'summon'}},
-	{name: 'Discard', cost: '{p}', eff: {class: 'Decay'}},
-	{name: 'Acidblight Swell', cost: '{p}{p}', eff: {class: 'Toxic Miasma'}}]},
-
-{id: 'DragonsHollow', name: "Dragon's Hollow", rarity: 'Rare', image: 'Cards/fop/DragonsHollow.png', flavor: '', 
- category: 'Terrain', color: 'Purple', type: ['Cursed','Dragon','Terrain'], hp: 7, cost: '{p3}', set: 'FracturedOrigins', skill: [
- 	{name: 'Terraform', cost: '{p3}', eff: {class: 'terraform'}},
-	{name: 'Dragon Echo', cost: '{u}', act: {'Echo', archetype: 'Dragon'}, eff: {class: 'NullSigil'}},
-	{name: 'Draconic Curse', cost: '{p2}', eff: {class: 'Curse'}}]}, 
-
-{id: 'FerronyxTerraIronclaw', name: 'Ferronyx, Terra Ironclaw', rarity: 'Legend', image: 'Cards/foc/FerronyxTerraIronclaw.png', flavor: 'Forged in the bones of the earth, its scales of stone and iron ring like shields in battle.', 
- category: 'Creature', fight: 'Terra Burst', color: 'Gray', type: ['Steel','Dragon'], hp: 6, atk: 4, cost: '{c7}', ability: ['Armor','Flying'], set: 'FracturedOrigins', skill: [
- 	{name: 'Summon', cost: '{c7}', eff: {class: 'summon'}},
-	{name: 'Metalwing Command', cost: '{c}', req: 'discard', eff: {class: 'Armor'}},
-	{name: 'Unbreakable Adamant', cost: '{c2}', eff: {class: 'Armor', target: 'playerCreatures'}}]},
- 
-{id: 'FerronyxIronhideStonelet', name: 'Ferronyx, Ironhide Stonelet', rarity: 'Rare', image: 'Cards/foc/FerronyxIronhideStonelet.png', flavor: '', 
- category: 'Creature', fight: 'Steel Strike', color: 'Gray', type: ['Steel','Dragon'], hp: 3, atk: 2, cost: '{c2}', ability: ['Armor','Flying'], set: 'FracturedOrigins', skill: [
- 	{name: 'Summon', cost: '{c2}', eff: {class: 'summon'}},
-	{name: 'Reveal', cost: '{c}', eff: {class: 'Armor'}},
-	{name: 'Ironbound Bash', trig: {attack: true}, check: {armor: 'higher', attacker: true, defender: false}, eff: {class: 'destroy', target: 'enemyDefending'}},
-	{name: 'Forgelight Mantle', cost: '{c}{c}', eff: {class: 'Armor', target: 'playerCreatures'}}]},
- 
-{id: 'FerronyxShardletGrindlewyrm', name: 'Ferronyx, Shardlet Grindlewyrm', rarity: 'Rare', image: 'Cards/foc/FerronyxShardletGrindlewyrm.png', flavor: '', 
- category: 'Creature', fight: '', color: 'Gray', type: ['Steel','Dragon'], hp: 2, atk: 2, cost: '{1}{c}', ability: 'Flying', set: 'FracturedOrigins', skill: [
- 	{name: 'Summon', cost: '{1}{c}', eff: {class: 'summon'}},
-	{name: 'Reveal', cost: '{c}', eff: {class: 'Armor'}},
-	{name: 'Forgelight Mantle', cost: '{c}{c}', eff: {class: 'Armor', target: 'playerCreatures'}}]},
-
-{id: 'DragonsBastion', name: "Dragon's Bastion", rarity: 'Rare', image: 'Cards/foc/DragonsBastion.png', flavor: '', 
- category: 'Terrain', color: 'Gray', type: ['Steel','Dragon','Terrain'], ability: ['Armor','Protect'], hp: 12, cost: '{c4}', essence: '{c}', set: 'FracturedOrigins', skill: [
- 	{name: 'Terraform', cost: '{c4}', eff: {class: 'terraform'}},
-	{name: 'Dragon Echo', cost: '{u}', act: {'Echo', archetype: 'Dragon'}, eff: {class: 'NullSigil'}},
-	{name: 'Draconic Ironwall', cost: '{c2}', eff: {class: 'Curse'}},]},
-
-{id: 'SolarythRadiantSolarwyrm', name: 'Solaryth, Radiant Solarwyrm', rarity: 'Legend', image: 'Cards/fow/SolarythRadiantSolarwyrm.png', flavor: '', 
- category: 'Creature', fight: 'Radiant Burst', color: 'White', type: ['Light','Dragon'], hp: 8, atk: 4, cost: '{w7}', ability: ['Flying','Aegis'], set: 'FracturedOrigins', skill: [
- 	{name: 'Summon', cost: '{w7}', eff: {class: 'summon'}},
-	{name: 'Celestial Scales', req: 'discard', eff: {class: 'inspire', ability: 'Aegis'}}]},
- 
-{id: 'SolarythGlintletDawnbloom', name: 'Solaryth, Glintlet Dawnbloom', rarity: 'Rare', image: 'Cards/fow/SolarythGlintletDawnbloom.png', flavor: '', 
- category: 'Creature', fight: 'Light Strike', color: 'White', type: ['Light','Dragon'], hp: 3, atk: 2, cost: '{w2}', ability: ['Flying','Aegis'], set: 'WyrmheartAwakening', skill: [
- 	{name: 'Summon', cost: '{w2}', eff: {class: 'summon'}},
-	{name: 'Seal', cost: '{w}{w}', eff: {class: 'Seal'}},
-	{name: 'Dawnveil Benediction', cost: '{w}', eff: {class: 'Daybreak Field'}}]},
-
-{id: 'DragonsHaven', name: "Dragon's Haven", rarity: 'Rare', image: 'Cards/fow/DragonsHaven.png', flavor: '', 
- category: 'Terrain', color: 'White', type: ['Light','Dragon','Terrain'], ability: ['Aegis','Flying'], hp: 10, cost: '{w4}', set: 'FracturedOrigins', skill: [
-	{name: 'Terraform', cost: '{w4}', eff: {class: 'terraform'}},
-	{name: 'Dragon Draw', cost: '{u}', act: {'Echo', archetype: 'Dragon'}, eff: {class: 'NullSigil'}},
-	{name: 'Draconic Solarflare', cost: '{w}{w}', eff: {class: 'Night'}}]},
 
 {id: 'NyzarielArchdemonDuchess', name: 'Nyzariel, Archdemon Duchess', rarity: 'Legend', image: 'Cards/fob/NyzarielArchdemonDuchess.png', flavor: '', 
  category: 'Creature', fight: 'Archdemon Burst', color: 'Black', type: ['Demon','Mage'], hp: 3, atk: 2, cost: '{b2}', ability: 'Conceal', set: 'FracturedOrigins', skill: [
