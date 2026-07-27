@@ -4,15 +4,6 @@ const dummyCards = [
 // ---------------- //
 
 // EGG //
-/*{id: 'MightoftheValiant', name: 'Might of the Valiant', rarity: 'Rare', image: 'Cards/egr/MightoftheValiant.png', flavor: '', 
- category: 'Spell', color: ['Green','Gay'], type: 'Aura', cost: '{g}{c}', mana: 2, set: ['ElementaGenesis','EssenceLegacy'], skill: [
-	{name: 'Cast', cost: '{g}{c}', eff: {class: 'cast'}},
-	{name: 'Might of the Valiant', mana: 1, eff: {class: 'bolster', atk: 1, hp: 1}},
-	{name: 'Might of the Valiant', mana: 3, eff: {class: 'bolster', atk: 2, hp: 3}}]},
-	*/
-{id: 'Verdara', name: 'Verdara', rarity: 'Legend', image: 'Cards/egg/Verdara.png', flavor: '', 
- category: 'Terrain', color: 'Green', type: ['Sylvan','Domain'], hp: 20, essence: '{g2}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
-	{name: 'Flourish', req: 'tap', eff: {class: 'bolster', hp: 2}, text: 'Give +{2} HP to 1 creature.'}]},
 
 {id: 'EryndorVerdaraDruidlord', name: 'Eryndor, Verdara Druidlord', rarity: 'Legend', image: 'Cards/egg/EryndorVerdaraDruidlord.png', flavor: '', 
  category: 'Creature', fight: 'Sylvan Burst', color: 'Green', type: ['Sylvan','Elf','Warrior'], hp: 5, atk: 2, cost: '{g3}', ability: '', set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/egg/VeyaVerdaraDruidessFA.png', skill: [
@@ -32,7 +23,12 @@ const dummyCards = [
 	{name: 'Stardust Veil', trig: 'summon', eff: {class: 'purify', target: 'playerCreatures'}, text: 'On summon, purify all creature allies.'},
 	{name: 'Luminescent Grace', cost: '{g}{x}', trig: 'attack', eff: {class: 'bolster', atk: 1, hp: '{x}', type: 'Satyr', target: 'playerCreatures'}}]},
 
-// EGG RARE //
+{id: 'Verdara', name: 'Verdara', rarity: 'Legend', image: 'Cards/egg/Verdara.png', flavor: '', 
+ category: 'Terrain', color: 'Green', type: ['Sylvan','Domain'], hp: 20, essence: '{g2}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+	{name: 'Flourish', req: 'tap', eff: {class: 'bolster', hp: 2}, text: 'Give +{2} HP to 1 creature.'}]},
+
+
+// GREEN RARE //
 {id: 'VerdaraSoldier', name: 'Verdara Soldier', rarity: 'Rare', image: 'Cards/egg/VerdaraSoldier.png', flavor: '', 
  category: 'Creature', fight: 'Sylvan Slash', color: 'Green', type: ['Verdant','Spirit','Warrior'], hp: 4, atk: 2, cost: '{g4}', 
  ability: ['Drain','Protect'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
@@ -40,12 +36,12 @@ const dummyCards = [
 	{name: 'Nature Prowess', trig: 'summon', eff: {class: 'bolster', atk: 1, countColor: 'Green'}, text: 'If summoned, gain +{1}/{0} for each sylvan creature ally.'},
 	{name: 'Forest Phalanx', trig: 'attack', eff: {class: 'add', type: ['Sylvan','Terrain']}, text: 'If this attacks, add 1 sylvan terrain.'}]},
 
-/*{id: 'WildhornSongreaver', name: 'Wildhorn Songreaver', rarity: 'Rare', image: 'Cards/egg/WildhornSongreaver.png', flavor: '', 
+{id: 'WildhornSongreaver', name: 'Wildhorn Songreaver', rarity: 'Rare', image: 'Cards/egg/WildhornSongreaver.png', flavor: '', 
  category: 'Creature', fight: 'Horncall Crescendo', color: 'Green', type: 'Satyr', hp: 4, atk: 2, cost: '{g2}', ability: 'Vigor', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{g2}', eff: {class: 'summon'}},
 	{name: 'Hidden Overture', discard: 1, eff: {class: 'enable', amount: 1}},
 	{name: 'Horncall Crescendo', cost: '{g}', trig: 'attack', discard: 1, eff: {class: 'bolster', atk: 1, type: 'Satyr', target: 'playerCreatures'}}]},
-*/
+
 {id: 'EarthrootTitan', name: 'Earthroot Titan', rarity: 'Rare', image: 'Cards/egg/EarthrootTitan.png', flavor: '', 
  category: 'Creature', fight: '', color: 'Green', type: ['Verdant','Beast'], hp: 6, atk: 3, cost: '{g5}', ability: 'Rush', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{g5}', eff: {class: 'summon'}}, {trig: 'summon', eff: {class: 'enable'}},
@@ -66,14 +62,14 @@ const dummyCards = [
 	{name: 'Shifting Bark Facade', trig: 'echo', eff: {class: 'summon', category: 'Creature', type: 'Verdant', cost: '<3'}},
 	{name: 'Primal Forest Pulse', trig: 'summon', eff: {class: 'recover', q: 2, type: 'Verdant'}}]},
 
-/*{id: 'StreamVagrantKappa', name: 'Stream Vagrant Kappa', rarity: 'Rare', image: 'Cards/egg/StreamVagrantKappa.png', flavor: '', 
+{id: 'StreamVagrantKappa', name: 'Stream Vagrant Kappa', rarity: 'Rare', image: 'Cards/egg/StreamVagrantKappa.png', flavor: '', 
  category: 'Creature', fight: '', color: ['Green','Blue'], type: ['Sylvan','Merfolk'], hp: 3, atk: 2, cost: '{g2}{u}', 
  ability: ['Dive','Rush'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{g2}{u}', eff: {class: 'summon'}},
 	{name: 'Riverbed Flotsam Glean', trig: 'summon', eff: {class: 'recover', category: 'Artifact'},
 	 text: 'When this card is summoned, recover 1 fallen artifact.'},
 	{name: 'Drifting Foam Escape', req: 'return', eff: {class: 'drench', target: 'enemyCreatures'}}]},
-*/
+
 {id: 'VigorousSatiricOrchard', name: 'Vigorous, Satiric Orchard', rarity: 'Rare', image: 'Cards/egg/VigorousSatiricOrchard.png', flavor: 'The air thickens with the scent of fermented nectar and the echoes of mocking laughter. Here, every fallen fruit is a catalyst for a riotous surge of primal power.', 
  category: 'Terrain', color: 'Green', type: 'Satyr', hp: 4, cost: '{g2}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Terraform', cost: '{g2}', eff: {class: 'terraform'}}, {trig: 'summon', eff: {class: 'bolster', atk: 1, target: 'playerCreatures', type: 'Satyr'}, text: 'If this is played, give +{1}/{0} to satyr allies.'},
@@ -84,7 +80,7 @@ const dummyCards = [
 	{name: 'Cast', cost: '{g2}', eff: {class: 'castEnchantment'}},
 	{name: 'Awaken', awaken: true, eff: [{class: 'Recover', amount: 1}, {class : 'Essence', color: 'Green', amount: 1}]}]},
 
-// EGG COMMON //
+// GREEN COMMON //
 {id: 'LifesGrowth', name: "Life's Growth", rarity: 'Common', image: 'Cards/egg/LifesGrowth.png', flavor: '', 
  category: 'Spell', color: 'Green', type: ['Sylvan','Enchantment'], cost: '{g3}', mana: 3, set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Cast', cost: '{g3}', eff: {class: 'castEnchantment'}},
@@ -149,13 +145,20 @@ const dummyCards = [
 	{name: 'Cast', cost: '{g}', eff: {class: 'cast'}},
 	{name: 'Flourishing Vitality', req: 'tap', mana: 1, eff: [{class: 'Heal', amount: 5}, {class: 'Draw', amount: 1}]}]},
  
-/*{id: 'EssenceSurge', name: 'Essence Surge', rarity: 'Common', image: 'Cards/egg/EssenceSurge.png', flavor: '', 
+{id: 'EssenceSurge', name: 'Essence Surge', rarity: 'Common', image: 'Cards/egg/EssenceSurge.png', flavor: '', 
  category: 'Spell', color: 'Green', type: 'Spell', cost: '{g2}', mana: 3, set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Cast', cost: '{g2}', eff: {class: 'cast'}},
 	{name: 'Essence Surge', req: 'tap', mana: 1, eff: {class: 'essence', color: 'colorless'}}]},
-/*
-// EGR //
-// EGR LEGEND //
+
+// GREEN/GRAY RARE //
+{id: 'MightoftheValiant', name: 'Might of the Valiant', rarity: 'Rare', image: 'Cards/egr/MightoftheValiant.png', flavor: '', 
+ category: 'Spell', color: ['Green','Gay'], type: 'Aura', cost: '{g}{c}', mana: 2, set: ['ElementaGenesis','EssenceLegacy'], skill: [
+	{name: 'Cast', cost: '{g}{c}', eff: {class: 'cast'}},
+	{name: 'Might of the Valiant', mana: 1, eff: {class: 'bolster', atk: 1, hp: 1}},
+	{name: 'Might of the Valiant', mana: 3, eff: {class: 'bolster', atk: 2, hp: 3}}]},
+	
+// RED //
+// RED LEGEND //
 {id: 'Magmaris', name: 'Magmaris', rarity: 'Legend', image: 'Cards/egr/Magmaris.png', flavor: '', 
  category: 'Terrain', color: 'Red', type: ['Inferno','Domain'], hp: 20, essence: '{r2}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Inferno Essence', req: 'tap', eff: {class: 'essence', color: 'green'}},
@@ -166,7 +169,8 @@ const dummyCards = [
 	{name: 'Summon', cost: '{r}', eff: {class: 'summon'}},
 	{name: 'Flameshot', cost: '{r}', eff: {class: 'burn', q: 2}},
 	{name: 'Fervor Arrowcall', cost: '{r}', trig: 'summon', eff: {class: 'bolster', amount: 1, targets: 'playerCreatures'}}]},
- 
+	
+// RED RARE // 
 {id: 'InfernoEruption', name: 'Inferno Eruption', rarity: 'Rare', image: 'Cards/egr/InfernoEruption.png', flavor: '', 
  category: 'Spell', color: 'Red', type: ['Fire','Spell'], cost: '{r4}', mana: 2, set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Cast', cost: '{r4}', eff: {class: 'cast'}}, {trig: 'summon', eff: {class: 'burn', q: 3, target: 'allCreatures'}},
@@ -203,13 +207,14 @@ const dummyCards = [
  category: 'Creature', fight: 'Searing Haste', color: 'Red', type: ['Fire','Beast'], hp: 6, atk: 3, cost: '{r4}', ability: ['Burn','Rush'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{r4}', eff: {class: 'summon'}}, {trig: 'summon, eff: {class: 'enable'}},
 	{name: 'Searing Haste', trig: 'attack', eff: {class: 'add', type: ['Beast','Fire']}},
-	{name: 'Spirit Stoke', cost: '{r}', req: void, eff: {class: 'destroy', blight: 'burned'}}]},
+	{name: 'Spirit Stoke', cost: '{r}', req: 'void', eff: {class: 'destroy', blight: 'burned'}}]},
 
 {id: 'BestialScorchedBarrens', name: 'Bestial Scorched Barrens', rarity: 'Rare', image: 'Cards/egr/BestialScorchedBarrens.png', flavor: '', 
  category: 'Terrain', color: 'Red', type: ['Fire','Beast','Terrain'], hp: 3, cost: '{r2}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Terraform', cost: '{r2}', eff: {class: 'terraform'}}, {trig: 'summon', eff: {class: 'enable', type: ['Fire','Beast']}, text: 'Enable 1 fire beast creature.'},
 	{name: 'Frenzied Fervor', req: 'tap', eff: {class: 'bolster', atk: 1, type: 'Beast', targets: 'playerCreatures'}, text: 'Give +{1} ATK to all beast creatures.'}]},
 
+// RED COMMON //
 {id: 'CinderfoxKitsune', name: 'Cinderfox Kitsune', rarity: 'Common', image: 'Cards/egr/CinderfoxKitsune.png', flavor: '',
  category: 'Creature', fight: 'Searing Haste', color: 'Red', type: ['Fire','Beast'], hp: 2, atk: 1, cost: '{r2}', ability: ['Burn','Rush'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{r2}', eff: {class: 'summon'}},
@@ -851,7 +856,7 @@ const dummyCards = [
  category: 'Creature', fight: 'Steel Strike', color: 'Gray', type: ['Steel','Dragon'], hp: 3, atk: 2, cost: '{c2}', ability: ['Armor','Flying'], set: 'FracturedOrigins', skill: [
  	{name: 'Summon', cost: '{c2}', eff: {class: 'summon'}},
 	{name: 'Reveal', cost: '{c}', eff: {class: 'Armor'}},
-	{name: 'Ironbound Bash', trig: {attack: true}. checK: {armor: 'higher', attacker: true, defender: flase}, eff: {class: 'destroy', target: enemyDefending}},
+	{name: 'Ironbound Bash', trig: {attack: true}. checK: {armor: 'higher', attacker: true, defender: false}, eff: {class: 'destroy', target: 'enemyDefending'}},
 	{name: 'Forgelight Mantle', cost: '{c}{c}', eff: {class: 'Armor', target: 'playerCreatures'}}]},
  
 {id: 'FerronyxShardletGrindlewyrm', name: 'Ferronyx, Shardlet Grindlewyrm', rarity: 'Rare', image: 'Cards/foc/FerronyxShardletGrindlewyrm.png', flavor: '', 
@@ -1081,12 +1086,12 @@ const dummyCards = [
  category: 'Creature', fight: '', color: 'Red', type: ['Fire','Beast'], hp: 6, atk: 3, cost: '{r4}', ability: ['Burn','Rush'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
  	{name: 'Summon', cost: '{r4}', eff: {class: 'summon'}}, {trig: 'summon', eff: {class: 'rush'}},
 	{name: 'Searing Haste', trig: 'attack', eff: {class: 'bolster', atk: 1, type: ['Fire','Beast']}},
-	{name: 'Spirit Stoke', req: void, eff: {class: 'bolster', atk: 1, type: ['Fire','Beast']}}]},
+	{name: 'Spirit Stoke', req: 'void', eff: {class: 'bolster', atk: 1, type: ['Fire','Beast']}}]},
  
 {id: 'EphorosFirelandBehemoth', name: 'Ephoros, Fireland Behemoth', rarity: 'Legend', image: 'Cards/dfr/EphorosFirelandBehemoth.png', flavor: '', fullArt: 'Cards/Fireland/EphorosFirelandBehemothFA.png', flavor: '',
  category: 'Creature', fight: 'Hellflame Onslaught', color: ['Red','Black'], type: ['Fire','Beast','Demon'], hp: 7, atk: 4, cost: '{r4}{b2}', ability: ['Burn','Rush','Reanimate'], set: 'EchoesofCreation', skill: [
 	{name: 'Summon', cost: '{r4}{b2}', eff: {class: 'summon'}},
-	{name: 'Infernal Volley', cost: '{r}', req: discard, eff: {class: 'Burn', amount: 3}, text: 'Discard to burn {3}'},
+	{name: 'Infernal Volley', cost: '{r}', req: 'discard', eff: {class: 'Burn', amount: 3}, text: 'Discard to burn {3}'},
 	{name: 'Hellflame Onslaught', summont: true, eff: {class: 'inspire', atk: 1, target: 'playerCreatures', type: ['Fire','Demon']}, text: 'Rally {1} to allied fire demons'}]},
 
 // GOLEMHEART //
@@ -1094,7 +1099,7 @@ const dummyCards = [
  category: 'Creature', fight: '', color: ['Red','Gray'], type: ['Fire','Rock','Spirit','Golem'], hp: 8, atk: 5, cost: '{r7}{c3}', ability: ['Armor''Burn','Fusion'], set: 'FracturedOrigins', skill: [
 	{name: 'Summon', cost: '{r7}{c3}', eff: {class: 'summon'}},
 	{name: 'Fusion', eff: {class: 'fusion', type: ['Fire','Rock']}},
-	{name: 'Magma Catalyst', req: discard, eff: [{class: 'bury', q: 2, type: ['Fire','Rock']}, {class: 'burn', q: 'playerFallen', type: 'Fire'}], 
+	{name: 'Magma Catalyst', req: 'discard', eff: [{class: 'bury', q: 2, type: ['Fire','Rock']}, {class: 'burn', q: 'playerFallen', type: 'Fire'}], 
 	 text: 'Discard this ally, bury 2 fire rock allies and burn {1} for each fallen fire ally.'},
 	{name: 'Moltern Aegis Nova', cost: '{r2}{c}', eff: [{class: 'wither', atk:1, hp:3}, {class: 'destroy', blight: 'burned', target: 'allField'}, {class: 'burn', amount: 3, target: 3}],
 	 text: 'Lose -{1}/-{3}, destroy all burned creatures and burn strike 2 to all enemies.'}]},
@@ -1158,7 +1163,7 @@ const dummyCards = [
  category: 'Creature', fight: '', color: 'Red', type: ['Fire','Construct'], cost: {r7}, hp: 8, atk: 4, ability: ['Armor','Burn','Exploit'], set: 'InfiniteHorizons', skill: [
  	{name: 'Summon', cost: '{r7}', eff: {class: 'summon'}},
 	{name: 'Fusion', eff: {class: 'fusion', ep: {r}, type: ['Fire','Steel']}},
-	{name: 'Pyrosurge Protocol', req: discard, eff: {class: 'burn', q: 2}, text: 'Discard and burn {2} to an enemy'},
+	{name: 'Pyrosurge Protocol', req: 'discard', eff: {class: 'burn', q: 2}, text: 'Discard and burn {2} to an enemy'},
 	{name: 'Pyrocore Overdrive', trig: 'echo', eff: {class: 'burn', target: 'enemyCreatures'}, text: 'Burn all enemies.'},
 	{name: 'Thermal Overdrive', cost: '{r}{r}{r}', eff: {class: 'Burn', amount: 3, target: 3}}]},
  
@@ -1188,7 +1193,7 @@ const dummyCards = [
 {id: 'MaelvyrnCoralboundAutomaton', name: 'Maelvyrn, Coralbound Automaton', rarity: 'Legend', image: 'Cards/ihu/MaelvyrnCoralboundAutomaton.png', flavor: '', fullArt: 'Cards/Coralbound/MaelvyrnCoralboundAutomatonFA.png', flavor: '',
  category: 'Creature', fight: '', color: 'Blue', type: ['Water','Steel','Spirit','Construct'], hp: 9, atk: 5, cost: '{u7}', ability: ['Armor','Drench','Exploit','Fusion'], set: 'InfiniteHorizons', skill: [
  	{name: 'Summon', cost: '{u7}', eff: {class: 'summon'}},
-	{name: 'Fusion', ep: '{u}, eff: {class: 'fusion', type: ['Water','Steel']}},
+	{name: 'Fusion', ep: '{u}', eff: {class: 'fusion', type: ['Water','Steel']}},
 	{name: 'Blueprint Retrieval', cost: '{u}', stash: 1, eff: {class: 'add', category: 'Spell', type: 'Construct'}},
 	{name: 'Hydroburst Cannon', cost: '{u2}', eff: {class: 'soak', target: 'allEnemies'}}]},
  
@@ -1234,7 +1239,7 @@ const dummyCards = [
  	{name: 'Summon', cost: '{b3}{p2}', eff: {class: 'summon'}},
 	{name: 'Reanimate', cost: '{b3}{p2}', eff: {class: 'reanimate'}},
 	{name: 'Revenant Scales', trig: 'summon', eff: {class: 'destroy', target: 'playerCreatures'}},
-	{name: 'Curseflame Inferno', trig: 'attack' eff: {class: 'burn', q: 1, target: 'enemyCreatures'}}]},
+	{name: 'Curseflame Inferno', trig: 'attack', eff: {class: 'burn', q: 1, target: 'enemyCreatures'}}]},
 
 {id: 'SkullframeArmoredDragon', name: 'Skullframe Armored Dragon', rarity: 'Rare', image: 'Cards/fob/SkullframeArmoredDragon.png', flavor: '', 
  category: 'Creature', fight: 'Draconic Bonestrike', color: 'Black', type: ['Bone','Dragon'], hp: 4, atk: 3, cost: '{b2}', ability: ['Armor','Flying','Reanimate'], set: 'DesolateFrontiers', skill: [
@@ -1467,7 +1472,7 @@ const dummyCards = [
 {id: 'SunbatheHills', name: 'Sunbathe Hills', rarity: 'Common', image: 'Cards/egw/SunbatheHills.png', flavor: '', 
  category: 'Terrain', color: 'White', hp: 8, cost: '{w}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
  	{name: 'Terraform', cost: '{1}', eff: {class: 'terraform'}}]},
-*/
+
 ];
 
 // Cost mapping and renderer (returns HTML string)
