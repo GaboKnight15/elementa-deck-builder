@@ -3346,6 +3346,7 @@ function createCardLibrary(card) {
   div.classList.add(getRarityBgClass(card));
 
   const img = document.createElement('img');
+  img.classList.add('card-img');
   img.src = card.image;
   img.onerror = function() {
     this.onerror = null;
@@ -3657,6 +3658,7 @@ function createCardGallery(card) {
     div.classList.add(getRarityBgClass(card));
 
     const img = document.createElement('img');
+	img.classList.add('card-img');
     img.src = (typeof window.getCardArtForOwner === "function")
       ? window.getCardArtForOwner(card, "player")
       : card.image;
