@@ -74,7 +74,7 @@ const dummyCards = [
  category: 'Terrain', color: 'Green', type: ['Verdant','Dragon','Terrain'], ability: 'Vigor', ep: '{g}', hp: 7, cost: '{g3}', set: 'FracturedOrigins', skill: [
  	{name: 'Terraform', cost: '{g3}', eff: {class: 'terraform'}},
 	{name: 'Draconic Pulse', trig: 'summon', eff: {class: 'bolster', hp: 1, type: ['Verdant','Dragon'], target: 'playerCreatures'}},
-	{name: 'Sylvan Scales', req: {class: 'summon', type: ['Sylvan','Dragon'], eff: {class: 'inspire', hp: 1}}]},
+	{name: 'Sylvan Scales', req: {class: 'summon', type: ['Sylvan','Dragon']}, eff: {class: 'inspire', hp: 1}}]},
 
 {id: 'ThicketmistDrakeling', name: 'Thicketmist Drakeling', rarity: 'Legend', image: 'Cards/fog/ThicketmistDrakeling.png', flavor: '', 
  category: 'Creature', fight: 'Verdant Strike', color: 'Green', type: ['Verdant','Dragon'], hp: 3, atk: 2, cost: '{g3}', ability: ['Flying','Vigor'], set: 'FracturedOrigins', skill: [
@@ -258,7 +258,7 @@ const dummyCards = [
 // GREEN/YELLOW //
 // GREEN/GRAY RARE //
 {id: 'MightoftheValiant', name: 'Might of the Valiant', rarity: 'Rare', image: 'Cards/egr/MightoftheValiant.png', flavor: '', 
- category: 'Spell', color: ['Green','Gay'], type: 'Aura', cost: '{g}{c}', mana: 2, set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Spell', color: ['Green','Gray'], type: 'Aura', cost: '{g}{c}', mana: 2, set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Cast', cost: '{g}{c}', eff: {class: 'cast'}},
 	{name: 'Might of the Valiant', mana: 1, eff: {class: 'bolster', atk: 1, hp: 1}},
 	{name: 'Might of the Valiant', mana: 3, eff: {class: 'bolster', atk: 2, hp: 3}}]},
@@ -288,7 +288,7 @@ const dummyCards = [
 
 {id: 'Jackalope', name: 'Jackalope', rarity: 'Common', image: 'Cards/dfg/Jackalope.png', flavor: '', 
  category: 'Creature', fight: '', color: ['Green','Black'], type: ['Mythical','Beast'], hp: 4, atk: 2, cost: '{g}{b}', ability: '', set: 'DesolateFrontiers', skill: [
- 	{name: 'Summon', cost: '{g}{b}', eff: {class: 'summon'}}
+ 	{name: 'Summon', cost: '{g}{b}', eff: {class: 'summon'}},
 	{name: 'Echo', cost: '{0}', req: {class: 'Echo', archetype: 'Hybrid'}, eff: {class: 'Search', archetype: 'Hybrid'}}]},
 
 // RED //
@@ -346,7 +346,7 @@ const dummyCards = [
  
 
 {id: 'IgnavarynCindercoreAutomaton', name: 'Ignavaryn, Cindercore Automaton', rarity: 'Legend', image: 'Cards/ihr/IgnavarynCindercoreAutomaton.png', flavor: '', 
- category: 'Creature', fight: '', color: 'Red', type: ['Fire','Construct'], cost: {r7}, hp: 8, atk: 4, ability: ['Armor','Burn','Exploit'], set: 'InfiniteHorizons', skill: [
+ category: 'Creature', fight: '', color: 'Red', type: ['Fire','Construct'], cost: '{r7}', hp: 8, atk: 4, ability: ['Armor','Burn','Exploit'], set: 'InfiniteHorizons', skill: [
  	{name: 'Summon', cost: '{r7}', eff: {class: 'summon'}},
 	{name: 'Fusion', eff: {class: 'fusion', ep: {r}, type: ['Fire','Steel']}},
 	{name: 'Pyrosurge Protocol', req: 'discard', eff: {class: 'burn', q: 2}, text: 'Discard and burn {2} to an enemy'},
@@ -412,7 +412,7 @@ const dummyCards = [
 
 {id: 'FlamingDirebeast', name: 'Flaming Direbeast', rarity: 'Rare', image: 'Cards/egr/FlamingDirebeast.png', flavor: '',
  category: 'Creature', fight: 'Searing Haste', color: 'Red', type: ['Fire','Beast'], hp: 6, atk: 3, cost: '{r4}', ability: ['Burn','Rush'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
-	{name: 'Summon', cost: '{r4}', eff: {class: 'summon'}}, {trig: 'summon, eff: {class: 'enable'}},
+	{name: 'Summon', cost: '{r4}', eff: {class: 'summon'}}, {trig: 'summon', eff: {class: 'enable'}},
 	{name: 'Searing Haste', trig: 'attack', eff: {class: 'add', type: ['Beast','Fire']}},
 	{name: 'Spirit Stoke', cost: '{r}', req: 'void', eff: {class: 'destroy', blight: 'burned'}}]},
 
@@ -460,7 +460,7 @@ const dummyCards = [
 // RED/YELLOW //
 // RED/GRAY //
 {id: 'PyrokragGolemheartTitan', name: 'Pyrokrag, Golemheart Titan', rarity: 'Legend', image: 'Cards/ecr/PyrokragGolemheartTitan.png', flavor: '', 
- category: 'Creature', fight: '', color: ['Red','Gray'], type: ['Fire','Rock','Spirit','Golem'], hp: 8, atk: 5, cost: '{r7}{c3}', ability: ['Armor''Burn','Fusion'], set: 'FracturedOrigins', skill: [
+ category: 'Creature', fight: '', color: ['Red','Gray'], type: ['Fire','Rock','Spirit','Golem'], hp: 8, atk: 5, cost: '{r7}{c3}', ability: ['Armor','Burn','Fusion'], set: 'FracturedOrigins', skill: [
 	{name: 'Summon', cost: '{r7}{c3}', eff: {class: 'summon'}},
 	{name: 'Fusion', eff: {class: 'fusion', type: ['Fire','Rock']}},
 	{name: 'Magma Catalyst', req: 'discard', eff: [{class: 'bury', q: 2, type: ['Fire','Rock']}, {class: 'burn', q: 'playerFallen', type: 'Fire'}], 
@@ -493,7 +493,7 @@ const dummyCards = [
  category: 'Creature', fight: 'Hellflame Onslaught', color: ['Red','Black'], type: ['Fire','Beast','Demon'], hp: 7, atk: 4, cost: '{r4}{b2}', ability: ['Burn','Rush','Reanimate'], set: 'EchoesofCreation', skill: [
 	{name: 'Summon', cost: '{r4}{b2}', eff: {class: 'summon'}},
 	{name: 'Infernal Volley', cost: '{r}', req: 'discard', eff: {class: 'Burn', amount: 3}, text: 'Discard to burn {3}'},
-	{name: 'Hellflame Onslaught', summont: true, eff: {class: 'inspire', atk: 1, target: 'playerCreatures', type: ['Fire','Demon']}, text: 'Rally {1} to allied fire demons'}]},
+	{name: 'Hellflame Onslaught', summon: true, eff: {class: 'inspire', atk: 1, target: 'playerCreatures', type: ['Fire','Demon']}, text: 'Rally {1} to allied fire demons'}]},
 
 // BLUE //
 // BLUE LEGEND //
@@ -528,8 +528,8 @@ const dummyCards = [
 {id: 'AbyndraRipplefinGloomlet', name: 'Abyndra, Ripplefin Gloomlet', rarity: 'Rare', image: 'Cards/fou/AbyndraRipplefinGloomlet.png', flavor: '', 
  category: 'Creature', fight: 'Water Strike', color: 'Blue', type: ['Water','Dragon'], hp: 3, atk: 2, cost: '{u2}', ability: ['Dive','Soak'], set: 'FracturedOrigins', skill: [
  	{name: 'Summon', cost: '{u2}', eff: {class: 'summon'}},
-	{name: 'Reveal', cost: '{u}', eff: {eff: 'Search', category: 'Terrain', color: 'Blue'}},
-	{name: 'Mirror of the Deep', cost: '{u}{u}', eff: {class: '', amount: 3, status: 'Burn'}}]},
+	{name: 'Reveal', cost: '{u}', eff: {class: 'Search', category: 'Terrain', color: 'Blue'}},
+	{name: 'Mirror of the Deep', cost: '{u2}', eff: {class: '', amount: 3, status: 'Burn'}}]},
 
 {id: 'DragonsAtoll', name: "Dragon's Atoll", rarity: 'Rare', image: 'Cards/fou/DragonsAtoll.png', flavor: '', 
  category: 'Terrain', color: 'Blue', type: ['Water','Dragon','Terrain'], hp: 11, cost: '{u4}', set: 'FracturedOrigins', skill: [
@@ -569,7 +569,7 @@ const dummyCards = [
 {id: 'HydrosurgeProtocol', name: 'Hydrosurge Protocol', rarity: 'Common', image: 'Cards/Construct/HydrosurgeProtocol.png', flavor: '', 
  category: 'Spell', color: 'Blue', type: ['Water','Construct','Aura'], cost: '{u2}', set: 'InfiniteHorizons', skill: [
  	{name: 'Cast', cost: '{u2}', eff: {class: 'cast'}},
-	{name: 'Hydrosurge Protocol', req: 'tap', req: {recycle: 1, type: ['Water','Steel'], eff: {class: 'Soak', amount: 0, target: 2}}]},
+	{name: 'Hydrosurge Protocol', req: {recycle: 1, type: ['Water','Steel']}, eff: {class: 'Soak', amount: 0, target: 2}}]},
 
 // --- HYDRAL CARDS ---//
 {id: 'HydrionPrimevalFloodbringer', name: 'Hydrion, Primeval Floodbringer', rarity: 'Legend', image: 'Cards/fou/HydrionPrimevalFloodbringer.png', flavor: '', fullArt: 'Cards/Coralbound/MaelvyrnCoralboundAutomatonFA.png', flavor: '',
@@ -1156,7 +1156,7 @@ const dummyCards = [
  category: 'Creature', fight: '', color: 'Black', type: ['Zombie','Mage'], hp: 6, atk: 2, cost: '{b3}', ability: ['Immortal','Reanimate'], set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/egb/MorvaneNoctyraOathbreakerFA.png', skill: [
 	{name: 'Summon', cost: '{b3}', eff: {class: 'summon'}},
 	{name: 'Reanimate', cost: '{b3}', eff: {class: 'Reanimate'}},
-	{name: 'Soul Barter', trig: 'attack', eff: [{class: 'spawn', targetId: 'Zombie'}, {class: 'bolster', atk: 1}, {class: 'wither', hp: 1]},
+	{name: 'Soul Barter', trig: 'attack', eff: [{class: 'spawn', targetId: 'Zombie'}, {class: 'bolster', atk: 1}, {class: 'wither', hp: 1}]},
 	{name: 'Deathless Vow', type: 'Zombie', eff: [{class: 'bolster', atk: 1}, {class: 'wither', hp: 1]}]},
 
 {id: 'VelmiraMistressofSilence', name: 'Velmira, Mistress of Silence', rarity: 'Legend', image: 'Cards/egb/VelmiraMistressofSilence.png', flavor: '', 
@@ -1248,14 +1248,14 @@ const dummyCards = [
 {id: 'GraveweaverWarlock', name: 'Graveweaver Warlock', rarity: 'Rare', image: 'Cards/egb/GraveweaverWarlock.png', flavor: '', 
  category: 'Creature', fight: 'Deathmarch Legionaire', color: 'Black', type: ['Dark','Orc','Mage'], hp: 6, atk: 3, cost: '{b4}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{b4}', eff: {class: 'summon'}},
-	{name: 'Morbid Pact', req {obj: 'discard', q: 1}, cost: '{b}', eff: {class: 'add', type: 'Zombie'}},
+	{name: 'Morbid Pact', req: {class: 'discard', q: 1}, cost: '{b}', eff: {class: 'add', type: 'Zombie'}},
 	{name: 'Deathmarch Legionaire', trig: 'attack', cost: '{b2}', eff: {class: 'revive', id: 'Zombie', amount: 2}}]},
 
 {id: 'ConquerorDeathknightDraugr', name: 'Conqueror Deathknight Draugr', rarity: 'Rare', image: 'Cards/egb/ConquerorDeathknightDraugr.png', flavor: '', 
  category: 'Creature', fight: 'Unending Siege', color: 'Black', type: ['Zombie','Warrior','Undead'], hp: 3, atk: 3, cost: '{b3}', ability: ['Defiant','Immortal','Reanimate'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{b3}', eff: {class: 'summon'}}, {name: 'Reanimate', cost: '{b3}', eff: {class: 'Reanimate'}},
 	{name: 'Unending Siege', trig: 'assault', eff: {class: 'revive', id: 'Zombie', q: 1}},
-	{name: 'Soul Vanquish', req 'discard', cost: '{b2}', eff: {class: 'destroy'}}]},
+	{name: 'Soul Vanquish', req: 'discard', cost: '{b2}', eff: {class: 'destroy'}}]},
 
 {id: 'ElementalofShadows', name: 'Elemental of Shadows', rarity: 'Rare', image: 'Cards/ecb/ElementalofShadows.png', flavor: '', 
  category: 'Creature', fight: '', color: 'Black', type: ['Shadow','Spirit','Elemental'], hp: 4, atk: 3, cost: '{b3}', ability: ['Ambush','Elusive'], set: ['ElementaGenesis','EssenceLegacy'], skill: [	
