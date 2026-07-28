@@ -573,10 +573,10 @@ const dummyCards = [
 
 // --- HYDRAL CARDS ---//
 {id: 'HydrionPrimevalFloodbringer', name: 'Hydrion, Primeval Floodbringer', rarity: 'Legend', image: 'Cards/fou/HydrionPrimevalFloodbringer.png', flavor: '', fullArt: 'Cards/Coralbound/MaelvyrnCoralboundAutomatonFA.png', flavor: '',
- category: 'Creature', fight: '', color: 'Blue', type: ['Water','Spirit','Elemental'], cost: {u8}, hp: 10, atk: 0, ability: ['Dive','Drench','Elusive'], set: 'PrimordialAscension', skill: [
+ category: 'Creature', fight: '', color: 'Blue', type: ['Water','Spirit','Elemental'], cost: '{u8}', hp: 10, atk: 0, ability: ['Dive','Drench','Elusive'], set: 'PrimordialAscension', skill: [
  	{name: 'Summon', cost: '{u8}', eff: {class: 'summon'}},
 	{name: 'Fusion', ep: '{u}', eff: {class: 'fusion', type: ['Water','Spirit']}},
-	{name: 'Stash', cost: '{U}',  req: {class: 'Stash'}, eff: {class: 'Search', archetype: 'Coralbound'}},
+	{name: 'Stash', cost: '{u}',  req: {class: 'Stash'}, eff: {class: 'Search', archetype: 'Coralbound'}},
 	{name: 'Tide of Oblivion', cost: '{u3}', eff: {class: 'Soak', amount: 8}}]},
 
 
