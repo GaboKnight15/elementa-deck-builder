@@ -6543,8 +6543,9 @@ if (card.skill) {
   modalContent.innerHTML = `
     <div class="full-card-modal-flex" style="position:relative;">
       <div class="full-card-image-container">
-        <img src="${card.image}" alt="${card.name}" class="full-card-modal-img ${owned === 0 ? 'card-image-locked' : ''}">
-      </div>
+		<img src="${owned > 0 ? (card.image || 'Icons/Other/Placeholder.png') : 'Icons/Other/Placeholder.png'}"
+     alt="${card.name}"
+     class="full-card-modal-img ${owned === 0 ? 'card-image-locked' : ''}">      </div>
       <div class="full-card-info-panel">
         ${infoHtml}
       </div>
