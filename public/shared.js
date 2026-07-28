@@ -606,7 +606,7 @@ const dummyCards = [
 {id: 'MermaidSanctuary', name: "Mermaid Sanctuary", rarity: 'Rare', image: 'Cards/egr/MermaidSanctuary.png', flavor: '', 
  category: 'Terrain', color: 'Blue', type: ['Merfolk','Terrain'], hp: 4, cost: '{u2}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Terraform', cost: '{u2}', eff: {class: 'terraform'}},
-	{name: 'Deep Surging Rest', req: 'tap', eff: [{class: 'essence', color: 'Blue', amount: 1}, {class: 'heal', target: 'playerCreatures', type: 'Merfolk', amount: 3]}]},
+	{name: 'Deep Surging Rest', req: 'tap', eff: [{class: 'essence', color: 'Blue', amount: 1}, {class: 'heal', target: 'playerCreatures', type: 'Merfolk', amount: 3}]}]},
 
 {id: 'TidalMaelstrom', name: 'Tidal Maelstrom', rarity: 'Rare', image: 'Cards/egu/TidalMaelstrom.png', flavor: '', 
  category: 'Spell', color: 'Blue', type: ['Water','Spell'], cost: '{u4}', mana: 2, set: ['ElementaGenesis','EssenceLegacy'], skill: [
@@ -720,7 +720,7 @@ const dummyCards = [
 {id: 'ElementalofLightning', name: 'Elemental of Lightning', rarity: 'Rare', image: 'Cards/egy/ElementalofLightning.png', flavor: '', 
  category: 'Creature', fight: 'Thunder Burst', color: 'Yellow', type: ['Thunder','Spirit','Elemental'], hp: 4, atk: 3, cost: '{y3}', ability: ['Elusive','Static'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{y3}', eff: {class: 'summon'}},
-	{name: 'Storm Discovery', cost: '{2}{y}', eff: [{class: 'summon'}, {class: 'Search', amount: 1, color: 'Yellow', targetTrait: 'Terrain'}]}]},
+	{name: 'Storm Discovery', cost: '{2}{y}', eff: [{class: 'summon'}, {class: 'Search', amount: 1, color: 'Yellow', targetCategory: 'Terrain'}]}]},
 
 {id: 'VoltwingImpundulu', name: 'Voltwing Impundulu', rarity: 'Rare', image: 'Cards/egy/VoltwingImpundulu.png', flavor: '', 
  category: 'Creature', fight: 'Flying Strike', color: 'Yellow', type: ['Thunder','Avian'], hp: 5, atk: 3, cost: '{y4}', ability: 'Flying', set: ['ElementaGenesis','EssenceLegacy'], skill: [
@@ -842,7 +842,7 @@ const dummyCards = [
 {id: 'TerraformationEmergence', name: 'Terra Emergence', rarity: 'Legend', image: 'Cards/egc/TerraformationEmergence.png', flavor: '', 
  category: 'Spell', color: 'Colorless', type: 'Enchantment', cost: '{2}', mana: 3, set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Cast', cost: '{c3}', eff: {class: 'Enchant'}},
-	{name: 'Terraformation Emergence', req: 'tap', mana: 1, eff: {class: 'add', targetTrait: 'Terrain'}}]},
+	{name: 'Terraformation Emergence', req: 'tap', mana: 1, eff: {class: 'add', targetCategory: 'Terrain'}}]},
 
 {id: 'DrakzulWarmonger', name: 'Drakzul Warmonger', rarity: 'Rare', image: 'Cards/egc/DrakzulWarmonger.png', flavor: '', 
  category: 'Creature', fight: 'Crushing Strike', color: 'Gray', type: ['Terra','Warrior'], hp: 6, atk: 3, cost: '{c3}', ability: 'Crush', set: ['ElementaGenesis','EssenceLegacy'], skill: [
@@ -1260,7 +1260,7 @@ const dummyCards = [
 {id: 'ElementalofShadows', name: 'Elemental of Shadows', rarity: 'Rare', image: 'Cards/ecb/ElementalofShadows.png', flavor: '', 
  category: 'Creature', fight: '', color: 'Black', type: ['Shadow','Spirit','Elemental'], hp: 4, atk: 3, cost: '{b3}', ability: ['Ambush','Elusive'], set: ['ElementaGenesis','EssenceLegacy'], skill: [	
 	 {name: 'Summon', cost: '{b3}', eff: {class: 'summon'}},
-	 {name: 'Umbral Discovery', trig: 'summon', eff: {class: 'add', color: 'Black', targetTrait: 'Terrain'}}]},
+	 {name: 'Umbral Discovery', trig: 'summon', eff: {class: 'add', color: 'Black', targetCategory: 'Terrain'}}]},
 
 {id: 'GraveveilFields', name: 'Graveveil Fields', rarity: 'Rare', image: 'Cards/egb/GraveveilFields.png', flavor: '', 
  category: 'Terrain', color: 'Black', type: 'Undead', hp: 5, cost: '{b2}', ep: '{b}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
@@ -1430,9 +1430,9 @@ const dummyCards = [
 
 
 {id: 'VerdantGolemite', name: 'Verdant Golemite', rarity: 'Rare', image: 'Cards/ecg/VerdantGolemite.png', flavor: '', 
- category: 'Creature', fight: '', color: 'Green', type: 'Elemental', trait: ['Verdant','Golem'], hp: 2, atk: 2, def: 2, cost: '{g}{c}', ability: '', set: 'EchoesofCreation', skill: [
- 	{name: 'Summon', cost: '{1}{b}', eff: {class: 'summon'}},
-	{name: 'Bloomchant', req: {class: 'CW'}, eff: {class: 'Essence', color: '{G}', amount: 1}}]},
+ category: 'Creature', fight: '', color: ['Gray','Green'], type: ['Elemental','Verdant','Golem'], hp: 2, atk: 2, cost: '{c}{g}', ability: '', set: 'EchoesofCreation', skill: [
+ 	{name: 'Summon', cost: '{c}{g}', eff: {class: 'summon'}},
+	{name: 'Bloomchant', req: 'tap', eff: {class: 'Essence', color: '{G}', amount: 1}}]},
  
 {id: 'SylvanManifestation', name: 'Sylvan Manifestation', rarity: 'Rare', image: 'Cards/ecg/SylvanManifestation.png', flavor: '', 
  category: 'Creature', fight: '', color: 'Green', type: ['Verdant','Spirit','Elemental'], hp: 5, atk: 2, cost: '{g4}', ability: '', set: 'EchoesofCreation', skill: [
