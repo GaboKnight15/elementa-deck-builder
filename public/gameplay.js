@@ -327,7 +327,7 @@ conceal: { name: 'Conceal', icon: 'Icons/Ability/Conceal.png',
   }
 },
   veil: { name: 'Veil', icon: 'Icons/Ability/Veil.png',
-    description: 'Cannot be targeted by spells and skills.',
+    description: 'Cannot be targeted by magics and skills.',
     handler: function(sourceCardObj, skillObj) {
       startSkillTarget(
         [...gameState.allyUnits, ...gameState.allyTerrains],
@@ -666,9 +666,9 @@ draw: { name: 'Draw',
 },
   
 cast: { name: 'Cast', zone: 'playerHand', icon: 'Icons/Skill/Cast.png',
-  description: 'Cast a spell from hand.',
+  description: 'Cast a magic from hand.',
   canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
-    // Accept common spellings used across your code
+    // Accept common magicings used across your code
     return currentZone === 'playerHand' || currentZone === 'playerHand' || currentZone === 'player-hand';
   },
   handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
@@ -681,11 +681,11 @@ cast: { name: 'Cast', zone: 'playerHand', icon: 'Icons/Skill/Cast.png',
         nextEffect && nextEffect();
         return;
       }
-      // Must be a Spell by definition
+      // Must be a Magic by definition
       const def = dummyCards.find(c => c.id === sourceCardObj.cardId);
-      const isSpell = String(def?.category || '').toLowerCase() === 'spell';
-      if (!isSpell) {
-        showToast && showToast('You can only cast spells from the hand.', { type: 'error' });
+      const isMagic = String(def?.category || '').toLowerCase() === 'magic';
+      if (!isMagic) {
+        showToast && showToast('You can only cast magics from the hand.', { type: 'error' });
         nextEffect && nextEffect();
         return;
       }
@@ -1501,7 +1501,7 @@ function getCardLane(cardObj) {
   const def = dummyCards.find(c => c.id === cardObj.cardId);
   if (!def) return null;
   const cat = (def.category || "").toLowerCase();
-  return cat === "unit" ? "unit" : "support"; // terrain/artifact/spell -> support
+  return cat === "unit" ? "unit" : "support"; // terrain/artifact/magic -> support
 }
 
 function findCardSlot(cardObj) {
@@ -1542,12 +1542,12 @@ function getZoneArrayForCard(cardObj) {
   if (Array.isArray(gameState.playerUnits) && gameState.playerUnits.some(c => c?.instanceId === id)) return gameState.playerUnits;
   if (Array.isArray(gameState.playerSupportSlots.filter(Boolean)) && gameState.playerSupportSlots.filter(Boolean).some(c => c?.instanceId === id)) return gameState.playerSupportSlots.filter(Boolean);
   if (Array.isArray(gameState.playerArtifacts) && gameState.playerArtifacts.some(c => c?.instanceId === id)) return gameState.playerArtifacts;
-  if (Array.isArray(gameState.playerSpells) && gameState.playerSpells.some(c => c?.instanceId === id)) return gameState.playerSpells;
+  if (Array.isArray(gameState.playerMagics) && gameState.playerMagics.some(c => c?.instanceId === id)) return gameState.playerMagics;
 
   if (Array.isArray(gameState.enemyUnits) && gameState.enemyUnits.some(c => c?.instanceId === id)) return gameState.enemyUnits;
   if (Array.isArray(gameState.enemySupportSlots.filter(Boolean)) && gameState.enemySupportSlots.filter(Boolean).some(c => c?.instanceId === id)) return gameState.enemySupportSlots.filter(Boolean);
   if (Array.isArray(gameState.enemyArtifacts) && gameState.enemyArtifacts.some(c => c?.instanceId === id)) return gameState.enemyArtifacts;
-  if (Array.isArray(gameState.enemySpells) && gameState.enemySpells.some(c => c?.instanceId === id)) return gameState.enemySpells;
+  if (Array.isArray(gameState.enemyMagics) && gameState.enemyMagics.some(c => c?.instanceId === id)) return gameState.enemyMagics;
 
   return null;
 }
@@ -2149,7 +2149,7 @@ function showHandCardMenu(instanceId, cardDiv) {
     const category = cardData.category ? cardData.category.toLowerCase() : '';
     switch (category) {
       case 'unit': playLabel = "Summon"; break;
-      case 'spell': playLabel = "Cast"; break;
+      case 'magic': playLabel = "Cast"; break;
       case 'terrain': playLabel = "Geomancy"; break;
       case 'artifact': playLabel = "Equip"; break;
       default: playLabel = "Play";
@@ -6816,7 +6816,7 @@ function removeCardByInstanceId(instanceId) {
 function getLaneForCard(cardObj) {
   const def = getCardDef(cardObj);
   const t = String(def?.type || def?.category || "").toLowerCase();
-  return t === "unit" ? "unit" : "support"; // terrain/artifact/spell -> support
+  return t === "unit" ? "unit" : "support"; // terrain/artifact/magic -> support
 }
 
 function removeCardFromAllFieldSlots(instanceId) {
