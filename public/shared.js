@@ -79,12 +79,18 @@ const dummyCards = [
 {id: 'ThicketmistDrakeling', name: 'Thicketmist Drakeling', rarity: 'Legend', image: 'Cards/fog/ThicketmistDrakeling.png', flavor: '', 
  category: 'Creature', fight: 'Verdant Strike', color: 'Green', type: ['Verdant','Dragon'], hp: 3, atk: 2, cost: '{g3}', ability: ['Flying','Vigor'], set: 'FracturedOrigins', skill: [
 	{name: 'Summon', cost: '{g3}', eff: {class: 'summon'}},
+	{name: 'Shrouded Whispers', trig: 'summon', eff: {class: ''}},
 	{name: 'Verdant Galeburst', cost: '{g}', trig: 'attack', eff: {class: 'Mossbound Terrain'}}]},
  
 {id: 'VerdantLindwurm', name: 'Verdant Lindwurm', rarity: 'Legend', image: 'Cards/fog/VerdantLindwurm.png', flavor: '', 
- category: 'Creature', fight: '', color: 'Green', type: ['Verdant','Dragon'], hp: 3, atk: 2, cost: '{g2}', ability: ['Flying','Regenerate'], set: 'FracturedOrigins', skill: [
+ category: 'Creature', fight: '', color: 'Green', type: ['Verdant','Dragon'], hp: 2, atk: 2, cost: '{g2}', ability: ['Flying','Vigor'], set: 'FracturedOrigins', skill: [
  	{name: 'Summon', cost: '{g2}', eff: {class: 'summon'}},
-	{name: 'Defender', act: {class: 'defender'}, eff: {class: 'Search', archetype: 'Thornwing', amount: 1}}]},
+	{name: 'Rootwyrm Rising', act: {class: 'strike'}, eff: {class: 'buff', type: ['Verdant','Dragon'], hp: 1, target: 'playerCreatures'}}]},
+
+{id: 'VerdantSerpent', name: 'Verdant Serpent', rarity: 'Legend', image: 'Cards/fog/VerdantSerpent.png', flavor: '', 
+ category: 'Creature', fight: '', color: 'Green', type: ['Verdant','Dragon'], hp: 2, atk: 2, cost: '{g2}', ability: ['Flying','Vigor'], set: 'FracturedOrigins', skill: [
+ 	{name: 'Summon', cost: '{g2}', eff: {class: 'summon'}},
+	{name: 'Shed Skin', act: {class: 'brace'}, eff: {class: 'buff', ability: 'Ambush', hp: 1}}]},
 
 // MONOGREEN RARE //
 {id: 'VerdaraSoldier', name: 'Verdara Soldier', rarity: 'Rare', image: 'Cards/egg/VerdaraSoldier.png', flavor: '', 
