@@ -968,9 +968,9 @@ function updateDeckDisplay() {
   // Group cards by category
   const sections = {
     domain: [],
-    creature: [],
+    unit: [],
     artifact: [],
-    spell: [],
+    magic: [],
     terrain: []
   };
 
@@ -985,8 +985,8 @@ function updateDeckDisplay() {
       if (sections.hasOwnProperty(cat)) {
         sections[cat].push({ card, count });
       } else {
-        // fallback to creature if unknown
-        sections.creature.push({ card, count });
+        // fallback to unit if unknown
+        sections.unit.push({ card, count });
       }
     }
     total += count;
@@ -1095,9 +1095,9 @@ deckList.appendChild(domainSlot);
   // Section display order
   const sectionNames = [
     { key: "domain", label: "domain" },
-    { key: "creature", label: "Creatures" },
+    { key: "unit", label: "Units" },
     { key: "artifact", label: "Artifacts" },
-    { key: "spell", label: "Spells" },
+    { key: "magic", label: "Magics" },
     { key: "terrain", label: "Terrains" }
   ];
   
