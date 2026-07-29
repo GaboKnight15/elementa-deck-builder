@@ -2448,19 +2448,163 @@ function setQuestResets(obj, cb) {
     if (typeof cb === "function") cb();
   });
 }
+
+function rotateDailyQuestSlotsIfNeeded() {
+  const now = new Date();
+  const todayUtc = new Date(Date.UTC(
+    now.getUTCFullYear(),
+    now.getUTCMonth(),
+    now.getUTCDate()
+  )).toISOString();
+
+  getQuestResets(function(resets) {
+    const lastReset = resets.lastReset ? new Date(resets.lastReset) : null;
+    const didResetToday = lastReset && lastReset.toISOString() === todayUtc;
+    if (didResetToday) return; // already rotated today
+
+    getActiveQuests(function(activeQuestsRaw) {
+      let activeQuests = Array.isArray(activeQuestsRaw) ? activeQuestsRaw.slice(0, QUEST_SLOTS) : [];
+      const questData = getQuestData();
+
+      // normalize + unique safeguard
+      const seen = new Set();
+      activeQuests = activeQuests.filter(q => {
+        const id = q?.id || q;
+        if (!id || seen.has(id)) return false;
+        seen.add(id);
+        return QUEST_POOL.some(poolQ => poolQ.id === id);
+      });
+
+      // fill missing slots first (no duplicates)
+      while (activeQuests.length < QUEST_SLOTS) {
+        const used = new Set(activeQuests.map(q => q.id || q));
+        const next = pickUniqueQuest(used);
+        if (!next) break;
+        activeQuests.push({ id: next.id, assignedAt: Date.now() });
+        if (!questData[next.id]) {
+          questData[next.id] = { progress: 0, completed: false, claimed: false };
+        }
+      }
+
+      // rotate only claimed quests
+      const usedIds = new Set(activeQuests.map(q => q.id || q));
+      const updated = activeQuests.map(slot => {
+        const slotId = slot.id || slot;
+        const progress = questData[slotId] || { progress: 0, completed: false, claimed: false };
+
+        if (progress.claimed) {
+          usedIds.delete(slotId); // freeing this slot for replacement
+          const replacement = pickUniqueQuest(usedIds);
+          if (replacement) {
+            usedIds.add(replacement.id);
+            // reset/new progress entry for new quest
+            questData[replacement.id] = { progress: 0, completed: false, claimed: false };
+            return { id: replacement.id, assignedAt: Date.now() };
+          }
+        }
+        return typeof slot === 'string' ? { id: slot, assignedAt: Date.now() } : slot;
+      });
+
+      setQuestData(questData, false);
+      setActiveQuests(updated, function() {
+        resets.lastReset = todayUtc;
+        setQuestResets(resets, function() {
+          renderQuests();
+          updateQuestsNotificationDot();
+        });
+      });
+    });
+  });
+}
+function normalizeQuestId(q) {
+  return q?.id || q || null;
+}
+
+function pickUniqueQuest(excludedIds = new Set()) {
+  const pool = QUEST_POOL
+    .filter(q => q && q.id) // ignore non-quest entries
+    .filter(q => !excludedIds.has(q.id));
+
+  if (!pool.length) return null;
+  const i = Math.floor(Math.random() * pool.length);
+  return pool[i];
+}
 function resetQuestsIfNeeded() {
   const now = new Date();
+  const todayUtcIso = new Date(Date.UTC(
+    now.getUTCFullYear(),
+    now.getUTCMonth(),
+    now.getUTCDate()
+  )).toISOString();
+
   getQuestResets(function(resets) {
-    let changed = false;
-    //  reset at 00:00 UTC
     const last = resets.lastReset ? new Date(resets.lastReset) : null;
-    const nowUtc = new Date(now.toISOString().split('T')[0] + "T00:00:00.000Z");
-    if (!last || nowUtc > last) {
-      resetQuestProgress('');
-      resets.lastReset = nowUtc.toISOString();
-      changed = true;
-    }
-    if (changed) setQuestResets(resets);
+    const alreadyResetToday = !!(last && last.toISOString() === todayUtcIso);
+    if (alreadyResetToday) return;
+
+    getActiveQuests(function(activeRaw) {
+      let activeQuests = Array.isArray(activeRaw) ? activeRaw.slice(0, QUEST_SLOTS) : [];
+      const questData = getQuestData() || {};
+
+      // 1) sanitize + dedupe current active quests
+      const seen = new Set();
+      activeQuests = activeQuests
+        .map(q => (typeof q === "string" ? { id: q } : q))
+        .filter(q => {
+          const id = normalizeQuestId(q);
+          if (!id || seen.has(id)) return false;
+          if (!QUEST_POOL.some(p => p.id === id)) return false;
+          seen.add(id);
+          return true;
+        });
+
+      // 2) fill missing slots (no duplicates)
+      while (activeQuests.length < QUEST_SLOTS) {
+        const used = new Set(activeQuests.map(normalizeQuestId));
+        const next = pickUniqueQuest(used);
+        if (!next) break;
+        activeQuests.push({ id: next.id, assignedAt: Date.now() });
+        if (!questData[next.id]) {
+          questData[next.id] = { progress: 0, completed: false, claimed: false };
+        }
+      }
+
+      // 3) rotate ONLY claimed quests
+      const usedIds = new Set(activeQuests.map(normalizeQuestId));
+      const rotated = activeQuests.map(slot => {
+        const slotId = normalizeQuestId(slot);
+        const progress = questData[slotId] || { progress: 0, completed: false, claimed: false };
+
+        if (progress.claimed) {
+          usedIds.delete(slotId);
+          const replacement = pickUniqueQuest(usedIds);
+          if (replacement) {
+            usedIds.add(replacement.id);
+            if (!questData[replacement.id]) {
+              questData[replacement.id] = { progress: 0, completed: false, claimed: false };
+            } else {
+              // reset replacement quest progress for fresh slot
+              questData[replacement.id].progress = 0;
+              questData[replacement.id].completed = false;
+              questData[replacement.id].claimed = false;
+            }
+            return { id: replacement.id, assignedAt: Date.now() };
+          }
+        }
+
+        return slot;
+      });
+
+      setQuestData(questData, false);
+      setActiveQuests(rotated, function() {
+        resets.lastReset = todayUtcIso;
+        setQuestResets(resets, function() {
+          renderQuests();
+          updateQuestsNotificationDot();
+          startQuestTimers();
+        });
+      });
+    });
   });
 }
 // 3. Reset Quest progress for a type
@@ -2841,7 +2985,7 @@ function updateQuestResetTimer() {
   timerDiv.textContent = `Next quests reset in ${formatTimer(ms)}`;
   // When timer reaches zero, reset quests and update UI
   if (ms <= 0) {
-    resetQuestsIfNeeded();
+    rotateDailyQuestSlotsIfNeeded();
     renderQuests();
   }
 }
@@ -3208,7 +3352,7 @@ function computeAchievementsProgress({ autoSave = true } = {}) {
 window.computeAchievementsProgress = computeAchievementsProgress;
 // --- ENSURE QUESTS RESET AT 00:00 UTC ON PAGE LOAD ---
 document.addEventListener('DOMContentLoaded', function() {
-  resetQuestsIfNeeded(); // Ensure daily reset logic runs
+  rotateDailyQuestSlotsIfNeeded();
 });
 // OPEN/CLOSE LOGIC
 document.getElementById('quests-icon').onclick = function() {
