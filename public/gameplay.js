@@ -3501,45 +3501,36 @@ function getPhaseDisplayName(phaseKey) { return PHASE_DISPLAY_NAMES[phaseKey] ||
 function getPhaseClass(phaseKey)       { return PHASE_CLASS[phaseKey] || ""; }
 
 function handleStartPhase(turn) {
-  // Increment turn counter
-  if (turn === 'player') {
-    gameState.turnNumber = (gameState.turnNumber || 0) + 1;
-  }
+  if (turn === 'player') gameState.turnNumber = (gameState.turnNumber || 0) + 1;
 
   const units = turn === 'player' ? gameState.playerUnits : gameState.enemyUnits;
   const terrains = turn === 'player' ? gameState.playerSupportSlots.filter(Boolean) : gameState.enemySupportSlots.filter(Boolean);
-  
-  [...units, ...terrains].forEach(cardObj => {
-    cardObj.orientation = 'vertical';
-  });
-  
+  [...units, ...terrains].forEach(cardObj => { cardObj.orientation = 'vertical'; });
+
   drawCards(turn, 1);
-  // Log action
-  appendVisualLog({
-    action: "startPhase",
+
+  addGameLogEntry({
+    type: 'phase_start',
     who: turn
-  }, false, turn === "player");
+  });
+
   renderGameState();
 }
 
 function handleActionPhase(turn) {
-  // Optionally log phase start
-  appendVisualLog({
-    action: "actionPhase",
+  addGameLogEntry({
+    type: 'phase_action',
     who: turn
-  }, false, turn === "player");
+  });
 }
 
 function handleEndPhase(turn) {
-  // Trigger end-of-turn effects (statuses, abilities, etc.)
- // triggerEndPhaseEffects(turn);
-  // Tick all statuses generically based on phase
   tickStatusDurations({ turn, phase: "end" });
-  // Optionally log phase end
-  appendVisualLog({
-    action: "endPhase",
+
+  addGameLogEntry({
+    type: 'phase_end',
     who: turn
-  }, false, turn === "player");
+  });
 }
 
 function updatePhase() {
@@ -3584,17 +3575,50 @@ function renderGameLog() {
   if (!container) return;
 
   container.innerHTML = '';
-  const entries = gameState.gameLog || [];
-  const logEl = document.getElementById('battlefield-log-container');
-  if (logEl) {
-    logEl.scrollTop = logEl.scrollHeight;
-  }
+  const entries = Array.isArray(gameState.gameLog) ? gameState.gameLog : [];
+
   if (!entries.length) {
     container.innerHTML = '<div style="color:#ffe06699;font-size:.9em;">No actions yet.</div>';
     return;
   }
 
-  // newest first
+  const whoLabel = (who) => who === 'player' ? 'You' : (who === 'enemy' ? 'Enemy' : 'System');
+
+  const describe = (e) => {
+    switch (e.type) {
+      case 'phase_start':  return `${whoLabel(e.who)} entered Start Phase`;
+      case 'phase_action': return `${whoLabel(e.who)} entered Action Phase`;
+      case 'phase_end':    return `${whoLabel(e.who)} entered End Phase`;
+
+      case 'attack': {
+        const a = e.data?.attackerName || 'Unit';
+        const d = e.data?.defenderName || 'target';
+        return `${whoLabel(e.who)}: ${a} attacked ${d}`;
+      }
+
+      case 'skill': {
+        const c = e.data?.cardName || 'Card';
+        const s = e.data?.skillName || 'Skill';
+        return `${whoLabel(e.who)}: ${c} activated ${s}`;
+      }
+
+      case 'move': {
+        const c = e.data?.cardName || 'Card';
+        const from = e.data?.from || 'zone';
+        const to = e.data?.to || 'zone';
+        return `${whoLabel(e.who)}: ${c} moved ${from} → ${to}`;
+      }
+
+      case 'draw': {
+        const n = e.data?.amount || 1;
+        return `${whoLabel(e.who)} drew ${n} card${n > 1 ? 's' : ''}`;
+      }
+
+      default:
+        return e.text || 'Action';
+    }
+  };
+
   entries.slice().reverse().forEach(entry => {
     const row = document.createElement('div');
     row.className = 'game-log-entry';
@@ -3604,12 +3628,11 @@ function renderGameLog() {
     row.style.background = 'rgba(255,224,102,0.08)';
     row.style.fontSize = '0.88em';
 
-    if (entry.html) row.innerHTML = entry.html;
-    else if (entry.text) row.textContent = entry.text;
-    else row.textContent = String(entry.type || 'action');
-
+    row.textContent = describe(entry);
     container.appendChild(row);
   });
+
+  container.scrollTop = container.scrollHeight;
 }
 function appendGameLog(type, text) {
   
@@ -4869,25 +4892,19 @@ let entryHtml = `
 
 // ATTACK LOG
 function appendAttackLog({ attacker, defender, defenderOrientation, who = "player" }, fromSocket = false, isMe = true) {
-  // Get card data
   const attackerDef = dummyCards.find(c => c.id === attacker.cardId);
   const defenderDef = dummyCards.find(c => c.id === defender.cardId);
 
-  // Compose the log HTML (same as before)
-  let logHtml = `<div class="log-action attack ${who}" style="background:${who === 'player' ? '#232' : '#322'}11;border-radius:7px;display:inline-flex;align-items:center;">`;
-  logHtml += cardImgLog(attackerDef, { width: 38, who });
-  logHtml += `<img src="Icons/Other/Attack.png" alt="Attack" style="width:32px;height:32px;vertical-align:middle;margin:0 9px;">`;
-  logHtml += cardImgLog(defenderDef, { width: 38, marginLeft: "8px", who, rotate: defenderOrientation === "horizontal" ? 90 : 0 });
-  logHtml += `</div>`;
-
-  // NEW: write to state
   addGameLogEntry({
-    type: "attack",
+    type: 'attack',
     who,
-    html: logHtml,
-    attacker,
-    defender,
-    defenderOrientation
+    data: {
+      attackerId: attacker?.instanceId,
+      defenderId: defender?.instanceId,
+      attackerName: attackerDef?.name || 'Unit',
+      defenderName: defenderDef?.name || 'Unit',
+      defenderOrientation: defenderOrientation || defender?.orientation || 'vertical'
+    }
   });
 
   // Only emit if not from socket
@@ -4962,7 +4979,6 @@ function filterCardsByCriteria(cardArr, criteria) {
   });
 }
 
-// APPEND TO LOG (state-driven; modal renders from gameState.gameLog)
 function appendVisualLog(obj, fromSocket = false, isMe = true) {
   if (!obj) return;
 
@@ -5587,7 +5603,15 @@ function activateSkill(cardObj, skillObj, options = {}) {
       onCancel: () => {} // optional
     });
   };
-
+addGameLogEntry({
+  type: 'skill',
+  who: getCardOwner(cardObj) === 'enemy' ? 'enemy' : 'player',
+  data: {
+    cardId: cardObj.instanceId,
+    cardName: cardData?.name || 'Card',
+    skillName: skillObj?.name || 'Skill'
+  }
+});
   if (skillObj.activation && skillObj.activation.handler) {
     skillObj.activation.handler(cardObj, skillObj, openPaymentModal);
   } else {
@@ -6697,13 +6721,28 @@ function isAnyvoidCardActionable(gameState, dummyCards) {
     nextSibling: null
   };
 
-function addGameLogEntry(entry) {
+function addGameLogEntry(entry = {}) {
   if (!Array.isArray(gameState.gameLog)) gameState.gameLog = [];
-  gameState.gameLog.push({
-    timestamp: Date.now(),
-    ...entry
-  });
+
+  const normalized = {
+    id: crypto?.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random()),
+    ts: Date.now(),
+    type: entry.type || "system",
+    who: entry.who || "system", // player | enemy | system
+    text: entry.text || "",
+    html: entry.html || "",
+    data: entry.data || {}
+  };
+
+  gameState.gameLog.push(normalized);
+
+  // keep last 200
+  if (gameState.gameLog.length > 200) {
+    gameState.gameLog = gameState.gameLog.slice(-200);
   }
+
+  renderGameLog();
+}
 })();
 const gameLogContainer = document.getElementById('game-log-container');
 if (gameLogContainer) {
