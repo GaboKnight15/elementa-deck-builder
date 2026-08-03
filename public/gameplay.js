@@ -1174,7 +1174,6 @@ banish: { icon: 'Icons/Skill/Banish.png', name: 'Banish',
       const owner = selectedCardObj.owner || getCardOwner(selectedCardObj);
       const deckArr = owner === "enemy" ? gameState.enemyDeck : gameState.playerDeck;
       moveCard(selectedCardObj.instanceId, fromArr, deckArr);
-      // shuffleDeck that owner's deck
       if (owner === "enemy") {
         gameState.enemyDeck = shuffleDeck(gameState.enemyDeck);
       } else {
@@ -2094,7 +2093,6 @@ function setCardAnimatableClass(div, cardObj, cardData, gameState, zone) {
   }
 }
 
-// Fisher-Yates in-place shuffleDeck for any array
 function shuffleDeck(arr) {
   if (!Array.isArray(arr) || arr.length <= 1) return arr;
   for (let i = arr.length - 1; i > 0; i--) {
@@ -2389,7 +2387,7 @@ function appendDeckZone(parentDiv, deckArray, who) {
           }
         },
         {
-          text: "shuffleDeck",
+          text: "Shuffle",
           onClick: function(ev) {
             ev.stopPropagation();
             gameState.playerDeck = shuffleDeck(gameState.playerDeck);
