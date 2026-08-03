@@ -5945,31 +5945,29 @@ function changeCardPosition(cardObj, newOrientation, onComplete) {
 // - onSelect(selectedArray) will be called with the chosen card instance(s)
 // - opts: optional { title, multi(boolean), count(number), confirm(boolean) }
 function chooseTargetsForEffect(step = {}, sourceCardObj = null, onSelect = () => {}, opts = {}) {
-  // Normalize step.target count
-  const count = (typeof step.target === 'number') ? Number(step.target) : (opts.count || (step.count || null));
-  // If no explicit target and no number, default count=1 (single selection)
+  const count = (typeof step.target === 'number') ? Number(step.target) : (opts.count || step.count || null);
   const expectedCount = (count && Number(count) > 0) ? Number(count) : (opts.count || 1);
 
-  // Determine the target kind/string to decide which UI to show
   const targetSpec = step.target || step.zone || null;
+  const targetKey = String(targetSpec || '').toLowerCase();
 
-  // Field-based selections -> use existing startSkillTarget which highlights cards on battlefield
-  if (!targetSpec || typeof targetSpec === 'number' || (typeof targetSpec === 'string' && ['targetenemy','targetPlayer','allUnit','allTerrain','any','enemy','player'].includes(String(targetSpec)))) {
-    // Use getTargetsFromEffect to produce candidate array
+  // Field-based selections
+  if (
+    !targetSpec ||
+    typeof targetSpec === 'number' ||
+    ['targetenemy', 'targetplayer', 'allunit', 'allterrain', 'any', 'enemy', 'player'].includes(targetKey)
+  ) {
     const candidates = getTargetsFromEffect(step, sourceCardObj);
-    // startSkillTarget expects the list of card objects and will handle selection highlighting
     startSkillTarget(candidates, selected => {
       onSelect(Array.isArray(selected) ? selected : [selected]);
     }, { title: opts.title || step.title || null, count: expectedCount });
     return;
   }
 
-  // Hand selections -> show modal listing those hand cards
-  if (String(targetSpec) === 'targetHandenemy' || String(targetSpec) === 'targetHandPlayer') {
+  // Hand selections
+  if (targetKey === 'targethandenemy' || targetKey === 'targethandplayer') {
     const arr = getTargetsFromEffect(step, sourceCardObj);
-    // For enemy hand: card objects may be concealed; we still present them in modal.
     showFilteredCardSelectionModal(arr, selected => {
-      // selected may be a single card instance or an object depending on modal usage - normalize to array
       onSelect(Array.isArray(selected) ? selected : [selected]);
     }, {
       title: opts.title || step.title || 'Select from Hand',
@@ -5978,26 +5976,34 @@ function chooseTargetsForEffect(step = {}, sourceCardObj = null, onSelect = () =
     return;
   }
 
-  // Void selections
-  if (['targetVoidEnemy','targetVoidPlayer'].includes(String(targetSpec))) {
+  // Void selections (single side)
+  if (targetKey === 'targetvoidenemy' || targetKey === 'targetvoidplayer') {
     const arr = getTargetsFromEffect(step, sourceCardObj);
     showFilteredCardSelectionModal(arr, selected => {
       onSelect(Array.isArray(selected) ? selected : [selected]);
     }, {
-      title: opts.title || step.title || 'Select from void',
+      title: opts.title || step.title || 'Select from Void',
       count: expectedCount
     });
     return;
   }
 
-  // Combined void modal: player's void first, enemy's below
-  if (String(targetSpec) === 'targetVoid') {
+  // Combined void selections (both sides)
+  if (targetKey === 'targetvoid') {
     const playerVoid = Array.isArray(gameState.playerVoid) ? gameState.playerVoid.slice() : [];
     const enemyVoid = Array.isArray(gameState.enemyVoid) ? gameState.enemyVoid.slice() : [];
- { title: opts.title || 'Select from void', count: expectedCount });
+    const combined = [...playerVoid, ...enemyVoid];
+
+    showFilteredCardSelectionModal(combined, selected => {
+      onSelect(Array.isArray(selected) ? selected : [selected]);
+    }, {
+      title: opts.title || 'Select from Void',
+      count: expectedCount
+    });
     return;
   }
 
+  // Fallback
   const fallback = getTargetsFromEffect(step, sourceCardObj);
   startSkillTarget(fallback, selected => {
     onSelect(Array.isArray(selected) ? selected : [selected]);
