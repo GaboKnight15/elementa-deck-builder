@@ -936,7 +936,7 @@ const dummyCards = [
 
 {id: 'Virkul', name: 'Virkul', rarity: 'Legend', image: 'Cards/egp/Virkul.png', flavor: '', 
  category: 'Terrain', color: 'Purple', hp: 20, ep: '{p2}', group: '', type: ['Mystic','Domain'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
-	{name: 'Terraform', cost: '{p3}', eff: {class: 'terraform'}}
+	{name: 'Terraform', cost: '{p3}', eff: {class: 'terraform'}},
 	{name: 'Distort', req: 'tap', eff: {class: 'curse', amount: 1}}]},
 
 {id: 'MyxarothCursedDreadspine', name: 'Myxaroth, Cursed Dreadspine', rarity: 'Legend', image: 'Cards/fop/MyxarothCursedDreadspine.png', flavor: '', 
