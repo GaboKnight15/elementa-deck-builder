@@ -2389,7 +2389,7 @@ button[disabled], .btn-disabled {
 .cpu-player-modal-content {
   background: linear-gradient(122deg, #263354d9 60%, #202b3ed1 100%);
 }
-/* <--- DECK AND FALLEN/VOID MODALS */
+/* <--- DECK AND VOID MODALS */
 .modal {
   display: none;
   position: fixed;
@@ -3486,8 +3486,8 @@ button[disabled], .btn-disabled {
   outline: 2px dashed #007bff;
   background: #e0f3ff;
 }
-/* FALLEN STYLE */
-.zone.fallen {
+/* VOID STYLE */
+.zone.void {
   background: #222; /* example, dark background for discard */
   display: flex;
   align-items: center;
@@ -3515,7 +3515,7 @@ button[disabled], .btn-disabled {
   box-sizing: border-box;
 }
 
-.deck-zone, .fallen-zone, #phase-badge {
+.deck-zone, .void-zone, #phase-badge {
   width: 60px;
   height: 85px;
   background: transparent;
@@ -3617,12 +3617,12 @@ button[disabled], .btn-disabled {
   z-index: 12;
 }
 .card-deck,
-.card-fallen {
+.card-void {
   transition: transform 0.16s, box-shadow 0.18s;
   cursor: pointer;
 }
 .card-deck:hover, .card-deck:focus,
-.card-fallen:hover, .card-fallen:focus {
+.card-void:hover, .card-void:focus {
   transform: translateY(-6px) scale(1.045);
   box-shadow: 0 10px 24px rgba(0,0,0,0.17);
   z-index: 3;
