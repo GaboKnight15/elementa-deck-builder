@@ -3323,11 +3323,10 @@ function openVoidModal(isenemy = false) {
   const modalContent = modal.querySelector('.modal-content');
   if (modalContent) modalContent.onclick = e => e.stopPropagation();
 
-  const voidList = document.getElementById('void-cards-list');
-  if (!voidList || !voidList) return;
+  const voidList = document.getElementById('void-modal-list');
+  if (!voidList) return;
 
   voidList.innerHTML = '';
-
   const voidCards = isenemy ? (gameState.enemyVoid || []) : (gameState.playerVoid || []);
 
   // ----
