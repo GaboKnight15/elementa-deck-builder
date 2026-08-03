@@ -216,7 +216,7 @@ const dummyCards = [
 {id: 'DeepwoodUrsan', name: 'Deepwood Ursan', rarity: 'Common', image: 'Cards/egg/DeepwoodUrsan.png', flavor: '', 
  category: 'Unit', fight: 'Apex Feast', color: 'Green', group: 'Wild', type: ['Sylvan','Beast'], hp: 6, atk: 3, cost: '{g4}', ability: '', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{g4}', eff: {class: 'summon'}},
-	{name: 'Apex Feast', ep: '{g}', eff: [{class: 'banish', q: 1, target: 'enemyFallen', category: 'Unit'}, {class: 'bolster', atk: 1, hp: 1}]}]},
+	{name: 'Apex Feast', ep: '{g}', eff: [{class: 'banish', q: 1, target: 'enemyVoid', category: 'Unit'}, {class: 'bolster', atk: 1, hp: 1}]}]},
 	
 {id: 'WoodlandAntler', name: 'Woodland Antler', rarity: 'Common', image: 'Cards/egg/WoodlandAntler.png', flavor: '', 
  category: 'Unit', fight: 'Forest Freight', color: 'Green', group: 'Wild', type: ['Sylvan','Beast'], hp: 4, atk: 2, cost: '{g3}', ability: 'Rush', set: ['ElementaGenesis','EssenceLegacy'], skill: [
@@ -254,7 +254,7 @@ const dummyCards = [
  ability: ['Dive','Rush'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{g2}{u}', eff: {class: 'summon'}},
 	{name: 'Riverbed Flotsam Glean', trig: 'summon', eff: {class: 'recover', category: 'Artifact'},
-	 text: 'When this card is summoned, recover 1 fallen artifact.'},
+	 text: 'When this card is summoned, recover 1 artifact.'},
 	{name: 'Drifting Foam Escape', req: 'return', eff: {class: 'drench', target: 'enemyUnits'}}]},
 
 {id: 'MistyMarsh', name: 'Misty Marsh', rarity: 'Common', image: 'Cards/egg/MistyMarsh.png', flavor: '', 
@@ -456,8 +456,8 @@ const dummyCards = [
  category: 'Unit', fight: '', color: ['Red','Gray'], group: 'Spirit', type: ['Fire','Rock','Elemental'], hp: 8, atk: 5, cost: '{r7}{c3}', ability: ['Armor','Burn','Fusion'], set: 'FracturedOrigins', skill: [
 	{name: 'Summon', cost: '{r7}{c3}', eff: {class: 'summon'}},
 	{name: 'Fusion', eff: {class: 'fusion', group: '', type: ['Fire','Rock']}},
-	{name: 'Magma Catalyst', req: 'discard', eff: [{class: 'bury', q: 2, group: '', type: ['Fire','Rock']}, {class: 'burn', q: 'playerFallen', group: '', type: 'Fire'}], 
-	 text: 'Discard this ally, bury 2 fire rock allies and burn {1} for each fallen fire ally.'},
+	{name: 'Magma Catalyst', req: 'discard', eff: [{class: 'bury', q: 2, group: '', type: ['Fire','Rock']}, {class: 'burn', q: 'playerVoid', group: '', type: 'Fire'}], 
+	 text: 'Discard this ally, bury 2 fire rock allies and burn {1} for each defeated fire ally.'},
 	{name: 'Moltern Aegis Nova', cost: '{r2}{c}', eff: [{class: 'wither', atk:1, hp:3}, {class: 'destroy', blight: 'burned', target: 'allField'}, {class: 'burn', amount: 3, target: 3}],
 	 text: 'Lose -{1}/-{3}, destroy all burned units and burn strike 2 to all enemies.'}]},
  
@@ -1695,7 +1695,7 @@ wither: {name: "Wither", text: "Inflict {wither} upon dealing damage. Withered c
 // -------------------- //
 // --- REQUIREMENTS --- //
 // -------------------- //
-discard: {name: "Discard", text: "Sends from the hand to the fallen zone."},
+discard: {name: "Discard", text: "Sends from the hand to the void."},
 stash: {name: "Stash", text: "Returns from the hand to the deck as a cost."},
 recycle: {name: "Recycle", text: "Returns from the void to the deck as a cost."},
 retreat: {name: "Retreat", text: "Returns from the field to the hand as a cost."},
@@ -1724,7 +1724,7 @@ repel: {name: "Repel", text: "Return one unit from the field to the hand."},
 mill: {name: "Mill", text: "Sends one card from the deck to the void."},
 
 // --- SELF SUMMON SKILLS --- //
-reanimate: {name: "Reanimate", text: "Can be summoned from the fallen."},
+reanimate: {name: "Reanimate", text: "Can be summoned from the void."},
 dash: {name: "Dash", text: "Summon from the hand with half HP (rounded up). Gain {1} Speed."},
 overcharge: {name: "Overcharge", text: "Summon from the hand. Gain {1}/{1}"},
 manifest: {name: "Manifest", text: "Summon from the deck after meeting certain conditions."},
