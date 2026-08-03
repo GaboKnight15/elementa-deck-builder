@@ -1367,10 +1367,8 @@ function startGame({
   // --- Reset non-field zones ---
   gameState.playerHand = [];
   gameState.playerVoid = [];
-  gameState.playerVoid = [];
 
   gameState.enemyHand = [];
-  gameState.enemyVoid = [];
   gameState.enemyVoid = [];
 
   // --- Reset canonical slot-based battlefield ---
@@ -1654,14 +1652,12 @@ function getCardOwner(cardObj) {
   if (gameState.playerHand.some(c => c.instanceId === id)) return "player";
   if (gameState.playerDeck.some(c => c.instanceId === id)) return "player";
   if (gameState.playerVoid.some(c => c.instanceId === id)) return "player";
-  if (gameState.playerVoid.some(c => c.instanceId === id)) return "player";
   if (gameState.playerUnitSlots.some(c => c && c.instanceId === id)) return "player";
   if (gameState.playerSupportSlots.some(c => c && c.instanceId === id)) return "player";
 
   // Enemy zones
   if (gameState.enemyHand.some(c => c.instanceId === id)) return "enemy";
   if (gameState.enemyDeck.some(c => c.instanceId === id)) return "enemy";
-  if (gameState.enemyVoid.some(c => c.instanceId === id)) return "enemy";
   if (gameState.enemyVoid.some(c => c.instanceId === id)) return "enemy";
   if (gameState.enemyUnitSlots.some(c => c && c.instanceId === id)) return "enemy";
   if (gameState.enemySupportSlots.some(c => c && c.instanceId === id)) return "enemy";
@@ -1677,8 +1673,6 @@ function isTargetStillPresent(targetObj) {
     gameState.enemyHand.some(c => c.instanceId === id) ||
     gameState.playerDeck.some(c => c.instanceId === id) ||
     gameState.enemyDeck.some(c => c.instanceId === id) ||
-    gameState.playerVoid.some(c => c.instanceId === id) ||
-    gameState.enemyVoid.some(c => c.instanceId === id) ||
     gameState.playerVoid.some(c => c.instanceId === id) ||
     gameState.enemyVoid.some(c => c.instanceId === id) ||
     gameState.playerUnitSlots.some(c => c && c.instanceId === id) ||
