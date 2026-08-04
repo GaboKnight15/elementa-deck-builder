@@ -6970,62 +6970,59 @@ function unlockCardStyle(cardId, styleType) {
 
 // MENU INSIDE VIEWPORT
 function placeMenuWithinShell(menu, triggerRect, preferred = "bottom") {
-  // Pick your shell/root element (adjust selector if needed)
   const shell =
-    document.getElementById('app-main') ||
     document.getElementById('game-shell') ||
-    document.querySelector('.game-shell') ||
+    document.getElementById('gameplay-section') ||
     document.body;
 
-  // Ensure shell can anchor absolutely-positioned children
-  const shellStyle = getComputedStyle(shell);
+  // Ensure menu is in shell so offsets are in same coordinate context
+  if (menu.parentNode !== shell) shell.appendChild(menu);
+
+  // Make sure shell can be a positioning context
+  const shellStyle = window.getComputedStyle(shell);
   if (shellStyle.position === 'static') {
     shell.style.position = 'relative';
   }
 
-  // Attach menu to shell (not body)
-  if (menu.parentNode !== shell) {
-    shell.appendChild(menu);
-  }
-
+  // Prepare menu for measurement
   menu.style.position = 'absolute';
-  menu.style.zIndex = '3000';
+  menu.style.visibility = 'hidden';
+  menu.style.left = '0px';
+  menu.style.top = '0px';
+  menu.style.maxWidth = 'min(280px, calc(100% - 16px))';
+  menu.style.zIndex = '9999';
 
-  // Rects
   const shellRect = shell.getBoundingClientRect();
 
-  // Initial preferred position relative to shell
-  let top = (preferred === 'top')
-    ? (triggerRect.top - shellRect.top) - menu.offsetHeight - 8
-    : (triggerRect.bottom - shellRect.top) + 8;
+  // Convert viewport coords -> shell-local coords
+  const anchorX = triggerRect.left - shellRect.left;
+  const anchorYTop = triggerRect.top - shellRect.top;
+  const anchorYBottom = triggerRect.bottom - shellRect.top;
 
-  let left = (triggerRect.left - shellRect.left);
+  const menuW = menu.offsetWidth;
+  const menuH = menu.offsetHeight;
 
-  // Force layout to get size if needed
-  const menuRect = menu.getBoundingClientRect();
-  const menuW = menuRect.width;
-  const menuH = menuRect.height;
+  // Default placement
+  let left = anchorX;
+  let top = preferred === 'top' ? (anchorYTop - menuH - 8) : (anchorYBottom + 8);
 
-  const maxLeft = shell.clientWidth - menuW - 8;
-  const maxTop = shell.clientHeight - menuH - 8;
+  // Clamp horizontally
+  const minPad = 8;
+  const maxLeft = shell.clientWidth - menuW - minPad;
+  left = Math.max(minPad, Math.min(left, maxLeft));
 
-  // Horizontal clamp to shell
-  left = Math.max(8, Math.min(left, maxLeft));
-
-  // Vertical fallback logic
-  if (top > maxTop) {
-    const above = (triggerRect.top - shellRect.top) - menuH - 8;
-    if (above >= 8) {
-      top = above;
-    } else {
-      top = maxTop;
-    }
+  // Flip if overflows bottom
+  if (top + menuH > shell.clientHeight - minPad) {
+    top = anchorYTop - menuH - 8;
   }
 
-  top = Math.max(8, Math.min(top, maxTop));
+  // Final vertical clamp
+  const maxTop = shell.clientHeight - menuH - minPad;
+  top = Math.max(minPad, Math.min(top, maxTop));
 
   menu.style.left = `${left}px`;
   menu.style.top = `${top}px`;
+  menu.style.visibility = 'visible';
 }
 // Example function to get number of unique collected cards (replace with your real function)
 function getUniqueCollectedCardsCount() {
