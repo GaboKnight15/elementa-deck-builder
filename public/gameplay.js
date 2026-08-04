@@ -3634,6 +3634,28 @@ function renderGameLog() {
 
   container.scrollTop = container.scrollHeight;
 }
+function addGameLogEntry(entry = {}) {
+  if (!Array.isArray(gameState.gameLog)) gameState.gameLog = [];
+
+  const normalized = {
+    id: crypto?.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random()),
+    ts: Date.now(),
+    type: entry.type || "system",
+    who: entry.who || "system", // player | enemy | system
+    text: entry.text || "",
+    html: entry.html || "",
+    data: entry.data || {}
+  };
+
+  gameState.gameLog.push(normalized);
+
+  // keep last 200
+  if (gameState.gameLog.length > 200) {
+    gameState.gameLog = gameState.gameLog.slice(-200);
+  }
+
+  renderGameLog();
+}
 function appendGameLog(type, text) {
   
   if (!gameState.gameLog) gameState.gameLog = [];
@@ -6712,38 +6734,6 @@ function isAnyvoidCardActionable(gameState, dummyCards) {
   });
 }
 
-// --- Game Log modal + clickable icon ---
-
-(function() {
-  // State for moving the log node back when the modal closes
-  let gameLogstate = {
-    originalParent: null,
-    nextSibling: null
-  };
-
-function addGameLogEntry(entry = {}) {
-  if (!Array.isArray(gameState.gameLog)) gameState.gameLog = [];
-
-  const normalized = {
-    id: crypto?.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random()),
-    ts: Date.now(),
-    type: entry.type || "system",
-    who: entry.who || "system", // player | enemy | system
-    text: entry.text || "",
-    html: entry.html || "",
-    data: entry.data || {}
-  };
-
-  gameState.gameLog.push(normalized);
-
-  // keep last 200
-  if (gameState.gameLog.length > 200) {
-    gameState.gameLog = gameState.gameLog.slice(-200);
-  }
-
-  renderGameLog();
-}
-})();
 const gameLogContainer = document.getElementById('game-log-container');
 if (gameLogContainer) {
   gameLogContainer.addEventListener('click', function(e) {
