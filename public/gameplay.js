@@ -391,7 +391,7 @@ const TRIGGER_MAP = {
 
 const REQ_MAP = {
 tap: { name: 'Tap', icon: 'Icons/Skill/Tap.png',
-  zone: ['playerUnits', 'playerSupportSlots.filter(Boolean)'],
+  zone: 'field',
   description: 'Changes itself to horizontal.',
   canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
     const validZone = Array.isArray(this.zone) ? this.zone : [this.zone];
@@ -421,7 +421,7 @@ tap: { name: 'Tap', icon: 'Icons/Skill/Tap.png',
 },
 
 untap: { name: 'Untap', icon: 'Icons/Skill/Untap.png',
-  zone: ['playerUnits', 'playerSupportSlots.filter(Boolean)'],
+  zone: 'field',
   description: 'Changes itself to vertical.',
   canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
     const validZone = Array.isArray(this.zone) ? this.zone : [this.zone];
@@ -450,7 +450,7 @@ untap: { name: 'Untap', icon: 'Icons/Skill/Untap.png',
   }
 },
   stash: { name: 'Stash', icon: 'Icons/Skill/Stash.png',
-    zone: ['playerHand'],
+    zone: 'hand',
     description: 'Returns itself from the hand to the deck.',
     canActivate(sourceCardObj, skillObj, currentZone, gameState) {
       return this.zone.includes(currentZone);
@@ -478,7 +478,7 @@ untap: { name: 'Untap', icon: 'Icons/Skill/Untap.png',
   discard: {
     name: 'Discard',
     icon: 'Icons/Skill/Discard.png',
-    zone: ['playerHand'],
+    zone: 'hand',
     description: 'Sends itself from the hand to the void.',
     canActivate(sourceCardObj, skillObj, currentZone, gameState) {
       return this.zone.includes(currentZone);
@@ -503,7 +503,7 @@ untap: { name: 'Untap', icon: 'Icons/Skill/Untap.png',
   return: {
     name: 'Return',
     icon: 'Icons/Skill/Return.png',
-    zone: ['playerUnits', 'playerSupportSlots.filter(Boolean)'],
+    zone: 'hand',
     description: 'Returns itself from the field to the hand.',
     canActivate(sourceCardObj, skillObj, currentZone, gameState) {
       return this.zone.includes(currentZone);
@@ -528,7 +528,7 @@ untap: { name: 'Untap', icon: 'Icons/Skill/Untap.png',
   retreat: {
     name: 'Retreat',
     icon: 'Icons/Skill/Retreat.png',
-    zone: ['playerUnits', 'playerSupportSlots.filter(Boolean)'],
+    zone: 'hand',
     description: 'Returns itself from the field to the deck.',
     canActivate(sourceCardObj, skillObj, currentZone, gameState) {
       return this.zone.includes(currentZone);
@@ -556,7 +556,7 @@ untap: { name: 'Untap', icon: 'Icons/Skill/Untap.png',
 };
 
 const EFF_MAP = {
-summon: { name: 'Summon', zone: 'playerHand', icon: 'Icons/Skill/Summon.png',
+summon: { name: 'Summon', zone: 'hand', icon: 'Icons/Skill/Summon.png',
   description: 'Move this card from hand to the field.',
   canActivate(cardObj, skillObj, currentZone, gameState) {
     return currentZone === 'playerHand' || currentZone === 'player-hand';
@@ -662,7 +662,7 @@ draw: { name: 'Draw',
   }
 },
   
-cast: { name: 'Cast', zone: 'playerHand', icon: 'Icons/Skill/Cast.png',
+cast: { name: 'Cast', zone: 'hand', icon: 'Icons/Skill/Cast.png',
   description: 'Cast a magic from hand.',
   canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
     // Accept common magicings used across your code
@@ -692,7 +692,7 @@ cast: { name: 'Cast', zone: 'playerHand', icon: 'Icons/Skill/Cast.png',
   }
 },
 
-terraform: { name: 'Terraform', zone: 'playerHand', icon: 'Icons/Skill/Terraform.png',
+terraform: { name: 'Terraform', zone: 'hand', icon: 'Icons/Skill/Terraform.png',
   description: 'You can only play terrains from the hand',
   canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
     // Must be in hand (tolerant naming), and terraform not used this turn by current player
@@ -850,7 +850,7 @@ disable: { name: 'Disable', icon: 'Icons/Skill/Tap.png',
   }
 },
 // --- SELF SUMMONING SKILLS --- //
-dash: { name: 'Dash', zone: 'playerHand', icon: 'Icons/Skill/Dash.png',
+dash: { name: 'Dash', zone: 'hand', icon: 'Icons/Skill/Dash.png',
   description: 'Summon this card from your hand with half HP (rounded up).',
   // Updated signature: accepts (sourceCardObj, skillObj, step, nextEffect)
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
@@ -894,7 +894,6 @@ reanimate: { name: 'Reanimate', zone: 'void', icon: 'Icons/Skill/Reanimate.png',
       if (nextEffect) nextEffect();
       return;
     }
-    // Determine target zone: units/terrains by card type
     const cardData = dummyCards.find(c => c.id === sourceCardObj.cardId);
     let targetArr;
     const category = Array.isArray(cardData.category)
@@ -1185,7 +1184,7 @@ banish: { icon: 'Icons/Skill/Banish.png', name: 'Banish',
   }
 },
   intimidate: {
-    icon: 'Icons/Ability/Intimidate.png', name: 'Intimidate', zone: 'playerField',  description: 'When attacking an enemy unit, disable it.',
+    icon: 'Icons/Ability/Intimidate.png', name: 'Intimidate', zone: 'field',  description: 'When attacking an enemy unit, disable it.',
     handler: function(attacker, defender, next) {
       // Only trigger Intimidate if defender is in ATK (vertical)
       if (defender.orientation === "vertical") {
@@ -1768,7 +1767,6 @@ function getTargets(target, sourceCardObj, context = {}) {
     });
   }
 
-  // object target style (if your effects pass { zone: "...", owner: "...", lane: "..." })
   if (typeof target === "object") {
     const zone = target.zone || target.key || "";
     if (zone && map[zone]) return [...map[zone]];
@@ -2730,8 +2728,8 @@ statsAndIconsOverlay.appendChild(topStatsRow);
   });
 
   // Skill Icons
-  if (Array.isArray(cardData.skills)) {
-    cardData.skills.forEach(skill => {
+  if (Array.isArray(cardData.skill)) {
+    cardData.skill.forEach(skill => {
       if (!skill.icon) return;
       const icon = document.createElement('img');
       icon.src = skill.icon;
@@ -5427,10 +5425,16 @@ function triggerSelfSkill(cardObj, eventType, context = {}, onComplete) {
 function normalizeZoneName(zone) {
   const z = String(zone || '').toLowerCase().trim();
 
+  // hand
   if (['hand','playerhand','player-hand','enemyhand','enemy-hand'].includes(z)) return 'hand';
+
+  // deck
   if (['deck','playerdeck','player-deck-zone','enemydeck','enemy-deck-zone'].includes(z)) return 'deck';
+
+  // void
   if (['void','playervoid','player-void-zone','enemyvoid','enemy-void-zone'].includes(z)) return 'void';
 
+  // field (all board slots)
   if (
     z === 'field' ||
     z.includes('unit') ||
@@ -5443,23 +5447,59 @@ function normalizeZoneName(zone) {
   return z;
 }
 
-function getSkillDeclaredZones(skillObj = {}) {
-  const raw = skillObj.zone ?? skillObj.activation?.zone;
-  if (!raw) return [];
+function getReqKeys(skillObj = {}) {
+  const raw = skillObj.req ?? skillObj.requirement ?? skillObj.activation?.requirement ?? [];
   const arr = Array.isArray(raw) ? raw : [raw];
-  return arr.map(normalizeZoneName).filter(Boolean);
+  return arr
+    .map(r => typeof r === 'string' ? r : r?.class)
+    .filter(Boolean)
+    .map(k => String(k).toLowerCase());
 }
 
-// For menu visibility only
+function getEffKeys(skillObj = {}) {
+  const raw = skillObj.effect ?? skillObj.resolution?.effect ?? [];
+  const arr = Array.isArray(raw) ? raw : [raw];
+  return arr
+    .map(e => typeof e === 'string' ? e : e?.class)
+    .filter(Boolean)
+    .map(k => String(k).toLowerCase());
+}
+
+function getSkillDeclaredZones(skillObj = {}) {
+  const zones = new Set();
+
+  // derive from REQ_MAP
+  for (const k of getReqKeys(skillObj)) {
+    const z = REQ_MAP?.[k]?.zone;
+    const arr = Array.isArray(z) ? z : (z ? [z] : []);
+    arr.map(normalizeZoneName).forEach(v => zones.add(v));
+  }
+
+  // derive from EFF_MAP
+  for (const k of getEffKeys(skillObj)) {
+    const z = EFF_MAP?.[k]?.zone;
+    const arr = Array.isArray(z) ? z : (z ? [z] : []);
+    arr.map(normalizeZoneName).forEach(v => zones.add(v));
+  }
+
+  return [...zones].filter(Boolean);
+}
+
+function isManualSkill(skillObj = {}) {
+  // Triggered-only skills should not appear in manual click menus
+  return !skillObj.trig;
+}
+
 function canRenderManualSkillInMenu(cardObj, skillObj, currentZone, gameState) {
+  if (!isManualSkill(skillObj)) return false;
+
   const declared = getSkillDeclaredZones(skillObj);
-  if (declared.length === 0) return false; // hide trigger/passive/no-zone skills from manual menus
+  if (declared.length === 0) return false;
 
   const z = normalizeZoneName(currentZone || getZoneNameForCard(cardObj));
-  if (!declared.includes(z)) return false;
-
-  return true;
+  return declared.includes(z);
 }
+
 function getAllowedSkillZones(skillObj = {}) {
   const direct = skillObj.zone;
   const legacy = skillObj.activation?.zone;
