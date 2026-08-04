@@ -2968,23 +2968,52 @@ function renderEssencePool(cardObj) {
   }
   return poolDiv;
 }
+// Add near other essence helpers in gameplay.js
+function resolveEssenceIcon(tokenOrColor, amount = 1) {
+  // Canonical source from shared.js
+  const map = (typeof ESSENCE_IMAGE_MAP !== 'undefined' && ESSENCE_IMAGE_MAP) ? ESSENCE_IMAGE_MAP : {};
 
+  const raw = String(tokenOrColor || '').trim();
+  const k = raw.toLowerCase();
+
+  // 1) direct key hit (supports your shared.js native keys)
+  if (map[raw] || map[k]) return map[raw] || map[k];
+
+  // 2) named color -> short token
+  const namedToShort = {
+    green: 'g', red: 'r', blue: 'u', yellow: 'y',
+    purple: 'p', gray: 'c', black: 'b', white: 'w'
+  };
+
+  if (k === 'colorless') {
+    return map[`x${amount}`] || map['x1'] || map['x0'] || '';
+  }
+
+  const short = namedToShort[k];
+  if (short) {
+    return map[short] || map[short.toUpperCase()] || map[`${short}${amount}`] || '';
+  }
+
+  // 3) if token looks like g/u/r etc
+  if (/^[gruypcbw]$/i.test(raw)) {
+    return map[k] || map[raw.toUpperCase()] || '';
+  }
+
+  return '';
+}
 function renderEssenceSummaryInto(container, pool = {}, opts = {}) {
   if (!container) return;
   container.innerHTML = '';
 
   const size = Number(opts.size || 16);
-  const imageMap = typeof ESSENCE_IMAGE_MAP !== 'undefined' ? ESSENCE_IMAGE_MAP : {};
-
-  const colors = ['green','red','blue','yellow','purple','gray','black','white','colorless'];
-  const keyToIcon = {
-    green:'g', red:'r', blue:'u', yellow:'y', purple:'p',
-    gray:'c', black:'b', white:'w', colorless:'x1'
-  };
+  const colors = ['green','red','blue','yellow','purple','gray','black','white'];
 
   colors.forEach(color => {
     const amt = Number(pool?.[color] || 0);
     if (amt <= 0) return;
+
+    const src = resolveEssenceIcon(color, amt);
+    if (!src) return;
 
     const wrap = document.createElement('div');
     wrap.style.display = 'inline-flex';
@@ -2993,8 +3022,8 @@ function renderEssenceSummaryInto(container, pool = {}, opts = {}) {
     wrap.style.margin = '0 6px 0 0';
 
     const img = document.createElement('img');
-    img.src = imageMap[keyToIcon[color]] || '';
-    img.alt = color + " essence";
+    img.src = src;
+    img.alt = `${color} essence`;
     img.style.width = `${size}px`;
     img.style.height = `${size}px`;
     wrap.appendChild(img);
@@ -4062,7 +4091,7 @@ function showEssencePaymentModal(opts = {}) {
       tokenWrap.style.minWidth = '56px';
 
       const tokenImg = document.createElement('img');
-      tokenImg.src = imageMap[color] || '';
+      tokenImg.src = resolveEssenceIcon(color, 1);
       tokenImg.style.width = '28px';
       tokenImg.style.height = '28px';
       tokenImg.title = `${color} (${amt})`;
@@ -4121,7 +4150,7 @@ function showEssencePaymentModal(opts = {}) {
       clWrap.style.minWidth = '56px';
 
       const clImg = document.createElement('img');
-      clImg.src = imageMap['X1'] || imageMap['X0'] || '';
+      clImg.src = resolveEssenceIcon('colorless', 1);
       clImg.style.width = '28px';
       clImg.style.height = '28px';
       clImg.title = `Colorless (${clAmt})`;
@@ -4265,32 +4294,13 @@ function showEssencePaymentModal(opts = {}) {
 
 // Requirement "progress" update
 function updateReqDiv(requirements, reqPaid, reqDiv) {
-  // requirements: array of {color, needed, paid}
-  // reqPaid: {color: number}
   reqDiv.innerHTML = `<b>Essence Required</b> ${
     requirements.map(r => {
       let icons = "";
-      // Colorless: use the X1 image for each unit
-      if (r.color === "colorless") {
-        for (let i = 0; i < r.needed; i++) {
-          const imgSrc = ESSENCE_IMAGE_MAP['x1'];
-          const isPaid = i < (reqPaid[r.color] || 0);
-          icons += `<img src="${imgSrc}" 
-            style="width:24px;height:24px;vertical-align:middle;margin: 0 3px;
-            filter:${isPaid ? "none" : "grayscale(0.5) brightness(0.5)"};
-            opacity:${isPaid ? "1" : "0.7"};
-            transition:filter 0.2s,opacity 0.2s;">`;
-        }
-      } else {
-        const imgSrc = ESSENCE_IMAGE_MAP[r.color];
-        for (let i = 0; i < r.needed; i++) {
-          const isPaid = i < (reqPaid[r.color] || 0);
-          icons += `<img src="${imgSrc}" 
-            style="width:24px;height:24px;vertical-align:middle;margin: 0 3px;
-            filter:${isPaid ? "none" : "grayscale(0.7) brightness(1.1)"};
-            opacity:${isPaid ? "1" : "0.7"};
-            transition:filter 0.2s,opacity 0.2s;">`;
-        }
+      for (let i = 0; i < r.needed; i++) {
+        const src = resolveEssenceIcon(r.color, 1);
+        const isPaid = i < (reqPaid[r.color] || 0);
+        icons += `<img src="${src}" style="width:24px;height:24px;vertical-align:middle;margin:0 3px;filter:${isPaid ? "none" : "grayscale(0.6) brightness(0.7)"};opacity:${isPaid ? "1" : "0.7"};">`;
       }
       return `<span style="display:inline-flex;align-items:center;">${icons}</span>`;
     }).join('')
@@ -6746,7 +6756,14 @@ function getCardAbilities(cardObj) {
 function isCardActionable(cardObj, cardData, gameState, zone) {
   // 1. Playable from hand
   if (zone === 'playerHand') {
-    if (canPayEssence(cardData.cost, getAllEssenceSources())) return true;
+    const pool = getEssencePool('player') || {};
+    let poolEssenceStr = '';
+    const map = { green:'G', red:'R', blue:'U', yellow:'Y', purple:'P', gray:'C', black:'B', white:'W' };
+    Object.entries(pool).forEach(([type, amount]) => {
+      const code = map[type];
+      for (let i = 0; code && i < Number(amount || 0); i++) poolEssenceStr += `{${code}}`;
+    });
+    if (canPayEssence({ essence: poolEssenceStr }, cardData.cost || '{0}')) return true;
   }
 
   // 2. Can attack (for units on field)
