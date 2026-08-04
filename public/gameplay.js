@@ -790,7 +790,7 @@ enable: { name: 'Enable', icon: 'Icons/Skill/Untap.png',
   canActivate: function(sourceCardObj, skillObj, currentZone, gameState, step = {}) {
     // Allow from field by default (match your other rotation logic)
     // If you want hand/void use too, expand this list.
-    const fieldZones = ['playerUnits','playerSupportSlots.filter(Boolean)','enemyUnits','enemySupportSlots.filter(Boolean)'];
+    const fieldZones = 'field';
     if (!fieldZones.includes(currentZone)) return false;
     if (step && step.target) {
       const targets = getTargets(step.target, sourceCardObj);
@@ -819,7 +819,7 @@ bolster: { icon: 'Icons/Skill/Bolster.png',
     if (typeof nextEffect === 'function') nextEffect();
   }
 },
-disable: { name: 'Disable', icon: 'Icons/Skill/Tap.png',
+disable: { name: 'Disable', icon: 'Icons/Skill/Tap.png', 
   description: 'Rotate a card to horizontal (disabled).',
   handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
       const targets = step.target ? getTargets(step.target, sourceCardObj) : [sourceCardObj];
@@ -840,7 +840,7 @@ disable: { name: 'Disable', icon: 'Icons/Skill/Tap.png',
       if (typeof nextEffect === "function") nextEffect();
   },
   canActivate: function(sourceCardObj, skillObj, currentZone, gameState, step = {}) {
-    const fieldZones = ['playerUnits','playerSupportSlots.filter(Boolean)','enemyUnits','enemySupportSlots.filter(Boolean)'];
+    const fieldZones = 'field';
     if (!fieldZones.includes(currentZone)) return false;
     if (step && step.target) {
       const targets = getTargets(step.target, sourceCardObj);
@@ -2240,10 +2240,15 @@ function setupDropZones() {
       const lane = slot.dataset.lane;   // "unit" | "support"
       const idx = Number(slot.dataset.slotIndex);
 
-      // pick correct source hand by owner
-      const handArr = owner === "enemy" ? gameState.enemyHand : gameState.playerHand;
-      const handIdx = handArr.findIndex(c => c?.instanceId === instanceId);
-      if (handIdx === -1) return; // only allow drop from that side's hand
+let handArr = null;
+let handIdx = gameState.playerHand.findIndex(c => c?.instanceId === instanceId);
+if (handIdx !== -1) {
+  handArr = gameState.playerHand;
+} else {
+  handIdx = gameState.enemyHand.findIndex(c => c?.instanceId === instanceId);
+  if (handIdx !== -1) handArr = gameState.enemyHand;
+}
+if (!handArr || handIdx === -1) return;
 
       const cardObj = handArr[handIdx];
       const requiredLane = getCardLane(cardObj); // unit | support
@@ -5503,11 +5508,14 @@ function isManualSkill(skillObj = {}) {
 function canRenderManualSkillInMenu(cardObj, skillObj, currentZone, gameState) {
   if (!isManualSkill(skillObj)) return false;
 
-  const declared = getSkillDeclaredZones(skillObj);
-  if (declared.length === 0) return false;
-
   const z = normalizeZoneName(currentZone || getZoneNameForCard(cardObj));
-  return declared.includes(z);
+  const declared = getSkillDeclaredZones(skillObj);
+
+  // If declared zones exist, respect them
+  if (declared.length > 0) return declared.includes(z);
+
+  // Fallback: if no declared zones, allow rendering when skill is activatable
+  return canActivateSkill(cardObj, skillObj, z, gameState);
 }
 
 function getAllowedSkillZones(skillObj = {}) {
