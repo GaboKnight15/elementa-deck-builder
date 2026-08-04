@@ -3323,7 +3323,7 @@ function openVoidModal(isenemy = false) {
   const modalContent = modal.querySelector('.modal-content');
   if (modalContent) modalContent.onclick = e => e.stopPropagation();
 
-  const voidList = document.getElementById('void-modal-list');
+  const voidList = document.getElementById('void-cards-list');
   if (!voidList) return;
 
   voidList.innerHTML = '';
