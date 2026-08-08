@@ -6829,35 +6829,57 @@ document.getElementById('gameplay-back-btn').onclick = function() {
   document.getElementById('home-section').classList.add('active');
 };
 
-// ASSIGNMENTS
 document.addEventListener('DOMContentLoaded', function() {
   // Settings button (top right of battlefield)
   document.getElementById('battlefield-settings-btn').onclick = function() {
     document.getElementById('settings-modal').style.display = 'flex';
   };
-  // Back button (top left of battlefield)
-  var backBtn = document.getElementById('battlefield-back-btn');
-  if (backBtn) {
-backBtn.onclick = function() {
-  showInputModal({
-    title: "Leave Match",
-    message: "Leave the game and return to menu?",
-    mode: "confirm", // if your helper supports it
-    confirmText: "Leave",
-    cancelText: "Stay",
-    onConfirm: function() {
+
+  const leaveModal = document.getElementById('leave-match-modal');
+  const leaveConfirmBtn = document.getElementById('leave-match-confirm-btn');
+  const leaveCancelBtn = document.getElementById('leave-match-cancel-btn');
+
+  function openLeaveMatchModal() {
+    if (!leaveModal) return;
+    leaveModal.style.display = 'flex';
+  }
+
+  function closeLeaveMatchModal() {
+    if (!leaveModal) return;
+    leaveModal.style.display = 'none';
+  }
+
+  if (leaveModal) {
+    leaveModal.addEventListener('click', function(e) {
+      if (e.target === leaveModal) closeLeaveMatchModal();
+    });
+  }
+
+  if (leaveCancelBtn) {
+    leaveCancelBtn.onclick = function() {
+      closeLeaveMatchModal();
+      if (typeof showToast === "function") {
+        showToast("Stayed in match.", { type: "info" });
+      }
+    };
+  }
+
+  if (leaveConfirmBtn) {
+    leaveConfirmBtn.onclick = function() {
+      closeLeaveMatchModal();
       if (typeof showToast === "function") {
         showToast("Leaving match...", { type: "info" });
       }
       endGame();
-    },
-    onCancel: function() {
-      if (typeof showToast === "function") {
-        showToast("Stayed in match.", { type: "info" });
-      }
-    }
-  });
-};
+    };
+  }
+
+  // Back button (top left of battlefield)
+  var backBtn = document.getElementById('battlefield-back-btn');
+  if (backBtn) {
+    backBtn.onclick = function() {
+      openLeaveMatchModal();
+    };
   }
 });
 
