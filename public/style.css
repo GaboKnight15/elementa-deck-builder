@@ -3677,6 +3677,15 @@ button[disabled], .btn-disabled {
   cursor: pointer;
   z-index: 10001 !important;
 }
+.slot-target-highlight {
+  outline: 2px dashed #ffe066;
+  box-shadow: 0 0 0 3px rgba(255,224,102,.25) inset;
+}
+.target-highlight.selected,
+.slot-target-highlight.selected {
+  outline: 3px solid #6fffb0;
+  box-shadow: 0 0 14px rgba(111,255,176,.6);
+}
 /* ---- ATTACK TARGET LOGIC CSS ---- */
 .attack-target-highlight {
   outline: 4px solid #ffe066 !important;
