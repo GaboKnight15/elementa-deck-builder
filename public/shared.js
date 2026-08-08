@@ -4828,7 +4828,7 @@ deckHighlightArtImg.onclick = function () {
   highlightArtList.innerHTML = "";
 
   // Fetch unlocked avatars directly
-  const avatarOptions = getUnlockedAvatars()
+  const unlockerAvatars = getUnlockedAvatars()
     .map((src) => avatarOptions.find((avatar) => avatar.src === src))
     .filter((avatar) => avatar); // Ensure only valid/unlocked avatars
 
@@ -4839,7 +4839,7 @@ deckHighlightArtImg.onclick = function () {
   }
 
   // Render the unlocked avatars
-  avatarOptions.forEach((avatar) => {
+  unlockerAvatars.forEach((avatar) => {
     // Create avatar element
     const img = document.createElement('img');
     img.src = avatar.src;
