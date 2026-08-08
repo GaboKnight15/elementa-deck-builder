@@ -4829,7 +4829,7 @@ deckHighlightArtImg.onclick = function () {
 
   // Fetch unlocked avatars directly
   const avatarOptions = getUnlockedAvatars()
-    .map((src) => allAvatarOptions.find((avatar) => avatar.src === src))
+    .map((src) => avatarOptions.find((avatar) => avatar.src === src))
     .filter((avatar) => avatar); // Ensure only valid/unlocked avatars
 
   // If no avatars are available, show a message
@@ -4882,7 +4882,7 @@ deckBannerImg.onclick = function () {
 
   // Fetch unlocked banners instead of available banners
   const unlockedBanners = getUnlockedBanners()
-    .map((src) => allBannerOptions.find((banner) => banner.src === src))
+    .map((src) => bannerOptions.find((banner) => banner.src === src))
     .filter((banner) => banner); // Ensure only valid banners
 
   if (!unlockedBanners || unlockedBanners.length === 0) {
@@ -4932,7 +4932,7 @@ deckCardbackImg.onclick = function () {
 
   // Fetch unlocked cardbacks instead of available cardbacks
   const unlockedCardbacks = getUnlockedCardbacks()
-    .map((src) => allCardbackOptions.find((cardback) => cardback.src === src))
+    .map((src) => cardbackOptions.find((cardback) => cardback.src === src))
     .filter((cardback) => cardback); // Ensure only valid cardbacks
 
   // Handle case where no cardbacks are unlocked
