@@ -148,7 +148,7 @@ const dummyCards = [
 {id: 'GoblinVillage', name: 'Goblin Village', rarity: 'Common', image: 'Cards/Brute/GoblinVillage.png', flavor: '', 
  category: 'Terrain', color: 'Green', group: 'Brute', type: ['Goblin','Habitat'], hp: 3, cost: '{g}', set: 'FracturedOrigins'},
  
-{id: 'Thornreach', name: 'Thornreach', rarity: 'Legendary', image: 'Cards/egg/Thornreach.png', flavor: '', 
+{id: 'Thornreach', name: 'Thornreach', rarity: 'Legend', image: 'Cards/egg/Thornreach.png', flavor: '', 
  category: 'Terrain', color: 'Green', group: 'Fae', type: ['Elf','Domain'], cost: '{g3}', hp: 20, ep: '{g2}', set: 'FracturedOrigins'},
  
 {id: 'LifesGrowth', name: "Life's Growth", rarity: 'Common', image: 'Cards/egg/LifesGrowth.png', flavor: '', 
@@ -638,7 +638,7 @@ const dummyCards = [
 // BLUE/RED //
 // BLUE/YELLOW //
 // BLUE/GRAY //
-{id: 'IsenheimFrostlandCitadel', name: 'Isenheim, Frostland Citadel', rarity: 'Legendary', image: 'Cards/fo/IsenheimFrostlandCitadel.png', flavor: '', 
+{id: 'IsenheimFrostlandCitadel', name: 'Isenheim, Frostland Citadel', rarity: 'Legend', image: 'Cards/fo/IsenheimFrostlandCitadel.png', flavor: '', 
  category: 'Terrain', color: 'Blue', type: ['Ice','Domain'], hp: 5, cost: '{u2}{c}', ep: '{u}{c}', set: 'DesolateFrontiers', skill: [
 	{name: 'Terraform', cost: '{u2}{c}', eff: {class: 'terraform'}},
 	{name: 'Cryohex Frostbane', cost: '{u}{c}', req: 'tap', eff: {class: 'destroy', targetBlight: 'frozen'}, text: 'Destroy 1 frozen enemy.'}]},
@@ -1630,7 +1630,7 @@ const FILTERS = {
     'Defender','Defiant','Dive','Dormant','Drain','Drench','Elusive','Exploit','Flying','Focus','Freeze','Frostbite',
     'Immunity','Intimidate','Leap','Levitate','Paralyze','Pierce','Pilfer','Poisonous','Precision','Protect','Provoke',
     'Regenerate','Relentless','Resilience','Rush','Scorch','Soak','Static','Toxic','Unbreakable','Veil','Wither']},
-  pack: { key: 'pack', label: 'Pack', options: ['All', 'ElementaGenesis', 'FracturedOrigins','EchoesofCreations','DesolateFrontiers','InfiniteHorizons'] }
+  pack: { key: 'pack', label: 'Pack', options: ['All', 'ElementaGenesis', 'FracturedOrigins','EchoesofCreation','DesolateFrontiers','InfiniteHorizons'] }
  // Add more as needed
 };
 
@@ -1666,7 +1666,6 @@ burn: {name: "Burn", text: "Burns after an attack or skill.", icon: "Icons/Abili
 conceal: {name: "Conceal", text: "Opponent can only target this unit for attacks last", icon: "Icons/Ability/Conceal.png" },
 crush: {name: "Crush", text: "Remove all armor from target unit.", icon: "Icons/Ability/Crush.png"},
 curse: {name: "Curse", text: "Curses opposing unit after dealing damage.", icon: "Icons/Ability/Curse.png"},
-defender: {name: "Defender", text: "Deals damage using its defense while disabled.", icon: "Icons/Ability/Defender.png" },
 defiant: {name: "Defiant", text: "Does not disable after attacking.", icon: "Icons/Ability/Defiant.png" },
 dive: {name: "Dive", text: "Cannot be targeted while disabled.", icon: "Icons/Ability/Dive.png" },
 drain: {name: "Drain", text: "Gain HP equal to damage dealt by attacks.", icon: "Icons/Ability/Drain.png" },
@@ -1777,7 +1776,6 @@ shadowgear: {name: "Shadowgear", profile: { hp: 1, atk: 7, def: 5, spd: 5, hc: 7
 pyro: {name: "Pyro", profile: { hp: 3, atk: 8, def: 2, spd: 6, hc: 4, ep: 6 }, icon: "Icons/Archetype/Pyro.png" , text: "Born from molten fury and the heart of burning flames, Pyros are pure embodiments of fire. Their bodies blaze with uncontrolled heat, and their movements ignite the air itself. Wherever they tread, flames consume and scorch, leaving nothing but ash in their wake, a testament to their unrelenting, fiery essence."},
 hydral: {name: "Hyral", profile: { hp: 10, atk: 1, def: 4, spd: 4, hc: 9, ep: 3 }, icon: "Icons/Archetype/Hydral.png" , text: "Forged from rivers, tides, and the endless depths, the Hyrals are living currents of water given form. They surge and crash with unrelenting force, drenching and drowning all who oppose them. Fluid and adaptable, they strike with the inevitability of the ocean, pulling foes beneath waves of relentless, liquid power."},
 galeform: {name: "Galeform", profile: { hp: 9, atk: 1, def: 6, spd: 3, hc: 7, ep: 10 }, icon: "Icons/Archetype/Galeform.png" , text: "Born of tempests and the rush of wind, Galeforms are swift, elusive elementals that strike with blades of air. Their movements are a blur, their attacks slicing and tearing with unerring precision. Masters of speed and agility, they descend like hurricanes, overwhelming foes with relentless, cutting gusts and the fury of the skies."},
-golem: {name: "Golem", profile: { hp: 8, atk: 7, def: 10, spd: 1, hc: 2, ep: 4 }, icon: "Icons/Archetype/Golem.png" , text: "Forged from bedrock and shaped by the ages, the golems are embodiments of the earth. Their massive forms crush all that stand against them, while their unyielding bodies shrug off attacks with unwavering resilience. Slow but unstoppable, they move with the relentless patience of mountains, turning the battlefield into a fortress of stone and earth."},
 obscurid: {name: "Obscurid", profile: { hp: 7, atk: 7, def: 3, spd: 8, hc: 6, ep: 7 }, icon: "Icons/Archetype/Obscurid.png" , text: "Born from shadow and void, the Obscurids are creeping shades that feed on the essence of life. Their forms shift and blur, slipping through defenses to drain strength and spirit from all who stand before them. Masters of subtlety and decay, they leave only emptiness in their wake, turning vitality into darkness."},
 luminaut: {name: "Luminaut", profile: { hp: 9, atk: 3, def: 7, spd: 8, hc: 2, ep: 6 }, icon: "Icons/Archetype/Luminaut.png" , text: "Born of pure light and radiant energy, the Luminauts illuminate the battlefield with brilliance. Their presence purifies corruption and inspires allies, while their searing attacks blaze with the power of the sun. Majestic and unwavering, they embody the essence of radiance, turning darkness into hope and striking down those who oppose their light."},
 corruptor: {name: "Corruptor", profile: { hp: 4, atk: 7, def: 4, spd: 2, hc: 5, ep: 5 }, icon: "Icons/Archetype/Corruptor.png" , text: "Born of venom, rot, and foul decay, the Corruptors spread poison wherever they go. Their touch withers plant and flesh alike, and their toxic presence corrupts even the purest of lands. Relentless and insidious, they revel in contamination, leaving blighted ground and weakened foes in their poisonous wake."},
@@ -1994,7 +1992,7 @@ const avatarOptions = [
 { name: 'Rockmaul Rhino', src: 'Images/Avatar/Gray/RockmaulRhino.png', rarity: 'Rare', price: 50, obtain: 'shop' },
 { name: 'Corrupted Dragon', src: 'Images/Avatar/Purple/CorruptedDragon.png', rarity: 'Rare', price: 50, obtain: 'shop' },
 
-// ELEMENTA GENESIS LEGENDARY HEROES //
+// ELEMENTA GENESIS LEGEND HEROES //
 { name: 'Veya, Verdara Druidess', src: 'Images/Avatar/Green/Veya.png', rarity: 'Legend', price: 100, obtain: 'shop' },
 { name: 'Kaelen, Blazeborn Huntress', src: 'Images/Avatar/Red/Kaelen.png', rarity: 'Legend', price: 100, obtain: 'shop' },
 { name: 'Serenya, Tidebound Enchantress', src: 'Images/Avatar/Blue/Serenya.png', rarity: 'Legend', price: 100, obtain: 'shop' },
@@ -2035,7 +2033,7 @@ const avatarOptions = [
 { name: 'Solaryth, Dawngleam Whelp', src: 'Images/Avatar/White/SolarythDawngleamWhelp.png', rarity: 'Rare', price: 50, obtain: 'shop' },
 { name: 'Noctyros, Dusk Whisper', src: 'Images/Avatar/Black/NoctyrosDuskWhisper.png', rarity: 'Rare', price: 50, obtain: 'shop' },
 
-// --- LEGENDARY GREEN AVATARS --- //
+// --- LEGEND GREEN AVATARS --- //
 
 // ELDER DRAGONS //
 { name: 'Verdarok, Sylvan Thornwing', src: 'Images/Avatar/Green/VerdarokSylvanThornwing.png', rarity: 'Legend', price: 100, obtain: 'shop' },
@@ -2047,7 +2045,7 @@ const avatarOptions = [
 { name: 'Solaryth, Radiant Solarwyrm', src: 'Images/Avatar/White/SolarythRadiantSolarwyrm.png', rarity: 'Legend', price: 100, obtain: 'shop' },
 { name: 'Noctyros, Umbral Nightshroud', src: 'Images/Avatar/Black/NoctyrosUmbralNightshroud.png', rarity: 'Legend', price: 100, obtain: 'shop' },
 
-// LEGENDARY ELEMENTALS //
+// LEGEND ELEMENTALS //
 // ECHOES OF CREATION COMMON ELEMENTALS //
 { name: 'Elemental of Leaves', src: 'Images/Avatar/Green/ElementalofLeaves.png', rarity: 'Common', price: 10, obtain: 'shop' },
 { name: 'Elemental of Embers', src: 'Images/Avatar/Red/ElementalofEmbers.png', rarity: 'Common', price: 10, obtain: 'shop' },
@@ -2062,7 +2060,7 @@ const avatarOptions = [
 { name: 'Hydrion, Primeval Floodbringer', src: 'Images/Avatar/Blue/Hydrion.png', rarity: 'Legend', price: 100, obtain: 'shop' },
 
 
-// LEGENDARY CONSTRUCTS //
+// LEGEND CONSTRUCTS //
 { name: 'Ignavaryn, Cindercore Automaton', src: 'Images/Avatar/Red/Ignavaryn.png', rarity: 'Legend', price: 100, obtain: 'shop' },
 { name: 'Maelvyrn, Coralbound Leviathan', src: 'Images/Avatar/Blue/Maelvyrn.png', rarity: 'Legend', price: 100, obtain: 'shop' },
 
@@ -2129,7 +2127,7 @@ const cardbackOptions = [
 ];
 
 const cardStyles = [
-	{ cardId: 'EryndorVerdaraKing', key: "fullArt", label: "Eryndor", rarity: 'Legend', price: 100, obtain: 'shop' },
+	{ cardId: 'EryndorVerdaraDruidlord', key: "fullArt", label: "Eryndor", rarity: 'Legend', price: 100, obtain: 'shop' },
 	{ cardId: 'FaelyraWildhornEmpress', key: "fullArt", label: "Faelyra", rarity: 'Legend', price: 100, obtain: 'shop' },
 	{ cardId: 'KaelyraMagmarisHeiress', key: "fullArt", label: "Kaelyra", rarity: 'Legend', price: 100, obtain: 'shop' },
 	{ cardId: 'KaelenFirelandHuntress', key: "fullArt", label: "Kaelen", rarity: 'Legend', price: 100, obtain: 'shop' },
@@ -2239,7 +2237,6 @@ const QUEST_POOL = [
   { id: 'collect_gray_card', group: '', type: 'quest', description: 'Collect a Gray Card', goal: 1, reward: { group: '', type: 'currency', amount: 80 }, image: 'Images/Blank/Gray.png', progress: 0, claimed: false, completed: false, refillAt: null},
   { id: 'collect_black_card', group: '', type: 'quest', description: 'Collect a Black Card', goal: 1, reward: { group: '', type: 'currency', amount: 80 }, image: 'Images/Blank/Black.png', progress: 0, claimed: false, completed: false, refillAt: null},
   { id: 'collect_white_card', group: '', type: 'quest', description: 'Collect a White Card', goal: 1, reward: { group: '', type: 'currency', amount: 80 }, image: 'Images/Blank/White.png', progress: 0, claimed: false, completed: false, refillAt: null},
-  { questId: null, refillAt: 1720000000000 },
 ];
 
 // -------------------- //
@@ -2487,73 +2484,6 @@ function setQuestResets(obj, cb) {
   });
 }
 
-function rotateDailyQuestSlotsIfNeeded() {
-  const now = new Date();
-  const todayUtc = new Date(Date.UTC(
-    now.getUTCFullYear(),
-    now.getUTCMonth(),
-    now.getUTCDate()
-  )).toISOString();
-
-  getQuestResets(function(resets) {
-    const lastReset = resets.lastReset ? new Date(resets.lastReset) : null;
-    const didResetToday = lastReset && lastReset.toISOString() === todayUtc;
-    if (didResetToday) return; // already rotated today
-
-    getActiveQuests(function(activeQuestsRaw) {
-      let activeQuests = Array.isArray(activeQuestsRaw) ? activeQuestsRaw.slice(0, QUEST_SLOTS) : [];
-      const questData = getQuestData();
-
-      // normalize + unique safeguard
-      const seen = new Set();
-      activeQuests = activeQuests.filter(q => {
-        const id = q?.id || q;
-        if (!id || seen.has(id)) return false;
-        seen.add(id);
-        return QUEST_POOL.some(poolQ => poolQ.id === id);
-      });
-
-      // fill missing slots first (no duplicates)
-      while (activeQuests.length < QUEST_SLOTS) {
-        const used = new Set(activeQuests.map(q => q.id || q));
-        const next = pickUniqueQuest(used);
-        if (!next) break;
-        activeQuests.push({ id: next.id, assignedAt: Date.now() });
-        if (!questData[next.id]) {
-          questData[next.id] = { progress: 0, completed: false, claimed: false };
-        }
-      }
-
-      // rotate only claimed quests
-      const usedIds = new Set(activeQuests.map(q => q.id || q));
-      const updated = activeQuests.map(slot => {
-        const slotId = slot.id || slot;
-        const progress = questData[slotId] || { progress: 0, completed: false, claimed: false };
-
-        if (progress.claimed) {
-          usedIds.delete(slotId); // freeing this slot for replacement
-          const replacement = pickUniqueQuest(usedIds);
-          if (replacement) {
-            usedIds.add(replacement.id);
-            // reset/new progress entry for new quest
-            questData[replacement.id] = { progress: 0, completed: false, claimed: false };
-            return { id: replacement.id, assignedAt: Date.now() };
-          }
-        }
-        return typeof slot === 'string' ? { id: slot, assignedAt: Date.now() } : slot;
-      });
-
-      setQuestData(questData, false);
-      setActiveQuests(updated, function() {
-        resets.lastReset = todayUtc;
-        setQuestResets(resets, function() {
-          renderQuests();
-          updateQuestsNotificationDot();
-        });
-      });
-    });
-  });
-}
 function normalizeQuestId(q) {
   return q?.id || q || null;
 }
@@ -2567,7 +2497,8 @@ function pickUniqueQuest(excludedIds = new Set()) {
   const i = Math.floor(Math.random() * pool.length);
   return pool[i];
 }
-function resetQuestsIfNeeded() {
+// Keep one source of truth for daily quest rotation/reset
+function runDailyQuestResetIfNeeded() {
   const now = new Date();
   const todayUtcIso = new Date(Date.UTC(
     now.getUTCFullYear(),
@@ -2584,7 +2515,7 @@ function resetQuestsIfNeeded() {
       let activeQuests = Array.isArray(activeRaw) ? activeRaw.slice(0, QUEST_SLOTS) : [];
       const questData = getQuestData() || {};
 
-      // 1) sanitize + dedupe current active quests
+      // 1) sanitize + dedupe + keep only valid quest ids
       const seen = new Set();
       activeQuests = activeQuests
         .map(q => (typeof q === "string" ? { id: q } : q))
@@ -2596,7 +2527,7 @@ function resetQuestsIfNeeded() {
           return true;
         });
 
-      // 2) fill missing slots (no duplicates)
+      // 2) fill missing slots with unique quests
       while (activeQuests.length < QUEST_SLOTS) {
         const used = new Set(activeQuests.map(normalizeQuestId));
         const next = pickUniqueQuest(used);
@@ -2618,18 +2549,10 @@ function resetQuestsIfNeeded() {
           const replacement = pickUniqueQuest(usedIds);
           if (replacement) {
             usedIds.add(replacement.id);
-            if (!questData[replacement.id]) {
-              questData[replacement.id] = { progress: 0, completed: false, claimed: false };
-            } else {
-              // reset replacement quest progress for fresh slot
-              questData[replacement.id].progress = 0;
-              questData[replacement.id].completed = false;
-              questData[replacement.id].claimed = false;
-            }
+            questData[replacement.id] = { progress: 0, completed: false, claimed: false };
             return { id: replacement.id, assignedAt: Date.now() };
           }
         }
-
         return slot;
       });
 
@@ -2645,6 +2568,7 @@ function resetQuestsIfNeeded() {
     });
   });
 }
+
 // 3. Reset Quest progress for a type
 function resetQuestProgress(type) {
   let quests = getQuestData();
@@ -3023,7 +2947,7 @@ function updateQuestResetTimer() {
   timerDiv.textContent = `Next quests reset in ${formatTimer(ms)}`;
   // When timer reaches zero, reset quests and update UI
   if (ms <= 0) {
-    rotateDailyQuestSlotsIfNeeded();
+    runDailyQuestResetIfNeeded();
     renderQuests();
   }
 }
@@ -3390,7 +3314,7 @@ function computeAchievementsProgress({ autoSave = true } = {}) {
 window.computeAchievementsProgress = computeAchievementsProgress;
 // --- ENSURE QUESTS RESET AT 00:00 UTC ON PAGE LOAD ---
 document.addEventListener('DOMContentLoaded', function() {
-  rotateDailyQuestSlotsIfNeeded();
+  runDailyQuestResetIfNeeded();
 });
 // OPEN/CLOSE LOGIC
 document.getElementById('quests-icon').onclick = function() {
@@ -3724,8 +3648,8 @@ document.addEventListener('DOMContentLoaded', function() {
 // === GALLERY LOGIC ===
 // ==========================
 const gallery = document.getElementById('gallery-cards');
-const CREATE_ESSENCE_COST = {common: 5, rare: 25, legendary: 100};
-const VOID_ESSENCE_REFUND = {common: 1, rare: 5, legendary: 20};
+const CREATE_ESSENCE_COST = {common: 5, rare: 25, legend: 100};
+const VOID_ESSENCE_REFUND = {common: 1, rare: 5, legend: 20};
 
 let showFavoritesOnly = false;
 
@@ -3810,7 +3734,7 @@ function updateFavoriteFilterIcon() {
 function getMinimumKeptForRarity(card) {
   if (!card.rarity) return 1; // Default fallback
   switch (card.rarity.toLowerCase()) {
-    case 'legendary': return 1;
+    case 'legend': return 1;
     case 'rare':      return 2;
     case 'common':      return 3;
     default:          return 1;
@@ -3834,7 +3758,7 @@ function getRarityBgClass(card) {
   switch ((card.rarity || '').toLowerCase()) {
     case 'common':    return 'card-rarity-common';
     case 'rare':      return 'card-rarity-rare';
-    case 'legendary': return 'card-rarity-legendary';
+    case 'legend': return 'card-rarity-legend';
     default:          return 'card-rarity-common';
   }
 }
@@ -5334,7 +5258,7 @@ function cycleDomainCard() {
 
 function getRarityCap(card) {
   const r = (card?.rarity || "").toLowerCase();
-  if (r === "legendary") return 1;
+  if (r === "legend") return 1;
   if (r === "rare") return 2;
   if (r === "common") return 3;
   // If you ever have non-rarity cards, decide policy:
@@ -5450,7 +5374,7 @@ deckList.appendChild(domainSlot);
 
   // Define rarity order
   const rarityOrder = {
-    legendary: 0,
+    legend: 0,
     rare: 1,
     common: 2
   };
@@ -5595,7 +5519,7 @@ function canAddCard(card, currentInDeck, ownedCount) {
   // ownership limit
   if (mainCount >= ownedCount) return false;
 
-  // rarity cap (legendary=1, rare=2, common=3)
+  // rarity cap (legend=1, rare=2, common=3)
   if (mainCount >= cap) return false;
 
   const isDomainCard = String(card?.type || '').toLowerCase() === 'domain';
@@ -5818,11 +5742,11 @@ const closePackOpeningModalBtn = document.getElementById('close-pack-opening-mod
 const PACK_SIZE = 5;
 
 const PACK_SLOT_ODDS_DEFAULT = [
-  { slot: 1, odds: { Common: 92, Rare: 7, Legendary: 1 } },
-  { slot: 2, odds: { Common: 85, Rare: 13, Legendary: 2 } },
-  { slot: 3, odds: { Common: 75, Rare: 22, Legendary: 3 } },
-  { slot: 4, odds: { Common: 60, Rare: 35, Legendary: 5 } },
-  { slot: 5, odds: { Rare: 90, Legendary: 10 } },
+  { slot: 1, odds: { Common: 92, Rare: 7, Legend: 1 } },
+  { slot: 2, odds: { Common: 85, Rare: 13, Legend: 2 } },
+  { slot: 3, odds: { Common: 75, Rare: 22, Legend: 3 } },
+  { slot: 4, odds: { Common: 60, Rare: 35, Legend: 5 } },
+  { slot: 5, odds: { Rare: 90, Legend: 10 } },
 ];
 
 let cosmeticConfirmModal = null;
@@ -6165,8 +6089,8 @@ openedPackRowModal.innerHTML = `
         case 'rare':
           flipSnd = document.getElementById('card-flip-rare-sound');
           break;
-        case 'legendary':
-          flipSnd = document.getElementById('card-flip-legendary-sound');
+        case 'legend':
+          flipSnd = document.getElementById('card-flip-legend-sound');
           break;
         default:
           flipSnd = document.getElementById('card-flip-common-sound');
@@ -6176,13 +6100,13 @@ openedPackRowModal.innerHTML = `
         flipSnd.play();
       }
 
-      // Special zoom-in animation for rare/legendary
+      // Special zoom-in animation for rare/legend
       let zoomClass = '';
       switch ((card.rarity || '').toLowerCase()) {
         case 'rare':
           zoomClass = 'zoom-rare'; break;
-        case 'legendary':
-          zoomClass = 'zoom-legendary'; break;
+        case 'legend':
+          zoomClass = 'zoom-legend'; break;
       }
       if (zoomClass && front) {
         front.classList.add(zoomClass);
