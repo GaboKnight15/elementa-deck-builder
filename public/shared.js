@@ -4140,7 +4140,7 @@ function showCardStyleModal(card, styleImages) {
     <button id="close-card-style-modal" class="btn-negative-secondary">Close</button>
   `;
   modal.appendChild(content);
-  document.body.appendChild(modal);
+  (document.getElementById('game-shell') || document.body).appendChild(modal);
 
   // Close logic
   document.getElementById('close-card-style-modal').onclick = function() { modal.remove(); };
@@ -4773,7 +4773,9 @@ function showDeckTileMenu(deckName, anchorElem) {
 }
 document.addEventListener('mousedown', function(e) {
   const menu = document.getElementById('deck-menu');
-  if (menu.style.display === 'block' && !menu.contains(e.target)) {
+  if (!menu) return;
+  const isOpen = getComputedStyle(menu).display !== 'none';
+  if (isOpen && !menu.contains(e.target)) {
     menu.style.display = 'none';
   }
 });
@@ -5888,7 +5890,7 @@ function showPackContentsModal(packId, packName) {
       </style>
     </div>
   `;
-  document.body.appendChild(modal);
+  (document.getElementById('game-shell') || document.body).appendChild(modal);
 
   // Add click handlers for each card to open showFullCardModal
   if (cardsInPack.length) {
@@ -8797,7 +8799,7 @@ function showInputModal({
    </div>
  `;
   modal.appendChild(content);
-  document.body.appendChild(modal);
+  (document.getElementById('game-shell') || document.body).appendChild(modal);
 
   const input = content.querySelector("#modal-input-field");
   const errorDiv = content.querySelector("#modal-input-error");
@@ -8882,7 +8884,7 @@ function showFilterModal(context, callback) {
     modal = document.createElement('div');
     modal.id = 'filter-modal';
     modal.className = 'modal';
-    document.body.appendChild(modal);
+    (document.getElementById('game-shell') || document.body).appendChild(modal);
   }
 
   // Build modal content dynamically
