@@ -1806,29 +1806,69 @@ function moveCard(instanceId, fromArr, toArr, extra = {}, callback) {
   const owner = extra.owner || getCardOwner(cardObj) || "player";
   const toField = extra.toField === true;
 
-  if (toField) {
-    const lane = getLaneForCard(cardObj);
-    const slots = getFieldSlots(owner, lane);
-    const freeIdx = slots.findIndex(s => !s);
+if (toField) {
+  const lane = getLaneForCard(cardObj);
+  const slots = getFieldSlots(owner, lane);
 
-    if (freeIdx === -1) {
+  // no slot available -> rollback
+  const hasFree = slots.some(s => !s);
+  if (!hasFree) {
+    if (isFromSlotArray) fromArr[fromIdx] = cardObj;
+    else fromArr.splice(fromIdx, 0, cardObj);
+    showToast && showToast(`No free ${lane} slots.`);
+    return finalize();
+  }
+
+  const placeAt = (slotIndex) => {
+    if (!Number.isInteger(slotIndex) || slotIndex < 0 || slotIndex >= slots.length) {
       if (isFromSlotArray) fromArr[fromIdx] = cardObj;
       else fromArr.splice(fromIdx, 0, cardObj);
-      showToast && showToast(`No free ${lane} slots.`);
+      return finalize();
+    }
+
+    // if picked occupied (or became occupied), fail safely
+    if (slots[slotIndex]) {
+      if (isFromSlotArray) fromArr[fromIdx] = cardObj;
+      else fromArr.splice(fromIdx, 0, cardObj);
+      showToast && showToast("That slot is occupied.");
       return finalize();
     }
 
     removeCardFromAllFieldSlots(cardObj.instanceId);
-    slots[freeIdx] = {
+    slots[slotIndex] = {
       ...cardObj,
       ...extra,
       owner,
       slotOwner: owner,
       slotLane: lane,
-      slotIndex: freeIdx
+      slotIndex
     };
     return finalize();
+  };
+
+  // Player chooses slot manually, enemy/CPU keeps auto-placement
+  const shouldChooseSlot = owner === "player" && extra.pickSlot !== false;
+
+  if (shouldChooseSlot) {
+    showSlotPickerModal({
+      owner,
+      lane,
+      onSelect: (slotIndex) => placeAt(slotIndex),
+      onCancel: () => {
+        // rollback if user cancels
+        if (isFromSlotArray) fromArr[fromIdx] = cardObj;
+        else fromArr.splice(fromIdx, 0, cardObj);
+        renderGameState && renderGameState();
+        callback && callback();
+      }
+    });
+    return; // wait for modal selection
   }
+
+  // fallback auto placement
+  const freeIdx = slots.findIndex(s => !s);
+  return placeAt(freeIdx);
+}
 
   if (!Array.isArray(toArr)) {
     callback && callback();
@@ -6085,7 +6125,7 @@ function chooseTargetsForEffect(step = {}, sourceCardObj = null, onSelect = () =
   }, { title: opts.title || step.title || null, count: expectedCount });
 }
 
-function showSlotPickerModal({ owner = "player", lane = "unit", onSelect, onCancel }) {
+function showSlotPickerModal({ owner = "player", lane = "unit", onSelect, onCancel, allowOccupied = false }) {
   const slots = getFieldSlots(owner, lane);
   const modal = document.createElement("div");
   modal.className = "modal";
@@ -6095,7 +6135,7 @@ function showSlotPickerModal({ owner = "player", lane = "unit", onSelect, onCanc
       <h3>Select ${owner} ${lane} slot</h3>
       <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:14px 0;">
         ${slots.map((card, i) => `
-          <button class="btn-secondary slot-pick-btn" data-i="${i}" ${card ? "disabled" : ""}>
+          <button class="btn-secondary slot-pick-btn" data-i="${i}" ${(!allowOccupied && card) ? "disabled" : ""}>
             ${card ? `Occupied ${i+1}` : `Slot ${i+1}`}
           </button>
         `).join("")}
