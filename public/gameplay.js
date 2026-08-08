@@ -3539,6 +3539,9 @@ function handleStartPhase(turn) {
   const terrains = turn === 'player' ? gameState.playerSupportSlots.filter(Boolean) : gameState.enemySupportSlots.filter(Boolean);
   [...units, ...terrains].forEach(cardObj => { cardObj.orientation = 'vertical'; });
 
+  // Generate essence from terrains
+  terrains.forEach(cardObj => generateEssence(cardObj));
+  
   drawCards(turn, 1);
 
   addGameLogEntry({
@@ -3914,13 +3917,13 @@ function initiateDomainSelection(deckArr, afterSelection) {
 function generateEssence(cardObj) {
   if (!cardObj) return;
   const cardDef = dummyCards.find(c => c.id === cardObj.cardId);
-  if (!cardDef || !cardDef.essence) return;
+  if (!cardDef || !cardDef.ep) return;
 
   const owner = getCardOwner(cardObj) === 'enemy' ? 'enemy' : 'player';
   const pool = getEssencePool(owner);
   if (!pool) return;
 
-  const essStr = cardDef.essence || '';
+  const essStr = cardDef.ep || '';
   const matches = essStr.match(/\{([^}]+)\}/g) || [];
 
   matches.forEach(m => {
