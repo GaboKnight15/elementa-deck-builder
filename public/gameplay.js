@@ -1920,7 +1920,7 @@ if (shouldChooseSlot) {
 // CREATE CARD MENUS
 function createCardMenu(buttons = []) {
   const menu = document.createElement('div');
-  menu.className = 'card-menu';
+  menu.className = 'menu';
   buttons.forEach(btnConf => {
     const btn = document.createElement('button');
     btn.type = "button";
@@ -2616,7 +2616,7 @@ gameState.playerDeck.forEach((cardObj, idx) => {
 
       menu.onclick = function(e) { e.stopPropagation(); };
       modal.onclick = function(e) {
-        if (!e.target.closest('.card-menu')) {
+        if (!e.target.closest('.menu')) {
           closeAllMenus();
           if (e.target === modal) modal.style.display = 'none';
         }
