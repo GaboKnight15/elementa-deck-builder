@@ -1846,24 +1846,40 @@ if (toField) {
     return finalize();
   };
 
-  // Player chooses slot manually, enemy/CPU keeps auto-placement
-  const shouldChooseSlot = owner === "player" && extra.pickSlot !== false;
+const shouldChooseSlot = owner === "player" && extra.pickSlot !== false;
 
-  if (shouldChooseSlot) {
-    showSlotPickerModal({
+if (shouldChooseSlot) {
+  const slotTargets = slots
+    .map((s, i) => (!s ? {
+      kind: "slot",
       owner,
       lane,
-      onSelect: (slotIndex) => placeAt(slotIndex),
-      onCancel: () => {
-        // rollback if user cancels
-        if (isFromSlotArray) fromArr[fromIdx] = cardObj;
-        else fromArr.splice(fromIdx, 0, cardObj);
-        renderGameState && renderGameState();
-        callback && callback();
-      }
-    });
-    return; // wait for modal selection
+      slotIndex: i,
+      id: `${owner}-${lane}-slot-${i}`
+    } : null))
+    .filter(Boolean);
+
+  if (!slotTargets.length) {
+    if (isFromSlotArray) fromArr[fromIdx] = cardObj;
+    else fromArr.splice(fromIdx, 0, cardObj);
+    showToast && showToast(`No free ${lane} slots.`);
+    return finalize();
   }
+
+  startGenericTargeting({
+    targets: slotTargets,
+    count: 1,
+    title: `Choose ${lane} slot`,
+    onConfirm: ([picked]) => placeAt(picked.slotIndex),
+    onCancel: () => {
+      if (isFromSlotArray) fromArr[fromIdx] = cardObj;
+      else fromArr.splice(fromIdx, 0, cardObj);
+      renderGameState && renderGameState();
+      callback && callback();
+    }
+  });
+  return;
+}
 
   // fallback auto placement
   const freeIdx = slots.findIndex(s => !s);
@@ -4364,7 +4380,20 @@ function startAttackTargeting(attackerId, attackerZone, cardDiv) {
       };
     }
   });
+const genericTargets = targets.map(c => ({
+  kind: "card",
+  id: `card:${c.instanceId}`,
+  instanceId: c.instanceId,
+  cardObj: c
+}));
 
+startGenericTargeting({
+  targets: genericTargets,
+  count: 1,
+  title: "Select attack target",
+  onConfirm: ([picked]) => resolveAttack(attackerId, picked.instanceId),
+  onCancel: () => {}
+});
   // Cancel handler
   attackMode.cancelHandler = function(e) {
     endAttackTarget();
@@ -5842,85 +5871,24 @@ function resolveSkill(cardObj, skillObj, context = {}, onComplete) {
   nextEffect();
 }
 function startSkillTarget(validTargets, onSelect, opts = {}) {
-  // Remove any previous highlights and handlers
-  document.querySelectorAll('.target-highlight, .selected').forEach(el => {
-    el.classList.remove('target-highlight', 'selected');
-    el.onclick = null;
+  const count = Number(opts.count || 1);
+  const wrapped = (validTargets || []).map(c => ({
+    kind: "card",
+    id: `card:${c.instanceId}`,
+    instanceId: c.instanceId,
+    cardObj: c
+  }));
+
+  startGenericTargeting({
+    targets: wrapped,
+    count,
+    title: opts.title || "Select target",
+    onConfirm: (picked) => {
+      const cards = picked.map(p => p.cardObj).filter(Boolean);
+      onSelect(count === 1 ? cards[0] : cards);
+    },
+    onCancel: () => {}
   });
-
-  battlefield.classList.add('skill-mode-backdrop');
-  let selected = [];
-
-  validTargets.forEach(cardObj => {
-    // Find card DOM in all field zones
-    const zoneIds = [
-      'player-unit-zone', 'player-support-zone',
-      'enemy-unit-zone', 'enemy-support-zone'
-    ];
-    let cardDiv = null;
-    for (const zoneId of zoneIds) {
-      cardDiv = findCardDivInZone(zoneId, cardObj.instanceId);
-      if (cardDiv) break;
-    }
-    if (cardDiv) {
-      cardDiv.classList.add('target-highlight');
-      cardDiv.onclick = function(e) {
-        e.stopPropagation();
-        if (selected.includes(cardObj)) {
-          // Deselect
-          selected = selected.filter(c => c !== cardObj);
-          cardDiv.classList.remove('selected');
-        } else {
-          // Enforce count limit if set
-          if (opts.count && selected.length >= opts.count) return;
-          selected.push(cardObj);
-          cardDiv.classList.add('selected');
-        }
-        // Confirm if count is met
-        if (opts.count && selected.length === opts.count) {
-          cleanup();
-          onSelect([...selected]);
-        }
-      };
-    }
-  });
-
-  // Confirm button for any selection if no count set (optional)
-  if (!opts.count) {
-    showConfirmBtn();
-  }
-
-  function showConfirmBtn() {
-    if (document.getElementById('skill-confirm-btn')) return;
-    const btn = document.createElement('button');
-    btn.textContent = opts.title || `Confirm Selection (${selected.length})`;
-    btn.id = 'skill-confirm-btn';
-    btn.style.position = 'fixed';
-    btn.style.bottom = '40px';
-    btn.style.right = '50vw';
-    btn.style.zIndex = 1000;
-    btn.onclick = () => {
-      cleanup();
-      onSelect([...selected]);
-    };
-    document.body.appendChild(btn);
-  }
-
-  function cleanup() {
-    document.querySelectorAll('.target-highlight, .selected').forEach(el => {
-      el.classList.remove('target-highlight', 'selected');
-      el.onclick = null;
-    });
-    battlefield.classList.remove('skill-mode-backdrop');
-    document.getElementById('skill-confirm-btn')?.remove();
-    document.body.removeEventListener('click', cancelHandler);
-  }
-
-  // Cancel logic: clicking elsewhere
-  function cancelHandler(e) {
-    cleanup();
-  }
-  setTimeout(() => document.body.addEventListener('click', cancelHandler, { once: true }), 10);
 }
 
 // Build a normalized filter object for effect targeting.
