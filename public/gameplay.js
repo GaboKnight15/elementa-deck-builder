@@ -5777,9 +5777,9 @@ function proceedSkillActivation(cardObj, skillObj, options = {}) {
 function resolveSkill(cardObj, skillObj, context = {}, onComplete) {
   // Support both legacy and new skill schemas
   const effect =
-    skillObj.effect ??
-    skillObj.resolution?.effect ??
-    skillObj.effects ??
+    skillObj.eff ??
+    skillObj.resolution?.eff ??
+    skillObj.effs ??
     null;
 
   // Normalize effect into an array of effect objects
@@ -5916,7 +5916,6 @@ function effectTargetFilter(step = {}) {
   // Shorthand -> canonical keys used by matchesFilter/fieldIncludes
   if (step.targetType != null)      f.type = step.targetType;
   if (step.targetColor != null)     f.color = step.targetColor;
-  if (step.targetArchetype != null) f.archetype = step.targetArchetype;
   if (step.targetAbility != null)   f.ability = step.targetAbility;
   if (step.targetCategory != null)  f.category = step.targetCategory;
   return f;
