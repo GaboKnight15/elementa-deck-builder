@@ -573,7 +573,7 @@ summon: { name: 'Summon', zone: 'hand', icon: 'Icons/Skill/Summon.png',
 
     const def = dummyCards.find(c => c.id === sourceCardObj.cardId);
     const cat = String(def?.category || '').toLowerCase();
-    const orientation = cat === 'unit' ? 'horizontal';
+    const orientation = cat === 'unit' ? 'horizontal' : 'vertical';
 
     moveCard(
       sourceCardObj.instanceId,
