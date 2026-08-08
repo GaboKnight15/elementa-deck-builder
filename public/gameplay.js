@@ -2882,64 +2882,46 @@ cardDiv.appendChild(statsAndIconsOverlay);
 }
 
 // COST DISPLAY IN HAND
-function getEssenceCostDisplay(cost) {
-  if (typeof cost === "string") {
-    return cost.replace(/\{([^}]+)\}/g, (match, token) => {
-      const key = String(token).trim().toLowerCase();
+// Keep one canonical token normalizer
+function normalizeEssenceTokens(str) {
+  return String(str || '').replace(/\{([^}]+)\}/g, (_, raw) => {
+    const tok = String(raw).trim().toLowerCase();
 
-      // {2} -> x2 icon key
-      const normalizedKey = /^\d+$/.test(key) ? `x${key}` : key;
-
-      const imgSrc = ESSENCE_IMAGE_MAP[normalizedKey];
-      if (imgSrc) {
-        return `<img src="${imgSrc}" style="width:22px;height:22px;vertical-align:middle;margin:0 2px;" alt="${key}">`;
-      }
-
-      return match;
-    });
-  }
-
-  if (!cost || typeof cost !== 'object') {
-    return `<img src="${ESSENCE_IMAGE_MAP['x0']}" style="width:22px;height:22px;vertical-align:middle;" alt="Colorless: 0">`;
-  }
-
-  const iconOrder = [
-    ['green', 'g'],
-    ['red', 'r'],
-    ['blue', 'u'],
-    ['yellow', 'y'],
-    ['purple', 'p'],
-    ['gray', 'c'],
-    ['black', 'b'],
-    ['white', 'w'],
-    ['colorless', 'x']
-  ];
-
-  let html = '';
-  let total = 0;
-
-  iconOrder.forEach(([prop, key]) => {
-    const amt = Number(cost[prop] || 0);
-    if (amt <= 0) return;
-    total += amt;
-
-    const iconKey = key === 'x' ? `x${amt}` : (amt === 1 ? key : `${key}${amt}`);
-    const imgSrc = ESSENCE_IMAGE_MAP[iconKey];
-
-    if (imgSrc) {
-      html += `<img src="${imgSrc}" style="width:22px;height:22px;vertical-align:middle;margin:0 2px;" alt="${prop}:${amt}">`;
-    } else if (key === 'x') {
-      html += `<img src="${ESSENCE_IMAGE_MAP[`x${amt}`] || ESSENCE_IMAGE_MAP.x1}" style="width:22px;height:22px;vertical-align:middle;margin:0 2px;" alt="${prop}:${amt}">`;
-    } else {
-      html += `<img src="${ESSENCE_IMAGE_MAP[key]}" style="width:22px;height:22px;vertical-align:middle;margin:0 2px;" alt="${prop}">`.repeat(amt);
+    // {g2} => {g}{g}
+    const mColor = tok.match(/^([gruypcbw])(\d+)$/i);
+    if (mColor) {
+      const sym = mColor[1].toLowerCase();
+      const n = Number(mColor[2] || 1);
+      return Array.from({ length: n }, () => `{${sym}}`).join('');
     }
+
+    // {x2} stays generic count
+    const mX = tok.match(/^x(\d+)$/i);
+    if (mX) return `{x${Number(mX[1])}}`;
+
+    // pass-through single symbols / numbers
+    if (/^[gruypcbw]$/i.test(tok)) return `{${tok.toLowerCase()}}`;
+    if (/^\d+$/.test(tok)) return `{x${tok}}`;
+
+    return `{${tok}}`;
   });
+}
 
-  if (total === 0) {
-    html = `<img src="${ESSENCE_IMAGE_MAP['x0']}" style="width:22px;height:22px;vertical-align:middle;" alt="Colorless: 0">`;
-  }
+// Render cost icons from string using ONLY base color icons
+function getEssenceCostDisplay(cost) {
+  const map = ESSENCE_IMAGE_MAP || {};
+  const s = normalizeEssenceTokens(typeof cost === 'string' ? cost : '');
+  const tokens = s.match(/\{([^}]+)\}/g) || [];
+  if (!tokens.length) return `<img src="${map.x0}" style="width:22px;height:22px;vertical-align:middle;" alt="0">`;
 
-  return html;
+  return tokens.map(t => {
+    const k = t.replace(/[{}]/g, '').toLowerCase(); // g,r,u... or xN
+    const src =
+      (/^[gruypcbw]$/.test(k) ? map[k] : null) ||
+      (/^x\d+$/.test(k) ? (map[k] || map.x1) : null) ||
+      map.x0;
+    return `<img src="${src}" style="width:22px;height:22px;vertical-align:middle;margin:0 2px;" alt="${k}">`;
+  }).join('');
 }
 /* ---------------
 // ESSENCE POOL //
