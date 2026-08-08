@@ -5472,7 +5472,7 @@ function getReqKeys(skillObj = {}) {
 }
 
 function getEffKeys(skillObj = {}) {
-  const raw = skillObj.effect ?? skillObj.resolution?.effect ?? [];
+  const raw = skillObj.eff ?? skillObj.resolution?.eff ?? [];
   const arr = Array.isArray(raw) ? raw : [raw];
   return arr
     .map(e => typeof e === 'string' ? e : e?.class)
@@ -5535,9 +5535,9 @@ function canActivateSkill(cardObj, skillObj, currentZone, gameState, targetObj =
     const z = normalizeZoneName(currentZone || getZoneNameForCard(cardObj));
     if (!declared.includes(z)) return false;
   }
-  const effects = Array.isArray(skillObj.effect)
-  ? skillObj.effect
-  : (skillObj.effect ? [skillObj.effect] : []);
+const effects = Array.isArray(skillObj.eff)
+  ? skillObj.eff
+  : (skillObj.eff ? [skillObj.eff] : (Array.isArray(skillObj.effs) ? skillObj.effs : (skillObj.effs ? [skillObj.effs] : [])));
 
 for (const step of effects) {
   // Only check when step has explicit targeting semantics
@@ -5576,8 +5576,8 @@ for (const step of effects) {
 
   // 2. EFFECTS: All effect handlers' canActivate must pass (if defined)
   let effectObjs = [];
-  if (skillObj.effect) {
-    effectObjs = Array.isArray(skillObj.effect) ? skillObj.effect : [skillObj.effect];
+  if (skillObj.eff) {
+    effectObjs = Array.isArray(skillObj.eff) ? skillObj.eff : [skillObj.eff];
   } else if (skillObj.resolution && skillObj.resolution.effect) {
     effectObjs = Array.isArray(skillObj.resolution.effect)
       ? skillObj.resolution.effect
@@ -5777,10 +5777,11 @@ function proceedSkillActivation(cardObj, skillObj, options = {}) {
 function resolveSkill(cardObj, skillObj, context = {}, onComplete) {
   // Support both legacy and new skill schemas
   const effect =
-    skillObj.eff ??
-    skillObj.resolution?.eff ??
-    skillObj.effs ??
-    null;
+  skillObj.eff ??
+  skillObj.effs ??
+  skillObj.resolution?.eff ??
+  skillObj.resolution?.effs ??
+  null;
 
   // Normalize effect into an array of effect objects
   let effectSteps = [];
@@ -6522,12 +6523,11 @@ function skillTitle(skill) {
   if (!skill) return '';
   if (skill.title && String(skill.title).trim()) return String(skill.title).trim();
   const costPart = skill.cost ? `${String(skill.cost)} ` : '';
-  const effectText = skillTitleFromEffect(skill.effect || skill.effects || skill.resolution || skill.effectText);
-  if (effectText) return (costPart + effectText).trim();
+  const effectText = skillTitleFromEffect(skill.eff || skill.effs || skill.resolution?.eff || skill.resolution?.effs);  if (effectText) return (costPart + effectText).trim();
   if (skill.name) return skill.name;
   return '';
 }
-window.skillTitle = skillTitle; // optional global for console/tests
+window.skillTitle = skillTitle;
 // ----------------------------------- //
 // --- Card Field Helper Functions --- //
 // ----------------------------------- //
