@@ -3874,7 +3874,39 @@ button[disabled], .btn-disabled {
   text-transform: uppercase;
   transition: color 0.2s, background 0.2s;
 }
-
+.card-menu {
+  display: flex;
+  position: absolute;
+  flex-direction: column;
+  gap: 8px;
+  background: linear-gradient(120deg, #22304a 80%, #1a2533 100%);
+  color: #e5e7ef;
+  border: 1.5px solid #aac;
+  border-radius: 14px;
+  box-shadow: 0 4px 24px #0003;
+  padding: 10px 10px;
+  z-index: 9999;
+  min-width: 160px;
+  max-width: 240px;
+  max-height: 80vh;
+  align-items: stretch;
+  overflow-y: auto;
+  animation: fadeIn 0.16s;    
+}
+.card-menu button {
+  background: #4285f4;
+  color: #fff;
+  padding: 10px 10px;
+  cursor: pointer;
+  width: 100%;
+  font-weight: 500;
+  transition: background 0.18s;
+  box-sizing: border-box;
+  display: block;
+}
+.card-menu button:hover, .card-menu button:focus {
+  background: #204080;
+}
 /* PROFILE AREA */
 #profile-area {
   cursor: pointer;
