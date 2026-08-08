@@ -6639,43 +6639,55 @@ function getStatColor(cardObj, statName) {
 
 // GAME STATUS UI
 // updateGameStatusRow - ensures pooled essence and casting preview are shown
+// 1) Make sure status row always shows values clearly
 function updateGameStatusRow() {
-  const container = document.getElementById('game-status-inline');
-  if (!container) return;
-  container.innerHTML = '';
+  const enemyRow = document.getElementById('enemy-status-row');
+  const playerRow = document.getElementById('player-status-row');
+  if (!enemyRow || !playerRow) return;
 
-  // enemy essence block
-  const oWrap = document.createElement('div');
-  oWrap.style.display = 'flex';
-  oWrap.style.flexDirection = 'column';
-  oWrap.style.alignItems = 'center';
-  oWrap.style.gap = '4px';
+  enemyRow.innerHTML = '';
+  playerRow.innerHTML = '';
 
-  const oIcons = document.createElement('div');
-  oIcons.style.display = 'flex';
-  oIcons.style.flexWrap = 'wrap';
-  oIcons.style.justifyContent = 'center';
-  oIcons.style.gap = '4px';
-  renderEssenceSummaryInto(oIcons, getEssencePool('enemy'), { size: 16 });
-  oWrap.appendChild(oIcons);
-  
-  // Player essence block
-  const pWrap = document.createElement('div');
-  pWrap.style.display = 'flex';
-  pWrap.style.flexDirection = 'column';
-  pWrap.style.alignItems = 'center';
-  pWrap.style.gap = '4px';
+  const makeIcons = (pool) => {
+    const wrap = document.createElement('div');
+    wrap.style.display = 'flex';
+    wrap.style.flexWrap = 'wrap';
+    wrap.style.alignItems = 'center';
+    wrap.style.justifyContent = 'center';
+    wrap.style.gap = '6px';
+    renderEssenceSummaryInto(wrap, pool, { size: 16 });
 
-  const pIcons = document.createElement('div');
-  pIcons.style.display = 'flex';
-  pIcons.style.flexWrap = 'wrap';
-  pIcons.style.justifyContent = 'center';
-  pIcons.style.gap = '4px';
-  renderEssenceSummaryInto(pIcons, getEssencePool('player'), { size: 16 });
-  pWrap.appendChild(pIcons);
+    if (!wrap.children.length) {
+      const empty = document.createElement('span');
+      empty.textContent = '0';
+      empty.style.color = '#9aa4b2';
+      empty.style.fontSize = '12px';
+      wrap.appendChild(empty);
+    }
+    return wrap;
+  };
 
-  container.appendChild(pWrap);
-  container.appendChild(oWrap);
+  enemyRow.appendChild(makeIcons(getEssencePool('enemy')));
+  playerRow.appendChild(makeIcons(getEssencePool('player')));
+}
+
+// 2) Ensure this is called after every render, no matter what
+const __origRenderGameState = renderGameState;
+renderGameState = function () {
+  __origRenderGameState.apply(this, arguments);
+  try { updateGameStatusRow(); } catch (e) { console.warn(e); }
+};
+
+// 3) Make lane resolution robust for category arrays/casing
+function getCardLane(cardObj) {
+  const def = dummyCards.find(c => c.id === cardObj.cardId);
+  if (!def) return "support";
+
+  const cats = Array.isArray(def.category)
+    ? def.category.map(v => String(v).toLowerCase())
+    : [String(def.category || '').toLowerCase()];
+
+  return cats.includes('unit') ? 'unit' : 'support';
 }
 
 // Hook into renderGameState so updates happen automatically
