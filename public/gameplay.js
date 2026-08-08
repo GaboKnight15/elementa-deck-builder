@@ -5595,33 +5595,25 @@ for (const step of effects) {
   }
 
   // 3. Status Effects
-  if (cardObj._paralyzed || cardObj._frozen) return false;
+  if (cardObj.paralyzed || cardObj._frozen) return false;
   if (cardObj.canActivateSkill === false) return false;
 
 // 4. Cost - CHECK THE PLAYER'S ESSENCE POOL
 if (skillObj.cost && skillObj.cost !== '{0}') {
-  // Determine whose pool should be used.
-  // For hand activations, infer owner from which hand contains the card.
   const inPlayerHand = gameState.playerHand && gameState.playerHand.includes(cardObj);
-  const inenemyHand = gameState.enemyHand && gameState.enemyHand.includes(cardObj);
+  const inEnemyHand = gameState.enemyHand && gameState.enemyHand.includes(cardObj);
+  const isHandActivation = inPlayerHand || inEnemyHand || normalizedCurrent === 'hand';
 
   let poolOwner = 'player';
-  if (inenemyHand) poolOwner = 'enemy';
-  else if (inPlayerHand) poolOwner = 'player';
-  else {
-    // Field/other zones: fall back to owner resolver
+  if (inEnemyHand) poolOwner = 'enemy';
+  else if (!inPlayerHand) {
     const owner = getCardOwner(cardObj);
     if (owner === 'enemy') poolOwner = 'enemy';
   }
 
   const pool = getEssencePool(poolOwner) || {};
-
-  // Convert pool -> essence string for canPayEssence (colored only)
   let poolEssenceStr = '';
-  const map = {
-    green: 'G', red: 'R', blue: 'U', yellow: 'Y',
-    purple: 'P', gray: 'C', black: 'B', white: 'W'
-  };
+  const map = { green:'G', red:'R', blue:'U', yellow:'Y', purple:'P', gray:'C', black:'B', white:'W' };
 
   for (const [type, amount] of Object.entries(pool)) {
     const n = Number(amount || 0);
@@ -5631,7 +5623,11 @@ if (skillObj.cost && skillObj.cost !== '{0}') {
     for (let i = 0; i < n; i++) poolEssenceStr += `{${code}}`;
   }
 
-  if (!canPayEssence({ essence: poolEssenceStr }, skillObj.cost)) {
+  const affordableNow = canPayEssence({ essence: poolEssenceStr }, skillObj.cost);
+
+  // Allow hand skills to be clicked so the payment modal can handle payment UX.
+  // Keep strict block for non-hand zones if you want.
+  if (!affordableNow && !isHandActivation) {
     return false;
   }
 }
@@ -6964,7 +6960,7 @@ if (window.socket) {
     // result should be "player" or "enemy" (or "heads"/"tails")
     showCoinFlipModal(function(whoStarts) {
       gameState.turn = whoStarts;
-      gameState.phase = "draw";
+      gameState.phase = "start";
       // ...continue with setup...
       initiateDomainSelection(gameState.playerDeck, () => {
         // Draw opening hand, setup, etc.
