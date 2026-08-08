@@ -559,7 +559,7 @@ const EFF_MAP = {
 summon: { name: 'Summon', zone: 'hand', icon: 'Icons/Skill/Summon.png',
   description: 'Move this card from hand to the field.',
   canActivate(cardObj, skillObj, currentZone, gameState) {
-    return currentZone === 'playerHand' || currentZone === 'player-hand';
+    return currentZone === 'hand';
   },
   handler(sourceCardObj, skillObj, step = {}, nextEffect) {
     const owner = getCardOwner(sourceCardObj) === 'enemy' ? 'enemy' : 'player';
@@ -573,14 +573,7 @@ summon: { name: 'Summon', zone: 'hand', icon: 'Icons/Skill/Summon.png',
 
     const def = dummyCards.find(c => c.id === sourceCardObj.cardId);
     const cat = String(def?.category || '').toLowerCase();
-
-    if (cat !== 'unit' && cat !== 'terrain') {
-      showToast && showToast('This card cannot be played.', { type: 'error' });
-      nextEffect && nextEffect();
-      return;
-    }
-
-    const orientation = cat === 'unit' ? 'horizontal' : 'vertical';
+    const orientation = cat === 'unit' ? 'horizontal';
 
     moveCard(
       sourceCardObj.instanceId,
@@ -2073,7 +2066,7 @@ function setCardAnimatableClass(div, cardObj, cardData, gameState, zone) {
         actionable = skills.some(skillObj => {
           // Only consider skills that are meant to be used from hand (Summon/Cast/Terraform/etc.)
           // We can just ask the engine; canActivateSkill will return false if zone not allowed or cost not payable.
-          return canActivateSkill(cardObj, skillObj, 'playerHand', gameState);
+          return canActivateSkill(cardObj, skillObj, 'hand', gameState);
         });
       } else {
         // Non-hand zones: keep existing logic
