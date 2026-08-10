@@ -2249,7 +2249,7 @@ window.playerAchievements = window.playerAchievements || {};
 const COLOR_QUESTS = ['green', 'red', 'blue', 'yellow', 'purple', 'gray', 'black', 'white'];
 // Quest LIST
 const INITIAL_QUESTS_ON_SIGNUP = 3;
-const QUEST_MAX_ACTIVE = QUEST_POOL.length;
+
 const QUEST_POOL = [
   { id: 'purchase_pack', group: '', type: 'quest', description: 'Purchase a Booster Pack', goal: 1, reward: { group: '', type: 'currency', amount: 100 }, image: 'Images/Blank/Pack.png', progress: 0, claimed: false, completed: false, refillAt: null},
   { id: 'collect_green_card', group: '', type: 'quest', description: 'Collect a Green Card', goal: 1, reward: { group: '', type: 'currency', amount: 80 }, image: 'Images/Blank/Green.png', progress: 0, claimed: false, completed: false, refillAt: null},
@@ -2261,7 +2261,7 @@ const QUEST_POOL = [
   { id: 'collect_black_card', group: '', type: 'quest', description: 'Collect a Black Card', goal: 1, reward: { group: '', type: 'currency', amount: 80 }, image: 'Images/Blank/Black.png', progress: 0, claimed: false, completed: false, refillAt: null},
   { id: 'collect_white_card', group: '', type: 'quest', description: 'Collect a White Card', goal: 1, reward: { group: '', type: 'currency', amount: 80 }, image: 'Images/Blank/White.png', progress: 0, claimed: false, completed: false, refillAt: null},
 ];
-
+const QUEST_MAX_ACTIVE = QUEST_POOL.length;
 // -------------------- //
 // --- ACHIEVEMENTS --- //
 // -------------------- //
