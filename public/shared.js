@@ -2152,7 +2152,29 @@ const cardStyles = [
 	{ cardId: 'Plains', key: "fullArt", label: "Plains", rarity: 'Common', price: 10, obtain: 'shop' },
 	{ cardId: 'Wasteland', key: "fullArt", label: "Wasteland", rarity: 'Common', price: 10, obtain: 'shop' },	
 ];
-
+const UPDATES = [
+  {
+    id: "news-welcome",
+    type: "news", // "news" | "balance" | "issues"
+    date: "2026-08-10",
+    title: "Welcome to Elementa",
+    body: "Welcome to the World of Elementa."
+  },
+  {
+    id: "balance-001",
+    type: "balance",
+    date: "2026-08-10",
+    title: "Starter Pass",
+    body: "Adjusted early coin rewards for smoother progression."
+  },
+  {
+    id: "issue-001",
+    type: "issues",
+    date: "2026-08-10",
+    title: "Known Issue: Modal overlap",
+    body: "Some modals can overlap on smaller screens. Fix in progress."
+  }
+];
 const packPrices = [
   { id: "EssenceLegacy", name: "Essence Legacy", price: 90,
     image: 'Images/Pack/EssenceLegacy.png'
@@ -7549,7 +7571,57 @@ function getKeywordIconPath(token) {
 
   return null;
 }
+function escapeHtml(s) {
+  return String(s ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+function getUpdatesByType(type) {
+  return UPDATES
+    .filter(item => item.type === type)
+    .sort((a, b) => new Date(b.date) - new Date(a.date)); // newest first
+}
 
+function renderUpdatesPanel(type) {
+  const panelMap = {
+    news: "panel-news",
+    balance: "panel-balance",
+    issues: "panel-issues"
+  };
+
+  const emptyMessageMap = {
+    news: "No news updates yet.",
+    balance: "No balance updates yet.",
+    issues: "No issues reported yet."
+  };
+
+  const panel = document.getElementById(panelMap[type]);
+  if (!panel) return;
+
+  const items = getUpdatesByType(type);
+
+  if (!items.length) {
+    panel.innerHTML = `
+      <div style="font-size:1.15em;color:#ffe066;text-align:center;">
+        ${escapeHtml(emptyMessageMap[type] || "No updates yet.")}
+      </div>
+    `;
+    return;
+  }
+
+  panel.innerHTML = items.map(item => `
+    <div class="news-item" style="margin-bottom:12px;padding:10px;border:1px solid rgba(255,255,255,.15);border-radius:8px;background:rgba(0,0,0,.18);">
+      <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;">
+        <div style="font-weight:700;color:#ffe066;">${escapeHtml(item.title)}</div>
+        <div style="font-size:.85em;opacity:.8;">${escapeHtml(item.date)}</div>
+      </div>
+      <div style="margin-top:6px;line-height:1.35;">${escapeHtml(item.body)}</div>
+    </div>
+  `).join("");
+}
 // Escape HTML for safe HTML generation
 function escapeHtmlInline(s) {
   return String(s || '').replace(/[&<>"']/g, function (m) {
@@ -9985,16 +10057,13 @@ usernameDisplay.onclick = function () {
 });
 // Initial News Panel content
 function renderNewsPanel() {
-  const panel = document.getElementById('panel-news');
-  if (panel) panel.innerHTML = `<div style="font-size:1.25em;color:#ffe066;text-align:center;">Welcome to the World of Elementa</div>`;
+  renderUpdatesPanel("news");
 }
 function renderBalancePanel() {
-  const panel = document.getElementById('panel-balance');
-  if (panel) panel.innerHTML = `<div style="font-size:1.15em;color:#ffe066;text-align:center;">No balance updates yet.</div>`;
+  renderUpdatesPanel("balance");
 }
 function renderIssuesPanel() {
-  const panel = document.getElementById('panel-issues');
-  if (panel) panel.innerHTML = `<div style="font-size:1.15em;color:#ffe066;text-align:center;">No issues reported yet.</div>`;
+  renderUpdatesPanel("issues");
 }
 // Hook up modals and icon
 document.getElementById('friends-icon').onclick = function() {
