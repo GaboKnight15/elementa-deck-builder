@@ -2158,13 +2158,13 @@ const UPDATES = [
     type: "news", // "news" | "balance" | "issues"
     date: "2026-08-10",
     title: "Welcome to Elementa",
-    body: "Welcome to the World of Elementa."
+    body: "Welcome to Elementa: Rise of Dragons."
   },
   {
     id: "balance-001",
     type: "balance",
     date: "2026-08-10",
-    title: "Starter Pass",
+    title: "Balance Updates",
     body: "Adjusted early coin rewards for smoother progression."
   },
   {
@@ -2172,7 +2172,7 @@ const UPDATES = [
     type: "issues",
     date: "2026-08-10",
     title: "Known Issue: Modal overlap",
-    body: "Some modals can overlap on smaller screens. Fix in progress."
+    body: "Some pop-ups can overlap on smaller screens. Fix in progress."
   }
 ];
 const packPrices = [
@@ -6796,7 +6796,7 @@ function renderFriendNotifications() {
 function renderFriendsList() {
   const modal = document.getElementById('friends-modal');
   const list = document.getElementById('friends-list');
-  list.innerHTML = '<div>Loading...</div>';
+  list.innerHTML = '<div style="color:#ffe066;">Loading...</div>';
   const currentUid = getCurrentUserId();
   if (!currentUid) {
     list.innerHTML = "<div>Please log in.</div>";
@@ -6823,9 +6823,9 @@ function renderFriendsList() {
     }
     // Friends section
     if (!ids.length) {
-      list.innerHTML += '<div>No friends yet.</div>';
-      return;
-    }
+	  list.innerHTML = '<div>No friends yet.</div>';
+	  return;
+	}
     ids.forEach(fid => {
       firebase.firestore().collection('users').doc(fid).get().then(function(friendDoc) {
         const userData = friendDoc.data() || {};
@@ -9520,17 +9520,6 @@ function onSealed(cb)     { return addBlightListener('Sealed', cb); }
 function onCursed(cb)     { return addBlightListener('Cursed', cb); }
 function onFrozen(cb)     { return addBlightListener('Frozen', cb); }
 
-// Expose to window for console/tests if desired
-window.onSoaked    = onSoaked;
-window.onBurned    = onBurned;
-window.onPoisoned  = onPoisoned;
-window.onParalyzed = onParalyzed;
-window.onBound     = onBound;
-window.onSealed    = onSealed;
-window.onCursed    = onCursed;
-window.onFrozen    = onFrozen;
-
-
 // --- STATUS --- //
 function hasEvolveSigil(cardObj) {
   if (!cardObj) return false;
@@ -9560,13 +9549,6 @@ function countVoidOpponent() {if (!window.gameState || !Array.isArray(gameState.
  return 0;return gameState.opponentVoid.length;}
 function countVoid() {return countVoidPlayer() + countVoidOpponent();}
 
-
-// expose to window for use in UI/templates if desired
-window.countHandPlayer = countHandPlayer;
-window.countHandOpponent = countHandOpponent;
-window.countVoid = countVoid;
-window.countVoidOpponent = countVoidOpponent;
-window.countVoidPlayer = countVoidPlayer;
 // --- COUNTING HELPERS --- //
 function countType(typeName) {
   if (!typeName) return 0;
@@ -9635,7 +9617,6 @@ function countTypeVoid(typeName) {
     }
   }
 }
-window.countTypeVoid = countTypeVoid;
 
 // --- COUNT TYPE VOID --- //
 // Per-type convenience wrappers (player's VOID)
@@ -9648,16 +9629,6 @@ function countElementalVoid() { return countTypeVoid('Elemental'); }
 function countFaefolkVoid()   { return countTypeVoid('Faefolk'); }
 function countHumanVoid()     { return countTypeVoid('Human'); }
 function countUndeadVoid()    { return countTypeVoid('Undead'); }
-
-window.countBeastVoid     = countBeastVoid;
-window.countBruteVoid     = countBruteVoid;
-window.countConstructVoid = countConstructVoid;
-window.countDemonVoid     = countDemonVoid;
-window.countDragonVoid    = countDragonVoid;
-window.countElementalVoid = countElementalVoid;
-window.countFaefolkVoid   = countFaefolkVoid;
-window.countHumanVoid     = countHumanVoid;
-window.countUndeadVoid    = countUndeadVoid;
 
 function closeAllFilterDropdowns() {
   document.querySelectorAll('.filter-dropdown-menu').forEach(el => el.remove());
