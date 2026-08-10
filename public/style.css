@@ -4247,6 +4247,28 @@ button[disabled], .btn-disabled {
 .shop-modal-card-img:hover {
   transform: scale(1.06);
 }
+.shop-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 10px 0 14px;
+}
+.shop-tab {
+  border: 1px solid #4e5a78;
+  background: #1e2637;
+  color: #dbe3ff;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+.shop-tab.selected {
+  border-color: #ffe066;
+  color: #ffe066;
+  background: #2a3550;
+  font-weight: 700;
+}
+.shop-panel { min-height: 320px; }
+.shop-empty-note { color: #b8c0d8; font-style: italic; padding: 12px 4px; }
 /* COSMETICS ANIMATION */
 .modal-content img[alt="Cosmetic Preview"] {
   transition: 
