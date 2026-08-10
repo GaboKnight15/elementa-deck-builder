@@ -5512,29 +5512,29 @@ function canAddCard(card, currentInDeck, ownedCount) {
   const mainCount = currentInDeck || 0;
   const cap = getRarityCap(card);
 
-  // 30-card deck limit
   const totalMain = Object.values(deck).reduce((a, b) => a + b, 0);
   if (totalMain >= 30) return false;
 
-  // ownership limit
   if (mainCount >= ownedCount) return false;
+  if (mainCount >= cap) return false; // Legends already cap at 1
 
-  // rarity cap (legend=1, rare=2, common=3)
-  if (mainCount >= cap) return false;
+  const isDomain = isType(card, 'Domain');
 
-  const isDomainCard = String(card?.type || '').toLowerCase() === 'domain';
+  // Count domains currently in deck
+const domainIdsInDeck = Object.keys(deck).filter(id => {
+  const c = dummyCards.find(dc => dc.id === id);
+  return c && isType(c, 'Domain') && Number(deck[id]) > 0;
+});
 
-  // domain-specific rules: max 1 domain total in deck, and only 1 copy
-  if (isDomainCard) {
-    if (mainCount >= 1) return false; // never more than 1 copy
+  // Rule A: if adding non-domain, deck must already contain a domain
+  if (!isDomain && domainIdsInDeck.length === 0) return false;
 
-    const hasOtherDomain = Object.keys(deck).some((cardId) => {
-      if (cardId === card.id) return false;
-      const c = dummyCards.find(dc => dc.id === cardId);
-      return c && String(c.type || '').toLowerCase() === 'domain' && Number(deck[cardId]) > 0;
-    });
-
-    if (hasOtherDomain) return false;
+  // Rule B: domain cards are legend -> max 1 copy handled by rarity cap
+  // Rule C: allow adding a different domain only if a domain already exists
+  // (this allows replacement flow in addCardToDeck)
+  if (isDomain) {
+    if (mainCount >= 1) return false; // explicit safety
+    return true;
   }
 
   return true;
@@ -5544,17 +5544,27 @@ function addCardToDeck(cardId) {
   const card = dummyCards.find(c => c.id === cardId);
   if (!card) return;
 
-  const isDomainCard = String(card.type || '').toLowerCase() === 'domain';
+  const isDomain = isType(card, 'Domain');
 
-  if (isDomainCard) {
-    // remove any existing domain first (single domain slot)
-    Object.keys(deck).forEach((id) => {
-      const c = dummyCards.find(dc => dc.id === id);
-      if (c && String(c.type || '').toLowerCase() === 'domain') {
-        delete deck[id];
-      }
-    });
-    deck[cardId] = 1; // exactly one
+const domainIdsInDeck = Object.keys(deck).filter(id => {
+  const c = dummyCards.find(dc => dc.id === id);
+  return c && isType(c, 'Domain') && Number(deck[id]) > 0;
+});
+
+  if (isDomain) {
+    // First domain: allow setting it
+    if (domainIdsInDeck.length === 0) {
+      deck[cardId] = 1;
+      setCurrentDeck(deck);
+      return;
+    }
+
+    // If same domain already present, do nothing
+    if (domainIdsInDeck.includes(cardId)) return;
+
+    // Different domain selected: replace current domain
+    domainIdsInDeck.forEach(id => delete deck[id]);
+    deck[cardId] = 1;
     setCurrentDeck(deck);
     return;
   }
