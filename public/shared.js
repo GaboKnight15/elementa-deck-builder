@@ -2840,7 +2840,6 @@ function getTierReward(tier) {
 function setAchievementProgress(sectionKey, groupId, value, { autoSave = true } = {}) {
   const st = ensureAchievementState();
   st.progress[groupId] = Math.max(0, Number(value || 0));
-
   if (autoSave && typeof saveProgress === "function") saveProgress();
 }
 
@@ -2853,7 +2852,46 @@ function isAchievementTierClaimed(groupId, tierNumber) {
   const st = ensureAchievementState();
   return !!(st.claimed[groupId] && st.claimed[groupId][tierNumber]);
 }
+function claimAchievementTierReward(sectionKey, groupId, tierNumber) {
+  const st = ensureAchievementState();
 
+  const section = (window.ACHIEVEMENTS || {})[sectionKey];
+  if (!section || !Array.isArray(section.groups)) return false;
+
+  const group = section.groups.find(g => g.id === groupId);
+  if (!group || !Array.isArray(group.tiers)) return false;
+
+  const tierDef = group.tiers.find(t => Number(t.tier) === Number(tierNumber));
+  if (!tierDef) return false;
+
+  const goal = Number(tierDef.goal || 0);
+  const progress = Number(st.progress[groupId] || 0);
+  if (progress < goal) return false; // not completed
+
+  if (!st.claimed[groupId]) st.claimed[groupId] = {};
+  if (st.claimed[groupId][tierNumber]) return false; // already claimed
+
+  // reward supports number or object
+  const reward = tierDef.reward;
+  if (typeof reward === 'number') {
+    setCurrency(getCurrency() + reward);
+  } else if (reward && typeof reward === 'object') {
+    if (reward.coins) setCurrency(getCurrency() + Number(reward.coins || 0));
+    if (reward.essence) setEssence(getEssence() + Number(reward.essence || 0));
+  }
+
+  st.claimed[groupId][tierNumber] = true;
+  if (typeof saveProgress === "function") saveProgress();
+  if (typeof showToast === "function") showToast("Achievement reward claimed!", { type: "success" });
+  return true;
+}
+function countUnlockedAvatars() {
+  const arr = (typeof getUnlockedAvatars === 'function') ? getUnlockedAvatars() : (window.playerUnlockedAvatars || []);
+  return Array.isArray(arr) ? new Set(arr).size : 0;
+}
+function countCollectedCardsByType(typeName) {
+  return countCardsType(typeName); // you already have countCardsType implemented
+}
 function countCardsColor(colorName) {
   const collection = (typeof getCollection === 'function') ? getCollection() : {};
   const want = String(colorName || '').toLowerCase();
@@ -2904,7 +2942,40 @@ function countOwnedCosmetics(kind) {
   // unique IDs
   return new Set(arr.map(x => String(x))).size;
 }
+function computeAchievementsProgress({ autoSave = true } = {}) {
+  // Account level
+  setAchievementProgress("account", "account_level", Number(window.playerLevel || 1), { autoSave: false });
 
+  // Colors
+  const colorMap = {
+    color_green: "green",
+    color_red: "red",
+    color_blue: "blue",
+    color_yellow: "yellow",
+    color_purple: "purple",
+    color_gray: "gray",
+    color_white: "white",
+    color_black: "black",
+  };
+  Object.entries(colorMap).forEach(([groupId, colorName]) => {
+    setAchievementProgress("color", groupId, countCardsColor(colorName), { autoSave: false });
+  });
+
+  // Types (only those defined in your ACHIEVEMENTS right now)
+  const typeMap = {
+    type_avian: "avian",
+    type_beast: "beast",
+  };
+  Object.entries(typeMap).forEach(([groupId, typeName]) => {
+    setAchievementProgress("type", groupId, countCollectedCardsByType(typeName), { autoSave: false });
+  });
+
+  // Cosmetics
+  setAchievementProgress("cosmetic", "cosmetic_avatar", countUnlockedAvatars(), { autoSave: false });
+
+  if (autoSave && typeof saveProgress === "function") saveProgress();
+}
+window.computeAchievementsProgress = computeAchievementsProgress;
 function updateCosmeticAchievements({ autoSave = true } = {}) {
 
   setAchievementProgress("cosmetic", "cosmetic_avatar", countOwnedCosmetics("avatar"), { autoSave: false });
@@ -3074,8 +3145,9 @@ function updateQuestsNotificationDot() {
   });
 }
 
+// --- Keep this renderer; just ensure dot update works with normalized state ---
 function updateAchievementsNotificationDot() {
-  const achievementData = getAchievementData();
+  const st = ensureAchievementState();
   const dot = document.getElementById('achievements-notification-dot');
   if (!dot) return;
 
@@ -3083,14 +3155,13 @@ function updateAchievementsNotificationDot() {
 
   for (const sectionDef of Object.values(ACHIEVEMENTS || {})) {
     const groups = Array.isArray(sectionDef?.groups) ? sectionDef.groups : [];
-
     for (const group of groups) {
       const groupId = group?.id;
       const tiers = Array.isArray(group?.tiers) ? group.tiers : [];
       if (!groupId) continue;
 
-      const progressValue = Number(achievementData?.progress?.[groupId] || 0);
-      const claimedMap = achievementData?.claimed?.[groupId] || {};
+      const progressValue = Number(st.progress[groupId] || 0);
+      const claimedMap = st.claimed[groupId] || {};
 
       for (const t of tiers) {
         const tierNum = Number(t?.tier || 0);
@@ -3105,10 +3176,8 @@ function updateAchievementsNotificationDot() {
           break;
         }
       }
-
       if (hasClaimable) break;
     }
-
     if (hasClaimable) break;
   }
 
@@ -3162,12 +3231,16 @@ function getAchievementTiers(section, group) {
     .slice()
     .sort((a, b) => Number(a.tier || 0) - Number(b.tier || 0));
 }
+
 function ensureAchievementState() {
-  if (!window.playerAchievements || typeof playerAchievements !== 'object') {
+  if (!window.playerAchievements || typeof window.playerAchievements !== 'object') {
     window.playerAchievements = {};
   }
-  if (!playerAchievements.groups || typeof playerAchievements.groups !== 'object') {
-    playerAchievements.groups = {};
+  if (!playerAchievements.progress || typeof playerAchievements.progress !== 'object') {
+    playerAchievements.progress = {};
+  }
+  if (!playerAchievements.claimed || typeof playerAchievements.claimed !== 'object') {
+    playerAchievements.claimed = {};
   }
   return playerAchievements;
 }
@@ -3175,33 +3248,7 @@ function ensureAchievementState() {
 function getAchievementGroupKeyFromEntry(entry) {
   return `${entry.section}::${entry.group}`;
 }
-function getTieredAchievementView(section, group, progressValue) {
-  const tiers = getAchievementTiers(section, group);
-  const groupKey = `${section}::${group}`;
 
-  // Determine completion from progress, and persist "completed" flags (monotonic)
-  tiers.forEach(t => {
-    const tierNum = Number(t.tier || 0);
-    const goal = Number(t.goal || 0);
-    if (tierNum > 0 && goal > 0 && progressValue >= goal) {
-      gs.completed[tierNum] = true;
-    }
-  });
-
-  // Determine the next tier to display: first not completed
-  let current = null;
-  for (const t of tiers) {
-    const tierNum = Number(t.tier || 0);
-    if (!gs.completed[tierNum]) {
-      current = t;
-      break;
-    }
-  }
-  // If all completed, show the last tier as "completed"
-  if (!current && tiers.length) current = tiers[tiers.length - 1];
-
-  return { tiers, current, state: gs, groupKey };
-}
 function buildAchievementIndex() {
   const idx = {};
   for (const [sectionKey, sectionDef] of Object.entries(ACHIEVEMENTS || {})) {
