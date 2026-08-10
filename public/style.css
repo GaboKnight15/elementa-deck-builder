@@ -646,6 +646,132 @@ button {}
   background: #ffe06622;
 }
 /* ACHIEVEMENTS */
+/* =========================
+   ACHIEVEMENTS (Quest-like)
+   ========================= */
+
+/* Container entries mirror quest cards */
+.achievement-entry {
+  display: flex;
+  align-items: flex-start;
+  background: #232a3c;
+  border-radius: 12px;
+  margin: 18px 0 0 0;
+  box-shadow: 0 2px 12px #0004;
+  gap: 18px;
+  padding: 10px 12px;
+  border: 2px solid transparent;
+  transition: background 0.2s, box-shadow 0.2s, border-color 0.2s, opacity 0.2s;
+}
+
+/* Left icon */
+.achievement-image {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  margin-right: 0;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+/* Main content block */
+.achievement-main {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* Description/title */
+.achievement-desc {
+  font-size: 1.11em;
+  color: #ffe066;
+  font-weight: 600;
+  margin: 4px 0 8px 0;
+}
+
+/* Row containing bar + numbers + reward */
+.achievement-progress-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+/* Progress bar wrapper */
+.achievement-progress-bar-wrap {
+  flex: 1 1 0;
+  background: #1a2234;
+  border-radius: 7px;
+  height: 15px;
+  overflow: hidden;
+  border: 1.5px solid #314175;
+  margin: 0;
+  min-width: 0;
+  position: relative;
+}
+
+/* Fill */
+.achievement-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #50eaff 0%, #ffe066 100%);
+  border-radius: 7px 0 0 7px;
+  transition: width 0.4s;
+}
+
+/* 3 / 10 style numbers */
+.achievement-progress-numbers {
+  text-align: right;
+  color: #fff;
+  font-size: 1em;
+  text-shadow: 0 1px 2px #0007;
+  white-space: nowrap;
+}
+
+/* Reward area on right */
+.achievement-reward {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 10px;
+  color: #ffe066;
+  font-weight: bold;
+  font-size: 1.02em;
+  white-space: nowrap;
+}
+
+.achievement-reward img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  vertical-align: middle;
+  filter: drop-shadow(0 1px 3px #0008);
+}
+
+/* Claimable state (same spirit as quest-claimable) */
+.achievement-claimable {
+  background: linear-gradient(90deg, #00710d 0%, #009941 100%);
+  box-shadow: 0 2px 14px #27ae6020;
+  border-color: #009911;
+  cursor: pointer;
+}
+
+.achievement-claimable:hover {
+  background: linear-gradient(90deg, #27ae60 0%, #2ecc40 100%);
+  box-shadow: 0 4px 22px #27ae6040;
+}
+
+/* Claimed state */
+.achievement-claimed {
+  opacity: 0.72;
+  background: linear-gradient(90deg, #234d2e 0%, #1c2e20 100%);
+  border-color: #5fad69;
+}
+
+/* Optional completed but not hovered subtle glow */
+.achievement-entry.completed:not(.achievement-claimed) {
+  box-shadow: 0 0 0 1px #ffe06644, 0 2px 14px #0006;
+}
 .fullpage-modal {
   position: absolute;
   inset: 0;
