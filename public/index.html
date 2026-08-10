@@ -401,23 +401,52 @@
         <img id="shop-settings-btn" src="Icons/Other/Settings.png" alt="Settings" class="section-header-btn" title="Settings" />
       </div>
     </div>
-    <div id="pack-options"></div>
-    <div id="shop-cosmetics">
-      <div id="shop-profile-pics" class="shop-division">
-      <h3>Avatars</h3>
-        <div id="shop-avatars-grid" class= "grid"></div>
-      </div>
-    <div id="shop-banners" class="shop-division">
-      <h3>Banners</h3>
-      <div id="shop-banners-grid"></div>
+    <!-- NEW: SHOP TABS -->
+    <div id="shop-tabs" class="shop-tabs">
+      <button id="shop-tab-packs" class="shop-tab selected" data-shop-tab="packs">Booster Packs</button>
+      <button id="shop-tab-structures" class="shop-tab" data-shop-tab="structures">Structure Decks</button>
+      <button id="shop-tab-avatars" class="shop-tab" data-shop-tab="avatars">Avatars</button>
+      <button id="shop-tab-banners" class="shop-tab" data-shop-tab="banners">Banners</button>
+      <button id="shop-tab-cardbacks" class="shop-tab" data-shop-tab="cardbacks">Cardbacks</button>
     </div>
-    <div id="shop-cardbacks" class="shop-division">
-      <h3>Cardbacks</h3>
-      <div id="shop-cardbacks-grid"></div>
+
+    <!-- NEW: SHOP PANELS -->
+    <div id="shop-panels">
+      <div id="shop-panel-packs" class="shop-panel">
+        <!-- existing pack render target kept -->
+        <div id="pack-options"></div>
+      </div>
+
+      <div id="shop-panel-structures" class="shop-panel" style="display:none;">
+        <div class="shop-empty-note">Structure Decks coming soon.</div>
+      </div>
+
+      <div id="shop-panel-avatars" class="shop-panel" style="display:none;">
+        <!-- existing avatar render target kept -->
+        <div id="shop-profile-pics" class="shop-division">
+          <h3>Avatars</h3>
+          <div id="shop-avatars-grid" class="grid"></div>
+        </div>
+      </div>
+
+      <div id="shop-panel-banners" class="shop-panel" style="display:none;">
+        <!-- existing banners render target kept -->
+        <div id="shop-banners" class="shop-division">
+          <h3>Banners</h3>
+          <div id="shop-banners-grid"></div>
+        </div>
+      </div>
+
+      <div id="shop-panel-cardbacks" class="shop-panel" style="display:none;">
+        <!-- existing cardbacks render target kept -->
+        <div id="shop-cardbacks" class="shop-division">
+          <h3>Cardbacks</h3>
+          <div id="shop-cardbacks-grid"></div>
+        </div>
+      </div>
     </div>
   </div>
-</div>
-</section>  
+</section>
 </div>
 
                                                           <!-- MODALS --> 
