@@ -2519,78 +2519,67 @@ function pickUniqueQuest(excludedIds = new Set()) {
   const i = Math.floor(Math.random() * pool.length);
   return pool[i];
 }
-// Keep one source of truth for daily quest rotation/reset
-function runDailyQuestResetIfNeeded() {
-  const now = new Date();
-  const todayUtcIso = new Date(Date.UTC(
-    now.getUTCFullYear(),
-    now.getUTCMonth(),
-    now.getUTCDate()
-  )).toISOString();
 
-  getQuestResets(function(resets) {
-    const last = resets.lastReset ? new Date(resets.lastReset) : null;
-    const alreadyResetToday = !!(last && last.toISOString() === todayUtcIso);
-    if (alreadyResetToday) return;
+const QUEST_MAX_ACTIVE = QUEST_POOL.length; // always match pool size
 
-    getActiveQuests(function(activeRaw) {
-      let activeQuests = Array.isArray(activeRaw) ? activeRaw.slice(0, QUEST_SLOTS) : [];
-      const questData = getQuestData() || {};
-
-      // 1) sanitize + dedupe + keep only valid quest ids
-      const seen = new Set();
-      activeQuests = activeQuests
-        .map(q => (typeof q === "string" ? { id: q } : q))
-        .filter(q => {
-          const id = normalizeQuestId(q);
-          if (!id || seen.has(id)) return false;
-          if (!QUEST_POOL.some(p => p.id === id)) return false;
-          seen.add(id);
-          return true;
-        });
-
-      // 2) fill missing slots with unique quests
-      while (activeQuests.length < QUEST_SLOTS) {
-        const used = new Set(activeQuests.map(normalizeQuestId));
-        const next = pickUniqueQuest(used);
-        if (!next) break;
-        activeQuests.push({ id: next.id, assignedAt: Date.now() });
-        if (!questData[next.id]) {
-          questData[next.id] = { progress: 0, completed: false, claimed: false };
-        }
-      }
-
-      // 3) rotate ONLY claimed quests
-      const usedIds = new Set(activeQuests.map(normalizeQuestId));
-      const rotated = activeQuests.map(slot => {
-        const slotId = normalizeQuestId(slot);
-        const progress = questData[slotId] || { progress: 0, completed: false, claimed: false };
-
-        if (progress.claimed) {
-          usedIds.delete(slotId);
-          const replacement = pickUniqueQuest(usedIds);
-          if (replacement) {
-            usedIds.add(replacement.id);
-            questData[replacement.id] = { progress: 0, completed: false, claimed: false };
-            return { id: replacement.id, assignedAt: Date.now() };
-          }
-        }
-        return slot;
-      });
-
-      setQuestData(questData, false);
-      setActiveQuests(rotated, function() {
-        resets.lastReset = todayUtcIso;
-        setQuestResets(resets, function() {
-          renderQuests();
-          updateQuestsNotificationDot();
-          startQuestTimers();
-        });
-      });
-    });
-  });
+function getQuestPoolIds() {
+  return QUEST_POOL
+    .filter(q => q && q.id)
+    .map(q => q.id);
 }
 
+function syncActiveQuests(cb) {
+  const user = firebase.auth().currentUser;
+  if (!user) {
+    if (typeof cb === "function") cb([]);
+    return;
+  }
+
+  const userRef = firebase.firestore().collection('users').doc(user.uid);
+
+  userRef.get().then(doc => {
+    const data = doc.exists ? doc.data() : {};
+    const poolIds = new Set(getQuestPoolIds());
+
+    // Start from saved active quests, normalize to {id}
+    let activeQuests = Array.isArray(data.activeQuests) ? data.activeQuests : [];
+    activeQuests = activeQuests
+      .map(q => (typeof q === "string" ? { id: q } : q))
+      .filter(q => q && q.id && poolIds.has(q.id));
+
+    // Deduplicate while preserving order
+    const seen = new Set();
+    activeQuests = activeQuests.filter(q => {
+      if (seen.has(q.id)) return false;
+      seen.add(q.id);
+      return true;
+    });
+
+    // Fill missing with unique quests from the pool
+    const used = new Set(activeQuests.map(q => q.id));
+    const remaining = QUEST_POOL.filter(q => q && q.id && !used.has(q.id));
+
+    while (activeQuests.length < QUEST_MAX_ACTIVE && remaining.length > 0) {
+      const next = remaining.shift();
+      activeQuests.push({
+        id: next.id,
+        assignedAt: Date.now()
+      });
+    }
+
+    // Save only if changed
+    userRef.set({
+      activeQuests,
+      lastQuestDate: getTodayUtcDateString()
+    }, { merge: true }).then(() => {
+      if (typeof cb === "function") cb(activeQuests);
+      renderQuests();
+      updateQuestsNotificationDot();
+    });
+  }).catch(() => {
+    if (typeof cb === "function") cb([]);
+  });
+}
 // 3. Reset Quest progress for a type
 function resetQuestProgress(type) {
   let quests = getQuestData();
@@ -2630,24 +2619,70 @@ function incrementQuestProgress(questId) {
 }
 
 function claimQuestReward(quest, cb) {
-  let data = getQuestData();
-  if (!data[quest.id] || !data[quest.id].completed || data[quest.id].claimed) {
-    if (typeof cb === "function") cb(false);
-    return false;
-  }
-  setCurrency(getCurrency() + quest.reward.amount);
-  data[quest.id].claimed = true;
-  // Set per-quest resetAt (24 hours from now)
-  data[quest.id].resetAt = Date.now() + 24 * 60 * 60 * 1000;
-  setQuestData(data);
-  updateQuestsNotificationDot();
-  saveProgress();
-  renderQuests();
-  startQuestTimers();
-  if (typeof cb === "function") cb(true);
-  return true;
-}
+  const user = firebase.auth().currentUser;
+  if (!user) return false;
 
+  const userRef = firebase.firestore().collection('users').doc(user.uid);
+
+  userRef.get().then(doc => {
+    const data = doc.exists ? doc.data() : {};
+    const activeQuests = Array.isArray(data.activeQuests) ? data.activeQuests : [];
+
+    // reward only if eligible
+    const questData = getQuestData();
+    if (!questData[quest.id] || !questData[quest.id].completed || questData[quest.id].claimed) {
+      if (typeof cb === "function") cb(false);
+      return;
+    }
+
+    // award reward
+    setCurrency(getCurrency() + quest.reward.amount);
+
+    // mark claimed locally
+    questData[quest.id].claimed = true;
+    setQuestData(questData);
+
+    // remove from activeQuests in Firestore
+    const nextActive = activeQuests.filter(q => (q.id || q) !== quest.id);
+
+    userRef.set({
+      activeQuests: nextActive
+    }, { merge: true }).then(() => {
+      renderQuests();
+      updateQuestsNotificationDot();
+      if (typeof cb === "function") cb(true);
+    });
+  });
+}
+function addDailyQuests(count = 3) {
+  const user = firebase.auth().currentUser;
+  if (!user) return;
+
+  const userRef = firebase.firestore().collection('users').doc(user.uid);
+
+  userRef.get().then(doc => {
+    const data = doc.exists ? doc.data() : {};
+    const activeQuests = Array.isArray(data.activeQuests) ? data.activeQuests : [];
+    const activeIds = new Set(activeQuests.map(q => q.id || q));
+
+    const pool = QUEST_POOL.filter(q => q && q.id && !activeIds.has(q.id));
+    const shuffled = pool.sort(() => Math.random() - 0.5);
+
+    const toAdd = shuffled.slice(0, count).map(q => ({
+      id: q.id,
+      assignedAt: Date.now()
+    }));
+
+    const updated = [...activeQuests, ...toAdd];
+
+    userRef.set({
+      activeQuests: updated
+    }, { merge: true }).then(() => {
+      renderQuests();
+      updateQuestsNotificationDot();
+    });
+  });
+}
 function renderQuests() {
   const list = document.getElementById('quests-list');
   if (!list) return;
@@ -3040,7 +3075,6 @@ function updateQuestResetTimer() {
   timerDiv.textContent = `Next quests reset in ${formatTimer(ms)}`;
   // When timer reaches zero, reset quests and update UI
   if (ms <= 0) {
-    runDailyQuestResetIfNeeded();
     renderQuests();
   }
 }
@@ -3068,12 +3102,6 @@ function startQuestTimers() {
           } else {
             el.textContent = 'New quest available!';
           }
-        }
-        // When timer ends, reset this quest
-        if (remain <= 0 && quest.claimed) {
-          // Remove/reset this quest slot (you could replace with a new random quest)
-          data[questId] = { progress: 0, completed: false, claimed: false };
-          updated = true;
         }
       }
     }
@@ -3381,10 +3409,7 @@ function computeAchievementsProgress({ autoSave = true } = {}) {
   if (autoSave && typeof saveProgress === "function") saveProgress();
 }
 window.computeAchievementsProgress = computeAchievementsProgress;
-// --- ENSURE QUESTS RESET AT 00:00 UTC ON PAGE LOAD ---
-document.addEventListener('DOMContentLoaded', function() {
-  runDailyQuestResetIfNeeded();
-});
+
 // OPEN/CLOSE LOGIC
 document.getElementById('quests-icon').onclick = function() {
   document.getElementById('quests-modal').style.display = 'flex';
