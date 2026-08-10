@@ -2248,7 +2248,8 @@ window.playerAchievements = window.playerAchievements || {};
 
 const COLOR_QUESTS = ['green', 'red', 'blue', 'yellow', 'purple', 'gray', 'black', 'white'];
 // Quest LIST
-const QUEST_SLOTS = 5;
+const INITIAL_QUESTS_ON_SIGNUP = 3;
+const QUEST_MAX_ACTIVE = QUEST_POOL.length;
 const QUEST_POOL = [
   { id: 'purchase_pack', group: '', type: 'quest', description: 'Purchase a Booster Pack', goal: 1, reward: { group: '', type: 'currency', amount: 100 }, image: 'Images/Blank/Pack.png', progress: 0, claimed: false, completed: false, refillAt: null},
   { id: 'collect_green_card', group: '', type: 'quest', description: 'Collect a Green Card', goal: 1, reward: { group: '', type: 'currency', amount: 80 }, image: 'Images/Blank/Green.png', progress: 0, claimed: false, completed: false, refillAt: null},
@@ -2510,18 +2511,6 @@ function normalizeQuestId(q) {
   return q?.id || q || null;
 }
 
-function pickUniqueQuest(excludedIds = new Set()) {
-  const pool = QUEST_POOL
-    .filter(q => q && q.id) // ignore non-quest entries
-    .filter(q => !excludedIds.has(q.id));
-
-  if (!pool.length) return null;
-  const i = Math.floor(Math.random() * pool.length);
-  return pool[i];
-}
-
-const QUEST_MAX_ACTIVE = QUEST_POOL.length; // always match pool size
-
 function getQuestPoolIds() {
   return QUEST_POOL
     .filter(q => q && q.id)
@@ -2579,6 +2568,24 @@ function syncActiveQuests(cb) {
   }).catch(() => {
     if (typeof cb === "function") cb([]);
   });
+}
+
+function fillUniqueQuests(activeQuests, targetCount) {
+  const used = new Set(activeQuests.map(q => q.id));
+  const pool = QUEST_POOL.filter(q => q && q.id && !used.has(q.id));
+
+  // simple shuffle
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+
+  const next = [...activeQuests];
+  while (next.length < targetCount && pool.length > 0) {
+    const q = pool.pop();
+    next.push({ id: q.id, assignedAt: Date.now() });
+  }
+  return next;
 }
 // 3. Reset Quest progress for a type
 function resetQuestProgress(type) {
@@ -2775,62 +2782,73 @@ function ensureQuestSlots(cb) {
 
   userDoc.get().then(doc => {
     const data = doc.exists ? doc.data() : {};
-    const lastQuestDate = data.lastQuestDate || null;
     const today = getTodayUtcDateString();
+    const lastQuestDate = data.lastQuestDate || null;
 
-    let needsUpdate = (lastQuestDate !== today);
-    let activeQuests = Array.isArray(data.activeQuests) ? data.activeQuests.slice(0, QUEST_SLOTS) : [];
+    // 1) Start from saved active quests (allow string or object format)
+    let activeQuests = Array.isArray(data.activeQuests) ? data.activeQuests : [];
 
-    // Only keep valid quests and ensure unique IDs
-    let uniqueQuestIds = new Set();
+    // 2) Normalize inline to {id, assignedAt}
+    activeQuests = activeQuests
+      .map(q => {
+        if (typeof q === "string") return { id: q, assignedAt: Date.now() };
+        if (q && typeof q === "object" && q.id) return { id: q.id, assignedAt: q.assignedAt || Date.now() };
+        return null;
+      })
+      .filter(Boolean);
+
+    // 3) Keep only valid quest ids from QUEST_POOL
+    const poolIds = new Set(getQuestPoolIds());
+    activeQuests = activeQuests.filter(q => poolIds.has(q.id));
+
+    // 4) Deduplicate inline
+    const seen = new Set();
     activeQuests = activeQuests.filter(q => {
-      const id = q.id || q;
-      if (uniqueQuestIds.has(id)) return false;
-      uniqueQuestIds.add(id);
-      return QUEST_POOL.some(poolQuest => poolQuest.id === id);
+      if (seen.has(q.id)) return false;
+      seen.add(q.id);
+      return true;
     });
 
-    if (needsUpdate || activeQuests.length < QUEST_SLOTS) {
-      // Fill empty slots with unique quests not already in activeQuests
-      const existingIds = new Set(activeQuests.map(q => q.id || q));
-      // Deep copy QUEST_POOL and shuffle
-      let pool = QUEST_POOL.filter(q => !existingIds.has(q.id));
-      pool = pool.filter(q => q.id); // skip pool entries without id
+    // First-time user = no date + no quests
+    const isFirstTime = !lastQuestDate && activeQuests.length === 0;
 
-      // Shuffle pool
-      for (let i = pool.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [pool[i], pool[j]] = [pool[j], pool[i]];
-      }
-
-      while (activeQuests.length < QUEST_SLOTS && pool.length > 0) {
-        activeQuests.push(pool.pop());
-      }
-
-      // Final safety: slice in case of accidental overflow
-      activeQuests = activeQuests.slice(0, QUEST_SLOTS);
-
-      userDoc.set({
-        activeQuests,
-        lastQuestDate: today
-      }, { merge: true }).then(() => {
-        if (typeof cb === "function") cb(activeQuests);
-        renderQuests();
-      });
+    // Decide target count
+    let targetCount;
+    if (isFirstTime) {
+      targetCount = INITIAL_QUESTS_ON_SIGNUP; // 3 at signup
+    } else if (lastQuestDate !== today) {
+      targetCount = QUEST_MAX_ACTIVE; // expand to pool size on daily refresh
     } else {
-      // No reset needed, just ensure exactly 5 unique quests
-      let uniqueQuestIds = new Set();
-      activeQuests = activeQuests.filter(q => {
-        const id = q.id || q;
-        if (uniqueQuestIds.has(id)) return false;
-        uniqueQuestIds.add(id);
-        return true;
-      });
-      activeQuests = activeQuests.slice(0, QUEST_SLOTS);
+      targetCount = activeQuests.length; // same day: only clean
+    }
 
+    // 5) Fill up to target with unique quests not already active
+    const existingIds = new Set(activeQuests.map(q => q.id));
+    let pool = QUEST_POOL
+      .filter(q => q && q.id && !existingIds.has(q.id));
+
+    // shuffle
+    for (let i = pool.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [pool[i], pool[j]] = [pool[j], pool[i]];
+    }
+
+    while (activeQuests.length < targetCount && pool.length > 0) {
+      const q = pool.pop();
+      activeQuests.push({ id: q.id, assignedAt: Date.now() });
+    }
+
+    // Final safety cap
+    activeQuests = activeQuests.slice(0, QUEST_MAX_ACTIVE);
+
+    userDoc.set(
+      { activeQuests, lastQuestDate: today },
+      { merge: true }
+    ).then(() => {
       if (typeof cb === "function") cb(activeQuests);
       renderQuests();
-    }
+      updateQuestsNotificationDot();
+    });
   });
 }
 function getTodayUtcDateString() {
@@ -5863,6 +5881,22 @@ document.getElementById('shop-back-btn').onclick = function() {
   document.getElementById('home-section').classList.add('active');
 };
 
+function selectShopTab(tab) {
+  const tabs = ['packs', 'structures', 'avatars', 'banners', 'cardbacks'];
+  tabs.forEach(t => {
+    const btn = document.getElementById(`shop-tab-${t}`);
+    const panel = document.getElementById(`shop-panel-${t}`);
+    if (btn) btn.classList.toggle('selected', t === tab);
+    if (panel) panel.style.display = (t === tab) ? '' : 'none';
+  });
+}
+
+function bindShopTabs() {
+  document.querySelectorAll('[data-shop-tab]').forEach(btn => {
+    btn.onclick = () => selectShopTab(btn.getAttribute('data-shop-tab'));
+  });
+}
+
 function showPackContentsModal(packId, packName) {
   // Remove existing modal if any
   let modal = document.getElementById('pack-contents-modal');
@@ -6541,14 +6575,15 @@ function animateCardFlipSequence(cardDivs, onAfterFlip) {
   });
 }
 
-// INITIALIZATION //
 function renderShop() {
-      renderShopCardbacks(),
-      renderShopBanners(),
-      renderShopAvatars()
-      renderShopPacks();
-	  // renderShopDecks(); //
-      updateCurrencyDisplay();
+  renderShopPacks();
+  renderShopAvatars();
+  renderShopBanners();
+  renderShopCardbacks();
+  updateCurrencyDisplay();
+
+  bindShopTabs();
+  selectShopTab('packs'); // default tab whenever entering shop
 }
 window.renderShop = renderShop;
 function appendFriendsProfilePanel(user, container, context) {
