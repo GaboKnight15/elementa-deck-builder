@@ -2467,9 +2467,8 @@ function appendDeckZone(parentDiv, deckArray, who) {
       menu.onclick = function(e) { e.stopPropagation(); };
 
       setTimeout(() => {
-        document.body.addEventListener('click', function handler() {
+        document.addEventListener('click', function handler() {
           closeAllMenus();
-          document.body.removeEventListener('click', handler);
         }, { once: true });
       }, 10);
     };
@@ -2585,7 +2584,6 @@ gameState.playerDeck.forEach((cardObj, idx) => {
     holdClickToView(img, cardObj, (e) => {
       e.stopPropagation();
       closeAllMenus();
-      
       const buttons = [
         {
           text: "Add to Hand",
@@ -2615,13 +2613,12 @@ gameState.playerDeck.forEach((cardObj, idx) => {
       const rect = img.getBoundingClientRect();
       placeMenuWithinShell(menu, rect);
 
-      menu.onclick = function(e) { e.stopPropagation(); };
-      modal.onclick = function(e) {
-        if (!e.target.closest('.menu')) {
-          closeAllMenus();
-          if (e.target === modal) modal.style.display = 'none';
-        }
-      };
+menu.onclick = function(e) { e.stopPropagation(); };
+setTimeout(() => {
+  document.addEventListener('click', function handler() {
+    closeAllMenus();
+  }, { once: true });
+}, 0);
     }, {
       enableDragDetection: false
     });
@@ -3366,13 +3363,11 @@ if (cardData.skill && Array.isArray(cardData.skill)) {
   // Position menu absolutely near cardDiv
   const rect = cardDiv.getBoundingClientRect();
   placeMenuWithinShell(menu, rect);
-
   menu.onclick = function(e) { e.stopPropagation(); };
   // Hide menu when clicking elsewhere
   setTimeout(() => {
-    document.body.addEventListener('click', function handler() {
+    document.addEventListener('click', function handler() {
       closeAllMenus();
-      document.body.removeEventListener('click', handler);
     }, { once: true });
   }, 10);
 }
@@ -3517,7 +3512,12 @@ function openVoidModal(isenemy = false) {
         shell.appendChild(menu);
         const rect = img.getBoundingClientRect();
         placeMenuWithinShell(menu, rect);
-        menu.onclick = function (ev) { ev.stopPropagation(); };
+        menu.onclick = function(e) { e.stopPropagation(); };
+        setTimeout(() => {
+          document.addEventListener('click', function handler() {
+            closeAllMenus();
+          }, { once: true });
+        }, 0);
       }, { enableDragDetection: false });
     }
     wrapper.appendChild(cardDiv);
