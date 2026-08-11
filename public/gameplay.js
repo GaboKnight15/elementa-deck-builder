@@ -2563,7 +2563,7 @@ function openDeckModal(filteredCards) {
   
   const deckCards = filteredCards || gameState.playerDeck;
   
-gameState.playerDeck.forEach((cardObj, idx) => {
+deckCards.forEach((cardObj, idx) => {
   const card = dummyCards.find(c => c.id === cardObj.cardId);
   if (!card) return;
   
@@ -6191,41 +6191,23 @@ function showFilteredCardSelectionModal(cards, onSelect, opts = {}) {
     cardDiv.appendChild(img);
     cardDiv.title = cardData.name;
     // Hold to preview logic
-    let holdTimer = null;
-    let held = false;
-
-    // For mouse
-    cardDiv.onmousedown = (e) => {
-      e.stopPropagation();
-      held = false;
-      holdTimer = setTimeout(() => {
-        held = true;
-        showFullCardModal(cardObj);
-      }, 500);
-    };
-    cardDiv.onmouseup = cardDiv.onmouseleave = (e) => {
-      clearTimeout(holdTimer);
-      if (!held) {
-        modal.remove();
-        onSelect(cardObj);
-      }
-    };
-
-    // For touch
-    cardDiv.ontouchstart = (e) => {
-      held = false;
-      holdTimer = setTimeout(() => {
-        held = true;
-        showFullCardModal(cardObj);
-      }, 500);
-    };
-    cardDiv.ontouchend = cardDiv.ontouchcancel = (e) => {
-      clearTimeout(holdTimer);
-      if (!held) {
-        modal.remove();
-        onSelect(cardObj);
-      }
-    };
+holdClickToView(
+  cardDiv,
+  cardObj,
+  (e) => {
+    // short click/tap -> select
+    e.stopPropagation();
+    modal.remove();
+    onSelect(cardObj);
+  },
+  {
+    enableDragDetection: false,
+    onHold: () => {
+      // long press -> preview
+      showFullCardModal(cardObj);
+    }
+  }
+);
 
     row.appendChild(cardDiv);
   });
