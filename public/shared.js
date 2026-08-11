@@ -1936,221 +1936,218 @@ const defaultIcon = "Images/Avatar/Default.png";
 const defaultBanner = "Images/Banner/Default.png";
 const avatarOptions = [
 // --- COMMON GREEN AVATARS --- //
-{ name: 'Fairy', src: 'Images/Avatar/Green/Fairy.png', rarity: 'Common', price: 10, obtain: 'shop' },
-{ name: 'Wildwood Goblin', src: 'Images/Avatar/Green/WildwoodGoblin.png', rarity: 'Common', price: 10, obtain: 'shop' },
-{ name: 'Verdant Serpent', src: 'Images/Avatar/VerdantSerpent.png', rarity: 'Common', price: 10, obtain: 'shop' },
+{ id: 'avatar_pixie', name: 'Fairy', src: 'Images/Avatar/Green/Fairy.png', price: 10, obtain: 'shop' },
+{ id: 'avatar_wildwoodgoblin', name: 'Wildwood Goblin', src: 'Images/Avatar/Green/WildwoodGoblin.png', price: 10, obtain: 'shop' },
+{ id: 'avatar_verdantserpent', name: 'Verdant Serpent', src: 'Images/Avatar/VerdantSerpent.png', price: 10, obtain: 'shop' },
 
-{ name: 'Fire Golem', src: 'Images/Avatar/Red/FireGolem.png', rarity: 'Common', price: 10, obtain: 'shop' },
-{ name: 'Kobold', src: 'Images/Avatar/Red/Kobold.png', rarity: 'Common', price: 10, obtain: 'shop' },
+{ id: 'avatar_firegolem', name: 'Fire Golem', src: 'Images/Avatar/Red/FireGolem.png', price: 10, obtain: 'shop' },
+{ id: 'avatar_kobold', name: 'Kobold', src: 'Images/Avatar/Red/Kobold.png', price: 10, obtain: 'shop' },
 // --- ELEMENTA GENESIS COMMON CREATURES --- //
-{ name: 'Satyr', src: 'Images/Avatar/Green/Satyr.png', rarity: 'Common', price: 10, obtain: 'shop' },
-{ name: 'Emberling', src: 'Images/Avatar/Red/Emberling.png', rarity: 'Common', price: 10, obtain: 'shop' },
-{ name: 'Mermaid', src: 'Images/Avatar/Blue/Mermaid.png', rarity: 'Common', price: 10, obtain: 'shop' },
-{ name: 'Dolphin', src: 'Images/Avatar/Blue/Dolphin.png', rarity: 'Common', price: 10, obtain: 'shop' },
-{ name: 'Runebound Shark', src: 'Images/Avatar/Blue/RuneboundShark.png', rarity: 'Common', price: 10, obtain: 'shop' },
+{ id: 'avatar_satyr', name: 'Satyr', src: 'Images/Avatar/Green/Satyr.png', price: 10, obtain: 'shop' },
+{ id: 'avatar_emberling', name: 'Emberling', src: 'Images/Avatar/Red/Emberling.png', price: 10, obtain: 'shop' },
+{ id: 'avatar_mermaid', name: 'Mermaid', src: 'Images/Avatar/Blue/Mermaid.png', price: 10, obtain: 'shop' },
+{ id: 'avatar_dolphin', name: 'Dolphin', src: 'Images/Avatar/Blue/Dolphin.png', price: 10, obtain: 'shop' },
+{ id: 'avatar_runeboundshark', name: 'Runebound Shark', src: 'Images/Avatar/Blue/RuneboundShark.png', price: 10, obtain: 'shop' },
 
-{ name: 'Birdfolk', src: 'Images/Avatar/Yellow/Birdfolk.png', rarity: 'Common', price: 10, obtain: 'shop' },
-{ name: 'Zephyr Sprite', src: 'Images/Avatar/Yellow/ZephyrSprite.png', rarity: 'Common', price: 10, obtain: 'shop' },
-{ name: 'Thunderspawn', src: 'Images/Avatar/Yellow/Thunderspawn.png', rarity: 'Common', price: 10, obtain: 'shop' },
+{ id: 'avatar_birdfolk', name: 'Birdfolk', src: 'Images/Avatar/Yellow/Birdfolk.png', price: 10, obtain: 'shop' },
+{ id: 'avatar_zephyrsprite', name: 'Zephyr Sprite', src: 'Images/Avatar/Yellow/ZephyrSprite.png', price: 10, obtain: 'shop' },
+{ id: 'avatar_thunderspawn', name: 'Thunderspawn', src: 'Images/Avatar/Yellow/Thunderspawn.png', price: 10, obtain: 'shop' },
 
-{ name: 'Orc', src: 'Images/Avatar/Gray/Orc.png', rarity: 'Common', price: 10, obtain: 'shop' },
-{ name: 'Rockshell Armadillo', src: 'Images/Avatar/Gray/RockshellArmadillo.png', rarity: 'Common', price: 10, obtain: 'shop' },
-{ name: 'Summit Watcher', src: 'Images/Avatar/Gray/SummitWatcher.png', rarity: 'Common', price: 10, obtain: 'shop' },
+{ id: 'avatar_orc', name: 'Orc', src: 'Images/Avatar/Gray/Orc.png', price: 10, obtain: 'shop' },
+{ id: 'avatar_rockshellarmadillo', name: 'Rockshell Armadillo', src: 'Images/Avatar/Gray/RockshellArmadillo.png', price: 10, obtain: 'shop' },
+{ id: 'avatar_summitwatcher', name: 'Summit Watcher', src: 'Images/Avatar/Gray/SummitWatcher.png', price: 10, obtain: 'shop' },
 
 // --- COMMON WHITE AVATARS --- //
-{ name: 'Angel', src: 'Images/Avatar/White/Angel.png', rarity: 'Common', price: 10, obtain: 'shop' },
-{ name: 'Valkyrie', src: 'Images/Avatar/White/Valkyrie.png', rarity: 'Common', price: 10, obtain: 'shop' },
-{ name: 'Angelic Warrior', src: 'Images/Avatar/White/AngelicWarrior.png', rarity: 'Common', price: 10, obtain: 'shop' },
+{ id: 'avatar_angel', name: 'Angel', src: 'Images/Avatar/White/Angel.png', price: 10, obtain: 'shop' },
+{ id: 'avatar_valkyrie', name: 'Valkyrie', src: 'Images/Avatar/White/Valkyrie.png', price: 10, obtain: 'shop' },
+{ id: 'avatar_angelicwarrior', name: 'Angelic Warrior', src: 'Images/Avatar/White/AngelicWarrior.png', price: 10, obtain: 'shop' },
 // --- COMMON BLACK AVATARS --- //
-{ name: 'Skeleton', src: 'Images/Avatar/Black/Skeleton.png', rarity: 'Common', price: 10, obtain: 'shop' },
-{ name: 'Zombie', src: 'Images/Avatar/Black/Zombie.png', rarity: 'Common', price: 10, obtain: 'shop' },
-{ name: 'Wolf', src: 'Images/Avatar/Black/Wolf.png', rarity: 'Common', price: 10, obtain: 'shop' },
+{ id: 'avatar_skeleton', name: 'Skeleton', src: 'Images/Avatar/Black/Skeleton.png', price: 10, obtain: 'shop' },
+{ id: 'avatar_zombie', name: 'Zombie', src: 'Images/Avatar/Black/Zombie.png', price: 10, obtain: 'shop' },
+{ id: 'avatar_wolf', name: 'Wolf', src: 'Images/Avatar/Black/Wolf.png', price: 10, obtain: 'shop' },
 
 
 // ECHOES OF CREATIONS RARE ELEMENTALS //
-{ name: 'Elemental of Foliages', src: 'Images/Avatar/Green/ElementalofFoliages.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-{ name: 'Elemental of Flames', src: 'Images/Avatar/Red/ElementalofFlames.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-{ name: 'Elemental of Torrents', src: 'Images/Avatar/Blue/ElementalofTorrents.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-{ name: 'Elemental of Gales', src: 'Images/Avatar/Yellow/ElementalofGales.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-{ name: 'Elemental of Lightning', src: 'Images/Avatar/Yellow/ElementalofLightning.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-{ name: 'Elemental of Boulders', src: 'Images/Avatar/Gray/ElementalofBoulders.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-{ name: 'Elemental of Miasmas', src: 'Images/Avatar/Purple/ElementalofMiasmas.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-{ name: 'Elemental of Lusters', src: 'Images/Avatar/White/ElementalofLusters.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-{ name: 'Elemental of Shadows', src: 'Images/Avatar/Black/ElementalofShadows.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+{ id: 'avatar_foliages', name: 'Elemental of Foliages', src: 'Images/Avatar/Green/ElementalofFoliages.png', price: 50, obtain: 'shop' },
+{ id: 'avatar_flames', name: 'Elemental of Flames', src: 'Images/Avatar/Red/ElementalofFlames.png', price: 50, obtain: 'shop' },
+{ id: 'avatar_torrents', name: 'Elemental of Torrents', src: 'Images/Avatar/Blue/ElementalofTorrents.png', price: 50, obtain: 'shop' },
+{ id: 'avatar_gales', name: 'Elemental of Gales', src: 'Images/Avatar/Yellow/ElementalofGales.png', price: 50, obtain: 'shop' },
+{ id: 'avatar_lightning', name: 'Elemental of Lightning', src: 'Images/Avatar/Yellow/ElementalofLightning.png', price: 50, obtain: 'shop' },
+{ id: 'avatar_boulders', name: 'Elemental of Boulders', src: 'Images/Avatar/Gray/ElementalofBoulders.png', price: 50, obtain: 'shop' },
+{ id: 'avatar_miasmas', name: 'Elemental of Miasmas', src: 'Images/Avatar/Purple/ElementalofMiasmas.png', price: 50, obtain: 'shop' },
+{ id: 'avatar_lusters', name: 'Elemental of Lusters', src: 'Images/Avatar/White/ElementalofLusters.png', price: 50, obtain: 'shop' },
+{ id: 'avatar_shadows', name: 'Elemental of Shadows', src: 'Images/Avatar/Black/ElementalofShadows.png', price: 50, obtain: 'shop' },
 
 // ELEMENTA GENESIS RARE HEROES  //
-{ name: 'Verdara Soldier', src: 'Images/Avatar/Green/VerdaraSoldier.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-{ name: 'Magmaris Mercenary', src: 'Images/Avatar/Red/MagmarisMercenary.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-{ name: 'Umarion Paladin', src: 'Images/Avatar/Blue/UmarionPaladin.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-{ name: 'Aetherion Electromancer', src: 'Images/Avatar/Yellow/AetherionElectromancer.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-{ name: 'Drakzul Warmonger', src: 'Images/Avatar/Gray/DrakzulWarmonger.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-{ name: 'Virkul Assassin', src: 'Images/Avatar/Purple/VirkulAssassin.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-{ name: 'Solmara Archpriest', src: 'Images/Avatar/White/SolmaraArchpriest.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-{ name: 'NoctyraEnforcer', src: 'Images/Avatar/Black/NoctyraEnforcer.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+{ id: 'avatar_verdarasoldier', name: 'Verdara Soldier', src: 'Images/Avatar/Green/VerdaraSoldier.png', price: 50, obtain: 'shop' },
+{ id: 'avatar_magmarismercenary', name: 'Magmaris Mercenary', src: 'Images/Avatar/Red/MagmarisMercenary.png', price: 50, obtain: 'shop' },
+{ id: 'avatar_umarionpaladin', name: 'Umarion Paladin', src: 'Images/Avatar/Blue/UmarionPaladin.png', price: 50, obtain: 'shop' },
+{ id: 'avatar_aetherionelectromancer', name: 'Aetherion Electromancer', src: 'Images/Avatar/Yellow/AetherionElectromancer.png', price: 50, obtain: 'shop' },
+{ id: 'avatar_drakzulwarmonger', name: 'Drakzul Warmonger', src: 'Images/Avatar/Gray/DrakzulWarmonger.png', price: 50, obtain: 'shop' },
+{ id: 'avatar_virkulassassin', name: 'Virkul Assassin', src: 'Images/Avatar/Purple/VirkulAssassin.png', price: 50, obtain: 'shop' },
+{ id: 'avatar_solmaraarchpriest', name: 'Solmara Archpriest', src: 'Images/Avatar/White/SolmaraArchpriest.png', price: 50, obtain: 'shop' },
+{ id: 'avatar_noctyraenforcer', name: 'NoctyraEnforcer', src: 'Images/Avatar/Black/NoctyraEnforcer.png', price: 50, obtain: 'shop' },
 
 
-{ name: 'Rockmaul Rhino', src: 'Images/Avatar/Gray/RockmaulRhino.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-{ name: 'Corrupted Dragon', src: 'Images/Avatar/Purple/CorruptedDragon.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+{ id: 'avatar_rockmaulrhino', name: 'Rockmaul Rhino', src: 'Images/Avatar/Gray/RockmaulRhino.png', price: 50, obtain: 'shop' },
+{ id: 'avatar_corrupteddragon', name: 'Corrupted Dragon', src: 'Images/Avatar/Purple/CorruptedDragon.png', price: 50, obtain: 'shop' },
 
 // ELEMENTA GENESIS LEGEND HEROES //
-{ name: 'Veya, Verdara Druidess', src: 'Images/Avatar/Green/Veya.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-{ name: 'Kaelen, Blazeborn Huntress', src: 'Images/Avatar/Red/Kaelen.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-{ name: 'Serenya, Tidebound Enchantress', src: 'Images/Avatar/Blue/Serenya.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-{ name: 'Zyra, Thunderblade Duelist', src: 'Images/Avatar/Yellow/Zyra.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-{ name: 'Rudgar, Ironfist Mauler', src: 'Images/Avatar/Gray/Rudgar.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-{ name: 'Selgor, Corrupted Warlord', src: 'Images/Avatar/Purple/Selgor.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-{ name: 'Elyndra, Dawnblade of Heavens', src: 'Images/Avatar/White/Elyndra.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-{ name: 'Velmira, Mistress of Silence', src: 'Images/Avatar/Black/Velmira.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+{ id: 'avatar_veya', name: 'Veya, Verdara Druidess', src: 'Images/Avatar/Green/Veya.png', price: 100, obtain: 'shop' },
+{ id: 'avatar_kaelen', name: 'Kaelen, Blazeborn Huntress', src: 'Images/Avatar/Red/Kaelen.png', price: 100, obtain: 'shop' },
+{ id: 'avatar_serenya', name: 'Serenya, Tidebound Enchantress', src: 'Images/Avatar/Blue/Serenya.png', price: 100, obtain: 'shop' },
+{ id: 'avatar_zyra', name: 'Zyra, Thunderblade Duelist', src: 'Images/Avatar/Yellow/Zyra.png', price: 100, obtain: 'shop' },
+{ id: 'avatar_rudgar', name: 'Rudgar, Ironfist Mauler', src: 'Images/Avatar/Gray/Rudgar.png', price: 100, obtain: 'shop' },
+{ id: 'avatar_selgor', name: 'Selgor, Corrupted Warlord', src: 'Images/Avatar/Purple/Selgor.png', price: 100, obtain: 'shop' },
+{ id: 'avatar_elyndra', name: 'Elyndra, Dawnblade of Heavens', src: 'Images/Avatar/White/Elyndra.png', price: 100, obtain: 'shop' },
+{ id: 'avatar_velmira', name: 'Velmira, Mistress of Silence', src: 'Images/Avatar/Black/Velmira.png', price: 100, obtain: 'shop' },
 
 // ELEMENTA GENESIS HEROES 2 //
-{ name: 'Faelyra, Wildhorn Empress', src: 'Images/Avatar/Green/Faelyra.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-{ name: 'Kaelyra, Magmaris Heiress', src: 'Images/Avatar/Red/Kaelyra.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-{ name: 'Zaryon, Umarion Commander', src: 'Images/Avatar/Blue/Zaryon.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-{ name: 'Garuda, Aetherion Wings', src: 'Images/Avatar/Yellow/Garuda.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-{ name: 'Gravok, Drakzul Tyrant', src: 'Images/Avatar/Gray/Gravok.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-{ name: 'Mordrath, Virkul Phantom', src: 'Images/Avatar/Purple/Mordrath.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-{ name: 'Seraphiel, Solmara Paragon', src: 'Images/Avatar/White/Seraphiel.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-{ name: 'Morvane, Noctyra Oathbreaker', src: 'Images/Avatar/Black/Morvane.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+{ id: 'avatar_glaistig', name: 'Faelyra, Wildhorn Empress', src: 'Images/Avatar/Green/Faelyra.png', price: 100, obtain: 'shop' },
+{ id: 'avatar_kaelyra', name: 'Kaelyra, Magmaris Heiress', src: 'Images/Avatar/Red/Kaelyra.png', price: 100, obtain: 'shop' },
+{ id: 'avatar_zaryon', name: 'Zaryon, Umarion Commander', src: 'Images/Avatar/Blue/Zaryon.png', price: 100, obtain: 'shop' },
+{ id: 'avatar_garuda', name: 'Garuda, Aetherion Wings', src: 'Images/Avatar/Yellow/Garuda.png', price: 100, obtain: 'shop' },
+{ id: 'avatar_gravok', name: 'Gravok, Drakzul Tyrant', src: 'Images/Avatar/Gray/Gravok.png', price: 100, obtain: 'shop' },
+{ id: 'avatar_mordrath', name: 'Mordrath, Virkul Phantom', src: 'Images/Avatar/Purple/Mordrath.png', price: 100, obtain: 'shop' },
+{ id: 'avatar_seraphiel', name: 'Seraphiel, Solmara Paragon', src: 'Images/Avatar/White/Seraphiel.png', price: 100, obtain: 'shop' },
+{ id: 'avatar_morvane', name: 'Morvane, Noctyra Oathbreaker', src: 'Images/Avatar/Black/Morvane.png', price: 100, obtain: 'shop' },
 
 
 // FRACTURED ORIGINS HEROES //
-{ name: 'Sylvania, Thornvale Queen', src: 'Images/Avatar/Green/Sylvania.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+{ id: 'avatar_sylvania', name: 'Sylvania, Thornvale Queen', src: 'Images/Avatar/Green/Sylvania.png', price: 100, obtain: 'shop' },
 
-{ name: 'Tydros, Coralbound Tidebreaker', src: 'Images/Avatar/Blue/Tydros.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-{ name: 'Astranyra, Thunderbane', src: 'Images/Avatar/Yellow/Astranyra.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-
-
-  
-{ name: 'Nyzariel, Archdemon Duchess', src: 'Images/Avatar/Black/Nyzariel.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+{ id: 'avatar_tydros', name: 'Tydros, Coralbound Tidebreaker', src: 'Images/Avatar/Blue/Tydros.png', price: 100, obtain: 'shop' },
+{ id: 'avatar_astranyra', name: 'Astranyra, Thunderbane', src: 'Images/Avatar/Yellow/Astranyra.png', price: 100, obtain: 'shop' },
+{ id: 'avatar_nyzariel', name: 'Nyzariel, Archdemon Duchess', src: 'Images/Avatar/Black/Nyzariel.png', price: 100, obtain: 'shop' },
 
 // DRAGONLINGS //
-{ name: 'Verdarok, Mosslet Guardian', src: 'Images/Avatar/Green/VerdarokMossletGuardian.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-{ name: 'Pyronyx, Ember Breeze', src: 'Images/Avatar/Red/PyronyxEmberBreeze.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-{ name: 'Abyndra, Foamscale Wyrmling', src: 'Images/Avatar/Blue/AbyndraFoamscaleWyrmling.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-{ name: 'Voltrazek, Boltling Skyrend', src: 'Images/Avatar/Yellow/VoltrazekBoltlingSkyrend.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-{ name: 'Ferronyx, Ironhide Stonelet', src: 'Images/Avatar/Gray/FerronyxIronhideStonelet.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-{ name: 'Myxaroth, Mirefang Broodling', src: 'Images/Avatar/Purple/MyxarothMirefangBroodling.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-{ name: 'Solaryth, Dawngleam Whelp', src: 'Images/Avatar/White/SolarythDawngleamWhelp.png', rarity: 'Rare', price: 50, obtain: 'shop' },
-{ name: 'Noctyros, Dusk Whisper', src: 'Images/Avatar/Black/NoctyrosDuskWhisper.png', rarity: 'Rare', price: 50, obtain: 'shop' },
+{ id: 'avatar_verdarok1', name: 'Verdarok, Mosslet Guardian', src: 'Images/Avatar/Green/VerdarokMossletGuardian.png', price: 50, obtain: 'shop' },
+{ id: 'avatar_pyronyx1', name: 'Pyronyx, Ember Breeze', src: 'Images/Avatar/Red/PyronyxEmberBreeze.png', price: 50, obtain: 'shop' },
+{ id: 'avatar_abyndra1', name: 'Abyndra, Foamscale Wyrmling', src: 'Images/Avatar/Blue/AbyndraFoamscaleWyrmling.png', price: 50, obtain: 'shop' },
+{ id: 'avatar_voltrazek1', name: 'Voltrazek, Boltling Skyrend', src: 'Images/Avatar/Yellow/VoltrazekBoltlingSkyrend.png', price: 50, obtain: 'shop' },
+{ id: 'avatar_ferronyx1', name: 'Ferronyx, Ironhide Stonelet', src: 'Images/Avatar/Gray/FerronyxIronhideStonelet.png', price: 50, obtain: 'shop' },
+{ id: 'avatar_myxaroth1', name: 'Myxaroth, Mirefang Broodling', src: 'Images/Avatar/Purple/MyxarothMirefangBroodling.png', price: 50, obtain: 'shop' },
+{ id: 'avatar_solaryth', name: 'Solaryth, Dawngleam Whelp', src: 'Images/Avatar/White/SolarythDawngleamWhelp.png', price: 50, obtain: 'shop' },
+{ id: 'avatar_noctyros', name: 'Noctyros, Dusk Whisper', src: 'Images/Avatar/Black/NoctyrosDuskWhisper.png', price: 50, obtain: 'shop' },
 
 // --- LEGEND GREEN AVATARS --- //
 
 // ELDER DRAGONS //
-{ name: 'Verdarok, Sylvan Thornwing', src: 'Images/Avatar/Green/VerdarokSylvanThornwing.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-{ name: 'Pyronyx, Inferno Blazingscale', src: 'Images/Avatar/Red/PyronyxInfernoBlazingscale.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-{ name: 'Abyndra, Tidal Abyssdrake', src: 'Images/Avatar/Blue/AbyndraTidalAbyssdrake.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-{ name: 'Voltrazek, Tempest Stormrazor', src: 'Images/Avatar/Yellow/VoltrazekTempestStormrazor.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-{ name: 'Ferronyx, Terra Ironclaw', src: 'Images/Avatar/Gray/FerronyxTerraIronclaw.png', rarity: 'Legend', price: 100, obtain: 'shop' },	
-{ name: 'Myxaroth, Cursed Dreadspine', src: 'Images/Avatar/Purple/MyxarothCursedDreadspine.png', rarity: 'Legend', price: 100, obtain: 'shop' },	
-{ name: 'Solaryth, Radiant Solarwyrm', src: 'Images/Avatar/White/SolarythRadiantSolarwyrm.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-{ name: 'Noctyros, Umbral Nightshroud', src: 'Images/Avatar/Black/NoctyrosUmbralNightshroud.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+{ id: 'avatar_verdarok', name: 'Verdarok, Sylvan Thornwing', src: 'Images/Avatar/Green/VerdarokSylvanThornwing.png', price: 100, obtain: 'shop' },
+{ id: 'avatar_pyronyx', name: 'Pyronyx, Inferno Blazingscale', src: 'Images/Avatar/Red/PyronyxInfernoBlazingscale.png', price: 100, obtain: 'shop' },
+{ id: 'avatar_abyndra', name: 'Abyndra, Tidal Abyssdrake', src: 'Images/Avatar/Blue/AbyndraTidalAbyssdrake.png', price: 100, obtain: 'shop' },
+{ id: 'avatar_voltrazek', name: 'Voltrazek, Tempest Stormrazor', src: 'Images/Avatar/Yellow/VoltrazekTempestStormrazor.png', price: 100, obtain: 'shop' },
+{ id: 'avatar_ferronyx', name: 'Ferronyx, Terra Ironclaw', src: 'Images/Avatar/Gray/FerronyxTerraIronclaw.png', price: 100, obtain: 'shop' },	
+{ id: 'avatar_myxaroth', name: 'Myxaroth, Cursed Dreadspine', src: 'Images/Avatar/Purple/MyxarothCursedDreadspine.png', price: 100, obtain: 'shop' },	
+{ id: 'avatar_solaryth', name: 'Solaryth, Radiant Solarwyrm', src: 'Images/Avatar/White/SolarythRadiantSolarwyrm.png', price: 100, obtain: 'shop' },
+{ id: 'avatar_noctyros', name: 'Noctyros, Umbral Nightshroud', src: 'Images/Avatar/Black/NoctyrosUmbralNightshroud.png', price: 100, obtain: 'shop' },
 
 // LEGEND ELEMENTALS //
 // ECHOES OF CREATION COMMON ELEMENTALS //
-{ name: 'Elemental of Leaves', src: 'Images/Avatar/Green/ElementalofLeaves.png', rarity: 'Common', price: 10, obtain: 'shop' },
-{ name: 'Elemental of Embers', src: 'Images/Avatar/Red/ElementalofEmbers.png', rarity: 'Common', price: 10, obtain: 'shop' },
-{ name: 'Elemental of Droplets', src: 'Images/Avatar/Blue/ElementalofDroplets.png', rarity: 'Common', price: 10, obtain: 'shop' },
-{ name: 'Elemental of Sparks', src: 'Images/Avatar/Yellow/ElementalofSparks.png', rarity: 'Common', price: 10, obtain: 'shop' },
-{ name: 'Elemental of Pebbles', src: 'Images/Avatar/Gray/ElementalofPebbles.png', rarity: 'Common', price: 10, obtain: 'shop' },
-{ name: 'Elemental of Toxins', src: 'Images/Avatar/Purple/ElementalofToxins.png', rarity: 'Common', price: 10, obtain: 'shop' },
-{ name: 'Elemental of Gleams', src: 'Images/Avatar/White/ElementalofGleams.png', rarity: 'Common', price: 10, obtain: 'shop' },
-{ name: 'Elemental of Shades', src: 'Images/Avatar/Black/ElementalofShades.png', rarity: 'Common', price: 10, obtain: 'shop' },
+{ id: 'avatar_leaves', name: 'Elemental of Leaves', src: 'Images/Avatar/Green/ElementalofLeaves.png', price: 10, obtain: 'shop' },
+{ id: 'avatar_embers', name: 'Elemental of Embers', src: 'Images/Avatar/Red/ElementalofEmbers.png', price: 10, obtain: 'shop' },
+{ id: 'avatar_droplets', name: 'Elemental of Droplets', src: 'Images/Avatar/Blue/ElementalofDroplets.png', price: 10, obtain: 'shop' },
+{ id: 'avatar_sparks', name: 'Elemental of Sparks', src: 'Images/Avatar/Yellow/ElementalofSparks.png', price: 10, obtain: 'shop' },
+{ id: 'avatar_pebbles', name: 'Elemental of Pebbles', src: 'Images/Avatar/Gray/ElementalofPebbles.png', price: 10, obtain: 'shop' },
+{ id: 'avatar_toxins', name: 'Elemental of Toxins', src: 'Images/Avatar/Purple/ElementalofToxins.png', price: 10, obtain: 'shop' },
+{ id: 'avatar_gleams', name: 'Elemental of Gleams', src: 'Images/Avatar/White/ElementalofGleams.png', price: 10, obtain: 'shop' },
+{ id: 'avatar_shades', name: 'Elemental of Shades', src: 'Images/Avatar/Black/ElementalofShades.png', price: 10, obtain: 'shop' },
 
-{ name: 'Pyrokrag, Golemheart Titan', src: 'Images/Avatar/Red/Pyrokrag.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-{ name: 'Hydrion, Primeval Floodbringer', src: 'Images/Avatar/Blue/Hydrion.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+{ id: 'avatar_pyrokrag', name: 'Pyrokrag, Golemheart Titan', src: 'Images/Avatar/Red/Pyrokrag.png', price: 100, obtain: 'shop' },
+{ id: 'avatar_hydrion', name: 'Hydrion, Primeval Floodbringer', src: 'Images/Avatar/Blue/Hydrion.png', price: 100, obtain: 'shop' },
 
 
 // LEGEND CONSTRUCTS //
-{ name: 'Ignavaryn, Cindercore Automaton', src: 'Images/Avatar/Red/Ignavaryn.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-{ name: 'Maelvyrn, Coralbound Leviathan', src: 'Images/Avatar/Blue/Maelvyrn.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+{ id: 'avatar_ignavaryn', name: 'Ignavaryn, Cindercore Automaton', src: 'Images/Avatar/Red/Ignavaryn.png', price: 100, obtain: 'shop' },
+{ id: 'avatar_maelvyrn', name: 'Maelvyrn, Coralbound Leviathan', src: 'Images/Avatar/Blue/Maelvyrn.png', price: 100, obtain: 'shop' },
 
-{ name: 'Ephoros, Hellfire Behemoth', src: 'Images/Avatar/Red/Ephoros.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-{ name: 'Ashara, Hellfire Matriarch', src: 'Images/Avatar/Red/Ashara.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+{ id: 'avatar_ephoros', name: 'Ephoros, Hellfire Behemoth', src: 'Images/Avatar/Red/Ephoros.png', price: 100, obtain: 'shop' },
+{ id: 'avatar_ashara', name: 'Ashara, Hellfire Matriarch', src: 'Images/Avatar/Red/Ashara.png', price: 100, obtain: 'shop' },
 
-{ name: 'Eirawen, Frostland Queen', src: 'Images/Avatar/Blue/Eirawen.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-{ name: 'Draven, Adamant Emperor', src: 'Images/Avatar/Gray/Draven.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+{ id: 'avatar_eirawen', name: 'Eirawen, Frostland Queen', src: 'Images/Avatar/Blue/Eirawen.png', price: 100, obtain: 'shop' },
+{ id: 'avatar_draven', name: 'Draven, Adamant Emperor', src: 'Images/Avatar/Gray/Draven.png', price: 100, obtain: 'shop' },
 
-{ name: 'Veniryss, Spider Princess', src: 'Images/Avatar/Purple/Veniryss.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+{ id: 'avatar_venirys', name: 'Veniryss, Spider Princess', src: 'Images/Avatar/Purple/Veniryss.png', price: 100, obtain: 'shop' },
 
-{ name: 'Maldryss, Skullframe Archmage', src: 'Images/Avatar/Black/Maldryss.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-{ name: 'Raukhar, Duskwing Knight', src: 'Images/Avatar/Black/Raukhar.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-{ name: 'Vorganna, Crimson Blade', src: 'Images/Avatar/Black/Vorganna.png', rarity: 'Legend', price: 100, obtain: 'shop' },
+{ id: 'avatar_makdryss', name: 'Maldryss, Skullframe Archmage', src: 'Images/Avatar/Black/Maldryss.png', price: 100, obtain: 'shop' },
+{ id: 'avatar_raukhar', name: 'Raukhar, Duskwing Knight', src: 'Images/Avatar/Black/Raukhar.png', price: 100, obtain: 'shop' },
+{ id: 'avatar_vorganna', name: 'Vorganna, Crimson Blade', src: 'Images/Avatar/Black/Vorganna.png', price: 100, obtain: 'shop' },
 
 ];
 
 const bannerOptions = [
-  { name: 'Forest', src: 'Images/Banner/Forest.png', price: 100, obtain: 'shop', unlock: { group: '', type: "achievementTierClaimed", groupId: "color_green", tier: 1 } },
-  { name: 'Volcano', src: 'Images/Banner/Volcano.png', price: 100, obtain: 'shop' },
-  { name: 'Ocean', src: 'Images/Banner/Ocean.png', price: 100, obtain: 'shop' },
-  { name: 'Peaks', src: 'Images/Banner/Peaks.png', price: 100, obtain: 'shop' },
-  { name: 'Mountain', src: 'Images/Banner/Mountain.png', price: 100, obtain: 'shop' },
-  { name: 'Swamp', src: 'Images/Banner/Swamp.png', price: 100, obtain: 'shop' },
-  { name: 'Plains', src: 'Images/Banner/Plains.png', price: 100, obtain: 'shop' },
-  { name: 'Shadowland', src: 'Images/Banner/Shadowland.png', price: 100, obtain: 'shop' },
-  { name: 'Verdara', src: 'Images/Banner/Verdara.png', price: 100, obtain: 'shop' },
-  { name: 'Magmaris', src: 'Images/Banner/Magmaris.png', price: 100, obtain: 'shop' },
-  { name: 'Umarion', src: 'Images/Banner/Umarion.png', price: 100, obtain: 'shop' },
-  { name: 'Aetherion', src: 'Images/Banner/Aetherion.png', price: 100, obtain: 'shop' },
-  { name: 'Drakzul', src: 'Images/Banner/Drakzul.png', price: 100, obtain: 'shop' },
-  { name: 'Virkul', src: 'Images/Banner/Virkul.png', price: 100, obtain: 'shop' },
-  { name: 'Solmara', src: 'Images/Banner/Solmara.png', price: 100, obtain: 'shop' },
-  { name: 'Noctyra', src: 'Images/Banner/Noctyra.png', price: 100, obtain: 'shop' },
-  { name: 'Thornvale', src: 'Images/Banner/Thornvale.png', price: 100, obtain: 'shop' },
-  { name: 'Pearlhaven', src: 'Images/Banner/Pearlhaven.png', price: 100, obtain: 'shop' },
-  { name: 'Duskhaven', src: 'Images/Banner/Duskhaven.png', price: 100, obtain: 'shop' },
-  { name: 'Dragons Grove', src: 'Images/Banner/DragonsGrove.png', price: 100, obtain: 'shop' },
-  { name: 'Dragons Spire', src: 'Images/Banner/DragonsSpire.png', price: 100, obtain: 'shop' },
-  { name: 'Dragons Atoll', src: 'Images/Banner/DragonsAtoll.png', price: 100, obtain: 'shop' },
-  { name: 'Dragons Skyreach', src: 'Images/Banner/DragonsSkyreach.png', price: 100, obtain: 'shop' },
-  { name: 'Dragons Bastion', src: 'Images/Banner/DragonsBastion.png', price: 100, obtain: 'shop' },
-  { name: 'Dragons Hollow', src: 'Images/Banner/DragonsHollow.png', price: 100, obtain: 'shop' },
-  { name: 'Dragons Haven', src: 'Images/Banner/DragonsHaven.png', price: 100, obtain: 'shop' },
-  { name: 'Dragons Moonhold', src: 'Images/Banner/DragonsMoonhold.png', price: 100, obtain: 'shop' },
+  { id: 'banner_forest', name: 'Forest', src: 'Images/Banner/Forest.png', price: 100, obtain: 'shop', unlock: { group: '', type: "achievementTierClaimed", groupId: "color_green", tier: 1 } },
+  { id: 'banner_volcano', name: 'Volcano', src: 'Images/Banner/Volcano.png', price: 100, obtain: 'shop' },
+  { id: 'banner_ocean', name: 'Ocean', src: 'Images/Banner/Ocean.png', price: 100, obtain: 'shop' },
+  { id: 'banner_peaks', name: 'Peaks', src: 'Images/Banner/Peaks.png', price: 100, obtain: 'shop' },
+  { id: 'banner_mountain', name: 'Mountain', src: 'Images/Banner/Mountain.png', price: 100, obtain: 'shop' },
+  { id: 'banner_swamp', name: 'Swamp', src: 'Images/Banner/Swamp.png', price: 100, obtain: 'shop' },
+  { id: 'banner_plains', name: 'Plains', src: 'Images/Banner/Plains.png', price: 100, obtain: 'shop' },
+  { id: 'banner_shadowland', name: 'Shadowland', src: 'Images/Banner/Shadowland.png', price: 100, obtain: 'shop' },
+  { id: 'banner_verdara', name: 'Verdara', src: 'Images/Banner/Verdara.png', price: 100, obtain: 'shop' },
+  { id: 'banner_magmaris', name: 'Magmaris', src: 'Images/Banner/Magmaris.png', price: 100, obtain: 'shop' },
+  { id: 'banner_umarion', name: 'Umarion', src: 'Images/Banner/Umarion.png', price: 100, obtain: 'shop' },
+  { id: 'banner_aetherion', name: 'Aetherion', src: 'Images/Banner/Aetherion.png', price: 100, obtain: 'shop' },
+  { id: 'banner_drakzul', name: 'Drakzul', src: 'Images/Banner/Drakzul.png', price: 100, obtain: 'shop' },
+  { id: 'banner_virkul', name: 'Virkul', src: 'Images/Banner/Virkul.png', price: 100, obtain: 'shop' },
+  { id: 'banner_solmara', name: 'Solmara', src: 'Images/Banner/Solmara.png', price: 100, obtain: 'shop' },
+  { id: 'banner_noctyra', name: 'Noctyra', src: 'Images/Banner/Noctyra.png', price: 100, obtain: 'shop' },
+  { id: 'banner_thornvale', name: 'Thornvale', src: 'Images/Banner/Thornvale.png', price: 100, obtain: 'shop' },
+  { id: 'banner_pearlhaven', name: 'Pearlhaven', src: 'Images/Banner/Pearlhaven.png', price: 100, obtain: 'shop' },
+  { id: 'banner_duskhaven', name: 'Duskhaven', src: 'Images/Banner/Duskhaven.png', price: 100, obtain: 'shop' },
+  { id: 'banner_dgrove', name: 'Dragons Grove', src: 'Images/Banner/DragonsGrove.png', price: 100, obtain: 'shop' },
+  { id: 'banner_dspire', name: 'Dragons Spire', src: 'Images/Banner/DragonsSpire.png', price: 100, obtain: 'shop' },
+  { id: 'banner_datoll', name: 'Dragons Atoll', src: 'Images/Banner/DragonsAtoll.png', price: 100, obtain: 'shop' },
+  { id: 'banner_dskyreach', name: 'Dragons Skyreach', src: 'Images/Banner/DragonsSkyreach.png', price: 100, obtain: 'shop' },
+  { id: 'banner_dbastion', name: 'Dragons Bastion', src: 'Images/Banner/DragonsBastion.png', price: 100, obtain: 'shop' },
+  { id: 'banner_dhollow', name: 'Dragons Hollow', src: 'Images/Banner/DragonsHollow.png', price: 100, obtain: 'shop' },
+  { id: 'banner_dhaven', name: 'Dragons Haven', src: 'Images/Banner/DragonsHaven.png', price: 100, obtain: 'shop' },
+  { id: 'banner_dmoonhold', name: 'Dragons Moonhold', src: 'Images/Banner/DragonsMoonhold.png', price: 100, obtain: 'shop' },
 ];
 
 const cardbackOptions = [
-  { name: 'Fairy', src: 'Images/Cardback/Fairy.png', rarity: 'Common', price: 100, obtain: 'shop' },
-  { name: 'Cindercore', src: 'Images/Cardback/Cindercore.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-  { name: 'Construct', src: 'Images/Cardback/Construct.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-  { name: 'Coralbound', src: 'Images/Cardback/Coralbound.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-  { name: 'Fireland', src: 'Images/Cardback/Fireland.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-  { name: 'Goblin', src: 'Images/Cardback/Goblin.png', rarity: 'Common', price: 100, obtain: 'shop' },
-  { name: 'Golemheart', src: 'Images/Cardback/Golemheart.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-  { name: 'Merfolk', src: 'Images/Cardback/Merfolk.png', rarity: 'Common', price: 100, obtain: 'shop' },
-  { name: 'Moonfang', src: 'Images/Cardback/Moonfang.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-  { name: 'Satyr', src: 'Images/Cardback/Satyr.png', rarity: 'Common', price: 100, obtain: 'shop' },
-  { name: 'Obscurid', src: 'Images/Cardback/Obscurid.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-  { name: 'Stonebound', src: 'Images/Cardback/Stonebound.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-  { name: 'Stormcore', src: 'Images/Cardback/Stormcore.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-  { name: 'Plagueaxis', src: 'Images/Cardback/Plagueaxis.png', rarity: 'Legend', price: 100, obtain: 'shop' },
-  { name: 'Grovehusk', src: 'Images/Cardback/Woodframe.png', rarity: 'Legend', price: 100, obtain: 'shop' }
+  { id: 'cardback_faefolk', name: 'Fairy', src: 'Images/Cardback/Fairy.png', price: 100, obtain: 'shop' },
+  { id: 'cardback_cindercore', name: 'Cindercore', src: 'Images/Cardback/Cindercore.png', price: 100, obtain: 'shop' },
+  { id: 'cardback_construct', name: 'Construct', src: 'Images/Cardback/Construct.png', price: 100, obtain: 'shop' },
+  { id: 'cardback_coralbound', name: 'Coralbound', src: 'Images/Cardback/Coralbound.png', price: 100, obtain: 'shop' },
+  { id: 'cardback_fireland', name: 'Fireland', src: 'Images/Cardback/Fireland.png', price: 100, obtain: 'shop' },
+  { id: 'cardback_goblin', name: 'Goblin', src: 'Images/Cardback/Goblin.png', price: 100, obtain: 'shop' },
+  { id: 'banner_golemheart', name: 'Golemheart', src: 'Images/Cardback/Golemheart.png', price: 100, obtain: 'shop' },
+  { id: 'banner_merfolk', name: 'Merfolk', src: 'Images/Cardback/Merfolk.png', price: 100, obtain: 'shop' },
+  { id: 'banner_moonfang', name: 'Moonfang', src: 'Images/Cardback/Moonfang.png', price: 100, obtain: 'shop' },
+  { id: 'banner_satyr', name: 'Satyr', src: 'Images/Cardback/Satyr.png', price: 100, obtain: 'shop' },
+  { id: 'banner_obscurid', name: 'Obscurid', src: 'Images/Cardback/Obscurid.png', price: 100, obtain: 'shop' },
+  { id: 'banner_stonebound', name: 'Stonebound', src: 'Images/Cardback/Stonebound.png', price: 100, obtain: 'shop' },
+  { id: 'banner_stormcore', name: 'Stormcore', src: 'Images/Cardback/Stormcore.png', price: 100, obtain: 'shop' },
+  { id: 'banner_plagueaxis', name: 'Plagueaxis', src: 'Images/Cardback/Plagueaxis.png', price: 100, obtain: 'shop' },
+  { id: 'banner_woodframe', name: 'Grovehusk', src: 'Images/Cardback/Woodframe.png', price: 100, obtain: 'shop' }
 ];
 
 const cardStyles = [
-	{ cardId: 'EryndorVerdaraDruidlord', key: "fullArt", label: "Eryndor", rarity: 'Legend', price: 100, obtain: 'shop' },
-	{ cardId: 'FaelyraWildhornEmpress', key: "fullArt", label: "Faelyra", rarity: 'Legend', price: 100, obtain: 'shop' },
-	{ cardId: 'KaelyraMagmarisHeiress', key: "fullArt", label: "Kaelyra", rarity: 'Legend', price: 100, obtain: 'shop' },
-	{ cardId: 'KaelenFirelandHuntress', key: "fullArt", label: "Kaelen", rarity: 'Legend', price: 100, obtain: 'shop' },
-	{ cardId: 'SerenyaTideboundEnchantress', key: "fullArt", label: "Serenya", rarity: 'Legend', price: 100, obtain: 'shop' },
-	{ cardId: 'ZaryonUmarionCommander', key: "fullArt", label: "Zaryon", rarity: 'Legend', price: 100, obtain: 'shop' },
-	{ cardId: 'ZyraThunderbladeDuelist', key: "fullArt", label: "Zyra", rarity: 'Legend', price: 100, obtain: 'shop' },
-	{ cardId: 'GarudaAetherion Wings', key: "fullArt", label: "Garuda", rarity: 'Legend', price: 100, obtain: 'shop' },
-	{ cardId: 'RudgarIronfistMauler', key: "fullArt", label: "Rudgar", rarity: 'Legend', price: 100, obtain: 'shop' },
-	{ cardId: 'GravokDrakzulTyrant', key: "fullArt", label: "Gravok", rarity: 'Legend', price: 100, obtain: 'shop' },
-	{ cardId: 'SelgorCorruptedWarlock', key: "fullArt", label: "Selgor", rarity: 'Legend', price: 100, obtain: 'shop' },
-	{ cardId: 'MordrathVirkulPhantom', key: "fullArt", label: "Mordrath", rarity: 'Legend', price: 100, obtain: 'shop' },
-	{ cardId: 'ElyndraDawnbladeofHeavens', key: "fullArt", label: "Elyndra", rarity: 'Legend', price: 100, obtain: 'shop' },
-	{ cardId: 'SeraphielSolmaraParagon', key: "fullArt", label: "Seraphiel", rarity: 'Legend', price: 100, obtain: 'shop' },
-	{ cardId: 'VelmiraMistressofSilence', key: "fullArt", label: "Faelyra", rarity: 'Legend', price: 100, obtain: 'shop' },
-	{ cardId: 'MorvaneNoctyraOathbreaker', key: "fullArt", label: "Morvane", rarity: 'Legend', price: 100, obtain: 'shop' },
-	{ cardId: 'Forest', key: "fullArt", label: "Forest", rarity: 'Common', price: 10, obtain: 'shop' },
-	{ cardId: 'Volcano', key: "fullArt", label: "Volcano", rarity: 'Common', price: 10, obtain: 'shop' },	
-	{ cardId: 'Ocean', key: "fullArt", label: "Ocean", rarity: 'Common', price: 10, obtain: 'shop' },
-	{ cardId: 'Peaks', key: "fullArt", label: "Peaks", rarity: 'Common', price: 10, obtain: 'shop' },
-	{ cardId: 'Mountain', key: "fullArt", label: "Mountain", rarity: 'Common', price: 10, obtain: 'shop' },
-	{ cardId: 'Swamp', key: "fullArt", label: "Swamp", rarity: 'Common', price: 10, obtain: 'shop' },	
-	{ cardId: 'Plains', key: "fullArt", label: "Plains", rarity: 'Common', price: 10, obtain: 'shop' },
-	{ cardId: 'Wasteland', key: "fullArt", label: "Wasteland", rarity: 'Common', price: 10, obtain: 'shop' },	
+	{ cardId: 'EryndorVerdaraDruidlord', key: "fullArt", label: "Eryndor", price: 100, obtain: 'shop' },
+	{ cardId: 'FaelyraWildhornEmpress', key: "fullArt", label: "Faelyra", price: 100, obtain: 'shop' },
+	{ cardId: 'KaelyraMagmarisHeiress', key: "fullArt", label: "Kaelyra", price: 100, obtain: 'shop' },
+	{ cardId: 'KaelenFirelandHuntress', key: "fullArt", label: "Kaelen", price: 100, obtain: 'shop' },
+	{ cardId: 'SerenyaTideboundEnchantress', key: "fullArt", label: "Serenya", price: 100, obtain: 'shop' },
+	{ cardId: 'ZaryonUmarionCommander', key: "fullArt", label: "Zaryon", price: 100, obtain: 'shop' },
+	{ cardId: 'ZyraThunderbladeDuelist', key: "fullArt", label: "Zyra", price: 100, obtain: 'shop' },
+	{ cardId: 'GarudaAetherion Wings', key: "fullArt", label: "Garuda", price: 100, obtain: 'shop' },
+	{ cardId: 'RudgarIronfistMauler', key: "fullArt", label: "Rudgar", price: 100, obtain: 'shop' },
+	{ cardId: 'GravokDrakzulTyrant', key: "fullArt", label: "Gravok", price: 100, obtain: 'shop' },
+	{ cardId: 'SelgorCorruptedWarlock', key: "fullArt", label: "Selgor", price: 100, obtain: 'shop' },
+	{ cardId: 'MordrathVirkulPhantom', key: "fullArt", label: "Mordrath", price: 100, obtain: 'shop' },
+	{ cardId: 'ElyndraDawnbladeofHeavens', key: "fullArt", label: "Elyndra", price: 100, obtain: 'shop' },
+	{ cardId: 'SeraphielSolmaraParagon', key: "fullArt", label: "Seraphiel", price: 100, obtain: 'shop' },
+	{ cardId: 'VelmiraMistressofSilence', key: "fullArt", label: "Faelyra", price: 100, obtain: 'shop' },
+	{ cardId: 'MorvaneNoctyraOathbreaker', key: "fullArt", label: "Morvane", price: 100, obtain: 'shop' },
+	{ cardId: 'Forest', key: "fullArt", label: "Forest", price: 10, obtain: 'shop' },
+	{ cardId: 'Volcano', key: "fullArt", label: "Volcano", price: 10, obtain: 'shop' },	
+	{ cardId: 'Ocean', key: "fullArt", label: "Ocean", price: 10, obtain: 'shop' },
+	{ cardId: 'Peaks', key: "fullArt", label: "Peaks", price: 10, obtain: 'shop' },
+	{ cardId: 'Mountain', key: "fullArt", label: "Mountain", price: 10, obtain: 'shop' },
+	{ cardId: 'Swamp', key: "fullArt", label: "Swamp", price: 10, obtain: 'shop' },	
+	{ cardId: 'Plains', key: "fullArt", label: "Plains", price: 10, obtain: 'shop' },
+	{ cardId: 'Wasteland', key: "fullArt", label: "Wasteland", price: 10, obtain: 'shop' },	
 ];
 const UPDATES = [
   {
@@ -2175,7 +2172,7 @@ const UPDATES = [
     body: "Some pop-ups can overlap on smaller screens. Fix in progress."
   }
 ];
-const packPrices = [
+const packOptions = [
   { id: "EssenceLegacy", name: "Essence Legacy", price: 90,
     image: 'Images/Pack/EssenceLegacy.png'
   },
@@ -2196,7 +2193,6 @@ const packPrices = [
   },*/
   // "ScalesofRuin": 100,"WyrmheartAwakening": 100,"MischiefUnbound": 100,"PrimordialAscension": 100,"IronbornProtocol": 100,"SavageTerritory": 100,"FeatheredOmen": 100,
 ];
-const packOptions = packPrices;
 
 const DAILY_LOGIN_REWARDS = [
  /* Example
@@ -6409,24 +6405,26 @@ function renderShopPacks() {
 }
 
 function getUnlockedAvatars() {
-  return (window.playerUnlockedAvatars || window.unlockedAvatars || []);
+  return Array.isArray(window.playerUnlockedAvatars) ? window.playerUnlockedAvatars : [];
 }
 function setUnlockedAvatars(arr) {
-  playerUnlockedAvatars = arr; 
+  window.playerUnlockedAvatars = Array.isArray(arr) ? arr : [];
   saveProgress();
 }
+
 function getUnlockedBanners() {
-  return (window.playerUnlockedBanners || window.unlockedBanners || []);
+  return Array.isArray(window.playerUnlockedBanners) ? window.playerUnlockedBanners : [];
 }
 function setUnlockedBanners(arr) {
-  playerUnlockedBanners = arr; 
+  window.playerUnlockedBanners = Array.isArray(arr) ? arr : [];
   saveProgress();
 }
+
 function getUnlockedCardbacks() {
-  return (window.playerUnlockedCardbacks || window.unlockedCardbacks || []);
+  return Array.isArray(window.playerUnlockedCardbacks) ? window.playerUnlockedCardbacks : [];
 }
 function setUnlockedCardbacks(arr) {
-  playerUnlockedCardbacks = arr;
+  window.playerUnlockedCardbacks = Array.isArray(arr) ? arr : [];
   saveProgress();
 }
 function renderShopCosmetics({
