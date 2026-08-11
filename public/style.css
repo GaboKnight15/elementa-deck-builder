@@ -2605,7 +2605,65 @@ button[disabled], .btn-disabled {
   margin-top: 10px;
   margin-bottom: 0;
 }
+/* Uniform option button style */
+.menu .btn-secondary,
+.menu button {
+  width: 100%;
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid rgba(145, 170, 255, 0.4);
+  border-radius: 999px; /* pill style */
+  background: linear-gradient(180deg, #4f67ff 0%, #3f56de 100%);
+  color: #f5f8ff;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 120ms ease, filter 120ms ease, box-shadow 120ms ease;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.18);
+}
 
+/* Hover */
+.menu .btn-secondary:hover,
+.menu button:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.2),
+    0 4px 10px rgba(36, 72, 255, 0.35);
+}
+
+/* Pressed */
+.menu .btn-secondary:active,
+.menu button:active {
+  transform: translateY(0);
+  filter: brightness(0.96);
+}
+
+/* Keyboard focus */
+.menu .btn-secondary:focus-visible,
+.menu button:focus-visible {
+  outline: 2px solid #9cc0ff;
+  outline-offset: 2px;
+}
+
+/* Disabled (your JS already sets .btn-disabled + disabled attr) */
+.menu .btn-secondary:disabled,
+.menu button:disabled,
+.menu .btn-disabled {
+  background: linear-gradient(180deg, #5d6788 0%, #4c5677 100%);
+  border-color: rgba(180, 190, 220, 0.25);
+  color: rgba(235, 240, 255, 0.7);
+  cursor: not-allowed;
+  filter: grayscale(0.15);
+  transform: none;
+  box-shadow: none;
+}
 /* Responsive for mobile */
 @media screen and (max-width: 600px) {
   .menu {
