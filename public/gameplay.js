@@ -1920,7 +1920,7 @@ if (shouldChooseSlot) {
 // CREATE CARD MENUS
 function createCardMenu(buttons = []) {
   const menu = document.createElement('div');
-  menu.className = 'card-menu';
+  menu.className = 'menu';
   buttons.forEach(btnConf => {
     const btn = document.createElement('button');
     btn.type = "button";
