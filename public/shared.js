@@ -3356,22 +3356,18 @@ function renderAchievementsCategory(sectionKey) {
 
         return { t, tierNumber, goal, completed, claimed };
       })
-      .sort((a, b) => Number(a.claimed) - Number(b.claimed)); // false first, true last
+      .sort((a, b) => Number(a.claimed) - Number(b.claimed));
 
     tierModels.forEach(({ t, tierNumber, goal, completed, claimed }) => {
       const row = document.createElement('div');
       row.className = 'achievement-entry';
       if (completed) row.classList.add('completed');
-      if (claimed) row.classList.add('claimed'); // you can style .claimed in CSS to gray out
-
-      // If you want: make it clickable only when completed && !claimed
+      if (claimed) row.classList.add('claimed');
       const claimable = completed && !claimed;
       if (claimable) {
         row.classList.add('claimable');
         row.style.cursor = 'pointer';
         row.onclick = () => {
-          // You will implement claimAchievementTierReward(groupId, tierNumber)
-          // then re-render
           if (typeof claimAchievementTierReward === "function") {
             claimAchievementTierReward(sectionKey, groupId, tierNumber);
             renderAchievementsCategory(sectionKey);
@@ -3379,13 +3375,12 @@ function renderAchievementsCategory(sectionKey) {
           }
         };
       }
-
       row.innerHTML = `
-        <div class="ach-title">${t.description || 'Achievement'} (Tier ${tierNumber})</div>
-        <div class="ach-progress">${Math.min(progressValue, goal)} / ${goal}</div>
-        <div class="ach-reward">Reward: ${t.reward ?? 0}</div>
-      `;
-
+ 		 ${t.title ? `<div class="ach-tier-title">${t.title}</div>` : ''}
+ 		 <div class="ach-title">${t.description || 'Achievement'}</div>
+  		 <div class="ach-progress">${Math.min(progressValue, goal)} / ${goal}</div>
+ 		 <div class="ach-reward">Reward: ${t.reward ?? 0}</div>
+		`;
       panel.appendChild(row);
     });
   });
