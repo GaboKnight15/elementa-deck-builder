@@ -2257,7 +2257,7 @@ const QUEST_POOL = [
   { id: 'collect_black_card', group: '', type: 'quest', description: 'Collect a Black Card', goal: 1, reward: { group: '', type: 'currency', amount: 80 }, image: 'Images/Blank/Black.png', progress: 0, claimed: false, completed: false, refillAt: null},
   { id: 'collect_white_card', group: '', type: 'quest', description: 'Collect a White Card', goal: 1, reward: { group: '', type: 'currency', amount: 80 }, image: 'Images/Blank/White.png', progress: 0, claimed: false, completed: false, refillAt: null},
 ];
-const QUEST_MAX_ACTIVE = QUEST_POOL.length;
+const QUEST_SLOTS = QUEST_POOL.length;
 // -------------------- //
 // --- ACHIEVEMENTS --- //
 // -------------------- //
@@ -2554,7 +2554,7 @@ function syncActiveQuests(cb) {
     const used = new Set(activeQuests.map(q => q.id));
     const remaining = QUEST_POOL.filter(q => q && q.id && !used.has(q.id));
 
-    while (activeQuests.length < QUEST_MAX_ACTIVE && remaining.length > 0) {
+    while (activeQuests.length < QUEST_SLOTS && remaining.length > 0) {
       const next = remaining.shift();
       activeQuests.push({
         id: next.id,
@@ -2823,7 +2823,7 @@ function ensureQuestSlots(cb) {
     if (isFirstTime) {
       targetCount = INITIAL_QUESTS_ON_SIGNUP; // 3 at signup
     } else if (lastQuestDate !== today) {
-      targetCount = QUEST_MAX_ACTIVE; // expand to pool size on daily refresh
+      targetCount = QUEST_SLOTS; // expand to pool size on daily refresh
     } else {
       targetCount = activeQuests.length; // same day: only clean
     }
@@ -2845,7 +2845,7 @@ function ensureQuestSlots(cb) {
     }
 
     // Final safety cap
-    activeQuests = activeQuests.slice(0, QUEST_MAX_ACTIVE);
+    activeQuests = activeQuests.slice(0, QUEST_SLOTS);
 
     userDoc.set(
       { activeQuests, lastQuestDate: today },
