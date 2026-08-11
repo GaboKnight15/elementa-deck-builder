@@ -4811,11 +4811,9 @@ function getInitialGameState() {
     playerDeck: [],
     playerHand: [],
     playerVoid: [],
-    playerVoid: [],
 
     enemyDeck: [],
     enemyHand: [],
-    enemyVoid: [],
     enemyVoid: [],
 
     // Canonical slot-based battlefield
@@ -4840,8 +4838,8 @@ function getInitialGameState() {
 
     // Essence pools
     essencePools: {
-      player: { green:0, red:0, blue:0, yellow:0, gray:0, purple:0, white:0, black:0, colorless:0 },
-      enemy:  { green:0, red:0, blue:0, yellow:0, gray:0, purple:0, white:0, black:0, colorless:0 }
+      player: { green:0, red:0, blue:0, yellow:0, gray:0, purple:0, white:0, black:0 },
+      enemy:  { green:0, red:0, blue:0, yellow:0, gray:0, purple:0, white:0, black:0 }
     }
   };
 }
