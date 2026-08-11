@@ -2251,9 +2251,9 @@ if (cardData.skill && Array.isArray(cardData.skill)) {
         }
       });
     });
-}
+  }
+  closeAllMenus();
   const menu = createCardMenu(buttons);
-
   // Position relative to cardDiv
   const rect = cardDiv.getBoundingClientRect();
   placeMenuWithinShell(menu, rect);
@@ -2459,6 +2459,7 @@ function appendDeckZone(parentDiv, deckArray, who) {
           }
         }
       ];
+      closeAllMenus();
       const menu = createCardMenu(buttons);
       const rect = deckCard.getBoundingClientRect();
       placeMenuWithinShell(menu, rect);
@@ -3359,6 +3360,7 @@ if (cardData.skill && Array.isArray(cardData.skill)) {
     });
   });
 }
+  closeAllMenus();
   // Create and show the menu
   const menu = createCardMenu(buttons);
   // Position menu absolutely near cardDiv
@@ -3509,18 +3511,15 @@ function openVoidModal(isenemy = false) {
               });
             });
         }
-
+        closeAllMenus();
         const menu = createCardMenu(buttons);
         const shell = document.getElementById('game-shell') || document.getElementById('gameplay-section');
         shell.appendChild(menu);
-
         const rect = img.getBoundingClientRect();
         placeMenuWithinShell(menu, rect);
-
         menu.onclick = function (ev) { ev.stopPropagation(); };
       }, { enableDragDetection: false });
     }
-
     wrapper.appendChild(cardDiv);
     voidList.appendChild(wrapper);
   });
@@ -3800,14 +3799,19 @@ function showGameStartAnimation(callback) {
   // Remove any previous overlays
   let oldOverlay = document.getElementById('game-start-overlay');
   if (oldOverlay) oldOverlay.remove();
+
+  // NEW: anchor to game shell when available
+  const shell = document.getElementById('game-shell');
+  const host = shell || document.body;
+  if (shell && window.getComputedStyle(shell).position === 'static') {
+    shell.style.position = 'relative';
+  }
+
   // Create overlay
   let overlay = document.createElement('div');
   overlay.id = 'game-start-overlay';
-  overlay.style.position = 'fixed';
-  overlay.style.top = 0;
-  overlay.style.left = 0;
-  overlay.style.width = '100vw';
-  overlay.style.height = '100vh';
+  overlay.style.position = shell ? 'absolute' : 'fixed'; // CHANGED
+  overlay.style.inset = '0'; // CHANGED (replaces top/left/width/height)
   overlay.style.background = 'rgba(10,20,40,0.90)';
   overlay.style.display = 'flex';
   overlay.style.alignItems = 'center';
@@ -3825,7 +3829,7 @@ function showGameStartAnimation(callback) {
   text.style.opacity = '0.97';
 
   overlay.appendChild(text);
-  document.body.appendChild(overlay);
+  host.appendChild(overlay); // CHANGED
 
   setTimeout(() => {
     overlay.style.opacity = 0;
@@ -4698,36 +4702,45 @@ function triggerOnDefenseSkills(defender, attacker, onComplete) {
   triggerSelfSkill(defender, "defend", { trigger: "defend", attacker }, onComplete);
 }
 
-// ------------------------ //
 // --- GAME START LOGIC --- //
-// ------------------------ //
-
-function showCoinFlipModal(onResult) {
+function showCoinFlipModal(onResult, forcedResult) {
   if (window.coinFlipShown) return; // prevent repeats
   window.coinFlipShown = true;
+
   // Remove any previous overlays
   let oldModal = document.getElementById('coin-flip-modal');
   if (oldModal) oldModal.remove();
-  // Use forcedResult if provided, else pick randomly (for solo/casual play)
+
+  // NEW: anchor to game shell when available
+  const shell = document.getElementById('game-shell');
+  const host = shell || document.body;
+  if (shell && window.getComputedStyle(shell).position === 'static') {
+    shell.style.position = 'relative';
+  }
+
+  // Use forcedResult if provided, else pick randomly
   let isHeads;
   if (typeof forcedResult !== "undefined") {
-    // Accept strings or booleans
     if (forcedResult === "player" || forcedResult === "heads" || forcedResult === true) isHeads = true;
     else isHeads = false;
   } else {
     isHeads = Math.random() < 0.5;
   }
-  // Flip logic
+
   const headsImg = "Icons/Other/Heads.png";
   const tailsImg = "Icons/Other/Tails.png";
   const chosenImg = isHeads ? headsImg : tailsImg;
   const chosenText = isHeads ? "Heads" : "Tails";
+
   // Create overlay/modal
   let modal = document.createElement('div');
+  modal.id = 'coin-flip-modal'; // IMPORTANT (you query this on reopen)
   modal.className = 'modal';
   modal.style.display = 'flex';
-  modal.style.position = 'fixed';
+  modal.style.position = shell ? 'absolute' : 'fixed'; // CHANGED
+  modal.style.inset = '0'; // CHANGED
   modal.style.background = 'rgba(16,20,24,0.92)';
+  modal.style.zIndex = 99999;
   modal.onclick = e => { if (e.target === modal) modal.remove(); };
 
   // Coin image and message
@@ -4746,12 +4759,11 @@ function showCoinFlipModal(onResult) {
   msg.style.marginTop = "24px";
   msg.innerText = "Flipping the coin...";
 
-  // Compose modal
   let content = document.createElement('div');
   content.appendChild(coin);
   content.appendChild(msg);
   modal.appendChild(content);
-  document.body.appendChild(modal);
+  host.appendChild(modal); // CHANGED
 
   setTimeout(() => {
     coin.style.transform = "rotateY(270deg)";
@@ -4765,8 +4777,8 @@ function showCoinFlipModal(onResult) {
           modal.remove();
           if (onResult) onResult(isHeads ? "player" : "enemy");
         }, 1300);
-      }, 450); // second half of the spin
-    }, 550); // half-spin duration
+      }, 450);
+    }, 550);
   }, 400);
 }
 
