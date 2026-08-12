@@ -4316,6 +4316,7 @@ button[disabled], .btn-disabled {
   gap: 8px;
   flex-wrap: wrap;
   margin: 10px 0 14px;
+  justify-content: center;
 }
 .shop-tab {
   border: 1px solid #4e5a78;
