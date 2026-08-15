@@ -559,28 +559,55 @@ const EFF_MAP = {
 summon: { name: 'Summon', zone: 'hand', icon: 'Icons/Skill/Summon.png',
   description: 'Move this card from hand to the field.',
   canActivate(cardObj, skillObj, currentZone, gameState) {
-    return currentZone === 'hand';
+    return normalizeZoneName(currentZone) === 'hand';
   },
   handler(sourceCardObj, skillObj, step = {}, nextEffect) {
     const owner = getCardOwner(sourceCardObj) === 'enemy' ? 'enemy' : 'player';
     const handArr = owner === 'player' ? gameState.playerHand : gameState.enemyHand;
 
+    // 1) Must still be in hand
     if (!handArr.includes(sourceCardObj)) {
       showToast && showToast('You can only summon from the hand.', { type: 'error' });
       nextEffect && nextEffect();
       return;
     }
 
-    const def = dummyCards.find(c => c.id === sourceCardObj.cardId);
-    const cat = String(def?.category || '').toLowerCase();
-    const orientation = cat === 'unit' ? 'horizontal' : 'vertical';
+    // 2) Determine lane
+    const lane = getLaneForCard(sourceCardObj); // "unit" | "support"
+    const slots = getFieldSlots(owner, lane);
+    const hasFree = Array.isArray(slots) && slots.some(s => !s);
+    if (!hasFree) {
+      showToast && showToast(`No free ${lane} slots.`, { type: 'error' });
+      nextEffect && nextEffect();
+      return;
+    }
 
+    // 3) Move transaction
     moveCard(
       sourceCardObj.instanceId,
       handArr,
-      handArr, // placeholder, ignored when toField:true
-      { owner, toField: true, orientation },
+      handArr, // ignored when toField:true
+      {
+        owner,
+        toField: true,
+        orientation: lane === 'unit' ? 'horizontal' : 'vertical',
+        pickSlot: owner === 'player'
+      },
       () => {
+        // 4) Verify card actually landed on field; otherwise rollback to hand
+        const landedArr = getZoneArrayForCard(sourceCardObj);
+        const landed =
+          landedArr === gameState.playerUnitSlots ||
+          landedArr === gameState.playerSupportSlots ||
+          landedArr === gameState.enemyUnitSlots ||
+          landedArr === gameState.enemySupportSlots;
+
+        if (!landed) {
+          // Defensive rollback
+          if (!handArr.includes(sourceCardObj)) handArr.push(sourceCardObj);
+          showToast && showToast('Summon failed, card returned to hand.', { type: 'error' });
+        }
+
         renderGameState && renderGameState();
         setupDropZones && setupDropZones();
         emitPublicState && emitPublicState();
@@ -6568,8 +6595,8 @@ function removeCardByInstanceId(instanceId) {
 }
 function getLaneForCard(cardObj) {
   const def = getCardDef(cardObj);
-  const t = String(def?.type || def?.category || "").toLowerCase();
-  return t === "unit" ? "unit" : "support"; // terrain/artifact/magic -> support
+  const cat = String(def?.category || '').toLowerCase();
+  return cat === 'unit' ? 'unit' : 'support';
 }
 
 function removeCardFromAllFieldSlots(instanceId) {
