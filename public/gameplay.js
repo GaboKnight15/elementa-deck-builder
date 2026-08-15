@@ -31,19 +31,19 @@ let gameState = {
   enemyDeck: [], enemyHand: [], enemyVoid: [],
 
   // New slot layout (5 unit + 5 support per side)
-  playerUnitSlots: Array(5).fill(null),
-  playerSupportSlots: Array(5).fill(null),
-  enemyUnitSlots: Array(5).fill(null),
-  enemySupportSlots: Array(5).fill(null),
+  playerUnits: Array(5).fill(null),
+  playerSupports: Array(5).fill(null),
+  enemyUnits: Array(5).fill(null),
+  enemySupports: Array(5).fill(null),
 
   playerDomain: null, enemyDomain: null,
   turn: "player",
   phase: "start",
+  gameLog: [],
   essencePools: {
     enemy: { green:0, red:0, blue:0, yellow:0, gray:0, purple:0, white:0, black:0, xcolor:0 },
     player: { green:0, red:0, blue:0, yellow:0, gray:0, purple:0, white:0, black:0, xcolor:0 }
   },
-  gameLog: [],
 };
 
 const ZONE_MAP = {
@@ -58,43 +58,36 @@ const ZONE_MAP = {
   enemyVoid:   { id: "enemy-void-zone",   arr: () => gameState.enemyVoid },
 
   // --- Canonical battlefield storage (ONLY these for board state) ---
-  playerUnitSlots: { id: "player-unit-zone", arr: () => gameState.playerUnitSlots },
-  playerSupportSlots:  { id: "player-support-zone",  arr: () => gameState.playerSupportSlots },
-  enemyUnitSlots:  { id: "enemy-unit-zone",  arr: () => gameState.enemyUnitSlots },
-  enemySupportSlots:   { id: "enemy-support-zone",   arr: () => gameState.enemySupportSlots },
-
-  // --- Derived views (computed, not stored) ---
-  playerUnits: { id: null, arr: () => gameState.playerUnitSlots.filter(Boolean) },
-  enemyUnits:  { id: null, arr: () => gameState.enemyUnitSlots.filter(Boolean) },
-
-  playerSupports:  { id: null, arr: () => gameState.playerSupportSlots.filter(Boolean) },
-  enemySupports:   { id: null, arr: () => gameState.enemySupportSlots.filter(Boolean) },
+  playerUnits: { id: "player-unit-zone", arr: () => gameState.playerUnits },
+  playerSupports:  { id: "player-support-zone",  arr: () => gameState.playerSupports },
+  enemyUnits:  { id: "enemy-unit-zone",  arr: () => gameState.enemyUnits },
+  enemySupports:   { id: "enemy-support-zone",   arr: () => gameState.enemySupports },
 
   allUnits: { id: null, arr: () => [
-    ...gameState.playerUnitSlots.filter(Boolean),
-    ...gameState.enemyUnitSlots.filter(Boolean)
+    ...gameState.playerUnits.filter(Boolean),
+    ...gameState.enemyUnits.filter(Boolean)
   ]},
 
   allSupports: { id: null, arr: () => [
-    ...gameState.playerSupportSlots.filter(Boolean),
-    ...gameState.enemySupportSlots.filter(Boolean)
+    ...gameState.playerSupports.filter(Boolean),
+    ...gameState.enemySupports.filter(Boolean)
   ]},
 
   playerField: { id: null, arr: () => [
-    ...gameState.playerUnitSlots.filter(Boolean),
-    ...gameState.playerSupportSlots.filter(Boolean)
+    ...gameState.playerUnits.filter(Boolean),
+    ...gameState.playerSupports.filter(Boolean)
   ]},
 
   enemyField: { id: null, arr: () => [
-    ...gameState.enemyUnitSlots.filter(Boolean),
-    ...gameState.enemySupportSlots.filter(Boolean)
+    ...gameState.enemyUnits.filter(Boolean),
+    ...gameState.enemySupports.filter(Boolean)
   ]},
 
   allField: { id: null, arr: () => [
-    ...gameState.playerUnitSlots.filter(Boolean),
-    ...gameState.playerSupportSlots.filter(Boolean),
-    ...gameState.enemyUnitSlots.filter(Boolean),
-    ...gameState.enemySupportSlots.filter(Boolean)
+    ...gameState.playerUnits.filter(Boolean),
+    ...gameState.playerSupports.filter(Boolean),
+    ...gameState.enemyUnits.filter(Boolean),
+    ...gameState.enemySupports.filter(Boolean)
   ]},
 
   allHands:   { id: null, arr: () => [...gameState.playerHand,   ...gameState.enemyHand] },
@@ -104,8 +97,8 @@ const ZONE_MAP = {
   allCards: { id: null, arr: () => [
     ...gameState.playerDeck, ...gameState.playerHand, ...gameState.playerVoid,
     ...gameState.enemyDeck,   ...gameState.enemyHand, ...gameState.enemyVoid,
-    ...gameState.playerUnitSlots.filter(Boolean), ...gameState.playerSupportSlots.filter(Boolean),
-    ...gameState.enemyUnitSlots.filter(Boolean), ...gameState.enemySupportSlots.filter(Boolean)
+    ...gameState.playerUnits.filter(Boolean), ...gameState.playerSupports.filter(Boolean),
+    ...gameState.enemyUnits.filter(Boolean), ...gameState.enemySupports.filter(Boolean)
   ]}
 };
 
@@ -597,10 +590,10 @@ summon: { name: 'Summon', zone: 'hand', icon: 'Icons/Skill/Summon.png',
         // 4) Verify card actually landed on field; otherwise rollback to hand
         const landedArr = getZoneArrayForCard(sourceCardObj);
         const landed =
-          landedArr === gameState.playerUnitSlots ||
-          landedArr === gameState.playerSupportSlots ||
-          landedArr === gameState.enemyUnitSlots ||
-          landedArr === gameState.enemySupportSlots;
+          landedArr === gameState.playerUnits ||
+          landedArr === gameState.playerSupports ||
+          landedArr === gameState.enemyUnits ||
+          landedArr === gameState.enemySupports;
 
         if (!landed) {
           // Defensive rollback
@@ -724,7 +717,7 @@ terraform: { name: 'Terraform', zone: 'hand', icon: 'Icons/Skill/Terraform.png',
 
       const owner = (getCardOwner(sourceCardObj) === 'enemy') ? 'enemy' : 'player';
       const handArr = owner === 'player' ? gameState.playerHand : gameState.enemyHand;
-      const terrainsArr = owner === 'player' ? gameState.playerSupportSlots : gameState.enemySupportSlots;
+      const terrainsArr = owner === 'player' ? gameState.playerSupports : gameState.enemySupports;
 
       // Must be in hand
       if (!handArr.includes(sourceCardObj)) {
@@ -752,7 +745,7 @@ terraform: { name: 'Terraform', zone: 'hand', icon: 'Icons/Skill/Terraform.png',
 strike: { name: 'Strike', icon: 'Icons/Skill/Strike.png', description: 'Deals damage.',
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
     // For your rule: any card on the field can be a target (player+enemy, units+terrains)
-    const enemyField = [...gameState.enemyUnits, ...gameState.enemySupportSlots.filter(Boolean)];
+    const enemyField = [...gameState.enemyUnits, ...gameState.enemySupports.filter(Boolean)];
     startSkillTarget(
       enemyField,
       selectedTarget => {
@@ -890,7 +883,7 @@ dash: { name: 'Dash', zone: 'hand', icon: 'Icons/Skill/Dash.png',
     if (category.includes("unit")) {
       targetArr = gameState.playerUnits;
     } else if (category.includes("terrain")) {
-      targetArr = gameState.playerSupportSlots.filter(Boolean);
+      targetArr = gameState.playerSupports.filter(Boolean);
     } else {
       showToast("Dash can only be used for units or terrains.");
       if (nextEffect) nextEffect();
@@ -922,7 +915,7 @@ reanimate: { name: 'Reanimate', zone: 'void', icon: 'Icons/Skill/Reanimate.png',
     if (category.includes("unit")) {
       targetArr = gameState.playerUnits;
     } else if (category.includes("terrain")) {
-      targetArr = gameState.playerSupportSlots.filter(Boolean);
+      targetArr = gameState.playerSupports.filter(Boolean);
     } else {
       showToast("Reanimate can only be used for units or terrains.");
       if (nextEffect) nextEffect();
@@ -938,7 +931,7 @@ reanimate: { name: 'Reanimate', zone: 'void', icon: 'Icons/Skill/Reanimate.png',
 heal: { name: 'Heal', icon: 'Icons/Skill/Heal.png',
   description: 'Heals an ally.',
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
-    const playerField = [...gameState.playerUnits, ...gameState.playerSupportSlots.filter(Boolean)];
+    const playerField = [...gameState.playerUnits, ...gameState.playerSupports.filter(Boolean)];
     startSkillTarget(
       playerField,
       selectedTargets => {
@@ -971,7 +964,7 @@ heal: { name: 'Heal', icon: 'Icons/Skill/Heal.png',
 armor: { name: 'Armor', icon: 'Icons/Skill/Armor.png',
   description: 'Grants armor to an ally.',
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
-    const playerField = [...gameState.playerUnits, ...gameState.playerSupportSlots.filter(Boolean)];
+    const playerField = [...gameState.playerUnits, ...gameState.playerSupports.filter(Boolean)];
     startSkillTarget(
       playerField,
       selectedTargets => {
@@ -1018,8 +1011,8 @@ destroy: { icon: 'Icons/Skill/Destroy.png', name: 'Destroy',
     const fieldArrays = [
       gameState.playerUnits,
       gameState.enemyUnits,
-      gameState.playerSupportSlots.filter(Boolean),
-      gameState.enemySupportSlots.filter(Boolean)
+      gameState.playerSupports.filter(Boolean),
+      gameState.enemySupports.filter(Boolean)
     ];
     const allTargets = fieldArrays.flat();
     let validTargets = getValidTargetsByCondition(allTargets, skillObj.condition || []);
@@ -1036,7 +1029,7 @@ destroy: { icon: 'Icons/Skill/Destroy.png', name: 'Destroy',
       // Determine correct void array based on owner
       const isPlayerCard =
         gameState.playerUnits.includes(selectedTarget) ||
-        gameState.playerSupportSlots.filter(Boolean).includes(selectedTarget);
+        gameState.playerSupports.filter(Boolean).includes(selectedTarget);
       const voidArr = isPlayerCard ? gameState.playerVoid : gameState.enemyVoid;
 
       // Move from its current zone to the appropriate void
@@ -1100,7 +1093,7 @@ add: { icon: 'Icons/Skill/Add.png', name: 'Search',
         if (category.includes("unit")) {
           targetArr = gameState.playerUnits;
         } else if (category.includes("terrain")) {
-          targetArr = gameState.playerSupportSlots.filter(Boolean);
+          targetArr = gameState.playerSupports.filter(Boolean);
         } else {
           showToast("Revive can only be used for units or terrains.");
           return;
@@ -1113,8 +1106,8 @@ bounce: { icon: 'Icons/Skill/Bounce.png', name: 'Bounce',
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
     // All units/terrains on both sides
     const fieldArrs = [
-      gameState.playerUnits, gameState.playerSupportSlots.filter(Boolean),
-      gameState.enemyUnits, gameState.enemySupportSlots.filter(Boolean)
+      gameState.playerUnits, gameState.playerSupports.filter(Boolean),
+      gameState.enemyUnits, gameState.enemySupports.filter(Boolean)
     ];
     const allField = fieldArrs.flat();
 
@@ -1159,8 +1152,8 @@ banish: { icon: 'Icons/Skill/Banish.png', name: 'Banish',
   handler: function(sourceCardObj, skillObj, step, nextEffect) {
     // All units/terrains on both sides
     const fieldArrs = [
-      gameState.playerUnits, gameState.playerSupportSlots.filter(Boolean),
-      gameState.enemyUnits, gameState.enemySupportSlots.filter(Boolean)
+      gameState.playerUnits, gameState.playerSupports.filter(Boolean),
+      gameState.enemyUnits, gameState.enemySupports.filter(Boolean)
     ];
     const allField = fieldArrs.flat();
 
@@ -1390,17 +1383,17 @@ function startGame({
   gameState.enemyVoid = [];
 
   // --- Reset canonical slot-based battlefield ---
-  gameState.playerUnitSlots = Array(5).fill(null);
-  gameState.playerSupportSlots = Array(5).fill(null);
-  gameState.enemyUnitSlots = Array(5).fill(null);
-  gameState.enemySupportSlots = Array(5).fill(null);
+  gameState.playerUnits = Array(5).fill(null);
+  gameState.playerSupports = Array(5).fill(null);
+  gameState.enemyUnits = Array(5).fill(null);
+  gameState.enemySupports = Array(5).fill(null);
 
   // --- Keep legacy arrays as derived aliases (compat for old helpers) ---
   // These should not be treated as source of truth.
-  gameState.playerUnits = gameState.playerUnitSlots.filter(Boolean);
-  gameState.playerSupports  = gameState.playerSupportSlots.filter(Boolean);
-  gameState.enemyUnits  = gameState.enemyUnitSlots.filter(Boolean);
-  gameState.enemySupports   = gameState.enemySupportSlots.filter(Boolean);
+  gameState.playerUnits = gameState.playerUnits.filter(Boolean);
+  gameState.playerSupports  = gameState.playerSupports.filter(Boolean);
+  gameState.enemyUnits  = gameState.enemyUnits.filter(Boolean);
+  gameState.enemySupports   = gameState.enemySupports.filter(Boolean);
 
   // --- Match state meta ---
   gameState.phase = "start";
@@ -1456,9 +1449,9 @@ function startGame({
       initiateDomainSelection(gameState.playerDeck, () => {
         // IMPORTANT: if domain is selected, place it into a support slot (source of truth)
         if (gameState.playerDomain) {
-          const freeSupport = gameState.playerSupportSlots.findIndex(s => !s);
+          const freeSupport = gameState.playerSupports.findIndex(s => !s);
           if (freeSupport !== -1) {
-            gameState.playerSupportSlots[freeSupport] = {
+            gameState.playerSupports[freeSupport] = {
               ...gameState.playerDomain,
               owner: "player",
               slotLane: "support",
@@ -1496,16 +1489,16 @@ function getZoneArray(zoneId) {
 }
 
 function getFieldSlots(owner, lane) {
-  if (owner === "player" && lane === "unit") return gameState.playerUnitSlots;
-  if (owner === "player" && lane === "support") return gameState.playerSupportSlots;
-  if (owner === "enemy" && lane === "unit") return gameState.enemyUnitSlots;
-  if (owner === "enemy" && lane === "support") return gameState.enemySupportSlots;
+  if (owner === "player" && lane === "unit") return gameState.playerUnits;
+  if (owner === "player" && lane === "support") return gameState.playerSupports;
+  if (owner === "enemy" && lane === "unit") return gameState.enemyUnits;
+  if (owner === "enemy" && lane === "support") return gameState.enemySupports;
   return [];
 }
 
 function getAllFieldCards(owner = null) {
-  const p = [...gameState.playerUnitSlots, ...gameState.playerSupportSlots].filter(Boolean);
-  const e = [...gameState.enemyUnitSlots, ...gameState.enemySupportSlots].filter(Boolean);
+  const p = [...gameState.playerUnits, ...gameState.playerSupports].filter(Boolean);
+  const e = [...gameState.enemyUnits, ...gameState.enemySupports].filter(Boolean);
   if (owner === "player") return p;
   if (owner === "enemy") return e;
   return [...p, ...e];
@@ -1529,7 +1522,9 @@ function findCardSlot(cardObj) {
   }
   return null;
 }
-
+function getUnits(owner) { return (owner === "enemy" ? gameState.enemyUnits : gameState.playerUnits);}
+function getSupports(owner) { return (owner === "enemy" ? gameState.enemySupports : gameState.playerSupports);}
+function getField(owner) { return [...getUnits(owner).filter(Boolean), ...getSupports(owner).filter(Boolean)];}
 function getZoneArrayForCard(cardObj) {
   if (!cardObj || !cardObj.instanceId) return null;
   const id = cardObj.instanceId;
@@ -1545,20 +1540,20 @@ function getZoneArrayForCard(cardObj) {
   if (Array.isArray(gameState.enemyVoid) && gameState.enemyVoid.some(c => c?.instanceId === id)) return gameState.enemyVoid;
 
   // --- Slot-based battlefield (NEW canonical field storage) ---
-  if (Array.isArray(gameState.playerUnitSlots) && gameState.playerUnitSlots.some(c => c && c.instanceId === id)) return gameState.playerUnitSlots;
-  if (Array.isArray(gameState.playerSupportSlots) && gameState.playerSupportSlots.some(c => c && c.instanceId === id)) return gameState.playerSupportSlots;
+  if (Array.isArray(gameState.playerUnits) && gameState.playerUnits.some(c => c && c.instanceId === id)) return gameState.playerUnits;
+  if (Array.isArray(gameState.playerSupports) && gameState.playerSupports.some(c => c && c.instanceId === id)) return gameState.playerSupports;
 
-  if (Array.isArray(gameState.enemyUnitSlots) && gameState.enemyUnitSlots.some(c => c && c.instanceId === id)) return gameState.enemyUnitSlots;
-  if (Array.isArray(gameState.enemySupportSlots) && gameState.enemySupportSlots.some(c => c && c.instanceId === id)) return gameState.enemySupportSlots;
+  if (Array.isArray(gameState.enemyUnits) && gameState.enemyUnits.some(c => c && c.instanceId === id)) return gameState.enemyUnits;
+  if (Array.isArray(gameState.enemySupports) && gameState.enemySupports.some(c => c && c.instanceId === id)) return gameState.enemySupports;
 
   // --- Legacy fallback (optional while migrating old code) ---
   if (Array.isArray(gameState.playerUnits) && gameState.playerUnits.some(c => c?.instanceId === id)) return gameState.playerUnits;
-  if (Array.isArray(gameState.playerSupportSlots.filter(Boolean)) && gameState.playerSupportSlots.filter(Boolean).some(c => c?.instanceId === id)) return gameState.playerSupportSlots.filter(Boolean);
+  if (Array.isArray(gameState.playerSupports.filter(Boolean)) && gameState.playerSupports.filter(Boolean).some(c => c?.instanceId === id)) return gameState.playerSupports.filter(Boolean);
   if (Array.isArray(gameState.playerArtifacts) && gameState.playerArtifacts.some(c => c?.instanceId === id)) return gameState.playerArtifacts;
   if (Array.isArray(gameState.playerMagics) && gameState.playerMagics.some(c => c?.instanceId === id)) return gameState.playerMagics;
 
   if (Array.isArray(gameState.enemyUnits) && gameState.enemyUnits.some(c => c?.instanceId === id)) return gameState.enemyUnits;
-  if (Array.isArray(gameState.enemySupportSlots.filter(Boolean)) && gameState.enemySupportSlots.filter(Boolean).some(c => c?.instanceId === id)) return gameState.enemySupportSlots.filter(Boolean);
+  if (Array.isArray(gameState.enemySupports.filter(Boolean)) && gameState.enemySupports.filter(Boolean).some(c => c?.instanceId === id)) return gameState.enemySupports.filter(Boolean);
   if (Array.isArray(gameState.enemyArtifacts) && gameState.enemyArtifacts.some(c => c?.instanceId === id)) return gameState.enemyArtifacts;
   if (Array.isArray(gameState.enemyMagics) && gameState.enemyMagics.some(c => c?.instanceId === id)) return gameState.enemyMagics;
 
@@ -1585,16 +1580,16 @@ function findZoneIdForCard(cardObj) {
   if (gameState.enemyVoid.some(c => c.instanceId === id)) return "enemy-void-zone";
 
   // Slot-based battlefield
-  const pC = gameState.playerUnitSlots.findIndex(c => c && c.instanceId === id);
+  const pC = gameState.playerUnits.findIndex(c => c && c.instanceId === id);
   if (pC !== -1) return `player-unit-slot-${pC}`;
 
-  const pS = gameState.playerSupportSlots.findIndex(c => c && c.instanceId === id);
+  const pS = gameState.playerSupports.findIndex(c => c && c.instanceId === id);
   if (pS !== -1) return `player-support-slot-${pS}`;
 
-  const eC = gameState.enemyUnitSlots.findIndex(c => c && c.instanceId === id);
+  const eC = gameState.enemyUnits.findIndex(c => c && c.instanceId === id);
   if (eC !== -1) return `enemy-unit-slot-${eC}`;
 
-  const eS = gameState.enemySupportSlots.findIndex(c => c && c.instanceId === id);
+  const eS = gameState.enemySupports.findIndex(c => c && c.instanceId === id);
   if (eS !== -1) return `enemy-support-slot-${eS}`;
 
   return null;
@@ -1670,15 +1665,15 @@ function getCardOwner(cardObj) {
   if (gameState.playerHand.some(c => c.instanceId === id)) return "player";
   if (gameState.playerDeck.some(c => c.instanceId === id)) return "player";
   if (gameState.playerVoid.some(c => c.instanceId === id)) return "player";
-  if (gameState.playerUnitSlots.some(c => c && c.instanceId === id)) return "player";
-  if (gameState.playerSupportSlots.some(c => c && c.instanceId === id)) return "player";
+  if (gameState.playerUnits.some(c => c && c.instanceId === id)) return "player";
+  if (gameState.playerSupports.some(c => c && c.instanceId === id)) return "player";
 
   // Enemy zones
   if (gameState.enemyHand.some(c => c.instanceId === id)) return "enemy";
   if (gameState.enemyDeck.some(c => c.instanceId === id)) return "enemy";
   if (gameState.enemyVoid.some(c => c.instanceId === id)) return "enemy";
-  if (gameState.enemyUnitSlots.some(c => c && c.instanceId === id)) return "enemy";
-  if (gameState.enemySupportSlots.some(c => c && c.instanceId === id)) return "enemy";
+  if (gameState.enemyUnits.some(c => c && c.instanceId === id)) return "enemy";
+  if (gameState.enemySupports.some(c => c && c.instanceId === id)) return "enemy";
 
   return null;
 }
@@ -1693,10 +1688,10 @@ function isTargetStillPresent(targetObj) {
     gameState.enemyDeck.some(c => c.instanceId === id) ||
     gameState.playerVoid.some(c => c.instanceId === id) ||
     gameState.enemyVoid.some(c => c.instanceId === id) ||
-    gameState.playerUnitSlots.some(c => c && c.instanceId === id) ||
-    gameState.playerSupportSlots.some(c => c && c.instanceId === id) ||
-    gameState.enemyUnitSlots.some(c => c && c.instanceId === id) ||
-    gameState.enemySupportSlots.some(c => c && c.instanceId === id)
+    gameState.playerUnits.some(c => c && c.instanceId === id) ||
+    gameState.playerSupports.some(c => c && c.instanceId === id) ||
+    gameState.enemyUnits.some(c => c && c.instanceId === id) ||
+    gameState.enemySupports.some(c => c && c.instanceId === id)
   );
 }
 
@@ -1720,10 +1715,10 @@ function getTargets(target, sourceCardObj, context = {}) {
   if (!target) return [];
 
   // Frequently used slot collections
-  const playerUnits = gameState.playerUnitSlots.filter(Boolean);
-  const enemyUnits = gameState.enemyUnitSlots.filter(Boolean);
-  const playerSupports  = gameState.playerSupportSlots.filter(Boolean);
-  const enemySupports   = gameState.enemySupportSlots.filter(Boolean);
+  const playerUnits = gameState.playerUnits.filter(Boolean);
+  const enemyUnits = gameState.enemyUnits.filter(Boolean);
+  const playerSupports  = gameState.playerSupports.filter(Boolean);
+  const enemySupports   = gameState.enemySupports.filter(Boolean);
 
   const allUnit = [...playerUnits, ...enemyUnits];
   const allSupports  = [...playerSupports, ...enemySupports];
@@ -1817,10 +1812,10 @@ function moveCard(instanceId, fromArr, toArr, extra = {}, callback) {
   const cardObj = fromArr[fromIdx];
 
   const isFromSlotArray =
-    fromArr === gameState.playerUnitSlots ||
-    fromArr === gameState.playerSupportSlots ||
-    fromArr === gameState.enemyUnitSlots ||
-    fromArr === gameState.enemySupportSlots;
+    fromArr === gameState.playerUnits ||
+    fromArr === gameState.playerSupports ||
+    fromArr === gameState.enemyUnits ||
+    fromArr === gameState.enemySupports;
 
   if (isFromSlotArray) fromArr[fromIdx] = null;
   else fromArr.splice(fromIdx, 1);
@@ -1919,10 +1914,10 @@ if (shouldChooseSlot) {
   }
 
   const isToSlotArray =
-    toArr === gameState.playerUnitSlots ||
-    toArr === gameState.playerSupportSlots ||
-    toArr === gameState.enemyUnitSlots ||
-    toArr === gameState.enemySupportSlots;
+    toArr === gameState.playerUnits ||
+    toArr === gameState.playerSupports ||
+    toArr === gameState.enemyUnits ||
+    toArr === gameState.enemySupports;
 
   const moved = { ...cardObj, ...extra };
 
@@ -2334,8 +2329,8 @@ if (!handArr || handIdx === -1) return;
       }
 
       const slots = lane === "unit"
-        ? (owner === "enemy" ? gameState.enemyUnitSlots : gameState.playerUnitSlots)
-        : (owner === "enemy" ? gameState.enemySupportSlots : gameState.playerSupportSlots);
+        ? (owner === "enemy" ? gameState.enemyUnits : gameState.playerUnits)
+        : (owner === "enemy" ? gameState.enemySupports : gameState.playerSupports);
 
       if (slots[idx]) return; // occupied
 
@@ -3593,7 +3588,7 @@ function handleStartPhase(turn) {
   if (turn === 'player') gameState.turnNumber = (gameState.turnNumber || 0) + 1;
 
   const units = turn === 'player' ? gameState.playerUnits : gameState.enemyUnits;
-  const terrains = turn === 'player' ? gameState.playerSupportSlots.filter(Boolean) : gameState.enemySupportSlots.filter(Boolean);
+  const terrains = turn === 'player' ? gameState.playerSupports.filter(Boolean) : gameState.enemySupports.filter(Boolean);
   [...units, ...terrains].forEach(cardObj => { cardObj.orientation = 'vertical'; });
 
   // Generate essence from terrains
@@ -3968,7 +3963,7 @@ function initiateDomainSelection(deckArr, afterSelection) {
   if (DomainObj) {
     DomainObj.currentHP = getBaseHp(DomainObj.cardId);
     gameState.playerDomain = DomainObj;
-    gameState.playerSupportSlots.filter(Boolean).unshift(DomainObj);
+    gameState.playerSupports.filter(Boolean).unshift(DomainObj);
     const idx = deckArr.findIndex(c => c.instanceId === DomainObj.instanceId);
     if (idx !== -1) deckArr.splice(idx, 1);
     renderGameState();
@@ -4378,7 +4373,7 @@ function updateReqDiv(requirements, reqPaid, reqDiv) {
 }
   
 function getAllEssenceSources() {
-  return [...gameState.playerSupportSlots.filter(Boolean), ...gameState.playerUnits /* add more if needed */];
+  return [...gameState.playerSupports.filter(Boolean), ...gameState.playerUnits /* add more if needed */];
 }
 
 // ATTACK LOGIC
@@ -4451,13 +4446,13 @@ function canAttack(cardObj, gameState) {
 }
 function getAttackTargets(attackerObj = null) {
   // If no attacker, default to enemy units as "possible generic attack targets"
-  if (!attackerObj) return gameState.enemyUnitSlots.filter(Boolean);
+  if (!attackerObj) return gameState.enemyUnits.filter(Boolean);
 
   const attackerOwner = getCardOwner(attackerObj); // should return "player" or "enemy"
   const defenders =
     attackerOwner === "player"
-      ? gameState.enemyUnitSlots.filter(Boolean)
-      : gameState.playerUnitSlots.filter(Boolean);
+      ? gameState.enemyUnits.filter(Boolean)
+      : gameState.playerUnits.filter(Boolean);
 
   // Keep your existing ability filters if present
   if (typeof applyAttackTargetFilters === "function") {
@@ -4468,7 +4463,7 @@ function getAttackTargets(attackerObj = null) {
 }
 function endAttackTarget() {
   // Remove highlights and listeners
-    [...gameState.enemyUnits, ...gameState.enemySupportSlots.filter(Boolean), ...(gameState.enemyArtifacts || [])].forEach(cardObj => {
+    [...gameState.enemyUnits, ...gameState.enemySupports.filter(Boolean), ...(gameState.enemyArtifacts || [])].forEach(cardObj => {
     const targetDiv = findCardDivInZone('enemy-unit-zone', cardObj.instanceId);
     const targetTerrainDiv = findCardDivInZone('enemy-support-zone', cardObj.instanceId);
     const targetArtifactDiv = findCardDivInZone('enemy-artifacts-zone', cardObj.instanceId);
@@ -4491,10 +4486,10 @@ function endAttackTarget() {
 // --- ATTACK RESOLUTION ANIMATION ---
 function resolveAttack(attackerId, defenderId) {
   // Find attacker/defender objects
-  const attackerObj = [...gameState.playerUnits, ...gameState.playerSupportSlots.filter(Boolean)]
+  const attackerObj = [...gameState.playerUnits, ...gameState.playerSupports.filter(Boolean)]
     .find(c => c.instanceId === attackerId);
     
-  const defenderObj = [...gameState.enemyUnits, ...gameState.enemySupportSlots.filter(Boolean), ...(gameState.enemyArtifacts || []), ...(gameState.enemyDomain ? [gameState.enemyDomain] : [])]
+  const defenderObj = [...gameState.enemyUnits, ...gameState.enemySupports.filter(Boolean), ...(gameState.enemyArtifacts || []), ...(gameState.enemyDomain ? [gameState.enemyDomain] : [])]
     .find(c => c.instanceId === defenderId);
 
   if (!attackerObj || !defenderObj) return;
@@ -4554,10 +4549,10 @@ function disableAfterCombat(cardObj, done, options = {}) {
   // If card left the field (e.g., destroyed), skip disabling.
   const fieldCards = [
     ...gameState.playerUnits,
-    ...gameState.playerSupportSlots.filter(Boolean),
+    ...gameState.playerSupports.filter(Boolean),
     ...(gameState.playerArtifacts || []),
     ...gameState.enemyUnits,
-    ...gameState.enemySupportSlots.filter(Boolean),
+    ...gameState.enemySupports.filter(Boolean),
     ...(gameState.enemyArtifacts || [])
   ];
   if (!fieldCards.includes(cardObj)) return done && done();
@@ -4593,7 +4588,7 @@ function damageCalculation(attacker, defender) {
     // Determine owner by membership (robust and cheap)
     const isPlayerCard =
       gameState.playerUnits.includes(cardObj) ||
-      gameState.playerSupportSlots.filter(Boolean).includes(cardObj) ||
+      gameState.playerSupports.filter(Boolean).includes(cardObj) ||
       gameState.playerHand.includes(cardObj) ||
       gameState.playerDeck.includes(cardObj);
 
@@ -4817,7 +4812,7 @@ function emitPublicState() {
     deckCount: gameState.playerDeck.length,
     handCount: gameState.playerHand.length,
     units: gameState.playerUnits.map(stripCardForSync),
-    terrains: gameState.playerSupportSlots.filter(Boolean).map(stripCardForSync),
+    terrains: gameState.playerSupports.filter(Boolean).map(stripCardForSync),
     voidCards: gameState.playerVoid.map(stripCardForSync),
     phase: gameState.phase,
     turn: gameState.turn
@@ -4856,10 +4851,10 @@ function getInitialGameState() {
     enemyVoid: [],
 
     // Canonical slot-based battlefield
-    playerUnitSlots: Array(5).fill(null),
-    playerSupportSlots: Array(5).fill(null),
-    enemyUnitSlots: Array(5).fill(null),
-    enemySupportSlots: Array(5).fill(null),
+    playerUnits: Array(5).fill(null),
+    playerSupports: Array(5).fill(null),
+    enemyUnits: Array(5).fill(null),
+    enemySupports: Array(5).fill(null),
 
     // Legacy derived aliases (kept for compatibility; should be re-derived after mutations)
     playerUnits: [],
@@ -5061,8 +5056,8 @@ function getValidTargetsByCondition(cardArr, conditionArr) {
       }
       // Owner check
       if (cond.owner) {
-        if (cond.owner === "player" && !(gameState.playerUnits.includes(cardObj) || gameState.playerSupportSlots.filter(Boolean).includes(cardObj))) return false;
-        if (cond.owner === "enemy" && !(gameState.enemyUnits.includes(cardObj) || gameState.enemySupportSlots.filter(Boolean).includes(cardObj))) return false;
+        if (cond.owner === "player" && !(gameState.playerUnits.includes(cardObj) || gameState.playerSupports.filter(Boolean).includes(cardObj))) return false;
+        if (cond.owner === "enemy" && !(gameState.enemyUnits.includes(cardObj) || gameState.enemySupports.filter(Boolean).includes(cardObj))) return false;
       }
       // Category/type check (from dummyCards)
       const cardData = dummyCards.find(c => c.id === cardObj.cardId);
@@ -5956,12 +5951,12 @@ function getTargetsFromEffect(step = {}, sourceCardObj = null, context = {}) {
 
     // If step.target is a number -> any card in the field is valid
     if (typeof step.target === 'number') {
-      return [...gameState.playerUnits, ...gameState.playerSupportSlots.filter(Boolean), ...gameState.enemyUnits, ...gameState.enemySupportSlots.filter(Boolean)];
+      return [...gameState.playerUnits, ...gameState.playerSupports.filter(Boolean), ...gameState.enemyUnits, ...gameState.enemySupports.filter(Boolean)];
     }
 
     // If target is missing -> default to whole field (single target expected elsewhere)
     if (!step.target) {
-      return [...gameState.playerUnits, ...gameState.playerSupportSlots.filter(Boolean), ...gameState.enemyUnits, ...gameState.enemySupportSlots.filter(Boolean)];
+      return [...gameState.playerUnits, ...gameState.playerSupports.filter(Boolean), ...gameState.enemyUnits, ...gameState.enemySupports.filter(Boolean)];
     }
 
     // If step.target is an object describing zone/filter, try using getTargets (existing helper)
@@ -5991,10 +5986,10 @@ function getTargetsFromEffect(step = {}, sourceCardObj = null, context = {}) {
       switch (key) {
         case 'targetEnemy':
         case 'enemy':
-          return [...gameState.enemyUnits, ...gameState.enemySupportSlots.filter(Boolean)];
+          return [...gameState.enemyUnits, ...gameState.enemySupports.filter(Boolean)];
         case 'targetPlayer':
         case 'player':
-          return [...gameState.playerUnits, ...gameState.playerSupportSlots.filter(Boolean)];
+          return [...gameState.playerUnits, ...gameState.playerSupports.filter(Boolean)];
         case 'targetHandEnemy':
           return Array.isArray(gameState.enemyHand) ? gameState.enemyHand.slice() : [];
         case 'targetHandPlayer':
@@ -6012,7 +6007,7 @@ function getTargetsFromEffect(step = {}, sourceCardObj = null, context = {}) {
         case 'allUnit':
           return [...gameState.playerUnits, ...gameState.enemyUnits];
         case 'allTerrain':
-          return [...gameState.playerSupportSlots.filter(Boolean), ...gameState.enemySupportSlots.filter(Boolean)];
+          return [...gameState.playerSupports.filter(Boolean), ...gameState.enemySupports.filter(Boolean)];
         case 'any':
           return Object.values(gameState).flat().filter(card => card && card.cardId);
         default:
@@ -6263,7 +6258,7 @@ function runSkillEffect(sourceCardObj, skillObj) {
 
 function effectStatusHandler(statusName) {
   return function(sourceCardObj, skillObj, step, nextEffect) {
-    const enemyField = [...gameState.enemyUnits, ...gameState.enemySupportSlots.filter(Boolean)];
+    const enemyField = [...gameState.enemyUnits, ...gameState.enemySupports.filter(Boolean)];
     startSkillTarget(
       enemyField,
       selectedTargets => {
@@ -6286,7 +6281,7 @@ function isValidForSkillType(sourceCardObj, skillObj, type) {
     // Only allow if sourceCardObj is still in hand or field
     return gameState.playerHand.includes(sourceCardObj) ||
            gameState.playerUnits.includes(sourceCardObj) ||
-           gameState.playerSupportSlots.filter(Boolean).includes(sourceCardObj);
+           gameState.playerSupports.filter(Boolean).includes(sourceCardObj);
   }
   // For other types, add custom logic as needed
   return true;
@@ -6312,9 +6307,9 @@ function isTargetStillPresent(targetObj) {
   // Check all possible arrays/zones
   return (
     gameState.playerUnits.includes(targetObj) ||
-    gameState.playerSupportSlots.filter(Boolean).includes(targetObj) ||
+    gameState.playerSupports.filter(Boolean).includes(targetObj) ||
     gameState.enemyUnits.includes(targetObj) ||
-    gameState.enemySupportSlots.filter(Boolean).includes(targetObj)
+    gameState.enemySupports.filter(Boolean).includes(targetObj)
     // ...add other zones as needed
   );
 }
@@ -6470,8 +6465,8 @@ function handleEndPhaseStatuses() {
 function tickStatusDurations(phaseObj) {
   // Get all relevant cards (units, terrains, etc)
   const allCards = [
-    ...gameState.playerUnits, ...gameState.playerSupportSlots.filter(Boolean),
-    ...gameState.enemyUnits, ...gameState.enemySupportSlots.filter(Boolean)
+    ...gameState.playerUnits, ...gameState.playerSupports.filter(Boolean),
+    ...gameState.enemyUnits, ...gameState.enemySupports.filter(Boolean)
   ];
   allCards.forEach(cardObj => {
     if (!cardObj.statuses) return;
@@ -6541,8 +6536,8 @@ function getAllCardCollections() {
     gameState.playerDeck, gameState.enemyDeck,
     gameState.playerVoid, gameState.enemyVoid,
     gameState.playerVoid, gameState.enemyVoid,
-    gameState.playerUnitSlots, gameState.playerSupportSlots,
-    gameState.enemyUnitSlots, gameState.enemySupportSlots
+    gameState.playerUnits, gameState.playerSupports,
+    gameState.enemyUnits, gameState.enemySupports
   ];
 }
 function getCardByInstanceId(instanceId) {
@@ -6555,10 +6550,10 @@ function getCardByInstanceId(instanceId) {
     gameState.enemyVoid,
     gameState.playerVoid,
     gameState.enemyVoid,
-    gameState.playerUnitSlots.filter(Boolean),
-    gameState.playerSupportSlots.filter(Boolean),
-    gameState.enemyUnitSlots.filter(Boolean),
-    gameState.enemySupportSlots.filter(Boolean),
+    gameState.playerUnits.filter(Boolean),
+    gameState.playerSupports.filter(Boolean),
+    gameState.enemyUnits.filter(Boolean),
+    gameState.enemySupports.filter(Boolean),
   ];
   for (const arr of pools) {
     const found = arr.find(c => c && c.instanceId === instanceId);
@@ -6581,8 +6576,8 @@ function removeCardByInstanceId(instanceId) {
       const removed = arr[idx];
       // slot arrays store null when empty
       if (
-        arr === gameState.playerUnitSlots || arr === gameState.playerSupportSlots ||
-        arr === gameState.enemyUnitSlots || arr === gameState.enemySupportSlots
+        arr === gameState.playerUnits || arr === gameState.playerSupports ||
+        arr === gameState.enemyUnits || arr === gameState.enemySupports
       ) {
         arr[idx] = null;
       } else {
@@ -6614,10 +6609,10 @@ function findCardAnywhere(instanceId) {
     ...gameState.playerDeck, ...gameState.enemyDeck,
     ...gameState.playerVoid, ...gameState.enemyVoid,
     ...gameState.playerVoid, ...gameState.enemyVoid,
-    ...gameState.playerUnitSlots.filter(Boolean),
-    ...gameState.playerSupportSlots.filter(Boolean),
-    ...gameState.enemyUnitSlots.filter(Boolean),
-    ...gameState.enemySupportSlots.filter(Boolean),
+    ...gameState.playerUnits.filter(Boolean),
+    ...gameState.playerSupports.filter(Boolean),
+    ...gameState.enemyUnits.filter(Boolean),
+    ...gameState.enemySupports.filter(Boolean),
   ];
   return all.find(c => c.instanceId === instanceId) || null;
 }
@@ -6632,7 +6627,7 @@ function placeInstanceOnField(instance) {
     return true;
   }
   if (cat === 'terrain') {
-    (owner === 'player' ? gameState.playerSupportSlots.filter(Boolean) : gameState.enemySupportSlots.filter(Boolean)).push(instance);
+    (owner === 'player' ? gameState.playerSupports.filter(Boolean) : gameState.enemySupports.filter(Boolean)).push(instance);
     return true;
   }
 
@@ -6824,11 +6819,11 @@ if (gameLogContainer) {
     const allArrays = [
       gameState.playerHand,
       gameState.playerUnits,
-      gameState.playerSupportSlots.filter(Boolean),
+      gameState.playerSupports.filter(Boolean),
       gameState.playerVoid,
       gameState.enemyHand,
       gameState.enemyUnits,
-      gameState.enemySupportSlots.filter(Boolean),
+      gameState.enemySupports.filter(Boolean),
       gameState.enemyVoid,
       gameState.playerDeck,
       gameState.enemyDeck,
@@ -6925,9 +6920,9 @@ if (window.socket) {
     gameState.enemyHand = Array.from({ length: state.handCount }, () => ({}));
     // Battlefield zones: use the real card objects sent from server
     gameState.enemyUnits = state.units || [];
-    gameState.enemySupportSlots = Array(5).fill(null);
+    gameState.enemySupports = Array(5).fill(null);
 (state.terrains || []).slice(0, 5).forEach((card, i) => {
-  gameState.enemySupportSlots[i] = card;
+  gameState.enemySupports[i] = card;
 });
     gameState.enemyVoid = state.voidCards || [];
     gameState.enemyPhase = state.phase;
