@@ -333,10 +333,8 @@ const dummyCards = [
 	{name: 'Inferno Scales', act: {class: 'draw', }, eff: {class: 'Burn', amount: 1}},
 	{name: 'Draconic Blaze', cost: '{r2}', eff: {class: 'Burn', amount: 2, target: 2}}]},
 
-
-
 {id: 'IgnavarynCindercoreAutomaton', name: 'Ignavaryn, Cindercore Automaton', rarity: 'Legend', image: 'Cards/ihr/IgnavarynCindercoreAutomaton.png', flavor: '', 
- category: 'Unit', fight: '', color: 'Red', type: ['Fire','Steel','Spirit'], cost: '{r7}', hp: 8, atk: 4, ability: ['Armor','Burn','Exploit'], set: 'InfiniteHorizons', skill: [
+ category: 'Unit', fight: '', color: 'Red', type: ['Fire','Construct'], cost: '{r7}', hp: 8, atk: 4, ability: ['Armor','Burn'], set: 'InfiniteHorizons', skill: [
  	{name: 'Summon', cost: '{r7}', eff: {class: 'summon'}},
 	{name: 'Fusion', eff: {class: 'fusion', ep: '{r}', type: ['Fire','Steel']}},
 	{name: 'Pyrosurge Protocol', req: 'discard', eff: {class: 'burn', q: 2}, text: 'Discard and burn {2} to an enemy'},
@@ -344,7 +342,7 @@ const dummyCards = [
 	{name: 'Thermal Overdrive', cost: '{r3}', eff: {class: 'Burn', amount: 3, target: 3}}]},
 
 {id: 'CindercoreProtector', name: 'Cindercore Protector', rarity: 'Rare', image: 'Cards/ihr/CindercoreProtector.png', flavor: '', 
- category: 'Unit', fight: '', color: 'Red', type: ['Fire','Steel','Spirit','Construct'], hp: 3, atk: 2, cost: '{r4}', ability: ['Armor','Burn','Exploit','Protect'], set: 'InfiniteHorizons', skill: [
+ category: 'Unit', fight: '', color: 'Red', type: ['Fire','Construct'], hp: 3, atk: 2, cost: '{r4}', ability: ['Armor','Burn','Exploit','Protect'], set: 'InfiniteHorizons', skill: [
  	{name: 'Summon', cost: '{r4}', eff: {class: 'summon'}},
 	{name: 'Volcanic Vortex', cost: '{r2}', eff: {class: 'strike', amount: 3, status: ['Burn','Bind']}}]},
 
@@ -354,7 +352,7 @@ const dummyCards = [
 	{name: 'Fire Pulse', cost: '{r}', eff: {class: 'Burn', amount: 1, target: 2}}]},
 
 {id: 'CindercoreSentry', name: 'Cindercore Sentry', rarity: 'Common', image: 'Cards/ihr/CindercoreSentry.png', flavor: '', 
- category: 'Unit', fight: '', color: 'Red', type: ['Fire','Steel','Spirit'], hp: 2, atk: 1, cost: '{r2}', ability: ['Armor','Burn','Exploit'], set: 'InfiniteHorizons', skill: [
+ category: 'Unit', fight: '', color: 'Red', type: ['Fire','Construct'], hp: 2, atk: 1, cost: '{r2}', ability: ['Armor','Burn','Exploit'], set: 'InfiniteHorizons', skill: [
  	{name: 'Summon', cost: '{r2}', eff: {class: 'summon'}},
 	{name: 'Pyrosurge Protocol', trig: 'summon', eff: [{class: 'add', type: 'Fire'}, {class: 'burn', q: 1}]}]},
 
@@ -380,7 +378,7 @@ const dummyCards = [
 	{name: 'Final War Spoils', trig: 'echo', eff: {class: 'add', type: 'Equipment'}}]},
 
 {id: 'BlazescaleWarDrake', name: 'Blazescale War-Drake', rarity: 'Rare', image: 'Cards/egr/BlazescaleWarDrake.png', flavor: '', 
- category: 'Unit', fight: '', color: 'Red', type: ['Fire','Drake'], hp: 5, atk: 3, cost: '{r4}', ability: 'Rush', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Unit', fight: '', color: 'Red', type: ['Fire','Dragon'], hp: 5, atk: 3, cost: '{r4}', ability: 'Rush', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{r4}', eff: {class: 'summon'}}]},
 
 {id: 'MoonlitVixenKumiho', name: 'Moonlit Vixen Kumiho', rarity: 'Rare', image: 'Cards/egr/MoonlitVixenKumiho.png', flavor: '', 
@@ -435,7 +433,7 @@ const dummyCards = [
 	{name: 'Inferno Booster', req: 'tap', eff: {class: 'add', category: 'Support', type: 'Fire'}, text: 'Add 1 fire spell from your deck.'}]},
 
 {id: 'Volcano', name: 'Volcano', rarity: 'Common', image: 'Cards/egr/Volcano.png', flavor: '', 
- category: 'Support', color: 'Red', type: ['Inferno','Terrain'], ep: '{r}', hp: 5, cost: '{r2}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Support', color: 'Red', type: 'Terrain', ep: '{r}', hp: 5, cost: '{r2}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Terraform', cost: '{r2}', eff: {class: 'terraform'}}]},
 
 {id: 'FlameBlast', name: 'Flame Blast', rarity: 'Common', image: 'Cards/egr/FlameBlast.png', flavor: '', 
@@ -497,7 +495,7 @@ const dummyCards = [
 	{name: 'Tidepiercer Vortex', cost: '{u}', trig: 'attack', eff: {class: 'destroy', category: 'Support', amount: 1}}]},
 
 {id: 'PearlhavenSubmergedCity', name: 'Pearlhaven, Submerged City', rarity: 'Legend', image: 'Cards/egu/PearlhavenSubmergedCity.png', flavor: '', 
- category: 'Support', color: 'Blue', type: ['Tidal','Domain'], cost: '{u3}', hp: 20, ep: '{u2}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Support', color: 'Blue', type: ['Merfolk','Domain'], cost: '{u3}', hp: 9, ep: '{u2}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Insight', req: 'tap', eff: {class: 'draw', amount: 1 }, text: 'Draw 1 card.'}]},
 
 {id: 'SerenyaTideboundEnchantress', name: 'Serenya, Tidebound Enchantress', rarity: 'Legend', image: 'Cards/egu/SerenyaTideboundEnchantress.png', flavor: '', 
@@ -507,44 +505,44 @@ const dummyCards = [
 	{name: 'Riptide Command', cost: '{u2}', trig: 'attack', eff: {class: 'repel', amount: 2, target:'opponentUnits'}}]},
 
 {id: 'TidecallersPearl', name: 'Tidecallers Pearl', rarity: 'Common', image: 'Cards/egu/TidecallersPearl.png', flavor: '', 
- category: 'Support', color: 'Blue', type: ['Merfolk','Relic'], hp: 5, cost: '{u3}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
- 	{name: 'Deploy', cost: '{u3}', eff: {class: 'deploy'}},
+ category: 'Support', color: 'Blue', type: ['Merfolk','Artifact'], hp: 5, cost: '{u3}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ 	{name: 'Cast', cost: '{u3}', eff: {class: 'cast'}},
 	{name: "Tidecaller's Pearl", passive: true, eff: {class: 'reduction', ep: '{u}', target: 'playerSpells'}}]},
 
 {id: 'AbyndraTidalAbyssdrake', name: 'Abyndra, Tidal Abyssdrake', rarity: 'Legend', image: 'Cards/fou/AbyndraTidalAbyssdrake.png', flavor: '', 
- category: 'Unit', fight: 'Tidal Burst', color: 'Blue', type: ['Water','Dragon'], hp: 8, atk: 4, cost: '{u7}', ability: ['Dive','Flying','Soak'], set: 'FracturedOrigins', skill: [
+ category: 'Unit', fight: 'Tidal Burst', color: 'Blue', type: ['Water','Dragon'], hp: 8, atk: 4, cost: '{u7}', ability: ['Dive','Flying'], set: 'FracturedOrigins', skill: [
 	{name: 'Summon', cost: '{u7}', eff: {class: 'summon'}},
 	{name: 'Reveal', cost: '{u}', eff: {class: 'Search', category: 'Support', color: 'Blue'}},
 	{name: "Ocean's Requiem", cost: '{u2}', eff: {class: 'bury', target: 'enemyDeck'}},
 	{name: 'Maelstrom Oblivion', cost: '{u3}', eff: [{class: 'drench', amount: 2, target: 3}, {class: 'Rain'}]}]},
 
 {id: 'AbyndraRipplefinGloomlet', name: 'Abyndra, Ripplefin Gloomlet', rarity: 'Rare', image: 'Cards/fou/AbyndraRipplefinGloomlet.png', flavor: '', 
- category: 'Unit', fight: 'Water Strike', color: 'Blue', type: ['Water','Drake'], hp: 3, atk: 2, cost: '{u2}', ability: ['Dive','Soak'], set: 'FracturedOrigins', skill: [
+ category: 'Unit', fight: 'Water Strike', color: 'Blue', type: ['Water','Dragon'], hp: 3, atk: 2, cost: '{u2}', ability: ['Dive','Soak'], set: 'FracturedOrigins', skill: [
  	{name: 'Summon', cost: '{u2}', eff: {class: 'summon'}},
 	{name: 'Reveal', cost: '{u}', eff: {class: 'Search', category: 'Support', color: 'Blue'}},
 	{name: 'Mirror of the Deep', cost: '{u2}', eff: {class: '', amount: 3, status: 'Burn'}}]},
 
 {id: 'DragonsAtoll', name: "Dragon's Atoll", rarity: 'Rare', image: 'Cards/fou/DragonsAtoll.png', flavor: '', 
  category: 'Support', color: 'Blue', type: ['Water','Dragon','Domain'], hp: 11, cost: '{u4}', set: 'FracturedOrigins', skill: [
-	{name: 'Terraform', cost: '{u4}', eff: {class: 'terraform'}},
+	{name: 'Cast', cost: '{u4}', eff: {class: 'cast'}},
 	{name: 'Slumbering Shroud', trig: 'echo', type: 'Dragon', eff: {class: 'Recall', type: 'Dragon'}},
 	{name: 'Draconic Inheritance', cost: '{u2}', act: {class: 'Echo', archetype: 'Dragon'}, eff: {class: 'NullSigil'}}]},
 
 {id: 'MaelvyrnCoralboundAutomaton', name: 'Maelvyrn, Coralbound Automaton', rarity: 'Legend', image: 'Cards/ihu/MaelvyrnCoralboundAutomaton.png', flavor: '', fullArt: 'Cards/Coralbound/MaelvyrnCoralboundAutomatonFA.png', flavor: '',
- category: 'Unit', fight: '', color: 'Blue', type: ['Steel','Water','Construct'], hp: 9, atk: 5, cost: '{u7}', ability: ['Armor','Drench','Exploit','Fusion'], set: 'InfiniteHorizons', skill: [
+ category: 'Unit', fight: '', color: 'Blue', type: ['Water','Construct'], hp: 9, atk: 5, cost: '{u7}', ability: ['Armor','Drench','Exploit','Fusion'], set: 'InfiniteHorizons', skill: [
  	{name: 'Summon', cost: '{u7}', eff: {class: 'summon'}},
 	{name: 'Fusion', ep: '{u}', eff: {class: 'fusion', type: ['Water','Steel']}},
 	{name: 'Blueprint Retrieval', cost: '{u}', stash: 1, eff: {class: 'add', category: 'Support', type: 'Construct'}},
 	{name: 'Hydroburst Cannon', cost: '{u2}', eff: {class: 'soak', target: 'allEnemies'}}]},
 
 {id: 'CoralboundProtector', name: 'Coralbound Protector', rarity: 'Rare', image: 'Cards/ihu/CoralboundProtector.png', flavor: '', 
- category: 'Unit', fight: '', color: 'Blue', type: ['Water','Steel','Machine'], hp: 4, atk: 3, cost: '{u4}', ability: ['Armor','Drench','Exploit','Protect'], set: 'InfiniteHorizons', skill: [
+ category: 'Unit', fight: '', color: 'Blue', type: ['Water','Construct'], hp: 4, atk: 3, cost: '{u4}', ability: ['Armor','Drench','Exploit','Protect'], set: 'InfiniteHorizons', skill: [
 	{name: 'Summon', cost: '{u4}', eff: {class: 'summon'}},
 	{name: 'Hydrosurge Protocol', req: 'echo', eff: {class: 'recover', q: 2, type: ['Water','Steel']}},
 	{name: 'Runic Deluge', cost: '{u}{u}', module: 2, eff: {class: 'Fuse'}}]},
 
 {id: 'CoralboundVanguard', name: 'Coralbound Vanguard', rarity: 'Common', image: 'Cards/ihu/CoralboundVanguard.png', flavor: '', 
- category: 'Unit', fight: '', color: 'Blue', type: ['Water','Steel','Construct'], hp: 3, atk: 2, cost: '{u3}', ability: ['Armor','Drench','Explot','Rush'], set: 'InfiniteHorizons', skill: [
+ category: 'Unit', fight: '', color: 'Blue', type: ['Water','Construct'], hp: 3, atk: 2, cost: '{u3}', ability: ['Armor','Drench','Explot','Rush'], set: 'InfiniteHorizons', skill: [
  	{name: 'Summon', cost: '{u3}', eff: {class: 'summon'}},
 	{name: 'Fusion', eff: {class: 'fusion', ep: '{u}', type: ['Water','Steel']}},
 	{name: 'Hydrosurge Protocol', trig: 'frenzy', eff: {class: 'add', type: ['Water','Steel']}}]},
@@ -560,9 +558,9 @@ const dummyCards = [
 	{name: 'Recycle', cost: '{U}', req: {class: 'Recycle'}, eff: {class: 'Soak', amount: 0, target: 1}}]},
 
 {id: 'HydrosurgeProtocol', name: 'Hydrosurge Protocol', rarity: 'Common', image: 'Cards/Construct/HydrosurgeProtocol.png', flavor: '', 
- category: 'Support', color: 'Blue', type: ['Water','Spell'], cost: '{u2}', set: 'InfiniteHorizons', skill: [
+ category: 'Support', color: 'Blue', type: ['Water','Construct','Spell'], cost: '{u2}', set: 'InfiniteHorizons', skill: [
  	{name: 'Cast', cost: '{u2}', eff: {class: 'cast'}},
-	{name: 'Hydrosurge Protocol', req: {recycle: 1, type: ['Water','Steel']}, eff: {class: 'Soak', amount: 0, target: 2}}]},
+	{name: 'Hydrosurge Protocol', req: {recycle: 1, type: ['Water','Construct']}, eff: {class: 'Soak', amount: 0, target: 2}}]},
 
 // --- HYDRAL CARDS ---//
 {id: 'HydrionPrimevalFloodbringer', name: 'Hydrion, Primeval Floodbringer', rarity: 'Legend', image: 'Cards/fou/HydrionPrimevalFloodbringer.png', flavor: '', fullArt: 'Cards/Coralbound/MaelvyrnCoralboundAutomatonFA.png', flavor: '',
@@ -626,7 +624,7 @@ const dummyCards = [
 	{name: 'Slipstream', eff: {class: 'Inspire', ability: 'Accel', targetAbility: 'Dive', amount: 1}}]},
 
 {id: 'Ocean', name: 'Ocean', rarity: 'Common', image: 'Cards/egu/Ocean.png', flavor: '', 
- category: 'Support', color: 'Blue', hp: 5, cost: '{u2}', ep: '{u}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Support', color: 'Blue', type: 'Terrain', hp: 5, cost: '{u2}', ep: '{u}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Terraform', cost: '{u2}', eff: {class: 'terraform'}}]},
 
 {id: 'EssenceInsight', name: 'Essence Insight', rarity: 'Common', image: 'Cards/egu/EssenceInsight.png', flavor: '', 
@@ -654,7 +652,7 @@ const dummyCards = [
 // YELLOW //
 // YELLOW LEGEND //
 {id: 'GarudaAetherionWings', name: 'Garuda, AetherionWings', rarity: 'Legend', image: 'Cards/Zephyra/GarudaAetherionWings.png', flavor: '', 
- category: 'Unit', fight: '', color: 'Yellow', type: ['Warrior'], hp: 5, atk: 2, cost: '{y3}', ability: 'Flying', set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/Zephyra/GarudaAetherionWingsFA.png', skill: [
+ category: 'Unit', fight: '', color: 'Yellow', type: ['Avian','Warrior'], hp: 5, atk: 2, cost: '{y3}', ability: 'Flying', set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/Zephyra/GarudaAetherionWingsFA.png', skill: [
 	{name: 'Summon', cost: '{y3}', eff: {class: 'summon'}},
 	{name: 'Dash', cost: '{y}{y}', eff: {class: 'Dash'}},
 	{name: 'Featherfall Tempest', cost: '{y}{y}', eff: {class: 'strike', amount: 1, target: 3}}]},
@@ -678,7 +676,7 @@ const dummyCards = [
 	{name: 'Electro Burst', cost: '{y}', eff: {class: 'strike', amount: 1, target: 3}}]},
 
 {id: 'VoltrazekSparkletStormling', name: 'Voltrazek, Sparklet Stormling', rarity: 'Rare', image: 'Cards/foy/VoltrazekSparkletStormling.png', flavor: '', 
- category: 'Unit', fight: 'Spark Claw', color: 'Yellow', type: ['Thunder','Dragon'], hp: 3, atk: 2, cost: '{y2}', ability: ['Dash','Flying','Static'], set: 'FracturedOrigins', skill: [
+ category: 'Unit', fight: 'Spark Claw', color: 'Yellow', type: ['Thunder','Dragon'], hp: 3, atk: 2, cost: '{y2}', ability: ['Flying','Static'], set: 'FracturedOrigins', skill: [
  	{name: 'Summon', cost: '{y2}', eff: {class: 'summon'}},
  	{name: 'Dash', cost: '{y}', eff: {class: 'dash'}},
 	{name: 'Overcharge', cost: '{y3}', eff: [{class: 'Overcharge'}, {class: 'Inspire', ability: 'Rush'}]},
@@ -702,7 +700,7 @@ const dummyCards = [
 	{name: 'Tailwind', eff: {class: 'Inspire', ability: 'Accel', amount: 1, targetAbility: 'Flying'}}]},
 
 {id: 'AetherionElectromancer', name: 'Aetherion Electromancer', rarity: 'Rare', image: 'Cards/egy/AetherionElectromancer.png', flavor: '', 
- category: 'Unit', fight: 'Thunder Burst', color: 'Yellow', type: ['Thunder','Rogue'], hp: 3, atk: 1, cost: '{y3}', ability: 'Static', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Unit', fight: 'Thunder Burst', color: 'Yellow', type: ['Thunder','Rogue','Mage'], hp: 3, atk: 1, cost: '{y3}', ability: 'Static', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{y3}', eff: {class: 'summon'}},
 	{name: 'Skyline Scouting', cost: '{2}{y}', eff: {class: 'Search', amount:1, targetAbility: 'Flying'}},
 	{name: 'Tailwind', eff: {class: 'Inspire', ability: 'Accel', amount: 1, targetAbility: 'Flying'}}]},
@@ -742,7 +740,7 @@ const dummyCards = [
 	{name: 'Summon', cost: '{y}', eff: {class: 'summon'}}]},
 
 {id: 'ElementalofSparks', name: 'Elemental of Sparks', rarity: 'Common', image: 'Cards/egy/ElementalofSparks.png', flavor: '', 
- category: 'Unit', fight: 'Thunder Strike', color: 'Yellow', type: ['Thunder','Elemental','Spirit'], hp: 2, atk: 2, cost: '{y}', ability: ['Elusive','Static'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Unit', fight: 'Thunder Strike', color: 'Yellow', type: ['Thunder','Elemental'], hp: 2, atk: 2, cost: '{y}', ability: ['Elusive','Static'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{y}', eff: {class: 'summon'}}]},
 
 {id: 'ZephyrSprite', name: 'Zephyr Sprite', rarity: 'Common', image: 'Cards/egy/ZephyrSprite.png', flavor: '', 
@@ -750,12 +748,12 @@ const dummyCards = [
 	{name: 'Summon', cost: '{y}', eff: {class: 'summon'}}]},
 
 {id: 'Peaks', name: 'Peaks', rarity: 'Common', image: 'Cards/egy/Peaks.png', flavor: '', 
- category: 'Support', color: 'Yellow', type: ['Storm','Terrain'], ep: '{y}', hp: 5, cost: '{y2}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Support', color: 'Yellow', type: 'Terrain', ep: '{y}', hp: 5, cost: '{y2}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Terraform', cost: '{y2}', eff: {class: 'terraform'}},
 	{name: 'Storm Essence', req: 'tap', eff: {class: 'essence', color: 'yellow'}}]},
 
 {id: 'Thunderlash', name: 'Thunderlash', rarity: 'Common', image: 'Cards/egy/Thunderlash.png', flavor: '', 
- category: 'Support', color: 'Yellow', type: 'Thunder', cost: '{y}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Support', color: 'Yellow', type: ['Thunder','Spell'], cost: '{y}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Cast', cost: '{y}', eff: {class: 'cast'}}]},
 
 {id: 'EssenceRay', name: 'Essence Ray', rarity: 'Common', image: 'Cards/egy/EssenceRay.png', flavor: '', 
@@ -774,7 +772,7 @@ const dummyCards = [
 // GRAY //
 // GRAY LEGEND //
 {id: 'GravokDrakzulTyrant', name: 'Gravok, Drakzul Tyrant', rarity: 'Legend', image: 'Cards/egc/GravokDrakzulTyrant.png', flavor: '', 
- category: 'Unit', fight: 'Seismic Shatter', color: 'Gray', type: ['Orc','Brute'], hp: 3, atk: 2, cost: '{c3}',
+ category: 'Unit', fight: 'Seismic Shatter', color: 'Gray', type: ['Orc','Warrior'], hp: 3, atk: 2, cost: '{c3}',
  ability: ['Armor','Crush'], set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/egc/GravokDrakzulTyrantFA.png', skill: [
 	{name: 'Summon', cost: '{c3}', eff: {class: 'summon'}},
 	{name: 'Stone Mantle', trig: 'summon', eff: {class: 'bolster', hp: 'x'}},
@@ -797,7 +795,7 @@ const dummyCards = [
 	{name: 'Twin Impact', cost: '{c2}', req: 'tap', eff: {class: 'destroy', q: 2, target: 'enemyUnits', status: 'disabled'}}]},
 
 {id: 'TitansAnvil', name: 'Titans Anvil', rarity: 'Rare', image: 'Cards/foc/TitansAnvil.png', flavor: 'Upon this colossal anvil, mountains are broken and reforged into weapons of legend. Each strike rings with the echo of gods.', 
- category: 'Relic', color: 'Gray', type: 'Relic', hp: 5, cost: '{c3}', set: 'FracturedOrigins', skill: [
+ category: 'Support', color: 'Gray', type: 'Artifact', hp: 5, cost: '{c3}', set: 'FracturedOrigins', skill: [
  	{name: 'Deploy', cost: '{c3}', eff: {class: 'deploy'}},
 	{name: 'Forge', req: 'tap', eff: {class: 'add', type:'Equipment'}}]},
 
@@ -818,7 +816,7 @@ const dummyCards = [
 	{name: 'Steelplate Scales', cost: '{c2}', eff: {class: 'Armor', target: 'playerUnits'}}]},
  
 {id: 'DravenAdamantEmperor', name: 'Draven, Adamant Emperor', rarity: 'Legend', image: 'Cards/foc/DravenAdamantEmperor.png', flavor: '', 
- category: 'Unit', fight: 'Steel Strike', color: 'Gray', type: ['Draconic','Steel','Warrior'], hp: 5, atk: 3, cost: '{c4}', ability: ['Armor','Flying'], set: 'FracturedOrigins', skill: [
+ category: 'Unit', fight: 'Steel Strike', color: 'Gray', type: ['Steel','Dragon','Warrior'], hp: 5, atk: 3, cost: '{c4}', ability: ['Armor','Flying'], set: 'FracturedOrigins', skill: [
  	{name: 'Summon', cost: '{c4}', eff: {class: 'summon'}},
 	{name: 'Quicksilver Resolve', trig: {attack: true}, eff: {class: 'destroy', target: 'enemyDefending'}},
 	{name: 'Unbreakable Adamant', cost: '{c2}', eff: {class: 'Armor', target: 'playerUnits'}}]},
@@ -829,7 +827,6 @@ const dummyCards = [
 	{name: 'Ironbound Bash', trig: {attack: true}, check: {armor: 'higher', attacker: true, defender: false}, eff: {class: 'destroy', target: 'enemyDefending'}},
 	{name: 'Forgelight Mantle', cost: '{c2}', eff: {class: 'Armor', target: 'playerUnits'}}]},
  
- 
 {id: 'FerronyxShardletGrindlewyrm', name: 'Ferronyx, Shardlet Grindlewyrm', rarity: 'Rare', image: 'Cards/foc/FerronyxShardletGrindlewyrm.png', flavor: '', 
  category: 'Unit', fight: '', color: 'Gray', type: ['Steel','Dragon'], hp: 2, atk: 2, cost: '{1}{c}', ability: 'Flying', set: 'FracturedOrigins', skill: [
  	{name: 'Summon', cost: '{c2}', eff: {class: 'summon'}},
@@ -837,7 +834,7 @@ const dummyCards = [
 	{name: 'Forgelight Mantle', cost: '{c}{c}', eff: {class: 'Armor', target: 'playerUnits'}}]},
 
 {id: 'DragonsBastion', name: "Dragon's Bastion", rarity: 'Rare', image: 'Cards/foc/DragonsBastion.png', flavor: '', 
- category: 'Support', color: 'Gray', type: ['Steel','Dragon','Terrain'], ability: ['Armor','Protect'], hp: 7, cost: '{c3}', ep: '{c}', set: 'FracturedOrigins', skill: [
+ category: 'Support', color: 'Gray', type: ['Steel','Dragon','Domain'], ability: ['Armor','Protect'], hp: 7, cost: '{c3}', ep: '{c}', set: 'FracturedOrigins', skill: [
  	{name: 'Terraform', cost: '{c4}', eff: {class: 'terraform'}},
 	{name: 'Dragon Echo', cost: '{u}', act: {class: 'Echo', type: 'Dragon'}, eff: {class: 'NullSigil'}},
 	{name: 'Draconic Ironwall', cost: '{c2}', eff: {class: 'Curse'}},]},
@@ -849,7 +846,7 @@ const dummyCards = [
 	{name: 'Terraformation Emergence', req: 'tap', eff: {class: 'add', targetcategory: 'Support'}}]},
 
 {id: 'DrakzulWarmonger', name: 'Drakzul Warmonger', rarity: 'Rare', image: 'Cards/egc/DrakzulWarmonger.png', flavor: '', 
- category: 'Unit', fight: 'Crushing Strike', color: 'Gray', type: ['Terra','Warrior'], hp: 6, atk: 3, cost: '{c4}', ability: 'Crush', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Unit', fight: 'Crushing Strike', color: 'Gray', type: 'Warrior', hp: 6, atk: 3, cost: '{c4}', ability: 'Crush', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{c4}', eff: {class: 'summon'}},
 	{name: 'Impact Mastery', req: 'passive', eff: {class: 'move', from: 'playerCards', to: 'playerSupports', targettype: 'Equip'}, text: 'Activate 1 {terra} equipment from anywhere.'},
 	{name: 'Faultline Breaker', cost: '{c4}', eff: [{class: 'destroy', target: 'enemyTerrains', targettype: 'Terrain', q: 1}, {class: 'disable', target: 'enemyField'}], text: 'Destroy 1 enemy terrain and disable all enemy cards.'}]},
@@ -860,7 +857,7 @@ const dummyCards = [
 	{name: 'Megahorn Charge', cost: '{c}', trig: 'attack', eff: {class: 'buff', atk: 2}}]},
 
 {id: 'ElementalofBoulders', name: 'Elemental of Boulders', rarity: 'Rare', image: 'Cards/egc/ElementalofBoulders.png', flavor: '', 
- category: 'Unit', fight: 'Rock Strike', color: 'Gray', type: ['Rock','Spirit','Elemental','Golem'], hp: 6, atk: 3, cost: '{c3}', ability: ['Armor','Crush'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Unit', fight: 'Rock Strike', color: 'Gray', type: ['Rock','Elemental'], hp: 6, atk: 3, cost: '{c3}', ability: ['Armor','Crush'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{c3}', eff: {class: 'summon'}},
 	{name: 'Terra Discovery', trig: 'summon', eff: {class: 'add', color: 'Gray', type: 'Terrain'}},
 	{name: 'Mountain Earthcraft', trig: 'summon', eff: {class: 'move', from: 'playerCards', to: 'playerSupports', type: 'Terrain'}}]},
@@ -871,7 +868,7 @@ const dummyCards = [
 	{name: 'Seismic Smite', cost: '{c}', eff: {class: 'strike', target: 3, amount: 2}}]},
 
 {id: 'OrcEncampment', name: 'Orc Encampment', rarity: 'Rare', image: 'Cards/egc/OrcEncampment.png', flavor: '', 
- category: 'Support', color: 'Gray', type: 'Orc', hp: 5, cost: '{c2}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Support', color: 'Gray', type: ['Orc','Domain'], hp: 5, cost: '{c2}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Terraform', cost: '{c2}', eff: {class: 'terraform'}}]},
  
  {id: 'SeismicRupture', name: 'Seismic Rupture', rarity: 'Common', image: 'Cards/egc/SeismicRupture.png', flavor: '', 
@@ -881,11 +878,11 @@ const dummyCards = [
 
 // GRAY COMMON //
 {id: 'Golemites', name: 'Golemites', rarity: 'Common', image: 'Cards/egc/Golemite.png', flavor: '', 
- category: 'Unit', fight: 'Rock Strike', color: 'Gray', type: 'Golem', hp: 2, atk: 1, cost: '{c}', ability: 'Armor', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Unit', fight: 'Rock Strike', color: 'Gray', type: ['Rock','Elemental'], hp: 1, atk: 1, cost: '{c}', ability: 'Armor', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{c}', eff: {class: 'summon'}}]},
 
 {id: 'Orc', name: 'Orc', rarity: 'Common', image: 'Cards/egc/Orc.png', flavor: '', 
- category: 'Unit', fight: 'Crushing Strike', color: 'Gray', type: ['Orc','Brute'], hp: 4, atk: 2, cost: '{1}', ability: ['Defiant','Intimidate'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Unit', fight: 'Crushing Strike', color: 'Gray', type: 'Orc', hp: 4, atk: 2, cost: '{c2}', ability: ['Defiant','Intimidate'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{1}', eff: {class: 'summon'}}]},
 
 {id: 'RockshellArmadillo', name: 'Rockshell Armadillo', rarity: 'Common', image: 'Cards/egc/RockshellArmadillo.png', flavor: '', 
@@ -893,22 +890,22 @@ const dummyCards = [
 	{name: 'Summon', cost: '{c}', eff: {class: 'summon'}}]},
 
 {id: 'ElementalofPebbles', name: 'Elemental of Pebbles', rarity: 'Common', image: 'Cards/egc/ElementalofPebbles.png', flavor: '', 
- category: 'Unit', fight: 'Rock Strike', color: 'Gray', type: ['Rock','Spirit','Golem','Elemental'], hp: 2, atk: 2, cost: '{c}', ability: ['Armor','Crush'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Unit', fight: 'Rock Strike', color: 'Gray', type: ['Rock','Elemental'], hp: 2, atk: 2, cost: '{c}', ability: 'Armor', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{c}', eff: {class: 'summon'}}]},
 
 {id: 'Mountain', name: 'Mountain', rarity: 'Common', image: 'Cards/egc/Mountain.png', flavor: '', 
- category: 'Support', color: 'Gray', hp: 5, cost: '{c2}', ep: '{c}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Support', color: 'Gray', type: 'Terrain', hp: 5, cost: '{c2}', ep: '{c}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Terraform', cost: '{c2}', eff: {class: 'terraform'}},
 	{name: 'Terra Essence', req: 'tap', eff: {class: 'essence', color: 'gray'}}]},
 
 {id: 'StoneFist', name: 'Stone Fist', rarity: 'Common', image: 'Cards/egc/StoneFist.png', flavor: '', 
- category: 'Support', color: 'Gray', type: ['Rock','Aura'], cost: '{c}', cd: 2, set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Support', color: 'Gray', type: ['Rock','Spell'], cost: '{c}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Cast', cost: '{c}', eff: {class: 'cast'}},
 	{name: 'Stone Fist', trig: 'summon', eff: {class: 'bolster', atk: 1}},
 	{name: 'Stone Fist', req: 'tap', cd: 1, eff: {class: 'inspire', ability: 'Armor', hp: 1}}]},
          
 {id: 'EssenceBarrier', name: 'Essence Barrier', rarity: 'Common', image: 'Cards/egc/EssenceBarrier.png', flavor: '', 
- category: 'Support', color: 'Gray', type: 'Aura', cost: '{c}', cd: 2, set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Support', color: 'Gray', type: 'Spell', cost: '{c}', cd: 2, set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Cast', cost: '{c}', eff: {class: 'cast'}},
 	{name: 'Essence Barrier', eff: {class: 'bolster', hp: 2}, text: 'Give aegis to an ally unit.'}]},
 
@@ -923,13 +920,13 @@ const dummyCards = [
 // PURPLE //
 // PURPLE LEGEND //
 {id: 'MordrathVirkulPhantom', name: 'Mordrath, Virkul Phantom', rarity: 'Legend', image: 'Cards/egp/MordrathVirkulPhantom.png', flavor: 'With every step, the earth blackens, flowers wither, and the air grows thick with despair — a knight cursed to rot all he touches.', 
- category: 'Unit', fight: 'Blighted Strike', color: 'Purple', type: ['Spirit','Warrior'], hp: 3, atk: 3, cost: '{p3}', ability: ['Armor','Exploit','Resilience'], set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/egp/MordrathVirkulPhantomFA.png', skill: [
+ category: 'Unit', fight: 'Blighted Strike', color: 'Purple', type: ['Ghost','Warrior'], hp: 2, atk: 3, cost: '{p3}', ability: ['Armor','Exploit'], set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/egp/MordrathVirkulPhantomFA.png', skill: [
 	{name: 'Summon', cost: '{p3}', eff: {class: 'summon'}},
 	{name: 'Blightfall Slash', req: 'tap', eff: {class: 'strike', amount: 1}},
 	{name: 'Hallowed Plate', trig: 'echo', eff: {class: 'spawn', id: 'Spirit'}}]},
 	
 {id: 'SelgorCorruptedWarlock', name: 'Selgor, Corrupted Warlock', rarity: 'Legend', image: 'Cards/egp/SelgorCorruptedWarlock.png', flavor: '', 
- category: 'Unit', fight: 'Corruptive Surge', color: 'Purple', type: ['Mystic','Mage'], hp: 4, atk: 1, cost: '{p4}', ability: ['Curse','Drain'], set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/egp/SelgorCorruptedWarlockFA.png', skill: [
+ category: 'Unit', fight: 'Corruptive Surge', color: 'Purple', type: ['Corrupted','Mage'], hp: 4, atk: 1, cost: '{p4}', ability: ['Curse','Drain'], set: ['ElementaGenesis','EssenceLegacy'], fullArt: 'Cards/egp/SelgorCorruptedWarlockFA.png', skill: [
 	{name: 'Summon', cost: '{p4}', eff: {class: 'summon'}},
 	{name: 'Soul Reap', tribute: 1, eff: {class: 'Rally', amount: 2}},
 	{name: 'Corruptive Surge', cost: '{p}{p}', trig: 'attack', eff: {class: 'curse', target: 'enemyUnits', amount: 1}}]},
@@ -946,20 +943,20 @@ const dummyCards = [
 	{name: 'Toxic Miasma', cost: '{p}', eff: {class: 'Toxic Miasma'}}]},
 
 {id: 'MyxarothToxletMireling', name: 'Myxaroth, Toxlet Mireling', rarity: 'Rare', image: 'Cards/fop/MyxarothToxletMireling.png', flavor: '', 
- category: 'Unit', fight: 'Toxic Strike', color: 'Purple', type: ['Cursed','Dragon'], hp: 3, atk: 2, cost: '{p2}', ability: ['Flying','Curse'], set: 'FracturedOrigins', skill: [
+ category: 'Unit', fight: 'Corrupted Strike', color: 'Purple', type: ['Corrupted','Dragon'], hp: 2, atk: 2, cost: '{p2}', ability: ['Flying','Curse'], set: 'FracturedOrigins', skill: [
  	{name: 'Summon', cost: '{p2}', eff: {class: 'summon'}},
 	{name: 'Discard', cost: '{p}', eff: {class: 'Decay'}},
 	{name: 'Acidblight Swell', cost: '{p}{p}', eff: {class: 'Toxic Miasma'}}]},
 
 {id: 'DragonsHollow', name: "Dragon's Hollow", rarity: 'Rare', image: 'Cards/fop/DragonsHollow.png', flavor: '', 
- category: 'Support', color: 'Purple', type: ['Cursed','Dragon','Terrain'], hp: 7, cost: '{p3}', set: 'FracturedOrigins', skill: [
+ category: 'Support', color: 'Purple', type: ['Corrupted','Dragon','Terrain'], hp: 7, cost: '{p3}', set: 'FracturedOrigins', skill: [
  	{name: 'Terraform', cost: '{p3}', eff: {class: 'terraform'}},
 	{name: 'Dragon Echo', cost: '{u}', act: {class: 'Echo', archetype: 'Dragon'}, eff: {class: 'NullSigil'}},
 	{name: 'Draconic Curse', cost: '{p2}', eff: {class: 'Curse'}}]}, 
 
 // PURPLE RARE //
 {id: 'ElementalofMiasmas', name: 'Elemental of Miasmas', rarity: 'Rare', image: 'Cards/egp/ElementalofMiasmas.png', flavor: '', 
- category: 'Unit', fight: 'Toxic Burst', color: 'Purple', type: ['Toxic','Spirit'], hp: 7, atk: 2, cost: '{p3}', ability: ['Elusive','Poisonous'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Unit', fight: 'Toxic Burst', color: 'Purple', type: ['Toxic','Elemental'], hp: 7, atk: 2, cost: '{p3}', ability: ['Elusive','Poisonous'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Cursed Discovery', cost: '{p3}', trig: 'summon', eff: [{class: 'summon'}, {class: 'Search', amount: 1, color: 'Purple', category: 'Support'}]}]},
 
 {id: 'SpiritualGloomPlateau', name: 'Spiritual Gloom Plateau', rarity: 'Rare', image: 'Cards/egp/SpiritualGloomPlateau.png', flavor: '', 
@@ -974,7 +971,7 @@ const dummyCards = [
 	{name: 'Cursed Worldfall', req: 'tap', eff: {class: 'Hindrance'}}]},
  
 {id: 'BlightWave', name: 'BlightWave', rarity: 'Common', image: 'Cards/egp/BlightWave.png', flavor: '', 
- category: 'Support', color: 'Purple', type: 'Toxic', cost: '{p3}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Support', color: 'Purple', type: ['Toxic','spell'], cost: '{p3}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Cast', cost: '{p3}', eff: {class: 'cast'}},
 	{name: 'Blightwave', eff: {class: 'poison', amount: 1, target: 'enemyField'}},
 	{name: 'Expel', expel: true, eff: {class: 'add', category: 'Support'}}]},
