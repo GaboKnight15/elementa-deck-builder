@@ -7,7 +7,7 @@ const dummyCards = [
 	{name: 'Timeless Zenith Blessing', req: 'void', eff: {class: 'bolster', target: 'playerField', atk: 1, hp: 2}, text: 'Give +{1}/+{2} to all Sylvan allies.'}]},
 
 {id: 'Verdara', name: 'Verdara', rarity: 'Legend', image: 'Cards/egg/Verdara.png', flavor: '', 
- category: 'Support', color: 'Green', type: 'Nexus', cost: '{g3}', hp: 20, ep: '{g2}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Support', color: 'Green', type: 'Nexus', hp: 20, ep: '{g3}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Flourish', req: 'tap', eff: {class: 'bolster', hp: 2}, text: 'Give +{2} HP to 1 unit.'}]},
 
 {id: 'GlaistigWildhornEmpress', name: 'Glaistig, Wildhorn Empress', rarity: 'Legend', image: 'Cards/egg/GlaistigWildhornEmpress.png', flavor: 'Beneath a crown of entwined blossoms, she dances through the forest while singing weaving spells of mirth. Satyrs, woodland units, and even the shyest spirits follow her lead, enchanted by her boundless charm.',
@@ -250,7 +250,7 @@ const dummyCards = [
 // GREEN/RED //
 // GREEN/BLUE //
 {id: 'StreamVagrantKappa', name: 'Stream Vagrant Kappa', rarity: 'Rare', image: 'Cards/egg/StreamVagrantKappa.png', flavor: '', 
- category: 'Unit', fight: '', color: ['Green','Blue'], isDual: true, type: ['Sylvan','Merfolk'], hp: 3, atk: 2, cost: '{g2}{u}', 
+ category: 'Unit', fight: '', color: ['Green','Blue'], isDual: true, type: 'Merfolk', hp: 3, atk: 2, cost: '{g2}{u}', 
  ability: ['Dive','Rush'], set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Summon', cost: '{g2}{u}', eff: {class: 'summon'}},
 	{name: 'Riverbed Flotsam Glean', trig: 'summon', eff: {class: 'recover', category: 'Support'},
@@ -258,7 +258,7 @@ const dummyCards = [
 	{name: 'Drifting Foam Escape', req: 'return', eff: {class: 'drench', target: 'enemyUnits'}}]},
 
 {id: 'MistyMarsh', name: 'Misty Marsh', rarity: 'Common', image: 'Cards/egg/MistyMarsh.png', flavor: '', 
- category: 'Support', color: ['Green','Blue'], type: ['Sylvan','Terrain'], cost: '{g2}', hp: 7, ep: '{u}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Support', color: ['Green','Blue'], type: 'Terrain', cost: '{g2}', hp: 7, ep: '{u}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Terraform', cost: '{g2}', eff: {class: 'terraform'}}]},
 // GREEN/YELLOW //
 // GREEN/GRAY RARE //
@@ -299,7 +299,7 @@ const dummyCards = [
 // RED //
 // RED LEGEND //
 {id: 'Magmaris', name: 'Magmaris', rarity: 'Legend', image: 'Cards/egr/Magmaris.png', flavor: '', 
- category: 'Support', color: 'Red', type: 'Nexus', hp: 20, ep: '{r2}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Support', color: 'Red', type: 'Nexus', hp: 20, ep: '{r3}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Inferno Essence', req: 'tap', eff: {class: 'essence', color: 'red'}},
 	{name: 'Ignite', req: 'tap', eff: {class: 'bolster', atk: 1 }}]},
 
@@ -548,7 +548,7 @@ const dummyCards = [
 	{name: 'Hydrosurge Protocol', trig: 'frenzy', eff: {class: 'add', type: ['Water','Steel']}}]},
 
 {id: 'CoralboundSentry', name: 'Coralbound Sentry', rarity: 'Common', image: 'Cards/ihu/CoralboundSentry.png', flavor: '', 
- category: 'Unit', fight: '', color: 'Blue', type: ['Water','Steel','Construct'], hp: 2, atk: 1, cost: '{u2}', ability: ['Armor','Drench','Exploit'], set: 'InfiniteHorizons', skill: [
+ category: 'Unit', fight: '', color: 'Blue', type: ['Water','Construct'], hp: 2, atk: 1, cost: '{u2}', ability: ['Armor','Drench','Exploit'], set: 'InfiniteHorizons', skill: [
  	{name: 'Summon', cost: '{u2}', eff: {class: 'summon'}},
 	{name: 'Hydrosurge Protocol', trig: 'summon', eff: [{class: 'add', type: ['Water','Steel']}, {class: 'Drench', q: 1}]}]},
 
@@ -571,7 +571,7 @@ const dummyCards = [
 	{name: 'Tide of Oblivion', cost: '{u3}', eff: {class: 'Soak', amount: 8}}]},
 
 {id: 'Umarion', name: 'Umarion', rarity: 'Legend', image: 'Cards/egu/Umarion.png', flavor: '', 
- category: 'Support', color: 'Blue', type: 'Nexus', hp: 20, ep: '{u2}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Support', color: 'Blue', type: 'Nexus', hp: 20, ep: '{u3}', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Insight', req: 'tap', eff: {class: 'draw', amount: 1 }, text: 'Draw 1 card.'}]},
 
 // BLUE RARE //
@@ -689,7 +689,7 @@ const dummyCards = [
 	{name: 'Draconic Storm', cost: '{u2}', eff: {class: 'Thunderstorm'}}]},
 
 {id: 'Aetherion', name: 'Aetherion', rarity: 'Legend', image: 'Cards/egy/Aetherion.png', flavor: '', 
- category: 'Support', color: 'Yellow', hp: 20, ep: '{y2}', type: 'Nexus', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Support', color: 'Yellow', hp: 20, ep: '{y3}', type: 'Nexus', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Shock', req: 'tap', eff: {class: 'strike', amount: 2 }}]},
 
 // YELLOW RARE //
@@ -785,7 +785,7 @@ const dummyCards = [
 	{name: 'Village Hero', awaken: true, eff: {class: 'bolster', atk: 1, hp: 1}}]},
          
 {id: 'Drakzul', name: 'Drakzul', rarity: 'Legend', image: 'Cards/egc/Drakzul.png', flavor: '', 
- category: 'Support', color: 'Gray', hp: 20, ep: '{c2}', type: 'Nexus', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Support', color: 'Gray', hp: 20, ep: '{c3}', type: 'Nexus', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Fortify', req: 'tap', eff: {class: 'armor', amount: 1}},
 	{name: 'Terra Essence', req: 'tap', eff: {class: 'essence', color: 'gray'}}]},
 
@@ -932,7 +932,7 @@ const dummyCards = [
 	{name: 'Corruptive Surge', cost: '{p}{p}', trig: 'attack', eff: {class: 'curse', target: 'enemyUnits', amount: 1}}]},
 
 {id: 'Virkul', name: 'Virkul', rarity: 'Legend', image: 'Cards/egp/Virkul.png', flavor: '', 
- category: 'Support', color: 'Purple', hp: 20, ep: '{p2}', type: 'Nexus', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Support', color: 'Purple', hp: 20, ep: '{p3}', type: 'Nexus', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Terraform', cost: '{p3}', eff: {class: 'terraform'}},
 	{name: 'Distort', req: 'tap', eff: {class: 'curse', amount: 1}}]},
 
@@ -1014,7 +1014,7 @@ const dummyCards = [
 // WHITE //
 // WHITE LEGEND //
 {id: 'Solmara', name: 'Solmara', rarity: 'Legend', image: 'Cards/egw/Solmara.png', flavor: '', 
- category: 'Support', color: 'White', cost: '{w3}', hp: 20, type: 'Nexus', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Support', color: 'White', ep: '{w3}', hp: 20, type: 'Nexus', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Terraform', cost: '{w3}', eff: {class: 'terraform'}},
 	{name: 'Blessing', req: 'tap', eff: {class: 'heal', amount: 3 }}]},
 
@@ -1226,7 +1226,7 @@ const dummyCards = [
 	{name: 'Hexbind', cost: '{p}{b}', eff: {class: 'Bind', amount: 4}}]},
 
 {id: 'Nocthyra', name: 'Nocthyra', rarity: 'Legend', image: 'Cards/egb/Nocthyra.png', flavor: '', 
- category: 'Support', color: 'Black', hp: 20, ep: '{b2}', type: 'Nexus', set: ['ElementaGenesis','EssenceLegacy'], skill: [
+ category: 'Support', color: 'Black', hp: 20, ep: '{b3}', type: 'Nexus', set: ['ElementaGenesis','EssenceLegacy'], skill: [
 	{name: 'Exaction', req: 'tap', discard: 1, eff: {class: 'draw', amount: 2}}]},
 
 {id: 'ShadelornWastes', name: 'Shadelorn Wastes', rarity: 'Rare', image: 'Cards/ecb/ShadelornWastes.png', flavor: '', 
