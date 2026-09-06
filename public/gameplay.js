@@ -27,8 +27,8 @@ TURNS.forEach(turn =>
 // --- ZONES --- //
 // ------------- //
 let gameState = {
-  playerDeck: [], playerHand: [], playerSouls: [],
-  enemyDeck: [], enemyHand: [], enemySouls: [],
+  playerDeck: [], playerHand: [], playerSouls: [], playerVoid: [],
+  enemyDeck: [], enemyHand: [], enemySouls: [], enemyVoid: [],
 
   // New slot layout (5 unit + 5 support per side)
   playerUnits: Array(5).fill(null),
@@ -51,12 +51,14 @@ const ZONE_MAP = {
   playerDeck:   { id: "player-deck-zone",   arr: () => gameState.playerDeck },
   playerHand:   { id: "player-hand",        arr: () => gameState.playerHand },
   playerSouls:   { id: "player-souls-zone",   arr: () => gameState.playerSouls },
+  playerVoid: { id: "player-void-zone", arr: () => gameState.playerVoid },
 
   // --- Core enemy zones ---
   enemyDeck:   { id: "enemy-deck-zone",   arr: () => gameState.enemyDeck },
   enemyHand:   { id: "enemy-hand",        arr: () => gameState.enemyHand },
   enemySouls:   { id: "enemy-souls-zone",   arr: () => gameState.enemySouls },
-
+  enemyVoid: { id: "enemy-void-zone", arr: () => gameState.enemyVoid },
+  
   // --- Canonical battlefield storage (ONLY these for board state) ---
   playerUnits: { id: "player-unit-zone", arr: () => gameState.playerUnits },
   playerSupports:  { id: "player-support-zone",  arr: () => gameState.playerSupports },
@@ -1378,9 +1380,11 @@ function startGame({
   // --- Reset non-field zones ---
   gameState.playerHand = [];
   gameState.playerSouls = [];
+  gameState.playerVoid = [];
 
   gameState.enemyHand = [];
   gameState.enemySouls = [];
+  gameState.enemyVoid = [];
 
   // --- Reset canonical slot-based battlefield ---
   gameState.playerUnits = Array(5).fill(null);
@@ -1578,6 +1582,8 @@ function findZoneIdForCard(cardObj) {
   if (gameState.enemyDeck.some(c => c.instanceId === id)) return "enemy-deck-zone";
   if (gameState.playerSouls.some(c => c.instanceId === id)) return "player-souls-zone";
   if (gameState.enemySouls.some(c => c.instanceId === id)) return "enemy-souls-zone";
+  if (gameState.playerVoid.some(c => c.instanceId === id)) return "player-void-zone";
+  if (gameState.enemyVoid.some(c => c.instanceId === id)) return "enemy-void-zone";
 
   // Slot-based battlefield
   const pC = gameState.playerUnits.findIndex(c => c && c.instanceId === id);
@@ -1641,17 +1647,19 @@ function getOwnerFromCard(cardObj) {
   return owner === "enemy" ? "enemy" : "player";
 }
 function getOwnerZones(owner) {
-  return owner === "enemy"
-    ? {
-        hand: gameState.enemyHand,
-        deck: gameState.enemyDeck,
-        souls: gameState.enemySouls
-      }
-    : {
-        hand: gameState.playerHand,
-        deck: gameState.playerDeck,
-        souls: gameState.playerSouls
-      };
+return owner === "enemy"
+  ? {
+      hand: gameState.enemyHand,
+      deck: gameState.enemyDeck,
+      souls: gameState.enemySouls,
+      void: gameState.enemyVoid
+    }
+  : {
+      hand: gameState.playerHand,
+      deck: gameState.playerDeck,
+      souls: gameState.playerSouls,
+      void: gameState.playerVoid
+    };
 }
 
 function getCardOwner(cardObj) {
