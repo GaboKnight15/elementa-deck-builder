@@ -678,7 +678,7 @@ draw: { name: 'Draw',
 },
   
 cast: { name: 'Cast', zone: 'hand', icon: 'Icons/Skill/Cast.png',
-  description: 'Cast a magic from hand.',
+  description: 'Cast a support card from hand.',
   canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
     // Accept common magicings used across your code
     return currentZone === 'playerHand' || currentZone === 'playerHand' || currentZone === 'player-hand';
@@ -702,43 +702,6 @@ cast: { name: 'Cast', zone: 'hand', icon: 'Icons/Skill/Cast.png',
         return;
       }
       runHandSkillWithAnimation(sourceCardObj, skillObj, soulsArr, () => {
-        nextEffect && nextEffect();
-      });
-  }
-},
-
-terraform: { name: 'Terraform', zone: 'hand', icon: 'Icons/Skill/Terraform.png',
-  description: 'You can only play terrains from the hand',
-  canActivate: function(sourceCardObj, skillObj, currentZone, gameState) {
-    // Must be in hand (tolerant naming), and terraform not used this turn by current player
-    const inHand = (currentZone === 'playerHand' || currentZone === 'playerHand' || currentZone === 'player-hand');
-    const activePlayer = gameState.turn;
-  },
-  handler: function(sourceCardObj, skillObj, step = {}, nextEffect) {
-      const activePlayer = gameState.turn;
-
-      const owner = (getCardOwner(sourceCardObj) === 'enemy') ? 'enemy' : 'player';
-      const handArr = owner === 'player' ? gameState.playerHand : gameState.enemyHand;
-      const terrainsArr = owner === 'player' ? gameState.playerSupports : gameState.enemySupports;
-
-      // Must be in hand
-      if (!handArr.includes(sourceCardObj)) {
-        showToast && showToast("You can only Terraform terrains from your hand.", { type: "error" });
-        nextEffect && nextEffect();
-        return;
-      }
-
-      // Must be a Terrain by definition
-      const def = dummyCards.find(c => c.id === sourceCardObj.cardId);
-      const isTerrain = String(def?.category || '').toLowerCase() === 'terrain';
-      if (!isTerrain) {
-        showToast && showToast("Only terrain cards can be Terraform'ed.", { type: "error" });
-        nextEffect && nextEffect();
-        return;
-      }
-
-      moveCard(sourceCardObj.instanceId, handArr, terrainsArr, { orientation: "vertical" }, () => {
-        renderGameState && renderGameState();
         nextEffect && nextEffect();
       });
   }
